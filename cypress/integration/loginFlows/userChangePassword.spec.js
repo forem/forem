@@ -12,8 +12,12 @@ describe('User Change Password', () => {
     cy.findByTestId('login-form').as('loginForm');
 
     cy.get('@user').then((user) => {
-      cy.get('@loginForm').findByText('Email').type(user.email);
-      cy.get('@loginForm').findByText('Password').type(user.password);
+      cy.get('@loginForm')
+        .findByText(/^Email$/)
+        .type(user.email);
+      cy.get('@loginForm')
+        .findByText(/^Password$/)
+        .type(user.password);
     });
 
     // Submit the form
@@ -43,8 +47,12 @@ describe('User Change Password', () => {
     cy.findByTestId('login-form').as('loginForm');
 
     cy.get('@user').then((user) => {
-      cy.get('@loginForm').findByText('Email').type(user.email);
-      cy.get('@loginForm').findByText('Password').type(newPassword);
+      cy.get('@loginForm')
+        .findByText(/^Email$/)
+        .type(user.email);
+      cy.get('@loginForm')
+        .findByText(/^Password$/)
+        .type(newPassword);
     });
 
     // Submit the form
@@ -63,8 +71,12 @@ describe('User Change Password', () => {
     cy.findByTestId('login-form').as('loginForm');
 
     cy.get('@user').then((user) => {
-      cy.get('@loginForm').findByText('Email').type(user.email);
-      cy.get('@loginForm').findByText('Password').type(user.password);
+      cy.get('@loginForm')
+        .findByText(/^Email$/)
+        .type(user.email);
+      cy.get('@loginForm')
+        .findByText(/^Password$/)
+        .type(user.password);
     });
 
     // Submit the form
@@ -87,7 +99,9 @@ describe('User Change Password', () => {
     });
 
     // Submit the form
-    cy.get('@updatePasswordForm').findByText('Set New Password').click();
+    cy.get('@updatePasswordForm')
+      .findByText(/^Set New Password$/)
+      .click();
 
     cy.findByTestId('account-errors-panel').findByText(
       /^Password doesn't match password confirmation$/,
