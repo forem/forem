@@ -11,7 +11,7 @@ export default class DataUpdateScriptController extends Controller {
     let button       = document.getElementById(`data_update_script_${id}_button`);
 
     this.showLoadingIndicators(statusColumn, runAtColumn, button);
-    this.kickoffSidekiqWorker(id, statusColumn, runAtColumn, button);
+    this.kickoffSidekiqWorker(id);
     this.pollForResponse(id, statusColumn, runAtColumn, button);
   }
 
@@ -21,7 +21,7 @@ export default class DataUpdateScriptController extends Controller {
     button.innerHTML       = "loading..";
   }
 
-  kickoffSidekiqWorker(id, statusColumn, runAtColumn, button) {
+  kickoffSidekiqWorker(id) {
     const formData = new FormData();
     formData.append('id', id);
 
