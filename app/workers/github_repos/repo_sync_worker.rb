@@ -4,6 +4,8 @@ module GithubRepos
 
     sidekiq_options queue: :low_priority, retry: 10, lock: :until_executing
 
+    TOUCH_USER_COOLDOWN = 30.minutes
+
     def perform(repo_id)
       repo = GithubRepo.find_by(id: repo_id)
       return unless repo
@@ -26,7 +28,7 @@ module GithubRepos
           stargazers_count: fetched_repo.stargazers_count,
           info_hash: fetched_repo.to_hash,
         )
-        if repo.user&.github_repos_updated_at&.before?(30.minutes.ago)
+        if repo.user&.github_repos_updated_at&.before?(TOUCH_USER_COOLDOWN.ago)
           repo.user.touch(:github_repos_updated_at)
         end
       rescue Github::Errors::NotFound,
