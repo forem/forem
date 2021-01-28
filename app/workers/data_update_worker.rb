@@ -3,9 +3,8 @@ class DataUpdateWorker
   sidekiq_options queue: :high_priority, retry: 5
 
   def perform(id = nil)
-    data_update_script = DataUpdateScript.find(id)
-
-    if data_update_script
+    if id
+      data_update_script = DataUpdateScript.find(id)
       data_update_script.mark_as_run!
       log_status(data_update_script)
       run_script(data_update_script)
