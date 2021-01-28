@@ -2,6 +2,11 @@
 
 class Seeder
   def initialize
+    if Rails.env.production?
+      puts "Can't run seeds in production"
+      exit 1
+    end
+    
     @counter = 0
   end
 
