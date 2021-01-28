@@ -1,4 +1,3 @@
-return if Rails.env.production?
 return unless Rails.env.test? && ENV["E2E"].present?
 
 # NOTE: when adding new data, please use the Seeder class to ensure the seed tasks
