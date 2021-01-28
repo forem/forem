@@ -5,6 +5,6 @@ RSpec.describe "Suspended user", type: :system do
 
   it "tries to create an article" do
     sign_in suspended_user
-    expect { visit "/new" }.to raise_error("SUSPENDED")
+    expect { visit "/new" }.to raise_error(SuspendedError)
   end
 end
