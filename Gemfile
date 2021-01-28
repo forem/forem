@@ -17,7 +17,7 @@ gem "addressable", "~> 2.7" # A replacement for the URI implementation that is p
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.1" # Tracking analytics for Rails
 gem "ancestry", "~> 3.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "blazer", "~> 2.4.0" # Allows admins to query data
+gem "blazer", "~> 2.4.1" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -50,7 +50,7 @@ gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X
 gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "imgproxy", "~> 1.2" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
-gem "jbuilder", "~> 2.10" # Create JSON structures via a Builder-style DSL
+gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.4" #  A gem to automate using jQuery with Rails
 gem "jsonapi-serializer", "~> 2.1" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
@@ -67,7 +67,7 @@ gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.20" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with Elasticsearch to support http keep-alive connections
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
-gem "puma", "~> 5.1.1" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 5.2.0" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.4" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.3" # Pusher Push Notifications Ruby server SDK
@@ -120,11 +120,10 @@ group :development do
   # NOTE: [@rhymes] binding_of_caller 1.0 breaks Docker Compose, see <https://github.com/forem/forem/issues/12068>
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
 
-  gem "brakeman", "~> 4.10", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
+  gem "brakeman", "~> 5.0", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.7" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 2.0", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", github: "thepracticaldev/erb-lint", branch: "jess/remove-version-pinning", require: false # ERB Linter tool
-  gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
@@ -141,7 +140,7 @@ end
 group :development, :test do
   gem "amazing_print", "~> 1.2" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.34" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.35.1" # Capybara is an integration testing tool for rack based web applications
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.15" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
