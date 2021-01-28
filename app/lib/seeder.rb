@@ -4,9 +4,12 @@ class Seeder
   def initialize
     if Rails.env.production?
       puts "Can't run seeds in production"
+
+      # rubocop:disable Rails/Exit
       exit 1
+      # rubocop:enable Rails/Exit
     end
-    
+
     @counter = 0
   end
 
