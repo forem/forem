@@ -1,8 +1,8 @@
 import { Controller } from 'stimulus';
 
 export default class DataUpdateScriptController extends Controller {
-  forceRun() {
 
+  forceRun() {
     event.preventDefault()
 
     const id         = event.target.dataset.value;
