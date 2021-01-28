@@ -11,12 +11,13 @@ Rails.application.routes.draw do
     omniauth_callbacks: "omniauth_callbacks",
     registrations: "registrations",
     invitations: "invitations",
-    passwords: "passwords"
+    passwords: "passwords",
+    confirmations: "confirmations"
   }
 
   devise_scope :user do
     get "/enter", to: "registrations#new", as: :sign_up
-    get "/confirm-email", to: "devise/confirmations#new"
+    get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
   end
 

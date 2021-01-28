@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { KeyboardShortcuts } from '../../shared/components/useKeyboardShortcuts';
 import { defaultChildrenPropTypes } from '../../common-prop-types';
 import { Button } from '@crayons';
 
@@ -40,6 +41,10 @@ export const Modal = ({
   overlay,
   onClose,
 }) => {
+  const shortcuts = {
+    escape: onClose,
+  };
+
   return (
     <div
       data-testid="modal-container"
@@ -64,6 +69,7 @@ export const Modal = ({
               aria-label="Close"
               onClick={onClose}
             />
+            <KeyboardShortcuts shortcuts={shortcuts} />
           </div>
         )}
         <div className="crayons-modal__box__body">{children}</div>
