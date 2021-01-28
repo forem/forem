@@ -6,6 +6,7 @@ cache:
   directories:
     - vendor/bundle
     - node_modules
+    - ~/.cache
 rvm:
   - 2.7.2
 addons:
