@@ -6,10 +6,14 @@ module Admin
       @data_update_scripts = DataUpdateScript.order(run_at: :desc)
     end
 
-    def force_run
-      response = DataUpdateScript.force_run(params[:id])
-
+    def show
+      response = DataUpdateScript.find(params[:id])
       render json: { response: response }
+    end
+
+    def force_run
+      script = DataUpdateScript.find(params[:id])
+      DataUpdateWorker.perform_async(script)
     end
   end
 end
