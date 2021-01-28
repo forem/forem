@@ -5,9 +5,7 @@ language: ruby
 cache:
   directories:
     - vendor/bundle
-    - node_modules
-    - $HOME/.nvm
-    - ~/.cache # cache folder with Cypress binary
+    - ~/.cache
 rvm:
   - 2.7.2
 addons:
