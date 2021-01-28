@@ -78,7 +78,7 @@ discussion around a new feature (or chime in on a pre-existing discussion!).
 There may be some open issues in our repository that we think evolve into
 impactful features. For such issues, we use the
 [potential RFC](https://github.com/forem/forem/labels/potential%20RFC) label in
-order to highlight the potential feature to the Forem core team member so that
+order to highlight the potential feature to the Forem core team members so that
 someone from the team can champion that feature.
 
 You can learn more about our internal RFC process and how we use forem.dev
