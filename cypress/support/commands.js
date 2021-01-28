@@ -35,7 +35,7 @@ Cypress.Commands.add('testSetup', () => {
     if (cookie.length) {
       // Instead of always waiting, only wait if the cookies aren't
       // cleared yet and attempt to clear again.
-      cy.wait(1); // eslint-disable-line cypress/no-unnecessary-waiting
+      cy.wait(500); // eslint-disable-line cypress/no-unnecessary-waiting
       cy.clearCookies();
     }
   });
