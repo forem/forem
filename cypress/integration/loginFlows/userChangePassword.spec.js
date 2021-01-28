@@ -89,7 +89,7 @@ describe('User Change Password', () => {
     // Submit the form
     cy.get('@updatePasswordForm').findByText('Set New Password').click();
 
-    cy.get('#page-content').findByText(
+    cy.findByTestId('account-errors-panel').findByText(
       /^Password doesn't match password confirmation$/,
     );
   });
