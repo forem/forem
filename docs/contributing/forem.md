@@ -22,8 +22,13 @@ contact the team with our [abuse report form](https://dev.to/report-abuse).
 All [issues](https://github.com/forem/forem/issues) labeled
 [ready for dev](https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22)
 and
-[type: bug](https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22type%3A+bug%22)
+[bug](https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22type%3A+bug%22+label%3Abug)
 are up for grabs.
+
+\*\*Please note that issues with the
+[Forem team](https://github.com/forem/forem/labels/Forem%20team) label are
+internal tasks that will be completed by a Forem
+[core team member](https://github.com/forem/forem/#core-team).
 
 - [good first issue](https://github.com/forem/forem/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+)
   issues are meant for newer developers.
@@ -63,11 +68,21 @@ issue exists, please claim that issue and link it in your PR, otherwise creating
 an issue is the best first step! Be sure to surround bug fixes with ample tests;
 bugs are magnets for other bugs. Write tests around bugs!
 
-**Building features** requires a lot of communication, but we'd love to have
-your help with this too! Features tend to be subjective and might spur some
-debate. Be sure to create an issue for new features before getting started! If
-your feature involves design changes, including design mockups can be very
-helpful. As always, when in doubt, ask!
+**Features** tend to be subjective and might spur some debate. The Forem core
+team uses an internal RFC ("request for comments") process to assess and
+prioritize new features. This process is intended to provide a consistent and
+standardized path for new changes to enter the Forem ecosystem. If you'd like to
+propose a new feature, please visit [forem.dev](https://forem.dev) to start a
+discussion around a new feature (or chime in on a pre-existing discussion!).
+
+There may be some open issues in our repository that we think evolve into
+impactful features. For such issues, we use the
+[potential RFC](https://github.com/forem/forem/labels/potential%20RFC) label in
+order to highlight the potential feature to the Forem core team members so that
+someone from the team can champion that feature.
+
+You can learn more about our internal RFC process and how we use forem.dev
+[here](https://forem.dev/foremteam/internal-rfc-process-and-forem-dev-discussions-3gl4)
 
 ### How to contribute
 
