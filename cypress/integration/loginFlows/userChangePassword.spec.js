@@ -4,9 +4,9 @@ describe('User Change Password', () => {
     cy.fixture('users/changePasswordUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user);
-
-      cy.visit('/settings/account');
+      cy.loginUser(user).then(() => {
+        cy.visit('/settings/account');
+      });
     });
   });
 
