@@ -1,3 +1,6 @@
+branches:
+  only:
+    - master
 language: ruby
 cache:
   directories:
@@ -22,7 +25,6 @@ services:
 env:
   global:
     - RAILS_ENV=test
-    - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
     - DATABASE_URL=postgres://postgres@localhost/
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
@@ -37,18 +39,9 @@ env:
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
     - ELASTICSEARCH_URL="http://localhost:9200"
-  jobs:
-    - KNAPSACK_PRO_CI_NODE_INDEX=0
-    - KNAPSACK_PRO_CI_NODE_INDEX=1
-    - KNAPSACK_PRO_CI_NODE_INDEX=2
-branches:
-  only:
-    - master
-install: true
-script:
+install:
   - date --rfc-3339=seconds
   - nvm install
-  - cp .env_sample .env
   - pkill -9 -f elasticsearch || true
   - curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb
   - sudo dpkg -i --force-confnew elasticsearch-7.5.2-amd64.deb
@@ -57,34 +50,14 @@ script:
   - echo -e '-XX:+DisableExplicitGC\n-Djdk.io.permissionsUseCanonicalPath=true\n-Dlog4j.skipJansi=true\n-server\n' | sudo tee -a /etc/elasticsearch/jvm.options
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
   - bundle config set path 'vendor/bundle'
+  - cp .env_sample .env
   - bin/ci-bundle
   - yarn install --frozen-lockfile
-  - bundle exec rails db:create
-  - bundle exec rails db:schema:load
-  - bundle exec rails assets:precompile
-  - './cc-test-reporter before-build'
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
-  - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
-  - yarn e2e:ci
-  # Dropping and recreating the database for Capybara/rspecs
-  - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
-  - bundle exec rails db:drop
-  - bundle exec rails db:create
-  - bundle exec rails db:schema:load
-  - 'bin/knapsack_pro_rspec'
+script:
+  - bundle exec rails db:create db:schema:load webpacker:compile
+  - bin/knapsack_pro_rspec
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
-after_script:
-  - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
-  - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
-after_deploy:
-  - bash scripts/after_deploy.sh
 notifications:
   slack:
     if: branch = master
@@ -97,9 +70,32 @@ notifications:
 
 jobs:
   include:
+    - stage: Test
+      name: "Node 0"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=0
+    - stage: Test
+      name: "Node 1"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=1
+    - stage: Test
+      name: "Node 2"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=2
+    - stage: Test
+      name: "Front-end tests, Storybook, bundle audit, console check, e2e"
+      script:
+        - yarn test --colors
+        - bundle exec rails db:create db:schema:load assets:precompile
+        - bundle exec bundle-audit check --update --ignore CVE-2015-9284
+        - bin/test-console-check
+        - yarn build-storybook
+        - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
+        - yarn e2e:ci
+        # Dropping and recreating the database for Capybara/rspecs
+        # - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
+
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request
+      install: skip
       script: skip
       after_script: skip
       deploy:
@@ -107,12 +103,14 @@ jobs:
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
           master: practicaldev
+      after_deploy:
+        - bash scripts/after_deploy.sh
     - stage: Deploy
       name: Deploy BenHalpern
       if: type != pull_request
+      install: skip
       script: skip
       after_script: skip
-      after_deploy: skip
       deploy:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'

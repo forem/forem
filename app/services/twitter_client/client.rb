@@ -31,7 +31,7 @@ module TwitterClient
 
         Honeycomb.add_field("twitter.result", "error")
         Honeycomb.add_field("twitter.error", class_name)
-        DatadogStatsClient.increment(
+        ForemStatsClient.increment(
           "twitter.errors",
           tags: ["error:#{class_name}", "message:#{exception.message}"],
         )
