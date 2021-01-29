@@ -90,7 +90,8 @@ class User < ApplicationRecord
   }x.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
-                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
+                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
+                :current_password
 
   rolify after_add: :index_roles, after_remove: :index_roles
 
@@ -303,7 +304,8 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article.tagged_with(cached_followed_tag_names, any: true)
+    Article
+      .tagged_with(cached_followed_tag_names, any: true).unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
       .where(language: preferred_languages_array, published: true)
   end
@@ -435,10 +437,6 @@ class User < ApplicationRecord
 
   def block; end
 
-  def all_blocking
-    UserBlock.where(blocker_id: id)
-  end
-
   def all_blocked_by
     UserBlock.where(blocked_id: id)
   end
@@ -498,6 +496,7 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
+    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end

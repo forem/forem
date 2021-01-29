@@ -114,8 +114,9 @@ var instantClick
 
   function changePage(title, body, newUrl, scrollY, pop) {
     var pageContentDiv = document.getElementById("page-content");
-    if (document.getElementById("navigation-butt")) {
-      document.getElementById("navigation-butt").classList.remove('showing')
+    var memberMenuButton = document.getElementById("member-menu-button")
+    if (memberMenuButton) {
+      memberMenuButton.classList.remove('showing')
     }
     document.getElementsByTagName("BODY")[0].replaceChild(body, pageContentDiv)
 

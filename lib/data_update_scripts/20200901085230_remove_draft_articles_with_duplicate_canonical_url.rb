@@ -31,7 +31,7 @@ module DataUpdateScripts
 
       # Sending IDs of deleted articles to Datadog
       result.map { |row| row["id"] }.in_groups_of(1000) do |ids|
-        DatadogStatsClient.event(
+        ForemStatsClient.event(
           "DataUpdateScripts::RemoveDraftArticlesWithDuplicateCanonicalUrl",
           "deleted draft articles with the same canonical_url and same body_markdown",
           tags: ids,
@@ -67,7 +67,7 @@ module DataUpdateScripts
 
       # Sending IDs of deleted articles to Datadog
       result.map { |row| row["id"] }.in_groups_of(1000) do |ids|
-        DatadogStatsClient.event(
+        ForemStatsClient.event(
           "DataUpdateScripts::RemoveDraftArticlesWithDuplicateCanonicalUrl",
           "deleted draft articles with the same canonical_url and different body_markdown",
           tags: ids,

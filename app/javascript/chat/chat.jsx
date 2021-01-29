@@ -1073,6 +1073,15 @@ export default class Chat extends Component {
     }));
   };
 
+  closeReportAbuseForm = () => {
+    const { activeChannelId } = this.state;
+    this.setActiveContentState(activeChannelId, null);
+    this.setState({
+      fullscreenContent: null,
+      expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
+    });
+  };
+
   setActiveContent = (response) => {
     const { activeChannelId } = this.state;
     this.setActiveContentState(activeChannelId, response);
@@ -1184,7 +1193,6 @@ export default class Chat extends Component {
         );
       }
     }
-
     return messages[activeChannelId].map((message) =>
       message.action ? (
         <ActionMessage
@@ -1209,11 +1217,21 @@ export default class Chat extends Component {
           onContentTrigger={this.triggerActiveContent}
           onDeleteMessageTrigger={this.triggerDeleteMessage}
           onEditMessageTrigger={this.triggerEditMessage}
+          onReportMessageTrigger={this.triggerReportMessage}
         />
       ),
     );
   };
+  triggerReportMessage = (messageId) => {
+    const { activeChannelId, messages } = this.state;
 
+    this.setActiveContent({
+      data: messages[activeChannelId].find(
+        (message) => message.id === messageId,
+      ),
+      type_of: 'message-report-abuse',
+    });
+  };
   triggerChannelFilter = (e) => {
     const { channelTypeFilter } = this.state;
     const filters =
@@ -1594,6 +1612,7 @@ export default class Chat extends Component {
           resource={state.activeContent[state.activeChannelId]}
           activeChannel={state.activeChannel}
           fullscreen={state.fullscreenContent === 'sidecar'}
+          closeReportAbuseForm={this.closeReportAbuseForm}
         />
         <VideoContent
           videoPath={state.videoPath}

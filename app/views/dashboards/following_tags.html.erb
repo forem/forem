@@ -21,11 +21,6 @@
             Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
             <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
         </div>
-
-        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, id: "follows_update_form" do |f| %>
-          <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit">Update Weights</button>
-        <% end %>
-
         <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
           <% negative_follow_shown_once = false %>
           <% @followed_tags.each do |follow| %>
@@ -42,7 +37,7 @@
                   <% end %>
                 </h3>
 
-                <p class="grid-cell__summary truncate-at-3 mb-4 fs-s">
+                <p class="grid-cell__summary truncate-at-2 mb-4 fs-m h-50">
                   <%= strip_tags(tag.short_summary) %>
                 </p>
 
@@ -54,6 +49,10 @@
             <% end %>
           <% end %>
         </div>
+
+        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, class: "sticky bg-base-10 pt-3 pb-1 z-elevate", html: { style: "bottom: 0;margin-left:-1px"}, id: "follows_update_form" do |f| %>
+          <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit">Update Weights</button>
+        <% end %>
       <% else %>
         <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any tags yet...</div>
       <% end %>

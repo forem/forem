@@ -48,14 +48,16 @@ def forem_cloud_config
   end
 end
 
-if Rails.env.production? && ENV["FILE_STORAGE_LOCATION"] != "file"
-  if ENV["FOREM_CONTEXT"] == "forem_cloud"
-    forem_cloud_config
-  elsif ApplicationConfig["AWS_ID"].present?
-    standard_production_config
+Rails.application.reloader.to_prepare do
+  if Rails.env.production? && ENV["FILE_STORAGE_LOCATION"] != "file"
+    if ENV["FOREM_CONTEXT"] == "forem_cloud"
+      forem_cloud_config
+    elsif ApplicationConfig["AWS_ID"].present?
+      standard_production_config
+    else
+      local_storage_config
+    end
   else
     local_storage_config
   end
-else
-  local_storage_config
 end
