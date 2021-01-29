@@ -149,7 +149,8 @@ RSpec.describe "Views an article", type: :system do
 
       it "shows the article edit link", js: true do
         visit article_path
-        expect(page.body).to include('display: inline-block;">Click to edit</a>')
+        edit_link = find("a#author-click-to-edit")
+        expect(edit_link.matches_style?(display: "inline-block")).to be true
       end
     end
 
