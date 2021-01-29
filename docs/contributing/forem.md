@@ -23,9 +23,7 @@ All [issues](https://github.com/forem/forem/issues) labeled
 [ready for dev](https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22)
 and
 [bug](https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22type%3A+bug%22+label%3Abug)
-are up for grabs.
-
-\*\*Please note that issues with the
+are up for grabs. Please note that issues with the
 [Forem team](https://github.com/forem/forem/labels/Forem%20team) label are
 internal tasks that will be completed by a Forem
 [core team member](https://github.com/forem/forem/#core-team).
