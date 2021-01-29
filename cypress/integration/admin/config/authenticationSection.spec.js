@@ -1,20 +1,13 @@
 describe('Authentication Section', () => {
   beforeEach(() => {
-    cy.fixture('logins/initialAdmin.json').as('admin');
+    cy.testSetup();
+    cy.fixture('users/adminUser.json').as('user');
 
-    cy.visit('http://localhost:3000/');
-
-    cy.findAllByText('Log in').first().click();
-    cy.url().should('contains', 'http://localhost:3000/enter');
-
-    cy.findByTestId('login-form').as('loginForm');
-    cy.get('@admin').then((admin) => {
-      cy.get('@loginForm').findByText('Email').type(admin.email);
-      cy.get('@loginForm').findByText('Password').type(admin.password);
+    cy.get('@user').then((user) => {
+      cy.loginUser(user).then(() => {
+        cy.visit('/admin/config');
+      });
     });
-    cy.get('@loginForm').findByText('Continue').click();
-
-    cy.visit('http://localhost:3000/admin/config');
   });
 
   // this context needs invite-only mode to be false and at least
@@ -30,7 +23,7 @@ describe('Authentication Section', () => {
         .contains('Update Site Configuration')
         .click();
 
-      cy.url().should('contains', 'http://localhost:3000/admin/config');
+      cy.url().should('contains', '/admin/config');
       cy.get('.alert')
         .contains('Site configuration was successfully updated')
         .should('be.visible');
@@ -40,12 +33,9 @@ describe('Authentication Section', () => {
       cy.get('#site_config_invite_only_mode').should('be.checked');
       cy.get('.enabled-indicator.visible').should('have.length', 0);
 
-      cy.visit('http://localhost:3000/signout_confirm');
+      cy.visit('/signout_confirm');
 
       cy.findAllByText('Yes, sign out').first().click();
-
-      cy.url().should('contains', 'http://localhost:3000');
-
       cy.findAllByText('Create account').first().click();
 
       cy.contains('Sign up with Email').should('not.exist');
