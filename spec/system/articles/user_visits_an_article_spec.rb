@@ -142,8 +142,6 @@ RSpec.describe "Views an article", type: :system do
   describe "when an article is not published" do
     let(:article) { create(:article, user: article_user, published: false) }
     let(:article_path) { article.path + query_params }
-    let(:href) { "#{article.path}/edit" }
-    let(:link_text) { "Click to edit" }
 
     context "with the article password, and the logged-in user is authorized to update the article" do
       let(:query_params) { "?preview=#{article.password}" }
