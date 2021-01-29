@@ -182,7 +182,12 @@ class ProfileForm extends Component {
         data-testid="onboarding-profile-form"
         className="onboarding-main crayons-modal"
       >
-        <div className="crayons-modal__box">
+        <div
+          className="crayons-modal__box"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
+        >
           <Navigation
             prev={prev}
             next={this.onSubmit}
@@ -192,8 +197,11 @@ class ProfileForm extends Component {
           />
           <div className="onboarding-content about">
             <header className="onboarding-content-header">
-              <h1 className="title">Build your profile</h1>
+              <h1 id="title" className="title">
+                Build your profile
+              </h1>
               <h2
+                id="subtitle"
                 data-testid="onboarding-profile-subtitle"
                 className="subtitle"
               >

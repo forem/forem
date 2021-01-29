@@ -94,3 +94,6 @@ cypress/screenshots
 
 # PostCSS error log
 postcss_error.log
+
+# ripgrep ignore file
+.rgignore
