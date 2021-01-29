@@ -3,6 +3,7 @@
 function initializeHeroBannerClose() {
   let bannerWrapper = document.getElementById('hero-html-wrapper');
   let closeIcon = document.getElementById('js-hero-banner__x');
+  closeIcon.setAttribute('aria-label', 'Close campaign banner');
   // Currently js-hero-banner__x button icon ID needs to be written into the abstract html
   // In the future this could be extracted so the implementer doesn't need to worry about it.
 
