@@ -202,6 +202,9 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    cypress-rails (0.4.2)
+      puma (>= 3.8.0)
+      railties (>= 5.2.0)
     dante (0.2.0)
     database_cleaner (1.8.5)
     database_cleaner-active_record (1.8.0)
@@ -862,6 +865,7 @@ DEPENDENCIES
   cld (~> 0.8)
   cloudinary (~> 1.18)
   counter_culture (~> 2.7)
+  cypress-rails (~> 0.4.2)
   database_cleaner-active_record (~> 1.8.0)
   ddtrace (~> 0.45.0)
   derailed_benchmarks (~> 2.0)

@@ -86,9 +86,7 @@ jobs:
         - bin/test-console-check
         - yarn build-storybook
         - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
-        - yarn e2e:ci
-        # Dropping and recreating the database for Capybara/rspecs
-        # - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
+        - bin/e2e-ci
 
     - stage: Deploy
       name: Deploy DEV

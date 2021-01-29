@@ -2,43 +2,9 @@
 
 return if Rails.env.production?
 
-# NOTE: when adding new data, please use this class to ensure the seed tasks
+# NOTE: when adding new data, please use the Seeder class to ensure the seed tasks
 # stays idempotent.
-class Seeder
-  def initialize
-    @counter = 0
-  end
-
-  # Used when the block is idempotent by itself and needs no further checks.
-  def create(message)
-    @counter += 1
-    puts "  #{@counter}. #{message}."
-    yield
-  end
-
-  def create_if_none(klass, count = nil)
-    @counter += 1
-    plural = klass.name.pluralize
-
-    if klass.none?
-      message = ["Creating", count, plural].compact.join(" ")
-      puts "  #{@counter}. #{message}."
-      yield
-    else
-      puts "  #{@counter}. #{plural} already exist. Skipping."
-    end
-  end
-
-  def create_if_doesnt_exist(klass, attribute_name, attribute_value)
-    record = klass.find_by("#{attribute_name}": attribute_value)
-    if record.nil?
-      puts "  #{klass} with #{attribute_name} = #{attribute_value} not found, proceeding..."
-      yield
-    else
-      puts "  #{klass} with #{attribute_name} = #{attribute_value} found, skipping."
-    end
-  end
-end
+require Rails.root.join("app/lib/seeder")
 
 # we use this to be able to increase the size of the seeded DB at will
 # eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
