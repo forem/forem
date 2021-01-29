@@ -1,7 +1,7 @@
 import { h, Component, Fragment } from 'preact';
 import debounceAction from '../utilities/debounceAction';
 import { fetchSearch } from '../utilities/search';
-import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import FocusTrap from '../shared/components/focusTrap';
 import ModalBackground from './components/ModalBackground';
 import Modal from './components/Modal';
 import AllListings from './components/AllListings';
@@ -302,25 +302,24 @@ export class Listings extends Component {
         />
         {shouldRenderModal && (
           <Fragment>
-            <div className="crayons-modal">
-              <Modal
-                currentUserId={currentUserId}
-                onAddTag={this.addTag}
-                onChangeDraftingMessage={this.handleDraftingMessage}
-                onClick={this.handleCloseModal}
-                onChangeCategory={this.selectCategory}
-                onOpenModal={this.handleOpenModal}
-                onSubmit={this.handleSubmitMessage}
-                listing={openedListing}
-                message={message}
-              />
-              <ModalBackground onClick={this.handleCloseModal} />
-            </div>
-            <KeyboardShortcuts
-              shortcuts={{
-                Escape: this.handleCloseModal,
-              }}
-            />
+            <FocusTrap
+              onDeactivate={() => this.handleCloseModal('close-modal')}
+            >
+              <div className="crayons-modal">
+                <Modal
+                  currentUserId={currentUserId}
+                  onAddTag={this.addTag}
+                  onChangeDraftingMessage={this.handleDraftingMessage}
+                  onClick={this.handleCloseModal}
+                  onChangeCategory={this.selectCategory}
+                  onOpenModal={this.handleOpenModal}
+                  onSubmit={this.handleSubmitMessage}
+                  listing={openedListing}
+                  message={message}
+                />
+                <ModalBackground onClick={this.handleCloseModal} />
+              </div>
+            </FocusTrap>
           </Fragment>
         )}
       </div>

@@ -3,11 +3,11 @@ import { useLayoutEffect, useRef } from 'preact/hooks';
 import { createFocusTrap } from 'focus-trap';
 import { defaultChildrenPropTypes } from '../../common-prop-types';
 
-const FocusTrap = ({ selector, children }) => {
+const FocusTrap = ({ selector, children, onDeactivate }) => {
   const focusTrap = useRef(null);
 
   useLayoutEffect(() => {
-    focusTrap.current = createFocusTrap(selector);
+    focusTrap.current = createFocusTrap(selector, { onDeactivate });
     focusTrap.current.activate();
     return () => {
       focusTrap.current.deactivate();
