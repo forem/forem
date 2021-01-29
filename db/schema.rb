@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_25_085442) do
+ActiveRecord::Schema.define(version: 2021_01_29_074823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1336,7 +1336,6 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
-    t.datetime "latest_article_updated_at"
     t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
