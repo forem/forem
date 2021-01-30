@@ -9,6 +9,8 @@ module Admin
     def show
       response = DataUpdateScript.find(params[:id])
       render json: { response: response }
+    rescue StandardError => e
+      render json: { error: "#{e.class}: #{e.message}" }, status: :not_found
     end
 
     def force_run

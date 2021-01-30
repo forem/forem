@@ -1,12 +1,15 @@
 <div data-controller="data-update-script" class="crayons-card p-6 grid gap-6">
+  <div class="alert alert-danger hidden data-update-script__alert">
+    <div id="data-update-script__error"></div>
+  </div>
   <table class="crayons-table">
     <thead>
       <tr>
         <th scope="col">ID</th>
         <th scope="col">Filename</th>
-        <th scope="col" class="whitespace-nowrap">Status</th>
         <th scope="col">Created at</th>
         <th scope="col">Run at</th>
+        <th scope="col" class="whitespace-nowrap">Status</th>
       </tr>
     </thead>
     <tbody class="crayons-card">
@@ -22,14 +25,14 @@
               </button>
             <% end %>
           </td>
+          <td id="data_update_script_<%= script.id %>_created_at"><%= script.created_at %></td>
+          <td id="data_update_script_<%= script.id %>_run_at" class="whitespace-nowrap"><%= script.run_at %></td>
           <td id="data_update_script_<%= script.id %>_status" class="justify-content-center">
             <%= script.status %>
             <% if script.error.present? %>
               <div class="fs-xs"><%= script.error %></div>
             <% end %>
           </td>
-          <td id="data_update_script_<%= script.id %>_created_at"><%= script.created_at %></td>
-          <td id="data_update_script_<%= script.id %>_run_at" class="whitespace-nowrap"><%= script.run_at %></td>
         </tr>
       <% end %>
     </tbody>
