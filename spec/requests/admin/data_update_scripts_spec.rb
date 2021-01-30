@@ -35,6 +35,12 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
         expect(response.body).to include(script.created_at.to_s)
         expect(response.body).to include(script.status.to_s)
       end
+
+      it "displays a 'Rerun' button when the script status is failed" do
+        script = create(:data_update_script, status: "failed")
+        get_resource
+        expect(response.body).to include("Re-run")
+      end
     end
   end
 end
