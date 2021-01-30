@@ -20,6 +20,10 @@ class FeedbackMessagesController < ApplicationController
       )
       rate_limiter.track_limit_by_action(:feedback_message_creation)
 
+      Rails.cache.fetch("user-#{current_user.id}-feedback-response-sent-at", Time.current, expires_in: 24.hours) do
+        NotifyMailer.with(email_to: current_user.email).feedback_response_email.deliver_later
+      end
+
       respond_to do |format|
         format.html { redirect_to feedback_messages_path }
         format.json { render json: { success: true, message: "Your report is submitted" } }

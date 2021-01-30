@@ -49,6 +49,16 @@ RSpec.describe "feedback_messages", type: :request do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
         end
       end
+
+      xit "queues an email" do
+        sidekiq_assert_enqueued_with do
+          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+        end
+      end
+
+      xit "doesn't queue an email when cache is set" do
+        # todo
+      end
     end
 
     context "when feedback is created by chat" do
