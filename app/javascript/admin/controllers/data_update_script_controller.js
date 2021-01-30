@@ -30,10 +30,11 @@ export default class DataUpdateScriptController extends Controller {
         this.pollForScriptResponse(id, statusColumn, runAtColumn);
       } else {
         response.json().then((response) => {
-          document.getElementsByClassName("data-update-script__alert")[0].classList.remove("hidden");
-          document.getElementById("data-update-script__error").innerHTML = `Data Update Script ${id} - ${response.error}`
-          runAtColumn.innerHTML = "";
-          statusColumn.innerHTML = "";
+          this.setErrorBanner(
+            runAtColumn,
+            statusColumn,
+            `Data Update Script ${id} - ${response.error}`
+          );
         });
       }
     })
@@ -48,12 +49,13 @@ export default class DataUpdateScriptController extends Controller {
           // only if we've stopped polling because we received a status;
           // and not because there was an error.
           if(updatedDataScript.status) {
+            runAtColumn.innerHTML = updatedDataScript.run_at;
             statusColumn.innerHTML = `${updatedDataScript.status}`;
             if(updatedDataScript.error) {
               statusColumn.innerHTML += `<div class='fs-xs'> ${updatedDataScript.error}</div>`
             }
-            runAtColumn.innerHTML = updatedDataScript.run_at;
             if(updatedDataScript.status === "succeeded") {
+              document.getElementById(`data_update_script_${id}_row`).classList.remove("alert-danger");
               document.getElementById(`data_update_script_${id}_button`).remove();
             }
           }
@@ -62,10 +64,11 @@ export default class DataUpdateScriptController extends Controller {
       });
       if ( counter > 20 ) {
         clearInterval(pollForStatus);
-        document.getElementsByClassName("data-update-script__alert")[0].classList.remove("hidden");
-        document.getElementById("data-update-script__error").innerHTML = `This may take some time. Please refresh the page to check for the status.`;
-        runAtColumn.innerHTML = "";
-        statusColumn.innerHTML = "";
+        this.setErrorBanner(
+          runAtColumn,
+          statusColumn,
+          `This may take some time. Please refresh the page to check for the status.`
+        );
       }
     }, 1000)
   }
@@ -89,13 +92,22 @@ export default class DataUpdateScriptController extends Controller {
         })
       } else {
         return response.json().then((response) => {
-          document.getElementsByClassName("data-update-script__alert")[0].classList.remove("hidden");
-          document.getElementById("data-update-script__error").innerHTML = `Data Update Script ${id} - ${response.error}`
-          runAtColumn.innerHTML = "";
-          statusColumn.innerHTML = "";
+          this.setErrorBanner(
+            runAtColumn,
+            statusColumn,
+            `Data Update Script ${id} - ${response.error}`
+          );
           return true;
         });
       }
     })
   }
+
+  setErrorBanner(runAtColumn, statusColumn, error) {
+    document.getElementsByClassName("data-update-script__alert")[0].classList.remove("hidden");
+    document.getElementById("data-update-script__error").innerHTML = error;
+    runAtColumn.innerHTML = "";
+    statusColumn.innerHTML = "";
+  }
+
 }
