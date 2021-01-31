@@ -2,7 +2,7 @@ import { Controller } from 'stimulus';
 
 export default class DataUpdateScriptController extends Controller {
 
-  forceRun() {
+  forceRun(event) {
     event.preventDefault();
     const id         = event.target.dataset.value;
     let statusColumn = document.getElementById(`data_update_script_${id}_status`);
@@ -56,7 +56,9 @@ export default class DataUpdateScriptController extends Controller {
             }
             if(updatedDataScript.status === "succeeded") {
               document.getElementById(`data_update_script_${id}_row`).classList.remove("alert-danger");
-              document.getElementById(`data_update_script_${id}_button`).remove();
+              if(document.getElementById(`data_update_script_${id}_button`)) {
+                document.getElementById(`data_update_script_${id}_button`).remove();
+              }
             }
           }
           clearInterval(pollForStatus);
