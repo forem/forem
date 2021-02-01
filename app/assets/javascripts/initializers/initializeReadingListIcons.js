@@ -49,11 +49,13 @@ function reactToReadingListButtonClick(event) {
   event.preventDefault();
   sendHapticMessage('medium');
   userStatus = document.body.getAttribute('data-user-status');
+  button = properButtonFromEvent(event);
+
   if (userStatus === 'logged-out') {
-    showModal('add-to-readinglist-from-index');
+    showModal('add-to-readinglist-from-index', `#${button.id}`);
     return;
   }
-  button = properButtonFromEvent(event);
+
   renderOptimisticResult(button);
   getCsrfToken()
     .then(sendFetch('reaction-creation', buttonFormData(button)))
