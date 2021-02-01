@@ -14,40 +14,42 @@ describe('Authentication Section', () => {
   // email registration and Facebook auth to be enabled
   context('invite-only mode setting', () => {
     it('should disable email registration and all authorization providers when enabled', () => {
-      cy.findAllByText('Authentication').first().click();
-      cy.get('#site_config_invite_only_mode').click();
-      cy.get('#authenticationBodyContainer #confirmation').type(
-        'My username is @admin_mcadmin and this action is 100% safe and appropriate.',
-      );
-      cy.get('#authenticationBodyContainer')
-        .contains('Update Site Configuration')
-        .click();
+      cy.updateAdminConfig().then(() => {
+        cy.findAllByText('Authentication').first().click();
+        cy.findByLabelText('Invite-only mode').click();
+        cy.get('#authenticationBodyContainer #confirmation').type(
+          'My username is @admin_mcadmin and this action is 100% safe and appropriate.',
+        );
+        cy.get('#authenticationBodyContainer')
+          .contains('Update Site Configuration')
+          .click();
 
-      cy.url().should('contains', '/admin/config');
-      cy.get('.alert')
-        .contains('Site configuration was successfully updated')
-        .should('be.visible');
+        cy.url().should('contains', '/admin/config');
+        cy.get('.alert')
+          .contains('Site configuration was successfully updated')
+          .should('be.visible');
 
-      cy.findAllByText('Authentication').first().click();
+        cy.findAllByText('Authentication').first().click();
 
-      cy.get('#site_config_invite_only_mode').should('be.checked');
-      cy.get('.enabled-indicator.visible').should('have.length', 0);
+        cy.findByLabelText('Invite-only mode').should('be.checked');
+        cy.get('.enabled-indicator.visible').should('have.length', 0);
 
-      cy.visit('/signout_confirm');
+        cy.visit('/signout_confirm');
 
-      cy.findAllByText('Yes, sign out').first().click();
-      cy.findAllByText('Create account').first().click();
+        cy.findAllByText('Yes, sign out').first().click();
+        cy.findAllByText('Create account').first().click();
 
-      cy.contains('Sign up with Email').should('not.exist');
-      cy.contains('Sign up with Facebook').should('not.exist');
-      cy.contains('is invite only').should('be.visible');
+        cy.contains('Sign up with Email').should('not.exist');
+        cy.contains('Sign up with Facebook').should('not.exist');
+        cy.contains('is invite only').should('be.visible');
+      });
     });
   });
 
   // this context needs Facebook auth provider to be disabled and
   // its keys to be blank
   context('authentication providers settings', () => {
-    it('should display warning modal if provider keys are missing', () => {
+    it.skip('should display warning modal if provider keys are missing', () => {
       cy.findAllByText('Authentication').first().click();
       cy.get('#facebook-auth-btn').click();
       cy.get('#authenticationBodyContainer #confirmation').type(
@@ -63,7 +65,7 @@ describe('Authentication Section', () => {
         .should('be.visible');
     });
 
-    it('should not display warning modal if provider keys present', () => {
+    it.skip('should not display warning modal if provider keys present', () => {
       cy.findAllByText('Authentication').first().click();
       cy.get('#facebook-auth-btn').click();
       cy.get('#site_config_facebook_key').type('randomkey');
