@@ -1,6 +1,6 @@
 /* global jQuery */
 import { Controller } from 'stimulus';
-import adminModal from '../adminModal';
+import { adminModal } from '../adminModal';
 
 const recaptchaFields = document.getElementById('recaptchaContainer');
 const emailRegistrationCheckbox = document.getElementById(
@@ -17,7 +17,7 @@ const emailAuthModalBody = `
   <p>However, people who have already created an account using their email address can continue to login.</p>
   <p><strong>You must confirm and update site config to save below this action.</strong></p>`;
 
-export default class ConfigController extends Controller {
+export class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',
     'authSectionForm',

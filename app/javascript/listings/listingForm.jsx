@@ -10,7 +10,7 @@ import Categories from './components/Categories';
 import ContactViaConnect from './components/ContactViaConnect';
 import ExpireDate from './components/ExpireDate';
 
-export default class ListingForm extends Component {
+export class ListingForm extends Component {
   constructor(props) {
     super(props);
     const {

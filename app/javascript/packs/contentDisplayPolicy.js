@@ -1,5 +1,5 @@
-import hideBlockedContent from '../contentDisplayPolicy/hideBlockedContent';
-import initHiddenComments from '../contentDisplayPolicy/initHiddenComments';
+import { hideBlockedContent } from '../contentDisplayPolicy/hideBlockedContent';
+import { initHiddenComments } from '../contentDisplayPolicy/initHiddenComments';
 
 window.InstantClick.on('change', () => {
   hideBlockedContent();

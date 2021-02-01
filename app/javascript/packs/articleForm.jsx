@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import { getUserDataAndCsrfToken } from '../chat/util';
-import ArticleForm from '../article-form/articleForm';
+import { ArticleForm } from '../article-form/articleForm';
 import { Snackbar } from '../Snackbar';
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {

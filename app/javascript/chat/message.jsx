@@ -6,7 +6,7 @@ import { adjustTimestamp } from './util';
 import ErrorMessage from './messages/errorMessage';
 import { Button } from '@crayons';
 
-const Message = ({
+export const Message = ({
   currentUserId,
   id,
   user,
@@ -168,5 +168,3 @@ Message.defaultProps = {
   timestamp: null,
   profileImageUrl: '',
 };
-
-export default Message;

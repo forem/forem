@@ -8,7 +8,7 @@ import FollowTags from './components/FollowTags';
 import FollowUsers from './components/FollowUsers';
 import ProfileForm from './components/ProfileForm';
 
-export default class Onboarding extends Component {
+export class Onboarding extends Component {
   constructor(props) {
     super(props);
 

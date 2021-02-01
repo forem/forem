@@ -1,5 +1,5 @@
 import { h, Component, Fragment } from 'preact';
-import debounceAction from '../utilities/debounceAction';
+import { debounceAction } from '../utilities/debounceAction';
 import { fetchSearch } from '../utilities/search';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import ModalBackground from './components/ModalBackground';
