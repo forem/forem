@@ -52,7 +52,15 @@ export default class DataUpdateScriptController extends Controller {
             runAtColumn.innerHTML = updatedDataScript.run_at;
             statusColumn.innerHTML = `${updatedDataScript.status}`;
             if(updatedDataScript.error) {
-              statusColumn.innerHTML += `<div class='fs-xs'> ${updatedDataScript.error}</div>`
+              // we need to show the html as text instead of a parsed version,
+              // hence we manipulate the DOm through this longer process. 
+              let errorElem = document.createElement('div');
+              errorElem.setAttribute('class', 'fs-xs');
+              errorElem.setAttribute('id', `data_update_script_${id}_error`);
+              statusColumn.appendChild(errorElem);
+
+              let completedErrorElem = document.getElementById(`data_update_script_${id}_error`);
+              completedErrorElem.innerText = updatedDataScript.error;
             }
             if(updatedDataScript.status === "succeeded") {
               document.getElementById(`data_update_script_${id}_row`).classList.remove("alert-danger");
