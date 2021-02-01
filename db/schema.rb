@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_25_085442) do
+ActiveRecord::Schema.define(version: 2021_01_31_000458) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
+    t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
@@ -783,6 +784,7 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.string "email"
     t.string "github_username"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
+    t.datetime "latest_article_updated_at"
     t.string "location"
     t.string "name"
     t.string "nav_image"
@@ -803,7 +805,6 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
-    t.datetime "latest_article_updated_at"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
@@ -1283,6 +1284,7 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.datetime "last_reacted_at"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
+    t.datetime "latest_article_updated_at"
     t.string "linkedin_url"
     t.string "location"
     t.datetime "locked_at"
@@ -1336,7 +1338,6 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
-    t.datetime "latest_article_updated_at"
     t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
