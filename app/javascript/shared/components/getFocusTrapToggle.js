@@ -1,18 +1,13 @@
-export function getFocusTrapToggle(
-  containerSelector,
-  focusTrapSelector,
-  activatorSelector,
-) {
+export function getFocusTrapToggle(containerSelector, activatorSelector) {
   const KEYCODE_TAB = 9;
   const KEYCODE_ESC = 27;
 
   let isTrapActive = false;
 
   const container = document.querySelector(containerSelector);
-  const trapArea = document.querySelector(focusTrapSelector);
   const activatorButton = document.querySelector(activatorSelector);
 
-  const focusableEls = trapArea.querySelectorAll(
+  const focusableEls = container.querySelectorAll(
     'a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])',
   );
 
@@ -38,22 +33,22 @@ export function getFocusTrapToggle(
         e.preventDefault();
       }
     } /* tab */ else if (document.activeElement === lastFocusableEl) {
-        firstFocusableEl.focus();
-        e.preventDefault();
-      }
+      firstFocusableEl.focus();
+      e.preventDefault();
+    }
   }
 
   function deactivateTrap() {
     container.classList.add('hidden');
     activatorButton.focus();
-    trapArea.removeEventListener('keydown', keyPressListener);
+    container.removeEventListener('keydown', keyPressListener);
     isTrapActive = false;
   }
 
   function activateTrap() {
     container.classList.remove('hidden');
     firstFocusableEl.focus();
-    trapArea.addEventListener('keydown', keyPressListener);
+    container.addEventListener('keydown', keyPressListener);
     isTrapActive = true;
   }
 

@@ -20,7 +20,6 @@ export default class ModalController extends Controller {
 
     this.currentFocusTrapToggle = getFocusTrapToggle(
       `#${this.trapAreaIdValue}`,
-      `#${this.trapAreaIdValue}`,
       `#${this.activatorIdValue}`,
     );
 

@@ -3,7 +3,6 @@
 function showModal(context, activatorSelector) {
   const toggleSignupModal = getFocusTrapToggle(
     '#global-signup-modal',
-    '.crayons-modal',
     activatorSelector,
   );
 
