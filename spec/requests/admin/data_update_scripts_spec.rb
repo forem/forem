@@ -74,14 +74,6 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
 
         expect(DataUpdateWorker).to have_received(:perform_async).with(script_id)
       end
-
-      it "returns an error if the worker fails" do
-        allow(DataUpdateWorker).to receive(:perform_async).and_raise("some_error")
-
-        post "/admin/data_update_scripts/#{script_id}/force_run"
-        expect { DataUpdateWorker.perform_async("fail") }.to raise_error(StandardError)
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
     end
   end
 end
