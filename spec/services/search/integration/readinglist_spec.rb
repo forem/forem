@@ -151,10 +151,10 @@ RSpec.describe "Compare ES search to PG search for ReadingList", type: :feature 
 
         expect(pg_results["total"]).to eq(es_results["total"])
 
-        pg_doc_ids = pg_results["reactions"].map { |doc| doc["id"] }
-        es_doc_ids = es_results["reactions"].map { |doc| doc["id"] }
-        expect(pg_doc_ids).to eq([article1.id])
-        expect(pg_doc_ids).to eq(es_doc_ids)
+        pg_article_ids = pg_results["reactions"].map { |doc| doc.dig("reactable", "id") }
+        es_article_ids = es_results["reactions"].map { |doc| doc.dig("reactable", "id") }
+        expect(pg_article_ids).to eq([article1.id])
+        expect(pg_article_ids).to eq(es_article_ids)
       end
     end
   end
