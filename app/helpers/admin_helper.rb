@@ -42,7 +42,7 @@ module AdminHelper
   ].sort_by { |menu_item| menu_item[:name] }
 
   def tech_admin_menu_items
-    return TECH_MENU_ITEMS if current_user.tech_admin?
+    return TECH_MENU_ITEMS
   end
 
   def admin_menu_items

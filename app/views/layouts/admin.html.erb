@@ -59,10 +59,8 @@
       <div class="crayons-layout__left-sidebar">
         <nav class="hidden m:block">
           <%= render "admin/shared/navbar", menu_items: admin_menu_items %>
-          <% if current_user.tech_admin? %>
-            <p class="crayons-field__description mt-4 mb-3">Tech Resources</p>
-            <%= render "admin/shared/navbar", menu_items: tech_admin_menu_items %>
-          <% end %>
+          <p class="crayons-field__description mt-4 mb-3">Tech Resources</p>
+          <%= render "admin/shared/navbar", menu_items: tech_admin_menu_items %>
         </nav>
       </div>
     <% end %>
