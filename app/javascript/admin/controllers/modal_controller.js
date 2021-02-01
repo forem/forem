@@ -1,12 +1,32 @@
 import { Controller } from 'stimulus';
+import { getFocusTrapToggle } from '../../shared/components/getFocusTrapToggle';
 
 export default class ModalController extends Controller {
+  // TODO: does 'hidden' ever change? If so need to change focusTrap code
   static classes = ['hidden'];
   static targets = ['toggle'];
+  static values = {
+    trapAreaId: String,
+    activatorId: String,
+  };
+
+  connect() {
+    this.currentFocusTrapToggle = null;
+  }
 
   toggleModal() {
-    if (this.hasToggleTarget) {
-      this.toggleTarget.classList.toggle(this.hiddenClass);
+    if (this.currentFocusTrapToggle) {
+      this.currentFocusTrapToggle();
+      this.currentFocusTrapToggle = null;
+      return;
     }
+
+    this.currentFocusTrapToggle = getFocusTrapToggle(
+      `#${this.trapAreaIdValue}`,
+      `#${this.trapAreaIdValue}`,
+      `#${this.activatorIdValue}`,
+    );
+
+    this.currentFocusTrapToggle();
   }
 }
