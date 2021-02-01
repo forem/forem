@@ -1,6 +1,12 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
 
+  PREVIOUSLY_BANNED_MESSAGE = "It appears that your previous %<community_name>s " \
+    "account was suspended. As such, we've taken measures to prevent you from " \
+    "creating a new account with %<community_name>s and its community. If you " \
+    "think that there has been a mistake, please email us at %<community_email>s, " \
+    "and we will take another look.".freeze
+
   # Rails actionpack only allows POST requests that come with an ORIGIN header
   # that matches `request.base_url`, it raises CSRF exception otherwise.
   # There is no way to allow specific ORIGIN values in order to securely bypass
@@ -95,6 +101,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
+  rescue Authentication::Authenticator::PreviouslyBanned => _e
+    # Do we want a DD counter for this?
+    flash_message = format(PREVIOUSLY_BANNED_MESSAGE,
+                           community_name: SiteConfig.community_name,
+                           community_email: SiteConfig.email_addresses[:contact])
+    flash[:global_notice] = flash_message
+    redirect_to root_path
   rescue StandardError => e
     Honeybadger.notify(e)
 
