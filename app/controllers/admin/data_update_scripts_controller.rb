@@ -9,7 +9,7 @@ module Admin
     def show
       response = DataUpdateScript.find(params[:id])
       render json: { response: response }
-    rescue StandardError => e
+    rescue ActiveRecord::RecordNotFound => e
       render json: { error: "#{e.class}: #{e.message}" }, status: :not_found
     end
 
