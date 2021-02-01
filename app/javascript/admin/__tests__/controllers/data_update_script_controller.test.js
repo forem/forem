@@ -51,8 +51,8 @@ describe('DataUpdateScriptController', () => {
     });
 
 
-    it('shows the correct error message if the first request fails', async () => {
-      fetch.mockResponseOnce('{ "error": "fake error message" }', { status: 422, headers: { 'content-type': 'application/json' } });
+    it('shows something went wrong if the first request fails', async () => {
+      fetch.mockResponseOnce('', { status: 422, headers: { 'content-type': 'application/json' } });
 
       const button = document.getElementById('data_update_script_1_button');
       button.click();
@@ -61,7 +61,7 @@ describe('DataUpdateScriptController', () => {
       await flushPromises();
 
       const banner = document.getElementById('data-update-script__error');
-      expect(banner.innerHTML).toMatch(/Data Update Script 1 - fake error message/)
+      expect(banner.innerHTML).toMatch(/Data Script 1 - Something went wrong/)
     });
 
     it('updates the status column with new values and formatting', async () => {

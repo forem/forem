@@ -29,13 +29,12 @@ export default class DataUpdateScriptController extends Controller {
       if(response.ok) {
         this.pollForScriptResponse(id, statusColumn, runAtColumn);
       } else {
-        response.json().then((response) => {
-          this.setErrorBanner(
-            runAtColumn,
-            statusColumn,
-            `Data Update Script ${id} - ${response.error}`
-          );
-        });
+        this.setErrorBanner(
+          runAtColumn,
+          statusColumn,
+          `Data Script ${id} - Something went wrong`,
+          'alert-danger'
+        );
       }
     })
   }
@@ -53,7 +52,7 @@ export default class DataUpdateScriptController extends Controller {
             statusColumn.innerHTML = `${updatedDataScript.status}`;
             if(updatedDataScript.error) {
               // we need to show the html as text instead of a parsed version,
-              // hence we manipulate the DOm through this longer process. 
+              // hence we manipulate the DOM through this longer process.
               let errorElem = document.createElement('div');
               errorElem.setAttribute('class', 'fs-xs');
               errorElem.setAttribute('id', `data_update_script_${id}_error`);
@@ -72,12 +71,13 @@ export default class DataUpdateScriptController extends Controller {
           clearInterval(pollForStatus);
         }
       });
-      if ( counter > 20 ) {
+      if ( counter > 0 ) {
         clearInterval(pollForStatus);
         this.setErrorBanner(
           runAtColumn,
           statusColumn,
-          `This may take some time. Please refresh the page to check for the status.`
+          `Data Script with ${id} may take some time. Please refresh the page to check for the status.`,
+          'alert-info'
         );
       }
     }, 1000)
@@ -105,7 +105,8 @@ export default class DataUpdateScriptController extends Controller {
           this.setErrorBanner(
             runAtColumn,
             statusColumn,
-            `Data Update Script ${id} - ${response.error}`
+            `Data Script ${id} - ${response.error}`,
+            'alert-danger'
           );
           return true;
         });
@@ -113,8 +114,11 @@ export default class DataUpdateScriptController extends Controller {
     })
   }
 
-  setErrorBanner(runAtColumn, statusColumn, error) {
-    document.getElementsByClassName('data-update-script__alert')[0].classList.remove('hidden');
+  setErrorBanner(runAtColumn, statusColumn, error, bannerClass) {
+    let classList = document.getElementsByClassName('data-update-script__alert')[0].classList
+
+    classList.add(bannerClass);
+    classList.remove('hidden');
     document.getElementById('data-update-script__error').innerHTML = error;
     runAtColumn.innerHTML = '';
     statusColumn.innerHTML = '';
