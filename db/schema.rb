@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_11_151630) do
+ActiveRecord::Schema.define(version: 2021_01_25_085442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 2021_01_11_151630) do
     t.string "utm_medium"
     t.string "utm_source"
     t.string "utm_term"
+    t.index ["feedback_message_id"], name: "index_ahoy_messages_on_feedback_message_id"
     t.index ["to"], name: "index_ahoy_messages_on_to"
     t.index ["token"], name: "index_ahoy_messages_on_token"
     t.index ["user_id", "mailer"], name: "index_ahoy_messages_on_user_id_and_mailer"
@@ -433,6 +434,7 @@ ActiveRecord::Schema.define(version: 2021_01_11_151630) do
 
   create_table "data_update_scripts", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.text "error"
     t.string "file_name"
     t.datetime "finished_at"
     t.datetime "run_at"
@@ -510,6 +512,7 @@ ActiveRecord::Schema.define(version: 2021_01_11_151630) do
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
     t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
+    t.index ["status"], name: "index_feedback_messages_on_status"
   end
 
   create_table "field_test_events", force: :cascade do |t|
@@ -800,6 +803,7 @@ ActiveRecord::Schema.define(version: 2021_01_11_151630) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
+    t.datetime "latest_article_updated_at"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
@@ -1332,6 +1336,7 @@ ActiveRecord::Schema.define(version: 2021_01_11_151630) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
+    t.datetime "latest_article_updated_at"
     t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"

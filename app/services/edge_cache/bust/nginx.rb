@@ -29,8 +29,8 @@ module EdgeCache
         # If we can't connect to OpenResty, alert ourselves that
         # it is unavailable and return false.
         Rails.logger.error("Could not connect to OpenResty via #{ApplicationConfig['OPENRESTY_URL']}!")
-        DatadogStatsClient.increment("edgecache_bust.service_unavailable",
-                                     tags: ["path:#{ApplicationConfig['OPENRESTY_URL']}"])
+        ForemStatsClient.increment("edgecache_bust.service_unavailable",
+                                   tags: ["path:#{ApplicationConfig['OPENRESTY_URL']}"])
         false
       end
     end

@@ -5,7 +5,7 @@ requires a custom partial
 -->
 <fieldset class="config-authentication-form">
   <div
-    class="crayons-notice crayons-notice--warning auth-warning <%= authentication_enabled_providers.include?(provider.provider_name) ? "hidden" : "" %>">
+    class="crayons-notice crayons-notice--warning auth-warning <%= authentication_provider_enabled?(provider) ? "hidden" : "" %>">
       <strong>Note:</strong> This authentication provider will <strong>not</strong> be enabled if the key or secret are missing. Please make sure that you enter your key and secret correctly.
   </div>
   <div class="crayons-field">
@@ -49,7 +49,7 @@ requires a custom partial
                      placeholder: Constants::SiteConfig::DETAILS[:apple_team_id][:placeholder] %>
   </div>
   <div class="flex gap-2">
-    <% if authentication_enabled_providers.include?(provider) %>
+    <% if authentication_provider_enabled?(provider) %>
       <button
         class="crayons-btn crayons-btn--danger"
         data-action="click->config#activateAuthProviderModal"
