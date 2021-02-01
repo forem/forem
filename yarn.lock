@@ -17462,10 +17462,10 @@ stack-utils@^2.0.2:
   dependencies:
     escape-string-regexp "^2.0.0"
 
-start-server-and-test@^1.11.7:
-  version "1.11.7"
-  resolved "https://registry.yarnpkg.com/start-server-and-test/-/start-server-and-test-1.11.7.tgz#3026bc6020e41edd4efad231bedf00a6a051f22a"
-  integrity sha512-91hA8mddcHSS3R7xRrVS9FT4qdRDvHlOEbI+mAA/sAW+31e78ptFmWWj+PJHFUKJrxtIkQ3ZeejPxCdesktULg==
+start-server-and-test@^1.12.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/start-server-and-test/-/start-server-and-test-1.12.0.tgz#e836553c928a13026f79c740757d378b92bee8d6"
+  integrity sha512-y3M/PLUPkPBsgKoengMIMQeceT8uOnOc4bkdor/RSCK9Ih/j8z4WthSCrAboXLjgtJJWOporAiEQsnYox+THXg==
   dependencies:
     bluebird "3.7.2"
     check-more-types "2.24.0"
