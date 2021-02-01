@@ -1,5 +1,5 @@
 import { Controller } from 'stimulus';
-import { getFocusTrapToggle } from '../../shared/components/getFocusTrapToggle';
+import { getFocusTrapToggle } from '../../utilities/getFocusTrapToggle';
 
 export default class ModalController extends Controller {
   static values = {

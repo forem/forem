@@ -1,7 +1,5 @@
-/* global getFocusTrapToggle */
-
 function showModal(context, activatorSelector) {
-  const toggleSignupModal = getFocusTrapToggle(
+  const toggleSignupModal = window.getFocusTrapToggle(
     '#global-signup-modal',
     activatorSelector,
   );

@@ -4,6 +4,9 @@ import {
   getInstantClick,
   initializeTouchDevice,
 } from '../topNavigation/utilities';
+import { getFocusTrapToggle } from '../utilities/getFocusTrapToggle';
+
+window.getFocusTrapToggle = getFocusTrapToggle;
 
 function getPageEntries() {
   return Object.entries({
