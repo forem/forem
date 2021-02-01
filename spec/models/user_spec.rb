@@ -218,11 +218,21 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_presence_of(:spent_credits_count) }
       it { is_expected.to validate_presence_of(:subscribed_to_user_subscriptions_count) }
 
-      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      context "custom username error uniqueness error message" do
+        subject { create(:user, username: "test_user_123") }
+        it { is_expected.to validate_uniqueness_of(:username).with_message("test_user_123 is taken.").case_insensitive }
+      end
 
       Authentication::Providers.username_fields.each do |username_field|
         it { is_expected.to validate_uniqueness_of(username_field).allow_nil }
       end
+    end
+
+    it "renders custom error message with value of taken username" do
+      create(:user, username: "test_user_123")
+      same_username = build(:user, username: "test_user_123")
+      expect(same_username).not_to be_valid
+      expect(same_username.errors[:username].to_s).to include("test_user_123 is taken.")
     end
 
     it "validates username against reserved words" do

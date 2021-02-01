@@ -219,7 +219,9 @@ class User < ApplicationRecord
   validates :unspent_credits_count, presence: true
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
   validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
-  validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
+  validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
+    "#{data[:value]} is taken."
+  end }, if: :username_changed?
   validates :welcome_notifications, inclusion: { in: [true, false] }
 
   # add validators for provider related usernames
