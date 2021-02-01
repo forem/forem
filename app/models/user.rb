@@ -259,7 +259,6 @@ class User < ApplicationRecord
   before_validation :verify_email
   before_validation :set_username
   before_validation :strip_payment_pointer
-  before_create :set_default_language
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
@@ -268,7 +267,7 @@ class User < ApplicationRecord
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
 
-  after_create_commit :send_welcome_notification, :estimate_default_language
+  after_create_commit :send_welcome_notification
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
