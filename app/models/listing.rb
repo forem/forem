@@ -3,6 +3,12 @@ class Listing < ApplicationRecord
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listings"
 
+  include PgSearch::Model
+  pg_search_scope :search,
+                  against: %i[body_markdown location slug title],
+                  associated_against: { tags: [:name] },
+                  using: { tsearch: { prefix: true } }
+
   include Searchable
 
   SEARCH_SERIALIZER = Search::ListingSerializer

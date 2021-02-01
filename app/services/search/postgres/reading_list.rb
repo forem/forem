@@ -3,7 +3,7 @@ module Search
     class ReadingList
       DEFAULT_STATUSES = %w[valid confirmed].freeze
 
-      def self.search_documents(user, term: nil, status: nil, tags: nil, tags_mode: :any, page: 1, per_page: 60)
+      def self.search_documents(user, term: nil, status: nil, tags: [], tags_mode: :any, page: 1, per_page: 60)
         status ||= DEFAULT_STATUSES
         page = (page || 1).to_i
         per_page = [(per_page || 60).to_i, 100].min
