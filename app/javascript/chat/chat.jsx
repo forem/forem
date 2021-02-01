@@ -22,7 +22,7 @@ import {
   deleteMessage,
   editMessage,
 } from './actions/actions';
-import CreateChatModal from './components/CreateChatModal';
+import { CreateChatModal } from './components/CreateChatModal';
 import {
   sendChannelRequest,
   rejectJoiningRequest,
@@ -34,7 +34,6 @@ import {
   scrollToBottom,
   setupObserver,
   getCurrentUser,
-  channelSorter,
 } from './util';
 import { Alert } from './alert';
 import { Channels } from './channels';

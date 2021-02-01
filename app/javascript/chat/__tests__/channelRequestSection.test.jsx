@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ChannelRequestSection from '../RequestManager/ChannelRequestSection';
+import { ChannelRequestSection } from '../RequestManager/ChannelRequestSection';
 
 const data = {
   channelRequests: [

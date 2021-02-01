@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { SingleListing } from '../singleListing/SingleListing';
-import NextPageButton from './NextPageButton';
+import { NextPageButton } from './NextPageButton';
 
 export const AllListings = ({
   listings,

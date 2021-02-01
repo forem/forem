@@ -2,10 +2,10 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { Article } from './article';
 import { ChannelRequest } from './channelRequest';
-import RequestManager from './RequestManager/RequestManager';
-import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
-import Draw from './draw';
-import ReportAbuse from './ReportAbuse';
+import { RequestManager } from './RequestManager/RequestManager';
+import { ChatChannelSettings } from './ChatChannelSettings/ChatChannelSettings';
+import { Draw } from './draw';
+import { ReportAbuse } from './ReportAbuse';
 
 const smartSvgIcon = (content, d) => (
   <svg

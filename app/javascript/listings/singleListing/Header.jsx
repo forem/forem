@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
-import DateTime from '../../shared/components/dateTime';
+import { DateTime } from '../../shared/components/dateTime';
 import { listingPropTypes } from './listingPropTypes';
-import DropdownMenu from './DropdownMenu';
-import TagLinks from './TagLinks';
+import { DropdownMenu } from './DropdownMenu';
+import { TagLinks } from './TagLinks';
 
 export const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
   const {
