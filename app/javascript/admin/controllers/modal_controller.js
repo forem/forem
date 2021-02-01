@@ -2,7 +2,6 @@ import { Controller } from 'stimulus';
 import { getFocusTrapToggle } from '../../shared/components/getFocusTrapToggle';
 
 export default class ModalController extends Controller {
-  static targets = ['toggle'];
   static values = {
     trapAreaId: String,
     activatorId: String,
