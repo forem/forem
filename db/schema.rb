@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_25_085442) do
+ActiveRecord::Schema.define(version: 2021_02_01_055410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -783,6 +783,7 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.string "email"
     t.string "github_username"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
+    t.datetime "latest_article_updated_at"
     t.string "location"
     t.string "name"
     t.string "nav_image"
@@ -803,7 +804,6 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
-    t.datetime "latest_article_updated_at"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
@@ -1080,6 +1080,13 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.index ["user_id"], name: "index_sponsorships_on_user_id"
   end
 
+  create_table "suspended_users", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "username_hash", null: false
+    t.index ["username_hash"], name: "index_suspended_users_on_username_hash", unique: true
+  end
+
   create_table "tag_adjustments", force: :cascade do |t|
     t.string "adjustment_type"
     t.bigint "article_id"
@@ -1250,7 +1257,6 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
-    t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
     t.boolean "feed_referential_link", default: true, null: false
@@ -1283,6 +1289,7 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.datetime "last_reacted_at"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
+    t.datetime "latest_article_updated_at"
     t.string "linkedin_url"
     t.string "location"
     t.datetime "locked_at"
@@ -1336,7 +1343,6 @@ ActiveRecord::Schema.define(version: 2021_01_25_085442) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
-    t.datetime "latest_article_updated_at"
     t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
