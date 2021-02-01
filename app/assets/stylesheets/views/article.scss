@@ -64,6 +64,10 @@
   &__body {
     overflow-wrap: break-word;
   }
+
+  .reaction-button[disabled] {
+    cursor: pointer;
+  }
 }
 
 .crayons-article-actions {
