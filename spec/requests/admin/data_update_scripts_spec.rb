@@ -5,7 +5,6 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
 
   context "when the user is not an tech admin" do
     let(:user) { create(:user) }
-
     before { sign_in user }
 
     describe "GET /admin/data_update_scripts" do
@@ -43,7 +42,6 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
       end
     end
 
-
     describe "POST /admin/:id/force_run" do
       let(:script) { create(:data_update_script, file_name: '20200214151804_data_update_test_script') }
       let(:script_id) { script.id.to_s }
@@ -64,7 +62,6 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
         expect { DataUpdateWorker.perform_async("fail") }.to raise_error(StandardError)
         expect(response).to have_http_status(:unprocessable_entity)
       end
-
     end
 
     describe "GET /admin/data_update_scripts/:id" do
@@ -84,14 +81,6 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
         expect(script.id).to eq(response.parsed_body["response"]["id"])
         expect(script.file_name).to eq(response.parsed_body["response"]["file_name"])
         expect(script.status).to eq(response.parsed_body["response"]["status"])
-      end
-
-      xit "returns an error if it cannot find the record" do
-        expect do
-          get admin_data_update_script_path(id: "some random id")
-        end.to raise_error(StandardError, "Couldn't find DataUpdateScript with 'id'=some random id")
-
-        expect(response).to have_http_status(:not_found)
       end
     end
   end
