@@ -10,6 +10,7 @@ module Users
       delete_user_activity
       user.unsubscribe_from_newsletters
       EdgeCache::Bust.call("/#{user.username}")
+      save_username_hash if user.has_role?(:banned)
       user.destroy
       Rails.cache.delete("user-destroy-token-#{user.id}")
     end
@@ -32,6 +33,11 @@ module Users
 
     def delete_articles
       DeleteArticles.call(user)
+    end
+
+    def save_username_hash
+      username_hash = Digest::SHA256.hexdigest(user.username)
+      Users::Suspended.create!(username_hash: username_hash)
     end
   end
 end
