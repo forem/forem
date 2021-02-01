@@ -2,6 +2,7 @@ class DataUpdateScript < ApplicationRecord
   DIRECTORY = Rails.root.join("lib/data_update_scripts").freeze
   NAMESPACE = "DataUpdateScripts".freeze
   STATUSES = { enqueued: 0, working: 1, succeeded: 2, failed: 3 }.freeze
+  resourcify
 
   enum status: STATUSES
 

@@ -49,8 +49,6 @@ Rails.application.routes.draw do
                                      { rack_protection: { except: %i[authenticity_token form_token json_csrf
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
-
-        resources :data_update_scripts, only: [:index]
       end
 
       namespace :users do
@@ -65,6 +63,7 @@ Rails.application.routes.draw do
                                               destroy], path: "listings/categories"
 
       resources :comments, only: [:index]
+      resources :data_update_scripts, only: [:index]
       resources :events, only: %i[index create update new edit]
       resources :feedback_messages, only: %i[index show]
       resources :invitations, only: %i[index new create destroy]
