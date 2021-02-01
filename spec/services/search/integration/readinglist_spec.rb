@@ -156,6 +156,39 @@ RSpec.describe "Compare ES search to PG search for ReadingList", type: :feature 
         expect(pg_article_ids).to eq([article1.id])
         expect(pg_article_ids).to eq(es_article_ids)
       end
+
+      it "filters by status" do
+        reaction1.update(status: "invalid")
+
+        es_reindex([article1, article2])
+
+        es_results = es_described_class.search_documents(user: user, params: { status: %w[valid confirmed] })
+        pg_results = pg_described_class.search_documents(user)
+
+        expect(pg_results["reactions"].count).to eq(1)
+
+        pg_doc_ids = pg_results["reactions"].map { |r| r["id"] }
+
+        expect(pg_doc_ids).to include(reaction2.id)
+        expect(pg_doc_ids).to eq(es_results["reactions"].map { |r| r["id"] })
+      end
+
+      it "only returns readinglist reactions" do
+        reaction1.update(category: "like")
+
+        es_reindex([article1, article2])
+
+        es_results = es_described_class.search_documents(user: user, params: {})
+        pg_results = pg_described_class.search_documents(user)
+
+        expect(pg_results["reactions"].count).to eq(1)
+
+        pg_doc_ids = pg_results["reactions"].map { |r| r["id"] }
+
+        expect(pg_doc_ids).not_to include(reaction1.id)
+        expect(pg_doc_ids).to include(reaction2.id)
+        expect(pg_doc_ids).to eq(es_results["reactions"].map { |r| r["id"] })
+      end
     end
   end
 end
