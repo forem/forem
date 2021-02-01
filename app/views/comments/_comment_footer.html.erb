@@ -17,6 +17,7 @@
   <% if comment.depth < 2 || is_childless %>
     <a
       class="actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
+      id="reply-button-<%= comment.id %>"
       href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>"
       data-comment-id="<%= comment.id %>"
       data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"

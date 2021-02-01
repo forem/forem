@@ -101,12 +101,13 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     event.preventDefault();
     sendHapticMessage('medium');
 
+    const { currentTarget: button } = event;
+
     if (userStatus === 'logged-out') {
-      showModal('add-to-readinglist-from-index');
+      showModal('add-to-readinglist-from-index', button.id);
       return;
     }
 
-    const { currentTarget: button } = event;
     const data = buttonFormData(button);
 
     const csrfToken = await getCsrfToken();

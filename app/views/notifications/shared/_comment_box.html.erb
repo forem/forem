@@ -56,7 +56,7 @@
                 <span class="hidden m:inline-block">Replied</span>
               </a>
             <% else %>
-              <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex" data-reactable-id="<%= json_data["comment"]["id"] %>" href="#<%= json_data["comment"]["path"] %>">
+              <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex" data-reactable-id="<%= json_data["comment"]["id"] %>" href="#<%= json_data["comment"]["path"] %>" id="reply-button-#{json_data['comment']['id']}">
                 <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Comment button") %>
                 <%= inline_svg_tag("small-comment-filled.svg", aria: true, class: "crayons-icon reaction-icon--comment reaction-icon reacted", title: "Comment button") %>
                 <span class="hidden m:inline-block">Reply</span>

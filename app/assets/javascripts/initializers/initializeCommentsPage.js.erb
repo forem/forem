@@ -100,7 +100,7 @@ function initializeCommentsPage() {
         sendHapticMessage('medium');
         var userStatus = document.body.getAttribute('data-user-status');
         if (userStatus === 'logged-out') {
-          showModal('react-to-comment');
+          showModal('react-to-comment', `#${this.id}`);
           return;
         }
 
@@ -155,7 +155,7 @@ function initializeCommentsPage() {
         } else {
           var userStatus = document.body.getAttribute('data-user-status');
           if (userStatus == 'logged-out') {
-            showModal('reply-to-comment');
+            showModal('reply-to-comment', `#${this.id}`);
             return;
           }
           var parentId = event.target.closest('.comment').dataset.commentId;
