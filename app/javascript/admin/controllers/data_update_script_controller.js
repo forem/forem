@@ -13,8 +13,8 @@ export default class DataUpdateScriptController extends Controller {
   }
 
   displayLoadingIndicators(statusColumn, runAtColumn) {
-    runAtColumn.innerHTML  = "loading..";
-    statusColumn.innerHTML = "";
+    runAtColumn.innerHTML  = 'loading..';
+    statusColumn.innerHTML = '';
   }
 
   forceRunScript(id, statusColumn, runAtColumn) {
@@ -46,9 +46,9 @@ export default class DataUpdateScriptController extends Controller {
       counter++;
       this.checkForUpdatedDataScript(id, runAtColumn, statusColumn).then((updatedDataScript) => {
         if (updatedDataScript) {
-          // only if we've stopped polling because we received a status;
-          // and not because there was an error.
           if(updatedDataScript.status) {
+            // when we've stopped polling because we've received a status
+            // and not because we've received an error.
             runAtColumn.innerHTML = updatedDataScript.run_at;
             statusColumn.innerHTML = `${updatedDataScript.status}`;
             if(updatedDataScript.error) {
@@ -106,10 +106,9 @@ export default class DataUpdateScriptController extends Controller {
   }
 
   setErrorBanner(runAtColumn, statusColumn, error) {
-    document.getElementsByClassName("data-update-script__alert")[0].classList.remove("hidden");
-    document.getElementById("data-update-script__error").innerHTML = error;
-    runAtColumn.innerHTML = "";
-    statusColumn.innerHTML = "";
+    document.getElementsByClassName('data-update-script__alert')[0].classList.remove('hidden');
+    document.getElementById('data-update-script__error').innerHTML = error;
+    runAtColumn.innerHTML = '';
+    statusColumn.innerHTML = '';
   }
-
 }

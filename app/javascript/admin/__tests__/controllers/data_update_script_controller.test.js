@@ -6,6 +6,11 @@ global.fetch = fetch;
 jest.useFakeTimers();
 
 describe('DataUpdateScriptController', () => {
+  beforeAll(() => {
+    document.head.innerHTML =
+      '<meta name="csrf-token" content="some-csrf-token" />';
+  });
+
   beforeEach(() => {
     document.body.innerHTML = `
     <div data-controller="data-update-script">
@@ -14,7 +19,7 @@ describe('DataUpdateScriptController', () => {
       </div>
       <table>
         <tbody>
-          <tr class="<%= 'alert-danger'%>" id="data_update_script_1_row">
+          <tr class="alert-danger" id="data_update_script_1_row">
             <td id="data_update_script_1">1</td>
             <td class="data_update_script__filename" id="data_update_script_1_file_name">
               Some filename
@@ -36,36 +41,31 @@ describe('DataUpdateScriptController', () => {
     application.register('data-update-script', DataUpdateScriptController);
   });
 
-  beforeAll(() => {
-    document.head.innerHTML =
-      '<meta name="csrf-token" content="some-csrf-token" />';
-  });
-
   describe('#forceRun', () => {
-
     it('shows a loading state when the Re-run button is clicked', () => {
       const button = document.getElementById('data_update_script_1_button');
       button.click();
-      const run_at = document.getElementById('data_update_script_1_run_at');
-      const status = document.getElementById('data_update_script_1_status');
 
-      expect(run_at.innerHTML).toMatch(/loading/);
-      expect(status.innerHTML).toEqual("");
+      expect(document.getElementById('data_update_script_1_run_at').innerHTML).toMatch(/loading/);
+      expect(document.getElementById('data_update_script_1_status').innerHTML).toEqual("");
     });
 
-    it('shows a message for an error response', async () => {
-      fetch.mockResponseOnce('{ "error": "fake error message" }', { status: 422, headers: { 'content-type': 'application/json' } });
-      const button = document.getElementById('data_update_script_1_button');
 
+    it('shows the correct error message if the first request fails', async () => {
+      fetch.mockResponseOnce('{ "error": "fake error message" }', { status: 422, headers: { 'content-type': 'application/json' } });
+
+      const button = document.getElementById('data_update_script_1_button');
       button.click();
 
       const flushPromises = () => new Promise(setImmediate);
       await flushPromises();
-      const banner = document.getElementById("data-update-script__error");
+
+      const banner = document.getElementById('data-update-script__error');
       expect(banner.innerHTML).toMatch(/Data Update Script 1 - fake error message/)
     });
 
-    it("updates the status column with new values", async () => {
+    it('updates the status column with new values and formatting', async () => {
+      expect(document.getElementById('data_update_script_1_row').classList).toContain('alert-danger');
       fetch.mockResponse();
 
       const date = new Date();
@@ -86,6 +86,7 @@ describe('DataUpdateScriptController', () => {
       await flushPromises();
 
       expect(document.getElementById('data_update_script_1_status').innerHTML).toMatch(/succeeded/);
+      expect(document.getElementById('data_update_script_1_row').classList).not.toContain('alert-danger');
     });
   });
 });
