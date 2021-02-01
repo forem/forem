@@ -281,10 +281,6 @@ class User < ApplicationRecord
     find_by(id: SiteConfig.mascot_user_id)
   end
 
-  def estimated_default_language
-    language_settings["estimated_default_language"]
-  end
-
   def tag_line
     summary
   end
@@ -307,7 +303,6 @@ class User < ApplicationRecord
     Article
       .tagged_with(cached_followed_tag_names, any: true).unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
-      .where(language: preferred_languages_array, published: true)
   end
 
   def cached_following_users_ids
@@ -337,12 +332,6 @@ class User < ApplicationRecord
         user_id: id, reactable_type: "Article",
       ).where.not(status: "archived").order(created_at: :desc).pluck(:reactable_id)
     end
-  end
-
-  def preferred_languages_array
-    return @preferred_languages_array if defined?(@preferred_languages_array)
-
-    @preferred_languages_array = language_settings["preferred_languages"]
   end
 
   def processed_website_url
@@ -544,14 +533,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def estimate_default_language
-    Users::EstimateDefaultLanguageWorker.perform_async(id)
-  end
-
-  def set_default_language
-    language_settings["preferred_languages"] ||= ["en"]
-  end
 
   def send_welcome_notification
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
