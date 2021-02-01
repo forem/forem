@@ -4,7 +4,7 @@ import { createPortal } from 'preact/compat';
 import { FlagUserModal } from '../../packs/flagUserModal';
 import { formatDate } from './util';
 
-export default class SingleArticle extends Component {
+export class SingleArticle extends Component {
   activateToggle = (e) => {
     e.preventDefault();
     const { id, path, toggleArticle } = this.props;

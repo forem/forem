@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { SingleListing } from '../singleListing/SingleListing';
 import NextPageButton from './NextPageButton';
 
-const AllListings = ({
+export const AllListings = ({
   listings,
   onAddTag,
   onChangeCategory,
@@ -45,5 +45,3 @@ AllListings.propTypes = {
 AllListings.defaultProps = {
   currentUserId: null,
 };
-
-export default AllListings;

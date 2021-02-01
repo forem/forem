@@ -7,7 +7,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
-import notifyUser from '../utilities/connect/newMessageNotify';
+import { notifyUser } from '../utilities/connect/newMessageNotify';
 import { debounceAction } from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
 import { processImageUpload } from '../article-form/actions';
