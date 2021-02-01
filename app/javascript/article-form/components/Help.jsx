@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import FocusTrap from '../../shared/components/focusTrap';
 import { Modal } from '@crayons';
 
 export class Help extends Component {
@@ -245,12 +246,14 @@ export class Help extends Component {
 
   renderModal = (onClose, title, helpHtml) => {
     return (
-      <Modal onClose={onClose} title={title}>
-        <div
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: helpHtml }}
-        />
-      </Modal>
+      <FocusTrap>
+        <Modal onClose={onClose} title={title}>
+          <div
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: helpHtml }}
+          />
+        </Modal>
+      </FocusTrap>
     );
   };
 
