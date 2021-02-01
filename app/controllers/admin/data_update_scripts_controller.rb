@@ -15,8 +15,6 @@ module Admin
 
     def force_run
       DataUpdateWorker.perform_async(params[:id])
-    rescue StandardError => e
-      render json: { error: "#{e.class}: #{e.message}" }, status: :unprocessable_entity
     end
   end
 end
