@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import Content from '../content';
+import { Content } from '../content';
 
 const getChannelRequestData = () => ({
   onTriggerContent: jest.fn(),

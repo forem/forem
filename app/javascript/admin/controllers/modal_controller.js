@@ -1,7 +1,7 @@
 import { Controller } from 'stimulus';
 import { getFocusTrapToggle } from '../../utilities/getFocusTrapToggle';
 
-export default class ModalController extends Controller {
+export class ModalController extends Controller {
   static values = {
     trapAreaId: String,
   };

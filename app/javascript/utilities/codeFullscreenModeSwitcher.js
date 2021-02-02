@@ -35,7 +35,7 @@ function toggleOverflowForDocument(overflow) {
   }
 }
 
-function addFullScreenModeControl(elements) {
+export function addFullScreenModeControl(elements) {
   if (elements) {
     for (let element of elements) {
       element.addEventListener('click', fullScreenModeControl);
@@ -82,5 +82,3 @@ function fullScreenModeControl(event) {
     isFullScreenModeCodeOn = true;
   }
 }
-
-export default addFullScreenModeControl;

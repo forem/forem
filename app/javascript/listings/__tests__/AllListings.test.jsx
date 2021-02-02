@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import AllListings from '../components/AllListings';
+import { AllListings } from '../components/AllListings';
 import '../../../assets/javascripts/utilities/localDateTime';
 
 const firstListing = {

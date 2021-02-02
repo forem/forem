@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ReportAbuse from '../ReportAbuse';
+import { ReportAbuse } from '../ReportAbuse';
 
 describe('<ReportAbuse />', () => {
   it('should have no a11y violations', async () => {

@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import CategoryLinks from './CategoryLinks';
-import CategoryLinksMobile from './CategoryLinksMobile';
+import { CategoryLinks } from './CategoryLinks';
+import { CategoryLinksMobile } from './CategoryLinksMobile';
 
-const ListingFiltersCategories = ({ categories, category, onClick }) => (
+export const ListingFiltersCategories = ({ categories, category, onClick }) => (
   <div className="listing-filters px-2 m:px-0" id="listing-filters">
     <nav className="hidden m:block">
       <a
@@ -38,5 +38,3 @@ ListingFiltersCategories.propTypes = {
   category: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
 };
-
-export default ListingFiltersCategories;

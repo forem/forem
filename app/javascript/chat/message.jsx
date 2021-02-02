@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/overflow-horizontal.svg';
 import { adjustTimestamp } from './util';
-import ErrorMessage from './messages/errorMessage';
+import { ErrorMessage } from './messages/errorMessage';
 import { Button } from '@crayons';
 
-const Message = ({
+export const Message = ({
   currentUserId,
   id,
   user,
@@ -168,5 +168,3 @@ Message.defaultProps = {
   timestamp: null,
   profileImageUrl: '',
 };
-
-export default Message;
