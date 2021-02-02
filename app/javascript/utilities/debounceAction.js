@@ -14,7 +14,7 @@ import debounce from 'lodash.debounce';
  *
  * @returns {Function} A function wrapped in `debounce`.
  */
-export default function debounceAction(
+export function debounceAction(
   action,
   { time = 300, config = { leading: false } } = {},
 ) {
