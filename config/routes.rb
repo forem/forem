@@ -50,7 +50,8 @@ Rails.application.routes.draw do
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
 
-        resources :data_update_scripts, only: [:index]
+        resources :data_update_scripts, only: %i[index show]
+        post "/data_update_scripts/:id/force_run", to: "data_update_scripts#force_run"
       end
 
       namespace :users do
