@@ -63,25 +63,66 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   );
 });
 
+const DEFAULT_AUTH_CONFIG = {
+  inviteOnlyMode: 0,
+  emailRegistration: 1,
+  allowedEmailDomains: 0,
+  publicEmailDomainList: '',
+  requireRecaptcha: 0,
+  recaptchaSiteKey: '',
+  recaptchaSecretKey: '',
+  authProvidersToEnable: '',
+  facebookKey: '',
+  facebookSecret: '',
+  githubKey: '',
+  githubSecret: '',
+  twitterKey: '',
+  twitterSecret: '',
+};
+
+/**
+ * Sets default values of SiteConfig atrributes relevant to Authentication Section.
+ *
+ * @param username {string} The username used in the test
+ * @param siteConfig
+ * @param siteConfig.inviteOnlyMode {boolean}
+ * @param siteConfig.emailRegistration {boolean}
+ * @param siteConfig.allowedEmailDomains {string}
+ * @param siteConfig.publicEmailDomainList {boolean}
+ * @param siteConfig.requireRecaptcha {boolean}
+ * @param siteConfig.recaptchaSiteKey {string}
+ * @param siteConfig.recaptchaSecretKey {string}
+ * @param siteConfig.authProvidersToEnable {string} Comma-separated string of providers to be enabled
+ * @param siteConfig.facebookKey {string}
+ * @param siteConfig.facebookSecret {string}
+ * @param siteConfig.githubKey {string}
+ * @param siteConfig.githubSecret {string}
+ * @param siteConfig.twitterKey {string}
+ * @param siteConfig.twitterSecret {string}
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for setting SiteConfig values for the Authentication Section.
+ */
 Cypress.Commands.add(
-  'updateAdminConfig',
-  ({
-    inviteOnlyMode = 0,
-    emailRegistration = 1,
-    allowedEmailDomains = 0,
-    publicEmailDomainList,
-    requireRecaptcha = 0,
-    recaptchaSiteKey,
-    recaptchaSecretKey,
-    authProvidersToEnable = 'facebook',
-    facebookKey = 'somekey',
-    facebookSecret = 'somesecret',
-    githubKey,
-    githubSecret,
-    twitterKey,
-    twitterSecret,
+  'updateAdminAuthConfig',
+  (
     username = 'admin_mcadmin',
-  }) => {
+    {
+      inviteOnlyMode,
+      emailRegistration,
+      allowedEmailDomains,
+      publicEmailDomainList,
+      requireRecaptcha,
+      recaptchaSiteKey,
+      recaptchaSecretKey,
+      authProvidersToEnable,
+      facebookKey,
+      facebookSecret,
+      githubKey,
+      githubSecret,
+      twitterKey,
+      twitterSecret,
+    } = DEFAULT_AUTH_CONFIG,
+  ) => {
     return cy.request(
       'POST',
       '/admin/config',
