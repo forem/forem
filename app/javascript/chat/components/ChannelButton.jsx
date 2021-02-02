@@ -2,7 +2,7 @@ import { h, createRef } from 'preact';
 import { useEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { defaultChannelPropTypes } from '../../common-prop-types/channel-list-prop-type';
-import ChannelImage from './ChannelImage';
+import { ChannelImage } from './ChannelImage';
 import { Button } from '@crayons';
 
 /**
@@ -22,7 +22,7 @@ import { Button } from '@crayons';
  * />
  *
  */
-export default function ChannelButton(props) {
+export function ChannelButton(props) {
   const buttonRef = createRef();
   const { isActiveChannel = false } = props;
 

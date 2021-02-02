@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus';
 
-export default class ReactionController extends Controller {
+export class ReactionController extends Controller {
   static targets = ['invalid', 'confirmed'];
   static values = {
     id: Number,

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ContactViaConnect from '../components/ContactViaConnect';
+import { ContactViaConnect } from '../components/ContactViaConnect';
 
 describe('<ContactViaConnect />', () => {
   it('should have no a11y violations', async () => {
