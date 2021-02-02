@@ -12,43 +12,62 @@ describe('Authentication Section', () => {
 
   // this context needs invite-only mode to be false and at least
   // email registration and Facebook auth to be enabled
-  context('invite-only mode setting', () => {
+  describe('invite-only mode setting', () => {
     it('should disable email registration and all authorization providers when enabled', () => {
+      cy.fixture('users/adminUser.json').as('user');
+
+      cy.findByTestId('authSectionForm').as('authSectionForm');
+
       cy.updateAdminConfig().then(() => {
-        cy.findAllByText('Authentication').first().click();
-        cy.findByLabelText('Invite-only mode').click();
-        cy.get('#authenticationBodyContainer #confirmation').type(
-          'My username is @admin_mcadmin and this action is 100% safe and appropriate.',
-        );
-        cy.get('#authenticationBodyContainer')
-          .contains('Update Site Configuration')
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('@authSectionForm').findByLabelText('Invite-only mode').check();
+        cy.get('@user').then(({ username }) => {
+          cy.get('@authSectionForm')
+            .findByPlaceholderText('Confirmation text')
+            .type(
+              `My username is ${username} and this action is 100% safe and appropriate.`,
+            );
+        });
+        cy.get('@authSectionForm')
+          .findByText('Update Site Configuration')
           .click();
 
         cy.url().should('contains', '/admin/config');
-        cy.get('.alert')
-          .contains('Site configuration was successfully updated')
-          .should('be.visible');
 
-        cy.findAllByText('Authentication').first().click();
+        // Page reloaded so need to get a new reference to the form.
+        cy.findByTestId('authSectionForm').as('authSectionForm');
 
-        cy.findByLabelText('Invite-only mode').should('be.checked');
-        cy.get('.enabled-indicator.visible').should('have.length', 0);
+        cy.findByText('Site configuration was successfully updated.').should(
+          'be.visible',
+        );
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+
+        cy.get('@authSectionForm')
+          .findByLabelText('Invite-only mode')
+          .should('be.checked');
+
+        // Ensure that none of the authentication providers are enabled.
+        cy.findByLabelText('Email enabled').should('not.be.visible');
+        cy.findByLabelText('Facebook enabled').should('not.be.visible');
+        cy.findByLabelText('GitHub enabled').should('not.be.visible');
+        cy.findByLabelText('Twitter enabled').should('not.be.visible');
 
         cy.visit('/signout_confirm');
 
-        cy.findAllByText('Yes, sign out').first().click();
-        cy.findAllByText('Create account').first().click();
+        cy.findByText('Yes, sign out').click();
+        cy.findByText('Create account').click();
 
-        cy.contains('Sign up with Email').should('not.exist');
-        cy.contains('Sign up with Facebook').should('not.exist');
-        cy.contains('is invite only').should('be.visible');
+        cy.findByLabelText('Sign up with Email').should('not.exist');
+        cy.findByLabelText('Sign up with Facebook').should('not.exist');
+        cy.findByText('DEV(local) is invite only.').should('be.visible');
       });
     });
   });
 
   // this context needs Facebook auth provider to be disabled and
   // its keys to be blank
-  context('authentication providers settings', () => {
+  describe('authentication providers settings', () => {
     it.skip('should display warning modal if provider keys are missing', () => {
       cy.findAllByText('Authentication').first().click();
       cy.get('#facebook-auth-btn').click();
