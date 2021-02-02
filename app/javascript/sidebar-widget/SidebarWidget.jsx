@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
-import sendFollowUser from '../utilities/sendFollowUser';
-import SidebarUser from './sidebarUser';
+import { sendFollowUser } from '../utilities/sendFollowUser';
+import { SidebarUser } from './sidebarUser';
 
-class SidebarWidget extends Component {
+export class SidebarWidget extends Component {
   constructor(props) {
     super(props);
     this.getSuggestedUsers = this.getSuggestedUsers.bind(this);
@@ -91,5 +91,3 @@ class SidebarWidget extends Component {
     return <div />;
   }
 }
-
-export default SidebarWidget;

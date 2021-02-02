@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import SingleArticle from './singleArticle';
+import { SingleArticle } from './singleArticle';
 
 export class ModerationArticles extends Component {
   state = {

@@ -21,7 +21,7 @@ module Admin
         @articles = articles_top(months_ago)
       when "satellite"
         @articles = articles_satellite
-      when "satellite-not-bufffered"
+      when "satellite-not-buffered"
         @articles = articles_satellite.where(last_buffered: nil)
       when "boosted-additional-articles"
         @articles = articles_boosted_additional

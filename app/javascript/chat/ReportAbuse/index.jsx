@@ -22,7 +22,7 @@ import { Button, FormField, RadioButton } from '@crayons';
  * />
  *
  */
-function ReportAbuse({ data, closeReportAbuseForm }) {
+export function ReportAbuse({ data, closeReportAbuseForm }) {
   const [category, setCategory] = useState(null);
 
   const handleChange = (e) => {
@@ -145,5 +145,3 @@ ReportAbuse.propTypes = {
     }),
   }).isRequired,
 };
-
-export default ReportAbuse;

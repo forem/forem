@@ -1,5 +1,5 @@
 import { Application } from 'stimulus';
-import ArticleController from '../../controllers/article_controller';
+import { ArticleController } from '../../controllers/article_controller';
 
 describe('ArticleController', () => {
   beforeEach(() => {
