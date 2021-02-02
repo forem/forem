@@ -1,29 +1,26 @@
 import { Controller } from 'stimulus';
 
-export default class SvgIconUploadController extends Controller {
+export class SvgIconUploadController extends Controller {
+  static targets = [
+    'svgIconContent',
+    'svgIconPreview',
+    'svgIconMessageValidate',
+    'navId',
+  ];
+
   selectSvgIcon(event) {
-    const currentNavigationLinkModal = this.targets.scope.data.element.querySelector(
-      'div',
-    );
-
-    this.clearInvalidIconTypeMessage(currentNavigationLinkModal);
-
-    const svgIconContent = currentNavigationLinkModal.querySelector(
-      '#svg-icon-content',
-    );
+    this.clearInvalidIconTypeMessage();
 
     const icon = event.target.files[0];
-    if (icon.type !== 'image/svg+xml') {
-      this.invalidIconTypeMessage(currentNavigationLinkModal, icon.type);
-      const navigationLinkId = currentNavigationLinkModal.getAttribute(
-        'nav-link-id',
-      );
+    if (icon.type !== 'image/svg+xml' && icon.type !== 'image/svg') {
+      this.invalidIconTypeMessage(icon.type);
+      const navigationLinkId = this.navIdTarget.attributes['nav-link-id'].value;
 
-      const ableToRemoveSvgIconContent =
-        svgIconContent.value && !navigationLinkId;
-      if (ableToRemoveSvgIconContent) {
-        svgIconContent.value = null;
-        this.setSvgIconPreview(currentNavigationLinkModal, null);
+      const ableToClearSvgIconContent =
+        !navigationLinkId && this.svgIconContentTarget.value;
+      if (ableToClearSvgIconContent) {
+        this.svgIconContentTarget.value = null;
+        this.setSvgIconPreview(null);
       }
       return;
     }
@@ -33,30 +30,30 @@ export default class SvgIconUploadController extends Controller {
 
     reader.onload = (content) => {
       const result = content.target.result;
-      svgIconContent.value = result;
-      this.setSvgIconPreview(currentNavigationLinkModal, result);
+      this.svgIconContentTarget.value = result;
+      this.setSvgIconPreview(result);
     };
   }
 
-  setSvgIconPreview(document, content) {
-    const iconPreview = document.querySelector('#svg-icon-preview');
-    iconPreview.innerHTML = content;
-    if (content) iconPreview.classList.add('pb-3');
-    else if (iconPreview.classList.length !== 0)
-      iconPreview.classList.remove('pb-3');
+  setSvgIconPreview(content) {
+    this.svgIconPreviewTarget.innerHTML = content;
+    if (content) this.svgIconPreviewTarget.classList.add('pb-3');
+    else if (this.svgIconPreviewTarget.classList.length !== 0)
+      this.svgIconPreviewTarget.classList.remove('pb-3');
   }
 
-  clearInvalidIconTypeMessage(document) {
-    const alertMessage = document.querySelector('#svg-icon-message-validate');
-    if (alertMessage.classList.length !== 0) {
-      alertMessage.classList.remove('alert', 'alert-danger');
-      alertMessage.innerHTML = null;
+  clearInvalidIconTypeMessage() {
+    if (this.svgIconMessageValidateTarget.classList.length !== 0) {
+      this.svgIconMessageValidateTarget.classList.remove(
+        'alert',
+        'alert-danger',
+      );
+      this.svgIconMessageValidateTarget.innerHTML = null;
     }
   }
 
-  invalidIconTypeMessage(document, type) {
-    const alertMessage = document.querySelector('#svg-icon-message-validate');
-    alertMessage.classList.add('alert', 'alert-danger');
-    alertMessage.innerHTML = `'${type}' is a invalid Icon type`;
+  invalidIconTypeMessage(type) {
+    this.svgIconMessageValidateTarget.classList.add('alert', 'alert-danger');
+    this.svgIconMessageValidateTarget.innerHTML = `'${type}' is a invalid Icon type`;
   }
 }
