@@ -8064,10 +8064,10 @@ eslint-visitor-keys@^2.0.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-2.0.0.tgz#21fdc8fbcd9c795cc0321f0563702095751511a8"
   integrity sha512-QudtT6av5WXels9WjIM7qz1XD1cWGvX4gGXvp/zBn9nXG02D0utdU3Em2m/QjTnrsk6bBjmCygl3rmj118msQQ==
 
-eslint@^7.18.0:
-  version "7.18.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.18.0.tgz#7fdcd2f3715a41fe6295a16234bd69aed2c75e67"
-  integrity sha512-fbgTiE8BfUJZuBeq2Yi7J3RB3WGUQ9PNuNbmgi6jt9Iv8qrkxfy19Ds3OpL1Pm7zg3BtTVhvcUZbIRQ0wmSjAQ==
+eslint@^7.19.0:
+  version "7.19.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.19.0.tgz#6719621b196b5fad72e43387981314e5d0dc3f41"
+  integrity sha512-CGlMgJY56JZ9ZSYhJuhow61lMPPjUzWmChFya71Z/jilVos7mR/jPgaEfVGgMBY5DshbKdG8Ezb8FDCHcoMEMg==
   dependencies:
     "@babel/code-frame" "^7.0.0"
     "@eslint/eslintrc" "^0.3.0"
@@ -16055,10 +16055,10 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redoc-cli@0.10.2:
-  version "0.10.2"
-  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.10.2.tgz#7c32699bc673ce45581cd0d42affc942168906a3"
-  integrity sha512-AQHx67+fJ+7PZUGf0Vl24XO02isSLHU7fh/OXu6wreFm6B1+xrVhcehV9um2nk63Zq9GFenjnv2GoXEyMSGc7Q==
+redoc-cli@0.10.3:
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.10.3.tgz#4e193be38ee446c11dce38df50e2147ba2469c02"
+  integrity sha512-j4dwDetXrQT5sz1wl6/ZckQ0Ynl9Z+Q/De+e4Qz29dqAq0itimml55DcGRDMyIfEcyYkFgdzpusvWIAi1t/OUw==
   dependencies:
     chokidar "^3.4.1"
     handlebars "^4.7.6"
@@ -16068,15 +16068,15 @@ redoc-cli@0.10.2:
     node-libs-browser "^2.2.1"
     react "^16.13.1"
     react-dom "^16.13.1"
-    redoc "2.0.0-rc.48"
+    redoc "2.0.0-rc.49"
     styled-components "^5.1.1"
     tslib "^2.0.0"
     yargs "^15.4.1"
 
-redoc@2.0.0-rc.48:
-  version "2.0.0-rc.48"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.48.tgz#5303cff67af5cba8a2b48dc1347a9854d45be835"
-  integrity sha512-shArJWhNG2gQ0XKxW8WcfG8peNOtxbZ86CqxgrR9P7MnE5ESAo559CH/PSlezePeVLpcC0C9tcimOfSN5MaAvA==
+redoc@2.0.0-rc.49:
+  version "2.0.0-rc.49"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.49.tgz#31b0055c13b45a4ba1b3871a853fb2a87675e04d"
+  integrity sha512-mCdO0kHnnmwieCq56R5LDJ5eIEhLCoq/le1m0AlMFkIkxMJWZfmq9y3QYq6Fe4Uec73kZgG7gN3qYSGBMHtgQQ==
   dependencies:
     "@redocly/react-dropdown-aria" "^2.0.11"
     "@types/node" "^13.11.1"
@@ -17462,10 +17462,10 @@ stack-utils@^2.0.2:
   dependencies:
     escape-string-regexp "^2.0.0"
 
-start-server-and-test@^1.11.7:
-  version "1.11.7"
-  resolved "https://registry.yarnpkg.com/start-server-and-test/-/start-server-and-test-1.11.7.tgz#3026bc6020e41edd4efad231bedf00a6a051f22a"
-  integrity sha512-91hA8mddcHSS3R7xRrVS9FT4qdRDvHlOEbI+mAA/sAW+31e78ptFmWWj+PJHFUKJrxtIkQ3ZeejPxCdesktULg==
+start-server-and-test@^1.12.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/start-server-and-test/-/start-server-and-test-1.12.0.tgz#e836553c928a13026f79c740757d378b92bee8d6"
+  integrity sha512-y3M/PLUPkPBsgKoengMIMQeceT8uOnOc4bkdor/RSCK9Ih/j8z4WthSCrAboXLjgtJJWOporAiEQsnYox+THXg==
   dependencies:
     bluebird "3.7.2"
     check-more-types "2.24.0"
