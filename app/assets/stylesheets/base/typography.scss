@@ -90,6 +90,14 @@ body {
     }
   }
 
+  // TODO: Hack to target all links in .text-styles except ones used in liquid tags...
+  // Liquid tags styling is still pretty random and overwriting what's been
+  // implemented there makes some things look worse. We should circle back
+  // when/if we "redesign" liquid tags.
+  [class*='ltag'] a {
+    text-decoration: none;
+  }
+
   h1,
   h2,
   h3,
@@ -178,7 +186,6 @@ body {
     font-style: italic;
     text-align: center;
     font-size: 0.8em;
-    line-height: 1.4em;
     color: var(--body-color);
     opacity: 0.75;
     display: block;
