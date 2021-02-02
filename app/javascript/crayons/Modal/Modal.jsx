@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import FocusTrap from '../../shared/components/focusTrap';
+import { FocusTrap } from '../../shared/components/focusTrap';
 import { defaultChildrenPropTypes } from '../../common-prop-types';
 import { Button } from '@crayons';
 
