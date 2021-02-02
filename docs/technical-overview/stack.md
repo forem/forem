@@ -45,7 +45,7 @@ For the Forem tech stack we use:
   [the Frontend Guide](/frontend) for more info
 - [_Pusher_](https://pusher.com) for realtime communication between the
   application and users' browsers
-- [_GitDocs_](https://gitdocs.netlify.com) for beautiful and SEO-friendly
+- [_GitDocs_](https://github.com/timberio/gitdocs) for beautiful and SEO-friendly
   documentation
 - [Git](https://git-scm.com/) for version control
 - [GitHub](https://github.com/) for hosting the source code and issue tracking
