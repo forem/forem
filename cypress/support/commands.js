@@ -63,10 +63,29 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   );
 });
 
-Cypress.Commands.add('updateAdminConfig', () => {
-  return cy.request(
-    'POST',
-    '/admin/config',
-    'utf8=%E2%9C%93&site_config%5Binvite_only_mode%5D=0&site_config%5Ballow_email_password_registration%5D=1&site_config%5Ballowed_registration_email_domains%5D=&site_config%5Bdisplay_email_domain_allow_list_publicly%5D=0&site_config%5Brequire_captcha_for_email_password_registration%5D=0&site_config%5Brecaptcha_site_key%5D=Optional&site_config%5Brecaptcha_secret_key%5D=Optional&site_config%5Bauth_providers_to_enable%5D=&site_config%5Bfacebook_key%5D=&site_config%5Bfacebook_secret%5D=&site_config%5Bgithub_key%5D=7bdf159809b000289cc7&site_config%5Bgithub_secret%5D=bce14a86e15274ec79003cc3ec16cdceb9cf30fd&site_config%5Btwitter_key%5D=&site_config%5Btwitter_secret%5D=&confirmation=My+username+is+%40admin_mcadmin+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Site+Configuration',
-  );
-});
+Cypress.Commands.add(
+  'updateAdminConfig',
+  ({
+    inviteOnlyMode = 0,
+    emailRegistration = 1,
+    allowedEmailDomains = 0,
+    publicEmailDomainList,
+    requireRecaptcha = 0,
+    recaptchaSiteKey,
+    recaptchaSecretKey,
+    authProvidersToEnable = 'facebook',
+    facebookKey = 'somekey',
+    facebookSecret = 'somesecret',
+    githubKey,
+    githubSecret,
+    twitterKey,
+    twitterSecret,
+    username = 'admin_mcadmin',
+  }) => {
+    return cy.request(
+      'POST',
+      '/admin/config',
+      `utf8=%E2%9C%93&site_config%5Binvite_only_mode%5D=${inviteOnlyMode}&site_config%5Ballow_email_password_registration%5D=${emailRegistration}&site_config%5Ballowed_registration_email_domains%5D=${allowedEmailDomains}&site_config%5Bdisplay_email_domain_allow_list_publicly%5D=${publicEmailDomainList}&site_config%5Brequire_captcha_for_email_password_registration%5D=${requireRecaptcha}&site_config%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&site_config%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&site_config%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&site_config%5Bfacebook_key%5D=${facebookKey}&site_config%5Bfacebook_secret%5D=${facebookSecret}&site_config%5Bgithub_key%5D=${githubKey}&site_config%5Bgithub_secret%5D=${githubSecret}&site_config%5Btwitter_key%5D=${twitterKey}&site_config%5Btwitter_secret%5D=${twitterSecret}&confirmation=My+username+is+%40${username}+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Site+Configuration`,
+    );
+  },
+);

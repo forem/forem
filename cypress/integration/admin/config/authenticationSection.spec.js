@@ -8,13 +8,11 @@ describe('Authentication Section', () => {
     });
   });
 
-  // this context needs invite-only mode to be false and at least
-  // email registration and Facebook auth to be enabled
   describe('invite-only mode setting', () => {
     it('should disable email registration and all authorization providers when enabled', () => {
       cy.fixture('users/adminUser.json').as('user');
 
-      cy.updateAdminConfig().then(() => {
+      cy.updateAdminConfig({}).then(() => {
         cy.visit('/admin/config');
         cy.findByTestId('authSectionForm').as('authSectionForm');
 
@@ -67,45 +65,76 @@ describe('Authentication Section', () => {
     });
   });
 
-  // this context needs Facebook auth provider to be disabled and
-  // its keys to be blank
   describe('authentication providers settings', () => {
-    it.skip('should display warning modal if provider keys are missing', () => {
-      cy.findAllByText('Authentication').first().click();
-      cy.get('#facebook-auth-btn').click();
-      cy.get('#authenticationBodyContainer #confirmation').type(
-        'My username is @admin_mcadmin and this action is 100% safe and appropriate.',
-      );
-      cy.get('#authenticationBodyContainer')
-        .contains('Update Site Configuration')
-        .click();
+    it('should display warning modal if provider keys are missing', () => {
+      cy.fixture('users/adminUser.json').as('user');
 
-      cy.contains('Setup not complete').should('be.visible');
-      cy.get('.crayons-modal__box__body > ul > li')
-        .contains('facebook')
-        .should('be.visible');
+      cy.updateAdminConfig({
+        authProvidersToEnable: '',
+        facebookKey: '',
+        facebookSecret: '',
+      }).then(() => {
+        cy.visit('/admin/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#facebook-auth-btn').click();
+        cy.get('@user').then(({ username }) => {
+          cy.get('@authSectionForm')
+            .findByPlaceholderText('Confirmation text')
+            .type(
+              `My username is ${username} and this action is 100% safe and appropriate.`,
+            );
+        });
+        cy.get('@authSectionForm')
+          .findByText('Update Site Configuration')
+          .click();
+
+        cy.contains('Setup not complete').should('be.visible');
+        cy.get('.crayons-modal__box__body > ul > li')
+          .contains('facebook')
+          .should('be.visible');
+      });
     });
 
-    it.skip('should not display warning modal if provider keys present', () => {
-      cy.findAllByText('Authentication').first().click();
-      cy.get('#facebook-auth-btn').click();
-      cy.get('#site_config_facebook_key').type('randomkey');
-      cy.get('#site_config_facebook_secret').type('randomsecret');
-      cy.get('#authenticationBodyContainer #confirmation').type(
-        'My username is @admin_mcadmin and this action is 100% safe and appropriate.',
-      );
-      cy.get('#authenticationBodyContainer')
-        .contains('Update Site Configuration')
-        .click();
+    it('should not display warning modal if provider keys present', () => {
+      cy.fixture('users/adminUser.json').as('user');
 
-      cy.url().should('contains', 'http://localhost:3000/admin/config');
-      cy.get('.alert')
-        .contains('Site configuration was successfully updated')
-        .should('be.visible');
+      cy.updateAdminConfig({
+        authProvidersToEnable: '',
+        facebookKey: '',
+        facebookSecret: '',
+      }).then(() => {
+        cy.visit('/admin/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
 
-      cy.findAllByText('Authentication').first().click();
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#facebook-auth-btn').click();
+        cy.get('#site_config_facebook_key').type('randomkey');
+        cy.get('#site_config_facebook_secret').type('randomsecret');
+        cy.get('@user').then(({ username }) => {
+          cy.get('@authSectionForm')
+            .findByPlaceholderText('Confirmation text')
+            .type(
+              `My username is ${username} and this action is 100% safe and appropriate.`,
+            );
+        });
+        cy.get('@authSectionForm')
+          .findByText('Update Site Configuration')
+          .click();
 
-      cy.get('#facebook-enabled-indicator').should('be.visible');
+        cy.url().should('contains', '/admin/config');
+
+        cy.findByText('Site configuration was successfully updated.').should(
+          'be.visible',
+        );
+
+        // Page reloaded so need to get a new reference to the form.
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+        cy.get('@authSectionForm').findByText('Authentication').click();
+
+        cy.findByLabelText('Facebook enabled').should('be.visible');
+      });
     });
   });
 });
