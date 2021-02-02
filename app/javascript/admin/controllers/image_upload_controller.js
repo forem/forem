@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus';
 
-export default class ImageUploadController extends Controller {
+export class ImageUploadController extends Controller {
   static targets = ['fileField', 'imageResult'];
   static values = { url: String };
 

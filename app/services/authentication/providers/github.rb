@@ -13,7 +13,7 @@ module Authentication
           github_created_at: raw_info.created_at,
           github_username: info.nickname,
           name: name,
-          remote_profile_image_url: info.image.to_s
+          remote_profile_image_url: Users::SafeRemoteProfileImageUrl.call(info.image.to_s)
         }
       end
 

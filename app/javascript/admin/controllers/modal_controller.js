@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus';
 
-export default class ModalController extends Controller {
+export class ModalController extends Controller {
   static classes = ['hidden'];
   static targets = ['toggle'];
 

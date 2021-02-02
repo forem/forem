@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus';
 
-export default class ArticleController extends Controller {
+export class ArticleController extends Controller {
   static classes = ['bgHighlighted', 'borderHighlighted'];
   static targets = ['featuredNumber', 'cardBody'];
 

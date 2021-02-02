@@ -36,7 +36,7 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS
+  self.ignored_columns = PROFILE_COLUMNS + %w[feed_admin_publish_permission]
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -304,7 +304,8 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article.tagged_with(cached_followed_tag_names, any: true)
+    Article
+      .tagged_with(cached_followed_tag_names, any: true).unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
       .where(language: preferred_languages_array, published: true)
   end

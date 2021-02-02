@@ -1,6 +1,6 @@
 <!-- Start Bottom Shell -->
 <% unless internal_navigation? %>
-  <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ForemInstance.deployed_at}", expires_in: 24.hours) do %>
+  <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{SiteConfig.admin_action_taken_at&.rfc3339}", expires_in: 24.hours) do %>
     <%= render "layouts/footer" %>
     <%= render "layouts/signup_modal" unless user_signed_in? %>
   <% end %>

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import SettingsForm from '../ChatChannelSettings/SettingsForm';
+import { SettingsForm } from '../ChatChannelSettings/SettingsForm';
 
 const data = {
   channelDescription: 'some description test',

@@ -1,9 +1,9 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import Header from './Header';
-import AuthorInfo from './AuthorInfo';
-import listingPropTypes from './listingPropTypes';
+import { Header } from './Header';
+import { AuthorInfo } from './AuthorInfo';
+import { listingPropTypes } from './listingPropTypes';
 
 export class SingleListing extends Component {
   listingContent = (
