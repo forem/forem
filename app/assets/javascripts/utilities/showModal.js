@@ -1,8 +1,5 @@
-function showModal(context, activatorSelector) {
-  const toggleSignupModal = window.getFocusTrapToggle(
-    '#global-signup-modal',
-    activatorSelector,
-  );
+function showModal(context) {
+  const toggleSignupModal = window.getFocusTrapToggle('#global-signup-modal');
 
   toggleSignupModal();
   document.body.classList.add('modal-open');

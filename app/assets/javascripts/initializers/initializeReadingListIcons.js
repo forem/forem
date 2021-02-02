@@ -52,7 +52,7 @@ function reactToReadingListButtonClick(event) {
   button = properButtonFromEvent(event);
 
   if (userStatus === 'logged-out') {
-    showModal('add-to-readinglist-from-index', `#${button.id}`);
+    showModal('add-to-readinglist-from-index');
     return;
   }
 

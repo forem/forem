@@ -1,11 +1,12 @@
-export function getFocusTrapToggle(containerSelector, activatorSelector) {
+export function getFocusTrapToggle(containerSelector) {
+  const activatorButton = document.activeElement;
+
   const KEYCODE_TAB = 9;
   const KEYCODE_ESC = 27;
 
   let isTrapActive = false;
 
   const container = document.querySelector(containerSelector);
-  const activatorButton = document.querySelector(activatorSelector);
 
   const focusableEls = container.querySelectorAll(
     'a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])',

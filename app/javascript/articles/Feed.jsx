@@ -104,7 +104,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     const { currentTarget: button } = event;
 
     if (userStatus === 'logged-out') {
-      showModal('add-to-readinglist-from-index', button.id);
+      showModal('add-to-readinglist-from-index');
       return;
     }
 

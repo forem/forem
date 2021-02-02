@@ -4,7 +4,6 @@ import { getFocusTrapToggle } from '../../utilities/getFocusTrapToggle';
 export default class ModalController extends Controller {
   static values = {
     trapAreaId: String,
-    activatorId: String,
   };
 
   connect() {
@@ -20,7 +19,6 @@ export default class ModalController extends Controller {
 
     this.currentFocusTrapToggle = getFocusTrapToggle(
       `#${this.trapAreaIdValue}`,
-      `#${this.activatorIdValue}`,
     );
 
     this.currentFocusTrapToggle();
