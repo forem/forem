@@ -60,7 +60,7 @@ describe('Authentication Section', () => {
 
         cy.findByLabelText('Sign up with Email').should('not.exist');
         cy.findByLabelText('Sign up with Facebook').should('not.exist');
-        cy.findByText('DEV(local) is invite only.').should('be.visible');
+        cy.findByText('is invite only.').should('be.visible');
       });
     });
   });
@@ -90,7 +90,7 @@ describe('Authentication Section', () => {
           .findByText('Update Site Configuration')
           .click();
 
-        cy.contains('Setup not complete').should('be.visible');
+        cy.findByText('Setup not complete').should('be.visible');
         cy.get('.crayons-modal__box__body > ul > li')
           .contains('facebook')
           .should('be.visible');
