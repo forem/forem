@@ -551,7 +551,7 @@ function listenForDetailsToggle() {
 }
 
 function updateCommentsCount() {
-  var commentsCountDiv = document.getElementsByClassName("comments-count")[0];
+  var commentsCountDiv = document.getElementsByClassName("js-comments-count")[0];
   var commentsCountData = parseInt(commentsCountDiv.dataset.commentsCount) + 1;
   commentsCountDiv.dataset.commentsCount = commentsCountData;
   commentsCountDiv.innerHTML = `(${commentsCountData})`
