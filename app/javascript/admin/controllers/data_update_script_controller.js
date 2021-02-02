@@ -1,19 +1,23 @@
 import { Controller } from 'stimulus';
 
+// eslint-disable-next-line no-restricted-syntax
 export default class DataUpdateScriptController extends Controller {
-
   forceRun(event) {
     event.preventDefault();
-    const id         = event.target.dataset.value;
-    let statusColumn = document.getElementById(`data_update_script_${id}_status`);
-    let runAtColumn  = document.getElementById(`data_update_script_${id}_run_at`);
+    const id = event.target.dataset.value;
+    let statusColumn = document.getElementById(
+      `data_update_script_${id}_status`,
+    );
+    let runAtColumn = document.getElementById(
+      `data_update_script_${id}_run_at`,
+    );
 
     this.displayLoadingIndicators(statusColumn, runAtColumn);
     this.forceRunScript(id, statusColumn, runAtColumn);
   }
 
   displayLoadingIndicators(statusColumn, runAtColumn) {
-    runAtColumn.innerHTML  = 'loading..';
+    runAtColumn.innerHTML = 'loading..';
     statusColumn.innerHTML = '';
   }
 
@@ -21,101 +25,112 @@ export default class DataUpdateScriptController extends Controller {
     fetch(`/admin/data_update_scripts/${id}/force_run`, {
       method: 'POST',
       headers: {
-       'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
+        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
+          .content,
       },
-      credentials: 'same-origin'
-    })
-    .then(response => {
-      if(response.ok) {
+      credentials: 'same-origin',
+    }).then((response) => {
+      if (response.ok) {
         this.pollForScriptResponse(id, statusColumn, runAtColumn);
       } else {
         this.setErrorBanner(
           runAtColumn,
           statusColumn,
           `Data Script ${id} - Something went wrong`,
-          'alert-danger'
+          'alert-danger',
         );
       }
-    })
+    });
   }
 
   pollForScriptResponse(id, statusColumn, runAtColumn) {
     let counter = 0;
     let pollForStatus = setInterval(() => {
       counter++;
-      this.checkForUpdatedDataScript(id, runAtColumn, statusColumn).then((updatedDataScript) => {
-        if (updatedDataScript) {
-          if(updatedDataScript.status) {
-            // when we've stopped polling because we've received a status
-            // and not because we've received an error.
-            runAtColumn.innerHTML = updatedDataScript.run_at;
-            statusColumn.innerHTML = `${updatedDataScript.status}`;
-            if(updatedDataScript.error) {
-              // we need to show the html as text instead of a parsed version,
-              // hence we manipulate the DOM through this longer process.
-              let errorElem = document.createElement('div');
-              errorElem.setAttribute('class', 'fs-xs');
-              errorElem.setAttribute('id', `data_update_script_${id}_error`);
-              statusColumn.appendChild(errorElem);
+      this.checkForUpdatedDataScript(id, runAtColumn, statusColumn).then(
+        (updatedDataScript) => {
+          if (updatedDataScript) {
+            if (updatedDataScript.status) {
+              // when we've stopped polling because we've received a status
+              // and not because we've received an error.
+              runAtColumn.innerHTML = updatedDataScript.run_at;
+              statusColumn.innerHTML = `${updatedDataScript.status}`;
+              if (updatedDataScript.error) {
+                // we need to show the html as text instead of a parsed version,
+                // hence we manipulate the DOM through this longer process.
+                let errorElem = document.createElement('div');
+                errorElem.setAttribute('class', 'fs-xs');
+                errorElem.setAttribute('id', `data_update_script_${id}_error`);
+                statusColumn.appendChild(errorElem);
 
-              let completedErrorElem = document.getElementById(`data_update_script_${id}_error`);
-              completedErrorElem.innerText = updatedDataScript.error;
-            }
-            if(updatedDataScript.status === "succeeded") {
-              document.getElementById(`data_update_script_${id}_row`).classList.remove("alert-danger");
-              if(document.getElementById(`data_update_script_${id}_button`)) {
-                document.getElementById(`data_update_script_${id}_button`).remove();
+                let completedErrorElem = document.getElementById(
+                  `data_update_script_${id}_error`,
+                );
+                completedErrorElem.innerText = updatedDataScript.error;
+              }
+              if (updatedDataScript.status === 'succeeded') {
+                document
+                  .getElementById(`data_update_script_${id}_row`)
+                  .classList.remove('alert-danger');
+                if (
+                  document.getElementById(`data_update_script_${id}_button`)
+                ) {
+                  document
+                    .getElementById(`data_update_script_${id}_button`)
+                    .remove();
+                }
               }
             }
+            clearInterval(pollForStatus);
           }
-          clearInterval(pollForStatus);
-        }
-      });
-      if ( counter > 0 ) {
+        },
+      );
+      if (counter > 0) {
         clearInterval(pollForStatus);
         this.setErrorBanner(
           runAtColumn,
           statusColumn,
           `Data Script with ${id} may take some time. Please refresh the page to check for the status.`,
-          'alert-info'
+          'alert-info',
         );
       }
-    }, 1000)
+    }, 1000);
   }
 
   checkForUpdatedDataScript(id, runAtColumn, statusColumn) {
     return fetch(`/admin/data_update_scripts/${id}`, {
       method: 'GET',
       headers: {
-       'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
+        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
+          .content,
       },
-      credentials: 'same-origin'
+      credentials: 'same-origin',
     }).then((response) => {
-      if(response.ok) {
-        return response.json().then(json => {
+      if (response.ok) {
+        return response.json().then((json) => {
           let script = json.response;
-          if(script.status === "succeeded" || script.status === "failed") {
+          if (script.status === 'succeeded' || script.status === 'failed') {
             return script;
-          } else {
-            return false;
           }
-        })
-      } else {
-        return response.json().then((response) => {
-          this.setErrorBanner(
-            runAtColumn,
-            statusColumn,
-            `Data Script ${id} - ${response.error}`,
-            'alert-danger'
-          );
-          return true;
+          return false;
         });
       }
-    })
+      return response.json().then((response) => {
+        this.setErrorBanner(
+          runAtColumn,
+          statusColumn,
+          `Data Script ${id} - ${response.error}`,
+          'alert-danger',
+        );
+        return true;
+      });
+    });
   }
 
   setErrorBanner(runAtColumn, statusColumn, error, bannerClass) {
-    let classList = document.getElementsByClassName('data-update-script__alert')[0].classList
+    let classList = document.getElementsByClassName(
+      'data-update-script__alert',
+    )[0].classList;
 
     classList.add(bannerClass);
     classList.remove('hidden');

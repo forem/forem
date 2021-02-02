@@ -1,6 +1,7 @@
 import { Controller } from 'stimulus';
 
-export class ImageUploadController extends Controller {
+// eslint-disable-next-line no-restricted-syntax
+export default class ImageUploadController extends Controller {
   static targets = ['fileField', 'imageResult'];
   static values = { url: String };
 
