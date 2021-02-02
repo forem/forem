@@ -1,5 +1,5 @@
 import { Application } from 'stimulus';
-import { BufferController } from '../../controllers/buffer_controller';
+import BufferController from '../../controllers/buffer_controller';
 
 describe('BufferController', () => {
   beforeEach(() => {

@@ -17,7 +17,8 @@ const emailAuthModalBody = `
   <p>However, people who have already created an account using their email address can continue to login.</p>
   <p><strong>You must confirm and update site config to save below this action.</strong></p>`;
 
-export class ConfigController extends Controller {
+// eslint-disable-next-line no-restricted-syntax
+export default class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',
     'authSectionForm',
