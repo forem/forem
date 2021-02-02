@@ -4,9 +4,7 @@ describe('Authentication Section', () => {
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/admin/config');
-      });
+      cy.loginUser(user);
     });
   });
 
@@ -16,11 +14,15 @@ describe('Authentication Section', () => {
     it('should disable email registration and all authorization providers when enabled', () => {
       cy.fixture('users/adminUser.json').as('user');
 
-      cy.findByTestId('authSectionForm').as('authSectionForm');
-
       cy.updateAdminConfig().then(() => {
+        cy.visit('/admin/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
         cy.get('@authSectionForm').findByText('Authentication').click();
-        cy.get('@authSectionForm').findByLabelText('Invite-only mode').check();
+        cy.get('@authSectionForm')
+          .findByLabelText('Invite-only mode')
+          .should('not.be.checked')
+          .check();
         cy.get('@user').then(({ username }) => {
           cy.get('@authSectionForm')
             .findByPlaceholderText('Confirmation text')
