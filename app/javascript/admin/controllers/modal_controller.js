@@ -1,6 +1,7 @@
 import { Controller } from 'stimulus';
 
-export class ModalController extends Controller {
+// eslint-disable-next-line no-restricted-syntax
+export default class ModalController extends Controller {
   static classes = ['hidden'];
   static targets = ['toggle'];
 

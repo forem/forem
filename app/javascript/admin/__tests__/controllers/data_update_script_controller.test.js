@@ -1,6 +1,6 @@
 import { Application } from 'stimulus';
-import DataUpdateScriptController from '../../controllers/data_update_script_controller';
 import fetch from 'jest-fetch-mock';
+import DataUpdateScriptController from '../../controllers/data_update_script_controller';
 
 global.fetch = fetch;
 jest.useFakeTimers();
@@ -46,13 +46,19 @@ describe('DataUpdateScriptController', () => {
       const button = document.getElementById('data_update_script_1_button');
       button.click();
 
-      expect(document.getElementById('data_update_script_1_run_at').innerHTML).toMatch(/loading/);
-      expect(document.getElementById('data_update_script_1_status').innerHTML).toEqual("");
+      expect(
+        document.getElementById('data_update_script_1_run_at').innerHTML,
+      ).toMatch(/loading/);
+      expect(
+        document.getElementById('data_update_script_1_status').innerHTML,
+      ).toEqual('');
     });
 
-
     it('shows something went wrong if the first request fails', async () => {
-      fetch.mockResponseOnce('', { status: 422, headers: { 'content-type': 'application/json' } });
+      fetch.mockResponseOnce('', {
+        status: 422,
+        headers: { 'content-type': 'application/json' },
+      });
 
       const button = document.getElementById('data_update_script_1_button');
       button.click();
@@ -61,11 +67,13 @@ describe('DataUpdateScriptController', () => {
       await flushPromises();
 
       const banner = document.getElementById('data-update-script__error');
-      expect(banner.innerHTML).toMatch(/Data Script 1 - Something went wrong/)
+      expect(banner.innerHTML).toMatch(/Data Script 1 - Something went wrong/);
     });
 
     it('updates the status column with new values and formatting', async () => {
-      expect(document.getElementById('data_update_script_1_row').classList).toContain('alert-danger');
+      expect(
+        document.getElementById('data_update_script_1_row').classList,
+      ).toContain('alert-danger');
       fetch.mockResponse();
 
       const date = new Date();
@@ -73,20 +81,24 @@ describe('DataUpdateScriptController', () => {
         response: {
           id: 1,
           status: 'succeeded',
-          run_at: date
-        }
-      }
+          run_at: date,
+        },
+      };
       fetch.mockResponse(JSON.stringify(response));
 
       const button = document.getElementById('data_update_script_1_button');
       button.click();
 
       const flushPromises = () => new Promise(setImmediate);
-      Promise.resolve().then(() => jest.advanceTimersByTime(1000));
+      await Promise.resolve().then(() => jest.advanceTimersByTime(1000));
       await flushPromises();
 
-      expect(document.getElementById('data_update_script_1_status').innerHTML).toMatch(/succeeded/);
-      expect(document.getElementById('data_update_script_1_row').classList).not.toContain('alert-danger');
+      expect(
+        document.getElementById('data_update_script_1_status').innerHTML,
+      ).toMatch(/succeeded/);
+      expect(
+        document.getElementById('data_update_script_1_row').classList,
+      ).not.toContain('alert-danger');
     });
   });
 });
