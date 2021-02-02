@@ -24,6 +24,10 @@ RSpec.describe "/admin", type: :request do
   end
 
   describe "Last deployed and Lastest Commit ID card" do
+    before do
+      ForemInstance.instance_variable_set(:@deployed_at, nil)
+    end
+    
     after do
       ForemInstance.instance_variable_set(:@deployed_at, nil)
     end
