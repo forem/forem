@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import adminEmoji from '../../../../assets/images/emoji/apple-fire.png';
 import { Button } from '@crayons';
 
-const Membership = ({
+export const Membership = ({
   membership,
   currentMembership,
   removeMembership,
@@ -127,5 +127,3 @@ Membership.propTypes = {
   handleUpdateMembershipRole: PropTypes.func.isRequired,
   showActionButton: PropTypes.bool.isRequired,
 };
-
-export default Membership;

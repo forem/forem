@@ -2,10 +2,10 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { getContentOfToken, userData, updateOnboarding } from '../utilities';
-import Navigation from './Navigation';
+import { Navigation } from './Navigation';
 
 /* eslint-disable camelcase */
-class IntroSlide extends Component {
+export class IntroSlide extends Component {
   constructor(props) {
     super(props);
 
@@ -216,7 +216,5 @@ IntroSlide.propTypes = {
     communityDescription: PropTypes.string.isRequired,
   }).isRequired,
 };
-
-export default IntroSlide;
 
 /* eslint-enable camelcase */

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import Modal from '../components/Modal';
+import { Modal } from '../components/Modal';
 
 import '../../../assets/javascripts/utilities/localDateTime';
 
