@@ -1,9 +1,11 @@
+branches:
+  only:
+    - master
 language: ruby
 cache:
   directories:
     - vendor/bundle
-    - node_modules
-    - $HOME/.nvm
+    - ~/.cache
 rvm:
   - 2.7.2
 addons:
@@ -13,13 +15,14 @@ addons:
     paths:
       - $(ls tmp/screenshots/*.png | tr "\n" ":")
       - $(ls tmp/csvs/*.csv | tr "\n" ":")
+      - $(ls cypress/screenshots/*.* | tr "\n" ":")
+      - $(ls cypress/videos/*.* | tr "\n" ":")
     debug: true
 services:
   - redis
 env:
   global:
     - RAILS_ENV=test
-    - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
     - DATABASE_URL=postgres://postgres@localhost/
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
@@ -32,18 +35,11 @@ env:
     - KNAPSACK_PRO_LOG_LEVEL=info
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
-  jobs:
-    - KNAPSACK_PRO_CI_NODE_INDEX=0
-    - KNAPSACK_PRO_CI_NODE_INDEX=1
-    - KNAPSACK_PRO_CI_NODE_INDEX=2
-branches:
-  only:
-    - master
-install: true
-script:
+    - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
+    - ELASTICSEARCH_URL="http://localhost:9200"
+install:
   - date --rfc-3339=seconds
   - nvm install
-  - cp .env_sample .env
   - pkill -9 -f elasticsearch || true
   - curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb
   - sudo dpkg -i --force-confnew elasticsearch-7.5.2-amd64.deb
@@ -52,25 +48,14 @@ script:
   - echo -e '-XX:+DisableExplicitGC\n-Djdk.io.permissionsUseCanonicalPath=true\n-Dlog4j.skipJansi=true\n-server\n' | sudo tee -a /etc/elasticsearch/jvm.options
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
   - bundle config set path 'vendor/bundle'
+  - cp .env_sample .env
   - bin/ci-bundle
   - yarn install --frozen-lockfile
-  - bundle exec rails db:create
-  - bundle exec rails db:schema:load
-  - bundle exec rails webpacker:compile
-  - './cc-test-reporter before-build'
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
-  - 'bin/knapsack_pro_rspec'
+script:
+  - bundle exec rails db:create db:schema:load webpacker:compile
+  - bin/knapsack_pro_rspec
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
-after_script:
-  - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
-  - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
 notifications:
   slack:
     if: branch = master
@@ -78,13 +63,35 @@ notifications:
     on_success: change
     on_failure: always
     rooms:
-      secure: vzIee4jDgPSRY4szZPdD/jW7YW4GzGqo5NoLV9Exz9TBoWH9UqJnc0TOb2YN84Ys5baRK7LOqxpfp8kFveZkrKGi7/ypeEJlpc9E5UqVh/bwQhvOGrKEg1fvNXbARRnO/sJ49o1CMvroMWvt3GurzuuY9Qu2r+3NBjn9aVwLnLzXsBuF+m2lLoeSkHnW13OC73EeJMsse6JBoCe3gp/srDwISp9+MU+sEAPaY333WK9Vk1kdG7D5oUIuT7743airLRiyWiNUCD1450g864628CEOEZKJAAtqk6kTmvwB91DJMnhD/XhMm4H21kd54YHy0fhqzcG8hYd1lDZuUfrOBfpdEtfnpcRwMyMpY+FPPHXkHhck3OiLJnzkV4L+Lr5W/RvDJ63Ye2nxT4hOItLWaoZWax/LhoIrhZjgYBc4JhiGRQJ8m2HzoRyceeG9Y80vayGVN7y46sjYHP5NHRI36qmJipneDRAJklBTXLdYATvVM/6Mh9B7+H/nBGR6UVJLBC/txi2C8rZRjKBZ/i9e+q/MZs0UEvOuvbz9BXKU08rI+rarJqH3h5Ji9G/k3M0mQ8EfvadabA9lu+gNUAAnq+vwLETweKvfbRpDQjVBKnWsOJoUl9aarfkBn3lhQE8fxZJT/GchLGZPx/CWUE4o1OhliBA9avJ7WINyYStM4Mc=
+      secure: 0cTxjTqAFnfCR9jw7lZFcTrTcil8QKTX4h2dzKKCeWaWpsYcvJsvhREfsdIGwrdChmHHYCveHp84dP3ouMvcXoSYEzTASZpK+nVGw2+E4kh3EbzA49N00RoeM+gnbEla3MtCjVxH7KVznLyV/jVfFoCZR6xYnO+pknZzUZwJzyffnSmAlwsQkw1Dt1FAw/uodfGqiDJjUgZhtQ51KFg74HiBd80iUc8ieg6zAEV4QnlW3YvjrHSJC2+AFblXQ7RVkAok8w3G876yQOXvEfESCV+wlmoXbSlQm7V2awMmY5v23iKMvJRRn7JMxTGzG1x2NvNIFL8NZBM+CcjMJxkDSU7Rc/hxVAbuEEYQdd3VPKmYv3o5jcPYjQY08nbz4OREZtiXMsFVCOLuZaCba2c7Xelr7c0eFOdRpQScN2SQtI039Zw8jUQgni18kiWyD/1CfYFIGUvpTCy8rHN0RCJkb0+wOlo3UjEbVDqCi6x06yQ/367XHc27hzFpfDQprVccCMDHbE47kj2fUsBX+FaocpzwODBMLLXZf/v6Vg/bhVArxAl9GLmWNt8942YVgRzkboR3yAy1mA3wx/1frLURY1C5377dx7LXwhHp/4Od6ms1xTBSEcEIRWPy7wQ0yG8fe9VPNFc0ndCEPnqkF8NLTxOX9w3uQ3wDB78NEyEDni0=
+
 
 jobs:
   include:
+    - stage: Test
+      name: "Node 0"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=0
+    - stage: Test
+      name: "Node 1"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=1
+    - stage: Test
+      name: "Node 2"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=2
+    - stage: Test
+      name: "Front-end tests, Storybook, bundle audit, console check, e2e"
+      script:
+        - yarn test --colors
+        - bundle exec rails db:create db:schema:load assets:precompile
+        - bundle exec bundle-audit check --update --ignore CVE-2015-9284
+        - bin/test-console-check
+        - yarn build-storybook
+        - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
+        - bin/e2e-ci
+
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request
+      install: skip
       script: skip
       after_script: skip
       deploy:
@@ -92,9 +99,12 @@ jobs:
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
           master: practicaldev
+      after_deploy:
+        - bash scripts/after_deploy.sh
     - stage: Deploy
       name: Deploy BenHalpern
       if: type != pull_request
+      install: skip
       script: skip
       after_script: skip
       deploy:

@@ -19,7 +19,11 @@
       <div class="row">
         <div class="col-9">
           <h5 class="fw-bold">
+          <% if feedback_message.feedback_type == "connect" %>
+            Reporter and Affected:
+          <% else %>
             Reporter:
+          <% end %>
           </h5>
           <h5>
             <% if feedback_message.reporter_id? %>
@@ -29,19 +33,35 @@
               Anonymous
             <% end %>
           </h5>
+
+          <% if feedback_message.feedback_type == "connect" %>
+            <h5 class="fw-bold">
+              Offender:
+            </h5>
+            <h5>
+              <%= feedback_message.offender.name %>
+              <a href="<%= feedback_message.offender.path %>">@<%= feedback_message.offender.username %></a>
+            </h5>
+          <% else %>
           <h5 class="fw-bold">
-            Reported URL (new tab):
-          </h5>
-          <h5>
-            <a href="<%= feedback_message.reported_url %>" target="_blank" rel="noopener"><%= feedback_message.reported_url %></a>
-          </h5>
+              Reported URL (new tab):
+            </h5>
+            <h5>
+              <a href="<%= feedback_message.reported_url %>" target="_blank" rel="noopener"><%= feedback_message.reported_url %></a>
+            </h5>
+          <% end %>
         </div>
+
         <div class="col-3">
-          <h3>
+          <h3 class="report__tags">
             <span class="badge badge-warning float-right"><%= feedback_message.category.titleize %></span>
+            <% if feedback_message.feedback_type == "connect" %>
+            <span class="badge badge-warning float-right badge-connect"><%= feedback_message.feedback_type %></span>
+            <% end %>
           </h3>
         </div>
         <div class="col-12">
+          <% if feedback_message.feedback_type != "connect" %>
           <h5 class="fw-bold">
             Message:
           </h5>
@@ -52,6 +72,14 @@
               <%= feedback_message.message %>
             <% end %>
           </p>
+          <% else %>
+            <h5 class="fw-bold">
+            Message from Offender:
+          </h5>
+          <div class="reported__message">
+                 <%= raw(feedback_message.message) %>
+          </div>
+            <% end %>
         </div>
       </div>
       <hr>

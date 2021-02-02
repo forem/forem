@@ -2,11 +2,11 @@
 
 <style>
   .widget header {
-    color: <%= HexComparer.new([@tag.bg_color_hex || "#0000000", @tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+    color: <%= Color::CompareHex.new([@tag.bg_color_hex || "#0000000", @tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
   }
 
   .slanty-accent {
-    background-color: <%= HexComparer.new([@tag.bg_color_hex || "#ffffff"]).accent %>
+    background-color: <%= Color::CompareHex.new([@tag.bg_color_hex || "#ffffff"]).accent %>
   }
 
   .tag-edit-tag {
@@ -84,7 +84,7 @@
 
 <% if current_user.has_role?(:super_admin) || current_user.has_role?(:admin) %>
   <center>
-    <h1><a href="/admin/tags/<%= @tag.id %>" data-no-instant><%= @tag.name %> admin</a></h1>
+    <h1><a href="/admin/tags/<%= @tag.id %>/edit" data-no-instant><%= @tag.name %>'s admin page</a></h1>
     <br />
     <br />
     <br />

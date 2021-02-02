@@ -4,9 +4,9 @@
       <%= flash[:notice] %>
     </div>
   <% end %>
-  <%= form_for(User.new, as: :user, url: registration_path(:user)) do |f| %>
+  <%= form_for(User.new, as: :user, data: { testid: "registration-form" }, url: registration_path(:user)) do |f| %>
     <% if defined?(resource) && resource&.errors&.any? %>
-      <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger">
+      <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" data-testid="signup-errors">
         <div class="crayons-card__header">
           <h3 class="crayons-card__headline">
             Whoops, we found <%= pluralize(resource.errors.size, "problem") %>

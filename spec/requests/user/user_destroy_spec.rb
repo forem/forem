@@ -133,10 +133,9 @@ RSpec.describe "UserDestroy", type: :request do
         sign_in user
       end
 
-      it "renders not_found if user doesn't have a destroy_token" do
-        expect do
-          get user_confirm_destroy_path(token: token)
-        end.to raise_error(ActionController::RoutingError)
+      it "displays a flash message if user doesn't have a destroy_token" do
+        get user_confirm_destroy_path(token: token)
+        expect(flash[:settings_notice]).to include("Your token has expired,")
       end
 
       it "renders not_found if destroy_token != token" do
@@ -154,10 +153,9 @@ RSpec.describe "UserDestroy", type: :request do
     end
 
     context "without a user" do
-      it "renders not_found" do
-        expect do
-          get user_confirm_destroy_path(token: token)
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "displays a flash message" do
+        get user_confirm_destroy_path(token: token)
+        expect(flash[:alert]).to include("You must be logged in")
       end
     end
   end

@@ -42,3 +42,6 @@ https://github.com/rails/webpacker/blob/master/lib/webpacker/helper.rb
 
 Aside from the Webpacker repository, see also Ross Kaffenberger's
 [visual guide to Webpacker](https://rossta.net/blog/visual-guide-to-webpacker.html).
+
+If you're interested in bundles sizes and what's contained within them for a
+production build, run `bin/bundleAnalyzer` from the command line.

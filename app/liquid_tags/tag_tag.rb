@@ -24,7 +24,7 @@ class TagTag < LiquidTagBase
   private
 
   def dark_color(tag)
-    HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.88)
+    Color::CompareHex.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.88)
   end
 
   def parse_tag_name_to_tag(input)

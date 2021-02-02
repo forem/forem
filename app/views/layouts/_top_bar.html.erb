@@ -32,7 +32,7 @@
       <% if user_signed_in? %>
         <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto">Write a post</a>
 
-        <a id="moderation-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded hidden m:flex" aria-label="Moderation" href="<%= mod_path %>">
+        <a id="moderation-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded trusted-visible-block m:flex" aria-label="Moderation" href="<%= mod_path %>">
           <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
         </a>
 
@@ -47,7 +47,7 @@
         </a>
 
         <div class="crayons-header__menu" id="crayons-header__menu">
-          <button type="button" class="crayons-header__menu__trigger navigation-butt" id="navigation-butt" aria-label="Navigation menu">
+          <button type="button" class="crayons-header__menu__trigger" id="member-menu-button" aria-label="Navigation menu">
             <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" /></span>
           </button>
           <%= render "layouts/nav_menu" %>

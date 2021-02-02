@@ -238,10 +238,11 @@ body {
     margin: 0 0 var(--content-rhythm) 0;
   }
 
-  img {
+  img,
+  video {
     height: auto;
     display: block;
-    margin: 0 auto var(--content-rhythm) auto;
+    margin: var(--content-rythm) auto;
     max-width: 100%;
     max-height: calc(50vh + 180px);
     border-radius: var(--radius);

@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "feedback_messages", type: :request do
+  let(:user) { create(:user) }
+
   describe "POST /feedback_messages" do
     def mock_recaptcha_verification
       # rubocop:disable RSpec/AnyInstance
@@ -46,6 +48,26 @@ RSpec.describe "feedback_messages", type: :request do
         sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
         end
+      end
+    end
+
+    context "when feedback is created by chat" do
+      before do
+        sign_in user
+        post "/feedback_messages", params: {
+          feedback_message: {
+            message: "Test Message",
+            feedback_type: "connect",
+            category: "rude or vulgar",
+            offender_id: user.id
+          }
+        }, as: :json
+      end
+
+      it "creates a feedback message" do
+        expect(response.status).to eq(200)
+        expect(response.parsed_body["success"]).to eq(true)
+        expect(FeedbackMessage.where(offender_id: user.id).count).to eq(1)
       end
     end
 

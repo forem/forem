@@ -2,7 +2,7 @@ module Users
   module DeleteArticles
     module_function
 
-    def call(user, cache_buster = CacheBuster)
+    def call(user)
       return if user.articles.blank?
 
       virtual_articles = user.articles.map { |article| Article.new(article.attributes) }
@@ -11,8 +11,8 @@ module Users
         article.buffer_updates.delete_all
         article.comments.includes(:user).find_each do |comment|
           comment.reactions.delete_all
-          cache_buster.bust_comment(comment.commentable)
-          cache_buster.bust_user(comment.user)
+          EdgeCache::BustComment.call(comment.commentable)
+          EdgeCache::BustUser.call(comment.user)
           comment.remove_from_elasticsearch
           comment.delete
         end
@@ -21,7 +21,7 @@ module Users
         article.purge
       end
       virtual_articles.each do |article|
-        cache_buster.bust_article(article)
+        EdgeCache::BustArticle.call(article)
       end
     end
   end

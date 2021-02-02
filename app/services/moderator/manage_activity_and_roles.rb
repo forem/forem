@@ -35,14 +35,14 @@ module Moderator
       @user.remove_role :trusted
       @user.remove_role :tag_moderator
       @user.update(email_tag_mod_newsletter: false)
-      MailchimpBot.new(user).manage_tag_moderator_list
+      Mailchimp::Bot.new(user).manage_tag_moderator_list
       @user.update(email_community_mod_newsletter: false)
-      MailchimpBot.new(user).manage_community_moderator_list
+      Mailchimp::Bot.new(user).manage_community_moderator_list
     end
 
     def remove_tag_moderator_role
       @user.remove_role :tag_moderator
-      MailchimpBot.new(user).manage_tag_moderator_list
+      Mailchimp::Bot.new(user).manage_tag_moderator_list
     end
 
     def create_note(reason, content)
@@ -69,7 +69,7 @@ module Moderator
       when "Trusted"
         remove_negative_roles
         user.remove_role :pro
-        add_trusted_role
+        TagModerators::AddTrustedRole.call(user)
       when "Admin"
         check_super_admin
         remove_negative_roles
@@ -84,7 +84,7 @@ module Moderator
         user.add_role(:single_resource_admin, role.split("Resource Admin: ").last.safe_constantize)
       when "Pro"
         remove_negative_roles
-        add_trusted_role
+        TagModerators::AddTrustedRole.call(user)
         user.add_role :pro
       end
       create_note(role, note)
@@ -110,15 +110,6 @@ module Moderator
       user.add_role :warned
       user.remove_role :banned
       remove_privileges
-    end
-
-    def add_trusted_role
-      return if user.has_role?(:trusted)
-
-      user.add_role :trusted
-      user.update(email_community_mod_newsletter: true)
-      NotifyMailer.with(user: user).trusted_role_email.deliver_now
-      MailchimpBot.new(user).manage_community_moderator_list
     end
 
     def remove_negative_roles

@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
+import FocusTrap from '../shared/components/focusTrap';
 import IntroSlide from './components/IntroSlide';
 import EmailPreferencesForm from './components/EmailPreferencesForm';
 import FollowTags from './components/FollowTags';
@@ -69,16 +70,18 @@ export default class Onboarding extends Component {
     const { currentSlide } = this.state;
     const { communityConfig } = this.props;
     return (
-      <main
-        className="onboarding-body"
-        style={
-          communityConfig.communityBackground && {
-            backgroundImage: `url(${communityConfig.communityBackground})`,
+      <FocusTrap>
+        <main
+          className="onboarding-body"
+          style={
+            communityConfig.communityBackground && {
+              backgroundImage: `url(${communityConfig.communityBackground})`,
+            }
           }
-        }
-      >
-        {this.slides[currentSlide]}
-      </main>
+        >
+          {this.slides[currentSlide]}
+        </main>
+      </FocusTrap>
     );
   }
 }

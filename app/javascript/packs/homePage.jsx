@@ -19,7 +19,14 @@ const frontPageFeedPathNames = new Map([
  * @param {object} user The currently logged on user, null if not logged on.
  */
 
-function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
+function renderTagsFollowed(user = userData()) {
+  const tagsFollowedContainer = document.getElementById(
+    'sidebar-nav-followed-tags',
+  );
+  if (!tagsFollowedContainer) {
+    // Not on the homepage, so nothing to do.
+    return false;
+  }
   if (user === null || document.getElementById('followed-tags-wrapper')) {
     return;
   }
@@ -45,10 +52,23 @@ function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
   );
 }
 
+function renderSidebar() {
+  const sidebarContainer = document.getElementById('sidebar-wrapper-right');
+
+  // If the screen's width is less than 1024px we don't need this extra data.
+  if (sidebarContainer && screen.width > 1023 && window.location.pathname === '/') {
+    window.fetch('/sidebars/home')
+    .then(res => res.text())
+    .then(response => {
+      sidebarContainer.innerHTML = response;
+    });
+  }
+}
+
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
 
 if (!document.getElementById('featured-story-marker')) {
-  const waitingForDataLoad = setInterval(function dataLoadedCheck() {
+  const waitingForDataLoad = setInterval(() => {
     const { user = null, userStatus } = document.body.dataset;
     if (userStatus === 'logged-out') {
       return;
@@ -81,11 +101,8 @@ if (!document.getElementById('featured-story-marker')) {
         });
       });
 
-      const tagsFollowedContainer = document.getElementById(
-        'sidebar-nav-followed-tags',
-      );
-
-      if (tagsFollowedContainer) renderTagsFollowed(tagsFollowedContainer);
+      renderTagsFollowed();
+      renderSidebar();
     }
   }, 2);
 }
@@ -96,15 +113,7 @@ InstantClick.on('change', () => {
     return false;
   }
 
-  const tagsFollowedContainer = document.getElementById(
-    'sidebar-nav-followed-tags',
-  );
-
-  if (!tagsFollowedContainer) {
-    // Not on the homepage, so nothing to do.
-    return false;
-  }
-
-  renderTagsFollowed(tagsFollowedContainer);
+  renderTagsFollowed();
+  renderSidebar();
 });
 InstantClick.init();

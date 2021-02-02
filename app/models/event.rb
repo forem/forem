@@ -23,7 +23,7 @@ class Event < ApplicationRecord
   private
 
   def evaluate_markdown
-    self.description_html = MarkdownParser.new(description_markdown).evaluate_markdown
+    self.description_html = MarkdownProcessor::Parser.new(description_markdown).evaluate_markdown
   end
 
   def end_time_after_start

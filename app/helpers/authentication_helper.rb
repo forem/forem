@@ -15,17 +15,16 @@ module AuthenticationHelper
     end
   end
 
+  def authentication_provider_enabled?(provider_name)
+    authentication_enabled_providers.include?(provider_name)
+  end
+
   def authentication_enabled_providers_for_user(user = current_user)
     Authentication::Providers.enabled_for_user(user)
   end
 
   def available_providers_array
     Authentication::Providers.available.map(&:to_s)
-  end
-
-  def provider_keys_configured?(provider)
-    SiteConfig.public_send("#{provider}_key").present? &&
-      SiteConfig.public_send("#{provider}_secret").present?
   end
 
   def forem_creator_flow_enabled?
@@ -45,7 +44,7 @@ module AuthenticationHelper
     invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : ""
   end
 
-  def disabled_attr_on_auth_provider_enablebtn
+  def disabled_attr_on_auth_provider_enable_btn
     invite_only_mode_or_no_enabled_auth_options ? "disabled" : ""
   end
 
