@@ -2017,18 +2017,18 @@
     regenerator-runtime "^0.13.7"
     ts-dedent "^2.0.0"
 
-"@storybook/addon-storysource@^6.1.15":
-  version "6.1.15"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-6.1.15.tgz#83db5b5153cf05a333e4357c8e623189bf5480a8"
-  integrity sha512-Qs6eEO7l8bJX7rhd1FiGHtt0QENtSMbQZQlsVe/ALVgBdFzcWji2FTVIzSlFHut1iwqmLHF7UEkNKhXpB3Nfzw==
+"@storybook/addon-storysource@^6.1.16":
+  version "6.1.16"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-6.1.16.tgz#cae90c47b26b483703136e91e1f9180fd6d5c856"
+  integrity sha512-ausHIVlW5kSIFirDK1eVGpHpnv+JRZMjhfc9f/sf3J22r1sesWfKFjzxMtuZVM9hukk31J1itsLqtmAQSiBTBA==
   dependencies:
-    "@storybook/addons" "6.1.15"
-    "@storybook/api" "6.1.15"
-    "@storybook/client-logger" "6.1.15"
-    "@storybook/components" "6.1.15"
-    "@storybook/router" "6.1.15"
-    "@storybook/source-loader" "6.1.15"
-    "@storybook/theming" "6.1.15"
+    "@storybook/addons" "6.1.16"
+    "@storybook/api" "6.1.16"
+    "@storybook/client-logger" "6.1.16"
+    "@storybook/components" "6.1.16"
+    "@storybook/router" "6.1.16"
+    "@storybook/source-loader" "6.1.16"
+    "@storybook/theming" "6.1.16"
     core-js "^3.0.1"
     estraverse "^4.2.0"
     loader-utils "^2.0.0"
@@ -2947,23 +2947,6 @@
   dependencies:
     core-js "^3.6.5"
     find-up "^4.1.0"
-
-"@storybook/source-loader@6.1.15":
-  version "6.1.15"
-  resolved "https://registry.yarnpkg.com/@storybook/source-loader/-/source-loader-6.1.15.tgz#21b985ede0ec626c1a4916fc92a58cffca9d6c63"
-  integrity sha512-ZFmbuvo4sq0jVeWj7Ur1zDq5SCfTxLYuQcV6mAOqUr89dyP778PX9AO1b1/BmipjsHL3JOHN6uHAn74ksB9ofg==
-  dependencies:
-    "@storybook/addons" "6.1.15"
-    "@storybook/client-logger" "6.1.15"
-    "@storybook/csf" "0.0.1"
-    core-js "^3.0.1"
-    estraverse "^4.2.0"
-    global "^4.3.2"
-    loader-utils "^2.0.0"
-    lodash "^4.17.15"
-    prettier "~2.0.5"
-    regenerator-runtime "^0.13.7"
-    source-map "^0.7.3"
 
 "@storybook/source-loader@6.1.16":
   version "6.1.16"
