@@ -2,11 +2,13 @@ require "rails_helper"
 
 RSpec.describe "Creating Comment", type: :system, js: true do
   include_context "with runkit_tag"
+  include_context "with twitter_timeline_tag"
 
   let(:user) { create(:user) }
   let(:raw_comment) { Faker::Lorem.paragraph }
   let(:runkit_comment) { compose_runkit_comment "comment 1" }
   let(:runkit_comment2) { compose_runkit_comment "comment 2" }
+  let(:twitter_timeline_comment) { compose_twitter_timeline_tag_comment "comment" }
 
   # the article should be created before signing in
   let!(:article) { create(:article, user_id: user.id, show_comments: true) }
@@ -113,6 +115,21 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       click_button("Preview")
 
       expect_runkit_tag_to_be_active
+    end
+  end
+
+  context "with TwitterTimeline tag" do
+    before do
+      visit article.path.to_s
+
+      wait_for_javascript
+    end
+
+    it "User fill out comment box with a TwitterTimeline tag, then clicks preview" do
+      fill_in "text-area", with: twitter_timeline_comment
+      click_button("Preview")
+
+      expect_twitter_timeline_tag_to_be_active
     end
   end
 
