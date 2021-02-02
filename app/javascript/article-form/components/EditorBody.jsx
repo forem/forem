@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Textarea from 'preact-textarea-autosize';
 import { useEffect, useRef } from 'preact/hooks';
 import { Toolbar } from './Toolbar';
-import { handleImagePasted} from './pasteImageHelpers';
+import { handleImagePasted } from './pasteImageHelpers';
 import {
   handleImageDrop,
   handleImageFailure,
@@ -19,7 +19,9 @@ function handleImageSuccess(textAreaRef) {
     // textarea ref.
     const editableBodyElement = textAreaRef.current.base;
     const { links, image } = response;
-    const altText = image[0].name.replace(/\.[^.]+$/, '');
+    const altText = image[0]
+      ? image[0].name.replace(/\.[^.]+$/, '')
+      : 'alt text';
     const markdownImageLink = `![${altText}](${links[0]})\n`;
     const { selectionStart, selectionEnd, value } = editableBodyElement;
     const before = value.substring(0, selectionStart);
@@ -56,7 +58,7 @@ export const EditorBody = ({
     onPaste: handleImagePasted(
       handleImageSuccess(textAreaRef),
       handleImageFailure,
-    )
+    ),
   });
 
   useEffect(() => {
