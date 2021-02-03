@@ -49,7 +49,7 @@ class DataUpdateScript < ApplicationRecord
   end
 
   def mark_as_finished!
-    update!(finished_at: Time.current, status: :succeeded)
+    update!(finished_at: Time.current, status: :succeeded, error: nil)
   end
 
   def mark_as_failed!(err)

@@ -49,6 +49,9 @@ Rails.application.routes.draw do
                                      { rack_protection: { except: %i[authenticity_token form_token json_csrf
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
+
+        resources :data_update_scripts, only: %i[index show]
+        post "/data_update_scripts/:id/force_run", to: "data_update_scripts#force_run"
       end
 
       namespace :users do

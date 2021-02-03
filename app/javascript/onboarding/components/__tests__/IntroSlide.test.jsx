@@ -4,7 +4,7 @@ import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { axe } from 'jest-axe';
 
-import IntroSlide from '../IntroSlide';
+import { IntroSlide } from '../IntroSlide';
 
 global.fetch = fetch;
 

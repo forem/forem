@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import PendingMembershipSections from '../ChatChannelSettings/PendingMembershipSection';
+import { PendingMembershipSection } from '../ChatChannelSettings/PendingMembershipSection';
 
 function getEmptyMembershipData() {
   return {
@@ -28,14 +28,14 @@ function getMembershipData() {
   };
 }
 
-describe('<PendingMembershipSections />', () => {
+describe('<PendingMembershipSection />', () => {
   it('should have no a11y violations when there are no members', async () => {
     const {
       pendingMemberships,
       currentMembershipRole,
     } = getEmptyMembershipData();
     const { container } = render(
-      <PendingMembershipSections
+      <PendingMembershipSection
         pendingMemberships={pendingMemberships}
         currentMembershipRole={currentMembershipRole}
       />,
@@ -48,7 +48,7 @@ describe('<PendingMembershipSections />', () => {
   it('should have no a11y violations when there are members', async () => {
     const { pendingMemberships, currentMembershipRole } = getMembershipData();
     const { container } = render(
-      <PendingMembershipSections
+      <PendingMembershipSection
         pendingMemberships={pendingMemberships}
         currentMembershipRole={currentMembershipRole}
       />,
@@ -64,7 +64,7 @@ describe('<PendingMembershipSections />', () => {
       currentMembershipRole,
     } = getEmptyMembershipData();
     const { getByTestId } = render(
-      <PendingMembershipSections
+      <PendingMembershipSection
         pendingMemberships={pendingMemberships}
         currentMembershipRole={currentMembershipRole}
       />,
@@ -79,7 +79,7 @@ describe('<PendingMembershipSections />', () => {
   it('should render the membership list', () => {
     const { pendingMemberships, currentMembershipRole } = getMembershipData();
     const { getByTestId } = render(
-      <PendingMembershipSections
+      <PendingMembershipSection
         pendingMemberships={pendingMemberships}
         currentMembershipRole={currentMembershipRole}
       />,
