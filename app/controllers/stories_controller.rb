@@ -374,20 +374,20 @@ class StoriesController < ApplicationController
     @user_json_ld = {
       "@context": "http://schema.org",
       "@type": "Person",
-      "mainEntityOfPage": {
+      mainEntityOfPage: {
         "@type": "WebPage",
         "@id": URL.user(@user)
       },
-      "url": URL.user(@user),
-      "sameAs": user_same_as,
-      "image": Images::Profile.call(@user.profile_image_url, length: 320),
-      "name": @user.name,
-      "email": @user.email_public ? @user.email : nil,
-      "jobTitle": @user.employment_title.presence,
-      "description": @user.summary.presence || "404 bio not found",
-      "disambiguatingDescription": user_disambiguating_description,
-      "worksFor": [user_works_for].compact,
-      "alumniOf": @user.education.presence
+      url: URL.user(@user),
+      sameAs: user_same_as,
+      image: Images::Profile.call(@user.profile_image_url, length: 320),
+      name: @user.name,
+      email: @user.email_public ? @user.email : nil,
+      jobTitle: @user.employment_title.presence,
+      description: @user.summary.presence || "404 bio not found",
+      disambiguatingDescription: user_disambiguating_description,
+      worksFor: [user_works_for].compact,
+      alumniOf: @user.education.presence
     }.reject { |_, v| v.blank? }
   end
 
@@ -395,34 +395,34 @@ class StoriesController < ApplicationController
     @article_json_ld = {
       "@context": "http://schema.org",
       "@type": "Article",
-      "mainEntityOfPage": {
+      mainEntityOfPage: {
         "@type": "WebPage",
         "@id": URL.article(@article)
       },
-      "url": URL.article(@article),
-      "image": seo_optimized_images,
-      "publisher": {
+      url: URL.article(@article),
+      image: seo_optimized_images,
+      publisher: {
         "@context": "http://schema.org",
         "@type": "Organization",
-        "name": SiteConfig.community_name.to_s,
-        "logo": {
+        name: SiteConfig.community_name.to_s,
+        logo: {
           "@context": "http://schema.org",
           "@type": "ImageObject",
-          "url": ApplicationController.helpers.optimized_image_url(SiteConfig.logo_png, width: 192,
-                                                                                        fetch_format: "png"),
-          "width": "192",
-          "height": "192"
+          url: ApplicationController.helpers.optimized_image_url(SiteConfig.logo_png, width: 192,
+                                                                                      fetch_format: "png"),
+          width: "192",
+          height: "192"
         }
       },
-      "headline": @article.title,
-      "author": {
+      headline: @article.title,
+      author: {
         "@context": "http://schema.org",
         "@type": "Person",
-        "url": URL.user(@user),
-        "name": @user.name
+        url: URL.user(@user),
+        name: @user.name
       },
-      "datePublished": @article.published_timestamp,
-      "dateModified": @article.edited_at&.iso8601 || @article.published_timestamp
+      datePublished: @article.published_timestamp,
+      dateModified: @article.edited_at&.iso8601 || @article.published_timestamp
     }
   end
 
@@ -441,14 +441,14 @@ class StoriesController < ApplicationController
     @organization_json_ld = {
       "@context": "http://schema.org",
       "@type": "Organization",
-      "mainEntityOfPage": {
+      mainEntityOfPage: {
         "@type": "WebPage",
         "@id": URL.organization(@organization)
       },
-      "url": URL.organization(@organization),
-      "image": Images::Profile.call(@organization.profile_image_url, length: 320),
-      "name": @organization.name,
-      "description": @organization.summary.presence || "404 bio not found"
+      url: URL.organization(@organization),
+      image: Images::Profile.call(@organization.profile_image_url, length: 320),
+      name: @organization.name,
+      description: @organization.summary.presence || "404 bio not found"
     }
   end
 
@@ -459,8 +459,8 @@ class StoriesController < ApplicationController
 
     {
       "@type": "Organization",
-      "name": @user.employer_name,
-      "url": @user.employer_url
+      name: @user.employer_name,
+      url: @user.employer_url
     }.reject { |_, v| v.blank? }
   end
 
