@@ -60,7 +60,7 @@
         <nav class="hidden m:block">
           <%= render "admin/shared/navbar", menu_items: admin_menu_items %>
           <p class="crayons-field__description mt-4 mb-3">Tech Resources</p>
-          <%= render "admin/shared/navbar", menu_items: tech_admin_menu_items %>
+          <%= render "admin/shared/navbar", menu_items: AdminHelper::TECH_MENU_ITEMS %>
         </nav>
       </div>
     <% end %>

@@ -41,10 +41,6 @@ module AdminHelper
     { name: "data_update_scripts", controller: "data_update_scripts" },
   ].sort_by { |menu_item| menu_item[:name] }
 
-  def tech_admin_menu_items
-    return TECH_MENU_ITEMS
-  end
-
   def admin_menu_items
     return MENU_ITEMS unless FeatureFlag.enabled?(:profile_admin)
 
