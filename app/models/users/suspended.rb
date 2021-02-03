@@ -4,8 +4,17 @@ module Users
 
     validates :username_hash, presence: true, uniqueness: true
 
+    def self.hash_username(username)
+      Digest::SHA256.hexdigest(username)
+    end
+
     def self.previously_banned?(username)
-      where(username_hash: Digest::SHA256.hexdigest(username)).any?
+      where(username_hash: hash_username(username)).any?
+    end
+
+    # Convenienc method for easily adding a suspended user
+    def self.add(user)
+      create!(username_hash: hash_username(user.username))
     end
   end
 end
