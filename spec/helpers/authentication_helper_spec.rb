@@ -38,26 +38,20 @@ RSpec.describe AuthenticationHelper, type: :helper do
     end
   end
 
-  describe "#provider_keys_configured?(provider)" do
-    let(:provider) { "facebook" }
-
-    it "returns true if provider key and secret both present" do
-      allow(SiteConfig).to receive(:"#{provider}_key").and_return("someKey")
-      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("someSecret")
-
-      expect(provider_keys_configured?(provider)).to be(true)
+  describe "#authentication_provider_enabled?" do
+    before do
+      allow(SiteConfig).to receive(:invite_only_mode).and_return(false)
+      allow(SiteConfig).to receive(:authentication_providers).and_return(%i[twitter github])
     end
 
-    it "returns false if either provider key or secret is missing" do
-      allow(SiteConfig).to receive(:"#{provider}_key").and_return("someKey")
-      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("")
+    it "returns true when a provider has been enabled" do
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Twitter)).to be true
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Github)).to be true
+    end
 
-      expect(provider_keys_configured?(provider)).to be(false)
-
-      allow(SiteConfig).to receive(:"#{provider}_key").and_return("")
-      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("someSecret")
-
-      expect(provider_keys_configured?(provider)).to be(false)
+    it "returns false when a provider has not yet been enabled" do
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Facebook)).to be false
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Apple)).to be false
     end
   end
 
@@ -74,7 +68,7 @@ RSpec.describe AuthenticationHelper, type: :helper do
       end
 
       it "returns 'disabled' attribute for relevant helper" do
-        expect(disabled_attr_on_auth_provider_enablebtn).to eq("disabled")
+        expect(disabled_attr_on_auth_provider_enable_btn).to eq("disabled")
       end
 
       it "returns appropriate text for 'tooltip_text_email_or_auth_provider_btns' helper" do

@@ -147,7 +147,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -211,7 +211,7 @@
                         data-button-text="<%= SiteConfig.allow_email_password_registration ? "edit" : "enable" %>"
                         data-config-target="emailAuthSettingsBtn"
                         data-action="click->config#enableOrEditEmailAuthSettings"
-                        <%= disabled_attr_on_auth_provider_enablebtn %>>
+                        <%= disabled_attr_on_auth_provider_enable_btn %>>
                         <%= SiteConfig.allow_email_password_registration ? "Edit" : "Enable" %>
                       </button>
 
@@ -308,7 +308,7 @@
                                      readonly: true %>
                   </div>
                   <% authentication_available_providers.each do |provider| %>
-                  <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
+                    <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
                     <section class="config-authentication__item mb-0">
                       <figure class="config-authentication__item--icon">
                         <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
@@ -318,12 +318,12 @@
                           class="flex items-center justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
                           data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
                           <div class="config-authentication__item--label">
-                            <p class="crayons-field__label <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
+                            <p class="crayons-field__label <%= authentication_provider_enabled?(provider) ? "pb-0" : "" %>">
                               <%= provider.official_name %>
                             </p>
                             <div
                               id="<%= provider.provider_name %>-enabled-indicator"
-                              class="enabled-indicator <%= authentication_enabled_providers.include?(provider) ? "visible" : "" %>">
+                              class="enabled-indicator <%= authentication_provider_enabled?(provider) ? "visible" : "" %>">
                               <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                               <small class="crayons-field__description ml-1">Enabled</small>
                             </div>
@@ -331,12 +331,13 @@
                           <button
                             class="crayons-btn crayons-btn--secondary"
                             id="<%= provider.provider_name %>-auth-btn"
-                            data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
+                            data-button-text="<%= authentication_provider_enabled?(provider) ? "edit" : "enable" %>"
                             data-action="click->config#enableOrEditAuthProvider"
-                            data-auth-provider-enable="<%= provider.provider_name %>"
-                            data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
-                            <%= disabled_attr_on_auth_provider_enablebtn %>>
-                            <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
+                            data-provider-name="<%= provider.provider_name %>"
+                            data-provider-official-name="<%= provider.official_name %>"
+                            data-enable-auth="<%= authentication_provider_enabled?(provider) ? "true" : "false" %>"
+                            <%= disabled_attr_on_auth_provider_enable_btn %>>
+                            <%= authentication_provider_enabled?(provider) ? "Edit" : "Enable" %>
                           </button>
                         </div>
                         <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
@@ -435,6 +436,15 @@
                                    class: "crayons-textfield",
                                    value: SiteConfig.campaign_call_to_action,
                                    placeholder: Constants::SiteConfig::DETAILS[:campaign_call_to_action][:placeholder] %>
+                </div>
+
+                <div class="crayons-field">
+                  <%= admin_config_label :campaign_articles_expiry_time, "Campaign article expiry time" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:description] %>
+                  <%= f.number_field :campaign_articles_expiry_time,
+                                     class: "crayons-textfield",
+                                     value: SiteConfig.campaign_articles_expiry_time,
+                                     placeholder: Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:placeholder] %>
                 </div>
 
                 <%= render "form_submission", f: f %>
@@ -656,7 +666,7 @@
                   <%= f.number_field :periodic_email_digest_min,
                                      class: "crayons-textfield",
                                      value: SiteConfig.periodic_email_digest_min,
-                                     placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:placeholder] %>
+                                     placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_min][:placeholder] %>
                 </div>
 
                 <%= render "form_submission", f: f %>
@@ -1284,5 +1294,5 @@
       </div>
     </div>
   </div>
-  <div data-target="config.configModalAnchor"></div>
+  <div data-config-target="configModalAnchor"></div>
 </div>

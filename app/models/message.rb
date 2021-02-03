@@ -14,7 +14,7 @@ class Message < ApplicationRecord
 
   def preferred_user_color
     color_options = [user.bg_color_hex || "#000000", user.text_color_hex || "#000000"]
-    HexComparer.new(color_options).brightness(0.9)
+    Color::CompareHex.new(color_options).brightness(0.9)
   end
 
   def direct_receiver
@@ -45,7 +45,7 @@ class Message < ApplicationRecord
   end
 
   def evaluate_markdown
-    html = MarkdownParser.new(message_markdown).evaluate_markdown
+    html = MarkdownProcessor::Parser.new(message_markdown).evaluate_markdown
     html = target_blank_links(html)
     html = append_rich_links(html)
     html = wrap_mentions_with_links(html)

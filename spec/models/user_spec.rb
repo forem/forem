@@ -913,7 +913,7 @@ RSpec.describe User, type: :model do
   end
 
   describe "#authenticated_with_all_providers?" do
-    let(:provider) { Authentication::Providers.available.first }
+    let(:provider) { (Authentication::Providers.available - [:apple]).first }
 
     it "returns false if the user has no related identity" do
       expect(user.authenticated_with_all_providers?).to be(false)

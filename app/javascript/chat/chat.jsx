@@ -7,8 +7,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
-import notifyUser from '../utilities/connect/newMessageNotify';
-import debounceAction from '../utilities/debounceAction';
+import { notifyUser } from '../utilities/connect/newMessageNotify';
+import { debounceAction } from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
 import { processImageUpload } from '../article-form/actions';
 import {
@@ -22,7 +22,7 @@ import {
   deleteMessage,
   editMessage,
 } from './actions/actions';
-import CreateChatModal from './components/CreateChatModal';
+import { CreateChatModal } from './components/CreateChatModal';
 import {
   sendChannelRequest,
   rejectJoiningRequest,
@@ -34,14 +34,13 @@ import {
   scrollToBottom,
   setupObserver,
   getCurrentUser,
-  channelSorter,
 } from './util';
-import Alert from './alert';
-import Channels from './channels';
-import Compose from './compose';
-import Message from './message';
-import ActionMessage from './actionMessage';
-import Content from './content';
+import { Alert } from './alert';
+import { Channels } from './channels';
+import { Compose } from './compose';
+import { Message } from './message';
+import { ActionMessage } from './actionMessage';
+import { Content } from './content';
 import { VideoContent } from './videoContent';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
 import { dragAndUpload } from '@utilities/dragAndUpload';
@@ -50,7 +49,7 @@ import { Button } from '@crayons';
 const NARROW_WIDTH_LIMIT = 767;
 const WIDE_WIDTH_LIMIT = 1600;
 
-export default class Chat extends Component {
+export class Chat extends Component {
   static propTypes = {
     pusherKey: PropTypes.number.isRequired,
     chatChannels: PropTypes.string.isRequired,
@@ -1073,6 +1072,15 @@ export default class Chat extends Component {
     }));
   };
 
+  closeReportAbuseForm = () => {
+    const { activeChannelId } = this.state;
+    this.setActiveContentState(activeChannelId, null);
+    this.setState({
+      fullscreenContent: null,
+      expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
+    });
+  };
+
   setActiveContent = (response) => {
     const { activeChannelId } = this.state;
     this.setActiveContentState(activeChannelId, response);
@@ -1184,7 +1192,6 @@ export default class Chat extends Component {
         );
       }
     }
-
     return messages[activeChannelId].map((message) =>
       message.action ? (
         <ActionMessage
@@ -1209,11 +1216,21 @@ export default class Chat extends Component {
           onContentTrigger={this.triggerActiveContent}
           onDeleteMessageTrigger={this.triggerDeleteMessage}
           onEditMessageTrigger={this.triggerEditMessage}
+          onReportMessageTrigger={this.triggerReportMessage}
         />
       ),
     );
   };
+  triggerReportMessage = (messageId) => {
+    const { activeChannelId, messages } = this.state;
 
+    this.setActiveContent({
+      data: messages[activeChannelId].find(
+        (message) => message.id === messageId,
+      ),
+      type_of: 'message-report-abuse',
+    });
+  };
   triggerChannelFilter = (e) => {
     const { channelTypeFilter } = this.state;
     const filters =
@@ -1594,6 +1611,7 @@ export default class Chat extends Component {
           resource={state.activeContent[state.activeChannelId]}
           activeChannel={state.activeChannel}
           fullscreen={state.fullscreenContent === 'sidecar'}
+          closeReportAbuseForm={this.closeReportAbuseForm}
         />
         <VideoContent
           videoPath={state.videoPath}

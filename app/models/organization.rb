@@ -126,7 +126,7 @@ class Organization < ApplicationRecord
   private
 
   def evaluate_markdown
-    self.cta_processed_html = MarkdownParser.new(cta_body_markdown).evaluate_limited_markdown
+    self.cta_processed_html = MarkdownProcessor::Parser.new(cta_body_markdown).evaluate_limited_markdown
   end
 
   def remove_at_from_usernames

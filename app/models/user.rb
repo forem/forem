@@ -10,7 +10,6 @@ class User < ApplicationRecord
     available_for
     behance_url
     bg_color_hex
-    contact_consent
     currently_hacking_on
     currently_learning
     currently_streaming_on
@@ -37,7 +36,7 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS
+  self.ignored_columns = PROFILE_COLUMNS + %w[feed_admin_publish_permission]
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -91,7 +90,8 @@ class User < ApplicationRecord
   }x.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
-                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
+                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
+                :current_password
 
   rolify after_add: :index_roles, after_remove: :index_roles
 
@@ -304,7 +304,8 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article.tagged_with(cached_followed_tag_names, any: true)
+    Article
+      .tagged_with(cached_followed_tag_names, any: true).unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
       .where(language: preferred_languages_array, published: true)
   end
@@ -436,10 +437,6 @@ class User < ApplicationRecord
 
   def block; end
 
-  def all_blocking
-    UserBlock.where(blocker_id: id)
-  end
-
   def all_blocked_by
     UserBlock.where(blocked_id: id)
   end
@@ -499,8 +496,9 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
+    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
 
-    MailchimpBot.new(self).unsubscribe_all_newsletters
+    Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
 
   def auditable?
@@ -531,7 +529,10 @@ class User < ApplicationRecord
   end
 
   def authenticated_with_all_providers?
-    identities_enabled.pluck(:provider).map(&:to_sym) == Authentication::Providers.enabled
+    # ga_providers refers to Generally Available (not in beta)
+    ga_providers = Authentication::Providers.enabled.reject { |sym| sym == :apple }
+    enabled_providers = identities.pluck(:provider).map(&:to_sym)
+    (ga_providers - enabled_providers).empty?
   end
 
   def rate_limiter

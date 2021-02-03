@@ -25,8 +25,8 @@ module EdgeCache
           true
         else
           Rails.logger.warn("#{provider_class} cannot be used without a #call implementation!")
-          DatadogStatsClient.increment("edgecache_bust.invalid_provider_class",
-                                       tags: ["provider_class:#{provider_class}"])
+          ForemStatsClient.increment("edgecache_bust.invalid_provider_class",
+                                     tags: ["provider_class:#{provider_class}"])
           false
         end
       end

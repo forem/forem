@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { SingleListing } from '../singleListing/SingleListing';
-import MessageModal from './MessageModal';
+import { MessageModal } from './MessageModal';
 import { Button } from '@crayons';
 
-const Modal = ({
+export const Modal = ({
   currentUserId,
   onAddTag,
   onChangeDraftingMessage,
@@ -92,5 +92,3 @@ Modal.propTypes = {
 Modal.defaultProps = {
   currentUserId: null,
 };
-
-export default Modal;

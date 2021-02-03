@@ -10,12 +10,14 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     registrations: "registrations",
-    invitations: "invitations"
+    invitations: "invitations",
+    passwords: "passwords",
+    confirmations: "confirmations"
   }
 
   devise_scope :user do
     get "/enter", to: "registrations#new", as: :sign_up
-    get "/confirm-email", to: "devise/confirmations#new"
+    get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
   end
 
@@ -48,7 +50,8 @@ Rails.application.routes.draw do
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
 
-        resources :data_update_scripts, only: [:index]
+        resources :data_update_scripts, only: %i[index show]
+        post "/data_update_scripts/:id/force_run", to: "data_update_scripts#force_run"
       end
 
       namespace :users do
@@ -204,6 +207,7 @@ Rails.application.routes.draw do
         resources :organizations, only: [:show], param: :username do
           resources :users, only: [:index], to: "organizations#users"
           resources :listings, only: [:index], to: "organizations#listings"
+          resources :articles, only: [:index], to: "organizations#articles"
         end
 
         namespace :admin do
@@ -385,6 +389,7 @@ Rails.application.routes.draw do
     post "organizations/generate_new_secret" => "organizations#generate_new_secret"
     post "users/api_secrets" => "api_secrets#create", :as => :users_api_secrets
     delete "users/api_secrets/:id" => "api_secrets#destroy", :as => :users_api_secret
+    post "users/update_password", to: "users#update_password", as: :user_update_password
 
     # The priority is based upon order of creation: first created -> highest priority.
     # See how all your routes lay out with "rake routes".
