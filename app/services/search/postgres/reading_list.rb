@@ -82,19 +82,8 @@ module Search
       end
       private_class_method :full_text_search
 
-      # borrowed from https://github.com/mbleigh/acts-as-taggable-on/blob/47da5036dea61cb971bfaf72de5fa93c85255307/lib/acts_as_taggable_on/taggable/core.rb#L110
       def self.tagged_with(article_ids, tags, tagged_with_any)
-        tag_list = ActsAsTaggableOn.default_parser.new(tags).parse
-        return Article.none if tag_list.empty?
-
-        relation = ActsAsTaggableOn::Taggable::TaggedWithQuery.build(
-          Article,
-          ActsAsTaggableOn::Tag,
-          ActsAsTaggableOn::Tagging,
-          tag_list,
-          any: tagged_with_any,
-        )
-
+        relation = Article.tagged_with(tags, any: tagged_with_any)
         relation.where(id: article_ids)
       end
       private_class_method :tagged_with
