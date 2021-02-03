@@ -8,7 +8,7 @@ module Tags
       tag = Tag.find_by(id: tag_id)
       return unless tag
 
-      tag.taggings.each do |tagging|
+      tag.taggings.find_each do |tagging|
         taggable = tagging.taggable
         new_tag_list = ActsAsTaggableOn::TagParser.new(taggable.tag_list).parse
         taggable.update(tag_list: new_tag_list)
