@@ -66,8 +66,8 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
 const DEFAULT_AUTH_CONFIG = {
   inviteOnlyMode: 0,
   emailRegistration: 1,
-  allowedEmailDomains: 0,
-  publicEmailDomainList: '',
+  allowedEmailDomains: '',
+  publicEmailDomainList: 0,
   requireRecaptcha: 0,
   recaptchaSiteKey: '',
   recaptchaSecretKey: '',
@@ -107,11 +107,11 @@ Cypress.Commands.add(
   (
     username = 'admin_mcadmin',
     {
-      inviteOnlyMode,
-      emailRegistration,
+      inviteOnlyMode = 0,
+      emailRegistration = 1,
       allowedEmailDomains,
-      publicEmailDomainList,
-      requireRecaptcha,
+      publicEmailDomainList = 0,
+      requireRecaptcha = 0,
       recaptchaSiteKey,
       recaptchaSecretKey,
       authProvidersToEnable,
