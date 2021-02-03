@@ -1,6 +1,7 @@
 import { Controller } from 'stimulus';
 
-export class SvgIconUploadController extends Controller {
+// eslint-disable-next-line no-restricted-syntax
+export default class SvgIconUploadController extends Controller {
   static targets = [
     'svgIconContent',
     'svgIconPreview',
@@ -12,7 +13,7 @@ export class SvgIconUploadController extends Controller {
     this.clearInvalidIconTypeMessage();
 
     const icon = event.target.files[0];
-    if (icon.type !== 'image/svg+xml' && icon.type !== 'image/svg') {
+    if (icon.type !== 'image/svg+xml') {
       this.invalidIconTypeMessage(icon.type);
       const navigationLinkId = this.navIdTarget.attributes['nav-link-id'].value;
 
