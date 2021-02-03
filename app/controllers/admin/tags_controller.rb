@@ -2,6 +2,12 @@ module Admin
   class TagsController < Admin::ApplicationController
     layout "admin"
 
+    ALLOWED_PARAMS = %i[
+      id supported rules_markdown short_summary pretty_name bg_color_hex
+      text_color_hex user_id alias_for badge_id requires_approval
+      category social_preview_template wiki_body_markdown submission_template
+    ].freeze
+
     before_action :set_default_options, only: %i[index]
     before_action :badges_for_options, only: %i[new create edit update]
     after_action only: [:update] do
@@ -38,6 +44,7 @@ module Admin
     def update
       @tag = Tag.find(params[:id])
       if @tag.update(tag_params)
+        ::Tags::AliasRetagWorker.perform_async(@tag.id) if tag_alias_updated?
         flash[:success] = "#{@tag.name} tag successfully updated!"
       else
         flash[:error] = "The tag update failed: #{@tag.errors_as_sentence}"
@@ -57,12 +64,11 @@ module Admin
     end
 
     def tag_params
-      allowed_params = %i[
-        id supported rules_markdown short_summary pretty_name bg_color_hex
-        text_color_hex user_id alias_for badge_id requires_approval
-        category social_preview_template wiki_body_markdown submission_template
-      ]
-      params.require(:tag).permit(allowed_params)
+      params.require(:tag).permit(ALLOWED_PARAMS)
+    end
+
+    def tag_alias_updated?
+      tag_params[:alias_for].present?
     end
   end
 end
