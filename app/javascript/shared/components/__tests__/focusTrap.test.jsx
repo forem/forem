@@ -3,7 +3,7 @@ import { render, waitFor } from '@testing-library/preact';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
-import FocusTrap from '../focusTrap';
+import { FocusTrap } from '../focusTrap';
 
 describe('<FocusTrap />', () => {
   it('should trap focus within crayon-modals', async () => {

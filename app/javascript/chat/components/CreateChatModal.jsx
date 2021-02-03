@@ -24,7 +24,7 @@ import { Modal, Button } from '@crayons';
  *
  */
 
-function CreateChatModal({
+export function CreateChatModal({
   toggleModalCreateChannel,
   handleCreateChannelSuccess,
 }) {
@@ -85,5 +85,3 @@ CreateChatModal.propTypes = {
   toggleModalCreateChannel: PropTypes.func.isRequired,
   handleCreateChannelSuccess: PropTypes.func.isRequired,
 };
-
-export default CreateChatModal;

@@ -2,9 +2,9 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { getContentOfToken } from '../utilities';
-import Navigation from './Navigation';
+import { Navigation } from './Navigation';
 
-class FollowTags extends Component {
+export class FollowTags extends Component {
   constructor(props) {
     super(props);
 
@@ -191,5 +191,3 @@ FollowTags.propTypes = {
   slidesCount: PropTypes.number.isRequired,
   currentSlideIndex: PropTypes.func.isRequired,
 };
-
-export default FollowTags;

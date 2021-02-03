@@ -14,7 +14,7 @@ import { Button, Modal } from '@crayons';
   editing are not used in this file, they are important to the
   editor.
 */
-export default class ArticleForm extends Component {
+export class ArticleForm extends Component {
   static handleGistPreview() {
     const els = document.getElementsByClassName('ltag_gist-liquid-tag');
     for (let i = 0; i < els.length; i += 1) {
