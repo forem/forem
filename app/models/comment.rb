@@ -7,7 +7,14 @@ class Comment < ApplicationRecord
 
   include PgSearch::Model
   multisearchable against: %i[body_markdown],
-                  associated_against: { user: %i[username name] },
+                  associated_against: { commentable: :title, user: %i[username name] },
+                  additional_attributes: lambda { |comment|
+                    {
+                      hotness_score: comment.score,
+                      published_at: comment.created_at,
+                      public_reactions_count: comment.public_reactions_count
+                    }
+                  },
                   unless: ->(comment) { comment.deleted? || comment.hidden_by_commentable_user? },
                   order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
 

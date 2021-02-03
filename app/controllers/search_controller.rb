@@ -121,7 +121,18 @@ class SearchController < ApplicationController
   private
 
   def feed_content_search
-    Search::FeedContent.search_documents(params: feed_params.to_h)
+    Search::Postgres::Feed.search_documents(
+      term: feed_params[:search_fields],
+      approved: feed_params[:approved] == "true",
+      class_name: feed_params[:class_name],
+      id: feed_params[:id],
+      sort_by: feed_params[:sort_by],
+      sort_direction: feed_params[:sort_direction],
+      published_at: feed_params[:published_at],
+      page: feed_params[:page],
+      per_page: feed_params[:per_page],
+    )
+    # Search::FeedContent.search_documents(params: feed_params.to_h)
   end
 
   def user_search

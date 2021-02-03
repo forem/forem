@@ -846,10 +846,15 @@ ActiveRecord::Schema.define(version: 2021_01_31_000458) do
   create_table "pg_search_documents", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", precision: 6, null: false
+    t.integer "hotness_score", null: false
+    t.integer "public_reactions_count", null: false
+    t.datetime "published_at", null: false
     t.bigint "searchable_id"
     t.string "searchable_type"
     t.datetime "updated_at", precision: 6, null: false
-    t.index "to_tsvector('simple'::regconfig, COALESCE(content, ''::text))", name: "index_pg_search_documents_on_content", using: :gin
+    t.index ["hotness_score"], name: "index_pg_search_documents_on_hotness_score"
+    t.index ["public_reactions_count"], name: "index_pg_search_documents_on_public_reactions_count"
+    t.index ["published_at"], name: "index_pg_search_documents_on_published_at"
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id"
   end
 

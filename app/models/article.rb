@@ -14,6 +14,13 @@ class Article < ApplicationRecord
                     tags: %i[name keywords_for_search],
                     user: %i[username name]
                   },
+                  additional_attributes: lambda { |article|
+                    {
+                      hotness_score: article.hotness_score,
+                      published_at: article.published_at,
+                      public_reactions_count: article.public_reactions_count
+                    }
+                  },
                   if: :published?,
                   order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
 

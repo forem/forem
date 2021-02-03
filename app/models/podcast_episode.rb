@@ -7,7 +7,14 @@ class PodcastEpisode < ApplicationRecord
   multisearchable against: %i[body quote subtitle summary],
                   # do we need `keywords_for_search` ?
                   associated_against: { tags: %i[name keywords_for_search] },
-                  if: :reachable?,
+                  additional_attributes: lambda { |pe|
+                    {
+                      hotness_score: pe.hotness_score,
+                      published_at: pe.published_at,
+                      public_reactions_count: pe.public_reactions_count
+                    }
+                  },
+                  if: ->(pe) { pe.published_at && pe.reachable? },
                   order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
 
   include Searchable
