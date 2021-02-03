@@ -4,7 +4,7 @@ module Users
 
     validates :username_hash, presence: true, uniqueness: true
 
-    def self.check_username(username)
+    def self.previously_banned?(username)
       where(username_hash: Digest::SHA256.hexdigest(username)).any?
     end
   end
