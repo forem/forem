@@ -134,7 +134,7 @@ export class RequestManager extends Component {
         <div className="p-4">
           <HeaderSection />
           {channelJoiningRequests.length <= 0 && userInvitations.length <= 0 ? (
-            <p>You have no pending invitations/Joining Requests.</p>
+            <p>You have no pending invitations.</p>
           ) : null}
           <ChannelRequestSection
             channelRequests={channelJoiningRequests}
