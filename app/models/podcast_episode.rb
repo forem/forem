@@ -4,7 +4,11 @@ class PodcastEpisode < ApplicationRecord
   ]
 
   include PgSearch::Model
-  multisearchable against: %i[title body_text] # spike, limited attributes
+  multisearchable against: %i[body quote subtitle summary],
+                  # do we need `keywords_for_search` ?
+                  associated_against: { tags: %i[name keywords_for_search] },
+                  if: :reachable?,
+                  order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
 
   include Searchable
   SEARCH_SERIALIZER = Search::PodcastEpisodeSerializer

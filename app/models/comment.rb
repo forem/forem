@@ -5,6 +5,12 @@ class Comment < ApplicationRecord
   include Reactable
   include Searchable
 
+  include PgSearch::Model
+  multisearchable against: %i[body_markdown],
+                  associated_against: { user: %i[username name] },
+                  unless: ->(comment) { comment.deleted? || comment.hidden_by_commentable_user? },
+                  order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
+
   SEARCH_SERIALIZER = Search::CommentSerializer
   SEARCH_CLASS = Search::FeedContent
 
