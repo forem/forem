@@ -486,7 +486,7 @@ class StoriesController < ApplicationController
 
   def cached_tagged_count
     Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
-      Article.published.cached_tagged_with(@tag).where("score >= ?", SiteConfig.tag_feed_minimum_score).size
+      @tag_model.articles.published.where("score >= ?", SiteConfig.tag_feed_minimum_score).count
     end
   end
 end
