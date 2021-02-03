@@ -31,8 +31,10 @@ RSpec.describe "/admin/invitations", type: :request do
     end
 
     it "does not create an invitation if a user with that email exists" do
-      post "/admin/invitations",
-           params: { user: { email: admin.email, name: "Roger #{rand(1000)}" } }
+      expect do
+        post "/admin/invitations",
+             params: { user: { email: admin.email, name: "Roger #{rand(1000)}" } }
+      end.not_to change { User.all.count }
       expect(flash[:error].present?).to be true
     end
   end
