@@ -27,7 +27,7 @@ RSpec.describe "/admin", type: :request do
     before do
       ForemInstance.instance_variable_set(:@deployed_at, nil)
     end
-    
+
     after do
       ForemInstance.instance_variable_set(:@deployed_at, nil)
     end
