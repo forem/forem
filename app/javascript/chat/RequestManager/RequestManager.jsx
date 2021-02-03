@@ -8,11 +8,11 @@ import {
   acceptJoiningRequest,
   rejectJoiningRequest,
 } from '../actions/requestActions';
-import HeaderSection from './HeaderSection';
-import ChannelRequestSection from './ChannelRequestSection';
-import PersonalInvitations from './PersonalInvitationSection';
+import { HeaderSection } from './HeaderSection';
+import { ChannelRequestSection } from './ChannelRequestSection';
+import { PersonalInvitationSection } from './PersonalInvitationSection';
 
-export default class RequestManager extends Component {
+export class RequestManager extends Component {
   static propTypes = {
     resource: PropTypes.shape({
       data: PropTypes.object,
@@ -141,7 +141,7 @@ export default class RequestManager extends Component {
             handleRequestRejection={this.handleRejectJoingRequest}
             handleRequestApproval={this.handleAcceptJoingRequest}
           />
-          <PersonalInvitations
+          <PersonalInvitationSection
             userInvitations={userInvitations}
             updateMembership={this.handleIUpdateMembership}
           />

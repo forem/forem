@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ChannelRequest from '../channelRequest';
+import { ChannelRequest } from '../channelRequest';
 
 const getResource = () => {
   return {
