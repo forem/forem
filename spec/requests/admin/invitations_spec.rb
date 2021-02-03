@@ -35,6 +35,7 @@ RSpec.describe "/admin/invitations", type: :request do
         post "/admin/invitations",
              params: { user: { email: admin.email, name: "Roger #{rand(1000)}" } }
       end.not_to change { User.all.count }
+      expect(admin.reload.registered).to be true
       expect(flash[:error].present?).to be true
     end
   end
