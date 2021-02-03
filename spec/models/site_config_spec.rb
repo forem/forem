@@ -7,7 +7,6 @@ RSpec.describe SiteConfig, type: :model do
         %w[
           campaign_sidebar_image main_social_image logo_png secondary_logo_url
           mascot_image_url mascot_footer_image_url onboarding_background_image
-          onboarding_logo_image onboarding_taskcard_image
         ]
       end
 
