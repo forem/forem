@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 
-import Navigation from './Navigation';
-import ColorPicker from './ProfileForm/ColorPicker';
-import TextArea from './ProfileForm/TextArea';
-import TextInput from './ProfileForm/TextInput';
-import CheckBox from './ProfileForm/CheckBox';
+import { Navigation } from './Navigation';
+import { ColorPicker } from './ProfileForm/ColorPicker';
+import { TextArea } from './ProfileForm/TextArea';
+import { TextInput } from './ProfileForm/TextInput';
+import { CheckBox } from './ProfileForm/CheckBox';
 
 import { request } from '@utilities/http';
 
 /* eslint-disable camelcase */
-class ProfileForm extends Component {
+export class ProfileForm extends Component {
   constructor(props) {
     super(props);
 
@@ -182,7 +182,12 @@ class ProfileForm extends Component {
         data-testid="onboarding-profile-form"
         className="onboarding-main crayons-modal"
       >
-        <div className="crayons-modal__box">
+        <div
+          className="crayons-modal__box"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
+        >
           <Navigation
             prev={prev}
             next={this.onSubmit}
@@ -192,8 +197,11 @@ class ProfileForm extends Component {
           />
           <div className="onboarding-content about">
             <header className="onboarding-content-header">
-              <h1 className="title">Build your profile</h1>
+              <h1 id="title" className="title">
+                Build your profile
+              </h1>
               <h2
+                id="subtitle"
                 data-testid="onboarding-profile-subtitle"
                 className="subtitle"
               >
@@ -230,7 +238,5 @@ ProfileForm.propTypes = {
     communityName: PropTypes.string.isRequired,
   }),
 };
-
-export default ProfileForm;
 
 /* eslint-enable camelcase */

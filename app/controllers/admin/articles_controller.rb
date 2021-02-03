@@ -21,7 +21,7 @@ module Admin
         @articles = articles_top(months_ago)
       when "satellite"
         @articles = articles_satellite
-      when "satellite-not-bufffered"
+      when "satellite-not-buffered"
         @articles = articles_satellite.where(last_buffered: nil)
       when "boosted-additional-articles"
         @articles = articles_boosted_additional
@@ -73,7 +73,7 @@ module Admin
     def articles_satellite
       Article.published.where(last_buffered: nil)
         .includes(:user, :buffer_updates)
-        .tagged_with(Tag.bufferized_tags, any: true)
+        .tagged_with(Tag.bufferized_tags, any: true).unscope(:select)
         .limited_columns_internal_select
         .order(hotness_score: :desc)
         .page(params[:page])

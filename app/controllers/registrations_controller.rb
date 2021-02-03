@@ -5,7 +5,8 @@ class RegistrationsController < Devise::RegistrationsController
     if user_signed_in?
       redirect_to root_path(signin: "true")
     else
-      if URI(request.referer || "").host == URI(request.base_url).host
+      referer_path = URI(request.referer || "").path
+      if URI(request.referer || "").host == URI(request.base_url).host && referer_path != "/serviceworker.js"
         store_location_for(:user, request.referer)
       end
       super
@@ -29,7 +30,7 @@ class RegistrationsController < Devise::RegistrationsController
       yield resource if block_given?
       if resource.persisted?
         update_first_user_permissions(resource)
-        redirect_to "/confirm-email?email=#{resource.email}"
+        redirect_to "/confirm-email?email=#{CGI.escape(resource.email)}"
       else
         render action: "by_email"
       end

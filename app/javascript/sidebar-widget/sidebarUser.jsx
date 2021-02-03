@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { userPropTypes } from '../common-prop-types';
 
-const SidebarUser = ({ followUser, user }) => {
+export const SidebarUser = ({ followUser, user }) => {
   const onClick = () => {
     followUser(user);
   };
@@ -42,5 +42,3 @@ SidebarUser.propTypes = {
   followUser: PropTypes.func.isRequired,
   user: PropTypes.objectOf(userPropTypes).isRequired,
 };
-
-export default SidebarUser;

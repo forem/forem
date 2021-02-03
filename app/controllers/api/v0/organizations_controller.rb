@@ -1,7 +1,7 @@
 module Api
   module V0
     class OrganizationsController < ApiController
-      before_action :find_organization, only: %i[users listings]
+      before_action :find_organization, only: %i[users listings articles]
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id username name summary twitter_username github_username url
@@ -20,6 +20,8 @@ module Api
         classified_listing_category_id processed_html published
       ].freeze
       private_constant :LISTINGS_FOR_SERIALIZATION
+
+      ARTICLES_FOR_SERIALIZATION = Api::V0::ArticlesController::INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
       def show
         @organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
@@ -45,6 +47,22 @@ module Api
           .order(bumped_at: :desc)
 
         @listings = @listings.in_category(params[:category]) if params[:category].present?
+      end
+
+      def articles
+        per_page = (params[:per_page] || 30).to_i
+        num = [per_page, 1000].min
+        page = params[:page] || 1
+
+        @articles = @organization.articles.published
+          .select(ARTICLES_FOR_SERIALIZATION)
+          .includes(:user)
+          .order(published_at: :desc)
+          .page(page)
+          .per(num)
+          .decorate
+
+        render "api/v0/articles/index.json.jbuilder"
       end
 
       private

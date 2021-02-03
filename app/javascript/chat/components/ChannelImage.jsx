@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { defaultChannelPropTypes } from '../../common-prop-types/channel-list-prop-type';
 
-export default function ChannelImage(props) {
+export function ChannelImage(props) {
   const { channel, newMessagesIndicator, discoverableChannel } = props;
 
   return (

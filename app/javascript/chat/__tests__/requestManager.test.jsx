@@ -3,7 +3,7 @@ import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import { axe } from 'jest-axe';
 import { beforeEach } from '@jest/globals';
-import RequestManager from '../RequestManager/RequestManager';
+import { RequestManager } from '../RequestManager/RequestManager';
 
 function getData() {
   const data = [

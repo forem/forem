@@ -77,7 +77,7 @@ class ArticleApiIndexService
 
   def tagged_articles
     articles = Article.published.includes(:user, :organization)
-    articles = articles.tagged_with(tags, any: true) if tags
+    articles = articles.tagged_with(tags, any: true).unscope(:select) if tags
     articles = articles.tagged_with(tags_exclude, exclude: true) if tags_exclude
 
     articles

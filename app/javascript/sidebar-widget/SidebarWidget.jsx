@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import sendFollowUser from '../utilities/sendFollowUser';
-import SidebarUser from './sidebarUser';
+import { sendFollowUser } from '../utilities/sendFollowUser';
+import { SidebarUser } from './sidebarUser';
 
-const SidebarWidget = () => {
+export const SidebarWidget = () => {
   const [suggestedUsers, setSuggestedUsers] = useState([]);
 
   useEffect(() => {
@@ -66,5 +66,3 @@ const SidebarWidget = () => {
     </div>
   );
 };
-
-export default SidebarWidget;

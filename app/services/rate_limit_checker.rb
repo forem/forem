@@ -110,6 +110,6 @@ class RateLimitChecker
   end
 
   def log_to_datadog
-    DatadogStatsClient.increment("rate_limit.limit_reached", tags: ["user:#{user.id}", "action:#{action}"])
+    ForemStatsClient.increment("rate_limit.limit_reached", tags: ["user:#{user.id}", "action:#{action}"])
   end
 end

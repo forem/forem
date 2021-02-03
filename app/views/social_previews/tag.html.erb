@@ -1,6 +1,6 @@
-<% accent_color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).biggest %>
-<% color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(1.4) %>
-<% dark_color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(0.7) %>
+<% accent_color = Color::CompareHex.new([@tag.bg_color_hex, @tag.text_color_hex]).biggest %>
+<% color = Color::CompareHex.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(1.4) %>
+<% dark_color = Color::CompareHex.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(0.7) %>
 <% not_so_rand = Random.new(@tag.id) # Using ID as seed ensures we get the same "random" numbers on each page load, Improves caching %>
 <style>
   body {

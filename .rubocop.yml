@@ -30,9 +30,17 @@ Bundler/OrderedGems:
 
 #################### Layout ###########################
 
+Lint/AmbiguousAssignment:
+  Description: 'Checks for mistyped shorthand assignments.'
+  Enabled: true
+
 Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
   StyleGuide: '#consistent-classes'
+  Enabled: true
+
+Lint/DeprecatedConstants:
+  Description: 'Checks for deprecated constants.'
   Enabled: true
 
 Layout/DotPosition:
@@ -121,8 +129,17 @@ Layout/MultilineMethodCallIndentation:
   Enabled: true
   EnforcedStyle: indented
 
+Lint/RedundantDirGlobSort:
+  Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
+  Enabled: true
+
 Layout/SpaceAroundMethodCallOperator:
   Description: 'Checks method call operators to not have spaces around them.'
+  Enabled: true
+
+Layout/SpaceBeforeBrackets:
+  Description: 'Checks for receiver with a space before the opening brackets.'
+  StyleGuide: '#space-in-brackets-access'
   Enabled: true
 
 #################### Lint ##################################
@@ -395,6 +412,11 @@ Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
   Enabled: false
 
+Style/EndlessMethod:
+  Description: 'Avoid the use of multi-lined endless method definitions.'
+  StyleGuide: '#endless-methods'
+  Enabled: pending
+
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
   StyleGuide: '#exponential-notation'
@@ -429,6 +451,12 @@ Style/HashAsLastArrayItem:
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
   StyleGuide: '#hash-each'
+  Enabled: true
+
+Style/HashExcept:
+  Description: >-
+                 Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
+                 that can be replaced with `Hash#except` method.
   Enabled: true
 
 Style/HashLikeCase:

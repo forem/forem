@@ -17,7 +17,7 @@
     <% @users.each do |user| %>
     <tr>
       <td><%= link_to user.username, admin_user_path(user) %></td>
-      <td><%= user.id %></td>
+      <td class="whitespace-nowrap"><%= user.id %></td>
       <td><%= user.name %></td>
       <td><%= user_twitter_link(user) %></td>
       <td><%= user_github_link(user) %></td>

@@ -32,9 +32,9 @@
   <tbody class="crayons-card">
     <% @privileged_reactions.each do |reaction| %>
       <tr>
-        <td><%= reaction.id %></td>
+        <td class="whitespace-nowrap"><%= reaction.id %></td>
         <td><%= link_to reaction.user.username, admin_user_path(reaction.user_id) %></td>
-        <td><%= reaction.reactable_type %></td>
+        <td class="whitespace-nowrap"><%= reaction.reactable_type %></td>
         <td><%= reaction.category %></td>
         <td>
           <% if reaction.reactable_type == "Article" %>

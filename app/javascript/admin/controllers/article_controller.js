@@ -1,5 +1,6 @@
 import { Controller } from 'stimulus';
 
+// eslint-disable-next-line no-restricted-syntax
 export default class ArticleController extends Controller {
   static classes = ['bgHighlighted', 'borderHighlighted'];
   static targets = ['featuredNumber', 'cardBody'];
