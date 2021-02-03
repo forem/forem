@@ -20,7 +20,7 @@ module Constants
                      "Resource Admin: HtmlVariant",
                      "Resource Admin: DisplayAd",
                      "Resource Admin: ListingCategory",
-                     "Resource Admin: Tag"
+                     "Resource Admin: Tag",
                      "Resource Admin: DataUpdateScript"].freeze
   end
 end
