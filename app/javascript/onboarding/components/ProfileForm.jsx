@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 
-import Navigation from './Navigation';
-import ColorPicker from './ProfileForm/ColorPicker';
-import TextArea from './ProfileForm/TextArea';
-import TextInput from './ProfileForm/TextInput';
-import CheckBox from './ProfileForm/CheckBox';
+import { Navigation } from './Navigation';
+import { ColorPicker } from './ProfileForm/ColorPicker';
+import { TextArea } from './ProfileForm/TextArea';
+import { TextInput } from './ProfileForm/TextInput';
+import { CheckBox } from './ProfileForm/CheckBox';
 
 import { request } from '@utilities/http';
 
 /* eslint-disable camelcase */
-class ProfileForm extends Component {
+export class ProfileForm extends Component {
   constructor(props) {
     super(props);
 
@@ -238,7 +238,5 @@ ProfileForm.propTypes = {
     communityName: PropTypes.string.isRequired,
   }),
 };
-
-export default ProfileForm;
 
 /* eslint-enable camelcase */

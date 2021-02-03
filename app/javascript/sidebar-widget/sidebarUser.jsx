@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { userPropTypes } from '../common-prop-types';
 
-class SidebarUser extends Component {
+export class SidebarUser extends Component {
   constructor(props) {
     super(props);
     this.onClick = this.onClick.bind(this);
@@ -51,5 +51,3 @@ SidebarUser.propTypes = {
   followUser: PropTypes.func.isRequired,
   user: PropTypes.objectOf(userPropTypes).isRequired,
 };
-
-export default SidebarUser;
