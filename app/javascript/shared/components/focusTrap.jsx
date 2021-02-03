@@ -8,14 +8,33 @@ import { KeyboardShortcuts } from './useKeyboardShortcuts';
 export const FocusTrap = ({ selector, children, onDeactivate }) => {
   const focusTrap = useRef(null);
 
+  const currentLocationHref = document.location.href;
+
+  const routeChangeObserver = new MutationObserver((mutations) => {
+    const hasRouteChanged = mutations.some(
+      () => currentLocationHref !== document.location.href,
+    );
+
+    // Ensure trap deactivates if user navigates from the page
+    if (hasRouteChanged) {
+      focusTrap.current?.deactivate();
+      routeChangeObserver.disconnect();
+    }
+  });
+
   useLayoutEffect(() => {
     focusTrap.current = createFocusTrap(selector, {
       escapeDeactivates: false,
     });
 
     focusTrap.current.activate();
+    routeChangeObserver.observe(document.querySelector('body'), {
+      childList: true,
+    });
+
     return () => {
       focusTrap.current.deactivate();
+      routeChangeObserver.disconnect();
     };
   });
 
