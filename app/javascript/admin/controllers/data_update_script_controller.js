@@ -85,7 +85,7 @@ export default class DataUpdateScriptController extends Controller {
           }
         },
       );
-      if (counter > 0) {
+      if (counter > 20) {
         clearInterval(pollForStatus);
         this.setErrorBanner(
           runAtColumn,
