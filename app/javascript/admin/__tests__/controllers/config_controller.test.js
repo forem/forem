@@ -1,5 +1,5 @@
 import { Application } from 'stimulus';
-import { ConfigController } from '../../controllers/config_controller';
+import ConfigController from '../../controllers/config_controller';
 
 describe('ConfigController', () => {
   beforeEach(() => {
