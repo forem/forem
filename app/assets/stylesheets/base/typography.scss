@@ -2,17 +2,16 @@
 @import '../config/import';
 
 :root {
-  --content-rythm: var(--su-2);
   --content-font-size: var(--fs-l);
   --content-secondary-font-size: var(--fs-base);
   --content-tertiary-font-size: var(--fs-base);
+  --content-rhythm: var(--content-font-size);
 
   @media (min-width: $breakpoint-s) {
     --content-secondary-font-size: var(--fs-l);
   }
 
-  @media (min-width: $breakpoint-m) {
-    --content-rythm: var(--su-4);
+  @media (min-width: $breakpoint-l) {
     --content-font-size: var(--fs-xl);
   }
 }
@@ -78,15 +77,25 @@ body {
     font-size: var(--content-tertiary-font-size);
   }
 
+  > :last-child {
+    margin-bottom: 0;
+  }
+
   a {
-    &.anchor {
-      padding-top: 0;
-      margin-top: 0;
-      top: -50px;
-      display: block;
-      visibility: hidden;
-      position: relative;
+    text-decoration: underline;
+    color: var(--accent-brand);
+
+    &:hover {
+      color: var(--accent-brand-darker);
     }
+  }
+
+  // TODO: Hack to target all links in .text-styles except ones used in liquid tags...
+  // Liquid tags styling is still pretty random and overwriting what's been
+  // implemented there makes some things look worse. We should circle back
+  // when/if we "redesign" liquid tags.
+  [class*='ltag'] a {
+    text-decoration: none;
   }
 
   h1,
@@ -96,44 +105,54 @@ body {
   h5,
   h6 {
     font-family: var(--ff-sans-serif);
-    margin: var(--content-rythm) 0;
-    margin-top: calc(var(--content-rythm) * 2);
+    margin: calc(var(--content-rhythm) / 2) 0;
     padding: 0;
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-tight);
   }
 
   h1 {
-    font-size: 1.85em;
-    line-height: 1.25em;
-    font-weight: 400;
+    font-size: 2em;
   }
 
   h2 {
-    font-size: 1.7em;
-    font-weight: 400;
-    line-height: 1.25em;
-    margin-bottom: 0.5em;
+    font-size: 1.5em;
   }
 
   h3 {
-    font-size: 1.32em;
-    font-weight: 400;
+    font-size: 1.25em;
+  }
+
+  h4 {
+    font-size: 1em;
+  }
+
+  h5 {
+    font-size: 0.875em;
+  }
+
+  h6 {
+    font-size: 0.85em;
+    color: var(--base-60);
   }
 
   hr {
     width: 25%;
     opacity: 0.1;
+    border-radius: var(--radius);
     border: 1px solid var(--body-color);
-    margin: 1.3em auto 1.5em;
+    margin: calc(var(--content-rhythm) * 2) auto;
   }
 
   p {
-    margin: var(--content-rythm) 0;
+    margin: 0 0 var(--content-rhythm) 0;
   }
 
   ul,
   ol {
     padding-left: var(--su-6);
-    margin: var(--content-rythm) 0;
+    margin: 0 0 var(--content-rhythm) 0;
+
     br {
       line-height: 0;
       margin: 0;
@@ -150,17 +169,13 @@ body {
     }
 
     ul {
-      margin: 0 0.7em 0 1.9em;
+      margin: 0 0 0 var(--content-rhythm);
       list-style-type: square;
 
       ul {
         list-style-type: circle;
       }
     }
-  }
-
-  li {
-    margin: var(--su-2) 0;
   }
 
   figure {
@@ -171,7 +186,6 @@ body {
     font-style: italic;
     text-align: center;
     font-size: 0.8em;
-    line-height: 1.4em;
     color: var(--body-color);
     opacity: 0.75;
     display: block;
@@ -182,13 +196,9 @@ body {
   }
 
   blockquote {
-    border-left: 4px solid var(--base-50);
-    padding: 0 var(--su-4);
-    margin: var(--content-rythm) 0;
-
-    p:first-child {
-      margin: var(--su-2) 0;
-    }
+    border-left: 4px solid var(--base-20);
+    padding: 0 0 0 var(--content-rhythm);
+    margin: 0 0 var(--content-rhythm) 0;
 
     &.twitter-tweet {
       font-family: var(--ff-sans-serif);
@@ -231,32 +241,31 @@ body {
 
   pre:not(.highlight),
   div.highlight {
-    margin: var(--content-rythm) 0;
+    margin: 0 0 var(--content-rhythm) 0;
   }
 
   img,
   video {
     height: auto;
-    position: relative;
     display: block;
-    margin: var(--content-rythm) auto;
+    margin: var(--content-rhythm) auto;
     max-width: 100%;
     max-height: calc(50vh + 180px);
     border-radius: var(--radius);
   }
 
-  a.article-body-image-wrapper {
+  .article-body-image-wrapper {
     cursor: zoom-in;
   }
 
   iframe {
     width: 100%;
     border: 0;
-    margin: var(--content-rythm) 0;
+    margin: 0 0 var(--content-rhythm) 0;
   }
 
   .fluidvids {
-    margin: var(--content-rythm) 0;
+    margin: 0 0 var(--content-rhythm) 0;
 
     iframe {
       margin: 0;
@@ -265,30 +274,32 @@ body {
 
   .table-wrapper-paragraph {
     width: 100%;
-    margin-left: 0%;
     overflow-x: auto;
+    margin: 0 0 var(--content-rhythm) 0;
+
+    table {
+      margin: 0;
+    }
   }
 
   table {
+    margin: 0 0 var(--content-rhythm) 0;
     border-collapse: collapse;
-    font-size: 0.78em;
-    margin: 0.8em auto 1.2em;
-    table-layout: fixed;
+    border-spacing: 0;
 
-    th {
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      padding: 5px 1vw;
-      background: var(--body-bg);
-      text-align: left;
+    th,
+    td {
+      padding: var(--su-2);
+      border: 1px solid var(--base-20);
     }
 
-    td {
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      padding: 5px 1vw;
+    th {
+      background: var(--body-bg);
+      text-align: left;
     }
   }
 
   .twitter-tweet {
-    margin: auto;
+    margin: 0 0 var(--content-rhythm) 0;
   }
 }
