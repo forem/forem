@@ -12,14 +12,11 @@
 }
 
 .live-chat {
-  /* height: calc(100vh - 56px); */
-
   &.live-chat--iossafari {
     height: calc(100vh - 56px);
   }
 
   overflow-y: hidden;
-  /* height: calc(100 * var(--vh) - var(--header-height)); */
 }
 
 .live-chat {
