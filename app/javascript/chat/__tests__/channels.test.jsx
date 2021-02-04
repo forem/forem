@@ -107,7 +107,7 @@ describe('<Channels />', () => {
       expect(queryByRole('alert')).toBeNull();
 
       // configFooter should exist
-      getByRole('menu');
+      getByRole('navigation', { name: /configuration menu/i });
       const settings = getByText('Settings');
       expect(settings.getAttribute('href')).toEqual('/settings');
 
@@ -121,7 +121,7 @@ describe('<Channels />', () => {
       // should show "Welcome to Connect message....."
       getByRole('alert');
 
-      getByRole('menu');
+      getByRole('navigation', { name: /configuration menu/i });
       const settings = getByText('Settings');
       expect(settings.getAttribute('href')).toEqual('/settings');
 

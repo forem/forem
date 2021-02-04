@@ -80,19 +80,23 @@ export const Channels = ({
   }
   let configFooter = '';
   if (expanded) {
-    // TODO: The <div /> below should be converted into a real menu or <nav />
     configFooter = (
-      <div className="chatchannels__config">
-        <img alt="configuration" src={ConfigImage} style={{ height: '18px' }} />
-        <div className="chatchannels__configmenu" role="menu">
-          <a href="/settings" role="menuitem">
-            Settings
-          </a>
-          <a href="/report-abuse" role="menuitem">
-            Report Abuse
-          </a>
-        </div>
-      </div>
+      <nav className="chatchannels__config" aria-label="configuration menu">
+        <img
+          alt="configuration"
+          src={ConfigImage}
+          style={{ height: '18px' }}
+          aria-hidden="true"
+        />
+        <ul className="chatchannels__configmenu">
+          <li>
+            <a href="/settings">Settings</a>
+          </li>
+          <li>
+            <a href="/report-abuse">Report Abuse</a>
+          </li>
+        </ul>
+      </nav>
     );
   }
   return (
