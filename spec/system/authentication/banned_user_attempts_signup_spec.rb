@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "Banned user tries to sign up again" do
-  let(:sign_in_link) { "Continue with Twitter" }
-
   before do
     omniauth_mock_twitter_payload
 
@@ -17,7 +15,7 @@ RSpec.describe "Banned user tries to sign up again" do
       create(:suspended_user, username: username)
 
       visit sign_up_path
-      click_on(sign_in_link, match: :first)
+      click_on("Continue with Twitter", match: :first)
       expect(page).to have_current_path(root_path)
 
       expected_message = format(
