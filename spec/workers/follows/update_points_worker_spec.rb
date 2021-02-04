@@ -1,4 +1,5 @@
 require "rails_helper"
+require 'sidekiq/testing/inline'
 
 RSpec.describe Follows::UpdatePointsWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority", 1
