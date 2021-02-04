@@ -131,12 +131,13 @@ class StoriesController < ApplicationController
     end
 
     @num_published_articles = if @tag_model.requires_approval?
-                                Article.published.cached_tagged_by_approval_with(@tag).size
+                                @tag_model.articles.published.where(approved: true).count
                               elsif SiteConfig.feed_strategy == "basic"
-                                Article.published.cached_tagged_with(@tag)
-                                  .where("score >= ?", SiteConfig.tag_feed_minimum_score).size
+                                tagged_count
                               else
-                                cached_tagged_count
+                                Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
+                                  tagged_count
+                                end
                               end
     @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
     @stories = Articles::Feeds::LargeForemExperimental
@@ -484,9 +485,7 @@ class StoriesController < ApplicationController
     params[:sort_direction] == "desc" ? :newest : :oldest
   end
 
-  def cached_tagged_count
-    Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
-      Article.published.cached_tagged_with(@tag).where("score >= ?", SiteConfig.tag_feed_minimum_score).size
-    end
+  def tagged_count
+    @tag_model.articles.published.where("score >= ?", SiteConfig.tag_feed_minimum_score).count
   end
 end
