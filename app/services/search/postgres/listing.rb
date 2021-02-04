@@ -24,9 +24,9 @@ module Search
         per_page = (per_page || 75).to_i
         tagged_with_any = tags_mode.to_sym == :any
 
-        relation = ::Listing.published
+        relation = ::Listing.published.includes(:taggings, :organization)
         relation = relation.search(term) if term.present?
-        relation = relation.in_category(category) if category.present?
+        relation = relation.includes(:listing_category).in_category(category) if category.present?
         relation = relation.tagged_with(tags, any: tagged_with_any) if tags.present?
 
         relation = relation.order(bumped_at: :desc).select(SELECT_FIELDS).page(page).per(per_page)

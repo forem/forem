@@ -5,7 +5,7 @@ module Search
         # NOTE: this is added to be closer to the existing behavior of
         # Search::User which raises an exception for leading wildcards,
         # which in turn leads to no results.
-        return ::User.none.as_json if term.starts_with?("*")
+        return ::User.none.as_json if term.to_s.starts_with?("*")
 
         page = (page || 1).to_i
         per_page = (per_page || 30).to_i

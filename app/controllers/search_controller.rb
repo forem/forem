@@ -50,7 +50,8 @@ class SearchController < ApplicationController
   ].freeze
 
   def tags
-    tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
+    # tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
+    tag_docs = Search::Postgres::Tag.search_documents("#{params[:name]}*")
 
     render json: { result: tag_docs }
   rescue Search::Errors::Transport::BadRequest
@@ -71,19 +72,28 @@ class SearchController < ApplicationController
   end
 
   def listings
-    cl_docs = Search::Listing.search_documents(
-      params: listing_params.to_h,
+    # cl_docs = Search::Listing.search_documents(params: listing_params.to_h)
+    cl_docs = Search::Postgres::Listing.search_documents(
+      term: listing_params[:listing_search],
+      category: listing_params[:category],
+      tags: listing_params[:tags],
+      tags_mode: listing_params[:tag_boolean_mode],
+      page: listing_params[:page],
+      per_page: listing_params[:per_page],
     )
 
     render json: { result: cl_docs }
   end
 
+  # NOTE: this endpoint looks to be unused by the Frontend
   def users
     render json: { result: user_search }
   end
 
+  # NOTE: this endpoint looks to be unused by the Frontend
   def usernames
-    usernames = Search::User.search_usernames(params[:username])
+    # usernames = Search::User.search_usernames(params[:username])
+    usernames = Search::Postgres::UserUsername.search_documents(params[:username])
 
     render json: { result: usernames }
   rescue Search::Errors::Transport::BadRequest
@@ -136,7 +146,12 @@ class SearchController < ApplicationController
   end
 
   def user_search
-    Search::User.search_documents(params: user_params.to_h)
+    # Search::User.search_documents(params: user_params.to_h)
+    Search::Postgres::User.search_documents(
+      term: user_params[:search_fields],
+      page: user_params[:page],
+      per_page: user_params[:per_page],
+    )
   end
 
   def chat_channel_params

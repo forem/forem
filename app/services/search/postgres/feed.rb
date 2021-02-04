@@ -28,7 +28,12 @@ module Search
 
                      relation = select_approved_articles(relation, approved, class_name)
                      relation = relation.where(searchable_type: class_name) if class_name.present?
+
+                     # NOTE: this should probably be at the top, no reason to search if we have to
+                     # filter by ID
                      relation.where(searchable_id: id) if id.present?
+
+                     relation
                    else
                      relation = PgSearch::Document
                      relation = relation.where(searchable_type: class_name) if class_name.present?
