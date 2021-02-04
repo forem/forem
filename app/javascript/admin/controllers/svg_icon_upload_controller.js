@@ -55,6 +55,6 @@ export default class SvgIconUploadController extends Controller {
 
   invalidIconTypeMessage(type) {
     this.svgIconMessageValidateTarget.classList.add('alert', 'alert-danger');
-    this.svgIconMessageValidateTarget.innerHTML = `'${type}' is a invalid Icon type`;
+    this.svgIconMessageValidateTarget.innerHTML = `'${type}' is an invalid Icon type`;
   }
 }
