@@ -11,11 +11,11 @@ RSpec.describe DataUpdateWorker, type: :worker do
   end
 
   context "when an id is passed" do
-    it "it updates the appropriate script" do
+    it "updates the appropriate script" do
       script = create(
         :data_update_script,
         file_name: "20200214151804_data_update_test_script",
-        status: "failed"
+        status: "failed",
       )
 
       expect do
@@ -26,7 +26,6 @@ RSpec.describe DataUpdateWorker, type: :worker do
       expect(updated_script.status).to eq("succeeded")
     end
   end
-
 
   context "when an id is not passed" do
     it "runs scripts that need running" do
