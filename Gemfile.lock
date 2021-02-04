@@ -179,8 +179,6 @@ GEM
       activesupport (>= 3)
     chartkick (3.4.2)
     childprocess (3.0.0)
-    cld (0.8.0)
-      ffi
     cloudinary (1.18.1)
       aws_cf_signer
       rest-client
@@ -862,7 +860,6 @@ DEPENDENCIES
   capybara (~> 3.35.3)
   carrierwave (~> 2.0)
   carrierwave-bombshelter (~> 0.2)
-  cld (~> 0.8)
   cloudinary (~> 1.18)
   counter_culture (~> 2.7)
   cypress-rails (~> 0.4.2)

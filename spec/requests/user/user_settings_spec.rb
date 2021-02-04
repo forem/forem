@@ -44,7 +44,7 @@ RSpec.describe "UserSettings", type: :request do
       it "displays content on Customization tab properly" do
         get user_settings_path(:customization)
 
-        expect(response.body).to include("Appearance", "Writing", "Content", "Languages", "Sponsors", "Announcements")
+        expect(response.body).to include("Appearance", "Writing", "Content", "Sponsors", "Announcements")
       end
 
       it "displays content on Notifications tab properly" do
@@ -337,36 +337,6 @@ RSpec.describe "UserSettings", type: :request do
 
         expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(nil, user.id)
       end
-    end
-  end
-
-  describe "update language settings" do
-    before { sign_in user }
-
-    it "updates language settings" do
-      put user_path(user), params: { user: { preferred_languages: %w[ja es] } }
-
-      user.reload
-
-      expect(user.language_settings["preferred_languages"]).to eq(%w[ja es])
-    end
-
-    it "keeps the estimated_default_language" do
-      user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en es])
-
-      put user_path(user), params: { user: { preferred_languages: %w[it en] } }
-
-      user.reload
-      expect(user.language_settings["estimated_default_language"]).to eq("ru")
-    end
-
-    it "doesn't set non-existent languages" do
-      user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en es])
-
-      put user_path(user), params: { user: { preferred_languages: %w[it en blah] } }
-
-      user.reload
-      expect(user.language_settings["preferred_languages"].sort).to eq(%w[en it])
     end
   end
 

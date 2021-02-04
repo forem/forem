@@ -430,47 +430,6 @@ RSpec.describe User, type: :model do
   context "when callbacks are triggered before and after create" do
     let(:user) { create(:user, email: nil) }
 
-    describe "#language_settings" do
-      it "sets correct language_settings by default" do
-        expect(user.language_settings).to eq("preferred_languages" => %w[en])
-      end
-
-      it "sets correct language_settings by default after the jobs are processed" do
-        sidekiq_perform_enqueued_jobs do
-          expect(user.language_settings).to eq("preferred_languages" => %w[en])
-        end
-      end
-    end
-
-    describe "#estimated_default_language" do
-      it "estimates default language to be nil" do
-        sidekiq_perform_enqueued_jobs do
-          expect(user.estimated_default_language).to be(nil)
-        end
-      end
-
-      it "estimates default language to be japanese with .jp email" do
-        user = nil
-
-        sidekiq_perform_enqueued_jobs do
-          user = create(:user, email: "ben@hello.jp")
-        end
-
-        expect(user.reload.estimated_default_language).to eq("ja")
-      end
-
-      it "estimates default language from Twitter identity" do
-        new_user = nil
-
-        sidekiq_perform_enqueued_jobs(only: Users::EstimateDefaultLanguageWorker) do
-          new_user = user_from_authorization_service(:twitter)
-        end
-
-        lang = new_user.identities.last.auth_data_dump.extra.raw_info.lang
-        expect(new_user.reload.estimated_default_language).to eq(lang)
-      end
-    end
-
     describe "#send_welcome_notification" do
       let(:mascot_account) { create(:user) }
       let!(:set_up_profile_broadcast) { create(:set_up_profile_broadcast) }
@@ -495,24 +454,6 @@ RSpec.describe User, type: :model do
           new_user = create(:user)
         end
         expect(new_user.reload.notifications.count).to eq(0)
-      end
-    end
-
-    describe "#preferred_languages_array" do
-      it "returns proper preferred_languages_array" do
-        user = nil
-
-        sidekiq_perform_enqueued_jobs do
-          user = create(:user, email: "ben@hello.jp")
-        end
-
-        expect(user.reload.preferred_languages_array).to eq(%w[en ja])
-      end
-
-      it "returns a correct array for language settings" do
-        language_settings = { estimated_default_language: "en", preferred_languages: %w[en ru it] }
-        user = build(:user, language_settings: language_settings)
-        expect(user.preferred_languages_array).to eq(%w[en ru it])
       end
     end
   end

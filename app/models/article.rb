@@ -95,7 +95,7 @@ class Article < ApplicationRecord
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
-  after_save :bust_cache, :detect_human_language
+  after_save :bust_cache
   after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article|
@@ -144,7 +144,7 @@ class Article < ApplicationRecord
            :comments_count, :public_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
-           :video_thumbnail_url, :video_closed_caption_track_url, :language,
+           :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
            :last_comment_at)
@@ -438,12 +438,6 @@ class Article < ApplicationRecord
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
     self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
-  end
-
-  def detect_human_language
-    return if language.present?
-
-    update_column(:language, Articles::DetectLanguage.call(self))
   end
 
   def async_score_calc
