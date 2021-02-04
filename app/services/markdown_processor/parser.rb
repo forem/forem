@@ -36,6 +36,7 @@ module MarkdownProcessor
         html = e.message
       end
 
+      html = "<div></div>" if html.empty?
       parse_html(html)
     end
 
