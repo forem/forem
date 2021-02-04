@@ -10,7 +10,7 @@ module Users
       return unless @user
 
       FieldTest.config["experiments"].each_key do |key|
-        @experiment = key.to_sym # Not currently running. Update this to current experiment.
+        @experiment = key.to_sym
         case goal
         # We have special conditional goals for some where we look for past events for commulative wins
         # Otherwise we convert the goal as given.
