@@ -40,6 +40,25 @@ module Admin
       redirect_to "/admin/users/#{params[:id]}"
     end
 
+    def destroy
+      role = params[:role]
+      @user = User.find(params[:user_id])
+
+      if role == :super_admin
+        flash[:danger] = "Super Admin roles cannot be removed."
+        redirect_to edit_admin_user_path(@user.id)
+      end
+
+      if @user.id == current_user.id
+        flash[:danger] = "Admins cannot remove roles from themselves."
+      elsif @user.remove_role(role)
+        flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
+      else
+        flash[:danger] = @role.errors_as_sentence
+      end
+      redirect_to edit_admin_user_path(@user.id)
+    end
+
     def user_status
       @user = User.find(params[:id])
       begin
