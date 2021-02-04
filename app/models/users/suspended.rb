@@ -12,7 +12,7 @@ module Users
       where(username_hash: hash_username(username)).any?
     end
 
-    # Convenienc method for easily adding a suspended user
+    # Convenience method for easily adding a suspended user
     def self.add(user)
       create!(username_hash: hash_username(user.username))
     end
