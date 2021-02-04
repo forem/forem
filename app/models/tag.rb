@@ -17,6 +17,7 @@ class Tag < ActsAsTaggableOn::Tag
   belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true
 
   has_many :buffer_updates, dependent: :nullify
+  has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
 
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
 
