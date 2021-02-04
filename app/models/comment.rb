@@ -304,6 +304,8 @@ class Comment < ApplicationRecord
   end
 
   def record_field_test_event
+    return if FieldTest.config["experiments"].nil?
+
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, "user_creates_comment")
   end
