@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Authenticating with Twitter" do
+RSpec.describe "Banned user tries to sign up again" do
   let(:sign_in_link) { "Continue with Twitter" }
 
   before do
