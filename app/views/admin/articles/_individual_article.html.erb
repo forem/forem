@@ -51,7 +51,7 @@
 
   <div
     data-article-target="cardBody"
-    class="card-body <%= background_color %> <%= "bg-danger" if !article.published? && article.published_from_feed? && !article.user&.feed_admin_publish_permission? %>">
+    class="card-body <%= background_color %> <%= "bg-danger" if !article.published? && article.published_from_feed? %>">
 
     <% if article.video %>
     <h2>Contains Video</h2>
