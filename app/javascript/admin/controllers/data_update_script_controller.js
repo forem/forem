@@ -33,10 +33,13 @@ export default class DataUpdateScriptController extends Controller {
       if (response.ok) {
         this.pollForScriptResponse(id, statusColumn, runAtColumn);
       } else {
+        const fileNameElement = document.getElementById(
+          `data_update_script_${id}_filename`,
+        );
         this.setErrorBanner(
           runAtColumn,
           statusColumn,
-          `Data Script ${id} - Something went wrong`,
+          `${fileNameElement.dataset.filename} - Something went wrong.`,
           'alert-danger',
         );
       }
@@ -87,10 +90,14 @@ export default class DataUpdateScriptController extends Controller {
       );
       if (counter > 20) {
         clearInterval(pollForStatus);
+        const fileNameElement = document.getElementById(
+          `data_update_script_${id}_filename`,
+        );
+
         this.setErrorBanner(
           runAtColumn,
           statusColumn,
-          `Data Script with ${id} may take some time. Please refresh the page to check for the status.`,
+          `${fileNameElement.dataset.filename} may take some time to run. Please refresh the page to check for the status.`,
           'alert-info',
         );
       }
