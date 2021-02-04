@@ -11,6 +11,13 @@ export default class ModalController extends Controller {
     this.currentFocusTrapToggle = null;
   }
 
+  disconnect() {
+    if (this.currentFocusTrapToggle) {
+      this.currentFocusTrapToggle();
+      this.currentFocusTrapToggle = null;
+    }
+  }
+
   toggleModal() {
     if (this.currentFocusTrapToggle) {
       this.currentFocusTrapToggle();
