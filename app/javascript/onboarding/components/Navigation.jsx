@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-class Navigation extends Component {
+export class Navigation extends Component {
   /**
    * A function to render the progress stepper within the `Navigation` component.
    * By default, it does not show the stepper for the first slide (the `IntroSlide` component).
@@ -131,5 +131,3 @@ Navigation.defaultProps = {
   hidePrev: false,
   class: '',
 };
-
-export default Navigation;

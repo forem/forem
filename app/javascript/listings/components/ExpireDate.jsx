@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 
-const ExpireDate = ({ onChange, defaultValue }) => {
+export const ExpireDate = ({ onChange, defaultValue }) => {
   let tomorrow = new Date();
   let monthFromToday = new Date();
   tomorrow.setDate(new Date().getDate() + 1);
@@ -35,5 +35,3 @@ ExpireDate.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
 };
-
-export default ExpireDate;

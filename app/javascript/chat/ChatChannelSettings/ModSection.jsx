@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-import InviteForm from './InviteForm';
-import SettingsForm from './SettingsForm';
+import { InviteForm } from './InviteForm';
+import { SettingsForm } from './SettingsForm';
 
-const ModSection = ({
+export const ModSection = ({
   handleChannelInvitations,
   invitationUsernames,
   handleInvitationUsernames,
@@ -47,5 +47,3 @@ ModSection.propTypes = {
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
   channelDiscoverable: PropTypes.bool.isRequired,
 };
-
-export default ModSection;
