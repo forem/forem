@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import LeaveMembershipSection from '../ChatChannelSettings/LeaveMembershipSection';
+import { LeaveMembershipSection } from '../ChatChannelSettings/LeaveMembershipSection';
 
 describe('<LeaveMembershipSection />', () => {
   it('should have no a11y violations', async () => {

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ManageActiveMembership from '../ChatChannelSettings/MembershipManager/ManageActiveMembership';
+import { ManageActiveMembership } from '../ChatChannelSettings/MembershipManager/ManageActiveMembership';
 
 const currentModMembership = {
   name: 'dummy user',

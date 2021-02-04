@@ -83,7 +83,6 @@ module Articles
         article_points += score_followed_user(article)
         article_points += score_followed_organization(article)
         article_points += score_followed_tags(article)
-        article_points += score_language(article)
         article_points += score_experience_level(article)
         article_points += score_comments(article)
         article_points
@@ -104,10 +103,6 @@ module Articles
 
       def score_followed_organization(article)
         user_following_org_ids.include?(article.organization_id) ? 1 : 0
-      end
-
-      def score_language(article)
-        @user&.preferred_languages_array&.include?(article.language || "en") ? 1 : -15
       end
 
       def score_experience_level(article)

@@ -2,6 +2,7 @@ import {
   initializeMobileMenu,
   setCurrentPageIconLink,
   getInstantClick,
+  initializeTouchDevice,
 } from '../topNavigation/utilities';
 
 function getPageEntries() {
@@ -25,6 +26,9 @@ getInstantClick().then((spa) => {
 });
 
 const { currentPage } = document.getElementById('page-content').dataset;
+const memberMenu = document.getElementById('crayons-header__menu');
+const menuNavButton = document.getElementById('member-menu-button');
 
 setCurrentPageIconLink(currentPage, getPageEntries());
 initializeMobileMenu(menus, moreMenus);
+initializeTouchDevice(memberMenu, menuNavButton);

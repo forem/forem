@@ -1,7 +1,7 @@
 /*
   global initializeLocalStorageRender, initializeBodyData,
   initializeAllChatButtons, initializeAllTagEditButtons, initializeUserFollowButts,
-  initializeBaseTracking, initializeTouchDevice, initializeCommentsPage,
+  initializeBaseTracking, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeCommentDropdown, initializeSettings,
   initializeCommentPreview,
@@ -40,7 +40,6 @@ function callInitializers() {
 
   initializeBaseTracking();
   initializePaymentPointers();
-  initializeTouchDevice();
   initializeCommentsPage();
   initializeArticleDate();
   initializeArticleReactions();
