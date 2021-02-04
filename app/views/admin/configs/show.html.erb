@@ -147,7 +147,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm" } }) do |f| %>
+        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm", "testid": "authSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -200,7 +200,7 @@
                         <div
                           class="enabled-indicator <%= SiteConfig.allow_email_password_registration ? "visible" : "" %>"
                           data-config-target="enabledIndicator">
-                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Email enabled") %>
                           <small class="crayons-field__description ml-1">Enabled</small>
                         </div>
                       </div>
@@ -324,7 +324,7 @@
                             <div
                               id="<%= provider.provider_name %>-enabled-indicator"
                               class="enabled-indicator <%= authentication_provider_enabled?(provider) ? "visible" : "" %>">
-                              <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                              <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "#{provider.official_name} enabled") %>
                               <small class="crayons-field__description ml-1">Enabled</small>
                             </div>
                           </div>

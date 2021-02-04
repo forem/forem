@@ -86,7 +86,6 @@ module Articles
         article_points += score_followed_organization(article)
         article_points += score_followed_tags(article)
         article_points += score_randomness
-        article_points += score_language(article)
         article_points += score_experience_level(article)
         article_points += score_comments(article)
         article_points
@@ -111,10 +110,6 @@ module Articles
 
       def score_randomness
         rand(3) * @randomness
-      end
-
-      def score_language(article)
-        @user&.preferred_languages_array&.include?(article.language || "en") ? 1 : -15
       end
 
       def score_experience_level(article)

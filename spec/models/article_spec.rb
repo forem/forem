@@ -862,26 +862,6 @@ RSpec.describe Article, type: :model do
       end
     end
 
-    describe "detect human language" do
-      before do
-        allow(Articles::DetectLanguage).to receive(:call)
-      end
-
-      it "calls the human language detector" do
-        article.language = ""
-        article.save
-
-        expect(Articles::DetectLanguage).to have_received(:call)
-      end
-
-      it "does not call the human language detector if there is already a language" do
-        article.language = "en"
-        article.save
-
-        expect(Articles::DetectLanguage).not_to have_received(:call)
-      end
-    end
-
     describe "slack messages" do
       before do
         # making sure there are no other enqueued jobs from other tests

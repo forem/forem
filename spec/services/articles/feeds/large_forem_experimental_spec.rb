@@ -228,30 +228,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     end
   end
 
-  describe "#score_language" do
-    context "when article is in a user's preferred language" do
-      it "returns a score of 1" do
-        expect(feed.score_language(article)).to eq 1
-      end
-    end
-
-    context "when article is not in user's prferred language" do
-      before { article.language = "de" }
-
-      it "returns a score of -10" do
-        expect(feed.score_language(article)).to eq(-15)
-      end
-    end
-
-    context "when article doesn't have a language, assume english" do
-      before { article.language = nil }
-
-      it "returns a score of 1" do
-        expect(feed.score_language(article)).to eq 1
-      end
-    end
-  end
-
   describe "#score_followed_tags" do
     let(:tag) { create(:tag) }
     let(:unfollowed_tag) { create(:tag) }

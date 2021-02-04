@@ -14,12 +14,8 @@ to match your region, changing date formats, etc.
 
 ## What do we currently support?
 
-Currently, we allow users to set some language settings (beta) under
-`/settings/misc`. Based on your selection, the feed algorithm will prioritize
-content written in your preferred languages.
-
-We also introduced some routing to lay the groundwork for a more comprehensive
-i18n implementation.
+We introduced some routing to lay the groundwork for a more comprehensive i18n
+implementation.
 
 ## What is the goal?
 
