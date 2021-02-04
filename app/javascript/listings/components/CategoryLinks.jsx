@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const CategoryLinks = ({ categories, onClick, selectedCategory }) => {
+export const CategoryLinks = ({ categories, onClick, selectedCategory }) => {
   return (
     <section>
       {categories.map((category) => {
@@ -39,5 +39,3 @@ CategoryLinks.propTypes = {
   onClick: PropTypes.func.isRequired,
   selectedCategory: PropTypes.string.isRequired,
 };
-
-export default CategoryLinks;

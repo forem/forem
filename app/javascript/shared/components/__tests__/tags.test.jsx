@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import Tags from '../tags';
+import { Tags } from '../tags';
 
 describe('<Tags />', () => {
   beforeAll(() => {

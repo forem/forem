@@ -1,14 +1,14 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import FocusTrap from '../shared/components/focusTrap';
-import IntroSlide from './components/IntroSlide';
-import EmailPreferencesForm from './components/EmailPreferencesForm';
-import FollowTags from './components/FollowTags';
-import FollowUsers from './components/FollowUsers';
-import ProfileForm from './components/ProfileForm';
+import { FocusTrap } from '../shared/components/focusTrap';
+import { IntroSlide } from './components/IntroSlide';
+import { EmailPreferencesForm } from './components/EmailPreferencesForm';
+import { FollowTags } from './components/FollowTags';
+import { FollowUsers } from './components/FollowUsers';
+import { ProfileForm } from './components/ProfileForm';
 
-export default class Onboarding extends Component {
+export class Onboarding extends Component {
   constructor(props) {
     super(props);
 

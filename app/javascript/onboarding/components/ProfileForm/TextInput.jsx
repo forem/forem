@@ -24,7 +24,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
 
-function TextInput(props) {
+export function TextInput(props) {
   const { onFieldChange } = props;
   const { attribute_name, placeholder_text, description, label } = props.field;
 
@@ -54,5 +54,3 @@ TextInput.propTypes = {
     input_type: PropTypes.string.isRequired,
   }).isRequired,
 };
-
-export default TextInput;

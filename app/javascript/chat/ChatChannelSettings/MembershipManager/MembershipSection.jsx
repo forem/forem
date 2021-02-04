@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import Membership from './Membership';
+import { Membership } from './Membership';
 
-const MembershipSection = ({
+export const MembershipSection = ({
   memberships,
   currentMembership,
   removeMembership,
@@ -48,5 +48,3 @@ MembershipSection.propType = {
   handleUpdateMembershipRole: PropTypes.func.isRequired,
   membershipCount: PropTypes.number.isRequired,
 };
-
-export default MembershipSection;

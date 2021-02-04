@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef } from 'preact/hooks';
 import { createFocusTrap } from 'focus-trap';
 import { defaultChildrenPropTypes } from '../../common-prop-types';
 
-const FocusTrap = ({ selector, children }) => {
+export const FocusTrap = ({ selector, children }) => {
   const focusTrap = useRef(null);
 
   useLayoutEffect(() => {
@@ -25,5 +25,3 @@ FocusTrap.propTypes = {
   selector: PropTypes.string,
   children: defaultChildrenPropTypes.isRequired,
 };
-
-export default FocusTrap;
