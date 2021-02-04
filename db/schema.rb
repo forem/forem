@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(version: 2021_02_01_055410) do
     t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
+    t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
@@ -1257,6 +1258,7 @@ ActiveRecord::Schema.define(version: 2021_02_01_055410) do
     t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
+    t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
     t.boolean "feed_referential_link", default: true, null: false
