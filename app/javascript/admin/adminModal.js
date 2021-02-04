@@ -14,7 +14,7 @@
  * @param {string} modalProps.leftCustomDataAttr A custom data attribute for the left button.
  * @param {string} modalProps.rightCustomDataAttr A custom data attribute for the right button.
  */
-const adminModal = function ({
+export const adminModal = function ({
   title,
   body,
   leftBtnText,
@@ -59,5 +59,3 @@ const adminModal = function ({
     </div>
   `;
 };
-
-export default adminModal;

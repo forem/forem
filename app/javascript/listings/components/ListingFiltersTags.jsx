@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import ClearQueryButton from './ClearQueryButton';
-import SelectedTags from './SelectedTags';
+import { ClearQueryButton } from './ClearQueryButton';
+import { SelectedTags } from './SelectedTags';
 
-const ListingFiltersTags = ({
+export const ListingFiltersTags = ({
   message,
   onKeyUp,
   onClearQuery,
@@ -47,5 +47,3 @@ ListingFiltersTags.propTypes = {
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
   query: PropTypes.string.isRequired,
 };
-
-export default ListingFiltersTags;

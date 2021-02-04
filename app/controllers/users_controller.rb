@@ -41,8 +41,6 @@ class UsersController < ApplicationController
   def update
     set_current_tab(params["user"]["tab"])
 
-    # preferred_languages is handled manually
-    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
     @user.assign_attributes(permitted_attributes(@user))
 
     if @user.save

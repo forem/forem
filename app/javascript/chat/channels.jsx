@@ -2,10 +2,10 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ConfigImage from 'images/overflow-horizontal.svg';
-import ChannelButton from './components/ChannelButton';
+import { ChannelButton } from './components/ChannelButton';
 import { channelSorter } from './util';
 
-const Channels = ({
+export const Channels = ({
   activeChannelId,
   chatChannels,
   unopenedChannelIds,
@@ -132,5 +132,3 @@ Channels.propTypes = {
   channelsLoaded: PropTypes.bool.isRequired,
   currentUserId: PropTypes.string.isRequired,
 };
-
-export default Channels;
