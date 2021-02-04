@@ -15,6 +15,7 @@ class SiteConfig < RailsSettings::Base
   URL_MESSAGE = "must be a valid URL".freeze
 
   # Forem Team
+  # [forem-fix] Remove channel name from SiteConfig
   field :article_published_slack_channel, type: :string, default: "activity"
 
   # Meta
