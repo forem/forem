@@ -5,6 +5,24 @@ import { createFocusTrap } from 'focus-trap';
 import { defaultChildrenPropTypes } from '../../common-prop-types';
 import { KeyboardShortcuts } from './useKeyboardShortcuts';
 
+/**
+ * Wrapper component to create a focus trap within the HTML element found by the given selector
+ *
+ * @example
+ * import { FocusTrap } from "shared/components/FocusTrap";
+ *
+ * const ExampleComponent = ({ onClose }) => (
+ *   <FocusTrap selector=".component-with-focus-trap" onDeactivate={onClose}>
+ *     <div class="component-with-focus-trap">
+ *       <button onClick={onClose}>Close</button>
+ *     </div>
+ *   </FocusTrap>
+ * )
+ *
+ * @param {string} selector The CSS selector for the element where focus is to be trapped
+ * @param {Array} children Child element(s) passed via composition
+ * @param {Function} onDeactivate Callback function to be called when the focus trap is deactivated by navigation or Escape press
+ */
 export const FocusTrap = ({ selector, children, onDeactivate }) => {
   const focusTrap = useRef(null);
 

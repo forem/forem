@@ -1,5 +1,5 @@
 import { Controller } from 'stimulus';
-import { getFocusTrapToggle } from '../../utilities/getFocusTrapToggle';
+import { getFocusTrapToggle } from '@utilities/getFocusTrapToggle';
 
 // eslint-disable-next-line no-restricted-syntax
 export default class ModalController extends Controller {

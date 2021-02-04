@@ -4,9 +4,11 @@ import {
   getInstantClick,
   initializeTouchDevice,
 } from '../topNavigation/utilities';
-import { getFocusTrapToggle } from '../utilities/getFocusTrapToggle';
 
-window.getFocusTrapToggle = getFocusTrapToggle;
+window.getFocusTrapToggle = async (selector) => {
+  const { getFocusTrapToggle } = await import('@utilities/getFocusTrapToggle');
+  return getFocusTrapToggle(selector);
+};
 
 function getPageEntries() {
   return Object.entries({
