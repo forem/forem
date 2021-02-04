@@ -49,6 +49,14 @@ RSpec.describe "feedback_messages", type: :request do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
         end
       end
+
+      it "doesn't try to send an email" do
+        expect do
+          perform_enqueued_jobs do
+            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+          end
+        end.not_to change { ActionMailer::Base.deliveries.count }
+      end
     end
 
     context "when feedback is created by chat" do
@@ -134,6 +142,38 @@ RSpec.describe "feedback_messages", type: :request do
         sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
         end
+      end
+
+      it "sends an email when no cache" do
+        expect do
+          perform_enqueued_jobs do
+            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+          end
+        end.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
+      it "queues a correct email when no cache" do
+        mailer_class = NotifyMailer
+        mailer = double
+        message_delivery = double
+        allow(mailer_class).to receive(:with).and_return(mailer)
+        allow(mailer).to receive(:feedback_response_email).and_return(message_delivery)
+        allow(message_delivery).to receive(:deliver_later)
+
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+
+        expect(mailer_class).to have_received(:with).with(email_to: user.email)
+        expect(mailer).to have_received(:feedback_response_email)
+        expect(message_delivery).to have_received(:deliver_later)
+      end
+
+      it "doesn't queue an email when cache is set" do
+        allow(Rails.cache).to receive(:read).and_return(Time.current)
+        expect do
+          perform_enqueued_jobs do
+            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+          end
+        end.not_to change { ActionMailer::Base.deliveries.count }
       end
     end
 

@@ -16,4 +16,5 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   RAILS_ENV=test E2E=true bin/e2e-setup
 fi
 
+bundle exec rails assets:precompile;
 CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.json" RAILS_ENV=test E2E=true bundle exec rake cypress:open
