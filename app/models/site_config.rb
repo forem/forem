@@ -14,6 +14,9 @@ class SiteConfig < RailsSettings::Base
   VALID_URL = %r{\A(http|https)://([/|.\w\s-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
   URL_MESSAGE = "must be a valid URL".freeze
 
+  # Forem Team
+  field :article_published_slack_channel, type: :string, default: "activity"
+
   # Meta
   field :admin_action_taken_at, type: :datetime, default: Time.current
 
