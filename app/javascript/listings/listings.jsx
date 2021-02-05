@@ -38,6 +38,7 @@ export class Listings extends Component {
     let openedListing = null;
     let slug = null;
     let listings = [];
+    let isModalOpen = false;
 
     if (params.t) {
       tags = params.t.split(',');
@@ -52,9 +53,7 @@ export class Listings extends Component {
     if (container.dataset.displayedlisting) {
       openedListing = JSON.parse(container.dataset.displayedlisting);
       ({ slug } = openedListing);
-      setTimeout(() => {
-        this.setState({ isModalOpen: true });
-      }, 200);
+      isModalOpen = true;
     }
 
     this.debouncedListingSearch = debounceAction(this.handleQuery.bind(this), {
@@ -70,6 +69,7 @@ export class Listings extends Component {
       listings,
       openedListing,
       slug,
+      isModalOpen,
     });
     this.listingSearch(query, tags, category, slug);
     this.setUser();
