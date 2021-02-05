@@ -5,11 +5,6 @@ import {
   initializeTouchDevice,
 } from '../topNavigation/utilities';
 
-window.getFocusTrapToggle = async (selector) => {
-  const { getFocusTrapToggle } = await import('@utilities/getFocusTrapToggle');
-  return getFocusTrapToggle(selector);
-};
-
 window.presentModal = async (
   title,
   contentSelector,

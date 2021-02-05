@@ -1,34 +1,36 @@
 import { Controller } from 'stimulus';
-import { getFocusTrapToggle } from '@utilities/getFocusTrapToggle';
 
 // eslint-disable-next-line no-restricted-syntax
 export default class ModalController extends Controller {
   static values = {
-    trapAreaId: String,
+    contentId: String,
+    title: String,
   };
 
-  connect() {
-    this.currentFocusTrapToggle = null;
-  }
+  async toggleModal() {
+    const [{ Modal }, { render, h }] = await Promise.all([
+      import('@crayons/Modal'),
+      import('preact'),
+    ]);
 
-  disconnect() {
-    if (this.currentFocusTrapToggle) {
-      this.currentFocusTrapToggle();
-      this.currentFocusTrapToggle = null;
-    }
-  }
+    const modalRoot = document.createElement('div');
+    document.body.appendChild(modalRoot);
 
-  toggleModal() {
-    if (this.currentFocusTrapToggle) {
-      this.currentFocusTrapToggle();
-      this.currentFocusTrapToggle = null;
-      return;
-    }
-
-    this.currentFocusTrapToggle = getFocusTrapToggle(
-      `#${this.trapAreaIdValue}`,
+    render(
+      <Modal
+        title={this.titleValue}
+        onClose={() => {
+          render(null, modalRoot);
+        }}
+      >
+        <div
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: document.querySelector(`#${this.contentIdValue}`).innerHTML,
+          }}
+        />
+      </Modal>,
+      modalRoot,
     );
-
-    this.currentFocusTrapToggle();
   }
 }
