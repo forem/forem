@@ -63,8 +63,11 @@ Rails.application.routes.draw do
                                               destroy], path: "listings/categories"
 
       resources :comments, only: [:index]
-      resources :data_update_scripts, only: %i[index show]
-      post "/data_update_scripts/:id/force_run", to: "data_update_scripts#force_run"
+      resources :data_update_scripts, only: %i[index show] do
+        member do
+          post :force_run
+        end
+      end
       resources :events, only: %i[index create update new edit]
       resources :feedback_messages, only: %i[index show]
       resources :invitations, only: %i[index new create destroy]
