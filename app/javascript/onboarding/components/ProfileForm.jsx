@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
+import { FocusTrap } from '../../shared/components/focusTrap';
 
 import { Navigation } from './Navigation';
 import { ColorPicker } from './ProfileForm/ColorPicker';
@@ -178,53 +179,55 @@ export class ProfileForm extends Component {
     });
 
     return (
-      <div
-        data-testid="onboarding-profile-form"
-        className="onboarding-main crayons-modal"
-      >
+      <FocusTrap>
         <div
-          className="crayons-modal__box"
-          role="dialog"
-          aria-labelledby="title"
-          aria-describedby="subtitle"
+          data-testid="onboarding-profile-form"
+          className="onboarding-main crayons-modal"
         >
-          <Navigation
-            prev={prev}
-            next={this.onSubmit}
-            canSkip={canSkip}
-            slidesCount={slidesCount}
-            currentSlideIndex={currentSlideIndex}
-          />
-          <div className="onboarding-content about">
-            <header className="onboarding-content-header">
-              <h1 id="title" className="title">
-                Build your profile
-              </h1>
-              <h2
-                id="subtitle"
-                data-testid="onboarding-profile-subtitle"
-                className="subtitle"
-              >
-                Tell us a little bit about yourself — this is how others will
-                see you on {communityConfig.communityName}. You’ll always be
-                able to edit this later in your Settings.
-              </h2>
-            </header>
-            <div className="current-user-info">
-              <figure className="current-user-avatar-container">
-                <img
-                  className="current-user-avatar"
-                  alt="profile"
-                  src={profile_image_90}
-                />
-              </figure>
-              <h3>{name}</h3>
-              <p>{username}</p>
+          <div
+            className="crayons-modal__box"
+            role="dialog"
+            aria-labelledby="title"
+            aria-describedby="subtitle"
+          >
+            <Navigation
+              prev={prev}
+              next={this.onSubmit}
+              canSkip={canSkip}
+              slidesCount={slidesCount}
+              currentSlideIndex={currentSlideIndex}
+            />
+            <div className="onboarding-content about">
+              <header className="onboarding-content-header">
+                <h1 id="title" className="title">
+                  Build your profile
+                </h1>
+                <h2
+                  id="subtitle"
+                  data-testid="onboarding-profile-subtitle"
+                  className="subtitle"
+                >
+                  Tell us a little bit about yourself — this is how others will
+                  see you on {communityConfig.communityName}. You’ll always be
+                  able to edit this later in your Settings.
+                </h2>
+              </header>
+              <div className="current-user-info">
+                <figure className="current-user-avatar-container">
+                  <img
+                    className="current-user-avatar"
+                    alt="profile"
+                    src={profile_image_90}
+                  />
+                </figure>
+                <h3>{name}</h3>
+                <p>{username}</p>
+              </div>
+              <div>{sections}</div>
             </div>
-            <div>{sections}</div>
           </div>
         </div>
-      </div>
+      </FocusTrap>
     );
   }
 }
