@@ -5,6 +5,7 @@ export default class ModalController extends Controller {
   static values = {
     contentId: String,
     title: String,
+    size: String,
   };
 
   async toggleModal() {
@@ -22,6 +23,7 @@ export default class ModalController extends Controller {
         onClose={() => {
           render(null, modalRoot);
         }}
+        size={this.sizeValue}
       >
         <div
           // eslint-disable-next-line react/no-danger

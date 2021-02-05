@@ -3,7 +3,7 @@
 .authentication-modal {
   &__container {
     display: grid;
-    grid-gap: var(--su-2);
+    grid-gap: var(--su-4);
   }
 
   &__image-container {
@@ -44,7 +44,7 @@
       width: 100%;
       margin: 0 auto;
       justify-self: center;
-      padding: 0 var(--su-8) var(--su-7);
+      padding: 0 var(--su-8) var(--su-4);
     }
   }
 
