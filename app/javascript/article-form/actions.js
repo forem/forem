@@ -13,7 +13,13 @@ export function previewArticle(payload, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.status !== 200) {
+        throw response;
+      }
+
+      return response.json();
+    })
     .then(successCb)
     .catch(failureCb);
 }
