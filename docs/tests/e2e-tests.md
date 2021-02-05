@@ -24,7 +24,7 @@ In addition to Cypress, we use
 [cypress-testing-library](https://github.com/testing-library/cypress-testing-library).
 This provides custom Cypress commands and utilities to improve how E2E tests are
 written. dom-testing-library and preact-testing-library are already used for
-[front-end tests](frontend-tests.md), which both offer a similar API in the
+[front-end tests](/tests/frontend-tests), which both offer a similar API in the
 context of testing a Preact or Stimulus component. All these tools are part of
 the [Testing Library](https://testing-library.com) family.
 
