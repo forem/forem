@@ -9,6 +9,7 @@ module Constants
 
     SPECIAL_ROLES = ["Admin",
                      "Super Admin",
+                     "Tech Admin",
                      "Resource Admin: Article",
                      "Resource Admin: Comment",
                      "Resource Admin: BufferUpdate",
