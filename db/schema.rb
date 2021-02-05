@@ -1081,11 +1081,9 @@ ActiveRecord::Schema.define(version: 2021_02_01_055410) do
     t.index ["user_id"], name: "index_sponsorships_on_user_id"
   end
 
-  create_table "suspended_users", force: :cascade do |t|
+  create_table "suspended_users", primary_key: "username_hash", id: :string, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "username_hash", null: false
-    t.index ["username_hash"], name: "index_suspended_users_on_username_hash", unique: true
   end
 
   create_table "tag_adjustments", force: :cascade do |t|
