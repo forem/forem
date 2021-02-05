@@ -11,7 +11,7 @@ RSpec.describe Users::Suspended, type: :model do
   describe ".previously_banned?" do
     it "returns true if the user has been previously banned" do
       user = create(:user, :banned)
-      described_class.add(user)
+      described_class.create_from_user(user)
 
       expect(described_class.previously_banned?(user.username)).to be true
     end
@@ -23,10 +23,10 @@ RSpec.describe Users::Suspended, type: :model do
     end
   end
 
-  describe ".add" do
+  describe ".create_from_user" do
     it "records a hash of the username in the database" do
       expect do
-        described_class.add(create(:user, :banned))
+        described_class.create_from_user(create(:user, :banned))
       end.to change(described_class, :count).by(1)
     end
   end

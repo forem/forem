@@ -13,7 +13,7 @@ module Users
     end
 
     # Convenience method for easily adding a suspended user
-    def self.add(user)
+    def self.create_from_user(user)
       create!(username_hash: hash_username(user.username))
     end
   end
