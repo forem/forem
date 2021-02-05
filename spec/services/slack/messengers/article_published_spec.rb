@@ -41,6 +41,10 @@ RSpec.describe Slack::Messengers::ArticlePublished, type: :service do
   end
 
   it "messages the proper channel with the proper username and emoji", :aggregate_failures do
+    channel = "test-channel"
+    # [forem-fix] Remove channel name from SiteConfig
+    allow(SiteConfig).to receive(:article_published_slack_channel).and_return(channel)
+
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params)
     end
@@ -48,7 +52,7 @@ RSpec.describe Slack::Messengers::ArticlePublished, type: :service do
     job = sidekiq_enqueued_jobs(worker: Slack::Messengers::Worker).last
     job_args = job["args"].first
 
-    expect(job_args["channel"]).to eq("activity")
+    expect(job_args["channel"]).to eq(channel)
     expect(job_args["username"]).to eq("article_bot")
     expect(job_args["icon_emoji"]).to eq(":writing_hand:")
   end

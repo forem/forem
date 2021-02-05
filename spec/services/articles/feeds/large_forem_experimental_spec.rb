@@ -2,10 +2,12 @@ require "rails_helper"
 
 RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   let(:user) { create(:user) }
-  let(:second_user) { create(:user)}
+  let(:second_user) { create(:user) }
   let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
   let!(:article) { create(:article) }
-  let!(:hot_story) { create(:article, hotness_score: 1000, score: 1000, published_at: 3.hours.ago, user_id: second_user.id) }
+  let!(:hot_story) do
+    create(:article, hotness_score: 1000, score: 1000, published_at: 3.hours.ago, user_id: second_user.id)
+  end
   let!(:old_story) { create(:article, published_at: 3.days.ago) }
   let!(:low_scoring_article) { create(:article, score: -1000) }
   let!(:month_old_story) { create(:article, published_at: 1.month.ago) }
@@ -13,7 +15,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   describe "#published_articles_by_tag" do
     let(:unpublished_article) { create(:article, published: false) }
     let(:tag) { "foo" }
-    let(:tagged_article) { create(:article, tags: tag) }
+    let!(:tagged_article) { create(:article, tags: tag) }
 
     it "returns published articles" do
       result = feed.published_articles_by_tag
@@ -199,53 +201,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
 
       it "returns a score of 0" do
         expect(feed.score_followed_organization(article)).to eq 0
-      end
-    end
-  end
-
-  describe "#score_randomness" do
-    context "when random number is less than 0.6 but greater than 0.3" do
-      it "returns 6" do
-        allow(feed).to receive(:rand).and_return(2)
-        expect(feed.score_randomness).to eq 6
-      end
-    end
-
-    context "when random number is less than 0.3" do
-      it "returns 3" do
-        allow(feed).to receive(:rand).and_return(1)
-        expect(feed.score_randomness).to eq 3
-      end
-    end
-
-    context "when random number is greater than 0.6" do
-      it "returns 0" do
-        allow(feed).to receive(:rand).and_return(0)
-        expect(feed.score_randomness).to eq 0
-      end
-    end
-  end
-
-  describe "#score_language" do
-    context "when article is in a user's preferred language" do
-      it "returns a score of 1" do
-        expect(feed.score_language(article)).to eq 1
-      end
-    end
-
-    context "when article is not in user's prferred language" do
-      before { article.language = "de" }
-
-      it "returns a score of -10" do
-        expect(feed.score_language(article)).to eq(-15)
-      end
-    end
-
-    context "when article doesn't have a language, assume english" do
-      before { article.language = nil }
-
-      it "returns a score of 1" do
-        expect(feed.score_language(article)).to eq 1
       end
     end
   end

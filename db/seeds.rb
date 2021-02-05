@@ -17,6 +17,7 @@ puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 SiteConfig.public = true
 SiteConfig.waiting_on_first_user = false
+SiteConfig.authentication_providers = Authentication::Providers.available
 
 ##############################################################################
 

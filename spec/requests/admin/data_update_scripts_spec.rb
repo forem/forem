@@ -5,6 +5,7 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
 
   context "when the user is not an tech admin" do
     let(:user) { create(:user) }
+
     before { sign_in user }
 
     describe "GET /admin/data_update_scripts" do
@@ -36,20 +37,20 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
       end
 
       it "displays a 'Rerun' button when the script status is failed" do
-        script = create(:data_update_script, status: "failed")
+        create(:data_update_script, status: "failed")
         get_resource
         expect(response.body).to include("Re-run")
       end
     end
 
     describe "GET /admin/data_update_scripts/:id" do
-      let(:script) {
+      let(:script) do
         create(
           :data_update_script,
-          file_name: '20200214151804_data_update_test_script',
-          status: "succeeded"
+          file_name: "20200214151804_data_update_test_script",
+          status: "succeeded",
         )
-      }
+      end
       let(:script_id) { script.id }
 
       it "returns a data update script" do
@@ -63,7 +64,7 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
     end
 
     describe "POST /admin/:id/force_run" do
-      let(:script) { create(:data_update_script, file_name: '20200214151804_data_update_test_script') }
+      let(:script) { create(:data_update_script, file_name: "20200214151804_data_update_test_script") }
       let(:script_id) { script.id.to_s }
 
       it "calls the the sidekiq worker" do
