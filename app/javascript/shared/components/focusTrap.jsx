@@ -22,12 +22,17 @@ import { KeyboardShortcuts } from './useKeyboardShortcuts';
  * @param {string} selector The CSS selector for the element where focus is to be trapped
  * @param {Array} children Child element(s) passed via composition
  * @param {Function} onDeactivate Callback function to be called when the focus trap is deactivated by navigation or Escape press
+ * @param {boolean} clickOutsideDeactivates If true, the focus trap will deactivate when a user clicks outside of the trap area
  */
-export const FocusTrap = ({ selector, children, onDeactivate }) => {
+export const FocusTrap = ({
+  selector,
+  children,
+  onDeactivate,
+  clickOutsideDeactivates = false,
+}) => {
   const focusTrap = useRef(null);
 
   const currentLocationHref = document.location.href;
-
   const routeChangeObserver = new MutationObserver((mutations) => {
     const hasRouteChanged = mutations.some(
       () => currentLocationHref !== document.location.href,
@@ -41,14 +46,18 @@ export const FocusTrap = ({ selector, children, onDeactivate }) => {
   });
 
   useLayoutEffect(() => {
-    focusTrap.current = createFocusTrap(selector, {
-      escapeDeactivates: false,
-    });
+    if (!focusTrap.current) {
+      focusTrap.current = createFocusTrap(selector, {
+        escapeDeactivates: false,
+        clickOutsideDeactivates,
+        onDeactivate,
+      });
 
-    focusTrap.current.activate();
-    routeChangeObserver.observe(document.querySelector('body'), {
-      childList: true,
-    });
+      focusTrap.current.activate();
+      routeChangeObserver.observe(document.querySelector('body'), {
+        childList: true,
+      });
+    }
 
     return () => {
       focusTrap.current.deactivate();

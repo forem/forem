@@ -43,6 +43,10 @@
     top: 0;
     bottom: 0;
     pointer-events: auto;
+
+    &.clickable {
+      pointer-events: none;
+    }
   }
 
   &__box {

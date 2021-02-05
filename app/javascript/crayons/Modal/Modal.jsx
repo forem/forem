@@ -40,9 +40,13 @@ export const Modal = ({
   title,
   overlay,
   onClose,
+  closeOnClickOutside = false,
 }) => {
   return (
-    <FocusTrap onDeactivate={onClose}>
+    <FocusTrap
+      onDeactivate={onClose}
+      clickOutsideDeactivates={closeOnClickOutside}
+    >
       <div
         data-testid="modal-container"
         className={`crayons-modal${getAdditionalClassNames({
@@ -71,7 +75,12 @@ export const Modal = ({
           <div className="crayons-modal__box__body">{children}</div>
         </div>
         {overlay && (
-          <div data-testid="modal-overlay" className="crayons-modal__overlay" />
+          <div
+            data-testid="modal-overlay"
+            className={`crayons-modal__overlay ${
+              closeOnClickOutside ? 'clickable' : ''
+            }`}
+          />
         )}
       </div>
     </FocusTrap>
