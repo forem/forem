@@ -28,11 +28,10 @@ module Articles
       end
 
       def published_articles_by_tag
-        articles = Article.published.limited_column_select
+        articles = @tag.present? ? Tag.find_by(name: @tag).articles : Article
+        articles.published.limited_column_select
           .includes(top_comments: :user)
           .page(@page).per(@number_of_articles)
-        articles = articles.cached_tagged_with(@tag) if @tag.present? # More efficient than tagged_with
-        articles
       end
 
       # Timeframe values from Timeframe::DATETIMES
