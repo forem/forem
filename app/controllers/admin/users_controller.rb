@@ -41,20 +41,21 @@ module Admin
     end
 
     def destroy
-      role = params[:role]
-      @user = User.find(params[:user_id])
+      role = params[:role].to_sym
 
       if role == :super_admin
         flash[:danger] = "Super Admin roles cannot be removed."
-        redirect_to edit_admin_user_path(@user.id)
+        redirect_to "/admin/users/#{params[:id]}/edit" and return
       end
+
+      @user = User.find(params[:user_id])
 
       if @user.id == current_user.id
         flash[:danger] = "Admins cannot remove roles from themselves."
-      elsif @user.remove_role(role)
+      elsif User.find(params[:user_id]).remove_role(role)
         flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
       else
-        flash[:danger] = @role.errors_as_sentence
+        flash[:danger] = "There was an issue removing this role. Please try again."
       end
       redirect_to edit_admin_user_path(@user.id)
     end

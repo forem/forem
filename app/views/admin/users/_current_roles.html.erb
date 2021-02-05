@@ -6,7 +6,7 @@
       <% @user.roles.each do |role| %>
         <% if role.name == "banned" %>
           <li>Suspended</li>
-        <% elsif role.name == "super_admin" || current_user.id == @user.id %>
+        <% elsif role.name == "super_admin" || @user.id == current_user.id %>
           <li><%= role.name.titlecase %></li>
         <% else %>
           <li>
