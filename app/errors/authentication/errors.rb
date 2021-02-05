@@ -22,6 +22,5 @@ module Authentication
                community_email: SiteConfig.email_addresses[:contact])
       end
     end
-
   end
 end
