@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { h, Fragment } from 'preact';
-import { useLayoutEffect, useRef } from 'preact/hooks';
+import { useLayoutEffect, useRef, useCallback } from 'preact/hooks';
 import { createFocusTrap } from 'focus-trap';
 import { defaultChildrenPropTypes } from '../../common-prop-types';
 import { KeyboardShortcuts } from './useKeyboardShortcuts';
@@ -31,39 +31,38 @@ export const FocusTrap = ({
   clickOutsideDeactivates = false,
 }) => {
   const focusTrap = useRef(null);
-
-  const currentLocationHref = document.location.href;
-  const routeChangeObserver = new MutationObserver((mutations) => {
-    const hasRouteChanged = mutations.some(
-      () => currentLocationHref !== document.location.href,
-    );
-
-    // Ensure trap deactivates if user navigates from the page
-    if (hasRouteChanged) {
-      focusTrap.current?.deactivate();
-      routeChangeObserver.disconnect();
-    }
-  });
+  const deactivate = useCallback(() => onDeactivate(), [onDeactivate]);
 
   useLayoutEffect(() => {
-    if (!focusTrap.current) {
-      focusTrap.current = createFocusTrap(selector, {
-        escapeDeactivates: false,
-        clickOutsideDeactivates,
-        onDeactivate,
-      });
+    const currentLocationHref = document.location.href;
+    const routeChangeObserver = new MutationObserver((mutations) => {
+      const hasRouteChanged = mutations.some(
+        () => currentLocationHref !== document.location.href,
+      );
 
-      focusTrap.current.activate();
-      routeChangeObserver.observe(document.querySelector('body'), {
-        childList: true,
-      });
-    }
+      // Ensure trap deactivates if user navigates from the page
+      if (hasRouteChanged) {
+        focusTrap.current?.deactivate();
+        routeChangeObserver.disconnect();
+      }
+    });
+
+    focusTrap.current = createFocusTrap(selector, {
+      escapeDeactivates: false,
+      clickOutsideDeactivates,
+      onDeactivate: deactivate,
+    });
+
+    focusTrap.current.activate();
+    routeChangeObserver.observe(document.querySelector('body'), {
+      childList: true,
+    });
 
     return () => {
       focusTrap.current.deactivate();
       routeChangeObserver.disconnect();
     };
-  });
+  }, [clickOutsideDeactivates, selector, deactivate]);
 
   const shortcuts = {
     escape: onDeactivate,
