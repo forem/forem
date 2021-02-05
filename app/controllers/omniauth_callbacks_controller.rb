@@ -101,12 +101,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
-  rescue Authentication::Authenticator::PreviouslyBanned => _e
-    # Do we want a DD counter for this?
-    flash_message = format(PREVIOUSLY_BANNED_MESSAGE,
-                           community_name: SiteConfig.community_name,
-                           community_email: SiteConfig.email_addresses[:contact])
-    flash[:global_notice] = flash_message
+  rescue Authentication::Authenticator::PreviouslyBanned => e
+    ForemStatsClient.increment("users.banned_signup_attempt", tags: ["error:#{e.class.name}"])
+    flash[:global_notice] = format(PREVIOUSLY_BANNED_MESSAGE,
+                                   community_name: SiteConfig.community_name,
+                                   community_email: SiteConfig.email_addresses[:contact])
     redirect_to root_path
   rescue StandardError => e
     Honeybadger.notify(e)

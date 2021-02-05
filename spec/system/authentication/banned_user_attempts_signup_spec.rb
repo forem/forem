@@ -7,6 +7,8 @@ RSpec.describe "Banned user tries to sign up again" do
     allow(SiteConfig)
       .to receive(:authentication_providers)
       .and_return(Authentication::Providers.available)
+
+    allow(ForemStatsClient).to receive(:increment)
   end
 
   context "when a user has been previously banned", :aggregate_failures do
@@ -24,6 +26,10 @@ RSpec.describe "Banned user tries to sign up again" do
         community_email: SiteConfig.email_addresses[:contact],
       )
       expect(page).to have_content(expected_message)
+      expect(ForemStatsClient)
+        .to have_received(:increment)
+        .with("users.banned_signup_attempt",
+              tags: ["error:Authentication::Authenticator::PreviouslyBanned"])
     end
   end
 end
