@@ -60,8 +60,8 @@ success Already up-to-date.
 ```
 
 3. You will be prompted to set up the end to end (E2E) test database. Type `y`
-   or `Y` to install the E2E test database. Typically this is a one time thing,
-   but it can be run as well if ever you corrupt your database.
+   or `Y` to install the E2E test database. Typically you only need to select `y` the first time you run e2e tests,
+   but it can also be run if ever you corrupt your database and need to reset it back to its original state.
 
 ```bash
 Do you need to set up your end to end (E2E) testing database? Answer yes
