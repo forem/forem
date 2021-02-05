@@ -1251,7 +1251,6 @@ ActiveRecord::Schema.define(version: 2021_01_31_000458) do
     t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
-    t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
     t.boolean "feed_referential_link", default: true, null: false

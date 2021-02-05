@@ -21,7 +21,7 @@ describe('DataUpdateScriptController', () => {
         <tbody>
           <tr class="alert-danger" id="data_update_script_1_row">
             <td id="data_update_script_1">1</td>
-            <td class="data_update_script__filename" id="data_update_script_1_file_name">
+            <td class="data_update_script__filename" data-filename="Some filename" id="data_update_script_1_filename">
               Some filename
               <button id="data_update_script_1_button"   data-action="click->data-update-script#forceRun" data-value="1" type="button">
                 Re-run
@@ -67,7 +67,7 @@ describe('DataUpdateScriptController', () => {
       await flushPromises();
 
       const banner = document.getElementById('data-update-script__error');
-      expect(banner.innerHTML).toMatch(/Data Script 1 - Something went wrong/);
+      expect(banner.innerHTML).toMatch(/Some filename - Something went wrong./);
     });
 
     it('updates the status column with new values and formatting', async () => {

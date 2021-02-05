@@ -7,7 +7,6 @@ class BufferUpdatesController < ApplicationController
     create_main_tweet
     create_satellite_tweets
     create_facebook_post
-    @article.update(last_buffered: Time.current)
     redirect_back(fallback_location: "/mod")
   end
 
