@@ -87,7 +87,7 @@
   "devDependencies": {
     "@stoplight/spectral": "5.8.0",
     "@storybook/addon-a11y": "^6.1.17",
-    "@storybook/addon-actions": "^6.1.16",
+    "@storybook/addon-actions": "^6.1.17",
     "@storybook/addon-docs": "^6.1.17",
     "@storybook/addon-knobs": "^6.1.17",
     "@storybook/addon-links": "^6.1.17",
