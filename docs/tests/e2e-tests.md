@@ -81,7 +81,7 @@ Created database 'PracticalDeveloper_test'
 ...
 ```
 
-5. The Cypress test runner will open and you are now ready to run end to end
+5. The [Cypress test runner](https://docs.cypress.io/guides/core-concepts/test-runner.html#Overview) will open and you are now ready to run end to end
    tests.
 
 ![A screenshot of the Cypress test runner](/cypress-test-runner.png)
