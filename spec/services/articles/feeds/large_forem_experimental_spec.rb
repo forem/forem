@@ -15,7 +15,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   describe "#published_articles_by_tag" do
     let(:unpublished_article) { create(:article, published: false) }
     let(:tag) { "foo" }
-    let(:tagged_article) { create(:article, tags: tag) }
+    let!(:tagged_article) { create(:article, tags: tag) }
 
     it "returns published articles" do
       result = feed.published_articles_by_tag
