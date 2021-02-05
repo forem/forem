@@ -32,7 +32,7 @@ For the test web server, the
 [cypress-rails](https://github.com/testdouble/cypress-rails) gem is used to
 start a test web server that runs a rails test environment (`RAILS_ENV=test`).
 It also resets the database between test runs by starting a database
-transaction at the beginning of a test and perfors a rollback at the end of a
+transaction at the beginning of a test and performs a rollback at the end of a
 test being run. The cypress-rails gem also provides a rake task that allows us
 to coordinate all this work.
 
