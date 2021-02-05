@@ -12,23 +12,6 @@ seeder = Seeder.new
 SiteConfig.public = true
 SiteConfig.waiting_on_first_user = false
 
-seeder.create_if_none(Organization) do
-  3.times do
-    Organization.create!(
-      name: Faker::TvShows::SiliconValley.company,
-      summary: Faker::Company.bs,
-      remote_profile_image_url: logo = Faker::Company.logo,
-      nav_image: logo,
-      url: Faker::Internet.url,
-      slug: "org#{rand(10_000)}",
-      github_username: "org#{rand(10_000)}",
-      twitter_username: "org#{rand(10_000)}",
-      bg_color_hex: Faker::Color.hex_color,
-      text_color_hex: Faker::Color.hex_color,
-    )
-  end
-end
-
 ##############################################################################
 
 # NOTE: @citizen428 For the time being we want all current DEV profile fields.
@@ -80,6 +63,50 @@ seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") d
     saw_onboarding: true,
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
+  )
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "article-editor-v1-user@forem.com") do
+  User.create!(
+    name: "Article Editor v1 User",
+    email: "article-editor-v1-user@forem.local",
+    username: "article_editor_v1_user",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+    editor_version: "v1",
+  )
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.com") do
+  User.create!(
+    name: "Article Editor v2 User",
+    email: "article-editor-v2-user@forem.local",
+    username: "article_editor_v2_user",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+    editor_version: "v2",
   )
 end
 
