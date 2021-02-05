@@ -9,15 +9,27 @@ to end (E2E) testing. Tests and associated utilities are within the `cypress`
 directory.
 
 ```shell
-$ tree app/javascript/article-form -L 1
+$ tree cypress
+
 cypress
 ├── fixtures
-|   └── initialAdmin.json
-|   └── ...
+│   ├── images
+│   │   └── admin-image.png
+│   └── users
+│       ├── adminUser.json
+│       └── changePasswordUser.json
 ├── integration
-|   └── **/*.spec.js
+│   ├── adminFlows
+│   │   └── config
+│   │       └── authenticationSection.spec.js
+│   └── loginFlows
+│       ├── userChangePassword.spec.js
+│       └── userLogin.spec.js
 ├── plugins
+│   └── index.js
 └── support
+    ├── commands.js
+    └── index.js
 ```
 
 In addition to Cypress, we use
@@ -31,10 +43,10 @@ the [Testing Library](https://testing-library.com) family.
 For the test web server, the
 [cypress-rails](https://github.com/testdouble/cypress-rails) gem is used to
 start a test web server that runs a rails test environment (`RAILS_ENV=test`).
-It also resets the database between test runs by starting a database
-transaction at the beginning of a test and performs a rollback at the end of a
-test being run. The cypress-rails gem also provides a rake task that allows us
-to coordinate all this work.
+It also resets the database between test runs by starting a database transaction
+at the beginning of a test and performs a rollback at the end of a test being
+run. The cypress-rails gem also provides a rake task that allows us to
+coordinate all this work.
 
 ## Running E2E Tests Locally
 
@@ -60,8 +72,9 @@ success Already up-to-date.
 ```
 
 3. You will be prompted to set up the end to end (E2E) test database. Type `y`
-   or `Y` to install the E2E test database. Typically you only need to select `y` the first time you run e2e tests,
-   but it can also be run if ever you corrupt your database and need to reset it back to its original state.
+   or `Y` to install the E2E test database. Typically you only need to select
+   `y` the first time you run e2e tests, but it can also be run if ever you
+   corrupt your database and need to reset it back to its original state.
 
 ```bash
 Do you need to set up your end to end (E2E) testing database? Answer yes
@@ -81,8 +94,9 @@ Created database 'PracticalDeveloper_test'
 ...
 ```
 
-5. The [Cypress test runner](https://docs.cypress.io/guides/core-concepts/test-runner.html#Overview) will open and you are now ready to run end to end
-   tests.
+5. The
+   [Cypress test runner](https://docs.cypress.io/guides/core-concepts/test-runner.html#Overview)
+   will open and you are now ready to run end to end tests.
 
 ![A screenshot of the Cypress test runner](/cypress-test-runner.png)
 
