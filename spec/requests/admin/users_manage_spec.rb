@@ -165,7 +165,7 @@ RSpec.describe "Admin::Users", type: :request do
       expect(user.credits.size).to eq(2)
     end
 
-    it "removes non-admin roles from non-super_admin users" do
+    it "removes non-admin roles from non-super_admin users", :aggregate_failures do
       user.add_role(:trusted)
 
       expect do
@@ -176,7 +176,7 @@ RSpec.describe "Admin::Users", type: :request do
       expect(request.flash["success"]).to include("successfully removed from the user!")
     end
 
-    it "does not allow super_admin roles to be removed" do
+    it "does not allow super_admin roles to be removed", :aggregate_failures do
       user.add_role(:super_admin)
 
       expect do
@@ -187,7 +187,7 @@ RSpec.describe "Admin::Users", type: :request do
       expect(request.flash["danger"]).to include("cannot be removed.")
     end
 
-    it "does not allow a admins to remove a role from themselves" do
+    it "does not allow a admins to remove a role from themselves", :aggregate_failures do
       super_admin.add_role(:trusted)
 
       expect do
