@@ -32,7 +32,7 @@ gem "doorkeeper", "~> 5.4" # Oauth 2 provider
 gem "elasticsearch", "~> 7.10" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
-gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
+gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
 gem "flipper", "~> 0.20.3" # Feature flipping / flags for Ruby
