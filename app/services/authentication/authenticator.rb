@@ -12,8 +12,6 @@ module Authentication
   # 2. update an existing user and align it to its authentication identity
   # 3. return the current user if a user is given (already logged in scenario)
   class Authenticator
-    class PreviouslyBanned < StandardError; end
-
     # auth_payload is the payload schema, see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema
     def initialize(auth_payload, current_user: nil, cta_variant: nil)
       @provider = load_authentication_provider(auth_payload)
@@ -99,7 +97,8 @@ module Authentication
 
     def find_or_create_user!
       username = provider.user_nickname
-      raise PreviouslyBanned if Users::Suspended.previously_banned?(username)
+      banned_user = Users::Suspended.previously_banned?(username)
+      raise ::Authentication::Errors::PreviouslyBanned if banned_user
 
       existing_user = User.where(
         provider.user_username_field => username,

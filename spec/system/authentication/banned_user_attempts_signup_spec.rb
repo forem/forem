@@ -20,16 +20,15 @@ RSpec.describe "Banned user tries to sign up again" do
       click_on("Continue with Twitter", match: :first)
       expect(page).to have_current_path(root_path)
 
-      expected_message = format(
-        OmniauthCallbacksController::PREVIOUSLY_BANNED_MESSAGE,
-        community_name: SiteConfig.community_name,
-        community_email: SiteConfig.email_addresses[:contact],
-      )
+      expected_message = ::Authentication::Errors::PreviouslyBanned.new.message
       expect(page).to have_content(expected_message)
       expect(ForemStatsClient)
         .to have_received(:increment)
-        .with("users.banned_signup_attempt",
-              tags: ["error:Authentication::Authenticator::PreviouslyBanned"])
+        .with("identity.errors",
+              tags: [
+                "error:Authentication::Errors::PreviouslyBanned",
+                "message:#{expected_message}",
+              ])
     end
   end
 end
