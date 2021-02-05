@@ -15,7 +15,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   describe "#published_articles_by_tag" do
     let(:unpublished_article) { create(:article, published: false) }
     let(:tag) { "foo" }
-    let(:tagged_article) { create(:article, tags: tag) }
+    let!(:tagged_article) { create(:article, tags: tag) }
 
     it "returns published articles" do
       result = feed.published_articles_by_tag
@@ -201,29 +201,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
 
       it "returns a score of 0" do
         expect(feed.score_followed_organization(article)).to eq 0
-      end
-    end
-  end
-
-  describe "#score_randomness" do
-    context "when random number is less than 0.6 but greater than 0.3" do
-      it "returns 6" do
-        allow(feed).to receive(:rand).and_return(2)
-        expect(feed.score_randomness).to eq 6
-      end
-    end
-
-    context "when random number is less than 0.3" do
-      it "returns 3" do
-        allow(feed).to receive(:rand).and_return(1)
-        expect(feed.score_randomness).to eq 3
-      end
-    end
-
-    context "when random number is greater than 0.6" do
-      it "returns 0" do
-        allow(feed).to receive(:rand).and_return(0)
-        expect(feed.score_randomness).to eq 0
       end
     end
   end

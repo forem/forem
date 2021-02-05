@@ -160,18 +160,11 @@ export class ArticleForm extends Component {
   };
 
   showPreview = (response) => {
-    if (response.processed_html) {
-      this.setState({
-        ...this.setCommonProps({ previewShowing: true }),
-        previewResponse: response,
-        errors: null,
-      });
-    } else {
-      this.setState({
-        errors: response,
-        submitting: false,
-      });
-    }
+    this.setState({
+      ...this.setCommonProps({ previewShowing: true }),
+      previewResponse: response,
+      errors: null,
+    });
   };
 
   handleOrgIdChange = (e) => {
@@ -180,9 +173,10 @@ export class ArticleForm extends Component {
   };
 
   failedPreview = (response) => {
-    // TODO: console.log should not be part of production code. Remove it!
-    // eslint-disable-next-line no-console
-    console.log(response);
+    this.setState({
+      errors: response,
+      submitting: false,
+    });
   };
 
   handleConfigChange = (e) => {
