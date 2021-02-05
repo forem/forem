@@ -17,6 +17,7 @@ describe('Article Editor', () => {
       cy.get('@articleForm')
         .findByText(/^Preview$/i)
         .click();
+      cy.findByTestId('error-message').should('not.exist');
     });
 
     it(`should show error if the article content can't be previewed`, () => {
@@ -53,6 +54,7 @@ describe('Article Editor', () => {
       cy.get('@articleForm')
         .findByText(/^Preview$/i)
         .click();
+      cy.findByTestId('error-message').should('not.exist');
     });
 
     it(`should show error if the article content can't be previewed`, () => {
