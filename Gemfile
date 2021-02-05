@@ -125,8 +125,6 @@ group :development do
   gem "erb_lint", github: "thepracticaldev/erb-lint", branch: "jess/remove-version-pinning", require: false # ERB Linter tool
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
-  # Disabled as it's not compatible with rspec-rails 4.1
-  # gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
   gem "listen", "~> 3.4", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
@@ -147,12 +145,13 @@ group :development, :test do
   gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
 
+  # Temporarily tracking single gems instead of `rspec-rails` because of Rails 6.1,
+  # see <https://github.com/rspec/rspec-rails/issues/2430> and <https://github.com/rspec/rspec-rails/blob/rails-6-1-dev/Changelog.md#rails-61-development>
   # gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  # Temporarily tracking for Rails 6.1
   gem "rspec-core", github: "rspec/rspec-core", branch: "main"
   gem "rspec-expectations", github: "rspec/rspec-expectations", branch: "main"
   gem "rspec-mocks", github: "rspec/rspec-mocks", branch: "main"
-  gem "rspec-rails", github: "rspec/rspec-rails", branch: "rails-6-1-dev" # rspec-rails is a testing framework for Rails 3+
+  gem "rspec-rails", github: "rspec/rspec-rails", branch: "rails-6-1-dev"
   gem "rspec-support", github: "rspec/rspec-support", branch: "main"
 
   gem "rubocop", "~> 1.9", require: false # Automatic Ruby code style checking tool
