@@ -7,13 +7,16 @@ export class ConfigMenu extends Component {
     super();
     this.state = { visible: false };
     this.firstNavLink = createRef();
+    this.configMenuButton = createRef();
   }
 
   handleClick = () => {
     this.setState(
       (prevState) => ({ visible: !prevState.visible }),
       () => {
-        this.state.visible && this.firstNavLink.current.focus();
+        this.state.visible
+          ? this.firstNavLink.current.focus()
+          : this.configMenuButton.current.focus();
       },
     );
   };
@@ -27,6 +30,7 @@ export class ConfigMenu extends Component {
           onClick={this.handleClick}
           aria-label="configuration menu"
           style={{ backgroundImage: `url(${ConfigImage})` }}
+          ref={this.configMenuButton}
         />
         {visible && (
           <nav aria-label="configuration menu">
