@@ -107,7 +107,9 @@ describe('<Channels />', () => {
       expect(queryByRole('alert')).toBeNull();
 
       // configFooter should exist
-      fireEvent.click(getByRole('button', { name: /configuration menu/i }));
+      fireEvent.click(
+        getByRole('button', { name: /toggle configuration menu/i }),
+      );
       const settings = getByText('Settings');
       expect(settings.getAttribute('href')).toEqual('/settings');
 
@@ -121,7 +123,9 @@ describe('<Channels />', () => {
       // should show "Welcome to Connect message....."
       getByRole('alert');
 
-      fireEvent.click(getByRole('button', { name: /configuration menu/i }));
+      fireEvent.click(
+        getByRole('button', { name: /toggle configuration menu/i }),
+      );
       const settings = getByText('Settings');
       expect(settings.getAttribute('href')).toEqual('/settings');
 
