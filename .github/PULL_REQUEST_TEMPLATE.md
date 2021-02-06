@@ -49,6 +49,20 @@ accessibility is impacted and tested. For more info, check out the
       have not been included_
 - [ ] I need help with writing tests
 
+## Does this change need to be communicated?
+
+_Please take a moment to consider if your PR will directly impact Forem users
+(members or creators), the Forem development process, or our support and/or
+marketing teams. You may want to include this in a Changelog post, write a
+[forem.dev](http://forem.dev) post, update documentation, or share this change
+internally._
+
+- [ ] Yes, this change will be communicated: _please replace this line with
+      details on how you will communicate your change_
+- [ ] No, and this is why not: _please replace this line with details on why
+      this change doesn't need to be communicated_
+- [ ] I'm not sure how best to communicate this change and need help
+
 ## Added to documentation?
 
 - [ ] [Developer Docs](https://docs.forem.com) and/or
