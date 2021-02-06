@@ -1,8 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-// eslint-disable-next-line import/no-unresolved
-import ConfigImage from 'images/overflow-horizontal.svg';
 import { ChannelButton } from './components/ChannelButton';
+import { ConfigMenu } from './configMenu';
 import { channelSorter } from './util';
 
 export const Channels = ({
@@ -78,27 +77,6 @@ export const Channels = ({
       <div className="chatchannels__channelslistfooter">...</div>
     );
   }
-  let configFooter = '';
-  if (expanded) {
-    configFooter = (
-      <nav className="chatchannels__config" aria-label="configuration menu">
-        <img
-          alt="configuration"
-          src={ConfigImage}
-          style={{ height: '18px' }}
-          aria-hidden="true"
-        />
-        <ul className="chatchannels__configmenu">
-          <li>
-            <a href="/settings">Settings</a>
-          </li>
-          <li>
-            <a href="/report-abuse">Report Abuse</a>
-          </li>
-        </ul>
-      </nav>
-    );
-  }
   return (
     <div className="chatchannels">
       <div
@@ -120,7 +98,8 @@ export const Channels = ({
         )}
         {channelsListFooter}
       </div>
-      {configFooter}
+
+      <ConfigMenu expanded={expanded} />
     </div>
   );
 };

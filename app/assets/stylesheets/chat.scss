@@ -549,8 +549,12 @@
   font-weight: bold;
   cursor: pointer;
 
-  img {
+  button {
     opacity: 0.6;
+    border: none;
+    height: 18px;
+    width: 18px;
+    background-size: cover;
   }
 
   ul {
@@ -565,7 +569,6 @@
 }
 
 .chatchannels__configmenu {
-  display: none;
   position: absolute;
   bottom: 42px;
   min-width: 150px;

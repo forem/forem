@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, fireEvent } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
 import { Channels } from '../channels';
@@ -107,7 +107,7 @@ describe('<Channels />', () => {
       expect(queryByRole('alert')).toBeNull();
 
       // configFooter should exist
-      getByRole('navigation', { name: /configuration menu/i });
+      fireEvent.click(getByRole('button', { name: /configuration menu/i }));
       const settings = getByText('Settings');
       expect(settings.getAttribute('href')).toEqual('/settings');
 
@@ -121,7 +121,7 @@ describe('<Channels />', () => {
       // should show "Welcome to Connect message....."
       getByRole('alert');
 
-      getByRole('navigation', { name: /configuration menu/i });
+      fireEvent.click(getByRole('button', { name: /configuration menu/i }));
       const settings = getByText('Settings');
       expect(settings.getAttribute('href')).toEqual('/settings');
 
