@@ -1,15 +1,10 @@
 import { h, Component, createRef } from 'preact';
-import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ConfigImage from 'images/overflow-horizontal.svg';
 
 export class ConfigMenu extends Component {
-  static propTypes = {
-    expanded: PropTypes.bool.isRequired,
-  };
-
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = { visible: false };
     this.firstNavLink = createRef();
   }
@@ -32,7 +27,7 @@ export class ConfigMenu extends Component {
           onClick={this.handleClick}
           aria-label="configuration menu"
           style={{ backgroundImage: `url(${ConfigImage})` }}
-         />
+        />
         {visible && (
           <nav aria-label="configuration menu">
             <ul className="chatchannels__configmenu">

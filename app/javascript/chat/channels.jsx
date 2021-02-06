@@ -99,7 +99,7 @@ export const Channels = ({
         {channelsListFooter}
       </div>
 
-      <ConfigMenu expanded={expanded} />
+      <ConfigMenu />
     </div>
   );
 };
