@@ -49,27 +49,23 @@ accessibility is impacted and tested. For more info, check out the
       have not been included_
 - [ ] I need help with writing tests
 
-## Does this change need to be communicated?
+## How will this change be communicated?
 
-_Please take a moment to consider if your PR will directly impact Forem users
-(members or creators), the Forem development process, or our support and/or
-marketing teams. You may want to include this in a Changelog post, write a
-[forem.dev](http://forem.dev) post, update documentation, or share this change
-internally._
+_Please take a moment to consider if your PR will directly impact Forem members
+or creators, the development process, or any of our internal teams. You may want
+to include this in a Changelog post, write a [forem.dev](http://forem.dev) post,
+update documentation, or share this change internally._
 
-- [ ] Yes, this change will be communicated: _please replace this line with
-      details on how you will communicate your change_
-- [ ] No, and this is why not: _please replace this line with details on why
-      this change doesn't need to be communicated_
+- [ ] I've updated the [Developer Docs](https://docs.forem.com) and/or
+      [Admin Guide](https://forem.gitbook.io/forem-admin-guide/), or [Storybook](https://storybook.forem.com/) (for Crayons components)
+- [ ] I've updated the README or inline documentation
+- [ ] I will include this in the [Changelog](https://forem.dev/t/changelog) or
+      in a [forem.dev](http://forem.dev) post
+- [ ] I will share this internally with the appropriate team
+- [ ] This change does not need to be communicated, and this is why not: _please
+      replace this line with details on why this change doesn't need to be
+      shared_
 - [ ] I'm not sure how best to communicate this change and need help
-
-## Added to documentation?
-
-- [ ] [Developer Docs](https://docs.forem.com) and/or
-      [Admin Guide](https://forem.gitbook.io/forem-admin-guide/)
-- [ ] [Storybook](https://storybook.forem.com/) (for Crayons components)
-- [ ] README
-- [ ] No documentation needed
 
 ## [optional] Are there any post deployment tasks we need to perform?
 
