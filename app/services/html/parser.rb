@@ -61,7 +61,7 @@ module Html
       doc.search("p img").each do |image|
         next if image.parent.name == "a"
 
-        image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>")
+        image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper' target='_blank'>#{image}</a>")
       end
 
       @html = doc.to_html
