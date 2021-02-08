@@ -1,0 +1,12 @@
+name: erb-lint
+
+up:
+  - ruby: 2.5.3
+  - bundler
+
+commands:
+  test:
+    syntax:
+      argument: file
+      optional: args...
+    run: bundle exec rspec "$@"

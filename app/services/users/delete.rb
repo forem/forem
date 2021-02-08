@@ -9,7 +9,7 @@ module Users
       delete_articles
       delete_user_activity
       user.unsubscribe_from_newsletters
-      CacheBuster.bust("/#{user.username}")
+      EdgeCache::Bust.call("/#{user.username}")
       user.destroy
       Rails.cache.delete("user-destroy-token-#{user.id}")
     end

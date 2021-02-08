@@ -80,6 +80,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def redirect_permanently_to(location)
+    redirect_to location + internal_nav_param, status: :moved_permanently
+  end
+
   def customize_params
     params[:signed_in] = user_signed_in?.to_s
   end
@@ -173,9 +177,25 @@ class ApplicationController < ActionController::Base
     redirect_to URL.url(request.fullpath)
   end
 
+  def bust_content_change_caches
+    EdgeCache::Bust.call("/tags/onboarding") # Needs to change when suggested_tags is edited.
+    EdgeCache::Bust.call("/shell_top") # Cached at edge, sent to service worker.
+    EdgeCache::Bust.call("/shell_bottom") # Cached at edge, sent to service worker.
+    EdgeCache::Bust.call("/async_info/shell_version") # Checks if current users should be busted.
+    EdgeCache::Bust.call("/onboarding") # Page is cached at edge.
+    EdgeCache::Bust.call("/") # Page is cached at edge.
+    SiteConfig.admin_action_taken_at = Time.current # Used as cache key
+  end
+
   protected
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
+  end
+
+  def internal_nav_param
+    return "" unless params[:i] == "i"
+
+    "?i=i"
   end
 end

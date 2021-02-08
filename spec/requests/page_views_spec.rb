@@ -56,7 +56,23 @@ RSpec.describe "PageViews", type: :request do
           referrer: "test"
         }
         expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async)
-          .with(user.id, :user_home_feed, "user_views_article_four_days_in_week")
+          .with(user.id, "user_creates_pageview")
+      end
+    end
+
+    context "when not part of field test" do
+      before do
+        sign_in user
+        allow(FieldTest).to receive(:config).and_return({ "experiments" => nil })
+        allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
+      end
+
+      it "converts field test" do
+        post "/page_views", params: {
+          article_id: article.id,
+          referrer: "test"
+        }
+        expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async)
       end
     end
 

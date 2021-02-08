@@ -83,6 +83,12 @@ class ArticleDecorator < ApplicationDecorator
     }
   end
 
+  def has_recent_comment_activity?(timeframe = 1.week.ago)
+    return false if last_comment_at.blank?
+
+    last_comment_at > timeframe
+  end
+
   def long_markdown?
     body_markdown.present? && body_markdown.size > LONG_MARKDOWN_THRESHOLD
   end
@@ -95,5 +101,11 @@ class ArticleDecorator < ApplicationDecorator
     co_authors.map do |user|
       "<b><a href=\"#{user.path}\">#{user.name}</a></b>"
     end.to_sentence
+  end
+
+  # Used in determining when to bust additional routes for an Article's comments
+  def discussion?
+    cached_tag_list_array.include?("discuss") &&
+      featured_number.to_i > 35.hours.ago.to_i
   end
 end

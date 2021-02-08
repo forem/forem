@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { addDecorator, addParameters } from '@storybook/preact';
+import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 
 import '../../assets/stylesheets/minimal.scss';
 import '../../assets/stylesheets/crayons.scss';
@@ -66,6 +67,7 @@ const themeSwitcherDecorator = (storyFn) => {
 };
 
 addDecorator(themeSwitcherDecorator);
+addDecorator((Story) => <Story />);
 
 addParameters({
   options: {
@@ -74,4 +76,31 @@ addParameters({
         ? 0
         : a[1].id.localeCompare(b[1].id, undefined, { numeric: true }),
   },
+
+  docs: {
+    container: DocsContainer,
+    page: DocsPage,
+  },
 });
+
+export const Foo = () => <Component />;
+Foo.parameters = {
+  previewTabs: { 'storybook/docs/panel': { index: -1 } },
+};
+
+export const parameters = {
+  options: {
+    storySort: {
+      order: [
+        'Introduction',
+        'Component Library',
+        'Utility-First CSS',
+        'Writing CSS',
+        'Fundamentals',
+        'Components',
+        'App Components',
+        'Utility-First Classes',
+      ],
+    },
+  },
+};

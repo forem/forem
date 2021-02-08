@@ -9,7 +9,7 @@
   <meta property="og:url" content="<%= app_url("/#{@podcast.slug}/#{@episode.slug}") %>" />
   <meta property="og:title" content="<%= @episode.title %>" />
   <meta property="og:description" content="<%= truncate(strip_tags(@episode.body), length: 140) %>" />
-  <meta property="og:site_name" content="<%= community_qualified_name %>" />
+  <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:creator" content="@software_daily">

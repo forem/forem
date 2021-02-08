@@ -90,6 +90,12 @@ RSpec.configure do |config|
     ENV["TZ"] = Time.zone.tzinfo.name
 
     Search::Cluster.recreate_indexes
+
+    # NOTE: @citizen428 needed while we delegate from User to Profile to keep
+    # spec changes limited for the time being.
+    csv = Rails.root.join("lib/data/dev_profile_fields.csv")
+    ProfileFields::ImportFromCsv.call(csv)
+    Profile.refresh_attributes!
   end
 
   config.before do
@@ -174,7 +180,23 @@ RSpec.configure do |config|
     allow(SiteConfig).to receive(:community_description).and_return("Some description")
     allow(SiteConfig).to receive(:public).and_return(true)
     allow(SiteConfig).to receive(:waiting_on_first_user).and_return(false)
-  end
+
+    # Default to have field a field test available.
+    config = { "experiments" =>
+      { "wut" =>
+        { "variants" => %w[base var_1],
+          "weights" => [50, 50],
+          "goals" => %w[user_creates_comment
+                        user_creates_comment_four_days_in_week
+                        user_views_article_four_days_in_week
+                        user_views_article_four_hours_in_day
+                        user_views_article_nine_days_in_two_week
+                        user_views_article_twelve_hours_in_five_days] } },
+     "exclude" => { "bots" => true },
+     "cache" => true,
+     "cookies" => false }
+    allow(FieldTest).to receive(:config).and_return(config)
+end
 
   config.after do
     Timecop.return

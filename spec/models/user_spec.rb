@@ -28,7 +28,10 @@ RSpec.describe User, type: :model do
   let(:other_user) { create(:user) }
   let(:org) { create(:organization) }
 
-  before { omniauth_mock_providers_payload }
+  before do
+    omniauth_mock_providers_payload
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+  end
 
   describe "validations" do
     describe "builtin validations" do
@@ -53,7 +56,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
-      it { is_expected.to have_many(:endorsements).dependent(:destroy) }
       it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
       it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:html_variants).dependent(:destroy) }
@@ -68,6 +70,8 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
       it { is_expected.to have_many(:page_views).dependent(:nullify) }
+      it { is_expected.to have_many(:podcast_episode_appearances).dependent(:destroy) }
+      it { is_expected.to have_many(:podcast_episodes).through(:podcast_episode_appearances).source(:podcast_episode) }
       it { is_expected.to have_many(:podcast_ownerships).dependent(:destroy) }
       it { is_expected.to have_many(:podcasts_owned).through(:podcast_ownerships).source(:podcast) }
       it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
@@ -182,6 +186,12 @@ RSpec.describe User, type: :model do
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
+      it { is_expected.not_to allow_value("$example.com/value\x1F").for(:payment_pointer) }
+      it { is_expected.not_to allow_value("example.com/value").for(:payment_pointer) }
+      it { is_expected.to allow_value(" $example.com/value ").for(:payment_pointer) }
+      it { is_expected.to allow_value(nil).for(:payment_pointer) }
+      it { is_expected.to allow_value("").for(:payment_pointer) }
+
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
 
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
@@ -208,11 +218,21 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_presence_of(:spent_credits_count) }
       it { is_expected.to validate_presence_of(:subscribed_to_user_subscriptions_count) }
 
-      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      context "custom username error uniqueness error message" do
+        subject { create(:user, username: "test_user_123") }
+        it { is_expected.to validate_uniqueness_of(:username).with_message("test_user_123 is taken.").case_insensitive }
+      end
 
       Authentication::Providers.username_fields.each do |username_field|
         it { is_expected.to validate_uniqueness_of(username_field).allow_nil }
       end
+    end
+
+    it "renders custom error message with value of taken username" do
+      create(:user, username: "test_user_123")
+      same_username = build(:user, username: "test_user_123")
+      expect(same_username).not_to be_valid
+      expect(same_username.errors[:username].to_s).to include("test_user_123 is taken.")
     end
 
     it "validates username against reserved words" do
@@ -266,6 +286,26 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
       expect(user.errors[:base].to_s).to include("could not be saved. Rate limit reached")
       expect(limiter).to have_received(:track_limit_by_action).with(:user_update).twice
+    end
+
+    context "when validating feed_url", vcr: true do
+      it "is valid with no feed_url" do
+        user.feed_url = nil
+
+        expect(user).to be_valid
+      end
+
+      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
+        user.feed_url = "http://example.com"
+
+        expect(user).not_to be_valid
+      end
+
+      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+        user.feed_url = "https://medium.com/feed/@vaidehijoshi"
+
+        expect(user).to be_valid
+      end
     end
   end
 
@@ -394,64 +434,11 @@ RSpec.describe User, type: :model do
         expect(user.old_username).to eq(new_username)
         expect(user.old_old_username).to eq(old_username)
       end
-
-      it "enforces summary length validation if previous summary was valid" do
-        user.summary = "0" * 999
-        user.save(validate: false)
-        user.summary = "0" * 999
-        expect(user).to be_valid
-      end
-
-      it "does not enforce summary validation if previous summary was invalid" do
-        user = build(:user, summary: "0" * 999)
-        expect(user).not_to be_valid
-      end
     end
   end
 
   context "when callbacks are triggered before and after create" do
     let(:user) { create(:user, email: nil) }
-
-    describe "#language_settings" do
-      it "sets correct language_settings by default" do
-        expect(user.language_settings).to eq("preferred_languages" => %w[en])
-      end
-
-      it "sets correct language_settings by default after the jobs are processed" do
-        sidekiq_perform_enqueued_jobs do
-          expect(user.language_settings).to eq("preferred_languages" => %w[en])
-        end
-      end
-    end
-
-    describe "#estimated_default_language" do
-      it "estimates default language to be nil" do
-        sidekiq_perform_enqueued_jobs do
-          expect(user.estimated_default_language).to be(nil)
-        end
-      end
-
-      it "estimates default language to be japanese with .jp email" do
-        user = nil
-
-        sidekiq_perform_enqueued_jobs do
-          user = create(:user, email: "ben@hello.jp")
-        end
-
-        expect(user.reload.estimated_default_language).to eq("ja")
-      end
-
-      it "estimates default language from Twitter identity" do
-        new_user = nil
-
-        sidekiq_perform_enqueued_jobs(only: Users::EstimateDefaultLanguageWorker) do
-          new_user = user_from_authorization_service(:twitter)
-        end
-
-        lang = new_user.identities.last.auth_data_dump.extra.raw_info.lang
-        expect(new_user.reload.estimated_default_language).to eq(lang)
-      end
-    end
 
     describe "#send_welcome_notification" do
       let(:mascot_account) { create(:user) }
@@ -477,24 +464,6 @@ RSpec.describe User, type: :model do
           new_user = create(:user)
         end
         expect(new_user.reload.notifications.count).to eq(0)
-      end
-    end
-
-    describe "#preferred_languages_array" do
-      it "returns proper preferred_languages_array" do
-        user = nil
-
-        sidekiq_perform_enqueued_jobs do
-          user = create(:user, email: "ben@hello.jp")
-        end
-
-        expect(user.reload.preferred_languages_array).to eq(%w[en ja])
-      end
-
-      it "returns a correct array for language settings" do
-        language_settings = { estimated_default_language: "en", preferred_languages: %w[en ru it] }
-        user = build(:user, language_settings: language_settings)
-        expect(user.preferred_languages_array).to eq(%w[en ru it])
       end
     end
   end
@@ -539,98 +508,6 @@ RSpec.describe User, type: :model do
 
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(website_url: "http://example.com")
-        end
-      end
-    end
-
-    describe "#conditionally_resave_articles" do
-      let!(:user) { create(:user) }
-
-      it "enqueues resave articles job when changing username" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.username = "#{user.username} changed"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing name" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.name = "#{user.name} changed"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing summary" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.summary = "#{user.summary} changed"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing bg_color_hex" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.bg_color_hex = "#12345F"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing text_color_hex" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.text_color_hex = "#FA345E"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing profile_image" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.profile_image = "https://fakeimg.pl/300/"
-          user.save
-        end
-      end
-
-      Authentication::Providers.username_fields.each do |username_field|
-        it "enqueues resave articles job when changing #{username_field}" do
-          sidekiq_assert_enqueued_with(
-            job: Users::ResaveArticlesWorker,
-            args: [user.id],
-            queue: "medium_priority",
-          ) do
-            user.assign_attributes(username_field => "greatnewusername")
-            user.save
-          end
-        end
-
-        it "doesn't enqueue resave articles job when changing #{username_field} for a banned user" do
-          banned_user = create(:user, :banned)
-
-          expect do
-            banned_user.assign_attributes(username_field => "greatnewusername")
-            banned_user.save
-          end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
         end
       end
     end
@@ -987,7 +864,7 @@ RSpec.describe User, type: :model do
   end
 
   describe "#authenticated_with_all_providers?" do
-    let(:provider) { Authentication::Providers.available.first }
+    let(:provider) { (Authentication::Providers.available - [:apple]).first }
 
     it "returns false if the user has no related identity" do
       expect(user.authenticated_with_all_providers?).to be(false)
@@ -1010,12 +887,6 @@ RSpec.describe User, type: :model do
   end
 
   describe "profiles" do
-    before do
-      create(:profile_field, label: "Available for")
-      create(:profile_field, label: "Brand Color 1")
-      Profile.refresh_attributes!
-    end
-
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)
       expect(user.profile).to be_present

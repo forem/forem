@@ -38,30 +38,20 @@ RSpec.describe AuthenticationHelper, type: :helper do
     end
   end
 
-  describe "#recaptcha_configured_and_enabled?" do
-    context "when recaptcha is enabled" do
-      before do
-        allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
-      end
-
-      it "returns true if both site & secret keys present" do
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
-
-        expect(recaptcha_configured_and_enabled?).to be(true)
-      end
-
-      it "returns false if site or secret key missing" do
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("")
-
-        expect(recaptcha_configured_and_enabled?).to be(false)
-      end
+  describe "#authentication_provider_enabled?" do
+    before do
+      allow(SiteConfig).to receive(:invite_only_mode).and_return(false)
+      allow(SiteConfig).to receive(:authentication_providers).and_return(%i[twitter github])
     end
 
-    it "returns false if recaptcha disabled for email signup" do
-      allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(false)
+    it "returns true when a provider has been enabled" do
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Twitter)).to be true
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Github)).to be true
+    end
 
-      expect(recaptcha_configured_and_enabled?).to be(false)
+    it "returns false when a provider has not yet been enabled" do
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Facebook)).to be false
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Apple)).to be false
     end
   end
 
@@ -78,7 +68,7 @@ RSpec.describe AuthenticationHelper, type: :helper do
       end
 
       it "returns 'disabled' attribute for relevant helper" do
-        expect(disabled_attr_on_auth_provider_enablebtn).to eq("disabled")
+        expect(disabled_attr_on_auth_provider_enable_btn).to eq("disabled")
       end
 
       it "returns appropriate text for 'tooltip_text_email_or_auth_provider_btns' helper" do

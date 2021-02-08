@@ -13,7 +13,6 @@ class ModerationsController < ApplicationController
     return unless current_user&.trusted
 
     articles = Article.published
-      .where("score > -5 AND score < 5")
       .order(published_at: :desc).limit(70)
     articles = articles.cached_tagged_with(params[:tag]) if params[:tag].present?
     if params[:state] == "new-authors"

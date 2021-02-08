@@ -17,7 +17,7 @@
     <%= form_tag "/listings/#{@listing.id}", method: :delete do %>
       <button class="crayons-btn crayons-btn--danger">Delete</button>
       <a data-no-instant href="/listings/<%= @listing.id %>/edit" class="crayons-btn crayons-btn--secondary">
-        <%= @article.published ? "Unpublish" : "Edit" %>
+        <%= @listing.published ? "Unpublish" : "Edit" %>
       </a>
     <% end %>
   </div>

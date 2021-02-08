@@ -8,12 +8,12 @@ RSpec.describe Metrics::CheckDataUpdateScriptStatuses, type: :worker do
       create(:data_update_script)
       create(:data_update_script, status: :failed, created_at: 1.month.ago)
       failed_script = create(:data_update_script, status: :failed)
-      allow(DatadogStatsClient).to receive(:count)
+      allow(ForemStatsClient).to receive(:count)
       described_class.new.perform
 
-      expect(DatadogStatsClient).to have_received(:count).once
+      expect(ForemStatsClient).to have_received(:count).once
       expect(
-        DatadogStatsClient,
+        ForemStatsClient,
       ).to have_received(:count).with(
         "data_update_scripts.failures", 1, { tags: ["file_name:#{failed_script.file_name}"] }
       ).at_least(1)

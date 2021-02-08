@@ -5,6 +5,39 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  # @citizen428 Preparing to drop profile columns from the users table
+  PROFILE_COLUMNS = %w[
+    available_for
+    behance_url
+    bg_color_hex
+    currently_hacking_on
+    currently_learning
+    currently_streaming_on
+    dribbble_url
+    education
+    email_public
+    employer_name
+    employer_url
+    employment_title
+    facebook_url
+    gitlab_url
+    instagram_url
+    linkedin_url
+    location
+    mastodon_url
+    medium_url
+    mostly_work_with
+    stackoverflow_url
+    summary
+    text_color_hex
+    twitch_url
+    twitch_username
+    website_url
+    youtube_url
+  ].freeze
+
+  self.ignored_columns = PROFILE_COLUMNS
+
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
   concerning :ProfileMigration do
@@ -15,24 +48,21 @@ class User < ApplicationRecord
       # instead. See `spec/factories/profiles.rb` for an example.
       attr_accessor :_skip_creating_profile
 
-      # NOTE: used for not sync-ing back data to profiles when the profile got
-      # updated first. This will eventually be removed:
-      attr_accessor :_skip_profile_sync
-
       # All new users should automatically have a profile
-      after_create_commit -> { Profile.create(user: self, data: Profiles::ExtractData.call(self)) },
-                          unless: :_skip_creating_profile
+      after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
 
-      # Keep saving changes locally for the time being, but propagate them to profiles.
-      after_update_commit :sync_profile
-
-      def sync_profile
-        return if _skip_profile_sync
-        return unless previous_changes.keys.any? { |attribute| attribute.in?(Profile.mapped_attributes) }
-
-        profile.update(data: Profiles::ExtractData.call(self))
+      # Getters and setters for unmapped profile attributes
+      (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
+        delegate column, "#{column}=", to: :profile, allow_nil: true
       end
-      private :sync_profile
+
+      # Getters and setters for mapped profile attributes
+      Profile::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
+        define_method(user_attribute) { profile&.public_send(profile_attribute) }
+        define_method("#{user_attribute}=") do |value|
+          profile&.public_send("#{profile_attribute}=", value)
+        end
+      end
     end
   end
 
@@ -50,9 +80,18 @@ class User < ApplicationRecord
     invalid_editor_version: "%<value>s must be either v1 or v2",
     reserved_username: "username is reserved"
   }.freeze
+  # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
+  PAYMENT_POINTER_REGEXP = %r{
+    \A                # start
+    \$                # starts with a dollar sign
+    ([a-zA-Z0-9\-.])+ # matches the hostname (ex ilp.uphold.com)
+    (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
+    \z
+  }x.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
-                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
+                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
+                :current_password
 
   rolify after_add: :index_roles, after_remove: :index_roles
 
@@ -100,7 +139,6 @@ class User < ApplicationRecord
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
-  has_many :endorsements, dependent: :destroy, class_name: "ListingEndorsement"
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
@@ -118,6 +156,8 @@ class User < ApplicationRecord
   has_many :organizations, through: :organization_memberships
   # we keep page views as they belong to the article, not to the user who viewed it
   has_many :page_views, dependent: :nullify
+  has_many :podcast_episode_appearances, dependent: :destroy, inverse_of: :user
+  has_many :podcast_episodes, through: :podcast_episode_appearances, source: :podcast_episode
   has_many :podcast_ownerships, dependent: :destroy, inverse_of: :owner
   has_many :podcasts_owned, through: :podcast_ownerships, source: :podcast
   has_many :poll_skips, dependent: :destroy
@@ -170,6 +210,7 @@ class User < ApplicationRecord
   validates :inbox_type, inclusion: { in: INBOXES }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
+  validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_blank: true
   validates :rating_votes_count, presence: true
   validates :reactions_count, presence: true
   validates :sign_in_count, presence: true
@@ -178,7 +219,9 @@ class User < ApplicationRecord
   validates :unspent_credits_count, presence: true
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
   validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
-  validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
+  validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
+    "#{data[:value]} is taken."
+  end }, if: :username_changed?
   validates :welcome_notifications, inclusion: { in: [true, false] }
 
   # add validators for provider related usernames
@@ -193,11 +236,9 @@ class User < ApplicationRecord
     validates username_field, uniqueness: { allow_nil: true }, if: :"#{username_field}_changed?"
   end
 
-  validate :conditionally_validate_summary
   validate :non_banished_username, :username_changed?
   validate :unique_including_orgs_and_podcasts, if: :username_changed?
   validate :validate_feed_url, if: :feed_url_changed?
-  validate :validate_mastodon_url
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -219,14 +260,16 @@ class User < ApplicationRecord
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :verify_email
   before_validation :set_username
-  before_create :set_default_language
+  before_validation :strip_payment_pointer
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
+
+  # NOTE: @citizen428 Temporary while migrating to generalized profiles
+  after_save { |user| user.profile&.save if user.profile&.changed? }
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
-  after_save :conditionally_resave_articles
 
-  after_create_commit :send_welcome_notification, :estimate_default_language
+  after_create_commit :send_welcome_notification
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
@@ -237,10 +280,6 @@ class User < ApplicationRecord
 
   def self.mascot_account
     find_by(id: SiteConfig.mascot_user_id)
-  end
-
-  def estimated_default_language
-    language_settings["estimated_default_language"]
   end
 
   def tag_line
@@ -262,9 +301,9 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article.tagged_with(cached_followed_tag_names, any: true)
+    Article
+      .tagged_with(cached_followed_tag_names, any: true).unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
-      .where(language: preferred_languages_array, published: true)
   end
 
   def cached_following_users_ids
@@ -294,12 +333,6 @@ class User < ApplicationRecord
         user_id: id, reactable_type: "Article",
       ).where.not(status: "archived").order(created_at: :desc).pluck(:reactable_id)
     end
-  end
-
-  def preferred_languages_array
-    return @preferred_languages_array if defined?(@preferred_languages_array)
-
-    @preferred_languages_array = language_settings["preferred_languages"]
   end
 
   def processed_website_url
@@ -394,10 +427,6 @@ class User < ApplicationRecord
 
   def block; end
 
-  def all_blocking
-    UserBlock.where(blocker_id: id)
-  end
-
   def all_blocked_by
     UserBlock.where(blocked_id: id)
   end
@@ -444,8 +473,8 @@ class User < ApplicationRecord
   def resave_articles
     articles.find_each do |article|
       if article.path
-        CacheBuster.bust(article.path)
-        CacheBuster.bust("#{article.path}?i=i")
+        EdgeCache::Bust.call(article.path)
+        EdgeCache::Bust.call("#{article.path}?i=i")
       end
       article.save
     end
@@ -457,8 +486,9 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
+    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
 
-    MailchimpBot.new(self).unsubscribe_all_newsletters
+    Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
 
   def auditable?
@@ -489,7 +519,10 @@ class User < ApplicationRecord
   end
 
   def authenticated_with_all_providers?
-    identities_enabled.pluck(:provider).map(&:to_sym) == Authentication::Providers.enabled
+    # ga_providers refers to Generally Available (not in beta)
+    ga_providers = Authentication::Providers.enabled.reject { |sym| sym == :apple }
+    enabled_providers = identities.pluck(:provider).map(&:to_sym)
+    (ga_providers - enabled_providers).empty?
   end
 
   def rate_limiter
@@ -501,14 +534,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def estimate_default_language
-    Users::EstimateDefaultLanguageWorker.perform_async(id)
-  end
-
-  def set_default_language
-    language_settings["preferred_languages"] ||= ["en"]
-  end
 
   def send_welcome_notification
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
@@ -571,47 +596,18 @@ class User < ApplicationRecord
     end
   end
 
-  def conditionally_resave_articles
-    Users::ResaveArticlesWorker.perform_async(id) if core_profile_details_changed? && !banned
-  end
-
   def bust_cache
     Users::BustCacheWorker.perform_async(id)
   end
 
-  def core_profile_details_changed?
-    saved_change_to_username? ||
-      saved_change_to_name? ||
-      saved_change_to_summary? ||
-      saved_change_to_bg_color_hex? ||
-      saved_change_to_text_color_hex? ||
-      saved_change_to_profile_image? ||
-      Authentication::Providers.username_fields.any? { |f| public_send("saved_change_to_#{f}?") }
-  end
-
-  def conditionally_validate_summary
-    # Grandfather people who had a too long summary before.
-    return if summary_was && summary_was.size > 200
-
-    errors.add(:summary, "is too long.") if summary.present? && summary.size > 200
-  end
-
   def validate_feed_url
     return if feed_url.blank?
-    return if RssReader.new.valid_feed_url?(feed_url)
 
-    errors.add(:feed_url, "is not a valid RSS/Atom feed")
-  end
+    valid = Feeds::ValidateUrl.call(feed_url)
 
-  def validate_mastodon_url
-    return if mastodon_url.blank?
-
-    uri = URI.parse(mastodon_url)
-    return if uri.host&.in?(Constants::Mastodon::ALLOWED_INSTANCES)
-
-    errors.add(:mastodon_url, "is not an allowed Mastodon instance")
-  rescue URI::InvalidURIError
-    errors.add(:mastodon_url, "is not a valid URL")
+    errors.add(:feed_url, "is not a valid RSS/Atom feed") unless valid
+  rescue StandardError => e
+    errors.add(:feed_url, e.message)
   end
 
   def tag_keywords_for_search
@@ -634,6 +630,8 @@ class User < ApplicationRecord
     return unless persisted?
 
     index_to_elasticsearch_inline
+  rescue StandardError => e
+    Honeybadger.notify(e, context: { user_id: id })
   end
 
   def can_send_confirmation_email
@@ -658,5 +656,9 @@ class User < ApplicationRecord
     return true if password == password_confirmation
 
     errors.add(:password, "doesn't match password confirmation")
+  end
+
+  def strip_payment_pointer
+    self.payment_pointer = payment_pointer.strip if payment_pointer
   end
 end

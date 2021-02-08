@@ -25,7 +25,7 @@ export const CommentsCount = ({ count, articlePath }) => {
         tagName="a"
       >
         <span title="Number of comments">
-          {count} 
+          {count}
           <span className="hidden s:inline">
             &nbsp;
             {`${count > 1 ? 'comments' : 'comment'}`}

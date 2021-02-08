@@ -2,36 +2,9 @@
 
 return if Rails.env.production?
 
-# NOTE: when adding new data, please use this class to ensure the seed tasks
+# NOTE: when adding new data, please use the Seeder class to ensure the seed tasks
 # stays idempotent.
-class Seeder
-  def initialize
-    @counter = 0
-  end
-
-  def create_if_none(klass, count = nil)
-    @counter += 1
-    plural = klass.name.pluralize
-
-    if klass.none?
-      message = ["Creating", count, plural].compact.join(" ")
-      puts "  #{@counter}. #{message}."
-      yield
-    else
-      puts "  #{@counter}. #{plural} already exist. Skipping."
-    end
-  end
-
-  def create_if_doesnt_exist(klass, attribute_name, attribute_value)
-    record = klass.find_by("#{attribute_name}": attribute_value)
-    if record.nil?
-      puts "  #{klass} with #{attribute_name} = #{attribute_value} not found, proceeding..."
-      yield
-    else
-      puts "  #{klass} with #{attribute_name} = #{attribute_value} found, skipping."
-    end
-  end
-end
+require Rails.root.join("app/lib/seeder")
 
 # we use this to be able to increase the size of the seeded DB at will
 # eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
@@ -44,6 +17,7 @@ puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 SiteConfig.public = true
 SiteConfig.waiting_on_first_user = false
+SiteConfig.authentication_providers = Authentication::Providers.available
 
 ##############################################################################
 
@@ -71,6 +45,15 @@ seeder.create_if_none(Organization) do
       text_color_hex: Faker::Color.hex_color,
     )
   end
+end
+
+##############################################################################
+
+# NOTE: @citizen428 For the time being we want all current DEV profile fields.
+# The CSV import is idempotent by itself, since it uses find_or_create_by.
+seeder.create("Creating DEV profile fields") do
+  dev_fields_csv = Rails.root.join("lib/data/dev_profile_fields.csv")
+  ProfileFields::ImportFromCsv.call(dev_fields_csv)
 end
 
 ##############################################################################
@@ -311,16 +294,16 @@ seeder.create_if_none(Broadcast) do
       "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
       "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
     facebook_connect: "You're on a roll! 🎉  Do you have a Facebook account? " \
-      "Consider <a href='/settings'>connecting it</a>.",
+    "Consider <a href='/settings'>connecting it</a>.",
     github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
       "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
     customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
       "your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
     customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
-      "Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!",
+      "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!",
     start_discussion: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; " \
-      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+    "just click on 'Write a Post' in the sidebar of the tag page to get started!",
     ask_question: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; " \
       "just click on 'Write a Post' in the sidebar of the tag page to get started!",
@@ -540,15 +523,6 @@ seeder.create_if_none(Listing) do
   end
 end
 
-seeder.create_if_none(ListingEndorsement) do
-  5.times do
-    ListingEndorsement.create!(
-      content: Faker::Lorem.sentence,
-      user: User.order(Arel.sql("RANDOM()")).first,
-      listing: Listing.order(Arel.sql("RANDOM()")).first,
-    )
-  end
-end
 ##############################################################################
 
 seeder.create_if_none(Page) do
@@ -561,17 +535,6 @@ seeder.create_if_none(Page) do
       template: %w[contained full_within_layout].sample,
     )
   end
-end
-
-##############################################################################
-
-seeder.create_if_none(ProfileField) do
-  ProfileFields::AddBaseFields.call
-  ProfileFields::AddLinkFields.call
-  ProfileFields::AddWorkFields.call
-  coding_fields_csv = Rails.root.join("lib/data/coding_profile_fields.csv")
-  ProfileFields::ImportFromCsv.call(coding_fields_csv)
-  ProfileFields::AddBrandingFields.call
 end
 
 ##############################################################################

@@ -53,6 +53,34 @@ RSpec.describe Article, type: :model do
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
+    describe "::admin_published_with" do
+      it "includes mascot-published articles" do
+        allow(SiteConfig).to receive(:mascot_user_id).and_return(3)
+        user = create(:user, id: 3)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(1)
+      end
+
+      it "includes staff-user-published articles" do
+        allow(SiteConfig).to receive(:staff_user_id).and_return(3)
+        user = create(:user, id: 3)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(1)
+      end
+
+      it "includes admin published articles" do
+        user = create(:user, :admin)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(1)
+      end
+
+      it "does not include regular user published articles" do
+        user = create(:user)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(0)
+      end
+    end
+
     describe "#body_markdown" do
       it "is unique scoped for user_id and title" do
         art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
@@ -110,6 +138,12 @@ RSpec.describe Article, type: :model do
                                      args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
         end
+      end
+
+      it "on update syncs elasticsearch data" do
+        allow(article).to receive(:sync_related_elasticsearch_docs)
+        article.save
+        expect(article).to have_received(:sync_related_elasticsearch_docs)
       end
     end
 
@@ -745,34 +779,17 @@ RSpec.describe Article, type: :model do
   end
 
   context "when callbacks are triggered after save" do
-    describe "main image background color" do
-      let(:article) { build(:article, user: user) }
-
-      it "enqueues a job to update the main image background if #dddddd" do
-        article.main_image_background_hex_color = "#dddddd"
-        allow(article).to receive(:update_main_image_background_hex).and_call_original
-        sidekiq_assert_enqueued_with(job: Articles::UpdateMainImageBackgroundHexWorker) do
-          article.save
-        end
-        expect(article).to have_received(:update_main_image_background_hex)
+    describe "article path sanitizing" do
+      it "returns a downcased username when user has uppercase characters" do
+        upcased_user = create(:user, username: "UpcasedUserName")
+        upcased_article = create(:article, user: upcased_user)
+        expect(upcased_article.path).not_to match(/[AZ]+/)
       end
 
-      it "does not enqueue a job to update the main image background if not #dddddd" do
-        article.main_image_background_hex_color = "#fff000"
-        allow(article).to receive(:update_main_image_background_hex).and_call_original
-        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
-          article.save
-        end
-        expect(article).to have_received(:update_main_image_background_hex)
-      end
-
-      it "does not enqueue a job if main_image has not changed" do
-        article.save
-        allow(article).to receive(:update_main_image_background_hex).and_call_original
-        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
-          article.save
-        end
-        expect(article).to have_received(:update_main_image_background_hex)
+      it "returns a downcased username when an org slug has uppercase characters" do
+        upcased_org = create(:organization, slug: "UpcasedSlug")
+        upcased_article = create(:article, organization: upcased_org)
+        expect(upcased_article.path).not_to match(/[AZ]+/)
       end
     end
 
@@ -798,13 +815,13 @@ RSpec.describe Article, type: :model do
         expect(Reaction.last.user_id).to eq(user.id)
       end
 
-      it "does not ban user if only single vomit" do
+      it "does not suspend user if only single vomit" do
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
         article.save
         expect(article.user.banned).to be false
       end
 
-      it "bans user with 3 comment vomits" do
+      it "suspends user with 3 comment vomits" do
         second_article = create(:article, user: article.user)
         third_article = create(:article, user: article.user)
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
@@ -815,7 +832,7 @@ RSpec.describe Article, type: :model do
         second_article.save
         third_article.save
         expect(article.user.banned).to be true
-        expect(Note.last.reason).to eq "automatic_ban"
+        expect(Note.last.reason).to eq "automatic_suspend"
       end
 
       it "does not create vomit reaction if does not have matching title" do
@@ -842,29 +859,6 @@ RSpec.describe Article, type: :model do
         sidekiq_assert_no_enqueued_jobs(only: Articles::ScoreCalcWorker) do
           article.save
         end
-      end
-    end
-
-    describe "detect human language" do
-      let(:language_detector) { instance_double(LanguageDetector) }
-
-      before do
-        allow(LanguageDetector).to receive(:new).and_return(language_detector)
-        allow(language_detector).to receive(:detect)
-      end
-
-      it "calls the human language detector" do
-        article.language = ""
-        article.save
-
-        expect(language_detector).to have_received(:detect)
-      end
-
-      it "does not call the human language detector if there is already a language" do
-        article.language = "en"
-        article.save
-
-        expect(language_detector).not_to have_received(:detect)
       end
     end
 

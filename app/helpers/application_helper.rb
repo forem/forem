@@ -1,8 +1,10 @@
 module ApplicationHelper
   # rubocop:disable Performance/OpenStruct
+  USER_COLORS = ["#19063A", "#dce9f3"].freeze
+
   DELETED_USER = OpenStruct.new(
     id: nil,
-    darker_color: HexComparer.new(bg: "#19063A", text: "#dce9f3").brightness,
+    darker_color: Color::CompareHex.new(USER_COLORS).brightness,
     username: "[deleted user]",
     name: "[Deleted User]",
     summary: nil,
@@ -45,7 +47,7 @@ module ApplicationHelper
     derived_title = if page_title.include?(community_name)
                       page_title
                     elsif user_signed_in?
-                      "#{page_title} - #{community_qualified_name} #{community_emoji}"
+                      "#{page_title} - #{community_name} #{community_emoji}"
                     else
                       "#{page_title} - #{community_name}"
                     end
@@ -125,7 +127,7 @@ module ApplicationHelper
     return if followable == DELETED_USER
 
     tag :button, # Yikes
-        class: "crayons-btn follow-action-button #{classes}",
+        class: "crayons-btn follow-action-button #{classes} whitespace-nowrap",
         data: {
           :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
@@ -173,14 +175,8 @@ module ApplicationHelper
     @community_emoji ||= SiteConfig.community_emoji
   end
 
-  def community_qualified_name
-    return "#{community_name} #{SiteConfig.collective_noun}" unless SiteConfig.collective_noun_disabled
-
-    community_name
-  end
-
   def release_adjusted_cache_key(path)
-    release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
+    release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
     "#{path}-#{params[:locale]}-#{release_footprint}-#{SiteConfig.admin_action_taken_at.rfc3339}"
@@ -202,10 +198,10 @@ module ApplicationHelper
     link_to body, collection.path, **kwargs
   end
 
-  def email_link(type = :default, text: nil, additional_info: nil)
-    # The allowed types for type is :default, :business, :privacy, and members.
-    # These options can be found in field :email_addresses of models/site_config.rb
-    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:default]
+  def email_link(type = :contact, text: nil, additional_info: nil)
+    # The allowed types for type are the keys of `SiteConfig.email_addresses`
+    # :default, :contact, :business, :privacy, :members
+    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:contact]
     mail_to email, text || email, additional_info
   end
 
@@ -282,16 +278,16 @@ module ApplicationHelper
     estimated_user_count > LARGE_USERBASE_THRESHOLD
   end
 
-  # rubocop:disable Rails/OutputSafety
   def admin_config_label(method, content = nil)
-    content ||= raw("<span>#{method.to_s.humanize}</span>")
+    content ||= tag.span(method.to_s.humanize)
+
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-      content = safe_join([content, raw("<span class='crayons-indicator crayons-indicator--critical'>Required</span>")])
+      required = tag.span("Required", class: "crayons-indicator crayons-indicator--critical")
+      content = safe_join([content, required])
     end
 
     tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
   end
-  # rubocop:enable Rails/OutputSafety
 
   def admin_config_description(content)
     tag.p(content, class: "crayons-field__description") unless content.empty?

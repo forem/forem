@@ -30,8 +30,7 @@ export class Help extends Component {
     };
   };
 
-  toggleModal = (varShowing) => (e) => {
-    e.preventDefault();
+  toggleModal = (varShowing) => () => {
     this.setState((prevState) => ({
       ...this.setCommonProps({
         [varShowing]: !prevState[varShowing],
@@ -75,8 +74,8 @@ export class Help extends Component {
             post.
           </li>
           <li>
-            Add up to four comma-separated tags per post. Combine tags to reach the appropriate
-            subcommunities.
+            Add up to four comma-separated tags per post. Combine tags to reach
+            the appropriate subcommunities.
           </li>
           <li>Use existing tags whenever possible.</li>
           <li>
@@ -99,7 +98,7 @@ export class Help extends Component {
           Jekyll front matter
         </a>
         . You can also use the <em>rich+markdown</em> editor you can find in{' '}
-        <a href="/settings/ux">
+        <a href="/settings/customization">
           UX settings
           <svg
             width="24"

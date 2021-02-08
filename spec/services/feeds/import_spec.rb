@@ -26,7 +26,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
       expect { described_class.call }.not_to change(Article, :count)
     end
 
-    it "parses correctly", vcr: { cassette_name: "rss_reader_fetch_articles" } do
+    it "parses correctly", vcr: { cassette_name: "feeds_import" } do
       described_class.call
 
       verify format: :txt do
@@ -41,25 +41,6 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
         user = User.find_by(feed_url: nonpermanent_link)
         feed_fetched_at = user.feed_fetched_at
         expect(feed_fetched_at.to_i).to eq(Time.current.to_i)
-      end
-    end
-
-    it "does refetch same user over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
-      user = User.find_by(feed_url: nonpermanent_link)
-
-      Timecop.freeze(Time.current) do
-        user.update_columns(feed_fetched_at: Time.current)
-
-        fetched_at_time = user.reload.feed_fetched_at
-
-        # travel a few seconds in the future to simulate a new time
-        3.times do |i|
-          Timecop.travel((i + 5).seconds.from_now) do
-            described_class.call
-          end
-        end
-
-        expect(user.reload.feed_fetched_at > fetched_at_time).to be(true)
       end
     end
 
@@ -96,6 +77,15 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
 
         expect(Rails.logger).to have_received(:error).at_least(:once)
       end
+
+      it "logs the error message" do
+        allow(Feedjira).to receive(:parse).and_raise("this is an error")
+        allow(Rails.logger).to receive(:error)
+
+        described_class.call
+
+        expect(Rails.logger).to have_received(:error).at_least(:once).with(/error_message=>"this is an error"/)
+      end
     end
 
     context "with an explicit set of users", vcr: { cassette_name: "feeds_import" } do
@@ -114,8 +104,61 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
     end
   end
 
+  context "when refetching" do
+    before do
+      [link, nonmedium_link, nonpermanent_link].each do |feed_url|
+        create(:user, feed_url: feed_url)
+      end
+    end
+
+    it "does refetch same user over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
+      user = User.find_by(feed_url: nonpermanent_link)
+
+      Timecop.freeze(Time.current) do
+        user.update_columns(feed_fetched_at: Time.current)
+
+        fetched_at_time = user.reload.feed_fetched_at
+
+        # travel a few seconds in the future to simulate a new time
+        3.times do |i|
+          Timecop.travel((i + 5).seconds.from_now) do
+            described_class.call
+          end
+        end
+
+        expect(user.reload.feed_fetched_at > fetched_at_time).to be(true)
+      end
+    end
+
+    it "does not refetch recently fetched users if earlier_than is given", vcr: { cassette_name: "feeds_import" } do
+      time = 30.minutes.ago
+
+      Timecop.freeze(time) do
+        described_class.call
+      end
+
+      # we delete the articles to make sure it won't trigger the duplicate check
+      Article.delete_all
+
+      expect { described_class.call(earlier_than: 1.hour.ago) }.not_to change(Article, :count)
+    end
+
+    it "refetches recently fetched users if earlier_than is now", vcr: { cassette_name: "feeds_import_twice" } do
+      time = 30.minutes.ago
+
+      Timecop.freeze(time) do
+        described_class.call
+      end
+
+      # we delete the articles to make sure it won't trigger the duplicate check
+      Article.delete_all
+
+      expect { described_class.call(earlier_than: Time.current) }.to change(Article, :count)
+    end
+  end
+
   context "when feed_referential_link is false" do
-    it "does not self-reference links for user" do
+    it "does not self-reference links for user", vcr: { cassette_name: "feeds_import_non_referential" } do
       # Article.find_by is used by find_and_replace_possible_links!
       # checking its invocation is a shortcut to testing the functionality.
       allow(Article).to receive(:find_by).and_call_original
@@ -128,29 +171,29 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
     end
   end
 
-  # describe "feeds parsing and regressions" do
-  #   it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "feeds_import_dvirsegal" } do
-  #     user = create(:user, feed_url: "https://medium.com/feed/@dvirsegal")
+  describe "feeds parsing and regressions" do
+    it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "rss_reader_dvirsegal" } do
+      user = create(:user, feed_url: "https://medium.com/feed/@dvirsegal")
 
-  #     expect do
-  #       rss_reader.fetch_user(user)
-  #     end.to change(user.articles, :count).by(10)
-  #   end
+      expect do
+        described_class.call(users: User.where(id: user.id))
+      end.to change(user.articles, :count).by(10)
+    end
 
-  #   it "converts/replaces <picture> tags to <img>", vcr: { cassette_name: "feeds_import_swimburger" } do
-  #     user = create(:user, feed_url: "https://swimburger.net/atom.xml")
+    it "converts/replaces <picture> tags to <img>", vcr: { cassette_name: "rss_reader_swimburger" } do
+      user = create(:user, feed_url: "https://swimburger.net/atom.xml")
 
-  #     expect do
-  #       rss_reader.fetch_user(user)
-  #     end.to change(user.articles, :count).by(10)
+      expect do
+        described_class.call(users: User.where(id: user.id))
+      end.to change(user.articles, :count).by(10)
 
-  #     body_markdown = user.articles.last.body_markdown
+      body_markdown = user.articles.last.body_markdown
 
-  #     expect(body_markdown).not_to include("<picture>")
-  #     expected_image_markdown =
-  #       "![Screenshot of Azure left navigation pane](https://swimburger.net/media/lxypkhak/azure-create-a-resource.png)"
+      expect(body_markdown).not_to include("<picture>")
+      expected_image_markdown =
+        "![Screenshot of Azure left navigation pane](https://swimburger.net/media/lxypkhak/azure-create-a-resource.png)"
 
-  #     expect(body_markdown).to include(expected_image_markdown)
-  #   end
-  # end
+      expect(body_markdown).to include(expected_image_markdown)
+    end
+  end
 end

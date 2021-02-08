@@ -10,12 +10,14 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     registrations: "registrations",
-    invitations: "invitations"
+    invitations: "invitations",
+    passwords: "passwords",
+    confirmations: "confirmations"
   }
 
   devise_scope :user do
     get "/enter", to: "registrations#new", as: :sign_up
-    get "/confirm-email", to: "devise/confirmations#new"
+    get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
   end
 
@@ -31,19 +33,10 @@ Rails.application.routes.draw do
       Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
       Sidekiq::Web.set :sessions, Rails.application.config.session_options
       Sidekiq::Web.class_eval do
-        use Rack::Protection, origin_whitelist: [URL.url] # resolve Rack Protection HttpOrigin
+        use Rack::Protection, permitted_origins: [URL.url] # resolve Rack Protection HttpOrigin
       end
       mount Sidekiq::Web => "/sidekiq"
       mount FieldTest::Engine, at: "abtests"
-    end
-
-    namespace :resource_admin do
-      # Check administrate gem docs
-      DashboardManifest::DASHBOARDS.each do |dashboard_resource|
-        resources dashboard_resource
-      end
-
-      root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
     end
 
     namespace :admin do
@@ -56,6 +49,13 @@ Rails.application.routes.draw do
                                      { rack_protection: { except: %i[authenticity_token form_token json_csrf
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
+
+        resources :data_update_scripts, only: %i[index show]
+        post "/data_update_scripts/:id/force_run", to: "data_update_scripts#force_run"
+      end
+
+      namespace :users do
+        resources :gdpr_delete_requests, only: %i[index destroy]
       end
 
       resources :articles, only: %i[index show update]
@@ -78,8 +78,7 @@ Rails.application.routes.draw do
       resources :podcasts, only: %i[index edit update destroy] do
         member do
           post :fetch
-          post :add_admin
-          delete :remove_admin
+          post :add_owner
         end
       end
 
@@ -103,10 +102,12 @@ Rails.application.routes.draw do
           post "save_status"
         end
       end
-      resources :tags, only: %i[index update show] do
+      resources :tags, only: %i[index new create update edit] do
         resource :moderator, only: %i[create destroy], module: "tags"
       end
       resources :users, only: %i[index show edit update] do
+        resources :email_messages, only: :show
+
         member do
           post "banish"
           post "export_data"
@@ -203,10 +204,14 @@ Rails.application.routes.draw do
         end
 
         resources :profile_images, only: %i[show], param: :username
-        resources :organizations, only: [] do
-          collection do
-            get "/:org_username", to: "organizations#show"
-          end
+        resources :organizations, only: [:show], param: :username do
+          resources :users, only: [:index], to: "organizations#users"
+          resources :listings, only: [:index], to: "organizations#listings"
+          resources :articles, only: [:index], to: "organizations#articles"
+        end
+
+        namespace :admin do
+          resource :config, only: %i[show update], defaults: { format: :json }
         end
       end
     end
@@ -244,9 +249,10 @@ Rails.application.routes.draw do
     resources :feedback_messages, only: %i[index create]
     resources :organizations, only: %i[update create destroy]
     resources :followed_articles, only: [:index]
-    resources :follows, only: %i[show create update] do
+    resources :follows, only: %i[show create] do
       collection do
         get "/bulk_show", to: "follows#bulk_show"
+        patch "/bulk_update", to: "follows#bulk_update"
       end
     end
     resources :image_uploads, only: [:create]
@@ -287,6 +293,7 @@ Rails.application.routes.draw do
     resources :podcasts, only: %i[new create]
     resources :article_approvals, only: %i[create]
     resources :video_chats, only: %i[show]
+    resources :sidebars, only: %i[show]
     resources :user_subscriptions, only: %i[create] do
       collection do
         get "/subscribed", action: "subscribed"
@@ -347,6 +354,7 @@ Rails.application.routes.draw do
 
     # Chat channel
     patch "/chat_channels/update_channel/:id" => "chat_channels#update_channel"
+    post "/create_channel" => "chat_channels#create_channel"
 
     # Chat Channel Membership json response
     get "/chat_channel_memberships/chat_channel_info/:id" => "chat_channel_memberships#chat_channel_info"
@@ -369,7 +377,6 @@ Rails.application.routes.draw do
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     # Settings
-    post "users/update_language_settings" => "users#update_language_settings"
     post "users/join_org" => "users#join_org"
     post "users/leave_org/:organization_id" => "users#leave_org", :as => :users_leave_org
     post "users/add_org_admin" => "users#add_org_admin"
@@ -382,6 +389,7 @@ Rails.application.routes.draw do
     post "organizations/generate_new_secret" => "organizations#generate_new_secret"
     post "users/api_secrets" => "api_secrets#create", :as => :users_api_secrets
     delete "users/api_secrets/:id" => "api_secrets#destroy", :as => :users_api_secret
+    post "users/update_password", to: "users#update_password", as: :user_update_password
 
     # The priority is based upon order of creation: first created -> highest priority.
     # See how all your routes lay out with "rake routes".
@@ -439,6 +447,12 @@ Rails.application.routes.draw do
       end
     end
 
+    # Redirect previous settings changed after https://github.com/forem/forem/pull/11347
+    get "/settings/integrations", to: redirect("/settings/extensions")
+    get "/settings/misc", to: redirect("/settings")
+    get "/settings/publishing-from-rss", to: redirect("/settings/extensions")
+    get "/settings/ux", to: redirect("/settings/customization")
+
     get "/settings/(:tab)" => "users#edit", :as => :user_settings
     get "/settings/:tab/:org_id" => "users#edit", :constraints => { tab: /organization/ }
     get "/settings/:tab/:id" => "users#edit", :constraints => { tab: /response-templates/ }
@@ -488,6 +502,7 @@ Rails.application.routes.draw do
 
     get "/feed" => "articles#feed", :as => "feed", :defaults => { format: "rss" }
     get "/feed/tag/:tag" => "articles#feed", :as => "tag_feed", :defaults => { format: "rss" }
+    get "/feed/latest" => "articles#feed", :as => "latest_feed", :defaults => { format: "rss" }
     get "/feed/:username" => "articles#feed", :as => "user_feed", :defaults => { format: "rss" }
     get "/rss" => "articles#feed", :defaults => { format: "rss" }
 

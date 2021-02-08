@@ -1,5 +1,3 @@
-
-
 /* Show article date/time according to user's locale */
 /* global addLocalizedDateTimeToElementsTitles */
 

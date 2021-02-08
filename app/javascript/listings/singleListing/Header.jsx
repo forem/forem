@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
-import DateTime from '../../shared/components/dateTime';
-import listingPropTypes from './listingPropTypes';
-import DropdownMenu from './DropdownMenu';
-import TagLinks from './TagLinks';
+import { DateTime } from '../../shared/components/dateTime';
+import { listingPropTypes } from './listingPropTypes';
+import { DropdownMenu } from './DropdownMenu';
+import { TagLinks } from './TagLinks';
 
-const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
+export const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
   const {
     id,
     user_id: userId,
@@ -48,5 +48,3 @@ Header.propTypes = {
 Header.defaultProps = {
   currentUserId: null,
 };
-
-export default Header;

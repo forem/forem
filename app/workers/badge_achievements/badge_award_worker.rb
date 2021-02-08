@@ -5,10 +5,14 @@ module BadgeAchievements
     sidekiq_options queue: :high_priority, retry: 10
 
     def perform(usernames, badge_slug, message)
-      if BadgeRewarder.respond_to?(badge_slug)
-        BadgeRewarder.public_send(badge_slug)
+      if (award_class = "Badges::#{badge_slug.classify}".safe_constantize)
+        award_class.call
       else
-        BadgeRewarder.award_badges(usernames, badge_slug, message)
+        Badges::Award.call(
+          User.where(username: usernames),
+          badge_slug,
+          message,
+        )
       end
     end
   end

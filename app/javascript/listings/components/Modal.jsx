@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { SingleListing } from '../singleListing/SingleListing';
-import MessageModal from './MessageModal';
+import { MessageModal } from './MessageModal';
 import { Button } from '@crayons';
 
-const Modal = ({
+export const Modal = ({
   currentUserId,
   onAddTag,
   onChangeDraftingMessage,
@@ -34,6 +34,7 @@ const Modal = ({
     <div
       role="dialog"
       aria-modal="true"
+      aria-label="listing modal"
       id="single-listing-container__inner"
       className="single-listing-container__inner crayons-modal__box"
     >
@@ -91,5 +92,3 @@ Modal.propTypes = {
 Modal.defaultProps = {
   currentUserId: null,
 };
-
-export default Modal;

@@ -110,10 +110,10 @@ RSpec.describe RateLimitChecker, type: :service do
       allow(Rails.cache)
         .to receive(:read).with("#{user.id}_organization_creation", raw: true)
         .and_return(SiteConfig.rate_limit_organization_creation + 1)
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
       described_class.new(user).limit_by_action("organization_creation")
 
-      expect(DatadogStatsClient).to have_received(:increment).with(
+      expect(ForemStatsClient).to have_received(:increment).with(
         "rate_limit.limit_reached",
         tags: ["user:#{user.id}", "action:organization_creation"],
       )

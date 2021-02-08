@@ -10,6 +10,7 @@ RSpec.describe "Registrations", type: :request do
 
         Authentication::Providers.enabled.each do |provider_name|
           provider = Authentication::Providers.get!(provider_name)
+          next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth)
 
           expect(response.body).to include("Continue with #{provider.official_name}")
         end
@@ -89,6 +90,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email registration allowed and captcha required" do
       before do
+        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
         allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
         allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
       end
@@ -268,6 +271,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site configured to accept email registration AND require captcha" do
       before do
+        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
         allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
         allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
       end
@@ -332,7 +337,7 @@ RSpec.describe "Registrations", type: :request do
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.first.has_role?(:super_admin)).to be true
-        expect(User.first.has_role?(:single_resource_admin, Config)).to be true
+        expect(User.first.has_role?(:trusted)).to be true
       end
 
       it "creates mascot user" do
@@ -360,7 +365,6 @@ RSpec.describe "Registrations", type: :request do
                     forem_owner_secret: "test",
                     password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.first.has_role?(:super_admin)).to be true
-        expect(User.first.has_role?(:single_resource_admin, Config)).to be true
       end
 
       it "does not authorize request in FOREM_OWNER_SECRET scenario if not passed correct value" do
@@ -405,7 +409,6 @@ RSpec.describe "Registrations", type: :request do
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.first.has_role?(:super_admin)).to be true
-        expect(User.first.has_role?(:single_resource_admin, Config)).to be true
       end
     end
   end

@@ -47,9 +47,7 @@ function onXhrSuccess(form, article, values) {
     toggleNotifications(submit, submitValue);
   }
 
-  article
-    .getElementsByClassName('js-ellipsis-menu')[0]
-    .classList.add('hidden');
+  article.getElementsByClassName('js-ellipsis-menu')[0].classList.add('hidden');
 }
 
 function handleFormSubmit(e) {

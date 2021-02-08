@@ -1,14 +1,16 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
-  before_action :raise_suspended, only: %i[update]
-  before_action :set_user, only: %i[
-    update update_language_settings confirm_destroy request_destroy full_delete remove_identity
-  ]
-  after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
+  before_action :raise_suspended, only: %i[update update_password]
+  before_action :set_user,
+                only: %i[update update_password request_destroy full_delete remove_identity]
+  # rubocop:disable Layout/LineLength
+  after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
+  # rubocop:enable Layout/LineLength
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
 
+  ALLOWED_USER_PARAMS = %i[last_onboarding_page].freeze
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -39,8 +41,13 @@ class UsersController < ApplicationController
   def update
     set_current_tab(params["user"]["tab"])
 
-    if @user.update(permitted_attributes(@user))
-      RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
+    @user.assign_attributes(permitted_attributes(@user))
+
+    if @user.save
+      # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
+      # explicitly requested "Feed fetch now" or simply updated any other field
+      import_articles_from_feed(@user)
+
       notice = "Your profile was successfully updated."
       if config_changed?
         notice = "Your config has been updated. Refresh to see all changes."
@@ -66,18 +73,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def update_language_settings
-    set_current_tab("misc")
-    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
-    if @user.save
-      flash[:settings_notice] = "Your language settings were successfully updated."
-      @user.touch(:profile_updated_at)
-      redirect_to "/settings/#{@tab}"
-    else
-      render :edit
-    end
-  end
-
   def request_destroy
     set_current_tab("account")
 
@@ -97,10 +92,28 @@ class UsersController < ApplicationController
   end
 
   def confirm_destroy
-    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
-    raise ActionController::RoutingError, "Not Found" unless destroy_token.present? && destroy_token == params[:token]
+    @user = current_user
 
-    set_current_tab("account")
+    if @user
+      authorize @user
+    else
+      flash[:alert] = "You must be logged in to proceed with account deletion."
+      redirect_to sign_up_path and return
+    end
+
+    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
+
+    # rubocop:disable Layout/LineLength
+    if destroy_token.blank?
+      flash[:settings_notice] = "Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated."
+      redirect_to user_settings_path("account")
+    elsif destroy_token != params[:token]
+      Honeycomb.add_field("destroy_token", destroy_token)
+      Honeycomb.add_field("token", params[:token])
+
+      raise ActionController::RoutingError, "Not Found"
+    end
+    # rubocop:enable Layout/LineLength
   end
 
   def full_delete
@@ -119,7 +132,7 @@ class UsersController < ApplicationController
   def remove_identity
     set_current_tab("account")
 
-    error_message = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+    error_message = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:contact]}"
     unless Authentication::Providers.enabled?(params[:provider])
       flash[:error] = error_message
       redirect_to user_settings_path(@tab)
@@ -138,6 +151,11 @@ class UsersController < ApplicationController
         :profile_updated_at => Time.current,
       )
 
+      # GitHub repositories are tied with the existence of the GitHub identity
+      # as we use the user's GitHub token to fetch them from the API.
+      # We should delete them when a user unlinks their GitHub account.
+      @user.github_repos.destroy_all if provider.provider_name == :github
+
       flash[:settings_notice] = "Your #{provider.official_name} account was successfully removed."
     else
       flash[:error] = error_message
@@ -149,13 +167,17 @@ class UsersController < ApplicationController
   def onboarding_update
     if params[:user]
       sanitize_user_params
-      permitted_params = %i[summary location employment_title employer_name last_onboarding_page]
-      current_user.assign_attributes(params[:user].permit(permitted_params))
+      current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS))
       current_user.profile_updated_at = Time.current
     end
+
+    if current_user.save && params[:profile]
+      update_result = Profiles::Update.call(current_user, { profile: profile_params })
+    end
+
     current_user.saw_onboarding = true
     authorize User
-    render_update_response
+    render_update_response(update_result&.success?)
   end
 
   def onboarding_checkbox_update
@@ -168,7 +190,7 @@ class UsersController < ApplicationController
 
     current_user.saw_onboarding = true
     authorize User
-    render_update_response
+    render_update_response(current_user.save)
   end
 
   def join_org
@@ -232,16 +254,37 @@ class UsersController < ApplicationController
     return @tab = "profile" if @tab.blank?
 
     case @tab
+    when "profile"
+      handle_integrations_tab
     when "organization"
       handle_organization_tab
-    when "integrations"
-      handle_integrations_tab
     when "billing"
       handle_billing_tab
     when "response-templates"
       handle_response_templates_tab
+    when "extensions"
+      handle_integrations_tab
+      handle_response_templates_tab
     else
       not_found unless @tab.in?(Constants::Settings::TAB_LIST.map { |t| t.downcase.tr(" ", "-") })
+    end
+  end
+
+  def update_password
+    set_current_tab("account")
+
+    if @user.update_with_password(password_params)
+      redirect_to user_settings_path(@tab)
+    else
+      Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("errored", true)
+
+      if @tab
+        render :edit, status: :bad_request
+      else
+        flash[:error] = @user.errors_as_sentence
+        redirect_to user_settings_path
+      end
     end
   end
 
@@ -270,8 +313,8 @@ class UsersController < ApplicationController
     recent_suggestions.presence || default_suggested_users
   end
 
-  def render_update_response
-    outcome = current_user.save ? "updated successfully" : "update failed"
+  def render_update_response(success)
+    outcome = success ? "updated successfully" : "update failed"
 
     respond_to do |format|
       format.json { render json: { outcome: outcome } }
@@ -324,5 +367,19 @@ class UsersController < ApplicationController
 
   def destroy_request_in_progress?
     Rails.cache.exist?("user-destroy-token-#{@user.id}")
+  end
+
+  def import_articles_from_feed(user)
+    return if user.feed_url.blank?
+
+    Feeds::ImportArticlesWorker.perform_async(nil, user.id)
+  end
+
+  def profile_params
+    params[:profile].permit(Profile.attributes)
+  end
+
+  def password_params
+    params.permit(:current_password, :password, :password_confirmation)
   end
 end

@@ -64,6 +64,10 @@
   &__body {
     overflow-wrap: break-word;
   }
+
+  .reaction-button[disabled] {
+    cursor: pointer;
+  }
 }
 
 .crayons-article-actions {
@@ -86,6 +90,7 @@
     box-shadow: none;
     justify-content: stretch;
     top: calc(var(--header-height) + var(--layout-padding) + 6vh);
+    z-index: var(--z-elevate);
   }
 
   &__inner {

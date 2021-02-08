@@ -70,17 +70,19 @@
       </div>
       <div class="crayons-story__bottom">
         <div class="crayons-story__details">
-          <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>">
-            <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Reactions") %>
-            <%= story.public_reactions_count %>
-            <span class="hidden s:inline">&nbsp;reactions</span>
-          </a>
+          <% if story.public_reactions_count > 0 %>
+            <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>">
+              <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Reactions") %>
+              <%= story.public_reactions_count %>
+              <span class="hidden s:inline">&nbsp;<%= story.public_reactions_count == 1 ? "reaction" : "reactions" %></span>
+            </a>
+          <% end %>
           <% if story.comments_count > 0 %>
-          <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left">
-            <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Comments") %>
-            <%= story.comments_count %>
-            <span class="hidden s:inline">&nbsp;comments</span>
-          </a>
+            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left">
+              <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Comments") %>
+              <%= story.comments_count %>
+              <span class="hidden s:inline">&nbsp;<%= story.comments_count == 1 ? "comment" : "comments" %></span>
+            </a>
           <% end %>
         </div>
         <div class="crayons-story__save">

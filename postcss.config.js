@@ -8,11 +8,6 @@ module.exports = {
         flexbox: 'no-2009',
       },
       stage: 3,
-      features: {
-        customProperties: {
-          warnings: false,
-        },
-      },
     }),
   ],
 };

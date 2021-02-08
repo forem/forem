@@ -1,7 +1,7 @@
 /*
   global initializeLocalStorageRender, initializeBodyData,
   initializeAllChatButtons, initializeAllTagEditButtons, initializeUserFollowButts,
-  initializeBaseTracking, initializeTouchDevice, initializeCommentsPage,
+  initializeBaseTracking, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeCommentDropdown, initializeSettings,
   initializeCommentPreview,
@@ -11,8 +11,8 @@
   initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast,
-  initializeDateHelpers
+  initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
+  initializeColorPicker
 */
 
 function callInitializers() {
@@ -38,10 +38,8 @@ function callInitializers() {
     }
   }, 1);
 
-  initializeSpecialNavigationFunctionality();
   initializeBaseTracking();
   initializePaymentPointers();
-  initializeTouchDevice();
   initializeCommentsPage();
   initializeArticleDate();
   initializeArticleReactions();
@@ -65,6 +63,7 @@ function callInitializers() {
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
   initializeDateHelpers();
+  initializeColorPicker();
 
   function freezeScrolling(event) {
     event.preventDefault();

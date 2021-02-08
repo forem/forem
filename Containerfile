@@ -10,8 +10,8 @@ RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo 
     dnf -y clean all && \
     rm -rf /var/cache/yum
 
-ENV BUNDLER_VERSION=2.1.4 BUNDLE_SILENCE_ROOT_WARNING=1
-RUN gem install bundler:"${BUNDLER_VERSION}"
+ENV BUNDLER_VERSION=2.1.4 BUNDLE_SILENCE_ROOT_WARNING=true BUNDLE_SILENCE_DEPRECATIONS=true
+RUN gem install -N bundler:"${BUNDLER_VERSION}"
 
 ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \
     LD_PRELOAD=/usr/lib64/libjemalloc.so.2
@@ -31,16 +31,14 @@ COPY ./.ruby-version "${APP_HOME}"/
 COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"/
 COPY ./vendor/cache "${APP_HOME}"/vendor/cache
 
-RUN bundle config build.sassc --disable-march-tune-native && \
-    bundle config set deployment 'true' && \
-    bundle config set without 'development test' && \
-    bundle install --jobs 4 --retry 5 && \
+RUN bundle config --local build.sassc --disable-march-tune-native && \
+    BUNDLE_WITHOUT="development:test" bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
-RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
+COPY . "${APP_HOME}"
 
-COPY . "${APP_HOME}"/
+RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
 RUN RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile
 
@@ -48,7 +46,7 @@ RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
     echo $(git rev-parse --short HEAD) >> "${APP_HOME}"/FOREM_BUILD_SHA && \
     rm -rf "${APP_HOME}"/.git/
 
-RUN rm -rf node_modules app/assets vendor/assets vendor/cache spec
+RUN rm -rf node_modules vendor/assets spec
 
 ## Production
 FROM quay.io/forem/ruby:2.7.2 as production
@@ -57,12 +55,12 @@ USER root
 
 RUN dnf install --setopt install_weak_deps=false -y bash curl ImageMagick \
                 iproute jemalloc less libcurl \
-                postgresql tzdata \
+                postgresql tzdata nodejs \
                 && dnf -y clean all \
                 && rm -rf /var/cache/yum
 
 ENV BUNDLER_VERSION=2.1.4 BUNDLE_SILENCE_ROOT_WARNING=1
-RUN gem install bundler:"${BUNDLER_VERSION}"
+RUN gem install -N bundler:"${BUNDLER_VERSION}"
 
 ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \
     LD_PRELOAD=/usr/lib64/libjemalloc.so.2
@@ -91,8 +89,6 @@ RUN dnf install --setopt install_weak_deps=false -y \
     yum clean all && \
     rm -rf /var/cache/yum
 
-COPY --chown="${APP_USER}":"${APP_USER}" ./app/assets "${APP_HOME}"/app/assets
-COPY --chown="${APP_USER}":"${APP_USER}" ./vendor/cache "${APP_HOME}"/vendor/cache
 COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
 COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
 
@@ -100,24 +96,19 @@ RUN chown "${APP_USER}":"${APP_USER}" -R "${APP_HOME}"
 
 USER "${APP_USER}"
 
-RUN bundle config build.sassc --disable-march-tune-native && \
-    bundle config set deployment 'false' && \
-    bundle config --delete without 'development test' && \
-    bundle install --jobs 4 --retry 5 && \
+RUN bundle config --local build.sassc --disable-march-tune-native && \
+    bundle config --delete without && \
+    bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
-RUN yarn install --frozen-lockfile && RAILS_ENV=test NODE_ENV=test bundle exec rails webpacker:compile
-
-ENTRYPOINT ["./scripts/entrypoint-dev.sh"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
 ## Development
 FROM builder AS development
 
-COPY --chown="${APP_USER}":"${APP_USER}" ./app/assets "${APP_HOME}"/app/assets
-COPY --chown="${APP_USER}":"${APP_USER}" ./vendor/cache "${APP_HOME}"/vendor/cache
 COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
 COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
 
@@ -125,14 +116,13 @@ RUN chown "${APP_USER}":"${APP_USER}" -R "${APP_HOME}"
 
 USER "${APP_USER}"
 
-RUN bundle config build.sassc --disable-march-tune-native && \
-    bundle config set deployment 'false' && \
-    bundle config --delete without 'development test' && \
-    bundle install --jobs 4 --retry 5 && \
+RUN bundle config --local build.sassc --disable-march-tune-native && \
+    bundle config --delete without && \
+    bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
-ENTRYPOINT ["./scripts/entrypoint-dev.sh"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 

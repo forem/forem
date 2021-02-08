@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { h, Component } from 'preact';
 
-class Categories extends Component {
+export class Categories extends Component {
   options = () => {
     const { categoriesForSelect, category } = this.props;
     return categoriesForSelect.map(([text, value]) => {
@@ -71,5 +71,3 @@ Categories.propTypes = {
   category: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 };
-
-export default Categories;

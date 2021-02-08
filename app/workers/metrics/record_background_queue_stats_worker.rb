@@ -4,7 +4,7 @@ module Metrics
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform
-      Loggers::LogWorkerQueueStats.run
+      Loggers::LogWorkerQueueStats.call
     end
   end
 end

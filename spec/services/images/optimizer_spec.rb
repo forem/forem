@@ -16,6 +16,10 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class.call(relative_asset_path)).to eq relative_asset_path
     end
 
+    it "does nothing when given nil" do
+      expect(described_class.call(nil)).to eq nil
+    end
+
     it "calls cloudinary if imgproxy is not enabled" do
       allow(described_class).to receive(:imgproxy_enabled?).and_return(false)
       described_class.call(image_url)
@@ -59,7 +63,7 @@ RSpec.describe Images::Optimizer, type: :service do
     it "works" do
       allow(described_class).to receive(:imgproxy_enabled?).and_return(true)
       imgproxy_url = described_class.imgproxy(image_url, service: :imgproxy, width: 500, height: 500)
-      expect(imgproxy_url).to match(%r{/s:500:500/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      expect(imgproxy_url).to match(%r{/s:500:500/mb:500000/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
 
@@ -82,7 +86,7 @@ RSpec.describe Images::Optimizer, type: :service do
   end
 
   describe "#translate_cloudinary_options" do
-    it "Set resizing_type to fill if crop: fill is provided" do
+    it "sets resizing_type to fill if crop: fill is provided" do
       options = { width: 100, height: 100, crop: "fill" }
       expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fill")
     end

@@ -2,17 +2,6 @@ module Stories
   class FeedsController < ApplicationController
     respond_to :json
 
-    VARIANTS = {
-      "more_comments_experiment" => :more_comments_experiment,
-      "more_tag_weight_randomized_at_end_experiment" => :more_tag_weight_randomized_at_end_experiment,
-      "more_comments_randomized_at_end_experiment" => :more_comments_randomized_at_end_experiment,
-      "more_comments_medium_weight_randomized_at_end_experiment" =>
-        :more_comments_medium_weight_randomized_at_end_experiment,
-      "more_comments_minimal_weight_randomized_at_end_experiment" =>
-        :more_comments_minimal_weight_randomized_at_end_experiment,
-      "mix_of_everything_experiment" => :mix_of_everything_experiment
-    }.freeze
-
     def show
       @stories = assign_feed_stories
     end
@@ -20,9 +9,9 @@ module Stories
     private
 
     def assign_feed_stories
-      stories = if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
+      stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
-                elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
+                elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
                   latest_feed
                 elsif user_signed_in?
                   signed_in_base_feed
@@ -61,13 +50,7 @@ module Stories
 
     def optimized_signed_in_feed
       feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-      test_variant = field_test(:user_home_feed, participant: current_user)
-      Honeycomb.add_field("field_test_user_home_feed", test_variant) # Monitoring different variants
-      if VARIANTS[test_variant].nil? || test_variant == "base"
-        feed.default_home_feed(user_signed_in: true)
-      else
-        feed.public_send(VARIANTS[test_variant])
-      end
+      feed.more_comments_minimal_weight_randomized_at_end
     end
   end
 end

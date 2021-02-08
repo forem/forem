@@ -3,20 +3,23 @@ require "rails_helper"
 RSpec.describe "Authenticating with Twitter" do
   let(:sign_in_link) { "Continue with Twitter" }
 
-  before { omniauth_mock_twitter_payload }
+  before do
+    omniauth_mock_twitter_payload
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+  end
 
   context "when a user is new" do
     context "when using valid credentials" do
       it "creates a new user" do
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
       end
 
       it "logs in and redirects to the onboarding" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/onboarding?referrer=none")
         expect(page.html).to include("onboarding-container")
@@ -24,7 +27,7 @@ RSpec.describe "Authenticating with Twitter" do
 
       it "remembers the user" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         user = User.last
 
@@ -40,7 +43,7 @@ RSpec.describe "Authenticating with Twitter" do
 
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
 
         expect(page).to have_current_path("/onboarding?referrer=none")
@@ -52,7 +55,7 @@ RSpec.describe "Authenticating with Twitter" do
       before do
         omniauth_setup_invalid_credentials(:twitter)
 
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
       end
 
       after do
@@ -62,17 +65,16 @@ RSpec.describe "Authenticating with Twitter" do
       it "does not create a new user" do
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "does not log in" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_in")
-        expect(page).to have_link(sign_in_link)
-        expect(page).to have_link("About #{SiteConfig.community_name}")
+        expect(page).to have_button(sign_in_link)
       end
 
       it "notifies Datadog about a callback error" do
@@ -83,10 +85,10 @@ RSpec.describe "Authenticating with Twitter" do
         omniauth_setup_authentication_error(error)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -99,10 +101,10 @@ RSpec.describe "Authenticating with Twitter" do
         omniauth_setup_authentication_error(error)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -112,10 +114,10 @@ RSpec.describe "Authenticating with Twitter" do
         omniauth_setup_authentication_error(error)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -130,13 +132,13 @@ RSpec.describe "Authenticating with Twitter" do
       it "does not create a new user" do
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "redirects to the registration page" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_up")
       end
@@ -145,7 +147,7 @@ RSpec.describe "Authenticating with Twitter" do
         allow(Honeybadger).to receive(:notify)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(Honeybadger).to have_received(:notify)
       end
@@ -163,7 +165,7 @@ RSpec.describe "Authenticating with Twitter" do
     context "when using valid credentials" do
       it "logs in" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/?signin=true")
       end
