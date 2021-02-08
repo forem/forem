@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
-import Channels from '../channels';
+import { Channels } from '../channels';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
 global.document = doc;

@@ -5,9 +5,9 @@ RSpec.describe Events::BustCacheWorker do
 
   describe "#perform" do
     it "busts cache" do
-      allow(CacheBuster).to receive(:bust_events)
+      allow(EdgeCache::BustEvents).to receive(:call)
       described_class.new.perform
-      expect(CacheBuster).to have_received(:bust_events)
+      expect(EdgeCache::BustEvents).to have_received(:call)
     end
   end
 end

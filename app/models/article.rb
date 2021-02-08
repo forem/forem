@@ -8,6 +8,7 @@ class Article < ApplicationRecord
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
 
   acts_as_taggable_on :tags
   resourcify
@@ -94,14 +95,16 @@ class Article < ApplicationRecord
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
-  after_save :bust_cache, :detect_human_language
+  after_save :bust_cache
   after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
+
   after_commit :async_score_calc, :touch_collection, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   serialize :cached_user
@@ -112,9 +115,10 @@ class Article < ApplicationRecord
 
   scope :admin_published_with, lambda { |tag_name|
     published
-      .where(user_id: SiteConfig.staff_user_id)
-      .order(published_at: :desc)
-      .tagged_with(tag_name)
+      .where(user_id: User.with_role(:super_admin)
+                          .union(User.with_role(:admin))
+                          .union(id: [SiteConfig.staff_user_id, SiteConfig.mascot_user_id].compact)
+                          .select(:id)).order(published_at: :desc).tagged_with(tag_name)
   }
 
   scope :user_published_with, lambda { |user_id, tag_name|
@@ -140,7 +144,7 @@ class Article < ApplicationRecord
            :comments_count, :public_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
-           :video_thumbnail_url, :video_closed_caption_track_url, :language,
+           :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
            :last_comment_at)
@@ -295,7 +299,7 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
-    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed.front_matter["title"].present?
@@ -413,9 +417,9 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownParser.new(parsed.content, source: self, user: user)
+    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
 
@@ -434,12 +438,6 @@ class Article < ApplicationRecord
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
     self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
-  end
-
-  def detect_human_language
-    return if language.present?
-
-    update_column(:language, LanguageDetector.new(self).detect)
   end
 
   def async_score_calc
@@ -468,6 +466,7 @@ class Article < ApplicationRecord
 
   def before_destroy_actions
     bust_cache
+    touch_actor_latest_article_updated_at(destroying: true)
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)
@@ -609,13 +608,8 @@ class Article < ApplicationRecord
   end
 
   def update_cached_user
-    if organization
-      self.cached_organization = Articles::CachedEntity.from_object(organization)
-    end
-
-    return unless user
-
-    self.cached_user = Articles::CachedEntity.from_object(user)
+    self.cached_organization = organization ? Articles::CachedEntity.from_object(organization) : nil
+    self.cached_user = user ? Articles::CachedEntity.from_object(user) : nil
   end
 
   def set_all_dates
@@ -663,11 +657,19 @@ class Article < ApplicationRecord
     self.canonical_url = nil if canonical_url == ""
   end
 
+  def touch_actor_latest_article_updated_at(destroying: false)
+    return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list]).present?
+
+    user.touch(:latest_article_updated_at)
+    organization&.touch(:latest_article_updated_at)
+  end
+
   def bust_cache
-    CacheBuster.bust(path)
-    CacheBuster.bust("#{path}?i=i")
-    CacheBuster.bust("#{path}?preview=#{password}")
+    EdgeCache::Bust.call(path)
+    EdgeCache::Bust.call("#{path}?i=i")
+    EdgeCache::Bust.call("#{path}?preview=#{password}")
     async_bust
+    touch_actor_latest_article_updated_at
   end
 
   def calculate_base_scores

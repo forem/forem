@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_03_063435) do
+ActiveRecord::Schema.define(version: 2021_01_31_000458) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.string "utm_medium"
     t.string "utm_source"
     t.string "utm_term"
+    t.index ["feedback_message_id"], name: "index_ahoy_messages_on_feedback_message_id"
     t.index ["to"], name: "index_ahoy_messages_on_to"
     t.index ["token"], name: "index_ahoy_messages_on_token"
     t.index ["user_id", "mailer"], name: "index_ahoy_messages_on_user_id_and_mailer"
@@ -155,6 +156,7 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
+    t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
@@ -337,17 +339,6 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.index ["slug"], name: "index_classified_listing_categories_on_slug", unique: true
   end
 
-  create_table "classified_listing_endorsements", force: :cascade do |t|
-    t.boolean "approved", default: false
-    t.bigint "classified_listing_id"
-    t.string "content"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
-    t.index ["classified_listing_id"], name: "index_classified_listing_endorsements_on_classified_listing_id"
-    t.index ["user_id"], name: "index_classified_listing_endorsements_on_user_id"
-  end
-
   create_table "classified_listings", force: :cascade do |t|
     t.text "body_markdown"
     t.datetime "bumped_at"
@@ -444,6 +435,7 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
 
   create_table "data_update_scripts", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.text "error"
     t.string "file_name"
     t.datetime "finished_at"
     t.datetime "run_at"
@@ -521,6 +513,7 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
     t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
+    t.index ["status"], name: "index_feedback_messages_on_status"
   end
 
   create_table "field_test_events", force: :cascade do |t|
@@ -791,6 +784,7 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.string "email"
     t.string "github_username"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
+    t.datetime "latest_article_updated_at"
     t.string "location"
     t.string "name"
     t.string "nav_image"
@@ -1204,6 +1198,8 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.datetime "apple_created_at"
+    t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
@@ -1220,7 +1216,6 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.datetime "confirmation_sent_at"
     t.string "confirmation_token"
     t.datetime "confirmed_at"
-    t.boolean "contact_consent", default: false
     t.datetime "created_at", null: false
     t.integer "credits_count", default: 0, null: false
     t.datetime "current_sign_in_at"
@@ -1256,7 +1251,6 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
-    t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
     t.boolean "feed_referential_link", default: true, null: false
@@ -1289,11 +1283,10 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.datetime "last_reacted_at"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
+    t.datetime "latest_article_updated_at"
     t.string "linkedin_url"
     t.string "location"
     t.datetime "locked_at"
-    t.boolean "looking_for_work", default: false
-    t.boolean "looking_for_work_publicly", default: false
     t.string "mastodon_url"
     t.string "medium_url"
     t.boolean "mobile_comment_notifications", default: true
@@ -1344,10 +1337,12 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
+    t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
+    t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"
     t.index ["feed_url"], name: "index_users_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -1414,8 +1409,6 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
   add_foreign_key "buffer_updates", "users", column: "composer_user_id", on_delete: :nullify
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
-  add_foreign_key "classified_listing_endorsements", "classified_listings"
-  add_foreign_key "classified_listing_endorsements", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade

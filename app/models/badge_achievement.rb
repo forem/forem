@@ -24,7 +24,7 @@ class BadgeAchievement < ApplicationRecord
   def render_rewarding_context_message_html
     return unless rewarding_context_message_markdown
 
-    parsed_markdown = MarkdownParser.new(rewarding_context_message_markdown)
+    parsed_markdown = MarkdownProcessor::Parser.new(rewarding_context_message_markdown)
     html = parsed_markdown.finalize
     final_html = ActionController::Base.helpers.sanitize(
       html,

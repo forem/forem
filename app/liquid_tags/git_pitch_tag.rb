@@ -20,7 +20,7 @@ class GitPitchTag < LiquidTagBase
 
   def parse_link(link)
     stripped_link = ActionController::Base.helpers.strip_tags(link)
-    the_link = stripped_link.split(" ").first
+    the_link = stripped_link.split.first
     raise_error unless valid_link?(the_link)
     the_link
   end

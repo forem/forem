@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ActiveMembershipsSection from '../ChatChannelSettings/ActiveMembershipsSection';
+import { ActiveMembershipsSection } from '../ChatChannelSettings/ActiveMembershipsSection';
 
 function getEmptyMembershipData() {
   return {

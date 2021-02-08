@@ -47,7 +47,7 @@ module FastlyConfig
         "configs_updated:#{configs.join(', ')}",
       ]
 
-      DatadogStatsClient.increment("fastly.update", tags: tags)
+      ForemStatsClient.increment("fastly.update", tags: tags)
     end
 
     def validate_configs(configs)

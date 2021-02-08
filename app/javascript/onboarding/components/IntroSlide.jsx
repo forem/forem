@@ -2,10 +2,10 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { getContentOfToken, userData, updateOnboarding } from '../utilities';
-import Navigation from './Navigation';
+import { Navigation } from './Navigation';
 
 /* eslint-disable camelcase */
-class IntroSlide extends Component {
+export class IntroSlide extends Component {
   constructor(props) {
     super(props);
 
@@ -106,7 +106,12 @@ class IntroSlide extends Component {
         data-testid="onboarding-intro-slide"
         className="onboarding-main introduction crayons-modal crayons-modal--m"
       >
-        <div className="crayons-modal__box overflow-auto">
+        <div
+          className="crayons-modal__box overflow-auto"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
+        >
           <div className="onboarding-content">
             <figure>
               <img
@@ -116,13 +121,14 @@ class IntroSlide extends Component {
               />
             </figure>
             <h1
+              id="title"
               data-testid="onboarding-introduction-title"
               className="introduction-title"
             >
               {this.user.name}
               &mdash; welcome to {communityConfig.communityName}!
             </h1>
-            <h2 className="introduction-subtitle">
+            <h2 id="subtitle" className="introduction-subtitle">
               {communityConfig.communityDescription}
             </h2>
           </div>
@@ -144,7 +150,7 @@ class IntroSlide extends Component {
                         checked={checked_code_of_conduct}
                         onChange={this.handleChange}
                       />
-                      You agree to uphold our{' '}
+                      You agree to uphold our&nbsp;
                       <a
                         href="/code-of-conduct"
                         data-no-instant
@@ -169,7 +175,7 @@ class IntroSlide extends Component {
                         checked={checked_terms_and_conditions}
                         onChange={this.handleChange}
                       />
-                      You agree to our{' '}
+                      You agree to our&nbsp;
                       <a
                         href="/terms"
                         data-no-instant
@@ -210,7 +216,5 @@ IntroSlide.propTypes = {
     communityDescription: PropTypes.string.isRequired,
   }).isRequired,
 };
-
-export default IntroSlide;
 
 /* eslint-enable camelcase */

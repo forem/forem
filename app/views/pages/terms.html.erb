@@ -1,21 +1,21 @@
-<% title("Terms of Use for the #{community_qualified_name}") %>
+<% title("Terms of Use for #{community_name}") %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/terms") %>" />
-  <meta name="description" content="Terms of Use for the <%= community_qualified_name %>">
+  <meta name="description" content="Terms of Use for <%= community_name %>">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/terms") %>" />
-  <meta property="og:title" content="Terms of Use for the <%= community_qualified_name %>" />
+  <meta property="og:title" content="Terms of Use for <%= community_name %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
-  <meta property="og:description" content="<%= community_qualified_name %> is great!" />
-  <meta property="og:site_name" content="<%= community_qualified_name %>" />
+  <meta property="og:description" content="<%= community_name %> is great!" />
+  <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="Terms of Use for the <%= community_qualified_name %>">
-  <meta name="twitter:description" content="<%= community_qualified_name %> is great!">
+  <meta name="twitter:title" content="Terms of Use for <%= community_name %>">
+  <meta name="twitter:description" content="<%= community_name %> is great!">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 

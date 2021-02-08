@@ -1,4 +1,5 @@
 {
-  "baseUrl": "http://localhost:3000",
-  "chromeWebSecurity": false
+  "screenshotsFolder": "tmp/cypress_screenshots",
+  "trashAssetsBeforeRuns": false,
+  "videosFolder": "tmp/cypress_videos"
 }

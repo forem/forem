@@ -53,7 +53,7 @@ RSpec.describe FastlyConfig::Update, type: :service do
 
     it "logs success messages" do
       allow(Rails.logger).to receive(:info)
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
 
       stub_const("#{described_class}::FASTLY_CONFIGS", ["Snippets"])
       snippet_handler = instance_double FastlyConfig::Snippets
@@ -66,7 +66,7 @@ RSpec.describe FastlyConfig::Update, type: :service do
 
       tags = hash_including(tags: array_including("new_version:#{fastly_version.number}", "configs_updated:Snippets"))
 
-      expect(DatadogStatsClient).to have_received(:increment).with("fastly.update", tags)
+      expect(ForemStatsClient).to have_received(:increment).with("fastly.update", tags)
     end
   end
 end

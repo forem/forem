@@ -53,6 +53,34 @@ RSpec.describe Article, type: :model do
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
+    describe "::admin_published_with" do
+      it "includes mascot-published articles" do
+        allow(SiteConfig).to receive(:mascot_user_id).and_return(3)
+        user = create(:user, id: 3)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(1)
+      end
+
+      it "includes staff-user-published articles" do
+        allow(SiteConfig).to receive(:staff_user_id).and_return(3)
+        user = create(:user, id: 3)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(1)
+      end
+
+      it "includes admin published articles" do
+        user = create(:user, :admin)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(1)
+      end
+
+      it "does not include regular user published articles" do
+        user = create(:user)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(0)
+      end
+    end
+
     describe "#body_markdown" do
       it "is unique scoped for user_id and title" do
         art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
@@ -110,6 +138,12 @@ RSpec.describe Article, type: :model do
                                      args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
         end
+      end
+
+      it "on update syncs elasticsearch data" do
+        allow(article).to receive(:sync_related_elasticsearch_docs)
+        article.save
+        expect(article).to have_received(:sync_related_elasticsearch_docs)
       end
     end
 
@@ -825,29 +859,6 @@ RSpec.describe Article, type: :model do
         sidekiq_assert_no_enqueued_jobs(only: Articles::ScoreCalcWorker) do
           article.save
         end
-      end
-    end
-
-    describe "detect human language" do
-      let(:language_detector) { instance_double(LanguageDetector) }
-
-      before do
-        allow(LanguageDetector).to receive(:new).and_return(language_detector)
-        allow(language_detector).to receive(:detect)
-      end
-
-      it "calls the human language detector" do
-        article.language = ""
-        article.save
-
-        expect(language_detector).to have_received(:detect)
-      end
-
-      it "does not call the human language detector if there is already a language" do
-        article.language = "en"
-        article.save
-
-        expect(language_detector).not_to have_received(:detect)
       end
     end
 

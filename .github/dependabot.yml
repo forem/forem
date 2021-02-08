@@ -10,18 +10,18 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      # Ignoring simplecov 0.18+ temporarily, until CodeClimate's test reporter is
-      # upgraded to work with it
-      # see <https://github.com/codeclimate/test-reporter/issues/413>
-      # and <https://rubygems.org/gems/simplecov>
-      - dependency-name: "simplecov"
-        versions: [">= 0.18"]
+      # Ignoring binding_of_caller 1.0 temporarily until we find a solution for it breaking Docker
+      # see <https://github.com/forem/forem/issues/12068>
+      - dependency-name: "binding_of_caller"
+        versions: [">= 1.0"]
+    labels: []
 
   # Set update schedule for Yarn/NPM
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
+    labels: []
 
   # Set update schedule for GitHub Actions
   # https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/keeping-your-actions-up-to-date-with-dependabot

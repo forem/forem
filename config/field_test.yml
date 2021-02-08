@@ -1,28 +1,30 @@
 experiments:
-  follow_implicit_points: # Points given for implicit tag weights
-    # Implemented here: app/workers/follows/update_points_worker.rb
-    # Hypotheses: Weighting tags based on implied preference will lead
-    # to more repeat engagement.
-    # Recommended duration: 4 weeks (ending at start of January)
-    variants:
-      - base
-      - no_implicit_score
-      - half_weight_after_log
-      - double_weight_after_log
-      - double_bonus_before_log
-      - without_weighting_bonus
-    weights: # "base" (what we currently implement) and "no_implicit_score" are what we want the most data on.
-      - 30
-      - 30
-      - 10
-      - 10
-      - 10
-      - 10
-    goals:
-      - user_creates_comment
-      - user_creates_reaction
-      - user_views_article_four_days_in_week
-      - user_views_article_four_hours_in_day
+  # No field test running.
+  # To run a test, change the five variants here. You can create more than
+  # five, but five is our typical standard.
+  # Do not change the goals unless you intend to also change the corresponding code in
+  # app/workers/users/record_field_test_event_worker.rb
+
+  # variant_name:
+  #   variants:
+  #     - base
+  #     - variant_1
+  #     - variant_2
+  #     - variant_3
+  #     - variant_4
+  #   weights: # "base" gets a few more rolls of the dice
+  #     - 20
+  #     - 20
+  #     - 20
+  #     - 20
+  #     - 20
+  #   goals:
+  #     - user_creates_comment
+  #     - user_creates_comment_four_days_in_week
+  #     - user_views_article_four_days_in_week
+  #     - user_views_article_four_hours_in_day
+  #     - user_views_article_nine_days_in_two_week
+  #     - user_views_article_twelve_hours_in_five_days
 exclude:
   bots: true
 

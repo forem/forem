@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/overflow-horizontal.svg';
 import { adjustTimestamp } from './util';
-import ErrorMessage from './messages/errorMessage';
+import { ErrorMessage } from './messages/errorMessage';
 import { Button } from '@crayons';
 
-const Message = ({
+export const Message = ({
   currentUserId,
   id,
   user,
@@ -19,6 +19,7 @@ const Message = ({
   profileImageUrl,
   onContentTrigger,
   onDeleteMessageTrigger,
+  onReportMessageTrigger,
   onEditMessageTrigger,
 }) => {
   const spanStyle = { color };
@@ -56,6 +57,22 @@ const Message = ({
           onClick={(_) => onDeleteMessageTrigger(id)}
         >
           Delete
+        </Button>
+      </div>
+    </div>
+  );
+  const dropdownReport = (
+    <div className="message__actions">
+      <span className="ellipsis__menubutton">
+        <img src={ThreeDotsIcon} alt="message actions" />
+      </span>
+
+      <div className="messagebody__dropdownmenu report__abuse__button">
+        <Button
+          variant="ghost-danger"
+          onClick={(_) => onReportMessageTrigger(id)}
+        >
+          Report Abuse
         </Button>
       </div>
     </div>
@@ -119,7 +136,7 @@ const Message = ({
               ' '
             )}
           </div>
-          {userID === currentUserId ? dropdown : ' '}
+          {userID === currentUserId ? dropdown : dropdownReport}
         </div>
         <div className="chatmessage__bodytext">
           <MessageArea />
@@ -143,6 +160,7 @@ Message.propTypes = {
   onContentTrigger: PropTypes.func.isRequired,
   onDeleteMessageTrigger: PropTypes.func.isRequired,
   onEditMessageTrigger: PropTypes.func.isRequired,
+  onReportMessageTrigger: PropTypes.func.isRequired,
 };
 
 Message.defaultProps = {
@@ -150,5 +168,3 @@ Message.defaultProps = {
   timestamp: null,
   profileImageUrl: '',
 };
-
-export default Message;

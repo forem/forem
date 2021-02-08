@@ -1,9 +1,9 @@
 module Pages
   class BustCacheWorker < BustCacheBaseWorker
-    def perform(slug, cache_buster = "CacheBuster")
+    def perform(slug)
       return if slug.blank?
 
-      cache_buster.constantize.bust_page(slug)
+      EdgeCache::BustPage.call(slug)
     end
   end
 end
