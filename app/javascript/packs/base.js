@@ -14,14 +14,18 @@ function getPageEntries() {
   });
 }
 
-const menus = [...document.getElementsByClassName('js-hamburger-trigger')];
-const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
+let menus = [...document.getElementsByClassName('js-hamburger-trigger')];
+let moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
 
 getInstantClick().then((spa) => {
   spa.on('change', () => {
+    let menus = [...document.getElementsByClassName('js-hamburger-trigger')];
+    let moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
     const { currentPage } = document.getElementById('page-content').dataset;
 
     setCurrentPageIconLink(currentPage, getPageEntries());
+    initializeMobileMenu(menus, moreMenus);
+    initializeTouchDevice(memberMenu, menuNavButton);
   });
 });
 
