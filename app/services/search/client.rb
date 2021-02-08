@@ -57,7 +57,9 @@ module Search
           retry_on_failure: 5,
           request_timeout: 30,
           adapter: :patron,
-          log: Rails.env.development?,
+          # NOTE: [@rhymes] temporarily disable logs, as they were only enabled
+          # in development
+          log: false,
         )
       end
     end
