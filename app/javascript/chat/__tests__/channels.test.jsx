@@ -108,7 +108,7 @@ describe('<Channels />', () => {
 
       // configFooter should exist
       fireEvent.click(
-        getByRole('button', { name: /toggle configuration menu/i }),
+        getByRole('button', { name: /configuration navigation menu/i }),
       );
       const settings = getByText('Settings');
       expect(settings.getAttribute('href')).toEqual('/settings');
@@ -124,7 +124,7 @@ describe('<Channels />', () => {
       getByRole('alert');
 
       fireEvent.click(
-        getByRole('button', { name: /toggle configuration menu/i }),
+        getByRole('button', { name: /configuration navigation menu/i }),
       );
       const settings = getByText('Settings');
       expect(settings.getAttribute('href')).toEqual('/settings');
