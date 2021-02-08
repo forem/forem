@@ -49,23 +49,23 @@ accessibility is impacted and tested. For more info, check out the
       have not been included_
 - [ ] I need help with writing tests
 
-## How will this change be communicated?
+## [Forem core team only] How will this change be communicated?
 
-_Please take a moment to consider if your PR will directly impact Forem members
-or creators, the development process, or any of our internal teams. You may want
-to include this in a Changelog post, write a [forem.dev](http://forem.dev) post,
-update documentation, or share this change internally._
+_Will this PR introduce a change that impacts Forem members or creators, the
+development process, or any of our internal teams? If so, please note how you
+will share this change with the people who need to know about it._
 
 - [ ] I've updated the [Developer Docs](https://docs.forem.com) and/or
-      [Admin Guide](https://forem.gitbook.io/forem-admin-guide/), or [Storybook](https://storybook.forem.com/) (for Crayons components)
-- [ ] I've updated the README or inline documentation
-- [ ] I will include this in the [Changelog](https://forem.dev/t/changelog) or
-      in a [forem.dev](http://forem.dev) post
-- [ ] I will share this internally with the appropriate team
+      [Admin Guide](https://forem.gitbook.io/forem-admin-guide/), or
+      [Storybook](https://storybook.forem.com/) (for Crayons components)
+- [ ] I've updated the README or added inline documentation
+- [ ] I will share this change in a [Changelog](https://forem.dev/t/changelog)
+      or in a [forem.dev](http://forem.dev) post
+- [ ] I will share this change internally with the appropriate team
+- [ ] I'm not sure how best to communicate this change and need help
 - [ ] This change does not need to be communicated, and this is why not: _please
       replace this line with details on why this change doesn't need to be
       shared_
-- [ ] I'm not sure how best to communicate this change and need help
 
 ## [optional] Are there any post deployment tasks we need to perform?
 
