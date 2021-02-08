@@ -61,6 +61,40 @@ it('should close when Escape is pressed', () => {
   expect(onClose).toHaveBeenCalledTimes(1);
 });
 
+it("shouldn't close on outside click by default", () => {
+  const onClose = jest.fn();
+  const { getByText } = render(
+    <div>
+      <p>Outside content</p>
+      <Modal title="This is a modal title" onClose={onClose}>
+        This is the modal body content
+      </Modal>
+    </div>,
+  );
+
+  userEvent.click(getByText('Outside content'));
+  expect(onClose).not.toHaveBeenCalled();
+});
+
+it('should close on click outside, if enabled', () => {
+  const onClose = jest.fn();
+  const { getByText } = render(
+    <div>
+      <p>Outside content</p>
+      <Modal
+        title="This is a modal title"
+        onClose={onClose}
+        closeOnClickOutside
+      >
+        This is the modal body content
+      </Modal>
+    </div>,
+  );
+
+  userEvent.click(getByText('Outside content'));
+  expect(onClose).toHaveBeenCalledTimes(1);
+});
+
 it('should render with additional class names', async () => {
   const { getByTestId } = render(
     <Modal
