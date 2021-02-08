@@ -10,15 +10,6 @@ RSpec.describe FeedbackMessagesHelper, type: :helper do
     end
   end
 
-  describe "#reporter_email_details" do
-    it "have proper subject and body" do
-      expect(helper.reporter_email_details).to include(
-        subject: "#{SiteConfig.community_name} Report",
-        body: a_string_starting_with("Hi"),
-      )
-    end
-  end
-
   describe "#affected_email_details" do
     it "have proper subject and body" do
       expect(helper.affected_email_details).to include(
