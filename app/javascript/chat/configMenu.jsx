@@ -28,7 +28,8 @@ export class ConfigMenu extends Component {
       <div className="chatchannels__config">
         <button
           onClick={this.handleClick}
-          aria-label="toggle configuration menu"
+          aria-expanded={visible}
+          aria-label="configuration navigation menu"
           style={{ backgroundImage: `url(${ConfigImage})` }}
           ref={this.configMenuButton}
         />
