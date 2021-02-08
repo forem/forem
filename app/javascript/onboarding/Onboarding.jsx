@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-
+import { FocusTrap } from '../shared/components/focusTrap';
 import { IntroSlide } from './components/IntroSlide';
 import { EmailPreferencesForm } from './components/EmailPreferencesForm';
 import { FollowTags } from './components/FollowTags';
@@ -77,7 +77,9 @@ export class Onboarding extends Component {
           }
         }
       >
-        {this.slides[currentSlide]}
+        <FocusTrap key={`onboarding-${currentSlide}`}>
+          {this.slides[currentSlide]}
+        </FocusTrap>
       </main>
     );
   }

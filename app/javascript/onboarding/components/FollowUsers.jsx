@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import he from 'he';
-import { FocusTrap } from '../../shared/components/focusTrap';
 import { getContentOfToken } from '../utilities';
 import { Navigation } from './Navigation';
 
@@ -144,78 +143,76 @@ export class FollowUsers extends Component {
     const canSkip = selectedUsers.length === 0;
 
     return (
-      <FocusTrap>
+      <div
+        data-testid="onboarding-follow-users"
+        className="onboarding-main crayons-modal"
+      >
         <div
-          data-testid="onboarding-follow-users"
-          className="onboarding-main crayons-modal"
+          className="crayons-modal__box overflow-auto"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
         >
-          <div
-            className="crayons-modal__box overflow-auto"
-            role="dialog"
-            aria-labelledby="title"
-            aria-describedby="subtitle"
-          >
-            <Navigation
-              prev={prev}
-              next={this.handleComplete}
-              canSkip={canSkip}
-              slidesCount={slidesCount}
-              currentSlideIndex={currentSlideIndex}
-            />
-            <div className="onboarding-content toggle-bottom">
-              <header className="onboarding-content-header">
-                <h1 id="title" className="title">
-                  Suggested people to follow
-                </h1>
-                <h2 id="subtitle" className="subtitle">
-                  Let&apos;s review a few things first
-                </h2>
-                <div className="onboarding-selection-status">
-                  {this.renderFollowCount()}
-                  {this.renderFollowToggle()}
-                </div>
-              </header>
-
-              <div data-testid="onboarding-users">
-                {users.map((user) => (
-                  <button
-                    data-testid="onboarding-user-button"
-                    type="button"
-                    onClick={() => this.handleClick(user)}
-                    onKeyDown={() => this.handleKeyDown(user)}
-                    className={
-                      selectedUsers.includes(user)
-                        ? 'user content-row selected'
-                        : 'user content-row unselected'
-                    }
-                  >
-                    <figure className="user-avatar-container">
-                      <img
-                        className="user-avatar"
-                        src={user.profile_image_url}
-                        alt="profile"
-                      />
-                    </figure>
-                    <div className="user-info">
-                      <h4 className="user-name">{user.name}</h4>
-                      <p className="user-summary">
-                        {he.unescape(user.summary || '')}
-                      </p>
-                    </div>
-                    <button
-                      data-testid="onboarding-user-following-status"
-                      type="button"
-                      className="user-following-status"
-                    >
-                      {selectedUsers.includes(user) ? 'Following' : 'Follow'}
-                    </button>
-                  </button>
-                ))}
+          <Navigation
+            prev={prev}
+            next={this.handleComplete}
+            canSkip={canSkip}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
+          />
+          <div className="onboarding-content toggle-bottom">
+            <header className="onboarding-content-header">
+              <h1 id="title" className="title">
+                Suggested people to follow
+              </h1>
+              <h2 id="subtitle" className="subtitle">
+                Let&apos;s review a few things first
+              </h2>
+              <div className="onboarding-selection-status">
+                {this.renderFollowCount()}
+                {this.renderFollowToggle()}
               </div>
+            </header>
+
+            <div data-testid="onboarding-users">
+              {users.map((user) => (
+                <button
+                  data-testid="onboarding-user-button"
+                  type="button"
+                  onClick={() => this.handleClick(user)}
+                  onKeyDown={() => this.handleKeyDown(user)}
+                  className={
+                    selectedUsers.includes(user)
+                      ? 'user content-row selected'
+                      : 'user content-row unselected'
+                  }
+                >
+                  <figure className="user-avatar-container">
+                    <img
+                      className="user-avatar"
+                      src={user.profile_image_url}
+                      alt="profile"
+                    />
+                  </figure>
+                  <div className="user-info">
+                    <h4 className="user-name">{user.name}</h4>
+                    <p className="user-summary">
+                      {he.unescape(user.summary || '')}
+                    </p>
+                  </div>
+                  <button
+                    data-testid="onboarding-user-following-status"
+                    type="button"
+                    className="user-following-status"
+                  >
+                    {selectedUsers.includes(user) ? 'Following' : 'Follow'}
+                  </button>
+                </button>
+              ))}
             </div>
           </div>
         </div>
-      </FocusTrap>
+      </div>
     );
   }
 }

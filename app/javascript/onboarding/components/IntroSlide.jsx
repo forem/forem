@@ -2,7 +2,6 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { getContentOfToken, userData, updateOnboarding } from '../utilities';
-import { FocusTrap } from '../../shared/components/focusTrap';
 import { Navigation } from './Navigation';
 
 /* eslint-disable camelcase */
@@ -81,131 +80,127 @@ export class IntroSlide extends Component {
 
     if (text) {
       return (
-        <FocusTrap>
-          <div className="onboarding-main crayons-modal crayons-modal--m">
-            <div className="crayons-modal__box overflow-auto">
-              <div className="onboarding-content terms-and-conditions-wrapper">
-                <button
-                  type="button"
-                  onClick={() => this.setState({ text: null })}
-                >
-                  Back
-                </button>
-                <div
-                  className="terms-and-conditions-content"
-                  /* eslint-disable react/no-danger */
-                  dangerouslySetInnerHTML={{ __html: text }}
-                  /* eslint-enable react/no-danger */
-                />
-              </div>
-            </div>
-          </div>
-        </FocusTrap>
-      );
-    }
-
-    return (
-      <FocusTrap>
-        <div
-          data-testid="onboarding-intro-slide"
-          className="onboarding-main introduction crayons-modal crayons-modal--m"
-        >
-          <div
-            className="crayons-modal__box overflow-auto"
-            role="dialog"
-            aria-labelledby="title"
-            aria-describedby="subtitle"
-          >
-            <div className="onboarding-content">
-              <figure>
-                <img
-                  src={communityConfig.communityLogo}
-                  className="sticker-logo"
-                  alt={communityConfig.communityName}
-                />
-              </figure>
-              <h1
-                id="title"
-                data-testid="onboarding-introduction-title"
-                className="introduction-title"
+        <div className="onboarding-main crayons-modal crayons-modal--m">
+          <div className="crayons-modal__box overflow-auto">
+            <div className="onboarding-content terms-and-conditions-wrapper">
+              <button
+                type="button"
+                onClick={() => this.setState({ text: null })}
               >
-                {this.user.name}
-                &mdash; welcome to {communityConfig.communityName}!
-              </h1>
-              <h2 id="subtitle" className="introduction-subtitle">
-                {communityConfig.communityDescription}
-              </h2>
-            </div>
-
-            <div className="checkbox-form-wrapper">
-              <form className="checkbox-form">
-                <fieldset>
-                  <ul>
-                    <li className="checkbox-item">
-                      <label
-                        data-testid="checked-code-of-conduct"
-                        htmlFor="checked_code_of_conduct"
-                        className="lh-base py-1"
-                      >
-                        <input
-                          type="checkbox"
-                          id="checked_code_of_conduct"
-                          name="checked_code_of_conduct"
-                          checked={checked_code_of_conduct}
-                          onChange={this.handleChange}
-                        />
-                        You agree to uphold our&nbsp;
-                        <a
-                          href="/code-of-conduct"
-                          data-no-instant
-                          onClick={(e) => this.handleShowText(e, 'coc')}
-                        >
-                          Code of Conduct
-                        </a>
-                        .
-                      </label>
-                    </li>
-
-                    <li className="checkbox-item">
-                      <label
-                        data-testid="checked-terms-and-conditions"
-                        htmlFor="checked_terms_and_conditions"
-                        className="lh-base py-1"
-                      >
-                        <input
-                          type="checkbox"
-                          id="checked_terms_and_conditions"
-                          name="checked_terms_and_conditions"
-                          checked={checked_terms_and_conditions}
-                          onChange={this.handleChange}
-                        />
-                        You agree to our&nbsp;
-                        <a
-                          href="/terms"
-                          data-no-instant
-                          onClick={(e) => this.handleShowText(e, 'terms')}
-                        >
-                          Terms and Conditions
-                        </a>
-                        .
-                      </label>
-                    </li>
-                  </ul>
-                </fieldset>
-              </form>
-              <Navigation
-                disabled={this.isButtonDisabled()}
-                className="intro-slide"
-                prev={prev}
-                slidesCount={slidesCount}
-                currentSlideIndex={currentSlideIndex}
-                next={this.onSubmit}
-                hidePrev
+                Back
+              </button>
+              <div
+                className="terms-and-conditions-content"
+                /* eslint-disable react/no-danger */
+                dangerouslySetInnerHTML={{ __html: text }}
+                /* eslint-enable react/no-danger */
               />
             </div>
           </div>
         </div>
-      </FocusTrap>
+      );
+    }
+
+    return (
+      <div
+        data-testid="onboarding-intro-slide"
+        className="onboarding-main introduction crayons-modal crayons-modal--m"
+      >
+        <div
+          className="crayons-modal__box overflow-auto"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
+        >
+          <div className="onboarding-content">
+            <figure>
+              <img
+                src={communityConfig.communityLogo}
+                className="sticker-logo"
+                alt={communityConfig.communityName}
+              />
+            </figure>
+            <h1
+              id="title"
+              data-testid="onboarding-introduction-title"
+              className="introduction-title"
+            >
+              {this.user.name}
+              &mdash; welcome to {communityConfig.communityName}!
+            </h1>
+            <h2 id="subtitle" className="introduction-subtitle">
+              {communityConfig.communityDescription}
+            </h2>
+          </div>
+
+          <div className="checkbox-form-wrapper">
+            <form className="checkbox-form">
+              <fieldset>
+                <ul>
+                  <li className="checkbox-item">
+                    <label
+                      data-testid="checked-code-of-conduct"
+                      htmlFor="checked_code_of_conduct"
+                      className="lh-base py-1"
+                    >
+                      <input
+                        type="checkbox"
+                        id="checked_code_of_conduct"
+                        name="checked_code_of_conduct"
+                        checked={checked_code_of_conduct}
+                        onChange={this.handleChange}
+                      />
+                      You agree to uphold our&nbsp;
+                      <a
+                        href="/code-of-conduct"
+                        data-no-instant
+                        onClick={(e) => this.handleShowText(e, 'coc')}
+                      >
+                        Code of Conduct
+                      </a>
+                      .
+                    </label>
+                  </li>
+
+                  <li className="checkbox-item">
+                    <label
+                      data-testid="checked-terms-and-conditions"
+                      htmlFor="checked_terms_and_conditions"
+                      className="lh-base py-1"
+                    >
+                      <input
+                        type="checkbox"
+                        id="checked_terms_and_conditions"
+                        name="checked_terms_and_conditions"
+                        checked={checked_terms_and_conditions}
+                        onChange={this.handleChange}
+                      />
+                      You agree to our&nbsp;
+                      <a
+                        href="/terms"
+                        data-no-instant
+                        onClick={(e) => this.handleShowText(e, 'terms')}
+                      >
+                        Terms and Conditions
+                      </a>
+                      .
+                    </label>
+                  </li>
+                </ul>
+              </fieldset>
+            </form>
+            <Navigation
+              disabled={this.isButtonDisabled()}
+              className="intro-slide"
+              prev={prev}
+              slidesCount={slidesCount}
+              currentSlideIndex={currentSlideIndex}
+              next={this.onSubmit}
+              hidePrev
+            />
+          </div>
+        </div>
+      </div>
     );
   }
 }

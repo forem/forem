@@ -2,7 +2,6 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { getContentOfToken } from '../utilities';
-import { FocusTrap } from '../../shared/components/focusTrap';
 import { Navigation } from './Navigation';
 
 export class FollowTags extends Component {
@@ -103,89 +102,85 @@ export class FollowTags extends Component {
     const canSkip = selectedTags.length === 0;
 
     return (
-      <FocusTrap>
+      <div
+        data-testid="onboarding-follow-tags"
+        className="onboarding-main crayons-modal"
+      >
         <div
-          data-testid="onboarding-follow-tags"
-          className="onboarding-main crayons-modal"
+          className="crayons-modal__box overflow-auto"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
         >
-          <div
-            className="crayons-modal__box overflow-auto"
-            role="dialog"
-            aria-labelledby="title"
-            aria-describedby="subtitle"
-          >
-            <Navigation
-              prev={prev}
-              next={this.handleComplete}
-              canSkip={canSkip}
-              slidesCount={slidesCount}
-              currentSlideIndex={currentSlideIndex}
-            />
-            <div className="onboarding-content toggle-bottom">
-              <header className="onboarding-content-header">
-                <h1 id="title" className="title">
-                  What are you interested in?
-                </h1>
-                <h2 id="subtitle" className="subtitle">
-                  Follow tags to customize your feed
-                </h2>
-                {this.renderFollowCount()}
-              </header>
-              <div data-testid="onboarding-tags" className="onboarding-tags">
-                {allTags.map((tag) => (
-                  <div
-                    className={`onboarding-tags__item ${
-                      selectedTags.includes(tag) &&
-                      'onboarding-tags__item--selected'
-                    }`}
-                    style={{
-                      boxShadow: selectedTags.includes(tag)
-                        ? `inset 0 0 0 100px ${tag.bg_color_hex}`
-                        : `inset 0 0 0 2px ${tag.bg_color_hex}`,
-                      color: selectedTags.includes(tag)
-                        ? tag.text_color_hex
-                        : '',
-                    }}
-                  >
-                    <div className="onboarding-tags__item__inner">
-                      #{tag.name}
-                      <button
-                        type="button"
-                        onClick={() => this.handleClick(tag)}
-                        className={`onboarding-tags__button ${
-                          selectedTags.includes(tag) &&
-                          'onboarding-tags__button--selected'
-                        }`}
-                        style={{
-                          backgroundColor: selectedTags.includes(tag)
-                            ? tag.text_color_hex
-                            : tag.bg_color_hex,
-                          color: selectedTags.includes(tag)
-                            ? tag.bg_color_hex
-                            : tag.text_color_hex,
-                        }}
-                      >
-                        {selectedTags.includes(tag) ? (
-                          <span>
-                            <span className="onboarding-tags__button-default">
-                              ✓ Following
-                            </span>
-                            <span className="onboarding-tags__button-alt">
-                              Unfollow
-                            </span>
+          <Navigation
+            prev={prev}
+            next={this.handleComplete}
+            canSkip={canSkip}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
+          />
+          <div className="onboarding-content toggle-bottom">
+            <header className="onboarding-content-header">
+              <h1 id="title" className="title">
+                What are you interested in?
+              </h1>
+              <h2 id="subtitle" className="subtitle">
+                Follow tags to customize your feed
+              </h2>
+              {this.renderFollowCount()}
+            </header>
+            <div data-testid="onboarding-tags" className="onboarding-tags">
+              {allTags.map((tag) => (
+                <div
+                  className={`onboarding-tags__item ${
+                    selectedTags.includes(tag) &&
+                    'onboarding-tags__item--selected'
+                  }`}
+                  style={{
+                    boxShadow: selectedTags.includes(tag)
+                      ? `inset 0 0 0 100px ${tag.bg_color_hex}`
+                      : `inset 0 0 0 2px ${tag.bg_color_hex}`,
+                    color: selectedTags.includes(tag) ? tag.text_color_hex : '',
+                  }}
+                >
+                  <div className="onboarding-tags__item__inner">
+                    #{tag.name}
+                    <button
+                      type="button"
+                      onClick={() => this.handleClick(tag)}
+                      className={`onboarding-tags__button ${
+                        selectedTags.includes(tag) &&
+                        'onboarding-tags__button--selected'
+                      }`}
+                      style={{
+                        backgroundColor: selectedTags.includes(tag)
+                          ? tag.text_color_hex
+                          : tag.bg_color_hex,
+                        color: selectedTags.includes(tag)
+                          ? tag.bg_color_hex
+                          : tag.text_color_hex,
+                      }}
+                    >
+                      {selectedTags.includes(tag) ? (
+                        <span>
+                          <span className="onboarding-tags__button-default">
+                            ✓ Following
                           </span>
-                        ) : (
-                          'Follow'
-                        )}
-                      </button>
-                    </div>
+                          <span className="onboarding-tags__button-alt">
+                            Unfollow
+                          </span>
+                        </span>
+                      ) : (
+                        'Follow'
+                      )}
+                    </button>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      </FocusTrap>
+      </div>
     );
   }
 }
