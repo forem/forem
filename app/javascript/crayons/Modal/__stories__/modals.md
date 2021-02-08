@@ -15,6 +15,4 @@ The Preact Modal component utilises the `focus-trap` library to ensure that:
   activated the modal
 - While the modal is open, focus is trapped inside so that when a user presses
   the Tab key, interactive items behind the modal are not focused
-
-When using the HTML variant, the utility function `getFocusTrapToggle` can be
-used to handle opening/closing the modal and the related focus trap.
+- When the modal is open, pressing the Escape key will close it

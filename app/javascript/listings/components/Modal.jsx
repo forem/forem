@@ -19,7 +19,11 @@ export const Modal = ({
 
   return (
     <div className="listings-modal">
-      <CrayonsModal onClose={onClick} closeOnClickOutside={true}>
+      <CrayonsModal
+        onClose={onClick}
+        closeOnClickOutside={true}
+        title="Listing"
+      >
         <div className="p-3 m:p-6 l:p-8">
           <SingleListing
             onAddTag={onAddTag}
