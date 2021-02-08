@@ -61,7 +61,7 @@ will share this change with the people who need to know about it._
 - [ ] I've updated the README or added inline documentation
 - [ ] I will share this change in a [Changelog](https://forem.dev/t/changelog)
       or in a [forem.dev](http://forem.dev) post
-- [ ] I will share this change internally with the appropriate team
+- [ ] I will share this change internally with the appropriate teams
 - [ ] I'm not sure how best to communicate this change and need help
 - [ ] This change does not need to be communicated, and this is why not: _please
       replace this line with details on why this change doesn't need to be
