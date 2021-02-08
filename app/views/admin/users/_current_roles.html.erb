@@ -11,8 +11,8 @@
         <% else %>
           <li>
             <%= role.name.titlecase %> <em><%= role.resource_name.to_s %></em> &nbsp;
-            <%= link_to "REMOVE", url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym), method: :delete, data: { confirm: "Are you sure?" },
-                                                                                                        class: "crayons-btn crayons-btn--danger crayons-btn--s lh-base fs-xs" %>
+            <%= link_to "X", url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym), method: :delete, data: { confirm: "Are you sure?" },
+                                                                                                   class: "crayons-btn crayons-btn--danger crayons-btn--s lh-base fs-xs" %>
           </li>
         <% end %>
       <% end %>
