@@ -37,6 +37,8 @@ env:
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
     - ELASTICSEARCH_URL="http://localhost:9200"
+before_install:
+  - gem install bundler:"<2.3"
 install:
   - date --rfc-3339=seconds
   - nvm install
