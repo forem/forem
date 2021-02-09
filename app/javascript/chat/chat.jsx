@@ -1248,19 +1248,6 @@ export class Chat extends Component {
     this.setState((prevState) => ({ expanded: !prevState.expanded }));
   };
 
-  renderChannelFilterButton = (type, name, active) => (
-    <Button
-      data-channel-type={type}
-      onClick={this.triggerChannelTypeFilter}
-      data-testid={name}
-      className={`chat__channeltypefilterbutton crayons-indicator crayons-indicator--${
-        type === active ? 'accent' : ''
-      }`}
-    >
-      {name}
-    </Button>
-  );
-
   toggleSearchShowing = () => {
     if (!this.state.searchShowing) {
       setTimeout(() => {
