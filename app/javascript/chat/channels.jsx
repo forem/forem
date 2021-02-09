@@ -1,8 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-// eslint-disable-next-line import/no-unresolved
-import ConfigImage from 'images/overflow-horizontal.svg';
 import { ChannelButton } from './components/ChannelButton';
+import { ConfigMenu } from './configMenu';
 import { channelSorter } from './util';
 
 export const Channels = ({
@@ -78,23 +77,6 @@ export const Channels = ({
       <div className="chatchannels__channelslistfooter">...</div>
     );
   }
-  let configFooter = '';
-  if (expanded) {
-    // TODO: The <div /> below should be converted into a real menu or <nav />
-    configFooter = (
-      <div className="chatchannels__config">
-        <img alt="configration" src={ConfigImage} style={{ height: '18px' }} />
-        <div className="chatchannels__configmenu" role="menu">
-          <a href="/settings" role="menuitem">
-            Settings
-          </a>
-          <a href="/report-abuse" role="menuitem">
-            Report Abuse
-          </a>
-        </div>
-      </div>
-    );
-  }
   return (
     <div className="chatchannels">
       <div
@@ -116,7 +98,8 @@ export const Channels = ({
         )}
         {channelsListFooter}
       </div>
-      {configFooter}
+
+      <ConfigMenu />
     </div>
   );
 };

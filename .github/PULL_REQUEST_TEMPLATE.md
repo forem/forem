@@ -53,6 +53,7 @@ accessibility is impacted and tested. For more info, check out the
 
 - [ ] [Developer Docs](https://docs.forem.com) and/or
       [Admin Guide](https://forem.gitbook.io/forem-admin-guide/)
+- [ ] [Storybook](https://storybook.forem.com/) (for Crayons components)
 - [ ] README
 - [ ] No documentation needed
 

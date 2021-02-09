@@ -14,6 +14,10 @@ class SiteConfig < RailsSettings::Base
   VALID_URL = %r{\A(http|https)://([/|.\w\s-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
   URL_MESSAGE = "must be a valid URL".freeze
 
+  # Forem Team
+  # [forem-fix] Remove channel name from SiteConfig
+  field :article_published_slack_channel, type: :string, default: "activity"
+
   # Meta
   field :admin_action_taken_at, type: :datetime, default: Time.current
 
@@ -116,8 +120,6 @@ class SiteConfig < RailsSettings::Base
     format: { with: VALID_URL, message: URL_MESSAGE }
   }
 
-  field :left_navbar_svg_icon, type: :string, default: STACK_ICON
-  field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
   field :enable_video_upload, type: :boolean, default: false
 
   # Mascot
@@ -158,13 +160,7 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Onboarding
-  field :onboarding_logo_image, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
   field :onboarding_background_image, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
-  field :onboarding_taskcard_image, type: :string, validates: {
     format: { with: VALID_URL, message: URL_MESSAGE }
   }
   field :suggested_tags, type: :array, default: %w[]

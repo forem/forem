@@ -19,42 +19,6 @@
                             optimizer_options: { crop: "fill" },
                             image_options: { class: "podcastliquidtag__podcastimage", id: "podcastimage-#{episode.slug}", alt: podcast.title }) %>
   </div>
-  <div class="hidden-audio" id="hidden-audio-<%= episode.slug %>" style="display:none" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
-    <audio id="audio" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
-      <source src="<%= episode.media_url %>" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-    <div id="progressBar" class="audio-player-display">
-      <a href="/<%= podcast.slug + "/" + episode.slug %>">
-        <%= optimized_image_tag(episode.image_url || podcast.image_url,
-                                optimizer_options: { crop: "fill", width: 420, height: 420 },
-                                image_options: { id: "episode-profile-image", alt: episode.title }) %>
-        <img id="animated-bars" src="/assets/animated-bars.gif" alt="animated volume bars">
-      </a>
-      <span id="barPlayPause">
-        <img class="butt play-butt" src="/assets/playbutt.png" alt="play">
-        <img class="butt pause-butt" src="/assets/pausebutt.png" alt="pause">
-      </span>
-      <span id="volume">
-        <span id="volumeindicator" class="volume-icon-wrapper showing">
-          <span id="volbutt">
-            <%= image_tag("/assets/volume.png", alt: "volume", class: "icon-img", height: 16, width: 16) %>
-          </span>
-          <span class="range-wrapper">
-            <input type="range" name="points" id="volumeslider" value="50" min="0" max="100" data-show-value="true">
-          </span>
-        </span>
-        <span id="mutebutt" class="volume-icon-wrapper hidden">
-          <%= image_tag("/assets/volume-mute.png", alt: "mute", class: "icon-img", height: 16, width: 16) %>
-        </span>
-        <span class="speed" id="speed" data-speed=1>1x</span>
-      </span>
-      <span class="buffer-wrapper" id="bufferwrapper">
-        <span id="buffer"></span>
-        <span id="progress"></span>
-        <span id="time">initializing...</span>
-        <span id="closebutt">×</span>
-      </span>
-    </div>
-  </div>
+
+  <%= render "podcast_episodes/podcast_bar", podcast: podcast, episode: episode %>
 </div>

@@ -132,7 +132,7 @@ describe Rack::Attack, type: :request, throttle: true do
 
     # rubocop:disable RSpec/AnyInstance, RSpec/ExampleLength
     it "throttles viewing tags" do
-      allow_any_instance_of(StoriesController).to receive(:cached_tagged_count).and_return(0)
+      allow_any_instance_of(StoriesController).to receive(:tagged_count).and_return(0)
       allow_any_instance_of(StoriesController).to receive(:stories_by_timeframe).and_return(Article.none)
       allow_any_instance_of(Articles::Feeds::LargeForemExperimental).to receive(
         :published_articles_by_tag,

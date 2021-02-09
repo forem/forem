@@ -32,7 +32,7 @@ gem "doorkeeper", "~> 5.4" # Oauth 2 provider
 gem "elasticsearch", "~> 7.10" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
-gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
+gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
 gem "flipper", "~> 0.20.3" # Feature flipping / flags for Ruby
@@ -66,17 +66,17 @@ gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.20" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with Elasticsearch to support http keep-alive connections
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
-gem "puma", "~> 5.2.0" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 5.2.1" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.4" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.3" # Pusher Push Notifications Ruby server SDK
-gem "rack-attack", "~> 6.4.0" # Used to throttle requests to prevent brute force attacks
+gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 6.0.3" # Ruby on Rails
 gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "ransack", "~> 2.4" # Searching and sorting
-gem "recaptcha", "~> 5.6", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "recaptcha", "~> 5.7", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.2.5" # Redis ruby client
 
