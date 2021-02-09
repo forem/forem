@@ -1,9 +1,3 @@
-/*
-  eslint-disable
-  consistent-return, no-unused-vars, react/destructuring-assignment,
-  react/no-access-state-in-setstate, react/button-has-type
-*/
-
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
@@ -124,7 +118,6 @@ export class Chat extends Component {
       channelPaginationNum,
       currentUserId,
       appDomain,
-      messageOffset,
     } = this.state;
 
     this.setupChannels(chatChannels);
@@ -463,7 +456,6 @@ export class Chat extends Component {
     const {
       messages,
       activeChannelId,
-      scrolled,
       chatChannels,
       currentUserId,
       unopenedChannelIds,
@@ -1540,7 +1532,7 @@ export class Chat extends Component {
     messageArea.classList.remove('opacity-25');
   }
   renderActiveChatChannel = (channelHeader) => {
-    const { state, props } = this;
+    const { state } = this;
     const channelName = state.activeChannel
       ? state.activeChannel.channel_name
       : ' ';
