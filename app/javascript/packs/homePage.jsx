@@ -42,11 +42,7 @@ function renderTagsFollowed(user = userData()) {
     );
   });
 
-  render(
-    <TagsFollowed tags={followedTags} />,
-    tagsFollowedContainer,
-    tagsFollowedContainer.firstElementChild,
-  );
+  render(<TagsFollowed tags={followedTags} />, tagsFollowedContainer);
 }
 
 function renderSidebar() {
