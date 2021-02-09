@@ -139,6 +139,12 @@ RSpec.describe Article, type: :model do
           article.destroy
         end
       end
+
+      it "on update syncs elasticsearch data" do
+        allow(article).to receive(:sync_related_elasticsearch_docs)
+        article.save
+        expect(article).to have_received(:sync_related_elasticsearch_docs)
+      end
     end
 
     context "when published" do
@@ -853,29 +859,6 @@ RSpec.describe Article, type: :model do
         sidekiq_assert_no_enqueued_jobs(only: Articles::ScoreCalcWorker) do
           article.save
         end
-      end
-    end
-
-    describe "detect human language" do
-      let(:language_detector) { instance_double(LanguageDetector) }
-
-      before do
-        allow(LanguageDetector).to receive(:new).and_return(language_detector)
-        allow(language_detector).to receive(:detect)
-      end
-
-      it "calls the human language detector" do
-        article.language = ""
-        article.save
-
-        expect(language_detector).to have_received(:detect)
-      end
-
-      it "does not call the human language detector if there is already a language" do
-        article.language = "en"
-        article.save
-
-        expect(language_detector).not_to have_received(:detect)
       end
     end
 

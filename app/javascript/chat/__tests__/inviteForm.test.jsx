@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import InviteForm from '../ChatChannelSettings/InviteForm';
+import { InviteForm } from '../ChatChannelSettings/InviteForm';
 
 describe('<InviteForm />', () => {
   it('should have no a11y violations', async () => {

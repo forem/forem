@@ -86,6 +86,14 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.authentication_providers).to eq([enabled])
         end
 
+        describe "Campaigns" do
+          it "sets campaign_articles_expiry_time" do
+            post "/admin/config", params: { site_config: { campaign_articles_expiry_time: 4 },
+                                            confirmation: confirmation_message }
+            expect(SiteConfig.campaign_articles_expiry_time).to eq(4)
+          end
+        end
+
         it "strips empty elements" do
           provider = Authentication::Providers.available.last.to_s
           enabled = "#{provider}, '', nil"
@@ -118,6 +126,13 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { allowed_registration_email_domains: proper_list },
                                           confirmation: confirmation_message }
           expect(SiteConfig.allowed_registration_email_domains).to eq(%w[dev.to forem.com forem.dev])
+        end
+
+        it "allows 2-character domains" do
+          proper_list = "dev.to, forem.com, 2u.com"
+          post "/admin/config", params: { site_config: { allowed_registration_email_domains: proper_list },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.allowed_registration_email_domains).to eq(%w[dev.to forem.com 2u.com])
         end
 
         it "does not allow improper domain list" do
@@ -191,13 +206,6 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { community_name: name_magoo },
                                           confirmation: confirmation_message }
           expect(SiteConfig.community_name).to eq(name_magoo)
-        end
-
-        it "updates the collective_noun" do
-          collective_noun = "Rhumba"
-          post "/admin/config", params: { site_config: { collective_noun: collective_noun },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.collective_noun).to eq(collective_noun)
         end
 
         it "updates the community_member_label" do
@@ -347,7 +355,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates logo_png" do
-          expected_default_image_url = URL.local_image("icon.png")
+          expected_default_image_url = SiteConfig.get_default(:logo_png)
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post "/admin/config", params: { site_config: { logo_png: expected_image_url },
@@ -399,22 +407,6 @@ RSpec.describe "/admin/config", type: :request do
           end.not_to change(SiteConfig, :secondary_logo_url)
         end
 
-        it "updates left_navbar_svg_icon" do
-          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' " \
-            "stroke='black' stroke-width='3'/></svg>"
-          post "/admin/config", params: { site_config: { left_navbar_svg_icon: expected_svg },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.left_navbar_svg_icon).to eq(expected_svg)
-        end
-
-        it "updates right_navbar_svg_icon" do
-          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' " \
-            "stroke='black' stroke-width='1'/></svg>"
-          post "/admin/config", params: { site_config: { right_navbar_svg_icon: expected_svg },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.right_navbar_svg_icon).to eq(expected_svg)
-        end
-
         it "rejects update without proper confirmation" do
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
@@ -441,7 +433,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates mascot_image_url" do
-          expected_default_image_url = URL.local_image("mascot.png")
+          expected_default_image_url = SiteConfig.get_default(:mascot_image_url)
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post "/admin/config", params: { site_config: { mascot_image_url: expected_image_url },
@@ -457,7 +449,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates the mascot_footer_image_width" do
-          expected_default_mascot_footer_image_width = 52
+          expected_default_mascot_footer_image_width = SiteConfig.get_default(:mascot_footer_image_width)
           expected_mascot_footer_image_width = 1002
 
           expect(SiteConfig.mascot_footer_image_width).to eq(expected_default_mascot_footer_image_width)
@@ -469,7 +461,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates the mascot_footer_image_height" do
-          expected_default_mascot_footer_image_height = 120
+          expected_default_mascot_footer_image_height = SiteConfig.get_default(:mascot_footer_image_height)
           expected_mascot_footer_image_height = 3002
 
           expect(SiteConfig.mascot_footer_image_height).to eq(expected_default_mascot_footer_image_height)
@@ -580,20 +572,6 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Onboarding" do
-        it "updates onboarding_taskcard_image" do
-          expected_image_url = "https://dummyimage.com/300x300.png"
-          post "/admin/config", params: { site_config: { onboarding_taskcard_image: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
-        end
-
-        it "updates onboarding_logo_image" do
-          expected_image_url = "https://dummyimage.com/300x300.png"
-          post "/admin/config", params: { site_config: { onboarding_logo_image: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.onboarding_logo_image).to eq(expected_image_url)
-        end
-
         it "updates onboarding_background_image" do
           expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { onboarding_background_image: expected_image_url },
@@ -646,101 +624,114 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Rate Limits and spam" do
         it "updates rate_limit_follow_count_daily" do
+          default_value = SiteConfig.get_default(:rate_limit_follow_count_daily)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_follow_count_daily: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_follow_count_daily).from(500).to(3)
+          end.to change(SiteConfig, :rate_limit_follow_count_daily).from(default_value).to(3)
         end
 
         it "updates rate_limit_comment_creation" do
+          default_value = SiteConfig.get_default(:rate_limit_comment_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_comment_creation: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_comment_creation).from(9).to(3)
+          end.to change(SiteConfig, :rate_limit_comment_creation).from(default_value).to(3)
         end
 
         it "updates rate_limit_published_article_creation" do
+          default_value = SiteConfig.get_default(:rate_limit_published_article_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_published_article_creation: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_published_article_creation).from(9).to(3)
+          end.to change(SiteConfig, :rate_limit_published_article_creation).from(default_value).to(3)
         end
 
         it "updates rate_limit_published_article_antispam_creation" do
+          default_value = SiteConfig.get_default(:rate_limit_published_article_antispam_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_published_article_antispam_creation: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_published_article_antispam_creation).from(1).to(3)
+          end.to change(SiteConfig, :rate_limit_published_article_antispam_creation).from(default_value).to(3)
         end
 
         it "updates rate_limit_organization_creation" do
+          default_value = SiteConfig.get_default(:rate_limit_organization_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_organization_creation: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_organization_creation).from(1).to(3)
+          end.to change(SiteConfig, :rate_limit_organization_creation).from(default_value).to(3)
         end
 
         it "updates rate_limit_image_upload" do
+          default_value = SiteConfig.get_default(:rate_limit_image_upload)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_image_upload: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_image_upload).from(9).to(3)
+          end.to change(SiteConfig, :rate_limit_image_upload).from(default_value).to(3)
         end
 
         it "updates rate_limit_email_recipient" do
+          default_value = SiteConfig.get_default(:rate_limit_email_recipient)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_email_recipient: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_email_recipient).from(5).to(3)
+          end.to change(SiteConfig, :rate_limit_email_recipient).from(default_value).to(3)
         end
 
         it "updates rate_limit_user_subscription_creation" do
+          default_value = SiteConfig.get_default(:rate_limit_user_subscription_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_user_subscription_creation: 1 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_user_subscription_creation).from(3).to(1)
+          end.to change(SiteConfig, :rate_limit_user_subscription_creation).from(default_value).to(1)
         end
 
         it "updates rate_limit_article_update" do
+          default_value = SiteConfig.get_default(:rate_limit_article_update)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_article_update: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_article_update).from(30).to(3)
+          end.to change(SiteConfig, :rate_limit_article_update).from(default_value).to(3)
         end
 
         it "updates rate_limit_user_update" do
           expect do
             post "/admin/config", params: { site_config: { rate_limit_user_update: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_user_update).from(5).to(3)
+          end.to change(SiteConfig, :rate_limit_user_update).to(3)
         end
 
         it "updates rate_limit_feedback_message_creation" do
+          default_value = SiteConfig.get_default(:rate_limit_feedback_message_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_feedback_message_creation: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_feedback_message_creation).from(5).to(3)
+          end.to change(SiteConfig, :rate_limit_feedback_message_creation).from(default_value).to(3)
         end
 
         it "updates rate_limit_listing_creation" do
+          default_value = SiteConfig.get_default(:rate_limit_listing_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_listing_creation: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_listing_creation).from(1).to(3)
+          end.to change(SiteConfig, :rate_limit_listing_creation).from(default_value).to(3)
         end
 
         it "updates rate_limit_reaction_creation" do
+          default_value = SiteConfig.get_default(:rate_limit_reaction_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_reaction_creation: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_reaction_creation).from(10).to(3)
+          end.to change(SiteConfig, :rate_limit_reaction_creation).from(default_value).to(3)
         end
 
         it "updates rate_limit_send_email_confirmation" do
+          default_value = SiteConfig.get_default(:rate_limit_send_email_confirmation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_send_email_confirmation: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_send_email_confirmation).from(2).to(3)
+          end.to change(SiteConfig, :rate_limit_send_email_confirmation).from(default_value).to(3)
         end
 
         it "updates spam_trigger_terms" do
@@ -807,6 +798,12 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { sidebar_tags: "hey, haha,hoHo, Bobo Fofo" },
                                           confirmation: confirmation_message }
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+
+        it "creates tags if they do not exist" do
+          post "/admin/config", params: { site_config: { sidebar_tags: "bobofogololo, spla, bla" },
+                                          confirmation: confirmation_message }
+          expect(Tag.find_by(name: "bobofogololo")).to be_valid
         end
       end
 
@@ -878,12 +875,7 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Credits" do
         it "updates the credit prices", :aggregate_failures do
-          original_prices = {
-            small: 500,
-            medium: 400,
-            large: 300,
-            xlarge: 250
-          }
+          original_prices = SiteConfig.get_default(:credit_prices_in_cents)
           SiteConfig.credit_prices_in_cents = original_prices
 
           SiteConfig.credit_prices_in_cents.each_key do |size|

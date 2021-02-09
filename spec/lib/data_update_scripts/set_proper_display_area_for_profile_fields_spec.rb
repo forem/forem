@@ -4,5 +4,12 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::SetProperDisplayAreaForProfileFields do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "migrates profile fields to proper areas" do
+    # Run the script
+    described_class.new.run
+
+    puts ProfileField.all.size
+    expect(ProfileField.find_by(attribute_name: "education").display_area).to eq("header")
+    expect(ProfileField.find_by(attribute_name: "currently_learning").display_area).to eq("left_sidebar")
+  end
 end

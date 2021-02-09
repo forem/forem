@@ -4,17 +4,17 @@ import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { submitArticle, previewArticle } from './actions';
+import { EditorActions, Form, Header, Help, Preview } from './components';
+import { Button, Modal } from '@crayons';
 
 /* global activateRunkitTags */
-
-import { EditorActions, Form, Header, Help, Preview } from './components';
 
 /*
   Although the state fields: id, description, canonicalUrl, series, allSeries and
   editing are not used in this file, they are important to the
   editor.
 */
-export default class ArticleForm extends Component {
+export class ArticleForm extends Component {
   static handleGistPreview() {
     const els = document.getElementsByClassName('ltag_gist-liquid-tag');
     for (let i = 0; i < els.length; i += 1) {
@@ -160,18 +160,11 @@ export default class ArticleForm extends Component {
   };
 
   showPreview = (response) => {
-    if (response.processed_html) {
-      this.setState({
-        ...this.setCommonProps({ previewShowing: true }),
-        previewResponse: response,
-        errors: null,
-      });
-    } else {
-      this.setState({
-        errors: response,
-        submitting: false,
-      });
-    }
+    this.setState({
+      ...this.setCommonProps({ previewShowing: true }),
+      previewResponse: response,
+      errors: null,
+    });
   };
 
   handleOrgIdChange = (e) => {
@@ -180,9 +173,10 @@ export default class ArticleForm extends Component {
   };
 
   failedPreview = (response) => {
-    // TODO: console.log should not be part of production code. Remove it!
-    // eslint-disable-next-line no-console
-    console.log(response);
+    this.setState({
+      errors: response,
+      submitting: false,
+    });
   };
 
   handleConfigChange = (e) => {
@@ -246,16 +240,18 @@ export default class ArticleForm extends Component {
       edited: false,
       helpFor: null,
       helpPosition: 0,
+      showModal: false,
     });
   };
 
   handleArticleError = (response, publishFailed = false) => {
     window.scrollTo(0, 0);
+    const { published } = this.state;
     this.setState({
       errors: response,
       submitting: false,
       // Even if it's an update that failed, published will still be set to true
-      published: !publishFailed,
+      published: published && !publishFailed,
     });
   };
 
@@ -266,6 +262,17 @@ export default class ArticleForm extends Component {
     this.setState({
       edited: true,
     });
+  };
+
+  toggleModal = () => {
+    if (this.state.edited) {
+      this.setState({
+        showModal: !this.state.showModal,
+      });
+    } else {
+      // If the user has not edited the body we send them home
+      window.location.href = '/';
+    }
   };
 
   switchHelpContext = ({ target }) => {
@@ -303,6 +310,7 @@ export default class ArticleForm extends Component {
         className="crayons-article-form"
         onSubmit={this.onSubmit}
         onInput={this.toggleEdit}
+        data-testid="article-form"
       >
         <Header
           onPreview={this.fetchPreview}
@@ -311,6 +319,7 @@ export default class ArticleForm extends Component {
           organizationId={organizationId}
           onToggle={this.handleOrgIdChange}
           siteLogo={siteLogo}
+          displayModal={this.toggleModal}
         />
 
         {previewShowing ? (
@@ -342,6 +351,26 @@ export default class ArticleForm extends Component {
           helpPosition={helpPosition}
           version={version}
         />
+        {this.state.showModal && (
+          <Modal
+            size="s"
+            title="You have unsaved changes"
+            onClose={this.toggleModal}
+          >
+            <p>
+              You've made changes to your post. Do you want to navigate to leave
+              this page?
+            </p>
+            <div className="pt-4">
+              <Button className="mr-2" variant="danger" url="/" tagName="a">
+                Yes, leave the page
+              </Button>
+              <Button variant="secondary" onClick={this.toggleModal}>
+                No, keep editing
+              </Button>
+            </div>
+          </Modal>
+        )}
 
         <EditorActions
           published={published}

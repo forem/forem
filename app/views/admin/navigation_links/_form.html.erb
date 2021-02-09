@@ -6,17 +6,28 @@
 <div class="form-group">
   <%= form.label :url %>
   <%= form.text_field :url, class: "form-control" %>
-  <div class="alert alert-info">A full URL for the link</div>
+  <div class="alert alert-info">A full (external) or relative (internal) URL for the link</div>
 </div>
-<div class="form-group">
-  <%= form.label :icon %>
-  <%= form.text_area :icon, class: "form-control" %>
-  <div class="alert alert-info">An SVG icon should be pasted in the textarea</div>
+<div class="form-group" data-controller="svg-icon-upload">
+  <div data-svg-icon-upload-target="navId" nav-link-id="<%= form.object[:id] %>">
+    <%= form.label :icon %>
+    <div data-svg-icon-upload-target="svgIconPreview" class="<%= form.object[:id].nil? ? "" : "pb-3" %>" style="width: 48px;">
+      <%= form.object[:icon]&.html_safe %>
+    </div>
+    <%= form.hidden_field :icon, "data-svg-icon-upload-target": "svgIconContent" %>
+
+    <input
+      type="file" accept="image/svg+xml" class="form-control-file"
+      data-action="svg-icon-upload#selectSvgIcon" />
+
+    <div class="alert alert-info">An SVG icon should be uploaded</div>
+    <div data-svg-icon-upload-target="svgIconMessageValidate"></div>
+  </div>
 </div>
 <div class="form-group">
   <%= form.label :position %>
   <%= form.number_field :position, class: "form-control" %>
-  <div class="alert alert-info">Detemines the order placement of the links in the sidebar</div>
+  <div class="alert alert-info">Determines the order placement of the links in the sidebar</div>
 </div>
 <div class="form-group">
   <%= form.check_box :display_only_when_signed_in %>

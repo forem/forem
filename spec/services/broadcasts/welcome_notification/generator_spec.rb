@@ -65,7 +65,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       not_github = [
         facebook_connect_broadcast,
         twitter_connect_broadcast,
-        apple_connect_broadcast
+        apple_connect_broadcast,
       ].include?(user.notifications.last.notifiable)
       expect(not_github).to be(true)
 

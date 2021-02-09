@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <% title = yield(:title) %>
-    <title><%= title || community_qualified_name.to_s %></title>
+    <title><%= title || community_name.to_s %></title>
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
@@ -17,14 +17,7 @@
         <meta name="monetization" content="<%= SiteConfig.payment_pointer %>">
       <% end %>
       <meta name="environment" content="<%= Rails.env %>">
-      <%= render "layouts/styles" %>
-      <style>
-        .home {
-          position: relative;
-          margin: auto;
-          max-width: 1250px;
-        }
-      </style>
+      <%= render "layouts/styles", qualifier: "main" %>
       <% unless user_signed_in? %>
         <%= javascript_packs_with_chunks_tag "base", "Search", defer: true %>
       <% end %>
@@ -45,7 +38,7 @@
       <meta name="application-name" content="<%= SiteConfig.app_domain %>">
       <meta name="theme-color" content="#000000" />
       <link rel="manifest" href="/manifest.json" />
-      <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_qualified_name %>" />
+      <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_name %>" />
 
       <meta property="forem:name" content="<%= community_name %>" />
       <meta property="forem:logo" content="<%= optimized_image_url(SiteConfig.logo_png, width: 512, fetch_format: "png") %>" />
@@ -60,15 +53,18 @@
         data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
         data-app-domain="<%= ChatChannel.urlsafe_encoded_app_domain %>"
         data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
-        data-release-footprint="<%= ApplicationConfig["RELEASE_FOOTPRINT"] %>"
+        data-deployed-at="<%= ForemInstance.deployed_at %>"
+        data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
         data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
+        <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
+        <%= render "layouts/styles", qualifier: "secondary" %>
         <div id="body-styles">
           <style>
             :root {
               --accent-brand: <%= SiteConfig.primary_brand_color_hex %>;
-              --accent-brand-darker: <%= HexComparer.new([SiteConfig.primary_brand_color_hex]).brightness(0.85) %>;
-              --accent-brand-lighter: <%= HexComparer.new([SiteConfig.primary_brand_color_hex]).brightness(1.1) %>;
-              --accent-brand-a10: <%= HexComparer.new([SiteConfig.primary_brand_color_hex]).opacity(0.1) %>;
+              --accent-brand-darker: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).brightness(0.85) %>;
+              --accent-brand-lighter: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).brightness(1.1) %>;
+              --accent-brand-a10: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).opacity(0.1) %>;
             }
           </style>
         </div>

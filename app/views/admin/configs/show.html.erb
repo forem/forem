@@ -9,15 +9,30 @@
 
   <div id="getStarted">
     <div class="card w-100">
-      <div class="card-header" id="getStartedHeader" data-toggle="collapse"
-        data-target="#getStartedBodyContainer" aria-expanded="true" aria-controls="getStartedBodyContainer">
+      <div
+        id="getStartedHeader"
+        class="card-header"
+        data-toggle="collapse"
+        data-target="#getStartedBodyContainer"
+        aria-expanded="true"
+        aria-controls="getStartedBodyContainer">
+
         <h2 class="d-inline">Get Started</h2>
-        <button class="crayons-btn crayons-btn--secondary float-right" type="button">
-          Toggle Get Started
+
+        <button
+          class="crayons-btn crayons-btn--secondary float-right"
+          type="button"
+          data-action="click->config#toggleAccordionButtonLabel">
+
+          <%= VerifySetupCompleted.setup_completed? ? "Show Getting Started" : "Hide Getting Started" %>
         </button>
       </div>
 
-      <div id="getStartedBodyContainer" class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3" aria-labelledby="siteConfigHeader">
+      <div
+        id="getStartedBodyContainer"
+        class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3"
+        aria-labelledby="getStartedHeader">
+
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <fieldset class="flex flex-column gap-4">
 
@@ -80,14 +95,25 @@
 
   <div id="siteConfig">
     <div class="card w-100">
-      <div class="card-header" id="siteConfigHeader" data-toggle="collapse"
-        data-target="#siteConfigBodyContainer" aria-expanded="true" aria-controls="siteConfigBodyContainer">
+      <div
+        id="siteConfigHeader"
+        class="card-header"
+        data-toggle="collapse"
+        data-target="#siteConfigBodyContainer"
+        aria-expanded="true"
+        aria-controls="siteConfigBodyContainer">
+
         <h2 class="d-inline">All Site Configuration</h2>
-        <button class="crayons-btn crayons-btn--secondary float-right" type="button">
-          Toggle Site Configuration
+
+        <button
+          class="crayons-btn crayons-btn--secondary float-right"
+          type="button"
+          data-action="click->config#toggleAccordionButtonLabel">
+          Hide Site Configuration
         </button>
       </div>
-      <div id="siteConfigBodyContainer" class="p-3" aria-labelledby="siteConfigHeader">
+
+      <div id="siteConfigBodyContainer" class="show expand p-3" aria-labelledby="siteConfigHeader">
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
@@ -95,7 +121,7 @@
                          header: "API Tokens",
                          state: "collapse",
                          target: "apiBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="apiBodyContainer" class="card-body collapse hide" aria-labelledby="apiBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -121,14 +147,14 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm", "testid": "authSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Authentication",
                          state: "collapse",
                          target: "authenticationBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
               <section class="mb-6">
@@ -174,7 +200,7 @@
                         <div
                           class="enabled-indicator <%= SiteConfig.allow_email_password_registration ? "visible" : "" %>"
                           data-config-target="enabledIndicator">
-                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Email enabled") %>
                           <small class="crayons-field__description ml-1">Enabled</small>
                         </div>
                       </div>
@@ -185,7 +211,7 @@
                         data-button-text="<%= SiteConfig.allow_email_password_registration ? "edit" : "enable" %>"
                         data-config-target="emailAuthSettingsBtn"
                         data-action="click->config#enableOrEditEmailAuthSettings"
-                        <%= disabled_attr_on_auth_provider_enablebtn %>>
+                        <%= disabled_attr_on_auth_provider_enable_btn %>>
                         <%= SiteConfig.allow_email_password_registration ? "Edit" : "Enable" %>
                       </button>
 
@@ -282,7 +308,7 @@
                                      readonly: true %>
                   </div>
                   <% authentication_available_providers.each do |provider| %>
-                  <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
+                    <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
                     <section class="config-authentication__item mb-0">
                       <figure class="config-authentication__item--icon">
                         <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
@@ -292,25 +318,26 @@
                           class="flex items-center justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
                           data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
                           <div class="config-authentication__item--label">
-                            <p class="crayons-field__label <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
+                            <p class="crayons-field__label <%= authentication_provider_enabled?(provider) ? "pb-0" : "" %>">
                               <%= provider.official_name %>
                             </p>
                             <div
                               id="<%= provider.provider_name %>-enabled-indicator"
-                              class="enabled-indicator <%= authentication_enabled_providers.include?(provider) ? "visible" : "" %>">
-                              <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                              class="enabled-indicator <%= authentication_provider_enabled?(provider) ? "visible" : "" %>">
+                              <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "#{provider.official_name} enabled") %>
                               <small class="crayons-field__description ml-1">Enabled</small>
                             </div>
                           </div>
                           <button
                             class="crayons-btn crayons-btn--secondary"
                             id="<%= provider.provider_name %>-auth-btn"
-                            data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
+                            data-button-text="<%= authentication_provider_enabled?(provider) ? "edit" : "enable" %>"
                             data-action="click->config#enableOrEditAuthProvider"
-                            data-auth-provider-enable="<%= provider.provider_name %>"
-                            data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
-                            <%= disabled_attr_on_auth_provider_enablebtn %>>
-                            <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
+                            data-provider-name="<%= provider.provider_name %>"
+                            data-provider-official-name="<%= provider.official_name %>"
+                            data-enable-auth="<%= authentication_provider_enabled?(provider) ? "true" : "false" %>"
+                            <%= disabled_attr_on_auth_provider_enable_btn %>>
+                            <%= authentication_provider_enabled?(provider) ? "Edit" : "Enable" %>
                           </button>
                         </div>
                         <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
@@ -343,7 +370,7 @@
                          header: "Campaign",
                          state: "collapse",
                          target: "campaignBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="campaignBodyContainer" class="card-body collapse hide" aria-labelledby="campaignBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -411,6 +438,15 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:campaign_call_to_action][:placeholder] %>
                 </div>
 
+                <div class="crayons-field">
+                  <%= admin_config_label :campaign_articles_expiry_time, "Campaign article expiry time" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:description] %>
+                  <%= f.number_field :campaign_articles_expiry_time,
+                                     class: "crayons-textfield",
+                                     value: SiteConfig.campaign_articles_expiry_time,
+                                     placeholder: Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:placeholder] %>
+                </div>
+
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>
@@ -424,7 +460,7 @@
                          header: "Community Content",
                          state: "collapse",
                          target: "contentBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -435,19 +471,6 @@
                                    class: "crayons-textfield",
                                    value: SiteConfig.community_name,
                                    placeholder: Constants::SiteConfig::DETAILS[:community_name][:placeholder] %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :collective_noun %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:collective_noun][:description] %>
-                  <%= f.text_field :collective_noun,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.collective_noun,
-                                   placeholder: Constants::SiteConfig::DETAILS[:collective_noun][:placeholder],
-                                   disabled: SiteConfig.collective_noun_disabled,
-                                   data: { target: "config.collectiveNoun" } %>
-                  <%= admin_config_label :collective_noun_disabled %>
-                  <%= f.check_box :collective_noun_disabled, checked: SiteConfig.collective_noun_disabled, data: { action: "config#disableTargetField", disable_target: "collectiveNoun" }, class: "crayons-checkbox" %>
                 </div>
 
                 <div class="crayons-field">
@@ -534,7 +557,7 @@
                          header: "Credits",
                          state: "collapse",
                          target: "creditsBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
 
             <div id="creditsBodyContainer" class="card-body collapse hide" aria-labelledby="creditsBodyContainer">
@@ -585,7 +608,7 @@
                          header: "Emails",
                          state: "collapse",
                          target: "emailBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -624,7 +647,7 @@
                          header: "Email digest frequency",
                          state: "collapse",
                          target: "emailDigestBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="emailDigestBodyContainer" class="card-body collapse hide" aria-labelledby="emailDigestBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -643,7 +666,7 @@
                   <%= f.number_field :periodic_email_digest_min,
                                      class: "crayons-textfield",
                                      value: SiteConfig.periodic_email_digest_min,
-                                     placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:placeholder] %>
+                                     placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_min][:placeholder] %>
                 </div>
 
                 <%= render "form_submission", f: f %>
@@ -659,7 +682,7 @@
                          header: "Jobs",
                          state: "collapse",
                          target: "jobsBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="jobsBodyContainer" class="card-body collapse hide" aria-labelledby="jobsBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -689,10 +712,10 @@
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
-                         header: "Google Analytics Reporting API v4",
+                         header: "Google Analytics",
                          state: "collapse",
                          target: "gaBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="gaBodyContainer" class="card-body collapse hide" aria-labelledby="gaBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -717,7 +740,7 @@
                          header: "Images",
                          state: "collapse",
                          target: "imagesBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="imagesBodyContainer" class="card-body collapse hide" aria-labelledby="imagesBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -782,28 +805,6 @@
                   <% end %>
                 </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :left_navbar_svg_icon %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:description] %>
-                  <%= f.text_area :left_navbar_svg_icon,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.left_navbar_svg_icon,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:placeholder] %>
-                  <%= SiteConfig.left_navbar_svg_icon.html_safe %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :right_navbar_svg_icon %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:description] %>
-                  <%= f.text_area :right_navbar_svg_icon,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.right_navbar_svg_icon,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:placeholder] %>
-                  <%= SiteConfig.right_navbar_svg_icon.html_safe %>
-                </div>
-
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>
@@ -817,7 +818,7 @@
                          header: "Mascot",
                          state: "collapse",
                          target: "mascotBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="mascotBodyContainer" class="card-body collapse hide" aria-labelledby="mascotBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -895,7 +896,7 @@
                          header: "Meta Keywords",
                          state: "collapse",
                          target: "metaKeywordsBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="metaKeywordsBodyContainer" class="card-body collapse hide" aria-labelledby="metaKeywordsBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -927,7 +928,7 @@
                          header: "Monetization",
                          state: "collapse",
                          target: "monetizationBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="monetizationBodyContainer" class="card-body collapse hide" aria-labelledby="monetizationBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -980,7 +981,7 @@
                          header: "Newsletter",
                          state: "collapse",
                          target: "newsletterBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -1037,24 +1038,10 @@
                          header: "Onboarding",
                          state: "collapse",
                          target: "onboardingBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
               <fieldset class="flex flex-column gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :onboarding_logo_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_logo_image][:description] %>
-                  <%= f.text_field :onboarding_logo_image,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.onboarding_logo_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:onboarding_logo_image][:placeholder] %>
-                  <div class="row mt-2">
-                    <div class="col-12">
-                      <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" width="600px" height="337px" />
-                    </div>
-                  </div>
-                </div>
-
                 <div class="crayons-field">
                   <%= admin_config_label :onboarding_background_image %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_background_image][:description] %>
@@ -1065,20 +1052,6 @@
                   <div class="row mt-2">
                     <div class="col-12">
                       <img alt="onboarding background image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :onboarding_taskcard_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:description] %>
-                  <%= f.text_field :onboarding_taskcard_image,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.onboarding_taskcard_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:placeholder] %>
-                  <div class="row mt-2">
-                    <div class="col-12">
-                      <img alt="onboarding taskcard image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
                     </div>
                   </div>
                 </div>
@@ -1115,7 +1088,7 @@
                          header: "Rate limits and anti-spam",
                          state: "collapse",
                          target: "rateLimitsBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -1154,7 +1127,7 @@
                          header: "Social Media",
                          state: "collapse",
                          target: "socialMediaBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -1194,7 +1167,7 @@
                          header: "Sponsors",
                          state: "collapse",
                          target: "sponsorsContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="sponsorsContainer" class="card-body collapse hide" aria-labelledby="sponsorsContainer">
               <fieldset class="flex flex-column gap-4">
@@ -1220,7 +1193,7 @@
                          header: "Tags",
                          state: "collapse",
                          target: "tagsBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="tagsBodyContainer" class="card-body collapse hide" aria-labelledby="tagsBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -1247,7 +1220,7 @@
                          header: "User Experience and Brand",
                          state: "collapse",
                          target: "uxBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="uxBodyContainer" class="card-body collapse hide" aria-labelledby="uxBodyContainer">
               <fieldset class="flex flex-column gap-4">
@@ -1321,5 +1294,5 @@
       </div>
     </div>
   </div>
-  <div data-target="config.configModalAnchor"></div>
+  <div data-config-target="configModalAnchor"></div>
 </div>
