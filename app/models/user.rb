@@ -291,7 +291,7 @@ class User < ApplicationRecord
   end
 
   def github_url
-    "https://twitter.com/#{github_username}" if github_username.present?
+    "https://github.com/#{github_username}" if github_username.present?
   end
 
   def set_remember_fields
