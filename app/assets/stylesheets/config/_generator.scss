@@ -300,7 +300,7 @@
     $spacing-units,
     true
   ),
-  ('-top', 'top', ('100': -100%), $spacing-units, true),
+  ('-top', 'top', ('100': -100%), $negative-spacing-units, true),
   (
     'bottom',
     'bottom',
@@ -308,7 +308,7 @@
     $spacing-units,
     true
   ),
-  ('-bottom', 'bottom', ('100': -100%), $spacing-units, true),
+  ('-bottom', 'bottom', ('100': -100%), $negative-spacing-units, true),
   (
     'left',
     'left',
@@ -316,7 +316,7 @@
     $spacing-units,
     true
   ),
-  ('-left', 'left', ('100': -100%), $spacing-units, true),
+  ('-left', 'left', ('100': -100%), $negative-spacing-units, true),
   (
     'right',
     'right',
@@ -324,7 +324,7 @@
     $spacing-units,
     true
   ),
-  ('-right', 'right', ('100': -100%), $spacing-units, true),
+  ('-right', 'right', ('100': -100%), $negative-spacing-units, true),
   ('z', 'z-index', $z-indexes, (), false),
   (
     'overflow',
