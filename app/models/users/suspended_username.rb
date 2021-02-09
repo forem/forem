@@ -1,6 +1,6 @@
 module Users
-  class Suspended < ApplicationRecord
-    self.table_name = "suspended_users"
+  class SuspendedUsername < ApplicationRecord
+    self.table_name_prefix = "users_"
 
     validates :username_hash, presence: true, uniqueness: true
 

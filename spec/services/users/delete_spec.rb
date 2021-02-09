@@ -182,7 +182,7 @@ RSpec.describe Users::Delete, type: :service do
       user = create(:user, :banned)
       expect do
         described_class.call(user)
-      end.to change(Users::Suspended, :count).by(1)
+      end.to change(Users::SuspendedUsername, :count).by(1)
     end
   end
 end

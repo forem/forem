@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Banned user tries to sign up again" do
+RSpec.describe "User with suspended username tried to sign up via OAuth" do
   before do
     omniauth_mock_twitter_payload
 
@@ -14,7 +14,7 @@ RSpec.describe "Banned user tries to sign up again" do
   context "when a user has been previously banned", :aggregate_failures do
     it "displays an error message" do
       username = OmniAuth.config.mock_auth[:twitter].extra.raw_info.username
-      create(:suspended_user, username: username)
+      create(:suspended_username, username: username)
 
       visit sign_up_path
       click_on("Continue with Twitter", match: :first)

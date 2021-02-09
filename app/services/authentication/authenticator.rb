@@ -97,7 +97,7 @@ module Authentication
 
     def find_or_create_user!
       username = provider.user_nickname
-      banned_user = Users::Suspended.previously_banned?(username)
+      banned_user = Users::SuspendedUsername.previously_banned?(username)
       raise ::Authentication::Errors::PreviouslyBanned if banned_user
 
       existing_user = User.where(
