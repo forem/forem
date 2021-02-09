@@ -17,6 +17,7 @@ import {
   editMessage,
 } from './actions/actions';
 import { CreateChatModal } from './components/CreateChatModal';
+import { ChannelFilterButton } from './components/ChannelFilterButton';
 import {
   sendChannelRequest,
   rejectJoiningRequest,
@@ -1314,21 +1315,24 @@ export class Chat extends Component {
           {invitesButton}
           {joiningRequestButton}
           <div className="chat__channeltypefilter">
-            {this.renderChannelFilterButton(
-              'all',
-              'all',
-              state.channelTypeFilter,
-            )}
-            {this.renderChannelFilterButton(
-              'direct',
-              'direct',
-              state.channelTypeFilter,
-            )}
-            {this.renderChannelFilterButton(
-              'invite_only',
-              'group',
-              state.channelTypeFilter,
-            )}
+            <ChannelFilterButton
+              type={'all'}
+              name={'all'}
+              active={state.channelTypeFilter}
+              onClick={this.triggerChannelTypeFilter}
+            />
+            <ChannelFilterButton
+              type={'direct'}
+              name={'direct'}
+              active={state.channelTypeFilter}
+              onClick={this.triggerChannelTypeFilter}
+            />
+            <ChannelFilterButton
+              type={'invite_only'}
+              name={'group'}
+              active={state.channelTypeFilter}
+              onClick={this.triggerChannelTypeFilter}
+            />
             <Button
               className="chat__channelssearchtoggle crayons-btn--ghost-dimmed p-2"
               aria-label="Toggle request manager"
