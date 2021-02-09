@@ -4,29 +4,25 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::AddSingleResourceAdminRoleToUsersWithTechAdmin do
-
-  before do
-    users = create_list(:user, 5)
-    User.first.add_role(:tech_admin)
-    User.second.add_role(:admin)
-    User.last.add_role(:tech_admin)
-  end
+  let!(:tech_admin1) { create(:user, :tech_admin) }
+  let!(:tech_admin2) { create(:user, :tech_admin) }
+  let!(:admin) { create(:user, :admin) }
 
   it "adds single_resource_admin roles to users with tech_admin roles" do
     described_class.new.run
 
-    expect(User.first.roles.pluck(:name)).to include("single_resource_admin")
-    expect(User.last.roles.pluck(:name)).to include("single_resource_admin")
+    expect(tech_admin1.reload.roles.pluck(:name)).to include("single_resource_admin")
+    expect(tech_admin2.reload.roles.pluck(:name)).to include("single_resource_admin")
   end
 
   it "sets the correct resource type for the single_resource_admin role" do
     described_class.new.run
-    expect(User.last.roles.pluck(:resource_type)).to include("DataUpdateScript")
+    expect(tech_admin2.reload.roles.pluck(:resource_type)).to include("DataUpdateScript")
   end
 
   it "does not add single_resource_admin roles alongside other roles" do
     described_class.new.run
-    expect(User.second.roles.pluck(:name)).not_to include("single_resource_admin")
+    expect(admin.reload.roles.pluck(:name)).not_to include("single_resource_admin")
   end
 
 end
