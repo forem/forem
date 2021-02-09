@@ -78,6 +78,14 @@ module Moderator
         check_super_admin
         remove_negative_roles
         user.add_role :super_admin
+      when "Tech Admin"
+        check_super_admin
+        remove_negative_roles
+        user.add_role :tech_admin
+        # DataUpdateScripts falls under the admin namespace
+        # and hence requires a single_resource_admin role to view
+        # this technical admin resource
+        user.add_role(:single_resource_admin, DataUpdateScript)
       when /^(Resource Admin: )/
         check_super_admin
         remove_negative_roles
