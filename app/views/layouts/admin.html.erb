@@ -56,11 +56,13 @@
 
   <div class="crayons-layout <%= controller_name == "admin_portals" ? "" : "crayons-layout--2-cols" %>">
     <% unless controller_name == "admin_portals" %>
-    <div class="crayons-layout__left-sidebar">
-      <nav class="hidden m:block">
-        <%= render "admin/shared/navbar" %>
-      </nav>
-    </div>
+      <div class="crayons-layout__left-sidebar">
+        <nav class="hidden m:block">
+          <%= render "admin/shared/navbar", menu_items: admin_menu_items %>
+          <p class="crayons-field__description mt-4 mb-3">Tech Resources</p>
+          <%= render "admin/shared/navbar", menu_items: AdminHelper::TECH_MENU_ITEMS %>
+        </nav>
+      </div>
     <% end %>
     <main class="crayons-layout__content min-w-0">
       <% flash.each do |type, message| %>
