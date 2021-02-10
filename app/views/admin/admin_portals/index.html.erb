@@ -22,19 +22,21 @@
     <% end %>
   </div>
 
-  <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
-    <div>
-      <div class="mt-6 mb-2"> Tech Resources </div>
-      <% AdminHelper::TECH_MENU_ITEMS.each do |tech_menu_item| %>
-        <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative">
-          <h3 class="crayons-tag crayons-tag--l mb-2">
-            <a href="/admin/<%= tech_menu_item[:controller] %>" class="crayons-link">
-              <%= tech_menu_item[:name].to_s.titleize %>
-            </a>
-          </h3>
-        </div>
-      <% end %>
+  <% if FeatureFlag.enabled?(:data_update_scripts) %>
+    <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
+      <div>
+        <div class="mt-6 mb-2"> Tech Resources </div>
+        <% AdminHelper::TECH_MENU_ITEMS.each do |tech_menu_item| %>
+          <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative">
+            <h3 class="crayons-tag crayons-tag--l mb-2">
+              <a href="/admin/<%= tech_menu_item[:controller] %>" class="crayons-link">
+                <%= tech_menu_item[:name].to_s.titleize %>
+              </a>
+            </h3>
+          </div>
+        <% end %>
+      </div>
     </div>
-  </div>
+  <% end %>
 
 </div>

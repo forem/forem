@@ -5,6 +5,7 @@ RSpec.describe "/admin/profile_fields", type: :request do
 
   before do
     sign_in admin
+    allow(FeatureFlag).to receive(:enabled?).and_call_original
     allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
   end
 

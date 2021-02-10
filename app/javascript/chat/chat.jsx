@@ -17,6 +17,7 @@ import {
   editMessage,
 } from './actions/actions';
 import { CreateChatModal } from './components/CreateChatModal';
+import { ChannelFilterButton } from './components/ChannelFilterButton';
 import {
   sendChannelRequest,
   rejectJoiningRequest,
@@ -1247,19 +1248,6 @@ export class Chat extends Component {
     this.setState((prevState) => ({ expanded: !prevState.expanded }));
   };
 
-  renderChannelFilterButton = (type, name, active) => (
-    <Button
-      data-channel-type={type}
-      onClick={this.triggerChannelTypeFilter}
-      data-testid={name}
-      className={`chat__channeltypefilterbutton crayons-indicator crayons-indicator--${
-        type === active ? 'accent' : ''
-      }`}
-    >
-      {name}
-    </Button>
-  );
-
   toggleSearchShowing = () => {
     if (!this.state.searchShowing) {
       setTimeout(() => {
@@ -1314,21 +1302,24 @@ export class Chat extends Component {
           {invitesButton}
           {joiningRequestButton}
           <div className="chat__channeltypefilter">
-            {this.renderChannelFilterButton(
-              'all',
-              'all',
-              state.channelTypeFilter,
-            )}
-            {this.renderChannelFilterButton(
-              'direct',
-              'direct',
-              state.channelTypeFilter,
-            )}
-            {this.renderChannelFilterButton(
-              'invite_only',
-              'group',
-              state.channelTypeFilter,
-            )}
+            <ChannelFilterButton
+              type="all"
+              name="all"
+              active={state.channelTypeFilter === 'all'}
+              onClick={this.triggerChannelTypeFilter}
+            />
+            <ChannelFilterButton
+              type="direct"
+              name="direct"
+              active={state.channelTypeFilter === 'direct'}
+              onClick={this.triggerChannelTypeFilter}
+            />
+            <ChannelFilterButton
+              type="invite_only"
+              name="group"
+              active={state.channelTypeFilter === 'invite_only'}
+              onClick={this.triggerChannelTypeFilter}
+            />
             <Button
               className="chat__channelssearchtoggle crayons-btn--ghost-dimmed p-2"
               aria-label="Toggle request manager"
