@@ -77,7 +77,7 @@
               <% Profile.special_social_link_attributes.each do |attribute| %>
                 <% if @user.send(attribute).present? %>
                   <a href="<%= @user.send(attribute) %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                    <%= inline_svg_tag("#{attribute.gsub("_url","")}.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                    <%= inline_svg_tag("#{attribute.gsub("_url","")}.svg", class: "crayons-icon", aria: true, title: "#{attribute.split("_").first.titleize} logo") %>
                   </a>
                 <% end %>
               <% end %>

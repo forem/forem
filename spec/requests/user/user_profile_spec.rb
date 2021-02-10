@@ -119,7 +119,8 @@ RSpec.describe "UserProfiles", type: :request do
       user.save
       get "/#{user.username}"
       # Does not include the word, but does include the SVG
-      expect(response.body).not_to include "Instagram"
+      expect(response.body).not_to include "<p>Instagram"
+      expect(response.body).to include "Instagram logo</title>"
       expect(response.body).to include user.instagram_url
       expect(response.body).to include "M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254"
     end
