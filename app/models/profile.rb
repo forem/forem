@@ -9,17 +9,12 @@ class Profile < ApplicationRecord
 
   store_attribute :data, :custom_attributes, :json, default: {}
 
-  SPECIAL_FUNCTIONALITY_ATTRIBUTES = %w[
+  SPECIAL_DISPLAY_ATTRIBUTES = %w[
     summary
     employment_title
     employer_name
     employer_url
-    email_public
     location
-    display_looking_for_work_on_profile
-    brand_color1
-    brand_color2
-    looking_for_work
   ].freeze
 
   SPECIAL_SOCIAL_LINK_ATTRIBUTES = %w[
@@ -71,7 +66,7 @@ class Profile < ApplicationRecord
   end
 
   def self.special_attributes
-    SPECIAL_FUNCTIONALITY_ATTRIBUTES + SPECIAL_SOCIAL_LINK_ATTRIBUTES
+    SPECIAL_DISPLAY_ATTRIBUTES + SPECIAL_SOCIAL_LINK_ATTRIBUTES
   end
 
   def self.special_social_link_attributes

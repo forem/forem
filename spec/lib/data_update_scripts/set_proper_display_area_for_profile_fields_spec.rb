@@ -8,7 +8,8 @@ describe DataUpdateScripts::SetProperDisplayAreaForProfileFields do
     # Run the script
     described_class.new.run
 
-    puts ProfileField.all.size
+    expect(ProfileField.find_by(attribute_name: "recruiters_can_contact_me_about_job_opportunities").display_area)
+      .to eq("settings_only")
     expect(ProfileField.find_by(attribute_name: "education").display_area).to eq("header")
     expect(ProfileField.find_by(attribute_name: "currently_learning").display_area).to eq("left_sidebar")
   end
