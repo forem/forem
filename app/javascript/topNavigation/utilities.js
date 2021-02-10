@@ -63,17 +63,6 @@ export function initializeTouchDevice(memberTopMenu, menuNavButton) {
         menuNavButton.addEventListener('click', (_event) => {
           toggleHeaderMenu(memberTopMenu, menuNavButton);
         });
-
-        document.addEventListener('click', (_event) => {
-          // if clicking outside of the menu or on a menu item, close it
-          if (document.activeElement.id !== 'member-menu-button') {
-            blurHeaderMenu(
-              memberTopMenu,
-              menuNavButton,
-              document.getElementById('first-nav-link'),
-            );
-          }
-        });
       } else {
         crayonsHeaderMenuClassList.add('desktop');
         menuNavButton.addEventListener('click', (_event) => {
