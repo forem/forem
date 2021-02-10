@@ -5,7 +5,6 @@ RSpec.describe ProfileFieldGroup, type: :model do
 
   before do
     allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
-    allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
   end
 
   let!(:group) { create(:profile_field_group) }
