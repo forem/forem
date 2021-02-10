@@ -762,7 +762,7 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.10)
-    timecop (0.9.3)
+    timecop (0.9.4)
     twilio-ruby (5.46.1)
       faraday (>= 0.9, < 2.0)
       jwt (>= 1.5, <= 2.5)
