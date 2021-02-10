@@ -9,17 +9,13 @@ describe DataUpdateScripts::AddFastlyHttpPurgeFeatureFlag do
   end
 
   it "adds the :fastly_http_purge flag", :aggregate_failures do
-    expect(FeatureFlag.exist?(:fastly_http_purge)).to be(false)
-
-    described_class.new.run
-
-    expect(FeatureFlag.exist?(:fastly_http_purge)).to be(true)
+    expect do
+      described_class.new.run
+    end.to change { FeatureFlag.exist?(:fastly_http_purge) }.from(false).to(true)
   end
 
   it "works if the flag is already available" do
     FeatureFlag.add(:fastly_http_purge)
-
-    described_class.new.run
 
     expect do
       described_class.new.run
