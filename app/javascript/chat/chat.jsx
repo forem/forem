@@ -1303,21 +1303,21 @@ export class Chat extends Component {
           {joiningRequestButton}
           <div className="chat__channeltypefilter">
             <ChannelFilterButton
-              type={'all'}
-              name={'all'}
-              active={state.channelTypeFilter}
+              type="all"
+              name="all"
+              active={state.channelTypeFilter === 'all'}
               onClick={this.triggerChannelTypeFilter}
             />
             <ChannelFilterButton
-              type={'direct'}
-              name={'direct'}
-              active={state.channelTypeFilter}
+              type="direct"
+              name="direct"
+              active={state.channelTypeFilter === 'direct'}
               onClick={this.triggerChannelTypeFilter}
             />
             <ChannelFilterButton
-              type={'invite_only'}
-              name={'group'}
-              active={state.channelTypeFilter}
+              type="invite_only"
+              name="group"
+              active={state.channelTypeFilter === 'invite_only'}
               onClick={this.triggerChannelTypeFilter}
             />
             <Button
