@@ -28,7 +28,7 @@ module EdgeCache
       def self.urls(path)
         [
           URL.url(path),
-          "https://#{URL.domain}#{path}?i=i",
+          URL.url("#{path}?i=i"),
         ]
       end
       private_class_method :fastly_purge
