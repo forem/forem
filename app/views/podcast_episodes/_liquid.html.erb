@@ -13,8 +13,8 @@
     </a>
   </div>
   <div id="record-<%= episode.slug %>" data-podcast="<%= podcast.slug %>" data-episode="<%= episode.slug %>" class="podcastliquidtag__record">
-    <img class="button play-butt" id="play-butt-<%= episode.slug %>" src="/assets/playbutt.png" alt="play">
-    <img class="button pause-butt" id="pause-butt-<%= episode.slug %>" src="/assets/pausebutt.png" alt="pause">
+    <img class="button play-butt" id="play-butt-<%= episode.slug %>" src="<%= asset_path("playbutt.png") %>" alt="play">
+    <img class="button pause-butt" id="pause-butt-<%= episode.slug %>" src="<%= asset_path("pausebutt.png") %>" alt="pause">
     <%= optimized_image_tag(podcast.image_url,
                             optimizer_options: { crop: "fill" },
                             image_options: { class: "podcastliquidtag__podcastimage", id: "podcastimage-#{episode.slug}", alt: podcast.title }) %>
