@@ -16,7 +16,7 @@ RSpec.describe ProfileFields::ImportFromCsv do
       expect(field.placeholder_text).to eq "John Doe"
       expect(field.description).to be_nil
       expect(field.profile_field_group.name).to eq "Basic"
-      expect(field.settings_only).to eq "header"
+      expect(field.display_area).to eq "header"
     end
 
     it "handles missing placeholder_texts", :aggregate_failures do
@@ -25,7 +25,7 @@ RSpec.describe ProfileFields::ImportFromCsv do
       expect(field.placeholder_text).to be_nil
       expect(field.description).to eq "Programming languages"
       expect(field.profile_field_group.name).to eq "Coding"
-      expect(field.settings_only).to eq "left_sidebar"
+      expect(field.display_area).to eq "left_sidebar"
     end
 
     it "handles commas in correctly quoted fields", :aggregate_failures do
@@ -34,7 +34,7 @@ RSpec.describe ProfileFields::ImportFromCsv do
       expect(field.placeholder_text).to eq "#000000"
       expect(field.description).to eq "Used for backgrounds, borders etc."
       expect(field.profile_field_group.name).to eq "Branding"
-      expect(field.settings_only).to eq "settings_only"
+      expect(field.display_area).to eq "settings_only"
     end
   end
 end
