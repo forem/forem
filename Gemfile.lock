@@ -750,7 +750,7 @@ GEM
     storext (3.3.0)
       activerecord (>= 4.0, < 6.2)
       virtus
-    stripe (5.29.0)
+    stripe (5.29.1)
     stripe-ruby-mock (3.0.1)
       dante (>= 0.2.0)
       multi_json (~> 1.0)
