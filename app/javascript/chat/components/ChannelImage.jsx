@@ -2,9 +2,26 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { defaultChannelPropTypes } from '../../common-prop-types/channel-list-prop-type';
 
-export function ChannelImage(props) {
-  const { channel, newMessagesIndicator, discoverableChannel } = props;
+/**
+ * Returns an image to help users identify chat channels
+ *
+ * @param {object} channel - Contains information about the channel this image represents
+ * @param {string} newMessagesIndicator
+ * @param {boolean} discoverableChannel
+ *
+ * @example
+ * <ChannelImage
+     channel={channel}
+     newMessagesIndicator={newMessagesIndicator}
+     discoverableChannel={discoverableChannel}
+   />
+ */
 
+export function ChannelImage({
+  channel,
+  newMessagesIndicator,
+  discoverableChannel,
+}) {
   return (
     <span
       data-channel-slug={channel.channel_modified_slug}
@@ -31,6 +48,6 @@ export function ChannelImage(props) {
 
 ChannelImage.propTypes = {
   channel: defaultChannelPropTypes,
-  discoverableChannel: PropTypes.bool,
   newMessagesIndicator: PropTypes.string,
+  discoverableChannel: PropTypes.bool,
 };
