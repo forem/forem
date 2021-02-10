@@ -21,6 +21,8 @@ describe DataUpdateScripts::AddFastlyHttpPurgeFeatureFlag do
 
     described_class.new.run
 
-    expect(FeatureFlag.exist?(:fastly_http_purge)).to be(true)
+    expect do
+      described_class.new.run
+    end.not_to change { FeatureFlag.exist?(:fastly_http_purge) }
   end
 end
