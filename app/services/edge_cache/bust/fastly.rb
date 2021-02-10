@@ -27,7 +27,7 @@ module EdgeCache
 
       def self.urls(path)
         [
-          "https://#{URL.domain}#{path}",
+          URL.url(path),
           "https://#{URL.domain}#{path}?i=i",
         ]
       end
