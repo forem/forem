@@ -1,4 +1,5 @@
 class Profile < ApplicationRecord
+  include ActiveModel::Dirty
   belongs_to :user
 
   validates :data, presence: true
@@ -47,5 +48,10 @@ class Profile < ApplicationRecord
 
   def clear!
     update(data: {})
+  end
+
+  def save_valid_attributes
+    restore_attributes(errors.keys)
+    save
   end
 end
