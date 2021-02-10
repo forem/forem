@@ -63,9 +63,12 @@ Rails.application.routes.draw do
                                               destroy], path: "listings/categories"
 
       resources :comments, only: [:index]
-      resources :data_update_scripts, only: %i[index show] do
-        member do
-          post :force_run
+      # We do not expose the Data Update Scripts to all Forems by default.
+      constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
+        resources :data_update_scripts, only: %i[index show] do
+          member do
+            post :force_run
+          end
         end
       end
       resources :events, only: %i[index create update new edit]

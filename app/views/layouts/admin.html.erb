@@ -59,8 +59,10 @@
       <div class="crayons-layout__left-sidebar">
         <nav class="hidden m:block">
           <%= render "admin/shared/navbar", menu_items: admin_menu_items %>
-          <p class="crayons-field__description mt-4 mb-3">Tech Resources</p>
-          <%= render "admin/shared/navbar", menu_items: AdminHelper::TECH_MENU_ITEMS %>
+          <% if FeatureFlag.enabled?(:data_update_scripts) %>
+            <p class="crayons-field__description mt-4 mb-3">Tech Resources</p>
+            <%= render "admin/shared/navbar", menu_items: AdminHelper::TECH_MENU_ITEMS %>
+          <% end %>
         </nav>
       </div>
     <% end %>
