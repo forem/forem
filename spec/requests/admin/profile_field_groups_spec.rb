@@ -6,6 +6,7 @@ RSpec.describe "/admin/profile_field_groups", type: :request do
   before do
     sign_in admin
     allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
+    allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(false)
   end
 
   describe "POST /admin/profile_field_groups" do
