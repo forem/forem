@@ -276,7 +276,7 @@ GEM
     factory_bot_rails (6.1.0)
       factory_bot (~> 6.1.0)
       railties (>= 5.0.0)
-    faker (2.15.1)
+    faker (2.16.0)
       i18n (>= 1.6, < 2)
     faraday (1.3.0)
       faraday-net_http (~> 1.0)
@@ -877,7 +877,7 @@ DEPENDENCIES
   erb_lint!
   exifr (>= 1.3.6)
   factory_bot_rails (~> 6.1)
-  faker (~> 2.15)
+  faker (~> 2.16)
   fastly (~> 3.0)
   feedjira (~> 3.1)
   field_test (~> 0.4)
