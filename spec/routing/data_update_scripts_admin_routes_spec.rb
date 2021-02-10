@@ -11,7 +11,7 @@ RSpec.describe "Data Update Scripts admin routes", type: :routing do
     )
   end
 
-  it "does not render the profile admin route if the feature flag is disabled" do
+  it "does not render the data update scripts admin route if the feature flag is disabled" do
     allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(false)
 
     expect(get: admin_data_update_scripts_path).not_to route_to(
