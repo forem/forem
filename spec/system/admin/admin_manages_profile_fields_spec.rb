@@ -8,8 +8,8 @@ RSpec.describe "Admin manages profile fields", type: :system do
   before do
     create(:profile_field, profile_field_group: profile_field_group, label: label)
     Profile.refresh_attributes!
+    allow(FeatureFlag).to receive(:enabled?).and_call_original
     allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
-    allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(false)
 
     sign_in admin
     visit admin_profile_fields_path

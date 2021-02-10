@@ -8,7 +8,7 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
 
     before do
       sign_in user
-      allow(Flipper).to receive(:enabled?).with(:profile_admin).and_return(false)
+      allow(Flipper).to receive(:enabled?).and_call_original
       allow(Flipper).to receive(:enabled?).with(:data_update_scripts).and_return(true)
     end
 
@@ -24,7 +24,7 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
 
     before do
       sign_in user
-      allow(Flipper).to receive(:enabled?).with(:profile_admin).and_return(false)
+      allow(Flipper).to receive(:enabled?).and_call_original
       allow(Flipper).to receive(:enabled?).with(:data_update_scripts).and_return(true)
     end
 

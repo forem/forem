@@ -5,8 +5,7 @@ RSpec.describe "admin sidebar", type: :request do
 
   before do
     sign_in super_admin
-    allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(false)
-    allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(false)
+    allow(FeatureFlag).to receive(:enabled?).and_call_original
   end
 
   describe "profile admin feature flag" do
