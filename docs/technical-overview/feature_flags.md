@@ -9,8 +9,9 @@ their removal.
 
 ## Creating a new feature flag
 
-To create a new feature flag, we use data update scripts so that they can be
-made available over the entire Forem fleet, for example:
+To create a new feature flag, we use
+[data update scripts](/backend/data-update-scripts) so that they can be made
+available over the entire Forem fleet, for example:
 
 ```shell
 bundle exec rails g data_update AddAwesomeAlgorithmFeatureFlag
@@ -33,8 +34,8 @@ and then start using it right away.
 
 ## Guarding a feature behind a flag
 
-Once the feature flag is added, you can start using it to hide the feature behind a
-boolean flag:
+Once the feature flag is added, you can start using it to hide the feature
+behind a boolean flag:
 
 ```ruby
 if FeatureFlag.enabled?(:awesome_algorithm)
@@ -60,10 +61,11 @@ As mentioned, feature flags can be used to test a work in progress feature or to
 test a new approach directly in production.
 
 To enable such a feature:
-- Login to the Forem
-- Go to `/admin/feature_flags` (it requires the `tech_admin` role)
+
+- Log in to the Forem
+- Go to `/admin/feature_flags` (it requires the
+  [`tech_admin` role](/backend/roles))
 - Click on the flag you want to enable and press "Fully Enable".
-``
 
 ![A screenshot of the Admin Feature Flag Panel](/admin_feature_flags.png)
 
