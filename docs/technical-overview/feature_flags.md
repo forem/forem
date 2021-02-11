@@ -33,7 +33,7 @@ and then start using it right away.
 
 ## Guarding a feature behind a flag
 
-Once the feature flag is added, you can start using it to hide feature behind a
+Once the feature flag is added, you can start using it to hide the feature behind a
 boolean flag:
 
 ```ruby
