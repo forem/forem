@@ -255,7 +255,7 @@
                             <%= admin_config_description Constants::SiteConfig::DETAILS[:require_captcha_for_email_password_registration][:description] %>
                           </div>
                         </div>
-                        <div id="recaptchaContainer" class="ml-7 <%= SiteConfig.require_captcha_for_email_password_registration ? "flex flex-col gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
+                        <div id="recaptchaContainer" class="ml-7 <%= SiteConfig.require_captcha_for_email_password_registration ? "grid gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
                           <div class="crayons-field">
                             <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
                             <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
