@@ -333,6 +333,26 @@
   }
 }
 
+.crayons-btn-actions {
+  --btn-wrap-gap: var(--su-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  // line height to give us protection in cases of wrapping:
+  // btn line height + buttin vertical padding * 2 to get top and bottom + our gap value
+  line-height: calc(
+    var(--su-6) + (var(--vertical-padding) * 2) + var(--btn-wrap-gap)
+  );
+
+  .crayons-btn {
+    margin-right: var(--btn-wrap-gap);
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
 // Grouped buttons
 .crayons-btn-group {
   display: flex;
