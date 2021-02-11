@@ -304,10 +304,6 @@ function handleFocus(event) {
     event.preventDefault();
     showLoginModal('reply-to-comment');
     area.blur();
-    setTimeout(function () {
-      area.blur();
-      showLoginModal('reply-to-comment');
-    }, 100);
   } else {
     var form = event.target.closest(".comment-form");
     form.classList.add("comment-form--initiated");
