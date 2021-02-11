@@ -6,14 +6,20 @@ import { defaultChannelPropTypes } from '../../common-prop-types/channel-list-pr
  * Returns an image to help users identify chat channels
  *
  * @param {object} channel - Contains information about the channel this image represents
- * @param {string} newMessagesIndicator
- * @param {boolean} discoverableChannel
+ * @param {string} newMessagesIndicator - Used to construct a CSS classname
+ * @param {boolean} discoverableChannel - Used to determine which CSS class should be applied
  *
  * @example
  * <ChannelImage
-     channel={channel}
-     newMessagesIndicator={newMessagesIndicator}
-     discoverableChannel={discoverableChannel}
+     channel={{channel_name: "Example Channel",
+               channel_type: "direct",
+               channel_modified_slug: "someslug-f7ff2c5a6a",
+               id: 1,
+               chat_channel_id: 20,
+               status: "active",
+               channel_image: "/some/path/to/image"}}
+     newMessagesIndicator="old"
+     discoverableChannel=false
    />
  */
 
