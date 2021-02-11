@@ -59,9 +59,11 @@ or, for example in a view:
 As mentioned, feature flags can be used to test a work in progress feature or to
 test a new approach directly in production.
 
-To enable such feature, login to the Forem, go to `/admin/feature_flags` (it
-requires the `tech_admin` role), click on the flag you want to enable and press
-"Fully Enable".
+To enable such a feature:
+- Login to the Forem
+- Go to `/admin/feature_flags` (it requires the `tech_admin` role)
+- Click on the flag you want to enable and press "Fully Enable".
+``
 
 ![A screenshot of the Admin Feature Flag Panel](/admin_feature_flags.png)
 
