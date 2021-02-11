@@ -42,7 +42,7 @@ module Admin
 
     def destroy
       role = params[:role].to_sym
-      resource_type = params[:resource_type]
+      resource_type = params[:resource_type].constantize
 
       if role == :super_admin
         flash[:danger] = "Super Admin roles cannot be removed."
