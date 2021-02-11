@@ -42,7 +42,7 @@ module Admin
 
     def destroy
       role = params[:role].to_sym
-      resource_type = params[:resource_type].constantize
+      resource_type = params[:resource_type]
 
       if role == :super_admin
         flash[:danger] = "Super Admin roles cannot be removed."
@@ -54,7 +54,7 @@ module Admin
       if @user.id == current_user.id
         flash[:danger] = "Admins cannot remove roles from themselves."
       elsif role == :single_resource_admin
-        User.find(params[:user_id]).remove_role(role, resource_type)
+        User.find(params[:user_id]).remove_role(role, resource_type.constantize)
         flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
       elsif User.find(params[:user_id]).remove_role(role)
         flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
