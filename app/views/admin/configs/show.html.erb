@@ -34,7 +34,7 @@
         aria-labelledby="getStartedHeader">
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
-          <fieldset class="flex flex-column gap-4">
+          <fieldset class="grid gap-4">
 
           <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
             <%# we need to list the config as separate fields if the data structure is a Hash %>
@@ -124,7 +124,7 @@
                          expanded: false
                        } %>
             <div id="apiBodyContainer" class="card-body collapse hide" aria-labelledby="apiBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :health_check_token %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:health_check_token][:description] %>
