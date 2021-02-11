@@ -10,6 +10,8 @@ module Tags
 
       tag.taggings.find_each do |tagging|
         taggable = tagging.taggable
+        next unless taggable
+
         new_tag_list = ActsAsTaggableOn::TagParser.new(taggable.tag_list).parse
         taggable.update(tag_list: new_tag_list)
       end
