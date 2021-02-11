@@ -47,7 +47,7 @@
       <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden" id="on-page-nav-butt-left" aria-label="nav-button-left">
           <div class="crayons-icon nav-icon ">
-            <%= SiteConfig.left_navbar_svg_icon.html_safe %>
+            <%= inline_svg_tag("hamburger.svg", aria: true, title: "Left menu") %>
           </div>
         </button>
         <% if user_signed_in? %>
@@ -81,7 +81,7 @@
 
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon ml-2 inline-block l:hidden" id="on-page-nav-butt-right" aria-label="nav-button-right">
           <div class="crayons-icon nav-icon ">
-            <%= SiteConfig.right_navbar_svg_icon.html_safe %>
+            <%= inline_svg_tag("hamburger.svg", aria: true, title: "Right menu") %>
           </div>
         </button>
       </header>

@@ -16,5 +16,11 @@ module Admin
     def force_run
       DataUpdateWorker.perform_async(params[:id])
     end
+
+    private
+
+    def authorize_admin
+      authorize DataUpdateScript, :access?, policy_class: InternalPolicy
+    end
   end
 end
