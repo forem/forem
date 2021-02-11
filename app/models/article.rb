@@ -209,16 +209,11 @@ class Article < ApplicationRecord
       .cached_tagged_with("help")
       .order(created_at: :desc)
       .where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
-    if stories.size.positive?
-      published
-        .cached_tagged_with("help")
-        .order(created_at: :desc)
-        .where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
-    else
-      published
-        .cached_tagged_with("help")
-        .order(created_at: :desc)
-    end
+    return stories if stories.size.positive?
+
+    published
+      .cached_tagged_with("help")
+      .order(created_at: :desc)
   end
 
   def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)

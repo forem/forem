@@ -682,30 +682,18 @@ RSpec.describe Article, type: :model do
   end
 
   describe ".active_help" do
-    let!(:filtered_article) do
-      create(:article, user: user, cached_tag_list: "help", published_at: 12.hours.ago, comments_count: 6, score: -4)
-    end
-    let!(:unfiltered_article) do
-      create(:article, user: user, cached_tag_list: "help", published_at: 12.hours.ago, score: -10)
-    end
-
     it "returns properly filtered articles under the 'help' tag" do
-      # articles = described_class.active_help
-      # article = filtered_article.active_help
-      # binding.pry
-      # expect(article.size).to eq(1)
-      # expect(articles).not_to be_empty
-      # expect(article).to include(filtered_article)
-
-      filtered_article = create(:article, user: user, cached_tag_list: "help", published_at: 12.hours.ago, comments_count: 6, score: -4)
+      filtered_article = create(:article, user: user, tags: "help",
+                                          published_at: 13.hours.ago, comments_count: 5, score: -3)
       articles = described_class.active_help
-      expect(articles.first).to eq(filtered_article)
+      expect(articles).to include(filtered_article)
     end
 
     it "returns any published articles tagged with 'help' when there are no articles that fit the criteria" do
-      article = described_class.active_help
-      # article = unfiltered_article.active_help
-      expect(article).to include(unfiltered_article)
+      unfiltered_article = create(:article, user: user, tags: "help",
+                                            published_at: 10.hours.ago, comments_count: 8, score: -5)
+      articles = described_class.active_help
+      expect(articles).to include(unfiltered_article)
     end
   end
 
