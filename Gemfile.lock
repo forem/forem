@@ -362,7 +362,7 @@ GEM
     hashie (4.1.0)
     heapy (0.2.0)
       thor
-    honeybadger (4.7.2)
+    honeybadger (4.7.3)
     honeycomb-beeline (2.4.0)
       libhoney (~> 1.14, >= 1.14.2)
     html_tokenizer (0.0.7)
