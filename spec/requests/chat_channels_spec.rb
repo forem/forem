@@ -260,7 +260,7 @@ RSpec.describe "ChatChannels", type: :request do
 
     context "when user is logged-in and authorized" do
       before do
-        user.add_role :codeland_admin
+        user.add_role(:codeland_admin)
         chat_channel.add_users([user, test_subject])
         sign_in user
         allow(Pusher).to receive(:trigger).and_return(true)
