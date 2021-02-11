@@ -90,7 +90,7 @@ RSpec.describe "Moderations", type: :request do
       let(:article2) { create(:article, tags: "javascript, cool, beans") }
 
       it "shows the option to remove the tag when the article has the tag" do
-        tag_mod.add_role :trusted
+        tag_mod.add_role(:trusted)
         sign_in tag_mod
 
         get "#{article1.path}/actions_panel"
@@ -98,7 +98,7 @@ RSpec.describe "Moderations", type: :request do
       end
 
       it "shows the option to add the tag when the article has the tag" do
-        tag_mod.add_role :trusted
+        tag_mod.add_role(:trusted)
         sign_in tag_mod
 
         get "#{article2.path}/actions_panel"
