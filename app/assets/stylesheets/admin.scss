@@ -143,8 +143,7 @@ label {
 }
 
 .config-authentication-form {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--su-4);
   padding-top: var(--su-6);
   padding-bottom: var(--su-2);
