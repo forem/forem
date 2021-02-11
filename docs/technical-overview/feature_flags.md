@@ -2,7 +2,7 @@
 
 We sometimes employ feature flags to develop features that aren't fully formed
 at the moment of deployment. They can also be employed to roll out features in
-productions incrementally.
+production incrementally.
 
 Feature flags are meant to be temporary and part of a rollout plan resulting in
 their removal.
