@@ -1,4 +1,4 @@
-<div class="gap-2 m:gap-4 hidden m:grid js-user-info">
+<div class="m:gap-4 hidden m:grid js-user-info">
   <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
     <% if @user.organizations.present? %>
       <div class="crayons-card crayons-card--secondary">
