@@ -3,19 +3,31 @@ require "rails_helper"
 RSpec.describe ForemInstance, type: :model do
   describe "deployed_at" do
     before do
+      allow(ENV).to receive(:[])
+      described_class.instance_variable_set(:@deployed_at, nil)
+    end
+
+    after do
       described_class.instance_variable_set(:@deployed_at, nil)
     end
 
     it "sets the RELEASE_FOOTPRINT if present" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("A deploy date")
-      stub_const("ENV", ENV.to_h.merge("HEROKU_RELEASE_CREATED_AT" => ""))
       expect(described_class.deployed_at).to eq(ApplicationConfig["RELEASE_FOOTPRINT"])
     end
 
     it "sets the HEROKU_RELEASE_CREATED_AT if the RELEASE_FOOTPRINT is not present" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("")
-      stub_const("ENV", ENV.to_h.merge("HEROKU_RELEASE_CREATED_AT" => "A deploy date set on Heroku"))
+      allow(ENV).to receive(:[]).with("HEROKU_RELEASE_CREATED_AT").and_return("A deploy date set on Heroku")
       expect(described_class.deployed_at).to eq(ENV["HEROKU_RELEASE_CREATED_AT"])
+    end
+
+    it "sets to current time if HEROKU_RELEASE_CREATED_AT and RELEASE_FOOTPRINT are not present" do
+      Timecop.freeze do
+        allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("")
+        allow(ENV).to receive(:[]).with("HEROKU_RELEASE_CREATED_AT").and_return("")
+        expect(described_class.deployed_at).to eq(Time.current.to_s)
+      end
     end
   end
 

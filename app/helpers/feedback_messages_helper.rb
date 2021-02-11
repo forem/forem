@@ -15,20 +15,6 @@ module FeedbackMessagesHelper
     { subject: "#{SiteConfig.community_name} Code of Conduct Violation", body: body }.freeze
   end
 
-  def reporter_email_details
-    body = <<~HEREDOC
-      Hi there,
-
-      Thank you for flagging content that may be in violation of the #{SiteConfig.community_name} Code of Conduct and/or our Terms of Use. We are looking into your report and will take appropriate action.
-
-      We appreciate your help as we work to foster a positive and inclusive environment for all!
-
-      #{SiteConfig.community_name} Team
-    HEREDOC
-
-    { subject: "#{SiteConfig.community_name} Report", body: body }.freeze
-  end
-
   def affected_email_details
     body = <<~HEREDOC
       Hi there,

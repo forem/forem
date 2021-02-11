@@ -10,7 +10,6 @@ class User < ApplicationRecord
     available_for
     behance_url
     bg_color_hex
-    contact_consent
     currently_hacking_on
     currently_learning
     currently_streaming_on
@@ -91,7 +90,8 @@ class User < ApplicationRecord
   }x.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
-                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
+                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
+                :current_password
 
   rolify after_add: :index_roles, after_remove: :index_roles
 
@@ -219,7 +219,9 @@ class User < ApplicationRecord
   validates :unspent_credits_count, presence: true
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
   validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
-  validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
+  validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
+    "#{data[:value]} is taken."
+  end }, if: :username_changed?
   validates :welcome_notifications, inclusion: { in: [true, false] }
 
   # add validators for provider related usernames
@@ -259,7 +261,6 @@ class User < ApplicationRecord
   before_validation :verify_email
   before_validation :set_username
   before_validation :strip_payment_pointer
-  before_create :set_default_language
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
@@ -268,7 +269,7 @@ class User < ApplicationRecord
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
 
-  after_create_commit :send_welcome_notification, :estimate_default_language
+  after_create_commit :send_welcome_notification
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
@@ -279,10 +280,6 @@ class User < ApplicationRecord
 
   def self.mascot_account
     find_by(id: SiteConfig.mascot_user_id)
-  end
-
-  def estimated_default_language
-    language_settings["estimated_default_language"]
   end
 
   def tag_line
@@ -304,9 +301,9 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article.tagged_with(cached_followed_tag_names, any: true)
+    Article
+      .tagged_with(cached_followed_tag_names, any: true).unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
-      .where(language: preferred_languages_array, published: true)
   end
 
   def cached_following_users_ids
@@ -336,12 +333,6 @@ class User < ApplicationRecord
         user_id: id, reactable_type: "Article",
       ).where.not(status: "archived").order(created_at: :desc).pluck(:reactable_id)
     end
-  end
-
-  def preferred_languages_array
-    return @preferred_languages_array if defined?(@preferred_languages_array)
-
-    @preferred_languages_array = language_settings["preferred_languages"]
   end
 
   def processed_website_url
@@ -436,10 +427,6 @@ class User < ApplicationRecord
 
   def block; end
 
-  def all_blocking
-    UserBlock.where(blocker_id: id)
-  end
-
   def all_blocked_by
     UserBlock.where(blocked_id: id)
   end
@@ -499,6 +486,7 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
+    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
@@ -531,7 +519,10 @@ class User < ApplicationRecord
   end
 
   def authenticated_with_all_providers?
-    identities_enabled.pluck(:provider).map(&:to_sym) == Authentication::Providers.enabled
+    # ga_providers refers to Generally Available (not in beta)
+    ga_providers = Authentication::Providers.enabled.reject { |sym| sym == :apple }
+    enabled_providers = identities.pluck(:provider).map(&:to_sym)
+    (ga_providers - enabled_providers).empty?
   end
 
   def rate_limiter
@@ -543,14 +534,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def estimate_default_language
-    Users::EstimateDefaultLanguageWorker.perform_async(id)
-  end
-
-  def set_default_language
-    language_settings["preferred_languages"] ||= ["en"]
-  end
 
   def send_welcome_notification
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))

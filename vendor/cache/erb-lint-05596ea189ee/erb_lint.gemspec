@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib".freeze]
   s.authors = ["Justin Chan".freeze]
   s.bindir = "exe".freeze
-  s.date = "2021-01-02"
+  s.date = "2021-02-11"
   s.description = "ERB Linter tool.".freeze
   s.email = ["justin.the.c@gmail.com".freeze]
   s.executables = ["erblint".freeze]
@@ -18,10 +18,10 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/Shopify/erb-lint".freeze
   s.licenses = ["MIT".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 2.5.0".freeze)
-  s.rubygems_version = "3.1.4".freeze
+  s.rubygems_version = "3.2.3".freeze
   s.summary = "ERB lint tool".freeze
 
-  s.installed_by_version = "3.1.4" if s.respond_to? :installed_by_version
+  s.installed_by_version = "3.2.3" if s.respond_to? :installed_by_version
 
   if s.respond_to? :specification_version then
     s.specification_version = 4

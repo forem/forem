@@ -15,5 +15,12 @@ module.exports = {
   },
   rules: {
     'no-console': ['error', { allow: ['error'] }],
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'ExportDefaultDeclaration',
+        message: 'Prefer named exports',
+      },
+    ],
   },
 };

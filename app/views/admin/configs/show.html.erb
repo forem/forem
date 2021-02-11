@@ -147,7 +147,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm" } }) do |f| %>
+        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm", "testid": "authSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -200,7 +200,7 @@
                         <div
                           class="enabled-indicator <%= SiteConfig.allow_email_password_registration ? "visible" : "" %>"
                           data-config-target="enabledIndicator">
-                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Email enabled") %>
                           <small class="crayons-field__description ml-1">Enabled</small>
                         </div>
                       </div>
@@ -318,26 +318,26 @@
                           class="flex items-center justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
                           data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
                           <div class="config-authentication__item--label">
-                            <p class="crayons-field__label <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
+                            <p class="crayons-field__label <%= authentication_provider_enabled?(provider) ? "pb-0" : "" %>">
                               <%= provider.official_name %>
                             </p>
                             <div
                               id="<%= provider.provider_name %>-enabled-indicator"
-                              class="enabled-indicator <%= authentication_enabled_providers.include?(provider) ? "visible" : "" %>">
-                              <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                              class="enabled-indicator <%= authentication_provider_enabled?(provider) ? "visible" : "" %>">
+                              <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "#{provider.official_name} enabled") %>
                               <small class="crayons-field__description ml-1">Enabled</small>
                             </div>
                           </div>
                           <button
                             class="crayons-btn crayons-btn--secondary"
                             id="<%= provider.provider_name %>-auth-btn"
-                            data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
+                            data-button-text="<%= authentication_provider_enabled?(provider) ? "edit" : "enable" %>"
                             data-action="click->config#enableOrEditAuthProvider"
                             data-provider-name="<%= provider.provider_name %>"
                             data-provider-official-name="<%= provider.official_name %>"
-                            data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
+                            data-enable-auth="<%= authentication_provider_enabled?(provider) ? "true" : "false" %>"
                             <%= disabled_attr_on_auth_provider_enable_btn %>>
-                            <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
+                            <%= authentication_provider_enabled?(provider) ? "Edit" : "Enable" %>
                           </button>
                         </div>
                         <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
@@ -436,6 +436,15 @@
                                    class: "crayons-textfield",
                                    value: SiteConfig.campaign_call_to_action,
                                    placeholder: Constants::SiteConfig::DETAILS[:campaign_call_to_action][:placeholder] %>
+                </div>
+
+                <div class="crayons-field">
+                  <%= admin_config_label :campaign_articles_expiry_time, "Campaign article expiry time" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:description] %>
+                  <%= f.number_field :campaign_articles_expiry_time,
+                                     class: "crayons-textfield",
+                                     value: SiteConfig.campaign_articles_expiry_time,
+                                     placeholder: Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:placeholder] %>
                 </div>
 
                 <%= render "form_submission", f: f %>
@@ -657,7 +666,7 @@
                   <%= f.number_field :periodic_email_digest_min,
                                      class: "crayons-textfield",
                                      value: SiteConfig.periodic_email_digest_min,
-                                     placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:placeholder] %>
+                                     placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_min][:placeholder] %>
                 </div>
 
                 <%= render "form_submission", f: f %>
@@ -794,28 +803,6 @@
                   <% if SiteConfig.secondary_logo_url.present? %>
                     <img alt="secondary logo image" class="img-fluid" src="<%= Images::Optimizer.call(SiteConfig.secondary_logo_url, width: 256) %>" width="128px" height="128px" />
                   <% end %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :left_navbar_svg_icon %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:description] %>
-                  <%= f.text_area :left_navbar_svg_icon,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.left_navbar_svg_icon,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:placeholder] %>
-                  <%= SiteConfig.left_navbar_svg_icon.html_safe %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :right_navbar_svg_icon %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:description] %>
-                  <%= f.text_area :right_navbar_svg_icon,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.right_navbar_svg_icon,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:placeholder] %>
-                  <%= SiteConfig.right_navbar_svg_icon.html_safe %>
                 </div>
 
                 <%= render "form_submission", f: f %>
@@ -1056,20 +1043,6 @@
             <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
               <fieldset class="flex flex-column gap-4">
                 <div class="crayons-field">
-                  <%= admin_config_label :onboarding_logo_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_logo_image][:description] %>
-                  <%= f.text_field :onboarding_logo_image,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.onboarding_logo_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:onboarding_logo_image][:placeholder] %>
-                  <div class="row mt-2">
-                    <div class="col-12">
-                      <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" width="600px" height="337px" />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="crayons-field">
                   <%= admin_config_label :onboarding_background_image %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_background_image][:description] %>
                   <%= f.text_field :onboarding_background_image,
@@ -1079,20 +1052,6 @@
                   <div class="row mt-2">
                     <div class="col-12">
                       <img alt="onboarding background image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :onboarding_taskcard_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:description] %>
-                  <%= f.text_field :onboarding_taskcard_image,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.onboarding_taskcard_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:placeholder] %>
-                  <div class="row mt-2">
-                    <div class="col-12">
-                      <img alt="onboarding taskcard image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
                     </div>
                   </div>
                 </div>

@@ -31,12 +31,13 @@
   </main>
 <% else %>
   <div class="container" style="margin-top: 90px;">
-    <h1 style="text-align: center"><%= community_name %> Mods</h1>
+    <h1 class="pt-5" style="text-align: center"><%= community_name %> Mods</h1>
     <div class="body">
       <p>We periodically award some <%= community_name %> members with heightened privileges to help moderate the community.</p>
-      <p>Email <%= email_link %> if you'd like to be considered right away.</p>
+      <p>Check out our <%= link_to "Code of Conduct", code_of_conduct_path %> and read through our <%= link_to "Trusted User Guide", community_moderation_path %> and <%= link_to "Tag Moderation Guide", tag_moderation_path %>.</p>
+      <p>If you'd like to assist us as a trusted user or tag mod, please email us at <%= mail_to email_link, email_link %> and let us know which role you're interested in and why. If it's tag moderation, please tell us what tags you'd like to moderate for.</p>
       <% unless user_signed_in? %>
-      <p><em>P.S. You are not currently signed in.</em></p>
+        <p><em>P.S. You are not currently signed in.</em></p>
       <% end %>
     </div>
   </div>

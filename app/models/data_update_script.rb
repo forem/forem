@@ -2,6 +2,7 @@ class DataUpdateScript < ApplicationRecord
   DIRECTORY = Rails.root.join("lib/data_update_scripts").freeze
   NAMESPACE = "DataUpdateScripts".freeze
   STATUSES = { enqueued: 0, working: 1, succeeded: 2, failed: 3 }.freeze
+  resourcify
 
   enum status: STATUSES
 
@@ -48,11 +49,15 @@ class DataUpdateScript < ApplicationRecord
   end
 
   def mark_as_finished!
-    update!(finished_at: Time.current, status: :succeeded)
+    update!(finished_at: Time.current, status: :succeeded, error: nil)
   end
 
-  def mark_as_failed!
-    update!(finished_at: Time.current, status: :failed)
+  def mark_as_failed!(err)
+    update!(
+      finished_at: Time.current,
+      status: :failed,
+      error: "#{err.class}: #{err.message}",
+    )
   end
 
   def file_path

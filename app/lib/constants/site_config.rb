@@ -45,6 +45,10 @@ module Constants
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
       },
+      campaign_articles_expiry_time: {
+        description: "Sets the expiry time for articles (in weeks) to be displayed in campaign sidebar",
+        placeholder: ""
+      },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s
@@ -181,10 +185,6 @@ module Constants
         description: "URL of the website where open positions are posted",
         placeholder: "Jobs URL"
       },
-      left_navbar_svg_icon: {
-        description: "The SVG icon used to expand the left navbar navigation menu. Should be a max of 24x24px.",
-        placeholder: SVG_PLACEHOLDER
-      },
       logo_png: {
         description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",
         placeholder: IMAGE_PLACEHOLDER
@@ -249,14 +249,6 @@ module Constants
         description: "Background for onboarding splash page",
         placeholder: IMAGE_PLACEHOLDER
       },
-      onboarding_logo_image: {
-        description: "Main onboarding display logo image",
-        placeholder: IMAGE_PLACEHOLDER
-      },
-      onboarding_taskcard_image: {
-        description: "Used as the onboarding task-card image",
-        placeholder: IMAGE_PLACEHOLDER
-      },
       payment_pointer: {
         description: "Used for site-wide web monetization. " \
         "See: https://github.com/thepracticaldev/dev.to/pull/6345",
@@ -278,12 +270,8 @@ module Constants
         description: "Add the secret key for Google reCAPTCHA, which is used for reporting abuse",
         placeholder: "What is the Google reCAPTCHA secret key?"
       },
-      right_navbar_svg_icon: {
-        description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",
-        placeholder: SVG_PLACEHOLDER
-      },
       secondary_logo_url: {
-        description: "Used as the secondary logo",
+        description: "A place for an alternate logo, if you have one. Used throughout member onboarding and in some sign in forms.",
         placeholder: IMAGE_PLACEHOLDER
       },
       spam_trigger_terms: {

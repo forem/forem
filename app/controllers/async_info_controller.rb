@@ -55,7 +55,7 @@ class AsyncInfoController < ApplicationController
                                                           methods: [:points]),
         followed_podcast_ids: @user.cached_following_podcasts_ids,
         reading_list_ids: @user.cached_reading_list_article_ids,
-        blocked_user_ids: @user.all_blocking.pluck(:blocked_id),
+        blocked_user_ids: UserBlock.cached_blocked_ids_for_blocker(@user.id),
         saw_onboarding: @user.saw_onboarding,
         checked_code_of_conduct: @user.checked_code_of_conduct,
         checked_terms_and_conditions: @user.checked_terms_and_conditions,

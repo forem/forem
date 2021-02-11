@@ -1,8 +1,11 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
-  before_action :raise_suspended, only: %i[update]
-  before_action :set_user, only: %i[update confirm_destroy request_destroy full_delete remove_identity]
-  after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
+  before_action :raise_suspended, only: %i[update update_password]
+  before_action :set_user,
+                only: %i[update update_password request_destroy full_delete remove_identity]
+  # rubocop:disable Layout/LineLength
+  after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
+  # rubocop:enable Layout/LineLength
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
@@ -38,10 +41,7 @@ class UsersController < ApplicationController
   def update
     set_current_tab(params["user"]["tab"])
 
-    # preferred_languages is handled manually
-    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
-
-    @user.attributes = permitted_attributes(@user)
+    @user.assign_attributes(permitted_attributes(@user))
 
     if @user.save
       # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
@@ -92,10 +92,28 @@ class UsersController < ApplicationController
   end
 
   def confirm_destroy
-    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
-    raise ActionController::RoutingError, "Not Found" unless destroy_token.present? && destroy_token == params[:token]
+    @user = current_user
 
-    set_current_tab("account")
+    if @user
+      authorize @user
+    else
+      flash[:alert] = "You must be logged in to proceed with account deletion."
+      redirect_to sign_up_path and return
+    end
+
+    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
+
+    # rubocop:disable Layout/LineLength
+    if destroy_token.blank?
+      flash[:settings_notice] = "Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated."
+      redirect_to user_settings_path("account")
+    elsif destroy_token != params[:token]
+      Honeycomb.add_field("destroy_token", destroy_token)
+      Honeycomb.add_field("token", params[:token])
+
+      raise ActionController::RoutingError, "Not Found"
+    end
+    # rubocop:enable Layout/LineLength
   end
 
   def full_delete
@@ -163,9 +181,6 @@ class UsersController < ApplicationController
   end
 
   def onboarding_checkbox_update
-    # TODO: mstruve will remove once debugging is done
-    Rails.logger.error("onboarding_checkbox_update_user_params:#{params[:user]}")
-
     if params[:user]
       permitted_params = %i[
         checked_code_of_conduct checked_terms_and_conditions email_newsletter email_digest_periodic
@@ -175,15 +190,7 @@ class UsersController < ApplicationController
 
     current_user.saw_onboarding = true
     authorize User
-
-    # TODO: mstruve will remove once debugging is done
-    result = current_user.save
-    unless result
-      errors = current_user.errors.full_messages.join(", ")
-      Rails.logger.error("onboarding_checkbox_update_errors:#{errors}")
-    end
-
-    render_update_response(result)
+    render_update_response(current_user.save)
   end
 
   def join_org
@@ -260,6 +267,24 @@ class UsersController < ApplicationController
       handle_response_templates_tab
     else
       not_found unless @tab.in?(Constants::Settings::TAB_LIST.map { |t| t.downcase.tr(" ", "-") })
+    end
+  end
+
+  def update_password
+    set_current_tab("account")
+
+    if @user.update_with_password(password_params)
+      redirect_to user_settings_path(@tab)
+    else
+      Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("errored", true)
+
+      if @tab
+        render :edit, status: :bad_request
+      else
+        flash[:error] = @user.errors_as_sentence
+        redirect_to user_settings_path
+      end
     end
   end
 
@@ -352,5 +377,9 @@ class UsersController < ApplicationController
 
   def profile_params
     params[:profile].permit(Profile.attributes)
+  end
+
+  def password_params
+    params.permit(:current_password, :password, :password_confirmation)
   end
 end

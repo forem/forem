@@ -83,6 +83,12 @@ class ArticleDecorator < ApplicationDecorator
     }
   end
 
+  def has_recent_comment_activity?(timeframe = 1.week.ago)
+    return false if last_comment_at.blank?
+
+    last_comment_at > timeframe
+  end
+
   def long_markdown?
     body_markdown.present? && body_markdown.size > LONG_MARKDOWN_THRESHOLD
   end

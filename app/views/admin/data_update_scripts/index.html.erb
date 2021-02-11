@@ -1,26 +1,40 @@
-<div class="crayons-card p-6 grid gap-6">
+<div data-controller="data-update-script" class="crayons-card p-6 grid gap-6">
+  <div class="alert hidden data-update-script__alert">
+    <div id="data-update-script__error"></div>
+  </div>
   <table class="crayons-table">
     <thead>
       <tr>
         <th scope="col">ID</th>
         <th scope="col">Filename</th>
-        <th scope="col" class="whitespace-nowrap">Status</th>
         <th scope="col">Created at</th>
         <th scope="col">Run at</th>
+        <th scope="col" class="whitespace-nowrap">Status</th>
       </tr>
     </thead>
     <tbody class="crayons-card">
       <% @data_update_scripts.each do |script| %>
-        <tr>
-          <td class="whitespace-nowrap"><%= script.id %></td>
-          <td><%= script.file_name %></td>
-          <td class="whitespace-nowrap justify-content-center">
-            <%= script.status %>
+        <tr class="<%= "alert-danger" if script.status == "failed" %>" id="data_update_script_<%= script.id %>_row">
+          <td id="data_update_script_<%= script.id %>" class="whitespace-nowrap"><%= script.id %></td>
+          <td data-filename="<%= script.file_name %>" id="data_update_script_<%= script.id %>_filename" class="data_update_script__filename">
+            <%= script.file_name %>
+            <% if script.status == "failed" %>
+              <button class="ml-2" id="data_update_script_<%= script.id %>_button"
+ data-action="click->data-update-script#forceRun" data-value="<%= script.id %>" type="button" className="crayons-btn crayons-btn--secondary">
+                Re-run
+              </button>
+            <% end %>
           </td>
           <td><%= script.created_at %></td>
-          <td><%= script.run_at %></td>
+          <td id="data_update_script_<%= script.id %>_run_at" class="whitespace-nowrap"><%= script.run_at %></td>
+          <td id="data_update_script_<%= script.id %>_status" class="data_update_script__status justify-content-center">
+            <%= script.status %>
+            <% if script.error.present? %>
+              <div id="data_update_script_<%= script.id %>_error" class="fs-xs"><%= script.error %></div>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>
   </table>
-</main>
+</div>

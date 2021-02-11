@@ -65,7 +65,7 @@ module Mailchimp
     end
 
     def manage_community_moderator_list
-      return false unless user.has_role?(:trusted)
+      return false unless SiteConfig.mailchimp_community_moderators_id.present? && user.has_role?(:trusted)
 
       success = false
       status = user.email_community_mod_newsletter ? "subscribed" : "unsubscribed"
@@ -91,7 +91,7 @@ module Mailchimp
     end
 
     def manage_tag_moderator_list
-      return false unless user.tag_moderator?
+      return false unless SiteConfig.mailchimp_tag_moderators_id.present? && user.tag_moderator?
 
       success = false
 
@@ -123,9 +123,9 @@ module Mailchimp
     end
 
     def unsub_sustaining_member
-      return unless user.tag_moderator?
+      return unless SiteConfig.mailchimp_sustaining_members_id.present? && a_sustaining_member?
 
-      gibbon.lists(SiteConfig.mailchimp_tag_moderators_id).members(target_md5_email).update(
+      gibbon.lists(SiteConfig.mailchimp_sustaining_members_id).members(target_md5_email).update(
         body: {
           status: "unsubscribed"
         },
@@ -133,7 +133,7 @@ module Mailchimp
     end
 
     def unsub_community_mod
-      return unless user.has_role?(:trusted)
+      return unless SiteConfig.mailchimp_community_moderators_id.present? && user.trusted
 
       gibbon.lists(SiteConfig.mailchimp_community_moderators_id).members(target_md5_email).update(
         body: {
@@ -143,9 +143,9 @@ module Mailchimp
     end
 
     def unsub_tag_mod
-      return unless a_sustaining_member?
+      return unless SiteConfig.mailchimp_tag_moderators_id.present? && user.tag_moderator?
 
-      gibbon.lists(SiteConfig.mailchimp_sustaining_members_id).members(target_md5_email).update(
+      gibbon.lists(SiteConfig.mailchimp_tag_moderators_id).members(target_md5_email).update(
         body: {
           status: "unsubscribed"
         },
@@ -185,8 +185,8 @@ module Mailchimp
 
     def report_error(exception)
       Rails.logger.error(exception)
-      DatadogStatsClient.increment("mailchimp.errors",
-                                   tags: ["action:failed", "user_id:#{user.id}", "source:gibbon-gem"])
+      ForemStatsClient.increment("mailchimp.errors",
+                                 tags: ["action:failed", "user_id:#{user.id}", "source:gibbon-gem"])
     end
 
     def target_md5_email

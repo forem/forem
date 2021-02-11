@@ -37,7 +37,7 @@
             });
           }
         }
-      }, 500)
+      }, 500);
     </script>
   <% end %>
   <% unless internal_navigation? || user_signed_in? %>
@@ -132,7 +132,7 @@
                 <%= @organization.name %>
               </a>
             <% end %>
-            <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 <%= @article.title_length_classification %>">
+            <h1 class="fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 <%= @article.title_length_classification %>">
               <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
                 <span class="fs-xl color-base-70 block"><%= @article.search_optimized_title_preamble %></span>
               <% end %>
@@ -206,7 +206,7 @@
 
       </article>
 
-      <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}", expires_in: 18.hours) do %>
+      <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 18.hours) do %>
         <% suggested_articles = Articles::Suggest.call(@article, max: 4) %>
         <%= render "articles/bottom_content", articles: suggested_articles %>
       <% end %>
@@ -214,7 +214,7 @@
   </main>
 
   <aside class="crayons-layout__sidebar-right" aria-label="Right sidebar navigation">
-    <% stick_nav_cache_key = "sticky-sidebar-#{@article.id}-#{(@organization || @user).profile_updated_at}-#{(@organization || @user).last_article_at}-1-#{@user.pro?}" %>
+    <% stick_nav_cache_key = "sticky-sidebar-#{@article.id}-#{(@organization || @user).profile_updated_at}-#{(@organization || @user).latest_article_updated_at}" %>
     <% cache(stick_nav_cache_key, expires_in: 50.hours) do %>
       <%= render "articles/sticky_nav" %>
     <% end %>

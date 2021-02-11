@@ -7,6 +7,7 @@ class UserPolicy < ApplicationPolicy
     config_font
     config_theme
     config_navbar
+    current_password
     currently_hacking_on
     currently_learning
     display_announcements
@@ -30,7 +31,6 @@ class UserPolicy < ApplicationPolicy
     export_requested
     facebook_url
     youtube_url
-    feed_admin_publish_permission
     feed_mark_canonical
     feed_referential_link
     feed_url
@@ -114,6 +114,10 @@ class UserPolicy < ApplicationPolicy
 
   def moderation_routes?
     (user.has_role?(:trusted) || minimal_admin?) && !user.banned
+  end
+
+  def update_password?
+    current_user?
   end
 
   def permitted_attributes

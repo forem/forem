@@ -7,6 +7,7 @@ items:
   - unit-functional-tests.md
   - frontend-tests.md
   - accessibility-tests.md
+  - e2e-tests.md
   - regression-tests.md
   - code-coverage.md
   - codeclimate.md
