@@ -273,7 +273,7 @@
                                              placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
                           </div>
                         </div>
-                        <div>
+                        <divm class="crayons-btn-actions">
                           <% if SiteConfig.allow_email_password_registration %>
                             <button
                               class="crayons-btn crayons-btn--danger"
@@ -281,7 +281,7 @@
                               Disable
                             </button>
                              <button
-                              class="ml-2 crayons-btn crayons-btn--secondary"
+                              class="crayons-btn crayons-btn--secondary"
                               data-action="click->config#hideEmailAuthSettings">
                               Close
                             </button>
