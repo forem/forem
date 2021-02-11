@@ -31,6 +31,9 @@ class Profile < ApplicationRecord
     twitch_url
     mastodon_url
     website_url
+    git_lab_url
+    linked_in_url
+    stack_overflow_url
   ].freeze
 
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
