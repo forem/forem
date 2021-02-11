@@ -16,7 +16,7 @@ made available over the entire Forem fleet, for example:
 bundle exec rails g data_update AddAwesomeAlgorithmFeatureFlag
 ```
 
-this will generate a script and its spec. Once done, you can add the new feature
+This will generate a script and its spec. Once done, you can add the new feature
 flag like this:
 
 ```ruby
