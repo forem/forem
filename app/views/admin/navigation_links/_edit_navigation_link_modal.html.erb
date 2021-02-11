@@ -1,4 +1,4 @@
-<span data-controller="modal" data-modal-content-id-value="edit-navigation-link-<%= link[:id] %>-modal" data-modal-title-value="Edit Link" data-modal-size-value="l">
+<span data-controller="modal" data-modal-root-id-value="edit-navigation-link-<%= link[:id] %>-modal-root" data-modal-content-id-value="edit-navigation-link-<%= link[:id] %>-modal" data-modal-title-value="Edit Link" data-modal-size-value="l">
   <button data-action="modal#toggleModal" class="color-accent-warning-darker crayons-btn crayons-btn--ghost-warning">
     Edit Link
   </button>
@@ -11,4 +11,6 @@
       <% end %>
     </div>
   </div>
+
+   <div id="edit-navigation-link-<%= link[:id] %>-modal-root"></div>
 </span>

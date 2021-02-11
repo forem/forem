@@ -5,12 +5,12 @@ import {
   initializeTouchDevice,
 } from '../topNavigation/utilities';
 
-window.presentModal = async (
+window.showModal = async ({
   title,
   contentSelector,
   overlay = false,
   size = 's',
-) => {
+}) => {
   const [{ Modal }, { render, h }] = await Promise.all([
     import('@crayons/Modal'),
     import('preact'),

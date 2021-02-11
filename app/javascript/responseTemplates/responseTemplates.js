@@ -296,10 +296,14 @@ function observeForReplyClick() {
 }
 
 function handleLoggedOut() {
-  // global method from app/assets/javascripts/utilities/showModal.js
+  // global method from app/assets/javascripts/utilities/showLoginModal.js
   document
     .getElementsByClassName('response-templates-button')[0]
-    ?.addEventListener('click', showModal); /* eslint-disable-line no-undef */
+    ?.addEventListener(
+      'click',
+      // eslint-disable-next-line no-undef
+      showLoginModal,
+    );
 }
 /* eslint-enable no-alert */
 /* eslint-enable no-restricted-globals */

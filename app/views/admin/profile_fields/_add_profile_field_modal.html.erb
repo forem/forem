@@ -1,4 +1,4 @@
-<span data-controller="modal" data-modal-content-id-value="add-<%= group_name %>-profile-field-modal" data-modal-title-value="Add Profile Field" data-modal-size-value="s" class="mx-1">
+<span data-controller="modal" data-modal-root-id-value="add-<%= group_name %>-profile-field-modal-root" data-modal-content-id-value="add-<%= group_name %>-profile-field-modal" data-modal-title-value="Add Profile Field" data-modal-size-value="s" class="mx-1">
   <button data-action="modal#toggleModal" class="crayons-btn">
     Add Field
   </button>
@@ -11,4 +11,6 @@
       <% end %>
     </div>
   </div>
+
+  <div id="add-<%= group_name %>-profile-field-modal-root"></div>
 </span>

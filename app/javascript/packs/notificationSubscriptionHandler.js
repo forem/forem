@@ -33,9 +33,9 @@ function loadFunctionality() {
 
   if (userStatus === 'logged-out') {
     updateStatus = () => {
-      // Disabled because showModal() is globally defined in asset pipeline
+      // Disabled because showLoginModal() is globally defined in asset pipeline
       // eslint-disable-next-line no-undef
-      showModal('notification-subscription');
+      showLoginModal('notification-subscription');
     };
   } else {
     updateStatus = (target) => {

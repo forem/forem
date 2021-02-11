@@ -3,6 +3,7 @@ import { Controller } from 'stimulus';
 // eslint-disable-next-line no-restricted-syntax
 export default class ModalController extends Controller {
   static values = {
+    rootId: String,
     contentId: String,
     title: String,
     size: String,
@@ -14,8 +15,7 @@ export default class ModalController extends Controller {
       import('preact'),
     ]);
 
-    const modalRoot = document.createElement('div');
-    document.body.appendChild(modalRoot);
+    const modalRoot = document.getElementById(this.rootIdValue);
 
     render(
       <Modal

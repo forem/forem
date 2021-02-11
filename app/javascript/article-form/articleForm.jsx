@@ -265,10 +265,10 @@ export class ArticleForm extends Component {
     });
   };
 
-  toggleModal = (isOpen) => {
+  toggleModal = (showModal) => {
     if (this.state.edited) {
       this.setState({
-        showModal: isOpen,
+        showModal,
       });
     } else {
       // If the user has not edited the body we send them home

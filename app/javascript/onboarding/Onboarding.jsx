@@ -65,6 +65,7 @@ export class Onboarding extends Component {
     }
   }
 
+  // TODO: Update main element id to enable skip link. See issue #1153.
   render() {
     const { currentSlide } = this.state;
     const { communityConfig } = this.props;
@@ -72,9 +73,11 @@ export class Onboarding extends Component {
       <main
         className="onboarding-body"
         style={
-          communityConfig.communityBackground && {
-            backgroundImage: `url(${communityConfig.communityBackground})`,
-          }
+          communityConfig.communityBackground
+            ? {
+                backgroundImage: `url(${communityConfig.communityBackground})`,
+              }
+            : null
         }
       >
         <FocusTrap key={`onboarding-${currentSlide}`}>
