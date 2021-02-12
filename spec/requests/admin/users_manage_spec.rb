@@ -180,7 +180,8 @@ RSpec.describe "Admin::Users", type: :request do
       user.add_role(:single_resource_admin, Comment)
 
       expect do
-        delete "/admin/users/#{user.id}", params: { user_id: user.id, role: :trusted, resource_type: Comment }
+        delete "/admin/users/#{user.id}",
+               params: { user_id: user.id, role: :single_resource_admin, resource_type: Comment }
       end.to change(user.roles, :count).by(-1)
 
       expect(user.has_role?(:single_resource_admin, Comment)).to be false
