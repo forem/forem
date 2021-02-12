@@ -19,7 +19,7 @@ import { defaultChannelPropTypes } from '../../common-prop-types/channel-list-pr
                status: "active",
                channel_image: "/some/path/to/image"}}
      newMessagesIndicator="old"
-     discoverableChannel=false
+     discoverableChannel={false}
    />
  */
 
