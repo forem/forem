@@ -18,7 +18,7 @@ export const Modal = ({
   const shouldRenderMessageModal = listing && listing.contact_via_connect;
 
   return (
-    <div className="listings-modal">
+    <div className="listings-modal" data-testid="listings-modal">
       <CrayonsModal
         onClose={onClick}
         closeOnClickOutside={true}

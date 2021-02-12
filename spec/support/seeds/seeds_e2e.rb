@@ -131,3 +131,35 @@ seeder.create_if_doesnt_exist(Article, "title", "Test article") do
     user_id: User.order(Arel.sql("RANDOM()")).first.id,
   )
 end
+
+##############################################################################
+
+seeder.create_if_none(ListingCategory) do
+  ListingCategory.create!(
+    slug: "cfp",
+    cost: 1,
+    name: "Conference CFP",
+    rules: "Currently open for proposals, with link to form.",
+  )
+end
+
+##############################################################################
+
+seeder.create_if_none(Listing) do
+  user = User.first
+  Credit.add_to(user, rand(100))
+
+  Listing.create!(
+    user: user,
+    title: "Listing title",
+    body_markdown: Faker::Markdown.random,
+    location: Faker::Address.city,
+    organization_id: user.organizations.first&.id,
+    listing_category_id: ListingCategory.first&.id,
+    contact_via_connect: true,
+    published: true,
+    originally_published_at: Time.current,
+    bumped_at: Time.current,
+    tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
+  )
+end
