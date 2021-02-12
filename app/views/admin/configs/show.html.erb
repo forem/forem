@@ -805,28 +805,6 @@
                   <% end %>
                 </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :left_navbar_svg_icon %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:description] %>
-                  <%= f.text_area :left_navbar_svg_icon,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.left_navbar_svg_icon,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:placeholder] %>
-                  <%= SiteConfig.left_navbar_svg_icon.html_safe %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :right_navbar_svg_icon %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:description] %>
-                  <%= f.text_area :right_navbar_svg_icon,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.right_navbar_svg_icon,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:placeholder] %>
-                  <%= SiteConfig.right_navbar_svg_icon.html_safe %>
-                </div>
-
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>
@@ -1065,20 +1043,6 @@
             <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
               <fieldset class="flex flex-column gap-4">
                 <div class="crayons-field">
-                  <%= admin_config_label :onboarding_logo_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_logo_image][:description] %>
-                  <%= f.text_field :onboarding_logo_image,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.onboarding_logo_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:onboarding_logo_image][:placeholder] %>
-                  <div class="row mt-2">
-                    <div class="col-12">
-                      <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" width="600px" height="337px" />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="crayons-field">
                   <%= admin_config_label :onboarding_background_image %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_background_image][:description] %>
                   <%= f.text_field :onboarding_background_image,
@@ -1088,20 +1052,6 @@
                   <div class="row mt-2">
                     <div class="col-12">
                       <img alt="onboarding background image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :onboarding_taskcard_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:description] %>
-                  <%= f.text_field :onboarding_taskcard_image,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.onboarding_taskcard_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:placeholder] %>
-                  <div class="row mt-2">
-                    <div class="col-12">
-                      <img alt="onboarding taskcard image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
                     </div>
                   </div>
                 </div>
