@@ -53,7 +53,7 @@ module Admin
 
       if @user.id == current_user.id
         flash[:danger] = "Admins cannot remove roles from themselves."
-      elsif role == :single_resource_admin
+      elsif role == :single_resource_admin && !resource_type.safe_constantize.nil?
         User.find(params[:user_id]).remove_role(role, resource_type.safe_constantize)
         flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
       elsif User.find(params[:user_id]).remove_role(role)
