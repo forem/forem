@@ -6,17 +6,31 @@ class Comment < ApplicationRecord
   include Searchable
 
   include PgSearch::Model
-  multisearchable against: %i[body_markdown],
-                  associated_against: { commentable: :title, user: %i[username name] },
+  # By treating PgSearch more akin to ES we need to store data during the index building step instead of joining it
+  # `associated_against` also seems not to be effective during multisearch
+  multisearchable against: %i[body_markdown pg_search_commentable_title pg_search_user_name pg_search_user_username],
                   additional_attributes: lambda { |comment|
                     {
                       hotness_score: comment.score,
+                      published: comment.commentable&.published,
                       published_at: comment.created_at,
                       public_reactions_count: comment.public_reactions_count
                     }
                   },
-                  unless: ->(comment) { comment.deleted? || comment.hidden_by_commentable_user? },
+                  unless: ->(comment) { comment.deleted? || comment.hidden_by_commentable_user? || !comment.commentable&.published },
                   order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
+
+  def pg_search_commentable_title
+    commentable&.title
+  end
+
+  def pg_search_user_name
+    user.name
+  end
+
+  def pg_search_user_username
+    user.username
+  end
 
   SEARCH_SERIALIZER = Search::CommentSerializer
   SEARCH_CLASS = Search::FeedContent

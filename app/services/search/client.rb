@@ -59,7 +59,7 @@ module Search
           adapter: :patron,
           # NOTE: [@rhymes] temporarily disable logs, as they were only enabled
           # in development
-          log: false,
+          log: Rails.env.development?,
         )
       end
     end

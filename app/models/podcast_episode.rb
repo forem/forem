@@ -4,18 +4,27 @@ class PodcastEpisode < ApplicationRecord
   ]
 
   include PgSearch::Model
-  multisearchable against: %i[body quote subtitle summary],
-                  # do we need `keywords_for_search` ?
-                  associated_against: { tags: %i[name keywords_for_search] },
+  multisearchable against: %i[body quote subtitle summary pg_search_tags_name pg_search_tags_keywords_for_search],
                   additional_attributes: lambda { |pe|
                     {
                       hotness_score: pe.hotness_score,
+                      published: pe.published,
                       published_at: pe.published_at,
                       public_reactions_count: pe.public_reactions_count
                     }
                   },
                   if: ->(pe) { pe.published_at && pe.reachable? },
                   order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
+
+  # See Search::PodcastEpisodeSerializer and config/elasticsearch/mappings/feed_content.json's search_fields
+  def pg_search_tags_name
+    cached_tag_list
+  end
+
+  def pg_search_tags_keywords_for_search
+    tags.map(&:keywords_for_search).compact.join(", ")
+  end
+
 
   include Searchable
   SEARCH_SERIALIZER = Search::PodcastEpisodeSerializer

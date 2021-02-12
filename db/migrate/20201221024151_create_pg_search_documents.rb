@@ -6,6 +6,7 @@ class CreatePgSearchDocuments < ActiveRecord::Migration[6.0]
 
         # columns needed for multisearch sorting (homepage feed and search)
         t.integer :hotness_score, null: false, index: true
+        t.boolean :published, null: false, index: true
         t.datetime :published_at, null: false, index: true
         t.integer :public_reactions_count, null: false, index: true
 

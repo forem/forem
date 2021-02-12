@@ -7,22 +7,38 @@ class Article < ApplicationRecord
   include UserSubscriptionSourceable
 
   include PgSearch::Model
-  multisearchable against: %i[body_markdown title],
-                  # do we need `keywords_for_search` ?
-                  associated_against: {
-                    organization: :name,
-                    tags: %i[name keywords_for_search],
-                    user: %i[username name]
-                  },
+  multisearchable against: %i[body_markdown title pg_search_organization_name pg_search_tags_name pg_search_tags_keywords_for_search pg_search_user_name pg_search_user_username],
                   additional_attributes: lambda { |article|
                     {
                       hotness_score: article.hotness_score,
+                      published: article.published,
                       published_at: article.published_at,
                       public_reactions_count: article.public_reactions_count
                     }
                   },
                   if: :published?,
                   order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
+
+  # See Search::ArticleSerializer and config/elasticsearch/mappings/feed_content.json's search_fields
+  def pg_search_organization_name
+    organization&.name
+  end
+
+  def pg_search_tags_name
+    cached_tag_list
+  end
+
+  def pg_search_tags_keywords_for_search
+    tags.map(&:keywords_for_search).compact.join(", ")
+  end
+
+  def pg_search_user_name
+    user.name
+  end
+
+  def pg_search_user_username
+    user.username
+  end
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent

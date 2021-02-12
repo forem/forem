@@ -20,7 +20,7 @@ module Search
                        .with_pg_search_rank
                        .includes(
                          searchable: [
-                           {  podcast_episode: {  podcast: :creator } },
+                           { podcast_episode: {  podcast: :creator } },
                            { articles: :organization },
                            :tag_taggings, :tags, :comments
                          ],
