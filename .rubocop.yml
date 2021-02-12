@@ -39,10 +39,6 @@ Layout/ClassStructure:
   StyleGuide: '#consistent-classes'
   Enabled: true
 
-Lint/DeprecatedConstants:
-  Description: 'Checks for deprecated constants.'
-  Enabled: true
-
 Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   StyleGuide: '#consistent-multi-line-chains'
@@ -129,10 +125,6 @@ Layout/MultilineMethodCallIndentation:
   Enabled: true
   EnforcedStyle: indented
 
-Lint/RedundantDirGlobSort:
-  Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
-  Enabled: true
-
 Layout/SpaceAroundMethodCallOperator:
   Description: 'Checks method call operators to not have spaces around them.'
   Enabled: true
@@ -160,6 +152,10 @@ Lint/BinaryOperatorWithIdenticalOperands:
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
   Enabled: false
+
+Lint/DeprecatedConstants:
+  Description: 'Checks for deprecated constants.'
+  Enabled: true
 
 Lint/DeprecatedOpenSSLConstant:
   Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
@@ -214,9 +210,17 @@ Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
   Enabled: true
 
+Lint/NumberedParameterAssignment:
+  Description: 'Checks for uses of numbered parameter assignment.'
+  Enabled: true
+
 # Lint/NumberConversion:
 #   Description: 'Checks unsafe usage of number conversion methods.'
 #   Enabled: false
+
+Lint/OrAssignmentToConstant:
+  Description: 'Checks unintended or-assignment to constant.'
+  Enabled: true
 
 Lint/OutOfRangeRegexpRef:
   Description: 'Checks for out of range reference for Regexp because it always returns nil.'
@@ -227,6 +231,10 @@ Lint/RaiseException:
   StyleGuide: '#raise-exception'
   Enabled: true
 
+Lint/RedundantDirGlobSort:
+  Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
+  Enabled: true
+
 Lint/SelfAssignment:
   Description: 'Checks for self-assignments.'
   Enabled: true
@@ -235,12 +243,20 @@ Lint/StructNewOverride:
   Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
   Enabled: true
 
+Lint/SymbolConversion:
+  Description: 'Checks for unnecessary symbol conversions.'
+  Enabled: true
+
 Lint/ToEnumArguments:
   Description: 'This cop ensures that `to_enum`/`enum_for`, called for the current method, has correct arguments.'
   Enabled: true
 
 Lint/TopLevelReturnWithArgument:
   Description: 'This cop detects top level return statements with argument.'
+  Enabled: true
+
+Lint/TripleQuotes:
+  Description: 'Checks for useless triple quote constructs.'
   Enabled: true
 
 Lint/UnexpectedBlockArity:
@@ -489,6 +505,10 @@ Style/IfUnlessModifier:
                  single-line body.
   StyleGuide: '#if-as-a-modifier'
   Enabled: false
+
+Style/IfWithBooleanLiteralBranches:
+  Description: 'Checks for redundant `if` with boolean literal branches.'
+  Enabled: true
 
 # Style/ImplicitRuntimeError:
 #   Description: >-

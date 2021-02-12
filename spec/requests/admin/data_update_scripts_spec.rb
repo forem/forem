@@ -6,7 +6,11 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
   context "when the user is not an tech admin" do
     let(:user) { create(:user) }
 
-    before { sign_in user }
+    before do
+      sign_in user
+      allow(Flipper).to receive(:enabled?).and_call_original
+      allow(Flipper).to receive(:enabled?).with(:data_update_scripts).and_return(true)
+    end
 
     describe "GET /admin/data_update_scripts" do
       it "blocks the request" do
@@ -18,7 +22,11 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
   context "when the user is a tech admin" do
     let(:user) { create(:user, :admin, :tech_admin) }
 
-    before { sign_in user }
+    before do
+      sign_in user
+      allow(Flipper).to receive(:enabled?).and_call_original
+      allow(Flipper).to receive(:enabled?).with(:data_update_scripts).and_return(true)
+    end
 
     describe "GET /admin/data_update_scripts" do
       it "allows the request" do
@@ -34,6 +42,46 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
         expect(response.body).to include(script.run_at.to_s)
         expect(response.body).to include(script.created_at.to_s)
         expect(response.body).to include(script.status.to_s)
+      end
+
+      it "displays a 'Rerun' button when the script status is failed" do
+        create(:data_update_script, status: "failed")
+        get_resource
+        expect(response.body).to include("Re-run")
+      end
+    end
+
+    describe "GET /admin/data_update_scripts/:id" do
+      let(:script) do
+        create(
+          :data_update_script,
+          file_name: "20200214151804_data_update_test_script",
+          status: "succeeded",
+        )
+      end
+      let(:script_id) { script.id }
+
+      it "returns a data update script" do
+        get admin_data_update_script_path(id: script_id)
+
+        expect(response).to have_http_status(:ok)
+        expect(script.id).to eq(response.parsed_body["response"]["id"])
+        expect(script.file_name).to eq(response.parsed_body["response"]["file_name"])
+        expect(script.status).to eq(response.parsed_body["response"]["status"])
+      end
+    end
+
+    describe "POST /admin/:id/force_run" do
+      let(:script) { create(:data_update_script, file_name: "20200214151804_data_update_test_script") }
+      let(:script_id) { script.id.to_s }
+
+      it "calls the the sidekiq worker" do
+        allow(DataUpdateWorker).to receive(:perform_async)
+
+        post "/admin/data_update_scripts/#{script_id}/force_run"
+        sidekiq_perform_enqueued_jobs
+
+        expect(DataUpdateWorker).to have_received(:perform_async).with(script_id)
       end
     end
   end

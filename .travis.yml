@@ -5,9 +5,7 @@ language: ruby
 cache:
   directories:
     - vendor/bundle
-    - node_modules
-    - $HOME/.nvm
-    - ~/.cache # cache folder with Cypress binary
+    - ~/.cache
 rvm:
   - 2.7.2
 addons:
@@ -39,6 +37,8 @@ env:
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
     - ELASTICSEARCH_URL="http://localhost:9200"
+before_install:
+  - gem install bundler:"<2.3"
 install:
   - date --rfc-3339=seconds
   - nvm install
@@ -84,13 +84,11 @@ jobs:
       script:
         - yarn test --colors
         - bundle exec rails db:create db:schema:load assets:precompile
-        - bundle exec bundle-audit check --update --ignore CVE-2015-9284
+        - bundle exec bundle-audit check --update --ignore CVE-2015-9284 CVE-2021-21288 CVE-2021-21305
         - bin/test-console-check
         - yarn build-storybook
         - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
-        - yarn e2e:ci
-        # Dropping and recreating the database for Capybara/rspecs
-        # - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
+        - bin/e2e-ci
 
     - stage: Deploy
       name: Deploy DEV

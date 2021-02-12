@@ -176,4 +176,13 @@ RSpec.describe Users::Delete, type: :service do
       expect(ChatChannel.find_by(id: chat_channel.id)).not_to be_nil
     end
   end
+
+  context "when the user was banned" do
+    it "stores a hash of the username so the user can't sign up again" do
+      user = create(:user, :banned)
+      expect do
+        described_class.call(user)
+      end.to change(Users::SuspendedUsername, :count).by(1)
+    end
+  end
 end

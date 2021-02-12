@@ -273,6 +273,7 @@ function handleCommentSubmit(event) {
           else {
             window.location.replace(newComment.url)
           }
+          updateCommentsCount();
           initializeCommentsPage();
           initializeCommentDate();
           initializeCommentDropdown();
@@ -547,4 +548,11 @@ function listenForDetailsToggle() {
       item.getElementsByTagName("SUMMARY")[0].blur();
     });
   }
+}
+
+function updateCommentsCount() {
+  var commentsCountDiv = document.getElementsByClassName("js-comments-count")[0];
+  var commentsCountData = parseInt(commentsCountDiv.dataset.commentsCount) + 1;
+  commentsCountDiv.dataset.commentsCount = commentsCountData;
+  commentsCountDiv.innerHTML = `(${commentsCountData})`
 }

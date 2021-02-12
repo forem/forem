@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ModSection from '../ChatChannelSettings/ModSection';
+import { ModSection } from '../ChatChannelSettings/ModSection';
 
 describe('<ModSection />', () => {
   it('should have no a11y violations', async () => {

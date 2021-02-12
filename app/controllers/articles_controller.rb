@@ -104,7 +104,7 @@ class ArticlesController < ApplicationController
             title: parsed["title"],
             tags: (Article.new.tag_list.add(parsed["tags"], parser: ActsAsTaggableOn::TagParser) if parsed["tags"]),
             cover_image: (ApplicationController.helpers.cloud_cover_url(parsed["cover_image"]) if parsed["cover_image"])
-          }
+          }, status: :ok
         end
       end
     end
