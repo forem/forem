@@ -18501,10 +18501,10 @@ tweetnacl@^1.0.3:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
-twilio-video@^2.11.0:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-2.11.0.tgz#b0500aab9e5c2ec624173d874aacf7c4c43cf6bb"
-  integrity sha512-6nvMzkvcXP3616ocX3hZU0SclpExCpBUbYwW1y79h993xmiY25C0WOIkcgycKIIdQwLcysXBWl01OGYDYw8R3w==
+twilio-video@^2.12.0:
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-2.12.0.tgz#821d68f7bea5ecbe0bbd7588a8bedb57c330a2ad"
+  integrity sha512-LfR7Z005yYVcWJpkZR39zBYA6PymaQy+AX1q8Ag4eiFP4CqxUcgpf8mGJcIG7kZQevOLXSPnImlt8Od5ButAtg==
   dependencies:
     "@twilio/webrtc" "4.3.2"
     backoff "^2.5.0"
