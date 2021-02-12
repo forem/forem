@@ -163,3 +163,20 @@ seeder.create_if_none(Listing) do
     tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
   )
 end
+
+##############################################################################
+
+seeder.create_if_none(NavigationLink) do
+  protocol = ApplicationConfig["APP_PROTOCOL"].freeze
+  domain = Rails.application&.initialized? ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
+  base_url = "#{protocol}#{domain}".freeze
+  reading_icon = File.read(Rails.root.join("app/assets/images/twemoji/drawer.svg")).freeze
+
+  NavigationLink.create!(
+    name: "Reading List",
+    url: "#{base_url}/readinglist",
+    icon: reading_icon,
+    display_only_when_signed_in: true,
+    position: 0,
+  )
+end
