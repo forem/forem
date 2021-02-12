@@ -3,8 +3,8 @@ import { Controller } from 'stimulus';
 // eslint-disable-next-line no-restricted-syntax
 export default class ModalController extends Controller {
   static values = {
-    rootId: String,
-    contentId: String,
+    rootSelector: String,
+    contentSelector: String,
     title: String,
     size: String,
   };
@@ -15,7 +15,7 @@ export default class ModalController extends Controller {
       import('preact'),
     ]);
 
-    const modalRoot = document.getElementById(this.rootIdValue);
+    const modalRoot = document.querySelector(this.rootSelectorValue);
 
     render(
       <Modal
@@ -28,7 +28,7 @@ export default class ModalController extends Controller {
         <div
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
-            __html: document.querySelector(`#${this.contentIdValue}`).innerHTML,
+            __html: document.querySelector(this.contentSelectorValue).innerHTML,
           }}
         />
       </Modal>,
