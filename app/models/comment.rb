@@ -17,8 +17,8 @@ class Comment < ApplicationRecord
                       public_reactions_count: comment.public_reactions_count
                     }
                   },
-                  unless: ->(comment) { comment.deleted? || comment.hidden_by_commentable_user? || !comment.commentable&.published },
-                  order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
+                  unless: ->(comment) { comment.deleted? || comment.hidden_by_commentable_user? || !comment.commentable&.published }
+                  # order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
 
   def pg_search_commentable_title
     commentable&.title

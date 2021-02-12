@@ -16,8 +16,8 @@ class Article < ApplicationRecord
                       public_reactions_count: article.public_reactions_count
                     }
                   },
-                  if: :published?,
-                  order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
+                  if: :published?
+                  # order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
 
   # See Search::ArticleSerializer and config/elasticsearch/mappings/feed_content.json's search_fields
   def pg_search_organization_name

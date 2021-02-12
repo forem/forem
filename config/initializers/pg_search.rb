@@ -14,7 +14,9 @@ PgSearch.multisearch_options = {
         MinWords: 5,
         MaxWords: 10
       }
-    }
+    },
   },
+  # https://github.com/Casecommons/pg_search#ranked_by-choosing-a-ranking-algorithm
+  ranked_by: "LENGTH(content)",
   ignoring: :accents
 }

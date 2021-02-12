@@ -13,8 +13,8 @@ class PodcastEpisode < ApplicationRecord
                       public_reactions_count: pe.public_reactions_count
                     }
                   },
-                  if: ->(pe) { pe.published_at && pe.reachable? },
-                  order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
+                  if: ->(pe) { pe.published_at && pe.reachable? }
+                  # order_within_rank: "score DESC, hotness_score DESC, comments_count DESC"
 
   # See Search::PodcastEpisodeSerializer and config/elasticsearch/mappings/feed_content.json's search_fields
   def pg_search_tags_name

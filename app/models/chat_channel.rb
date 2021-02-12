@@ -7,7 +7,7 @@ class ChatChannel < ApplicationRecord
   CHANNEL_TYPES = %w[open invite_only direct].freeze
   STATUSES = %w[active inactive blocked].freeze
 
-  pg_search_scope :search_by_name_and_members, against: %i[channel_name slug],
+  pg_search_scope :search_by_name_and_members, against: { channel_name: "A", slug: "B" },
                                                associated_against: { users: %i[username name] }
 
   has_many :messages, dependent: :destroy
