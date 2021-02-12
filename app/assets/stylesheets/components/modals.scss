@@ -44,7 +44,7 @@
     bottom: 0;
     pointer-events: auto;
 
-    &.clickable {
+    &.background-clickable {
       pointer-events: none;
     }
   }

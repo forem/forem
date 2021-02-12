@@ -1,5 +1,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
+/* global showLoginModal */
 
 function toggleTemplateTypeButton(form, e) {
   const { targetType } = e.target.dataset;
@@ -296,7 +297,6 @@ function observeForReplyClick() {
 }
 
 function handleLoggedOut() {
-  // global method from app/assets/javascripts/utilities/showLoginModal.js
   document
     .getElementsByClassName('response-templates-button')[0]
     ?.addEventListener(

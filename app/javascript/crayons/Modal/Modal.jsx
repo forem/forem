@@ -78,7 +78,7 @@ export const Modal = ({
           <div
             data-testid="modal-overlay"
             className={`crayons-modal__overlay ${
-              closeOnClickOutside ? 'clickable' : ''
+              closeOnClickOutside ? 'background-clickable' : ''
             }`}
           />
         )}
