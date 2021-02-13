@@ -394,7 +394,9 @@ function fetchNextPageIfNearBottom() {
       fetchNextFollowingPage(indexContainer);
     };
   } else {
-    scrollableElemId = 'articles-list';
+    const isHome = indexWhich === 'home';
+    scrollableElemId = isHome ? 'main-content' : 'articles-list';
+
     fetchCallback = function fetch() {
       paginate(
         indexContainer.dataset.tag,

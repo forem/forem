@@ -124,9 +124,7 @@
 
 .skip-content-link {
   position: absolute;
-  top: 0;
   left: 50%;
-  transform: translate(-50%, -100px);
   background: var(--body-color);
   color: var(--body-color-inverted);
   z-index: var(--z-popover);
@@ -134,12 +132,23 @@
   pointer-events: none;
   opacity: 0;
   border-radius: var(--radius);
-  outline: 0;
+  height: var(-header-height);
+  transform: translateY(-10em);
+  transition: transform 0.1s ease-in;
+  outline: none;
+  border: 2px solid var(--header-button-focus-color);
 
-  &:focus {
+  &:focus,
+  &:focus-within {
     pointer-events: auto;
     opacity: 1;
-    transform: translate(-50%, var(--header-height) / 2);
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &.skip-content-link {
+      transition-duration: 0;
+    }
   }
 }
 
