@@ -93,12 +93,7 @@ module Profiles
       # Before saving, filter out obsolete profile fields
       @profile.data.slice!(*Profile.attributes)
 
-      if @profile.valid?
-        @profile.save!
-      else
-        @profile.save_valid_attributes
-        raise ActiveRecord::RecordInvalid
-      end
+      @profile.save!
     end
 
     def conditionally_resave_articles
