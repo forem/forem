@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render, fireEvent, createEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import Compose from '../compose';
+import { Compose } from '../compose';
 
 let submitNoMessage = false;
 let submitWithMessage = false;

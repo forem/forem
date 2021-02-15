@@ -47,7 +47,7 @@ RSpec.describe "User destroys their profile", type: :system, js: true do
     fill_in "delete__account__username__field", with: user.username
     fill_in "delete__account__verification__field", with: "delete my account"
     sidekiq_assert_enqueued_with(job: Users::DeleteWorker) do
-      click_button "DELETE ACCOUNT"
+      click_button "Delete account"
     end
   end
 end

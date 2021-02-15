@@ -71,6 +71,8 @@
 
 // Dropdown under profile picture / hamburger icon
 .crayons-header__menu {
+  --trigger-color: var(--header-icons-color);
+  --trigger-border-color: transparent;
   height: 100%;
   display: flex;
   align-items: center;
@@ -81,11 +83,13 @@
 
   &__trigger {
     all: unset;
-    padding: var(--su-1);
+    padding: calc(var(--su-1) / 2);
     margin: 0 var(--su-2);
     border-radius: 50%;
-    color: var(--header-icons-color);
+    color: var(--trigger-color);
     cursor: pointer;
+    // hold space for interaction style
+    border: 2px solid var(--trigger-border-color);
   }
 
   &__dropdown {
@@ -103,17 +107,18 @@
   }
 
   &.showing,
-  &.desktop:hover,
-  &.desktop:focus {
+  &.desktop:hover {
+    --trigger-border-color: var(--header-bg-hover);
+    --trigger-color: var(--header-icons-color-hover);
     --dropdown-transform: translateY(0) rotateX(0);
     --dropdown-delay: 0;
     --dropdown-opacity: 1;
     --dropdown-visibility: visible;
+  }
 
-    .crayons-header__menu__trigger {
-      color: var(--header-icons-color-hover);
-      background: var(--header-bg-hover);
-    }
+  .focus-visible:focus {
+    --trigger-border-color: var(--header-button-focus-color);
+    --trigger-color: var(--header-button-focus-color);
   }
 }
 

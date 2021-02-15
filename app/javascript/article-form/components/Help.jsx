@@ -30,8 +30,7 @@ export class Help extends Component {
     };
   };
 
-  toggleModal = (varShowing) => (e) => {
-    e.preventDefault();
+  toggleModal = (varShowing) => () => {
     this.setState((prevState) => ({
       ...this.setCommonProps({
         [varShowing]: !prevState[varShowing],

@@ -4,7 +4,7 @@ import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { axe } from 'jest-axe';
 
-import ProfileForm from '../ProfileForm';
+import { ProfileForm } from '../ProfileForm';
 
 global.fetch = fetch;
 

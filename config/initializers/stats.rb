@@ -1,0 +1,1 @@
+ForemStatsClient = ForemStatsDriver.new

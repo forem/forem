@@ -55,7 +55,7 @@ RSpec.describe "Authenticating with Twitter" do
       before do
         omniauth_setup_invalid_credentials(:twitter)
 
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
       end
 
       after do
@@ -88,7 +88,7 @@ RSpec.describe "Authenticating with Twitter" do
         click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -104,7 +104,7 @@ RSpec.describe "Authenticating with Twitter" do
         click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -117,7 +117,7 @@ RSpec.describe "Authenticating with Twitter" do
         click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end

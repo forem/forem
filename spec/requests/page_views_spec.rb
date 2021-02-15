@@ -60,6 +60,22 @@ RSpec.describe "PageViews", type: :request do
       end
     end
 
+    context "when not part of field test" do
+      before do
+        sign_in user
+        allow(FieldTest).to receive(:config).and_return({ "experiments" => nil })
+        allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
+      end
+
+      it "converts field test" do
+        post "/page_views", params: {
+          article_id: article.id,
+          referrer: "test"
+        }
+        expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async)
+      end
+    end
+
     context "when user not signed in" do
       it "creates a new page view" do
         post "/page_views", params: {

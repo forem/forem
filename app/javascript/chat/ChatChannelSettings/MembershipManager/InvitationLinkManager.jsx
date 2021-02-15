@@ -20,7 +20,7 @@ const CopyIcon = () => (
   </svg>
 );
 
-export default class InvitationLinkManager extends Component {
+export class InvitationLinkManager extends Component {
   static propTypes = {
     invitationLink: PropTypes.string.isRequired,
     currentMembership: PropTypes.isRequired,
