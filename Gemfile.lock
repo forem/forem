@@ -326,7 +326,7 @@ GEM
       fog-core
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.2.5)
-    front_matter_parser (0.2.1)
+    front_matter_parser (1.0.0)
     fugit (1.4.1)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
@@ -886,7 +886,7 @@ DEPENDENCIES
   flipper-active_record (~> 0.20.3)
   flipper-ui (~> 0.20.3)
   fog-aws (~> 3.8)
-  front_matter_parser (~> 0.2)
+  front_matter_parser (~> 1.0)
   gemoji (~> 4.0.0.rc2)
   gibbon (~> 3.3)
   guard (~> 2.16)
