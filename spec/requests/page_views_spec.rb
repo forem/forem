@@ -6,8 +6,10 @@ RSpec.describe "PageViews", type: :request do
 
   def page_views_post(params)
     sidekiq_perform_enqueued_jobs do
-      post page_views_path, params: params
+      post "/page_views", params: params
     end
+    # Also drain Articles::UpdateOrganicPageViewsWorker if any were enqueued
+    sidekiq_perform_enqueued_jobs(only: Articles::UpdateOrganicPageViewsWorker)
   end
 
   describe "POST /page_views" do
@@ -76,14 +78,14 @@ RSpec.describe "PageViews", type: :request do
         expect(PageView.last.counts_for_number_of_views).to eq(10)
       end
 
-      xit "stores aggregate page views" do
+      it "stores aggregate page views" do
         page_views_post(article_id: article.id)
         page_views_post(article_id: article.id)
 
         expect(article.reload.page_views_count).to eq(20)
       end
 
-      xit "stores aggregate organic page views", :aggregate_failures do
+      it "stores aggregate organic page views", :aggregate_failures do
         page_views_post(article_id: article.id, referrer: "https://www.google.com/")
         page_views_post(article_id: article.id)
 
