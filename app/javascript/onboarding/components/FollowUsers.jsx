@@ -93,6 +93,12 @@ class FollowUsers extends Component {
     }
   }
 
+  handleKeyPress(event, user) {
+    if (event.key === ' ') {
+      this.handleClick(user);
+    }
+  }
+
   renderFollowCount() {
     const { users, selectedUsers } = this.state;
     let followingStatus;
@@ -180,10 +186,8 @@ class FollowUsers extends Component {
                 const selected = selectedUsers.includes(user);
 
                 return (
-                  <button
+                  <div
                     data-testid="onboarding-user-button"
-                    type="button"
-                    onClick={() => this.handleClick(user)}
                     className={
                       selected
                         ? 'user content-row selected'
@@ -215,11 +219,13 @@ class FollowUsers extends Component {
                         aria-label={`Follow ${user.name}`}
                         aria-checked={selected}
                         role="checkbox"
+                        onClick={() => this.handleClick(user)}
+                        onKeyPress={(event) => this.handleKeyPress(event, user)}
                       >
                         {selected ? 'Following' : 'Follow'}
                       </div>
                     </label>
-                  </button>
+                  </div>
                 );
               })}
             </fieldset>
