@@ -394,8 +394,8 @@ function fetchNextPageIfNearBottom() {
       fetchNextFollowingPage(indexContainer);
     };
   } else {
-    const isHome = indexWhich === 'home';
-    scrollableElemId = isHome ? 'main-content' : 'articles-list';
+    const useMainContentId = document.getElementById('main-content') !== null;
+    scrollableElemId = useMainContentId ? 'main-content' : 'articles-list';
 
     fetchCallback = function fetch() {
       paginate(
