@@ -2,12 +2,12 @@ module Articles
   class UpdateOrganicPageViewsWorker
     include Sidekiq::Worker
 
-    GOOGLE_REFERRER = "https://www.google.com/".freeze
-
     sidekiq_options queue: :medium_priority,
                     lock: :until_executing,
                     on_conflict: :replace,
                     retry: 10
+
+    GOOGLE_REFERRER = "https://www.google.com/".freeze
 
     def perform(article_id)
       article = Article.find(article_id)
