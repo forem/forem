@@ -83,11 +83,11 @@
     }
 
     &__body {
-      flex: 1 auto;
       font-size: var(--modal-body-font-size);
       padding: var(--modal-body-padding);
       max-height: 100%;
       overflow-y: auto;
+      grid-auto-rows: min-content;
     }
   }
 
