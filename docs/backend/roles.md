@@ -41,7 +41,7 @@ rails console
 > user.has_role? :pro
 => false
 
-> user.add_role :pro
+> user.add_role(:pro)
 => #<Role:
 ...
 name: "pro"

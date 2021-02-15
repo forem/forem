@@ -122,7 +122,7 @@ RSpec.describe "Admin::Users", type: :request do
     end
 
     it "selects new role for user" do
-      user.add_role :trusted
+      user.add_role(:trusted)
       user.reload
 
       params = { user: { user_status: "Comment Suspend", note_for_current_role: "comment suspend this user" } }
@@ -133,7 +133,7 @@ RSpec.describe "Admin::Users", type: :request do
     end
 
     it "selects super admin role when user was banned" do
-      user.add_role :banned
+      user.add_role(:banned)
       user.reload
 
       params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }

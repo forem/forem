@@ -60,7 +60,7 @@ RSpec.describe CommentPolicy, type: :policy do
     end
 
     context "when user is an admin or super_admin" do
-      before { user.add_role :admin }
+      before { user.add_role(:admin) }
 
       it { is_expected.to permit_actions(%i[create moderator_create admin_delete]) }
 
