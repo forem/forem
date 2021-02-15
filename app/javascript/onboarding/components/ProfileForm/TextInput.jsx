@@ -26,7 +26,13 @@ import { FormField } from '@crayons';
 
 export function TextInput(props) {
   const { onFieldChange } = props;
-  const { attribute_name, placeholder_text, description, label } = props.field;
+  const {
+    attribute_name,
+    placeholder_text,
+    default_value,
+    description,
+    label,
+  } = props.field;
 
   return (
     <FormField>
@@ -36,6 +42,7 @@ export function TextInput(props) {
       <input
         class="crayons-textfield"
         placeholder={placeholder_text}
+        defaultValue={default_value}
         name={attribute_name}
         id={attribute_name}
         onChange={onFieldChange}

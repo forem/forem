@@ -130,14 +130,17 @@ describe('ProfileForm', () => {
     const { findByLabelText } = renderProfileForm();
 
     const field1 = await findByLabelText(/Education/i);
-    const field2 = await findByLabelText(/Name/i);
+    const field2 = await findByLabelText(/^Name/i);
     const field3 = await findByLabelText(/Website URL/i);
+    const field4 = await findByLabelText(/Username/i);
 
     expect(field1).toBeInTheDocument();
     expect(field2).toBeInTheDocument();
     expect(field2.getAttribute('placeholder')).toEqual('John Doe');
     expect(field3).toBeInTheDocument();
     expect(field3.getAttribute('placeholder')).toEqual('https://yoursite.com');
+    expect(field4).toBeInTheDocument();
+    expect(field4.getAttribute('value')).toEqual('username');
   });
 
   it('should render a stepper', () => {
@@ -162,7 +165,7 @@ describe('ProfileForm', () => {
     } = renderProfileForm();
 
     // input the bio
-    const field2 = await findByLabelText(/Name/i);
+    const field2 = await findByLabelText(/^Name/i);
     expect(field2.value).toEqual('');
     getByText(/skip for now/i);
     expect(queryByText(/continue/i)).toBeNull();

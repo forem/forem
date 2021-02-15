@@ -50,6 +50,7 @@ export class ProfileForm extends Component {
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
     const { formValues, last_onboarding_page } = this.state;
+    const { username, ...newFormValues } = formValues;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
@@ -57,16 +58,23 @@ export class ProfileForm extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user: { last_onboarding_page },
-        profile: { ...formValues },
+        user: { last_onboarding_page, username },
+        profile: { ...newFormValues },
       }),
       credentials: 'same-origin',
-    }).then((response) => {
-      if (response.ok) {
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw response;
+        }
         const { next } = this.props;
         next();
-      }
-    });
+      })
+      .catch((error) => {
+        error.json().then((data) => {
+          this.setState({ error: true, errorMessage: data.errors.toString() });
+        });
+      });
   }
 
   handleFieldChange(e) {
@@ -153,14 +161,6 @@ export class ProfileForm extends Component {
     const { profile_image_90, username, name } = this.user;
     const { canSkip, groups = [], error, errorMessage } = this.state;
 
-    if (error) {
-      return (
-        <div role="alert" class="crayons-notice crayons-notice--danger">
-          An error occurred: {errorMessage}
-        </div>
-      );
-    }
-
     const sections = groups.map((group) => {
       return (
         <div key={group.id} class="onboarding-profile-sub-section">
@@ -195,6 +195,11 @@ export class ProfileForm extends Component {
             slidesCount={slidesCount}
             currentSlideIndex={currentSlideIndex}
           />
+          {error && (
+            <div role="alert" class="crayons-notice crayons-notice--danger">
+              An error occurred: {errorMessage}
+            </div>
+          )}
           <div className="onboarding-content about">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
@@ -219,9 +224,20 @@ export class ProfileForm extends Component {
                 />
               </figure>
               <h3>{name}</h3>
-              <p>{username}</p>
             </div>
-            <div>{sections}</div>
+            <div>
+              <div className="onboarding-profile-sub-section">
+                <TextInput
+                  field={{
+                    attribute_name: 'username',
+                    label: 'Username',
+                    default_value: username,
+                  }}
+                  onFieldChange={this.handleFieldChange}
+                />
+              </div>
+              {sections}
+            </div>
           </div>
         </div>
       </div>

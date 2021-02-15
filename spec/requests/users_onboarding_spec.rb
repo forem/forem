@@ -19,6 +19,13 @@ RSpec.describe "UsersOnboarding", type: :request do
         end.to change(user, :last_onboarding_page)
       end
 
+      it "updates the user's username attribute" do
+        params = { user: { username: "WilhuffTarkin" } }
+        expect do
+          patch "/onboarding_update.json", params: params
+        end.to change(user, :username).to("wilhufftarkin")
+      end
+
       it "does not update the user's last_onboarding_page if it is empty" do
         params = { user: { last_onboarding_page: "" } }
         expect do
