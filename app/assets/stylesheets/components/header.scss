@@ -130,19 +130,17 @@
   z-index: var(--z-popover);
   padding: var(--su-4);
   pointer-events: none;
-  opacity: 0;
   border-radius: var(--radius);
-  height: var(-header-height);
-  transform: translateY(-10em);
+  height: var(--header-height);
+  transform: translate(-50%, calc(-1 * var(--header-height)));
   transition: transform 0.1s ease-in;
-  outline: none;
-  border: 2px solid var(--header-button-focus-color);
 
   &:focus,
   &:focus-within {
     pointer-events: auto;
-    opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, 0);
+    outline: none;
+    border: 2px solid var(--header-button-focus-color);
   }
 
   @media (prefers-reduced-motion: reduce) {
