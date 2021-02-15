@@ -7,7 +7,7 @@
         <% if role.name == "banned" %>
           <li>Suspended</li>
         <% elsif role.name == "super_admin" || @user.id == current_user.id %>
-          <li><%= role.name.titlecase %></li>
+          <li><%= role.name.titlecase %> <em><%= role.resource_name.to_s %></em></li>
         <% else %>
           <li>
             <%= role.name.titlecase %> <em><%= role.resource_name.to_s %></em> &nbsp;
