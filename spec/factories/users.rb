@@ -100,7 +100,7 @@ FactoryBot.define do
     end
 
     trait :pro do
-      after(:build) { |user| user.add_role :pro }
+      after(:build) { |user| user.add_role(:pro) }
     end
 
     trait :org_member do
@@ -144,7 +144,7 @@ FactoryBot.define do
     trait :tag_moderator do
       after(:create) do |user|
         tag = create(:tag)
-        user.add_role :tag_moderator, tag
+        user.add_role(:tag_moderator, tag)
       end
     end
 
