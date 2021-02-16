@@ -435,7 +435,6 @@ Rails.application.routes.draw do
 
     get "/mod" => "moderations#index", :as => :mod
     get "/mod/:tag" => "moderations#index"
-    get "/page/crayons" => "pages#crayons"
 
     post "/fallback_activity_recorder" => "ga_events#create"
 
