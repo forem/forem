@@ -8,7 +8,7 @@ module Articles
                     retry: false
 
     def perform(create_params)
-      PageView.create(create_params)
+      PageView.create!(create_params)
 
       article = Article.find(create_params["article_id"])
       updated_count = article.page_views.sum(:counts_for_number_of_views)
