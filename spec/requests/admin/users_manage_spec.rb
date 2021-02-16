@@ -178,6 +178,7 @@ RSpec.describe "Admin::Users", type: :request do
 
     it "removes the correct resource_admin_role from non-super_admin users", :aggregate_failures do
       user.add_role(:single_resource_admin, Comment)
+      user.add_role(:single_resource_admin, Broadcast)
 
       expect do
         delete "/admin/users/#{user.id}",
@@ -185,6 +186,7 @@ RSpec.describe "Admin::Users", type: :request do
       end.to change(user.roles, :count).by(-1)
 
       expect(user.has_role?(:single_resource_admin, Comment)).to be false
+      expect(user.has_role?(:single_resource_admin, Broadcast)).to be true
       expect(request.flash["success"]).to include("successfully removed from the user!")
     end
 
