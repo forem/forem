@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { debounceAction } from '../utilities/debounceAction';
 
 import {
   defaultState,
@@ -15,6 +14,7 @@ import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
 import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
 import { ItemListTags } from './components/ItemListTags';
+import { debounceAction } from '@utilities/debounceAction';
 import { Button } from '@crayons';
 import { request } from '@utilities/http';
 
