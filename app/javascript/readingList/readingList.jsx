@@ -94,10 +94,9 @@ export class ReadingList extends Component {
       body: { current_status: statusView },
     });
 
-    const t = this;
     const newItems = items;
     newItems.splice(newItems.indexOf(item), 1);
-    t.setState({
+    this.setState({
       archiving: true,
       items: newItems,
       totalCount: totalCount - 1,
@@ -105,7 +104,7 @@ export class ReadingList extends Component {
 
     // hide the snackbar in a few moments
     setTimeout(() => {
-      t.setState({ archiving: false });
+      this.setState({ archiving: false });
     }, 1000);
   };
 
