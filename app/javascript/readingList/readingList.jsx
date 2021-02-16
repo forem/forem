@@ -193,7 +193,7 @@ export class ReadingList extends Component {
             {` (${items.length})`}
           </h1>
 
-          <div class="flex items-center">
+          <fieldset class="flex items-center">
             <Button
               onClick={(e) => this.toggleStatusView(e)}
               className="mr-2 whitespace-nowrap"
@@ -210,7 +210,7 @@ export class ReadingList extends Component {
               placeholder="Search..."
               className="crayons-textfield"
             />
-          </div>
+          </fieldset>
         </header>
 
         <div className="crayons-layout crayons-layout--2-cols">
