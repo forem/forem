@@ -5,7 +5,7 @@ module Articles
     sidekiq_options queue: :medium_priority,
                     lock: :until_executing,
                     on_conflict: :replace,
-                    retry: 10
+                    retry: false
 
     GOOGLE_REFERRER = "https://www.google.com/".freeze
 
@@ -25,7 +25,7 @@ module Articles
       past_month_count = sum_page_views(google_page_views, 1.month.ago)
       update_params[:organic_page_views_past_month_count] = past_month_count
 
-      article.update(update_params)
+      article.update_columns(update_params)
     end
 
     private

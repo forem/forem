@@ -12,7 +12,7 @@ class PageViewsController < ApplicationMetalController
     end
 
     Articles::UpdatePageViewsWorker.perform_at(
-      5.minutes.from_now,
+      2.minutes.from_now,
       page_view_create_params,
     )
 
