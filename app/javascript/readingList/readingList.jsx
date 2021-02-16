@@ -99,7 +99,6 @@ export class ReadingList extends Component {
     this.setState({
       archiving: true,
       items: newItems,
-      totalCount: totalCount - 1,
     });
 
     // hide the snackbar in a few moments
@@ -158,8 +157,7 @@ export class ReadingList extends Component {
 
   render() {
     const {
-      items,
-      totalCount,
+      items = [],
       availableTags,
       selectedTags,
       showLoadMoreButton,
@@ -192,7 +190,7 @@ export class ReadingList extends Component {
         <header className="crayons-layout flex justify-between items-center pb-0">
           <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
-            {` (${totalCount > 0 ? totalCount : '0'})`}
+            {` (${items.length})`}
           </h1>
 
           <fieldset class="flex items-center">
