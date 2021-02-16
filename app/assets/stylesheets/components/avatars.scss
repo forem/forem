@@ -133,30 +133,6 @@
       }
     }
   }
-
-  @media (min-width: $breakpoint-xl) {
-    .xl\:crayons-#{$name} {
-      &--l {
-        width: var(--su-7);
-        height: var(--su-7);
-      }
-
-      &--xl {
-        width: var(--su-8);
-        height: var(--su-8);
-      }
-
-      &--2xl {
-        width: var(--su-9);
-        height: var(--su-9);
-      }
-
-      &--3xl {
-        width: var(--su-10);
-        height: var(--su-10);
-      }
-    }
-  }
 }
 
 @include avatar-logo('avatar', 100%, var(--card-color-tertiary));
