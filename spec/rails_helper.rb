@@ -192,11 +192,11 @@ RSpec.configure do |config|
                         user_views_article_four_hours_in_day
                         user_views_article_nine_days_in_two_week
                         user_views_article_twelve_hours_in_five_days] } },
-     "exclude" => { "bots" => true },
-     "cache" => true,
-     "cookies" => false }
+               "exclude" => { "bots" => true },
+               "cache" => true,
+               "cookies" => false }
     allow(FieldTest).to receive(:config).and_return(config)
-end
+  end
 
   config.after do
     Timecop.return
