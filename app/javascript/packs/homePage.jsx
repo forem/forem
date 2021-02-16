@@ -48,8 +48,12 @@ function renderTagsFollowed(user = userData()) {
 function renderSidebar() {
   const sidebarContainer = document.getElementById('sidebar-wrapper-right');
 
-  // If the screen's width is less than 1024px we don't need this extra data.
-  if (sidebarContainer && window.location.pathname === '/') {
+  // If the screen's width is less than 640 we don't need this extra data.
+  if (
+    sidebarContainer &&
+    screen.width >= 640 &&
+    window.location.pathname === '/'
+  ) {
     window
       .fetch('/sidebars/home')
       .then((res) => res.text())
