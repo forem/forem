@@ -1823,11 +1823,9 @@ export class Chat extends Component {
     return (
       <div
         id="message"
-        className={
-          showDeleteModal
-            ? 'message__delete__modal crayons-modal crayons-modal--s absolute'
-            : 'message__delete__modal message__delete__modal__hide crayons-modal crayons-modal--s absolute'
-        }
+        className={`message__delete__modal crayons-modal crayons-modal--s ${
+          !showDeleteModal && 'hidden'
+        }`}
         aria-hidden={showDeleteModal}
         aria-label="delete confirmation"
         role="dialog"
