@@ -1,10 +1,16 @@
 #!/bin/bash
 printf "Doing a quick bundle check to make sure gems are all up to date.\n\n"
 bundle check # ensure gems are up to date
-yarn install # ensure npm packages are up to date
 
 if [ $? -eq 1 ]; then
    echo "Unable to launch end to end tests. Ensure that all your gems are installed and up to date."
+   exit;
+fi
+
+yarn install # ensure npm packages are up to date
+
+if [ $? -eq 1 ]; then
+   echo "Unable to launch end to end tests. An error occurred while running yarn install."
    exit;
 fi
 

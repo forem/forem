@@ -36,7 +36,7 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS
+  self.ignored_columns = PROFILE_COLUMNS + %w[language_settings]
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -284,6 +284,14 @@ class User < ApplicationRecord
 
   def tag_line
     summary
+  end
+
+  def twitter_url
+    "https://twitter.com/#{twitter_username}" if twitter_username.present?
+  end
+
+  def github_url
+    "https://github.com/#{github_username}" if github_username.present?
   end
 
   def set_remember_fields

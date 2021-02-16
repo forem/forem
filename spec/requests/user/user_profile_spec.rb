@@ -91,6 +91,40 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).not_to include "author-payment-pointer"
     end
 
+    it "renders sidebar profile field elements in sidebar" do
+      create(:profile_field, label: "whoaaaa", display_area: "left_sidebar")
+      get "/#{user.username}"
+      # Ensure this comes after the start of the sidebar element
+      expect(response.body.split("Whoaaaa").first).to include "crayons-layout__sidebar-left"
+    end
+
+    it "does not render settings_only on page" do
+      create(:profile_field, label: "whoaaaa", display_area: "settings_only")
+      get "/#{user.username}"
+      expect(response.body).not_to include "Whoaaaa"
+    end
+
+    it "does not render special display header elements naively" do
+      user.location = "hawaii"
+      user.save
+      get "/#{user.username}"
+      # Does not include the word, but does include the SVG
+      expect(response.body).not_to include "<p>Location</p>"
+      expect(response.body).to include user.location
+      expect(response.body).to include "M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1112.728 0zM12 13a2 2 0 100-4 2 2 0"
+    end
+
+    it "does not render special display social link elements naively" do
+      user.instagram_url = "https://instagram.com/whoa"
+      user.save
+      get "/#{user.username}"
+      # Does not include the word, but does include the SVG
+      expect(response.body).not_to include "<p>Instagram"
+      expect(response.body).to include "Instagram logo</title>"
+      expect(response.body).to include user.instagram_url
+      expect(response.body).to include "M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254"
+    end
+
     context "when organization" do
       it "renders organization page if org" do
         get organization.path

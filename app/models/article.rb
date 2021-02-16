@@ -10,6 +10,8 @@ class Article < ApplicationRecord
   SEARCH_CLASS = Search::FeedContent
   DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
 
+  self.ignored_columns = %w[language]
+
   acts_as_taggable_on :tags
   resourcify
 

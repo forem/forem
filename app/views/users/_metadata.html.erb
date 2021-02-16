@@ -1,63 +1,31 @@
-<% if FeatureFlag.enabled?(:profile_admin) %>
-  <% if (header_fields = @profile.ui_attributes_for(area: :header)).present? %>
-    <div class="profile-header__bottom fs-base">
-      <% header_fields.each do |title, value| %>
-        <div class="crayons-definition">
-          <strong class="crayons-definition__title">
-            <%= sanitized_sidebar title.titleize %>
-          </strong>
-          <p class="crayons-definition__value">
-            <%= sanitized_sidebar value %>
-          </p>
-        </div>
-      <% end %>
-      <%# As we migrate to more generalized profiles, we don't want to break DEV %>
-      <% if SiteConfig.dev_to? %>
-        <% if @user.employment_title.present? %>
-          <div class="crayons-definition">
-            <strong class="crayons-definition__title">Work</strong>
-            <p class="crayons-definition__value">
-              <%= @user.employment_title %>
-              <% if @user.employer_name.present? %>
-                <span class="opacity-50"> at </span>
-                <% if @user.employer_url.present? %>
-                  <a href="<%= @user.employer_url %>" class="crayons-link crayons-link--brand" target="_blank" rel="noopener"><%= @user.employer_name %></a>
-                <% else %>
-                  <%= @user.employer_name %>
-                <% end %>
-              <% end %>
-            </p>
-          </div>
-        <% end %>
-      <% end %>
-    </div>
-  <% end %>
-<% else %>
-  <% if @user.employment_title.present? || @user.education.present? %>
-    <div class="profile-header__bottom fs-base">
-      <% if @user.education.present? %>
-        <div class="crayons-definition">
-          <strong class="crayons-definition__title">Education</strong>
-          <p class="crayons-definition__value"><%= @user.education %></p>
-        </div>
-      <% end %>
-
-      <% if @user.employment_title.present? %>
-        <div class="crayons-definition">
-          <strong class="crayons-definition__title">Work</strong>
-          <p class="crayons-definition__value">
-            <%= @user.employment_title %>
-            <% if @user.employer_name.present? %>
-              <span class="opacity-50"> at </span>
-              <% if @user.employer_url.present? %>
-                <a href="<%= @user.employer_url %>" class="crayons-link crayons-link--brand" target="_blank" rel="noopener"><%= @user.employer_name %></a>
-              <% else %>
-                <%= @user.employer_name %>
-              <% end %>
+<% if (header_fields = @profile.ui_attributes_for(area: :header)).present? %>
+  <div class="profile-header__bottom fs-base">
+    <% header_fields.each do |title, value| %>
+      <% next if Profile.special_attributes.include?(title) %>
+      <div class="crayons-definition">
+        <strong class="crayons-definition__title">
+          <%= sanitized_sidebar title.titleize %>
+        </strong>
+        <p class="crayons-definition__value">
+          <%= sanitized_sidebar value %>
+        </p>
+      </div>
+    <% end %>
+    <% if @user.employment_title.present? %>
+      <div class="crayons-definition">
+        <strong class="crayons-definition__title">Work</strong>
+        <p class="crayons-definition__value">
+          <%= @user.employment_title %>
+          <% if @user.employer_name.present? %>
+            <span class="opacity-50"> at </span>
+            <% if @user.employer_url.present? %>
+              <a href="<%= @user.employer_url %>" class="crayons-link crayons-link--brand" target="_blank" rel="noopener"><%= @user.employer_name %></a>
+            <% else %>
+              <%= @user.employer_name %>
             <% end %>
-          </p>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
+          <% end %>
+        </p>
+      </div>
+    <% end %>
+  </div>
 <% end %>
