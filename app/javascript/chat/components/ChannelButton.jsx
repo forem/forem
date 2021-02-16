@@ -50,8 +50,8 @@ export function ChannelButton(props) {
       key={channel.id}
       className={
         discoverableChannel
-          ? 'chatchanneltab chatchanneltab--inactive crayons-btn--ghost'
-          : `chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator} crayons-btn--ghost`
+          ? 'chatchanneltab chatchanneltab--inactive crayons-btn--ghost align-left'
+          : `chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator} crayons-btn--ghost align-left`
       }
       onClick={discoverableChannel ? triggerActiveContent : handleSwitchChannel}
       data-content="sidecar-channel-request"
