@@ -36,7 +36,7 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS + %w[language_settings]
+  self.ignored_columns = PROFILE_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
