@@ -196,7 +196,7 @@ export class ProfileForm extends Component {
             currentSlideIndex={currentSlideIndex}
           />
           {error && (
-            <div role="alert" class="crayons-notice crayons-notice--danger">
+            <div role="alert" class="crayons-notice crayons-notice--danger m-2">
               An error occurred: {errorMessage}
             </div>
           )}
