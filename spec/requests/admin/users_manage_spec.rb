@@ -164,6 +164,53 @@ RSpec.describe "Admin::Users", type: :request do
       put "/admin/users/#{user.id}", params: { user: { remove_credits: "3" } }
       expect(user.credits.size).to eq(2)
     end
+
+    it "removes non-admin roles from non-super_admin users", :aggregate_failures do
+      user.add_role(:trusted)
+
+      expect do
+        delete "/admin/users/#{user.id}", params: { user_id: user.id, role: :trusted }
+      end.to change(user.roles, :count).by(-1)
+
+      expect(user.has_role?(:trusted)).to be false
+      expect(request.flash["success"]).to include("successfully removed from the user!")
+    end
+
+    it "removes the correct resource_admin_role from non-super_admin users", :aggregate_failures do
+      user.add_role(:single_resource_admin, Comment)
+      user.add_role(:single_resource_admin, Broadcast)
+
+      expect do
+        delete "/admin/users/#{user.id}",
+               params: { user_id: user.id, role: :single_resource_admin, resource_type: Comment }
+      end.to change(user.roles, :count).by(-1)
+
+      expect(user.has_role?(:single_resource_admin, Comment)).to be false
+      expect(user.has_role?(:single_resource_admin, Broadcast)).to be true
+      expect(request.flash["success"]).to include("successfully removed from the user!")
+    end
+
+    it "does not allow super_admin roles to be removed", :aggregate_failures do
+      user.add_role(:super_admin)
+
+      expect do
+        delete "/admin/users/#{user.id}", params: { user_id: user.id, role: :super_admin }
+      end.not_to change(user.roles, :count)
+
+      expect(user.has_role?(:super_admin)).to be true
+      expect(request.flash["danger"]).to include("cannot be removed.")
+    end
+
+    it "does not allow a admins to remove a role from themselves", :aggregate_failures do
+      super_admin.add_role(:trusted)
+
+      expect do
+        delete "/admin/users/#{super_admin.id}", params: { user_id: super_admin.id, role: :trusted }
+      end.not_to change(super_admin.roles, :count)
+
+      expect(super_admin.has_role?(:trusted)).to be true
+      expect(request.flash["danger"]).to include("cannot remove roles")
+    end
   end
 
   context "when deleting user" do
