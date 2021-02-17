@@ -16,6 +16,7 @@ import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButto
 import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
 import { ItemListTags } from './components/ItemListTags';
 import { Button } from '@crayons';
+import { request } from '@utilities/http';
 
 const STATUS_VIEW_VALID = 'valid,confirmed';
 const STATUS_VIEW_ARCHIVED = 'archived';
@@ -88,14 +89,9 @@ export class ReadingList extends Component {
     event.preventDefault();
 
     const { statusView, items, totalCount } = this.state;
-    window.fetch(`/reading_list_items/${item.id}`, {
+    request(`/reading_list_items/${item.id}`, {
       method: 'PUT',
-      headers: {
-        'X-CSRF-Token': window.csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ current_status: statusView }),
-      credentials: 'same-origin',
+      body: { current_status: statusView },
     });
 
     const t = this;
