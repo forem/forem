@@ -14,25 +14,20 @@ function getPageEntries() {
   });
 }
 
-let menus = [...document.getElementsByClassName('js-hamburger-trigger')];
-let moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
+function initializeNav() {
+  const { currentPage } = document.getElementById('page-content').dataset;
+  const menus = [...document.getElementsByClassName('js-hamburger-trigger')];
+  const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
+  const memberMenu = document.getElementById('crayons-header__menu');
+  const menuNavButton = document.getElementById('member-menu-button');
+
+  setCurrentPageIconLink(currentPage, getPageEntries());
+  initializeMobileMenu(menus, moreMenus);
+  initializeTouchDevice(memberMenu, menuNavButton);
+}
 
 getInstantClick().then((spa) => {
-  spa.on('change', () => {
-    let menus = [...document.getElementsByClassName('js-hamburger-trigger')];
-    let moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
-    const { currentPage } = document.getElementById('page-content').dataset;
-
-    setCurrentPageIconLink(currentPage, getPageEntries());
-    initializeMobileMenu(menus, moreMenus);
-    initializeTouchDevice(memberMenu, menuNavButton);
-  });
+  spa.on('change', initializeNav);
 });
 
-const { currentPage } = document.getElementById('page-content').dataset;
-const memberMenu = document.getElementById('crayons-header__menu');
-const menuNavButton = document.getElementById('member-menu-button');
-
-setCurrentPageIconLink(currentPage, getPageEntries());
-initializeMobileMenu(menus, moreMenus);
-initializeTouchDevice(memberMenu, menuNavButton);
+initializeNav();
