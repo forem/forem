@@ -25,7 +25,7 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cloudinary", "~> 1.18" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.7" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.45.0" # ddtrace is Datadog’s tracing client for Ruby.
-gem "devise", "~> 4.7" # Flexible authentication solution for Rails
+gem "devise", github: "heartcombo/devise", branch: "master" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.3" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.4" # Oauth 2 provider

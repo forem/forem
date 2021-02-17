@@ -7,6 +7,18 @@ GIT
       activerecord (>= 4.0)
 
 GIT
+  remote: https://github.com/heartcombo/devise.git
+  revision: 0cd72a56f984a7ff089246f87a8b259120545edd
+  branch: master
+  specs:
+    devise (4.7.3)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 4.1.0)
+      responders
+      warden (~> 1.2.3)
+
+GIT
   remote: https://github.com/thepracticaldev/erb-lint.git
   revision: 05596ea189ee00fb2ad3ea10a41489e2dba345c4
   branch: jess/remove-version-pinning
@@ -227,12 +239,6 @@ GEM
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     device_detector (1.0.5)
-    devise (4.7.3)
-      bcrypt (~> 3.0)
-      orm_adapter (~> 0.1)
-      railties (>= 4.1.0)
-      responders
-      warden (~> 1.2.3)
     devise_invitable (2.0.3)
       actionmailer (>= 5.0)
       devise (>= 4.6)
@@ -871,7 +877,7 @@ DEPENDENCIES
   database_cleaner-active_record (~> 2.0.0)
   ddtrace (~> 0.45.0)
   derailed_benchmarks (~> 2.0)
-  devise (~> 4.7)
+  devise!
   devise_invitable (~> 2.0.3)
   dogstatsd-ruby (~> 4.8)
   doorkeeper (~> 5.4)
