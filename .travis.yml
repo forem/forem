@@ -1,6 +1,6 @@
 branches:
   only:
-    - master
+    - rhymes/fastly-http-purge
 language: ruby
 cache:
   directories:
@@ -91,21 +91,7 @@ jobs:
         - bin/e2e-ci
 
     - stage: Deploy
-      name: Deploy DEV
-      if: type != pull_request
-      install: skip
-      script: skip
-      after_script: skip
-      deploy:
-        provider: heroku
-        api_key: '$HEROKU_AUTH_TOKEN'
-        app:
-          master: practicaldev
-      after_deploy:
-        - bash scripts/after_deploy.sh
-    - stage: Deploy
       name: Deploy BenHalpern
-      if: type != pull_request
       install: skip
       script: skip
       after_script: skip
