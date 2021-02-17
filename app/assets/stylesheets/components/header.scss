@@ -124,22 +124,23 @@
 
 .skip-content-link {
   position: absolute;
-  top: 0;
   left: 50%;
-  transform: translate(-50%, -100px);
   background: var(--body-color);
   color: var(--body-color-inverted);
   z-index: var(--z-popover);
   padding: var(--su-4);
   pointer-events: none;
-  opacity: 0;
   border-radius: var(--radius);
-  outline: 0;
+  height: var(--header-height);
+  transform: translate(-50%, -100%);
+  transition: transform var(--transition-props);
 
-  &:focus {
+  &:focus,
+  &:focus-within {
     pointer-events: auto;
-    opacity: 1;
-    transform: translate(-50%, var(--header-height) / 2);
+    transform: translate(-50%, 0);
+    outline: none;
+    border: 2px solid var(--header-button-focus-color);
   }
 }
 
