@@ -132,8 +132,8 @@
   pointer-events: none;
   border-radius: var(--radius);
   height: var(--header-height);
-  transform: translate(-50%, calc(-1 * var(--header-height)));
-  transition: transform 0.1s ease-in;
+  transform: translate(-50%, -100%);
+  transition: transform var(--transition-props);
 
   &:focus,
   &:focus-within {
@@ -141,12 +141,6 @@
     transform: translate(-50%, 0);
     outline: none;
     border: 2px solid var(--header-button-focus-color);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    &.skip-content-link {
-      transition-duration: 0;
-    }
   }
 }
 
