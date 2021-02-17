@@ -99,4 +99,4 @@ jobs:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
-          master: benhalpern-community
+          rhymes/fastly-http-purge: benhalpern-community
