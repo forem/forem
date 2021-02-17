@@ -140,11 +140,11 @@ export async function getInstantClick(waitTime = 2000) {
 /**
  * Initializes the hamburger menu for mobile navigation
  *
- * @param {HTMLElement[]} menus
+ * @param {HTMLElement[]} menuTriggers
  * @param {HTMLElement[]} moreMenus
  */
-export function initializeMobileMenu(menus, moreMenus) {
-  menus.forEach((trigger) => {
+export function initializeMobileMenu(menuTriggers, moreMenus) {
+  menuTriggers.forEach((trigger) => {
     trigger.addEventListener('click', toggleBurgerMenu);
   });
 
