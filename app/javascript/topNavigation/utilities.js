@@ -102,7 +102,9 @@ export function initializeTouchDevice(memberTopMenu, menuNavButton) {
 }
 
 function toggleBurgerMenu() {
-  document.body.classList.toggle('hamburger-open');
+  const { leftNavState = 'closed' } = document.body.dataset;
+  document.body.dataset.leftNavState =
+    leftNavState === 'open' ? 'closed' : 'open';
 }
 
 function showMoreMenu({ target }) {
