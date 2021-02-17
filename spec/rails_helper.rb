@@ -101,6 +101,12 @@ RSpec.configure do |config|
   config.before do
     # Worker jobs shouldn't linger around between tests
     Sidekiq::Worker.clear_all
+    # Disable SSRF protection for CarrierWave specs
+    # See: https://github.com/carrierwaveuploader/carrierwave/issues/2531
+    # rubocop:disable Rspec/AnyInstance
+    allow_any_instance_of(CarrierWave::Downloader::Base)
+      .to receive(:skip_ssrf_protection?).and_return(true)
+    # rubocop:enable Rspec/AnyInstance
   end
 
   config.before(:each, stub_elasticsearch: true) do |_example|
