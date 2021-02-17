@@ -166,20 +166,19 @@ class UsersController < ApplicationController
 
   def onboarding_update
     authorize User
-    current_user.saw_onboarding = true
+    user_params = { saw_onboarding: true }
 
     if params[:user]
+      if params.dig(:user, :username).blank?
+        return render_update_response(false, "Username cannot be blank")
+      end
+
       sanitize_user_params
-      current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS))
-      current_user.profile_updated_at = Time.current
+      user_params.merge!(params[:user].permit(ALLOWED_USER_PARAMS))
     end
 
-    if current_user.invalid?
-      render_update_response(false, current_user.errors_as_sentence)
-    elsif current_user.save && params[:profile]
-      update_result = Profiles::Update.call(current_user, { profile: profile_params })
-      render_update_response(update_result&.success?)
-    end
+    update_result = Profiles::Update.call(current_user, { user: user_params, profile: profile_params })
+    render_update_response(update_result.success?, update_result.errors_as_sentence)
   end
 
   def onboarding_checkbox_update
@@ -378,7 +377,7 @@ class UsersController < ApplicationController
   end
 
   def profile_params
-    params[:profile].permit(Profile.attributes)
+    params[:profile] ? params[:profile].permit(Profile.attributes) : nil
   end
 
   def password_params

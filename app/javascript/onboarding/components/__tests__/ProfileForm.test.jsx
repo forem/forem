@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, fireEvent } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { axe } from 'jest-axe';
@@ -155,44 +155,9 @@ describe('ProfileForm', () => {
     expect(queryByTestId('back-button')).toBeDefined();
   });
 
-  it('should update the text on the forward button', async () => {
-    const {
-      getByLabelText,
-      getByText,
-      queryByText,
-      findByLabelText,
-      findByText,
-    } = renderProfileForm();
+  it('should not be skippable', async () => {
+    const { getByText } = renderProfileForm();
 
-    // input the bio
-    const field2 = await findByLabelText(/^Name/i);
-    expect(field2.value).toEqual('');
-    getByText(/skip for now/i);
-    expect(queryByText(/continue/i)).toBeNull();
-
-    fireEvent.keyDown(field2, {
-      key: 'Enter',
-      keyCode: 13,
-      which: 13,
-      target: { value: 'Hong Kong Fuey' },
-    });
-    expect(field2.value).toEqual('Hong Kong Fuey');
-
-    // input the location too (since we're using firevent and it doesn't call the focus events
-    // that will trigger the continue )
-    let field3 = getByLabelText(/Website URL/i);
-    expect(field3.value).toEqual('');
-    fireEvent.keyDown(field3, {
-      key: 'Enter',
-      keyCode: 13,
-      which: 13,
-      target: { value: 'www.website.com' },
-    });
-
-    field3 = await findByLabelText(/Website URL/i);
-
-    expect(field3.value).toEqual('www.website.com');
-
-    findByText(/continue/i);
+    expect(getByText(/continue/i)).toBeInTheDocument();
   });
 });

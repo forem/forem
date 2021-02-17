@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import { userData, getContentOfToken, updateOnboarding } from '../utilities';
+import { userData, updateOnboarding } from '../utilities';
 
 import { Navigation } from './Navigation';
 import { ColorPicker } from './ProfileForm/ColorPicker';
@@ -22,8 +22,8 @@ export class ProfileForm extends Component {
     this.user = userData();
     this.state = {
       groups: [],
-      formValues: {},
-      canSkip: true,
+      formValues: { username: this.user.username },
+      canSkip: false,
       last_onboarding_page: 'v2: personal info form',
     };
   }
@@ -47,34 +47,34 @@ export class ProfileForm extends Component {
     }
   }
 
-  onSubmit() {
-    const csrfToken = getContentOfToken('csrf-token');
+  async onSubmit() {
     const { formValues, last_onboarding_page } = this.state;
     const { username, ...newFormValues } = formValues;
-    fetch('/onboarding_update', {
-      method: 'PATCH',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user: { last_onboarding_page, username },
-        profile: { ...newFormValues },
-      }),
-      credentials: 'same-origin',
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw response;
-        }
-        const { next } = this.props;
-        next();
-      })
-      .catch((error) => {
-        error.json().then((data) => {
-          this.setState({ error: true, errorMessage: data.errors.toString() });
-        });
+    try {
+      const response = await request('/onboarding_update', {
+        method: 'PATCH',
+        body: {
+          user: { last_onboarding_page, username },
+          profile: { ...newFormValues },
+        },
       });
+      if (!response.ok) {
+        throw response;
+      }
+      const { next } = this.props;
+      next();
+    } catch (error) {
+      Honeybadger.notify(error.statusText);
+      let errorMessage = 'Unable to continue, please try again.';
+      if (error.status === 422) {
+        // parse validation error messages from UsersController#onboarding_update
+        const errorData = await error.json();
+        errorMessage = errorData.errors;
+        this.setState({ error: true, errorMessage });
+      } else {
+        this.setState({ error: true, errorMessage });
+      }
+    }
   }
 
   handleFieldChange(e) {
@@ -225,19 +225,18 @@ export class ProfileForm extends Component {
               </figure>
               <h3>{name}</h3>
             </div>
-            <div>
-              <div className="onboarding-profile-sub-section">
-                <TextInput
-                  field={{
-                    attribute_name: 'username',
-                    label: 'Username',
-                    default_value: username,
-                  }}
-                  onFieldChange={this.handleFieldChange}
-                />
-              </div>
-              {sections}
+            <div className="onboarding-profile-sub-section">
+              <TextInput
+                field={{
+                  attribute_name: 'username',
+                  label: 'Username',
+                  default_value: username,
+                  required: true,
+                }}
+                onFieldChange={this.handleFieldChange}
+              />
             </div>
+            {sections}
           </div>
         </div>
       </div>

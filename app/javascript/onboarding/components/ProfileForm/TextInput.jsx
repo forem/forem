@@ -25,14 +25,15 @@ import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
 
 export function TextInput(props) {
-  const { onFieldChange } = props;
+  const { onFieldChange, field } = props;
   const {
     attribute_name,
     placeholder_text,
     default_value,
     description,
     label,
-  } = props.field;
+    required,
+  } = field;
 
   return (
     <FormField>
@@ -46,6 +47,7 @@ export function TextInput(props) {
         name={attribute_name}
         id={attribute_name}
         onChange={onFieldChange}
+        required={required ? 'required' : ''}
       />
       {description && <p class="crayons-field__description">{description}</p>}
     </FormField>
