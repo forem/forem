@@ -365,20 +365,8 @@
   }
 }
 
-.button-text {
-  display: inline-block;
-}
-
-.button-text-wide-logo {
-  display: none;
-}
-
 @media screen and (max-width: 376px) {
   .button-text {
-    display: none !important;
-  }
-
-  .button-text-wide-logo {
-    display: inline-block !important;
+    font-size: smaller;
   }
 }
