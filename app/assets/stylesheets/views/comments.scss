@@ -34,8 +34,14 @@
 
   .comment-textarea {
     resize: vertical;
-    padding: 0.5em;
     max-height: 40vh;
+
+    // We need to overwrite default styles for `.crayons-textfield--ghost`
+    &,
+    &:hover,
+    &:focus {
+      padding: 0.5em;
+    }
   }
 
   &__toolbar,
