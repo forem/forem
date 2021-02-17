@@ -88,7 +88,7 @@ export class ReadingList extends Component {
   toggleArchiveStatus = (event, item) => {
     event.preventDefault();
 
-    const { statusView, items, totalCount } = this.state;
+    const { statusView, items } = this.state;
     request(`/reading_list_items/${item.id}`, {
       method: 'PUT',
       body: { current_status: statusView },
