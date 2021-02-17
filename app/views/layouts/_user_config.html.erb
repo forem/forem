@@ -1,13 +1,9 @@
 <script>
   try {
-    var bodyClass = localStorage.getItem('config_body_class');
+    const bodyClass = localStorage.getItem('config_body_class');
     const userString = localStorage.getItem('current_user');
 
     if (bodyClass) {
-      if (document.body.classList.contains('hamburger-open')) {
-        bodyClass += ' hamburger-open';
-      }
-
       document.body.className = bodyClass;
 
       if (bodyClass.includes('night-theme')) {
