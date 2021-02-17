@@ -110,7 +110,7 @@ Rails.application.routes.draw do
       resources :tags, only: %i[index new create update edit] do
         resource :moderator, only: %i[create destroy], module: "tags"
       end
-      resources :users, only: %i[index show edit update] do
+      resources :users, only: %i[index show edit update destroy] do
         resources :email_messages, only: :show
 
         member do
