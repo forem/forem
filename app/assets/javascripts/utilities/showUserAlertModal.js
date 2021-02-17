@@ -75,7 +75,7 @@ const getModalHtml = (
             </svg>
           </button>
       </div>
-      <div class="crayons-modal__box__body pt-0 flex gap-2">
+      <div class="crayons-modal__box__body pt-0 flex">
         <div class="w-75">
           <h2>
             ${title}
