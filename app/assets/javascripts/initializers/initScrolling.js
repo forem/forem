@@ -372,29 +372,33 @@ function fetchNextPageIfNearBottom() {
   var indexWhich = indexContainer.dataset.which;
 
   var fetchCallback;
-  var scrollableElemId;
+  var scrollableElem;
+
   if (indexWhich === 'podcast-episodes') {
-    scrollableElemId = 'articles-list';
+    scrollableElem = document.getElementById('articles-list');
     fetchCallback = function fetch() {
       fetchNextPodcastPage(indexContainer);
     };
   } else if (indexWhich === 'videos') {
-    scrollableElemId = 'video-collection';
+    scrollableElem = document.getElementById('video-collection');
     fetchCallback = function fetch() {
       fetchNextVideoPage(indexContainer);
     };
   } else if (indexWhich === 'followers') {
-    scrollableElemId = 'user-dashboard';
+    scrollableElem = document.getElementById('user-dashboard');
     fetchCallback = function fetch() {
       fetchNextFollowersPage(indexContainer);
     };
   } else if (indexWhich === 'following') {
-    scrollableElemId = 'user-dashboard';
+    scrollableElem = document.getElementById('user-dashboard');
     fetchCallback = function fetch() {
       fetchNextFollowingPage(indexContainer);
     };
   } else {
-    scrollableElemId = 'articles-list';
+    scrollableElem =
+      document.getElementById('main-content') ||
+      document.getElementById('articles-list');
+
     fetchCallback = function fetch() {
       paginate(
         indexContainer.dataset.tag,
@@ -403,8 +407,6 @@ function fetchNextPageIfNearBottom() {
       );
     };
   }
-
-  var scrollableElem = document.getElementById(scrollableElemId);
 
   if (
     !done &&

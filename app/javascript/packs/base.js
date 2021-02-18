@@ -16,13 +16,17 @@ function getPageEntries() {
 
 function initializeNav() {
   const { currentPage } = document.getElementById('page-content').dataset;
-  const menus = [...document.getElementsByClassName('js-hamburger-trigger')];
+  const menuTriggers = [
+    ...document.querySelectorAll(
+      '.js-hamburger-trigger, .hamburger a:not(.js-nav-more-trigger)',
+    ),
+  ];
   const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
   const memberMenu = document.getElementById('crayons-header__menu');
   const menuNavButton = document.getElementById('member-menu-button');
-
+const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
   setCurrentPageIconLink(currentPage, getPageEntries());
-  initializeMobileMenu(menus, moreMenus);
+  initializeMobileMenu(menuTriggers, moreMenus);
   initializeTouchDevice(memberMenu, menuNavButton);
 }
 

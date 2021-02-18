@@ -102,7 +102,7 @@ RSpec.describe Mailchimp::Bot, type: :service do
 
     it "sends proper information" do
       user.update(email_community_mod_newsletter: true)
-      user.add_role :trusted
+      user.add_role(:trusted)
       SiteConfig.mailchimp_community_moderators_id = "something"
       described_class.new(user).manage_community_moderator_list
       expect(my_gibbon_client).to have_received(:upsert)

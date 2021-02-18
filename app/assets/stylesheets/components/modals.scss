@@ -46,8 +46,8 @@
   }
 
   &__box {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto 1fr;
     max-width: var(--modal-max-width);
     background: var(--card-bg);
     color: var(--card-color);
@@ -83,11 +83,11 @@
     }
 
     &__body {
-      flex: 1 auto;
       font-size: var(--modal-body-font-size);
       padding: var(--modal-body-padding);
       max-height: 100%;
       overflow-y: auto;
+      grid-auto-rows: min-content;
     }
   }
 

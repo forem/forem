@@ -120,8 +120,6 @@ class SiteConfig < RailsSettings::Base
     format: { with: VALID_URL, message: URL_MESSAGE }
   }
 
-  field :left_navbar_svg_icon, type: :string, default: STACK_ICON
-  field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
   field :enable_video_upload, type: :boolean, default: false
 
   # Mascot
@@ -162,13 +160,7 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Onboarding
-  field :onboarding_logo_image, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
   field :onboarding_background_image, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
-  field :onboarding_taskcard_image, type: :string, validates: {
     format: { with: VALID_URL, message: URL_MESSAGE }
   }
   field :suggested_tags, type: :array, default: %w[]

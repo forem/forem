@@ -3,7 +3,7 @@ import { ListNavigation } from '../shared/components/useListNavigation';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const root = document.getElementById('articles-list');
+  const root = document.getElementById('main-content');
 
   render(
     <Fragment>

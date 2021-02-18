@@ -10,17 +10,4 @@
       <li><%= @user.badge_achievements_count %> badges</li>
     </ul>
   </div>
-  <div class="col-sm-6">
-    <h2>Current Roles</h2>
-    <p>(view full history in notes below)</p>
-    <ul>
-      <% @user.roles.each do |role| %>
-        <% if role.name == "banned" %>
-          <li>suspended</li>
-        <% else %>
-          <li><%= role.name %> <em><%= role.resource_name.to_s %></em></li>
-        <% end %>
-      <% end %>
-    </ul>
-  </div>
 </div>

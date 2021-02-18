@@ -1,8 +1,21 @@
 /* global activateRunkitTags */
 
 function getAndShowPreview(preview, editor) {
+  function attachTwitterTimelineScript() {
+    const script = document.createElement('script');
+    script.src = 'https://platform.twitter.com/widgets.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }
+
   function successCb(body) {
     preview.innerHTML = body.processed_html; // eslint-disable-line no-param-reassign
+    if (body.processed_html.includes('twitter-timeline')) {
+      attachTwitterTimelineScript();
+    }
     activateRunkitTags();
   }
 
