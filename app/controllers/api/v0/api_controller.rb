@@ -36,10 +36,10 @@ module Api
       def authenticate!
         if doorkeeper_token
           @user = User.find(doorkeeper_token.resource_owner_id)
-          return error_unauthorized unless @user
+          return error_unauthorized unless @user && !@user.banned
         elsif request.headers["api-key"]
           @user = authenticate_with_api_key
-          return error_unauthorized unless @user
+          return error_unauthorized unless @user && !@user.banned
         elsif current_user
           @user = current_user
         else
