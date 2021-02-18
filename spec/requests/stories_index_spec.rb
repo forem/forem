@@ -161,24 +161,6 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be > 1
     end
 
-    context "when user signed in" do
-      before do
-        sign_in user
-      end
-
-      it "has necessary asset reconciliation code" do
-        # Ensure code elements are available for fixing assets if necessary.
-        # app/views/layouts/_asset_reconciliation.html.erb
-        # Basic regression test to ensure we don't accidentally remove something we should not.
-        get "/"
-        expect(response.body).to include('<meta name="head-cached-at"')
-        expect(response.body).to include('<meta name="page-cached-at"')
-        expect(response.body).to include('"main-crayons-stylesheet"')
-        expect(response.body).to include('"main-minimal-stylesheet"')
-        expect(response.body).to include("if (headCacheCheck && headCrayons &&")
-      end
-    end
-
     context "with campaign hero" do
       let!(:hero_html) do
         create(
