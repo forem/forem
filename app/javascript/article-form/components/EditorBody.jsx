@@ -76,7 +76,7 @@ export const EditorBody = ({
       <Toolbar version={version} />
 
       <Textarea
-        className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field"
+        className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l"
         id="article_body_markdown"
         aria-label="Post Content"
         placeholder="Write your post content here..."
