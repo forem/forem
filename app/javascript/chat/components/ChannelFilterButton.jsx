@@ -22,7 +22,7 @@ import { Button } from '@crayons';
  * />
  */
 
-export const ChannelFilterButton = ({ type, name, active, onClick }) => {
+export function ChannelFilterButton({ type, name, active, onClick }) {
   return (
     <Button
       data-channel-type={type}
@@ -35,7 +35,7 @@ export const ChannelFilterButton = ({ type, name, active, onClick }) => {
       {name}
     </Button>
   );
-};
+}
 
 ChannelFilterButton.propTypes = {
   type: PropTypes.string.isRequired,

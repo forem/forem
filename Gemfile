@@ -39,7 +39,7 @@ gem "flipper", "~> 0.20.3" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.20.3" # Store Flipper flags in ActiveRecord
 gem "flipper-ui", "~> 0.20.3"
 gem "fog-aws", "~> 3.8" # 'fog' gem to support Amazon Web Services
-gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
+gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "honeybadger", "~> 4.7" # Used for tracking application errors
@@ -146,7 +146,7 @@ group :development, :test do
   gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.9", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.10", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.9", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.9", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.2", require: false # Code style checking for RSpec files
