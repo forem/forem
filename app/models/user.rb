@@ -286,6 +286,14 @@ class User < ApplicationRecord
     summary
   end
 
+  def twitter_url
+    "https://twitter.com/#{twitter_username}" if twitter_username.present?
+  end
+
+  def github_url
+    "https://github.com/#{github_username}" if github_username.present?
+  end
+
   def set_remember_fields
     self.remember_token ||= self.class.remember_token if respond_to?(:remember_token)
     self.remember_created_at ||= Time.now.utc

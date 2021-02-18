@@ -26,7 +26,7 @@ describe ArticleImageUploader, type: :uploader do
   end
 
   it "stores files in the correct directory" do
-    expect(uploader.store_dir).to eq("i/")
+    expect(uploader.store_dir).to eq("uploads/articles/")
   end
 
   describe "filename" do

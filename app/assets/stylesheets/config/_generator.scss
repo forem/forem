@@ -296,119 +296,35 @@
   (
     'top',
     'top',
-    (
-      'auto': auto,
-      'unset': unset,
-      '0': 0,
-      '1': var(--su-1),
-      '2': var(--su-2),
-      '3': var(--su-3),
-      '4': var(--su-4),
-      '100': 100%
-    ),
-    (),
+    ('auto': auto, 'unset': unset, '0': 0, '100': 100%),
+    $spacing-units,
     true
   ),
-  (
-    '-top',
-    'top',
-    (
-      '1': calc(var(--su-1) * -1),
-      '2': calc(var(--su-2) * -1),
-      '3': calc(var(--su-3) * -1),
-      '4': calc(var(--su-4) * -1),
-      '100': -100%
-    ),
-    (),
-    true
-  ),
+  ('-top', 'top', ('100': -100%), $negative-spacing-units, true),
   (
     'bottom',
     'bottom',
-    (
-      'auto': auto,
-      'unset': unset,
-      '0': 0,
-      '1': var(--su-1),
-      '2': var(--su-2),
-      '3': var(--su-3),
-      '4': var(--su-4),
-      '100': 100%
-    ),
-    (),
+    ('auto': auto, 'unset': unset, '0': 0, '100': 100%),
+    $spacing-units,
     true
   ),
-  (
-    '-bottom',
-    'bottom',
-    (
-      '1': calc(var(--su-1) * -1),
-      '2': calc(var(--su-2) * -1),
-      '3': calc(var(--su-3) * -1),
-      '4': calc(var(--su-4) * -1),
-      '100': -100%
-    ),
-    (),
-    true
-  ),
+  ('-bottom', 'bottom', ('100': -100%), $negative-spacing-units, true),
   (
     'left',
     'left',
-    (
-      'auto': auto,
-      'unset': unset,
-      '0': 0,
-      '1': var(--su-1),
-      '2': var(--su-2),
-      '3': var(--su-3),
-      '4': var(--su-4),
-      '100': 100%
-    ),
-    (),
+    ('auto': auto, 'unset': unset, '0': 0, '100': 100%),
+    $spacing-units,
     true
   ),
-  (
-    '-left',
-    'left',
-    (
-      '1': calc(var(--su-1) * -1),
-      '2': calc(var(--su-2) * -1),
-      '3': calc(var(--su-3) * -1),
-      '4': calc(var(--su-4) * -1),
-      '100': -100%
-    ),
-    (),
-    true
-  ),
+  ('-left', 'left', ('100': -100%), $negative-spacing-units, true),
   (
     'right',
     'right',
-    (
-      'auto': auto,
-      'unset': unset,
-      '0': 0,
-      '1': var(--su-1),
-      '2': var(--su-2),
-      '3': var(--su-3),
-      '4': var(--su-4),
-      '100': 100%
-    ),
-    (),
+    ('auto': auto, 'unset': unset, '0': 0, '100': 100%),
+    $spacing-units,
     true
   ),
-  (
-    '-right',
-    'right',
-    (
-      '1': calc(var(--su-1) * -1),
-      '2': calc(var(--su-2) * -1),
-      '3': calc(var(--su-3) * -1),
-      '4': calc(var(--su-4) * -1),
-      '100': -100%
-    ),
-    (),
-    true
-  ),
+  ('-right', 'right', ('100': -100%), $negative-spacing-units, true),
   ('z', 'z-index', $z-indexes, (), false),
   (
     'overflow',

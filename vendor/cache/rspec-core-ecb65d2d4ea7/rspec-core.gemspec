@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib".freeze]
   s.authors = ["Steven Baker".freeze, "David Chelimsky".freeze, "Chad Humphries".freeze, "Myron Marston".freeze]
   s.bindir = "exe".freeze
-  s.date = "2021-02-05"
+  s.date = "2021-02-18"
   s.description = "BDD for Ruby. RSpec runner and example groups.".freeze
   s.email = "rspec@googlegroups.com".freeze
   s.executables = ["rspec".freeze]
