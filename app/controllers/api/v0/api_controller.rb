@@ -42,6 +42,7 @@ module Api
           return error_unauthorized unless @user && !@user.banned
         elsif current_user
           @user = current_user
+          return error_unauthorized if @user.banned
         else
           error_unauthorized
         end
