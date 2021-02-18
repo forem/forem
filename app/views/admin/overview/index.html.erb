@@ -1,0 +1,63 @@
+<h2 class="crayons-title mb-3">Overview</h2>
+<div class="grid s:grid-cols-3 s:grid-rows-4 gap-3">
+  <article style="grid-column: span 2; grid-row: span 4;">
+    <section class="crayons-card mb-3">
+      <div class="crayons-card__body">
+        <h3 class="crayons-subtitle-2">Welcome Checklist</h3>
+        <p class="crayons-field__description mb-3">Here are things we recommend you do now that you're on Forem</p>
+        <ol>
+          <li>Setup and configure your Forem under <a href="/admin/config">Config</a></li>
+          <li><a href="/admin/invitations">Invite people</a> to join your Forem</li>
+          <li><a href="/admin/tags">Update your Forem tags</a></li>
+          <li><a href="/admin/pages">Create pages</a> and <a href="/admin/navigation_links">sort them in the navigation sidebar</a></li>
+          <li>Read the <a href="https://forem.gitbook.io/forem-admin-guide/quick-start-guide">Quick Start Guide</a></li>
+          <li><a href="/admin/welcome">Set up a Welcome Thread</a></li>
+          <li>Browse the <a href="https://forem.gitbook.io/forem-admin-guide">Forem Admin Guide</a></li>
+          <li>Join the private <a href="https://creators.forem.com">Creators Forem</a>! (email <a href="mailto:support@forem.com">support@forem.com</a> if you need an invite)</li>
+        </ol>
+        <p class="m-3 align-center"><a href="">Visit Forem Admin Guide</a></p>
+      </div>
+    </section>
+    <h2 class="crayons-subtitle-1 mb-3">Resources</h2>
+    <article class="grid s:grid-cols-2 gap-3">
+      <section class="crayons-card">
+        <div class="crayons-card__header">
+          <h3 class="crayons-subtitle-2">Forem Admin Guide</h3>
+        </div>
+        <div class="crayons-card__body flex flex-wrap" style="min-height: 150px;">
+          <p>This guide gives you the best practices on how you can manage and grow your community on Forem.</p>
+          <a role="button" href="https://forem.gitbook.io/forem-admin-guide" class="crayons-btn mt-1 w-100 self-end">Visit Guide</a>
+        </div>
+      </section>
+      <section class="crayons-card">
+        <div class="crayons-card__header">
+          <h3 class="crayons-subtitle-2">Forem Creators Community</h3>
+        </div>
+        <div class="crayons-card__body flex flex-wrap" style="min-height: 150px;">
+          <p>Meet other creators using Forem so that you can share tips with each other.</p>
+          <a role="button" href="https://creators.forem.com" class="crayons-btn mt-1 w-100 self-end">Join Community</a>
+        </div>
+      </section>
+      <section class="crayons-card">
+        <div class="crayons-card__header">
+          <h3 class="crayons-subtitle-2">Forem Community Experts</h3>
+        </div>
+        <div class="crayons-card__body flex flex-wrap" style="min-height: 150px;">
+          <p>Get one-on-one time with our expert who can give you an extra hand.</p>
+          <a role="button" href="" class="crayons-btn mt-1 w-100 self-end">Book Time</a>
+        </div>
+      </section>
+    </article>
+  </article>
+  <article class="crayons-card">
+    <div class="crayons-card__header">
+      <h3 class="crayons-subtitle-2">Deployment</h3>
+    </div>
+    <div class="crayons-card__body">
+      <p class="crayons-field__description">Last Deployed</p>
+      <p><%= ForemInstance.deployed_at %></p>
+      <p class="crayons-field__description">Latest Commit ID</p>
+      <p><%= ForemInstance.latest_commit_id || "Not Available" %></p>
+    </div>
+  </article>
+</div>
