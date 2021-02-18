@@ -21,10 +21,10 @@ function initializeNav() {
       '.js-hamburger-trigger, .hamburger a:not(.js-nav-more-trigger)',
     ),
   ];
-  const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
   const memberMenu = document.getElementById('crayons-header__menu');
   const menuNavButton = document.getElementById('member-menu-button');
-const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
+  const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
+
   setCurrentPageIconLink(currentPage, getPageEntries());
   initializeMobileMenu(menuTriggers, moreMenus);
   initializeTouchDevice(memberMenu, menuNavButton);
