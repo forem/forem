@@ -44,24 +44,33 @@ module Admin
       role = params[:role].to_sym
       resource_type = params[:resource_type]
 
-      if role == :super_admin
-        flash[:danger] = "Super Admin roles cannot be removed."
-        redirect_to "/admin/users/#{params[:id]}/edit" and return
-      end
-
       @user = User.find(params[:user_id])
 
-      if @user.id == current_user.id
-        flash[:danger] = "Admins cannot remove roles from themselves."
-      elsif role == :single_resource_admin && !resource_type.safe_constantize.nil?
-        User.find(params[:user_id]).remove_role(role, resource_type.safe_constantize)
-        flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
-      elsif User.find(params[:user_id]).remove_role(role)
+      response = Users::RemoveRole.call(@user, role, resource_type)
+      if response.success?
         flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
       else
-        flash[:danger] = "There was an issue removing this role. Please try again."
+        flash[:danger] = response.error_mesage
       end
       redirect_to edit_admin_user_path(@user.id)
+      # if role == :super_admin # def super_admin? private method
+      #   flash[:danger] = "Super Admin roles cannot be removed."
+      #   redirect_to "/admin/users/#{params[:id]}/edit" and return # remove this redirect!
+      # end
+
+      # @user = User.find(params[:user_id])
+
+      # if @user.id == current_user.id
+      #   flash[:danger] = "Admins cannot remove roles from themselves."
+      # elsif role == :single_resource_admin && !resource_type.safe_constantize.nil?
+      # User.find(params[:user_id]).remove_role(role, resource_type.safe_constantize)
+      #   flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
+      # elsif User.find(params[:user_id]).remove_role(role) # remove_role(role, nil)
+      #   flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
+      # else
+      #   flash[:danger] = "There was an issue removing this role. Please try again."
+      # end
+      # redirect_to edit_admin_user_path(@user.id)
     end
 
     def user_status
