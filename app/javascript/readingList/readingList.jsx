@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { debounceAction } from '../utilities/debounceAction';
 
 import {
   defaultState,
@@ -15,6 +14,7 @@ import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
 import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
 import { ItemListTags } from './components/ItemListTags';
+import { debounceAction } from '@utilities/debounceAction';
 import { Button } from '@crayons';
 import { request } from '@utilities/http';
 
@@ -88,24 +88,22 @@ export class ReadingList extends Component {
   toggleArchiveStatus = (event, item) => {
     event.preventDefault();
 
-    const { statusView, items, totalCount } = this.state;
+    const { statusView, items } = this.state;
     request(`/reading_list_items/${item.id}`, {
       method: 'PUT',
       body: { current_status: statusView },
     });
 
-    const t = this;
     const newItems = items;
     newItems.splice(newItems.indexOf(item), 1);
-    t.setState({
+    this.setState({
       archiving: true,
       items: newItems,
-      totalCount: totalCount - 1,
     });
 
     // hide the snackbar in a few moments
     setTimeout(() => {
-      t.setState({ archiving: false });
+      this.setState({ archiving: false });
     }, 1000);
   };
 
@@ -159,8 +157,7 @@ export class ReadingList extends Component {
 
   render() {
     const {
-      items,
-      totalCount,
+      items = [],
       availableTags,
       selectedTags,
       showLoadMoreButton,
@@ -189,11 +186,11 @@ export class ReadingList extends Component {
       ''
     );
     return (
-      <div>
+      <section>
         <header className="crayons-layout flex justify-between items-center pb-0">
           <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
-            {` (${totalCount > 0 ? totalCount : '0'})`}
+            {` (${items.length})`}
           </h1>
 
           <div class="flex items-center">
@@ -236,7 +233,7 @@ export class ReadingList extends Component {
 
           {snackBar}
         </div>
-      </div>
+      </section>
     );
   }
 }
