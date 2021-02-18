@@ -9,7 +9,7 @@ GIT
 GIT
   remote: https://github.com/heartcombo/devise.git
   revision: 0cd72a56f984a7ff089246f87a8b259120545edd
-  branch: master
+  ref: 0cd72a5
   specs:
     devise (4.7.3)
       bcrypt (~> 3.0)
@@ -393,7 +393,7 @@ GEM
     httpclient (2.8.3)
     hypershield (0.2.2)
       activerecord (>= 5)
-    i18n (1.8.8)
+    i18n (1.8.9)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     image_processing (1.12.1)
