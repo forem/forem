@@ -1,4 +1,4 @@
-function showLoginModal(context) {
+function showLoginModal() {
   window.showModal({
     title: 'Log in to continue',
     contentSelector: '#global-signup-modal',

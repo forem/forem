@@ -63,7 +63,7 @@ function reactToArticle(articleId, reaction) {
   var userStatus = document.body.getAttribute('data-user-status');
   sendHapticMessage('medium');
   if (userStatus === 'logged-out') {
-    showLoginModal('react-to-article');
+    showLoginModal();
     return;
   }
   toggleReaction();

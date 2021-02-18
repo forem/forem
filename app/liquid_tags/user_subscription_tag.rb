@@ -176,7 +176,7 @@ class UserSubscriptionTag < LiquidTagBase
       if (signInBtn) {
         signInBtn.addEventListener('click', function(e) {
           if (typeof showLoginModal !== 'undefined') {
-            showLoginModal('user_subscription');
+            showLoginModal();
           }
         });
       }

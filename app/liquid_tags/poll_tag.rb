@@ -93,7 +93,7 @@ class PollTag < LiquidTagBase
         for (i = 0; i < els.length; i += 1) {
           els[i].onclick = function(e) {
             if (typeof showLoginModal !== "undefined") {
-              showLoginModal('poll');
+              showLoginModal();
             }
           }
         }
