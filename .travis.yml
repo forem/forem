@@ -87,7 +87,6 @@ jobs:
         - bundle exec bundle-audit check --update --ignore CVE-2015-9284
         - bin/test-console-check
         - yarn build-storybook
-        - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
         - bin/e2e-ci
 
     - stage: Deploy
