@@ -30,6 +30,12 @@ Bundler/OrderedGems:
 
 #################### Layout ###########################
 
+Gemspec/DateAssignment:
+  Description: 'Checks that `date =` is not used in gemspec file, it is set automatically when the gem is packaged.'
+  Enabled: true
+
+#################### Layout ###########################
+
 Lint/AmbiguousAssignment:
   Description: 'Checks for mistyped shorthand assignments.'
   Enabled: true
@@ -463,6 +469,10 @@ Style/HashAsLastArrayItem:
   StyleGuide: '#hash-literal-as-last-array-item'
   Enabled: true
   EnforcedStyle: braces
+
+Style/HashConversion:
+  Description: 'Avoid Hash[] in favor of ary.to_h or literal hashes.'
+  Enabled: true
 
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
