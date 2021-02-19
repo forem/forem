@@ -28,7 +28,7 @@ gem "ddtrace", "~> 0.45.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.3" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
-gem "doorkeeper", "~> 5.4" # Oauth 2 provider
+gem "doorkeeper", "~> 5.5" # Oauth 2 provider
 gem "elasticsearch", "~> 7.11" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
