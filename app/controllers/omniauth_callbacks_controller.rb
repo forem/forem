@@ -95,6 +95,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
+  rescue ::Authentication::Errors::PreviouslyBanned => e
+    flash[:global_notice] = e.message
+    redirect_to root_path
   rescue StandardError => e
     Honeybadger.notify(e)
 

@@ -34,17 +34,8 @@ module Api
       end
 
       def authenticate!
-        if doorkeeper_token
-          @user = User.find(doorkeeper_token.resource_owner_id)
-          return error_unauthorized unless @user
-        elsif request.headers["api-key"]
-          @user = authenticate_with_api_key
-          return error_unauthorized unless @user
-        elsif current_user
-          @user = current_user
-        else
-          error_unauthorized
-        end
+        @user = authenticated_user
+        return error_unauthorized unless @user && !@user.banned
       end
 
       def authorize_super_admin
@@ -76,6 +67,16 @@ module Api
         # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
         secure_secret = ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key)
         return api_secret.user if secure_secret
+      end
+
+      def authenticated_user
+        if doorkeeper_token
+          User.find(doorkeeper_token.resource_owner_id)
+        elsif request.headers["api-key"]
+          authenticate_with_api_key
+        elsif current_user
+          current_user
+        end
       end
     end
   end

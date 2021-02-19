@@ -1,13 +1,13 @@
-<div class="hidden-audio" id="hidden-audio-<%= @episode.slug %>" style="display:none" data-episode="<%= @episode.slug %>" data-podcast="<%= @podcast.slug %>">
-  <audio id="audio" data-episode="<%= @episode.slug %>" data-podcast="<%= @podcast.slug %>">
-    <source src="<%= @episode.media_url %>" type="audio/mpeg">
+<div class="hidden-audio" id="hidden-audio-<%= episode.slug %>" style="display:none" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
+  <audio id="audio" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
+    <source src="<%= episode.media_url %>" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
   <div id="progressBar" class="audio-player-display">
-    <a href="/<%= @podcast.slug %>/<%= @episode.slug %>">
-      <%= optimized_image_tag(@episode.image_url || @podcast.image_url,
+    <a href="/<%= podcast.slug %>/<%= episode.slug %>">
+      <%= optimized_image_tag(episode.image_url || podcast.image_url,
                               optimizer_options: { crop: "fill", width: 420, height: 420 },
-                              image_options: { id: "episode-profile-image", alt: @episode.title }) %>
+                              image_options: { id: "episode-profile-image", alt: episode.title }) %>
       <img id="animated-bars" src="<%= asset_path("animated-bars.gif") %>" alt="animated volume bars">
     </a>
     <span id="barPlayPause">

@@ -50,9 +50,9 @@ describe('top navigation utilitities', () => {
 
       initializeMobileMenu([navButton], []);
 
-      expect(document.body).not.toHaveClass('hamburger-open');
+      expect(document.body.dataset.leftNavState).toBeUndefined();
       navButton.click();
-      expect(document.body).toHaveClass('hamburger-open');
+      expect(document.body.dataset.leftNavState).toEqual('open');
     });
 
     it('should close the hamburger menu', () => {
@@ -65,12 +65,12 @@ describe('top navigation utilitities', () => {
 
       initializeMobileMenu([navButton], []);
 
-      expect(document.body).not.toHaveClass('hamburger-open');
+      expect(document.body.dataset.leftNavState).toBeUndefined();
       navButton.click();
-      expect(document.body).toHaveClass('hamburger-open');
+      expect(document.body.dataset.leftNavState).toEqual('open');
 
       navButton.click();
-      expect(document.body).not.toHaveClass('hamburger-open');
+      expect(document.body.dataset.leftNavState).toEqual('closed');
     });
 
     it('should open the more menu', () => {
