@@ -1,10 +1,10 @@
 require "rails_helper"
 require Rails.root.join(
-  "lib/data_update_scripts/20210218041143_backfill_usernames.rb",
+  "lib/data_update_scripts/20210219031051_backfill_usernames_without_validations.rb",
 )
 
-describe DataUpdateScripts::BackfillUsernames do
-  it " " do
+describe DataUpdateScripts::BackfillUsernamesWithoutValidations do
+  it "backfills usernames" do
     user = create(:user)
     user.update_column(:username, nil)
     expect do
