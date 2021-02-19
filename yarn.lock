@@ -18040,10 +18040,10 @@ supports-hyperlinks@^2.0.0:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
 
-svgo@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/svgo/-/svgo-2.0.1.tgz#6db16e349d9bef9264a1325c402c9629f0eecd12"
-  integrity sha512-v5Tzv3WPayd0XVnpmnRHqWqSHAabQFFjiTuA/KrBAOwMIyn6odBk1bCmygJJbw/6IJLwGznSvaNDKqNQeWJOtA==
+svgo@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/svgo/-/svgo-2.0.2.tgz#26a23ff4aca66a0fb3c765b7cc8500db4603700b"
+  integrity sha512-MKNtsLk1gVZ2V+/1SbbLhO9dGnkF5rkbbnHDcmtTYsOMuBlnCkQySBWJc3hF2WMZH850Spq17Ucih9bOml+Jlg==
   dependencies:
     chalk "^4.1.0"
     commander "^7.1.0"
