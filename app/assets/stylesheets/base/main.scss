@@ -44,6 +44,10 @@ body {
     padding-top: var(--header-height);
     min-height: calc(100vh - var(--header-height));
   }
+
+  #main-content {
+    scroll-margin-top: var(--header-height);
+  }
 }
 
 .wrapper {
