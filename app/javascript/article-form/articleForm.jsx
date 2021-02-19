@@ -265,10 +265,10 @@ export class ArticleForm extends Component {
     });
   };
 
-  toggleModal = (showModal) => {
+  showModal = (isOpen) => {
     if (this.state.edited) {
       this.setState({
-        showModal,
+        showModal: isOpen,
       });
     } else {
       // If the user has not edited the body we send them home
@@ -320,7 +320,7 @@ export class ArticleForm extends Component {
           organizationId={organizationId}
           onToggle={this.handleOrgIdChange}
           siteLogo={siteLogo}
-          displayModal={() => this.toggleModal(true)}
+          displayModal={() => this.showModal(true)}
         />
 
         {previewShowing ? (
@@ -356,7 +356,7 @@ export class ArticleForm extends Component {
           <Modal
             size="s"
             title="You have unsaved changes"
-            onClose={() => this.toggleModal(false)}
+            onClose={() => this.showModal(false)}
           >
             <p>
               You've made changes to your post. Do you want to navigate to leave
@@ -366,10 +366,7 @@ export class ArticleForm extends Component {
               <Button className="mr-2" variant="danger" url="/" tagName="a">
                 Yes, leave the page
               </Button>
-              <Button
-                variant="secondary"
-                onClick={() => this.toggleModal(false)}
-              >
+              <Button variant="secondary" onClick={() => this.showModal(false)}>
                 No, keep editing
               </Button>
             </div>

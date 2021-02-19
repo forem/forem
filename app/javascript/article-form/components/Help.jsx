@@ -21,7 +21,7 @@ export class Help extends Component {
     };
   }
 
-  toggleModal = (sectionShowing, isOpen) => () => {
+  showModal = (sectionShowing, isOpen) => () => {
     this.setState({ [sectionShowing]: isOpen });
   };
 
@@ -83,7 +83,7 @@ export class Help extends Component {
         You are currently using the basic markdown editor that uses{' '}
         <a
           href="#frontmatter"
-          onClick={this.toggleModal('frontmatterShowing', true)}
+          onClick={this.showModal('frontmatterShowing', true)}
         >
           Jekyll front matter
         </a>
@@ -122,7 +122,7 @@ export class Help extends Component {
             Use{' '}
             <a
               href="#markdown"
-              onClick={this.toggleModal('markdownShowing', true)}
+              onClick={this.showModal('markdownShowing', true)}
             >
               Markdown
             </a>{' '}
@@ -222,7 +222,7 @@ export class Help extends Component {
           </li>
           <li>
             You can use{' '}
-            <a href="#liquid" onClick={this.toggleModal('liquidShowing', true)}>
+            <a href="#liquid" onClick={this.showModal('liquidShowing', true)}>
               Liquid tags
             </a>{' '}
             to add rich content such as Tweets, YouTube videos, etc.
@@ -278,21 +278,21 @@ export class Help extends Component {
 
         {liquidShowing &&
           this.renderModal(
-            this.toggleModal('liquidShowing', false),
+            this.showModal('liquidShowing', false),
             '🌊 Liquid Tags',
             liquidHelpHTML,
           )}
 
         {markdownShowing &&
           this.renderModal(
-            this.toggleModal('markdownShowing', false),
+            this.showModal('markdownShowing', false),
             '✍️ Markdown',
             markdownHelpHTML,
           )}
 
         {frontmatterShowing &&
           this.renderModal(
-            this.toggleModal('frontmatterShowing', false),
+            this.showModal('frontmatterShowing', false),
             'Jekyll Front Matter',
             frontmatterHelpHTML,
           )}
