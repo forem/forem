@@ -115,7 +115,7 @@ RSpec.configure do |config|
     allow(Search::Client).to receive(:index).and_return({ "_source" => {} })
   end
 
-  config.around(:each, :flaky) do
+  config.around(:each, :flaky) do |ex|
     ex.run_with_retry retry: 3
   end
 
