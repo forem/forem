@@ -71,7 +71,7 @@
       "prettier --write --prose-wrap always"
     ],
     "*.svg": [
-      "svgo --disable=removeViewBox --pretty"
+      "svgo --pretty"
     ]
   },
   "repository": {
