@@ -63,6 +63,9 @@ export function initializeTouchDevice(memberTopMenu, menuNavButton) {
         menuNavButton.addEventListener('click', (_event) => {
           toggleHeaderMenu(memberTopMenu, menuNavButton);
         });
+        window.InstantClick.on('change', () => {
+          memberTopMenu.classList.remove('showing');
+        });
       } else {
         crayonsHeaderMenuClassList.add('desktop');
         menuNavButton.addEventListener('click', (_event) => {
