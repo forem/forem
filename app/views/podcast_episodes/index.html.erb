@@ -19,7 +19,7 @@
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
   <%= render "podcast_episodes/sidebar" %>
-  <div class="articles-list" id="articles-list">
+  <main class="articles-list" id="main-content">
     <div class="substories" id="substories">
       <% if @podcast_episodes %>
         <%= render "podcast_episodes/episodes_feed" %>
