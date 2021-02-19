@@ -10092,10 +10092,10 @@ husky@^4.3.8:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-ibm-openapi-validator@0.34.1:
-  version "0.34.1"
-  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.34.1.tgz#755ef7a6809baabd6b5e88faedd0ef91d6c33c02"
-  integrity sha512-CLIdze4NVxug8gNyVeUwWymLXFQRHkVMyAEXMK1x0EEYaFpAlXT5bMBhzH4hVgq9JYTSAOIQkULmge6nzAfeBw==
+ibm-openapi-validator@0.34.2:
+  version "0.34.2"
+  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.34.2.tgz#ab8c1f4f6bde375a6a9394b9b6caa44a0708ae55"
+  integrity sha512-2DyW1+hbkfwuFhsr+Je/9phyOP2Wd1tuyBwopNLyQct5IU4sJtIdSZR4vjxc2X5d5Rkn78k98VzYzmp2GhOCww==
   dependencies:
     "@stoplight/spectral" "^5.5.0"
     chalk "^4.1.0"
@@ -16813,10 +16813,10 @@ sass-loader@^8.0.2:
     schema-utils "^2.6.1"
     semver "^6.3.0"
 
-sass@1.32.7:
-  version "1.32.7"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.7.tgz#632a9df2b85dc4b346977fcaf2d5e6f2b7039fd8"
-  integrity sha512-C8Z4bjqGWnsYa11o8hpKAuoyFdRhrSHcYjCr+XAWVPSIQqC8mp2f5Dx4em0dKYehPzg5XSekmCjqJnEZbIls9A==
+sass@1.32.8:
+  version "1.32.8"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.8.tgz#f16a9abd8dc530add8834e506878a2808c037bdc"
+  integrity sha512-Sl6mIeGpzjIUZqvKnKETfMf0iDAswD9TNlv13A7aAF3XZlRPMq4VvJWBC2N2DXbp94MQVdNSFG6LfF/iOXrPHQ==
   dependencies:
     chokidar ">=2.0.0 <4.0.0"
 
