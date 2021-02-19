@@ -98,7 +98,7 @@ export class ArticleForm extends Component {
       siteLogo,
       helpFor: null,
       helpPosition: null,
-      showModal: false,
+      isModalOpen: false,
       ...previousContentState,
     };
   }
@@ -241,7 +241,7 @@ export class ArticleForm extends Component {
       edited: false,
       helpFor: null,
       helpPosition: 0,
-      showModal: false,
+      isModalOpen: false,
     });
   };
 
@@ -265,10 +265,10 @@ export class ArticleForm extends Component {
     });
   };
 
-  showModal = (isOpen) => {
+  showModal = (isModalOpen) => {
     if (this.state.edited) {
       this.setState({
-        showModal: isOpen,
+        isModalOpen,
       });
     } else {
       // If the user has not edited the body we send them home
@@ -352,7 +352,7 @@ export class ArticleForm extends Component {
           helpPosition={helpPosition}
           version={version}
         />
-        {this.state.showModal && (
+        {this.state.isModalOpen && (
           <Modal
             size="s"
             title="You have unsaved changes"
