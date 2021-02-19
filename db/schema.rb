@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_16_023520) do
+ActiveRecord::Schema.define(version: 2021_02_19_043102) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1275,7 +1275,7 @@ ActiveRecord::Schema.define(version: 2021_02_16_023520) do
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
-    t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
+    t.datetime "last_moderation_notification", default: "2016-12-31 17:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
     t.datetime "last_reacted_at"
@@ -1355,9 +1355,9 @@ ActiveRecord::Schema.define(version: 2021_02_16_023520) do
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.string "email"
+    t.string "email", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id"
+    t.integer "user_id", null: false
     t.string "username"
   end
 
