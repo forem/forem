@@ -83,6 +83,11 @@
               <%= story.comments_count %>
               <span class="hidden s:inline">&nbsp;<%= story.comments_count == 1 ? "comment" : "comments" %></span>
             </a>
+          <% else %>
+            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left">
+              <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Comments") %>
+              <span class="hidden s:inline">Add&nbsp;Comment</span>
+            </a>
           <% end %>
         </div>
         <div class="crayons-story__save">
