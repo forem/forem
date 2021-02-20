@@ -108,7 +108,7 @@ Pro as there were issues integrating the cypress-rails gem with the
 [knapsack-pro-cypress](https://github.com/KnapsackPro/knapsack-pro-cypress) npm
 package.
 
-## Custom Cypress commands
+## Cypress Custom commands
 
 [Cypress custom commands](https://docs.cypress.io/api/cypress-api/custom-commands.html)
 allow you do extend the functionality of the E2E testing framework. In the case
