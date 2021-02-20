@@ -1,26 +1,6 @@
 // Shared behavior between the reading list and history pages
 import { fetchSearch } from '../utilities/search';
 
-// Provides the initial state for the component
-export function defaultState(options) {
-  const state = {
-    query: '',
-    index: null,
-
-    page: 0,
-    hitsPerPage: 80,
-
-    items: [],
-    itemsLoaded: false,
-
-    availableTags: [],
-    selectedTags: [],
-
-    showLoadMoreButton: false,
-  };
-  return Object.assign({}, state, options);
-}
-
 // Starts the search when the user types in the search box
 export function onSearchBoxType(event) {
   const component = this;
@@ -36,19 +16,18 @@ export function onSearchBoxType(event) {
   });
 }
 
-export function toggleTag(event, tag) {
-  event.preventDefault();
-
+export function toggleTag(event) {
+  const { value: selectedTag } = event.target;
   const component = this;
-  const { query, selectedTags, statusView } = component.state;
-  const newTags = selectedTags;
-  if (newTags.indexOf(tag) === -1) {
-    newTags.push(tag);
-  } else {
-    newTags.splice(newTags.indexOf(tag), 1);
-  }
-  component.setState({ selectedTags: newTags, page: 0, items: [] });
-  component.search(query, { tags: newTags, statusView, appendItems: false });
+
+  const { query, statusView } = component.state;
+
+  component.setState({ selectedTag, page: 0, items: [] });
+  component.search(query, {
+    tags: [selectedTag],
+    statusView,
+    appendItems: false,
+  });
 }
 
 export function clearSelectedTags(event) {
@@ -56,9 +35,8 @@ export function clearSelectedTags(event) {
 
   const component = this;
   const { query, statusView } = component.state;
-  const newTags = [];
-  component.setState({ selectedTags: newTags, page: 0, items: [] });
-  component.search(query, { tags: newTags, statusView, appendItems: false });
+  component.setState({ selectedTag: '', page: 0, items: [] });
+  component.search(query, { tags: [], statusView, appendItems: false });
 }
 
 // Perform the initial search
