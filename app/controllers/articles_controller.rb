@@ -129,6 +129,8 @@ class ArticlesController < ApplicationController
 
     not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
 
+    # @article = Articles::Updater.call(current_user, @article.id, article_params)
+
     edited_at_date = if @article.user == current_user && @article.published
                        Time.current
                      else
