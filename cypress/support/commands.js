@@ -192,10 +192,6 @@ Cypress.Commands.add(
         edited: true,
         updatedAt: null,
         version: editorVersion,
-        siteLogo:
-          '<a href="/" class="site-logo" aria-label="DEV(local) Community Home">\n    <span class="truncate-at-2">\n      DEV(local) Community\n    </span>\n</a>\n',
-        helpFor: 'article_body_markdown',
-        helpPosition: 411,
       },
     });
   },
