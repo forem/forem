@@ -18,25 +18,29 @@ module Articles
       article = load_article
       was_published = article.published
 
-      # the client can change the series the article belongs to
-      if article_params.key?(:series)
-        series = article_params[:series]
-        article.collection = Collection.find_series(series, article.user) if series.present?
-        article.collection = nil if series.nil?
-      end
+      # # the client can change the series the article belongs to
+      # if article_params.key?(:series)
+      #   series = article_params[:series]
+      #   article.collection = Collection.find_series(series, article.user) if series.present?
+      #   article.collection = nil if series.nil?
+      # end
 
-      # convert tags from array to a string
-      tags = article_params[:tags]
-      if tags.present?
-        article_params[:tag_list] = tags.join(", ")
-        article_params.delete(:tags)
-      end
+      # # convert tags from array to a string
+      # tags = article_params[:tags]
+      # if tags.present?
+      #   article_params[:tag_list] = tags.join(", ")
+      #   article_params.delete(:tags)
+      # end
 
       # updated edited time only if already published and not edited by an admin
       update_edited_at = article.user == user && article.published
       article_params[:edited_at] = Time.current if update_edited_at
 
-      article.update!(article_params)
+      attrs = Articles::Attributes.new(article_params, user).for_update
+
+      # article.update!(article_params)
+      article.update!(attrs)
+
       user.rate_limiter.track_limit_by_action(:article_update)
 
       # send notification only the first time an article is published

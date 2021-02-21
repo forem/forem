@@ -1,6 +1,6 @@
 module Articles
   class Attributes
-    ATTRIBUTES = %i[archived body_markdown canonical_url description main_image organization_id published series title tags video_thumbnail_url].freeze
+    ATTRIBUTES = %i[archived body_markdown canonical_url description edited_at main_image organization_id published series title tags video_thumbnail_url user_id].freeze
 
     attr_reader :attributes, :article_user
 
@@ -11,19 +11,13 @@ module Articles
 
     # если nil, то не должно назначаться!
     def for_update
-      {
-        title: attributes[:title],
-        body_markdown: attributes[:body_markdown],
-        published: attributes[:published],
-        description: attributes[:description],
-        main_image: attributes[:main_image],
-        canonical_url: attributes[:canonical_url],
-        video_thumbnail_url: attributes[:video_thumbnail_url],
-        collection: collection,
-        tag_list: tag_list,
-        archived: attributes[:archived],
-        organization_id: attributes[:organization_id]
-      }
+      hash = {}
+      %i[archived body_markdown canonical_url description edited_at main_image organization_id published title video_thumbnail_url].each do |attr|
+        hash[attr] = attributes[attr] if attributes[attr]
+      end
+      hash[:collection] = collection
+      hash[:tag_list] = tag_list
+      hash
     end
 
     def collection

@@ -37,6 +37,11 @@ RSpec.describe Articles::Attributes, type: :service do
         expect(no_series_attrs[:series]).to be nil
       end
 
+      it "sets the collection when collection_id is passed" do
+        
+      end
+
+
       # или это не надо, не поняла?
       it "doesn't have the collection when :series was not passed" do
 
