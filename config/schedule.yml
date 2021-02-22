@@ -133,7 +133,7 @@ get_podcast_episodes:
   cron: "5 * * * *"
   class: "Podcasts::EnqueueGetEpisodesWorker"
 update_latest_github_repos:
-  description: "Fetches the latest info about stored GitHub repositories (runs daily at 16:30 UTC)"
-  cron: "30 16 * * *"
+  description: "Fetches the latest info about stored GitHub repositories (runs hourly, 45 min after the hour)"
+  cron: "45 * * * *"
   class: "GithubRepos::UpdateLatestWorker"
 
