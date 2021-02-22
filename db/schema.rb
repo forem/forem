@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_01_055410) do
+ActiveRecord::Schema.define(version: 2021_02_22_102602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1364,10 +1364,49 @@ ActiveRecord::Schema.define(version: 2021_02_01_055410) do
     t.string "username"
   end
 
+  create_table "users_notification_settings", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "email_badge_notifications", default: true
+    t.boolean "email_comment_notifications", default: true
+    t.boolean "email_community_mod_newsletter", default: false
+    t.boolean "email_connect_messages", default: true
+    t.boolean "email_digest_periodic", default: false, null: false
+    t.boolean "email_follower_notifications", default: true
+    t.boolean "email_membership_newsletter", default: false
+    t.boolean "email_mention_notifications", default: true
+    t.boolean "email_newsletter", default: false
+    t.boolean "email_tag_mod_newsletter", default: false
+    t.boolean "email_unread_notifications", default: true
+    t.boolean "mobile_comment_notifications", default: true
+    t.boolean "mod_roundrobin_notifications", default: true
+    t.boolean "reaction_notifications", default: true
+    t.datetime "updated_at", precision: 6, null: false
+    t.boolean "welcome_notifications", default: true, null: false
+  end
+
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "role_id"
     t.bigint "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+  end
+
+  create_table "users_settings", force: :cascade do |t|
+    t.string "config_font", default: "default"
+    t.string "config_navbar", default: "default", null: false
+    t.string "config_theme", default: "default"
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "display_announcements", default: true
+    t.boolean "display_sponsors", default: true
+    t.string "editor_version", default: "v1"
+    t.integer "experience_level"
+    t.boolean "feed_mark_canonical", default: false
+    t.boolean "feed_referential_link", default: true, null: false
+    t.string "feed_url"
+    t.string "inbox_guidelines"
+    t.string "inbox_type", default: "private"
+    t.jsonb "language_settings", default: {}, null: false
+    t.boolean "permit_adjacent_sponsors", default: true
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|
