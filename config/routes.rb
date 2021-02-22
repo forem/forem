@@ -49,9 +49,6 @@ Rails.application.routes.draw do
                                      { rack_protection: { except: %i[authenticity_token form_token json_csrf
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
-
-        resources :data_update_scripts, only: %i[index show]
-        post "/data_update_scripts/:id/force_run", to: "data_update_scripts#force_run"
       end
 
       namespace :users do
@@ -66,6 +63,14 @@ Rails.application.routes.draw do
                                               destroy], path: "listings/categories"
 
       resources :comments, only: [:index]
+      # We do not expose the Data Update Scripts to all Forems by default.
+      constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
+        resources :data_update_scripts, only: %i[index show] do
+          member do
+            post :force_run
+          end
+        end
+      end
       resources :events, only: %i[index create update new edit]
       resources :feedback_messages, only: %i[index show]
       resources :invitations, only: %i[index new create destroy]
@@ -105,7 +110,7 @@ Rails.application.routes.draw do
       resources :tags, only: %i[index new create update edit] do
         resource :moderator, only: %i[create destroy], module: "tags"
       end
-      resources :users, only: %i[index show edit update] do
+      resources :users, only: %i[index show edit update destroy] do
         resources :email_messages, only: :show
 
         member do
@@ -430,7 +435,6 @@ Rails.application.routes.draw do
 
     get "/mod", to: "moderations#index", as: :mod
     get "/mod/:tag", to: "moderations#index"
-    get "/page/crayons", to: "pages#crayons"
 
     post "/fallback_activity_recorder", to: "ga_events#create"
 

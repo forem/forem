@@ -96,8 +96,12 @@ module Authentication
     end
 
     def find_or_create_user!
+      username = provider.user_nickname
+      banned_user = Users::SuspendedUsername.previously_banned?(username)
+      raise ::Authentication::Errors::PreviouslyBanned if banned_user
+
       existing_user = User.where(
-        provider.user_username_field => provider.user_nickname,
+        provider.user_username_field => username,
       ).take
       return existing_user if existing_user
 

@@ -37,9 +37,9 @@ export const adminModal = function ({
             </svg>
           </button>
         </header>
-        <div class="crayons-modal__box__body flex flex-col gap-4">
+        <div class="crayons-modal__box__body grid gap-4">
           ${body}
-          <div class="flex gap-2">
+          <div class="crayons-btn-actions">
             <button
               class="crayons-btn ${leftBtnClasses}"
               data-action="click->config#${leftBtnAction}"

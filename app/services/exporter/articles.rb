@@ -48,7 +48,6 @@ module Exporter
         cached_user_username
         comments_count
         description
-        language
         main_image
         main_image_background_hex_color
         path

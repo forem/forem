@@ -41,8 +41,6 @@ class UsersController < ApplicationController
   def update
     set_current_tab(params["user"]["tab"])
 
-    # preferred_languages is handled manually
-    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
     @user.assign_attributes(permitted_attributes(@user))
 
     if @user.save
@@ -124,7 +122,7 @@ class UsersController < ApplicationController
       Users::DeleteWorker.perform_async(@user.id)
       sign_out @user
       flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
-      redirect_to root_path
+      redirect_to new_user_registration_path
     else
       flash[:settings_notice] = "Please, provide an email to delete your account"
       redirect_to user_settings_path("account")

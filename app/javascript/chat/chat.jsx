@@ -1,9 +1,3 @@
-/*
-  eslint-disable
-  consistent-return, no-unused-vars, react/destructuring-assignment,
-  react/no-access-state-in-setstate, react/button-has-type
-*/
-
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
@@ -23,6 +17,7 @@ import {
   editMessage,
 } from './actions/actions';
 import { CreateChatModal } from './components/CreateChatModal';
+import { ChannelFilterButton } from './components/ChannelFilterButton';
 import {
   sendChannelRequest,
   rejectJoiningRequest,
@@ -124,7 +119,6 @@ export class Chat extends Component {
       channelPaginationNum,
       currentUserId,
       appDomain,
-      messageOffset,
     } = this.state;
 
     this.setupChannels(chatChannels);
@@ -463,7 +457,6 @@ export class Chat extends Component {
     const {
       messages,
       activeChannelId,
-      scrolled,
       chatChannels,
       currentUserId,
       unopenedChannelIds,
@@ -1255,19 +1248,6 @@ export class Chat extends Component {
     this.setState((prevState) => ({ expanded: !prevState.expanded }));
   };
 
-  renderChannelFilterButton = (type, name, active) => (
-    <Button
-      data-channel-type={type}
-      onClick={this.triggerChannelTypeFilter}
-      data-testid={name}
-      className={`chat__channeltypefilterbutton crayons-indicator crayons-indicator--${
-        type === active ? 'accent' : ''
-      }`}
-    >
-      {name}
-    </Button>
-  );
-
   toggleSearchShowing = () => {
     if (!this.state.searchShowing) {
       setTimeout(() => {
@@ -1322,21 +1302,24 @@ export class Chat extends Component {
           {invitesButton}
           {joiningRequestButton}
           <div className="chat__channeltypefilter">
-            {this.renderChannelFilterButton(
-              'all',
-              'all',
-              state.channelTypeFilter,
-            )}
-            {this.renderChannelFilterButton(
-              'direct',
-              'direct',
-              state.channelTypeFilter,
-            )}
-            {this.renderChannelFilterButton(
-              'invite_only',
-              'group',
-              state.channelTypeFilter,
-            )}
+            <ChannelFilterButton
+              type="all"
+              name="all"
+              active={state.channelTypeFilter === 'all'}
+              onClick={this.triggerChannelTypeFilter}
+            />
+            <ChannelFilterButton
+              type="direct"
+              name="direct"
+              active={state.channelTypeFilter === 'direct'}
+              onClick={this.triggerChannelTypeFilter}
+            />
+            <ChannelFilterButton
+              type="invite_only"
+              name="group"
+              active={state.channelTypeFilter === 'invite_only'}
+              onClick={this.triggerChannelTypeFilter}
+            />
             <Button
               className="chat__channelssearchtoggle crayons-btn--ghost-dimmed p-2"
               aria-label="Toggle request manager"
@@ -1540,7 +1523,7 @@ export class Chat extends Component {
     messageArea.classList.remove('opacity-25');
   }
   renderActiveChatChannel = (channelHeader) => {
-    const { state, props } = this;
+    const { state } = this;
     const channelName = state.activeChannel
       ? state.activeChannel.channel_name
       : ' ';
@@ -1840,11 +1823,9 @@ export class Chat extends Component {
     return (
       <div
         id="message"
-        className={
-          showDeleteModal
-            ? 'message__delete__modal crayons-modal crayons-modal--s absolute'
-            : 'message__delete__modal message__delete__modal__hide crayons-modal crayons-modal--s absolute'
-        }
+        className={`message__delete__modal crayons-modal crayons-modal--s ${
+          !showDeleteModal && 'hidden'
+        }`}
         aria-hidden={showDeleteModal}
         aria-label="delete confirmation"
         role="dialog"

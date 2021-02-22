@@ -14,9 +14,9 @@
     </thead>
     <tbody class="crayons-card">
       <% @data_update_scripts.each do |script| %>
-        <tr class="<%= 'alert-danger' if script.status == 'failed' %>" id="data_update_script_<%= script.id %>_row">
+        <tr class="<%= "alert-danger" if script.status == "failed" %>" id="data_update_script_<%= script.id %>_row">
           <td id="data_update_script_<%= script.id %>" class="whitespace-nowrap"><%= script.id %></td>
-          <td class="data_update_script__filename">
+          <td data-filename="<%= script.file_name %>" id="data_update_script_<%= script.id %>_filename" class="data_update_script__filename">
             <%= script.file_name %>
             <% if script.status == "failed" %>
               <button class="ml-2" id="data_update_script_<%= script.id %>_button"

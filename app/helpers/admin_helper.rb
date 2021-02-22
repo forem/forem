@@ -37,6 +37,10 @@ module AdminHelper
 
   PROFILE_ADMIN = { name: "config: profile setup", controller: "profile_fields" }.freeze
 
+  TECH_MENU_ITEMS = [
+    { name: "data_update_scripts", controller: "data_update_scripts" },
+  ].sort_by { |menu_item| menu_item[:name] }
+
   def admin_menu_items
     return MENU_ITEMS unless FeatureFlag.enabled?(:profile_admin)
 
