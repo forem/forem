@@ -1,7 +1,9 @@
 module Api
   module V0
     class OrganizationsController < ApiController
-      before_action :find_organization, only: %i[users listings articles]
+      before_action :find_organization, only: %i[users listings articles stats]
+      before_action :authenticate!, only: %i[stats]
+      before_action -> { doorkeeper_authorize! :public }, only: %w[show users listings articles], if: -> { doorkeeper_token }
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id username name summary twitter_username github_username url
@@ -20,6 +22,14 @@ module Api
         classified_listing_category_id processed_html published
       ].freeze
       private_constant :LISTINGS_FOR_SERIALIZATION
+
+      STATS_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id
+        title description main_image published published_at cached_tag_list
+        slug path canonical_url comments_count public_reactions_count
+        page_views_count crossposted_at body_markdown updated_at
+      ].freeze
+      private_constant :STATS_ATTRIBUTES_FOR_SERIALIZATION
 
       ARTICLES_FOR_SERIALIZATION = Api::V0::ArticlesController::INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -63,6 +73,34 @@ module Api
           .decorate
 
         render "api/v0/articles/index.json.jbuilder"
+      end
+
+      def stats
+        doorkeeper_scope = %w[unpublished all].include?(params[:status]) ? :read_articles : :public
+        doorkeeper_authorize! doorkeeper_scope if doorkeeper_token
+
+        per_page = (params[:per_page] || 30).to_i
+        num = [per_page, 1000].min
+        page = params[:page] || 1
+
+        @articles = case params[:status]
+                    when "published"
+                      @user.articles.published
+                    when "unpublished"
+                      @user.articles.unpublished
+                    when "all"
+                      @user.articles
+                    else
+                      @user.articles.published
+                    end
+
+        @articles = @organization.articles.published
+          .select(STATS_ATTRIBUTES_FOR_SERIALIZATION)
+          .includes(:user)
+          .order(published_at: :desc)
+          .page(page)
+          .per(num)
+          .decorate
       end
 
       private
