@@ -17,6 +17,14 @@ module Users
     def call
       return response if super_admin?(role)
       return response if current_user?(user)
+
+      if @user.remove_role(role, resource_type.safe_constantize)
+        response.success = true
+      elsif @user.remove_role(role)
+        response.success = true
+      else
+        response.error = "There was an issue removing this role. Please try again."
+      end
     end
 
     private
