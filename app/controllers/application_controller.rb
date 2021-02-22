@@ -22,6 +22,10 @@ class ApplicationController < ActionController::Base
     error_too_many_requests(exc)
   end
 
+  rescue_from ActionController::InvalidAuthenticityToken do
+    ForemStatsClient.increment("users.invalid_authenticity_token.#{controller_name}")
+  end
+
   PUBLIC_CONTROLLERS = %w[shell
                           async_info
                           ga_events
