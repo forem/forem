@@ -2927,10 +2927,10 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@testing-library/cypress@^7.0.3":
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/@testing-library/cypress/-/cypress-7.0.3.tgz#1f4bcf992d0a0ff55da13b80f6f785c976ef9c0d"
-  integrity sha512-JOYW4VSSyHxaZDUhrS5N7tZA8jhr3ISx73WnLPpNkPqDCLUIJpo8ZQihti68Q4Qv5hVuA+I2rUI2glORaEFPaA==
+"@testing-library/cypress@^7.0.4":
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/@testing-library/cypress/-/cypress-7.0.4.tgz#38a55880712f222ddb9671bc899fe80f8c41bfc0"
+  integrity sha512-5I1amLVB2ExIRWuHlvG35dVFVC2KiNBZ0U1ASJUJZASFPQ0BhqJG4s0B8B8wNAE7TrR8KWlrzcNutkgxXL6VOg==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^7.28.1"
