@@ -3,7 +3,7 @@ class AddCheckConstraintForUsername < ActiveRecord::Migration[6.0]
     safety_assured do
       execute(<<~SQL.squish)
         ALTER TABLE "users"
-        ADD CONSTRAINT "users_username_null"
+        ADD CONSTRAINT "users_username_not_null"
         CHECK ("username" IS NOT NULL)
         NOT VALID
       SQL
