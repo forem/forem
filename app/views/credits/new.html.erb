@@ -143,6 +143,12 @@
   </div>
 </div>
   <script>
+    var form = document.getElementById('new_credit');
+    form.onsubmit = function(event) {
+      var button = event.submitter;
+      button.disabled = true;
+      button.textContent = "Submitting...";
+    }
 
     var stripe = Stripe('<%= SiteConfig.stripe_publishable_key %>');
     var elements = stripe.elements();
