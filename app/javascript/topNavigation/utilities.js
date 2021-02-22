@@ -145,15 +145,11 @@ export async function getInstantClick(waitTime = 2000) {
  */
 export function initializeMobileMenu(menuTriggers, moreMenus) {
   menuTriggers.forEach((trigger) => {
-    if (trigger.onclick === null) {
-      trigger.onclick = toggleBurgerMenu;
-    }
+    trigger.onclick = toggleBurgerMenu;
   });
 
   moreMenus.forEach((trigger) => {
-    if (trigger.onclick === null) {
-      trigger.onclick = showMoreMenu;
-    }
+    trigger.onclick = showMoreMenu;
   });
 }
 
