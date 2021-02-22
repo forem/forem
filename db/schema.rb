@@ -1061,66 +1061,6 @@ ActiveRecord::Schema.define(version: 2021_03_10_154630) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
-  create_table "rpush_apps", force: :cascade do |t|
-    t.string "access_token"
-    t.datetime "access_token_expiration"
-    t.string "auth_key"
-    t.text "certificate"
-    t.string "client_id"
-    t.string "client_secret"
-    t.integer "connections", default: 1, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.string "environment"
-    t.string "name", null: false
-    t.string "password"
-    t.string "type", null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "rpush_feedback", force: :cascade do |t|
-    t.integer "app_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.string "device_token", limit: 64, null: false
-    t.datetime "failed_at", null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["device_token"], name: "index_rpush_feedback_on_device_token"
-  end
-
-  create_table "rpush_notifications", force: :cascade do |t|
-    t.text "alert"
-    t.boolean "alert_is_json", default: false
-    t.integer "app_id", null: false
-    t.integer "badge"
-    t.string "category"
-    t.string "collapse_key"
-    t.boolean "content_available", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.text "data"
-    t.boolean "delay_while_idle", default: false, null: false
-    t.datetime "deliver_after"
-    t.boolean "delivered", default: false, null: false
-    t.datetime "delivered_at"
-    t.string "device_token", limit: 64
-    t.integer "error_code"
-    t.text "error_description"
-    t.integer "expiry", default: 86400
-    t.datetime "fail_after"
-    t.boolean "failed", default: false, null: false
-    t.datetime "failed_at"
-    t.boolean "mutable_content", default: false
-    t.text "notification"
-    t.integer "priority"
-    t.boolean "processing", default: false, null: false
-    t.text "registration_ids"
-    t.integer "retries", default: 0
-    t.string "sound"
-    t.string "type", null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "uri"
-    t.text "url_args"
-    t.index ["delivered", "failed"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))"
-  end
-
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1348,7 +1288,7 @@ ActiveRecord::Schema.define(version: 2021_03_10_154630) do
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
-    t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
+    t.datetime "last_moderation_notification", default: "2017-01-01 06:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
     t.datetime "last_reacted_at"
@@ -1428,9 +1368,9 @@ ActiveRecord::Schema.define(version: 2021_03_10_154630) do
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.string "email"
+    t.string "email", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id"
+    t.integer "user_id", null: false
     t.string "username"
   end
 
