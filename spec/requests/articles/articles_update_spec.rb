@@ -10,6 +10,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     user
   end
   let(:article) { create(:article, user_id: user.id) }
+  let(:collection) { create(:collection, user: user) }
 
   before do
     sign_in user
@@ -85,6 +86,34 @@ RSpec.describe "ArticlesUpdate", type: :request do
       article: { archived: true }
     }
     expect(article.archived).to eq(false)
+  end
+
+  it "updates article collection when new series was passed" do
+    expect do
+      put "/articles/#{article.id}", params: {
+        article: { series: "new slug", body_markdown: "blah" }
+      }
+    end.to change(Collection, :count).by(1)
+    article.reload
+    expect(article.collection_id).not_to be_nil
+  end
+
+  it "updates article collection when series was passed" do
+    put "/articles/#{article.id}", params: {
+      article: { series: collection.slug, body_markdown: "blah" }
+    }
+    article.reload
+    expect(article.collection_id).to eq(collection.id)
+  end
+
+  it "resets article collection when empty series was passed" do
+    article.update_column(:collection_id, collection.id)
+
+    put "/articles/#{article.id}", params: {
+      article: { series: "", body_markdown: "blah" }
+    }
+    article.reload
+    expect(article.collection).to eq(nil)
   end
 
   it "creates a notification job if published" do
