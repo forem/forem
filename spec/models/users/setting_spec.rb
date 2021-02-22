@@ -2,7 +2,9 @@ require "rails_helper"
 
 RSpec.describe Users::Setting, type: :model do
   describe "validations" do
-    subject { create(:setting) }
+    let(:user) { create(:user) }
+    let(:setting) { create(:setting, user_id: user.id) }
+    subject { create(:setting, user_id: user.id) }
 
     it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
     it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
@@ -11,8 +13,6 @@ RSpec.describe Users::Setting, type: :model do
     it { is_expected.to validate_presence_of(:config_theme) }
 
     describe "when validating feed_url", vcr: true do
-      let(:setting) { create(:setting) }
-
       it "is valid with no feed_url" do
         setting.feed_url = nil
 
@@ -33,8 +33,6 @@ RSpec.describe Users::Setting, type: :model do
     end
 
     describe "#config_theme" do
-      let(:setting) { create(:setting) }
-
       it "accepts valid theme" do
         setting.config_theme = "night theme"
         expect(setting).to be_valid
@@ -47,8 +45,6 @@ RSpec.describe Users::Setting, type: :model do
     end
 
     describe "#config_font" do
-      let(:setting) { create(:setting) }
-
       it "accepts valid font" do
         setting.config_font = "sans serif"
         expect(setting).to be_valid
@@ -61,8 +57,6 @@ RSpec.describe Users::Setting, type: :model do
     end
 
     describe "#config_navbar" do
-      let(:setting) { create(:setting) }
-
       it "accepts valid navbar" do
         setting.config_navbar = "static"
         expect(setting).to be_valid

@@ -1,6 +1,7 @@
 class CreateUsersSettings < ActiveRecord::Migration[6.0]
   def change
     create_table :users_settings do |t|
+      t.integer :user_id, null: false
       t.string "config_font", default: "default"
       t.string "config_navbar", default: "default", null: false
       t.string "config_theme", default: "default"

@@ -1381,6 +1381,7 @@ ActiveRecord::Schema.define(version: 2021_02_22_102602) do
     t.boolean "mod_roundrobin_notifications", default: true
     t.boolean "reaction_notifications", default: true
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "user_id", null: false
     t.boolean "welcome_notifications", default: true, null: false
   end
 
@@ -1407,6 +1408,7 @@ ActiveRecord::Schema.define(version: 2021_02_22_102602) do
     t.jsonb "language_settings", default: {}, null: false
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "user_id", null: false
   end
 
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|

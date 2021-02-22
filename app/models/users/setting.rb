@@ -17,6 +17,7 @@ module Users
 
     before_validation :set_config_input
 
+    validates :user_id, presence: true
     validates :config_font, inclusion: { in: FONTS + ["default".freeze], message: MESSAGES[:invalid_config_font] }
     validates :config_font, presence: true
     validates :config_navbar, inclusion: { in: NAVBARS, message: MESSAGES[:invalid_config_navbar] }

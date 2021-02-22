@@ -38,6 +38,8 @@ RSpec.describe User, type: :model do
       subject { user }
 
       it { is_expected.to have_one(:profile).dependent(:destroy) }
+      it { is_expected.to have_one(:notification_setting).dependent(:destroy) }
+      it { is_expected.to have_one(:setting).dependent(:destroy) }
 
       it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").dependent(:delete_all) }
       it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").dependent(:delete_all) }

@@ -1,6 +1,7 @@
 class CreateUsersNotificationSettings < ActiveRecord::Migration[6.0]
   def change
     create_table :users_notification_settings do |t|
+      t.integer :user_id, null: false
       t.boolean "email_badge_notifications", default: true
       t.boolean "email_comment_notifications", default: true
       t.boolean "email_community_mod_newsletter", default: false
