@@ -12,6 +12,20 @@ RSpec.describe Articles::Updater, type: :service do
     expect(article.body_markdown).to eq("sample")
   end
 
+  it "sets series" do
+    attributes[:series] = "collection-slug"
+    described_class.call(user, article.id, attributes)
+    article.reload
+    expect(article.collection).to be_a(Collection)
+  end
+
+  it "sets tags" do
+    attributes[:tags] = %w[ruby productivity]
+    described_class.call(user, article.id, attributes)
+    article.reload
+    expect(article.tags.pluck(:name).sort).to eq(%w[productivity ruby])
+  end
+
   describe "events dispatcher" do
     let(:event_dispatcher) { double }
 
