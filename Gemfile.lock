@@ -262,7 +262,7 @@ GEM
       http_parser.rb (~> 0.6.0)
     email_validator (2.2.2)
       activemodel
-    emoji_regex (3.2.1)
+    emoji_regex (3.2.2)
     environs (1.1.0)
     equalizer (0.0.11)
     errbase (0.2.1)
