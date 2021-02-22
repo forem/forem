@@ -325,7 +325,7 @@ Rails.application.routes.draw do
     get "/listings/:category", to: "listings#index", as: :listing_category
     get "/listings/:category/:slug", to: "listings#index", as: :listing_slug
     get "/listings/:category/:slug/:view", to: "listings#index",
-        constraints: { view: /moderate/ }
+                                           constraints: { view: /moderate/ }
     get "/listings/:category/:slug/delete_confirm", to: "listings#delete_confirm"
     delete "/listings/:category/:slug", to: "listings#destroy"
     get "/notifications/:filter", to: "notifications#index"
@@ -468,9 +468,9 @@ Rails.application.routes.draw do
     get "/dashboard/subscriptions", to: "dashboards#subscriptions"
     get "/dashboard/:which", to: "dashboards#followers", constraints: { which: /user_followers/ }
     get "/dashboard/:which/:org_id", to: "dashboards#show",
-        constraints: {
-          which: /organization/
-        }
+                                     constraints: {
+                                       which: /organization/
+                                     }
     get "/dashboard/:username", to: "dashboards#show"
 
     # for testing rails mailers
@@ -487,7 +487,7 @@ Rails.application.routes.draw do
 
     # open search
     get "/open-search", to: "open_search#show",
-        constraints: { format: /xml/ }
+                        constraints: { format: /xml/ }
 
     get "/shell_top", to: "shell#top"
     get "/shell_bottom", to: "shell#bottom"
@@ -514,7 +514,7 @@ Rails.application.routes.draw do
     get "/t/:tag/top/:timeframe", to: "stories#index"
     get "/t/:tag/page/:page", to: "stories#index"
     get "/t/:tag/:timeframe", to: "stories#index",
-        constraints: { timeframe: /latest/ }
+                              constraints: { timeframe: /latest/ }
 
     get "/badge/:slug", to: "badges#show", as: :badge
 
@@ -539,7 +539,7 @@ Rails.application.routes.draw do
     get "/:username/comment/:id_code/settings", to: "comments#settings"
 
     get "/:username/:slug/:view", to: "stories#show",
-        constraints: { view: /moderate/ }
+                                  constraints: { view: /moderate/ }
     get "/:username/:slug/mod", to: "moderations#article"
     get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
     get "/:username/:slug/manage", to: "articles#manage"
@@ -547,10 +547,10 @@ Rails.application.routes.draw do
     get "/:username/:slug/delete_confirm", to: "articles#delete_confirm"
     get "/:username/:slug/stats", to: "articles#stats"
     get "/:username/:view", to: "stories#index",
-        constraints: { view: /comments|moderate|admin/ }
+                            constraints: { view: /comments|moderate|admin/ }
     get "/:username/:slug", to: "stories#show"
     get "/:sitemap", to: "sitemaps#show",
-        constraints: { format: /xml/, sitemap: /sitemap-.+/ }
+                     constraints: { format: /xml/, sitemap: /sitemap-.+/ }
     get "/:username", to: "stories#index", as: "user_profile"
 
     root "stories#index"
