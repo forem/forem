@@ -220,7 +220,7 @@ export class ReadingList extends Component {
             onClick={this.toggleTag}
           />
 
-          <main className="crayons-layout__content">
+          <main className="crayons-layout__content" id="main-content">
             <div className="crayons-card mb-4">
               {items.length > 0 ? itemsToRender : this.renderEmptyItems()}
             </div>
