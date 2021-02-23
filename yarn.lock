@@ -1972,17 +1972,17 @@
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-actions@^6.1.18":
-  version "6.1.18"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-6.1.18.tgz#9dad0f2be52db778ec4519f130d9e0c46188b504"
-  integrity sha512-05p52RWst3jS5txwqplLZFWuZ89PMtsHojxs4rWRQ6mrgPwiTE0MUl+S1wMihabLm9CYUUJ0/41QNb2Uv0+hhw==
+"@storybook/addon-actions@^6.1.19":
+  version "6.1.19"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-6.1.19.tgz#1b5055a72fb3c055cc3b5803d992f310a425a200"
+  integrity sha512-UJUVOUn2A6xBYQXOZYKRV054oil++BKZ+TpIJF++bixZCd91xJIItB7viptEECK94RbyoNJljBfNgfR/oKpi5A==
   dependencies:
-    "@storybook/addons" "6.1.18"
-    "@storybook/api" "6.1.18"
-    "@storybook/client-api" "6.1.18"
-    "@storybook/components" "6.1.18"
-    "@storybook/core-events" "6.1.18"
-    "@storybook/theming" "6.1.18"
+    "@storybook/addons" "6.1.19"
+    "@storybook/api" "6.1.19"
+    "@storybook/client-api" "6.1.19"
+    "@storybook/components" "6.1.19"
+    "@storybook/core-events" "6.1.19"
+    "@storybook/theming" "6.1.19"
     core-js "^3.0.1"
     fast-deep-equal "^3.1.1"
     global "^4.3.2"
