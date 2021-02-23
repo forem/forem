@@ -430,6 +430,10 @@ class Article < ApplicationRecord
     user&.collections&.pluck(:slug)
   end
 
+  def decoded_title
+    HTMLEntities.new.decode(title)
+  end
+
   def cloudinary_video_url
     return if video_thumbnail_url.blank?
 

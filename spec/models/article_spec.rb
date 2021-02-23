@@ -1307,4 +1307,12 @@ RSpec.describe Article, type: :model do
       expect { article.update_score }.not_to change { article.reload.hotness_score }
     end
   end
+
+  describe "#decoded_title" do
+    let!(:article) { create(:article, user: user, title: "&lt;script&gt;alert('oh nos!')&lt;/script&gt;") }
+
+    it "decodes html entities correctly" do
+      expect(article.decoded_title).to eq("<script>alert('oh nos!')</script>")
+    end
+  end
 end
