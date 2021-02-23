@@ -487,12 +487,6 @@ RSpec.describe User, type: :model do
         end
       end
 
-      it "does not enqueue with an invalid email" do
-        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
-          user.update(email: "foobar")
-        end
-      end
-
       it "does not enqueue with an unconfirmed email" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
