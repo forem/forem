@@ -145,7 +145,7 @@
   <script>
     var form = document.getElementById('new_credit');
     form.onsubmit = function(event) {
-      var button = event.submitter;
+      var button = document.getElementById('add-credit-card-button');
       button.disabled = true;
       button.textContent = "Submitting...";
     }
