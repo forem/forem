@@ -7,7 +7,7 @@ RSpec.describe Articles::Attributes, type: :service do
     context "when few attributes" do
       let(:few_attributes) do
         {
-          body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nHey this is the article",
+          body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: hey\n---\n\nHey this is the article",
           organization_id: 2
         }
       end
@@ -24,35 +24,26 @@ RSpec.describe Articles::Attributes, type: :service do
       end
     end
 
-    context "more attributes" do
-      it "sets collection when :series was passed" do
-        series_attrs = described_class.new({ series: "slug", title: "title" }, user).for_update
-        expect(series_attrs[:collection]).to be_a(Collection)
-        expect(series_attrs[:series]).to be nil
-      end
+    it "sets a collection when :series was passed" do
+      series_attrs = described_class.new({ series: "slug", title: "title" }, user).for_update
+      expect(series_attrs[:collection]).to be_a(Collection)
+      expect(series_attrs[:series]).to be nil
+    end
 
-      it "resets the collection when empty :series was passed" do
-        no_series_attrs = described_class.new({ series: "" }, user).for_update
-        expect(no_series_attrs[:collection]).to be nil
-        expect(no_series_attrs[:series]).to be nil
-      end
+    it "resets the collection when empty :series was passed" do
+      no_series_attrs = described_class.new({ series: "" }, user).for_update
+      expect(no_series_attrs[:collection]).to be nil
+      expect(no_series_attrs[:series]).to be nil
+    end
 
-      it "sets the collection when collection_id is passed" do
-        
-      end
+    it "sets tag_list when tags were passed" do
+      tags_attrs = described_class.new({ tags: %w[ruby cpp], title: "title" }, user).for_update
+      expect(tags_attrs[:tag_list]).to eq("ruby, cpp")
+    end
 
-
-      # или это не надо, не поняла?
-      it "doesn't have the collection when :series was not passed" do
-
-      end
-
-      it "sets tag_list when tags were passed" do
-
-      end
-
-      it "sets tag_list when tag_list was passed" do
-      end
+    it "sets tag_list when tag_list was passed" do
+      tags_attrs = described_class.new({ tag_list: "ruby, cpp", title: "title" }, user).for_update
+      expect(tags_attrs[:tag_list]).to eq("ruby, cpp")
     end
   end
 end

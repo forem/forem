@@ -4,7 +4,6 @@ module Articles
       @user = user
       @article_id = article_id
       @article_params = article_params
-      # @item = item.is_a?(EpisodeRssItem) ? item : EpisodeRssItem.new(item)
       @event_dispatcher = event_dispatcher
     end
 
