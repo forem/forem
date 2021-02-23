@@ -129,13 +129,12 @@ class ArticlesController < ApplicationController
 
     not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
 
-    # @article = Articles::Updater.call(current_user, @article.id, article_params)
-
     edited_at_date = if @article.user == current_user && @article.published
                        Time.current
                      else
                        @article.edited_at
                      end
+
     updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
     handle_notifications(updated)
     Webhook::DispatchEvent.call("article_updated", @article) if updated
