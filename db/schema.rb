@@ -1392,11 +1392,14 @@ ActiveRecord::Schema.define(version: 2021_02_22_102602) do
   end
 
   create_table "users_settings", force: :cascade do |t|
+    t.string "brand_color1", default: "#000000"
+    t.string "brand_color2", default: "#ffffff"
     t.string "config_font", default: "default"
     t.string "config_navbar", default: "default", null: false
     t.string "config_theme", default: "default"
     t.datetime "created_at", precision: 6, null: false
     t.boolean "display_announcements", default: true
+    t.boolean "display_email_on_profile", default: false
     t.boolean "display_sponsors", default: true
     t.string "editor_version", default: "v1"
     t.integer "experience_level"
