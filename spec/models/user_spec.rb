@@ -505,6 +505,13 @@ RSpec.describe User, type: :model do
         end
       end
 
+      it "does not enqueue if Mailchimp is not enabled" do
+        allow(SiteConfig).to receive(:mailchimp_api_key).and_return(nil)
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(email: "something@real.com")
+        end
+      end
+
       it "does not enqueue when the email address or subscription status has not changed" do
         # The trait replaces the method with a dummy, but we need the actual method for this test.
         user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)
