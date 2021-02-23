@@ -132,7 +132,7 @@
   pointer-events: none;
   border-radius: var(--radius);
   height: var(--header-height);
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, -200%);
   transition: transform var(--transition-props);
 
   &:focus,
