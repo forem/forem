@@ -1277,7 +1277,7 @@ ActiveRecord::Schema.define(version: 2021_02_22_102602) do
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
-    t.datetime "last_moderation_notification", default: "2016-12-31 22:00:00"
+    t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
     t.datetime "last_reacted_at"
@@ -1358,9 +1358,9 @@ ActiveRecord::Schema.define(version: 2021_02_22_102602) do
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.string "email", null: false
+    t.string "email"
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.string "username"
   end
 
@@ -1392,14 +1392,11 @@ ActiveRecord::Schema.define(version: 2021_02_22_102602) do
   end
 
   create_table "users_settings", force: :cascade do |t|
-    t.string "brand_color1", default: "#000000"
-    t.string "brand_color2", default: "#ffffff"
     t.string "config_font", default: "default"
     t.string "config_navbar", default: "default", null: false
     t.string "config_theme", default: "default"
     t.datetime "created_at", precision: 6, null: false
     t.boolean "display_announcements", default: true
-    t.boolean "display_email_on_profile", default: false
     t.boolean "display_sponsors", default: true
     t.string "editor_version", default: "v1"
     t.integer "experience_level"

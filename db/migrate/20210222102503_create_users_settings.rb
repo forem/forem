@@ -16,9 +16,6 @@ class CreateUsersSettings < ActiveRecord::Migration[6.0]
       t.string "inbox_type", default: "private"
       t.jsonb "language_settings", default: {}, null: false
       t.boolean "permit_adjacent_sponsors", default: true
-      t.string "brand_color1", default: "#000000"
-      t.string "brand_color2", default: "#ffffff"
-      t.boolean "display_email_on_profile", default: false
 
       t.timestamps
     end
