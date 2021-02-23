@@ -13,7 +13,7 @@ export const AllListings = ({
   loadNextPage,
 }) => {
   return (
-    <main class="crayons-layout__content">
+    <main class="crayons-layout__content" id="main-content">
       <div className="listings-columns" id="listings-results">
         {listings.map((listing) => (
           <SingleListing

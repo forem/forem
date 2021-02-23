@@ -63,16 +63,8 @@ export function initializeTouchDevice(memberTopMenu, menuNavButton) {
         menuNavButton.addEventListener('click', (_event) => {
           toggleHeaderMenu(memberTopMenu, menuNavButton);
         });
-
-        document.addEventListener('click', (_event) => {
-          // if clicking outside of the menu or on a menu item, close it
-          if (document.activeElement.id !== 'member-menu-button') {
-            blurHeaderMenu(
-              memberTopMenu,
-              menuNavButton,
-              document.getElementById('first-nav-link'),
-            );
-          }
+        window.InstantClick.on('change', () => {
+          memberTopMenu.classList.remove('showing');
         });
       } else {
         crayonsHeaderMenuClassList.add('desktop');
@@ -113,7 +105,9 @@ export function initializeTouchDevice(memberTopMenu, menuNavButton) {
 }
 
 function toggleBurgerMenu() {
-  document.body.classList.toggle('hamburger-open');
+  const { leftNavState = 'closed' } = document.body.dataset;
+  document.body.dataset.leftNavState =
+    leftNavState === 'open' ? 'closed' : 'open';
 }
 
 function showMoreMenu({ target }) {
@@ -149,11 +143,11 @@ export async function getInstantClick(waitTime = 2000) {
 /**
  * Initializes the hamburger menu for mobile navigation
  *
- * @param {HTMLElement[]} menus
+ * @param {HTMLElement[]} menuTriggers
  * @param {HTMLElement[]} moreMenus
  */
-export function initializeMobileMenu(menus, moreMenus) {
-  menus.forEach((trigger) => {
+export function initializeMobileMenu(menuTriggers, moreMenus) {
+  menuTriggers.forEach((trigger) => {
     trigger.addEventListener('click', toggleBurgerMenu);
   });
 

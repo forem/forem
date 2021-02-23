@@ -34,7 +34,7 @@
         aria-labelledby="getStartedHeader">
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
-          <fieldset class="flex flex-column gap-4">
+          <fieldset class="grid gap-4">
 
           <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
             <%# we need to list the config as separate fields if the data structure is a Hash %>
@@ -124,7 +124,7 @@
                          expanded: false
                        } %>
             <div id="apiBodyContainer" class="card-body collapse hide" aria-labelledby="apiBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :health_check_token %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:health_check_token][:description] %>
@@ -255,7 +255,7 @@
                             <%= admin_config_description Constants::SiteConfig::DETAILS[:require_captcha_for_email_password_registration][:description] %>
                           </div>
                         </div>
-                        <div id="recaptchaContainer" class="ml-7 <%= SiteConfig.require_captcha_for_email_password_registration ? "flex flex-col gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
+                        <div id="recaptchaContainer" class="ml-7 <%= SiteConfig.require_captcha_for_email_password_registration ? "grid gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
                           <div class="crayons-field">
                             <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
                             <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
@@ -273,7 +273,7 @@
                                              placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
                           </div>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="crayons-btn-actions">
                           <% if SiteConfig.allow_email_password_registration %>
                             <button
                               class="crayons-btn crayons-btn--danger"
@@ -373,7 +373,7 @@
                          expanded: false
                        } %>
             <div id="campaignBodyContainer" class="card-body collapse hide" aria-labelledby="campaignBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :campaign_hero_html_variant_name, "Campaign hero HTML variant name" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_hero_html_variant_name][:description] %>
@@ -463,7 +463,7 @@
                          expanded: false
                        } %>
             <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :community_name %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:community_name][:description] %>
@@ -561,7 +561,7 @@
                        } %>
 
             <div id="creditsBodyContainer" class="card-body collapse hide" aria-labelledby="creditsBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <%= f.fields_for :credit_prices_in_cents do |price_field| %>
                   <div class="crayons-field">
                     <%= admin_config_label "Credit price in cents (S)" %>
@@ -611,7 +611,7 @@
                          expanded: false
                        } %>
             <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                   <div class="crayons-field">
                     <label for="site_config_email_addresses_default" class="crayons-field__label">
                       Default
@@ -650,7 +650,7 @@
                          expanded: false
                        } %>
             <div id="emailDigestBodyContainer" class="card-body collapse hide" aria-labelledby="emailDigestBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :periodic_email_digest_max %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:description] %>
@@ -685,7 +685,7 @@
                          expanded: false
                        } %>
             <div id="jobsBodyContainer" class="card-body collapse hide" aria-labelledby="jobsBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :jobs_url, "Jobs URL" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:jobs_url][:description] %>
@@ -718,7 +718,7 @@
                          expanded: false
                        } %>
             <div id="gaBodyContainer" class="card-body collapse hide" aria-labelledby="gaBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :ga_tracking_id, "View ID" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:ga_tracking_id][:description] %>
@@ -743,7 +743,7 @@
                          expanded: false
                        } %>
             <div id="imagesBodyContainer" class="card-body collapse hide" aria-labelledby="imagesBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :main_social_image %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:main_social_image][:description] %>
@@ -821,7 +821,7 @@
                          expanded: false
                        } %>
             <div id="mascotBodyContainer" class="card-body collapse hide" aria-labelledby="mascotBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :mascot_user_id, "Mascot user ID" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_user_id][:description] %>
@@ -899,7 +899,7 @@
                          expanded: false
                        } %>
             <div id="metaKeywordsBodyContainer" class="card-body collapse hide" aria-labelledby="metaKeywordsBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <%= f.fields_for :meta_keywords do |meta_keywords_field| %>
                   <% SiteConfig.meta_keywords.each do |area, keywords| %>
                     <div class="crayons-field">
@@ -931,7 +931,7 @@
                          expanded: false
                        } %>
             <div id="monetizationBodyContainer" class="card-body collapse hide" aria-labelledby="monetizationBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :shop_url, "Shop URL" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:shop_url][:description] %>
@@ -984,7 +984,7 @@
                          expanded: false
                        } %>
             <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :mailchimp_api_key, "Mailchimp API Key" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_api_key][:description] %>
@@ -1041,7 +1041,7 @@
                          expanded: false
                        } %>
             <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :onboarding_background_image %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_background_image][:description] %>
@@ -1091,7 +1091,7 @@
                          expanded: false
                        } %>
             <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <% configurable_rate_limits.each do |key, field_hash| %>
                   <div class="crayons-field">
                     <%= admin_config_label field_hash[:title] %>
@@ -1130,7 +1130,7 @@
                          expanded: false
                        } %>
             <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :twitter_hashtag %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:twitter_hashtag][:description] %>
@@ -1170,7 +1170,7 @@
                          expanded: false
                        } %>
             <div id="sponsorsContainer" class="card-body collapse hide" aria-labelledby="sponsorsContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :sponsor_headline %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:sponsor_headline][:description] %>
@@ -1196,7 +1196,7 @@
                          expanded: false
                        } %>
             <div id="tagsBodyContainer" class="card-body collapse hide" aria-labelledby="tagsBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :sidebar_tags %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %>
@@ -1223,7 +1223,7 @@
                          expanded: false
                        } %>
             <div id="uxBodyContainer" class="card-body collapse hide" aria-labelledby="uxBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-fieldx">
                   <%= admin_config_label :feed_style %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:feed_style][:description] %>

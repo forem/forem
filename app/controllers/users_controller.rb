@@ -122,7 +122,7 @@ class UsersController < ApplicationController
       Users::DeleteWorker.perform_async(@user.id)
       sign_out @user
       flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
-      redirect_to root_path
+      redirect_to new_user_registration_path
     else
       flash[:settings_notice] = "Please, provide an email to delete your account"
       redirect_to user_settings_path("account")

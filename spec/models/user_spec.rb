@@ -218,10 +218,13 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_presence_of(:spent_credits_count) }
       it { is_expected.to validate_presence_of(:subscribed_to_user_subscriptions_count) }
 
-      context "custom username error uniqueness error message" do
+      # rubocop:disable RSpec/NestedGroups
+      context "when evaluating the custom error message for username uniqueness" do
         subject { create(:user, username: "test_user_123") }
+
         it { is_expected.to validate_uniqueness_of(:username).with_message("test_user_123 is taken.").case_insensitive }
       end
+      # rubocop:enable RSpec/NestedGroups
 
       Authentication::Providers.username_fields.each do |username_field|
         it { is_expected.to validate_uniqueness_of(username_field).allow_nil }
