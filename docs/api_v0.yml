@@ -1312,7 +1312,6 @@ components:
           body_markdown: Hello DEV, this is my first post
           tags: ["discuss", "help"]
           series: Hello series
-          canonical_url: https://example.com/blog/hello
     ArticleCreateFrontMatter:
       value:
         article:
@@ -1323,7 +1322,6 @@ components:
             tags: discuss, help
             date: 20190701T10:00Z
             series: Hello series
-            canonical_url: https://example.com/blog/hello
             ---
 
             Hello DEV, this is my first post
@@ -1335,7 +1333,6 @@ components:
           body_markdown: Hello DEV, this is my first post
           tags: ["discuss", "help"]
           series: Hello series
-          canonical_url: https://example.com/blog/hello
           organization_id: 1234
     ArticleVideo:
       value:
