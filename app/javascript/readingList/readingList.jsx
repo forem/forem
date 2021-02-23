@@ -190,13 +190,13 @@ export class ReadingList extends Component {
       ''
     );
     return (
-      <main className="crayons-layout">
-        <header className="grid l:grid-cols-2 grid-cols-1">
+      <main>
+        <header className="crayons-layout l:grid-cols-2 grid-cols-1">
           <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
             {` (${items.length})`}
           </h1>
-          <fieldset className="grid gap-1 l:grid-cols-3 grid-cols-1">
+          <fieldset className="grid gap-1 l:grid-cols-2 grid-cols-1">
             <legend className="hidden">Filter</legend>
             <input
               aria-label="Search..."
@@ -208,6 +208,7 @@ export class ReadingList extends Component {
               availableTags={availableTags}
               selectedTag={selectedTag}
               onSelectTag={this.toggleTag}
+              isMobile={true}
             />
             <Button
               onClick={(e) => this.toggleStatusView(e)}
@@ -221,24 +222,33 @@ export class ReadingList extends Component {
             </Button>
           </fieldset>
         </header>
-        <section className="crayons-layout__content">
-          <div className="crayons-card mb-4">
-            {items.length > 0 ? (
-              <ItemList
-                items={items}
-                archiveButtonLabel={archiveButtonLabel}
-                toggleArchiveStatus={this.toggleArchiveStatus}
-              />
-            ) : (
-              this.renderEmptyItems()
-            )}
-          </div>
+        <div className="crayons-layout crayons-layout--2-cols s:grid-cols-1">
+          <aside className="crayons-layout__sidebar-left s:hidden">
+            <TagList
+              availableTags={availableTags}
+              selectedTag={selectedTag}
+              onSelectTag={this.toggleTag}
+            />
+          </aside>
+          <section className="crayons-layout__content">
+            <div className="crayons-card mb-4">
+              {items.length > 0 ? (
+                <ItemList
+                  items={items}
+                  archiveButtonLabel={archiveButtonLabel}
+                  toggleArchiveStatus={this.toggleArchiveStatus}
+                />
+              ) : (
+                this.renderEmptyItems()
+              )}
+            </div>
 
-          <ItemListLoadMoreButton
-            show={showLoadMoreButton}
-            onClick={this.loadNextPage}
-          />
-        </section>
+            <ItemListLoadMoreButton
+              show={showLoadMoreButton}
+              onClick={this.loadNextPage}
+            />
+          </section>
+        </div>
         {snackBar}
       </main>
     );
