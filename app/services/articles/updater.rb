@@ -19,9 +19,9 @@ module Articles
 
       # updated edited time only if already published and not edited by an admin
       update_edited_at = article.user == user && article.published
-      article_params[:edited_at] = Time.current if update_edited_at
+      # article_params[:edited_at] = Time.current if update_edited_at
 
-      attrs = Articles::Attributes.new(article_params, user).for_update
+      attrs = Articles::Attributes.new(article_params, user, update_edited_at).for_update
 
       article.update!(attrs)
 

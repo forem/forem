@@ -45,5 +45,15 @@ RSpec.describe Articles::Attributes, type: :service do
       tags_attrs = described_class.new({ tag_list: "ruby, cpp", title: "title" }, user).for_update
       expect(tags_attrs[:tag_list]).to eq("ruby, cpp")
     end
+
+    it "sets edited_at if update_edited_at" do
+      attrs = described_class.new({ title: "title" }, user, true).for_update
+      expect(attrs[:edited_at]).to be_truthy
+    end
+
+    it "sets edited_at if update_edited_at is false" do
+      attrs = described_class.new({ title: "title" }, user, false).for_update
+      expect(attrs[:edited_at]).to be_falsey
+    end
   end
 end
