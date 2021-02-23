@@ -23,7 +23,10 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from ActionController::InvalidAuthenticityToken do
-    ForemStatsClient.increment("users.invalid_authenticity_token.#{controller_name}")
+    ForemStatsClient.increment(
+      "users.invalid_authenticity_token.#{controller_name}",
+      tags: ["path:#{request.fullpath}"],
+    )
   end
 
   PUBLIC_CONTROLLERS = %w[shell
