@@ -1,5 +1,5 @@
 module Users
-   class NotificationSetting < ApplicationRecord
+  class NotificationSetting < ApplicationRecord
     self.table_name_prefix = "users_"
 
     validates :user_id, presence: true
@@ -12,5 +12,5 @@ module Users
     # NOTE: @ridhwana Need to account for
     # subscribe_to_mailchimp_newsletter in app/models/user.rb
     # code: return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
-   end
+  end
  end

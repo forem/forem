@@ -1,5 +1,5 @@
 module Users
-   class Setting < ApplicationRecord
+  class Setting < ApplicationRecord
     self.table_name_prefix = "users_"
 
     EDITORS = %w[v1 v2].freeze
@@ -12,7 +12,7 @@ module Users
       invalid_config_font: "%<value>s is not a valid font selection",
       invalid_config_navbar: "%<value>s is not a valid navbar value",
       invalid_config_theme: "%<value>s is not a valid theme",
-      invalid_editor_version: "%<value>s must be either v1 or v2",
+      invalid_editor_version: "%<value>s must be either v1 or v2"
     }.freeze
 
     before_validation :set_config_input
@@ -52,6 +52,5 @@ module Users
       self.config_font = config_font&.tr(" ", "_")
       self.config_navbar = config_navbar&.tr(" ", "_")
     end
-
-   end
+  end
  end
