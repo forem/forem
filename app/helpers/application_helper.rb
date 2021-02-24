@@ -294,8 +294,6 @@ module ApplicationHelper
   end
 
   def role_display_name(role)
-    return "suspended" if role.name == "banned"
-
-    role.name
+    role.name == "banned" ? "Suspended" : role.name.titlecase
   end
 end

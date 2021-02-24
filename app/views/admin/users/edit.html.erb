@@ -21,7 +21,7 @@
       <h2>
         User Status
         <% if @user.banned %>
-          <span class="badge badge-danger">🚨 Member is Banned 🚨</span>
+          <span class="badge badge-danger">🚨 Member is Suspended 🚨</span>
         <% elsif @user.warned %>
           <span class="badge badge-warning">Member is Warned</span>
         <% elsif @user.comment_banned %>
