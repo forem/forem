@@ -143,6 +143,16 @@
   </div>
 </div>
   <script>
+    function changeSubmitButton(opts) {
+      var button = document.getElementById('add-credit-card-button');
+      button.disabled = !opts.active;
+      button.textContent = opts.text;
+    }
+
+    var form = document.getElementById('new_credit');
+    form.onsubmit = function(_event) {
+      changeSubmitButton({ text: 'Submitting...', active: false })
+    }
 
     var stripe = Stripe('<%= SiteConfig.stripe_publishable_key %>');
     var elements = stripe.elements();
@@ -206,6 +216,7 @@
           stripe.createToken(card).then(function(result) {
             if (result.error) {
               // Inform the user if there was an error.
+              changeSubmitButton({ text: "Complete Purchase", active: true });
               var errorElement = document.getElementById('card-errors');
               errorElement.textContent = result.error.message;
             } else {
