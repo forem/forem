@@ -1,6 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
+import { BREAKPOINTS } from '@components/useMediaQuery';
+import { MediaQuery } from '@components/MediaQuery';
 import {
   loadNextPage,
   onSearchBoxType,
@@ -191,25 +193,13 @@ export class ReadingList extends Component {
     );
     return (
       <main>
-        <header className="crayons-layout l:grid-cols-2 grid-cols-1">
+        <header className="crayons-layout l:grid-cols-2">
           <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
             {` (${items.length})`}
           </h1>
-          <fieldset className="grid gap-1 l:grid-cols-2 grid-cols-1">
+          <fieldset className="grid gap-1 m:grid-cols-2 grid-cols-1">
             <legend className="hidden">Filter</legend>
-            <input
-              aria-label="Search..."
-              onKeyUp={this.onSearchBoxType}
-              placeholder="Search..."
-              className="crayons-textfield"
-            />
-            <TagList
-              availableTags={availableTags}
-              selectedTag={selectedTag}
-              onSelectTag={this.toggleTag}
-              isMobile={true}
-            />
             <Button
               onClick={(e) => this.toggleStatusView(e)}
               className="whitespace-nowrap"
@@ -220,16 +210,46 @@ export class ReadingList extends Component {
             >
               {isStatusViewValid ? 'View archive' : 'View reading list'}
             </Button>
+            <input
+              aria-label="Search..."
+              onKeyUp={this.onSearchBoxType}
+              placeholder="Search..."
+              className="crayons-textfield"
+            />
+            <MediaQuery
+              query={`(width <= ${BREAKPOINTS.Medium - 1}px)`}
+              render={(matches) => {
+                return (
+                  matches && (
+                    <TagList
+                      availableTags={availableTags}
+                      selectedTag={selectedTag}
+                      onSelectTag={this.toggleTag}
+                      isMobile={true}
+                    />
+                  )
+                );
+              }}
+            />
           </fieldset>
         </header>
-        <div className="crayons-layout crayons-layout--2-cols s:grid-cols-1">
-          <aside className="crayons-layout__sidebar-left s:hidden">
-            <TagList
-              availableTags={availableTags}
-              selectedTag={selectedTag}
-              onSelectTag={this.toggleTag}
-            />
-          </aside>
+        <div className="crayons-layout crayons-layout--2-cols">
+          <MediaQuery
+            query={`(width >= ${BREAKPOINTS.Medium}px)`}
+            render={(matches) => {
+              return (
+                matches && (
+                  <aside className="crayons-layout__sidebar-left">
+                    <TagList
+                      availableTags={availableTags}
+                      selectedTag={selectedTag}
+                      onSelectTag={this.toggleTag}
+                    />
+                  </aside>
+                )
+              );
+            }}
+          />
           <section className="crayons-layout__content">
             <div className="crayons-card mb-4">
               {items.length > 0 ? (
