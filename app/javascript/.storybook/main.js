@@ -67,7 +67,7 @@ module.exports = {
         ...config.resolve.alias,
         '@crayons': path.resolve(__dirname, '../crayons'),
         '@utilities': path.resolve(__dirname, '../utilities'),
-        '@shared': path.resolve(__dirname, '../shared/components'),
+        '@components': path.resolve(__dirname, '../shared/components'),
       },
     };
 
