@@ -41,8 +41,8 @@ loading split chunks multiple times.
 
 The project uses
 [webpack aliases](https://webpack.js.org/configuration/resolve/#resolvealias).
-The aliases used in the project can be found in
-https://github.com/forem/forem/blob/master/config/webpack/environment.js#L21-L26
+The aliases used in the project can be found under `alias` in
+https://github.com/forem/forem/blob/master/config/webpack/environment.js
 
 ## Additional Resources
 
