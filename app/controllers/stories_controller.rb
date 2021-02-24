@@ -235,6 +235,7 @@ class StoriesController < ApplicationController
     #   - Let's say it's `4`. On mobile it would display two rows: 1st with 3 badges and
     # 2nd with 1 badge (!) <-- and that would look off.
     @badges_limit = 6
+    @user.create_profile(user_id:@user.id) unless @user.profile
     @profile = @user.profile.decorate
 
     set_surrogate_key_header "articles-user-#{@user.id}"
