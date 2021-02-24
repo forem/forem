@@ -13,4 +13,4 @@ module Users
     # subscribe_to_mailchimp_newsletter in app/models/user.rb
     # code: return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
   end
- end
+end

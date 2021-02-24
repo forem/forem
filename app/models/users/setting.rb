@@ -53,4 +53,4 @@ module Users
       self.config_navbar = config_navbar&.tr(" ", "_")
     end
   end
- end
+end
