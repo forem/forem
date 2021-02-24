@@ -121,18 +121,28 @@ Rails.application.configure do
 
   protocol = ENV["APP_PROTOCOL"] || "http://"
 
-  config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: protocol + ENV["APP_DOMAIN"].to_s }
-  ActionMailer::Base.smtp_settings = {
-    address: "smtp.sendgrid.net",
-    port: "587",
-    authentication: :plain,
-    user_name: "apikey",
-    password: ENV["SENDGRID_API_KEY"],
-    domain: ENV["APP_DOMAIN"],
-    enable_starttls_auto: true
-  }
+
+  if ENV["SENDGRID_API_KEY"].present?
+    config.action_mailer.delivery_method = :smtp
+    ActionMailer::Base.smtp_settings = {
+      address: "smtp.sendgrid.net",
+      port: "587",
+      authentication: :plain,
+      user_name: "apikey",
+      password: ENV["SENDGRID_API_KEY"],
+      domain: ENV["APP_DOMAIN"],
+      enable_starttls_auto: true
+    }
+  else
+    config.action_mailer.delivery_method = :sendmail
+    # Defaults to:
+    # # config.action_mailer.sendmail_settings = {
+    # #   location: '/usr/sbin/sendmail',
+    # #   arguments: '-i -t'
+    # # }
+  end
 
   if ENV["HEROKU_APP_URL"].present? && ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
     config.middleware.use Rack::HostRedirect,
