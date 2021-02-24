@@ -468,7 +468,7 @@ class User < ApplicationRecord
   def subscribe_to_mailchimp_newsletter
     return unless registered && email.present?
     return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
-    return if saved_changes.key?(:unconfirmed_email)
+    return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
     return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
