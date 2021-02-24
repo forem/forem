@@ -23,7 +23,10 @@ services:
 env:
   global:
     - RAILS_ENV=test
-    - DATABASE_URL=postgres://postgres@localhost/
+    - DATABASE_URL=postgres://postgres@localhost/Forem_prod_test
+    - DATABASE_NAME=Forem_prod_test
+    - DATABASE_URL_TEST=postgres://postgres@localhost/Forem_test
+    - DATABASE_NAME_TEST=Forem_test
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
     - APP_DOMAIN=localhost:3000
@@ -84,10 +87,9 @@ jobs:
       script:
         - yarn test --colors
         - bundle exec rails db:create db:schema:load assets:precompile
-        - bundle exec bundle-audit check --update --ignore CVE-2015-9284 CVE-2021-21288 CVE-2021-21305
+        - bundle exec bundle-audit check --update --ignore CVE-2015-9284
         - bin/test-console-check
         - yarn build-storybook
-        - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
         - bin/e2e-ci
 
     - stage: Deploy

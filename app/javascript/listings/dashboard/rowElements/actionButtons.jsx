@@ -4,7 +4,7 @@ import { Button } from '@crayons';
 
 export const ActionButtons = ({ isDraft, editUrl, deleteConfirmUrl }) => {
   return (
-    <div className="listing-row-actions">
+    <div className="listing-row-actions crayons-btn-actions">
       {isDraft && (
         <Button tagName="a" url={editUrl}>
           View draft

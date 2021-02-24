@@ -12,6 +12,13 @@ COMPONENT_FINGERPRINTS = {
   "internal" => "internal"
 }.freeze
 
+HONEYBADGER_EXCEPTIONS_TO_IGNORE = [
+  ActiveRecord::QueryCanceled,
+  ActiveRecord::RecordNotFound,
+  Pundit::NotAuthorizedError,
+  RateLimitChecker::LimitReached,
+].freeze
+
 Rails.application.reloader.to_prepare do
   # https://docs.honeybadger.io/lib/ruby/gem-reference/configuration.html
   Honeybadger.configure do |config|
@@ -25,8 +32,8 @@ Rails.application.reloader.to_prepare do
     # Logging allows us to fill in gaps if we need to when errors get discarded.
     config.send_data_at_exit = false
 
-    config.exceptions.ignore +=
-      config.request.filter_keys += %w[authorization]
+    config.exceptions.ignore += HONEYBADGER_EXCEPTIONS_TO_IGNORE
+    config.request.filter_keys += %w[authorization]
     config.sidekiq.attempt_threshold = 10
     config.breadcrumbs.enabled = true
 
