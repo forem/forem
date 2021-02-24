@@ -7,14 +7,19 @@ RSpec.describe Articles::BustMultipleCachesWorker, type: :worker do
     let!(:article) { create(:article) }
     let(:path) { article.path }
     let(:worker) { subject }
+    let(:buster) { instance_double(EdgeCache::Buster) }
+
+    before do
+      allow(EdgeCache::Buster).to receive(:new).and_return(buster)
+      allow(buster).to receive(:bust).with(path)
+      allow(buster).to receive(:bust).with("#{path}?i=i")
+    end
 
     it "busts cache" do
-      allow(EdgeCache::Bust).to receive(:call)
-
       worker.perform([article.id])
 
-      expect(EdgeCache::Bust).to have_received(:call).with(path).once
-      expect(EdgeCache::Bust).to have_received(:call).with("#{path}?i=i").once
+      expect(buster).to have_received(:bust).with(path).once
+      expect(buster).to have_received(:bust).with("#{path}?i=i").once
     end
   end
 end

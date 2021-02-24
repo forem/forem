@@ -1,5 +1,5 @@
 module EdgeCache
-  class Bust
+  class Buster
     class Fastly
       # [@forem/systems] Fastly-enabled Forems don't need "flexible" domains.
       def self.call(path)

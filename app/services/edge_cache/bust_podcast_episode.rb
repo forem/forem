@@ -1,5 +1,5 @@
 module EdgeCache
-  class BustPodcastEpisode < Bust
+  class BustPodcastEpisode < Buster
     def self.call(podcast_episode, path, podcast_slug)
       return unless podcast_episode && path && podcast_slug
 
@@ -7,9 +7,10 @@ module EdgeCache
       podcast_episode.purge_all
 
       begin
-        bust(path)
-        bust("/#{podcast_slug}")
-        bust("/pod")
+        buster = EdgeCache::Buster.new
+        buster.bust(path)
+        buster.bust("/#{podcast_slug}")
+        buster.bust("/pod")
       rescue StandardError => e
         Rails.logger.warn(e)
       end

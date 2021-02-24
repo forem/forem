@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe EdgeCache::BustUser, type: :service do
+  let(:buster) { instance_double(EdgeCache::Buster) }
   let(:user) { create(:user) }
 
   let(:paths) do
@@ -19,8 +20,10 @@ RSpec.describe EdgeCache::BustUser, type: :service do
   end
 
   before do
+    allow(EdgeCache::Buster).to receive(:new).and_return(buster)
+
     paths.each do |path|
-      allow(described_class).to receive(:bust).with(path).once
+      allow(buster).to receive(:bust).with(path).once
     end
   end
 
@@ -28,7 +31,7 @@ RSpec.describe EdgeCache::BustUser, type: :service do
     described_class.call(user)
 
     paths.each do |path|
-      expect(described_class).to have_received(:bust).with(path).once
+      expect(buster).to have_received(:bust).with(path).once
     end
   end
 end

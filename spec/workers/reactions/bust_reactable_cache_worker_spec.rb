@@ -8,22 +8,24 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
     let(:comment) { create(:comment, commentable: article) }
     let(:comment_reaction) { create(:reaction, reactable: comment, user: user) }
     let(:worker) { subject }
+    let(:buster) { instance_double(EdgeCache::Buster) }
 
     before do
-      allow(EdgeCache::Bust).to receive(:call)
+      allow(EdgeCache::Buster).to receive(:new).and_return(buster)
+      allow(buster).to receive(:bust)
     end
 
     it "busts the reactable article cache" do
       worker.perform(reaction.id)
-      expect(EdgeCache::Bust).to have_received(:call).with(user.path).once
-      expect(EdgeCache::Bust).to have_received(:call).with("/reactions?article_id=#{article.id}").once
+      expect(buster).to have_received(:bust).with(user.path).once
+      expect(buster).to have_received(:bust).with("/reactions?article_id=#{article.id}").once
     end
 
     it "busts the reactable comment cache" do
       worker.perform(comment_reaction.id)
-      expect(EdgeCache::Bust).to have_received(:call).with(user.path).once
+      expect(buster).to have_received(:bust).with(user.path).once
       param = "/reactions?commentable_id=#{article.id}&commentable_type=Article"
-      expect(EdgeCache::Bust).to have_received(:call).with(param).once
+      expect(buster).to have_received(:bust).with(param).once
     end
 
     it "doesn't fail if a reaction doesn't exist" do

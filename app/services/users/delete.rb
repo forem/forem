@@ -9,7 +9,7 @@ module Users
       delete_articles
       delete_user_activity
       user.unsubscribe_from_newsletters
-      EdgeCache::Bust.call("/#{user.username}")
+      EdgeCache::Buster.new.bust("/#{user.username}")
       Users::SuspendedUsername.create_from_user(user) if user.has_role?(:banned)
       user.destroy
       Rails.cache.delete("user-destroy-token-#{user.id}")

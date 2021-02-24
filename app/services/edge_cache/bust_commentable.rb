@@ -1,10 +1,12 @@
 module EdgeCache
-  class BustCommentable < Bust
+  class BustCommentable < Buster
     def self.call(commentable)
       return unless commentable
 
       EdgeCache::BustComment.call(commentable)
-      bust("#{commentable.path}/comments")
+
+      buster = EdgeCache::Buster.new
+      buster.bust("#{commentable.path}/comments")
       commentable.index_to_elasticsearch_inline
     end
   end

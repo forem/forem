@@ -1,13 +1,15 @@
 module EdgeCache
-  class BustOrganization < Bust
+  class BustOrganization < Buster
     def self.call(organization, slug)
       return unless organization && slug
 
-      bust("/#{slug}")
+      buster = EdgeCache::Buster.new
+
+      buster.bust("/#{slug}")
 
       begin
         organization.articles.find_each do |article|
-          bust(article.path)
+          buster.bust(article.path)
         end
       rescue StandardError => e
         Rails.logger.error("Tag issue: #{e}")

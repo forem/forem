@@ -5,24 +5,32 @@ RSpec.describe Reactions::BustHomepageCacheWorker, type: :worker do
     let(:user) { create(:user) }
     let(:article) { create(:article, featured: true) }
     let(:worker) { subject }
+    let(:buster) { instance_double(EdgeCache::Buster) }
+
+    before do
+      allow(EdgeCache::Buster).to receive(:new).and_return(buster)
+      allow(buster).to receive(:bust)
+    end
 
     it "busts the homepage cache when reactable is an Article" do
       reaction = create(:reaction, reactable: article, user: user)
-      allow(EdgeCache::Bust).to receive(:call)
 
       worker.perform(reaction.id)
 
-      expect(EdgeCache::Bust).to have_received(:call).exactly(4)
+      expect(buster).to have_received(:bust).with("/").exactly(2).times
+      expect(buster).to have_received(:bust).with("/?i=i")
+      expect(buster).to have_received(:bust).with("?i=i")
     end
 
     it "doesn't bust the homepage cache when reactable is a Comment" do
       comment = create(:comment, commentable: article)
       comment_reaction = create(:reaction, reactable: comment, user: user)
-      allow(EdgeCache::Bust).to receive(:call)
 
       worker.perform(comment_reaction.id)
 
-      expect(EdgeCache::Bust).not_to have_received(:call)
+      expect(buster).not_to have_received(:bust).with("/")
+      expect(buster).not_to have_received(:bust).with("/?i=i")
+      expect(buster).not_to have_received(:bust).with("?i=i")
     end
 
     it "doesn't fail if a reaction doesn't exist" do

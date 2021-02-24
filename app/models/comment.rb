@@ -238,7 +238,7 @@ class Comment < ApplicationRecord
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     user.touch(:last_comment_at)
-    EdgeCache::Bust.call(commentable.path.to_s) if commentable
+    EdgeCache::Buster.new.bust(commentable.path.to_s) if commentable
     expire_root_fragment
   end
 

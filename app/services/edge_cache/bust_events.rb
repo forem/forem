@@ -1,8 +1,9 @@
 module EdgeCache
-  class BustEvents < Bust
+  class BustEvents < Buster
     def self.call
-      bust("/events")
-      bust("/events?i=i")
+      buster = EdgeCache::Buster.new
+      buster.bust("/events")
+      buster.bust("/events?i=i")
     end
   end
 end

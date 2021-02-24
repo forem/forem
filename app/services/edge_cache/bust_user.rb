@@ -1,5 +1,5 @@
 module EdgeCache
-  class BustUser < Bust
+  class BustUser < Buster
     def self.call(user)
       return unless user
 
@@ -16,7 +16,8 @@ module EdgeCache
         "/feed/#{username}",
       ]
 
-      paths.each { |path| bust(path) }
+      buster = EdgeCache::Buster.new
+      paths.each { |path| buster.bust(path) }
     end
   end
 end

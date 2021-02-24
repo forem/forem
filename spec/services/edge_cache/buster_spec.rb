@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe EdgeCache::Bust, type: :service do
+RSpec.describe EdgeCache::Buster, type: :service do
   let(:user) { create(:user) }
   let(:path) { "/#{user.username}" }
 
@@ -18,7 +18,7 @@ RSpec.describe EdgeCache::Bust, type: :service do
   end
 
   describe "#bust_fastly_cache" do
-    let(:fastly_provider_class) { EdgeCache::Bust::Fastly }
+    let(:fastly_provider_class) { EdgeCache::Buster::Fastly }
 
     context "when fastly is not configured" do
       before do
@@ -29,7 +29,7 @@ RSpec.describe EdgeCache::Bust, type: :service do
       it "does not bust a fastly cache" do
         allow(fastly_provider_class).to receive(:call)
 
-        described_class.call(path)
+        described_class.new.bust(path)
         expect(fastly_provider_class).not_to have_received(:call)
       end
     end
@@ -43,14 +43,14 @@ RSpec.describe EdgeCache::Bust, type: :service do
       it "can bust a fastly cache" do
         allow(fastly_provider_class).to receive(:call)
 
-        described_class.call(path)
+        described_class.new.bust(path)
         expect(fastly_provider_class).to have_received(:call)
       end
     end
   end
 
   describe "#bust_nginx_cache" do
-    let(:nginx_provider_class) { EdgeCache::Bust::Nginx }
+    let(:nginx_provider_class) { EdgeCache::Buster::Nginx }
 
     before do
       # Explicitly stub Fastly since we check if Fastly has
@@ -66,7 +66,7 @@ RSpec.describe EdgeCache::Bust, type: :service do
       it "does not bust an nginx cache" do
         allow(nginx_provider_class).to receive(:call)
 
-        described_class.call(path)
+        described_class.new.bust(path)
         expect(nginx_provider_class).not_to have_received(:call)
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe EdgeCache::Bust, type: :service do
       it "can bust an nginx cache" do
         allow(nginx_provider_class).to receive(:call)
 
-        described_class.call(path)
+        described_class.new.bust(path)
         expect(nginx_provider_class).to have_received(:call)
       end
     end

@@ -1,5 +1,5 @@
 class BustCachePathWorker < BustCacheBaseWorker
   def perform(path)
-    EdgeCache::Bust.call(path)
+    EdgeCache::Buster.new.bust(path)
   end
 end
