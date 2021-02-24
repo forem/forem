@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useMediaQuery } from './useMediaQuery';
 
 /**
@@ -14,3 +15,8 @@ export function MediaQuery({ query, render }) {
 
   return render(matchesBreakpoint);
 }
+
+MediaQuery.propTypes = {
+  query: PropTypes.string.isRequired,
+  render: PropTypes.func.isRequired,
+};
