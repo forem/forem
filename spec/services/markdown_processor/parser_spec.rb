@@ -86,16 +86,16 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     content = "<code>\n this is some random code \n </code>"
     code_span_object = described_class.new(content)
     test = code_span_object.add_proper_code_tags(content)
-    expect(test).not_to include('<code>')
-    expect(test).not_to include('</code>')
+    expect(test).not_to include("<code>")
+    expect(test).not_to include("</code>")
   end
 
   it "converts multiple code tags to triple backticks" do
     content = "<code>\n this is some random code \n </code> \n\n <code> \n more random code \n </code>"
     code_span_object = described_class.new(content)
     test = code_span_object.add_proper_code_tags(content)
-    expect(test).not_to include('<code>')
-    expect(test).not_to include('</code>')
+    expect(test).not_to include("<code>")
+    expect(test).not_to include("</code>")
   end
 
   it "ignores code tag if pre tag is present" do

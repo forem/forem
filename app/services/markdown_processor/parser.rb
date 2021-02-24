@@ -136,13 +136,12 @@ module MarkdownProcessor
       return content if /<code>/.match?(content) && /<pre>/.match(content)
 
       # check if <code> tag is on the same line
-      return content if /<code>(.*)<[\/\\]code>/.match?(content)
+      return content if %r{<code>(.*)</code>}.match?(content)
 
       # At this point, there should be <code> tags with no wrapping <pre> tag
       code_with_pre_tag = content.clone
-      code_with_pre_tag.gsub!('<code>',"```")
-      code_with_pre_tag.gsub!('</code>',"```")
-      return code_with_pre_tag
+      code_with_pre_tag.gsub!("<code>", "```")
+      code_with_pre_tag.gsub!("</code>", "```")
     end
 
     private
