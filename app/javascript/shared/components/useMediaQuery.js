@@ -18,6 +18,19 @@ export const BREAKPOINTS = Object.freeze({
  * @param {function} render A render prop for using   the media query.
  *
  * @returns {boolean} True if the media query is matched, false otherwise.
+ *
+ * @example
+ * import { useMediaQuery } from '@components/useMediaQuery';
+ *
+ * function SomeComponent({ query, render }) {
+ *    const matchesBreakpoint = useMediaQuery(query);
+ *
+ *    if (!matchesBreakpoint) {
+ *      return null;
+ *    }
+ *
+ *    return <SomeComponentThatMatchesMediaQuery />
+ * }
  */
 export const useMediaQuery = (query) => {
   const mediaQuery = window.matchMedia(query);

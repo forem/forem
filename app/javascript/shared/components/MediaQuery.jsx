@@ -9,6 +9,24 @@ import { useMediaQuery } from './useMediaQuery';
  * @param {function} props.render A render prop for using the result of the media query.
  *
  * @return {JSX.Element} Runs the render prop function to generate a JSX element
+ *
+ * @example
+ * <MediaQuery
+ *   query={`(width >= ${BREAKPOINTS.Medium}px)`}
+ *   render={(matches) => {
+ *     return (
+ *       matches && (
+ *         <aside className="crayons-layout__sidebar-left">
+ *           <TagList
+ *             availableTags={availableTags}
+ *             selectedTag={selectedTag}
+ *             onSelectTag={this.toggleTag}
+ *           />
+ *         </aside>
+ *       )
+ *     );
+ *   }}
+ * />
  */
 export function MediaQuery({ query, render }) {
   const matchesBreakpoint = useMediaQuery(query);
