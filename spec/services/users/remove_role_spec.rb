@@ -6,8 +6,8 @@ RSpec.describe Users::RemoveRole, type: :service do
   context "when user is a super_admin" do
     it "does not remove super_admin roles and raises an error", :aggregate_failures do
       super_admin = create(:user, :super_admin)
-      resource_type = nil
       role = super_admin.roles.first.name.to_sym
+      resource_type = nil
       args = { user: super_admin, role: role, resource_type: resource_type, current_user: current_user }
       role_removal = described_class.call(args)
 

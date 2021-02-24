@@ -53,7 +53,7 @@ module Admin
       if response.success
         flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
       else
-        flash[:danger] = response.error_mesage
+        flash[:danger] = response.error_message
       end
       redirect_to edit_admin_user_path(@user.id)
     end
