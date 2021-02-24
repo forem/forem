@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
   return (
-    <fieldset className="hidden l:grid grid-cols-1 gap-2">
+    <fieldset className="hidden grid grid-cols-1 gap-2">
       <legend className="hidden">Filter by tag</legend>
       {availableTags.map((tag) => (
         <label
@@ -43,7 +43,7 @@ export function TagList({
 }) {
   return isMobile ? (
     <select
-      class="crayons-select l:hidden"
+      class="crayons-select"
       aria-label="Filter by tag"
       onBlur={(event) => {
         // We need blur for a11y, but we also don't want to make the same search query twice
