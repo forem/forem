@@ -1,14 +1,11 @@
-import { h, Component, Fragment } from 'preact';
+import { h, Component } from 'preact';
 import { debounceAction } from '../utilities/debounceAction';
 import { fetchSearch } from '../utilities/search';
-import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
-import { ModalBackground } from './components/ModalBackground';
 import { Modal } from './components/Modal';
 import { AllListings } from './components/AllListings';
 import { ListingFilters } from './components/ListingFilters';
 import {
   LISTING_PAGE_SIZE,
-  MATCH_LISTING,
   updateListings,
   getQueryParams,
   resizeAllMasonryItems,
@@ -29,6 +26,7 @@ export class Listings extends Component {
     slug: null,
     page: 0,
     showNextPageButton: false,
+    isModalOpen: false,
   };
 
   componentWillMount() {
@@ -40,6 +38,7 @@ export class Listings extends Component {
     let openedListing = null;
     let slug = null;
     let listings = [];
+    let isModalOpen = false;
 
     if (params.t) {
       tags = params.t.split(',');
@@ -54,7 +53,7 @@ export class Listings extends Component {
     if (container.dataset.displayedlisting) {
       openedListing = JSON.parse(container.dataset.displayedlisting);
       ({ slug } = openedListing);
-      document.body.classList.add('modal-open');
+      isModalOpen = true;
     }
 
     this.debouncedListingSearch = debounceAction(this.handleQuery.bind(this), {
@@ -70,6 +69,7 @@ export class Listings extends Component {
       listings,
       openedListing,
       slug,
+      isModalOpen,
     });
     this.listingSearch(query, tags, category, slug);
     this.setUser();
@@ -88,15 +88,12 @@ export class Listings extends Component {
 
   addTag = (e, tag) => {
     e.preventDefault();
-    if (document.body.classList.contains('modal-open')) {
-      this.handleCloseModal('close-modal');
-    }
     const { query, tags, category } = this.state;
     const newTags = tags;
     if (newTags.indexOf(tag) === -1) {
       newTags.push(tag);
     }
-    this.setState({ tags: newTags, page: 0 });
+    this.setState({ tags: newTags, page: 0, isModalOpen: false });
     this.listingSearch(query, newTags, category, null);
     window.scroll(0, 0);
   };
@@ -126,30 +123,21 @@ export class Listings extends Component {
     this.listingSearch(query, tags, cat, null);
   };
 
-  handleCloseModal = (e) => {
-    const { openedListing } = this.state;
-    if (
-      e === 'close-modal' ||
-      (openedListing !== null && e.key === 'Escape') ||
-      MATCH_LISTING.includes(e.target.id)
-    ) {
-      const { query, tags, category } = this.state;
-      this.setState({ openedListing: null, page: 0 });
-      this.setLocation(query, tags, category, null);
-      document.body.classList.remove('modal-open');
-    }
+  handleCloseModal = () => {
+    const { query, tags, category } = this.state;
+    this.setState({ openedListing: null, page: 0, isModalOpen: false });
+    this.setLocation(query, tags, category, null);
   };
 
   handleOpenModal = (e, listing) => {
     e.preventDefault();
-    this.setState({ openedListing: listing });
+    this.setState({ openedListing: listing, isModalOpen: true });
     window.history.replaceState(
       null,
       null,
       `/listings/${listing.category}/${listing.slug}`,
     );
     this.setLocation(null, null, listing.category, listing.slug);
-    document.body.classList.add('modal-open');
   };
 
   handleDraftingMessage = (e) => {
@@ -269,10 +257,11 @@ export class Listings extends Component {
       showNextPageButton,
       initialFetch,
       message,
+      isModalOpen,
     } = this.state;
 
     const shouldRenderModal =
-      openedListing !== null && openedListing !== undefined;
+      isModalOpen && openedListing !== null && openedListing !== undefined;
 
     if (initialFetch) {
       this.triggerMasonry();
@@ -301,27 +290,17 @@ export class Listings extends Component {
           loadNextPage={this.loadNextPage}
         />
         {shouldRenderModal && (
-          <Fragment>
-            <div className="crayons-modal">
-              <Modal
-                currentUserId={currentUserId}
-                onAddTag={this.addTag}
-                onChangeDraftingMessage={this.handleDraftingMessage}
-                onClick={this.handleCloseModal}
-                onChangeCategory={this.selectCategory}
-                onOpenModal={this.handleOpenModal}
-                onSubmit={this.handleSubmitMessage}
-                listing={openedListing}
-                message={message}
-              />
-              <ModalBackground onClick={this.handleCloseModal} />
-            </div>
-            <KeyboardShortcuts
-              shortcuts={{
-                Escape: this.handleCloseModal,
-              }}
-            />
-          </Fragment>
+          <Modal
+            currentUserId={currentUserId}
+            onAddTag={this.addTag}
+            onChangeDraftingMessage={this.handleDraftingMessage}
+            onClick={this.handleCloseModal}
+            onChangeCategory={this.selectCategory}
+            onOpenModal={this.handleOpenModal}
+            onSubmit={this.handleSubmitMessage}
+            listing={openedListing}
+            message={message}
+          />
         )}
       </div>
     );
