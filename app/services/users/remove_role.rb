@@ -8,35 +8,38 @@ module Users
       new(*args).call
     end
 
-    def initialize(user, _role, _resource_type)
+    def initialize(user:, role:, resource_type:, current_user:)
       @user = user
-      @role = params[:role].to_sym
-      @resource_type = params[:resource_type]
+      @role = role
+      @resource_type = resource_type&.safe_constantize
+      @current_user = current_user
+      @response = Response.new(success: false)
     end
 
     def call
-      return response if super_admin?(role)
-      return response if current_user?(user)
+      return response if super_admin_role?(role)
+      return response if user_is_current_user?(user)
 
-      if @user.remove_role(role, resource_type.safe_constantize)
+      if !resource_type.nil? && @user.remove_role(role, resource_type)
         response.success = true
       elsif @user.remove_role(role)
         response.success = true
       else
-        response.error = "There was an issue removing this role. Please try again."
+        response.error_message = "There was an issue removing this role. Please try again."
       end
+      response
     end
 
     private
 
-    def super_admin?(role)
+    def super_admin_role?(role)
       return false if role != :super_admin
 
       response.error_message = "Super Admin roles cannot be removed."
       true
     end
 
-    def current_user?(user)
+    def user_is_current_user?(user)
       return false if user.id != current_user.id
 
       response.error_message = "Admins cannot remove roles from themselves."
