@@ -10,7 +10,6 @@ FactoryBot.define do
     feed_mark_canonical { false }
     feed_referential_link { true }
     inbox_type { "private" }
-    language_settings { "" }
     permit_adjacent_sponsors { true }
   end
 end
