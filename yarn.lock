@@ -1910,19 +1910,19 @@
     "@stoplight/yaml-ast-parser" "0.0.48"
     tslib "^1.12.0"
 
-"@storybook/addon-a11y@^6.1.19":
-  version "6.1.19"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.1.19.tgz#b9349fcf3d184bccd354cdaf689ecbf1ab4874db"
-  integrity sha512-VBYKJX54anbqE8olxc/vLykoQgVQD8VEy36mmHXRJHCNInpkXE2B5dCxO6LCvITI57f5QnZI2oL/CQX4fglvDw==
+"@storybook/addon-a11y@^6.1.20":
+  version "6.1.20"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.1.20.tgz#71102a84ebaf37948e19a6d28fb58de5adadd1b6"
+  integrity sha512-ytktgT4XyXtbqpYt76R2PWlRTku7NjoZHLCF6Gv+OSEYfys8e0twZ+BJ+Cojch6WLwHYXVcSfcmhgY+DedI0BA==
   dependencies:
-    "@storybook/addons" "6.1.19"
-    "@storybook/api" "6.1.19"
-    "@storybook/channels" "6.1.19"
-    "@storybook/client-api" "6.1.19"
-    "@storybook/client-logger" "6.1.19"
-    "@storybook/components" "6.1.19"
-    "@storybook/core-events" "6.1.19"
-    "@storybook/theming" "6.1.19"
+    "@storybook/addons" "6.1.20"
+    "@storybook/api" "6.1.20"
+    "@storybook/channels" "6.1.20"
+    "@storybook/client-api" "6.1.20"
+    "@storybook/client-logger" "6.1.20"
+    "@storybook/components" "6.1.20"
+    "@storybook/core-events" "6.1.20"
+    "@storybook/theming" "6.1.20"
     axe-core "^4.0.1"
     core-js "^3.0.1"
     global "^4.3.2"
