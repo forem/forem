@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe Users::Setting, type: :model do
   describe "validations" do
     let(:user) { create(:user) }
-    let(:setting) { create(:setting, user_id: user.id) }
-    subject { create(:setting, user_id: user.id) }
+    let(:setting) { create(:setting, user: user) }
+    subject { create(:setting, user: user) }
 
     it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
     it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
