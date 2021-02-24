@@ -11,6 +11,8 @@ import { useMediaQuery } from './useMediaQuery';
  * @return {JSX.Element} Runs the render prop function to generate a JSX element
  *
  * @example
+ * import { MediaQuery } from '@components/MediaQuery';
+ *
  * <MediaQuery
  *   query={`(width >= ${BREAKPOINTS.Medium}px)`}
  *   render={(matches) => {
