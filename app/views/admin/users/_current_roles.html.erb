@@ -8,7 +8,7 @@
           <li><%= role_display_name(role) %> <em><%= role.resource_name.to_s %></em></li>
         <% else %>
           <li>
-            <%= role.name.titlecase %> <em><%= role.resource_name.to_s %></em> &nbsp;
+            <%= role_display_name(role) %> <em><%= role.resource_name.to_s %></em> &nbsp;
             <%= link_to "X", url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym, resource_type: role.resource_type), method: :delete, data: { confirm: "Are you sure?" },
                                                                                                                                       class: "crayons-btn crayons-btn--danger crayons-btn--s lh-base fs-xs" %>
           </li>
