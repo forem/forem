@@ -1,14 +1,14 @@
 module PushNotifications
   class Send
-    def self.call(user = nil, **kwargs)
-      new(user, **kwargs).call
+    def self.call(user:, title:, body:, payload:)
+      new(user: user, title: title, body: body, payload: payload).call
     end
 
-    def initialize(user, **kwargs)
+    def initialize(user:, title:, body:, payload:)
       @user = user
-      @title = kwargs[:title]
-      @body = kwargs[:body]
-      @payload = kwargs[:payload]
+      @title = title
+      @body = body
+      @payload = payload
     end
 
     def call

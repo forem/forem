@@ -1,6 +1,10 @@
 class DevicesController < ApplicationController
   before_action :authenticate_user!, only: [:create]
 
+  rescue_from ActiveRecord::ActiveRecordError do |exc|
+    render json: { error: exc.message, status: 422 }, status: :unprocessable_entity
+  end
+
   def create
     device = Device.find_or_create_by(device_params)
     if device.persisted?
@@ -15,11 +19,8 @@ class DevicesController < ApplicationController
                           token: params[:token],
                           platform: params[:platform],
                           app_bundle: params[:app_bundle]).first
-    if device&.destroy
-      head :ok
-    else
-      render json: { error: device.errors_as_sentence }, status: :bad_request
-    end
+    device&.destroy
+    render json: { error: device.errors_as_sentence }, status: :bad_request
   end
 
   private

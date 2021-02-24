@@ -16,7 +16,7 @@ class Device < ApplicationRecord
 
   def ios_notification(title, body, payload)
     n = Rpush::Apns2::Notification.new
-    # [@forem/oss] `.where().first` is necessary because we use Redis data storage
+    # [@forem/backend] `.where().first` is necessary because we use Redis data storage
     # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
     # rubocop:disable Rails/FindBy
     n.app = Rpush::Apns2::App.where(name: app_bundle).first || recreate_ios_app
@@ -39,7 +39,7 @@ class Device < ApplicationRecord
 
   def android_notification(title, body, payload)
     n = Rpush::Gcm::Notification.new
-    # [@forem/oss] `.where().first` is necessary because we use Redis data storage
+    # [@forem/backend] `.where().first` is necessary because we use Redis data storage
     # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
     # rubocop:disable Rails/FindBy
     n.app = Rpush::Gcm::App.where(name: app_bundle).first || recreate_android_app
@@ -53,7 +53,7 @@ class Device < ApplicationRecord
     n.save!
   end
 
-  def recreate_ios_app
+  def recreate_ios_app!
     app = Rpush::Apns2::App.new
     app.name = app_bundle
     app.certificate = Base64.decode64(ApplicationConfig["RPUSH_IOS_PEM"])
@@ -65,7 +65,7 @@ class Device < ApplicationRecord
     app
   end
 
-  def recreate_android_app
+  def recreate_android_app!
     app = Rpush::Gcm::App.new
     app.name = app_bundle
     app.auth_key = "..."
