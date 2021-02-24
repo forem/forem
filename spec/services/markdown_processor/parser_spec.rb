@@ -82,6 +82,45 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(test).to eq("#{code_span}\n\n")
   end
 
+  it "converts code tag to triple backticks" do
+    content = "<code>\n this is some random code \n </code>"
+    code_span_object = described_class.new(content)
+    test = code_span_object.add_proper_code_tags(content)
+    expect(test).not_to include('<code>')
+    expect(test).not_to include('</code>')
+  end
+
+  it "converts multiple code tags to triple backticks" do
+    content = "<code>\n this is some random code \n </code> \n\n <code> \n more random code \n </code>"
+    code_span_object = described_class.new(content)
+    test = code_span_object.add_proper_code_tags(content)
+    expect(test).not_to include('<code>')
+    expect(test).not_to include('</code>')
+  end
+
+  it "ignores code tag if pre tag is present" do
+    content = "<pre> \n <code>\n this is some random code \n </code> \n </pre>"
+    code_span_object = described_class.new(content)
+    test = code_span_object.add_proper_code_tags(content)
+    expect(test).to include("<pre> \n <code>")
+    expect(test).to include("</code> \n </pre>")
+  end
+
+  it "ignores code tag if tags are inline" do
+    content = "<code> this is some random code </code>"
+    code_span_object = described_class.new(content)
+    test = code_span_object.add_proper_code_tags(content)
+    expect(test).to include("<code>")
+    expect(test).to include("</code>")
+  end
+
+  it "returns original content if code tag is not present" do
+    content = "this is some random code"
+    code_span_object = described_class.new(content)
+    test = code_span_object.add_proper_code_tags(content)
+    expect(test).to be(content)
+  end
+
   context "when rendering links markdown" do
     # the following specs are testing HTMLRouge
     it "renders properly if protocol http is included" do
