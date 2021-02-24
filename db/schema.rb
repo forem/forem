@@ -1405,7 +1405,6 @@ ActiveRecord::Schema.define(version: 2021_02_22_102602) do
     t.string "feed_url"
     t.string "inbox_guidelines"
     t.string "inbox_type", default: "private"
-    t.jsonb "language_settings", default: {}, null: false
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.integer "user_id", null: false

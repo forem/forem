@@ -14,7 +14,6 @@ class CreateUsersSettings < ActiveRecord::Migration[6.0]
       t.string "feed_url"
       t.string "inbox_guidelines"
       t.string "inbox_type", default: "private"
-      t.jsonb "language_settings", default: {}, null: false
       t.boolean "permit_adjacent_sponsors", default: true
       t.string "brand_color1", default: "#000000"
       t.string "brand_color2", default: "#ffffff"
