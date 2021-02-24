@@ -1,8 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import { BREAKPOINTS } from '@components/useMediaQuery';
-import { MediaQuery } from '@components/MediaQuery';
 import {
   loadNextPage,
   onSearchBoxType,
@@ -15,6 +13,8 @@ import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
 import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
 import { TagList } from './components/TagList';
+import { MediaQuery } from '@components/MediaQuery';
+import { BREAKPOINTS } from '@components/useMediaQuery';
 import { debounceAction } from '@utilities/debounceAction';
 import { Button } from '@crayons';
 import { request } from '@utilities/http';
@@ -193,12 +193,12 @@ export class ReadingList extends Component {
     );
     return (
       <main>
-        <header className="crayons-layout l:grid-cols-2">
+        <header className="crayons-layout l:grid-cols-2 pb-0">
           <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
             {` (${items.length})`}
           </h1>
-          <fieldset className="grid gap-1 m:grid-cols-2 grid-cols-1">
+          <fieldset className="grid gap-1 m:grid-cols-2 mb-1">
             <legend className="hidden">Filter</legend>
             <Button
               onClick={(e) => this.toggleStatusView(e)}
