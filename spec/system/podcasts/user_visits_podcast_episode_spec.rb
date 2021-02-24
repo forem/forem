@@ -14,7 +14,7 @@ RSpec.describe "User visits podcast show page", type: :system, js: true do
     expect(result).to be false
   end
 
-  it "they see the content of the hero", js: true, retry: 3 do
+  it "they see the content of the hero", :flaky, js: true do
     visit podcast_episode.path.to_s
 
     expect(page).to have_text(podcast_episode.title)

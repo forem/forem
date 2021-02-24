@@ -7,7 +7,7 @@ RSpec.describe Articles::Suggest, type: :service do
     expect(described_class.call(article).size).to eq(4)
   end
 
-  it "returns proper number of articles with post with different tags" do
+  it "returns proper number of articles with post with different tags", :flaky do
     create_list(:article, 2, featured: true, tags: ["discuss"], score: 10)
     create_list(:article, 2, featured: true, tags: ["javascript"])
     article = create(:article, featured: true, tags: ["discuss"])

@@ -18,8 +18,8 @@ import { Modal, Button } from '@crayons';
  * @example
  *
  * <CreateChatModal
- * toggleModalCreateChannel={toggleModalCreateChannel}
- * handleCreateChannelSuccess={handleCreateChannelSuccess}
+ *   toggleModalCreateChannel={toggleModalCreateChannel}
+ *   handleCreateChannelSuccess={handleCreateChannelSuccess}
  * />
  *
  */

@@ -72,7 +72,7 @@ class User < ApplicationRecord
   NAVBARS = %w[default static].freeze
   THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
   USERNAME_MAX_LENGTH = 30
-  USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
+  USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
   MESSAGES = {
     invalid_config_font: "%<value>s is not a valid font selection",
     invalid_config_navbar: "%<value>s is not a valid navbar value",
@@ -87,7 +87,7 @@ class User < ApplicationRecord
     ([a-zA-Z0-9\-.])+ # matches the hostname (ex ilp.uphold.com)
     (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
     \z
-  }x.freeze
+  }x
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -284,6 +284,14 @@ class User < ApplicationRecord
 
   def tag_line
     summary
+  end
+
+  def twitter_url
+    "https://twitter.com/#{twitter_username}" if twitter_username.present?
+  end
+
+  def github_url
+    "https://github.com/#{github_username}" if github_username.present?
   end
 
   def set_remember_fields
