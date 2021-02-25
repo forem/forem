@@ -3,7 +3,7 @@ import { useState, useEffect } from 'preact/hooks';
 /**
  * Pre-defined breakpoints for width.
  *
- * Note: These were copied from _generator.scss.
+ * Note: These were copied from _import.scss.
  */
 export const BREAKPOINTS = Object.freeze({
   Small: '640',
