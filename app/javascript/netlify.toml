@@ -12,3 +12,4 @@
   ignore = "git diff --quiet HEAD^ HEAD app/javascript && git diff --quiet HEAD^ HEAD app/assets/stylesheets/config"
   [environment]
   NETLIFY_USE_YARN = 1
+  NODE_VERSION = "14.14.0"
