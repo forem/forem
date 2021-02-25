@@ -183,6 +183,7 @@ export class ReadingList extends Component {
 
     const isStatusViewValid = this.statusViewValid();
     const archiveButtonLabel = isStatusViewValid ? 'Archive' : 'Unarchive';
+    const hasTags = availableTags.length > 0;
 
     const snackBar = archiving ? (
       <div className="snackbar">
@@ -233,12 +234,16 @@ export class ReadingList extends Component {
             />
           </fieldset>
         </header>
-        <div className="crayons-layout crayons-layout--2-cols">
-          <MediaQuery
-            query={`(width >= ${BREAKPOINTS.Medium}px)`}
-            render={(matches) => {
-              return (
-                matches && (
+        <MediaQuery
+          query={`(width >= ${BREAKPOINTS.Medium}px)`}
+          render={(matches) => {
+            return (
+              <div
+                className={`crayons-layout ${
+                  hasTags ? 'crayons-layout--2-cols' : 'grid-cols-1'
+                }`}
+              >
+                {matches && hasTags && (
                   <aside className="crayons-layout__sidebar-left">
                     <TagList
                       availableTags={availableTags}
@@ -246,29 +251,29 @@ export class ReadingList extends Component {
                       onSelectTag={this.toggleTag}
                     />
                   </aside>
-                )
-              );
-            }}
-          />
-          <section className="crayons-layout__content">
-            <div className="crayons-card mb-4">
-              {items.length > 0 ? (
-                <ItemList
-                  items={items}
-                  archiveButtonLabel={archiveButtonLabel}
-                  toggleArchiveStatus={this.toggleArchiveStatus}
-                />
-              ) : (
-                this.renderEmptyItems()
-              )}
-            </div>
+                )}
+                <section className="crayons-layout__content">
+                  <div className="crayons-card mb-4">
+                    {items.length > 0 ? (
+                      <ItemList
+                        items={items}
+                        archiveButtonLabel={archiveButtonLabel}
+                        toggleArchiveStatus={this.toggleArchiveStatus}
+                      />
+                    ) : (
+                      this.renderEmptyItems()
+                    )}
+                  </div>
 
-            <ItemListLoadMoreButton
-              show={showLoadMoreButton}
-              onClick={this.loadNextPage}
-            />
-          </section>
-        </div>
+                  <ItemListLoadMoreButton
+                    show={showLoadMoreButton}
+                    onClick={this.loadNextPage}
+                  />
+                </section>
+              </div>
+            );
+          }}
+        />
         {snackBar}
       </main>
     );
