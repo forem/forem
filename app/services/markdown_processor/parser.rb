@@ -130,7 +130,7 @@ module MarkdownProcessor
 
     def convert_code_tags_to_triple_backticks(content)
       # return content if there is not a <code> tag
-      return content unless (/^<code>$/).match?(content)
+      return content unless /^<code>$/.match?(content)
 
       # return content if there is a <pre> and <code> tag
       return content if /<code>/.match?(content) && /<pre>/.match?(content)
