@@ -68,15 +68,21 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
   describe "GET /search/usernames" do
     let(:authorized_user) { create(:user) }
-    let(:names) { ["username"] }
+    let(:result) do
+      {
+        "username" => "molly",
+        "name" => "Molly",
+        "profile_image_90" => "something"
+      }
+    end
 
     it "returns json" do
       sign_in authorized_user
       allow(Search::User).to receive(:search_usernames).and_return(
-        names,
+        result,
       )
       get "/search/usernames"
-      expect(response.parsed_body).to eq("result" => names)
+      expect(response.parsed_body).to eq("result" => result)
     end
   end
 
