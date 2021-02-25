@@ -147,7 +147,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm", "testid": "authSectionForm" } }) do |f| %>
+        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm", testid: "authSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -355,7 +355,7 @@
                 </section>
               </section>
               <div class="crayons-notice crayons-notice--info mb-4">
-                Changing authentication keys will not take affect until this forem instance is restarted.
+                Changing authentication keys will not take effect until this Forem instance is restarted.
               </div>
 
               <%= render "form_submission", f: f %>
