@@ -3,7 +3,16 @@ require "rails_helper"
 RSpec.describe DataUpdateScript do
   let(:test_directory) { Rails.root.join("spec/support/fixtures/data_update_scripts") }
 
-  it { is_expected.to validate_uniqueness_of(:file_name) }
+  describe "validations" do
+    describe "builtin validations" do
+      subject { create(:data_update_script) }
+
+      it { is_expected.to validate_presence_of(:file_name) }
+      it { is_expected.to validate_presence_of(:status) }
+
+      it { is_expected.to validate_uniqueness_of(:file_name) }
+    end
+  end
 
   describe ".scripts_to_run" do
     before { stub_const "#{described_class}::DIRECTORY", test_directory }
@@ -11,7 +20,7 @@ RSpec.describe DataUpdateScript do
     it "creates new DataUpdateScripts from files" do
       expect do
         described_class.scripts_to_run
-      end.to change(described_class, :count).by(1)
+      end.to change(described_class, :count).by(2)
     end
 
     it "returns scripts that need to be run" do
@@ -43,18 +52,24 @@ RSpec.describe DataUpdateScript do
       expect(described_class.scripts_to_run?).to be(true)
     end
 
-    it "returns false if there are only working scripts" do
+    it "returns true if there are multiple files on disk" do
       create(:data_update_script, status: :working)
+      expect(described_class.scripts_to_run?).to be(true)
+    end
+
+    it "returns false if there are only working scripts" do
+      create_list(:data_update_script, 2, status: :working)
       expect(described_class.scripts_to_run?).to be(false)
     end
 
     it "returns false if there are only succeeded scripts" do
-      create(:data_update_script, status: :succeeded)
+      create_list(:data_update_script, 2, status: :succeeded)
+
       expect(described_class.scripts_to_run?).to be(false)
     end
 
     it "returns false if there are only failed scripts" do
-      create(:data_update_script, status: :failed)
+      create_list(:data_update_script, 2, status: :failed)
       expect(described_class.scripts_to_run?).to be(false)
     end
   end
@@ -86,8 +101,9 @@ RSpec.describe DataUpdateScript do
       test_script = create(:data_update_script)
       expect(test_script.finished_at).to be_nil
       expect(test_script).to be_enqueued
-      test_script.mark_as_failed!
+      test_script.mark_as_failed!(StandardError.new("error"))
       expect(test_script).to be_failed
+      expect(test_script.error).to eq("StandardError: error")
       expect(test_script.finished_at).not_to be_nil
     end
   end

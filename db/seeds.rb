@@ -2,26 +2,9 @@
 
 return if Rails.env.production?
 
-# NOTE: when adding new data, please use this class to ensure the seed tasks
+# NOTE: when adding new data, please use the Seeder class to ensure the seed tasks
 # stays idempotent.
-class Seeder
-  def initialize
-    @counter = 0
-  end
-
-  def create_if_none(klass, count = nil)
-    @counter += 1
-    plural = klass.name.pluralize
-
-    if klass.none?
-      message = ["Creating", count, plural].compact.join(" ")
-      puts "  #{@counter}. #{message}."
-      yield
-    else
-      puts "  #{@counter}. #{plural} already exist. Skipping."
-    end
-  end
-end
+require Rails.root.join("app/lib/seeder")
 
 # we use this to be able to increase the size of the seeded DB at will
 # eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
@@ -34,6 +17,7 @@ puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 SiteConfig.public = true
 SiteConfig.waiting_on_first_user = false
+SiteConfig.authentication_providers = Authentication::Providers.available
 
 ##############################################################################
 
@@ -65,6 +49,15 @@ end
 
 ##############################################################################
 
+# NOTE: @citizen428 For the time being we want all current DEV profile fields.
+# The CSV import is idempotent by itself, since it uses find_or_create_by.
+seeder.create("Creating DEV profile fields") do
+  dev_fields_csv = Rails.root.join("lib/data/dev_profile_fields.csv")
+  ProfileFields::ImportFromCsv.call(dev_fields_csv)
+end
+
+##############################################################################
+
 num_users = 10 * SEEDS_MULTIPLIER
 
 users_in_random_order = seeder.create_if_none(User, num_users) do
@@ -84,6 +77,8 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       # Emails limited to 50 characters
       email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
+      registered_at: Time.current,
+      registered: true,
       password: "password",
       password_confirmation: "password",
     )
@@ -134,6 +129,25 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
   end
 
   User.order(Arel.sql("RANDOM()"))
+end
+
+seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
+  user = User.create!(
+    name: "Admin McAdmin",
+    email: "admin@forem.local",
+    username: "Admin_McAdmin",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+
+  user.add_role(:super_admin)
+  user.add_role(:single_resource_admin, Config)
 end
 
 ##############################################################################
@@ -218,7 +232,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "2faa4a",
       overcast_url: "https://overcast.fm/itunes919219256/codenewbie",
       android_url: "https://subscribeonandroid.com/feeds.podtrac.com/q8s8ba9YtM6r",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
     {
@@ -231,7 +245,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "111111",
       overcast_url: "https://overcast.fm/itunes769189585/coding-blocks",
       android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
     {
@@ -244,7 +258,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "181a1c",
       overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me",
       android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
     {
@@ -258,7 +272,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "343d46",
       overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
       android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
   ]
@@ -280,16 +294,16 @@ seeder.create_if_none(Broadcast) do
       "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
       "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
     facebook_connect: "You're on a roll! 🎉  Do you have a Facebook account? " \
-      "Consider <a href='/settings'>connecting it</a>.",
+    "Consider <a href='/settings'>connecting it</a>.",
     github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
       "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
     customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
       "your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
     customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
-      "Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!",
+      "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!",
     start_discussion: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; " \
-      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+    "just click on 'Write a Post' in the sidebar of the tag page to get started!",
     ask_question: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; " \
       "just click on 'Write a Post' in the sidebar of the tag page to get started!",
@@ -340,6 +354,13 @@ seeder.create_if_none(ChatChannel) do
       slug: chan,
     )
   end
+
+  # This channel is hard-coded in a few places
+  ChatChannel.create!(
+    channel_name: "Tag Moderators",
+    channel_type: "open",
+    slug: "tag-moderators",
+  )
 
   direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
   Message.create!(
@@ -412,9 +433,16 @@ seeder.create_if_none(FeedbackMessage) do
   )
 
   3.times do
+    article_id = Article
+      .left_joins(:reactions)
+      .where.not(articles: { id: Reaction.article_vomits.pluck(:reactable_id) })
+      .order(Arel.sql("RANDOM()"))
+      .first
+      .id
+
     Reaction.create!(
       category: "vomit",
-      reactable_id: Article.order(Arel.sql("RANDOM()")).first.id,
+      reactable_id: article_id,
       reactable_type: "Article",
       user_id: mod.id,
     )
@@ -487,6 +515,7 @@ seeder.create_if_none(Listing) do
         listing_category_id: category_id,
         contact_via_connect: true,
         published: true,
+        originally_published_at: Time.current,
         bumped_at: Time.current,
         tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
       )
@@ -494,15 +523,6 @@ seeder.create_if_none(Listing) do
   end
 end
 
-seeder.create_if_none(ListingEndorsement) do
-  5.times do
-    ListingEndorsement.create!(
-      content: Faker::Lorem.sentence,
-      user: User.order(Arel.sql("RANDOM()")).first,
-      listing: Listing.order(Arel.sql("RANDOM()")).first,
-    )
-  end
-end
 ##############################################################################
 
 seeder.create_if_none(Page) do
@@ -519,17 +539,6 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(ProfileField) do
-  ProfileFields::AddBaseFields.call
-  ProfileFields::AddLinkFields.call
-  ProfileFields::AddWorkFields.call
-  coding_fields_csv = Rails.root.join("lib/data/coding_profile_fields.csv")
-  ProfileFields::ImportFromCsv.call(coding_fields_csv)
-  ProfileFields::AddBrandingFields.call
-end
-
-##############################################################################
-
 seeder.create_if_none(Sponsorship) do
   organizations = Organization.take(3)
   organizations.each do |organization|
@@ -540,6 +549,12 @@ seeder.create_if_none(Sponsorship) do
       blurb_html: Faker::Hacker.say_something_smart,
     )
   end
+end
+
+##############################################################################
+
+seeder.create_if_none(NavigationLink) do
+  Rake::Task["navigation_links:update"].invoke
 end
 
 ##############################################################################

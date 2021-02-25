@@ -4,7 +4,6 @@ module Search
       Search::ChatChannelMembership,
       Search::Listing,
       Search::FeedContent,
-      Search::Reaction,
       Search::Tag,
       Search::User,
     ].freeze

@@ -2,6 +2,10 @@
 items:
   - stack.md
   - architecture.md
+  - feed.md
+  - compatibility.md
+  - ab_testing.md
+  - feature_flags.md
 ---
 
 # Technical Overview

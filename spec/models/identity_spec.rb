@@ -9,8 +9,6 @@ RSpec.describe Identity, type: :model do
 
       it { is_expected.to belong_to(:user) }
 
-      it { is_expected.to have_many(:backup_data).class_name("BackupData").dependent(:destroy) }
-
       it { is_expected.to validate_presence_of(:provider) }
       it { is_expected.to validate_presence_of(:uid) }
       it { is_expected.to validate_presence_of(:user_id) }
@@ -28,6 +26,38 @@ RSpec.describe Identity, type: :model do
 
     before do
       omniauth_mock_providers_payload
+    end
+
+    context "with Apple payload" do
+      let(:auth_payload) { OmniAuth.config.mock_auth[:apple] }
+      let(:provider) { Authentication::Providers::Apple.new(auth_payload) }
+
+      it "initializes a new identity from the auth payload" do
+        identity = described_class.build_from_omniauth(provider)
+
+        expect(identity.new_record?).to be(true)
+        expect(identity.provider).to eq("apple")
+        expect(identity.uid).to eq(auth_payload.uid)
+        expect(identity.token).to eq(auth_payload.credentials.token)
+        expect(identity.secret).to be_nil
+        expect(identity.auth_data_dump).to eq(provider.payload)
+      end
+
+      it "finds an existing identity" do
+        payload = provider.payload
+
+        existing_identity = described_class.create!(
+          user: user,
+          provider: payload.provider,
+          uid: payload.uid,
+          token: payload.credentials.token,
+          secret: nil,
+          auth_data_dump: payload,
+        )
+
+        identity = described_class.build_from_omniauth(provider)
+        expect(identity).to eq(existing_identity)
+      end
     end
 
     context "with Github payload" do

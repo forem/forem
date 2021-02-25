@@ -1,10 +1,16 @@
 <div class="grid gap-6">
   <div class="crayons-card p-6">
     <h2 class="d-inline">
-      <%= @user.name %><%= link_to "@#{@user.username}", @user.path, class: "ml-2", target: "_blank", rel: "noopener" %>
+      <% if @user.registered? %>
+        <%= @user.name %><%= link_to "@#{@user.username}", @user.path, class: "ml-2", target: "_blank", rel: "noopener" %>
+      <% else %>
+        @<%= @user.username %> has not accepted their invitation yet.
+      <% end %>
     </h2>
-    <a href="<%= edit_admin_user_path(@user) %>" class="btn btn-primary float-right">Manage User</a>
-    <p class="font-italic">Member since <%= @user.created_at.strftime("%b %e '%y") %></p>
+    <% if @user.registered? %>
+      <a href="<%= edit_admin_user_path(@user) %>" class="btn btn-primary float-right">Manage User</a>
+      <p class="font-italic">Member since <%= @user.created_at.strftime("%b %e '%y") %></p>
+    <% end %>
 
     <hr>
 
@@ -35,8 +41,10 @@
     </dl>
   </div>
 
-<%= render "activity" %>
-<%= render "credits" %>
-<%= render "notes" %>
-<%= render "user_organizations" %>
-<%= render "email_tools" %>
+<% if @user.registered? %>
+  <%= render "activity" %>
+  <%= render "credits" %>
+  <%= render "notes" %>
+  <%= render "user_organizations" %>
+  <%= render "email_tools" %>
+<% end %>

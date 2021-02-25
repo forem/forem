@@ -23,12 +23,10 @@ RSpec.describe Users::DeleteArticles, type: :service do
   end
 
   context "with comments" do
-    let(:buster) { double }
-
     before do
-      allow(buster).to receive(:bust_comment)
-      allow(buster).to receive(:bust_article)
-      allow(buster).to receive(:bust_user)
+      allow(EdgeCache::BustComment).to receive(:call)
+      allow(EdgeCache::BustArticle).to receive(:call)
+      allow(EdgeCache::BustUser).to receive(:call)
 
       create_list(:comment, 2, commentable: article, user: user2)
     end
@@ -47,10 +45,10 @@ RSpec.describe Users::DeleteArticles, type: :service do
     end
 
     it "busts cache" do
-      described_class.call(user, buster)
-      expect(buster).to have_received(:bust_comment).with(article).twice
-      expect(buster).to have_received(:bust_user).with(user2).at_least(:once)
-      expect(buster).to have_received(:bust_article).with(article)
+      described_class.call(user)
+      expect(EdgeCache::BustComment).to have_received(:call).with(article).twice
+      expect(EdgeCache::BustUser).to have_received(:call).with(user2).at_least(:once)
+      expect(EdgeCache::BustArticle).to have_received(:call).with(article)
     end
 
     it "removes comments from Elasticsearch", :aggregate_failures do

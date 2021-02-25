@@ -1,6 +1,8 @@
 class Identity < ApplicationRecord
+  NO_EMAIL_MSG = "No email found. Please relink your %<provider>s " \
+                 "account to avoid errors.".freeze
+
   belongs_to :user
-  has_many :backup_data, as: :instance, class_name: "BackupData", dependent: :destroy
 
   scope :enabled, -> { where(provider: Authentication::Providers.enabled) }
 
@@ -40,6 +42,6 @@ class Identity < ApplicationRecord
   end
 
   def email
-    auth_data_dump.info.email
+    auth_data_dump&.info&.email || format(NO_EMAIL_MSG, provider: provider)
   end
 end

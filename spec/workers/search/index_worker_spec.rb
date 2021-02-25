@@ -14,6 +14,6 @@ RSpec.describe Search::IndexWorker, type: :worker, elasticsearch: "Tag" do
   end
 
   it "does not raise an error if record is not found" do
-    expect { worker.perform("Tag", 1234) }.not_to raise_error(ActiveRecord::RecordNotFound)
+    expect { worker.perform("Tag", 1234) }.not_to raise_error
   end
 end

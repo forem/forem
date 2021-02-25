@@ -51,24 +51,25 @@ RSpec.describe "/admin/buffer_updates", type: :request do
     it "updates last facebook buffered at" do
       post "/admin/buffer_updates",
            params:
-           { social_channel: "facebook", article_id: article.id, tweet: "Hello this is a test" }
+           { social_channel: "facebook", article_id: article.id, fb_post: "Hello this is a test" }
       expect(article.reload.facebook_last_buffered).not_to eq(nil)
     end
   end
 
   describe "PUT /admin/buffer_updates" do
-    before do
-      sign_in user
-      user.add_role(:super_admin)
-    end
-
+    let(:tag) { create(:tag) }
     let(:buffer_update) do
       BufferUpdate.create(article_id: article.id,
                           composer_user_id: user.id,
                           body_text: "This is text - #{rand(100)}",
                           social_service_name: "twitter",
-                          tag_id: "ruby",
+                          tag_id: tag.id,
                           status: "pending")
+    end
+
+    before do
+      sign_in user
+      user.add_role(:super_admin)
     end
 
     it "sends to buffer" do

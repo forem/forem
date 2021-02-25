@@ -3,7 +3,4 @@
 //= link_directory ../javascripts .js
 //= link_directory ../stylesheets .css
 //= link s3_direct_upload.js
-//= link administrate/application.css
-//= link administrate/application.js
 //= link katex.css
-//= link search.xml

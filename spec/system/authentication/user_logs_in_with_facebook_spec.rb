@@ -3,20 +3,23 @@ require "rails_helper"
 RSpec.describe "Authenticating with Facebook" do
   let(:sign_in_link) { "Continue with Facebook" }
 
-  before { omniauth_mock_facebook_payload }
+  before do
+    omniauth_mock_facebook_payload
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+  end
 
   context "when a user is new" do
     context "when using valid credentials" do
       it "creates a new user" do
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
       end
 
       it "logs in and redirects to the onboarding" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
@@ -24,7 +27,7 @@ RSpec.describe "Authenticating with Facebook" do
 
       it "remembers the user" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         user = User.last
 
@@ -42,13 +45,13 @@ RSpec.describe "Authenticating with Facebook" do
       it "creates a new user" do
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
       end
 
       it "logs in and redirects to the onboarding" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
@@ -56,7 +59,7 @@ RSpec.describe "Authenticating with Facebook" do
 
       it "remembers the user" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         user = User.last
 
@@ -73,7 +76,7 @@ RSpec.describe "Authenticating with Facebook" do
 
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
 
         expect(page).to have_current_path("/onboarding", ignore_query: true)
@@ -89,7 +92,7 @@ RSpec.describe "Authenticating with Facebook" do
       before do
         omniauth_setup_invalid_credentials(:facebook)
 
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
       end
 
       after do
@@ -99,17 +102,16 @@ RSpec.describe "Authenticating with Facebook" do
       it "does not create a new user" do
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "does not log in" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_in")
-        expect(page).to have_link(sign_in_link)
-        expect(page).to have_link("About #{ApplicationConfig['COMMUNITY_NAME']}")
+        expect(page).to have_button(sign_in_link)
       end
 
       it "notifies Datadog about a callback error" do
@@ -117,13 +119,13 @@ RSpec.describe "Authenticating with Facebook" do
           "Callback error", "Error reason", "https://example.com/error"
         )
 
-        omniauth_setup_authentication_error(error)
+        omniauth_setup_authentication_error(error, params)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "facebook", params)
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -133,26 +135,26 @@ RSpec.describe "Authenticating with Facebook" do
         allow(request).to receive(:code).and_return(401)
         allow(request).to receive(:message).and_return("unauthorized")
         error = OAuth::Unauthorized.new(request)
-        omniauth_setup_authentication_error(error)
+        omniauth_setup_authentication_error(error, params)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "facebook", params)
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
 
       it "notifies Datadog even with no OmniAuth error present" do
         error = nil
-        omniauth_setup_authentication_error(error)
+        omniauth_setup_authentication_error(error, params)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "facebook", params)
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -167,13 +169,13 @@ RSpec.describe "Authenticating with Facebook" do
       it "does not create a new user" do
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "redirects to the registration page" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_up")
       end
@@ -182,7 +184,7 @@ RSpec.describe "Authenticating with Facebook" do
         allow(Honeybadger).to receive(:notify)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(Honeybadger).to have_received(:notify).once
       end
@@ -205,7 +207,7 @@ RSpec.describe "Authenticating with Facebook" do
     context "when using valid credentials" do
       it "logs in" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/?signin=true")
       end
@@ -218,6 +220,18 @@ RSpec.describe "Authenticating with Facebook" do
 
         expect(page).to have_current_path("/?signin=true")
       end
+    end
+  end
+
+  context "when community is in invite only mode" do
+    before do
+      allow(SiteConfig).to receive(:invite_only_mode).and_return(true)
+    end
+
+    it "doesn't present the authentication option" do
+      visit sign_up_path(state: "new-user")
+      expect(page).not_to have_text(sign_in_link)
+      expect(page).to have_text("invite only")
     end
   end
 end

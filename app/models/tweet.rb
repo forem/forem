@@ -22,7 +22,7 @@ class Tweet < ApplicationRecord
       text.gsub!("@#{uname}", "<a href='https://twitter.com/#{uname}'>#{"@#{uname}"}</a>")
     end
     hashtags_serialized.each do |tag|
-      tag_text = tag[:text]
+      tag_text = tag.text
       text.gsub!("##{tag_text}",
                  "<a href='https://twitter.com/hashtag/#{tag_text}'>#{"##{tag_text}"}</a>")
     end

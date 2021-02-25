@@ -24,7 +24,7 @@ describe SocialImageHelper do
 
       url = helper.user_social_image_url(user)
 
-      expect(url).to eq GeneratedImage.new(user).social_image
+      expect(url).to eq Images::GenerateSocialImage.call(user)
     end
 
     it "returns social preview path for newer decorated users" do
@@ -36,9 +36,10 @@ describe SocialImageHelper do
 
   describe ".article_social_image_url" do
     it "returns social preview path for newer articles" do
+      allow(SiteConfig).to receive(:app_domain).and_return("hello.com")
       url = helper.article_social_image_url(article)
 
-      expect(url).to eq article_social_preview_url(article, format: :png)
+      expect(url).to eq article_social_preview_url(article, format: :png, host: "hello.com")
     end
 
     it "returns the main image if set" do
@@ -55,13 +56,14 @@ describe SocialImageHelper do
 
       url = helper.article_social_image_url(article)
 
-      expect(url).to eq GeneratedImage.new(article).social_image
+      expect(url).to eq Images::GenerateSocialImage.call(article)
     end
 
     it "returns social preview path for newer decorated articles" do
+      allow(SiteConfig).to receive(:app_domain).and_return("hello.com")
       url = helper.article_social_image_url(article.decorate)
 
-      expect(url).to eq article_social_preview_url(article, format: :png)
+      expect(url).to eq article_social_preview_url(article, format: :png, host: "hello.com")
     end
 
     it "returns correct manipulation of cloudinary links" do

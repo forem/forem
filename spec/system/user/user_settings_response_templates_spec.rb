@@ -19,10 +19,10 @@ RSpec.describe "User uses response templates settings", type: :system do
       end
 
       it "shows the proper message when deleting a reponse template", js: true do
-        visit "/settings/response-templates"
+        visit "/settings/extensions"
         expect(page).to have_text(response_template.title)
 
-        expect(page).to have_css(".github-repo-row-name", text: response_template.title)
+        expect(page).to have_css(".flex-1", text: response_template.title)
         begin
           accept_confirm { click_button("Remove") }
         rescue Capybara::ModalNotFound => e

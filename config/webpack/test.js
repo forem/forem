@@ -1,4 +1,4 @@
-/* global process, module, require */
+/* eslint-env node */
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 

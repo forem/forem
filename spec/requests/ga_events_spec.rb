@@ -15,7 +15,7 @@ RSpec.describe "GaEvents", type: :request, vcr: vcr_option do
     end
 
     it "renders normal response even if site config is private" do
-      SiteConfig.public = false
+      allow(SiteConfig).to receive(:public).and_return(false)
       post "/fallback_activity_recorder", params: {
         path: "/ben", user_language: "en"
       }.to_json

@@ -19,11 +19,12 @@ class Article < ApplicationRecord
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
 
-  belongs_to :user
-  belongs_to :organization, optional: true
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
   belongs_to :collection, optional: true
+
+  belongs_to :organization, optional: true
+  belongs_to :user
 
   counter_culture :user
   counter_culture :organization
@@ -48,17 +49,25 @@ class Article < ApplicationRecord
            class_name: "Comment"
 
   validates :body_markdown, length: { minimum: 0, allow_nil: false }, uniqueness: { scope: %i[user_id title] }
+  validates :boost_states, presence: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :canonical_url, uniqueness: { allow_nil: true }
   validates :canonical_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
+  validates :comments_count, presence: true
   validates :feed_source_url, uniqueness: { allow_nil: true }
   validates :feed_source_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  validates :positive_reactions_count, presence: true
+  validates :previous_public_reactions_count, presence: true
+  validates :public_reactions_count, presence: true
+  validates :rating_votes_count, presence: true
+  validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
   validates :slug, uniqueness: { scope: :user_id }
   validates :title, presence: true, length: { maximum: 128 }
   validates :user_id, presence: true
+  validates :user_subscriptions_count, presence: true
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
@@ -71,6 +80,9 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validate :validate_tag
   validate :validate_video
+  validate :validate_co_authors, unless: -> { co_author_ids.blank? }
+  validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
+  validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
   before_validation :evaluate_markdown, :create_slug
   before_save :update_cached_user
@@ -82,15 +94,17 @@ class Article < ApplicationRecord
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
-  after_save :bust_cache, :detect_human_language
+  after_save :create_conditional_autovomits
+  after_save :bust_cache
   after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
-  after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection, on: %i[create update]
+
+  after_commit :async_score_calc, :touch_collection, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :sync_related_elasticsearch_docs, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   serialize :cached_user
@@ -101,9 +115,10 @@ class Article < ApplicationRecord
 
   scope :admin_published_with, lambda { |tag_name|
     published
-      .where(user_id: SiteConfig.staff_user_id)
-      .order(published_at: :desc)
-      .tagged_with(tag_name)
+      .where(user_id: User.with_role(:super_admin)
+                          .union(User.with_role(:admin))
+                          .union(id: [SiteConfig.staff_user_id, SiteConfig.mascot_user_id].compact)
+                          .select(:id)).order(published_at: :desc).tagged_with(tag_name)
   }
 
   scope :user_published_with, lambda { |user_id, tag_name|
@@ -129,7 +144,7 @@ class Article < ApplicationRecord
            :comments_count, :public_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
-           :video_thumbnail_url, :video_closed_caption_track_url, :language,
+           :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
            :last_comment_at)
@@ -143,7 +158,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
            :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-           :email_digest_eligible, :processed_html, :second_user_id, :third_user_id)
+           :email_digest_eligible, :processed_html, :co_author_ids)
   }
 
   scope :boosted_via_additional_articles, lambda {
@@ -284,7 +299,7 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
-    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed.front_matter["title"].present?
@@ -360,16 +375,16 @@ class Article < ApplicationRecord
     "#{duration[:hours]}:#{minutes_and_seconds}"
   end
 
-  def video_duration_in_minutes_integer
-    (video_duration_in_seconds.to_i / 60) % 60
-  end
-
   def update_score
     new_score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
     update_columns(score: new_score,
                    comment_score: comments.sum(:score),
                    hotness_score: BlackBox.article_hotness_score(self),
                    spaminess_rating: BlackBox.calculate_spaminess(self))
+  end
+
+  def co_author_ids_list=(list_of_co_author_ids)
+    self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
   end
 
   private
@@ -398,13 +413,13 @@ class Article < ApplicationRecord
 
     self.cached_user_name = user_name
     self.cached_user_username = user_username
-    self.path = calculated_path
+    self.path = calculated_path.downcase
   end
 
   def evaluate_markdown
-    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownParser.new(parsed.content, source: self, user: user)
+    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
 
@@ -416,25 +431,13 @@ class Article < ApplicationRecord
 
     self.description = processed_description if description.blank?
   rescue StandardError => e
-    errors[:base] << ErrorMessageCleaner.new(e.message).clean
+    errors[:base] << ErrorMessages::Clean.call(e.message)
   end
 
   def set_tag_list(tags)
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
     self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
-  end
-
-  def update_main_image_background_hex
-    return if main_image.blank? || main_image_background_hex_color != "#dddddd"
-
-    Articles::UpdateMainImageBackgroundHexWorker.perform_async(id)
-  end
-
-  def detect_human_language
-    return if language.present?
-
-    update_column(:language, LanguageDetector.new(self).detect)
   end
 
   def async_score_calc
@@ -463,6 +466,7 @@ class Article < ApplicationRecord
 
   def before_destroy_actions
     bust_cache
+    touch_actor_latest_article_updated_at(destroying: true)
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)
@@ -554,6 +558,24 @@ class Article < ApplicationRecord
     errors.add(:collection_id, "must be one you have permission to post to")
   end
 
+  def validate_co_authors
+    return if co_author_ids.exclude?(user_id)
+
+    errors.add(:co_author_ids, "must not be the same user as the author")
+  end
+
+  def validate_co_authors_must_not_be_the_same
+    return if co_author_ids.uniq.count == co_author_ids.count
+
+    errors.add(:base, "co-author IDs must be unique")
+  end
+
+  def validate_co_authors_exist
+    return if User.where(id: co_author_ids).count == co_author_ids.count
+
+    errors.add(:co_author_ids, "must be valid user IDs")
+  end
+
   def past_or_present_date
     return unless published_at && published_at > Time.current
 
@@ -586,13 +608,8 @@ class Article < ApplicationRecord
   end
 
   def update_cached_user
-    if organization
-      self.cached_organization = Articles::CachedEntity.from_object(organization)
-    end
-
-    return unless user
-
-    self.cached_user = Articles::CachedEntity.from_object(user)
+    self.cached_organization = organization ? Articles::CachedEntity.from_object(organization) : nil
+    self.cached_user = user ? Articles::CachedEntity.from_object(user) : nil
   end
 
   def set_all_dates
@@ -640,16 +657,46 @@ class Article < ApplicationRecord
     self.canonical_url = nil if canonical_url == ""
   end
 
+  def touch_actor_latest_article_updated_at(destroying: false)
+    return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list]).present?
+
+    user.touch(:latest_article_updated_at)
+    organization&.touch(:latest_article_updated_at)
+  end
+
   def bust_cache
-    CacheBuster.bust(path)
-    CacheBuster.bust("#{path}?i=i")
-    CacheBuster.bust("#{path}?preview=#{password}")
+    EdgeCache::Bust.call(path)
+    EdgeCache::Bust.call("#{path}?i=i")
+    EdgeCache::Bust.call("#{path}?preview=#{password}")
     async_bust
+    touch_actor_latest_article_updated_at
   end
 
   def calculate_base_scores
     self.hotness_score = 1000 if hotness_score.blank?
     self.spaminess_rating = 0 if new_record?
+  end
+
+  def create_conditional_autovomits
+    return unless SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
+
+    Reaction.create(
+      user_id: SiteConfig.mascot_user_id,
+      reactable_id: id,
+      reactable_type: "Article",
+      category: "vomit",
+    )
+
+    return unless Reaction.article_vomits.where(reactable_id: user.articles.pluck(:id)).size > 2
+
+    user.add_role(:banned)
+    Note.create(
+      author_id: SiteConfig.mascot_user_id,
+      noteable_id: user_id,
+      noteable_type: "User",
+      reason: "automatic_suspend",
+      content: "User suspended for too many spammy articles, triggered by autovomit.",
+    )
   end
 
   def async_bust

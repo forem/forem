@@ -70,6 +70,7 @@ module Podcasts
     def finalize(episode)
       episode.purge_all
       episode.index_to_elasticsearch
+      episode.save if episode.processed_html.blank?
     end
   end
 end

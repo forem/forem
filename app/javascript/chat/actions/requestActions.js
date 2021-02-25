@@ -92,3 +92,52 @@ export async function updateMembership(membershipId, userAction) {
 
   return response.json();
 }
+
+/**
+ *
+ * @param {string} feedback_message
+ * @param {string} type_of_feedback
+ * @param {string} category
+ * @param {string} reported_url
+ */
+export async function reportAbuse(
+  feedback_message,
+  feedback_type,
+  category,
+  offender_id,
+) {
+  const response = await request('/feedback_messages', {
+    method: 'POST',
+    body: {
+      feedback_message: {
+        message: feedback_message,
+        feedback_type,
+        category,
+        offender_id,
+      },
+    },
+  });
+
+  return response.json();
+}
+
+/**
+ * Blocks a user with the given ID from using Connect
+ *
+ * @param {number} userId
+ *
+ *
+ */
+
+export async function blockUser(userId) {
+  const response = await request('/user_blocks', {
+    method: 'POST',
+    body: {
+      user_block: {
+        blocked_id: userId,
+      },
+    },
+  });
+
+  return response.json();
+}

@@ -3,6 +3,8 @@ class ApplicationController < ActionController::Base
   skip_before_action :track_ahoy_visit
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
+  before_action :remember_cookie_sync
+  before_action :forward_to_app_config_domain
 
   include SessionCurrentUser
   include ValidRequest
@@ -10,6 +12,9 @@ class ApplicationController < ActionController::Base
   include CachingHeaders
   include ImageUploads
   include VerifySetupCompleted
+  include DevelopmentDependencyChecks if Rails.env.development?
+  include EdgeCacheSafetyCheck unless Rails.env.production?
+  include Devise::Controllers::Rememberable
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
@@ -24,7 +29,9 @@ class ApplicationController < ActionController::Base
                           omniauth_callbacks
                           registrations
                           confirmations
-                          passwords].freeze
+                          invitations
+                          passwords
+                          health_checks].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   def verify_private_forem
@@ -73,6 +80,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def redirect_permanently_to(location)
+    redirect_to location + internal_nav_param, status: :moved_permanently
+  end
+
   def customize_params
     params[:signed_in] = user_signed_in?.to_s
   end
@@ -96,6 +107,10 @@ class ApplicationController < ActionController::Base
       referrer = request.env["omniauth.origin"] || "none"
       onboarding_path(referrer: referrer)
     end
+  end
+
+  def after_accept_path_for(_resource)
+    onboarding_path
   end
 
   def raise_suspended
@@ -144,9 +159,43 @@ class ApplicationController < ActionController::Base
     Stripe.log_level = Stripe::LEVEL_INFO
   end
 
+  def remember_cookie_sync
+    # Set remember cookie token in case not properly set.
+    if user_signed_in? &&
+        cookies[:remember_user_token].blank?
+      current_user.remember_me = true
+      current_user.remember_me!
+      remember_me(current_user)
+    end
+  end
+
+  def forward_to_app_config_domain
+    return unless request.get? && # Let's only redirect get requests for this purpose.
+      request.host == ENV["APP_DOMAIN"] && # If the request equals the original set domain, e.g. forem-x.forem.cloud.
+      ENV["APP_DOMAIN"] != SiteConfig.app_domain # If the app domain config has now been set, let's go there instead.
+
+    redirect_to URL.url(request.fullpath)
+  end
+
+  def bust_content_change_caches
+    EdgeCache::Bust.call("/tags/onboarding") # Needs to change when suggested_tags is edited.
+    EdgeCache::Bust.call("/shell_top") # Cached at edge, sent to service worker.
+    EdgeCache::Bust.call("/shell_bottom") # Cached at edge, sent to service worker.
+    EdgeCache::Bust.call("/async_info/shell_version") # Checks if current users should be busted.
+    EdgeCache::Bust.call("/onboarding") # Page is cached at edge.
+    EdgeCache::Bust.call("/") # Page is cached at edge.
+    SiteConfig.admin_action_taken_at = Time.current # Used as cache key
+  end
+
   protected
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
+  end
+
+  def internal_nav_param
+    return "" unless params[:i] == "i"
+
+    "?i=i"
   end
 end

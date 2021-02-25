@@ -141,7 +141,33 @@ class CommentsController < ApplicationController
     authorize @comment
     if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
-      redirect_to URI.parse(@comment.path).path, notice: "Comment was successfully updated."
+
+      # The following sets variables used in the index view. We render the
+      # index view directly to avoid having to redirect.
+      #
+      # Redirects lead to a race condition where we redirect to a cached view
+      # after updating data and we don't bust the cache fast enough before
+      # hitting the view, therefore stale content ends up being served from
+      # cache.
+      #
+      # https://github.com/forem/forem/issues/10338#issuecomment-693401481
+      @on_comments_page = true
+      @root_comment = @comment
+      @commentable = @comment.commentable
+      @commentable_type = @comment.commentable_type
+
+      case @commentable_type
+      when "PodcastEpisode"
+        @user = @commentable&.podcast
+      when "Article"
+        # user could be a user or an organization
+        @user = @commentable&.user
+        @article = @commentable
+      else
+        @user = @commentable&.user
+      end
+
+      render :index
     else
       @commentable = @comment.commentable
       render :edit
@@ -177,8 +203,8 @@ class CommentsController < ApplicationController
     skip_authorization
     begin
       permitted_body_markdown = permitted_attributes(Comment)[:body_markdown]
-      fixed_body_markdown = MarkdownFixer.fix_for_preview(permitted_body_markdown)
-      parsed_markdown = MarkdownParser.new(fixed_body_markdown, source: Comment.new, user: current_user)
+      fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(permitted_body_markdown)
+      parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: Comment.new, user: current_user)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       processed_html = "<p>😔 There was an error in your markdown</p><hr><p>#{e}</p>"
@@ -237,7 +263,7 @@ class CommentsController < ApplicationController
       redirect_url = @comment.commentable&.path
       if redirect_url
         flash[:success] = "Comment was successfully deleted."
-        redirect_to redirect_url
+        redirect_to URI.parse(redirect_url).path
       else
         redirect_to_comment_path
       end

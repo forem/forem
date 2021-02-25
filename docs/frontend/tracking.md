@@ -7,7 +7,7 @@ title: Tracking
 For first-party analytics, we use the
 [`ahoy.js` library](https://github.com/ankane/ahoy.js), which tracks visits and
 events. This library works in conjunction with the `ahoy_matey` gem, which is
-documented in our [backend tracking guide](../backend/tracking.md).
+documented in our [backend tracking guide](/backend/tracking).
 
 ### Configuration
 

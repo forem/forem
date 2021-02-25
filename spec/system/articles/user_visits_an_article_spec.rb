@@ -5,7 +5,6 @@ RSpec.describe "Views an article", type: :system do
   let(:article) do
     create(:article, :with_notification_subscription, user: user)
   end
-  let(:timestamp) { "2019-03-04T10:00:00Z" }
 
   before do
     sign_in user
@@ -27,25 +26,40 @@ RSpec.describe "Views an article", type: :system do
     expect { visit("/#{user.username}/#{article.slug}/mod") }.to raise_error(Pundit::NotAuthorizedError)
   end
 
-  describe "when showing the date" do
-    before do
-      article.update_columns(published_at: Time.zone.parse(timestamp))
+  describe "sticky nav sidebar" do
+    it "suggests articles by other users if the author has no other articles" do
+      create(:article, user: create(:user))
+      visit article.path
+      expect(page).to have_text("Trending on #{SiteConfig.community_name}")
     end
 
-    it "shows the readable publish date", js: true do
+    it "suggests more articles by the author if there are any" do
+      create(:article, user: user)
       visit article.path
-      expect(page).to have_selector("article time", text: "Mar 4")
+      expect(page).to have_text("More from #{user.name}")
+    end
+  end
+
+  describe "when showing the date" do
+    # TODO: @sre ideally this spec should have js:true enabled since we use
+    # js helpers to ensure the datetime is locale. However, testing locale
+    # datetimes has proven to be very flaky which is why the js is not included
+    # here
+    it "shows the readable publish date" do
+      visit article.path
+      expect(page).to have_selector("article time", text: article.readable_publish_date.gsub("  ", " "))
     end
 
     it "embeds the published timestamp" do
       visit article.path
-      selector = "article time[datetime='#{timestamp}']"
+
+      selector = "article time[datetime='#{article.decorate.published_timestamp}']"
       expect(page).to have_selector(selector)
     end
 
     context "when articles have long markdowns and different published dates" do
-      let(:first_article) { build(:article, published_at: "2019-03-04T10:00:00Z") }
-      let(:second_article) { build(:article, published_at: "2019-03-05T10:00:00Z") }
+      let(:first_article) { build(:article) }
+      let(:second_article) { build(:article) }
 
       before do
         [first_article, second_article].each do |article|
@@ -55,13 +69,19 @@ RSpec.describe "Views an article", type: :system do
         end
       end
 
-      it "shows the identical readable publish dates in each page", js: true do
+      # TODO: @sre ideally this spec should have js:true enabled since we use
+      # js helpers to ensure the datetime is locale. However, testing locale
+      # datetimes has proven to be very flaky which is why the js is not included
+      # here
+      it "shows the identical readable publish dates in each page" do
         visit first_article.path
-        expect(page).to have_selector("article time", text: "Mar 4")
-        expect(page).to have_selector(".crayons-card--secondary time", text: "Mar 4")
+        expect(page).to have_selector("article time", text: first_article.readable_publish_date.gsub("  ", " "))
+        expect(page).to have_selector(".crayons-card--secondary time",
+                                      text: first_article.readable_publish_date.gsub("  ", " "))
         visit second_article.path
-        expect(page).to have_selector("article time", text: "Mar 5")
-        expect(page).to have_selector(".crayons-card--secondary time", text: "Mar 5")
+        expect(page).to have_selector("article time", text: second_article.readable_publish_date.gsub("  ", " "))
+        expect(page).to have_selector(".crayons-card--secondary time",
+                                      text: second_article.readable_publish_date.gsub("  ", " "))
       end
     end
   end
@@ -122,16 +142,15 @@ RSpec.describe "Views an article", type: :system do
   describe "when an article is not published" do
     let(:article) { create(:article, user: article_user, published: false) }
     let(:article_path) { article.path + query_params }
-    let(:href) { "#{article.path}/edit" }
-    let(:link_text) { "Click to edit" }
 
     context "with the article password, and the logged-in user is authorized to update the article" do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
-      it "shows the article edit link" do
+      it "shows the article edit link", js: true do
         visit article_path
-        expect(page).to have_link(link_text, href: href)
+        edit_link = find("a#author-click-to-edit")
+        expect(edit_link.matches_style?(display: "inline-block")).to be true
       end
     end
 
@@ -141,7 +160,7 @@ RSpec.describe "Views an article", type: :system do
 
       it "does not the article edit link" do
         visit article_path
-        expect(page).not_to have_link(link_text, href: href)
+        expect(page.body).not_to include('display: inline-block;">Click to edit</a>')
       end
     end
 
@@ -152,7 +171,7 @@ RSpec.describe "Views an article", type: :system do
       it "does not the article edit link" do
         sign_out user
         visit article_path
-        expect(page).not_to have_link(link_text, href: href)
+        expect(page.body).not_to include('display: inline-block;">Click to edit</a>')
       end
     end
 

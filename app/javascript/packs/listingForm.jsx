@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import ListingForm from '../listings/listingForm';
+import { ListingForm } from '../listings/listingForm';
 
 function loadElement() {
   const root = document.getElementById('listingform-data');
@@ -18,7 +18,6 @@ function loadElement() {
         categoriesForDetails={categoriesForDetails}
       />,
       root,
-      root.firstElementChild,
     );
   }
 }

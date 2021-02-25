@@ -54,7 +54,7 @@ class RedditTag < LiquidTagBase
   end
 
   def parse_markdown_content(content)
-    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTMLRouge, REDCARPET_CONFIG)
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTMLRouge, Constants::Redcarpet::CONFIG)
     text = markdown.render(content)
 
     sanitize(HTML_Truncator.truncate(text, 60))

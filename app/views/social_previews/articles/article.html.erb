@@ -1,5 +1,5 @@
-<% accent_color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).biggest %>
-<% dark_color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(0.8) %>
+<% accent_color = Color::CompareHex.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).biggest %>
+<% dark_color = Color::CompareHex.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(0.8) %>
 <style>
   body {
     background: <%= accent_color %>;

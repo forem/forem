@@ -11,21 +11,34 @@ class Organization < ApplicationRecord
 
   acts_as_followable
 
+  before_validation :downcase_slug
+  before_validation :check_for_slug_change
+  before_validation :evaluate_markdown
+  before_save :update_articles
+  before_save :remove_at_from_usernames
+  before_save :generate_secret
+  # You have to put before_destroy callback BEFORE the dependent: :nullify
+  # to ensure they execute before the records are updated
+  # https://guides.rubyonrails.org/active_record_callbacks.html#destroying-an-object
+  before_destroy :cache_article_ids
+
   has_many :articles, dependent: :nullify
   has_many :collections, dependent: :nullify
   has_many :credits, dependent: :restrict_with_error
   has_many :display_ads, dependent: :destroy
   has_many :listings, dependent: :destroy
-  has_many :notifications, dependent: :destroy
+  has_many :notifications, dependent: :delete_all
   has_many :organization_memberships, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
   has_many :sponsorships, dependent: :destroy
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :users, through: :organization_memberships
 
+  validates :articles_count, presence: true
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :company_size, format: { with: INTEGER_REGEXP, message: MESSAGES[:integer_only], allow_blank: true }
   validates :company_size, length: { maximum: 7 }, allow_nil: true
+  validates :credits_count, presence: true
   validates :cta_body_markdown, length: { maximum: 256 }
   validates :cta_button_text, length: { maximum: 20 }
   validates :cta_button_url, length: { maximum: 150 }, url: { allow_blank: true, no_local: true }
@@ -39,25 +52,21 @@ class Organization < ApplicationRecord
   validates :slug, exclusion: { in: ReservedWords.all, message: MESSAGES[:reserved_word] }
   validates :slug, format: { with: SLUG_REGEXP }, length: { in: 2..18 }
   validates :slug, presence: true, uniqueness: { case_sensitive: false }
+  validates :spent_credits_count, presence: true
   validates :summary, length: { maximum: 250 }
   validates :tag_line, length: { maximum: 60 }
   validates :tech_stack, :story, length: { maximum: 640 }
   validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :twitter_username, length: { maximum: 15 }
+  validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
 
   validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
 
-  before_validation :downcase_slug
-  before_validation :check_for_slug_change
-  before_validation :evaluate_markdown
-  before_save :update_articles
-  before_save :remove_at_from_usernames
-  before_save :generate_secret
   after_save :bust_cache
 
-  after_commit :sync_related_elasticsearch_docs, on: %i[update destroy]
-  after_commit :bust_cache, on: :destroy
+  after_commit :sync_related_elasticsearch_docs, on: :update
+  after_commit :bust_cache, :article_sync, on: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -67,6 +76,12 @@ class Organization < ApplicationRecord
   alias_attribute :old_username, :old_slug
   alias_attribute :old_old_username, :old_old_slug
   alias_attribute :website_url, :url
+
+  attr_accessor :cached_article_ids
+
+  def cache_article_ids
+    self.cached_article_ids = articles.ids
+  end
 
   def check_for_slug_change
     return unless slug_changed?
@@ -111,7 +126,7 @@ class Organization < ApplicationRecord
   private
 
   def evaluate_markdown
-    self.cta_processed_html = MarkdownParser.new(cta_body_markdown).evaluate_limited_markdown
+    self.cta_processed_html = MarkdownProcessor::Parser.new(cta_body_markdown).evaluate_limited_markdown
   end
 
   def remove_at_from_usernames
@@ -146,5 +161,10 @@ class Organization < ApplicationRecord
 
   def sync_related_elasticsearch_docs
     DataSync::Elasticsearch::Organization.new(self).call
+  end
+
+  def article_sync
+    # Syncs article cached organization and updates Elasticsearch docs
+    Article.where(id: cached_article_ids).find_each(&:save)
   end
 end

@@ -21,7 +21,7 @@ module Search
       end
 
       # adapted from https://api.rubyonrails.org/classes/Module.html#method-i-delegate_missing_to
-      def respond_to_missing?(method, _include_all = false) # rubocop:disable Style/OptionalBooleanParameter
+      def respond_to_missing?(method, _include_all = false)
         target.respond_to?(method, false) || super
       end
 
@@ -48,7 +48,7 @@ module Search
       def record_error(error_message, class_name)
         Honeycomb.add_field("elasticsearch.result", "error")
         Honeycomb.add_field("elasticsearch.error", class_name)
-        DatadogStatsClient.increment("elasticsearch.errors", tags: ["error:#{class_name}", "message:#{error_message}"])
+        ForemStatsClient.increment("elasticsearch.errors", tags: ["error:#{class_name}", "message:#{error_message}"])
       end
 
       def target

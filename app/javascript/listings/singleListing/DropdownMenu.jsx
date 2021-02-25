@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { h, Component, createRef } from 'preact';
-import listingPropTypes from './listingPropTypes';
+import { listingPropTypes } from './listingPropTypes';
 import { Button } from '@crayons';
 
 const Icon = () => (
@@ -19,7 +19,7 @@ const Icon = () => (
   </svg>
 );
 
-class DropdownMenu extends Component {
+export class DropdownMenu extends Component {
   componentRef = createRef();
 
   static propTypes = {
@@ -64,7 +64,10 @@ class DropdownMenu extends Component {
     const reportUrl = `/report-abuse?url=https://dev.to/listings/${category}/${slug}`;
 
     return (
-      <div className="single-listing__dropdown absolute right-0 top-0" ref={this.componentRef}>
+      <div
+        className="single-listing__dropdown absolute right-0 top-0"
+        ref={this.componentRef}
+      >
         <Button
           variant="ghost"
           contentType="icon"
@@ -92,5 +95,3 @@ class DropdownMenu extends Component {
     );
   }
 }
-
-export default DropdownMenu;

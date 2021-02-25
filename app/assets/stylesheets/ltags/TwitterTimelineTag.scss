@@ -1,0 +1,51 @@
+@import '../variables';
+
+.ltag_twitter-timeline-liquid-tag {
+  margin: 1.1em auto 1.3em;
+  max-width: 580px;
+  z-index: 1;
+  position: relative;
+}
+
+.twitter-timeline-thread {
+  background-color: #fff;
+  background-color: var(--card-bg);
+  border: 1px solid #d1d5da;
+  box-shadow: $shadow;
+  border-radius: 3px;
+  font-size: 0.77em;
+  line-height: 1.15em;
+  margin: 0;
+  width: 98%;
+  overflow: hidden;
+}
+
+.ltag-twitter-timeline-body {
+  padding: 1em 0.5em;
+  max-height: calc(21vw + 165px);
+  overflow: hidden;
+}
+
+.tt-btn-container {
+  text-align: center;
+  padding: 0.35em 0 1.35em;
+  box-shadow: -0px -0px 60px 42px #fff;
+  box-shadow: -0px -0px 60px 42px var(--card-bg);
+  position: relative;
+  z-index: 100;
+}
+
+.tt-btn {
+  color: #0366d6;
+  background-color: #f1f8ff;
+  border-radius: 3px;
+  line-height: 20px;
+  padding: 0.25em 1.2em;
+  opacity: 0.9;
+  font-size: 0.94em;
+  font-weight: bold;
+  border: 1px solid #0366d6;
+  &:hover {
+    opacity: 1;
+  }
+}

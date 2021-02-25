@@ -6,25 +6,15 @@
     </figure>
     <div class="authentication-feed__content">
       <h2 class="authentication-feed__title">
-<a href="/"><%= community_name %></a> is a community of <br />
-        <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
+        <%= render "shared/authentication_title" %>
       </h2>
       <p class="authentication-feed__description">
-        <% if SiteConfig.tagline.present? %>
-          <%= SiteConfig.tagline %>
-        <% else %>
-          Log in to customize your experience and get involved.
-        <% end %>
+        <%= render "shared/authentication_description" %>
       </p>
     </div>
   </div>
 
   <div class="authentication-feed__actions">
-    <a href="<%= sign_up_path %>" class="crayons-btn" aria-label="Create new account">
-      Create new account
-    </a>
-    <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand" aria-label="Log in">
-      Log in
-    </a>
+    <%= render "shared/authentication_actions" %>
   </div>
 </div>

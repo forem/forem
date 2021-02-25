@@ -5,6 +5,9 @@ class SitemapRefreshWorker
 
   def perform
     Rails.application.load_tasks
-    Rake::Task["sitemap:refresh"].invoke
+
+    sitemap_task = SiteConfig.local? ? "sitemap:refresh:no_ping" : "sitemap:refresh"
+
+    Rake::Task[sitemap_task].invoke
   end
 end

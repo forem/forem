@@ -32,6 +32,11 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       expect(episode.guid).to include("53b17a1e-271b-40e3-a084-a67b4fcba562")
     end
 
+    it "populates processed_html" do
+      episode = described_class.call(podcast.id, item)
+      expect(episode.processed_html).not_to be_blank
+    end
+
     it "sets correct availability statuses" do
       episode = described_class.call(podcast.id, item)
       expect(episode.https?).to be true

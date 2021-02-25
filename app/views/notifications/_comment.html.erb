@@ -1,56 +1,68 @@
-<% if notification.action == "Reaction" %>
-  <%= render "reaction", notification: notification %>
-<% else %>
-  <% json_data = notification.json_data %>
-  <% cache "activity-profile-pic-#{json_data['user']['id']}-#{json_data['user']['profile_image_90']}" do %>
-    <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
-      <div class="small-pic">
-        <img src="<%= json_data["user"]["profile_image_90"] %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
-      </div>
-    </a>
-  <% end %>
-  <div class="content notification-content comment-content">
-    <% if notification.action.blank? %>
-      <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
-      <% if json_data["comment"]["depth"] && json_data["comment"]["depth"] > 0 %>
-      replied to a thread in
-      <% else %>
-      commented on
-      <% end %>
-      <a href="<%= json_data["comment"]["commentable"]["path"] %>">
-        <%= h(json_data["comment"]["commentable"]["title"]) %>
-      </a>
-      <% if json_data["comment"]["created_at"] %>
-        <div>
-          <small><%= time_ago_in_words json_data["comment"]["created_at"] %> ago</small>
-        </div>
-      <% end %>
-      <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
-    <% elsif notification.action == "Moderation" %>
-      <a href="/<%= json_data["comment"]["path"].split("/")[1] %>">@<%= json_data["comment"]["path"].split("/")[1] %></a> just left a comment. Since they are new to the community, could you leave a nice reply to help them feel welcome?
-      <b>Thank you!</b>
-      <br /><br />
-      <em style="font-size: 0.9em">Alternatively, if this comment violates the code of conduct, please downvote/report as appropriate.</em>
-      <br /><br>
-      <b>re:
-        <a href="<%= json_data["comment"]["commentable"]["path"] %>">
-          <%= h(json_data["comment"]["commentable"]["title"]) %>
-        </a></b>
-      <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "moderation" %>
-      <br>
-      <div class="footnote">All negative reactions are 100% private.</div>
-    <% elsif notification.action == "First" %>
-      <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
-      wrote their first comment on:
-      <a href="<%= json_data["comment"]["commentable"]["path"] %>">
-        <%= h(json_data["comment"]["commentable"]["title"]) %>
-      </a>
-      <div>
-        <small><%= time_ago_in_words notification.created_at %> ago</small>
-      </div>
-      <%= render "notifications/shared/comment_box", activity: activity, context: "moderation" %>
-      Give them their first reply! 🎉
-      <br>
+<div class="crayons-card notification">
+  <% if notification.action == "Reaction" %>
+    <%= render "reaction", notification: notification %>
+  <% else %>
+    <% json_data = notification.json_data %>
+    <% cache "activity-profile-pic-#{json_data['user']['id']}-#{json_data['user']['profile_image_90']}" do %>
+      <%= render "notifications/shared/profile_pic", json_data: json_data %>
     <% end %>
-  </div>
-<% end %>
+
+    <div class="notification__content">
+      <% if notification.action.blank? %>
+        <% if json_data["comment"]["created_at"] %>
+          <header class="mb-4">
+            <h2 class="fs-base fw-normal">
+              <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold">
+                <%= json_data["user"]["name"] %>
+              </a>
+              <% if json_data["comment"]["depth"] && json_data["comment"]["depth"] > 0 %>
+                replied to a thread in
+              <% else %>
+                commented on
+              <% end %>
+              <a href="<%= json_data["comment"]["commentable"]["path"] %>" class="crayons-link fw-bold">
+                <%= h(json_data["comment"]["commentable"]["title"]) %>
+              </a>
+            </h2>
+            <p class="lh-tight"><a href="<%= json_data["comment"]["path"] %>" class="crayons-link fs-s crayons-link--secondary"><%= time_ago_in_words json_data["comment"]["created_at"] %> ago</a></p>
+          </header>
+        <% end %>
+
+        <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
+
+      <% elsif notification.action == "Moderation" %>
+        <header class="mb-4">
+          <h2 class="fs-base fw-normal">
+            <a href="/<%= json_data["comment"]["path"].split("/")[1] %>" class="crayons-link fw-bold"><%= json_data["comment"]["path"].split("/")[1] %></a>
+            just left a comment on
+            <a href="<%= json_data["comment"]["commentable"]["path"] %>" class="crayons-link fw-bold">
+              <%= h(json_data["comment"]["commentable"]["title"]) %>
+            </a>.
+          </h2>
+          <p>Since they are new to the community, could you leave a nice reply to help them feel welcome? <strong>Thank you!</strong></p>
+        </header>
+
+        <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "moderation" %>
+
+        <p class="fs-s color-base-60 pt-4">All negative reactions are 100% private. If this comment violates the code of conduct, please downvote/report as inappropriate.</p>
+
+      <% elsif notification.action == "First" %>
+        <header class="mb-4">
+          <h2 class="fs-base fw-normal">
+            <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold"><%= json_data["user"]["name"] %></a>
+            wrote their first comment on
+            <a href="<%= json_data["comment"]["commentable"]["path"] %>" class="crayons-link fw-bold">
+              <%= h(json_data["comment"]["commentable"]["title"]) %>
+            </a>
+          </h2>
+          <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words notification.created_at %> ago</small></p>
+
+          <p>Give them their first reply! 🎉</p>
+        </header>
+
+        <%= render "notifications/shared/comment_box", activity: activity, context: "moderation" %>
+
+      <% end %>
+    </div>
+  <% end %>
+</div>

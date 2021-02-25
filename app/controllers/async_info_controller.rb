@@ -1,5 +1,4 @@
 class AsyncInfoController < ApplicationController
-  include Devise::Controllers::Rememberable
   # No pundit policy. All actions are unrestricted.
   before_action :set_cache_control_headers, only: %i[shell_version]
 
@@ -12,11 +11,6 @@ class AsyncInfoController < ApplicationController
         token: form_authenticity_token
       }
       return
-    end
-    if remember_user_token.blank?
-      current_user.remember_me = true
-      current_user.remember_me!
-      remember_me(current_user)
     end
     @user = current_user.decorate
     respond_to do |format|
@@ -35,8 +29,8 @@ class AsyncInfoController < ApplicationController
     set_surrogate_key_header "shell-version-endpoint"
     # shell_version will change on every deploy.
     # *Technically* could be only on changes to assets and shell, but this is more fool-proof.
-    shell_version = ApplicationConfig["RELEASE_FOOTPRINT"]
-    render json: { version: Rails.env.production? ? shell_version : rand(1000) }.to_json
+    shell_version = ForemInstance.deployed_at.to_s + SiteConfig.admin_action_taken_at.to_s
+    render json: { version: shell_version }.to_json
   end
 
   def broadcast_data
@@ -60,8 +54,8 @@ class AsyncInfoController < ApplicationController
         followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score],
                                                           methods: [:points]),
         followed_podcast_ids: @user.cached_following_podcasts_ids,
-        reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
-        blocked_user_ids: @user.all_blocking.pluck(:blocked_id),
+        reading_list_ids: @user.cached_reading_list_article_ids,
+        blocked_user_ids: UserBlock.cached_blocked_ids_for_blocker(@user.id),
         saw_onboarding: @user.saw_onboarding,
         checked_code_of_conduct: @user.checked_code_of_conduct,
         checked_terms_and_conditions: @user.checked_terms_and_conditions,
@@ -72,7 +66,8 @@ class AsyncInfoController < ApplicationController
         config_body_class: @user.config_body_class,
         pro: @user.pro?,
         feed_style: feed_style_preference,
-        created_at: @user.created_at
+        created_at: @user.created_at,
+        admin: @user.any_admin?
       }
     end.to_json
   end
@@ -80,18 +75,13 @@ class AsyncInfoController < ApplicationController
   def user_cache_key
     "user-info-#{current_user&.id}__
     #{current_user&.last_sign_in_at}__
+    #{current_user&.following_tags_count}__
     #{current_user&.last_followed_at}__
+    #{current_user&.last_reacted_at}__
     #{current_user&.updated_at}__
     #{current_user&.reactions_count}__
-    #{current_user&.saw_onboarding}__
-    #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
     #{current_user&.pro?}__
-    #{current_user&.blocking_others_count}__
-    #{remember_user_token}"
-  end
-
-  def remember_user_token
-    cookies[:remember_user_token]
+    #{current_user&.blocking_others_count}__"
   end
 end

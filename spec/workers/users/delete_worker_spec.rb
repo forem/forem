@@ -46,6 +46,12 @@ RSpec.describe Users::DeleteWorker, type: :worker do
         expect(mailer).to have_received(:account_deleted_email)
         expect(message_delivery).to have_received(:deliver_now)
       end
+
+      it "creates a gdpr-delete record" do
+        expect do
+          worker.perform(user.id, true)
+        end.to change(Users::GdprDeleteRequest, :count).by(1)
+      end
     end
 
     context "when user is not found" do

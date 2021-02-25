@@ -6,7 +6,7 @@ module DataUpdateScripts
       # This statement deletes all draft articles in excess found to be duplicate over canonical_url,
       # excluding those whose body_markdown is different from the other duplicate occurrences
       result = ActiveRecord::Base.connection.execute(
-        <<~SQL.squish,
+        <<-SQL,
           WITH duplicates_draft_articles AS
               (SELECT id
                FROM
@@ -31,7 +31,7 @@ module DataUpdateScripts
 
       # Sending IDs of deleted articles to Datadog
       result.map { |row| row["id"] }.in_groups_of(1000) do |ids|
-        DatadogStatsClient.event(
+        ForemStatsClient.event(
           "DataUpdateScripts::RemoveDraftArticlesWithDuplicateCanonicalUrl",
           "deleted draft articles with the same canonical_url and same body_markdown",
           tags: ids,
@@ -42,7 +42,7 @@ module DataUpdateScripts
       # with different bodies.
       # We thus select the oldest for removal preserving the most recent one
       result = ActiveRecord::Base.connection.execute(
-        <<~SQL.squish,
+        <<-SQL,
           WITH duplicates_draft_articles AS
               (SELECT id
                FROM
@@ -67,7 +67,7 @@ module DataUpdateScripts
 
       # Sending IDs of deleted articles to Datadog
       result.map { |row| row["id"] }.in_groups_of(1000) do |ids|
-        DatadogStatsClient.event(
+        ForemStatsClient.event(
           "DataUpdateScripts::RemoveDraftArticlesWithDuplicateCanonicalUrl",
           "deleted draft articles with the same canonical_url and different body_markdown",
           tags: ids,

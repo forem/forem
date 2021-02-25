@@ -22,6 +22,9 @@
       "type": "text",
       "copy_to": "listing_search"
     },
+    "originally_published_at": {
+      "type": "date"
+    },
     "bumped_at": {
       "type": "date"
     },

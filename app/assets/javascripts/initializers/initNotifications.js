@@ -109,8 +109,9 @@ function initReactions() {
           var thisButt = this;
           document
             .getElementById('comment-form-for-' + thisButt.dataset.reactableId)
-            .classList.add('showing');
-          thisButt.innerHTML = '';
+            .classList.remove('hidden');
+          thisButt.classList.add('hidden');
+          thisButt.classList.remove('inline-flex');
           setTimeout(function () {
             document
               .getElementById(

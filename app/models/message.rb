@@ -14,13 +14,17 @@ class Message < ApplicationRecord
 
   def preferred_user_color
     color_options = [user.bg_color_hex || "#000000", user.text_color_hex || "#000000"]
-    HexComparer.new(color_options).brightness(0.9)
+    Color::CompareHex.new(color_options).brightness(0.9)
   end
 
   def direct_receiver
     return if chat_channel.group?
 
     chat_channel.users.where.not(id: user.id).first
+  end
+
+  def left_channel?
+    chat_action == "removed_from_channel" || chat_action == "left_channel"
   end
 
   private
@@ -31,6 +35,8 @@ class Message < ApplicationRecord
   end
 
   def update_all_has_unopened_messages_statuses
+    return if left_channel?
+
     chat_channel
       .chat_channel_memberships
       .where("last_opened_at < ?", 10.seconds.ago)
@@ -39,7 +45,7 @@ class Message < ApplicationRecord
   end
 
   def evaluate_markdown
-    html = MarkdownParser.new(message_markdown).evaluate_markdown
+    html = MarkdownProcessor::Parser.new(message_markdown).evaluate_markdown
     html = target_blank_links(html)
     html = append_rich_links(html)
     html = wrap_mentions_with_links(html)
@@ -196,19 +202,19 @@ class Message < ApplicationRecord
   end
 
   def rich_link_article(link)
-    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+    return unless link["href"].include?("//#{SiteConfig.app_domain}/") && link["href"].split("/")[4]
 
     Article.find_by(slug: link["href"].split("/")[4].split("?")[0])
   end
 
   def rich_link_tag(link)
-    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/t/")
+    return unless link["href"].include?("//#{SiteConfig.app_domain}/t/")
 
     Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0])
   end
 
   def rich_user_link(link)
-    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/")
+    return unless link["href"].include?("//#{SiteConfig.app_domain}/")
 
     User.find_by(username: link["href"].split("/")[3].split("/")[0])
   end

@@ -1,4 +1,6 @@
 class ListingCategory < ApplicationRecord
+  resourcify
+
   # We used to use both "classified listing" and "listing" throughout the app.
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listing_categories"

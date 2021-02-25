@@ -1,8 +1,8 @@
 @import 'config/variables';
 @import 'config/colors';
-@import 'config/generator';
 
 @import 'base/reset';
+@import 'base/main';
 @import 'base/helpers';
 @import 'base/icons';
 @import 'base/layout';
@@ -15,6 +15,9 @@
 @import 'components/comments';
 @import 'components/dropdowns';
 @import 'components/forms';
+@import 'components/hamburger';
+@import 'components/header';
+@import 'components/headers';
 @import 'components/indicators';
 @import 'components/loaders';
 @import 'components/modals';
@@ -24,14 +27,10 @@
 @import 'components/snackbars';
 @import 'components/spinner';
 @import 'components/stories';
+@import 'components/syntax';
 @import 'components/tables';
 @import 'components/tabs';
 @import 'components/tags';
+@import 'components/tooltips';
 
-@import 'views/article';
-@import 'views/article-form';
-@import 'views/listings';
-@import 'views/dashboard';
-@import 'views/profile';
-@import 'views/signin';
-@import 'views/sponsors';
+@import 'config/generator';

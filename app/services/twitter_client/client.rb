@@ -12,7 +12,7 @@ module TwitterClient
       end
 
       # adapted from https://api.rubyonrails.org/classes/Module.html#method-i-delegate_missing_to
-      def respond_to_missing?(method, _include_all = false) # rubocop:disable Style/OptionalBooleanParameter
+      def respond_to_missing?(method, _include_all = false)
         target.respond_to?(method, false) || super
       end
 
@@ -31,7 +31,7 @@ module TwitterClient
 
         Honeycomb.add_field("twitter.result", "error")
         Honeycomb.add_field("twitter.error", class_name)
-        DatadogStatsClient.increment(
+        ForemStatsClient.increment(
           "twitter.errors",
           tags: ["error:#{class_name}", "message:#{exception.message}"],
         )
@@ -57,8 +57,8 @@ module TwitterClient
 
       def target
         Twitter::REST::Client.new(
-          consumer_key: ApplicationConfig["TWITTER_KEY"],
-          consumer_secret: ApplicationConfig["TWITTER_SECRET"],
+          consumer_key: SiteConfig.twitter_key.presence || ApplicationConfig["TWITTER_KEY"],
+          consumer_secret: SiteConfig.twitter_secret.presence || ApplicationConfig["TWITTER_SECRET"],
           user_agent: "TwitterRubyGem/#{Twitter::Version} (#{URL.url})",
           timeouts: {
             connect: 5,

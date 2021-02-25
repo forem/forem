@@ -1,7 +1,9 @@
 import { h } from 'preact';
 import { axe } from 'jest-axe';
 import { render } from '@testing-library/preact';
+import '@testing-library/jest-dom';
 
+import '../../../assets/javascripts/utilities/localDateTime';
 import { SingleListing } from '../singleListing/SingleListing';
 
 const listing = {
@@ -14,6 +16,8 @@ const listing = {
   slug: 'illo-iure-quos-perspiciatis-5hk7',
   title: 'Illo iure quos perspiciatis.',
   user_id: 7,
+  bumped_at: '2020-09-06T14:15:02.977Z',
+  originally_published_at: '2020-09-06T14:15:02.977Z',
   tags: ['go', 'git'],
   author: {
     name: 'Mrs. Yoko Christiansen',
@@ -23,7 +27,15 @@ const listing = {
   },
 };
 
+/* eslint-disable no-unused-vars */
+/* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
+
 describe('<SingleListing />', () => {
+  afterAll(() => {
+    delete globalThis.timestampToLocalDateTimeLong;
+    delete globalThis.timestampToLocalDateTimeShort;
+  });
+
   const renderSingleListing = () =>
     render(
       <SingleListing

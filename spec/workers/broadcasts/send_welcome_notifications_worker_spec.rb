@@ -8,7 +8,7 @@ RSpec.describe Broadcasts::SendWelcomeNotificationsWorker, type: :worker do
 
   describe "#perform" do
     it "does nothing if SiteConfig.welcome_notifications_live_at is nil" do
-      SiteConfig.welcome_notifications_live_at = nil
+      allow(SiteConfig).to receive(:welcome_notifications_live_at).and_return(nil)
       allow(service).to receive(:call)
       create(:user, created_at: 1.day.ago)
       worker.perform
@@ -17,7 +17,7 @@ RSpec.describe Broadcasts::SendWelcomeNotificationsWorker, type: :worker do
 
     it "sends welcome notifications to new users" do
       Timecop.freeze do
-        SiteConfig.welcome_notifications_live_at = 3.days.ago
+        allow(SiteConfig).to receive(:welcome_notifications_live_at).and_return(3.days.ago)
         allow(User).to receive(:mascot_account).and_return(create(:user))
         welcome_broadcast = create(:welcome_broadcast)
         user = create(:user, created_at: 1.day.ago)

@@ -8,19 +8,23 @@ title: macOS
 
 ### Ruby
 
-1. If you don't already have a Ruby version manager, we highly recommend
-   [rbenv](https://github.com/rbenv/rbenv). Please follow their
-   [installation guide](https://github.com/rbenv/rbenv#installation).
+1. **Note:** MacOS ships with a version of Ruby, needed for various operating systems. 
+   To avoid causing an issue with your operating system you should use a version manager for Ruby.
+
+   If you don't already have a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). This will allow you to have different versions running on a per project basis. The MacOS system version of Ruby will stay intact while giving you the ability to use the version needed for this Forem project.
+Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
 2. With the Ruby version manager, install the Ruby version listed on our badge.
    (i.e. with rbenv: `rbenv install $(cat .ruby-version)`)
+   
+   **Note:** The repository must be forked and cloned before running the `rbenv install $(cat .ruby-version)` command.
+    
 
 ### Yarn
-
 Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 ### PostgreSQL
 
-Forem requires PostgreSQL version 11 or higher.
+Forem requires PostgreSQL version 11 or higher to run.
 
 The easiest way to get started is to use
 [Postgres.app](https://postgresapp.com/). Alternatively, check out the official
@@ -38,7 +42,7 @@ You can install ImageMagick with `brew install imagemagick`.
 
 ### Redis
 
-Forem requires Redis version 4.0 or higher.
+Forem requires Redis version 6.0 or higher to run.
 
 We recommend using [Homebrew](https://brew.sh):
 
@@ -61,11 +65,10 @@ redis-cli ping
 
 ### Elasticsearch
 
-Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
-not supported. We recommend version 7.5.2.
+Forem requires Elasticsearch 7.x to run. We recommend version 7.5.2.
 
 You have the option of installing Elasticsearch with Homebrew or through an
-archive. We recommend installing from archive on Mac.
+archive. We **recommend** installing from archive on Mac.
 
 ### Installing Elasticsearch from the archive
 
@@ -109,13 +112,15 @@ To start elasticsearch as a daemonized process:
 
 ### Installing Elasticsearch with Homebrew
 
-As the default version of the Homebrew formula points to Elasticsearch 7.6, we
-need to retrieve the correct revision of the formula to make sure we install the
-latest supported version: 7.5.2.
+To install Elasticsearch with Homebrew we will use the following commands to:
+
+- tap the Elastic Homebrew repository
+- install the latest OSS distribution
+- pin the latest OSS distribution.
 
 ```shell
 brew tap elastic/tap
-brew install https://raw.githubusercontent.com/elastic/homebrew-tap/bed8bc6b03213c2c1a7df6e4b9f928e7082fae46/Formula/elasticsearch-oss.rb
+brew install elastic/tap/elasticsearch-oss
 brew pin elasticsearch-oss
 ```
 
@@ -209,8 +214,8 @@ your local Elasticsearch installation, for example:
 3. Install bundler with `gem install bundler`
 4. Set up your environment variables/secrets
 
-   - Take a look at `Envfile` to see all the `ENV` variables we use and the fake
-     default provided for any missing keys.
+   - Take a look at `.env_sample` to see all the `ENV` variables we use and the
+     fake default provided for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
    - The [backend guide](/backend) will show you how to get free API keys for
@@ -228,16 +233,19 @@ your local Elasticsearch installation, for example:
       export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
      ```
 
-   - If you are missing `ENV` variables on bootup, the
-     [envied](https://rubygems.org/gems/envied) gem will alert you with messages
-     similar to
-     `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
 5. Run `bin/setup`
 
 ### Possible error messages
+
+**Error:** 
+`rbenv install hangs at ruby-build: using readline from homebrew`
+
+**_Solution:_**
+[Stackoverflow answer](https://stackoverflow.com/questions/63599818/rbenv-install-hangs-at-ruby-build-using-readline-from-homebrew)
+`RUBY_CONFIGURE_OPTS=--with-readline-dir="$(brew --prefix readline)" rbenv install 2.0.0`
 
 **Error:**
 `__NSPlaceholderDate initialize] may have been in progress in another thread when fork() was called`

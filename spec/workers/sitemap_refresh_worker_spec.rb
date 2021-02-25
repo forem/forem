@@ -5,12 +5,26 @@ RSpec.describe SitemapRefreshWorker, type: :woker do
 
   describe "#perform" do
     let(:worker) { subject }
+    let(:mock_task) { instance_double(Rake::Task, invoke: true) }
 
-    it "runs sitemap refresh rake task" do
+    before do
       allow(Rails.application).to receive(:load_tasks)
-      mock_task = instance_double(Rake::Task, invoke: true)
       allow(Rake::Task).to receive(:[]).and_return(mock_task)
+    end
+
+    it "runs sitemap:refresh:no_ping Rake task locally" do
+      allow(SiteConfig).to receive(:local?).and_return(true)
+
       worker.perform
+
+      expect(Rake::Task).to have_received(:[]).with("sitemap:refresh:no_ping")
+    end
+
+    it "runs sitemap:refresh Rake task on regular installations" do
+      allow(SiteConfig).to receive(:local?).and_return(false)
+
+      worker.perform
+
       expect(Rake::Task).to have_received(:[]).with("sitemap:refresh")
     end
   end
