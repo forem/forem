@@ -1,9 +1,27 @@
 #!/bin/bash
-if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS" = "" ]; then
-  KNAPSACK_PRO_ENDPOINT=https://api-disabled-for-fork.knapsackpro.com \
-    KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
-    KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS=disabled-for-fork \
-    npx cypress run # run without parallelization
-else
-  npx knapsack-pro-cypress # parallelization is available
+printf "Doing a quick bundle check to make sure gems are all up to date.\n\n"
+bundle check # ensure gems are up to date
+
+if [ $? -eq 1 ]; then
+   echo "Unable to launch end to end tests. Ensure that all your gems are installed and up to date."
+   exit;
 fi
+
+yarn install # ensure npm packages are up to date
+
+if [ $? -eq 1 ]; then
+   echo "Unable to launch end to end tests. An error occurred while running yarn install."
+   exit;
+fi
+
+printf "\n"
+
+read -p "Do you need to set up your end to end (E2E) testing database? Answer yes if this is your first time running E2E tests on your local machine or you need to recreate your E2E test database. (y/n) " -n 1 -r
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  printf "\n\nSetting up the E2E database before running E2E tests...\n\n"
+  RAILS_ENV=test E2E=true bin/e2e-setup
+fi
+
+bundle exec rails assets:precompile;
+CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.json" RAILS_ENV=test E2E=true bundle exec rake cypress:open

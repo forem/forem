@@ -6,4 +6,6 @@
 # Example:
 # Audit::Subscribe.listen :internal, :quest_user
 
-Audit::Subscribe.listen(:moderator, :internal) unless Rails.env.test?
+Rails.application.reloader.to_prepare do
+  Audit::Subscribe.listen(:moderator, :internal) unless Rails.env.test?
+end

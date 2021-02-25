@@ -27,7 +27,7 @@ class Organization < ApplicationRecord
   has_many :credits, dependent: :restrict_with_error
   has_many :display_ads, dependent: :destroy
   has_many :listings, dependent: :destroy
-  has_many :notifications, dependent: :destroy
+  has_many :notifications, dependent: :delete_all
   has_many :organization_memberships, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
   has_many :sponsorships, dependent: :destroy
@@ -126,7 +126,7 @@ class Organization < ApplicationRecord
   private
 
   def evaluate_markdown
-    self.cta_processed_html = MarkdownParser.new(cta_body_markdown).evaluate_limited_markdown
+    self.cta_processed_html = MarkdownProcessor::Parser.new(cta_body_markdown).evaluate_limited_markdown
   end
 
   def remove_at_from_usernames

@@ -1,6 +1,5 @@
 @import 'config/variables';
 @import 'config/colors';
-@import 'config/generator';
 
 @import 'base/reset';
 @import 'base/main';
@@ -33,3 +32,5 @@
 @import 'components/tabs';
 @import 'components/tags';
 @import 'components/tooltips';
+
+@import 'config/generator';

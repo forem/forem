@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ChatChannelMembershipSection from '../ChatChannelSettings/ChatChannelMembershipSection';
+import { ChatChannelMembershipSection } from '../ChatChannelSettings/ChatChannelMembershipSection';
 
 describe('<ChatChannelMembershipSection />', () => {
   it('should have no a11y violations', async () => {

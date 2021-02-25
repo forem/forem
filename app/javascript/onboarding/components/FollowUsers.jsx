@@ -1,11 +1,10 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import he from 'he';
-
 import { getContentOfToken } from '../utilities';
-import Navigation from './Navigation';
+import { Navigation } from './Navigation';
 
-class FollowUsers extends Component {
+export class FollowUsers extends Component {
   constructor(props) {
     super(props);
 
@@ -128,7 +127,11 @@ class FollowUsers extends Component {
     }
 
     return (
-      <button type="button" class="crayons-btn crayons-btn--ghost-brand -ml-2" onClick={() => this.handleSelectAll()}>
+      <button
+        type="button"
+        class="crayons-btn crayons-btn--ghost-brand -ml-2"
+        onClick={() => this.handleSelectAll()}
+      >
         {followText}
       </button>
     );
@@ -144,7 +147,12 @@ class FollowUsers extends Component {
         data-testid="onboarding-follow-users"
         className="onboarding-main crayons-modal"
       >
-        <div className="crayons-modal__box overflow-auto">
+        <div
+          className="crayons-modal__box overflow-auto"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
+        >
           <Navigation
             prev={prev}
             next={this.handleComplete}
@@ -154,8 +162,12 @@ class FollowUsers extends Component {
           />
           <div className="onboarding-content toggle-bottom">
             <header className="onboarding-content-header">
-              <h1 className="title">Suggested people to follow</h1>
-              <h2 className="subtitle">Let&apos;s review a few things first</h2>
+              <h1 id="title" className="title">
+                Suggested people to follow
+              </h1>
+              <h2 id="subtitle" className="subtitle">
+                Let&apos;s review a few things first
+              </h2>
               <div className="onboarding-selection-status">
                 {this.renderFollowCount()}
                 {this.renderFollowToggle()}
@@ -211,5 +223,3 @@ FollowUsers.propTypes = {
   slidesCount: PropTypes.number.isRequired,
   currentSlideIndex: PropTypes.func.isRequired,
 };
-
-export default FollowUsers;

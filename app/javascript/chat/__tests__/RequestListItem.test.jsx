@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import RequestListItem from '../RequestManager/RequestListItem';
+import { RequestListItem } from '../RequestManager/RequestListItem';
 
 const data = {
   request: {

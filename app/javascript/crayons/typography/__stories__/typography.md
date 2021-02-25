@@ -1,7 +1,7 @@
 ## Main Typography
 
 Default font is set to 16px (fs-base). It should be standard in UI. Smaller and
-bigger font sizes should be used carefully with respect to good visual rythm
+bigger font sizes should be used carefully with respect to good visual rhythm
 between elements.
 
 XS size should be used as little as possible in edge cases. Even though it’s

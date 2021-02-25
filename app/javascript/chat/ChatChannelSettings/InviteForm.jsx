@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-const InviteForm = ({
+export const InviteForm = ({
   handleChannelInvitations,
   invitationUsernames,
   handleInvitationUsernames,
@@ -40,5 +40,3 @@ InviteForm.propTypes = {
   handleChannelInvitations: PropTypes.func.isRequired,
   invitationUsernames: PropTypes.func.isRequired,
 };
-
-export default InviteForm;

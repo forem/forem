@@ -27,6 +27,7 @@ module.exports = {
             alias: {
               '@crayons': path.join(__dirname, './crayons'),
               '@utilities': path.join(__dirname, './utilities'),
+              '@components': path.join(__dirname, './shared/components'),
             },
             extensions: ['.js', '.jsx'],
           },
