@@ -21,7 +21,7 @@ export const BREAKPOINTS = Object.freeze({
  * @example
  * import { useMediaQuery } from '@components/useMediaQuery';
  *
- * function SomeComponent({ query, render }) {
+ * function SomeComponent({ query }) {
  *    const matchesBreakpoint = useMediaQuery(query);
  *
  *    if (!matchesBreakpoint) {
