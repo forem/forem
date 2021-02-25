@@ -54,11 +54,10 @@ RSpec.describe Users::RemoveRole, type: :service do
 
   it "returns an error if there is an issue removing the role" do
     user = create(:user)
-    allow(user).to receive(:remove_role).and_return(false)
+    allow(user).to receive(:remove_role).and_raise(StandardError)
     args = { user: user, role: nil, resource_type: nil, admin: current_user }
     role_removal = described_class.call(args)
 
     expect(role_removal.success).to be false
-    expect(role_removal.error_message).to eq "There was an issue removing this role. Please try again."
   end
 end

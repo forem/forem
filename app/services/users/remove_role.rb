@@ -22,9 +22,10 @@ module Users
         response.success = true
       elsif user.remove_role(role)
         response.success = true
-      else
-        response.error_message = "There was an issue removing this role. Please try again."
       end
+      response
+    rescue StandardError => e
+      response.error_message = "There was an issue removing this role. #{e.message}"
       response
     end
 
