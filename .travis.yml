@@ -87,7 +87,7 @@ jobs:
       script:
         - yarn test --colors
         - bundle exec rails db:create db:schema:load assets:precompile
-        - bundle exec bundle-audit check --update --ignore CVE-2015-9284
+        - bundle exec bundle-audit check --update
         - bin/test-console-check
         - yarn build-storybook
         - bin/e2e-ci
