@@ -13,7 +13,7 @@ module Search
           source = doc["_source"]
           {
             "username" => source["username"],
-            "name" => source["username"],
+            "name" => source["name"],
             "profile_image_90" => source["profile_image_90"]
           }
         end
