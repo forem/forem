@@ -20,7 +20,7 @@ module MarkdownProcessor
       renderer = Redcarpet::Render::HTMLRouge.new(options)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       catch_xss_attempts(@content)
-      code_tag_content = add_proper_code_tags(@content)
+      code_tag_content = convert_code_tags_to_triple_backticks(@content)
       escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
       sanitized_content = sanitize_rendered_markdown(html)
@@ -128,20 +128,15 @@ module MarkdownProcessor
       end
     end
 
-    def add_proper_code_tags(content)
-      # return content if there is not a <code> tag or there are triple back ticks
-      return content if /<code>/.match?(content) == false || /```/.match?(content)
+    def convert_code_tags_to_triple_backticks(content)
+      # return content if there is not a <code> tag
+      return content unless (content).match?(/^<code>$/)
 
       # return content if there is a <pre> and <code> tag
-      return content if /<code>/.match?(content) && /<pre>/.match(content)
+      return content if /<code>/.match?(content) && /<pre>/.match?(content)
 
-      # check if <code> tag is on the same line
-      return content if %r{<code>(.*)</code>}.match?(content)
-
-      # At this point, there should be <code> tags with no wrapping <pre> tag
-      code_with_pre_tag = content.clone
-      code_with_pre_tag.gsub!("<code>", "```")
-      code_with_pre_tag.gsub!("</code>", "```")
+      # Convert all multiline code tags to triple backticks
+      content.gsub(%r{^</?code>$}, "\n```\n")
     end
 
     private
