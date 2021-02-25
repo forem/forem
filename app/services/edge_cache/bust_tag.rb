@@ -1,16 +1,16 @@
 module EdgeCache
-  class BustTag < Buster
+  class BustTag
     def self.call(tag)
       return unless tag
 
       tag.purge
 
-      buster = EdgeCache::Buster.new
-      buster.bust("/t/#{tag.name}")
-      buster.bust("/t/#{tag.name}?i=i")
-      buster.bust("/t/#{tag.name}/?i=i")
-      buster.bust("/t/#{tag.name}/")
-      buster.bust("/tags")
+      cache_bust = EdgeCache::Bust.new
+      cache_bust.call("/t/#{tag.name}")
+      cache_bust.call("/t/#{tag.name}?i=i")
+      cache_bust.call("/t/#{tag.name}/?i=i")
+      cache_bust.call("/t/#{tag.name}/")
+      cache_bust.call("/tags")
     end
   end
 end

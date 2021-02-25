@@ -38,9 +38,9 @@ class GithubRepo < ApplicationRecord
     return if user.blank?
 
     user.touch
-    buster = EdgeCache::Buster.new
-    buster.bust(user.path)
-    buster.bust("#{user.path}?i=i")
-    buster.bust("#{user.path}/?i=i")
+    cache_bust = EdgeCache::Bust.new
+    cache_bust.call(user.path)
+    cache_bust.call("#{user.path}?i=i")
+    cache_bust.call("#{user.path}/?i=i")
   end
 end

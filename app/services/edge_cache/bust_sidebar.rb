@@ -1,8 +1,8 @@
 module EdgeCache
-  class BustSidebar < Buster
+  class BustSidebar
     def self.call
-      buster = EdgeCache::Buster.new
-      buster.bust("/sidebars/home")
+      cache_bust = EdgeCache::Bust.new
+      cache_bust.call("/sidebars/home")
     end
   end
 end

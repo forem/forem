@@ -664,10 +664,10 @@ class Article < ApplicationRecord
   end
 
   def bust_cache
-    buster = EdgeCache::Buster.new
-    buster.bust(path)
-    buster.bust("#{path}?i=i")
-    buster.bust("#{path}?preview=#{password}")
+    cache_bust = EdgeCache::Bust.new
+    cache_bust.call(path)
+    cache_bust.call("#{path}?i=i")
+    cache_bust.call("#{path}?preview=#{password}")
     async_bust
     touch_actor_latest_article_updated_at
   end

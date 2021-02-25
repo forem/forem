@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe BustCachePathWorker, type: :worker do
   let(:worker) { subject }
-  let(:buster) { instance_double(EdgeCache::Buster) }
+  let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
   include_examples "#enqueues_on_correct_queue", "high_priority"
 
@@ -10,13 +10,13 @@ RSpec.describe BustCachePathWorker, type: :worker do
     let(:path) { "/foo" }
 
     before do
-      allow(EdgeCache::Buster).to receive(:new).and_return(buster)
-      allow(buster).to receive(:bust).with(path)
+      allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
+      allow(cache_bust).to receive(:call).with(path)
     end
 
     it "busts cache for given path" do
       worker.perform(path)
-      expect(buster).to have_received(:bust).with(path)
+      expect(cache_bust).to have_received(:call).with(path)
     end
   end
 end

@@ -3,12 +3,12 @@ require "rails_helper"
 RSpec.describe GithubRepo, type: :model do
   let(:user) { create(:user, :with_identity, identities: ["github"]) }
   let(:repo) { create(:github_repo, user: user) }
-  let(:buster) { instance_double(EdgeCache::Buster) }
+  let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
   before do
     omniauth_mock_github_payload
-    allow(EdgeCache::Buster).to receive(:new).and_return(buster)
-    allow(buster).to receive(:bust)
+    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
+    allow(cache_bust).to receive(:call)
   end
 
   describe "validations" do
@@ -41,9 +41,9 @@ RSpec.describe GithubRepo, type: :model do
       it "busts the correct caches" do
         repo.save
 
-        expect(buster).to have_received(:bust).with(user.path)
-        expect(buster).to have_received(:bust).with("#{user.path}?i=i")
-        expect(buster).to have_received(:bust).with("#{user.path}/?i=i")
+        expect(cache_bust).to have_received(:call).with(user.path)
+        expect(cache_bust).to have_received(:call).with("#{user.path}?i=i")
+        expect(cache_bust).to have_received(:call).with("#{user.path}/?i=i")
       end
     end
   end

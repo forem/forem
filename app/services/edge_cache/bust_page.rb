@@ -1,13 +1,13 @@
 module EdgeCache
-  class BustPage < Buster
+  class BustPage
     def self.call(slug)
       return unless slug
 
-      buster = EdgeCache::Buster.new
-      buster.bust("/page/#{slug}")
-      buster.bust("/page/#{slug}?i=i")
-      buster.bust("/#{slug}")
-      buster.bust("/#{slug}?i=i")
+      cache_bust = EdgeCache::Bust.new
+      cache_bust.call("/page/#{slug}")
+      cache_bust.call("/page/#{slug}?i=i")
+      cache_bust.call("/#{slug}")
+      cache_bust.call("/#{slug}?i=i")
     end
   end
 end

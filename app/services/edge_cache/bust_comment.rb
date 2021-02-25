@@ -1,32 +1,32 @@
 module EdgeCache
-  class BustComment < Buster
+  class BustComment
     def self.call(commentable)
       return unless commentable
 
-      buster = EdgeCache::Buster.new
-      bust_article_comment(buster, commentable) if commentable.is_a?(Article)
+      cache_bust = EdgeCache::Bust.new
+      bust_article_comment(cache_bust, commentable) if commentable.is_a?(Article)
       commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
 
-      buster.bust("#{commentable.path}/comments/")
-      buster.bust(commentable.path.to_s)
+      cache_bust.call("#{commentable.path}/comments/")
+      cache_bust.call(commentable.path.to_s)
 
       commentable.comments.includes(:user).find_each do |comment|
-        buster.bust(comment.path)
-        buster.bust("#{comment.path}?i=i")
+        cache_bust.call(comment.path)
+        cache_bust.call("#{comment.path}?i=i")
       end
 
-      buster.bust("#{commentable.path}/comments/*")
+      cache_bust.call("#{commentable.path}/comments/*")
     end
 
     # bust commentable if it's an article
-    def self.bust_article_comment(buster, article)
-      buster.bust("/") if Article.published.order(hotness_score: :desc).limit(3).ids.include?(article.id)
+    def self.bust_article_comment(cache_bust, article)
+      cache_bust.call("/") if Article.published.order(hotness_score: :desc).limit(3).ids.include?(article.id)
 
       return unless article.decorate.discussion?
 
-      buster.bust("/")
-      buster.bust("/?i=i")
-      buster.bust("?i=i")
+      cache_bust.call("/")
+      cache_bust.call("/?i=i")
+      cache_bust.call("?i=i")
     end
 
     private_class_method :bust_article_comment
