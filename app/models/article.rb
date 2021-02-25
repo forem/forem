@@ -132,6 +132,12 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
+  scope :active_help, lambda {
+    stories = published.cached_tagged_with("help").order(created_at: :desc)
+
+    stories.where(published_at: 12.hours.ago.., comments_count: ..5, score: -3..).presence || stories
+  }
+
   scope :limited_column_select, lambda {
     select(:path, :title, :id, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
@@ -202,18 +208,6 @@ class Article < ApplicationRecord
     boosted_additional_articles Boolean, default: false
     boosted_dev_digest_email Boolean, default: false
     boosted_additional_tags String, default: ""
-  end
-
-  def self.active_help
-    stories = published
-      .cached_tagged_with("help")
-      .order(created_at: :desc)
-      .where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
-    return stories if stories.size.positive?
-
-    published
-      .cached_tagged_with("help")
-      .order(created_at: :desc)
   end
 
   def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)
