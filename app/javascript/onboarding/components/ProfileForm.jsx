@@ -29,11 +29,11 @@ export class ProfileForm extends Component {
   }
 
   componentDidMount() {
-    this.getProfielFieldGroups();
+    this.getProfileFieldGroups();
     updateOnboarding('v2: personal info form');
   }
 
-  async getProfielFieldGroups() {
+  async getProfileFieldGroups() {
     try {
       const response = await request(`/profile_field_groups?onboarding=true`);
       if (response.ok) {
