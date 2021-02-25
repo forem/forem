@@ -8,7 +8,7 @@ RSpec.describe Users::RemoveRole, type: :service do
       super_admin = create(:user, :super_admin)
       role = super_admin.roles.first.name.to_sym
       resource_type = nil
-      args = { user: super_admin, role: role, resource_type: resource_type, current_user: current_user }
+      args = { user: super_admin, role: role, resource_type: resource_type, admin: current_user }
       role_removal = described_class.call(args)
 
       expect(role_removal.success).to be false
@@ -20,7 +20,7 @@ RSpec.describe Users::RemoveRole, type: :service do
     it "does not remove roles and raises an error", :aggregate_failures do
       role = current_user.roles.first
       resource_type = nil
-      args = { user: current_user, role: role, resource_type: resource_type, current_user: current_user }
+      args = { user: current_user, role: role, resource_type: resource_type, admin: current_user }
       role_removal = described_class.call(args)
 
       expect(role_removal.success).to be false
@@ -32,7 +32,7 @@ RSpec.describe Users::RemoveRole, type: :service do
     user = create(:user, :trusted)
     role = user.roles.first
     resource_type = nil
-    args = { user: user, role: role, resource_type: resource_type, current_user: current_user }
+    args = { user: user, role: role, resource_type: resource_type, admin: current_user }
     role_removal = described_class.call(args)
 
     expect(role_removal.success).to be true
@@ -44,7 +44,7 @@ RSpec.describe Users::RemoveRole, type: :service do
     user = create(:user, :single_resource_admin)
     role = user.roles.first
     resource_type = "Comment"
-    args = { user: user, role: role, resource_type: resource_type, current_user: current_user }
+    args = { user: user, role: role, resource_type: resource_type, admin: current_user }
     role_removal = described_class.call(args)
 
     expect(role_removal.success).to be true
@@ -55,7 +55,7 @@ RSpec.describe Users::RemoveRole, type: :service do
   it "returns an error if there is an issue removing the role" do
     user = create(:user)
     allow(user).to receive(:remove_role).and_return(false)
-    args = { user: user, role: nil, resource_type: nil, current_user: current_user }
+    args = { user: user, role: nil, resource_type: nil, admin: current_user }
     role_removal = described_class.call(args)
 
     expect(role_removal.success).to be false

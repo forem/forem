@@ -49,7 +49,7 @@ module Admin
       response = ::Users::RemoveRole.call(user: @user,
                                           role: role,
                                           resource_type: resource_type,
-                                          current_user: current_user)
+                                          admin: current_user)
       if response.success
         flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
       else
