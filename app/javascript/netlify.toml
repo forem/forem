@@ -5,6 +5,9 @@
 # “base” is directory to change to before starting build. if you set base:
 #    that is where we will look for package.json/.nvmrc/etc not repo root!
 
+[build.environment]
+  YARN_VERSION = "1.22.5"
+
 [build]
   # base set in Netlify settings UI
   command = "yarn install && yarn run build-storybook --docs"
