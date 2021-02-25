@@ -69,7 +69,7 @@ RSpec.describe Search::User, type: :service do
     it "searches with username" do
       usernames = described_class.search_usernames(user1.username)
       expect(usernames.count).to eq(1)
-      expect(usernames).to match([user1.username])
+      expect(usernames.map { |u| u["username"] }).to match([user1.username])
     end
 
     it "analyzes wildcards" do
@@ -77,10 +77,10 @@ RSpec.describe Search::User, type: :service do
       index_documents([user3])
 
       usernames = described_class.search_usernames("star*")
-      expect(usernames).to match(
+      expect(usernames.map { |u| u["username"] }).to match(
         [user1.username, user2.username],
       )
-      expect(usernames).not_to include(user3.username)
+      expect(usernames.map { |u| u["username"] }).not_to include(user3.username)
     end
 
     it "does not allow leading wildcards" do
