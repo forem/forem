@@ -8,7 +8,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 [Media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries) allow us to create responsive experiences by changing the look and feel of a component based on the given media query. This can be done from CSS, but also programatically via JavaScript. This works well with a component because it **allows us to render only certain markup** based on the evaluated media query unlike a CSS media query which would apply to existing markup.
 
-# Breakpoints
+## Breakpoints
 
 Currently, these are the breakpoints for widths we support out of the box. These can be used to build media queries in your code.
 
@@ -20,9 +20,9 @@ export const BREAKPOINTS = Object.freeze({
 });
 ```
 
-# useMediaQuery Custom Hook
+## useMediaQuery Custom Hook
 
-A custom Preact hooks has been created to evaluate the given media query. It listens to changes in the breakpoint.
+A custom Preact hooks used to evaluate and monitor a given media query.
 
 ```jsx
 import { useMediaQuery } from '@components/useMediaQuery';
@@ -38,7 +38,7 @@ export function MediaQuery() {
 }
 ```
 
-# Media Query Component
+## Media Query Component
 
 The codebase currently has a lot of class based components, so a custom hook cannot be used. the `<MediaQuery />` component is perfect for this scenario. It encapsulates the custom `useMediaQuery` hook allowing us to reuse that logic and expose the result via a [render prop](https://reactjs.org/docs/render-props.html).
 
@@ -52,3 +52,8 @@ import { MediaQuery } from '@components/MediaQuery';
   }}
 />;
 ```
+
+## Additional resources
+
+- [Testing media queries programmatically](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Testing_media_queries)
+- [Using media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries)
