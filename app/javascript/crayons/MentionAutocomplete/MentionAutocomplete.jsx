@@ -1,5 +1,6 @@
 import { h, Fragment } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
+import PropTypes from 'prop-types';
 import {
   Combobox,
   ComboboxInput,
@@ -9,49 +10,10 @@ import {
 } from '@reach/combobox';
 import '@reach/combobox/styles.css';
 
-function fetchUsers(searchTerm) {
-  const exampleApiResult = {
-    result: [
-      {
-        username: 'one',
-        name: 'User One',
-        profile_image_90: 'https://placedog.net/50',
-      },
-      {
-        username: 'two',
-        name: 'User Two',
-        profile_image_90: 'https://placedog.net/51',
-      },
-    ],
-  };
-
-  return exampleApiResult.result.filter((user) =>
-    user.username.includes(searchTerm),
-  );
-}
-
-function useUsernameSearch(searchTerm) {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    if (searchTerm.trim() !== '') {
-      let isFresh = true;
-
-      // TODO: This fetch should actually be an awaited network call
-      const fetchedUsers = fetchUsers(searchTerm);
-      if (isFresh) setUsers(fetchedUsers);
-
-      return () => (isFresh = false);
-    }
-  }, [searchTerm]);
-
-  return users;
-}
-
 const UserListItemContent = ({ user }) => {
   return (
     <Fragment>
-      <span className="crayons-avatar crayons-avatar--l mr-2">
+      <span className="crayons-avatar crayons-avatar--l mr-2 shrink-0">
         <img
           src={user.profile_image_90}
           alt=""
@@ -67,9 +29,43 @@ const UserListItemContent = ({ user }) => {
   );
 };
 
-export const MentionAutocomplete = ({ startText = '', onSelect }) => {
+/**
+ * A component for dynamically searching for users and displaying results in a dropdown.
+ *
+ * @param {object} props
+ * @param {string} props.startText The initial search term to use
+ * @param {function} props.onSelect Callback function for using the selected user
+ * @param {function} props.fetchSuggestions The async call to use for the search
+ *
+ * @example
+ * <MentionAutocomplete
+ *    startText="name"
+ *    onSelect={(user) => console.log(user)}
+ *    fetchSuggestions={fetchUsersByUsername}
+ * />
+ */
+export const MentionAutocomplete = ({
+  startText = '',
+  onSelect,
+  fetchSuggestions,
+}) => {
   const [searchTerm, setSearchTerm] = useState(startText);
-  const users = useUsernameSearch(searchTerm);
+  const [cachedSearches, setCachedSearches] = useState({});
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    if (searchTerm.trim() !== '') {
+      if (cachedSearches[searchTerm]) {
+        setUsers(cachedSearches[searchTerm]);
+        return;
+      }
+
+      fetchSuggestions(searchTerm).then((fetchedUsers) => {
+        setCachedSearches({ ...cachedSearches, [searchTerm]: fetchedUsers });
+        setUsers(fetchedUsers);
+      });
+    }
+  }, [searchTerm, fetchSuggestions, cachedSearches]);
 
   return (
     <Combobox
@@ -99,4 +95,10 @@ export const MentionAutocomplete = ({ startText = '', onSelect }) => {
       </ComboboxPopover>
     </Combobox>
   );
+};
+
+MentionAutocomplete.propTypes = {
+  startText: PropTypes.string,
+  onSelect: PropTypes.func.isRequired,
+  fetchSuggestions: PropTypes.func.isRequired,
 };
