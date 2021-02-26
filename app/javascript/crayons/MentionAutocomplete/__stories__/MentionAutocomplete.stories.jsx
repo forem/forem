@@ -1,8 +1,10 @@
 import { h } from 'preact';
 import { MentionAutocomplete } from '../MentionAutocomplete';
+import notes from './mention-autocomplete.md';
 
 export default {
   title: 'Components/MentionAutocomplete',
+  parameters: { notes },
 };
 
 function fetchUsers(searchTerm) {
@@ -10,13 +12,13 @@ function fetchUsers(searchTerm) {
     result: [
       {
         username: 'one',
-        name: 'First name Last Name One Two Three',
-        profile_image_90: 'https://placedog.net/50',
+        name: 'User One First Name Last Name',
+        profile_image_90: '/images/apple-icon.png',
       },
       {
         username: 'two',
         name: 'User Two',
-        profile_image_90: 'https://placedog.net/51',
+        profile_image_90: '/images/apple-icon.png',
       },
     ],
   };
