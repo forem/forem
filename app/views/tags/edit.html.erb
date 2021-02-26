@@ -54,12 +54,12 @@
     <div class="tag-form-field">
       <%= label_tag :bg_color_hex %>
       <br>
-      <%= color_field_tag "tag[bg_color_hex]", @tag.bg_color_hex, placeholder: "Click for color picker", class: "tag-form-text-field" %>
+      <%= color_field_tag "tag[bg_color_hex]", @tag.bg_color_hex.presence || "#000000", placeholder: "#000000", class: "tag-form-text-field" %>
     </div>
     <div class="tag-form-field">
       <%= label_tag :text_color_hex %>
       <br>
-      <%= color_field_tag "tag[text_color_hex]", @tag.text_color_hex, placeholder: "Click for color picker", class: "tag-form-text-field" %>
+      <%= color_field_tag "tag[text_color_hex]", @tag.text_color_hex.presence || "#ffffff", placeholder: "#ffffff", class: "tag-form-text-field" %>
     </div>
     <div class="tag-form-field">
       <%= label_tag :short_summary %>

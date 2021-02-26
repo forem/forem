@@ -375,7 +375,7 @@ function fetchNextPageIfNearBottom() {
   var scrollableElem;
 
   if (indexWhich === 'podcast-episodes') {
-    scrollableElem = document.getElementById('articles-list');
+    scrollableElem = document.getElementById('main-content');
     fetchCallback = function fetch() {
       fetchNextPodcastPage(indexContainer);
     };

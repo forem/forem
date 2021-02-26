@@ -100,7 +100,7 @@ function initializeCommentsPage() {
         sendHapticMessage('medium');
         var userStatus = document.body.getAttribute('data-user-status');
         if (userStatus === 'logged-out') {
-          showModal('react-to-comment');
+          showLoginModal();
           return;
         }
 
@@ -155,7 +155,7 @@ function initializeCommentsPage() {
         } else {
           var userStatus = document.body.getAttribute('data-user-status');
           if (userStatus == 'logged-out') {
-            showModal('reply-to-comment');
+            showLoginModal();
             return;
           }
           var parentId = event.target.closest('.comment').dataset.commentId;
@@ -302,12 +302,8 @@ function handleFocus(event) {
   var area = event.target;
   if (userStatus == 'logged-out') {
     event.preventDefault();
-    showModal('reply-to-comment');
+    showLoginModal();
     area.blur();
-    setTimeout(function () {
-      area.blur();
-      showModal('reply-to-comment');
-    }, 100);
   } else {
     var form = event.target.closest(".comment-form");
     form.classList.add("comment-form--initiated");

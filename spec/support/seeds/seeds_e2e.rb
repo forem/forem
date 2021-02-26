@@ -111,3 +111,72 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.com")
 end
 
 ##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "title", "Test article") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Test article
+    published: true
+    cover_image: #{Faker::Company.logo}
+    ---
+
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  Article.create(
+    body_markdown: markdown,
+    featured: true,
+    show_comments: true,
+    user_id: User.order(Arel.sql("RANDOM()")).first.id,
+  )
+end
+
+##############################################################################
+
+seeder.create_if_none(ListingCategory) do
+  ListingCategory.create!(
+    slug: "cfp",
+    cost: 1,
+    name: "Conference CFP",
+    rules: "Currently open for proposals, with link to form.",
+  )
+end
+
+##############################################################################
+
+seeder.create_if_none(Listing) do
+  user = User.first
+  Credit.add_to(user, rand(100))
+
+  Listing.create!(
+    user: user,
+    title: "Listing title",
+    body_markdown: Faker::Markdown.random,
+    location: Faker::Address.city,
+    organization_id: user.organizations.first&.id,
+    listing_category_id: ListingCategory.first&.id,
+    contact_via_connect: true,
+    published: true,
+    originally_published_at: Time.current,
+    bumped_at: Time.current,
+    tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
+  )
+end
+
+##############################################################################
+
+seeder.create_if_none(NavigationLink) do
+  protocol = ApplicationConfig["APP_PROTOCOL"].freeze
+  domain = Rails.application&.initialized? ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
+  base_url = "#{protocol}#{domain}".freeze
+  reading_icon = File.read(Rails.root.join("app/assets/images/twemoji/drawer.svg")).freeze
+
+  NavigationLink.create!(
+    name: "Reading List",
+    url: "#{base_url}/readinglist",
+    icon: reading_icon,
+    display_only_when_signed_in: true,
+    position: 0,
+  )
+end
