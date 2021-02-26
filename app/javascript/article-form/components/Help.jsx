@@ -15,27 +15,14 @@ export class Help extends Component {
       frontmatterHelpHTML:
         document.getElementById('editor-frontmatter-help') &&
         document.getElementById('editor-frontmatter-help').innerHTML,
+      liquidShowing: false,
+      markdownShowing: false,
+      frontmatterShowing: false,
     };
   }
 
-  setCommonProps = ({
-    liquidShowing = false,
-    markdownShowing = false,
-    frontmatterShowing = false,
-  }) => {
-    return {
-      liquidShowing,
-      markdownShowing,
-      frontmatterShowing,
-    };
-  };
-
-  toggleModal = (varShowing) => () => {
-    this.setState((prevState) => ({
-      ...this.setCommonProps({
-        [varShowing]: !prevState[varShowing],
-      }),
-    }));
+  showModal = (sectionShowing, isOpen) => () => {
+    this.setState({ [sectionShowing]: isOpen });
   };
 
   renderArticleFormTitleHelp = () => {
@@ -94,7 +81,10 @@ export class Help extends Component {
         className="crayons-card crayons-card--secondary p-4 mb-6"
       >
         You are currently using the basic markdown editor that uses{' '}
-        <a href="#frontmatter" onClick={this.toggleModal('frontmatterShowing')}>
+        <a
+          href="#frontmatter"
+          onClick={this.showModal('frontmatterShowing', true)}
+        >
           Jekyll front matter
         </a>
         . You can also use the <em>rich+markdown</em> editor you can find in{' '}
@@ -130,7 +120,10 @@ export class Help extends Component {
         <ul className="list-disc pl-6 color-base-70">
           <li>
             Use{' '}
-            <a href="#markdown" onClick={this.toggleModal('markdownShowing')}>
+            <a
+              href="#markdown"
+              onClick={this.showModal('markdownShowing', true)}
+            >
               Markdown
             </a>{' '}
             to write and format posts.
@@ -229,7 +222,7 @@ export class Help extends Component {
           </li>
           <li>
             You can use{' '}
-            <a href="#liquid" onClick={this.toggleModal('liquidShowing')}>
+            <a href="#liquid" onClick={this.showModal('liquidShowing', true)}>
               Liquid tags
             </a>{' '}
             to add rich content such as Tweets, YouTube videos, etc.
@@ -285,21 +278,21 @@ export class Help extends Component {
 
         {liquidShowing &&
           this.renderModal(
-            this.toggleModal('liquidShowing'),
+            this.showModal('liquidShowing', false),
             '🌊 Liquid Tags',
             liquidHelpHTML,
           )}
 
         {markdownShowing &&
           this.renderModal(
-            this.toggleModal('markdownShowing'),
+            this.showModal('markdownShowing', false),
             '✍️ Markdown',
             markdownHelpHTML,
           )}
 
         {frontmatterShowing &&
           this.renderModal(
-            this.toggleModal('frontmatterShowing'),
+            this.showModal('frontmatterShowing', false),
             'Jekyll Front Matter',
             frontmatterHelpHTML,
           )}

@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import he from 'he';
-
 import { getContentOfToken } from '../utilities';
 import { Navigation } from './Navigation';
 

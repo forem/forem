@@ -1,10 +1,3 @@
-# Global settings applied to the whole site.
-#
-# “publish” is the directory to publish (relative to root of your repo),
-# “command” is your build command,
-# “base” is directory to change to before starting build. if you set base:
-#    that is where we will look for package.json/.nvmrc/etc not repo root!
-
 [build]
   command = "make"
   [environment]
@@ -12,13 +5,13 @@
 
 # See <https://docs.netlify.com/routing/redirects/redirect-options/> for more options
 [[redirects]]
-from = "http://docs.dev.to"
-to = "http://docs.forem.com"
+from = "https://docs.dev.to"
+to = "https://docs.forem.com"
 status = 301
 force = true
 
 [[redirects]]
-from = "http://docs.dev.to/*"
-to = "http://docs.forem.com/:splat"
+from = "https://docs.dev.to/*"
+to = "https://docs.forem.com/:splat"
 status = 301
 force = true

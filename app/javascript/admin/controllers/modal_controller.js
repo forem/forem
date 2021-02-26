@@ -2,12 +2,37 @@ import { Controller } from 'stimulus';
 
 // eslint-disable-next-line no-restricted-syntax
 export default class ModalController extends Controller {
-  static classes = ['hidden'];
-  static targets = ['toggle'];
+  static values = {
+    rootSelector: String,
+    contentSelector: String,
+    title: String,
+    size: String,
+  };
 
-  toggleModal() {
-    if (this.hasToggleTarget) {
-      this.toggleTarget.classList.toggle(this.hiddenClass);
-    }
+  async toggleModal() {
+    const [{ Modal }, { render, h }] = await Promise.all([
+      import('@crayons/Modal'),
+      import('preact'),
+    ]);
+
+    const modalRoot = document.querySelector(this.rootSelectorValue);
+
+    render(
+      <Modal
+        title={this.titleValue}
+        onClose={() => {
+          render(null, modalRoot);
+        }}
+        size={this.sizeValue}
+      >
+        <div
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: document.querySelector(this.contentSelectorValue).innerHTML,
+          }}
+        />
+      </Modal>,
+      modalRoot,
+    );
   }
 }

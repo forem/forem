@@ -7,8 +7,9 @@
     "msjsdiag.debugger-for-chrome",
     "msjsdiag.debugger-for-edge",
     "rebornix.ruby",
-    "MS-vsliveshare.vsliveshare-pack",
-    "42Crunch.vscode-openapi",
-    "philosowaffle.openapi-designer"
+    "ms-vsliveshare.vsliveshare-pack",
+    "42crunch.vscode-openapi",
+    "philosowaffle.openapi-designer",
+    "silvenon.mdx"
   ]
 }
