@@ -1399,7 +1399,7 @@ ActiveRecord::Schema.define(version: 2021_02_22_102602) do
     t.boolean "display_announcements", default: true, null: false
     t.boolean "display_email_on_profile", default: false, null: false
     t.boolean "display_sponsors", default: true, null: false
-    t.string "editor_version", default: "v1"
+    t.string "editor_version", default: "v1", null: false
     t.integer "experience_level"
     t.boolean "feed_mark_canonical", default: false, null: false
     t.boolean "feed_referential_link", default: true, null: false
