@@ -22,6 +22,8 @@ module Constants
                      "Resource Admin: DisplayAd",
                      "Resource Admin: ListingCategory",
                      "Resource Admin: Tag",
+                     "Resource Admin: BadgeAchievement",
+                     "Resource Admin: Badge",
                      "Resource Admin: DataUpdateScript"].freeze
   end
 end
