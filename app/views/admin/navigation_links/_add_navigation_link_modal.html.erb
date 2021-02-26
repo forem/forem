@@ -1,38 +1,18 @@
-<button class="btn btn-primary ml-7" type="button" onclick="toggleNavigationLinkModal()">
-  Add Navigation Link
-</button>
+<span data-controller="modal" data-modal-root-selector-value="#add-navigation-link-modal-root" data-modal-content-selector-value="#add-navigation-link-modal" data-modal-title-value="Add Navigation Link" data-modal-size-value="l">
+  <button class="btn btn-primary ml-7" type="button" data-action="modal#toggleModal" id="nav-link-button">
+    Add Navigation Link
+  </button>
 
-<div id="add-navigation-link-modal" class="hidden">
-  <div class="crayons-modal crayons-modal--l">
-    <div class="crayons-modal__box">
-      <header class="crayons-modal__box__header">
-        <h2>Add Navigation Link</h2>
-        <button type="button" onclick="toggleNavigationLinkModal()" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
-          <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-          </svg>
-        </button>
-      </header>
-      <div class="crayons-modal__box__body">
-        <div class="form-group grid p-6 mb-6 gap-1">
-          <div class="form-group grid p-6 mb-6 gap-1">
-            <%= form_for(NavigationLink.new, url: admin_navigation_links_path) do |form| %>
-              <%= render "form", form: form %>
-              <%= form.submit "Add link", class: "crayons-btn" %>
-            <% end %>
-          </div>
-        </div>
+  <div id="add-navigation-link-modal" class="hidden">
+    <div class="form-group grid p-6 mb-6 gap-1">
+      <div class="form-group grid p-6 mb-6 gap-1">
+        <%= form_for(NavigationLink.new, url: admin_navigation_links_path) do |form| %>
+          <%= render "form", form: form %>
+          <%= form.submit "Add link", class: "crayons-btn" %>
+        <% end %>
       </div>
     </div>
-    <div class="crayons-modal__overlay"></div>
   </div>
-</div>
 
-<script>
-  function toggleNavigationLinkModal() {
-    const confirmationModal = document.getElementById(`add-navigation-link-modal`);
-    if (confirmationModal) {
-      confirmationModal.classList.toggle("hidden");
-    }
-  }
-</script>
+  <div id="add-navigation-link-modal-root"></div>
+</span>

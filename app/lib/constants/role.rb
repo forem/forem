@@ -9,6 +9,7 @@ module Constants
 
     SPECIAL_ROLES = ["Admin",
                      "Super Admin",
+                     "Tech Admin",
                      "Resource Admin: Article",
                      "Resource Admin: Comment",
                      "Resource Admin: BufferUpdate",
@@ -20,6 +21,7 @@ module Constants
                      "Resource Admin: HtmlVariant",
                      "Resource Admin: DisplayAd",
                      "Resource Admin: ListingCategory",
-                     "Resource Admin: Tag"].freeze
+                     "Resource Admin: Tag",
+                     "Resource Admin: DataUpdateScript"].freeze
   end
 end

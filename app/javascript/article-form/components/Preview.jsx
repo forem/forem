@@ -51,7 +51,7 @@ function titleArea(previewResponse, articleState, errors) {
       )}
       <div className="crayons-article__header__meta">
         {errors && <ErrorList errors={errors} />}
-        <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
+        <h1 className="fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
           {previewTitle}
         </h1>
 

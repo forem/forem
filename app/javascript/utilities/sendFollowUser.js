@@ -1,4 +1,4 @@
-export default function sendFollowUser(user, successCb) {
+export function sendFollowUser(user, successCb) {
   const csrfToken = document.querySelector("meta[name='csrf-token']").content;
 
   const formData = new FormData();

@@ -92,8 +92,8 @@ class PollTag < LiquidTagBase
         var els = document.getElementsByClassName('ltag-poll')
         for (i = 0; i < els.length; i += 1) {
           els[i].onclick = function(e) {
-            if (typeof showModal !== "undefined") {
-              showModal('poll');
+            if (typeof showLoginModal !== "undefined") {
+              showLoginModal();
             }
           }
         }

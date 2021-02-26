@@ -1,11 +1,10 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-
 import { getContentOfToken, updateOnboarding } from '../utilities';
-import Navigation from './Navigation';
+import { Navigation } from './Navigation';
 
 /* eslint-disable camelcase */
-class EmailPreferencesForm extends Component {
+export class EmailPreferencesForm extends Component {
   constructor(props) {
     super(props);
 
@@ -124,7 +123,5 @@ EmailPreferencesForm.propTypes = {
   slidesCount: PropTypes.number.isRequired,
   currentSlideIndex: PropTypes.func.isRequired,
 };
-
-export default EmailPreferencesForm;
 
 /* eslint-enable camelcase */

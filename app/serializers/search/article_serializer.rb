@@ -4,7 +4,7 @@ module Search
 
     attributes :approved, :body_text, :class_name, :cloudinary_video_url,
                :comments_count, :experience_level_rating, :experience_level_rating_distribution,
-               :featured, :featured_number, :hotness_score, :language,
+               :featured, :featured_number, :hotness_score,
                :main_image, :path, :public_reactions_count, :published,
                :published_at, :reactions_count, :reading_time, :score, :title
 

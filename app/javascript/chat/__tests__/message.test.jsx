@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import '@testing-library/jest-dom';
 import { axe } from 'jest-axe';
-import Message from '../message';
+import { Message } from '../message';
 
 const msg = {
   username: 'asdf',

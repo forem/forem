@@ -100,7 +100,7 @@ function initializeCommentsPage() {
         sendHapticMessage('medium');
         var userStatus = document.body.getAttribute('data-user-status');
         if (userStatus === 'logged-out') {
-          showModal('react-to-comment');
+          showLoginModal();
           return;
         }
 
@@ -155,7 +155,7 @@ function initializeCommentsPage() {
         } else {
           var userStatus = document.body.getAttribute('data-user-status');
           if (userStatus == 'logged-out') {
-            showModal('reply-to-comment');
+            showLoginModal();
             return;
           }
           var parentId = event.target.closest('.comment').dataset.commentId;
@@ -273,6 +273,7 @@ function handleCommentSubmit(event) {
           else {
             window.location.replace(newComment.url)
           }
+          updateCommentsCount();
           initializeCommentsPage();
           initializeCommentDate();
           initializeCommentDropdown();
@@ -301,12 +302,8 @@ function handleFocus(event) {
   var area = event.target;
   if (userStatus == 'logged-out') {
     event.preventDefault();
-    showModal('reply-to-comment');
+    showLoginModal();
     area.blur();
-    setTimeout(function () {
-      area.blur();
-      showModal('reply-to-comment');
-    }, 100);
   } else {
     var form = event.target.closest(".comment-form");
     form.classList.add("comment-form--initiated");
@@ -547,4 +544,11 @@ function listenForDetailsToggle() {
       item.getElementsByTagName("SUMMARY")[0].blur();
     });
   }
+}
+
+function updateCommentsCount() {
+  var commentsCountDiv = document.getElementsByClassName("js-comments-count")[0];
+  var commentsCountData = parseInt(commentsCountDiv.dataset.commentsCount) + 1;
+  commentsCountDiv.dataset.commentsCount = commentsCountData;
+  commentsCountDiv.innerHTML = `(${commentsCountData})`
 }

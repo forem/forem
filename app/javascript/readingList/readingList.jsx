@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import debounceAction from '../utilities/debounceAction';
 
 import {
   defaultState,
@@ -15,7 +14,9 @@ import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
 import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
 import { ItemListTags } from './components/ItemListTags';
+import { debounceAction } from '@utilities/debounceAction';
 import { Button } from '@crayons';
+import { request } from '@utilities/http';
 
 const STATUS_VIEW_VALID = 'valid,confirmed';
 const STATUS_VIEW_ARCHIVED = 'archived';
@@ -87,29 +88,22 @@ export class ReadingList extends Component {
   toggleArchiveStatus = (event, item) => {
     event.preventDefault();
 
-    const { statusView, items, totalCount } = this.state;
-    window.fetch(`/reading_list_items/${item.id}`, {
+    const { statusView, items } = this.state;
+    request(`/reading_list_items/${item.id}`, {
       method: 'PUT',
-      headers: {
-        'X-CSRF-Token': window.csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ current_status: statusView }),
-      credentials: 'same-origin',
+      body: { current_status: statusView },
     });
 
-    const t = this;
     const newItems = items;
     newItems.splice(newItems.indexOf(item), 1);
-    t.setState({
+    this.setState({
       archiving: true,
       items: newItems,
-      totalCount: totalCount - 1,
     });
 
     // hide the snackbar in a few moments
     setTimeout(() => {
-      t.setState({ archiving: false });
+      this.setState({ archiving: false });
     }, 1000);
   };
 
@@ -163,8 +157,7 @@ export class ReadingList extends Component {
 
   render() {
     const {
-      items,
-      totalCount,
+      items = [],
       availableTags,
       selectedTags,
       showLoadMoreButton,
@@ -193,11 +186,11 @@ export class ReadingList extends Component {
       ''
     );
     return (
-      <div>
+      <section>
         <header className="crayons-layout flex justify-between items-center pb-0">
           <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
-            {` (${totalCount > 0 ? totalCount : '0'})`}
+            {` (${items.length})`}
           </h1>
 
           <div class="flex items-center">
@@ -227,7 +220,7 @@ export class ReadingList extends Component {
             onClick={this.toggleTag}
           />
 
-          <main className="crayons-layout__content">
+          <main className="crayons-layout__content" id="main-content">
             <div className="crayons-card mb-4">
               {items.length > 0 ? itemsToRender : this.renderEmptyItems()}
             </div>
@@ -240,7 +233,7 @@ export class ReadingList extends Component {
 
           {snackBar}
         </div>
-      </div>
+      </section>
     );
   }
 }

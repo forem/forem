@@ -14,7 +14,7 @@
  * @param {string} modalProps.leftCustomDataAttr A custom data attribute for the left button.
  * @param {string} modalProps.rightCustomDataAttr A custom data attribute for the right button.
  */
-const adminModal = function ({
+export const adminModal = function ({
   title,
   body,
   leftBtnText,
@@ -37,9 +37,9 @@ const adminModal = function ({
             </svg>
           </button>
         </header>
-        <div class="crayons-modal__box__body flex flex-col gap-4">
+        <div class="crayons-modal__box__body grid gap-4">
           ${body}
-          <div class="flex gap-2">
+          <div class="crayons-btn-actions">
             <button
               class="crayons-btn ${leftBtnClasses}"
               data-action="click->config#${leftBtnAction}"
@@ -59,5 +59,3 @@ const adminModal = function ({
     </div>
   `;
 };
-
-export default adminModal;

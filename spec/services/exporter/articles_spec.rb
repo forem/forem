@@ -23,7 +23,6 @@ RSpec.describe Exporter::Articles, type: :service do
       description
       edited_at
       feed_source_url
-      language
       last_comment_at
       main_image
       main_image_background_hex_color

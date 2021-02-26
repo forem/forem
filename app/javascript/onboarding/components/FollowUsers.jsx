@@ -1,11 +1,10 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import he from 'he';
-
 import { getContentOfToken } from '../utilities';
-import Navigation from './Navigation';
+import { Navigation } from './Navigation';
 
-class FollowUsers extends Component {
+export class FollowUsers extends Component {
   constructor(props) {
     super(props);
 
@@ -224,5 +223,3 @@ FollowUsers.propTypes = {
   slidesCount: PropTypes.number.isRequired,
   currentSlideIndex: PropTypes.func.isRequired,
 };
-
-export default FollowUsers;

@@ -1,40 +1,11 @@
 @import '../config/import';
 
 .authentication-modal {
-  &__box {
-    position: relative;
-    margin-left: var(--su-4);
-    margin-right: var(--su-4);
-    height: auto;
-    width: auto;
-
-    @include generate-box(
-      $level: 2,
-      $bg: var(--base-inverted),
-      $border: var(--base),
-      $color: var(--card-color)
-    );
-
-    @media (min-width: $breakpoint-s) {
-      margin: inherit;
-    }
-  }
-
-  &__close-btn {
-    position: absolute;
-    top: var(--su-3);
-    right: var(--su-3);
-  }
-
   &__container {
     display: grid;
-    grid-gap: var(--su-2);
-    padding: var(--su-4);
-
-    @media (min-width: $breakpoint-s) {
-      padding: var(--su-8) var(--su-8) var(--su-6);
-    }
+    grid-gap: var(--su-4);
   }
+
   &__image-container {
     width: var(--su-8);
     height: var(--su-8);
@@ -58,16 +29,6 @@
     grid-gap: var(--su-1);
   }
 
-  &__title {
-    color: var(--card-color);
-    font-size: var(--fs-2xl);
-    line-height: var(--lh-tight);
-
-    @media (min-width: $breakpoint-s) {
-      font-size: var(--fs-3xl);
-    }
-  }
-
   &__description {
     color: var(--card-color-secondary);
   }
@@ -83,16 +44,18 @@
       width: 100%;
       margin: 0 auto;
       justify-self: center;
-      padding: 0 var(--su-8) var(--su-7);
+      padding: 0 var(--su-8) var(--su-4);
     }
   }
 
   &__footer {
     border-top: 2px solid var(--base-100);
-    padding: var(--su-2) var(--su-4);
+    padding: var(--su-2) var(--su-4) 0 var(--su-4);
+    margin: 0 calc(-1 * var(--modal-body-padding)) 0
+      calc(-1 * var(--modal-body-padding));
 
     @media (min-width: $breakpoint-s) {
-      padding: var(--su-5) var(--su-8);
+      padding: var(--su-5) var(--su-8) 0 var(--su-8);
     }
   }
 

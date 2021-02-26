@@ -2,10 +2,10 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { getContentOfToken, userData, updateOnboarding } from '../utilities';
-import Navigation from './Navigation';
+import { Navigation } from './Navigation';
 
 /* eslint-disable camelcase */
-class IntroSlide extends Component {
+export class IntroSlide extends Component {
   constructor(props) {
     super(props);
 
@@ -150,7 +150,7 @@ class IntroSlide extends Component {
                         checked={checked_code_of_conduct}
                         onChange={this.handleChange}
                       />
-                      You agree to uphold our{' '}
+                      You agree to uphold our&nbsp;
                       <a
                         href="/code-of-conduct"
                         data-no-instant
@@ -175,7 +175,7 @@ class IntroSlide extends Component {
                         checked={checked_terms_and_conditions}
                         onChange={this.handleChange}
                       />
-                      You agree to our{' '}
+                      You agree to our&nbsp;
                       <a
                         href="/terms"
                         data-no-instant
@@ -216,7 +216,5 @@ IntroSlide.propTypes = {
     communityDescription: PropTypes.string.isRequired,
   }).isRequired,
 };
-
-export default IntroSlide;
 
 /* eslint-enable camelcase */

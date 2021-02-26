@@ -12,14 +12,11 @@
 }
 
 .live-chat {
-  /* height: calc(100vh - 56px); */
-
   &.live-chat--iossafari {
     height: calc(100vh - 56px);
   }
 
   overflow-y: hidden;
-  /* height: calc(100 * var(--vh) - var(--header-height)); */
 }
 
 .live-chat {
@@ -552,8 +549,17 @@
   font-weight: bold;
   cursor: pointer;
 
-  img {
+  button {
     opacity: 0.6;
+    border: none;
+    height: 18px;
+    width: 18px;
+    background-size: cover;
+    background-color: transparent;
+  }
+
+  ul {
+    padding: 12px 10px;
   }
 
   &:hover {
@@ -564,10 +570,8 @@
 }
 
 .chatchannels__configmenu {
-  display: none;
   position: absolute;
   bottom: 42px;
-  padding: 12px 10px;
   min-width: 150px;
   left: 0;
   right: 0;
@@ -575,10 +579,13 @@
   border-top: 1px solid $light-medium-gray;
   font-size: 13px;
 
-  a {
-    color: $dark-gray;
-    display: block;
-    padding: 5px 0px;
+  li {
+    list-style: none;
+    a {
+      color: $dark-gray;
+      display: block;
+      padding: 5px 0px;
+    }
   }
 }
 
