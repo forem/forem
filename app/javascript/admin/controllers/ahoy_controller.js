@@ -14,7 +14,7 @@ export default class AhoyController extends Controller {
       action: event.type,
       target: event.target.toString(),
     };
-    ahoy.track('Overview Link Clicked', properties);
+    ahoy.track('Admin Overview Link Clicked', properties);
     window.location.href = event.target.href;
   }
 }
