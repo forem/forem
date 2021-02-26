@@ -12,4 +12,4 @@
   publish = "storybook-static"
   ignore = "git diff --quiet HEAD^ HEAD app/javascript && git diff --quiet HEAD^ HEAD app/assets/stylesheets/config"
 [build.environment]
-  NODE_VERSION = "14.14.0"
+  NODE_VERSION = "14.14"
