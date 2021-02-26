@@ -446,12 +446,12 @@ ActiveRecord::Schema.define(version: 2021_03_10_154630) do
   end
 
   create_table "devices", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "token", null: false
+    t.string "platform", null: false
     t.string "app_bundle", null: false
     t.datetime "created_at", precision: 6, null: false
-    t.string "platform", null: false
-    t.string "token", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id", null: false
     t.index ["user_id", "token", "platform", "app_bundle"], name: "index_devices_on_user_id_and_token_and_platform_and_app_bundle", unique: true
   end
 
@@ -1288,7 +1288,7 @@ ActiveRecord::Schema.define(version: 2021_03_10_154630) do
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
-    t.datetime "last_moderation_notification", default: "2017-01-01 06:00:00"
+    t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
     t.datetime "last_reacted_at"
@@ -1368,9 +1368,9 @@ ActiveRecord::Schema.define(version: 2021_03_10_154630) do
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.string "email", null: false
+    t.string "email"
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.string "username"
   end
 
