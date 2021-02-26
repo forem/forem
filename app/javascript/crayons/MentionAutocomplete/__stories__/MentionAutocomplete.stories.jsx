@@ -7,7 +7,7 @@ export default {
 
 export const Default = () => (
   <div>
-    <MentionAutocomplete />
+    <MentionAutocomplete onSelect={() => console.log('selected')} />
   </div>
 );
 
