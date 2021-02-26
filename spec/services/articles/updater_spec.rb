@@ -26,6 +26,14 @@ RSpec.describe Articles::Updater, type: :service do
     expect(article.tags.pluck(:name).sort).to eq(%w[productivity ruby])
   end
 
+  describe "sends notifications" do
+    it "sends notifications when" do
+    end
+
+    it "" do
+    end
+  end
+
   describe "events dispatcher" do
     let(:event_dispatcher) { double }
 

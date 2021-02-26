@@ -3,7 +3,7 @@ module Articles
     def initialize(user, article_id, article_params, event_dispatcher = Webhook::DispatchEvent)
       @user = user
       @article_id = article_id
-      @article_params = article_params
+      @article_params = Articles::Attributes.new(article_params, user)
       @event_dispatcher = event_dispatcher
     end
 
@@ -18,15 +18,11 @@ module Articles
       was_published = article.published
 
       # updated edited time only if already published and not edited by an admin
-      update_edited_at = article.user == user && article.published
-      # article_params[:edited_at] = Time.current if update_edited_at
-
-      attrs = Articles::Attributes.new(article_params, user, update_edited_at).for_update
-
+      attrs = article_params.for_update(update_edited_at: article.user == user && article.published)
       article.update!(attrs)
 
       user.rate_limiter.track_limit_by_action(:article_update)
-
+      binding.pry
       # send notification only the first time an article is published
       send_notification = article.published && article.saved_change_to_published_at.present?
       Notification.send_to_followers(article, "Published") if send_notification

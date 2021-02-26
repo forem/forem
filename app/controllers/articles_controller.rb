@@ -129,14 +129,17 @@ class ArticlesController < ApplicationController
 
     not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
 
-    edited_at_date = if @article.user == current_user && @article.published
-                       Time.current
-                     else
-                       @article.edited_at
-                     end
-    updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
-    handle_notifications(updated)
-    Webhook::DispatchEvent.call("article_updated", @article) if updated
+    # edited_at_date = if @article.user == current_user && @article.published
+    #                    Time.current
+    #                  else
+    #                    @article.edited_at
+    #                  end
+
+    Articles::Updater.call(@user, @article.id, article_params_json)
+
+    # updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
+    # handle_notifications(updated)
+    # Webhook::DispatchEvent.call("article_updated", @article) if updated
     respond_to do |format|
       format.html do
         # TODO: JSON should probably not be returned in the format.html section
