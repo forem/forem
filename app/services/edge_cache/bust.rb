@@ -14,14 +14,12 @@ module EdgeCache
       paths = Array.wrap(paths)
       paths.each do |path|
         @provider_class.call(path)
-        true
       rescue StandardError => e
         Honeybadger.notify(e)
         ForemStatsClient.increment(
           "edgecache_bust.provider_error",
           tags: ["provider_class:#{@provider_class}", "error_class:#{e.class}"],
         )
-        false
       end
     end
 
