@@ -22,9 +22,9 @@ module Articles
       article.update!(attrs)
 
       user.rate_limiter.track_limit_by_action(:article_update)
-      binding.pry
+
       # send notification only the first time an article is published
-      send_notification = article.published && article.saved_change_to_published_at.present?
+      send_notification = article.saved_changes["published"] == [false, true]
       Notification.send_to_followers(article, "Published") if send_notification
 
       # remove related notifications if unpublished

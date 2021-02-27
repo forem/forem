@@ -129,17 +129,8 @@ class ArticlesController < ApplicationController
 
     not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
 
-    # edited_at_date = if @article.user == current_user && @article.published
-    #                    Time.current
-    #                  else
-    #                    @article.edited_at
-    #                  end
+    updated = Articles::Updater.call(@user, @article.id, article_params_json)
 
-    Articles::Updater.call(@user, @article.id, article_params_json)
-
-    # updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
-    # handle_notifications(updated)
-    # Webhook::DispatchEvent.call("article_updated", @article) if updated
     respond_to do |format|
       format.html do
         # TODO: JSON should probably not be returned in the format.html section
@@ -243,28 +234,12 @@ class ArticlesController < ApplicationController
     Honeycomb.add_field("article_id", @article.id)
   end
 
-  def article_params
-    params[:article][:published] = true if params[:submit_button] == "PUBLISH"
-    modified_params = policy(Article).permitted_attributes
-    modified_params << :user_id if org_admin_user_change_privilege
-    modified_params << :comment_template if current_user.has_role?(:admin)
-    params.require(:article).permit(modified_params)
-  end
-
   # TODO: refactor all of this update logic into the Articles::Updater possibly,
   # ideally there should only be one place to handle the update logic
   def article_params_json
     params.require(:article) # to trigger the correct exception in case `:article` is missing
 
     params["article"].transform_keys!(&:underscore)
-
-    # handle series/collections
-    if params["article"]["series"].present?
-      collection = Collection.find_series(params["article"]["series"], @user)
-      params["article"]["collection_id"] = collection.id
-    elsif params["article"]["series"] == "" # reset collection?
-      params["article"]["collection_id"] = nil
-    end
 
     allowed_params = if params["article"]["version"] == "v1"
                        %i[body_markdown]
@@ -285,19 +260,6 @@ class ArticlesController < ApplicationController
     end
 
     params.require(:article).permit(allowed_params)
-  end
-
-  def handle_notifications(updated)
-    if updated && @article.published && @article.saved_changes["published"] == [false, true]
-      Notification.send_to_followers(@article, "Published")
-    elsif @article.saved_changes["published"] == [true, false]
-      Notification.remove_all_by_action_without_delay(notifiable_ids: @article.id, notifiable_type: "Article",
-                                                      action: "Published")
-      if @article.comments.exists?
-        Notification.remove_all(notifiable_ids: @article.comments.ids,
-                                notifiable_type: "Comment")
-      end
-    end
   end
 
   def allowed_to_change_org_id?

@@ -36,10 +36,6 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(article.reload.title).to eq("hey hey hahuu")
   end
 
-  it "updates user_id when" do
-    
-  end
-
   it "adds organization ID when user updates" do
     user_org_id = user.organizations.first.id
     put "/articles/#{article.id}", params: {
