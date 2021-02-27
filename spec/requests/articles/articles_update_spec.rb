@@ -116,11 +116,20 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(article.collection).to eq(nil)
   end
 
-  it "creates a notification job if published" do
-    article.update_column(:published, false)
+  it "creates a notification job if published the first time" do
+    draft = create(:article, published: false, user_id: user.id)
     sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
+      put "/articles/#{draft.id}", params: {
+        article: { published: true, body_markdown: "blah"  }
+      }
+    end
+  end
+
+  it "does not create a notification job if published the second time" do
+    article.update_column(:published, false)
+    sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
       put "/articles/#{article.id}", params: {
-        article: { published: true }
+        article: { published: true, body_markdown: "blah"  }
       }
     end
   end
