@@ -545,7 +545,8 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     text-align: left;
     width: 100%;
 
-    &:hover {
+    &:hover,
+    &:focus-within {
       background-color: #eef0f1 !important;
     }
   }
@@ -565,19 +566,6 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   .user-name,
   .user-summary {
     margin: 0;
-  }
-
-  input[type='checkbox'].user-following-status + div {
-    margin-left: 32px;
-  }
-
-  input[type='checkbox']:not(:checked).user-following-status + div {
-    @extend .crayons-btn;
-    @extend .crayons-btn--outlined;
-  }
-
-  input[type='checkbox']:checked.user-following-status + div {
-    @extend .crayons-btn;
   }
 }
 

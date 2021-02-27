@@ -188,11 +188,9 @@ export class FollowUsers extends Component {
                 return (
                   <div
                     data-testid="onboarding-user-button"
-                    className={
-                      selected
-                        ? 'user content-row selected'
-                        : 'user content-row unselected'
-                    }
+                    className={`user content-row ${
+                      selected ? 'selected' : 'unselected'
+                    }`}
                   >
                     <figure className="user-avatar-container">
                       <img
@@ -207,23 +205,22 @@ export class FollowUsers extends Component {
                         {he.unescape(user.summary || '')}
                       </p>
                     </div>
-                    <label className="relative">
+                    <label
+                      className={`relative user-following-status crayons-btn ${
+                        selected
+                          ? 'color-base-inverted'
+                          : 'crayons-btn--outlined'
+                      }`}
+                    >
                       <input
+                        aria-label={`Follow ${user.name}`}
                         type="checkbox"
                         checked={selected}
-                        className="user-following-status invisible absolute top-0 bottom-0 right-0 left-0"
-                      />
-                      <div
-                        tabIndex="0"
-                        data-testid="onboarding-user-following-status"
-                        aria-label={`Follow ${user.name}`}
-                        aria-checked={selected}
-                        role="checkbox"
+                        className="absolute opacity-0 absolute top-0 bottom-0 right-0 left-0"
                         onClick={() => this.handleClick(user)}
-                        onKeyPress={(event) => this.handleKeyPress(event, user)}
-                      >
-                        {selected ? 'Following' : 'Follow'}
-                      </div>
+                        data-testid="onboarding-user-following-status"
+                      />
+                      {selected ? 'Following' : 'Follow'}
                     </label>
                   </div>
                 );
