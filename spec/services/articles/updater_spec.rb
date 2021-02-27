@@ -26,11 +26,26 @@ RSpec.describe Articles::Updater, type: :service do
     expect(article.tags.pluck(:name).sort).to eq(%w[productivity ruby])
   end
 
-  describe "sends notifications" do
-    it "sends notifications when" do
+  describe "notifications" do
+    it "sends notifications when an article was published" do
+      attributes[:published] = true
+      sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
+        described_class.call(user, draft.id, attributes)
+      end
     end
 
-    it "" do
+    it "doesn't send when an article was unpublished" do
+      attributes[:published] = false
+      sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
+        described_class.call(user, article.id, attributes)
+      end
+    end
+
+    it "doesn't send when an article went from published to published" do
+      attributes[:published] = true
+      sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
+        described_class.call(user, article.id, attributes)
+      end
     end
   end
 
