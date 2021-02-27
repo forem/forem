@@ -71,9 +71,15 @@ module Api
       end
 
       def update
-        @article = Articles::Updater.call(@user, params[:id], article_params)
+        result = Articles::Updater.call(@user, params[:id], article_params)
+        @article = result.article
 
-        render "show", status: :ok
+        if result.success
+          render "show", status: :ok
+        else
+          message = @article.errors_as_sentence
+          render json: { error: message, status: 422 }, status: :unprocessable_entity
+        end
       end
 
       def me

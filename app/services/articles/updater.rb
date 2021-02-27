@@ -1,5 +1,7 @@
 module Articles
   class Updater
+    Result = Struct.new(:success, :article, keyword_init: true)
+
     def initialize(user, article_id, article_params, event_dispatcher = Webhook::DispatchEvent)
       @user = user
       @article_id = article_id
@@ -19,27 +21,28 @@ module Articles
 
       # updated edited time only if already published and not edited by an admin
       attrs = article_params.for_update(update_edited_at: article.user == user && article.published)
-      article.update!(attrs)
+      success = article.update(attrs)
 
-      user.rate_limiter.track_limit_by_action(:article_update)
+      if success
+        user.rate_limiter.track_limit_by_action(:article_update)
 
-      # send notification only the first time an article is published
-      send_notification = article.saved_changes["published"] == [false, true]
-      Notification.send_to_followers(article, "Published") if send_notification
+        # send notification only the first time an article is published
+        send_notification = article.saved_changes["published"] == [false, true]
+        Notification.send_to_followers(article, "Published") if send_notification
 
-      # remove related notifications if unpublished
-      if article.saved_changes["published"] == [true, false]
-        Notification.remove_all_by_action_without_delay(notifiable_ids: article.id, notifiable_type: "Article",
-                                                        action: "Published")
-        if article.comments.exists?
-          Notification.remove_all(notifiable_ids: article.comments.ids,
-                                  notifiable_type: "Comment")
+        # remove related notifications if unpublished
+        if article.saved_changes["published"] == [true, false]
+          Notification.remove_all_by_action_without_delay(notifiable_ids: article.id, notifiable_type: "Article",
+                                                          action: "Published")
+          if article.comments.exists?
+            Notification.remove_all(notifiable_ids: article.comments.ids,
+                                    notifiable_type: "Comment")
+          end
         end
+        # don't send only if article keeps being unpublished
+        dispatch_event(article) if article.published || was_published
       end
-      # don't send only if article keeps being unpublished
-      dispatch_event(article) if article.published || was_published
-
-      article.decorate
+      Result.new(success: success, article: article.decorate)
     end
 
     private

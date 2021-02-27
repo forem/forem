@@ -150,7 +150,7 @@ class ArticlesController < ApplicationController
       end
 
       format.json do
-        render json: if updated
+        render json: if updated.success
                        @article.to_json(only: [:id], methods: [:current_state_path])
                      else
                        @article.errors.to_json
