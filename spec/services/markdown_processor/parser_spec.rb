@@ -88,6 +88,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     test = code_block_object.convert_code_tags_to_triple_backticks(content)
     expect(test).not_to include("<code>")
     expect(test).not_to include("</code>")
+    expect(test).to include("```")
   end
 
   it "converts multiple code tags to triple backticks" do
@@ -96,6 +97,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     test = code_block_object.convert_code_tags_to_triple_backticks(content)
     expect(test).not_to include("<code>")
     expect(test).not_to include("</code>")
+    expect(test).to include("```")
   end
 
   it "ignores code tag if pre tag is present" do
@@ -104,6 +106,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     test = code_block_object.convert_code_tags_to_triple_backticks(content)
     expect(test).to include("<pre>\n<code>")
     expect(test).to include("</code>\n</pre>")
+    expect(test).not_to include("```")
   end
 
   it "ignores code tag if tags are inline" do
@@ -112,6 +115,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     test = code_block_object.convert_code_tags_to_triple_backticks(content)
     expect(test).to include("<code>")
     expect(test).to include("</code>")
+    expect(test).not_to include("```")
   end
 
   it "returns original content if code tag is not present" do
