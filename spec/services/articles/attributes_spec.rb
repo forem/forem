@@ -36,6 +36,11 @@ RSpec.describe Articles::Attributes, type: :service do
       expect(no_series_attrs[:series]).to be nil
     end
 
+    it "does not reset the collection when no :series was passed" do
+      no_series_attrs = described_class.new({ title: "hello" }, user).for_update
+      expect(no_series_attrs.key?(:collection)).to be false
+    end
+
     it "sets tag_list when tags were passed" do
       tags_attrs = described_class.new({ tags: %w[ruby cpp], title: "title" }, user).for_update
       expect(tags_attrs[:tag_list]).to eq("ruby, cpp")

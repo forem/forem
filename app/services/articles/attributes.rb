@@ -16,7 +16,8 @@ module Articles
       ATTRIBUTES.each do |attr|
         hash[attr] = attributes[attr] if attributes[attr]
       end
-      hash[:collection] = collection
+      # don't reset the collection when no series was passed
+      hash[:collection] = collection if attributes.key?(:series)
       hash[:tag_list] = tag_list
       hash[:edited_at] = Time.current if update_edited_at
       hash
