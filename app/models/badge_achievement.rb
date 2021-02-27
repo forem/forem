@@ -1,6 +1,7 @@
 class BadgeAchievement < ApplicationRecord
   CONTEXT_MESSAGE_ALLOWED_TAGS = %w[strong em i b u a code].freeze
   CONTEXT_MESSAGE_ALLOWED_ATTRIBUTES = %w[href name].freeze
+  resourcify
 
   belongs_to :user
   belongs_to :badge
