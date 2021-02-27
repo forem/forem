@@ -1,4 +1,5 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
+import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import ArticleFormTitle from './ArticleFormTitle';
 import TagInput from './TagInput';
@@ -6,98 +7,91 @@ import BasicEditor from './BasicEditor';
 import EditorFormattingHelp from './EditorFormattingHelp';
 import { Modal } from '@crayons';
 
-export class Help extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      liquidHelpHTML:
-        document.getElementById('editor-liquid-help') &&
-        document.getElementById('editor-liquid-help').innerHTML,
-      markdownHelpHTML:
-        document.getElementById('editor-markdown-help') &&
-        document.getElementById('editor-markdown-help').innerHTML,
-      frontmatterHelpHTML:
-        document.getElementById('editor-frontmatter-help') &&
-        document.getElementById('editor-frontmatter-help').innerHTML,
-      liquidShowing: false,
-      markdownShowing: false,
-      frontmatterShowing: false,
-    };
-  }
+const renderModal = (onClose, title, helpHtml) => {
+  return (
+    <Modal onClose={onClose} title={title}>
+      <div
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: helpHtml }}
+      />
+    </Modal>
+  );
+};
 
-  toggleModal = (varShowing) => (e) => {
+export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
+  const [state, setState] = useState({
+    liquidHelpHTML:
+      document.getElementById('editor-liquid-help') &&
+      document.getElementById('editor-liquid-help').innerHTML,
+    markdownHelpHTML:
+      document.getElementById('editor-markdown-help') &&
+      document.getElementById('editor-markdown-help').innerHTML,
+    frontmatterHelpHTML:
+      document.getElementById('editor-frontmatter-help') &&
+      document.getElementById('editor-frontmatter-help').innerHTML,
+    liquidShowing: false,
+    markdownShowing: false,
+    frontmatterShowing: false,
+  });
+
+  const toggleModal = (varShowing) => (e) => {
     e.preventDefault();
-    this.setState((prevState) => ({
+    setState((prevState) => ({
       [varShowing]: !prevState[varShowing],
     }));
   };
 
-  renderModal = (onClose, title, helpHtml) => {
-    return (
-      <Modal onClose={onClose} title={title}>
+  const {
+    liquidHelpHTML,
+    markdownHelpHTML,
+    frontmatterHelpHTML,
+    liquidShowing,
+    markdownShowing,
+    frontmatterShowing,
+  } = state;
+
+  return (
+    <div className="crayons-article-form__aside">
+      {!previewShowing && (
         <div
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: helpHtml }}
-        />
-      </Modal>
-    );
-  };
+          data-testid="article-form__help-section"
+          className="sticky"
+          style={{ top: version === 'v1' ? '56px' : helpPosition }}
+        >
+          {helpFor === 'article-form-title' && <ArticleFormTitle />}
+          {helpFor === 'tag-input' && <TagInput />}
 
-  render() {
-    const { previewShowing, helpFor, helpPosition, version } = this.props;
+          {version === 'v1' && <BasicEditor toggleModal={toggleModal} />}
 
-    const {
-      liquidHelpHTML,
-      markdownHelpHTML,
-      frontmatterHelpHTML,
-      liquidShowing,
-      markdownShowing,
-      frontmatterShowing,
-    } = this.state;
+          {(helpFor === 'article_body_markdown' || version === 'v1') && (
+            <EditorFormattingHelp toggleModal={toggleModal} />
+          )}
+        </div>
+      )}
 
-    return (
-      <div className="crayons-article-form__aside">
-        {!previewShowing && (
-          <div
-            data-testid="article-form__help-section"
-            className="sticky"
-            style={{ top: version === 'v1' ? '56px' : helpPosition }}
-          >
-            {helpFor === 'article-form-title' && <ArticleFormTitle />}
-            {helpFor === 'tag-input' && <TagInput />}
-
-            {version === 'v1' && <BasicEditor toggleModal={this.toggleModal} />}
-
-            {(helpFor === 'article_body_markdown' || version === 'v1') && (
-              <EditorFormattingHelp toggleModal={this.toggleModal} />
-            )}
-          </div>
+      {liquidShowing &&
+        renderModal(
+          toggleModal('liquidShowing'),
+          '🌊 Liquid Tags',
+          liquidHelpHTML,
         )}
 
-        {liquidShowing &&
-          this.renderModal(
-            this.toggleModal('liquidShowing'),
-            '🌊 Liquid Tags',
-            liquidHelpHTML,
-          )}
+      {markdownShowing &&
+        renderModal(
+          toggleModal('markdownShowing'),
+          '✍️ Markdown',
+          markdownHelpHTML,
+        )}
 
-        {markdownShowing &&
-          this.renderModal(
-            this.toggleModal('markdownShowing'),
-            '✍️ Markdown',
-            markdownHelpHTML,
-          )}
-
-        {frontmatterShowing &&
-          this.renderModal(
-            this.toggleModal('frontmatterShowing'),
-            'Jekyll Front Matter',
-            frontmatterHelpHTML,
-          )}
-      </div>
-    );
-  }
-}
+      {frontmatterShowing &&
+        renderModal(
+          toggleModal('frontmatterShowing'),
+          'Jekyll Front Matter',
+          frontmatterHelpHTML,
+        )}
+    </div>
+  );
+};
 
 Help.propTypes = {
   previewShowing: PropTypes.bool.isRequired,
