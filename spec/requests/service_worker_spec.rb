@@ -4,7 +4,7 @@ RSpec.describe "ServiceWorker", type: :request do
   describe "GET /serviceworker.js" do
     it "renders file with proper text" do
       get "/serviceworker.js"
-      expect(response.body).to include("Serviceworkers file")
+      expect(response.body).to include("Service worker file")
     end
 
     it "renders javascript file" do

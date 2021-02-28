@@ -1,7 +1,9 @@
-// Serviceworkers file. Renders as serviceworker.js
+// Service worker file. Renders as serviceworker.js
 
 <% unless Rails.env.test? || ENV["SKIP_SERVICEWORKERS"] == "true" %>
+  const VERSION = "1.0" // Increment to invalidate old assets.
   const OFFLINE_URL = "offline.html";
+  const OFFLINE_NAME = OFFLINE_URL + VERSION
 
   self.addEventListener("install", (event) => {
     event.waitUntil(
@@ -10,7 +12,7 @@
         // Setting {cache: 'reload'} in the new request will ensure that the
         // response isn't fulfilled from the HTTP cache; i.e., it will be from
         // the network.
-        const offlineCache = await caches.open(OFFLINE_URL);
+        const offlineCache = await caches.open(OFFLINE_NAME);
         await offlineCache.add(new Request(OFFLINE_URL, { cache: "reload" }));
       })()
     );
@@ -56,7 +58,7 @@
             // the 4xx or 5xx range, the catch() will NOT be called.
             console.log("Fetch failed; returning offline page instead.", error);
 
-            const cache = await caches.open(OFFLINE_URL);
+            const cache = await caches.open(OFFLINE_NAME);
             const cachedResponse = await cache.match(OFFLINE_URL);
             return cachedResponse;
           }
