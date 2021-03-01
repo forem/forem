@@ -652,6 +652,11 @@ Style/TrailingCommaInBlockArgs:
   Description: 'Checks for useless trailing commas in block arguments.'
   Enabled: true
 
+Style/UnlessLogicalOperators:
+  Description: >-
+                 Checks for use of logical operators in an unless condition.
+  Enabled: false
+
 # Performance cops from rubocop-performance
 # https://github.com/rubocop-hq/rubocop-performance/blob/master/config/default.yml
 Performance/AncestorsInclude:
