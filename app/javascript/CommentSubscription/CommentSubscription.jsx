@@ -83,7 +83,7 @@ export class CommentSubscription extends Component {
       onSubscribe,
       onUnsubscribe,
       positionType = 'relative',
-      userStatus
+      isLoggedIn
     } = this.props;
 
     const CogIcon = () => (
@@ -110,7 +110,7 @@ export class CommentSubscription extends Component {
           <Button
             variant="outlined"
             onClick={(_event) => {
-              if (userStatus == "logged-in") {
+              if (isLoggedIn) {
                 if (subscribed) {
                   onUnsubscribe(COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED);
                   this.setState({
@@ -122,7 +122,6 @@ export class CommentSubscription extends Component {
 
                 this.setState({ subscribed: !subscribed });
               } else {
-                _event.preventDefault();
                 showLoginModal();
               }
             }}
@@ -244,4 +243,5 @@ CommentSubscription.propTypes = {
   subscriptionType: PropTypes.oneOf(
     Object.entries(COMMENT_SUBSCRIPTION_TYPE).map(([, value]) => value),
   ).isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
 };
