@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib".freeze]
   s.authors = ["Justin Chan".freeze]
   s.bindir = "exe".freeze
-  s.date = "2021-02-24"
+  s.date = "2021-03-01"
   s.description = "ERB Linter tool.".freeze
   s.email = ["justin.the.c@gmail.com".freeze]
   s.executables = ["erblint".freeze]
