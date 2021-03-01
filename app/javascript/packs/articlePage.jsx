@@ -25,6 +25,7 @@ const userDataIntervalID = setInterval(async () => {
 
     clearInterval(userDataIntervalID);
     const root = document.getElementById('comment-subscription');
+    const isLoggedIn = (userStatus === "logged-in");
 
     try {
       const {
@@ -34,14 +35,13 @@ const userDataIntervalID = setInterval(async () => {
       } = await import('../CommentSubscription');
 
       const { articleId } = document.getElementById('article-body').dataset;
-      
+
       let subscriptionType = 'not_subscribed';
 
-      if (userStatus === 'logged-in' && user !== null) {
-        const commentSubscriptionStatus = await getCommentSubscriptionStatus(
+      if (isLoggedIn && user !== null) {
+        ({ config: subscriptionType } = await getCommentSubscriptionStatus(
           articleId,
-        );
-        subscriptionType = commentSubscriptionStatus.config;
+        ));
       }
 
       const subscriptionRequestHandler = async (type) => {
@@ -56,7 +56,7 @@ const userDataIntervalID = setInterval(async () => {
           positionType="static"
           onSubscribe={subscriptionRequestHandler}
           onUnsubscribe={subscriptionRequestHandler}
-          userStatus={userStatus}
+          isLoggedIn={isLoggedIn}
         />,
         root,
       );
@@ -64,5 +64,4 @@ const userDataIntervalID = setInterval(async () => {
       document.getElementById('comment-subscription').innerHTML =
         '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
     }
-  // }
 });
