@@ -7,11 +7,12 @@ RSpec.describe "Views an article", type: :system, js: true do
   let!(:comment) { create(:comment, commentable: article) }
   let!(:child_comment) { create(:comment, parent: comment, commentable: article) }
 
-  it "shows all comments" do
+  it "shows all comments and date/time based on locale" do
     create(:comment, commentable: article)
     visit "#{article.path}/comments"
 
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
+    expect(page).to have_selector(".date-no-year")
   end
 
   it "shows a thread" do

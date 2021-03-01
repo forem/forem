@@ -1197,6 +1197,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
     t.string "facebook_url"
+    t.integer "failed_attempts", default: 0
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
@@ -1231,6 +1232,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
     t.string "location"
+    t.datetime "locked_at"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
     t.string "mastodon_url"
@@ -1275,6 +1277,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.integer "twitter_following_count"
     t.string "twitter_username"
     t.string "unconfirmed_email"
+    t.string "unlock_token"
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "username"
@@ -1293,6 +1296,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["twitch_username"], name: "index_users_on_twitch_username"
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
