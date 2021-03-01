@@ -10,7 +10,7 @@ class UsersController < ApplicationController
   before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
 
-  ALLOWED_USER_PARAMS = %i[last_onboarding_page].freeze
+  ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -165,19 +165,20 @@ class UsersController < ApplicationController
   end
 
   def onboarding_update
-    if params[:user]
-      sanitize_user_params
-      current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS))
-      current_user.profile_updated_at = Time.current
-    end
-
-    if current_user.save && params[:profile]
-      update_result = Profiles::Update.call(current_user, { profile: profile_params })
-    end
-
-    current_user.saw_onboarding = true
     authorize User
-    render_update_response(update_result&.success?)
+    user_params = { saw_onboarding: true }
+
+    if params[:user]
+      if params.dig(:user, :username).blank?
+        return render_update_response(false, "Username cannot be blank")
+      end
+
+      sanitize_user_params
+      user_params.merge!(params[:user].permit(ALLOWED_USER_PARAMS))
+    end
+
+    update_result = Profiles::Update.call(current_user, { user: user_params, profile: profile_params })
+    render_update_response(update_result.success?, update_result.errors_as_sentence)
   end
 
   def onboarding_checkbox_update
@@ -313,11 +314,11 @@ class UsersController < ApplicationController
     recent_suggestions.presence || default_suggested_users
   end
 
-  def render_update_response(success)
-    outcome = success ? "updated successfully" : "update failed"
+  def render_update_response(success, errors = nil)
+    status = success ? 200 : 422
 
     respond_to do |format|
-      format.json { render json: { outcome: outcome } }
+      format.json { render json: { errors: errors }, status: status }
     end
   end
 
@@ -376,7 +377,7 @@ class UsersController < ApplicationController
   end
 
   def profile_params
-    params[:profile].permit(Profile.attributes)
+    params[:profile] ? params[:profile].permit(Profile.attributes) : nil
   end
 
   def password_params

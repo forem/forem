@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-
 import { FocusTrap } from '../shared/components/focusTrap';
 import { IntroSlide } from './components/IntroSlide';
 import { EmailPreferencesForm } from './components/EmailPreferencesForm';
@@ -66,22 +65,25 @@ export class Onboarding extends Component {
     }
   }
 
+  // TODO: Update main element id to enable skip link. See issue #1153.
   render() {
     const { currentSlide } = this.state;
     const { communityConfig } = this.props;
     return (
-      <FocusTrap>
-        <main
-          className="onboarding-body"
-          style={
-            communityConfig.communityBackground && {
-              backgroundImage: `url(${communityConfig.communityBackground})`,
-            }
-          }
-        >
+      <main
+        className="onboarding-body"
+        style={
+          communityConfig.communityBackground
+            ? {
+                backgroundImage: `url(${communityConfig.communityBackground})`,
+              }
+            : null
+        }
+      >
+        <FocusTrap key={`onboarding-${currentSlide}`}>
           {this.slides[currentSlide]}
-        </main>
-      </FocusTrap>
+        </FocusTrap>
+      </main>
     );
   }
 }

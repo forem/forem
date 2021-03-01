@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-
 import { getContentOfToken, updateOnboarding } from '../utilities';
 import { Navigation } from './Navigation';
 

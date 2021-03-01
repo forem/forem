@@ -45,5 +45,10 @@ RSpec.describe Reactions::UpdateRelevantScoresWorker, type: :worker do
         worker.perform(Reaction.maximum(:id).to_i + 1)
       end.not_to raise_error
     end
+
+    it "uses a throttled call for syncing the reactions count" do
+      allow(ThrottledCall).to receive(:perform)
+        .with(:sync_reactions_count, instance_of(ActiveSupport::Duration))
+    end
   end
 end

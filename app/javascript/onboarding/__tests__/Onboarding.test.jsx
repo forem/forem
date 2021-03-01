@@ -133,7 +133,7 @@ describe('<Onboarding />', () => {
     termsCheckbox.click();
 
     // click to next step
-    const nextButton = await findByText(/continue/i);
+    let nextButton = await findByText(/continue/i);
 
     fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();
@@ -148,10 +148,10 @@ describe('<Onboarding />', () => {
     // we should be on the Profile Form step
     await findByTestId('onboarding-profile-form');
 
-    // click on skip for now
-    skipButton = getByText(/Skip for now/i);
+    // click on continue without adjusting form fields
+    nextButton = getByText(/Continue/i);
     fetch.mockResponse(fakeEmptyResponse);
-    skipButton.click();
+    nextButton.click();
 
     // we should be on the Follow Users step
     await findByTestId('onboarding-follow-users');
