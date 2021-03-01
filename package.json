@@ -110,7 +110,7 @@
     "cssom": "^0.4.4",
     "cypress": "^6.5.0",
     "cypress-file-upload": "^5.0.2",
-    "eslint": "^7.20.0",
+    "eslint": "^7.21.0",
     "eslint-config-preact": "^1.1.3",
     "eslint-config-prettier": "^8.1.0",
     "eslint-import-resolver-webpack": "^0.13.0",
