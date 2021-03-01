@@ -1,6 +1,7 @@
 class BadgeAchievement < ApplicationRecord
   CONTEXT_MESSAGE_ALLOWED_TAGS = %w[strong em i b u a code].freeze
   CONTEXT_MESSAGE_ALLOWED_ATTRIBUTES = %w[href name].freeze
+  resourcify
 
   belongs_to :user
   belongs_to :badge
@@ -24,7 +25,7 @@ class BadgeAchievement < ApplicationRecord
   def render_rewarding_context_message_html
     return unless rewarding_context_message_markdown
 
-    parsed_markdown = MarkdownParser.new(rewarding_context_message_markdown)
+    parsed_markdown = MarkdownProcessor::Parser.new(rewarding_context_message_markdown)
     html = parsed_markdown.finalize
     final_html = ActionController::Base.helpers.sanitize(
       html,

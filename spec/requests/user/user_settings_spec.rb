@@ -44,7 +44,7 @@ RSpec.describe "UserSettings", type: :request do
       it "displays content on Customization tab properly" do
         get user_settings_path(:customization)
 
-        expect(response.body).to include("Appearance", "Writing", "Content", "Languages", "Sponsors", "Announcements")
+        expect(response.body).to include("Appearance", "Writing", "Content", "Sponsors", "Announcements")
       end
 
       it "displays content on Notifications tab properly" do
@@ -202,6 +202,28 @@ RSpec.describe "UserSettings", type: :request do
     end
   end
 
+  describe "GET /settings/profile" do
+    before { sign_in user }
+
+    context "when user has profile image" do
+      it "displays profile image upload input" do
+        get user_settings_path(:profile)
+
+        expect(response.body).to include("user[profile_image]")
+      end
+    end
+
+    context "when user does not have a profile image" do
+      let(:user) { create(:user, profile_image: nil) }
+
+      it "displays profile image upload input" do
+        get user_settings_path(:profile)
+
+        expect(response.body).to include("user[profile_image]")
+      end
+    end
+  end
+
   describe "PUT /update/:id" do
     before { sign_in user }
 
@@ -308,56 +330,13 @@ RSpec.describe "UserSettings", type: :request do
       let(:feed_url) { "https://medium.com/feed/@vaidehijoshi" }
       let(:user) { create(:user, feed_url: feed_url) }
 
-      it "invokes RssReaderFetchUserWorker" do
-        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(user.id)
-        allow(RssReaderFetchUserWorker).to receive(:perform_async).with(user.id)
+      it "invokes Feeds::ImportArticlesWorker" do
+        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(nil, user.id)
 
         put user_path(user.id), params: { user: { feed_url: feed_url } }
 
-        expect(Feeds::ImportArticlesWorker).not_to have_received(:perform_async)
-        expect(RssReaderFetchUserWorker).to have_received(:perform_async).with(user.id)
+        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(nil, user.id)
       end
-
-      it "invokes Feeds::ImportArticlesWorker if feeds_import feature flag is on" do
-        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(user.id)
-        allow(RssReaderFetchUserWorker).to receive(:perform_async).with(user.id)
-        allow(FeatureFlag).to receive(:enabled?).with(:feeds_import).and_return(true)
-
-        put user_path(user.id), params: { user: { feed_url: feed_url } }
-
-        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(user.id)
-        expect(RssReaderFetchUserWorker).not_to have_received(:perform_async).with(user.id)
-      end
-    end
-  end
-
-  describe "update language settings" do
-    before { sign_in user }
-
-    it "updates language settings" do
-      put user_path(user), params: { user: { preferred_languages: %w[ja es] } }
-
-      user.reload
-
-      expect(user.language_settings["preferred_languages"]).to eq(%w[ja es])
-    end
-
-    it "keeps the estimated_default_language" do
-      user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en es])
-
-      put user_path(user), params: { user: { preferred_languages: %w[it en] } }
-
-      user.reload
-      expect(user.language_settings["estimated_default_language"]).to eq("ru")
-    end
-
-    it "doesn't set non-existent languages" do
-      user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en es])
-
-      put user_path(user), params: { user: { preferred_languages: %w[it en blah] } }
-
-      user.reload
-      expect(user.language_settings["preferred_languages"].sort).to eq(%w[en it])
     end
   end
 
@@ -375,31 +354,31 @@ RSpec.describe "UserSettings", type: :request do
 
       it "removes the correct identity" do
         expect do
-          delete "/users/remove_identity", params: { provider: provider }
+          delete users_remove_identity_path, params: { provider: provider }
         end.to change(user.identities, :count).by(-1)
 
         expect(user.identities.map(&:provider)).not_to include(provider)
       end
 
       it "empties their associated username" do
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
 
         expect(user.public_send("#{provider}_username")).to be(nil)
       end
 
       it "updates the profile_updated_at timestamp" do
         original_profile_updated_at = user.profile_updated_at
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
         expect(user.profile_updated_at.to_i).to be > original_profile_updated_at.to_i
       end
 
       it "redirects successfully to /settings/account" do
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
       end
 
       it "renders a successful response message" do
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
         auth_provider = Authentication::Providers.get!(provider)
 
         expected_notice = "Your #{auth_provider.official_name} account was successfully removed."
@@ -409,7 +388,7 @@ RSpec.describe "UserSettings", type: :request do
       it "redirects the user with an error if the corresponding provider has been since disabled" do
         providers = Authentication::Providers.available - [provider]
         allow(Authentication::Providers).to receive(:enabled).and_return(providers)
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
 
         error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:contact]}"
@@ -420,8 +399,26 @@ RSpec.describe "UserSettings", type: :request do
         providers = Authentication::Providers.available.first(2)
         allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
 
-        delete "/users/remove_identity", params: { provider: providers.first }
+        delete users_remove_identity_path, params: { provider: providers.first }
         expect(response.body).not_to include("Remove OAuth Associations")
+      end
+
+      it "does not remove GitHub repositories if the removed identity is not GitHub" do
+        create(:github_repo, user: user)
+
+        expect do
+          delete users_remove_identity_path, params: { provider: :twitter }
+        end.not_to change(user.github_repos, :count)
+      end
+
+      it "removes GitHub repositories if the removed identity is GitHub" do
+        repo = create(:github_repo, user: user)
+
+        expect do
+          delete users_remove_identity_path, params: { provider: :github }
+        end.to change(user.github_repos, :count).by(-1)
+
+        expect(GithubRepo.exists?(id: repo.id)).to be(false)
       end
     end
 

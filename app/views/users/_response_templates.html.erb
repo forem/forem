@@ -32,7 +32,7 @@
     <% end %>
 
   <%= form_with model: @response_template do |f| %>
-    <section class="flex flex-col gap-3">
+    <section class="grid gap-3">
       <% if @response_template&.persisted? %>
         <% title = params[:previous_title] || @response_template.title %>
         <% content = params[:previous_content] || @response_template.content %>

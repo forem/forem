@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import RequestListItem from './RequestListItem';
+import { RequestListItem } from './RequestListItem';
 
-const ChannelRequestSection = ({
+export const ChannelRequestSection = ({
   channelRequests,
   handleRequestApproval,
   handleRequestRejection,
@@ -46,5 +46,3 @@ ChannelRequestSection.propTypes = {
   handleRequestApproval: PropTypes.func.isRequired,
   handleRequestRejection: PropTypes.func.isRequired,
 };
-
-export default ChannelRequestSection;

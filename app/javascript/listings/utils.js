@@ -4,13 +4,6 @@
  */
 export const LISTING_PAGE_SIZE = 75;
 
-export const MATCH_LISTING = [
-  'single-listing-container__inner',
-  'listing-filters',
-  'listings-modal-background',
-  'close-listing-modal',
-];
-
 export function updateListings(listings) {
   const fullListings = [];
 

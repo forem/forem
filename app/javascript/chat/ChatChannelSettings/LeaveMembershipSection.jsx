@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropsType from 'prop-types';
 import { Button } from '@crayons';
 
-const LeaveMembershipSection = ({
+export const LeaveMembershipSection = ({
   handleleaveChannelMembership,
   currentMembershipRole,
 }) => {
@@ -30,5 +30,3 @@ const LeaveMembershipSection = ({
 LeaveMembershipSection.propTypes = {
   handleleaveChannelMembership: PropsType.func.isRequired,
 };
-
-export default LeaveMembershipSection;

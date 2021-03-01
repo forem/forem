@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 
 /* eslint-env node */
-/* eslint-disable no-console */
 
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
 const folderExists = util.promisify(fs.exists);
 const mkdir = util.promisify(fs.mkdir);
-const sass = require('node-sass');
+const sass = require('sass');
 const CSSOM = require('cssom');
 const prettier = require('prettier');
 const renderCss = util.promisify(sass.render);
@@ -96,15 +95,10 @@ function generateUtilityClassStories(cssProperty, cssRules) {
   for (const [className, cssRule] of Object.entries(cssRules)) {
     const sanitizedCssClassName = className.replace(/[.-]/g, '_');
     const propertiesAndValues = [];
-    let isImportant = false;
 
     for (let i = 0; i < cssRule.style.length; i++) {
       const styleProperty = cssRule.style[i];
       const value = cssRule.style[styleProperty];
-
-      if (!isImportant) {
-        isImportant = cssRule.style._importants[styleProperty] === 'important';
-      }
 
       propertiesAndValues.push(`<li>
           <a
@@ -121,11 +115,6 @@ function generateUtilityClassStories(cssProperty, cssRules) {
       <ul>
         ${propertiesAndValues.join('')}
       </ul>
-      ${
-        isImportant
-          ? '<p>Note that <code>!important</code> is being used to override pre-design system CSS.</p>'
-          : ''
-      }
       <pre><code>{\`${prettier.format(cssRule.cssText, {
         parser: 'css',
       })}\`}</code></pre>
@@ -145,17 +134,23 @@ async function generateUtilityClassesDocumentation(
   styleSheet,
   fileWriter = file.writeFile,
 ) {
-  // eslint-disable-next-line no-console
-  console.log('Grouping stylesheet rules by CSS property');
+  if (!process.env.CI) {
+    // eslint-disable-next-line no-console
+    console.log('Grouping stylesheet rules by CSS property');
+  }
+
   const rulesForStorybook = groupCssRulesByCssProperty(styleSheet.cssRules);
 
   for (const [cssProperty, cssRules] of Object.entries(rulesForStorybook)) {
     const storybookContent = generateUtilityClassStories(cssProperty, cssRules);
 
-    // eslint-disable-next-line no-console
-    console.log(
-      `Persisting Storybook stories for CSS utility classes related to the ${cssProperty} property.`,
-    );
+    if (!process.env.CI) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `Persisting Storybook stories for CSS utility classes related to the ${cssProperty} property.`,
+      );
+    }
+
     await fileWriter(
       path.join(
         GENERATED_STORIES_FOLDER,
@@ -167,14 +162,19 @@ async function generateUtilityClassesDocumentation(
 }
 
 async function generateDocumentation() {
-  // eslint-disable-next-line no-console
-  console.log('Ensuring the auto-generated Storybook folder exists.');
+  if (!process.env.CI) {
+    // eslint-disable-next-line no-console
+    console.log('Ensuring the auto-generated Storybook folder exists.');
+  }
 
   if (!(await folderExists(GENERATED_STORIES_FOLDER))) {
-    // eslint-disable-next-line no-console
-    console.log(
-      'The auto-generated Storybook folder does not exist. Creating it.',
-    );
+    if (!process.env.CI) {
+      // eslint-disable-next-line no-console
+      console.log(
+        'The auto-generated Storybook folder does not exist. Creating it.',
+      );
+    }
+
     await mkdir(GENERATED_STORIES_FOLDER, { recursive: true });
   }
 
@@ -183,15 +183,17 @@ async function generateDocumentation() {
     'config/_generator.scss',
   );
 
-  // eslint-disable-next-line no-console
-  console.log(`Generating the style sheet for ${utilityClassesFilename}`);
+  if (!process.env.CI) {
+    // eslint-disable-next-line no-console
+    console.log(`Generating the style sheet for ${utilityClassesFilename}`);
+  }
 
   try {
     const styleSheet = await getStyleSheet(utilityClassesFilename);
 
     await generateUtilityClassesDocumentation(styleSheet);
   } catch (error) {
-    throw new Error('Error generating the CSS utilty class Storybook stories');
+    throw new Error('Error generating the CSS utility class Storybook stories');
   }
 }
 

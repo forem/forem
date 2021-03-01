@@ -1,11 +1,10 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-
 import { getContentOfToken, updateOnboarding } from '../utilities';
-import Navigation from './Navigation';
+import { Navigation } from './Navigation';
 
 /* eslint-disable camelcase */
-class EmailPreferencesForm extends Component {
+export class EmailPreferencesForm extends Component {
   constructor(props) {
     super(props);
 
@@ -57,7 +56,12 @@ class EmailPreferencesForm extends Component {
         data-testid="onboarding-email-preferences-form"
         className="onboarding-main crayons-modal"
       >
-        <div className="crayons-modal__box">
+        <div
+          className="crayons-modal__box"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
+        >
           <Navigation
             prev={prev}
             next={this.onSubmit}
@@ -66,8 +70,10 @@ class EmailPreferencesForm extends Component {
           />
           <div className="onboarding-content terms-and-conditions-wrapper">
             <header className="onboarding-content-header">
-              <h1 className="title">Almost there!</h1>
-              <h2 className="subtitle">
+              <h1 id="title" className="title">
+                Almost there!
+              </h1>
+              <h2 id="subtitle" className="subtitle">
                 Review your email preferences before we continue.
               </h2>
             </header>
@@ -117,7 +123,5 @@ EmailPreferencesForm.propTypes = {
   slidesCount: PropTypes.number.isRequired,
   currentSlideIndex: PropTypes.func.isRequired,
 };
-
-export default EmailPreferencesForm;
 
 /* eslint-enable camelcase */

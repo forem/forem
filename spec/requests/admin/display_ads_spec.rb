@@ -50,6 +50,12 @@ RSpec.describe "/admin/display_ads", type: :request do
           post_resource
         end.to change { DisplayAd.all.count }.by(1)
       end
+
+      it "busts sidebar" do
+        allow(EdgeCache::BustSidebar).to receive(:call)
+        post_resource
+        expect(EdgeCache::BustSidebar).to have_received(:call).once
+      end
     end
 
     describe "PUT /admin/display_ads" do

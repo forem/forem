@@ -49,6 +49,23 @@ RSpec.describe "Comments", type: :request do
         get comment.path
         expect(response.body).to include(comment.processed_html)
       end
+
+      it "displays noindex if comment has score of less than 0" do
+        comment.update_column(:score, -5)
+        get comment.path
+        expect(response.body).to include('<meta name="googlebot" content="noindex">')
+      end
+
+      it "displays does not display noindex if comment has 0 or more score" do
+        get comment.path
+        expect(response.body).not_to include('<meta name="googlebot" content="noindex">')
+      end
+
+      it "displays noindex if commentable has score of less than 0" do
+        comment.commentable.update_column(:score, -5)
+        get comment.path
+        expect(response.body).to include('<meta name="googlebot" content="noindex">')
+      end
     end
 
     context "when the comment is a child comment" do
@@ -318,8 +335,22 @@ RSpec.describe "Comments", type: :request do
       it "converts field test" do
         post "/comments", params: base_comment_params
 
-        expected_args = [user.id, :follow_implicit_points, "user_creates_comment"]
+        expected_args = [user.id, "user_creates_comment"]
         expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(*expected_args)
+      end
+    end
+
+    context "when not part of field test" do
+      before do
+        sign_in user
+        allow(FieldTest).to receive(:config).and_return({ "experiments" => nil })
+        allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
+      end
+
+      it "converts field test" do
+        post "/comments", params: base_comment_params
+
+        expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async)
       end
     end
   end

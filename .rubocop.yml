@@ -30,6 +30,16 @@ Bundler/OrderedGems:
 
 #################### Layout ###########################
 
+Gemspec/DateAssignment:
+  Description: 'Checks that `date =` is not used in gemspec file, it is set automatically when the gem is packaged.'
+  Enabled: true
+
+#################### Layout ###########################
+
+Lint/AmbiguousAssignment:
+  Description: 'Checks for mistyped shorthand assignments.'
+  Enabled: true
+
 Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
   StyleGuide: '#consistent-classes'
@@ -125,6 +135,11 @@ Layout/SpaceAroundMethodCallOperator:
   Description: 'Checks method call operators to not have spaces around them.'
   Enabled: true
 
+Layout/SpaceBeforeBrackets:
+  Description: 'Checks for receiver with a space before the opening brackets.'
+  StyleGuide: '#space-in-brackets-access'
+  Enabled: true
+
 #################### Lint ##################################
 
 Lint/AmbiguousBlockAssociation:
@@ -144,12 +159,24 @@ Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
   Enabled: false
 
+Lint/DeprecatedConstants:
+  Description: 'Checks for deprecated constants.'
+  Enabled: true
+
 Lint/DeprecatedOpenSSLConstant:
   Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
   Enabled: true
 
+Lint/DuplicateBranch:
+  Description: Checks that there are no repeated bodies within `if/unless`, `case-when` and `rescue` constructs.
+  Enabled: false
+
 Lint/DuplicateElsifCondition:
   Description: 'Do not repeat conditions used in if `elsif`.'
+  Enabled: true
+
+Lint/DuplicateRegexpCharacterClassElement:
+  Description: 'Checks for duplicate elements in Regexp character classes.'
   Enabled: true
 
 Lint/DuplicateRescueException:
@@ -158,6 +185,14 @@ Lint/DuplicateRescueException:
 
 Lint/EmptyConditionalBody:
   Description: 'This cop checks for the presence of `if`, `elsif` and `unless` branches without a body.'
+  Enabled: true
+
+Lint/EmptyBlock:
+  Description: 'This cop checks for blocks without a body.'
+  Enabled: true
+
+Lint/EmptyClass:
+  Description: 'Checks for classes and metaclasses without a body.'
   Enabled: true
 
 Lint/FloatComparison:
@@ -181,9 +216,17 @@ Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
   Enabled: true
 
+Lint/NumberedParameterAssignment:
+  Description: 'Checks for uses of numbered parameter assignment.'
+  Enabled: true
+
 # Lint/NumberConversion:
 #   Description: 'Checks unsafe usage of number conversion methods.'
 #   Enabled: false
+
+Lint/OrAssignmentToConstant:
+  Description: 'Checks unintended or-assignment to constant.'
+  Enabled: true
 
 Lint/OutOfRangeRegexpRef:
   Description: 'Checks for out of range reference for Regexp because it always returns nil.'
@@ -194,6 +237,10 @@ Lint/RaiseException:
   StyleGuide: '#raise-exception'
   Enabled: true
 
+Lint/RedundantDirGlobSort:
+  Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
+  Enabled: true
+
 Lint/SelfAssignment:
   Description: 'Checks for self-assignments.'
   Enabled: true
@@ -202,8 +249,28 @@ Lint/StructNewOverride:
   Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
   Enabled: true
 
+Lint/SymbolConversion:
+  Description: 'Checks for unnecessary symbol conversions.'
+  Enabled: true
+
+Lint/ToEnumArguments:
+  Description: 'This cop ensures that `to_enum`/`enum_for`, called for the current method, has correct arguments.'
+  Enabled: true
+
 Lint/TopLevelReturnWithArgument:
   Description: 'This cop detects top level return statements with argument.'
+  Enabled: true
+
+Lint/TripleQuotes:
+  Description: 'Checks for useless triple quote constructs.'
+  Enabled: true
+
+Lint/UnexpectedBlockArity:
+  Description: 'Looks for blocks that have fewer arguments that the calling method expects.'
+  Enabled: true
+
+Lint/UnmodifiedReduceAccumulator:
+  Description: Checks for `reduce` or `inject` blocks that do not update the accumulator each iteration.
   Enabled: true
 
 Lint/UnreachableLoop:
@@ -274,6 +341,11 @@ Naming/PredicateName:
   Exclude:
     - spec/**/*
 
+Naming/VariableNumber:
+  Description: 'Use the configured style when numbering symbols, methods and variables.'
+  StyleGuide: '#snake-case-symbols-methods-vars-with-numbers'
+  Enabled: false
+
 #################### Style ###############################
 
 Style/AsciiComments:
@@ -284,6 +356,11 @@ Style/AsciiComments:
 Style/AccessorGrouping:
   Description: 'Checks for grouping of accessors in `class` and `module` bodies.'
   Enabled: true
+
+Style/ArgumentsForwarding:
+  Description: 'Use arguments forwarding.'
+  StyleGuide: '#arguments-forwarding'
+  Enabled: false
 
 Style/ArrayCoercion:
   Description: >-
@@ -305,6 +382,16 @@ Style/BisectedAttrAccessor:
 Style/CaseLikeIf:
   Description: 'This cop identifies places where `if-elsif` constructions can be replaced with `case-when`.'
   StyleGuide: '#case-vs-if-else'
+  Enabled: true
+
+Style/ClassAndModuleChildren:
+  Description: 'Checks style of children classes and modules.'
+  StyleGuide: '#namespace-definition'
+  Enabled: true
+  SafeAutoCorrect: true
+
+Style/CollectionCompact:
+  Description: 'Use `{Array,Hash}#{compact,compact!}` instead of custom logic to reject nils.'
   Enabled: true
 
 Style/CollectionMethods:
@@ -329,9 +416,12 @@ Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: false
 
-Style/Encoding:
-  Description: 'Use UTF-8 as the source file encoding.'
-  Enabled: false
+Style/DocumentDynamicEvalDefinition:
+  Description: >-
+                When using `class_eval` (or other `eval`) with string interpolation,
+                add a comment block showing its appearance if interpolated.
+  StyleGuide: '#eval-comment-docs'
+  Enabled: true
 
 Style/ExplicitBlockArgument:
   Description: >-
@@ -340,11 +430,25 @@ Style/ExplicitBlockArgument:
   StyleGuide: '#block-argument'
   Enabled: true
 
+Style/Encoding:
+  Description: 'Use UTF-8 as the source file encoding.'
+  Enabled: false
+
+Style/EndlessMethod:
+  Description: 'Avoid the use of multi-lined endless method definitions.'
+  StyleGuide: '#endless-methods'
+  Enabled: pending
+
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
   StyleGuide: '#exponential-notation'
   Enabled: true
   EnforcedStyle: scientific
+
+Style/FormatStringToken:
+  Description: 'Use a consistent style for format string tokens.'
+  Exclude:
+    - 'config/routes.rb'
 
 Style/FrozenStringLiteralComment:
   Description: >-
@@ -366,9 +470,19 @@ Style/HashAsLastArrayItem:
   Enabled: true
   EnforcedStyle: braces
 
+Style/HashConversion:
+  Description: 'Avoid Hash[] in favor of ary.to_h or literal hashes.'
+  Enabled: true
+
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
   StyleGuide: '#hash-each'
+  Enabled: true
+
+Style/HashExcept:
+  Description: >-
+                 Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
+                 that can be replaced with `Hash#except` method.
   Enabled: true
 
 Style/HashLikeCase:
@@ -402,6 +516,10 @@ Style/IfUnlessModifier:
   StyleGuide: '#if-as-a-modifier'
   Enabled: false
 
+Style/IfWithBooleanLiteralBranches:
+  Description: 'Checks for redundant `if` with boolean literal branches.'
+  Enabled: true
+
 # Style/ImplicitRuntimeError:
 #   Description: >-
 #                  Use `raise` or `fail` with an explicit exception class and
@@ -426,16 +544,11 @@ Style/IfUnlessModifier:
 #   StyleGuide: '#single-line-blocks'
 #   Enabled: false
 
-Style/ClassAndModuleChildren:
-  Description: 'Checks style of children classes and modules.'
-  StyleGuide: '#namespace-definition'
+Style/NegatedIfElseCondition:
+  Description: >-
+                This cop checks for uses of `if-else` and ternary operators with a negated condition
+                which can be simplified by inverting condition and swapping branches.
   Enabled: true
-  SafeAutoCorrect: true
-
-Style/FormatStringToken:
-  Description: 'Use a consistent style for format string tokens.'
-  Exclude:
-    - 'config/routes.rb'
 
 Style/OptionalBooleanParameter:
   Description: 'Use keyword arguments when defining method with boolean argument.'
@@ -449,6 +562,14 @@ Style/OptionHash:
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
   StyleGuide: '#no-nested-conditionals'
+  Enabled: true
+
+Style/NilLambda:
+  Description: 'Prefer `-> {}` to `-> { nil }`.'
+  Enabled: true
+
+Style/RedundantArgument:
+  Description: 'Check for a redundant argument passed to certain methods.'
   Enabled: true
 
 Style/RedundantAssignment:
@@ -509,6 +630,11 @@ Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
   ConsistentQuotesInMultiline: true
+
+Style/SwapValues:
+  Description: 'This cop enforces the use of shorthand-style swapping of 2 variables.'
+  StyleGuide: '#values-swapping'
+  Enabled: true
 
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
@@ -682,11 +808,21 @@ RSpec/DescribeClass:
     - 'spec/system/**/*'
     - 'spec/tasks/**/*'
 
+RSpec/DescribedClassModuleWrapping:
+  Description: Avoid opening modules and defining specs within them.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribedClassModuleWrapping
+
 RSpec/ExampleLength:
   Description: Checks for long examples.
   Enabled: true
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
+
+RSpec/MessageExpectation:
+  Description: Checks for consistent message expectation style.
+  Enabled: true
+  EnforcedStyle: allow
 
 RSpec/MultipleMemoizedHelpers:
   Description: Checks if example groups contain too many `let` and `subject` calls.

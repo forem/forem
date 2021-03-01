@@ -487,7 +487,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
 
       before do
-        user.add_role :trusted
+        user.add_role(:trusted)
         sign_in user
         sidekiq_perform_enqueued_jobs do
           Notification.send_moderation_notification(comment)
@@ -528,7 +528,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
 
       before do
-        user.add_role :trusted
+        user.add_role(:trusted)
         user.update(mod_roundrobin_notifications: false)
         sign_in user
         sidekiq_perform_enqueued_jobs do

@@ -59,7 +59,7 @@ class SearchController < ApplicationController
 
   def chat_channels
     search_user_id = if chat_channel_params[:user_id].present?
-                       [current_user.id, SiteConfig.mascot_user_id]
+                       [current_user.id, SiteConfig.mascot_user_id, chat_channel_params[:user_id]].reject(&:blank?)
                      else
                        [current_user.id]
                      end

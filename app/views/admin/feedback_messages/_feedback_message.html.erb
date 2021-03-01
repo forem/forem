@@ -19,7 +19,11 @@
       <div class="row">
         <div class="col-9">
           <h5 class="fw-bold">
+          <% if feedback_message.feedback_type == "connect" %>
+            Reporter and Affected:
+          <% else %>
             Reporter:
+          <% end %>
           </h5>
           <h5>
             <% if feedback_message.reporter_id? %>
@@ -29,19 +33,35 @@
               Anonymous
             <% end %>
           </h5>
-          <h5 class="fw-bold">
-            Reported URL (new tab):
-          </h5>
-          <h5>
-            <a href="<%= feedback_message.reported_url %>" target="_blank" rel="noopener"><%= feedback_message.reported_url %></a>
-          </h5>
+
+          <% if feedback_message.feedback_type == "connect" %>
+            <h5 class="fw-bold">
+              Offender:
+            </h5>
+            <h5>
+              <%= feedback_message.offender.name %>
+              <a href="<%= feedback_message.offender.path %>">@<%= feedback_message.offender.username %></a>
+            </h5>
+          <% else %>
+            <h5 class="fw-bold">
+              Reported URL (new tab):
+            </h5>
+            <h5>
+              <a href="<%= feedback_message.reported_url %>" target="_blank" rel="noopener"><%= feedback_message.reported_url %></a>
+            </h5>
+          <% end %>
         </div>
+
         <div class="col-3">
-          <h3>
+          <h3 class="report__tags">
             <span class="badge badge-warning float-right"><%= feedback_message.category.titleize %></span>
+            <% if feedback_message.feedback_type == "connect" %>
+            <span class="badge badge-warning float-right badge-connect"><%= feedback_message.feedback_type %></span>
+            <% end %>
           </h3>
         </div>
         <div class="col-12">
+          <% if feedback_message.feedback_type != "connect" %>
           <h5 class="fw-bold">
             Message:
           </h5>
@@ -52,6 +72,14 @@
               <%= feedback_message.message %>
             <% end %>
           </p>
+          <% else %>
+            <h5 class="fw-bold">
+              Message from Offender:
+            </h5>
+            <div class="reported__message">
+              <%= raw(feedback_message.message) %>
+            </div>
+          <% end %>
         </div>
       </div>
       <hr>
@@ -80,25 +108,14 @@
           <h4 class="fw-bold">Email Form:</h4>
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="nav-item">
-              <a class="nav-link active" href="#reporter-<%= feedback_message.id %>" aria-controls="reporter-<%= feedback_message.id %>" role="tab" data-toggle="tab">Reporter</a>
-            </li>
-            <li role="presentation" class="nav-item">
-              <a class="nav-link" href="#offender-<%= feedback_message.id %>" aria-controls="offender-<%= feedback_message.id %>" role="tab" data-toggle="tab">Offender</a>
+              <a class="nav-link active" href="#offender-<%= feedback_message.id %>" aria-controls="offender-<%= feedback_message.id %>" role="tab" data-toggle="tab">Offender</a>
             </li>
             <li role="presentation" class="nav-item">
               <a class="nav-link" href="#affected-<%= feedback_message.id %>" aria-controls="affected-<%= feedback_message.id %>" role="tab" data-toggle="tab">Affected</a>
             </li>
           </ul>
           <div class="tab-content my-3">
-            <div role="tabcard" class="tab-pane fade active show" data-id="<%= feedback_message.id %>" data-userType="reporter" id="reporter-<%= feedback_message.id %>">
-              <h5 class="fw-bold">Send To:</h5>
-              <%= email_field_tag :reporter_email_to, feedback_message.reporter&.email, class: "form-control my-1", id: "reporter__emailto__#{feedback_message.id}", required: true %>
-              <h5 class="fw-bold">Subject:</h5>
-              <%= text_field_tag :reporter_email_subject, reporter_email_details[:subject], class: "form-control my-1", id: "reporter__subject__#{feedback_message.id}" %>
-              <h5 class="fw-bold">Body:</h5>
-              <%= text_area_tag :reporter_email_body, reporter_email_details[:body], class: "form-control my-1", style: "height: 300px;", id: "reporter__body__#{feedback_message.id}" %>
-            </div>
-            <div role="tabcard" class="tab-pane fade" data-id="<%= feedback_message.id %>" data-userType="offender" id="offender-<%= feedback_message.id %>">
+            <div role="tabcard" class="tab-pane fade active show" data-id="<%= feedback_message.id %>" data-userType="offender" id="offender-<%= feedback_message.id %>">
               <h5 class="fw-bold">Send To:</h5>
               <%= email_field_tag :offender_email_to, feedback_message.offender&.email, class: "form-control my-1", id: "offender__emailto__#{feedback_message.id}", required: true %>
               <h5 class="fw-bold">Subject:</h5>

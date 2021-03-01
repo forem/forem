@@ -22,6 +22,13 @@ class ApplicationController < ActionController::Base
     error_too_many_requests(exc)
   end
 
+  rescue_from ActionController::InvalidAuthenticityToken do
+    ForemStatsClient.increment(
+      "users.invalid_authenticity_token.#{controller_name}",
+      tags: ["path:#{request.fullpath}"],
+    )
+  end
+
   PUBLIC_CONTROLLERS = %w[shell
                           async_info
                           ga_events
@@ -175,6 +182,16 @@ class ApplicationController < ActionController::Base
       ENV["APP_DOMAIN"] != SiteConfig.app_domain # If the app domain config has now been set, let's go there instead.
 
     redirect_to URL.url(request.fullpath)
+  end
+
+  def bust_content_change_caches
+    EdgeCache::Bust.call("/tags/onboarding") # Needs to change when suggested_tags is edited.
+    EdgeCache::Bust.call("/shell_top") # Cached at edge, sent to service worker.
+    EdgeCache::Bust.call("/shell_bottom") # Cached at edge, sent to service worker.
+    EdgeCache::Bust.call("/async_info/shell_version") # Checks if current users should be busted.
+    EdgeCache::Bust.call("/onboarding") # Page is cached at edge.
+    EdgeCache::Bust.call("/") # Page is cached at edge.
+    SiteConfig.admin_action_taken_at = Time.current # Used as cache key
   end
 
   protected

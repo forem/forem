@@ -1,14 +1,8 @@
-/*
-  eslint-disable
-  consistent-return, no-unused-vars, react/destructuring-assignment,
-  react/no-access-state-in-setstate, react/button-has-type
-*/
-
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
-import notifyUser from '../utilities/connect/newMessageNotify';
-import debounceAction from '../utilities/debounceAction';
+import { notifyUser } from '../utilities/connect/newMessageNotify';
+import { debounceAction } from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
 import { processImageUpload } from '../article-form/actions';
 import {
@@ -22,7 +16,8 @@ import {
   deleteMessage,
   editMessage,
 } from './actions/actions';
-import CreateChatModal from './components/CreateChatModal';
+import { CreateChatModal } from './components/CreateChatModal';
+import { ChannelFilterButton } from './components/ChannelFilterButton';
 import {
   sendChannelRequest,
   rejectJoiningRequest,
@@ -34,14 +29,13 @@ import {
   scrollToBottom,
   setupObserver,
   getCurrentUser,
-  channelSorter,
 } from './util';
-import Alert from './alert';
-import Channels from './channels';
-import Compose from './compose';
-import Message from './message';
-import ActionMessage from './actionMessage';
-import Content from './content';
+import { Alert } from './alert';
+import { Channels } from './channels';
+import { Compose } from './compose';
+import { Message } from './message';
+import { ActionMessage } from './actionMessage';
+import { Content } from './content';
 import { VideoContent } from './videoContent';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
 import { dragAndUpload } from '@utilities/dragAndUpload';
@@ -50,7 +44,7 @@ import { Button } from '@crayons';
 const NARROW_WIDTH_LIMIT = 767;
 const WIDE_WIDTH_LIMIT = 1600;
 
-export default class Chat extends Component {
+export class Chat extends Component {
   static propTypes = {
     pusherKey: PropTypes.number.isRequired,
     chatChannels: PropTypes.string.isRequired,
@@ -125,7 +119,6 @@ export default class Chat extends Component {
       channelPaginationNum,
       currentUserId,
       appDomain,
-      messageOffset,
     } = this.state;
 
     this.setupChannels(chatChannels);
@@ -261,7 +254,7 @@ export default class Chat extends Component {
           activeChannel ||
           this.filterForActiveChannel(channels, activeChannelId),
       });
-      this.setupChannel(activeChannelId);
+      this.setupChannel(activeChannelId, activeChannel);
     } else if (activeChannelId) {
       this.setState({
         scrolled: false,
@@ -273,7 +266,7 @@ export default class Chat extends Component {
           activeChannel ||
           this.filterForActiveChannel(channels, activeChannelId),
       });
-      this.setupChannel(activeChannelId);
+      this.setupChannel(activeChannelId, activeChannel);
     } else if (channels.length > 0) {
       this.setState({
         chatChannels: channels,
@@ -288,6 +281,7 @@ export default class Chat extends Component {
         channels[0].channel_modified_slug,
         channels,
       );
+      this.setupChannels(channels);
     } else {
       this.setState({ channelsLoaded: true });
     }
@@ -323,9 +317,10 @@ export default class Chat extends Component {
   };
 
   setupChannels = (channels) => {
+    const { activeChannel } = this.state;
     channels.forEach((channel, index) => {
       if (index < 3) {
-        this.setupChannel(channel.chat_channel_id);
+        this.setupChannel(channel.chat_channel_id, activeChannel);
       }
     });
   };
@@ -353,8 +348,8 @@ export default class Chat extends Component {
     });
   };
 
-  setupChannel = (channelId) => {
-    const { messages, messageOffset, activeChannel, appDomain } = this.state;
+  setupChannel = (channelId, activeChannel) => {
+    const { messages, messageOffset, appDomain } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
@@ -362,7 +357,11 @@ export default class Chat extends Component {
     ) {
       getAllMessages(channelId, messageOffset, this.receiveAllMessages);
     }
-    if (activeChannel && activeChannel.channel_type !== 'direct') {
+    if (
+      activeChannel &&
+      activeChannel.channel_type !== 'direct' &&
+      activeChannel.chat_channel_id === channelId
+    ) {
       getContent(
         `/chat_channels/${channelId}/channel_info`,
         this.setOpenChannelUsers,
@@ -458,7 +457,6 @@ export default class Chat extends Component {
     const {
       messages,
       activeChannelId,
-      scrolled,
       chatChannels,
       currentUserId,
       unopenedChannelIds,
@@ -822,21 +820,26 @@ export default class Chat extends Component {
     if (index > -1) {
       newUnopenedChannelIds.splice(index, 1);
     }
+
+    let updatedActiveChannel = this.filterForActiveChannel(
+      channelList,
+      id,
+      currentUserId,
+    );
+
     this.setState({
-      activeChannel: this.filterForActiveChannel(
-        channelList,
-        id,
-        currentUserId,
-      ),
+      activeChannel: updatedActiveChannel,
       activeChannelId: parseInt(id, 10),
       scrolled: false,
       showAlert: false,
       allMessagesLoaded: false,
+      showMemberlist: false,
       unopenedChannelIds: unopenedChannelIds.filter(
         (unopenedId) => unopenedId !== id,
       ),
     });
-    this.setupChannel(id);
+
+    this.setupChannel(id, updatedActiveChannel);
     const params = new URLSearchParams(window.location.search);
 
     if (params.get('ref') === 'group_invite') {
@@ -1062,6 +1065,15 @@ export default class Chat extends Component {
     }));
   };
 
+  closeReportAbuseForm = () => {
+    const { activeChannelId } = this.state;
+    this.setActiveContentState(activeChannelId, null);
+    this.setState({
+      fullscreenContent: null,
+      expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
+    });
+  };
+
   setActiveContent = (response) => {
     const { activeChannelId } = this.state;
     this.setActiveContentState(activeChannelId, response);
@@ -1173,7 +1185,6 @@ export default class Chat extends Component {
         );
       }
     }
-
     return messages[activeChannelId].map((message) =>
       message.action ? (
         <ActionMessage
@@ -1198,11 +1209,21 @@ export default class Chat extends Component {
           onContentTrigger={this.triggerActiveContent}
           onDeleteMessageTrigger={this.triggerDeleteMessage}
           onEditMessageTrigger={this.triggerEditMessage}
+          onReportMessageTrigger={this.triggerReportMessage}
         />
       ),
     );
   };
+  triggerReportMessage = (messageId) => {
+    const { activeChannelId, messages } = this.state;
 
+    this.setActiveContent({
+      data: messages[activeChannelId].find(
+        (message) => message.id === messageId,
+      ),
+      type_of: 'message-report-abuse',
+    });
+  };
   triggerChannelFilter = (e) => {
     const { channelTypeFilter } = this.state;
     const filters =
@@ -1226,18 +1247,6 @@ export default class Chat extends Component {
   toggleExpand = () => {
     this.setState((prevState) => ({ expanded: !prevState.expanded }));
   };
-
-  renderChannelFilterButton = (type, name, active) => (
-    <Button
-      data-channel-type={type}
-      onClick={this.triggerChannelTypeFilter}
-      className={`chat__channeltypefilterbutton crayons-indicator crayons-indicator--${
-        type === active ? 'accent' : ''
-      }`}
-    >
-      {name}
-    </Button>
-  );
 
   toggleSearchShowing = () => {
     if (!this.state.searchShowing) {
@@ -1293,21 +1302,24 @@ export default class Chat extends Component {
           {invitesButton}
           {joiningRequestButton}
           <div className="chat__channeltypefilter">
-            {this.renderChannelFilterButton(
-              'all',
-              'all',
-              state.channelTypeFilter,
-            )}
-            {this.renderChannelFilterButton(
-              'direct',
-              'direct',
-              state.channelTypeFilter,
-            )}
-            {this.renderChannelFilterButton(
-              'invite_only',
-              'group',
-              state.channelTypeFilter,
-            )}
+            <ChannelFilterButton
+              type="all"
+              name="all"
+              active={state.channelTypeFilter === 'all'}
+              onClick={this.triggerChannelTypeFilter}
+            />
+            <ChannelFilterButton
+              type="direct"
+              name="direct"
+              active={state.channelTypeFilter === 'direct'}
+              onClick={this.triggerChannelTypeFilter}
+            />
+            <ChannelFilterButton
+              type="invite_only"
+              name="group"
+              active={state.channelTypeFilter === 'invite_only'}
+              onClick={this.triggerChannelTypeFilter}
+            />
             <Button
               className="chat__channelssearchtoggle crayons-btn--ghost-dimmed p-2"
               aria-label="Toggle request manager"
@@ -1511,7 +1523,7 @@ export default class Chat extends Component {
     messageArea.classList.remove('opacity-25');
   }
   renderActiveChatChannel = (channelHeader) => {
-    const { state, props } = this;
+    const { state } = this;
     const channelName = state.activeChannel
       ? state.activeChannel.channel_name
       : ' ';
@@ -1582,6 +1594,7 @@ export default class Chat extends Component {
           resource={state.activeContent[state.activeChannelId]}
           activeChannel={state.activeChannel}
           fullscreen={state.fullscreenContent === 'sidecar'}
+          closeReportAbuseForm={this.closeReportAbuseForm}
         />
         <VideoContent
           videoPath={state.videoPath}
@@ -1634,6 +1647,8 @@ export default class Chat extends Component {
     const { activeChannel } = this.state;
     const mention = e.keyCode === 64;
     if (mention && activeChannel.channel_type !== 'direct') {
+      const memberListElement = document.getElementById('mentionList');
+      memberListElement.focus();
       this.setState({ showMemberlist: true });
     }
   };
@@ -1687,6 +1702,7 @@ export default class Chat extends Component {
     el.value = `${before + name} ${after}`;
     el.selectionStart = start + name.length + 1;
     el.selectionEnd = start + name.length + 1;
+    el.dispatchEvent(new Event('input'));
     el.focus();
     this.setState({ showMemberlist: false });
   };
@@ -1745,13 +1761,16 @@ export default class Chat extends Component {
       channelUsers,
       memberFilterQuery,
     } = this.state;
+
     const filterRegx = new RegExp(memberFilterQuery, 'gi');
+
     return (
       <div
         className={
           showMemberlist ? 'mention__list mention__visible' : 'mention__list'
         }
         id="mentionList"
+        data-testid="mentionList"
       >
         {showMemberlist
           ? Object.values(channelUsers[activeChannelId])
@@ -1804,11 +1823,9 @@ export default class Chat extends Component {
     return (
       <div
         id="message"
-        className={
-          showDeleteModal
-            ? 'message__delete__modal crayons-modal crayons-modal--s absolute'
-            : 'message__delete__modal message__delete__modal__hide crayons-modal crayons-modal--s absolute'
-        }
+        className={`message__delete__modal crayons-modal crayons-modal--s ${
+          !showDeleteModal && 'hidden'
+        }`}
         aria-hidden={showDeleteModal}
         aria-label="delete confirmation"
         role="dialog"

@@ -7,6 +7,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   let(:raw_comment) { Faker::Lorem.paragraph }
   let(:runkit_comment) { compose_runkit_comment "comment 1" }
   let(:runkit_comment2) { compose_runkit_comment "comment 2" }
+  let(:twitter_comment) { "comment {% twitter_timeline https://twitter.com/NYTNow/timelines/576828964162965504 %}" }
 
   # the article should be created before signing in
   let!(:article) { create(:article, user_id: user.id, show_comments: true) }
@@ -64,6 +65,24 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     end
   end
 
+  context "when there is an error posting a comment" do
+    let(:unconfigured_twitter_comment) { "{% twitter 733111952256335874 %}" }
+
+    before do
+      stub_request(:post, "https://api.twitter.com/oauth2/token")
+        .to_return(status: 400, body: '{"errors":[{"code":215,"message":"Bad Authentication data."}]}', headers: {})
+    end
+
+    it "displays a error modal" do
+      visit article.path.to_s
+      wait_for_javascript
+
+      fill_in "text-area", with: unconfigured_twitter_comment
+      click_button("Submit")
+      expect(page).to have_text("Error posting comment")
+    end
+  end
+
   context "with Runkit tags" do
     before do
       visit article.path.to_s
@@ -95,6 +114,21 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       click_button("Preview")
 
       expect_runkit_tag_to_be_active
+    end
+  end
+
+  context "with TwitterTimeline tag" do
+    before do
+      visit article.path.to_s
+
+      wait_for_javascript
+    end
+
+    it "User fill out comment box with a TwitterTimeline tag, then clicks preview" do
+      fill_in "text-area", with: twitter_comment
+      click_button("Preview")
+
+      expect(page).to have_css(".ltag-twitter-timeline-body iframe", count: 1)
     end
   end
 

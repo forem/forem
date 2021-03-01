@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
-import addFullScreenModeControl from '../utilities/codeFullscreenModeSwitcher';
+import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 
 const fullscreenActionElements = document.getElementsByClassName(
   'js-fullscreen-code-action',

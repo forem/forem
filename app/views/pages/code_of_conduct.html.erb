@@ -1,17 +1,17 @@
-<% title "#{community_qualified_name} Code of Conduct" %>
+<% title "#{community_name} Code of Conduct" %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(code_of_conduct_path) %>" />
-  <meta name="description" content="<%= community_qualified_name %> Code of Conduct">
+  <meta name="description" content="<%= community_name %> Code of Conduct">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url(code_of_conduct_path) %>" />
-  <meta property="og:title" content="<%= community_qualified_name %> Code of Conduct" />
-  <meta property="og:site_name" content="<%= community_qualified_name %>" />
+  <meta property="og:title" content="<%= community_name %> Code of Conduct" />
+  <meta property="og:site_name" content="<%= community_name %>" />
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="<%= community_qualified_name %> Code of Conduct">
+  <meta name="twitter:title" content="<%= community_name %> Code of Conduct">
 <% end %>
 
 <div class="crayons-layout crayons-layout--limited-l">

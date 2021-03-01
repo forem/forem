@@ -34,6 +34,16 @@ RSpec.describe GithubRepos::RepoSyncWorker, type: :worker do
       end
     end
 
+    it "does not touch repo user again if recently updated " do
+      repo.update_column(:updated_at, 1.day.ago)
+      worker.perform(repo.id)
+      old_updated_at = repo.user.reload.github_repos_updated_at
+      repo.update_column(:updated_at, 1.day.ago)
+      worker.perform(repo.id)
+
+      expect(repo.user.reload.github_repos_updated_at).to eq(old_updated_at)
+    end
+
     it "destroys unfound repos" do
       repo_id = repo.id
       allow(github_client).to receive(:repository).and_raise(Github::Errors::NotFound)

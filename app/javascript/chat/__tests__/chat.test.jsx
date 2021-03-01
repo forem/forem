@@ -1,9 +1,9 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { fireEvent, render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
-import Chat from '../chat';
+import { Chat } from '../chat';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
 global.document = doc;
@@ -225,5 +225,20 @@ describe('<Chat />', () => {
         selector: 'button',
       }),
     ).toBeDefined();
+  });
+
+  it('should show mention pop-up on keyUp @', async () => {
+    const { getByLabelText, getByTestId } = render(<Chat {...getRootData()} />);
+
+    const inputField = getByLabelText('Compose a message');
+
+    expect(inputField).toBeDefined();
+    fireEvent.change(inputField, { target: { value: '@' } });
+
+    const mentionModal = getByTestId('mentionList');
+    const allButton = getByTestId('all');
+
+    expect(mentionModal).toBeDefined();
+    expect(allButton).toBeDefined();
   });
 });

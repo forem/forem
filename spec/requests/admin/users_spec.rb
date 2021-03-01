@@ -34,14 +34,14 @@ RSpec.describe "admin/users", type: :request do
       it "only displays limited information about the user" do
         user.update_columns(registered: false)
         get "/admin/users/#{user.id}"
-        expect(response.body).not_to include("Current Roles")
+        expect(response.body).not_to include("Activity")
       end
     end
 
     context "when a user is registered" do
       it "renders the Admin User profile as expected" do
         get "/admin/users/#{user.id}"
-        expect(response.body).to include("Current Roles")
+        expect(response.body).to include("Activity")
       end
     end
 
@@ -70,6 +70,11 @@ RSpec.describe "admin/users", type: :request do
     it "does not show banish button for non-admins" do
       sign_out(admin)
       expect { get "/admin/users/#{user.id}/edit" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "displays the 'Current Roles' section" do
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include("Current Roles")
     end
 
     it "displays the 'Recent Reactions' section" do
@@ -138,16 +143,53 @@ RSpec.describe "admin/users", type: :request do
   end
 
   describe "DELETE /admin/users/:id/remove_identity" do
+    let(:provider) { Authentication::Providers.available.first }
+    let(:user) do
+      omniauth_mock_providers_payload
+      create(:user, :with_identity)
+    end
+
+    before do
+      omniauth_mock_providers_payload
+      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    end
+
     it "removes the given identity" do
       identity = user.identities.first
-      delete "/admin/users/#{user.id}/remove_identity", params: { user: { identity_id: identity.id } }
-      expect { identity.reload }.to raise_error ActiveRecord::RecordNotFound
+
+      delete remove_identity_admin_user_path(user.id), params: { user: { identity_id: identity.id } }
+
+      expect { identity.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "updates their social account's username to nil" do
       identity = user.identities.first
-      delete "/admin/users/#{user.id}/remove_identity", params: { user: { identity_id: identity.id } }
-      expect(user.reload.github_username).to eq nil
+
+      delete remove_identity_admin_user_path(user.id), params: { user: { identity_id: identity.id } }
+
+      expect(user.public_send("#{identity.provider}_username")).to be(nil)
+    end
+
+    it "does not remove GitHub repositories if the removed identity is not GitHub" do
+      create(:github_repo, user: user)
+
+      identity = user.identities.twitter.first
+
+      expect do
+        delete remove_identity_admin_user_path(user.id), params: { user: { identity_id: identity.id } }
+      end.not_to change(user.github_repos, :count)
+    end
+
+    it "removes GitHub repositories if the removed identity is GitHub" do
+      repo = create(:github_repo, user: user)
+
+      identity = user.identities.github.first
+
+      expect do
+        delete remove_identity_admin_user_path(user.id), params: { user: { identity_id: identity.id } }
+      end.to change(user.github_repos, :count).by(-1)
+
+      expect(GithubRepo.exists?(id: repo.id)).to be(false)
     end
   end
 

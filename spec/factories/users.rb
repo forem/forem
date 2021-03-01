@@ -52,6 +52,10 @@ FactoryBot.define do
       after(:build) { |user, options| user.add_role(:single_resource_admin, options.resource) }
     end
 
+    trait :tech_admin do
+      after(:build) { |user| user.add_role(:tech_admin) }
+    end
+
     trait :restricted_liquid_tag do
       transient do
         resource { nil }
@@ -88,13 +92,15 @@ FactoryBot.define do
 
     trait :ignore_mailchimp_subscribe_callback do
       after(:build) do |user|
+        # rubocop:disable Lint/EmptyBlock
         user.define_singleton_method(:subscribe_to_mailchimp_newsletter) {}
+        # rubocop:enable Lint/EmptyBlock
         # user.class.skip_callback(:validates, :after_create)
       end
     end
 
     trait :pro do
-      after(:build) { |user| user.add_role :pro }
+      after(:build) { |user| user.add_role(:pro) }
     end
 
     trait :org_member do
@@ -138,7 +144,7 @@ FactoryBot.define do
     trait :tag_moderator do
       after(:create) do |user|
         tag = create(:tag)
-        user.add_role :tag_moderator, tag
+        user.add_role(:tag_moderator, tag)
       end
     end
 
