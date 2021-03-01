@@ -5,7 +5,7 @@ module Articles
     def initialize(user, article_id, article_params, event_dispatcher = Webhook::DispatchEvent)
       @user = user
       @article_id = article_id
-      @article_params = Articles::Attributes.new(article_params, user)
+      @article_params = article_params
       @event_dispatcher = event_dispatcher
     end
 
@@ -20,7 +20,9 @@ module Articles
       was_published = article.published
 
       # updated edited time only if already published and not edited by an admin
-      attrs = article_params.for_update(update_edited_at: article.user == user && article.published)
+      update_edited_at = article.user == user && article.published
+      attrs = Articles::Attributes.new(article_params, article.user).for_update(update_edited_at: update_edited_at)
+
       success = article.update(attrs)
 
       if success

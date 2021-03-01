@@ -12,11 +12,18 @@ RSpec.describe Articles::Updater, type: :service do
     expect(article.body_markdown).to eq("sample")
   end
 
-  it "sets series" do
+  it "sets a collection" do
     attributes[:series] = "collection-slug"
     described_class.call(user, article.id, attributes)
     article.reload
     expect(article.collection).to be_a(Collection)
+  end
+
+  it "creates a collection for the user, not admin when updated by admin" do
+    admin = create(:user, :super_admin)
+    attributes[:series] = "new-slug"
+    described_class.call(admin, article.id, attributes)
+    expect(article.reload.collection.user).to eq(article.user)
   end
 
   it "sets tags" do
