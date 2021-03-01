@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
+import { defaultMembershipPropType } from '../../common-prop-types/membership-prop-type';
 import { Button } from '@crayons';
 
-const Membership = ({
+export const Membership = ({
   membership,
   removeMembership,
   membershipType,
@@ -54,11 +54,9 @@ const Membership = ({
 };
 
 Membership.propTypes = {
-  membership: PropTypes.objectOf(defaulMembershipPropType).isRequired,
+  membership: PropTypes.objectOf(defaultMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   membershipType: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
 };
-
-export default Membership;

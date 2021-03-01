@@ -40,6 +40,30 @@ module Admin
       redirect_to "/admin/users/#{params[:id]}"
     end
 
+    def destroy
+      role = params[:role].to_sym
+      resource_type = params[:resource_type]
+
+      if role == :super_admin
+        flash[:danger] = "Super Admin roles cannot be removed."
+        redirect_to "/admin/users/#{params[:id]}/edit" and return
+      end
+
+      @user = User.find(params[:user_id])
+
+      if @user.id == current_user.id
+        flash[:danger] = "Admins cannot remove roles from themselves."
+      elsif role == :single_resource_admin && !resource_type.safe_constantize.nil?
+        User.find(params[:user_id]).remove_role(role, resource_type.safe_constantize)
+        flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
+      elsif User.find(params[:user_id]).remove_role(role)
+        flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
+      else
+        flash[:danger] = "There was an issue removing this role. Please try again."
+      end
+      redirect_to edit_admin_user_path(@user.id)
+    end
+
     def user_status
       @user = User.find(params[:id])
       begin
@@ -76,10 +100,12 @@ module Admin
       @user = User.find(params[:id])
       begin
         Moderator::DeleteUser.call(user: @user)
+        link = helpers.tag.a("the page", href: admin_users_gdpr_delete_requests_path, data: { "no-instant" => true })
         message = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) " \
-          "has been fully deleted." \
-          "If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
-        flash[:success] = message
+          "has been fully deleted. " \
+          "If this is a GDPR delete, delete them from Mailchimp & Google Analytics " \
+          " and confirm on "
+        flash[:success] = helpers.safe_join([message, link, "."])
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -100,9 +126,17 @@ module Admin
     def remove_identity
       identity = Identity.find(user_params[:identity_id])
       @user = identity.user
+
       begin
-        identity.delete
+        identity.destroy
+
         @user.update("#{identity.provider}_username" => nil)
+
+        # GitHub repositories are tied with the existence of the GitHub identity
+        # as we use the user's GitHub token to fetch them from the API.
+        # We should delete them when a user unlinks their GitHub account.
+        @user.github_repos.destroy_all if identity.provider.to_sym == :github
+
         flash[:success] = "The #{identity.provider.capitalize} identity was successfully deleted and backed up."
       rescue StandardError => e
         flash[:danger] = e.message

@@ -11,7 +11,7 @@
   <% end %>
   <div id="page-content-inner">
     <% if @hero_html %>
-      <div id="hero-html-wrapper" data-name="<%= @hero_area.name %>">
+      <div id="hero-html-wrapper" class="overflow-x-hidden" data-name="<%= @hero_area.name %>">
         <script>
           // Make sure html variant element has id hero-html-wrapper and data-name as its name
           if (localStorage.getItem('exited_hero') === '<%= @hero_area.name %>') {
@@ -22,7 +22,6 @@
       </div>
     <% end %>
     <%= yield %>
-    <%= render "layouts/asset_reconciliation" %>
   </div>
 </div>
 <%= render "shell/bottom" %>

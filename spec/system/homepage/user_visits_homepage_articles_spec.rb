@@ -19,6 +19,15 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).to have_selector(".crayons-story--featured", visible: :visible)
       end
 
+      # Regression test for https://github.com/forem/forem/pull/12724
+      it "does not display a comment count of 0", js: true, stub_elasticsearch: true do
+        expect(page).to have_text("Add Comment")
+        expect(page).not_to have_text("0 comments")
+        article.update_column(:comments_count, 50)
+        visit "/"
+        expect(page).to have_text(/50\s*comments/)
+      end
+
       it "shows the main article readable date and time", js: true, stub_elasticsearch: true do
         expect(page).to have_selector(".crayons-story--featured time", text: published_date)
         selector = ".crayons-story--featured time[datetime='#{timestamp}']"
@@ -57,17 +66,17 @@ RSpec.describe "User visits a homepage", type: :system do
       before { visit "/" }
 
       it "contains the qualified community name in og:title" do
-        selector = "meta[property='og:title'][content='#{community_qualified_name}']"
+        selector = "meta[property='og:title'][content='#{community_name}']"
         expect(page).to have_selector(selector, visible: :hidden)
       end
 
       it "contains the qualified community name in og:site_name" do
-        selector = "meta[property='og:site_name'][content='#{community_qualified_name}']"
+        selector = "meta[property='og:site_name'][content='#{community_name}']"
         expect(page).to have_selector(selector, visible: :hidden)
       end
 
       it "contains the qualified community name in twitter:title" do
-        selector = "meta[name='twitter:title'][content='#{community_qualified_name}']"
+        selector = "meta[name='twitter:title'][content='#{community_name}']"
         expect(page).to have_selector(selector, visible: :hidden)
       end
     end

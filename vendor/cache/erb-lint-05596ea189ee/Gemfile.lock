@@ -1,0 +1,105 @@
+PATH
+  remote: .
+  specs:
+    erb_lint (0.0.35)
+      activesupport
+      better_html (~> 1.0.7)
+      html_tokenizer
+      parser (>= 2.7.1.4)
+      rainbow
+      rubocop
+      smart_properties
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    actionview (5.2.4.1)
+      activesupport (= 5.2.4.1)
+      builder (~> 3.1)
+      erubi (~> 1.4)
+      rails-dom-testing (~> 2.0)
+      rails-html-sanitizer (~> 1.0, >= 1.0.3)
+    activesupport (5.2.4.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 0.7, < 2)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
+    ast (2.4.1)
+    better_html (1.0.15)
+      actionview (>= 4.0)
+      activesupport (>= 4.0)
+      ast (~> 2.0)
+      erubi (~> 1.4)
+      html_tokenizer (~> 0.0.6)
+      parser (>= 2.4)
+      smart_properties
+    builder (3.2.4)
+    concurrent-ruby (1.1.5)
+    crass (1.0.6)
+    diff-lcs (1.3)
+    erubi (1.10.0)
+    fakefs (1.0.0)
+    html_tokenizer (0.0.7)
+    i18n (1.8.1)
+      concurrent-ruby (~> 1.0)
+    jaro_winkler (1.5.4)
+    loofah (2.7.0)
+      crass (~> 1.0.2)
+      nokogiri (>= 1.5.9)
+    mini_portile2 (2.4.0)
+    minitest (5.13.0)
+    nokogiri (1.10.10)
+      mini_portile2 (~> 2.4.0)
+    parallel (1.19.1)
+    parser (2.7.1.4)
+      ast (~> 2.4.1)
+    rails-dom-testing (2.0.3)
+      activesupport (>= 4.2.0)
+      nokogiri (>= 1.6)
+    rails-html-sanitizer (1.3.0)
+      loofah (~> 2.3)
+    rainbow (3.0.0)
+    rake (13.0.1)
+    rspec (3.9.0)
+      rspec-core (~> 3.9.0)
+      rspec-expectations (~> 3.9.0)
+      rspec-mocks (~> 3.9.0)
+    rspec-core (3.9.1)
+      rspec-support (~> 3.9.1)
+    rspec-expectations (3.9.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-mocks (3.9.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-support (3.9.2)
+    rubocop (0.79.0)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.7.0.1)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-shopify (1.0.0)
+      rubocop (>= 0.78.0)
+    ruby-progressbar (1.10.1)
+    smart_properties (1.15.0)
+    thread_safe (0.3.6)
+    tzinfo (1.2.6)
+      thread_safe (~> 0.1)
+    unicode-display_width (1.6.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activesupport (~> 5.1)
+  erb_lint!
+  fakefs
+  rake
+  rspec
+  rubocop
+  rubocop-shopify
+
+BUNDLED WITH
+   1.17.3

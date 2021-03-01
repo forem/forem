@@ -18,24 +18,36 @@ RSpec.describe Badge, type: :model do
     end
   end
 
+  describe "class methods" do
+    describe ".id_for_slug" do
+      it "returns the id of an existing slug" do
+        expect(described_class.id_for_slug(badge.slug)).to eq badge.id
+      end
+
+      it "returns nil for non-existing slugs" do
+        expect(described_class.id_for_slug("ohnoes")).to be_nil
+      end
+    end
+  end
+
   context "when callbacks are triggered after save" do
     let!(:badge) { create(:badge) }
 
     describe "cache busting" do
       before do
-        allow(CacheBuster).to receive(:bust)
+        allow(EdgeCache::Bust).to receive(:bust)
       end
 
       it "calls the cache buster with the path" do
         badge.save
 
-        expect(CacheBuster).to have_received(:bust).with(badge.path)
+        expect(EdgeCache::Bust).to have_received(:bust).with(badge.path)
       end
 
       it "calls the cache buster with the internal path" do
         badge.save
 
-        expect(CacheBuster).to have_received(:bust).with("#{badge.path}?i=i")
+        expect(EdgeCache::Bust).to have_received(:bust).with("#{badge.path}?i=i")
       end
     end
   end

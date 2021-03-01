@@ -35,6 +35,7 @@ module.exports = {
     '\\.(svg|png)$': '<rootDir>/empty-module.js',
     '^@crayons(.*)$': '<rootDir>/app/javascript/crayons$1',
     '^@utilities(.*)$': '<rootDir>/app/javascript/utilities$1',
+    '^@components(.*)$': '<rootDir>/app/javascript/shared/components$1',
   },
   // The webpack config folder for webpacker is excluded as it has a test.js file that gets
   // picked up by jest if this folder is not excluded causing a false negative of a test suite failing.
@@ -44,6 +45,7 @@ module.exports = {
     // Allows developers to add utility modules that jest won't run as test suites.
     '/__tests__/utilities/',
     '<rootDir>/app/javascript/storybook-static',
+    '<rootDir>/cypress',
   ],
   watchPlugins: [
     'jest-watch-typeahead/filename',

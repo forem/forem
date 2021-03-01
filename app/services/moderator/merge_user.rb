@@ -25,7 +25,7 @@ module Moderator
       @keep_user.touch(:profile_updated_at)
       Users::MergeSyncWorker.perform_async(@keep_user.id)
 
-      CacheBuster.bust("/#{@keep_user.username}")
+      EdgeCache::Bust.call("/#{@keep_user.username}")
     end
 
     private

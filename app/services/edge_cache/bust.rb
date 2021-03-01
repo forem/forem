@@ -1,5 +1,12 @@
 module EdgeCache
   class Bust
+    TIMEFRAMES = [
+      [-> { 1.week.ago }, "week"],
+      [-> { 1.month.ago }, "month"],
+      [-> { 1.year.ago }, "year"],
+      [-> { 5.years.ago }, "infinity"],
+    ].freeze
+
     def self.call(path)
       bust(path)
     end
@@ -18,8 +25,8 @@ module EdgeCache
           true
         else
           Rails.logger.warn("#{provider_class} cannot be used without a #call implementation!")
-          DatadogStatsClient.increment("edgecache_bust.invalid_provider_class",
-                                       tags: ["provider_class:#{provider_class}"])
+          ForemStatsClient.increment("edgecache_bust.invalid_provider_class",
+                                     tags: ["provider_class:#{provider_class}"])
           false
         end
       end

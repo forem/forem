@@ -16,7 +16,7 @@
     </div>
   <% else %>
     <% json_data_array = notification["json_data"]["aggregated_siblings"] %>
-    <div class="flex mb-3">
+    <div class="flex mb-3 max-w-100 overflow-x-hidden">
       <% notification.json_data["aggregated_siblings"][0..10].each do |sibling| %>
         <a href="<%= sibling["path"] %>" class="crayons-avatar crayons-avatar--l shrink-0 mx-1" <% if sibling["id"] == json_data_array.first["id"] %> tabindex="-1" aria-hidden="true"<% end %>>
           <img src="<%= sibling["profile_image_90"] %>" class="crayons-avatar__image" alt="link to <%= sibling["name"] %>'s profile" width="32" height="32">

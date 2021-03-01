@@ -1,6 +1,5 @@
 @import 'config/variables';
 @import 'config/colors';
-@import 'config/generator';
 
 @import 'base/reset';
 @import 'base/main';
@@ -16,6 +15,7 @@
 @import 'components/comments';
 @import 'components/dropdowns';
 @import 'components/forms';
+@import 'components/hamburger';
 @import 'components/header';
 @import 'components/headers';
 @import 'components/indicators';
@@ -32,3 +32,5 @@
 @import 'components/tabs';
 @import 'components/tags';
 @import 'components/tooltips';
+
+@import 'config/generator';

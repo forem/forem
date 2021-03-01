@@ -4,7 +4,7 @@ import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
-import Onboarding from '../Onboarding';
+import { Onboarding } from '../Onboarding';
 global.fetch = fetch;
 
 // NOTE: the navigation and behaviour per component is tested in each components unit test. This file simply tests the ability to move forward and backward in a modal, and can probably be replaced by an end to end test at some point.
@@ -34,6 +34,8 @@ describe('<Onboarding />', () => {
     document.head.innerHTML =
       '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
+    const csrfToken = 'this-is-a-csrf-token';
+    global.getCsrfToken = async () => csrfToken;
   });
 
   it('should have no a11y violations', async () => {
@@ -131,7 +133,7 @@ describe('<Onboarding />', () => {
     termsCheckbox.click();
 
     // click to next step
-    const nextButton = await findByText(/continue/i);
+    let nextButton = await findByText(/continue/i);
 
     fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();
@@ -146,10 +148,10 @@ describe('<Onboarding />', () => {
     // we should be on the Profile Form step
     await findByTestId('onboarding-profile-form');
 
-    // click on skip for now
-    skipButton = getByText(/Skip for now/i);
+    // click on continue without adjusting form fields
+    nextButton = getByText(/Continue/i);
     fetch.mockResponse(fakeEmptyResponse);
-    skipButton.click();
+    nextButton.click();
 
     // we should be on the Follow Users step
     await findByTestId('onboarding-follow-users');

@@ -5,7 +5,7 @@ class KotlinTag < LiquidTagBase
   def initialize(_tag_name, link, _parse_context)
     super
     stripped_link = ActionController::Base.helpers.strip_tags(link)
-    the_link = stripped_link.split(" ").first
+    the_link = stripped_link.split.first
     @embedded_url = KotlinTag.embedded_url(the_link)
   end
 

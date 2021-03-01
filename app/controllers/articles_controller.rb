@@ -26,6 +26,9 @@ class ArticlesController < ApplicationController
                   handle_user_or_organization_feed
                 elsif params[:tag]
                   handle_tag_feed
+                elsif request.path == latest_feed_path
+                  @articles.where("score > ?", Articles::Feeds::LargeForemExperimental::MINIMUM_SCORE_LATEST_FEED)
+                    .includes(:user)
                 else
                   @articles.where(featured: true).includes(:user)
                 end
@@ -82,9 +85,9 @@ class ArticlesController < ApplicationController
     authorize Article
 
     begin
-      fixed_body_markdown = MarkdownFixer.fix_for_preview(params[:article_body])
+      fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(params[:article_body])
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed_markdown = MarkdownParser.new(parsed.content, source: Article.new, user: current_user)
+      parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: Article.new, user: current_user)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
@@ -101,7 +104,7 @@ class ArticlesController < ApplicationController
             title: parsed["title"],
             tags: (Article.new.tag_list.add(parsed["tags"], parser: ActsAsTaggableOn::TagParser) if parsed["tags"]),
             cover_image: (ApplicationController.helpers.cloud_cover_url(parsed["cover_image"]) if parsed["cover_image"])
-          }
+          }, status: :ok
         end
       end
     end

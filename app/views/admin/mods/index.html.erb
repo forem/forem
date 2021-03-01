@@ -40,7 +40,7 @@
     <tbody class="crayons-card">
       <% @mods.each do |mod| %>
         <tr>
-          <td><%= mod.id %></td>
+          <td class="whitespace-nowrap"><%= mod.id %></td>
           <td><%= link_to mod.username, admin_user_path(mod.id) %></td>
           <td><%= mod.comments_count %></td>
           <td><%= mod.badge_achievements_count %></td>
