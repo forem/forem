@@ -137,7 +137,7 @@ seeder.create_if_doesnt_exist(NavigationLink, "url", "/contact") do
   6.times do |i|
     NavigationLink.create!(
       name: "Nav link #{i}",
-      position: i,
+      position: i + 1,
       url: "/contact",
       icon: icon,
     )
@@ -199,4 +199,3 @@ seeder.create_if_none(Listing) do
 end
 
 ##############################################################################
-
