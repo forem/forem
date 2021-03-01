@@ -697,6 +697,48 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe ".active_threads" do
+    it "returns the latest published article in descending order" do
+      filtered_article = create(:article, user: user, published: true, score: -3)
+      articles = described_class.active_threads
+      expect(articles).to include(filtered_article)
+    end
+
+    it "returns published articles in descending order if there are no articles that match the criteria" do
+      unfiltered_article = create(:article, user: user, published: true, score: -10)
+      articles = described_class.active_threads
+      expect(articles).to include(unfiltered_article)
+    end
+
+    it "returns the published article filtered by time_ago and comment_count in descending order" do
+      filtered_article = create(:article, user: user,
+                                          published_at: 5.hours.ago, score: -3)
+      articles = described_class.active_threads
+      expect(articles).to include(filtered_article)
+    end
+
+    it "returns published articles filtered by comment_count if there are no aritcles that match the criteria" do
+      unfiltered_article = create(:article, user: user,
+                                            published_at: 10.hours.ago, score: -10)
+      articles = described_class.active_threads
+      expect(articles).to include(unfiltered_article)
+    end
+
+    it "returns the published article filtered by comment_count in descending order" do
+      filtered_article = create(:article, user: user, tags: "discuss",
+                                          published_at: 6.days.ago, score: -3)
+      articles = described_class.active_threads
+      expect(articles).to include(filtered_article)
+    end
+
+    it "returns published articles filtered by desc comment_count if there are no aritcles that match the criteria" do
+      unfiltered_article = create(:article, user: user,
+                                            published_at: 1.day.ago, score: -10)
+      articles = described_class.active_threads
+      expect(articles).to include(unfiltered_article)
+    end
+  end
+
   describe ".seo_boostable" do
     let!(:top_article) do
       create(:article, organic_page_views_past_month_count: 20, score: 30, tags: "good, greatalicious", user: user)
