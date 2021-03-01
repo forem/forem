@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import { MentionAutocomplete } from '@crayons';
+import { MentionAutocomplete } from '@crayons/MentionAutocomplete';
 
 describe('<MentionAutocomplete />', () => {
   it('should have no a11y violations when rendered', async () => {

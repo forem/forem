@@ -17,11 +17,19 @@
   }
 
   &__option {
+    border-bottom: 1px solid var(--base-10);
+    padding-top: var(--su-2);
+    padding-bottom: var(--su-2);
+
     &[data-reach-combobox-option]:hover,
     &[data-reach-combobox-option][aria-selected='true'] {
       & .crayons-autocomplete__name {
         color: var(--link-color-hover);
       }
+    }
+
+    &:last-child {
+      border-bottom: none;
     }
   }
 
@@ -37,7 +45,7 @@
 
   &__empty {
     display: block;
-    margin: 8px;
+    margin: var(--su-2);
     color: var(--base-60);
     font-size: var(--fs-s);
   }
