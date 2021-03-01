@@ -1,5 +1,5 @@
-<% accent_color = HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).biggest %>
-<% dark_color = HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.8) %>
+<% accent_color = Color::CompareHex.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).biggest %>
+<% dark_color = Color::CompareHex.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.8) %>
 <style>
   body {
     background: <%= accent_color %>;
@@ -110,7 +110,7 @@
           <% font_size = 4.6 %>
         <% end %>
       <h1 style="font-size:<%= font_size %>vw;">
-        <img src="<%= ProfileImage.new(@user).get(width: 640) %>" alt="<%= @user.name %> profile image">
+        <img src="<%= Images::Profile.call(@user.profile_image_url, length: 640) %>" alt="<%= @user.name %> profile image">
         <%= truncate @user.name, length: 32 %>
         <br />
         <span style="font-size: 0.4em;display: inline-block; margin-left: 5.4em; margin-top: -1.7em">@<%= @user.username %></span>

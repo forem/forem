@@ -1,6 +1,6 @@
 <% title "Moderating " + @moderatable.title %>
 
-<% cache(cache_key_heroku_slug("mod-styling")) do %>
+<% cache(release_adjusted_cache_key("mod-styling")) do %>
   <style>
     <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
   </style>
@@ -12,7 +12,7 @@
   <header class="top-header">
     <h1>Moderate Post</h1>
     <h2>Rate the quality of this post</h2>
-    <button class="crayons-btn crayons-btn--secondary crayons-btn--icon-rounded close-actions-panel" type="button" title="Close moderator actions panel">
+    <button class="crayons-btn crayons-btn--secondary crayons-btn--icon-rounded close-actions-panel hidden" type="button" title="Close moderator actions panel">
       <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Close moderator actions panel") %>
     </button>
   </header>
@@ -161,6 +161,20 @@
         </span>
       </a>
     </div>
+
+    <% if current_user.any_admin? && @moderatable.published %>
+      <div class="unpublish-article">
+        <button
+          class="crayons-btn crayons-btn--danger"
+          id="unpublish-article-btn"
+          data-article-id="<%= @moderatable.id %>"
+          data-article-author="<%= @moderatable.username %>"
+          data-article-slug="<%= @moderatable.slug %>"
+        >
+          Unpublish Article
+        </button>
+      </div>
+    <% end %>
   </div>
 
   <div class="bottom-actions">

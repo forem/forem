@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import ListingFiltersCategories from './ListingFiltersCategories';
-import ListingFiltersTags from './ListingFiltersTags';
+import { ListingFiltersCategories } from './ListingFiltersCategories';
+import { ListingFiltersTags } from './ListingFiltersTags';
 
-const ListingFilters = ({
+export const ListingFilters = ({
   categories,
   category,
   onSelectCategory,
@@ -16,12 +16,7 @@ const ListingFilters = ({
   query,
 }) => {
   return (
-    <div className="listing-filters" id="listing-filters">
-      <ListingFiltersCategories
-        categories={categories}
-        category={category}
-        onClick={onSelectCategory}
-      />
+    <aside className="crayons-layout__sidebar-left">
       <ListingFiltersTags
         message={message}
         onKeyUp={onKeyUp}
@@ -31,7 +26,12 @@ const ListingFilters = ({
         onKeyPress={onKeyPress}
         query={query}
       />
-    </div>
+      <ListingFiltersCategories
+        categories={categories}
+        category={category}
+        onClick={onSelectCategory}
+      />
+    </aside>
   );
 };
 
@@ -50,5 +50,3 @@ ListingFilters.propTypes = {
   onKeyPress: PropTypes.func.isRequired,
   query: PropTypes.string.isRequired,
 };
-
-export default ListingFilters;

@@ -25,14 +25,14 @@ module Honeycomb
       # should_sample is a no-op if the rate is 1
 
       if fields["redis.command"].in? NOISY_REDIS_COMMANDS
-        rate = 100
+        rate = 300
       elsif fields["sql.active_record.sql"].in? NOISY_SQL_COMMANDS
-        rate = 100
+        rate = 300
       elsif fields["redis.command"]&.start_with?("BRPOP")
         # BRPOP is disproportionately noisy and not really interesting
-        rate = 1000
+        rate = 5000
       elsif fields["redis.command"]&.start_with?(*NOISY_REDIS_PREFIXES)
-        rate = 100
+        rate = 300
       end
       [should_sample(rate, fields["trace.trace_id"]), rate]
     end

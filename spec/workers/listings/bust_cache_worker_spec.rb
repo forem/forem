@@ -7,7 +7,7 @@ RSpec.describe Listings::BustCacheWorker, type: :worker do
     let(:worker) { subject }
 
     before do
-      allow(CacheBuster).to receive(:bust_listings)
+      allow(EdgeCache::BustListings).to receive(:call)
     end
 
     context "with listing" do
@@ -21,7 +21,7 @@ RSpec.describe Listings::BustCacheWorker, type: :worker do
       it "busts cache" do
         worker.perform(listing_id)
 
-        expect(CacheBuster).to have_received(:bust_listings).with(listing)
+        expect(EdgeCache::BustListings).to have_received(:call).with(listing)
       end
     end
 
@@ -32,7 +32,7 @@ RSpec.describe Listings::BustCacheWorker, type: :worker do
 
       it "does not bust cache" do
         worker.perform(nil)
-        expect(CacheBuster).not_to have_received(:bust_listings)
+        expect(EdgeCache::BustListings).not_to have_received(:call)
       end
     end
   end

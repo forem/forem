@@ -16,9 +16,10 @@ function moreCommentsButton(comments, articlePath, totalCount) {
     button = (
       <div className="crayons-story__comments__actions">
         <Button
-          variant="secondary"
+          variant="ghost"
           size="s"
           tagName="a"
+          className="-ml-2"
           url={linkToCommentsSection(articlePath)}
           data-testid="see-all-comments"
         >

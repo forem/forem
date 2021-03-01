@@ -1,5 +1,7 @@
 @import '../variables';
 .ltag-github-readme-tag {
+  z-index: 1;
+  position: relative;
   border: 1px solid $light-medium-gray;
   border-radius: 3px;
   box-shadow: $shadow;

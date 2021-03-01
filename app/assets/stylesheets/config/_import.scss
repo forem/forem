@@ -2,7 +2,7 @@
 // Colors. /////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 //
-// List of colors to be used to generate utility-first classes,
+// List of colors to be used to generate Utility-First Classes/,
 // using generate-classes() function. See files from /base folder
 // for reference.
 //
@@ -25,17 +25,9 @@ $colors: (
   'base-0': var(--base-0),
   'base-inverted': var(--base-inverted),
   'accent-brand': var(--accent-brand),
-  'accent-brand-darker': var(--accent-brand-darker),
-  'accent-brand-lighter': var(--accent-brand-lighter),
   'accent-success': var(--accent-success),
-  'accent-success-darker': var(--accent-success-darker),
-  'accent-success-lighter': var(--accent-success-lighter),
   'accent-warning': var(--accent-warning),
-  'accent-warning-darker': var(--accent-warning-darker),
-  'accent-warning-lighter': var(--accent-warning-lighter),
   'accent-danger': var(--accent-danger),
-  'accent-danger-darker': var(--accent-danger-darker),
-  'accent-danger-lighter': var(--accent-danger-lighter),
 );
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -44,16 +36,15 @@ $colors: (
 //
 // List of breakpoints for our responsiveness.
 
+// If you modify these breakpoints, ensure you update them in @components/useMediaQuery.js
 $breakpoint-s: 640px;
 $breakpoint-m: 768px;
 $breakpoint-l: 1024px;
-$breakpoint-xl: 1280px;
 
 $breakpoints: (
   's': $breakpoint-s,
   'm': $breakpoint-m,
   'l': $breakpoint-l,
-  'xl': $breakpoint-xl,
 );
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -84,6 +75,18 @@ $negative-spacing-units: (
   '8': calc(var(--su-8) * -1),
   '9': calc(var(--su-9) * -1),
   '10': calc(var(--su-10) * -1),
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+
+$z-indexes: (
+  'negative': var(--z-negative),
+  'elevate': var(--z-elevate),
+  'sticky': var(--z-sticky),
+  'drawer': var(--z-drawer),
+  'modal': var(--z-modal),
+  'dropdown': var(--z-dropdown),
+  'popover': var(--z-popover),
 );
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +169,7 @@ $negative-spacing-units: (
   @each $name, $value in $values {
     .#{$prefix}#{$separator}#{$name} {
       @each $property in $properties {
-        #{$property}: $value !important;
+        #{$property}: $value;
       }
     }
   }
@@ -176,7 +179,7 @@ $negative-spacing-units: (
 
 // initialize-generator()
 //
-// Initilize generators.
+// Initialize generators.
 //
 // @param {list} $breakpoints       All our responsiveness breakpoints.
 // @param {list} $classes           All the parameters required by generate-classes().
@@ -213,7 +216,7 @@ $negative-spacing-units: (
 // @param {integer} $level    Visual elevation level: 0-4
 // @param {color} $bg         Background color
 // @param {color} $border     Border and shadow colors
-// @param {color} $color      Contnet color
+// @param {color} $color      Content color
 
 @mixin generate-box(
   $level: 1,

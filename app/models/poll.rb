@@ -4,14 +4,16 @@ class Poll < ApplicationRecord
   serialize :voting_data
 
   belongs_to :article
-  has_many :poll_options
-  has_many :poll_skips
-  has_many :poll_votes
 
-  validates :prompt_markdown, presence: true,
-                              length: { maximum: 128 }
-  validates :poll_options_input_array, presence: true,
-                                       length: { minimum: 2, maximum: 15 }
+  has_many :poll_options, dependent: :destroy
+  has_many :poll_skips, dependent: :destroy
+  has_many :poll_votes, dependent: :destroy
+
+  validates :poll_options_count, presence: true
+  validates :poll_options_input_array, presence: true, length: { minimum: 2, maximum: 15 }
+  validates :poll_skips_count, presence: true
+  validates :poll_votes_count, presence: true
+  validates :prompt_markdown, presence: true, length: { maximum: 128 }
 
   before_save :evaluate_markdown
   after_create :create_poll_options
@@ -29,6 +31,6 @@ class Poll < ApplicationRecord
   end
 
   def evaluate_markdown
-    self.prompt_html = MarkdownParser.new(prompt_markdown).evaluate_inline_limited_markdown
+    self.prompt_html = MarkdownProcessor::Parser.new(prompt_markdown).evaluate_inline_limited_markdown
   end
 end

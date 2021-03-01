@@ -24,7 +24,7 @@ class StackexchangeTag < LiquidTagBase
   def render(_context)
     default_link = "https://stackoverflow.com/a/#{@json_content['answer_id'] || @json_content['question_id']}"
 
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         site: @site,
@@ -58,7 +58,7 @@ class StackexchangeTag < LiquidTagBase
   def valid_input?(input)
     return false if input.nil?
 
-    ID_REGEXP.match?(input.split(" ")[0])
+    ID_REGEXP.match?(input.split.first)
   end
 
   def handle_response_error(response, input)
@@ -72,7 +72,7 @@ class StackexchangeTag < LiquidTagBase
   def get_data(input)
     raise StandardError, "Invalid Stack Exchange ID: {% #{tag_name} #{input} %}" unless valid_input?(input)
 
-    id = input.split(" ")[0]
+    id = input.split.first
 
     url = "#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}" \
       "&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"

@@ -14,13 +14,17 @@ class Message < ApplicationRecord
 
   def preferred_user_color
     color_options = [user.bg_color_hex || "#000000", user.text_color_hex || "#000000"]
-    HexComparer.new(color_options).brightness(0.9)
+    Color::CompareHex.new(color_options).brightness(0.9)
   end
 
   def direct_receiver
     return if chat_channel.group?
 
     chat_channel.users.where.not(id: user.id).first
+  end
+
+  def left_channel?
+    chat_action == "removed_from_channel" || chat_action == "left_channel"
   end
 
   private
@@ -31,6 +35,8 @@ class Message < ApplicationRecord
   end
 
   def update_all_has_unopened_messages_statuses
+    return if left_channel?
+
     chat_channel
       .chat_channel_memberships
       .where("last_opened_at < ?", 10.seconds.ago)
@@ -39,7 +45,7 @@ class Message < ApplicationRecord
   end
 
   def evaluate_markdown
-    html = MarkdownParser.new(message_markdown).evaluate_markdown
+    html = MarkdownProcessor::Parser.new(message_markdown).evaluate_markdown
     html = target_blank_links(html)
     html = append_rich_links(html)
     html = wrap_mentions_with_links(html)
@@ -107,16 +113,16 @@ class Message < ApplicationRecord
         html += "<a href='#{article.current_state_path}'
         class='chatchannels__richlink'
           target='_blank' rel='noopener' data-content='sidecar-article'>
-            #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(" + cl_path(article.main_image) + ")' data-content='sidecar-article' ></div>" if article.main_image.present?}
+            #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(#{cl_path(article.main_image)})' data-content='sidecar-article' ></div>" if article.main_image.present?}
           <h1 data-content='sidecar-article'>#{article.title}</h1>
-          <h4 data-content='sidecar-article'><img src='#{ProfileImage.new(article.cached_user).get(width: 90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
+          <h4 data-content='sidecar-article'><img src='#{Images::Profile.call(article.cached_user.profile_image_url, length: 90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
           </a>".html_safe
       elsif (tag = rich_link_tag(anchor))
         html += "<a href='/t/#{tag.name}'
         class='chatchannels__richlink'
           target='_blank' rel='noopener' data-content='sidecar-tag'>
           <h1 data-content='sidecar-tag'>
-            #{"<img src='" + cl_path(tag.badge.badge_image_url) + "' data-content='sidecar-tag' style='transform:rotate(-5deg)' />" if tag.badge_id.present?}
+            #{"<img src='#{cl_path(tag.badge.badge_image_url)}' data-content='sidecar-tag' style='transform:rotate(-5deg)' />" if tag.badge_id.present?}
             ##{tag.name}
           </h1>
           </a>".html_safe
@@ -125,7 +131,7 @@ class Message < ApplicationRecord
         class='chatchannels__richlink'
           target='_blank' rel='noopener' data-content='sidecar-user'>
           <h1 data-content='sidecar-user'>
-            <img src='#{ProfileImage.new(user).get(width: 90)}' data-content='sidecar-user' class='chatchannels__richlinkprofilepic' />
+            <img src='#{Images::Profile.call(user.profile_image_url, length: 90)}' data-content='sidecar-user' class='chatchannels__richlinkprofilepic' />
             #{user.name}
           </h1>
           </a>".html_safe
@@ -175,14 +181,7 @@ class Message < ApplicationRecord
   # rubocop:enable Rails/OutputSafety
 
   def cl_path(img_src)
-    ActionController::Base.helpers
-      .cl_image_path(img_src,
-                     type: "fetch",
-                     width: 725,
-                     crop: "limit",
-                     flags: "progressive",
-                     fetch_format: "auto",
-                     sign_url: true)
+    Images::Optimizer.call(img_src, width: 725)
   end
 
   def determine_user_validity
@@ -203,19 +202,19 @@ class Message < ApplicationRecord
   end
 
   def rich_link_article(link)
-    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+    return unless link["href"].include?("//#{SiteConfig.app_domain}/") && link["href"].split("/")[4]
 
     Article.find_by(slug: link["href"].split("/")[4].split("?")[0])
   end
 
   def rich_link_tag(link)
-    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/t/")
+    return unless link["href"].include?("//#{SiteConfig.app_domain}/t/")
 
     Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0])
   end
 
   def rich_user_link(link)
-    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/")
+    return unless link["href"].include?("//#{SiteConfig.app_domain}/")
 
     User.find_by(username: link["href"].split("/")[3].split("/")[0])
   end

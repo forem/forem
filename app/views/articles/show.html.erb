@@ -37,7 +37,7 @@
             });
           }
         }
-      }, 500)
+      }, 500);
     </script>
   <% end %>
   <% unless internal_navigation? || user_signed_in? %>
@@ -48,26 +48,30 @@
 <% end %>
 
 <% if internal_navigation? %>
+  <!-- If you have service workers turned on, you may be seeing the canonical URL in the body for human inspection -->
+  <!-- However, the crawled version of the page has the canonical in the head. -->
+  <!-- This is confirmed by the canonical url inspector. See https://github.com/forem/forem/issues/9509#issuecomment-732259221. -->
   <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
   <meta name="description" content="<%= @article.description_and_tags %>">
-  <meta name="keywords" content="<%= @article.cached_tag_list %>, <%= SiteConfig.meta_keywords[:article] %>">
+  <%= meta_keywords_article(@article.cached_tag_list) %>
 <% else %>
   <%= content_for :page_meta do %>
     <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
     <meta name="description" content="<%= @article.description_and_tags %>">
-    <meta name="keywords" content="<%= @article.cached_tag_list %>, <%= SiteConfig.meta_keywords[:article] %>">
+    <%= meta_keywords_article(@article.cached_tag_list) %>
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= article_url(@article) %>" />
     <meta property="og:title" content="<%= @article.title %>" />
     <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
-    <meta property="og:site_name" content="<%= community_qualified_name %>" />
+    <meta property="og:site_name" content="<%= community_name %>" />
     <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
     <meta name="twitter:title" content="<%= @article.title %>">
     <meta name="twitter:description" content="<%= @article.description || "An article from the community" %>">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:widgets:new-embed-design" content="on">
+    <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <% if @article.published %>
       <meta property="og:image" content="<%= article_social_image_url(@article) %>" />
       <meta name="twitter:image:src" content="<%= article_social_image_url(@article) %>">
@@ -79,8 +83,8 @@
         @article.processed_html.exclude?("<code>")) ||
       @article.featured_number.to_i < 1500000000 ||
       @article.score < -1 %>
-      <meta name="googlebot" content="noindex">
-      <meta name="googlebot" content="nofollow">
+      <meta name="robots" content="noindex">
+      <meta name="robots" content="nofollow">
     <% end %>
   <% end %>
 <% end %>
@@ -95,7 +99,9 @@
       <% if !@article.published %>
         <div class="crayons-notice crayons-notice--danger mb-4">
           <strong>Unpublished Post.</strong> This URL is public but secret, so share at your own discretion.
-          <a href="<%= @article.path %>/edit" class="fw-bold">Click to edit</a>.
+          <% if user_signed_in? %>
+            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none">Click to edit</a>
+          <% end %>
         </div>
       <% end %>
 
@@ -121,12 +127,12 @@
             <% if @organization %>
               <a href="<%= @organization.path %>" class="flex items-center mb-4 fs-l fw-medium crayons-link">
                 <span class="crayons-logo crayons-logo--l mr-3">
-                  <img src="<%= ProfileImage.new(@organization).get(width: 50) %>" class="crayons-logo__image" alt="<%= @organization.name %> profile image">
+                  <img src="<%= Images::Profile.call(@organization.profile_image_url, length: 50) %>" class="crayons-logo__image" alt="<%= @organization.name %> profile image">
                 </span>
                 <%= @organization.name %>
               </a>
             <% end %>
-            <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 <%= @article.title_length_classification %>">
+            <h1 class="fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 <%= @article.title_length_classification %>">
               <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
                 <span class="fs-xl color-base-70 block"><%= @article.search_optimized_title_preamble %></span>
               <% end %>
@@ -144,7 +150,7 @@
 
             <div class="crayons-article__subheader">
               <a href="/<%= @user.username %>" class="flex items-center mr-4 mb-4 s:mb-0 fw-medium crayons-link">
-                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" /></span>
+                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" /></span>
                 <%= @user.name %>
               </a>
 
@@ -152,75 +158,63 @@
                 <% if @article.published_timestamp.present? %>
                   <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
                 <% end %>
-                <% if @second_user.present? %>
-                  <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
-                <% end %>
-                <% if @third_user.present? %>
-                  <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
+                <% if @article.co_author_ids.present? %>
+                  <em>with <%= @article.co_author_name_and_path.html_safe %></em>
                 <% end %>
 
-                <% if should_show_updated_on?(@article) %>
-                  <em>Updated on <time datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em>
-                <% elsif should_show_crossposted_on?(@article) %>
+                <% if should_show_crossposted_on?(@article) %>
                   <em>
                     Originally published at
                     <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
                     <% if @article.crossposted_at %>
                       on
-                      <time datetime="<%= (@article.originally_published_at || @article.published_at)&.utc&.iso8601 %>"><%= (@article.originally_published_at || @article.published_at)&.strftime("%b %d, %Y") %></time>
+                      <%= local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year) %>
                     <% end %>
                   </em>
+                <% end %>
+                <% if should_show_updated_on?(@article) %>
+                  ・<em>Updated on <%= local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year) %></em>
                 <% end %>
 
                 <span class="mr-4">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
               </span>
               <span id="action-space" class="mb-4 s:mb-0"></span>
             </div>
-
           </div>
         </header>
 
-        <% if @collection %>
-          <%= render "articles/collection",
-                     rendered_article: @article,
-                     collection: @collection,
-                     articles: @collection_articles,
-                     position: :top %>
-        <% end %>
+        <div class="crayons-article__main">
+          <% if @collection %>
+            <%= render "articles/collection",
+                       rendered_article: @article,
+                       collection: @collection,
+                       articles: @collection_articles %>
+          <% end %>
 
-        <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
-          <%= @article.processed_html.html_safe %>
+          <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
+            <%= @article.processed_html.html_safe %>
+          </div>
+
+          <% if @article.long_markdown? && @collection %>
+            <%= render "articles/collection",
+                       rendered_article: @article,
+                       collection: @collection,
+                       articles: @collection_articles %>
+          <% end %>
         </div>
+        <%= render "articles/full_comment_area" %>
 
-        <% if @article.long_markdown? && @collection %>
-          <%= render "articles/collection",
-                     rendered_article: @article,
-                     collection: @collection,
-                     articles: @collection_articles,
-                     position: :bottom %>
-        <% end %>
       </article>
 
-      <% if @article.long_markdown? || @organization %>
-        <section class="crayons-card crayons-card--secondary text-padding mb-4">
-          <% if @article.long_markdown? %>
-            <%= render "articles/about_author", published: @article.readable_publish_date %>
-          <% end %>
-          <%= render "articles/org_branding", organization: @organization, author: @article.long_markdown? %>
-        </section>
-      <% end %>
-
-      <%= render "articles/full_comment_area" %>
-
-      <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}", expires_in: 18.hours) do %>
-        <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
+      <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 18.hours) do %>
+        <% suggested_articles = Articles::Suggest.call(@article, max: 4) %>
         <%= render "articles/bottom_content", articles: suggested_articles %>
       <% end %>
     </div>
   </main>
 
   <aside class="crayons-layout__sidebar-right" aria-label="Right sidebar navigation">
-    <% stick_nav_cache_key = "sticky-sidebar-#{@article.id}-#{(@organization || @user).profile_updated_at}-#{(@organization || @user).last_article_at}-1-#{@user.pro?}" %>
+    <% stick_nav_cache_key = "sticky-sidebar-#{@article.id}-#{(@organization || @user).profile_updated_at}-#{(@organization || @user).latest_article_updated_at}" %>
     <% cache(stick_nav_cache_key, expires_in: 50.hours) do %>
       <%= render "articles/sticky_nav" %>
     <% end %>
@@ -231,7 +225,8 @@
   <% if has_vid?(@article) %>
     <%= render "articles/fitvids" %>
   <% end %>
-  <% if @article.processed_html.include? 'class="twitter-tweet"' %>
+  <% if @article.processed_html.include?('class="twitter-tweet"') ||
+       @article.processed_html.include?("ltag_twitter_timeline-liquid-tag") %>
     <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
   <% end %>
   <% if @article.processed_html.include? "instagram-media" %>
@@ -242,6 +237,8 @@
 <div class="mod-actions-menu"></div>
 <div id="mod-actions-menu-btn-area"></div>
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
+
+<div class="fullscreen-code js-fullscreen-code"></div>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>

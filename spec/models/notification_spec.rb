@@ -13,11 +13,11 @@ RSpec.describe Notification, type: :model do
   let(:comment) { create(:comment, user: user2, commentable: article) }
   let(:badge_achievement) { create(:badge_achievement) }
 
-  it do
+  it "validates a unique user_id according to the correct scope" do
+    notification = create(:notification, user: user2, notifiable: article, organization: nil)
+
     scopes = %i[organization_id notifiable_id notifiable_type action]
-    # rubocop:disable RSpec/NamedSubject
-    expect(subject).to validate_uniqueness_of(:user_id).scoped_to(scopes)
-    # rubocop:enable RSpec/NamedSubject
+    expect(notification).to validate_uniqueness_of(:user_id).scoped_to(scopes)
   end
 
   describe "when trying to create duplicate notifications" do

@@ -15,7 +15,7 @@
   }
 }
 .ltag__user {
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
   border: 1px solid $light-medium-gray;
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
   border-radius: 3px;

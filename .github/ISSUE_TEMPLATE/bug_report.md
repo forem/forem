@@ -30,16 +30,14 @@ about: Create a report to help us improve
 
 **Desktop (please complete the following information):**
 
-- OS:
-- Browser:
-- Version:
+- OS, version:
+- Browser, version:
 
 **Smartphone (please complete the following information):**
 
 - Device:
-- OS:
-- Browser:
-- Version:
+- OS, version:
+- Browser, version:
 
 **Additional context**
 

@@ -14,34 +14,34 @@ RSpec.describe Honeycomb::NoiseCancellingSampler do
     it "samples if its in NOISY_REDIS_COMMANDS" do
       is_sampled, rate = described_class.sample({ "redis.command" => "TIME", "trace.trace_id" => trace_id })
       expect(is_sampled).to be_in [true, false]
-      expect(rate).to match(100)
+      expect(rate).to match(300)
     end
 
     it "samples if the command is BRPOP" do
       is_sampled, rate = described_class.sample({ "redis.command" => "BRPOP", "trace.trace_id" => trace_id })
       expect(is_sampled).to be_in [true, false]
-      expect(rate).to match(1000)
+      expect(rate).to match(5000)
     end
 
     it "samples if the command starts with TTL" do
       is_sampled, rate = described_class.sample({ "redis.command" => "TTL this and that",
                                                   "trace.trace_id" => trace_id })
       expect(is_sampled).to be_in [true, false]
-      expect(rate).to match(100)
+      expect(rate).to match(300)
     end
 
     it "samples if the command starts with GET rack:" do
       is_sampled, rate = described_class.sample({ "redis.command" => "GET rack::something",
                                                   "trace.trace_id" => trace_id })
       expect(is_sampled).to be_in [true, false]
-      expect(rate).to match(100)
+      expect(rate).to match(300)
     end
 
     it "samples if the command starts with SET rack:" do
       is_sampled, rate = described_class.sample({ "redis.command" => "SET rack::something",
                                                   "trace.trace_id" => trace_id })
       expect(is_sampled).to be_in [true, false]
-      expect(rate).to match(100)
+      expect(rate).to match(300)
     end
   end
 
@@ -49,7 +49,7 @@ RSpec.describe Honeycomb::NoiseCancellingSampler do
     it "samples if its in NOISY_SQL_COMMANDS" do
       is_sampled, rate = described_class.sample({ "sql.active_record.sql" => "COMMIT", "trace.trace_id" => trace_id })
       expect(is_sampled).to be_in [true, false]
-      expect(rate).to match(100)
+      expect(rate).to match(300)
     end
   end
 end

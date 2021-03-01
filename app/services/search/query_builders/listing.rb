@@ -18,7 +18,7 @@ module Search
       ].freeze
 
       QUERY_KEYS = %i[
-        classified_listing_search
+        listing_search
       ].freeze
 
       DEFAULT_PARAMS = {
@@ -29,6 +29,8 @@ module Search
       }.freeze
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
 
         # For now, we're not allowing searches for Listings that are

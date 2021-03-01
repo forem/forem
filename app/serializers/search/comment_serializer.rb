@@ -1,7 +1,5 @@
 module Search
-  class CommentSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class CommentSerializer < ApplicationSerializer
     attribute :id, &:search_id
 
     attributes :path, :public_reactions_count
@@ -11,8 +9,8 @@ module Search
       comment.class.name
     end
     attribute :hotness_score, &:score
-    attribute :published do |_comment|
-      true
+    attribute :published do |comment|
+      comment.commentable&.published
     end
     attribute :published_at, &:created_at
     attribute :readable_publish_date_string, &:readable_publish_date

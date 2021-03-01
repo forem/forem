@@ -10,7 +10,8 @@
   position: absolute;
   display: none; // initially hidden
   padding: var(--su-4);
-  min-width: 200px;
+  min-width: 250px;
+  z-index: var(--z-dropdown);
 
   @media (min-width: $breakpoint-s) {
     max-width: 360px;

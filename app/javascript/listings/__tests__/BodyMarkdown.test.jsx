@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import BodyMarkdown from '../components/BodyMarkdown';
+import { BodyMarkdown } from '../components/BodyMarkdown';
 
 describe('<BodyMarkdown />', () => {
   const getProps = () => ({
@@ -28,9 +28,7 @@ describe('<BodyMarkdown />', () => {
 
     const textArea = getByLabelText('Body Markdown');
 
-    expect(textArea.getAttribute('placeholder')).toEqual(
-      '400 characters max, 12 line break max, no images allowed, *markdown is encouraged*',
-    );
+    expect(textArea.getAttribute('placeholder')).toEqual('...');
     expect(textArea.getAttribute('maxLength')).toEqual('400');
     expect(textArea.value).toEqual(defaultValue);
   });

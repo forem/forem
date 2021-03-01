@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import SingleArticle from './singleArticle';
+import { SingleArticle } from './singleArticle';
 
 export class ModerationArticles extends Component {
   state = {
@@ -24,7 +24,7 @@ export class ModerationArticles extends Component {
 
     if (
       id === prevSelectedArticleId &&
-      document.querySelectorAll('.opened').length > 0
+      document.getElementsByClassName('opened').length > 0
     ) {
       selectedArticle.classList.remove('opened');
       return;

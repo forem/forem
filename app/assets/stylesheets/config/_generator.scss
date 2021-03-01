@@ -296,135 +296,36 @@
   (
     'top',
     'top',
-    (
-      'auto': auto,
-      'unset': unset,
-      '0': 0,
-      '1': var(--su-1),
-      '2': var(--su-2),
-      '3': var(--su-3),
-      '4': var(--su-4),
-      '100': 100%
-    ),
-    (),
+    ('auto': auto, 'unset': unset, '0': 0, '100': 100%),
+    $spacing-units,
     true
   ),
-  (
-    '-top',
-    'top',
-    (
-      '1': calc(var(--su-1) * -1),
-      '2': calc(var(--su-2) * -1),
-      '3': calc(var(--su-3) * -1),
-      '4': calc(var(--su-4) * -1),
-      '100': -100%
-    ),
-    (),
-    true
-  ),
+  ('-top', 'top', ('100': -100%), $negative-spacing-units, true),
   (
     'bottom',
     'bottom',
-    (
-      'auto': auto,
-      'unset': unset,
-      '0': 0,
-      '1': var(--su-1),
-      '2': var(--su-2),
-      '3': var(--su-3),
-      '4': var(--su-4),
-      '100': 100%
-    ),
-    (),
+    ('auto': auto, 'unset': unset, '0': 0, '100': 100%),
+    $spacing-units,
     true
   ),
-  (
-    '-bottom',
-    'bottom',
-    (
-      '1': calc(var(--su-1) * -1),
-      '2': calc(var(--su-2) * -1),
-      '3': calc(var(--su-3) * -1),
-      '4': calc(var(--su-4) * -1),
-      '100': -100%
-    ),
-    (),
-    true
-  ),
+  ('-bottom', 'bottom', ('100': -100%), $negative-spacing-units, true),
   (
     'left',
     'left',
-    (
-      'auto': auto,
-      'unset': unset,
-      '0': 0,
-      '1': var(--su-1),
-      '2': var(--su-2),
-      '3': var(--su-3),
-      '4': var(--su-4),
-      '100': 100%
-    ),
-    (),
+    ('auto': auto, 'unset': unset, '0': 0, '100': 100%),
+    $spacing-units,
     true
   ),
-  (
-    '-left',
-    'left',
-    (
-      '1': calc(var(--su-1) * -1),
-      '2': calc(var(--su-2) * -1),
-      '3': calc(var(--su-3) * -1),
-      '4': calc(var(--su-4) * -1),
-      '100': -100%
-    ),
-    (),
-    true
-  ),
+  ('-left', 'left', ('100': -100%), $negative-spacing-units, true),
   (
     'right',
     'right',
-    (
-      'auto': auto,
-      'unset': unset,
-      '0': 0,
-      '1': var(--su-1),
-      '2': var(--su-2),
-      '3': var(--su-3),
-      '4': var(--su-4),
-      '100': 100%
-    ),
-    (),
+    ('auto': auto, 'unset': unset, '0': 0, '100': 100%),
+    $spacing-units,
     true
   ),
-  (
-    '-right',
-    'right',
-    (
-      '1': calc(var(--su-1) * -1),
-      '2': calc(var(--su-2) * -1),
-      '3': calc(var(--su-3) * -1),
-      '4': calc(var(--su-4) * -1),
-      '100': -100%
-    ),
-    (),
-    true
-  ),
-  (
-    'z',
-    'z-index',
-    (
-      'negative': -1,
-      '0': 0,
-      '10': 10,
-      '20': 20,
-      '30': 30,
-      '40': 40,
-      '50': 50,
-      'auto': auto
-    ),
-    (),
-    false
-  ),
+  ('-right', 'right', ('100': -100%), $negative-spacing-units, true),
+  ('z', 'z-index', $z-indexes, (), false),
   (
     'overflow',
     'overflow',
@@ -573,9 +474,9 @@
     'ff',
     'font-family',
     (
-      'default': var(--ff-default),
-      'accent': var(--ff-accent),
-      'serif': var(--ff-serif)
+      'sans-serif': var(--ff-sans-serif),
+      'serif': var(--ff-serif),
+      'monospace': var(--ff-monospace)
     ),
     (),
     false
@@ -630,6 +531,7 @@
     (),
     false
   ),
+  ('fs', 'font-style', ('italic': italic, 'normal': normal), (), false),
   (
     'text',
     'text-transform',
@@ -742,5 +644,12 @@
     ),
     (),
     true
+  ),
+  (
+    'resize',
+    'resize',
+    ('x': horizontal, 'y': vertical, 'none': none),
+    (),
+    false
   )
 );

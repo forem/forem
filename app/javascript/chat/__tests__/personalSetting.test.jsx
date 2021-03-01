@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import PersonalSettng from '../ChatChannelSettings/PersonalSetting';
+import { PersonalSettng } from '../ChatChannelSettings/PersonalSetting';
 
 describe('<PersonalSettng />', () => {
   it('should have no a11y violations', async () => {

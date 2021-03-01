@@ -84,6 +84,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
       get api_listings_path
 
       expect(response.headers["cache-control"]).to be_present
+      expect(response.headers["x-accel-expires"]).to be_present
       expect(response.headers["surrogate-control"]).to match(/max-age/).and(match(/stale-if-error/))
     end
 
@@ -214,6 +215,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
       get api_listing_path(listing.id)
 
       expect(response.headers["cache-control"]).to be_present
+      expect(response.headers["x-accel-expires"]).to be_present
       expect(response.headers["surrogate-control"]).to match(/max-age/).and(match(/stale-if-error/))
     end
 

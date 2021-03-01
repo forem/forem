@@ -9,7 +9,6 @@ export function defaultState(options) {
 
     page: 0,
     hitsPerPage: 80,
-    totalCount: 0,
 
     items: [],
     itemsLoaded: false,
@@ -75,12 +74,15 @@ export function performInitialSearch({ searchOptions = {} }) {
   const responsePromise = fetchSearch('reactions', dataHash);
   return responsePromise.then((response) => {
     const reactions = response.result;
+    const availableTags = [
+      ...new Set(reactions.flatMap((rxn) => rxn.reactable.tag_list)),
+    ].sort();
     component.setState({
       page: 0,
       items: reactions,
       itemsLoaded: true,
-      totalCount: response.total,
       showLoadMoreButton: hitsPerPage < response.total,
+      availableTags,
     });
   });
 }
@@ -126,7 +128,6 @@ export function search(query, { page, tags, statusView, appendItems = false }) {
       query,
       page: newPage,
       items,
-      totalCount: response.total,
       showLoadMoreButton: items.length < response.total,
     });
   });
@@ -139,6 +140,7 @@ export function loadNextPage() {
   const { query, selectedTags, page, statusView } = component.state;
   component.setState({ page: page + 1 });
   component.search(query, {
+    page: page + 1,
     tags: selectedTags,
     statusView,
     appendItems: true,

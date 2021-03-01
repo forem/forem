@@ -1,4 +1,4 @@
-import initCharts from '../analytics/dashboard';
+import { initCharts } from '../analytics/dashboard';
 
 function initDashboardArticle() {
   const article = document.getElementById('article');

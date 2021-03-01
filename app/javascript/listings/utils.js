@@ -4,12 +4,6 @@
  */
 export const LISTING_PAGE_SIZE = 75;
 
-export const MATCH_LISTING = [
-  'single-listing-container__inner',
-  'listing-filters',
-  'listings-modal-background',
-];
-
 export function updateListings(listings) {
   const fullListings = [];
 
@@ -45,13 +39,10 @@ function resizeMasonryItem(item) {
     window.getComputedStyle(grid).getPropertyValue('grid-row-gap'),
     10,
   );
-  const rowHeight = parseInt(
-    window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'),
-    10,
-  );
-
+  const rowHeight = 0;
   const rowSpan = Math.ceil(
-    (item.querySelector('.listing-content').getBoundingClientRect().height +
+    (item.getElementsByClassName('listing-content')[0].getBoundingClientRect()
+      .height +
       rowGap) /
       (rowHeight + rowGap),
   );

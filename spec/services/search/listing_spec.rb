@@ -25,7 +25,7 @@ RSpec.describe Search::Listing, type: :service do
 
         listing_docs = described_class.search_documents(params: { size: 5, listing_search: "test" })
         expect(listing_docs.count).to eq(5)
-        expect(listing_docs.map { |t| t.dig("id") }).to match_array(listings.map(&:id))
+        expect(listing_docs.map { |t| t["id"] }).to match_array(listings.map(&:id))
       end
     end
 

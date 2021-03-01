@@ -35,12 +35,12 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
     end
 
     it "accepts YouTube ID with no start time and an empty space" do
-      liquid = generate_new_liquid(valid_id_no_time + " ").render
+      liquid = generate_new_liquid("#{valid_id_no_time} ").render
       Approvals.verify(liquid, name: "youtube_liquid_tag_no_time_trailing_space", format: :html)
     end
 
     it "accepts YouTube ID with start times and one empty space" do
-      liquid = generate_new_liquid(valid_ids_with_time + " ").render
+      liquid = generate_new_liquid("#{valid_ids_with_time} ").render
       Approvals.verify(liquid, name: "youtube_liquid_tag_with_time", format: :html)
     end
 

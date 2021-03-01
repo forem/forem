@@ -5,12 +5,12 @@ class KotlinTag < LiquidTagBase
   def initialize(_tag_name, link, _parse_context)
     super
     stripped_link = ActionController::Base.helpers.strip_tags(link)
-    the_link = stripped_link.split(" ").first
+    the_link = stripped_link.split.first
     @embedded_url = KotlinTag.embedded_url(the_link)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         url: @embedded_url
@@ -19,7 +19,7 @@ class KotlinTag < LiquidTagBase
   end
 
   def self.embedded_url(link)
-    "https://play.kotlinlang.org/embed?" + URI.encode_www_form(parse_link(link))
+    "https://play.kotlinlang.org/embed?#{URI.encode_www_form(parse_link(link))}"
   end
 
   def self.parse_link(link)

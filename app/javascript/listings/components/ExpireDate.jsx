@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 
-const ExpireDate = ({ onChange, defaultValue }) => {
+export const ExpireDate = ({ onChange, defaultValue }) => {
   let tomorrow = new Date();
   let monthFromToday = new Date();
   tomorrow.setDate(new Date().getDate() + 1);
@@ -10,14 +10,16 @@ const ExpireDate = ({ onChange, defaultValue }) => {
   [monthFromToday] = monthFromToday.toISOString().split('T');
 
   return (
-    <div className="field">
-      <label className="listingform__label" htmlFor="expires_at">
-        Custom Expire Date (if applicable for time sensitive events, deadlines,
-        etc.)
+    <div className="crayons-field">
+      <label className="crayons-field__label" htmlFor="expires_at">
+        Custom Expire Date
+        <p class="crayons-field__description">
+          If applicable for time sensitive events, deadlines, etc.
+        </p>
       </label>
       <input
         type="date"
-        className="listingform__input"
+        className="crayons-textfield m:max-w-50"
         id="expires_at"
         name="listing[expires_at]"
         value={defaultValue}
@@ -33,5 +35,3 @@ ExpireDate.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
 };
-
-export default ExpireDate;

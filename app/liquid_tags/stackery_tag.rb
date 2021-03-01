@@ -7,7 +7,7 @@ class StackeryTag < LiquidTagBase
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         owner: @data[:owner],
@@ -20,7 +20,7 @@ class StackeryTag < LiquidTagBase
   private
 
   def get_data(input)
-    items = input.split(" ")
+    items = input.split
     owner = items.first
     repo = items.second
     ref = items.third || "master"

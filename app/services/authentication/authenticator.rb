@@ -35,6 +35,7 @@ module Authentication
 
       ActiveRecord::Base.transaction do
         user = proper_user(identity)
+
         user = if user.nil?
                  find_or_create_user!
                else
@@ -58,7 +59,7 @@ module Authentication
 
       if log_to_datadog
         # Notify DataDog if a new identity was successfully created.
-        DatadogStatsClient.increment("identity.created", tags: ["provider:#{id_provider}"])
+        ForemStatsClient.increment("identity.created", tags: ["provider:#{id_provider}"])
       end
 
       # Return the successfully-authed used from the transaction.
@@ -66,7 +67,7 @@ module Authentication
     rescue StandardError => e
       # Notify DataDog if something goes wrong in the transaction,
       # and then ensure that we re-raise and bubble up the error.
-      DatadogStatsClient.increment("identity.errors", tags: ["error:#{e.class}", "message:#{e.message}"])
+      ForemStatsClient.increment("identity.errors", tags: ["error:#{e.class}", "message:#{e.message}"])
       raise e
     end
 
@@ -95,8 +96,12 @@ module Authentication
     end
 
     def find_or_create_user!
+      username = provider.user_nickname
+      banned_user = Users::SuspendedUsername.previously_banned?(username)
+      raise ::Authentication::Errors::PreviouslyBanned if banned_user
+
       existing_user = User.where(
-        provider.user_username_field => provider.user_nickname,
+        provider.user_username_field => username,
       ).take
       return existing_user if existing_user
 
@@ -127,6 +132,7 @@ module Authentication
 
     def update_user(user)
       user.tap do |model|
+        user.unlock_access! if user.access_locked?
         user.assign_attributes(provider.existing_user_data)
 
         update_profile_updated_at(model)
@@ -142,12 +148,24 @@ module Authentication
 
     def account_less_than_a_week_old?(user, logged_in_identity)
       provider_created_at = user.public_send(provider.user_created_at_field)
-      user_identity_age = provider_created_at ||
-        Time.zone.parse(logged_in_identity.auth_data_dump.extra.raw_info.created_at)
+      user_identity_age = provider_created_at
+      user_identity_age ||= extract_created_at_from_payload(logged_in_identity)
 
       # last one is a fallback in case both are nil
       range = 1.week.ago.beginning_of_day..Time.current
       range.cover?(user_identity_age)
+    end
+
+    def extract_created_at_from_payload(logged_in_identity)
+      raw_info = logged_in_identity.auth_data_dump.extra.raw_info
+
+      if raw_info.created_at.present?
+        Time.zone.parse(raw_info.created_at)
+      elsif raw_info.auth_time.present?
+        Time.zone.at(raw_info.auth_time)
+      else
+        Time.current
+      end
     end
 
     def flag_spam_user(user)

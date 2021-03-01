@@ -32,17 +32,17 @@ The
 go into depth on how Rails merges the existing `database.yml` with the
 connection string.
 
-### Setup `DATABASE_URL` in application.yml
+### Setup `DATABASE_URL` in .env
 
-1. Open your `config/application.yml`
+1. Open your `.env`
 
 1. Add the following:
 
-```yml
-DATABASE_URL: postgresql://USERNAME:PASSWORD@localhost
+```shell
+export DATABASE_URL=postgresql://USERNAME:PASSWORD@localhost
 
 # Optional: If your test database is in a different url, be sure to set this.
-DATABASE_URL_TEST: postgresql://USERNAME:PASSWORD@localhost
+export DATABASE_URL_TEST=postgresql://USERNAME:PASSWORD@localhost
 ```
 
 1. Replace `USERNAME` with your database username, `PASSWORD` with your database

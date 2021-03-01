@@ -26,7 +26,7 @@ RSpec.describe UserSubscription, type: :model do
                                                                                    published: false)
       user_subscription = described_class.build(source: unpublished_source, subscriber: subscriber)
       expect(user_subscription).not_to be_valid
-      expect(user_subscription.errors[:base]).to include "Source not found."
+      expect(user_subscription.errors[:base]).to include "Source not found. Please make sure your Article is active!"
     end
 
     it "validates the tag is enabled in the source" do
@@ -43,6 +43,28 @@ RSpec.describe UserSubscription, type: :model do
 
       error = "Can't subscribe with an Apple private relay. Please update email."
       expect(user_subscription.errors[:subscriber_email]).to include(error)
+    end
+
+    describe "#user_subscription_sourceable" do
+      it "is required on creation" do
+        subscription = described_class.new(
+          user_subscription_sourceable: nil, subscriber: subscriber, subscriber_email: subscriber.email,
+          author: source.user
+        )
+        subscription.save
+
+        expect(subscription).not_to be_valid
+        expect(subscription.errors.messages.keys).to include(
+          :user_subscription_sourceable_id, :user_subscription_sourceable_type
+        )
+      end
+
+      it "can be nulled on update" do
+        subscription = described_class.make(source: source, subscriber: subscriber)
+        subscription.update(user_subscription_sourceable: nil)
+
+        expect(subscription).to be_valid
+      end
     end
   end
 

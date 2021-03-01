@@ -4,7 +4,7 @@ module Users
       user = User.find_by(id: user_id)
       return unless user
 
-      CacheBuster.bust_user(user)
+      EdgeCache::BustUser.call(user)
     end
   end
 end

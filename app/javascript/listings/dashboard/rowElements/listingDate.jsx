@@ -1,28 +1,18 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 
-const ListingDate = ({ bumpedAt, updatedAt }) => {
+import { DateTime } from '../../../shared/components/dateTime';
 
-  const listingDate = bumpedAt
-    ? new Date(bumpedAt.toString()).toLocaleDateString('default', {
-        day: '2-digit',
-        month: 'short',
-      })
-    : new Date(updatedAt.toString()).toLocaleDateString('default', {
-        day: '2-digit',
-        month: 'short',
-      });
-
+export const ListingDate = ({ bumpedAt, updatedAt }) => {
   return (
-    <span className="dashboard-listing-date">
-      {listingDate} 
-    </span> 
-  )
-}
+    <DateTime
+      className="dashboard-listing-date"
+      dateTime={bumpedAt ? bumpedAt.toString() : updatedAt.toString()}
+    />
+  );
+};
 
 ListingDate.propTypes = {
   bumpedAt: PropTypes.instanceOf(Date).isRequired,
   updatedAt: PropTypes.instanceOf(Date).isRequired,
-}
-
-export default ListingDate;
+};

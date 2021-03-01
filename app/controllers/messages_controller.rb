@@ -111,7 +111,7 @@ class MessagesController < ApplicationController
     message_json = create_pusher_payload(@message, @temp_message_id)
 
     user_ids.each do |id|
-      Pusher.trigger("private-message-notifications-#{id}", "mentioned", message_json)
+      Pusher.trigger(ChatChannel.pm_notifications_channel(id), "mentioned", message_json)
     end
   end
 end

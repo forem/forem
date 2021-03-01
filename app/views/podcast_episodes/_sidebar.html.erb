@@ -10,15 +10,7 @@
           <% @podcasts.each do |podcast| %>
             <a href="/<%= podcast.slug %>">
               <div class="podcast-pic" id="podcast-pic-<%= podcast.slug %>">
-                <img src="<%= cl_image_path(podcast.image_url,
-                                            type: "fetch",
-                                            crop: "fill",
-                                            width: 100,
-                                            height: 100,
-                                            flags: "progressive",
-                                            quality: "auto",
-                                            fetch_format: "auto",
-                                            sign_url: true) %>"
+                <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "fill", width: 100, height: 100) %>"
                      alt="<%= podcast.title %>" />
                 <div class="podcast-name">
                   <div class="podcast-name-inner">

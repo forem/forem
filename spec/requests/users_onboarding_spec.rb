@@ -8,23 +8,42 @@ RSpec.describe "UsersOnboarding", type: :request do
       before { sign_in user }
 
       it "updates saw_onboarding boolean" do
-        sign_in user
         patch "/onboarding_update.json", params: {}
         expect(user.saw_onboarding).to eq(true)
       end
 
-      it "updates the attributes on the user" do
-        params = { user: { location: "Alpaca Town" } }
+      it "updates the user's last_onboarding_page attribute" do
+        params = { user: { last_onboarding_page: "v2: personal info form", username: "test" } }
         expect do
           patch "/onboarding_update.json", params: params
-        end.to change(user, :location)
+        end.to change(user, :last_onboarding_page)
       end
 
-      it "does not update attributes if params are empty" do
-        params = { user: { location: "" } }
+      it "updates the user's username attribute" do
+        params = { user: { username: "WilhuffTarkin" } }
         expect do
           patch "/onboarding_update.json", params: params
-        end.not_to change(user, :location)
+        end.to change(user, :username).to("wilhufftarkin")
+      end
+
+      it "returns a 422 error if the username is blank" do
+        params = { user: { username: "" } }
+        patch "/onboarding_update.json", params: params
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "updates the user's profile" do
+        params = { profile: { employer_name: "Galatic Empire" } }
+        expect do
+          patch "/onboarding_update.json", params: params
+        end.to change(user.profile, :employer_name).to("Galatic Empire")
+      end
+
+      it "does not update the user's last_onboarding_page if it is empty" do
+        params = { user: { last_onboarding_page: "" } }
+        expect do
+          patch "/onboarding_update.json", params: params
+        end.not_to change(user, :last_onboarding_page)
       end
     end
 

@@ -17,5 +17,11 @@ module Github
 
     class InvalidRepository < ArgumentError
     end
+
+    class AccountSuspended < ClientError
+    end
+
+    class RepositoryUnavailable < ClientError
+    end
   end
 end

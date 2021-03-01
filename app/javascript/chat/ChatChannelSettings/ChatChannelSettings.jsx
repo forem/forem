@@ -13,11 +13,12 @@ import {
 } from '../actions/chat_channel_setting_actions';
 
 import { addSnackbarItem } from '../../Snackbar';
-import ManageActiveMembership from './MembershipManager/ManageActiveMembership';
-import ChatChannelSettingsSection from './ChatChannelSettingsSection';
+import { ManageActiveMembership } from './MembershipManager/ManageActiveMembership';
+import { ChatChannelSettingsSection } from './ChatChannelSettingsSection';
 
-export default class ChatChannelSettings extends Component {
+export class ChatChannelSettings extends Component {
   static propTypes = {
+    handleLeavingChannel: PropTypes.func.isRequired,
     activeMembershipId: PropTypes.number.isRequired,
   };
 
@@ -307,14 +308,20 @@ export default class ChatChannelSettings extends Component {
     const { currentMembership } = this.state;
     if (actionStatus) {
       const response = await leaveChatChannelMembership(currentMembership.id);
+      const { message } = response;
       if (response.success) {
-        this.updateChannelDetails();
+        this.setState({
+          successMessages: message,
+          errorMessages: null,
+        });
+        this.props.handleLeavingChannel(currentMembership.id);
       } else {
         this.setState({
           successMessages: null,
           errorMessages: response.message,
         });
       }
+      addSnackbarItem({ message });
     }
   };
 

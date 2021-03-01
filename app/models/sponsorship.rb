@@ -15,10 +15,11 @@ class Sponsorship < ApplicationRecord
   belongs_to :organization, inverse_of: :sponsorships
   belongs_to :sponsorable, polymorphic: true, optional: true
 
-  validates :user, :organization, :featured_number, presence: true
-  validates :level, inclusion: { in: LEVELS }
-  validates :status, inclusion: { in: STATUSES }
+  validates :level, presence: true, inclusion: { in: LEVELS }
+  validates :status, presence: true, inclusion: { in: STATUSES }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[http https] }
+  validates :user, :organization, :featured_number, presence: true
+
   validate :validate_tag_uniqueness, if: proc { level.to_s == "tag" }
   validate :validate_level_uniqueness, if: proc { METAL_LEVELS.include?(level) }
 

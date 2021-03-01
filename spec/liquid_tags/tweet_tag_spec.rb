@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe TweetTag, type: :liquid_tag do
   let(:twitter_id) { "1018911886862057472" }
   let(:handle) { "thepracticaldev" }
-  let(:name) { "DEV Community 👩‍💻👨‍💻" }
+  let(:name) { "DEV Community" }
   let(:body) { "When GitHub goes down" }
 
   setup { Liquid::Template.register_tag("tweet", described_class) }

@@ -1,7 +1,5 @@
 module Search
-  class PodcastEpisodeSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class PodcastEpisodeSerializer < ApplicationSerializer
     attribute :id, &:search_id
 
     attributes :body_text, :class_name, :comments_count, :hotness_score, :path,
@@ -10,7 +8,7 @@ module Search
                :website_url
 
     attribute :main_image do |pde|
-      ProfileImage.new(pde.podcast).get(width: 90)
+      Images::Profile.call(pde.podcast.profile_image_url, length: 90)
     end
     attribute :slug, &:podcast_slug
 

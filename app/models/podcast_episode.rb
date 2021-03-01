@@ -15,15 +15,19 @@ class PodcastEpisode < ApplicationRecord
   delegate :published, to: :podcast
 
   belongs_to :podcast
-  has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
+  has_many :podcast_episode_appearances, dependent: :destroy
+  has_many :users, through: :podcast_episode_appearances
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
-  validates :title, presence: true
-  validates :slug, presence: true
-  validates :media_url, presence: true, uniqueness: true
+  validates :comments_count, presence: true
   validates :guid, presence: true, uniqueness: true
+  validates :media_url, presence: true, uniqueness: true
+  validates :reactions_count, presence: true
+  validates :slug, presence: true
+  validates :title, presence: true
 
   before_validation :process_html_and_prefix_all_images
   # NOTE: Any create callbacks will not be run since we use activerecord-import to create episodes
@@ -69,6 +73,10 @@ class PodcastEpisode < ApplicationRecord
     ActionView::Base.full_sanitizer.sanitize(processed_html)
   end
 
+  def score
+    1 # When it is expected that a "commentable" has a score, this is the fallback.
+  end
+
   def zero_method
     0
   end
@@ -89,8 +97,7 @@ class PodcastEpisode < ApplicationRecord
     nil
   end
   alias user_id nil_method
-  alias second_user_id nil_method
-  alias third_user_id nil_method
+  alias co_author_ids nil_method
 
   private
 
@@ -113,18 +120,7 @@ class PodcastEpisode < ApplicationRecord
 
       next unless img_src
 
-      quality = "auto"
-      quality = 66 if img_src.include?(".gif")
-
-      cloudinary_img_src = ActionController::Base.helpers
-        .cl_image_path(img_src,
-                       type: "fetch",
-                       width: 725,
-                       crop: "limit",
-                       quality: quality,
-                       flags: "progressive",
-                       fetch_format: "auto",
-                       sign_url: true)
+      cloudinary_img_src = Images::Optimizer.call(img_src, width: 725)
       self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
     end
   end

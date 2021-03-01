@@ -1,14 +1,21 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
 
-  # Called upon successful redirect from Twitter
-  def twitter
-    callback_for(:twitter)
-  end
+  # Rails actionpack only allows POST requests that come with an ORIGIN header
+  # that matches `request.base_url`, it raises CSRF exception otherwise.
+  # There is no way to allow specific ORIGIN values in order to securely bypass
+  # trusted origins (i.e. Apple OAuth) so `protect_from_forgery` is skipped
+  # ONLY when it's safe to do so (i.e. ORIGIN == 'https://appleid.apple.com').
+  # The hardcoded CSRF check can be found in the method `valid_request_origin?`:
+  # https://github.com/rails/rails/blob/901f12212c488f6edfcf6f8ad3230bce6b3d5792/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L449-L459
+  protect_from_forgery unless: -> { safe_apple_callback_request? }
 
-  # Called upon successful redirect from GitHub
-  def github
-    callback_for(:github)
+  # Each available authentication method needs a related action that will be called
+  # as a callback on successful redirect from the upstream OAuth provider
+  Authentication::Providers.available.each do |provider_name|
+    define_method(provider_name) do
+      callback_for(provider_name)
+    end
   end
 
   # Callback for third party failures (shared by all providers)
@@ -16,7 +23,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     error = request.env["omniauth.error"]
     class_name = error.present? ? error.class.name : ""
 
-    DatadogStatsClient.increment(
+    ForemStatsClient.increment(
       "omniauth.failure",
       tags: [
         "class:#{class_name}",
@@ -31,6 +38,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     )
 
     super
+  end
+
+  def passthru
+    redirect_to root_path(signin: "true")
   end
 
   private
@@ -76,7 +87,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
                             username: @user.username,
                             user_id: @user.id,
                             auth_data: request.env["omniauth.auth"],
-                            auth_error: request.env["omniauth.error"]&.inspect,
+                            auth_error: request.env["omniauth.error"].inspect,
                             user_errors: user_errors
                           })
       Honeybadger.notify("Omniauth log in error")
@@ -84,6 +95,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
+  rescue ::Authentication::Errors::PreviouslyBanned => e
+    flash[:global_notice] = e.message
+    redirect_to root_path
   rescue StandardError => e
     Honeybadger.notify(e)
 
@@ -97,5 +111,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def user_persisted_but_username_taken?
     @user.persisted? && @user.errors_as_sentence.include?("username has already been taken")
+  end
+
+  # We only bypass CSRF checks on Apple callback path & Apple trusted ORIGIN
+  def safe_apple_callback_request?
+    trusted_origin = Authentication::Providers::Apple::TRUSTED_CALLBACK_ORIGIN
+    request.fullpath == Authentication::Providers::Apple::CALLBACK_PATH &&
+      request.headers["ORIGIN"] == trusted_origin
   end
 end

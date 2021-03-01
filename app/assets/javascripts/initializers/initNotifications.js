@@ -109,8 +109,9 @@ function initReactions() {
           var thisButt = this;
           document
             .getElementById('comment-form-for-' + thisButt.dataset.reactableId)
-            .classList.add('showing');
-          thisButt.innerHTML = '';
+            .classList.remove('hidden');
+          thisButt.classList.add('hidden');
+          thisButt.classList.remove('inline-flex');
           setTimeout(function () {
             document
               .getElementById(
@@ -125,11 +126,14 @@ function initReactions() {
 }
 
 function listenForNotificationsBellClick() {
-  setTimeout(function () {
-    document.getElementById('notifications-link').onclick = function () {
-      document.getElementById('notifications-number').classList.add('hidden');
-    };
-  }, 180);
+  var notificationsLink = document.getElementById('notifications-link');
+  if (notificationsLink) {
+    setTimeout(function () {
+      notificationsLink.onclick = function () {
+        document.getElementById('notifications-number').classList.add('hidden');
+      };
+    }, 180);
+  }
 }
 
 function initFilter() {

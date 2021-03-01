@@ -92,8 +92,8 @@ class PollTag < LiquidTagBase
         var els = document.getElementsByClassName('ltag-poll')
         for (i = 0; i < els.length; i += 1) {
           els[i].onclick = function(e) {
-            if (typeof showModal !== "undefined") {
-              showModal('poll');
+            if (typeof showLoginModal !== "undefined") {
+              showLoginModal();
             }
           }
         }
@@ -106,7 +106,7 @@ class PollTag < LiquidTagBase
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         poll: @poll

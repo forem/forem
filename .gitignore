@@ -36,11 +36,13 @@ latest.dump
 
 # Ignore application configuration
 /config/application.yml
+/config/application_unused.yml
 /public/packs
 /public/packs-test
 /node_modules
 yarn-debug.log*
 .yarn-integrity
+.env
 
 # Ignore storybook static site generation
 app/javascript/storybook-static/
@@ -79,3 +81,19 @@ docs/.static/api/
 db_data
 es_data
 gem_cache
+
+# Compose generated files
+bundle_finished
+
+# Auto-generated Storybook stories
+app/javascript/generated_stories/
+
+# Cypress test run artifacts
+cypress/videos
+cypress/screenshots
+
+# PostCSS error log
+postcss_error.log
+
+# ripgrep ignore file
+.rgignore

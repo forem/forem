@@ -1,38 +1,30 @@
 experiments:
-  user_home_feed: # Home feed collection for logged in user
-    variants:
-      - base
-      - more_random_experiment
-      - more_tag_weight_experiment
-      - mix_base_more_random_experiment
-      - more_tag_weight_more_random_experiment
-      - more_comments_experiment
-      - more_experience_level_weight_experiment
-      - mix_of_everything_experiment
-      - more_tag_weight_randomized_at_end_experiment
-      - more_experience_level_weight_randomized_at_end_experiment
-      - more_comments_randomized_at_end_experiment
-      - more_comments_medium_weight_randomized_at_end_experiment
-      - more_comments_minimal_weight_randomized_at_end_experiment
-    weights:
-      - 5
-      - 5
-      - 5
-      - 10
-      - 5
-      - 5
-      - 5
-      - 10
-      - 10
-      - 5
-      - 25
-      - 5
-      - 5
-    goals:
-      - user_creates_comment
-      - user_creates_reaction
-      - user_views_article_four_days_in_week
-      - user_views_article_four_hours_in_day
+  # No field test running.
+  # To run a test, change the five variants here. You can create more than
+  # five, but five is our typical standard.
+  # Do not change the goals unless you intend to also change the corresponding code in
+  # app/workers/users/record_field_test_event_worker.rb
+
+  # variant_name:
+  #   variants:
+  #     - base
+  #     - variant_1
+  #     - variant_2
+  #     - variant_3
+  #     - variant_4
+  #   weights: # "base" gets a few more rolls of the dice
+  #     - 20
+  #     - 20
+  #     - 20
+  #     - 20
+  #     - 20
+  #   goals:
+  #     - user_creates_comment
+  #     - user_creates_comment_four_days_in_week
+  #     - user_views_article_four_days_in_week
+  #     - user_views_article_four_hours_in_day
+  #     - user_views_article_nine_days_in_two_week
+  #     - user_views_article_twelve_hours_in_five_days
 exclude:
   bots: true
 

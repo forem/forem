@@ -1,5 +1,5 @@
-<% accent_color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).biggest %>
-<% dark_color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(0.8) %>
+<% accent_color = Color::CompareHex.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).biggest %>
+<% dark_color = Color::CompareHex.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(0.8) %>
 <style>
   body {
     background: <%= accent_color %>;
@@ -127,7 +127,7 @@
       <h1 style="font-size:<%= font_size %>vw;"><%= @article.title %></h1>
     </div>
     <div class="preview-user">
-      <img src="<%= ProfileImage.new(@article.user).get(width: 90) %>" />
+      <img src="<%= Images::Profile.call(@article.user.profile_image_url, length: 90) %>" />
       <%= truncate @article.user.name, length: 28 %>・<%= @article.readable_publish_date %>
     </div>
     <div class="badge-images">

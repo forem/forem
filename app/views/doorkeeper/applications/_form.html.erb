@@ -22,7 +22,7 @@
 
       <% if Doorkeeper.configuration.native_redirect_uri %>
           <span class="form-text text-secondary">
-            <%= raw t("doorkeeper.applications.help.native_redirect_uri", native_redirect_uri: content_tag(:code, class: "bg-light") { Doorkeeper.configuration.native_redirect_uri }) %>
+            <%= raw t("doorkeeper.applications.help.native_redirect_uri", native_redirect_uri: tag.code(class: "bg-light") { Doorkeeper.configuration.native_redirect_uri }) %>
           </span>
       <% end %>
 

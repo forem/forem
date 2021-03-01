@@ -12,7 +12,7 @@ module Sprockets
 
       # Update source map according to the version 3 spec: https://sourcemaps.info/spec.html
       sourcemap                   = JSON.parse(sourcemap_json)
-      sourcemap["sources"]        = [name + ".js"]
+      sourcemap["sources"]        = ["#{name}.js"]
       sourcemap["sourceRoot"]     = ::Rails.application.config.assets.prefix
       sourcemap["sourcesContent"] = [data]
       sourcemap_json              = sourcemap.to_json

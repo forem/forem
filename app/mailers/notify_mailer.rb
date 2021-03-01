@@ -1,8 +1,4 @@
 class NotifyMailer < ApplicationMailer
-  SUBJECTS = {
-    new_follower_email: "just followed you on #{ApplicationConfig['COMMUNITY_NAME']}".freeze
-  }.freeze
-
   def new_reply_email
     @comment = params[:comment]
     @user = @comment.parent_user
@@ -22,7 +18,7 @@ class NotifyMailer < ApplicationMailer
     @follower = follow.follower
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_follower_notifications)
 
-    mail(to: @user.email, subject: "#{@follower.name} #{SUBJECTS[__method__]}")
+    mail(to: @user.email, subject: "#{@follower.name} #{subjects[__method__]}")
   end
 
   def new_mention_email
@@ -43,7 +39,7 @@ class NotifyMailer < ApplicationMailer
 
     @unread_notifications_count = @user.notifications.unread.count
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_unread_notifications)
-    subject = "🔥 You have #{@unread_notifications_count} unread notifications on #{ApplicationConfig['COMMUNITY_NAME']}"
+    subject = "🔥 You have #{@unread_notifications_count} unread notifications on #{SiteConfig.community_name}"
     mail(to: @user.email, subject: subject)
   end
 
@@ -60,6 +56,10 @@ class NotifyMailer < ApplicationMailer
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_badge_notifications)
 
     mail(to: @user.email, subject: "You just got a badge")
+  end
+
+  def feedback_response_email
+    mail(to: params[:email_to], subject: "Thanks for your report on #{SiteConfig.community_name}")
   end
 
   def feedback_message_resolution_email
@@ -104,11 +104,10 @@ class NotifyMailer < ApplicationMailer
   end
 
   def account_deleted_email
-    user = params[:user]
-    @name = user.name
+    @name = params[:name]
 
-    subject = "#{ApplicationConfig['COMMUNITY_NAME']} - Account Deletion Confirmation"
-    mail(to: user.email, subject: subject)
+    subject = "#{SiteConfig.community_name} - Account Deletion Confirmation"
+    mail(to: params[:email], subject: subject)
   end
 
   def account_deletion_requested_email
@@ -116,17 +115,16 @@ class NotifyMailer < ApplicationMailer
     @name = user.name
     @token = params[:token]
 
-    subject = "#{ApplicationConfig['COMMUNITY_NAME']} - Account Deletion Requested"
+    subject = "#{SiteConfig.community_name} - Account Deletion Requested"
     mail(to: user.email, subject: subject)
   end
 
   def export_email
-    @user = params[:user]
     attachment = params[:attachment]
 
     export_filename = "devto-export-#{Date.current.iso8601}.zip"
     attachments[export_filename] = attachment
-    mail(to: @user.email, subject: "The export of your content is ready")
+    mail(to: params[:email], subject: "The export of your content is ready")
   end
 
   def tag_moderator_confirmation_email
@@ -141,7 +139,13 @@ class NotifyMailer < ApplicationMailer
   def trusted_role_email
     @user = params[:user]
 
-    subject = "You've been upgraded to #{ApplicationConfig['COMMUNITY_NAME']} Community mod status!"
+    subject = "Congrats! You're now a \"trusted\" user on #{SiteConfig.community_name}!"
     mail(to: @user.email, subject: subject)
+  end
+
+  def subjects
+    {
+      new_follower_email: "just followed you on #{SiteConfig.community_name}".freeze
+    }.freeze
   end
 end

@@ -17,4 +17,13 @@ RSpec.describe "CommentsUpdate", type: :request do
     }
     expect(Comment.last.processed_html).to include(new_body)
   end
+
+  it "doesn't redirect" do
+    new_body = "NEW TITLE #{rand(100)}"
+    put "/comments/#{comment.id}", params: {
+      comment: { body_markdown: new_body }
+    }
+    expect(response).not_to have_http_status(:redirect)
+    expect(response).to have_http_status(:ok)
+  end
 end

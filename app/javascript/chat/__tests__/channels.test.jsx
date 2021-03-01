@@ -1,8 +1,8 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, fireEvent } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
-import Channels from '../channels';
+import { Channels } from '../channels';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
 global.document = doc;
@@ -107,9 +107,11 @@ describe('<Channels />', () => {
       expect(queryByRole('alert')).toBeNull();
 
       // configFooter should exist
-      getByRole('menu');
-      const devSettings = getByText('DEV Settings');
-      expect(devSettings.getAttribute('href')).toEqual('/settings');
+      fireEvent.click(
+        getByRole('button', { name: /configuration navigation menu/i }),
+      );
+      const settings = getByText('Settings');
+      expect(settings.getAttribute('href')).toEqual('/settings');
 
       const reportAbuse = getByText('Report Abuse');
       expect(reportAbuse.getAttribute('href')).toEqual('/report-abuse');
@@ -118,12 +120,14 @@ describe('<Channels />', () => {
     it('should render without chat channels', () => {
       const { getByText, getByRole } = render(getChannels(true, []));
 
-      // should show "Welcome to DEV Connect message....."
+      // should show "Welcome to Connect message....."
       getByRole('alert');
 
-      getByRole('menu');
-      const devSettings = getByText('DEV Settings');
-      expect(devSettings.getAttribute('href')).toEqual('/settings');
+      fireEvent.click(
+        getByRole('button', { name: /configuration navigation menu/i }),
+      );
+      const settings = getByText('Settings');
+      expect(settings.getAttribute('href')).toEqual('/settings');
 
       const reportAbuse = getByText('Report Abuse');
       expect(reportAbuse.getAttribute('href')).toEqual('/report-abuse');

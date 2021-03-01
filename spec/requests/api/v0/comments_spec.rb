@@ -97,6 +97,13 @@ RSpec.describe "Api::V0::Comments", type: :request do
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
 
+    it "returns date created" do
+      get api_comments_path(a_id: article.id)
+      expect(find_root_comment(response)).to include(
+        "created_at" => root_comment.created_at.utc.iso8601,
+      )
+    end
+
     context "when a comment is deleted" do
       before do
         child_comment.update(deleted: true)
@@ -154,6 +161,25 @@ RSpec.describe "Api::V0::Comments", type: :request do
         get api_comments_path(a_id: article.id)
 
         expect(find_child_comment(response)["children"]).not_to be_empty
+      end
+    end
+
+    context "when getting by podcast episode id" do
+      let(:podcast) { create(:podcast) }
+      let(:podcast_episode) { create(:podcast_episode, podcast: podcast) }
+      let(:comment) { create(:comment, commentable: podcast_episode) }
+
+      before { comment }
+
+      it "not found if bad podcast episode id" do
+        get api_comments_path(p_id: "asdfghjkl")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns comment if good podcast episode id" do
+        get api_comments_path(p_id: podcast_episode.id)
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
       end
     end
   end

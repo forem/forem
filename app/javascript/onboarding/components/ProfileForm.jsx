@@ -1,66 +1,154 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import { userData, getContentOfToken, updateOnboarding } from '../utilities';
-import Navigation from './Navigation';
+import { userData, updateOnboarding } from '../utilities';
+
+import { Navigation } from './Navigation';
+import { ColorPicker } from './ProfileForm/ColorPicker';
+import { TextArea } from './ProfileForm/TextArea';
+import { TextInput } from './ProfileForm/TextInput';
+import { CheckBox } from './ProfileForm/CheckBox';
+
+import { request } from '@utilities/http';
 
 /* eslint-disable camelcase */
-class ProfileForm extends Component {
+export class ProfileForm extends Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleFieldChange = this.handleFieldChange.bind(this);
+    this.handleColorPickerChange = this.handleColorPickerChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.user = userData();
-
     this.state = {
-      formValues: {
-        summary: '',
-        location: '',
-        employment_title: '',
-        employer_name: '',
-      },
+      groups: [],
+      formValues: { username: this.user.username },
+      canSkip: false,
       last_onboarding_page: 'v2: personal info form',
-      canSkip: true,
     };
   }
 
   componentDidMount() {
+    this.getProfileFieldGroups();
     updateOnboarding('v2: personal info form');
   }
 
-  onSubmit() {
-    const csrfToken = getContentOfToken('csrf-token');
-    const { formValues, last_onboarding_page } = this.state;
-    fetch('/onboarding_update', {
-      method: 'PATCH',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ user: { ...formValues, last_onboarding_page } }),
-      credentials: 'same-origin',
-    }).then((response) => {
+  async getProfileFieldGroups() {
+    try {
+      const response = await request(`/profile_field_groups?onboarding=true`);
       if (response.ok) {
-        const { next } = this.props;
-        next();
+        const data = await response.json();
+        this.setState({ groups: data.profile_field_groups });
+      } else {
+        throw new Error(response.statusText);
       }
-    });
+    } catch (error) {
+      this.setState({ error: true, errorMessage: error.toString() });
+    }
   }
 
-  handleChange(e) {
+  async onSubmit() {
+    const { formValues, last_onboarding_page } = this.state;
+    const { username, ...newFormValues } = formValues;
+    try {
+      const response = await request('/onboarding_update', {
+        method: 'PATCH',
+        body: {
+          user: { last_onboarding_page, username },
+          profile: { ...newFormValues },
+        },
+      });
+      if (!response.ok) {
+        throw response;
+      }
+      const { next } = this.props;
+      next();
+    } catch (error) {
+      Honeybadger.notify(error.statusText);
+      let errorMessage = 'Unable to continue, please try again.';
+      if (error.status === 422) {
+        // parse validation error messages from UsersController#onboarding_update
+        const errorData = await error.json();
+        errorMessage = errorData.errors;
+        this.setState({ error: true, errorMessage });
+      } else {
+        this.setState({ error: true, errorMessage });
+      }
+    }
+  }
+
+  handleFieldChange(e) {
     const { formValues } = { ...this.state };
     const currentFormState = formValues;
     const { name, value } = e.target;
 
     currentFormState[name] = value;
+    this.setState({
+      formValues: currentFormState,
+      canSkip: this.formIsEmpty(currentFormState),
+    });
+  }
 
+  handleColorPickerChange(e) {
+    const { formValues } = { ...this.state };
+    const currentFormState = formValues;
+
+    const field = e.target;
+    const { name, value } = field;
+
+    let sibling = field.nextElementSibling
+      ? field.nextElementSibling
+      : field.previousElementSibling;
+    sibling.value = value;
+
+    currentFormState[name] = value;
+    this.setState({
+      formValues: currentFormState,
+      canSkip: this.formIsEmpty(currentFormState),
+    });
+  }
+
+  formIsEmpty(currentFormState) {
     // Once we've derived the new form values, check if the form is empty
     // and use that value to set the `canSkip` property on the state.
-    const formIsEmpty =
-      Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
+    Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
+  }
 
-    this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
+  renderAppropriateFieldType(field) {
+    switch (field.input_type) {
+      case 'check_box':
+        return (
+          <CheckBox
+            key={field.id}
+            field={field}
+            onFieldChange={this.handleFieldChange}
+          />
+        );
+      case 'color_field':
+        return (
+          <ColorPicker
+            key={field.id}
+            field={field}
+            onColorChange={this.handleColorPickerChange}
+          />
+        );
+      case 'text_area':
+        return (
+          <TextArea
+            key={field.id}
+            field={field}
+            onFieldChange={this.handleFieldChange}
+          />
+        );
+      default:
+        return (
+          <TextInput
+            key={field.id}
+            field={field}
+            onFieldChange={this.handleFieldChange}
+          />
+        );
+    }
   }
 
   render() {
@@ -71,14 +159,35 @@ class ProfileForm extends Component {
       communityConfig,
     } = this.props;
     const { profile_image_90, username, name } = this.user;
-    const { canSkip } = this.state;
+    const { canSkip, groups = [], error, errorMessage } = this.state;
+
+    const sections = groups.map((group) => {
+      return (
+        <div key={group.id} class="onboarding-profile-sub-section">
+          <h2>{group.name}</h2>
+          {group.description && (
+            <div class="color-base-60">{group.description})</div>
+          )}
+          <div>
+            {group.profile_fields.map((field) => {
+              return this.renderAppropriateFieldType(field);
+            })}
+          </div>
+        </div>
+      );
+    });
 
     return (
       <div
         data-testid="onboarding-profile-form"
         className="onboarding-main crayons-modal"
       >
-        <div className="crayons-modal__box">
+        <div
+          className="crayons-modal__box"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
+        >
           <Navigation
             prev={prev}
             next={this.onSubmit}
@@ -86,10 +195,18 @@ class ProfileForm extends Component {
             slidesCount={slidesCount}
             currentSlideIndex={currentSlideIndex}
           />
+          {error && (
+            <div role="alert" class="crayons-notice crayons-notice--danger m-2">
+              An error occurred: {errorMessage}
+            </div>
+          )}
           <div className="onboarding-content about">
             <header className="onboarding-content-header">
-              <h1 className="title">Build your profile</h1>
+              <h1 id="title" className="title">
+                Build your profile
+              </h1>
               <h2
+                id="subtitle"
                 data-testid="onboarding-profile-subtitle"
                 className="subtitle"
               >
@@ -107,54 +224,19 @@ class ProfileForm extends Component {
                 />
               </figure>
               <h3>{name}</h3>
-              <p>{username}</p>
             </div>
-            <form>
-              <label htmlFor="summary">
-                Bio
-                <textarea
-                  name="summary"
-                  id="summary"
-                  placeholder="Tell us about yourself"
-                  onChange={this.handleChange}
-                  maxLength="120"
-                />
-              </label>
-              <label htmlFor="location">
-                Where are you located?
-                <input
-                  type="text"
-                  name="location"
-                  id="location"
-                  placeholder="e.g. New York, NY"
-                  onChange={this.handleChange}
-                  maxLength="60"
-                />
-              </label>
-              <label htmlFor="employment_title">
-                What is your title?
-                <input
-                  type="text"
-                  name="employment_title"
-                  id="employment_title"
-                  placeholder="e.g. Software Engineer"
-                  onChange={this.handleChange}
-                  maxLength="60"
-                />
-              </label>
-              <label htmlFor="employer_name">
-                Where do you work?
-                <input
-                  type="text"
-                  name="employer_name"
-                  id="employer_name"
-                  placeholder="e.g. Company name, self-employed, etc."
-                  onChange={this.handleChange}
-                  maxLength="60"
-                  className="onboarding-form-input--last"
-                />
-              </label>
-            </form>
+            <div className="onboarding-profile-sub-section">
+              <TextInput
+                field={{
+                  attribute_name: 'username',
+                  label: 'Username',
+                  default_value: username,
+                  required: true,
+                }}
+                onFieldChange={this.handleFieldChange}
+              />
+            </div>
+            {sections}
           </div>
         </div>
       </div>
@@ -169,10 +251,7 @@ ProfileForm.propTypes = {
   currentSlideIndex: PropTypes.func.isRequired,
   communityConfig: PropTypes.shape({
     communityName: PropTypes.string.isRequired,
-    communityDescription: PropTypes.string.isRequired,
   }),
 };
-
-export default ProfileForm;
 
 /* eslint-enable camelcase */

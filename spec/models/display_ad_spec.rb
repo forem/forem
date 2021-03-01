@@ -4,11 +4,18 @@ RSpec.describe DisplayAd, type: :model do
   let(:organization) { create(:organization) }
   let(:display_ad) { create(:display_ad, organization_id: organization.id) }
 
-  it { is_expected.to validate_presence_of(:organization_id) }
-  it { is_expected.to validate_presence_of(:placement_area) }
-  it { is_expected.to validate_presence_of(:body_markdown) }
-
   describe "validations" do
+    describe "builtin validations" do
+      subject { display_ad }
+
+      it { is_expected.to belong_to(:organization) }
+      it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
+
+      it { is_expected.to validate_presence_of(:organization_id) }
+      it { is_expected.to validate_presence_of(:placement_area) }
+      it { is_expected.to validate_presence_of(:body_markdown) }
+    end
+
     it "allows sidebar_right" do
       display_ad.placement_area = "sidebar_right"
       expect(display_ad).to be_valid

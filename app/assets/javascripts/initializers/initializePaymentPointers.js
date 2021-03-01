@@ -3,9 +3,9 @@ function initializePaymentPointers() {
   var basePointer = document.getElementById('base-payment-pointer');
   var meta = document.querySelector("meta[name='monetization']");
 
-  if (userPointer) {
+  if (userPointer && meta) {
     meta.content = userPointer.dataset.paymentPointer;
   } else if (basePointer) {
-    meta.content = basePointer.dataset.paymentPointer;;
+    meta.content = basePointer.dataset.paymentPointer;
   }
 }

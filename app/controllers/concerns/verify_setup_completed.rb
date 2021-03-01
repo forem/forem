@@ -4,17 +4,8 @@ module VerifySetupCompleted
   module_function
 
   MANDATORY_CONFIGS = %i[
+    community_name
     community_description
-    community_action
-    tagline
-
-    main_social_image
-    logo_png
-
-    mascot_user_id
-    mascot_image_url
-
-    meta_keywords
 
     suggested_tags
     suggested_users
@@ -27,21 +18,34 @@ module VerifySetupCompleted
   end
 
   def setup_completed?
-    MANDATORY_CONFIGS.all? { |config| SiteConfig.public_send(config).present? }
+    missing_configs.empty?
+  end
+
+  def missing_configs
+    @missing_configs ||= MANDATORY_CONFIGS.reject { |config| SiteConfig.public_send(config).present? }
   end
 
   private
 
-  def verify_setup_completed
-    return if config_path? || setup_completed?
+  def missing_configs_text
+    display_missing = missing_configs.size > 3 ? missing_configs.first(3) + ["others"] : missing_configs
+    display_missing.map { |c| c.to_s.tr("_", " ") }.to_sentence
+  end
 
-    link = helpers.link_to("the configuration page", internal_config_path)
-    # rubocop:disable Rails/OutputSafety
-    flash[:global_notice] = "Setup not completed yet, please visit #{link}.".html_safe
-    # rubocop:enable Rails/OutputSafety
+  def verify_setup_completed
+    # This is the only flash in our application layout, don't override it if
+    # there's already another message.
+    return if flash[:global_notice].present?
+    return if config_path? || setup_completed? || SiteConfig.waiting_on_first_user
+
+    link = helpers.tag.a("the configuration page", href: admin_config_path, data: { "no-instant" => true })
+
+    flash[:global_notice] = helpers.safe_join(["Setup not completed yet, missing ",
+                                               missing_configs_text,
+                                               ". Please visit ", link, "."])
   end
 
   def config_path?
-    request.env["PATH_INFO"] == internal_config_path
+    request.env["PATH_INFO"] == admin_config_path
   end
 end

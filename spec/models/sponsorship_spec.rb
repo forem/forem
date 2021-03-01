@@ -1,19 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Sponsorship, type: :model do
-  it { is_expected.to belong_to(:user) }
-  it { is_expected.to belong_to(:organization).inverse_of(:sponsorships) }
-  it { is_expected.to belong_to(:sponsorable).optional }
-  it { is_expected.to validate_presence_of(:user) }
-  it { is_expected.to validate_presence_of(:organization) }
-  it { is_expected.to validate_inclusion_of(:level).in_array(Sponsorship::LEVELS) }
-  it { is_expected.to validate_inclusion_of(:status).in_array(Sponsorship::STATUSES) }
-  it { is_expected.to allow_values(nil).for(:expires_at) }
-  it { is_expected.not_to allow_values(nil).for(:featured_number) }
-  it { is_expected.to have_db_index(:level) }
-  it { is_expected.to have_db_index(:status) }
-  it { is_expected.to have_db_index(%i[sponsorable_id sponsorable_type]) }
-
   describe "constants" do
     it "has the correct values for constants" do
       expect(Sponsorship::LEVELS).to eq(%w[gold silver bronze tag media devrel])
@@ -51,6 +38,27 @@ RSpec.describe Sponsorship, type: :model do
   describe "validations" do
     let(:user) { create(:user, :org_member) }
     let(:org) { user.organizations.first }
+
+    describe "builtin validations" do
+      it { is_expected.to belong_to(:organization).inverse_of(:sponsorships) }
+      it { is_expected.to belong_to(:sponsorable).optional }
+      it { is_expected.to belong_to(:user) }
+
+      it { is_expected.to have_db_index(%i[sponsorable_id sponsorable_type]) }
+      it { is_expected.to have_db_index(:level) }
+      it { is_expected.to have_db_index(:status) }
+
+      it { is_expected.to validate_inclusion_of(:level).in_array(Sponsorship::LEVELS) }
+      it { is_expected.to validate_inclusion_of(:status).in_array(Sponsorship::STATUSES) }
+
+      it { is_expected.to validate_presence_of(:level) }
+      it { is_expected.to validate_presence_of(:organization) }
+      it { is_expected.to validate_presence_of(:status) }
+      it { is_expected.to validate_presence_of(:user) }
+
+      it { is_expected.not_to allow_values(nil).for(:featured_number) }
+      it { is_expected.to allow_values(nil).for(:expires_at) }
+    end
 
     it "forbids an org to have multiple 'expiring' (bronze-silver-gold) sponsorships" do
       create(:sponsorship, level: :gold, organization: org, expires_at: 2.days.from_now)

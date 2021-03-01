@@ -5,10 +5,10 @@ RSpec.describe Metrics::RecordBackgroundQueueStatsWorker, type: :worker do
 
   describe "#perform" do
     it "logs estimated counts in Datadog" do
-      allow(Loggers::LogWorkerQueueStats).to receive(:run)
+      allow(Loggers::LogWorkerQueueStats).to receive(:call)
       described_class.new.perform
 
-      expect(Loggers::LogWorkerQueueStats).to have_received(:run)
+      expect(Loggers::LogWorkerQueueStats).to have_received(:call)
     end
   end
 end

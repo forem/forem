@@ -1,8 +1,9 @@
 import { h } from 'preact';
 import { addDecorator, addParameters } from '@storybook/preact';
-import { withA11y } from '@storybook/addon-a11y';
+import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 
 import '../../assets/stylesheets/minimal.scss';
+import '../../assets/stylesheets/views.scss';
 import '../../assets/stylesheets/crayons.scss';
 import '../../assets/javascripts/lib/xss';
 import '../../assets/javascripts/utilities/timeAgo';
@@ -66,7 +67,7 @@ const themeSwitcherDecorator = (storyFn) => {
 };
 
 addDecorator(themeSwitcherDecorator);
-addDecorator(withA11y);
+addDecorator((Story) => <Story />);
 
 addParameters({
   options: {
@@ -75,4 +76,31 @@ addParameters({
         ? 0
         : a[1].id.localeCompare(b[1].id, undefined, { numeric: true }),
   },
+
+  docs: {
+    container: DocsContainer,
+    page: DocsPage,
+  },
 });
+
+export const Foo = () => <Component />;
+Foo.parameters = {
+  previewTabs: { 'storybook/docs/panel': { index: -1 } },
+};
+
+export const parameters = {
+  options: {
+    storySort: {
+      order: [
+        'Introduction',
+        'Component Library',
+        'Utility-First CSS',
+        'Writing CSS',
+        'Fundamentals',
+        'Components',
+        'App Components',
+        'Utility-First Classes',
+      ],
+    },
+  },
+};

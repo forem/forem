@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
+import { withKnobs, object, text, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { Article } from '..';
 import {
@@ -20,7 +20,7 @@ const commonProps = {
 };
 
 export default {
-  title: '4_App Components/Article/Video',
+  title: 'App Components/Article/Video',
   decorators: [withKnobs],
 };
 

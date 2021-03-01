@@ -1,0 +1,59 @@
+import { h } from 'preact';
+
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Components/Media Queries" />
+
+# Media Queries
+
+[Media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries) allow us to create responsive experiences by changing the look and feel of a component based on the given media query. This can be done from CSS, but also programatically via JavaScript. This works well with a component because it **allows us to render only certain markup** based on the evaluated media query unlike a CSS media query which would apply to existing markup.
+
+## Breakpoints
+
+Currently, these are the breakpoints for widths we support out of the box. These can be used to build media queries in your code.
+
+```javascript
+export const BREAKPOINTS = Object.freeze({
+  Small: '640',
+  Medium: '768',
+  Large: '1024',
+});
+```
+
+## useMediaQuery Custom Hook
+
+A custom Preact hook used to evaluate and monitor a given media query.
+
+```jsx
+import { useMediaQuery } from '@components/useMediaQuery';
+
+export function MediaQuery() {
+  const matchesBreakpoint = useMediaQuery(`(width >= ${BREAKPOINTS.Medium}px)`);
+
+  if (!matchesBreakpoint) {
+    return null;
+  }
+
+  return <p>I matched the breakpoint</p>;
+}
+```
+
+## Media Query Component
+
+The codebase currently has a lot of class based components, so a custom hook cannot be used. the `<MediaQuery />` component is perfect for this scenario. It encapsulates the custom `useMediaQuery` hook allowing us to reuse that logic and expose the result via a [render prop](https://reactjs.org/docs/render-props.html).
+
+```jsx
+import { MediaQuery } from '@components/MediaQuery';
+
+<MediaQuery
+  query={`(width >= ${BREAKPOINTS.Medium}px)`}
+  render={(matches) => {
+    return matches && <p>This will render if the media query is matched.</p>;
+  }}
+/>;
+```
+
+## Additional resources
+
+- [Testing media queries programmatically](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Testing_media_queries)
+- [Using media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries)

@@ -52,7 +52,7 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
     end
 
     it "creates a read notification" do
-      notification = described_class.call(follow_data(follow), true)
+      notification = described_class.call(follow_data(follow), is_read: true)
       expect(notification.read).to be_truthy
     end
 

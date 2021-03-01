@@ -6,11 +6,14 @@ class GistTag < LiquidTagBase
 
   def initialize(_tag_name, link, _parse_context)
     super
+
+    raise StandardError, "Invalid Gist link: You must provide a Gist link" if link.blank?
+
     @uri = build_uri(link)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         uri: @uri

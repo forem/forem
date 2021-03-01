@@ -8,21 +8,29 @@ Object {
       <article
         class="crayons-story cursor-pointer crayons-story--featured"
         data-content-user-id="23289"
-        data-testid="featured-article"
         id="featured-story-marker"
       >
+        <a
+          aria-labelledby="article-link-62407"
+          class="crayons-story__hidden-navigation-link"
+          href="/some-post/path"
+        >
+          Unbranded Home Loan Account
+        </a>
         <div
           role="presentation"
         >
           <a
             class="crayons-story__cover"
             href="/some-post/path"
+            style="background-image: url(/images/10.png);"
             title="Unbranded Home Loan Account"
           >
-            <div
-              class="crayons-story__cover__image"
-              style="background-image: url(/images/10.png);"
-            />
+            <span
+              class="hidden"
+            >
+              Unbranded Home Loan Account
+            </span>
           </a>
           <div
             class="crayons-story__body"
@@ -74,30 +82,25 @@ Object {
             <div
               class="crayons-story__indention"
             >
-              <h2
+              <h3
                 class="crayons-story__title"
               >
                 <a
                   href="/some-post/path"
                   id="article-link-62407"
                 >
-                  <span
-                    class="crayons-story__flare-tag"
-                    style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
-                  >
-                    #javascript
-                  </span>
                   <span>
                     Unbranded Home Loan Account
                   </span>
                 </a>
-              </h2>
+              </h3>
               <div
                 class="crayons-story__tags"
               >
                 <a
                   class="crayons-tag"
                   href="/t/javascript"
+                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
                 >
                   <span
                     class="crayons-tag__prefix"
@@ -137,32 +140,6 @@ Object {
                 >
                   <a
                     class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
-                    href="/some-post/path"
-                  >
-                    <svg
-                      class="crayons-icon"
-                      height="24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
-                      />
-                    </svg>
-                    <span
-                      title="Number of reactions"
-                    >
-                      0
-                      <span
-                        class="hidden s:inline"
-                      >
-                         
-                        reactions
-                      </span>
-                    </span>
-                  </a>
-                  <a
-                    class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                     data-testid="add-a-comment"
                     href="/some-post/path#comments"
                   >
@@ -200,6 +177,7 @@ Object {
                     class="crayons-btn crayons-btn--s crayons-btn--secondary"
                     data-initial-feed="true"
                     data-reactable-id="62407"
+                    id="article-save-button-62407"
                     type="button"
                   >
                     Save
@@ -216,21 +194,29 @@ Object {
     <article
       class="crayons-story cursor-pointer crayons-story--featured"
       data-content-user-id="23289"
-      data-testid="featured-article"
       id="featured-story-marker"
     >
+      <a
+        aria-labelledby="article-link-62407"
+        class="crayons-story__hidden-navigation-link"
+        href="/some-post/path"
+      >
+        Unbranded Home Loan Account
+      </a>
       <div
         role="presentation"
       >
         <a
           class="crayons-story__cover"
           href="/some-post/path"
+          style="background-image: url(/images/10.png);"
           title="Unbranded Home Loan Account"
         >
-          <div
-            class="crayons-story__cover__image"
-            style="background-image: url(/images/10.png);"
-          />
+          <span
+            class="hidden"
+          >
+            Unbranded Home Loan Account
+          </span>
         </a>
         <div
           class="crayons-story__body"
@@ -282,30 +268,25 @@ Object {
           <div
             class="crayons-story__indention"
           >
-            <h2
+            <h3
               class="crayons-story__title"
             >
               <a
                 href="/some-post/path"
                 id="article-link-62407"
               >
-                <span
-                  class="crayons-story__flare-tag"
-                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
-                >
-                  #javascript
-                </span>
                 <span>
                   Unbranded Home Loan Account
                 </span>
               </a>
-            </h2>
+            </h3>
             <div
               class="crayons-story__tags"
             >
               <a
                 class="crayons-tag"
                 href="/t/javascript"
+                style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
               >
                 <span
                   class="crayons-tag__prefix"
@@ -345,32 +326,6 @@ Object {
               >
                 <a
                   class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
-                  href="/some-post/path"
-                >
-                  <svg
-                    class="crayons-icon"
-                    height="24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
-                    />
-                  </svg>
-                  <span
-                    title="Number of reactions"
-                  >
-                    0
-                    <span
-                      class="hidden s:inline"
-                    >
-                       
-                      reactions
-                    </span>
-                  </span>
-                </a>
-                <a
-                  class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                   data-testid="add-a-comment"
                   href="/some-post/path#comments"
                 >
@@ -408,6 +363,7 @@ Object {
                   class="crayons-btn crayons-btn--s crayons-btn--secondary"
                   data-initial-feed="true"
                   data-reactable-id="62407"
+                  id="article-save-button-62407"
                   type="button"
                 >
                   Save

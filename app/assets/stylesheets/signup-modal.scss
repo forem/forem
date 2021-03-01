@@ -1,65 +1,106 @@
 @import 'variables';
-.global-signup-modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 899900;
-  &.showing {
-    display: block;
-  }
-  .global-signup-modal--bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.88);
-    z-index: 899901;
-    .close-modal-button {
-      position: fixed;
-      top: calc(3% - 5px);
-      left: calc(5% - 5px);
-      border: 0;
-      background: transparent;
-      cursor: pointer;
-      img {
-        width: calc(0.8vw + 20px);
-      }
+@import 'config/import';
+
+.authentication-modal {
+  &__box {
+    position: relative;
+    margin-left: var(--su-4);
+    margin-right: var(--su-4);
+    height: auto;
+    width: auto;
+
+    @include generate-box(
+      $level: 2,
+      $bg: var(--base-inverted),
+      $border: var(--base),
+      $color: var(--card-color)
+    );
+
+    @media (min-width: $breakpoint-s) {
+      margin: inherit;
     }
   }
-  .global-signup-modal--inner-a {
-    font-family: var(--ff-default);
-    position: fixed;
-    top: calc(13% - 38px);
-    left: calc(15% - 33px);
-    right: calc(15% - 33px);
-    bottom: calc(10% - 33px);
-    background: white;
-    z-index: 899902;
+
+  &__close-btn {
+    position: absolute;
+    top: var(--su-3);
+    right: var(--su-3);
+  }
+
+  &__container {
+    display: grid;
+    grid-gap: var(--su-2);
+    padding: var(--su-4);
+
+    @media (min-width: $breakpoint-s) {
+      padding: var(--su-8) var(--su-8) var(--su-6);
+    }
+  }
+  &__image-container {
+    width: var(--su-8);
+    height: var(--su-8);
+    margin-bottom: var(--su-2);
+
+    @media (min-width: $breakpoint-s) {
+      height: 80px;
+      width: 80px;
+    }
+  }
+
+  &__image {
+    border-radius: var(--radius);
+    transform: rotate(-10deg);
+    height: auto;
+    width: 100%;
+  }
+
+  &__content {
+    display: grid;
+    grid-gap: var(--su-1);
+  }
+
+  &__title {
+    color: var(--card-color);
+    font-size: var(--fs-2xl);
+    line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-3xl);
+    }
+  }
+
+  &__description {
+    color: var(--card-color-secondary);
+  }
+
+  &__actions {
+    display: grid;
+    grid-gap: var(--su-1);
+    padding: 0 var(--su-4) var(--su-4);
+
+    @media (min-width: $breakpoint-s) {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin: 0 auto;
+      justify-self: center;
+      padding: 0 var(--su-8) var(--su-7);
+    }
+  }
+
+  &__footer {
+    border-top: 2px solid var(--base-100);
+    padding: var(--su-2) var(--su-4);
+
+    @media (min-width: $breakpoint-s) {
+      padding: var(--su-5) var(--su-8);
+    }
+  }
+
+  &__footer-label {
+    font-size: var(--fs-s);
+    line-height: var(--lh-tight);
+    color: var(--card-color-secondary);
     text-align: center;
-    font-size: calc(0.8vw + 15px);
-    box-shadow: 0px 0px 100px 20px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
-    padding: calc(1vw + 24px) calc(1vw + 10px);
-    overflow-y: auto;
-    max-height: calc(100vh - 50px)
-    h1 {
-      font-weight: 600;
-      margin-top: 0px;
-      margin-bottom: 18px;
-    }
-    p {
-      font-size: 0.73em;
-      max-width: 75%;
-      text-align: center;
-      margin: auto;
-    }
-    .mascot-image {
-      height: calc(7vw + 45px);
-      margin-top: calc(6vh - 25px);
-    }
   }
 }

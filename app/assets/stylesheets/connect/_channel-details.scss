@@ -2,12 +2,12 @@
 
 .channeldetails {
   .channeldetails__name {
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     font-size: 48px;
   }
 
   .channeldetails__description {
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     color: $dark-gray;
   }
 
@@ -28,13 +28,13 @@
       vertical-align: -6px;
     }
     a {
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
     }
   }
 
   .channeldetails__inviteusers {
     h2 {
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
     }
 
     // find users
@@ -65,7 +65,7 @@
 
         a {
           font-size: 14px;
-          font-family: var(--ff-default);
+          font-family: var(--ff-sans-serif);
         }
 
         // invite button
@@ -81,7 +81,7 @@
         span {
           color: $dark-gray;
           font-size: 14px;
-          font-family: var(--ff-default);
+          font-family: var(--ff-sans-serif);
         }
       }
     }
@@ -89,7 +89,7 @@
     .channeldetails__pendingusers {
       a {
         font-size: 18px;
-        font-family: var(--ff-default);
+        font-family: var(--ff-sans-serif);
       }
     }
   }
@@ -116,19 +116,19 @@
 
   .channeldetails__leftchannel {
     h2 {
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       font-size: 32px;
     }
     h3 {
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       font-size: 18px;
     }
     h4 {
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       font-size: 18px;
     }
     p {
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
     }
   }
 }

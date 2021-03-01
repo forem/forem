@@ -4,7 +4,7 @@
     data-params="<%= params.to_json(only: %i[action per_page]) %>"
     data-which="following">
   <header class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0">Dashboard &raquo; Following podcasts</h1>
+    <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Following podcasts</h1>
     <%= render "actions_mobile" %>
   </header>
 
@@ -19,7 +19,7 @@
         <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
           <% @followed_podcasts.each do |follow| %>
             <% podcast = follow.followable %>
-            <div class="crayons-card p-4 m:p-6 flex s:grid single-article" id="follows-<%= follow.id %>">
+            <div class="crayons-card p-4 m:p-6 flex s:grid single-article break-word content-center" id="follows-<%= follow.id %>">
               <a href="/<%= podcast.path %>" class="crayons-logo crayons-logo--2xl s:mb-2 s:mx-auto">
                 <img alt="<%= podcast.name %> logo" class="crayons-logo__image" src="<%= podcast.image_url %>" />
               </a>

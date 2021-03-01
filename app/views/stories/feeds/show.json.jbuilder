@@ -1,6 +1,6 @@
 article_attributes_to_include = %i[
   title path id user_id comments_count public_reactions_count organization_id
-  reading_time video_thumbnail_url video video_duration_in_minutes language
+  reading_time video_thumbnail_url video video_duration_in_minutes
   experience_level_rating experience_level_rating_distribution
 ]
 article_methods_to_include = %i[
@@ -11,10 +11,10 @@ article_methods_to_include = %i[
 
 json.array!(@stories) do |article|
   json.extract! article, *article_attributes_to_include
-  json.user article.cached_user.as_json["table"]
+  json.user article.cached_user.as_json
 
   if article.cached_organization?
-    json.organization article.cached_organization.as_json["table"]
+    json.organization article.cached_organization.as_json
   end
 
   if article.main_image?

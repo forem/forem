@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { h, Component } from 'preact';
 
-class Categories extends Component {
+export class Categories extends Component {
   options = () => {
     const { categoriesForSelect, category } = this.props;
     return categoriesForSelect.map(([text, value]) => {
@@ -20,8 +20,12 @@ class Categories extends Component {
   details = () => {
     const { categoriesForDetails } = this.props;
     const rules = categoriesForDetails.map((category) => {
-      const paragraphText = `${category.name}: ${category.rules}`;
-      return <p>{paragraphText}</p>;
+      const paragraphText = (
+        <li>
+          <strong>{category.name}:</strong> {category.rules}
+        </li>
+      );
+      return <ul>{paragraphText}</ul>;
     });
 
     return (
@@ -35,19 +39,21 @@ class Categories extends Component {
   render() {
     const { onChange } = this.props;
     return (
-      <div className="field">
-        <label className="listingform__label" htmlFor="category">
-          Category
-        </label>
-        <select
-          id="category"
-          className="listingform__input"
-          name="listing[listing_category_id]"
-          onChange={onChange}
-          onBlur={onChange}
-        >
-          {this.options()}
-        </select>
+      <div>
+        <div className="crayons-field mb-4">
+          <label className="crayons-field__label" htmlFor="category">
+            Category
+          </label>
+          <select
+            id="category"
+            className="crayons-select"
+            name="listing[listing_category_id]"
+            onChange={onChange}
+            onBlur={onChange}
+          >
+            {this.options()}
+          </select>
+        </div>
         {this.details()}
       </div>
     );
@@ -65,5 +71,3 @@ Categories.propTypes = {
   category: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 };
-
-export default Categories;

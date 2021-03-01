@@ -1,3 +1,5 @@
+import { validateFileInputs } from '../packs/validateFileInputs';
+
 export function previewArticle(payload, successCb, failureCb) {
   fetch('/articles/preview', {
     method: 'POST',
@@ -11,7 +13,15 @@ export function previewArticle(payload, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then((response) => response.json())
+    .then(async (response) => {
+      const payload = await response.json();
+
+      if (response.status !== 200) {
+        throw payload;
+      }
+
+      return payload;
+    })
     .then(successCb)
     .catch(failureCb);
 }
@@ -71,9 +81,6 @@ function generateUploadFormdata(payload) {
     formData.append('image[]', value),
   );
 
-  if (payload.wrap_cloudinary) {
-    formData.append('wrap_cloudinary', 'true');
-  }
   return formData;
 }
 
@@ -91,8 +98,29 @@ export function generateMainImage(payload, successCb, failureCb) {
       if (json.error) {
         throw new Error(json.error);
       }
-
-      return successCb(json);
+      const { links } = json;
+      const { image } = payload;
+      return successCb({ links, image });
     })
     .catch(failureCb);
+}
+
+/**
+ * Processes images for upload.
+ *
+ * @param {FileList} images Images to be uploaded.
+ * @param {Function} handleImageSuccess The handler that runs when the image is uploaded successfully.
+ * @param {Function} handleImageFailure The handler that runs when the image upload fails.
+ */
+export function processImageUpload(
+  images,
+  handleImageSuccess,
+  handleImageFailure,
+) {
+  // Currently only one image is supported for upload.
+  if (images.length > 0 && validateFileInputs()) {
+    const payload = { image: images };
+
+    generateMainImage(payload, handleImageSuccess, handleImageFailure);
+  }
 }

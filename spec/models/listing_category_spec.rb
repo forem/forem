@@ -6,8 +6,10 @@ RSpec.describe ListingCategory, type: :model do
     # https://www.rubydoc.info/github/thoughtbot/shoulda-matchers/Shoulda%2FMatchers%2FActiveRecord:validate_uniqueness_of
     subject { create(:listing_category) }
 
-    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to have_many(:listings).inverse_of(:listing_category).dependent(:restrict_with_error) }
+
     it { is_expected.to validate_presence_of(:cost) }
+    it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:rules) }
     it { is_expected.to validate_presence_of(:slug) }
     it { is_expected.to validate_uniqueness_of(:name) }

@@ -6,37 +6,34 @@
 <br>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.7.1-green.svg" alt="ruby version">
+    <img src="https://img.shields.io/badge/Ruby-v2.7.2-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
-    <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
+    <img src="https://img.shields.io/badge/Rails-v6.0.3-brightgreen.svg" alt="rails version">
   </a>
-  <a href="https://travis-ci.com/thepracticaldev/dev.to">
-    <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to">
+  <a href="https://travis-ci.com/forem/forem">
+    <img src="https://travis-ci.com/forem/forem.svg?branch=master" alt="Travis Status for forem/forem">
   </a>
-  <a href="https://codeclimate.com/github/thepracticaldev/dev.to/maintainability">
+  <a href="https://codeclimate.com/github/forem/forem/maintainability">
     <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/maintainability" alt="Code Climate maintainability">
   </a>
-  <a href="https://codeclimate.com/github/thepracticaldev/dev.to/test_coverage">
-    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/test_coverage" alt="Code Climate test coverage">
+  <a href="https://codeclimate.com/github/forem/forem/trends/technical_debt">
+    <img src="https://img.shields.io/codeclimate/tech-debt/forem/forem" alt="Code Climate technical debt">
   </a>
-  <a href="https://codeclimate.com/github/thepracticaldev/dev.to/trends/technical_debt">
-    <img src="https://img.shields.io/codeclimate/tech-debt/thepracticaldev/dev.to" alt="Code Climate technical debt">
+  <a href="https://www.codetriage.com/forem/forem">
+    <img src="https://www.codetriage.com/forem/forem/badges/users.svg" alt="CodeTriage badge">
   </a>
-  <a href="https://www.codetriage.com/thepracticaldev/dev.to">
-    <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge">
-  </a>
-  <img src="https://badgen.net/dependabot/thepracticaldev/dev.to?icon=dependabot" alt="Dependabot Badge">
+  <img src="https://badgen.net/dependabot/forem/forem?icon=dependabot" alt="Dependabot Badge">
   <a href="https://gitpod.io/from-referrer/">
     <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
   </a>
-  <a href="https://app.netlify.com/sites/devto/deploys">
+  <a href="https://app.netlify.com/sites/docsdevto/deploys">
     <img src="https://api.netlify.com/api/v1/badges/e5dbe779-7bca-4390-80b9-6e678b4806a3/deploy-status" alt="Netlify badge">
   </a>
-  <img src="https://img.shields.io/github/languages/code-size/thepracticaldev/dev.to" alt="GitHub code size in bytes">
-  <img src="https://img.shields.io/github/commit-activity/w/thepracticaldev/dev.to" alt="GitHub commit activity">
-  <a href="https://github.com/thepracticaldev/dev.to/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
-    <img src="https://img.shields.io/github/issues/thepracticaldev/dev.to/ready for dev" alt="GitHub issues ready for dev">
+  <img src="https://img.shields.io/github/languages/code-size/forem/forem" alt="GitHub code size in bytes">
+  <img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity">
+  <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
+    <img src="https://img.shields.io/github/issues/forem/forem/ready for dev" alt="GitHub issues ready for dev">
   </a>
   <a href="https://app.honeybadger.io/project/Pl5JzZB5ax">
     <img src="https://img.shields.io/badge/honeybadger-active-informational" alt="Honeybadger badge">
@@ -57,12 +54,12 @@ Forem is open source software for building communities. Communities for your
 peers, customers, fanbases, families, friends, and any other time and space
 where people need to come together to be part of a collective.
 [See our announcement post](https://dev.to/devteam/for-empowering-community-2k6h)
-for a higher level overview of what Forem is.
+for a high-level overview of what Forem is.
 
 [dev.to](https://dev.to) (or just DEV) is hosted by Forem. It is a community of
-software developers who write articles, take part in discussions, and build their
-professional profiles. We value supportive and constructive dialogue in the
-pursuit of great code and career growth for all members. The ecosystem spans
+software developers who write articles, take part in discussions, and build
+their professional profiles. We value supportive and constructive dialogue in
+the pursuit of great code and career growth for all members. The ecosystem spans
 from beginner to advanced developers, and all are welcome to find their place
 within our community. ❤️
 
@@ -70,6 +67,7 @@ within our community. ❤️
 
 - [What is Forem?](#what-is-forem)
 - [Table of Contents](#table-of-contents)
+- [Community](#community)
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
@@ -81,6 +79,12 @@ within our community. ❤️
 - [Vulnerability disclosure](#vulnerability-disclosure)
 - [License](#license)
 
+## Community
+
+For a place to have open discussions on features, voice your ideas, or get help
+with general questions please visit our community at
+[forem.dev](https://forem.dev/).
+
 ## Contributing
 
 We encourage you to contribute to Forem! Please check out the
@@ -90,8 +94,8 @@ proceed.
 ## Getting Started
 
 This section provides a high-level quick start guide. If you're looking for the
-[installation guide](https://docs.dev.to/installation/), you'll want to refer to
-our complete [Developer Documentation](https://docs.forem.com/).
+[installation guide](https://docs.forem.com/installation/), you'll want to refer
+to our complete [Developer Documentation](https://docs.forem.com/).
 
 We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
 transitioning to a [Preact](https://preactjs.com/)-first frontend.
@@ -127,11 +131,11 @@ A more complete overview of our stack is available in
 
 ### Installation Documentation
 
-[View Full Installation Documentation](https://docs.dev.to/installation/).
+[View Full Installation Documentation](https://docs.forem.com/installation/).
 
 ## Developer Documentation
 
-[Check out our dedicated docs page for more technical documentation](https://docs.dev.to).
+[Check out our dedicated docs page for more technical documentation](https://docs.forem.com).
 
 ## Core team
 
@@ -154,6 +158,11 @@ A more complete overview of our stack is available in
 - [@fdoxyz](https://dev.to/fdoxyz)
 - [@msarit](https://dev.to/msarit)
 - [@jdoss](https://dev.to/jdoss)
+- [@cmgorton](https://dev.to/coffeecraftcode)
+- [@andygeorge](https://dev.to/andygeorge)
+- [@phannon716](https://dev.to/phannon716)
+- [@katiedavis](https://dev.to/katiedavis)
+- [@s_aitchison](https://dev.to/s_aitchison)
 
 ## Vulnerability disclosure
 
@@ -161,6 +170,11 @@ Forem is the open source software which powers [DEV](https://dev.to).
 
 We welcome security research on DEV under the terms of our
 [vulnerability disclosure policy](https://dev.to/security).
+
+## Acknowledgments
+
+Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the
+usage of their emojis.
 
 ## License
 
@@ -171,15 +185,15 @@ later version. Please see the [LICENSE](./LICENSE.md) file in our repository for
 the full text.
 
 Like many open source projects, we require that contributors provide us with a
-Contributor License Agreement (CLA). By submitting code to the Forem project, you
-are granting us a right to use that code under the terms of the CLA.
+Contributor License Agreement (CLA). By submitting code to the Forem project,
+you are granting us a right to use that code under the terms of the CLA.
 
 Our version of the CLA was adapted from the Microsoft Contributor License
 Agreement, which they generously made available to the public domain under
 Creative Commons CC0 1.0 Universal.
 
-Any questions, please refer to our [license FAQ](https://docs.dev.to/licensing/)
-doc or email yo@dev.to.
+Any questions, please refer to our
+[license FAQ](https://docs.forem.com/licensing/) doc or email yo@dev.to.
 
 <br>
 
@@ -188,3 +202,5 @@ doc or email yo@dev.to.
   <br>
   <strong>Happy Coding</strong> ❤️
 </p>
+
+[⬆ Back to Top](#Table-of-contents)

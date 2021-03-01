@@ -42,17 +42,83 @@ module OmniauthHelpers
     }
   }.freeze
 
+  OMNIAUTH_PAYLOAD_FACEBOOK = OmniAuth::AuthHash::InfoHash.new(
+    {
+      provider: "facebook",
+      uid: SecureRandom.hex,
+      info: {
+        email: "markz@thefacebook.com",
+        name: "fname lname",
+        image: "https://dummyimage.com/400x400.jpg"
+      },
+      credentials: {
+        token: SecureRandom.hex,
+        refresh_token: SecureRandom.hex,
+        expires_at: 1_589_475_606,
+        expires: true
+      },
+      extra: {
+        raw_info: {
+          email: "markz@thefacebook.com",
+          id: "123455677",
+          name: "fname lname"
+        }
+      }
+    },
+  ).freeze
+
+  OMNIAUTH_PAYLOAD_APPLE = OmniAuth::AuthHash::InfoHash.new(
+    {
+      provider: "apple",
+      uid: SecureRandom.hex,
+      info: {
+        sub: "001551.6fb185533f63469196d61e2ae126febf.1523",
+        email: "hynnu385xiabcdef@privaterelay.appleid.com",
+        first_name: "fname",
+        last_name: "lname"
+      },
+      credentials: {
+        token: SecureRandom.hex,
+        refresh_token: SecureRandom.hex,
+        expires_at: 1_589_475_606,
+        expires: true
+      },
+      extra: {
+        raw_info: {
+          iss: "https://appleid.apple.com",
+          aud: "test",
+          exp: 1_589_472_606,
+          iat: 1_589_472_606,
+          sub: "001551.6fb185533f63469196d61e2ae126febf.1523",
+          at_hash: SecureRandom.hex,
+          email: "hynnu385xiabcdef@privaterelay.appleid.com",
+          email_verified: true,
+          is_private_email: true,
+          nonce_supported: true,
+          name: {
+            first_name: "fname",
+            last_name: "lname"
+          },
+          id_info: {
+            auth_time: 1_589_472_002
+          }
+        }
+      }
+    },
+  ).freeze
+
   def omniauth_setup_invalid_credentials(provider)
     OmniAuth.config.mock_auth[provider] = :invalid_credentials
   end
 
-  def omniauth_setup_authentication_error(error)
+  def omniauth_setup_authentication_error(error, params = nil)
     # this hack is needed due to a limitation in how OmniAuth handles
     # failures in mocked/testing environments,
     # see <https://github.com/omniauth/omniauth/issues/654#issuecomment-610851884>
     # for more details
     local_failure_handler = lambda do |env|
       env["omniauth.error"] = error
+      env["omniauth.params"] = params unless params.nil?
       env
     end
 
@@ -90,6 +156,14 @@ module OmniauthHelpers
     Authentication::Providers.available.each do |provider_name|
       OmniAuth.config.mock_auth[provider_name] = nil
     end
+  end
+
+  def omniauth_mock_facebook_payload
+    OmniAuth.config.mock_auth[:facebook] = OMNIAUTH_PAYLOAD_FACEBOOK.dup
+  end
+
+  def omniauth_mock_apple_payload
+    OmniAuth.config.mock_auth[:apple] = OMNIAUTH_PAYLOAD_APPLE.dup
   end
 
   def omniauth_mock_github_payload

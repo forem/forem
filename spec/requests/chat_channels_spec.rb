@@ -54,6 +54,15 @@ RSpec.describe "ChatChannels", type: :request do
         expect(response.body).not_to include(invite_channel.slug)
       end
     end
+
+    context "when logged in and chat channel doesnt exist" do
+      it "renders chat page" do
+        sign_in user
+        get "/connect/@#{user.username}"
+        expect(response.status).to eq(200)
+        expect(response.body).to include("chat-page-wrapper")
+      end
+    end
   end
 
   describe "get /chat_channels?state=unopened" do
@@ -251,7 +260,7 @@ RSpec.describe "ChatChannels", type: :request do
 
     context "when user is logged-in and authorized" do
       before do
-        user.add_role :codeland_admin
+        user.add_role(:codeland_admin)
         chat_channel.add_users([user, test_subject])
         sign_in user
         allow(Pusher).to receive(:trigger).and_return(true)
@@ -305,7 +314,7 @@ RSpec.describe "ChatChannels", type: :request do
     end
 
     it "returns error message if create_with_users fails" do
-      allow(ChatChannel).to receive(:create_with_users).and_raise(StandardError.new("Blocked"))
+      allow(ChatChannels::CreateWithUsers).to receive(:call).and_raise(StandardError.new("Blocked"))
       post "/chat_channels/create_chat",
            params: { user_id: user_open_inbox.id }
       expect(response.parsed_body["message"]).to eq("Blocked")
@@ -397,7 +406,7 @@ RSpec.describe "ChatChannels", type: :request do
         expected_last_opened_at = Time.zone.parse(response_channel_users[user.username]["last_opened_at"]).to_i
         response_user = response_channel_users[user.username]
 
-        expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(width: 90))
+        expect(response_user["profile_image"]).to eq(Images::Profile.call(user.profile_image_url, length: 90))
         expect(response_user["darker_color"]).to eq(user.decorate.darker_color)
         expect(response_user["name"]).to eq(user.name)
         expect(expected_last_opened_at).to eq(user.chat_channel_memberships.last.last_opened_at.to_i)
@@ -422,6 +431,31 @@ RSpec.describe "ChatChannels", type: :request do
         expect(expected_updated_at).to eq(pending_user.updated_at.to_i)
         expect(response_pending_user_select_fields["username"]).to eq(pending_user.username)
       end
+    end
+  end
+
+  describe "POST /create_channel" do
+    it "create channel by mod users only" do
+      user.add_role(:tag_moderator)
+      post "/create_channel", params: {
+        chat_channel: {
+          channel_name: "dummy test",
+          invitation_usernames: ""
+        }
+      }
+      expect(response.status).to eq(200)
+      expect(response.parsed_body["success"]).to eq(true)
+    end
+
+    it "when non mod user logged in" do
+      expect do
+        post "/create_channel", params: {
+          chat_channel: {
+            channel_name: "dummy test",
+            invitation_usernames: ""
+          }
+        }
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end

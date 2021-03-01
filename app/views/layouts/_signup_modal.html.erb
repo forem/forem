@@ -1,30 +1,32 @@
-<div class="global-signup-modal" id="global-signup-modal" style="display:none">
-  <div class="global-signup-modal--bg" id="global-signup-modal-bg">
-    <button type="button" class="close-modal-button">
-      <img src="<%= asset_path("cancel.svg") %>" class="search-img" alt="Close modal button" />
-    </button>
-  </div>
-  <div class="global-signup-modal--inner-a">
-    <%= image_tag(cloudinary(SiteConfig.mascot_image_url, 300),
-                  class: "mascot-image",
-                  alt: SiteConfig.mascot_image_description,
-                  loading: "lazy") %>
-    <% if any_selfserve_auth? %>
-      <h1>Join our <%= community_qualified_name %> :)</h1>
-
+<div id="global-signup-modal" class="authentication-modal hidden">
+<div class="authentication-modal__container">
+  <figure class="authentication-modal__image-container">
+    <img class="authentication-modal__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
+      alt="<%= community_name %>" />
+  </figure>
+  <div class="authentication-modal__content">
+    <p class="authentication-modal__description">
       <% if SiteConfig.tagline.present? %>
-        <p><%= SiteConfig.tagline %></p>
+        <%= SiteConfig.tagline %>
+      <% else %>
+        We’d love for you to be a part of this community.
       <% end %>
-
-      <div class="flex flex-col l:flex-row justify-center">
-        <%= render partial: "shared/authentication/providers_signup_modal" %>
-      </div>
-
-      <p>
-        <em>We strive for transparency and don't collect excess data.</em>
-      </p>
-    <% else %>
-      <h1><a href="/enter" data-no-instant>Sign in</a> to <%= community_qualified_name %> :)</h1>
-    <% end %>
+    </p>
+  </div>
+  <div class="authentication-modal__actions">
+    <a href="<%= sign_up_path %>" class="crayons-btn" aria-label="Log in" data-no-instant>
+      Log in
+    </a>
+    <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn crayons-btn--ghost-brand" aria-label="Create new account" data-no-instant>
+      Create new account
+    </a>
+  </div>
+  <footer class="authentication-modal__footer">
+    <p class="authentication-modal__footer-label">
+      We strive for transparency and don't collect excess data.
+    </p>
+  </footer>
   </div>
 </div>
+
+<%= javascript_packs_with_chunks_tag "signupModalShortcuts", defer: true %>

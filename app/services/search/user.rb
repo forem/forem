@@ -7,10 +7,34 @@ module Search
     DEFAULT_PER_PAGE = 20
 
     class << self
+      def search_usernames(username)
+        results = search(body: username_query(username))
+        results.dig("hits", "hits").map do |doc|
+          source = doc["_source"]
+          {
+            "username" => source["username"],
+            "name" => source["name"],
+            "profile_image_90" => source["profile_image_90"]
+          }
+        end
+      end
+
       private
 
+      def username_query(username)
+        {
+          query: {
+            query_string: {
+              query: "username:#{username}*",
+              analyze_wildcard: true,
+              allow_leading_wildcard: false
+            }
+          }
+        }
+      end
+
       def prepare_doc(hit)
-        source = hit.dig("_source")
+        source = hit["_source"]
         {
           "user" => {
             "username" => source["username"],
@@ -25,7 +49,6 @@ module Search
           "comments_count" => source["comments_count"],
           "badge_achievements_count" => source["badge_achievements_count"],
           "last_comment_at" => source["last_comment_at"],
-          "roles" => source["roles"],
           "user_id" => source["id"]
         }
       end
@@ -41,6 +64,14 @@ module Search
             number_of_shards: 1,
             number_of_replicas: 0
           }
+        end
+      end
+
+      def dynamic_index_settings
+        if Rails.env.production?
+          { refresh_interval: "10s" }
+        else
+          { refresh_interval: "1s" }
         end
       end
     end

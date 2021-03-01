@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const ChannelDescriptionSection = ({
+export const ChannelDescriptionSection = ({
   channelName,
   channelDescription,
   currentMembershipRole,
@@ -20,5 +20,3 @@ ChannelDescriptionSection.propTypes = {
   currentMembershipRole: PropTypes.string.isRequired,
   channelDescription: PropTypes.string.isRequired,
 };
-
-export default ChannelDescriptionSection;

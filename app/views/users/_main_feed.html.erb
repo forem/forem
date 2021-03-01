@@ -1,21 +1,23 @@
 <% if @pinned_stories.present? %>
-  <div class="pinned-articles">
-    <h5><img src="<%= asset_path("pushpin.svg") %>" width="20" height="20" alt="pin" /> Pinned</h5>
-    <% @pinned_stories.each do |story| %>
-      <%= render "articles/single_story", story: story, featured: false %>
-    <% end %>
+  <div class="crayons-card mb-2 border-2 border-solid border-accent-brand">
+    <header>
+      <h3 class="crayons-subtitle-3 inline-flex items-center bg-accent-brand color-base-inverted pl-3 pr-4 py-2 ml-4 -mt-2 radius-default">
+        <%= inline_svg_tag("pin.svg", aria: true, class: "crayons-icon mr-2", title: "Pin") %>
+        Pinned
+      </h3>
+    </header>
+    <div class="p-4 pb-2 pt-3">
+      <%= render partial: "articles/single_story", collection: @pinned_stories, as: :story, locals: { featured: false } %>
+    </div>
   </div>
 <% end %>
-<% @stories.each_with_index do |story, i| %>
-  <%= render "articles/single_story", story: story, featured: false %>
-  <% if i == 0 && @comments.present? %>
+<% if @stories.present? %>
+  <%= render "articles/single_story", story: @stories.first, featured: false %>
+  <% if @comments.present? %>
     <%= render "users/comments_section" %>
   <% end %>
-<% end %>
-<% if @stories.none? && @comments.present? %>
+  <%= render partial: "articles/single_story", collection: @stories[1, @stories.size], as: :story, locals: { featured: false } %>
+  <div class="placeholder-div"></div>
+<% elsif @comments.present? %>
   <%= render "users/comments_section" %>
 <% end %>
-<% if @stories.size > 1 %>
-  <div class="placeholder-div"></div>
-<% end %>
-<div class="single-article-small-pic" id="article-index-hidden-div" style="display:none"></div>

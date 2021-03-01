@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe URL, type: :lib do
   before do
     allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
-    allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("dev.to")
+    allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("test.forem.cloud")
+    allow(SiteConfig).to receive(:app_domain).and_return("dev.to")
   end
 
   describe ".protocol" do
@@ -13,8 +14,8 @@ RSpec.describe URL, type: :lib do
   end
 
   describe ".domain" do
-    it "returns the value of APP_DOMAIN env variable" do
-      expect(described_class.domain).to eq(ApplicationConfig["APP_DOMAIN"])
+    it "returns the value of SiteConfig" do
+      expect(described_class.domain).to eq(SiteConfig.app_domain)
     end
   end
 
@@ -24,16 +25,16 @@ RSpec.describe URL, type: :lib do
     end
 
     it "creates a URL with a path" do
-      expect(described_class.url("internal")).to eq("https://dev.to/internal")
+      expect(described_class.url("admin")).to eq("https://dev.to/admin")
     end
 
     it "creates the correct URL even if the path starts with a slash" do
-      expect(described_class.url("/internal")).to eq("https://dev.to/internal")
+      expect(described_class.url("/admin")).to eq("https://dev.to/admin")
     end
 
     it "works when called with an URI object" do
-      uri = URI::Generic.build(path: "internal", fragment: "test")
-      expect(described_class.url(uri)).to eq("https://dev.to/internal#test")
+      uri = URI::Generic.build(path: "admin", fragment: "test")
+      expect(described_class.url(uri)).to eq("https://dev.to/admin#test")
     end
   end
 
@@ -92,6 +93,51 @@ RSpec.describe URL, type: :lib do
 
     it "returns the correct URL for a tag" do
       expect(described_class.tag(tag, 2)).to eq("https://dev.to/t/#{tag.name}/page/2")
+    end
+  end
+
+  describe ".local_image" do
+    let(:image_name) { "social-media-cover" }
+    let(:image_extension) { ".png" }
+    let(:image_file) { image_name + image_extension }
+    let(:test_host) { "https://test-host.com" }
+
+    # Rails "fingerprints" the assets so /social-media-cover.png is actually
+    # /social-media-cover-a1b2c3.png. Therefore, we use regex to match the file
+    # names in these specs.
+    it "returns the correct URL for an image name with no host" do
+      image_url_regex = %r{
+        #{ApplicationConfig["APP_PROTOCOL"]} # https://
+        #{SiteConfig.app_domain}/            # dev.to
+        assets/                              # assets/ directory
+        #{image_name}-                       # social-media-cover
+        [a-f0-9]*                            # letters and numbers
+        #{image_extension}                   # .png
+      }x
+      expect(described_class.local_image(image_file)).to match(image_url_regex)
+    end
+
+    it "returns the correct URL for an image when a host is provided" do
+      image_url_regex = %r{
+        #{test_host}/      # https://test-host.com
+        assets/            # assets/ directory
+        #{image_name}-     # social-media-cover
+        [a-f0-9]*          # letters and numbers
+        #{image_extension} # .png
+      }x
+      expect(described_class.local_image(image_file, host: test_host)).to match(image_url_regex)
+    end
+
+    it "returns the correct URL for an image when an asset_host is defined" do
+      allow(ActionController::Base).to receive(:asset_host).and_return(test_host)
+      image_url_regex = %r{
+        #{test_host}/      # https://test-host.com
+        assets/            # assets/ directory
+        #{image_name}-     # social-media-cover
+        [a-f0-9]*          # letters and numbers
+        #{image_extension} # .png
+      }x
+      expect(described_class.local_image(image_file)).to match(image_url_regex)
     end
   end
 end

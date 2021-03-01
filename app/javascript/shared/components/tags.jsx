@@ -26,7 +26,7 @@ const LETTERS_NUMBERS = /[a-z0-9]/i;
 /* TODO: Remove all instances of this.props.listing
    and refactor this component to be more generic */
 
-class Tags extends Component {
+export class Tags extends Component {
   constructor(props) {
     super(props);
     const { listing } = props;
@@ -335,7 +335,9 @@ class Tags extends Component {
       // updates searchResults array according to what is being typed by user
       // allows user to choose a tag when they've typed the partial or whole word
       this.setState({
-        searchResults: response.result,
+        searchResults: response.result.filter(
+          (t) => !this.selected.includes(t.name),
+        ),
       });
     });
   }
@@ -430,8 +432,12 @@ class Tags extends Component {
     }
 
     return (
-      <div className={`${classPrefix}__tagswrapper`}>
-        {listing && <label htmlFor="Tags">Tags</label>}
+      <div className={`${classPrefix}__tagswrapper crayons-field`}>
+        {listing && (
+          <label htmlFor="Tags" class="crayons-field__label">
+            Tags
+          </label>
+        )}
         <input
           data-testid="tag-input"
           aria-label="Post Tags"
@@ -469,5 +475,3 @@ Tags.propTypes = {
   onFocus: PropTypes.func.isRequired,
   pattern: PropTypes.string.isRequired,
 };
-
-export default Tags;

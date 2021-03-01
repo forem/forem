@@ -1,0 +1,23 @@
+<span data-controller="modal" data-modal-root-selector-value="#add-group-modal-root" data-modal-content-selector-value="#add-group-modal" data-modal-title-value="Add Group" data-modal-size-value="s">
+  <button class="crayons-btn" type="button" data-action="modal#toggleModal">
+    Add group
+  </button>
+
+  <div id="add-group-modal" class="hidden">
+    <div class="form-group grid p-6 mb-6 gap-1">
+      <%= form_for [:admin, ProfileFieldGroup.new] do |form| %>
+        <div class="form-group">
+          <%= form.label :name %>
+          <%= form.text_field :name, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= form.label :description %>
+          <%= form.text_field :description, class: "form-control" %>
+        </div>
+        <%= form.submit class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div id="add-group-modal-root"></div>
+</span>

@@ -15,28 +15,14 @@ export class Help extends Component {
       frontmatterHelpHTML:
         document.getElementById('editor-frontmatter-help') &&
         document.getElementById('editor-frontmatter-help').innerHTML,
+      liquidShowing: false,
+      markdownShowing: false,
+      frontmatterShowing: false,
     };
   }
 
-  setCommonProps = ({
-    liquidShowing = false,
-    markdownShowing = false,
-    frontmatterShowing = false,
-  }) => {
-    return {
-      liquidShowing,
-      markdownShowing,
-      frontmatterShowing,
-    };
-  };
-
-  toggleModal = (varShowing) => (e) => {
-    e.preventDefault();
-    this.setState((prevState) => ({
-      ...this.setCommonProps({
-        [varShowing]: !prevState[varShowing],
-      }),
-    }));
+  showModal = (sectionShowing, isOpen) => () => {
+    this.setState({ [sectionShowing]: isOpen });
   };
 
   renderArticleFormTitleHelp = () => {
@@ -75,8 +61,8 @@ export class Help extends Component {
             post.
           </li>
           <li>
-            Add up to four tags per post. Combine tags to reach the appropriate
-            subcommunities.
+            Add up to four comma-separated tags per post. Combine tags to reach
+            the appropriate subcommunities.
           </li>
           <li>Use existing tags whenever possible.</li>
           <li>
@@ -95,11 +81,14 @@ export class Help extends Component {
         className="crayons-card crayons-card--secondary p-4 mb-6"
       >
         You are currently using the basic markdown editor that uses{' '}
-        <a href="#frontmatter" onClick={this.toggleModal('frontmatterShowing')}>
+        <a
+          href="#frontmatter"
+          onClick={this.showModal('frontmatterShowing', true)}
+        >
           Jekyll front matter
         </a>
         . You can also use the <em>rich+markdown</em> editor you can find in{' '}
-        <a href="/settings/ux">
+        <a href="/settings/customization">
           UX settings
           <svg
             width="24"
@@ -131,7 +120,10 @@ export class Help extends Component {
         <ul className="list-disc pl-6 color-base-70">
           <li>
             Use{' '}
-            <a href="#markdown" onClick={this.toggleModal('markdownShowing')}>
+            <a
+              href="#markdown"
+              onClick={this.showModal('markdownShowing', true)}
+            >
               Markdown
             </a>{' '}
             to write and format posts.
@@ -140,7 +132,7 @@ export class Help extends Component {
               <table className="crayons-card crayons-card--secondary crayons-table crayons-table--compact w-100 mt-2 mb-4 lh-tight">
                 <tbody>
                   <tr>
-                    <td className="ff-accent">
+                    <td className="ff-monospace">
                       # Header
                       <br />
                       ...
@@ -156,25 +148,25 @@ export class Help extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">*italics* or _italics_</td>
+                    <td className="ff-monospace">*italics* or _italics_</td>
                     <td>
                       <em>italics</em>
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">**bold**</td>
+                    <td className="ff-monospace">**bold**</td>
                     <td>
                       <strong>bold</strong>
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">[Link](https://...)</td>
+                    <td className="ff-monospace">[Link](https://...)</td>
                     <td>
                       <a href="https://forem.com">Link</a>
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">
+                    <td className="ff-monospace">
                       * item 1<br />* item 2
                     </td>
                     <td>
@@ -185,7 +177,7 @@ export class Help extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">
+                    <td className="ff-monospace">
                       1. item 1<br />
                       2. item 2
                     </td>
@@ -197,7 +189,7 @@ export class Help extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">&gt; quoted text</td>
+                    <td className="ff-monospace">&gt; quoted text</td>
                     <td>
                       <span className="pl-2 border-0 border-solid border-l-4 border-base-50">
                         quoted text
@@ -205,13 +197,13 @@ export class Help extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">`inline code`</td>
+                    <td className="ff-monospace">`inline code`</td>
                     <td>
                       <code>inline code</code>
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">
+                    <td className="ff-monospace">
                       <span class="fs-xs">```</span>
                       <br />
                       code block
@@ -230,10 +222,14 @@ export class Help extends Component {
           </li>
           <li>
             You can use{' '}
-            <a href="#liquid" onClick={this.toggleModal('liquidShowing')}>
+            <a href="#liquid" onClick={this.showModal('liquidShowing', true)}>
               Liquid tags
             </a>{' '}
             to add rich content such as Tweets, YouTube videos, etc.
+          </li>
+          <li>
+            In addition to images for the post's content, you can also drag and
+            drop a cover image
           </li>
         </ul>
       </div>
@@ -282,21 +278,21 @@ export class Help extends Component {
 
         {liquidShowing &&
           this.renderModal(
-            this.toggleModal('liquidShowing'),
+            this.showModal('liquidShowing', false),
             '🌊 Liquid Tags',
             liquidHelpHTML,
           )}
 
         {markdownShowing &&
           this.renderModal(
-            this.toggleModal('markdownShowing'),
+            this.showModal('markdownShowing', false),
             '✍️ Markdown',
             markdownHelpHTML,
           )}
 
         {frontmatterShowing &&
           this.renderModal(
-            this.toggleModal('frontmatterShowing'),
+            this.showModal('frontmatterShowing', false),
             'Jekyll Front Matter',
             frontmatterHelpHTML,
           )}

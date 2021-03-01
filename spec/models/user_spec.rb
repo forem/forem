@@ -1,6 +1,6 @@
 require "rails_helper"
 
-def user_from_authorization_service(service_name, signed_in_resource, cta_variant)
+def user_from_authorization_service(service_name, signed_in_resource = nil, cta_variant = "navbar_basic")
   auth = OmniAuth.config.mock_auth[service_name]
   Authentication::Authenticator.call(
     auth,
@@ -9,18 +9,40 @@ def user_from_authorization_service(service_name, signed_in_resource, cta_varian
   )
 end
 
+def mock_username(provider_name, username)
+  if provider_name == :apple
+    OmniAuth.config.mock_auth[provider_name].info.first_name = username
+  else
+    OmniAuth.config.mock_auth[provider_name].info.nickname = username
+  end
+end
+
+def provider_username(service_name)
+  auth_payload = OmniAuth.config.mock_auth[service_name]
+  provider_class = Authentication::Providers.get!(auth_payload.provider)
+  provider_class.new(auth_payload).user_nickname
+end
+
 RSpec.describe User, type: :model do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
-  let(:user_with_user_optional_fields) { create(:user, :with_user_optional_fields) }
   let(:org) { create(:organization) }
 
-  before { omniauth_mock_providers_payload }
+  before do
+    omniauth_mock_providers_payload
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+  end
 
   describe "validations" do
     describe "builtin validations" do
       subject { user }
 
+      it { is_expected.to have_one(:profile).dependent(:destroy) }
+
+      it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").dependent(:delete_all) }
+      it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").dependent(:delete_all) }
+      it { is_expected.to have_many(:ahoy_events).class_name("Ahoy::Event").dependent(:destroy) }
+      it { is_expected.to have_many(:ahoy_visits).class_name("Ahoy::Visit").dependent(:destroy) }
       it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
       it { is_expected.to have_many(:articles).dependent(:destroy) }
       it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
@@ -28,7 +50,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
-      it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:collections).dependent(:destroy) }
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
@@ -39,21 +60,31 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:html_variants).dependent(:destroy) }
       it { is_expected.to have_many(:identities).dependent(:destroy) }
+      it { is_expected.to have_many(:identities_enabled) }
+      it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:mentions).dependent(:destroy) }
       it { is_expected.to have_many(:messages).dependent(:destroy) }
-      it { is_expected.to have_many(:notes) }
+      it { is_expected.to have_many(:notes).dependent(:destroy) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:notifications).dependent(:destroy) }
       it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
-      it { is_expected.to have_many(:page_views).dependent(:destroy) }
+      it { is_expected.to have_many(:page_views).dependent(:nullify) }
+      it { is_expected.to have_many(:podcast_episode_appearances).dependent(:destroy) }
+      it { is_expected.to have_many(:podcast_episodes).through(:podcast_episode_appearances).source(:podcast_episode) }
+      it { is_expected.to have_many(:podcast_ownerships).dependent(:destroy) }
+      it { is_expected.to have_many(:podcasts_owned).through(:podcast_ownerships).source(:podcast) }
       it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
       it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
       it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
-      it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:rating_votes).dependent(:nullify) }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:response_templates).dependent(:destroy) }
-      it { is_expected.to have_many(:tweets).dependent(:destroy) }
+      it { is_expected.to have_many(:source_authored_user_subscriptions).dependent(:destroy) }
+      it { is_expected.to have_many(:subscribed_to_user_subscriptions).dependent(:destroy) }
+      it { is_expected.to have_many(:subscribers).dependent(:destroy) }
+      it { is_expected.to have_many(:tweets).dependent(:nullify) }
+      it { is_expected.to have_many(:webhook_endpoints).class_name("Webhook::Endpoint").dependent(:delete_all) }
 
       # rubocop:disable RSpec/NamedSubject
       it do
@@ -85,10 +116,19 @@ RSpec.describe User, type: :model do
       end
 
       it do
-        expect(subject).to have_many(:backup_data)
-          .class_name("BackupData")
-          .with_foreign_key("instance_user_id")
-          .dependent(:delete_all)
+        expect(subject).to have_many(:badge_achievements_rewarded)
+          .class_name("BadgeAchievement")
+          .with_foreign_key("rewarder_id")
+          .inverse_of(:rewarder)
+          .dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:banished_users)
+          .class_name("BanishedUser")
+          .with_foreign_key("banished_by_id")
+          .inverse_of(:banished_by)
+          .dependent(:nullify)
       end
 
       it do
@@ -103,6 +143,22 @@ RSpec.describe User, type: :model do
           .class_name("UserBlock")
           .with_foreign_key("blocker_id")
           .dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:buffer_updates_approved)
+          .class_name("BufferUpdate")
+          .with_foreign_key("approver_user_id")
+          .inverse_of(:approver_user)
+          .dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:buffer_updates_composed)
+          .class_name("BufferUpdate")
+          .with_foreign_key("composer_user_id")
+          .inverse_of(:composer_user)
+          .dependent(:nullify)
       end
 
       it do
@@ -125,52 +181,61 @@ RSpec.describe User, type: :model do
           .with_foreign_key(:reporter_id)
           .dependent(:nullify)
       end
-
-      it do
-        expect(subject).to have_many(:webhook_endpoints)
-          .class_name("Webhook::Endpoint")
-          .dependent(:delete_all)
-      end
       # rubocop:enable RSpec/NamedSubject
 
-      it "has at most three optional fields" do
-        expect(user_with_user_optional_fields).to have_many(:user_optional_fields).dependent(:destroy)
-        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field",
-                                                                                  value: "some value")
-        expect(fourth_field).not_to be_valid
-      end
-
-      it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
-      it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
-      it { is_expected.to allow_value("#aabbcc").for(:bg_color_hex) }
-      it { is_expected.to allow_value("#aabbcc").for(:text_color_hex) }
-      it { is_expected.to allow_value("#abc").for(:bg_color_hex) }
-      it { is_expected.to allow_value("#abc").for(:text_color_hex) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
+      it { is_expected.not_to allow_value("$example.com/value\x1F").for(:payment_pointer) }
+      it { is_expected.not_to allow_value("example.com/value").for(:payment_pointer) }
+      it { is_expected.to allow_value(" $example.com/value ").for(:payment_pointer) }
+      it { is_expected.to allow_value(nil).for(:payment_pointer) }
+      it { is_expected.to allow_value("").for(:payment_pointer) }
+
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
-      it { is_expected.to validate_length_of(:available_for).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:behance_url).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:currently_hacking_on).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:currently_learning).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:education).is_at_most(100).allow_nil }
+
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
-      it { is_expected.to validate_length_of(:employer_name).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:employer_url).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:employment_title).is_at_most(100).allow_nil }
       it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
-      it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
-      it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
-      it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
-      it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
-      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
-      it { is_expected.to validate_url_of(:employer_url) }
-      it { is_expected.to validate_url_of(:website_url) }
+
+      it { is_expected.to validate_presence_of(:articles_count) }
+      it { is_expected.to validate_presence_of(:badge_achievements_count) }
+      it { is_expected.to validate_presence_of(:blocked_by_count) }
+      it { is_expected.to validate_presence_of(:blocking_others_count) }
+      it { is_expected.to validate_presence_of(:comments_count) }
+      it { is_expected.to validate_presence_of(:config_font) }
+      it { is_expected.to validate_presence_of(:config_navbar) }
+      it { is_expected.to validate_presence_of(:config_theme) }
+      it { is_expected.to validate_presence_of(:credits_count) }
+      it { is_expected.to validate_presence_of(:following_orgs_count) }
+      it { is_expected.to validate_presence_of(:following_tags_count) }
+      it { is_expected.to validate_presence_of(:following_users_count) }
+      it { is_expected.to validate_presence_of(:rating_votes_count) }
+      it { is_expected.to validate_presence_of(:reactions_count) }
+      it { is_expected.to validate_presence_of(:sign_in_count) }
+      it { is_expected.to validate_presence_of(:spent_credits_count) }
+      it { is_expected.to validate_presence_of(:subscribed_to_user_subscriptions_count) }
+
+      # rubocop:disable RSpec/NestedGroups
+      context "when evaluating the custom error message for username uniqueness" do
+        subject { create(:user, username: "test_user_123") }
+
+        it { is_expected.to validate_uniqueness_of(:username).with_message("test_user_123 is taken.").case_insensitive }
+      end
+      # rubocop:enable RSpec/NestedGroups
+
+      Authentication::Providers.username_fields.each do |username_field|
+        it { is_expected.to validate_uniqueness_of(username_field).allow_nil }
+      end
+    end
+
+    it "renders custom error message with value of taken username" do
+      create(:user, username: "test_user_123")
+      same_username = build(:user, username: "test_user_123")
+      expect(same_username).not_to be_valid
+      expect(same_username.errors[:username].to_s).to include("test_user_123 is taken.")
     end
 
     it "validates username against reserved words" do
@@ -225,6 +290,26 @@ RSpec.describe User, type: :model do
       expect(user.errors[:base].to_s).to include("could not be saved. Rate limit reached")
       expect(limiter).to have_received(:track_limit_by_action).with(:user_update).twice
     end
+
+    context "when validating feed_url", vcr: true do
+      it "is valid with no feed_url" do
+        user.feed_url = nil
+
+        expect(user).to be_valid
+      end
+
+      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
+        user.feed_url = "http://example.com"
+
+        expect(user).not_to be_valid
+      end
+
+      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+        user.feed_url = "https://medium.com/feed/@vaidehijoshi"
+
+        expect(user).to be_valid
+      end
+    end
   end
 
   describe "#after_commit" do
@@ -253,31 +338,19 @@ RSpec.describe User, type: :model do
   context "when callbacks are triggered before validation" do
     let(:user) { build(:user) }
 
-    describe "#twitter_username" do
-      it "sets twitter username to nil if empty" do
-        user.twitter_username = ""
-        user.validate!
-        expect(user.twitter_username).to eq(nil)
-      end
+    Authentication::Providers.username_fields.each do |username_field|
+      describe username_field do
+        it "sets #{username_field} to nil if empty" do
+          user.assign_attributes(username_field => "")
+          user.validate!
+          expect(user.attributes[username_field.to_s]).to be_nil
+        end
 
-      it "does not change a valid name" do
-        user.twitter_username = "hello"
-        user.validate!
-        expect(user.twitter_username).to eq("hello")
-      end
-    end
-
-    describe "#github_username" do
-      it "sets github username to nil if empty" do
-        user.github_username = ""
-        user.validate!
-        expect(user.github_username).to eq(nil)
-      end
-
-      it "does not change a valid name" do
-        user.github_username = "hello"
-        user.validate!
-        expect(user.github_username).to eq("hello")
+        it "does not change a valid name" do
+          user.assign_attributes(username_field => "hello")
+          user.validate!
+          expect(user.attributes[username_field.to_s]).to eq("hello")
+        end
       end
     end
 
@@ -310,224 +383,6 @@ RSpec.describe User, type: :model do
       it "does not allow to change to a username that is taken by an organization" do
         user.username = create(:organization).slug
         expect(user).not_to be_valid
-      end
-    end
-
-    describe "#website_url" do
-      it "does not accept invalid website url" do
-        user.website_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid http website url" do
-        user.website_url = "http://ben.com"
-        expect(user).to be_valid
-      end
-    end
-
-    describe "#mastodon_url" do
-      it "accepts valid https mastodon url" do
-        user.mastodon_url = "https://mastodon.social/@test"
-        expect(user).to be_valid
-      end
-
-      it "does not accept a denied mastodon instance" do
-        user.mastodon_url = "https://SpammyMcSpamface.com/"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept invalid mastodon url" do
-        user.mastodon_url = "mastodon.social/@test"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept an invalid url" do
-        user.mastodon_url = "ben .com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#facebook_url" do
-      it "accepts valid https facebook url", :aggregate_failures do
-        %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
-          user.facebook_url = "https://facebook.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid facebook url" do
-        user.facebook_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#youtube_url" do
-      it "accepts valid https youtube url", :aggregate_failures do
-        %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
-          user.youtube_url = "https://youtube.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid youtube url" do
-        user.youtube_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#behance_url" do
-      it "accepts valid https behance url", :aggregate_failures do
-        %w[jess jess/ je-ss jes_ss].each do |username|
-          user.behance_url = "https://behance.net/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid behance url" do
-        user.behance_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#twitch_url" do
-      it "does not accept invalid twitch url" do
-        user.twitch_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid https twitch url", :aggregate_failures do
-        %w[pandyzhao pandyzhao/ PandyZhao_ pandy_Zhao].each do |username|
-          user.twitch_url = "https://twitch.tv/#{username}"
-          expect(user).to be_valid
-        end
-      end
-    end
-
-    describe "#stackoverflow_url" do
-      it "accepts valid https stackoverflow url", :aggregate_failures do
-        %w[pandyzhao pandyzhao/ pandy-zhao].each do |username|
-          user.stackoverflow_url = "https://stackoverflow.com/users/7381391/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid stackoverflow url" do
-        user.stackoverflow_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid stackoverflow sub community url", :aggregate_failures do
-        %w[pt ru es ja].each do |subcommunity|
-          user.stackoverflow_url = "https://#{subcommunity}.stackoverflow.com/users/7381391/mazen"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid stackoverflow sub community url" do
-        user.stackoverflow_url = "https://fr.stackoverflow.com/users/7381391/mazen"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#linkedin_url" do
-      it "accepts valid https linkedin url", :aggregate_failures do
-        %w[jessleenyc jessleenyc/ jess-lee-nyc].each do |username|
-          user.linkedin_url = "https://linkedin.com/in/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "accepts valid country specific https linkedin url" do
-        user.linkedin_url = "https://mx.linkedin.com/in/jessleenyc"
-        expect(user).to be_valid
-      end
-
-      it "does not accept three letters country codes in http linkedin url" do
-        user.linkedin_url = "http://mex.linkedin.com/in/jessleenyc"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept three letters country codes in https linkedin url" do
-        user.linkedin_url = "https://mex.linkedin.com/in/jessleenyc"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept invalid linkedin url" do
-        user.linkedin_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#dribbble_url", :aggregate_failures do
-      it "accepts valid https dribbble url" do
-        %w[jess jess/ je-ss je_ss].each do |username|
-          user.dribbble_url = "https://dribbble.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid dribbble url" do
-        user.dribbble_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#medium_url" do
-      it "accepts valid https medium url", :aggregate_failures do
-        %w[jess jess/ je-ss je_ss].each do |username|
-          user.medium_url = "https://medium.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid medium url" do
-        user.medium_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#instagram_url" do
-      it "does not accept invalid instagram url" do
-        user.instagram_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid instagram url", :aggregate_failures do
-        %w[jess je_ss je_ss.tt A.z.E.r.T.y].each do |username|
-          user.instagram_url = "https://instagram.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-    end
-
-    describe "#gitlab_url" do
-      it "accepts valid https gitlab url", :aggregate_failures do
-        %w[jess jess/ je-ss je_ss].each do |username|
-          user.gitlab_url = "https://gitlab.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid gitlab url" do
-        user.gitlab_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#employer_url" do
-      it "does not accept invalid employer url" do
-        user.employer_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "does accept valid http employer url" do
-        user.employer_url = "http://ben.com"
-        expect(user).to be_valid
-      end
-
-      it "does accept valid https employer url" do
-        user.employer_url = "https://ben.com"
-        expect(user).to be_valid
       end
     end
 
@@ -582,63 +437,11 @@ RSpec.describe User, type: :model do
         expect(user.old_username).to eq(new_username)
         expect(user.old_old_username).to eq(old_username)
       end
-
-      it "enforces summary length validation if previous summary was valid" do
-        user.summary = "0" * 999
-        user.save(validate: false)
-        user.summary = "0" * 999
-        expect(user).to be_valid
-      end
-
-      it "does not enforce summary validation if previous summary was invalid" do
-        user = build(:user, summary: "0" * 999)
-        expect(user).not_to be_valid
-      end
     end
   end
 
   context "when callbacks are triggered before and after create" do
     let(:user) { create(:user, email: nil) }
-
-    describe "#language_settings" do
-      it "sets correct language_settings by default" do
-        expect(user.language_settings).to eq("preferred_languages" => %w[en])
-      end
-
-      it "sets correct language_settings by default after the jobs are processed" do
-        sidekiq_perform_enqueued_jobs do
-          expect(user.language_settings).to eq("preferred_languages" => %w[en])
-        end
-      end
-    end
-
-    describe "#estimated_default_language" do
-      it "estimates default language to be nil" do
-        sidekiq_perform_enqueued_jobs do
-          expect(user.estimated_default_language).to be(nil)
-        end
-      end
-
-      it "estimates default language to be japanese with .jp email" do
-        user = nil
-
-        sidekiq_perform_enqueued_jobs do
-          user = create(:user, email: "ben@hello.jp")
-        end
-
-        expect(user.reload.estimated_default_language).to eq("ja")
-      end
-
-      it "estimates default language based on ID dump" do
-        new_user = nil
-
-        sidekiq_perform_enqueued_jobs do
-          new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-        end
-
-        expect(new_user.estimated_default_language).to eq(nil)
-      end
-    end
 
     describe "#send_welcome_notification" do
       let(:mascot_account) { create(:user) }
@@ -666,35 +469,6 @@ RSpec.describe User, type: :model do
         expect(new_user.reload.notifications.count).to eq(0)
       end
     end
-
-    describe "#preferred_languages_array" do
-      it "returns proper preferred_languages_array" do
-        user = nil
-
-        sidekiq_perform_enqueued_jobs do
-          user = create(:user, email: "ben@hello.jp")
-        end
-
-        expect(user.reload.preferred_languages_array).to eq(%w[en ja])
-      end
-
-      it "returns a correct array when language settings are in a new format" do
-        language_settings = { estimated_default_language: "en", preferred_languages: %w[en ru it] }
-        user = build(:user, language_settings: language_settings)
-        expect(user.preferred_languages_array).to eq(%w[en ru it])
-      end
-
-      it "returns a correct array when language settings are in the old format" do
-        language_settings = {
-          estimated_default_language: "en",
-          prefer_language_en: true,
-          prefer_language_ja: false,
-          prefer_language_es: true
-        }
-        user = build(:user, language_settings: language_settings)
-        expect(user.preferred_languages_array).to eq(%w[en es])
-      end
-    end
   end
 
   context "when callbacks are triggered after save" do
@@ -713,12 +487,6 @@ RSpec.describe User, type: :model do
         end
       end
 
-      it "does not enqueue with an invalid email" do
-        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
-          user.update(email: "foobar")
-        end
-      end
-
       it "does not enqueue with an unconfirmed email" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
@@ -731,6 +499,13 @@ RSpec.describe User, type: :model do
         end
       end
 
+      it "does not enqueue if Mailchimp is not enabled" do
+        allow(SiteConfig).to receive(:mailchimp_api_key).and_return(nil)
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(email: "something@real.com")
+        end
+      end
+
       it "does not enqueue when the email address or subscription status has not changed" do
         # The trait replaces the method with a dummy, but we need the actual method for this test.
         user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)
@@ -740,177 +515,91 @@ RSpec.describe User, type: :model do
         end
       end
     end
-
-    describe "#conditionally_resave_articles" do
-      let!(:user) { create(:user) }
-
-      it "enqueues resave articles job when changing username" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.username = "#{user.username} changed"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing name" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.name = "#{user.name} changed"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing summary" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.summary = "#{user.summary} changed"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing bg_color_hex" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.bg_color_hex = "#12345F"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing text_color_hex" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.text_color_hex = "#FA345E"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing profile_image" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.profile_image = "https://fakeimg.pl/300/"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing github_username" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.github_username = "mygreatgithubname"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing twitter_username" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.twitter_username = "mygreattwittername"
-          user.save
-        end
-      end
-
-      it "doesn't enqueue resave articles when changing resave attributes but user is banned" do
-        banned_user = create(:user, :banned)
-        expect do
-          banned_user.twitter_username = "mygreattwittername"
-          banned_user.save
-        end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
-      end
-    end
   end
 
-  describe "user registration" do
+  describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
     let(:user) { create(:user) }
 
-    it "finds user by email and assigns identity to that if exists" do
-      OmniAuth.config.mock_auth[:twitter].info.email = user.email
+    before { omniauth_mock_providers_payload }
 
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.id).to eq(user.id)
-    end
+    Authentication::Providers.available.each do |provider_name|
+      it "finds user by email and assigns identity to that if exists for #{provider_name}" do
+        OmniAuth.config.mock_auth[provider_name].info.email = user.email
 
-    it "assigns random username if username is taken on registration" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = user.username
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
+        new_user = user_from_authorization_service(provider_name)
+        expect(new_user.id).to eq(user.id)
+      end
 
-      expect(new_user.persisted?).to eq(true)
-      expect(new_user.username).not_to eq(user.username)
-    end
+      it "assigns random username if username is taken on registration for #{provider_name}" do
+        OmniAuth.config.mock_auth[provider_name].info.nickname = user.username
+        OmniAuth.config.mock_auth[provider_name].info.first_name = user.username
 
-    it "assigns random username if username is taken by organization on registration" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = org.slug
+        new_user = user_from_authorization_service(provider_name)
 
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.persisted?).to eq(true)
-      expect(new_user.username).not_to eq(org.slug)
-    end
+        expect(new_user.persisted?).to be(true)
+        expect(new_user.username).not_to eq(user.username)
+      end
 
-    it "assigns signup_cta_variant to state param with Twitter if new user" do
-      new_user = user_from_authorization_service(:twitter, nil, "hey-hey-hey")
-      expect(new_user.signup_cta_variant).to eq("hey-hey-hey")
-    end
+      it "assigns signup_cta_variant to state param if new user for #{provider_name}" do
+        new_user = user_from_authorization_service(provider_name, nil, "hey-hey-hey")
+        expect(new_user.signup_cta_variant).to eq("hey-hey-hey")
+      end
 
-    it "does not assign signup_cta_variant to non-new users" do
-      returning_user = create(:user, signup_cta_variant: nil)
-      new_user = user_from_authorization_service(:twitter, returning_user, "hey-hey-hey")
-      expect(new_user.signup_cta_variant).to eq(nil)
-    end
+      it "does not assign signup_cta_variant to non-new users for #{provider_name}" do
+        returning_user = create(:user, signup_cta_variant: nil)
+        new_user = user_from_authorization_service(provider_name, returning_user, "hey-hey-hey")
+        expect(new_user.signup_cta_variant).to be(nil)
+      end
 
-    it "assigns proper social_username based on auth" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = "valid_username"
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.username).to eq("valid_username")
-    end
+      it "assigns proper social username based on authentication for #{provider_name}" do
+        mock_username(provider_name, "valid_username")
+        new_user = user_from_authorization_service(provider_name)
 
-    it "assigns modified username if invalid" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.user"
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.username).to eq("invaliduser")
-    end
+        case provider_name
+        when :apple
+          expect(new_user.username).to match(/valid_username_\w+/)
+        when :facebook
+          expect(new_user.username).to match(/fname_lname_\S*\z/)
+        else
+          expect(new_user.username).to eq("valid_username")
+        end
+      end
 
-    it "assigns an identity to user" do
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.identities.size).to eq(1)
-      new_user = user_from_authorization_service(:github, nil, "navbar_basic")
-      expect(new_user.identities.size).to eq(2)
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.identities.size).to eq(2)
-      new_user = user_from_authorization_service(:github, nil, "navbar_basic")
-      expect(new_user.identities.size).to eq(2)
-    end
+      it "marks registered_at for newly registered user" do
+        new_user = user_from_authorization_service(provider_name, nil, "navbar_basic")
+        expect(new_user.registered_at).not_to be nil
+      end
 
-    it "persists JSON dump of identity data" do
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      identity = new_user.identities.first
-      expect(identity.auth_data_dump.provider).to eq(identity.provider)
-    end
+      it "assigns modified username if the username is invalid for #{provider_name}" do
+        mock_username(provider_name, "invalid.username")
+        new_user = user_from_authorization_service(provider_name)
 
-    it "marks registered_at for newly registered user" do
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.registered_at).not_to be nil
+        case provider_name
+        when :apple
+          expect(new_user.username).to match(/invalidusername_\w+/)
+        when :facebook
+          expect(new_user.username).to match(/fname_lname_\S*\z/)
+        else
+          expect(new_user.username).to eq("invalidusername")
+        end
+      end
+
+      it "serializes the authentication payload for #{provider_name}" do
+        new_user = user_from_authorization_service(provider_name)
+
+        identity = new_user.identities.last
+        expect(identity.auth_data_dump.provider).to eq(identity.provider)
+      end
+
+      it "does not allow previously banished users to sign up again for #{provider_name}" do
+        banished_name = "SpammyMcSpamface"
+        mock_username(provider_name, banished_name)
+
+        create(:banished_user, username: provider_username(provider_name))
+        expect do
+          user_from_authorization_service(provider_name, nil, "navbar_basic")
+        end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
+      end
     end
 
     it "persists extracts relevant identity data from new twitter user" do
@@ -919,29 +608,27 @@ RSpec.describe User, type: :model do
       expect(new_user.twitter_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
     end
 
-    it "persists extracts relevant identity data from new github user" do
-      new_user = user_from_authorization_service(:github, nil, "navbar_basic")
-      expect(new_user.github_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
+    it "assigns multiple identities to the same user", :aggregate_failures, vcr: { cassette_name: "fastly_sloan" } do
+      providers = Authentication::Providers.available
+
+      users = []
+      Authentication::Providers.available.each do |provider_name|
+        OmniAuth.config.mock_auth[provider_name].info.email = "person1@example.com"
+
+        users.append(user_from_authorization_service(provider_name))
+      end
+
+      expect(users.uniq.first.identities.count).to eq(providers.length)
     end
+  end
 
-    it "does not allow previously banished users to sign up again" do
-      banished_name = "SpammyMcSpamface"
-      create(:banished_user, username: banished_name)
-      OmniAuth.config.mock_auth[:twitter].info.nickname = banished_name
+  it "does not allow an existing user to change their name to a banished one" do
+    banished_name = "SpammyMcSpamface"
+    create(:banished_user, username: banished_name)
+    user = create(:user)
 
-      expect do
-        user_from_authorization_service(:twitter, nil, "navbar_basic")
-      end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
-    end
-
-    it "does not allow an existing user to change their name to a banished one" do
-      banished_name = "SpammyMcSpamface"
-      create(:banished_user, username: banished_name)
-      user = create(:user)
-
-      user.update(username: banished_name)
-      expect(user.errors.full_messages).to include("Username has been banished.")
-    end
+    user.update(username: banished_name)
+    expect(user.errors.full_messages).to include("Username has been banished.")
   end
 
   describe "#follow and #all_follows" do
@@ -986,7 +673,7 @@ RSpec.describe User, type: :model do
 
   describe "theming properties" do
     it "creates proper body class with defaults" do
-      classes = "default default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
@@ -1008,28 +695,28 @@ RSpec.describe User, type: :model do
     it "creates proper body class with sans serif config" do
       user.config_font = "sans_serif"
 
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.config_font = "open_dyslexic"
 
-      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with night theme" do
       user.config_theme = "night_theme"
 
-      classes = "night-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with pink theme" do
       user.config_theme = "pink_theme"
 
-      classes = "pink-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
@@ -1058,6 +745,15 @@ RSpec.describe User, type: :model do
     it "has an accurate organization follow count" do
       user.follow(org)
       expect(user.reload.following_orgs_count).to eq(1)
+    end
+
+    it "returns cached ids of articles that have been saved to their readinglist" do
+      article = create(:article)
+      article2 = create(:article)
+      create(:reading_reaction, user: user, reactable: article)
+      create(:reading_reaction, user: user, reactable: article2)
+
+      expect(user.cached_reading_list_article_ids).to eq([article2.id, article.id])
     end
   end
 
@@ -1172,7 +868,7 @@ RSpec.describe User, type: :model do
   end
 
   describe "#authenticated_with_all_providers?" do
-    let(:provider) { Authentication::Providers.available.first }
+    let(:provider) { (Authentication::Providers.available - [:apple]).first }
 
     it "returns false if the user has no related identity" do
       expect(user.authenticated_with_all_providers?).to be(false)
@@ -1191,6 +887,32 @@ RSpec.describe User, type: :model do
       user = create(:user, :with_identity)
 
       expect(user.authenticated_with_all_providers?).to be(true)
+    end
+  end
+
+  describe "profiles" do
+    it "automatically creates a profile for new users", :aggregate_failures do
+      user = create(:user)
+      expect(user.profile).to be_present
+      expect(user.profile).to respond_to(:available_for)
+    end
+
+    it "propagates changes of unmapped attributes to the profile model", :aggregate_failures do
+      expect do
+        user.update(available_for: "profile migrations")
+      end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
+
+      # Changes were also persisted in the users table
+      expect(user.reload.available_for).to eq "profile migrations"
+    end
+
+    it "propagates changes of mapped attributes to the profile model", :aggregate_failures do
+      expect do
+        user.update(bg_color_hex: "#abcdef")
+      end.to change { user.profile.reload.brand_color1 }.to("#abcdef")
+
+      # Changes were also persisted in the users table
+      expect(user.reload.bg_color_hex).to eq "#abcdef"
     end
   end
 end

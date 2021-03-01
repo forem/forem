@@ -56,31 +56,33 @@ with Podman. You can install it by following these
 
 ## Setting up Forem
 
-1. Fork Forem's repository, e.g. <https://github.com/forem/forem/fork>
-1. Clone your forked repository, eg.
-   `git clone https://github.com/<your-username>/forem.git`
-1. Set up your environment variables/secrets
+1.  Fork Forem's repository, e.g. <https://github.com/forem/forem/fork>
+1.  Clone your forked repository, eg.
+    `git clone https://github.com/<your-username>/forem.git`
+1.  Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use
-     and provides a fake default for any missing keys.
-   - The [backend guide](/backend) will show you how to get free API keys for
-     additional services that may be required to run certain parts of the app.
-   - For any key that you wish to enter/replace:
+    1.  Create `.env` by copying from the provided template`.env_sample` (i.e.
+        with bash: `cp .env_sample .env`).
 
-     1. Create `config/application.yml` by copying from the provided template
-        (i.e. with bash:
-        `cp config/sample_application.yml config/application.yml`). This is a
-        personal file that is ignored in git.
-     1. Obtain the development variable and apply the key you wish to
-        enter/replace. i.e.:
+        - `.env` is a personal file that is **ignored in git**.
+        - `.env` lists all the `ENV` variables we use and provides a fake
+          default for any missing keys.
 
-     ```shell
-     GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
-     GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
-     ```
+    2.  For any key that you wish to enter/replace:
 
-   - You do not need "real" keys for basic development. Some features require
-     certain keys, so you may be able to add them as you go.
+        - You do not need "real" keys for basic development. Some features
+          require certain keys, so you may be able to add them as you go.
+        - The [backend guide](/backend) will show you how to get free API keys
+          for additional services that may be required to run certain parts of
+          the app.
+        - Obtain the development variable and apply the key you wish to
+          enter/replace. i.e.:
+
+        ```shell
+        export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
+        export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+        export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
+        ```
 
 ## Running Forem with Docker via docker-compose
 
@@ -112,14 +114,14 @@ The script executes the following steps:
 
   ![docker gui](https://user-images.githubusercontent.com/47985/74210448-b63b7c80-4c83-11ea-959b-02249b2a6952.png)
 
-- In case `rails server` doesn't start with the following message:
+- In case `rails server` starts with the following message:
 
-  ```
+  ```shell
   Data update scripts need to be run before you can start the application. Please run rails data_updates:run (RuntimeError)
   ```
 
   run the following command:
 
   ```shell
-  docker-compose run web rails data_updates:run
+  docker-compose run rails rails data_updates:run
   ```

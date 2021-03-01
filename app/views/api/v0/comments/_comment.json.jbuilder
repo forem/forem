@@ -1,5 +1,6 @@
 json.type_of "comment"
 json.id_code comment.id_code_generated
+json.created_at utc_iso_timestamp(comment.created_at)
 
 if comment.deleted?
   json.body_html "<p>#{Comment::TITLE_DELETED}</p>"

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import Tags from '../../shared/components/tags';
+import { Tags } from '../../shared/components/tags';
 
 export const DEFAULT_TAG_FORMAT = '[0-9A-Za-z, ]+';
 
@@ -18,7 +18,7 @@ export const TagsField = ({
         onInput={onInput}
         onFocus={switchHelpContext}
         classPrefix="crayons-article-form"
-        fieldClassName="crayons-textfield crayons-textfield--ghost ff-accent"
+        fieldClassName="crayons-textfield crayons-textfield--ghost ff-monospace"
         pattern={tagFormat}
       />
     </div>

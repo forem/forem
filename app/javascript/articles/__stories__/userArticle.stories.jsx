@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, object, text } from '@storybook/addon-knobs/react';
+import { withKnobs, object, text } from '@storybook/addon-knobs';
 import { Article } from '..';
 import {
   assetPath,
@@ -20,7 +20,7 @@ const commonProps = {
 };
 
 export default {
-  title: '4_App Components/Article/User',
+  title: 'App Components/Article/User',
   decorators: [withKnobs],
 };
 

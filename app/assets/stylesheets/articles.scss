@@ -14,13 +14,12 @@
   @media screen and (max-width: 949px) {
     .sidebar-wrapper {
       position: fixed;
-      top: 48px;
+      top: 0;
       left: 0;
       bottom: 0;
-      z-index: 100;
       overflow-y: auto;
       width: 200%;
-      height: calc(100% - 48px);
+      height: 100%;
       display: none;
       -webkit-overflow-scrolling: touch;
       .sidebar-bg {
@@ -35,6 +34,7 @@
       }
       &.swiped-in {
         display: block;
+        z-index: var(--z-drawer);
         .side-bar {
           display: block;
           background: var(--card-bg);
@@ -68,7 +68,6 @@
     line-height: 1.35em;
     display: none;
     position: relative;
-    z-index: 5;
     padding: 16px 0;
     box-sizing: border-box;
     color: var(--card-secondary-color);
@@ -82,17 +81,6 @@
     }
     @media screen and (min-width: 950px) {
       display: block;
-    }
-
-    .sidebar-nav {
-      .sidebar-nav-block {
-        .sidebar-nav-default-tags {
-          display: none;
-          &.showing {
-            display: block;
-          }
-        }
-      }
     }
 
     .search-partner-mention {
@@ -113,6 +101,11 @@
 
 .sidebar-tags-browser {
   max-height: 420px;
+}
+
+.sidebar-navigation-links .crayons-icon svg {
+  height: 24px;
+  width: 24px;
 }
 
 @keyframes fade-in {
@@ -137,93 +130,6 @@
   }
   100% {
     transform: translate(-100vw, 0);
-  }
-}
-
-// Feed Card: Signup CTA
-.feed-cta {
-  background: lighten($purple, 6%) !important;
-  border: 1px solid darken($bold-blue, 5%) !important;
-  box-shadow: 5px 6px 0px darken($bold-blue, 15%) !important;
-  margin: 0.8em 0;
-  .cta-container {
-    padding: calc(1vw + 7px) 9px;
-    margin-bottom: 15px;
-  }
-  h2 {
-    text-align: center;
-    margin-right: 9px;
-    padding-right: 9px;
-    font-size: 1.5em;
-  }
-  h3 {
-    text-align: center;
-    margin-right: 9px;
-    padding-right: 9px;
-    font-size: 17px !important;
-  }
-  .button-container {
-    margin-top: 40px;
-    text-align: center;
-    margin-right: 9px;
-    padding-right: 9px;
-  }
-  img.secondary-logo {
-    width: 190px;
-    height: 190px;
-    margin: 18px auto 35px;
-    border-radius: 22px;
-    display: block;
-    transform: rotate(6deg);
-  }
-  .cta-button {
-    text-align: center;
-    margin: 5px;
-    padding: 12px 5px;
-    min-width: 230px;
-    font-size: 1.1em;
-    display: inline-block;
-    height: auto;
-    text-align: center;
-    font-weight: bold;
-    border-radius: 100px;
-    background-color: $bold-blue;
-    color: white !important;
-  }
-  .feed-cta-sub {
-    margin-top: 20px;
-    font-size: 15px;
-  }
-}
-
-// MOBILE ONLY navigation to switch between tabs (these on top of the feed).
-// Although it uses different markup :/.
-.narrow-nav-menu {
-  position: absolute;
-  top: 48px;
-  left: 0;
-  right: 0;
-  background: white;
-  z-index: 500;
-  font-family: $helvetica-condensed;
-  font-stretch: condensed;
-  font-weight: 600;
-  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.3);
-  padding: 5px 0px 15px;
-  display: none;
-  font-size: 1.1em;
-  background: var(--card-bg);
-  a {
-    display: block;
-    text-align: center;
-    color: var(--card-color);
-    padding: 20px 0px;
-    &.selected {
-      background: var(--accent-brand-lighter);
-    }
-  }
-  &.showing {
-    display: block;
   }
 }
 
@@ -371,19 +277,6 @@
     max-width: calc(100% - 560px); // 560 = 2*280: two sidebars
   }
 
-  .pinned-articles {
-    padding: 8px;
-    margin: 0 auto;
-    @include dev-card;
-
-    h5 {
-      margin: 0 0 8px;
-      padding: 8px 0;
-      display: flex;
-      align-items: center;
-    }
-  }
-
   .placeholder-div {
     // TOOD: what is this?
     display: block;
@@ -399,15 +292,6 @@
     &.active {
       // TODO: what is this .active thingy?
       opacity: 0.66;
-    }
-    &.big-article {
-      &.active {
-        opacity: 0.84;
-      }
-      .time-ago-indicator {
-        // TODO: where do we use it?
-        vertical-align: 0.11em;
-      }
     }
     &.single-article-small-pic {
       vertical-align: top;
@@ -437,37 +321,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .single-article-video-preview {
-      img {
-        width: 100%;
-      }
-      position: relative;
-      padding-top: 56%;
-      display: block;
-      background: $black no-repeat center center;
-      background-size: cover;
-      &:hover {
-        opacity: 1;
-      }
-      .single-article-video-duration {
-        position: absolute;
-        bottom: 8px;
-        right: 7px;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        border-radius: 3px;
-        padding: 2px 5px 3px;
-        font-size: 0.75em;
-        font-weight: 500;
-        img {
-          width: 12px;
-          height: 12px;
-          margin-right: 4px;
-          vertical-align: -1px;
-        }
-      }
-    }
-
     // Organization Badge
     .org-headline-filler {
       @include themeable(
@@ -636,89 +489,6 @@
       color: rgb(163, 188, 201);
       padding-bottom: 16px;
     }
-    &.big-article {
-      padding: 0px;
-      .picture {
-        padding-top: 42%;
-        border-radius: 3px 3px 0 0;
-        background: no-repeat center center;
-        background-size: cover;
-      }
-      .content-wrapper {
-        padding-bottom: 115px;
-        h3 {
-          font-size: 28px;
-          padding: 16px;
-          margin: 0;
-          word-break: break-word;
-          line-height: 1.28em;
-          @media screen and (min-width: 450px) {
-            font-size: 40px;
-          }
-        }
-        .title-block {
-          display: inline-block;
-        }
-      }
-    }
-  }
-  .featured-profile-button {
-    float: left;
-    z-index: 10;
-    left: 16px;
-    position: absolute;
-    margin-top: -110px;
-  }
-  img.featured-profile-pic {
-    height: 40px;
-    width: 40px;
-    border-radius: 50px;
-    overflow: hidden;
-    &:hover {
-      opacity: 0.9;
-    }
-  }
-  .featured-user-name {
-    font-weight: bold;
-    margin-top: 0;
-    position: absolute;
-    width: 80%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    z-index: 10;
-    left: 72px;
-    bottom: 65px;
-    font-size: 0.8em;
-    a {
-      color: var(--card-color-tertiary);
-    }
-    @media screen and (min-width: 450px) {
-      font-size: 1em;
-    }
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-  .featured-tags {
-    font-size: 1em;
-    position: absolute;
-    max-width: 80%;
-    bottom: 95px !important;
-    left: 62px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    z-index: 10;
-  }
-  .article-reading-time {
-    position: absolute;
-    right: 82px;
-    bottom: 12px;
-    font-size: 0.7em;
-    padding: 6px 0px;
-    z-index: 8;
-    color: var(--card-color-tertiary);
   }
   .article-engagement-count {
     font-size: 13px;
@@ -801,32 +571,6 @@
       display: inline-block;
     }
   }
-  .video-player-header {
-    background: $black;
-    margin-top: 0;
-    max-width: 1050px;
-    margin: auto;
-    margin-bottom: 15px;
-    height: 52.5vw;
-    margin-bottom: -5px;
-    overflow-y: hidden;
-    @media screen and (min-width: 750px) {
-      height: 396px;
-    }
-    @media screen and (min-width: 950px) {
-      height: calc(52.5vw - 172px);
-    }
-    @media screen and (min-width: 1120px) {
-      height: calc(52.5vw - 314px);
-    }
-    @media screen and (min-width: 1240px) {
-      height: 339px;
-    }
-  }
-}
-
-#homepage-feed {
-  min-height: 100vh;
 }
 
 // Podcast episode that goes within the <TodaysPodcast /> component.
@@ -865,15 +609,4 @@
       $light-gray
     );
   }
-}
-
-////////////////////////////////////////////////
-// OTHER VIEWS /////////////////////////////////
-////////////////////////////////////////////////
-
-// Search results: empty
-.query-results-nothing {
-  @include dev-card;
-  padding: 48px 24px;
-  text-align: center;
 }

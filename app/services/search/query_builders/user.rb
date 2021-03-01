@@ -17,6 +17,8 @@ module Search
       }.freeze
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
 
         # default to excluding users who are banned

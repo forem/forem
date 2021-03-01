@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
-import listingPropTypes from './listingPropTypes';
+import { listingPropTypes } from './listingPropTypes';
 
 const LocationText = ({ location }) => {
   return location ? (
-    <a data-testid="single-listing-location" href={`/listings/?q=${location}`}>
+    <a
+      data-testid="single-listing-location"
+      className="crayons-link crayons-link--secondary"
+      href={`/listings/?q=${location}`}
+    >
       {'・'}
       {location}
     </a>
@@ -21,20 +25,41 @@ LocationText.defaultProps = {
   location: null,
 };
 
-const AuthorInfo = ({ listing, onCategoryClick }) => {
+export const AuthorInfo = ({ listing, onCategoryClick }) => {
   const { category, location, author = {} } = listing;
-  const { username, name } = author;
+  const { username, name, profile_image_90 } = author;
   return (
-    <div className="single-listing-author-info">
+    <footer className="fs-s flex items-center">
       <a
-        href={`/listings/${category}`}
-        onClick={(e) => onCategoryClick(e, category)}
-        data-no-instant
+        href={`/${username}`}
+        className="crayons-avatar crayons-avatar--l mr-2"
       >
-        {category}
+        <img
+          src={profile_image_90}
+          alt={name}
+          width="32"
+          height="32"
+          className="crayons-avatar__image"
+        />
       </a>
-      <LocationText location={location} />・<a href={`/${username}`}>{name}</a>
-    </div>
+
+      <div>
+        <a href={`/${username}`} className="crayons-link fw-medium">
+          {name}
+        </a>
+        <p className="fs-xs">
+          <a
+            href={`/listings/${category}`}
+            onClick={(e) => onCategoryClick(e, category)}
+            data-no-instant
+            className="crayons-link crayons-link--secondary"
+          >
+            {category}
+          </a>
+          <LocationText location={location} />
+        </p>
+      </div>
+    </footer>
   );
 };
 
@@ -46,5 +71,3 @@ AuthorInfo.propTypes = {
 AuthorInfo.defaultProps = {
   onCategoryClick: () => {},
 };
-
-export default AuthorInfo;

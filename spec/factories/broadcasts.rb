@@ -22,13 +22,11 @@ FactoryBot.define do
       end
     end
 
-    factory :twitter_connect_broadcast do
-      title          { "Welcome Notification: twitter_connect" }
+    factory :apple_connect_broadcast do
+      title          { "Welcome Notification: apple_connect" }
       type_of        { "Welcome" }
       processed_html do
-        "You're on a roll! 🎉 Do you have a Twitter account? Consider " \
-        "<a href='/settings'>connecting it</a> so we can @mention you if we share " \
-        "your post via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>."
+        "You're on a roll! 🎉  Do you have an Apple account? Consider <a href='/settings'>connecting it</a>."
       end
     end
 
@@ -41,12 +39,31 @@ FactoryBot.define do
       end
     end
 
+    factory :facebook_connect_broadcast do
+      title          { "Welcome Notification: facebook_connect" }
+      type_of        { "Welcome" }
+      processed_html do
+        "You're on a roll! 🎉  Do you have a Facebook account? Consider " \
+        "<a href='/settings'>connecting it</a>."
+      end
+    end
+
+    factory :twitter_connect_broadcast do
+      title          { "Welcome Notification: twitter_connect" }
+      type_of        { "Welcome" }
+      processed_html do
+        "You're on a roll! 🎉 Do you have a Twitter account? Consider " \
+        "<a href='/settings'>connecting it</a> so we can @mention you if we share " \
+        "your post via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>."
+      end
+    end
+
     factory :customize_ux_broadcast do
       title          { "Welcome Notification: customize_experience" }
       type_of        { "Welcome" }
       processed_html do
         "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
-        "Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!"
+        "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!"
       end
     end
 

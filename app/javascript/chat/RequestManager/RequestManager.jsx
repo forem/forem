@@ -8,11 +8,11 @@ import {
   acceptJoiningRequest,
   rejectJoiningRequest,
 } from '../actions/requestActions';
-import HeaderSection from './HeaderSection';
-import ChannelRequestSection from './ChannelRequestSection';
-import PersonalInvitations from './PersonalInvitationSection';
+import { HeaderSection } from './HeaderSection';
+import { ChannelRequestSection } from './ChannelRequestSection';
+import { PersonalInvitationSection } from './PersonalInvitationSection';
 
-export default class RequestManager extends Component {
+export class RequestManager extends Component {
   static propTypes = {
     resource: PropTypes.shape({
       data: PropTypes.object,
@@ -48,7 +48,12 @@ export default class RequestManager extends Component {
   }
 
   handleIUpdateMembership = async (e) => {
-    const { membershipId, userAction } = e.target.dataset;
+    const {
+      membershipId,
+      userAction,
+      channelSlug,
+      channelId,
+    } = e.target.dataset;
     const response = await updateMembership(membershipId, userAction);
     const { success, membership, message } = response;
     const { updateRequestCount } = this.state;
@@ -63,6 +68,9 @@ export default class RequestManager extends Component {
           userInvitations: filteredUserInvitations,
         };
       });
+      if (userAction === 'accept') {
+        updateRequestCount(true, { channelSlug, channelId });
+      }
       updateRequestCount();
       addSnackbarItem({ message });
     } else {
@@ -122,18 +130,18 @@ export default class RequestManager extends Component {
     const { channelJoiningRequests, userInvitations } = this.state;
 
     return (
-      <div className="activechatchannel__activeArticle activesendrequest">
+      <div>
         <div className="p-4">
           <HeaderSection />
           {channelJoiningRequests.length <= 0 && userInvitations.length <= 0 ? (
-            <p>You have no pending invitations/Joining Requests.</p>
+            <p>You have no pending invitations.</p>
           ) : null}
           <ChannelRequestSection
             channelRequests={channelJoiningRequests}
             handleRequestRejection={this.handleRejectJoingRequest}
             handleRequestApproval={this.handleAcceptJoingRequest}
           />
-          <PersonalInvitations
+          <PersonalInvitationSection
             userInvitations={userInvitations}
             updateMembership={this.handleIUpdateMembership}
           />

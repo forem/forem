@@ -6,7 +6,7 @@ module Moderator
 
     attr_reader :keep_user, :admin, :delete_user_id
 
-    def initialize(admin:, keep_user:, delete_user_id:)
+    def initialize(admin:, keep_user:, delete_user_id:) # rubocop:disable Lint/MissingSuper
       @keep_user = keep_user
       @admin = admin
       @delete_user = User.find(delete_user_id.to_i)
@@ -25,7 +25,7 @@ module Moderator
       @keep_user.touch(:profile_updated_at)
       Users::MergeSyncWorker.perform_async(@keep_user.id)
 
-      CacheBuster.bust("/#{@keep_user.username}")
+      EdgeCache::Bust.call("/#{@keep_user.username}")
     end
 
     private

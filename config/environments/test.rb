@@ -1,15 +1,19 @@
-# Silence all Ruby 2.7 deprecation warnings
-$VERBOSE = nil
-
 # rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
+
+  # Include middleware to ensure timezone for browser requests for Capybara specs
+  # matches the random zonebie timezone set at the beginning of our spec run
+  config.middleware.use SetTimeZone
 
   # The test environment is used exclusively to run your application's
   # test suite. You never need to work with it otherwise. Remember that
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
+
+  # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
+  config.action_view.cache_template_loading = true
 
   # NOTE: [Rails 6] this is the default store in testing,
   # as we haven't enabled Rails 6.0 defaults in config/application.rb,
@@ -75,6 +79,8 @@ Rails.application.configure do
     # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+    # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
   end
 end
 # rubocop:enable Metrics/BlockLength

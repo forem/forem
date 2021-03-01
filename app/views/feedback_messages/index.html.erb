@@ -1,5 +1,5 @@
 <% title "Feedback" %>
-<% cache(cache_key_heroku_slug("feedback-messages-lander-styling")) do %>
+<% cache(release_adjusted_cache_key("feedback-messages-lander-styling")) do %>
   <style>
     <%= Rails.application.assets["feedback_messages.css"].to_s.html_safe %>
   </style>

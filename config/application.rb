@@ -17,6 +17,8 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+Dotenv::Railtie.load if Rails.env.test? || Rails.env.development?
+
 module PracticalDeveloper
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
@@ -42,6 +44,11 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.eager_load_paths += Dir["#{config.root}/lib"]
 
+    # Middlewares folder is not otherwise autorequired.
+    Dir["#{config.root}/app/middlewares/**/*.rb"].each do |file|
+      require_dependency(file)
+    end
+
     config.active_job.queue_adapter = :sidekiq
 
     config.middleware.use Rack::Deflater
@@ -54,12 +61,15 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
+    config.middleware.use SetCookieDomain
+
     # NOTE: [Rails 6]
     # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.
     config.action_dispatch.use_cookies_with_metadata = false
 
     # After-initialize checker to add routes to reserved words
     config.after_initialize do
+      # Add routes to reserved words
       Rails.application.reload_routes!
       top_routes = []
       Rails.application.routes.routes.each do |route|

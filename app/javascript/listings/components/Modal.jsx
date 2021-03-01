@@ -1,9 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import SingleListing from '../singleListing';
-import MessageModal from './MessageModal';
+import { SingleListing } from '../singleListing/SingleListing';
+import { MessageModal } from './MessageModal';
+import { Modal as CrayonsModal } from '@crayons';
 
-const Modal = ({
+export const Modal = ({
   currentUserId,
   onAddTag,
   onChangeDraftingMessage,
@@ -17,36 +18,33 @@ const Modal = ({
   const shouldRenderMessageModal = listing && listing.contact_via_connect;
 
   return (
-    <div className="single-listing-container">
-      <div
-        id="single-listing-container__inner"
-        className="single-listing-container__inner"
-        onClick={onClick}
-        role="button"
-        onKeyPress={onClick}
-        tabIndex="0"
+    <div className="listings-modal" data-testid="listings-modal">
+      <CrayonsModal
+        onClose={onClick}
+        closeOnClickOutside={true}
+        title="Listing"
       >
-        <SingleListing
-          onAddTag={onAddTag}
-          onChangeCategory={onChangeCategory}
-          listing={listing}
-          currentUserId={currentUserId}
-          onOpenModal={onOpenModal}
-          isOpen
-        />
-        {shouldRenderMessageModal && (
-          <MessageModal
-            onSubmit={onSubmit}
-            onChangeDraftingMessage={onChangeDraftingMessage}
-            message={message}
+        <div className="p-3 m:p-6 l:p-8">
+          <SingleListing
+            onAddTag={onAddTag}
+            onChangeCategory={onChangeCategory}
             listing={listing}
+            currentUserId={currentUserId}
+            onOpenModal={onOpenModal}
+            isOpen
           />
+        </div>
+        {shouldRenderMessageModal && (
+          <div className="bg-base-10 p-3 m:p-6 l:p-8">
+            <MessageModal
+              onSubmit={onSubmit}
+              onChangeDraftingMessage={onChangeDraftingMessage}
+              message={message}
+              listing={listing}
+            />
+          </div>
         )}
-        <a href="/about-listings" className="single-listing-info-link">
-          About DEV Listings
-        </a>
-        <div className="single-listing-container__spacer" />
-      </div>
+      </CrayonsModal>
     </div>
   );
 };
@@ -66,5 +64,3 @@ Modal.propTypes = {
 Modal.defaultProps = {
   currentUserId: null,
 };
-
-export default Modal;

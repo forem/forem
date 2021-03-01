@@ -2,7 +2,7 @@ class Broadcast < ApplicationRecord
   VALID_BANNER_STYLES = %w[default brand success warning error].freeze
   resourcify
 
-  has_many :notifications, as: :notifiable, inverse_of: :notifiable
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
 
   validates :title, uniqueness: { scope: :type_of }, presence: true
   validates :type_of, :processed_html, presence: true

@@ -1,0 +1,35 @@
+<div class="form-group">
+  <%= form.label :group %>
+  <%= select_tag "profile_field[profile_field_group_id]",
+                 options_from_collection_for_select(
+                   ProfileFieldGroup.all,
+                   :id, :name,
+                   selected: group&.id
+                 ),
+                 { class: "form-control selectpicker profile__group-dropdown",
+                   include_blank: "" } %>
+</div>
+<div class="form-group">
+  <%= form.label :label %>
+  <%= form.text_field :label, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= form.label :description %>
+  <%= form.text_field :description, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= form.label :placeholder_text %>
+  <%= form.text_field :placeholder_text, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= form.label :input_type %>
+  <%= form.select :input_type, ProfileField.input_types.keys, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= form.label :display_area %>
+  <%= form.select :display_area, ProfileField.display_areas.keys, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= form.label :show_in_onboarding %>
+  <%= form.check_box :show_in_onboarding %>
+</div>

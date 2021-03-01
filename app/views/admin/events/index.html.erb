@@ -1,0 +1,38 @@
+<header class="flex items-center mb-6">
+  <h2 class="crayons-title">Events</h2>
+  <%= link_to "New Event", new_admin_event_path, class: "ml-auto crayons-btn crayons-btn--s" %>
+</header>
+<br>
+
+<div class="crayons-card p-6 pages__table">
+  <h3>Upcoming Events</h3>
+  <% @events.each do |event| %>
+    <% if event.starts_at.future? %>
+      <div class="flex py-2 items-center">
+        <%= event.title %>
+        <% if event.cover_image_url.present? %>
+          <img class="mx-auto mt-3" width="40" height="40" src="<%= event.cover_image_url %>" alt="event cover image">
+        <% end %>
+        <%= link_to "Edit", edit_admin_event_path(event.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
+      </div>
+      <hr>
+    <% end %>
+  <% end %>
+</div>
+<br>
+
+<div class="crayons-card p-6 pages__table">
+<h3>Past Events</h3>
+  <% @events.each do |event| %>
+    <% if !event.starts_at.future? %>
+      <div class="flex py-2 items-center">
+        <%= event.title %>
+        <% if event.cover_image_url.present? %>
+          <img class="mx-auto mt-3 justify-content-center" width="40" height="40" src="<%= event.cover_image_url %>" alt="event cover image">
+        <% end %>
+        <%= link_to "Edit", edit_admin_event_path(event.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
+      </div>
+      <hr>
+    <% end %>
+  <% end %>
+</div>

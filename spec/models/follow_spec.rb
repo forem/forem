@@ -2,17 +2,32 @@ require "rails_helper"
 
 RSpec.describe Follow, type: :model do
   let(:user) { create(:user) }
+  let(:tag) { create(:tag) }
   let(:user_2) { create(:user) }
 
   describe "validations" do
     subject { user.follow(user_2) }
 
     it { is_expected.to validate_inclusion_of(:subscription_status).in_array(%w[all_articles none]) }
+    it { is_expected.to validate_presence_of(:followable_id) }
+    it { is_expected.to validate_presence_of(:followable_type) }
+    it { is_expected.to validate_presence_of(:follower_id) }
+    it { is_expected.to validate_presence_of(:follower_type) }
+    it { is_expected.to validate_presence_of(:subscription_status) }
   end
 
   it "follows user" do
     user.follow(user_2)
     expect(user.following?(user_2)).to eq(true)
+  end
+
+  it "calculates points with explicit and implicit combined" do
+    user.follow(tag)
+    follow = described_class.last
+    follow.explicit_points = 2.0
+    follow.implicit_points = 3.0
+    follow.save
+    expect(follow.points).to eq(5.0)
   end
 
   context "when enqueuing jobs" do

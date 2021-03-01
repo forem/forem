@@ -12,7 +12,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
     it "returns CORS headers" do
       origin = "http://example.com"
-      get api_articles_path, headers: { "origin": origin }
+      get api_articles_path, headers: { origin: origin }
 
       expect(response).to have_http_status(:ok)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
@@ -159,6 +159,42 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
     end
 
+    context "with tags param" do
+      it "returns articles with any of the specified tags" do
+        create(:article, published: true)
+        get api_articles_path(tags: "javascript, css, not-existing-tag")
+        expect(response.parsed_body.size).to eq(1)
+      end
+    end
+
+    context "with tags_exclude param" do
+      it "returns articles that do not contain any of excluded tag" do
+        create(:article, published: true)
+        get api_articles_path(tags_exclude: "node, java")
+        expect(response.parsed_body.size).to eq(2)
+
+        create(:article, published: true, tags: "node")
+        get api_articles_path(tags_exclude: "node, java")
+        expect(response.parsed_body.size).to eq(2)
+      end
+    end
+
+    context "with tags and tags_exclude params" do
+      it "returns proper scope" do
+        create(:article, published: true)
+        get api_articles_path(tags: "javascript, css", tags_exclude: "node, java")
+        expect(response.parsed_body.size).to eq(1)
+      end
+    end
+
+    context "when tags and tags_exclude contain the same tag" do
+      it "returns empty set" do
+        create(:article, published: true, tags: "java")
+        get api_articles_path(tags: "java", tags_exclude: "java")
+        expect(response.parsed_body.size).to eq(0)
+      end
+    end
+
     context "with top param" do
       it "only returns fresh top articles if top param is present" do
         # TODO: slight duplication, test should be removed
@@ -270,7 +306,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   describe "GET /api/articles/:id" do
     it "returns CORS headers" do
       origin = "http://example.com"
-      get api_article_path(article.id), headers: { "origin": origin }
+      get api_article_path(article.id), headers: { origin: origin }
 
       expect(response).to have_http_status(:ok)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
@@ -350,7 +386,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   describe "GET /api/articles/:username/:slug" do
     it "returns CORS headers" do
       origin = "http://example.com"
-      get slug_api_articles_path(article.username, article.slug), headers: { "origin": origin }
+      get slug_api_articles_path(article.username, article.slug), headers: { origin: origin }
       expect(response).to have_http_status(:ok)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
       expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
@@ -445,7 +481,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns success when requesting publiched articles with public token" do
+      it "returns success when requesting published articles with public token" do
         public_token = create(:doorkeeper_access_token, resource_owner: user, scopes: "public")
         get me_api_articles_path(status: :published), params: { access_token: public_token.token }
         expect(response.media_type).to eq("application/json")
@@ -512,6 +548,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
     context "when unauthorized" do
       it "fails with no api key" do
         post api_articles_path, headers: { "content-type" => "application/json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "fails with a banned user" do
+        user.add_role(:banned)
+        post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
 
@@ -590,6 +632,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         string_params = "this_string_is_definitely_not_a_hash"
         post api_articles_path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
+
+      it "fails if params are unwrapped" do
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        post api_articles_path, params: { body_markdown: "Body", title: "Title" }.to_json, headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
@@ -795,7 +845,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(response.parsed_body["id"]).description).to eq("yoooo" * 20 + "y...")
+        expect(Article.find(response.parsed_body["id"]).description).to eq("#{'yoooo' * 20}y...")
       end
 
       it "does not raise an error if article params are missing" do

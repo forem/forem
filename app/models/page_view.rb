@@ -28,9 +28,11 @@ class PageView < ApplicationRecord
   end
 
   def record_field_test_event
+    return if FieldTest.config["experiments"].nil?
+
     return unless user_id
 
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_views_article_four_days_in_week")
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_views_article_four_hours_in_day")
+    Users::RecordFieldTestEventWorker
+      .perform_async(user_id, "user_creates_pageview")
   end
 end

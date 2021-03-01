@@ -36,6 +36,16 @@ RSpec.describe Search::Cluster, type: :service do
     end
   end
 
+  describe "::update_indexes" do
+    it "calls update_index for each search class" do
+      described_class::SEARCH_CLASSES.each do |search_class|
+        allow(search_class).to receive(:update_index)
+      end
+      described_class.update_indexes
+      expect(described_class::SEARCH_CLASSES).to all(have_received(:update_index))
+    end
+  end
+
   describe "::delete_indexes" do
     it "calls delete_index for each search class" do
       allow(Search::Client.indices).to receive(:exists).and_return(true)

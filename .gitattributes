@@ -3,3 +3,8 @@
 # means that when checking out code, LF endings get converted
 # to CRLF.
 # *.svg text eol=lf
+*.rb   diff=ruby
+*.rake diff=ruby
+*.css  diff=css
+*.html diff=html
+*.erb  diff=html

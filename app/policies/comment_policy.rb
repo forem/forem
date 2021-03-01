@@ -39,6 +39,10 @@ class CommentPolicy < ApplicationPolicy
     user_is_commentable_author?
   end
 
+  def admin_delete?
+    minimal_admin?
+  end
+
   def permitted_attributes_for_update
     %i[body_markdown receive_notifications]
   end

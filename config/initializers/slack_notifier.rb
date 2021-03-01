@@ -4,14 +4,6 @@ class NoOpHTTPClient
   end
 end
 
-def create_normal_notifier
-  Slack::Notifier.new(
-    ApplicationConfig["SLACK_WEBHOOK_URL"],
-    channel: ApplicationConfig["SLACK_CHANNEL"],
-    username: "activity_bot",
-  )
-end
-
 def create_test_channel_notifier
   return create_stubbed_notifier if ApplicationConfig["SLACK_WEBHOOK_URL"].blank?
 
@@ -41,7 +33,7 @@ def init_slack_client
                       }
                     end
 
-  webhook_url = ApplicationConfig["SLACK_WEBHOOK_URL"]
+  webhook_url = ApplicationConfig["SLACK_WEBHOOK_URL"] || ""
   use_no_op_client = Rails.env.test? || webhook_url.blank?
 
   Slack::Notifier.new(webhook_url) do

@@ -7,6 +7,9 @@
     "category": {
       "type": "keyword"
     },
+    "created_at": {
+      "type": "date"
+    },
     "last_indexed_at": {
       "type": "date"
     },

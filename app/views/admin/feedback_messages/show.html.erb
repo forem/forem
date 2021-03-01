@@ -1,0 +1,5 @@
+<%= render "style" %>
+
+<%= form_for [:admin, @feedback_message], html: { class: "mt-3" } do |f| %>
+  <%= render "feedback_message", f: f, feedback_message: @feedback_message %>
+<% end %>

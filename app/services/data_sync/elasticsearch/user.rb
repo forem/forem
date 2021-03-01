@@ -3,7 +3,6 @@ module DataSync
     class User < Base
       RELATED_DOCS = %i[
         articles
-        reactions
         podcast_episodes
         chat_channel_memberships
         comments
