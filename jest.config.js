@@ -32,7 +32,7 @@ module.exports = {
     },
   },
   moduleNameMapper: {
-    '\\.(svg|png)$': '<rootDir>/empty-module.js',
+    '\\.(svg|png|css)$': '<rootDir>/empty-module.js',
     '^@crayons(.*)$': '<rootDir>/app/javascript/crayons$1',
     '^@utilities(.*)$': '<rootDir>/app/javascript/utilities$1',
     '^@components(.*)$': '<rootDir>/app/javascript/shared/components$1',

@@ -8,6 +8,7 @@ import {
   ComboboxList,
   ComboboxOption,
 } from '@reach/combobox';
+import '@reach/combobox/styles.css';
 
 const UserListItemContent = ({ user }) => {
   return (
