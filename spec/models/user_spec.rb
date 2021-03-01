@@ -218,10 +218,13 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_presence_of(:spent_credits_count) }
       it { is_expected.to validate_presence_of(:subscribed_to_user_subscriptions_count) }
 
-      context "custom username error uniqueness error message" do
+      # rubocop:disable RSpec/NestedGroups
+      context "when evaluating the custom error message for username uniqueness" do
         subject { create(:user, username: "test_user_123") }
+
         it { is_expected.to validate_uniqueness_of(:username).with_message("test_user_123 is taken.").case_insensitive }
       end
+      # rubocop:enable RSpec/NestedGroups
 
       Authentication::Providers.username_fields.each do |username_field|
         it { is_expected.to validate_uniqueness_of(username_field).allow_nil }
@@ -484,12 +487,6 @@ RSpec.describe User, type: :model do
         end
       end
 
-      it "does not enqueue with an invalid email" do
-        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
-          user.update(email: "foobar")
-        end
-      end
-
       it "does not enqueue with an unconfirmed email" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
@@ -499,6 +496,13 @@ RSpec.describe User, type: :model do
       it "does not enqueue with a non-registered user" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(registered: false)
+        end
+      end
+
+      it "does not enqueue if Mailchimp is not enabled" do
+        allow(SiteConfig).to receive(:mailchimp_api_key).and_return(nil)
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(email: "something@real.com")
         end
       end
 

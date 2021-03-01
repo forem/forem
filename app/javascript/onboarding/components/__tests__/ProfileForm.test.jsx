@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, fireEvent } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { axe } from 'jest-axe';
@@ -130,14 +130,17 @@ describe('ProfileForm', () => {
     const { findByLabelText } = renderProfileForm();
 
     const field1 = await findByLabelText(/Education/i);
-    const field2 = await findByLabelText(/Name/i);
+    const field2 = await findByLabelText(/^Name/i);
     const field3 = await findByLabelText(/Website URL/i);
+    const field4 = await findByLabelText(/Username/i);
 
     expect(field1).toBeInTheDocument();
     expect(field2).toBeInTheDocument();
     expect(field2.getAttribute('placeholder')).toEqual('John Doe');
     expect(field3).toBeInTheDocument();
     expect(field3.getAttribute('placeholder')).toEqual('https://yoursite.com');
+    expect(field4).toBeInTheDocument();
+    expect(field4.getAttribute('value')).toEqual('username');
   });
 
   it('should render a stepper', () => {
@@ -152,44 +155,9 @@ describe('ProfileForm', () => {
     expect(queryByTestId('back-button')).toBeDefined();
   });
 
-  it('should update the text on the forward button', async () => {
-    const {
-      getByLabelText,
-      getByText,
-      queryByText,
-      findByLabelText,
-      findByText,
-    } = renderProfileForm();
+  it('should not be skippable', async () => {
+    const { getByText } = renderProfileForm();
 
-    // input the bio
-    const field2 = await findByLabelText(/Name/i);
-    expect(field2.value).toEqual('');
-    getByText(/skip for now/i);
-    expect(queryByText(/continue/i)).toBeNull();
-
-    fireEvent.keyDown(field2, {
-      key: 'Enter',
-      keyCode: 13,
-      which: 13,
-      target: { value: 'Hong Kong Fuey' },
-    });
-    expect(field2.value).toEqual('Hong Kong Fuey');
-
-    // input the location too (since we're using firevent and it doesn't call the focus events
-    // that will trigger the continue )
-    let field3 = getByLabelText(/Website URL/i);
-    expect(field3.value).toEqual('');
-    fireEvent.keyDown(field3, {
-      key: 'Enter',
-      keyCode: 13,
-      which: 13,
-      target: { value: 'www.website.com' },
-    });
-
-    field3 = await findByLabelText(/Website URL/i);
-
-    expect(field3.value).toEqual('www.website.com');
-
-    findByText(/continue/i);
+    expect(getByText(/continue/i)).toBeInTheDocument();
   });
 });

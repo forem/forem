@@ -63,5 +63,4 @@ RSpec.describe "/admin", type: :request do
       expect(response.body).not_to include("Data Update Scripts")
     end
   end
-
 end

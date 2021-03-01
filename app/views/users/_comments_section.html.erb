@@ -30,11 +30,11 @@
           <h4 class="fw-bold fs-base m-0 mb-1">
             <%= comment.commentable.title %>
           </h4>
-          <div class="inline-flex items-center fs-s gap-2">
+          <div class="flex items-center fs-s">
             <p class="color-base-80">
               <%= truncate(strip_tags(comment.processed_html), length: 64).html_safe %>
             <p>
-            <small class="color-base-60 fs-s comment-date whitespace-nowrap">
+            <small class="ml-2 color-base-60 fs-s comment-date whitespace-nowrap">
               <time datetime="<%= comment.decorate.published_timestamp %>"><%= comment.readable_publish_date %></time>
             </small>
           </div>

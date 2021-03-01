@@ -36,9 +36,9 @@ RSpec.describe "UserDestroy", type: :request do
         expect(controller.current_user).to eq nil
       end
 
-      it "redirects to root" do
+      it "redirects to sign up" do
         delete "/users/full_delete"
-        expect(response).to redirect_to "/"
+        expect(response).to redirect_to new_user_registration_path
         expect(flash[:global_notice]).to include("Your account deletion is scheduled")
       end
     end

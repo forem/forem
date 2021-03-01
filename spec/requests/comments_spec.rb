@@ -350,11 +350,9 @@ RSpec.describe "Comments", type: :request do
       it "converts field test" do
         post "/comments", params: base_comment_params
 
-        expected_args = [user.id, "user_creates_comment"]
         expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async)
       end
     end
-
   end
 
   describe "PATCH /comments/:comment_id/hide" do

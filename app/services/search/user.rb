@@ -10,7 +10,12 @@ module Search
       def search_usernames(username)
         results = search(body: username_query(username))
         results.dig("hits", "hits").map do |doc|
-          doc.dig("_source", "username")
+          source = doc["_source"]
+          {
+            "username" => source["username"],
+            "name" => source["name"],
+            "profile_image_90" => source["profile_image_90"]
+          }
         end
       end
 

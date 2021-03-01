@@ -4,11 +4,12 @@ RSpec.describe "PageViews", type: :request do
   let(:user) { create(:user, :trusted) }
   let(:article) { create(:article) }
 
-  before do
-    # rubocop:disable RSpec/AnyInstance
-    allow_any_instance_of(PageViewsController).to receive(:skip_page_view_update?).and_return(false)
-    allow_any_instance_of(PageViewsController).to receive(:skip_organic_page_view_update?).and_return(false)
-    # rubocop:enable RSpec/AnyInstance
+  def page_views_post(params)
+    sidekiq_perform_enqueued_jobs do
+      post "/page_views", params: params
+    end
+    # Also drain Articles::UpdateOrganicPageViewsWorker if any were enqueued
+    sidekiq_perform_enqueued_jobs(only: Articles::UpdateOrganicPageViewsWorker)
   end
 
   describe "POST /page_views" do
@@ -17,10 +18,9 @@ RSpec.describe "PageViews", type: :request do
         sign_in user
       end
 
-      it "creates a new page view" do
-        post "/page_views", params: {
-          article_id: article.id
-        }
+      it "creates a new page view", :aggregate_failures do
+        page_views_post(article_id: article.id)
+
         expect(article.reload.page_views.size).to eq(1)
         expect(article.reload.page_views_count).to eq(1)
         expect(user.reload.page_views.size).to eq(1)
@@ -28,18 +28,14 @@ RSpec.describe "PageViews", type: :request do
       end
 
       it "sends referrer" do
-        post "/page_views", params: {
-          article_id: article.id,
-          referrer: "test"
-        }
+        page_views_post(article_id: article.id, referrer: "test")
+
         expect(PageView.last.referrer).to eq("test")
       end
 
       it "sends user agent" do
-        post "/page_views", params: {
-          article_id: article.id,
-          user_agent: "test"
-        }
+        page_views_post(article_id: article.id, user_agent: "test")
+
         expect(PageView.last.user_agent).to eq("test")
       end
     end
@@ -51,10 +47,8 @@ RSpec.describe "PageViews", type: :request do
       end
 
       it "converts field test" do
-        post "/page_views", params: {
-          article_id: article.id,
-          referrer: "test"
-        }
+        page_views_post(article_id: article.id, referrer: "test")
+
         expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async)
           .with(user.id, "user_creates_pageview")
       end
@@ -68,19 +62,16 @@ RSpec.describe "PageViews", type: :request do
       end
 
       it "converts field test" do
-        post "/page_views", params: {
-          article_id: article.id,
-          referrer: "test"
-        }
+        page_views_post(article_id: article.id, referrer: "test")
+
         expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async)
       end
     end
 
-    context "when user not signed in" do
+    context "when user not signed in", :aggregate_failures do
       it "creates a new page view" do
-        post "/page_views", params: {
-          article_id: article.id
-        }
+        page_views_post(article_id: article.id)
+
         expect(article.reload.page_views.size).to eq(1)
         expect(article.reload.page_views_count).to eq(10)
         expect(user.reload.page_views.size).to eq(0)
@@ -88,36 +79,38 @@ RSpec.describe "PageViews", type: :request do
       end
 
       it "stores aggregate page views" do
-        post "/page_views", params: { article_id: article.id }
-        post "/page_views", params: { article_id: article.id }
+        page_views_post(article_id: article.id)
+        page_views_post(article_id: article.id)
+
         expect(article.reload.page_views_count).to eq(20)
       end
 
-      it "stores aggregate organic page views" do
-        post "/page_views", params: { article_id: article.id, referrer: "https://www.google.com/" }
-        post "/page_views", params: { article_id: article.id }
+      it "stores aggregate organic page views", :aggregate_failures do
+        page_views_post(article_id: article.id, referrer: "https://www.google.com/")
+        page_views_post(article_id: article.id)
+
         expect(article.reload.organic_page_views_count).to eq(10)
         expect(article.reload.organic_page_views_past_week_count).to eq(10)
         expect(article.reload.organic_page_views_past_month_count).to eq(10)
-        post "/page_views", params: { article_id: article.id, referrer: "https://www.google.com/" }
+
+        page_views_post(article_id: article.id, referrer: "https://www.google.com/")
+
         expect(article.reload.organic_page_views_count).to eq(20)
-        post "/page_views", params: { article_id: article.id }
+
+        page_views_post(article_id: article.id)
+
         expect(article.reload.organic_page_views_count).to eq(20)
       end
 
       it "sends referrer" do
-        post "/page_views", params: {
-          article_id: article.id,
-          referrer: "test"
-        }
+        page_views_post(article_id: article.id, referrer: "test")
+
         expect(PageView.last.referrer).to eq("test")
       end
 
       it "sends user agent" do
-        post "/page_views", params: {
-          article_id: article.id,
-          user_agent: "test"
-        }
+        page_views_post(article_id: article.id, user_agent: "test")
+
         expect(PageView.last.user_agent).to eq("test")
       end
     end
@@ -130,7 +123,7 @@ RSpec.describe "PageViews", type: :request do
       end
 
       it "updates a new page view time on page by 15" do
-        post "/page_views", params: { article_id: article.id }
+        page_views_post(article_id: article.id)
 
         put "/page_views/#{article.id}"
 
@@ -139,16 +132,16 @@ RSpec.describe "PageViews", type: :request do
 
       it "does not update an invalid page view" do
         invalid_id = article.id + 100
+
         expect { put "/page_views/#{invalid_id}" }.not_to raise_error
       end
     end
 
     context "when user is not signed in" do
       it "updates a new page view time on page by 15" do
-        post "/page_views", params: {
-          article_id: article.id
-        }
+        page_views_post(article_id: article.id)
         put "/page_views/#{article.id}"
+
         expect(PageView.last.time_tracked_in_seconds).to eq(15)
       end
     end
