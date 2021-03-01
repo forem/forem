@@ -1,6 +1,6 @@
 <h2 class="crayons-title mb-3">Overview</h2>
-<div class="grid s:grid-cols-3 s:grid-rows-4 gap-3">
-  <article style="grid-column: span 2; grid-row: span 4;">
+<div class="px-0 crayons-layout crayons-layout--2-cols crayons-layout--2-cols--1-2 crayons-layout--2-cols--inverted">
+  <article class="crayons-layout__content">
     <section class="crayons-card mb-3">
       <div class="crayons-card__body" data-controller="ahoy">
         <h3 class="crayons-subtitle-2">Welcome Checklist</h3>
@@ -40,15 +40,17 @@
       </section>
     </article>
   </article>
-  <article class="crayons-card">
-    <div class="crayons-card__header">
-      <h3 class="crayons-subtitle-2">Deployment</h3>
-    </div>
-    <div class="crayons-card__body">
-      <p class="crayons-field__description">Last Deployed</p>
-      <p><%= ForemInstance.deployed_at %></p>
-      <p class="crayons-field__description">Latest Commit ID</p>
-      <p><%= ForemInstance.latest_commit_id || "Not Available" %></p>
-    </div>
-  </article>
+  <div class="crayons-layout__sidebar-right">
+    <article class="crayons-card">
+      <div class="crayons-card__header">
+        <h3 class="crayons-subtitle-2">Deployment</h3>
+      </div>
+      <div class="crayons-card__body">
+        <p class="crayons-field__description">Last Deployed</p>
+        <p><%= ForemInstance.deployed_at %></p>
+        <p class="crayons-field__description">Latest Commit ID</p>
+        <p><%= ForemInstance.latest_commit_id || "Not Available" %></p>
+      </div>
+    </article>
+  </div>
 </div>
