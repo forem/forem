@@ -58,10 +58,6 @@ we try to reduce our bundle size with
 
 We make use of serviceworkers to cache portions of the page.
 
-We cache styles here as well as script fingerprinting, so we should increment
-the number in `/async_info/shell_version` any time we change core CSS or
-JavaScript.
-
 Serviceworkers can be controlled in the `application` tab of Chrome.
 Serviceworkers are a reverse proxy that runs in the browser in a non-blocking
 thread, supported by most major browsers. You may want to disable or bypass
