@@ -213,13 +213,15 @@ class Article < ApplicationRecord
   def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)
     stories = published.limit(number)
     stories = if time_ago == "latest"
-                stories.order(published_at: :desc).where("score > ?", -5)
+                stories.order(published_at: :desc).where("score > ?", -5).presence || stories.order(published_at: :desc)
               elsif time_ago
                 stories.order(comments_count: :desc)
-                  .where("published_at > ? AND score > ?", time_ago, -5)
+                  .where("published_at > ? AND score > ?", time_ago, -5).presence ||
+                  stories.order(comments_count: :desc)
               else
                 stories.order(last_comment_at: :desc)
-                  .where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5)
+                  .where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5).presence ||
+                  stories.order(last_comment_at: :desc)
               end
     stories = tags.size == 1 ? stories.cached_tagged_with(tags.first) : stories.tagged_with(tags)
     stories.pluck(:path, :title, :comments_count, :created_at)
