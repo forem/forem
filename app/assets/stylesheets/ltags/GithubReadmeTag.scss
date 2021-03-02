@@ -19,14 +19,14 @@
     h2 {
       font-weight: 400 !important;
       font-size: 1.2em !important;
-      line-height: 0.5em !important;
+      line-height: 1.3em !important;
       margin: 0em 0px 0.5em !important;
       img {
         width: 1.15em !important;
         max-width: 1.1em !important;
         display: inline-block;
-        float: left;
-        margin: 0.3em;
+        left: 0px;
+        margin: 0;
         vertical-align: -0.18em;
         filter: invert(0);
         filter: var(--theme-social-icon-invert, invert(0));
