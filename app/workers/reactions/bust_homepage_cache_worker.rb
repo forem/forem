@@ -12,10 +12,11 @@ module Reactions
       return unless featured_articles_ids.include?(reaction.reactable_id)
 
       reaction.reactable.touch
-      EdgeCache::Bust.call("/")
-      EdgeCache::Bust.call("/")
-      EdgeCache::Bust.call("/?i=i")
-      EdgeCache::Bust.call("?i=i")
+      cache_bust = EdgeCache::Bust.new
+      cache_bust.call("/")
+      cache_bust.call("/")
+      cache_bust.call("/?i=i")
+      cache_bust.call("?i=i")
     end
   end
 end
