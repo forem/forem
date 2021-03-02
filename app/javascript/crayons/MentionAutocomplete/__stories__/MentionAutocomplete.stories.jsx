@@ -1,5 +1,5 @@
-import { h } from 'preact';
-import { MentionAutocomplete } from '../MentionAutocomplete';
+import { h, createRef } from 'preact';
+import { MentionAutocompleteListener } from '@components/MentionAutocompleteListener';
 import notes from './mention-autocomplete.md';
 
 export default {
@@ -50,11 +50,19 @@ function fetchUsers(searchTerm) {
   );
 }
 
-export const Default = () => (
-  <div>
-    <MentionAutocomplete onSelect={() => {}} fetchSuggestions={fetchUsers} />
-  </div>
-);
+export const Default = () => {
+  const textAreaRef = createRef(null);
+  return (
+    <div>
+      <textarea ref={textAreaRef} aria-label="test text area" />
+      <MentionAutocompleteListener
+        textAreaRef={textAreaRef}
+        onSelect={() => {}}
+        fetchSuggestions={fetchUsers}
+      />
+    </div>
+  );
+};
 
 Default.story = {
   name: 'default',
