@@ -33,6 +33,21 @@ RSpec.describe Articles::Updater, type: :service do
     expect(article.tags.pluck(:name).sort).to eq(%w[productivity ruby])
   end
 
+  describe "result" do
+    it "returns success when saved" do
+      result = described_class.call(user, article.id, attributes)
+      expect(result.success).to be true
+      expect(result.article).to be_a(ArticleDecorator)
+    end
+
+    it "returns not success when not saved" do
+      invalid_attributes = { body_markdown: nil }
+      result = described_class.call(user, article.id, invalid_attributes)
+      expect(result.success).to be false
+      expect(result.article.errors.any?).to be true
+    end
+  end
+
   describe "notifications" do
     it "sends notifications when an article was published" do
       attributes[:published] = true
