@@ -101,7 +101,7 @@ GEM
       addressable (>= 2.3.2)
       nokogiri
       safely_block (>= 0.1.1)
-    ahoy_matey (3.1.0)
+    ahoy_matey (3.2.0)
       activesupport (>= 5)
       device_detector
       geocoder (>= 1.4.5)
@@ -338,7 +338,7 @@ GEM
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
     gemoji (4.0.0.rc2)
-    geocoder (1.6.4)
+    geocoder (1.6.5)
     get_process_mem (0.2.7)
       ffi (~> 1.0)
     gibbon (3.3.4)
@@ -858,7 +858,7 @@ DEPENDENCIES
   acts_as_follower!
   addressable (~> 2.7)
   ahoy_email (~> 1.1)
-  ahoy_matey (~> 3.1)
+  ahoy_matey (~> 3.2)
   amazing_print (~> 1.2)
   ancestry (~> 3.2)
   approvals (~> 0.0)
