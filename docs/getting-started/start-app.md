@@ -53,9 +53,9 @@ advanced setup to start the application by using [Overmind][overmind].
 The prerequisite is to install [Overmind][overmind], a process manager which
 takes advantage of [tmux][tmux].
 
-This will allow you to launch all your app's processes in the same terminal, navigate the logs
-of each service separately, restart each service separately and have a better
-debugging experience.
+This will allow you to launch all your app's processes in the same terminal,
+navigate the logs of each service separately, restart each service separately
+and have a better debugging experience.
 
 After installing [Overmind][overmind], launch the application:
 
@@ -68,9 +68,10 @@ overmind s -f Procfile.dev
 [Overmind][overmind] lets you easily step through the Rails application in a
 debugging session.
 
-Using the `pry` gem, you can add a `binding.pry` to set a breakpoint in the method you're trying to
-debug; the application will halt its execution there. You can then connect
-to the web server by opening a separate terminal window and typing:
+Using the `pry` gem, you can add a `binding.pry` to set a breakpoint in the
+method you're trying to debug; the application will halt its execution there.
+You can then connect to the web server by opening a separate terminal window and
+typing:
 
 ```shell
 overmind c web
@@ -80,9 +81,9 @@ This will open up a [tmux][tmux] window pane at the debugging statement
 position, which will look something like this:
 
 ```ruby
-pry(#<Admin::AdminPortalsController>)> whereami
+pry(#<Admin::OverviewController>)> whereami
 
-From: /forem/app/controllers/admin/admin_portals_controller.rb:8 Admin::AdminPortalsController#index:
+From: /forem/app/controllers/admin/overview_controller.rb:8 Admin::OverviewController#index:
 
     5: def index
     6:   a = "Hello debugger"
@@ -103,21 +104,22 @@ separate terminal window to look at those logs specifically:
 overmind c sidekiq
 ```
 
-This will open a `tmux` console, which will allow you to browse _only_ the Sidekiq logs.
+This will open a `tmux` console, which will allow you to browse _only_ the
+Sidekiq logs.
 
 There are also some handy `tmux` shortcuts that you may find useful.
 
-* The shortcut `C-b [` (_Control-b-open square bracket_) activates "scroll
-mode", which allows you to use the arrows up and down and inspect the logs.
-* The shortcut `q` deactivates "scroll mode".
+- The shortcut `C-b [` (_Control-b-open square bracket_) activates "scroll
+  mode", which allows you to use the arrows up and down and inspect the logs.
+- The shortcut `q` deactivates "scroll mode".
 
-Please refer to [tmux][tmux] documentation for more information around `tmux` configuration and for additional
-shortcuts.
+Please refer to [tmux][tmux] documentation for more information around `tmux`
+configuration and for additional shortcuts.
 
 ## Resources
 
-Other than the official [Overmind][overmind] and [tmux][tmux]
-documentation, you may find the following resources useful:
+Other than the official [Overmind][overmind] and [tmux][tmux] documentation, you
+may find the following resources useful:
 
 - [Rails quick tips #6: tmux, tmuxinator and Overmind](https://dev.to/citizen428/rails-quick-tips-6-tmux-tmuxinator-and-overmind-4850)
 - [Give Your Terminal Super Powers: tmux Cheatsheet!](https://dev.to/jacobherrington/give-your-terminal-super-powers-tmux-cheatsheet-1p6p)
