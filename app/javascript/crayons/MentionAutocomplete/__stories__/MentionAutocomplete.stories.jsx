@@ -1,4 +1,4 @@
-import { h, createRef } from 'preact';
+import { h, createRef, Fragment } from 'preact';
 import { MentionAutocompleteListener } from '@components/MentionAutocompleteListener';
 import notes from './mention-autocomplete.md';
 
@@ -53,14 +53,18 @@ function fetchUsers(searchTerm) {
 export const Default = () => {
   const textAreaRef = createRef(null);
   return (
-    <div>
-      <textarea ref={textAreaRef} aria-label="test text area" />
+    <Fragment>
+      <textarea
+        ref={textAreaRef}
+        aria-label="test text area"
+        style={{ width: '500px', maxWidth: '100%', minHeight: '200px' }}
+      />
       <MentionAutocompleteListener
         textAreaRef={textAreaRef}
         onSelect={() => {}}
         fetchSuggestions={fetchUsers}
       />
-    </div>
+    </Fragment>
   );
 };
 
