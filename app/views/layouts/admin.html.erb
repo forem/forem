@@ -53,6 +53,9 @@
   <div class="crayons-layout crayons-layout--2-cols">
     <div class="crayons-layout__left-sidebar">
       <nav class="hidden m:block">
+        <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/">
+          Overview
+        </a>
         <%= render "admin/shared/navbar", menu_items: admin_menu_items %>
         <% if FeatureFlag.enabled?(:data_update_scripts) %>
           <p class="crayons-field__description mt-4 mb-3">Tech Resources</p>
