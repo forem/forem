@@ -40,7 +40,7 @@ Rails.application.routes.draw do
     end
 
     namespace :admin do
-      get "/", to: "admin_portals#index"
+      get "/", to: "overview#index"
 
       authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
