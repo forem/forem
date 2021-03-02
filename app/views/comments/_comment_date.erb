@@ -6,7 +6,7 @@
   </time>
 
   <% if decorated_comment.edited_at.present? %>
-    • Edited
+    &bull; Edited
     <span class="hidden m:inline-block">
       on <time datetime="<%= decorated_comment.edited_timestamp %>">
       <%= decorated_comment.edited_at.strftime('%b %-d') %></time>
