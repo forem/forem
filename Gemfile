@@ -108,7 +108,7 @@ gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twilio-ruby", "~> 5.48" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
-gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
+gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.15" # Used to store secrets
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
