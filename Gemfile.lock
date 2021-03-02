@@ -794,7 +794,7 @@ GEM
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
-    ulid (1.2.0)
+    ulid (1.3.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
@@ -992,7 +992,7 @@ DEPENDENCIES
   twilio-ruby (~> 5.48)
   twitter (~> 7.0)
   uglifier (~> 4.2)
-  ulid (~> 1.2)
+  ulid (~> 1.3)
   validate_url (~> 1.0)
   vault (~> 0.15)
   vcr (~> 6.0)
