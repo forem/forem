@@ -1,5 +1,5 @@
 import { h, Fragment } from 'preact';
-import { useState, useEffect, useRef } from 'preact/hooks';
+import { useState, useEffect, useRef, useLayoutEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import {
   Combobox,
@@ -31,6 +31,7 @@ const UserListItemContent = ({ user }) => {
 
 /**
  * A component for dynamically searching for users and displaying results in a dropdown.
+ * This component should be mounted when a user has started typing a mention with the '@' symbol, and will be positioned at the given coordinates.
  *
  * @param {object} props
  * @param {string} props.startText The initial search term to use
@@ -42,7 +43,7 @@ const UserListItemContent = ({ user }) => {
  * @example
  * <MentionAutocomplete
  *    startText="name"
- *    onSelect={(user) => console.log(user)}
+ *    onSelect={handleUserMentionSelection}
  *    fetchSuggestions={fetchUsersByUsername}
  *    placementCoords={{x: 22, y: 0}}
  *    onSearchTermChange={updateSearchTermText}
@@ -79,29 +80,58 @@ export const MentionAutocomplete = ({
     inputRef.current.focus();
   }, [inputRef]);
 
+  useLayoutEffect(() => {
+    const popover = document.getElementById('mention-autocomplete-popover');
+    const closeOnClickOutsideListener = (event) => {
+      if (!popover.contains(event.target)) {
+        // User clicked outside, exit with current search term
+        onSelect(searchTerm);
+      }
+    };
+
+    document.addEventListener('click', closeOnClickOutsideListener);
+
+    return () =>
+      document.removeEventListener('click', closeOnClickOutsideListener);
+  }, [searchTerm, onSelect]);
+
+  const handleSearchTermChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+
+    if (value === '' || value.charAt(value.length - 1) === ' ') {
+      // User has deleted their selection or spaced away from a complete word - finish the autocomplete
+      onSelect(value);
+      return;
+    }
+    setSearchTerm(value);
+    onSearchTermChange(value);
+  };
+
   return (
     <Combobox
       aria-label="mention user"
       onSelect={(item) => onSelect(item)}
       className="crayons-autocomplete"
-      style={{
-        position: 'absolute',
-        top: `${placementCoords.y}px`,
-        left: `${placementCoords.x}px`,
-      }}
     >
       <ComboboxInput
         style={{
           opacity: 0.000001,
         }}
         ref={inputRef}
-        onChange={(e) => {
-          setSearchTerm(e.target.value);
-          onSearchTermChange(e.target.value);
-        }}
+        onChange={handleSearchTermChange}
         selectOnClick
       />
-      <ComboboxPopover className="crayons-autocomplete__popover">
+      <ComboboxPopover
+        className="crayons-autocomplete__popover"
+        id="mention-autocomplete-popover"
+        style={{
+          position: 'absolute',
+          top: `calc(${placementCoords.y}px + 1.5rem)`,
+          left: `${placementCoords.x}px`,
+        }}
+      >
         {users.length > 0 ? (
           <ComboboxList>
             {users.map((user) => (

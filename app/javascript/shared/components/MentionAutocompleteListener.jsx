@@ -50,7 +50,11 @@ export const MentionAutocompleteListener = ({
     textAreaRef.current.value = newValue;
   };
 
-  const handleSelection = () => {};
+  const handleSelection = (selection) => {
+    handleSearchTermChange(selection);
+    setIsAutocompleteActive(false);
+    textAreaRef.current.focus();
+  };
 
   return isAutocompleteActive ? (
     <MentionAutocomplete
