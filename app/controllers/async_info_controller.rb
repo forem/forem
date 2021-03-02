@@ -25,6 +25,8 @@ class AsyncInfoController < ApplicationController
     end
   end
 
+  # TODO: Remove these "shell_version", because they are for service worker functionality we no longer need.
+  # We are keeping these around mid-March 2021 because previously-installed service workers may still expect them.
   def shell_version
     set_surrogate_key_header "shell-version-endpoint"
     # shell_version will change on every deploy.
