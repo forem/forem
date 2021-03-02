@@ -1,229 +1,75 @@
-// Serviceworkers file. This code gets installed in users browsers and runs code before the request is made.
+// Service worker file. Renders as serviceworker.js
+
 <% unless Rails.env.test? || ENV["SKIP_SERVICEWORKERS"] == "true" %>
-  const staticCacheName = 'static-1.4';
-  const expectedCaches = [
-    staticCacheName
-  ];
+  const VERSION = "1.0" // Increment to invalidate old assets.
+  const OFFLINE_URL = "offline.html";
+  const OFFLINE_NAME = OFFLINE_URL + VERSION
 
-  self.addEventListener('install', event => {
+  self.addEventListener("install", (event) => {
+    event.waitUntil(
+      (async () => {
+
+        // Setting {cache: 'reload'} in the new request will ensure that the
+        // response isn't fulfilled from the HTTP cache; i.e., it will be from
+        // the network.
+        const offlineCache = await caches.open(OFFLINE_NAME);
+        await offlineCache.add(new Request(OFFLINE_URL, { cache: "reload" }));
+      })()
+    );
+    // Force the waiting service worker to become the active service worker.
     self.skipWaiting();
-    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent)) {
-      // iOS seems to have issues.
-      return;
-    }
-    // Populate initial serviceworker cache.
-    event.waitUntil(
-      caches.open(staticCacheName)
-      .then(cache => cache.addAll([
-        "/shell_top",                // head, top bar, inline styles
-        "/shell_bottom",             // footer
-        "/async_info/shell_version", // For comparing changes in the shell. Should be incremented with style changes.
-        "/404.html",                 // Not found page
-        "/500.html",                 // Error page
-        "/offline.html"              //Offline page
-      ]))
-    );
   });
 
-  // remove caches that aren't in expectedCaches
-  self.addEventListener('activate', event => {
+  self.addEventListener("activate", (event) => {
     event.waitUntil(
-      caches.keys().then(keys => Promise.all(
-        keys.map(key => {
-          if (!expectedCaches.includes(key)) return caches.delete(key);
-        })
-      ))
+      (async () => {
+        // Enable navigation preload if it's supported.
+        // See https://developers.google.com/web/updates/2017/02/navigation-preload
+        if ("navigationPreload" in self.registration) {
+          await self.registration.navigationPreload.enable();
+        }
+      })()
     );
+
+    // Tell the active service worker to take control of the page immediately.
+    self.clients.claim();
   });
 
-  // Create a composed streamed webpage with shell and core content
-  function createPageStream(request) {
-    const stream = new ReadableStream({
-      start(controller) {
-        Promise.all([caches.match('/shell_top'), caches.match('/shell_bottom')])
-          .then((cachedShellMatches) => {
-            const cachedShellTop = cachedShellMatches[0];
-            const cachedShellBottom = cachedShellMatches[1];
-            if (!cachedShellTop || !cachedShellBottom) { // return if shell isn't cached.
-              return
+  self.addEventListener("fetch", (event) => {
+    // We only want to call event.respondWith() if this is a navigation request
+    // for an HTML page.
+    if (event.request.mode === "navigate") {
+      event.respondWith(
+        (async () => {
+          try {
+            // First, try to use the navigation preload response if it's supported.
+            const preloadResponse = await event.preloadResponse;
+            if (preloadResponse) {
+              return preloadResponse;
             }
-            // the body url is the request url plus 'include'
-            const url = new URL(request.url);
-            url.searchParams.set('i', 'i'); // Adds ?i=i or &i=i, which is our indicator for "internal" partial page
-            const startFetch = Promise.resolve(cachedShellTop);
-            const endFetch = Promise.resolve(cachedShellBottom);
-            const middleFetch = fetch(url).then(response => {
-              if (!response.ok && response.status === 404) {
-                return caches.match('/404.html');
-              }
-              if (!response.ok && response.status != 404) {
-                return caches.match('/500.html');
-              }
-              return response;
-            }).catch(err => caches.match('/offline.html'));
 
-            function pushStream(stream) {
-              const reader = stream.getReader();
-              return reader.read().then(function process(result) {
-                if (result.done) return;
-                controller.enqueue(result.value);
-                return reader.read().then(process);
-              });
-            }
-            startFetch
-              .then(response => pushStream(response.body))
-              .then(() => middleFetch)
-              .then(response => pushStream(response.body))
-              .then(() => endFetch)
-              .then(response => pushStream(response.body))
-              .then(() => controller.close());
-          })
+            // Always try the network first.
+            const networkResponse = await fetch(event.request);
+            return networkResponse;
+          } catch (error) {
+            // catch is only triggered if an exception is thrown, which is likely
+            // due to a network error.
+            // If fetch() returns a valid HTTP response with a response code in
+            // the 4xx or 5xx range, the catch() will NOT be called.
+            console.log("Fetch failed; returning offline page instead.", error);
 
-      }
-    });
-
-    return new Response(stream, {
-      headers: {'Content-Type': 'text/html; charset=utf-8'}
-    });
-  }
-
-  function includesUnsupportedPath(url) {
-    return [
-      '/%F0%9F%92%B8',         // 💸 (hiring)
-      '/abtests',              // Skip for field_test dashboard
-      '/admin',                // Don't fetch for admin dashboard.
-      '/ahoy/',                // Skip for ahoy message redirects
-      '/api',                  // redirects
-      '/api/',                 // Don't run on API endpoints.
-      '/checkin',              // Don't run on checkin reroutes.
-      '/embed/',               // Don't fetch for embeded content.
-      '/enter',                // Don't run on registration.
-      '/feed',                 // Skip the RSS feed
-      '/i/',                   // Ignore locally stored image path
-      '/images/',              // Ignore nginx proxy path
-      '/internal',             // redirects
-      '/locale/',              // Don't run on explicit locale endpoints.
-      '/new',
-      '/oauth/',               // Skip oauth apps
-      '/onboarding',           // Don't run on onboarding.
-      '/podcasts',             // redirects
-      '/rails/mailers',        // Skip for mailers previews in development mode
-      '/robots.txt',           // Skip robots for web crawlers
-      '/rss',                  // Skip the RSS feed alternative path
-      '/search/chat_channels', // Don't run on search endpoints
-      '/search/feed_content',
-      '/search/listings',
-      '/search/reactions',
-      '/search/tags',
-      '/search/users',
-      '/search/usernames',
-      '/shell_',               // Don't fetch for shell.
-      '/shop',                 // redirects
-      '/sidekiq',              // Skip for Sidekiq dashboard
-      '/sitemap-',             // Don't run on registration.
-      '/social_previews',      // Skip for social previews
-      '/survey',               // redirects
-      '/uploads/',             // Ignore locally stored image path
-      '/users/auth',           // Don't run on authentication.
-      '/welcome',              // Don't run on welcome reroutes.
-      '/workshops',            // redirects
-    ].some(path => url.pathname.includes(path))
-  }
-
-  self.addEventListener('fetch', event => {
-    const url = new URL(event.request.url);
-    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent)) {
-      // iOS seems to have issues.
-      return;
+            const cache = await caches.open(OFFLINE_NAME);
+            const cachedResponse = await cache.match(OFFLINE_URL);
+            return cachedResponse;
+          }
+        })()
+      );
     }
 
-    <% if Rails.env.production? %>
-      // We should generally not run this in development
-      // Because the assets will not have cache-busting fingerprints.
-      // Fetch and/or JS and CSS assets for better persistence than memory cache.
-      if (url.pathname.startsWith("/assets/") || url.pathname.startsWith("/packs/")) {
-        event.respondWith(
-          caches.open(staticCacheName).then(function (cache) {
-            return cache.match(event.request).then(function (response) {
-              return (
-                response ||
-                fetch(event.request).then(function (response) {
-                  cache.put(event.request, response.clone());
-                  return response;
-                })
-              );
-            });
-          })
-        );
-      }
-    <% end %>
-
-    if (url.origin === location.origin) {
-      if (event.clientId === "" && // Not fetched via AJAX after page load.
-        event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
-        !event.request.referrer.includes('/signout_confirm') && // If this is the referrer, we instead want to flush.
-        !url.href.includes('i=i') && // Parameter representing "internal" navigation.
-        !url.href.includes('.css') && // Don't run on CSS.
-        !url.href.includes('.js') && // Don't run on JS.
-        !url.href.includes('?preview=') && // Skip for preview pages.
-        !url.href.includes('?signin') && // Don't run on sign in.
-        !includesUnsupportedPath(url) &&
-        caches.match('/shell_top') && // Ensure shell_top is in the cache.
-        caches.match('/shell_bottom') // Ensure shell_bottom is in the cache.
-    ) {
-      event.respondWith(createPageStream(event.request)); // Respond with the stream
-
-      // Ping version endpoint to see if we should fetch new shell.
-      if (!caches.match('/async_info/shell_version')) { // Check if we have a cached shell version
-        caches.open(staticCacheName)
-          .then(cache => cache.addAll([
-            "/async_info/shell_version",
-          ]));
-        return;
-      }
-
-      fetch('/async_info/shell_version').then(response => response.json()).then(json => {
-        caches.match('/async_info/shell_version')
-          .then(cachedResponse => (cachedResponse === undefined) ? {} : cachedResponse.json())
-          .then(cacheJson => {
-            if (cacheJson['version'] != json['version']) {
-              caches.open(staticCacheName)
-                .then(cache => cache.addAll([
-                  "/shell_top",
-                  "/shell_bottom",
-                  "/async_info/shell_version"
-                ]));
-            }
-          })
-      })
-      return;
-    }
-
-      // Fetch new shell upon events that signify change in session.
-      if (event.clientId === "" &&
-        (event.request.referrer.includes('/signout_confirm') || url.href.includes('?signin') || url.href.includes('/onboarding'))) {
-        caches.open(staticCacheName)
-          .then(cache => cache.addAll([
-            "/shell_top",
-            "/shell_bottom",
-          ]));
-      }
-
-      // Periodically delete assets when they pile up
-      if (Math.random() > 0.97) {
-        caches.open(staticCacheName).then(function(cache) {
-          cache.keys().then(function(keys) {
-            if (keys.length > 100) {
-              keys.forEach(function(r) {
-                if (r.url.includes("/assets/") || r.url.includes("/packs/")) {
-                  cache.delete(r);
-                };
-              });
-            }
-          });
-        });
-      }
-
-    }
+    // If our if() condition is false, then this fetch handler won't intercept the
+    // request. If there are any other fetch handlers registered, they will get a
+    // chance to call event.respondWith(). If no fetch handlers call
+    // event.respondWith(), the request will be handled by the browser as if there
+    // were no service worker involvement.
   });
 <% end %>

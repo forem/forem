@@ -71,7 +71,7 @@ way, when the search engine crawler hits an article written in Spanish, the
 crawler will see the entire page in Spanish. We will not hide comments for the
 views that real users see.
 
-## Caching and service workers
+## Caching
 
 The platform relies on edge caching, especially with regards to articles. To
 account for this, we'll need to add logic at the edge that understands what
@@ -95,11 +95,6 @@ the cache key accordingly.
 We also make use of fragment caching in several places. We need to update the
 keys for those caches to account for `locale` so we're not mistakenly serving a
 cached fragment in a different language than intended.
-
-Service workers load some parts of the UI up front, like the shell. Therefore,
-the service worker will need to be aware of language preferences so that it
-loads the shell in the correct language. We also need to make sure the service
-worker/cache is aware of a change in the user's language preference.
 
 ## Additional considerations
 
@@ -127,7 +122,6 @@ A few next steps we can take on the road to internationalization.
   We want to update this logic so these characters work in URLs as expected.
 - Allow Forem Admins to set a "default language". Currently, if a user doesn't
   select a language preference, it defaults to English ("en").
-- Update service workers and caching to interpret language preferences.
 - Clean up some code. There are some places we're hard-coding strings on the
   frontend. We'll want to explore moving that sort data to the backend to unify
   where and how we're translating.
