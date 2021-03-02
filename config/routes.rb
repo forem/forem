@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do
-    get "/locale/:locale" => "stories#index"
+    get "/locale/:locale", to: "stories#index"
     require "sidekiq/web"
     require "sidekiq_unique_jobs/web"
     require "sidekiq/cron/web"
@@ -40,7 +40,7 @@ Rails.application.routes.draw do
     end
 
     namespace :admin do
-      get "/" => "admin_portals#index"
+      get "/", to: "overview#index"
 
       authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
@@ -50,69 +50,18 @@ Rails.application.routes.draw do
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
       end
-
+      resources :buffer_updates, only: %i[create update]
+      resource :config
+      resources :feedback_messages, only: %i[index show]
+      resources :invitations, only: %i[index new create destroy]
+      resources :organization_memberships, only: %i[update destroy create]
+      resources :permissions, only: %i[index]
+      resources :reactions, only: [:update]
       namespace :users do
         resources :gdpr_delete_requests, only: %i[index destroy]
       end
-
-      resources :articles, only: %i[index show update]
-      resources :broadcasts
-      resources :buffer_updates, only: %i[create update]
-      resources :listings, only: %i[index edit update destroy]
-      resources :listing_categories, only: %i[index edit update new create
-                                              destroy], path: "listings/categories"
-
-      resources :comments, only: [:index]
-      # We do not expose the Data Update Scripts to all Forems by default.
-      constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
-        resources :data_update_scripts, only: %i[index show] do
-          member do
-            post :force_run
-          end
-        end
-      end
-      resources :events, only: %i[index create update new edit]
-      resources :feedback_messages, only: %i[index show]
-      resources :invitations, only: %i[index new create destroy]
-      resources :pages, only: %i[index new create edit update destroy]
-      resources :mods, only: %i[index update]
-      resources :moderator_actions, only: %i[index]
-      resources :navigation_links, only: %i[index update create destroy]
-      resources :privileged_reactions, only: %i[index]
-      resources :permissions, only: %i[index]
-      resources :podcasts, only: %i[index edit update destroy] do
-        member do
-          post :fetch
-          post :add_owner
-        end
-      end
-
-      # NOTE: @citizen428 The next two resources have a temporary constraint
-      # while profile generalization is still WIP
-      constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
-        resources :profile_field_groups, only: %i[update create destroy]
-        resources :profile_fields, only: %i[index update create destroy]
-      end
-      resources :reactions, only: [:update]
-      resources :response_templates, only: %i[index new edit create update destroy]
-      resources :chat_channels, only: %i[index create update destroy] do
-        member do
-          delete :remove_user
-        end
-      end
-      resources :reports, only: %i[index show], controller: "feedback_messages" do
-        collection do
-          post "send_email"
-          post "create_note"
-          post "save_status"
-        end
-      end
-      resources :tags, only: %i[index new create update edit] do
-        resource :moderator, only: %i[create destroy], module: "tags"
-      end
       resources :users, only: %i[index show edit update destroy] do
         resources :email_messages, only: :show
-
         member do
           post "banish"
           post "export_data"
@@ -125,40 +74,168 @@ Rails.application.routes.draw do
           patch "unlock_access"
         end
       end
-      resources :organization_memberships, only: %i[update destroy create]
+
+      # We do not expose the Data Update Scripts to all Forems by default.
+      constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
+        resources :data_update_scripts, only: %i[index show] do
+          member do
+            post :force_run
+          end
+        end
+      end
+
+      # NOTE: @citizen428 The next two resources have a temporary constraint
+      # while profile generalization is still WIP
+      constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
+        resources :profile_field_groups, only: %i[update create destroy]
+        resources :profile_fields, only: %i[index update create destroy]
+      end
+
+      # These redirects serve as a safeguard to prevent 404s for any Admins
+      # who have the old badge_achievement URLs bookmarked.
+      get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
+      get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
+
+      # NOTE: @ridhwana These routes below will be deleted once we remove the admin_restructure feature flag, hence they've been regrouped them in this manner.
+      resources :articles, only: %i[index show update]
+      resources :badges, only: %i[index edit update new create]
+      resources :badge_achievements, only: %i[index destroy]
+      get "/badge_achievements/award_badges", to: "badge_achievements#award"
+      post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
+      resources :broadcasts
+      resources :chat_channels, only: %i[index create update destroy] do
+        member do
+          delete :remove_user
+        end
+      end
+      resources :comments, only: [:index]
+      resources :display_ads, only: %i[index edit update new create destroy]
+      resources :events, only: %i[index create update new edit]
+      resources :html_variants, only: %i[index edit update new create show destroy]
+      resources :listings, only: %i[index edit update destroy]
+      resources :listing_categories, only: %i[index edit update new create
+                                              destroy], path: "listings/categories"
+      resources :navigation_links, only: %i[index update create destroy]
       resources :organizations, only: %i[index show] do
         member do
           patch "update_org_credits"
         end
       end
+      resources :pages, only: %i[index new create edit update destroy]
+      resources :podcasts, only: %i[index edit update destroy] do
+        member do
+          post :fetch
+          post :add_owner
+        end
+      end
+      resources :mods, only: %i[index update]
+      resources :moderator_actions, only: %i[index]
+      resources :navigation_links, only: %i[index update create destroy]
+      resources :privileged_reactions, only: %i[index]
+      resources :reports, only: %i[index show], controller: "feedback_messages" do
+        collection do
+          post "send_email"
+          post "create_note"
+          post "save_status"
+        end
+      end
+      resources :response_templates, only: %i[index new edit create update destroy]
+      resources :secrets, only: %i[index]
+      put "secrets", to: "secrets#update"
       resources :sponsorships, only: %i[index edit update new create destroy]
-      resources :welcome, only: %i[index create]
-      resources :growth, only: %i[index]
+
+      resources :tags, only: %i[index new create update edit] do
+        resource :moderator, only: %i[create destroy], module: "tags"
+      end
       resources :tools, only: %i[index create] do
         collection do
           post "bust_cache"
         end
       end
       resources :webhook_endpoints, only: :index
-      resource :config
-      resources :badges, only: %i[index edit update new create]
-      resources :display_ads, only: %i[index edit update new create destroy]
+      resources :welcome, only: %i[index create]
+      # @ridhwana end of routes that will be deleted once we remove the admin_restructure feature flag
 
-      resources :html_variants, only: %i[index edit update new create show destroy]
-      # These redirects serve as a safegaurd to prevent 404s for any Admins
-      # who have the old badge_achievement URLs bookmarked.
-      get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
-      get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
-      resources :badge_achievements, only: %i[index destroy]
-      get "/badge_achievements/award_badges", to: "badge_achievements#award"
-      post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
-      resources :secrets, only: %i[index]
-      put "secrets", to: "secrets#update"
+      # @ridhwana Feature Flag that implements the updated routes for the admin restructure is a work in progress.
+      constraints(->(_request) { FeatureFlag.enabled?(:admin_restructure) }) do
+        # People
+        # get "admin/users", to: ""
+
+        scope path: :content_manager do
+          resources :articles, only: %i[index show update] #done: index
+          resources :badges, only: %i[index edit update new create]
+          resources :badge_achievements, only: %i[index destroy]
+          get "/badge_achievements/award_badges", to: "badge_achievements#award"
+          post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
+          resources :comments, only: [:index]
+          resources :organizations, only: %i[index show] do
+            member do
+              patch "update_org_credits"
+            end
+          end
+          resources :podcasts, only: %i[index edit update destroy] do
+            member do
+              post :fetch
+              post :add_owner
+            end
+          end
+          resources :tags, only: %i[index new create update edit] do
+            resource :moderator, only: %i[create destroy], module: "tags"
+          end
+        end
+
+        scope path: :customization do
+          resources :display_ads, only: %i[index edit update new create destroy]
+          resources :html_variants, only: %i[index edit update new create show destroy]
+          resources :navigation_links, only: %i[index update create destroy]
+          resources :pages, only: %i[index new create edit update destroy]
+        end
+
+        scope path: :moderation do
+          resources :reports, only: %i[index show], controller: "feedback_messages" do
+            collection do
+              post "send_email"
+              post "create_note"
+              post "save_status"
+            end
+          end
+          resources :mods, only: %i[index update]
+          resources :moderator_actions, only: %i[index]
+          resources :privileged_reactions, only: %i[index]
+        end
+
+        scope path: :advanced do
+          resources :broadcasts
+          resources :response_templates, only: %i[index new edit create update destroy]
+          resources :secrets, only: %i[index]
+          put "secrets", to: "secrets#update"
+          resources :sponsorships, only: %i[index edit update new create destroy]
+          resources :tools, only: %i[index create] do
+            collection do
+              post "bust_cache"
+            end
+          end
+          resources :webhook_endpoints, only: :index
+        end
+
+        scope path: :app do
+          resources :chat_channels, only: %i[index create update destroy] do
+            member do
+              delete :remove_user
+            end
+          end
+          resources :events, only: %i[index create update new edit]
+          resources :listings, only: %i[index edit update destroy]
+          resources :listing_categories, only: %i[index edit update new create
+                                                  destroy], path: "listings/categories"
+          resources :welcome, only: %i[index create]
+        end
+      end
     end
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
-        get ":timeframe" => "feeds#show"
+        get ":timeframe", to: "feeds#show"
       end
     end
 
@@ -318,127 +395,127 @@ Rails.application.routes.draw do
     resources :liquid_tags, only: %i[index], defaults: { format: :json }
 
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
-    get "/search/tags" => "search#tags"
-    get "/search/chat_channels" => "search#chat_channels"
-    get "/search/listings" => "search#listings"
-    get "/search/users" => "search#users"
-    get "/search/usernames" => "search#usernames"
-    get "/search/feed_content" => "search#feed_content"
-    get "/search/reactions" => "search#reactions"
-    get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
-    get "/listings/dashboard" => "listings#dashboard"
-    get "/listings/:category" => "listings#index", :as => :listing_category
-    get "/listings/:category/:slug" => "listings#index", :as => :listing_slug
-    get "/listings/:category/:slug/:view" => "listings#index",
-        :constraints => { view: /moderate/ }
-    get "/listings/:category/:slug/delete_confirm" => "listings#delete_confirm"
-    delete "/listings/:category/:slug" => "listings#destroy"
-    get "/notifications/:filter" => "notifications#index"
-    get "/notifications/:filter/:org_id" => "notifications#index"
-    get "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#show"
-    post "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#upsert"
-    patch "/onboarding_update" => "users#onboarding_update"
-    patch "/onboarding_checkbox_update" => "users#onboarding_checkbox_update"
+    get "/search/tags", to: "search#tags"
+    get "/search/chat_channels", to: "search#chat_channels"
+    get "/search/listings", to: "search#listings"
+    get "/search/users", to: "search#users"
+    get "/search/usernames", to: "search#usernames"
+    get "/search/feed_content", to: "search#feed_content"
+    get "/search/reactions", to: "search#reactions"
+    get "/chat_channel_memberships/find_by_chat_channel_id", to: "chat_channel_memberships#find_by_chat_channel_id"
+    get "/listings/dashboard", to: "listings#dashboard"
+    get "/listings/:category", to: "listings#index", as: :listing_category
+    get "/listings/:category/:slug", to: "listings#index", as: :listing_slug
+    get "/listings/:category/:slug/:view", to: "listings#index",
+                                           constraints: { view: /moderate/ }
+    get "/listings/:category/:slug/delete_confirm", to: "listings#delete_confirm"
+    delete "/listings/:category/:slug", to: "listings#destroy"
+    get "/notifications/:filter", to: "notifications#index"
+    get "/notifications/:filter/:org_id", to: "notifications#index"
+    get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
+    post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
+    patch "/onboarding_update", to: "users#onboarding_update"
+    patch "/onboarding_checkbox_update", to: "users#onboarding_checkbox_update"
     get "email_subscriptions/unsubscribe"
-    post "/chat_channels/:id/moderate" => "chat_channels#moderate"
-    post "/chat_channels/:id/open" => "chat_channels#open"
-    get "/connect" => "chat_channels#index"
-    get "/connect/:slug" => "chat_channels#index"
+    post "/chat_channels/:id/moderate", to: "chat_channels#moderate"
+    post "/chat_channels/:id/open", to: "chat_channels#open"
+    get "/connect", to: "chat_channels#index"
+    get "/connect/:slug", to: "chat_channels#index"
     get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
-    post "/chat_channels/create_chat" => "chat_channels#create_chat"
-    post "/chat_channels/block_chat" => "chat_channels#block_chat"
-    post "/chat_channel_memberships/remove_membership" => "chat_channel_memberships#remove_membership"
-    post "/chat_channel_memberships/add_membership" => "chat_channel_memberships#add_membership"
-    post "/join_chat_channel" => "chat_channel_memberships#join_channel"
-    delete "/messages/:id" => "messages#destroy"
-    patch "/messages/:id" => "messages#update"
+    post "/chat_channels/create_chat", to: "chat_channels#create_chat"
+    post "/chat_channels/block_chat", to: "chat_channels#block_chat"
+    post "/chat_channel_memberships/remove_membership", to: "chat_channel_memberships#remove_membership"
+    post "/chat_channel_memberships/add_membership", to: "chat_channel_memberships#add_membership"
+    post "/join_chat_channel", to: "chat_channel_memberships#join_channel"
+    delete "/messages/:id", to: "messages#destroy"
+    patch "/messages/:id", to: "messages#update"
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
 
-    post "/pusher/auth" => "pusher#auth"
+    post "/pusher/auth", to: "pusher#auth"
 
     # Chat channel
-    patch "/chat_channels/update_channel/:id" => "chat_channels#update_channel"
-    post "/create_channel" => "chat_channels#create_channel"
+    patch "/chat_channels/update_channel/:id", to: "chat_channels#update_channel"
+    post "/create_channel", to: "chat_channels#create_channel"
 
     # Chat Channel Membership json response
-    get "/chat_channel_memberships/chat_channel_info/:id" => "chat_channel_memberships#chat_channel_info"
-    post "/chat_channel_memberships/create_membership_request" => "chat_channel_memberships#create_membership_request"
-    patch "/chat_channel_memberships/leave_membership/:id" => "chat_channel_memberships#leave_membership"
-    patch "/chat_channel_memberships/update_membership/:id" => "chat_channel_memberships#update_membership"
-    get "/channel_request_info/" => "chat_channel_memberships#request_details"
-    patch "/chat_channel_memberships/update_membership_role/:id" => "chat_channel_memberships#update_membership_role"
-    get "/join_channel_invitation/:channel_slug" => "chat_channel_memberships#join_channel_invitation"
-    post "/joining_invitation_response" => "chat_channel_memberships#joining_invitation_response"
+    get "/chat_channel_memberships/chat_channel_info/:id", to: "chat_channel_memberships#chat_channel_info"
+    post "/chat_channel_memberships/create_membership_request", to: "chat_channel_memberships#create_membership_request"
+    patch "/chat_channel_memberships/leave_membership/:id", to: "chat_channel_memberships#leave_membership"
+    patch "/chat_channel_memberships/update_membership/:id", to: "chat_channel_memberships#update_membership"
+    get "/channel_request_info/", to: "chat_channel_memberships#request_details"
+    patch "/chat_channel_memberships/update_membership_role/:id", to: "chat_channel_memberships#update_membership_role"
+    get "/join_channel_invitation/:channel_slug", to: "chat_channel_memberships#join_channel_invitation"
+    post "/joining_invitation_response", to: "chat_channel_memberships#joining_invitation_response"
 
-    get "/social_previews/article/:id" => "social_previews#article", :as => :article_social_preview
-    get "/social_previews/user/:id" => "social_previews#user", :as => :user_social_preview
-    get "/social_previews/organization/:id" => "social_previews#organization", :as => :organization_social_preview
-    get "/social_previews/tag/:id" => "social_previews#tag", :as => :tag_social_preview
-    get "/social_previews/listing/:id" => "social_previews#listing", :as => :listing_social_preview
-    get "/social_previews/comment/:id" => "social_previews#comment", :as => :comment_social_preview
+    get "/social_previews/article/:id", to: "social_previews#article", as: :article_social_preview
+    get "/social_previews/user/:id", to: "social_previews#user", as: :user_social_preview
+    get "/social_previews/organization/:id", to: "social_previews#organization", as: :organization_social_preview
+    get "/social_previews/tag/:id", to: "social_previews#tag", as: :tag_social_preview
+    get "/social_previews/listing/:id", to: "social_previews#listing", as: :listing_social_preview
+    get "/social_previews/comment/:id", to: "social_previews#comment", as: :comment_social_preview
 
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     # Settings
-    post "users/join_org" => "users#join_org"
-    post "users/leave_org/:organization_id" => "users#leave_org", :as => :users_leave_org
-    post "users/add_org_admin" => "users#add_org_admin"
-    post "users/remove_org_admin" => "users#remove_org_admin"
-    post "users/remove_from_org" => "users#remove_from_org"
+    post "users/join_org", to: "users#join_org"
+    post "users/leave_org/:organization_id", to: "users#leave_org", as: :users_leave_org
+    post "users/add_org_admin", to: "users#add_org_admin"
+    post "users/remove_org_admin", to: "users#remove_org_admin"
+    post "users/remove_from_org", to: "users#remove_from_org"
     delete "users/remove_identity", to: "users#remove_identity"
     post "users/request_destroy", to: "users#request_destroy", as: :user_request_destroy
     get "users/confirm_destroy/:token", to: "users#confirm_destroy", as: :user_confirm_destroy
     delete "users/full_delete", to: "users#full_delete", as: :user_full_delete
-    post "organizations/generate_new_secret" => "organizations#generate_new_secret"
-    post "users/api_secrets" => "api_secrets#create", :as => :users_api_secrets
-    delete "users/api_secrets/:id" => "api_secrets#destroy", :as => :users_api_secret
+    post "organizations/generate_new_secret", to: "organizations#generate_new_secret"
+    post "users/api_secrets", to: "api_secrets#create", as: :users_api_secrets
+    delete "users/api_secrets/:id", to: "api_secrets#destroy", as: :users_api_secret
     post "users/update_password", to: "users#update_password", as: :user_update_password
 
     # The priority is based upon order of creation: first created -> highest priority.
     # See how all your routes lay out with "rake routes".
 
     # You can have the root of your site routed with "root
-    get "/robots.:format" => "pages#robots"
+    get "/robots.:format", to: "pages#robots"
     get "/api", to: redirect("https://docs.forem.com/api")
-    get "/privacy" => "pages#privacy"
-    get "/terms" => "pages#terms"
-    get "/contact" => "pages#contact"
-    get "/code-of-conduct" => "pages#code_of_conduct"
-    get "/report-abuse" => "pages#report_abuse"
-    get "/welcome" => "pages#welcome"
-    get "/challenge" => "pages#challenge"
-    get "/checkin" => "pages#checkin"
-    get "/badge" => "pages#badge", :as => :pages_badge
+    get "/privacy", to: "pages#privacy"
+    get "/terms", to: "pages#terms"
+    get "/contact", to: "pages#contact"
+    get "/code-of-conduct", to: "pages#code_of_conduct"
+    get "/report-abuse", to: "pages#report_abuse"
+    get "/welcome", to: "pages#welcome"
+    get "/challenge", to: "pages#challenge"
+    get "/checkin", to: "pages#checkin"
+    get "/badge", to: "pages#badge", as: :pages_badge
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
-    get "/events" => "events#index"
+    get "/events", to: "events#index"
     get "/workshops", to: redirect("events")
-    get "/sponsors" => "pages#sponsors"
-    get "/search" => "stories#search"
-    post "articles/preview" => "articles#preview"
-    post "comments/preview" => "comments#preview"
+    get "/sponsors", to: "pages#sponsors"
+    get "/search", to: "stories#search"
+    post "articles/preview", to: "articles#preview"
+    post "comments/preview", to: "comments#preview"
 
     # These routes are required by links in the sites and will most likely to be replaced by a db page
-    get "/about" => "pages#about"
-    get "/about-listings" => "pages#about_listings"
+    get "/about", to: "pages#about"
+    get "/about-listings", to: "pages#about_listings"
     get "/security", to: "pages#bounty"
-    get "/community-moderation" => "pages#community_moderation"
-    get "/faq" => "pages#faq"
-    get "/page/post-a-job" => "pages#post_a_job"
-    get "/tag-moderation" => "pages#tag_moderation"
+    get "/community-moderation", to: "pages#community_moderation"
+    get "/faq", to: "pages#faq"
+    get "/page/post-a-job", to: "pages#post_a_job"
+    get "/tag-moderation", to: "pages#tag_moderation"
 
     # NOTE: can't remove the hardcoded URL here as SiteConfig is not available here, we should eventually
     # setup dynamic redirects, see <https://github.com/thepracticaldev/dev.to/issues/7267>
     get "/shop", to: redirect("https://shop.dev.to")
 
-    get "/mod" => "moderations#index", :as => :mod
-    get "/mod/:tag" => "moderations#index"
+    get "/mod", to: "moderations#index", as: :mod
+    get "/mod/:tag", to: "moderations#index"
 
-    post "/fallback_activity_recorder" => "ga_events#create"
+    post "/fallback_activity_recorder", to: "ga_events#create"
 
-    get "/page/:slug" => "pages#show"
+    get "/page/:slug", to: "pages#show"
 
     # TODO: [forem/teamsmash] removed the /p/information view and added a redirect for SEO purposes.
     # We need to remove this route in 2 months (11 January 2021).
@@ -457,105 +534,105 @@ Rails.application.routes.draw do
     get "/settings/publishing-from-rss", to: redirect("/settings/extensions")
     get "/settings/ux", to: redirect("/settings/customization")
 
-    get "/settings/(:tab)" => "users#edit", :as => :user_settings
-    get "/settings/:tab/:org_id" => "users#edit", :constraints => { tab: /organization/ }
-    get "/settings/:tab/:id" => "users#edit", :constraints => { tab: /response-templates/ }
-    get "/signout_confirm" => "users#signout_confirm"
-    get "/dashboard" => "dashboards#show"
+    get "/settings/(:tab)", to: "users#edit", as: :user_settings
+    get "/settings/:tab/:org_id", to: "users#edit", constraints: { tab: /organization/ }
+    get "/settings/:tab/:id", to: "users#edit", constraints: { tab: /response-templates/ }
+    get "/signout_confirm", to: "users#signout_confirm"
+    get "/dashboard", to: "dashboards#show"
     get "/dashboard/pro", to: "dashboards#pro"
     get "dashboard/pro/org/:org_id", to: "dashboards#pro", as: :dashboard_pro_org
-    get "dashboard/following" => "dashboards#following_tags"
-    get "dashboard/following_tags" => "dashboards#following_tags"
-    get "dashboard/following_users" => "dashboards#following_users"
-    get "dashboard/following_organizations" => "dashboards#following_organizations"
-    get "dashboard/following_podcasts" => "dashboards#following_podcasts"
-    get "/dashboard/subscriptions" => "dashboards#subscriptions"
-    get "/dashboard/:which" => "dashboards#followers", :constraints => { which: /user_followers/ }
-    get "/dashboard/:which/:org_id" => "dashboards#show",
-        :constraints => {
-          which: /organization/
-        }
-    get "/dashboard/:username" => "dashboards#show"
+    get "dashboard/following", to: "dashboards#following_tags"
+    get "dashboard/following_tags", to: "dashboards#following_tags"
+    get "dashboard/following_users", to: "dashboards#following_users"
+    get "dashboard/following_organizations", to: "dashboards#following_organizations"
+    get "dashboard/following_podcasts", to: "dashboards#following_podcasts"
+    get "/dashboard/subscriptions", to: "dashboards#subscriptions"
+    get "/dashboard/:which", to: "dashboards#followers", constraints: { which: /user_followers/ }
+    get "/dashboard/:which/:org_id", to: "dashboards#show",
+                                     constraints: {
+                                       which: /organization/
+                                     }
+    get "/dashboard/:username", to: "dashboards#show"
 
     # for testing rails mailers
     unless Rails.env.production?
-      get "/rails/mailers" => "rails/mailers#index"
-      get "/rails/mailers/*path" => "rails/mailers#preview"
+      get "/rails/mailers", to: "rails/mailers#index"
+      get "/rails/mailers/*path", to: "rails/mailers#preview"
     end
 
     get "/embed/:embeddable", to: "liquid_embeds#show", as: "liquid_embed"
 
     # serviceworkers
-    get "/serviceworker" => "service_worker#index"
-    get "/manifest" => "service_worker#manifest"
+    get "/serviceworker", to: "service_worker#index"
+    get "/manifest", to: "service_worker#manifest"
 
     # open search
-    get "/open-search" => "open_search#show",
-        :constraints => { format: /xml/ }
+    get "/open-search", to: "open_search#show",
+                        constraints: { format: /xml/ }
 
-    get "/shell_top" => "shell#top"
-    get "/shell_bottom" => "shell#bottom"
+    get "/shell_top", to: "shell#top"
+    get "/shell_bottom", to: "shell#bottom"
 
-    get "/new" => "articles#new"
-    get "/new/:template" => "articles#new"
+    get "/new", to: "articles#new"
+    get "/new/:template", to: "articles#new"
 
     get "/pod", to: "podcast_episodes#index"
     get "/podcasts", to: redirect("pod")
-    get "/readinglist" => "reading_list_items#index"
-    get "/readinglist/:view" => "reading_list_items#index", :constraints => { view: /archive/ }
+    get "/readinglist", to: "reading_list_items#index"
+    get "/readinglist/:view", to: "reading_list_items#index", constraints: { view: /archive/ }
 
-    get "/feed" => "articles#feed", :as => "feed", :defaults => { format: "rss" }
-    get "/feed/tag/:tag" => "articles#feed", :as => "tag_feed", :defaults => { format: "rss" }
-    get "/feed/latest" => "articles#feed", :as => "latest_feed", :defaults => { format: "rss" }
-    get "/feed/:username" => "articles#feed", :as => "user_feed", :defaults => { format: "rss" }
-    get "/rss" => "articles#feed", :defaults => { format: "rss" }
+    get "/feed", to: "articles#feed", as: "feed", defaults: { format: "rss" }
+    get "/feed/tag/:tag", to: "articles#feed", as: "tag_feed", defaults: { format: "rss" }
+    get "/feed/latest", to: "articles#feed", as: "latest_feed", defaults: { format: "rss" }
+    get "/feed/:username", to: "articles#feed", as: "user_feed", defaults: { format: "rss" }
+    get "/rss", to: "articles#feed", defaults: { format: "rss" }
 
-    get "/tag/:tag" => "stories#index"
+    get "/tag/:tag", to: "stories#index"
     get "/t/:tag", to: "stories#index", as: :tag
     get "/t/:tag/edit", to: "tags#edit"
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
-    get "/t/:tag/top/:timeframe" => "stories#index"
-    get "/t/:tag/page/:page" => "stories#index"
-    get "/t/:tag/:timeframe" => "stories#index",
-        :constraints => { timeframe: /latest/ }
+    get "/t/:tag/top/:timeframe", to: "stories#index"
+    get "/t/:tag/page/:page", to: "stories#index"
+    get "/t/:tag/:timeframe", to: "stories#index",
+                              constraints: { timeframe: /latest/ }
 
-    get "/badge/:slug" => "badges#show", :as => :badge
+    get "/badge/:slug", to: "badges#show", as: :badge
 
-    get "/top/:timeframe" => "stories#index"
+    get "/top/:timeframe", to: "stories#index"
 
-    get "/:timeframe" => "stories#index", :constraints => { timeframe: /latest/ }
+    get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest/ }
 
-    get "/:username/series" => "collections#index", :as => "user_series"
-    get "/:username/series/:id" => "collections#show"
+    get "/:username/series", to: "collections#index", as: "user_series"
+    get "/:username/series/:id", to: "collections#show"
 
     # Legacy comment format (might still be floating around app, and external links)
-    get "/:username/:slug/comments" => "comments#index"
-    get "/:username/:slug/comments/:id_code" => "comments#index"
-    get "/:username/:slug/comments/:id_code/edit" => "comments#edit"
-    get "/:username/:slug/comments/:id_code/delete_confirm" => "comments#delete_confirm"
+    get "/:username/:slug/comments", to: "comments#index"
+    get "/:username/:slug/comments/:id_code", to: "comments#index"
+    get "/:username/:slug/comments/:id_code/edit", to: "comments#edit"
+    get "/:username/:slug/comments/:id_code/delete_confirm", to: "comments#delete_confirm"
 
     # Proper link format
-    get "/:username/comment/:id_code" => "comments#index"
-    get "/:username/comment/:id_code/edit" => "comments#edit"
-    get "/:username/comment/:id_code/delete_confirm" => "comments#delete_confirm"
-    get "/:username/comment/:id_code/mod" => "moderations#comment"
+    get "/:username/comment/:id_code", to: "comments#index"
+    get "/:username/comment/:id_code/edit", to: "comments#edit"
+    get "/:username/comment/:id_code/delete_confirm", to: "comments#delete_confirm"
+    get "/:username/comment/:id_code/mod", to: "moderations#comment"
     get "/:username/comment/:id_code/settings", to: "comments#settings"
 
-    get "/:username/:slug/:view" => "stories#show",
-        :constraints => { view: /moderate/ }
-    get "/:username/:slug/mod" => "moderations#article"
-    get "/:username/:slug/actions_panel" => "moderations#actions_panel"
-    get "/:username/:slug/manage" => "articles#manage"
-    get "/:username/:slug/edit" => "articles#edit"
-    get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
-    get "/:username/:slug/stats" => "articles#stats"
-    get "/:username/:view" => "stories#index",
-        :constraints => { view: /comments|moderate|admin/ }
-    get "/:username/:slug" => "stories#show"
-    get "/:sitemap" => "sitemaps#show",
-        :constraints => { format: /xml/, sitemap: /sitemap-.+/ }
-    get "/:username" => "stories#index", :as => "user_profile"
+    get "/:username/:slug/:view", to: "stories#show",
+                                  constraints: { view: /moderate/ }
+    get "/:username/:slug/mod", to: "moderations#article"
+    get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
+    get "/:username/:slug/manage", to: "articles#manage"
+    get "/:username/:slug/edit", to: "articles#edit"
+    get "/:username/:slug/delete_confirm", to: "articles#delete_confirm"
+    get "/:username/:slug/stats", to: "articles#stats"
+    get "/:username/:view", to: "stories#index",
+                            constraints: { view: /comments|moderate|admin/ }
+    get "/:username/:slug", to: "stories#show"
+    get "/:sitemap", to: "sitemaps#show",
+                     constraints: { format: /xml/, sitemap: /sitemap-.+/ }
+    get "/:username", to: "stories#index", as: "user_profile"
 
     root "stories#index"
   end

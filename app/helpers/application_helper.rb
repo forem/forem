@@ -292,4 +292,8 @@ module ApplicationHelper
   def admin_config_description(content)
     tag.p(content, class: "crayons-field__description") unless content.empty?
   end
+
+  def role_display_name(role)
+    role.name == "banned" ? "Suspended" : role.name.titlecase
+  end
 end

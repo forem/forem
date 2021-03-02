@@ -133,10 +133,9 @@ class Article < ApplicationRecord
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
   scope :active_help, lambda {
-    published
-      .cached_tagged_with("help")
-      .order(created_at: :desc)
-      .where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
+    stories = published.cached_tagged_with("help").order(created_at: :desc)
+
+    stories.where(published_at: 12.hours.ago.., comments_count: ..5, score: -3..).presence || stories
   }
 
   scope :limited_column_select, lambda {

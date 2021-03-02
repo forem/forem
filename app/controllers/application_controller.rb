@@ -22,6 +22,13 @@ class ApplicationController < ActionController::Base
     error_too_many_requests(exc)
   end
 
+  rescue_from ActionController::InvalidAuthenticityToken do
+    ForemStatsClient.increment(
+      "users.invalid_authenticity_token",
+      tags: ["controller_name:#{controller_name}", "path:#{request.fullpath}"],
+    )
+  end
+
   PUBLIC_CONTROLLERS = %w[shell
                           async_info
                           ga_events
@@ -179,6 +186,8 @@ class ApplicationController < ActionController::Base
 
   def bust_content_change_caches
     EdgeCache::Bust.call("/tags/onboarding") # Needs to change when suggested_tags is edited.
+    # TODO: Remove these "shell" endpoints, because they are for service worker functionality we no longer need.
+    # We are keeping these around mid-March 2021 because previously-installed service workers may still expect them.
     EdgeCache::Bust.call("/shell_top") # Cached at edge, sent to service worker.
     EdgeCache::Bust.call("/shell_bottom") # Cached at edge, sent to service worker.
     EdgeCache::Bust.call("/async_info/shell_version") # Checks if current users should be busted.

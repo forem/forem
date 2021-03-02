@@ -32,7 +32,7 @@ describe CoverImageUploader, type: :uploader do
 
   describe "formats" do
     it "permits a set of extensions" do
-      expect(uploader.extension_whitelist).to eq(%w[jpg jpeg jpe gif png ico bmp dng])
+      expect(uploader.extension_allowlist).to eq(%w[jpg jpeg jpe gif png ico bmp dng])
     end
 
     it "permits jpegs" do

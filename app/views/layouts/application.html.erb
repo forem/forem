@@ -22,9 +22,6 @@
       </div>
     <% end %>
     <%= yield %>
-    <% if user_signed_in? %>
-      <%= render "layouts/asset_reconciliation" %>
-    <% end %>
   </div>
 </div>
 <%= render "shell/bottom" %>
