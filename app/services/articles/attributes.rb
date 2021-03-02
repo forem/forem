@@ -14,7 +14,7 @@ module Articles
     def for_update(update_edited_at: false)
       hash = {}
       ATTRIBUTES.each do |attr|
-        hash[attr] = attributes[attr] if attributes[attr]
+        hash[attr] = attributes[attr] if attributes.key?(attr)
       end
       # don't reset the collection when no series was passed
       hash[:collection] = collection if attributes.key?(:series)

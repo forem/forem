@@ -13,6 +13,13 @@ RSpec.describe Articles::Attributes, type: :service do
       end
       let(:attrs_for_update) { described_class.new(few_attributes, user).for_update }
 
+      it "has attributes that were passed as nils" do
+        few_attributes[:title] = nil
+        attrs = described_class.new(few_attributes, user).for_update
+        expect(attrs.key?(:title)).to be true
+        expect(attrs[:title]).to be nil
+      end
+
       it "doesn't have attributes that were not passed" do
         expect(attrs_for_update.key?(:title)).to be false
         expect(attrs_for_update.key?(:video_thumbnail_url)).to be false
