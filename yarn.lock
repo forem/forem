@@ -18143,10 +18143,10 @@ supports-hyperlinks@^2.0.0:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
 
-svgo@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/svgo/-/svgo-2.1.0.tgz#1de9a194906fa414403f0f928685132c753f6f96"
-  integrity sha512-f5iEvWkSesVHPqBBc26s9/9LFKJZ+4aWPpOVX0uxXz/39SlNL4XuwfhOWsqOS5Q1j7Z6WLayCF/s1lISeAHjwA==
+svgo@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/svgo/-/svgo-2.2.0.tgz#36bc3950507fd06e210493b8bc7722c1e14b1213"
+  integrity sha512-78w27VB+Vvca8TNRZrpbN70OTaVXgyQKm/rBiEqFPZmEJkn6i3PqEgIniPqPY6H2kFevakixAfBaQlwuStZuBA==
   dependencies:
     "@trysound/sax" "0.1.1"
     chalk "^4.1.0"
