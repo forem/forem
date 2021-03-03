@@ -6,7 +6,7 @@
       <%= group_name.to_s.gsub("_", " ").titleize %>
     </a>
   <% else %>
-    <div><%= group_name.to_s.gsub("_", " ").titleize %></div>
+    <div class="ml-2"><%= group_name.to_s.gsub("_", " ").titleize %></div>
     <% group.each do |item| %>
       <a class="crayons-link crayons-link--block ml-6"
          href="/admin/<%= group_name %>/<%= item[:controller] %>"
