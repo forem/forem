@@ -1,0 +1,14 @@
+<header class="mb-3">
+  <h2 class="crayons-title"><%= child_nav_items[:name].to_s.titleize %></h2>
+  <div class="block s:flex items-center space-between">
+    <nav class="crayons-tabs crayons-tabs--wrapped">
+      <% child_nav_items[:children].each do |item| %>
+        <a
+          href="/admin/<%= request.path.split("/")[- 2] %>/<%= item[:controller] %>"
+          class="crayons-tabs__item <%= "crayons-tabs__item--current" if request.path.split("/")[-1]&.match?(item[:controller]) %>" <>
+          <%= item[:name].to_s.titleize %>
+        </a>
+      <% end %>
+    </nav>
+  </div>
+</header>
