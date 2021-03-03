@@ -699,46 +699,28 @@ RSpec.describe Article, type: :model do
 
   describe ".active_threads" do
     let!(:filtered_article) do
-      create(:article, user: user, score: -3, tags: "discuss, watercooler")
+      create(:article, user: user, score: -2, tags: "discuss, watercooler")
     end
 
-    let!(:unfiltered_article) do
-      create(:article, user: user, score: -10, tags: "discuss, watercooler")
-    end
-
-    it "returns the latest published article in descending order" do
+    it "returns the latest published article within the score constraints" do
       articles = described_class.active_threads("discuss", "latest", 1)
       expect(articles.first[0]).to eq(filtered_article.path)
     end
 
-    it "returns published articles in descending order if there are no articles that match the criteria" do
-      # unfiltered_article = create(:article, user: user, published: true, score: -10)
+    it "returns the published article within the time_ago and score constraints" do
       articles = described_class.active_threads("discuss", 1.hour.ago, 1)
-      expect(articles.flatten).to include(unfiltered_article.path)
-    end
-
-    it "returns the published article filtered by time_ago and comment_count in descending order" do
-      articles = described_class.active_threads("discuss", nil, 1)
       expect(articles.first[0]).to eq(filtered_article.path)
     end
 
-    it "returns published articles filtered by comment_count if there are no aritcles that match the criteria" do
-      # unfiltered_article = create(:article, user: user,
-      #                                       published_at: 10.hours.ago, score: -10)
-      articles = described_class.active_threads("discuss", nil, 1)
-      expect(articles.flatten).to include(unfiltered_article.path)
-    end
-
-    it "returns the published article filtered by comment_count in descending order" do
+    it "returns the published article within the published_at and score constraints" do
       articles = described_class.active_threads("discuss", 6.days.ago, 1)
       expect(articles.first[0]).to eq(filtered_article.path)
     end
 
-    it "returns published articles filtered by desc comment_count if there are no aritcles that match the criteria" do
-      # unfiltered_article = create(:article, user: user,
-      #                                       published_at: 1.day.ago, score: -10)
-      articles = described_class.active_threads("discuss", 1.day.ago, 1)
-      expect(articles.first[0]).to include(unfiltered_article.path)
+    it "returns the published article with the corresponding tag even if it does not fall within the constraints" do
+      unfiltered_article = create(:article, user: user, published: true, score: -25, tags: "discuss, watercooler")
+      articles = described_class.active_threads("discuss", "latest", 1)
+      expect(articles.first[0]).to eq(unfiltered_article.path)
     end
   end
 
