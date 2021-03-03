@@ -1,163 +1,116 @@
-import { h, Fragment } from 'preact';
-import { useState, useEffect, useRef, useLayoutEffect } from 'preact/hooks';
-import PropTypes from 'prop-types';
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxPopover,
-  ComboboxList,
-  ComboboxOption,
-} from '@reach/combobox';
-import '@reach/combobox/styles.css';
-
-const UserListItemContent = ({ user }) => {
-  return (
-    <Fragment>
-      <span className="crayons-avatar crayons-avatar--l mr-2 shrink-0">
-        <img
-          src={user.profile_image_90}
-          alt=""
-          className="crayons-avatar__image "
-        />
-      </span>
-
-      <div>
-        <p className="crayons-autocomplete__name">{user.name}</p>
-        <p className="crayons-autocomplete__username">{`@${user.username}`}</p>
-      </div>
-    </Fragment>
-  );
-};
+import { h, render } from 'preact';
+import { useState, useEffect, useCallback } from 'preact/hooks';
+import { getCursorXY } from '@utilities/textAreaUtils';
 
 /**
- * A component for dynamically searching for users and displaying results in a dropdown.
- * This component should be mounted when a user has started typing a mention with the '@' symbol, and will be positioned at the given coordinates.
+ * A component which listens for an '@' keypress, and encompasses the MentionAutocomplete functionality.
+ * When an autocomplete suggestion is selected, it is inserted into the textarea.
  *
  * @param {object} props
- * @param {string} props.startText The initial search term to use
- * @param {function} props.onSelect Callback function for using the selected user
- * @param {function} props.fetchSuggestions The async call to use for the search
- * @param {object} props.placementCoords The x/y coordinates for placement of the popover
- * @param {function} props.onSearchTermChange A callback for each time the searchTerm changes
+ * @param {object} props.textAreaRef A reference to the text area where an '@' mention can take place
+ * @param {function} props.fetchSuggestions The callback to search for suggestions
  *
  * @example
- * <MentionAutocomplete
- *    startText="name"
- *    onSelect={handleUserMentionSelection}
- *    fetchSuggestions={fetchUsersByUsername}
- *    placementCoords={{x: 22, y: 0}}
- *    onSearchTermChange={updateSearchTermText}
- * />
+ * <Fragment>
+ *    <textarea
+ *      ref={textAreaRef}
+ *      aria-label="test text area"/>
+ *    <MentionAutocomplete
+ *      textAreaRef={textAreaRef}
+ *      fetchSuggestions={fetchUsers}
+ *    />
+ * </Fragment>
  */
-export const MentionAutocomplete = ({
-  startText = '',
-  onSelect,
-  fetchSuggestions,
-  placementCoords,
-  onSearchTermChange,
-}) => {
-  const [searchTerm, setSearchTerm] = useState(startText);
-  const [cachedSearches, setCachedSearches] = useState({});
-  const [users, setUsers] = useState([]);
+export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
+  const [isAutocompleteActive, setIsAutocompleteActive] = useState(false);
+  const [cursorPlacementData, setCursorPlacementData] = useState({});
 
-  const inputRef = useRef(null);
+  const handleSearchTermChange = useCallback(
+    (searchTerm) => {
+      const { textBefore, textAfter } = cursorPlacementData;
+
+      const newValue = `${textBefore}@${searchTerm}${textAfter}`;
+      textAreaRef.current.value = newValue;
+    },
+    [cursorPlacementData, textAreaRef],
+  );
+
+  const handleSelection = useCallback(
+    (selection) => {
+      const { textBefore, textAfter } = cursorPlacementData;
+      const newValueUntilEndOfSearch = `${textBefore}@${selection}`;
+      textAreaRef.current.value = `${newValueUntilEndOfSearch}${textAfter}`;
+
+      const nextCursorPosition = newValueUntilEndOfSearch.length;
+      setIsAutocompleteActive(false);
+      textAreaRef.current.focus();
+      textAreaRef.current.setSelectionRange(
+        nextCursorPosition,
+        nextCursorPosition,
+      );
+    },
+    [cursorPlacementData, textAreaRef],
+  );
 
   useEffect(() => {
-    if (searchTerm.trim() !== '') {
-      if (cachedSearches[searchTerm]) {
-        setUsers(cachedSearches[searchTerm]);
-        return;
-      }
+    const keyEventListener = ({ key }) => {
+      if (key === '@') {
+        const coords = getCursorXY(
+          textAreaRef.current,
+          textAreaRef.current.selectionStart,
+        );
 
-      fetchSuggestions(searchTerm).then((fetchedUsers) => {
-        setCachedSearches({ ...cachedSearches, [searchTerm]: fetchedUsers });
-        setUsers(fetchedUsers);
-      });
-    }
-  }, [searchTerm, fetchSuggestions, cachedSearches]);
-
-  useEffect(() => {
-    inputRef.current.focus();
-  }, [inputRef]);
-
-  useLayoutEffect(() => {
-    const popover = document.getElementById('mention-autocomplete-popover');
-    const closeOnClickOutsideListener = (event) => {
-      if (!popover.contains(event.target)) {
-        // User clicked outside, exit with current search term
-        onSelect(searchTerm);
+        setCursorPlacementData({
+          ...coords,
+          textBefore: textAreaRef.current.value.substring(
+            0,
+            textAreaRef.current.selectionStart,
+          ),
+          textAfter: textAreaRef.current.value.substring(
+            textAreaRef.current.selectionStart,
+          ),
+        });
+        setIsAutocompleteActive(true);
       }
     };
 
-    document.addEventListener('click', closeOnClickOutsideListener);
+    const textArea = textAreaRef.current;
 
-    return () =>
-      document.removeEventListener('click', closeOnClickOutsideListener);
-  }, [searchTerm, onSelect]);
+    if (textArea) {
+      textArea.onkeypress = keyEventListener;
+      return () => (textArea.onkeypress = null);
+    }
+  }, [textAreaRef]);
 
-  const handleSearchTermChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-
-    if (value === '' || value.charAt(value.length - 1) === ' ') {
-      // User has deleted their selection or spaced away from a complete word - finish the autocomplete
-      onSelect(value);
+  useEffect(() => {
+    const container = document.getElementById('mention-autocomplete-container');
+    if (!container) {
       return;
     }
-    setSearchTerm(value);
-    onSearchTermChange(value);
-  };
+    if (isAutocompleteActive) {
+      import('./MentionAutocompleteCombobox').then(
+        ({ MentionAutocompleteCombobox }) => {
+          render(
+            <MentionAutocompleteCombobox
+              onSelect={handleSelection}
+              fetchSuggestions={fetchSuggestions}
+              placementCoords={cursorPlacementData}
+              onSearchTermChange={handleSearchTermChange}
+            />,
+            container,
+          );
+        },
+      );
+    } else {
+      render(null, container);
+    }
+  }, [
+    cursorPlacementData,
+    fetchSuggestions,
+    handleSearchTermChange,
+    handleSelection,
+    isAutocompleteActive,
+  ]);
 
-  return (
-    <Combobox
-      aria-label="mention user"
-      onSelect={(item) => onSelect(item)}
-      className="crayons-autocomplete"
-    >
-      <ComboboxInput
-        style={{
-          opacity: 0.000001,
-        }}
-        ref={inputRef}
-        onChange={handleSearchTermChange}
-        selectOnClick
-      />
-      <ComboboxPopover
-        className="crayons-autocomplete__popover"
-        id="mention-autocomplete-popover"
-        style={{
-          position: 'absolute',
-          top: `calc(${placementCoords.y}px + 1.5rem)`,
-          left: `${placementCoords.x}px`,
-        }}
-      >
-        {users.length > 0 ? (
-          <ComboboxList>
-            {users.map((user) => (
-              <ComboboxOption
-                value={user.username}
-                className="crayons-autocomplete__option flex items-center"
-              >
-                <UserListItemContent user={user} />
-              </ComboboxOption>
-            ))}
-          </ComboboxList>
-        ) : (
-          <span className="crayons-autocomplete__empty">No results found</span>
-        )}
-      </ComboboxPopover>
-    </Combobox>
-  );
-};
-
-MentionAutocomplete.propTypes = {
-  startText: PropTypes.string,
-  onSelect: PropTypes.func.isRequired,
-  fetchSuggestions: PropTypes.func.isRequired,
-  placementCoords: PropTypes.shape({
-    x: PropTypes.number,
-    y: PropTypes.number,
-  }).isRequired,
-  onSearchTermChange: PropTypes.func.isRequired,
+  return <span id="mention-autocomplete-container" />;
 };

@@ -1,6 +1,6 @@
 import { h, createRef, Fragment } from 'preact';
-import { MentionAutocompleteListener } from '@components/MentionAutocompleteListener';
 import notes from './mention-autocomplete.md';
+import { MentionAutocomplete } from '@crayons/MentionAutocomplete';
 
 export default {
   title: 'Components/MentionAutocomplete',
@@ -59,9 +59,8 @@ export const Default = () => {
         aria-label="test text area"
         style={{ width: '500px', maxWidth: '100%', minHeight: '200px' }}
       />
-      <MentionAutocompleteListener
+      <MentionAutocomplete
         textAreaRef={textAreaRef}
-        onSelect={() => {}}
         fetchSuggestions={fetchUsers}
       />
     </Fragment>
