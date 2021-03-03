@@ -48,9 +48,17 @@ export const MentionAutocompleteListener = ({
   };
 
   const handleSelection = (selection) => {
-    handleSearchTermChange(selection);
+    const { textBefore, textAfter } = cursorPlacementData;
+    const newValueUntilEndOfSearch = `${textBefore}@${selection}`;
+    textAreaRef.current.value = `${newValueUntilEndOfSearch}${textAfter}`;
+
+    const nextCursorPosition = newValueUntilEndOfSearch.length;
     setIsAutocompleteActive(false);
     textAreaRef.current.focus();
+    textAreaRef.current.setSelectionRange(
+      nextCursorPosition,
+      nextCursorPosition,
+    );
   };
 
   return isAutocompleteActive ? (
