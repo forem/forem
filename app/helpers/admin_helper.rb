@@ -72,7 +72,7 @@ module AdminHelper
     ],
     admin_team: [{ name: "admin_team", controller: "permissions" }],
     moderation: [
-      { name: "reports", controller: "feedback_messages" },
+      { name: "reports", controller: "reports" },
       { name: "mods", controller: "mods" },
       { name: "moderator actions ads", controller: "moderator_actions" },
       { name: "privileged reactions", controller: "privileged_reactions" },
