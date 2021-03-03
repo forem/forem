@@ -58,6 +58,10 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
   useEffect(() => {
     const keyEventListener = ({ key }) => {
       if (key === '@') {
+        if (!shouldKeyPressTriggerSearch(textAreaRef.current)) {
+          return;
+        }
+
         const textAreaX = textAreaRef.current.offsetLeft;
         const cursorCoords = getCursorXY(
           textAreaRef.current,
@@ -122,4 +126,15 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
   ]);
 
   return <span id="mention-autocomplete-container" />;
+};
+
+const shouldKeyPressTriggerSearch = (textArea) => {
+  const { selectionStart, value: valueBeforeKeystroke } = textArea;
+
+  const previousCharacter = valueBeforeKeystroke.charAt(selectionStart - 1);
+  const validPreviousCharRegex = new RegExp(/[^A-Za-z0-9]/);
+
+  return (
+    previousCharacter === '' || validPreviousCharRegex.test(previousCharacter)
+  );
 };
