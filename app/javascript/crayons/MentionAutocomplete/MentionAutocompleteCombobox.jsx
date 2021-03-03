@@ -132,6 +132,7 @@ export const MentionAutocompleteCombobox = ({
         onChange={handleSearchTermChange}
         value={searchTerm}
         selectOnClick
+        autocomplete={false}
       />
       <ComboboxPopover
         className="crayons-autocomplete__popover"
