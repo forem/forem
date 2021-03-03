@@ -1,19 +1,14 @@
-<% if FeatureFlag.enabled?(:admin_restructure) %>
-  <%= render "admin/shared/tabbed_navbar", nested_menu_items: get_nested_menu_items(:content_manager, "badges") %>
-  <div class="flex justify-end mb-6">
+<header class="flex mb-6">
+  <!-- @ridhwana: temporary deuplicate header removed. Will remove this with old navigation code -->
+  <% if !FeatureFlag.enabled?(:admin_restructure) %>
+    <h2 class="crayons-title">Badges</h2>
+  <% end %>
+
+  <div class="ml-auto">
     <%= link_to "Create Badge", new_admin_badge_path, class: "btn btn-primary" %>
     <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, style: "margin-left: 20px;", class: "btn btn-primary" %>
   </div>
-<% else %>
-  <header class="flex mb-6">
-    <h2 class="crayons-title">Badges</h2>
-
-    <div class="ml-auto">
-      <%= link_to "Create Badge", new_admin_badge_path, class: "btn btn-primary" %>
-      <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, style: "margin-left: 20px;", class: "btn btn-primary" %>
-    </div>
-  </header>
-<% end %>
+</header>
 <table class="crayons-table" width="100%">
   <thead>
     <tr>

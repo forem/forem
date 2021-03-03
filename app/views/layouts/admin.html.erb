@@ -73,6 +73,15 @@
           <%= message %>
         </div>
       <% end %>
+
+      <% if FeatureFlag.enabled?(:admin_restructure) %>
+      <!-- hack to ensure that when you go to the old admin view nothing breaks -->
+        <% if request.path.split("/")[-3] == "admin" %>
+          <%= render "admin/shared/tabbed_navbar", menu_items: AdminHelper::NESTED_MENU_ITEMS %>
+        <% end %>
+      <% end %>
+
+
       <%= yield %>
       <% if @help_url %>
         <a class="admin-help-button crayons-btn crayons-btn--icon-rounded crayons-btn--s" href="<%= @help_url %>" target="_blank" rel="noopener noreferer">

@@ -1,7 +1,3 @@
-<% if FeatureFlag.enabled?(:admin_restructure) %>
-  <%= render "admin/shared/tabbed_navbar", nested_menu_items: get_nested_menu_items(:advanced, "developer tools") %>
-<% end %>
-
 <%= paginate @endpoints %>
 
 <table class="crayons-table" width="100%">
