@@ -98,14 +98,11 @@ module AdminHelper
 
   def get_nested_menu_items(group_name, child_nav_item)
     return NESTED_MENU_ITEMS[group_name.to_sym].each do |items|
-      if items[:controller] == child_nav_item
-        return items
-      end
+      return items if items[:controller] == child_nav_item
+
       if items[:children] && items[:children].length > 0
         return items[:children].each do |child|
-          if child[:controller] == child_nav_item
-            return items
-          end
+          return items if child[:controller] == child_nav_item
         end
       end
     end
