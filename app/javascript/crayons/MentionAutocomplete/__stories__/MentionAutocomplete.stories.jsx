@@ -54,7 +54,7 @@ export const Default = () => {
   const textAreaRef = createRef(null);
   return (
     <Fragment>
-      <label>
+      <label style={{ display: 'flex', flexDirection: 'column' }}>
         Enter text and type '@us' to start triggering search results
         <textarea
           ref={textAreaRef}
