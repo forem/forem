@@ -38,7 +38,7 @@ gem "field_test", "~> 0.4" # A/B testing
 gem "flipper", "~> 0.20.3" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.20.3" # Store Flipper flags in ActiveRecord
 gem "flipper-ui", "~> 0.20.3"
-gem "fog-aws", "~> 3.8" # 'fog' gem to support Amazon Web Services
+gem "fog-aws", "~> 3.9" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
