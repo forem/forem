@@ -1,6 +1,5 @@
-import { h } from 'preact';
-import { useState, useEffect } from 'preact/hooks';
-import { MentionAutocomplete } from '@crayons/MentionAutocomplete';
+import { h, render } from 'preact';
+import { useState, useEffect, useCallback } from 'preact/hooks';
 import { getCursorXY } from '@utilities/textAreaUtils';
 
 export const MentionAutocompleteListener = ({
@@ -9,6 +8,33 @@ export const MentionAutocompleteListener = ({
 }) => {
   const [isAutocompleteActive, setIsAutocompleteActive] = useState(false);
   const [cursorPlacementData, setCursorPlacementData] = useState({});
+
+  const handleSearchTermChange = useCallback(
+    (searchTerm) => {
+      const { textBefore, textAfter } = cursorPlacementData;
+
+      const newValue = `${textBefore}@${searchTerm}${textAfter}`;
+      textAreaRef.current.value = newValue;
+    },
+    [cursorPlacementData, textAreaRef],
+  );
+
+  const handleSelection = useCallback(
+    (selection) => {
+      const { textBefore, textAfter } = cursorPlacementData;
+      const newValueUntilEndOfSearch = `${textBefore}@${selection}`;
+      textAreaRef.current.value = `${newValueUntilEndOfSearch}${textAfter}`;
+
+      const nextCursorPosition = newValueUntilEndOfSearch.length;
+      setIsAutocompleteActive(false);
+      textAreaRef.current.focus();
+      textAreaRef.current.setSelectionRange(
+        nextCursorPosition,
+        nextCursorPosition,
+      );
+    },
+    [cursorPlacementData, textAreaRef],
+  );
 
   useEffect(() => {
     const keyEventListener = ({ key }) => {
@@ -40,33 +66,33 @@ export const MentionAutocompleteListener = ({
     }
   }, [textAreaRef]);
 
-  const handleSearchTermChange = (searchTerm) => {
-    const { textBefore, textAfter } = cursorPlacementData;
+  useEffect(() => {
+    const container = document.getElementById('mention-autocomplete-container');
+    if (!container) {
+      return;
+    }
+    if (isAutocompleteActive) {
+      import('@crayons/MentionAutocomplete').then(({ MentionAutocomplete }) => {
+        render(
+          <MentionAutocomplete
+            onSelect={handleSelection}
+            fetchSuggestions={fetchSuggestions}
+            placementCoords={cursorPlacementData}
+            onSearchTermChange={handleSearchTermChange}
+          />,
+          container,
+        );
+      });
+    } else {
+      render(null, container);
+    }
+  }, [
+    cursorPlacementData,
+    fetchSuggestions,
+    handleSearchTermChange,
+    handleSelection,
+    isAutocompleteActive,
+  ]);
 
-    const newValue = `${textBefore}@${searchTerm}${textAfter}`;
-    textAreaRef.current.value = newValue;
-  };
-
-  const handleSelection = (selection) => {
-    const { textBefore, textAfter } = cursorPlacementData;
-    const newValueUntilEndOfSearch = `${textBefore}@${selection}`;
-    textAreaRef.current.value = `${newValueUntilEndOfSearch}${textAfter}`;
-
-    const nextCursorPosition = newValueUntilEndOfSearch.length;
-    setIsAutocompleteActive(false);
-    textAreaRef.current.focus();
-    textAreaRef.current.setSelectionRange(
-      nextCursorPosition,
-      nextCursorPosition,
-    );
-  };
-
-  return isAutocompleteActive ? (
-    <MentionAutocomplete
-      onSelect={handleSelection}
-      fetchSuggestions={fetchSuggestions}
-      placementCoords={cursorPlacementData}
-      onSearchTermChange={handleSearchTermChange}
-    />
-  ) : null;
+  return <span id="mention-autocomplete-container" />;
 };
