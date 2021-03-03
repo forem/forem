@@ -1,14 +1,25 @@
 /* eslint-disable no-alert */
-
 export function initFlag() {
   const flagButton = document.getElementById(
     'user-profile-dropdownmenu-flag-button',
   );
+
   if (!flagButton) {
     // button not always present when this is called
     return;
   }
+
   const { profileUserId } = flagButton.dataset;
+
+  /* eslint-disable-next-line no-undef */
+  const user = userData();
+  if (!user) {
+    return;
+  }
+
+  if (user.id === parseInt(profileUserId, 10) || !user.trusted) {
+    flagButton.remove();
+  }
 
   function flag() {
     const confirmFlag = window.confirm(
@@ -43,16 +54,5 @@ export function initFlag() {
   }
 
   flagButton.addEventListener('click', flag);
-
-  /* eslint-disable-next-line no-undef */
-  const user = userData();
-  if (!user) {
-    return;
-  }
-
-  if (user.id === parseInt(profileUserId, 10)) {
-    flagButton.style.display = 'none';
-  }
 }
-
 /* eslint-enable no-alert */
