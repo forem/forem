@@ -61,7 +61,6 @@ module AdminHelper
       ]}
     ],
     advanced: [
-      { name: "advanced", controller: "broadcasts" },
       { name: "broadcasts", controller: "broadcasts" },
       { name: "response_templates", controller: "response_templates" },
       { name: "sponsorships", controller: "sponsorships" },

@@ -3,15 +3,15 @@
     <a class="crayons-link crayons-link--block"
        href="/admin/<%= group[0][:controller] %>"
     >
-      <%= group_name.to_s.titleize %>
+      <%= group_name.to_s.gsub("_", " ").titleize %>
     </a>
   <% else %>
-    <div><%= group_name %></div>
+    <div><%= group_name.to_s.gsub("_", " ").titleize %></div>
     <% group.each do |item| %>
-      <a class="crayons-link crayons-link--block"
+      <a class="crayons-link crayons-link--block ml-6"
          href="/admin/<%= group_name %>/<%= item[:controller] %>"
       >
-        -<%= item[:name].to_s.titleize %>
+        <%= item[:name].to_s.titleize %>
       </a>
     <% end %>
   <% end %>
