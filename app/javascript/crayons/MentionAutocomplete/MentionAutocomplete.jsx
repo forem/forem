@@ -77,8 +77,8 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
     const textArea = textAreaRef.current;
 
     if (textArea) {
-      textArea.onkeypress = keyEventListener;
-      return () => (textArea.onkeypress = null);
+      textArea.addEventListener('keydown', keyEventListener);
+      return () => textArea.removeEventListener('keydown', keyEventListener);
     }
   }, [textAreaRef]);
 
