@@ -50,20 +50,19 @@ const UserListItemContent = ({ user }) => {
  * />
  */
 export const MentionAutocompleteCombobox = ({
-  startText = '',
   onSelect,
   fetchSuggestions,
   placementCoords,
   onSearchTermChange,
 }) => {
-  const [searchTerm, setSearchTerm] = useState(startText);
+  const [searchTerm, setSearchTerm] = useState('');
   const [cachedSearches, setCachedSearches] = useState({});
   const [users, setUsers] = useState([]);
 
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (searchTerm.trim() !== '') {
+    if (searchTerm.trim() !== '' && searchTerm.length >= 2) {
       if (cachedSearches[searchTerm]) {
         setUsers(cachedSearches[searchTerm]);
         return;
@@ -82,6 +81,10 @@ export const MentionAutocompleteCombobox = ({
 
   useLayoutEffect(() => {
     const popover = document.getElementById('mention-autocomplete-popover');
+    if (!popover) {
+      return;
+    }
+
     const closeOnClickOutsideListener = (event) => {
       if (!popover.contains(event.target)) {
         // User clicked outside, exit with current search term
@@ -144,7 +147,11 @@ export const MentionAutocompleteCombobox = ({
             ))}
           </ComboboxList>
         ) : (
-          <span className="crayons-autocomplete__empty">No results found</span>
+          <span className="crayons-autocomplete__empty">
+            {searchTerm.length >= 2
+              ? 'No results found'
+              : 'Type to search for a user'}
+          </span>
         )}
       </ComboboxPopover>
     </Combobox>
@@ -152,7 +159,6 @@ export const MentionAutocompleteCombobox = ({
 };
 
 MentionAutocompleteCombobox.propTypes = {
-  startText: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
   fetchSuggestions: PropTypes.func.isRequired,
   placementCoords: PropTypes.shape({

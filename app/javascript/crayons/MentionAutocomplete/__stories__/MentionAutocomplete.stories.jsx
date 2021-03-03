@@ -11,32 +11,32 @@ function fetchUsers(searchTerm) {
   const exampleApiResult = {
     result: [
       {
-        username: 'u_one',
+        username: 'user_one',
         name: 'User One First Name Last Name',
         profile_image_90: '/images/apple-icon.png',
       },
       {
-        username: 'u_two',
+        username: 'user_two',
         name: 'User Two',
         profile_image_90: '/images/apple-icon.png',
       },
       {
-        username: 'u_three',
+        username: 'user_three',
         name: 'User Three',
         profile_image_90: '/images/apple-icon.png',
       },
       {
-        username: 'u_four',
+        username: 'user_four',
         name: 'User Four',
         profile_image_90: '/images/apple-icon.png',
       },
       {
-        username: 'u_five',
+        username: 'user_five',
         name: 'User Five',
         profile_image_90: '/images/apple-icon.png',
       },
       {
-        username: 'u_six',
+        username: 'user_six',
         name: 'User Six First Name Last Name Longer',
         profile_image_90: '/images/apple-icon.png',
       },
@@ -54,11 +54,15 @@ export const Default = () => {
   const textAreaRef = createRef(null);
   return (
     <Fragment>
-      <textarea
-        ref={textAreaRef}
-        aria-label="test text area"
-        style={{ width: '500px', maxWidth: '100%', minHeight: '200px' }}
-      />
+      <label>
+        Enter text and type '@us' to start triggering search results
+        <textarea
+          ref={textAreaRef}
+          aria-label="test text area"
+          style={{ width: '500px', maxWidth: '100%', minHeight: '200px' }}
+        />
+      </label>
+
       <MentionAutocomplete
         textAreaRef={textAreaRef}
         fetchSuggestions={fetchUsers}
