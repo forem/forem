@@ -1,13 +1,16 @@
 class Device < ApplicationRecord
   belongs_to :user
 
+  IOS = "iOS".freeze
+  ANDROID = "Android".freeze
+
   validates :token, uniqueness: { scope: %i[user_id platform app_bundle] }
 
   def create_notification(title, body, payload)
     case platform
-    when "iOS"
+    when IOS
       ios_notification(title, body, payload)
-    when "Android"
+    when ANDROID
       android_notification(title, body, payload)
     end
   end
@@ -19,7 +22,7 @@ class Device < ApplicationRecord
     # [@forem/backend] `.where().first` is necessary because we use Redis data storage
     # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
     # rubocop:disable Rails/FindBy
-    n.app = Rpush::Apns2::App.where(name: app_bundle).first || recreate_ios_app
+    n.app = Rpush::Apns2::App.where(name: app_bundle).first || recreate_ios_app!
     # rubocop:enable Rails/FindBy
 
     n.device_token = token
@@ -42,7 +45,7 @@ class Device < ApplicationRecord
     # [@forem/backend] `.where().first` is necessary because we use Redis data storage
     # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
     # rubocop:disable Rails/FindBy
-    n.app = Rpush::Gcm::App.where(name: app_bundle).first || recreate_android_app
+    n.app = Rpush::Gcm::App.where(name: app_bundle).first || recreate_android_app!
     # rubocop:enable Rails/FindBy
 
     n.registration_ids = [token]

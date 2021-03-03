@@ -12,6 +12,8 @@ module PushNotifications
     end
 
     def call
+      return unless FeatureFlag.enabled?(:mobile_notifications)
+
       @user.devices.each do |device|
         device.create_notification(@title, @body, @payload)
       end
