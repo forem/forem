@@ -58,7 +58,6 @@ export const Default = () => {
         Enter text and type '@us' to start triggering search results
         <textarea
           ref={textAreaRef}
-          aria-label="test text area"
           style={{ width: '500px', maxWidth: '100%', minHeight: '200px' }}
         />
       </label>
