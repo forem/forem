@@ -8,6 +8,7 @@
 @import 'base/layout';
 @import 'base/typography';
 
+@import 'components/autocomplete';
 @import 'components/avatars';
 @import 'components/banners';
 @import 'components/buttons';
@@ -32,6 +33,5 @@
 @import 'components/tabs';
 @import 'components/tags';
 @import 'components/tooltips';
-@import 'components/autocomplete.scss';
 
 @import 'config/generator';
