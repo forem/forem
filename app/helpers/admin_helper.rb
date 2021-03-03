@@ -58,7 +58,25 @@ module AdminHelper
       { name: "badges", controller: "badges", children: [
         { name: "badge library", controller: "badges" },
         { name: "badge achievements", controller: "badge_achievements" }
-      ]}
+      ]},
+      { name: "organizations", controller: "organizations" },
+      { name: "podcasts", controller: "podcasts" },
+      { name: "tags", controller: "tags" },
+    ],
+    customization: [
+      { name: "config", controller: "config" },
+      { name: "HTML variants", controller: "html_variants" },
+      { name: "display ads", controller: "display_ads" },
+      { name: "navigation links", controller: "navigation_links" },
+      { name: "pages", controller: "pages" }
+    ],
+    admin_team: [{ name: "admin_team", controller: "permissions" }],
+    moderation: [
+      { name: "reports", controller: "feedback_messages" },
+      { name: "mods", controller: "mods" },
+      { name: "moderator actions ads", controller: "moderator_actions" },
+      { name: "privileged reactions", controller: "privileged_reactions" },
+      # { name: "interaction limits", controller: "" }
     ],
     advanced: [
       { name: "broadcasts", controller: "broadcasts" },
@@ -69,6 +87,12 @@ module AdminHelper
         { name: "vault secrets", controller: "secrets" },
         { name: "webhooks", controller: "webhook_endpoints" }
       ]}
+    ],
+    apps: [
+      { name: "chat channels", controller: "chat_channels" },
+      { name: "events", controller: "events" },
+      { name: "listings", controller: "listings" },
+      { name: "welcome", controller: "welcome" }
     ]
   }
 
