@@ -1,3 +1,7 @@
+<% if FeatureFlag.enabled?(:admin_restructure) %>
+  <%= render "admin/shared/tabbed_navbar", nested_menu_items: get_nested_menu_items(:advanced, "developer tools") %>
+<% end %>
+
 <div class="crayons-card p-6 mb-6">
   <h2 class="crayons-title mb-4">General Purpose URL Purge</h2>
   <p class="mb-2">For a page that should 404. This will purge the page via Fastly.</p>

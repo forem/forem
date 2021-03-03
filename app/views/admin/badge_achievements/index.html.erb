@@ -1,7 +1,9 @@
 <div class="alert alert-warning">
   <strong>Note: If you remove a badge that is automatically rewarded it will simply be re-awarded despite being removed.</strong>
 </div>
-
+<% if FeatureFlag.enabled?(:admin_restructure) %>
+  <%= render "admin/shared/tabbed_navbar", nested_menu_items: get_nested_menu_items(:content_manager, "badges") %>
+<% end %>
 <div class="flex">
   <div>
     <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>

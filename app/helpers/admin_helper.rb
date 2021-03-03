@@ -72,4 +72,10 @@ module AdminHelper
       ]}
     ]
   }
+
+  def get_nested_menu_items(group_name, child_nav_item)
+    return NESTED_MENU_ITEMS[group_name].detect {
+      |items| items[:name] == child_nav_item
+    }
+  end
 end
