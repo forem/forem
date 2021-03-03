@@ -42,7 +42,7 @@ describe('<MentionAutocomplete />', () => {
     expect(container.innerHTML).toMatchSnapshot();
   });
 
-  it('should not fetch suggestions with less than two characters', async () => {
+  it('should not fetch suggestions with less than three characters', async () => {
     const mockFetchSuggestions = jest.fn();
 
     const { getByLabelText } = render(
@@ -57,11 +57,11 @@ describe('<MentionAutocomplete />', () => {
 
     expect(mockFetchSuggestions.mock.calls.length).toBe(0);
     const input = getByLabelText('mention user');
-    userEvent.type(input, 'e');
+    userEvent.type(input, 'us');
     expect(mockFetchSuggestions.mock.calls.length).toBe(0);
   });
 
-  it('should fetch and display suggestions when search text changes to more than 2 characters', async () => {
+  it('should fetch and display suggestions when search text changes to more than 3 characters', async () => {
     const mockMatchingUser = {
       username: 'user_1',
       name: 'User One',
@@ -83,7 +83,7 @@ describe('<MentionAutocomplete />', () => {
     expect(mockFetchSuggestions.mock.calls.length).toBe(0);
 
     const input = getByLabelText('mention user');
-    userEvent.type(input, 'us');
+    userEvent.type(input, 'use');
     expect(mockFetchSuggestions.mock.calls.length).toBe(1);
 
     await waitFor(() => expect(getByText('User One')).toBeInTheDocument());

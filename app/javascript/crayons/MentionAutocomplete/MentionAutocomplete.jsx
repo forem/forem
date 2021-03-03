@@ -26,13 +26,13 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
   const [isAutocompleteActive, setIsAutocompleteActive] = useState(false);
   const [cursorPlacementData, setCursorPlacementData] = useState({});
 
-  const isSmallScreen = useMediaQuery(`(width >= ${BREAKPOINTS.Small}px)`);
+  const isSmallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Small}px)`);
 
   const handleSearchTermChange = useCallback(
     (searchTerm) => {
       const { textBefore, textAfter } = cursorPlacementData;
 
-      const newValue = `${textBefore}@${searchTerm}${textAfter}`;
+      const newValue = `${textBefore}${searchTerm}${textAfter}`;
       textAreaRef.current.value = newValue;
     },
     [cursorPlacementData, textAreaRef],
@@ -41,7 +41,7 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
   const handleSelection = useCallback(
     (selection) => {
       const { textBefore, textAfter } = cursorPlacementData;
-      const newValueUntilEndOfSearch = `${textBefore}@${selection}`;
+      const newValueUntilEndOfSearch = `${textBefore}${selection}`;
       textAreaRef.current.value = `${newValueUntilEndOfSearch}${textAfter}`;
 
       const nextCursorPosition = newValueUntilEndOfSearch.length;
@@ -89,7 +89,7 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
       textArea.addEventListener('keydown', keyEventListener);
       return () => textArea.removeEventListener('keydown', keyEventListener);
     }
-  }, [textAreaRef]);
+  }, [textAreaRef, isSmallScreen]);
 
   useEffect(() => {
     const container = document.getElementById('mention-autocomplete-container');

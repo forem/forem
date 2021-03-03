@@ -55,21 +55,27 @@ export const MentionAutocompleteCombobox = ({
   placementCoords,
   onSearchTermChange,
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('@');
   const [cachedSearches, setCachedSearches] = useState({});
   const [users, setUsers] = useState([]);
 
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (searchTerm.trim() !== '' && searchTerm.length >= 2) {
-      if (cachedSearches[searchTerm]) {
-        setUsers(cachedSearches[searchTerm]);
+    if (searchTerm.length >= 3) {
+      // Remove the '@' symbol for search
+      const trimmedSearchTerm = searchTerm.substring(1);
+
+      if (cachedSearches[trimmedSearchTerm]) {
+        setUsers(cachedSearches[trimmedSearchTerm]);
         return;
       }
 
-      fetchSuggestions(searchTerm).then((fetchedUsers) => {
-        setCachedSearches({ ...cachedSearches, [searchTerm]: fetchedUsers });
+      fetchSuggestions(trimmedSearchTerm).then((fetchedUsers) => {
+        setCachedSearches({
+          ...cachedSearches,
+          [trimmedSearchTerm]: fetchedUsers,
+        });
         setUsers(fetchedUsers);
       });
     }
@@ -103,8 +109,8 @@ export const MentionAutocompleteCombobox = ({
       target: { value },
     } = event;
 
-    if (value === '' || value.charAt(value.length - 1) === ' ') {
-      // User has deleted their selection or spaced away from a complete word - finish the autocomplete
+    if (value.charAt(value.length - 1) === ' ' || value === '') {
+      // User has spaced away from a complete word or deleted everything - finish the autocomplete
       onSelect(value);
       return;
     }
@@ -115,7 +121,7 @@ export const MentionAutocompleteCombobox = ({
   return (
     <Combobox
       aria-label="mention user"
-      onSelect={(item) => onSelect(item)}
+      onSelect={(item) => onSelect(`@${item}`)}
       className="crayons-autocomplete"
     >
       <ComboboxInput
@@ -124,6 +130,7 @@ export const MentionAutocompleteCombobox = ({
         }}
         ref={inputRef}
         onChange={handleSearchTermChange}
+        value={searchTerm}
         selectOnClick
       />
       <ComboboxPopover
