@@ -1,0 +1,18 @@
+<% menu_items.each do |group_name, group| %>
+  <% if group.length == 1 %>
+    <a class="crayons-link crayons-link--block"
+       href="/admin/<%= group[0][:controller] %>"
+    >
+      <%= group_name.to_s.titleize %>
+    </a>
+  <% else %>
+    <div><%= group_name %></div>
+    <% group.each do |item| %>
+      <a class="crayons-link crayons-link--block"
+         href="/admin/<%= group_name %>/<%= item[:controller] %>"
+      >
+        -<%= item[:name].to_s.titleize %>
+      </a>
+    <% end %>
+  <% end %>
+<% end %>

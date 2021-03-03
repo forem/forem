@@ -45,4 +45,31 @@ module AdminHelper
 
     MENU_ITEMS.dup.insert(7, PROFILE_ADMIN)
   end
+
+  # @ridhwana WIP on new admin navigation elements
+  # The outer keys in NESTED_MENU_ITEMS need to correspond to the scope of the route
+  # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
+  NESTED_MENU_ITEMS = {
+    overview: [{ name: "overview", controller: "" }],
+    people: [{ name: "people", controller: "users" }],
+    content_manager: [
+      { name: "posts", controller: "articles" },
+      { name: "comments", controller: "comments" },
+      { name: "badges", controller: "badges", children: [
+        { name: "badge library", controller: "badges" },
+        { name: "badge achievements", controller: "badge_achievements" }
+      ]}
+    ],
+    advanced: [
+      { name: "advanced", controller: "broadcasts" },
+      { name: "broadcasts", controller: "broadcasts" },
+      { name: "response_templates", controller: "response_templates" },
+      { name: "sponsorships", controller: "sponsorships" },
+      { name: "developer tools", controller: "tools", children: [
+        { name: "tools", controller: "tools" },
+        { name: "vault secrets", controller: "secrets" },
+        { name: "webhooks", controller: "webhook_endpoints" }
+      ]}
+    ]
+  }
 end
