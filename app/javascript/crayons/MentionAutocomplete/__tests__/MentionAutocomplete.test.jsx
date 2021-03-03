@@ -13,6 +13,15 @@ describe('<MentionAutocomplete />', () => {
   const mockFetchSuggestions = jest.fn();
 
   it('should have no a11y violations when rendered', async () => {
+    global.window.matchMedia = jest.fn((query) => {
+      return {
+        matches: false,
+        media: query,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      };
+    });
+
     const { container } = render(
       <Fragment>
         {testTextArea}

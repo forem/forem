@@ -1,6 +1,7 @@
 import { h, render } from 'preact';
 import { useState, useEffect, useCallback } from 'preact/hooks';
 import { getCursorXY } from '@utilities/textAreaUtils';
+import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
 
 /**
  * A component which listens for an '@' keypress, and encompasses the MentionAutocomplete functionality.
@@ -24,6 +25,8 @@ import { getCursorXY } from '@utilities/textAreaUtils';
 export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
   const [isAutocompleteActive, setIsAutocompleteActive] = useState(false);
   const [cursorPlacementData, setCursorPlacementData] = useState({});
+
+  const isSmallScreen = useMediaQuery(`(width >= ${BREAKPOINTS.Small}px)`);
 
   const handleSearchTermChange = useCallback(
     (searchTerm) => {
@@ -55,10 +58,16 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
   useEffect(() => {
     const keyEventListener = ({ key }) => {
       if (key === '@') {
-        const coords = getCursorXY(
+        const textAreaX = textAreaRef.current.offsetLeft;
+        const cursorCoords = getCursorXY(
           textAreaRef.current,
           textAreaRef.current.selectionStart,
         );
+
+        const coords = {
+          y: cursorCoords.y,
+          x: isSmallScreen ? textAreaX : cursorCoords.x,
+        };
 
         setCursorPlacementData({
           ...coords,
