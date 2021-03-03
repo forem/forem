@@ -389,7 +389,6 @@ class StoriesController < ApplicationController
       email: @user.email_public ? @user.email : nil,
       jobTitle: @user.employment_title.presence,
       description: @user.summary.presence || "404 bio not found",
-      disambiguatingDescription: user_disambiguating_description,
       worksFor: [user_works_for].compact,
       alumniOf: @user.education.presence
     }.reject { |_, v| v.blank? }
@@ -457,8 +456,8 @@ class StoriesController < ApplicationController
   end
 
   def user_works_for
-    # For further examples of the worksFor and disambiguatingDescription properties,
-    # please refer to this link: https://jsonld.com/person/
+    # For further examples of the worksFor properties, please refer to this
+    # link: https://jsonld.com/person/
     return unless @user.employer_name.presence || @user.employer_url.presence
 
     {
@@ -466,10 +465,6 @@ class StoriesController < ApplicationController
       name: @user.employer_name,
       url: @user.employer_url
     }.reject { |_, v| v.blank? }
-  end
-
-  def user_disambiguating_description
-    [@user.mostly_work_with, @user.currently_hacking_on, @user.currently_learning].compact
   end
 
   def user_same_as

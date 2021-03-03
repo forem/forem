@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe EdgeCache::BustListings, type: :service do
   let(:listing) { create(:listing) }
+  let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
   let(:paths) do
     [
@@ -15,9 +16,10 @@ RSpec.describe EdgeCache::BustListings, type: :service do
 
   before do
     allow(listing).to receive(:purge_all)
+    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
 
     paths.each do |path|
-      allow(described_class).to receive(:bust).with(path).once
+      allow(cache_bust).to receive(:call).with(path).once
     end
   end
 
@@ -27,7 +29,7 @@ RSpec.describe EdgeCache::BustListings, type: :service do
     expect(listing).to have_received(:purge_all)
 
     paths.each do |path|
-      expect(described_class).to have_received(:bust).with(path).once
+      expect(cache_bust).to have_received(:call).with(path).once
     end
   end
 end

@@ -10,6 +10,7 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
            user: user,
            body_markdown: Faker::Lorem.paragraph)
   end
+  let(:iso8601_datetime_regexp) { /^((\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z)$/ }
 
   before do
     sign_in user
@@ -19,8 +20,16 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
     expect(page).to have_css("textarea")
     expect(page).to have_text("Editing comment")
     fill_in "text-area", with: new_comment_text
+
     click_button("Submit")
+
     expect(page).to have_text(new_comment_text)
+
+    expect(page).to have_text("Edited on")
+    # using .last here because the first `<time>` element is the creation date,
+    # the second one is the time of editing
+    timestamp = page.all(".comment-date time").last[:datetime]
+    expect(timestamp).to match(iso8601_datetime_regexp)
   end
 
   context "when user edits comment on the bottom of the article" do

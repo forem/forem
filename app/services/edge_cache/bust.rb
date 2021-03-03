@@ -1,62 +1,64 @@
 module EdgeCache
   class Bust
-    TIMEFRAMES = [
-      [-> { 1.week.ago }, "week"],
-      [-> { 1.month.ago }, "month"],
-      [-> { 1.year.ago }, "year"],
-      [-> { 5.years.ago }, "infinity"],
-    ].freeze
-
-    def self.call(path)
-      bust(path)
+    def initialize
+      @provider_class = determine_provider_class
     end
 
-    class << self
-      protected
+    def self.call(*paths)
+      new.call(*paths)
+    end
 
-      def bust(path)
-        provider_class = determine_provider_class
+    def call(paths)
+      return unless @provider_class
 
-        return unless provider_class
-
-        if provider_class.respond_to?(:call)
-          provider_class.call(path)
-
-          true
-        else
-          Rails.logger.warn("#{provider_class} cannot be used without a #call implementation!")
-          ForemStatsClient.increment("edgecache_bust.invalid_provider_class",
-                                     tags: ["provider_class:#{provider_class}"])
-          false
-        end
+      paths = Array.wrap(paths)
+      paths.each do |path|
+        @provider_class.call(path)
+      rescue StandardError => e
+        Honeybadger.notify(e)
+        ForemStatsClient.increment(
+          "edgecache_bust.provider_error",
+          tags: ["provider_class:#{@provider_class}", "error_class:#{e.class}"],
+        )
       end
     end
 
-    def self.determine_provider_class
+    private
+
+    def determine_provider_class
       provider =
         if fastly_enabled?
           "fastly"
-        elsif nginx_enabled?
+        elsif nginx_enabled_and_available?
           "nginx"
         end
 
       return unless provider
 
-      const_get(provider.capitalize)
+      self.class.const_get(provider.capitalize)
     end
 
-    private_class_method :determine_provider_class
-
-    def self.fastly_enabled?
+    def fastly_enabled?
       ApplicationConfig["FASTLY_API_KEY"].present? && ApplicationConfig["FASTLY_SERVICE_ID"].present?
     end
 
-    private_class_method :fastly_enabled?
+    def nginx_enabled_and_available?
+      return false if ApplicationConfig["OPENRESTY_URL"].blank?
 
-    def self.nginx_enabled?
-      ApplicationConfig["OPENRESTY_URL"].present?
+      uri = URI.parse(ApplicationConfig["OPENRESTY_URL"])
+      http = Net::HTTP.new(uri.host, uri.port)
+      response = http.get(uri.request_uri)
+
+      return true if response.is_a?(Net::HTTPSuccess)
+    rescue StandardError
+      # If we can't connect to OpenResty, alert ourselves that it is
+      # unavailable and return false.
+      Rails.logger.error("Could not connect to OpenResty via #{ApplicationConfig['OPENRESTY_URL']}!")
+      Honeybadger.notify(e)
+      ForemStatsClient.increment("edgecache_bust.service_unavailable",
+                                 tags: ["path:#{ApplicationConfig['OPENRESTY_URL']}"])
     end
 
-    private_class_method :nginx_enabled?
+    false
   end
 end
