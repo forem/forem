@@ -51,7 +51,6 @@ Rails.application.routes.draw do
         mount flipper_ui, at: "feature_flags"
       end
       resources :buffer_updates, only: %i[create update]
-      resource :config
       resources :feedback_messages, only: %i[index show]
       resources :invitations, only: %i[index new create destroy]
       resources :organization_memberships, only: %i[update destroy create]
@@ -109,6 +108,7 @@ Rails.application.routes.draw do
         end
       end
       resources :comments, only: [:index]
+      resource :config
       resources :display_ads, only: %i[index edit update new create destroy]
       resources :events, only: %i[index create update new edit]
       resources :html_variants, only: %i[index edit update new create show destroy]
@@ -185,6 +185,7 @@ Rails.application.routes.draw do
         end
 
         scope path: :customization, as: "customization" do
+          resource :config
           resources :display_ads, only: %i[index edit update new create destroy]
           resources :html_variants, only: %i[index edit update new create show destroy]
           resources :navigation_links, only: %i[index update create destroy]

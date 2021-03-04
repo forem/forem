@@ -1,6 +1,6 @@
-<% nested_menu_items = get_nested_menu_items(request.path.split("/")[-2], request.path.split("/")[-1]) %>
+<% nested_menu_items = AdminMenu.get_nested_menu_items(request.path.split("/")[-2], request.path.split("/")[-1]) %>
 
-<% if nested_menu_items[:children].present? && nested_menu_items[:children].length > 0 %>
+<% if nested_menu_items[:children].any?%>
 
   <header class="mb-3">
     <h2 class="crayons-title"><%= nested_menu_items[:name].to_s.titleize %></h2>
