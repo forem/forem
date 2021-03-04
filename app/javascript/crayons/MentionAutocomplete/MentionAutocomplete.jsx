@@ -128,13 +128,14 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
   return <span id="mention-autocomplete-container" />;
 };
 
+const VALID_PREVIOUS_CHAR_REGEX = new RegExp(/[^A-Za-z0-9]/);
 const shouldKeyPressTriggerSearch = (textArea) => {
   const { selectionStart, value: valueBeforeKeystroke } = textArea;
 
   const previousCharacter = valueBeforeKeystroke.charAt(selectionStart - 1);
-  const validPreviousCharRegex = new RegExp(/[^A-Za-z0-9]/);
 
   return (
-    previousCharacter === '' || validPreviousCharRegex.test(previousCharacter)
+    previousCharacter === '' ||
+    VALID_PREVIOUS_CHAR_REGEX.test(previousCharacter)
   );
 };
