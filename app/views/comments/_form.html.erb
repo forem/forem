@@ -1,8 +1,5 @@
 <div id="response-templates-data" class="hidden"></div>
 <%= javascript_packs_with_chunks_tag "validateFileInputs", "responseTemplates", defer: true %>
-<span id="comment-mention-autocomplete">
-  <%# filled by JS %>
-</span>
 
 <% if @comment.errors.any? %>
   <div class="crayons-notice crayons-notice--danger">
@@ -42,7 +39,7 @@
                       onkeyup: "handleKeyUp(event)",
                       onkeydown: "handleKeyDown(event)",
                       oninput: "handleChange(event)",
-                      id: "comment-text-area",
+                      id: "text-area",
                       required: true,
                       class: "crayons-textfield comment-textarea crayons-textfield--ghost",
                       'aria-label': "Add a comment to the discussion" %>

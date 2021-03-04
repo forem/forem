@@ -1,7 +1,8 @@
-import { h, render, createRef } from 'preact';
+import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
-import { fetchSearch } from '@utilities/search';
+
+/* global initializeMentionAutocomplete */
 
 const fullscreenActionElements = document.getElementsByClassName(
   'js-fullscreen-code-action',
@@ -67,24 +68,9 @@ const userDataIntervalID = setInterval(async () => {
     }
 });
 
-const commentBox = document.getElementById('comment-text-area');
-const textAreaRef = createRef(null);
+const commentBox = document.getElementById('text-area');
 if (commentBox) {
   commentBox.addEventListener('focusin', () => {
-    textAreaRef.current = commentBox;
-    const container = document.getElementById('comment-mention-autocomplete');
-    import('@crayons/MentionAutocomplete').then(({ MentionAutocomplete }) => {
-      render(
-        <MentionAutocomplete
-          textAreaRef={textAreaRef}
-          fetchSuggestions={(username) =>
-            fetchSearch('usernames', {
-              username,
-            })
-          }
-        />,
-        container,
-      );
-    });
+    initializeMentionAutocomplete(commentBox);
   });
 }

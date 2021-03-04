@@ -89,6 +89,12 @@ function initializeCommentsPage() {
           })(i);
         }
       })();
+
+      const allReplyCommentTextAreas = document.querySelectorAll('[id^="textarea"]');
+      for (var i = 0; i < allReplyCommentTextAreas.length; i++) {
+        const element = allReplyCommentTextAreas[i];
+        element.addEventListener('focusin', () => initializeMentionAutocomplete(element));
+      }
     }
 
     var butts = document.getElementsByClassName('reaction-button');
