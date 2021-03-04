@@ -51,6 +51,10 @@ module Images
         options[:crop] = nil
       end
 
+      if options[:crop] == "imagga_scale"
+        options[:crop] = nil
+      end
+
       options
     end
 
