@@ -16,6 +16,6 @@ class Menu
   end
 
   def item(name:, controller: name, children: [])
-    { name: name, controller: controller.gsub(" ", "_"), children: children }
+    { name: name, controller: controller.tr(" ", "_"), children: children }
   end
 end

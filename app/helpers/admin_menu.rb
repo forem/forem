@@ -12,9 +12,9 @@ class AdminMenu
     scope :content_manager, [
       item(name: "posts", controller: "articles"),
       item(name: "badges", children: [
-        item(name: "badge library", controller: "badges"),
-        item(name: "badge achievements")
-      ]),
+             item(name: "badge library", controller: "badges"),
+             item(name: "badge achievements"),
+           ]),
       item(name: "organizations"),
       item(name: "podcasts"),
       item(name: "tags"),
@@ -35,20 +35,20 @@ class AdminMenu
     scope :moderation, [
       item(name: "reports"),
       item(name: "mods"),
-      item(name: "moderator actions ads", controller: "moderator_actions" ),
+      item(name: "moderator actions ads", controller: "moderator_actions"),
       item(name: "privileged reactions"),
       # item(name: "interaction limits", controller: "" )
     ]
 
     scope :advanced, [
-       item(name: "broadcasts"),
-       item(name: "response_templates"),
-       item(name: "sponsorships"),
-       item(name: "developer tools", controller: "tools", children: [
-        item(name: "tools"),
-        item(name: "vault secrets", controller: "secrets"),
-        item(name: "webhooks", controller: "webhook_endpoints"),
-      ])
+      item(name: "broadcasts"),
+      item(name: "response_templates"),
+      item(name: "sponsorships"),
+      item(name: "developer tools", controller: "tools", children: [
+             item(name: "tools"),
+             item(name: "vault secrets", controller: "secrets"),
+             item(name: "webhooks", controller: "webhook_endpoints"),
+           ]),
     ]
 
     scope :apps, [
@@ -63,10 +63,10 @@ class AdminMenu
     ITEMS[group_name.to_sym].each do |items|
       return items if items[:controller] == child_nav_item
 
-      if items[:children]&.any?
-        items[:children].each do |child|
-          return items if child[:controller] == child_nav_item
-        end
+      next unless items[:children]&.any?
+
+      items[:children].each do |child|
+        return items if child[:controller] == child_nav_item
       end
     end
   end
