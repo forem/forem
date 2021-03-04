@@ -1,6 +1,10 @@
 'use strict';
 
-if ('serviceWorker' in navigator) {
+if (
+  'serviceWorker' in navigator &&
+  !('safari' in window)
+) {
+  // Safari has issues with the service worker, so we'll just skip it on those browsers
   navigator.serviceWorker
     .register('/serviceworker.js', { scope: '/' })
     .then(function swStart(registration) {
