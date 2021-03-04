@@ -57,8 +57,8 @@ module AdminHelper
       { name: "comments", controller: "comments" },
       { name: "badges", controller: "badges", children: [
         { name: "badge library", controller: "badges" },
-        { name: "badge achievements", controller: "badge_achievements" }
-      ]},
+        { name: "badge achievements", controller: "badge_achievements" },
+      ] },
       { name: "organizations", controller: "organizations" },
       { name: "podcasts", controller: "podcasts" },
       { name: "tags", controller: "tags" },
@@ -68,7 +68,7 @@ module AdminHelper
       { name: "HTML variants", controller: "html_variants" },
       { name: "display ads", controller: "display_ads" },
       { name: "navigation links", controller: "navigation_links" },
-      { name: "pages", controller: "pages" }
+      { name: "pages", controller: "pages" },
     ],
     admin_team: [{ name: "admin_team", controller: "permissions" }],
     moderation: [
@@ -85,22 +85,22 @@ module AdminHelper
       { name: "developer tools", controller: "tools", children: [
         { name: "tools", controller: "tools" },
         { name: "vault secrets", controller: "secrets" },
-        { name: "webhooks", controller: "webhook_endpoints" }
-      ]}
+        { name: "webhooks", controller: "webhook_endpoints" },
+      ] },
     ],
     apps: [
       { name: "chat channels", controller: "chat_channels" },
       { name: "events", controller: "events" },
       { name: "listings", controller: "listings" },
-      { name: "welcome", controller: "welcome" }
+      { name: "welcome", controller: "welcome" },
     ]
-  }
+  }.freeze
 
   def get_nested_menu_items(group_name, child_nav_item)
-    return NESTED_MENU_ITEMS[group_name.to_sym].each do |items|
+    NESTED_MENU_ITEMS[group_name.to_sym].each do |items|
       return items if items[:controller] == child_nav_item
 
-      if items[:children] && items[:children].length > 0
+      if items[:children]&.length&.positive?
         return items[:children].each do |child|
           return items if child[:controller] == child_nav_item
         end
