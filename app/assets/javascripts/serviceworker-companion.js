@@ -2,10 +2,7 @@
 
 if (
   'serviceWorker' in navigator &&
-  !(
-    /Safari/i.test(navigator.userAgent) &&
-    /Apple Computer/.test(navigator.vendor)
-  )
+  !('safari' in window)
 ) {
   // Safari has issues with the service worker, so we'll just skip it on those browsers
   navigator.serviceWorker
