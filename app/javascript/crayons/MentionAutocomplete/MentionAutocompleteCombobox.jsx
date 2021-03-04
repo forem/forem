@@ -10,6 +10,8 @@ import {
 } from '@reach/combobox';
 import '@reach/combobox/styles.css';
 
+const MAX_RESULTS_DISPLAYED = 6;
+
 const UserListItemContent = ({ user }) => {
   return (
     <Fragment>
@@ -71,12 +73,19 @@ export const MentionAutocompleteCombobox = ({
         return;
       }
 
-      fetchSuggestions(trimmedSearchTerm).then((fetchedUsers) => {
+      fetchSuggestions(trimmedSearchTerm).then(({ result: fetchedUsers }) => {
+        const resultLength =
+          fetchedUsers.length > MAX_RESULTS_DISPLAYED
+            ? MAX_RESULTS_DISPLAYED
+            : fetchedUsers.length;
+
+        const results = fetchedUsers.slice(0, resultLength);
+
         setCachedSearches({
           ...cachedSearches,
-          [trimmedSearchTerm]: fetchedUsers,
+          [trimmedSearchTerm]: results,
         });
-        setUsers(fetchedUsers);
+        setUsers(results);
       });
     }
   }, [searchTerm, fetchSuggestions, cachedSearches]);
@@ -159,7 +168,7 @@ export const MentionAutocompleteCombobox = ({
           </ComboboxList>
         ) : (
           <span className="crayons-autocomplete__empty">
-            {searchTerm.length >= 2
+            {searchTerm.length >= 3
               ? 'No results found'
               : 'Type to search for a user'}
           </span>

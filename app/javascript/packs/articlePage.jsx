@@ -1,6 +1,7 @@
 import { h, render, createRef } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
+import { fetchSearch } from '@utilities/search';
 
 const fullscreenActionElements = document.getElementsByClassName(
   'js-fullscreen-code-action',
@@ -76,8 +77,10 @@ if (commentBox) {
       render(
         <MentionAutocomplete
           textAreaRef={textAreaRef}
-          fetchSuggestions={() =>
-            Promise.resolve([{ username: 'one', name: 'one' }])
+          fetchSuggestions={(username) =>
+            fetchSearch('usernames', {
+              username,
+            })
           }
         />,
         container,
