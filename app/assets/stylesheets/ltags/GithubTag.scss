@@ -338,4 +338,8 @@
   box-shadow: -0 -0 60px 42px var(--card-bg);
   position: relative;
   z-index: 100;
+
+  .crayons-btn--secondary {
+    color: var(--color);
+  }
 }
