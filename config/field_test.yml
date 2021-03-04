@@ -1,30 +1,32 @@
 experiments:
-  # No field test running.
-  # To run a test, change the five variants here. You can create more than
-  # five, but five is our typical standard.
-  # Do not change the goals unless you intend to also change the corresponding code in
-  # app/workers/users/record_field_test_event_worker.rb
 
-  # variant_name:
-  #   variants:
-  #     - base
-  #     - variant_1
-  #     - variant_2
-  #     - variant_3
-  #     - variant_4
-  #   weights: # "base" gets a few more rolls of the dice
-  #     - 20
-  #     - 20
-  #     - 20
-  #     - 20
-  #     - 20
-  #   goals:
-  #     - user_creates_comment
-  #     - user_creates_comment_four_days_in_week
-  #     - user_views_article_four_days_in_week
-  #     - user_views_article_four_hours_in_day
-  #     - user_views_article_nine_days_in_two_week
-  #     - user_views_article_twelve_hours_in_five_days
+  # Hypotheses: Adding more weight to the home page for "followed user" will create a more relevant feed.
+  # Additional context: Since we also send notifications for published posts, it's been hard to also
+  # want to rank posts from people you follow higher.... We may want to rip the bandaid off on notifications
+  # for published posts
+
+  # This test should run for two weeks
+
+  points_for_followed_user:
+    variants:
+      - "1" # base
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+    weights: # "base" gets a few more rolls of the dice
+      - 20
+      - 20
+      - 20
+      - 20
+      - 20
+    goals:
+      - user_creates_comment
+      - user_creates_comment_four_days_in_week
+      - user_views_article_four_days_in_week
+      - user_views_article_four_hours_in_day
+      - user_views_article_nine_days_in_two_week
+      - user_views_article_twelve_hours_in_five_days
 exclude:
   bots: true
 

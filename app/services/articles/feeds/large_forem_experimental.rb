@@ -88,7 +88,8 @@ module Articles
       end
 
       def score_followed_user(article)
-        user_following_users_ids.include?(article.user_id) ? 1 : 0
+        test_variant = field_test(:points_for_followed_user, participant: @user)
+        user_following_users_ids.include?(article.user_id) ? test_variant.to_i : 0
       end
 
       def score_followed_tags(article)
