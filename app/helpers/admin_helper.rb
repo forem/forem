@@ -100,7 +100,7 @@ module AdminHelper
     NESTED_MENU_ITEMS[group_name.to_sym].each do |items|
       return items if items[:controller] == child_nav_item
 
-      if items[:children]&.length&.positive?
+      if items[:children]&.any?
         return items[:children].each do |child|
           return items if child[:controller] == child_nav_item
         end
