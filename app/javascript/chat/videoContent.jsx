@@ -51,7 +51,7 @@ export function VideoContent(props) {
         aria-label={fullscreen ? 'Fullscreen' : 'Leave fullscreen'}
         className="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
         data-content="fullscreen"
-        style={{ left: '39px' }}
+        style={{ left: '75%' }}
       >
         {fullscreen
           ? smartSvgIcon(
