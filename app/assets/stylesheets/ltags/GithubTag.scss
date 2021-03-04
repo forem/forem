@@ -59,7 +59,7 @@
   .ltag-github-issue-comment-header {
     display: flex;
     align-items: center;
-    background: var(--card-bg, #f6f8f9);
+    background: var(--card-bg);
     border-bottom: 1px solid var(--base-60);
     padding: 0 10px;
 
@@ -335,23 +335,7 @@
 .gh-btn-container {
   text-align: center;
   padding: 0.35em 0 1.35em;
-  box-shadow: -0 -0 60px 42px var(--card-bg, #fff);
+  box-shadow: -0 -0 60px 42px var(--card-bg);
   position: relative;
   z-index: 100;
-}
-
-.gh-btn {
-  color: var(--accent-brand);
-  background-color: var(--base-100);
-  border-radius: 3px;
-  line-height: 20px;
-  padding: 0.25em 1.2em;
-  opacity: 0.9;
-  font-size: 0.94em;
-  font-weight: var(--fw-bold);
-  border: 1px solid var(--accent-brand);
-
-  &:hover {
-    opacity: 1;
-  }
 }
