@@ -87,7 +87,11 @@ body.ten-x-hacker-theme {
   align-self: center;
 }
 
-body.trusted-status-true {
+.trusted-visible-block {
+  display: none !important;
+}
+
+body.trusted-status-true .trusted-visible-block {
   display: flex !important;
 }
 
