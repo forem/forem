@@ -10,6 +10,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     user
   end
   let(:article) { create(:article, user_id: user.id) }
+  let(:other_article) { create(:article, user: user2) }
   let(:collection) { create(:collection, user: user) }
 
   before do
@@ -79,6 +80,18 @@ RSpec.describe "ArticlesUpdate", type: :request do
     put "/articles/#{article.id}", params: { article: { user_id: other_user.id } }
     expect(article.reload.user).to eq(other_user)
     expect(article.organization_id).to eq(admin_org_id)
+  end
+
+  it "allows super_admin to edit an article" do
+    user.add_role(:super_admin)
+    put "/articles/#{other_article.id}", params: { article: { title: "new", body_markdown: "hello" } }
+    expect(other_article.reload.title).to eq("new")
+  end
+
+  it "doesn't allow other user to edit an article" do
+    expect do
+      put "/articles/#{other_article.id}", params: { article: { body_markdown: "hello" } }
+    end.to raise_error(Pundit::NotAuthorizedError)
   end
 
   it "archives" do
