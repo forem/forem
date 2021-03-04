@@ -1,10 +1,6 @@
 class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   ITEMS = Menu.define do
-    scope :overview, [
-      item(name: "overview"),
-    ]
-
     scope :people, [
       item(name: "people", controller: "users"),
     ]
