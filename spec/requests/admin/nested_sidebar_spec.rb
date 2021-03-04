@@ -48,5 +48,4 @@ RSpec.describe "admin sidebar", type: :request do
       expect(response.body).to include("Badge Achievements")
     end
   end
-
 end
