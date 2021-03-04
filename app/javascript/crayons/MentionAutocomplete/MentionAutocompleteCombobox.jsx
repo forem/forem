@@ -127,6 +127,9 @@ export const MentionAutocompleteCombobox = ({
       <ComboboxInput
         style={{
           opacity: 0.000001,
+          position: 'absolute',
+          top: placementCoords.y,
+          left: placementCoords.x,
         }}
         ref={inputRef}
         onChange={handleSearchTermChange}

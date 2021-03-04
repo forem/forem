@@ -1,4 +1,4 @@
-import { h, render } from 'preact';
+import { h, render, createRef } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 
@@ -65,3 +65,23 @@ const userDataIntervalID = setInterval(async () => {
         '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
     }
 });
+
+const commentBox = document.getElementById('comment-text-area');
+const textAreaRef = createRef(null);
+if (commentBox) {
+  commentBox.addEventListener('focusin', () => {
+    textAreaRef.current = commentBox;
+    const container = document.getElementById('comment-mention-autocomplete');
+    import('@crayons/MentionAutocomplete').then(({ MentionAutocomplete }) => {
+      render(
+        <MentionAutocomplete
+          textAreaRef={textAreaRef}
+          fetchSuggestions={() =>
+            Promise.resolve([{ username: 'one', name: 'one' }])
+          }
+        />,
+        container,
+      );
+    });
+  });
+}

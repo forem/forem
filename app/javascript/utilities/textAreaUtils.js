@@ -11,14 +11,24 @@
  * const coordinates = getCursorXY(elementRef.current, elementRef.current.selectionStart)
  */
 export const getCursorXY = (input, selectionPoint) => {
-  const { offsetLeft: inputX, offsetTop: inputY } = input;
+  const bodyRect = document.body.getBoundingClientRect();
+  const elementRect = input.getBoundingClientRect();
+
+  const inputY = elementRect.top - bodyRect.top;
+  const inputX = elementRect.left - bodyRect.left;
 
   // create a dummy element with the computed style of the input
-  const div = top.document.createElement('div');
+  const div = document.createElement('div');
   const copyStyle = getComputedStyle(input);
   for (const prop of copyStyle) {
     div.style[prop] = copyStyle[prop];
   }
+
+  // set the div to the correct position
+  div.style['position'] = 'absolute';
+  div.style['top'] = `${inputY}px`;
+  div.style['left'] = `${inputX}px`;
+  div.style['opacity'] = 0;
 
   // replace whitespace with '.' when filling the dummy element if it's a single line <input/>
   const swap = '.';
@@ -33,19 +43,20 @@ export const getCursorXY = (input, selectionPoint) => {
   if (input.tagName === 'INPUT') div.style.width = 'auto';
 
   // marker element to obtain caret position
-  const span = top.document.createElement('span');
+  const span = document.createElement('span');
   // give the span the textContent of remaining content so that the recreated dummy element is as close as possible
   span.textContent = inputValue.substr(selectionPoint) || '.';
 
   // append the span marker to the div and the dummy element to the body
   div.appendChild(span);
-  top.document.body.appendChild(div);
+  document.body.appendChild(div);
 
   // get the marker position, this is the caret position top and left relative to the input
   const { offsetLeft: spanX, offsetTop: spanY } = span;
 
   // remove dummy element
-  top.document.body.removeChild(div);
+  document.body.removeChild(div);
+
   // return object with the x and y of the caret. account for input positioning so that you don't need to wrap the input
   return {
     x: inputX + spanX,
