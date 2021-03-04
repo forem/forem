@@ -43,4 +43,19 @@ describe('Show log in modal', () => {
       },
     );
   });
+
+  it('should show login modal for comment subscription', () => {
+    cy.findAllByText('Test article').last().click();
+    cy.findByRole('button', { name: /Subscribe/ }).as('subscribe').click();
+
+    cy.findByTestId('modal-container').as('modal');
+    cy.get('@modal').findByText('Log in to continue').should('exist');
+    cy.get('@modal').findByLabelText('Log in').should('exist');
+    cy.get('@modal').findByLabelText('Create new account').should('exist');
+    cy.get('@modal').findByRole('button').first().should('have.focus');
+
+    cy.get('@modal').findByRole('button', { name: /Close/ }).click();
+    cy.get('@subscribe').should('have.focus');
+    cy.findByTestId('modal-container').should('not.exist');
+  });
 });

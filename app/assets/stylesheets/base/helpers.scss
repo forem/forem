@@ -41,13 +41,3 @@
     display: none;
   }
 }
-
-/* Hide headers for screen readers */
-// TODO: remove when #10424 and #10508 are merged.
-.visually-hidden-header {
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}

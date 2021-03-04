@@ -54,7 +54,10 @@ describe('<CommentSubscription />', () => {
   it('should subscribe when the subscribe button is pressed', () => {
     const onSubscribe = jest.fn();
     const { getByText } = render(
-      <CommentSubscription onSubscribe={onSubscribe} />,
+      <CommentSubscription
+        onSubscribe={onSubscribe}
+        isLoggedIn={true}
+      />,
     );
 
     const button = getByText(/subscribe/i, { selector: 'button' });
@@ -69,6 +72,7 @@ describe('<CommentSubscription />', () => {
       <CommentSubscription
         subscriptionType={COMMENT_SUBSCRIPTION_TYPE.AUTHOR}
         onUnsubscribe={onUnsubscribe}
+        isLoggedIn={true}
       />,
     );
 
