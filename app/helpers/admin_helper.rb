@@ -54,6 +54,6 @@ module AdminHelper
   end
 
   def deduced_scope(request)
-    request.path.split("/")[-2]
+    request.path.split("/").second_to_last
   end
 end
