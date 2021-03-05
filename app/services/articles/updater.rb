@@ -2,9 +2,9 @@ module Articles
   class Updater
     Result = Struct.new(:success, :article, keyword_init: true)
 
-    def initialize(user, article_id, article_params, event_dispatcher = Webhook::DispatchEvent)
+    def initialize(user, article, article_params, event_dispatcher = Webhook::DispatchEvent)
       @user = user
-      @article_id = article_id
+      @article = article
       @article_params = article_params
       @event_dispatcher = event_dispatcher
     end
@@ -16,7 +16,6 @@ module Articles
     def call
       user.rate_limiter.check_limit!(:article_update)
 
-      article = load_article
       was_published = article.published
 
       # updated edited time only if already published and not edited by an admin
@@ -49,15 +48,10 @@ module Articles
 
     private
 
-    attr_reader :user, :article_id, :article_params, :event_dispatcher
+    attr_reader :user, :article, :article_params, :event_dispatcher
 
     def dispatch_event(article)
       event_dispatcher.call("article_updated", article)
-    end
-
-    def load_article
-      relation = user.has_role?(:super_admin) ? Article.includes(:user) : user.articles
-      relation.find(article_id)
     end
   end
 end

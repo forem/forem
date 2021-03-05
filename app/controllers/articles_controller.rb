@@ -129,7 +129,7 @@ class ArticlesController < ApplicationController
 
     not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
 
-    updated = Articles::Updater.call(@user, @article.id, article_params_json)
+    updated = Articles::Updater.call(@user, @article, article_params_json)
 
     respond_to do |format|
       format.html do
