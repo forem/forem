@@ -1,6 +1,6 @@
 <header class="flex mb-6">
   <!-- @ridhwana: temporary deuplicate header removed. Will remove this with old navigation code -->
-  <% if !FeatureFlag.enabled?(:admin_restructure) %>
+  <% unless FeatureFlag.enabled?(:admin_restructure) %>
     <h2 class="crayons-title">Badges</h2>
   <% end %>
 
