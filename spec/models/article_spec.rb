@@ -980,4 +980,10 @@ RSpec.describe Article, type: :model do
       expect(article.co_author_ids).to match_array([co_author1.id, co_author2.id])
     end
   end
+
+  describe "#plain_html" do
+    it "doesn't include js panel markup" do
+      expect(article.plain_html).not_to include("Enter fullscreen mode")
+    end
+  end
 end
