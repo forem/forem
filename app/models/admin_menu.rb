@@ -57,7 +57,7 @@ class AdminMenu
   end
   # rubocop:enable Metrics/BlockLength
 
-  def self.get_nested_menu_items(group_name, child_nav_item)
+  def self.nested_menu_items(group_name, child_nav_item)
     ITEMS[group_name.to_sym].each do |items|
       return items if items[:controller] == child_nav_item
 
@@ -69,8 +69,8 @@ class AdminMenu
     end
   end
 
-  def self.get_nested_menu_items_from_request(request)
+  def self.nested_menu_items_from_request(request)
     group, child_nav_item = request.path.split("/").last(2)
-    get_nested_menu_items(group, child_nav_item)
+    nested_menu_items(group, child_nav_item)
   end
 end
