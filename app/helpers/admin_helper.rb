@@ -58,6 +58,6 @@ module AdminHelper
   end
 
   def display_name(group_name)
-    group_name.to_s.gsub("_", " ").titleize
+    group_name.to_s.tr("_", " ").titleize
   end
 end
