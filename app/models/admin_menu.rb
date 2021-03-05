@@ -68,4 +68,9 @@ class AdminMenu
       end
     end
   end
+
+  def self.get_nested_menu_items_from_request(request)
+    group, child_nav_item = request.path.split("/").last(2)
+    get_nested_menu_items(group, child_nav_item)
+  end
 end

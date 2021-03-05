@@ -1,14 +1,14 @@
-<% nested_menu_items = AdminMenu.get_nested_menu_items(request.path.split("/")[-2], request.path.split("/")[-1]) %>
+<% nested_menu_items = AdminMenu.get_nested_menu_items_from_request(request) %>
 
-<% if nested_menu_items[:children].any?%>
 
+<% if nested_menu_items[:children].any? %>
   <header class="mb-3">
     <h2 class="crayons-title"><%= nested_menu_items[:name].to_s.titleize %></h2>
     <div class="block s:flex items-center space-between">
       <nav class="crayons-tabs crayons-tabs--wrapped">
         <% nested_menu_items[:children].each do |item| %>
           <a
-            href="/admin/<%= request.path.split("/")[- 2] %>/<%= item[:controller] %>"
+            href="/admin/<%= request.path.split("/")[-2] %>/<%= item[:controller] %>"
             class="crayons-tabs__item <%= "crayons-tabs__item--current" if request.path.split("/")[-1]&.match?(item[:controller]) %>" <>
             <%= item[:name].to_s.titleize %>
           </a>
