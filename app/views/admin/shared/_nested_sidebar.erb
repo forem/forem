@@ -6,13 +6,22 @@
       <%= display_name(group_name) %>
     </a>
   <% else %>
-    <div class="ml-2"><%= display_name(group_name) %></div>
-    <% group.each do |item| %>
-      <a class="crayons-link crayons-link--block ml-6"
-         href="/admin/<%= group_name %>/<%= item[:controller] %>"
+    <div
+      class="crayons-link crayons-link--block" data-toggle="collapse"
+      data-target="#<%= group_name %>"
+      aria-expanded="false"
+      aria-controls="<%= group_name %>"
       >
-        <%= item[:name].to_s.titleize %>
-      </a>
-    <% end %>
+      <%= display_name(group_name) %>
+    </div>
+    <div id="<%= group_name %>" class="collapse hide" aria-labelledby="<%= group_name %>">
+      <% group.each do |item| %>
+        <a class="crayons-link crayons-link--block ml-6"
+           href="/admin/<%= group_name %>/<%= item[:controller] %>"
+        >
+          <%= item[:name].to_s.titleize %>
+        </a>
+      <% end %>
+    </div>
   <% end %>
 <% end %>
