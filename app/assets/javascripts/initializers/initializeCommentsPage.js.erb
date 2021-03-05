@@ -89,12 +89,6 @@ function initializeCommentsPage() {
           })(i);
         }
       })();
-
-      const allReplyCommentTextAreas = document.querySelectorAll('[id^="textarea"]');
-      for (var i = 0; i < allReplyCommentTextAreas.length; i++) {
-        const element = allReplyCommentTextAreas[i];
-        element.addEventListener('focusin', intializeAutocompleteListener);
-      }
     }
 
     var butts = document.getElementsByClassName('reaction-button');
@@ -191,9 +185,7 @@ function initializeCommentsPage() {
   listenForDetailsToggle();
 }
 
-function intializeAutocompleteListener(event) {
-  initializeMentionAutocomplete(event.target)
-}
+
 
 function toggleCodeOfConduct() {
   var user = userData();
@@ -318,6 +310,8 @@ function handleFocus(event) {
     var form = event.target.closest(".comment-form");
     form.classList.add("comment-form--initiated");
     handleSizeChange(event);
+    console.log(area)
+    initializeMentionAutocomplete(area)
   }
 }
 
