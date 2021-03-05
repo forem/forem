@@ -22,7 +22,6 @@ module Podcasts
         end
       else
         feed.items.last(limit).each do |item|
-          binding.pry
           get_episode.call(item: item, force_update: force_update)
         end
       end
