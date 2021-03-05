@@ -48,13 +48,9 @@ module Images
     def self.translate_cloudinary_options(options)
       if options[:crop] == "fill"
         options[:resizing_type] = "fill"
-        options[:crop] = nil
       end
 
-      if options[:crop] == "imagga_scale"
-        options[:crop] = nil
-      end
-
+      options[:crop] = nil
       options
     end
 
