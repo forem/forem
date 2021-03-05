@@ -50,7 +50,7 @@ module AdminHelper
   # @ridhwana end delete
 
   def deduced_controller(request)
-    request.path.split("/")[-1]
+    request.path.split("/").last
   end
 
   def deduced_scope(request)
