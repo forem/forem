@@ -1,4 +1,7 @@
 class DevicesController < ApplicationController
+  # Devices can only be created for authenticated users. 
+  # This replaces the Authenticated Users Pusher Beams solution.
+  # See: https://github.com/forem/forem/pull/12419/files#r563906038
   before_action :authenticate_user!, only: [:create]
 
   rescue_from ActiveRecord::ActiveRecordError do |exc|
