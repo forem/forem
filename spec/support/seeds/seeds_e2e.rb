@@ -112,6 +112,34 @@ end
 
 ##############################################################################
 
+num_search_test_users = 7
+
+Array(1..num_search_test_users).each do |i|
+  seeder.create_if_doesnt_exist(User, "email", "user#{i}@forem.com") do
+    user = User.create!(
+      name: "Search user #{i}",
+      email: "user#{i}@forem.com",
+      username: "search_user_#{i}",
+      summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+      profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+      website_url: Faker::Internet.url,
+      email_comment_notifications: false,
+      email_follower_notifications: false,
+      confirmed_at: Time.current,
+      password: "password",
+      password_confirmation: "password",
+      saw_onboarding: true,
+      checked_code_of_conduct: true,
+      checked_terms_and_conditions: true,
+      editor_version: "v2",
+    )
+
+    user.add_role(:pro)
+  end
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Article, "title", "Test article") do
   markdown = <<~MARKDOWN
     ---
