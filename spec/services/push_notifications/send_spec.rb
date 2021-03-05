@@ -24,7 +24,7 @@ RSpec.describe PushNotifications::Send, type: :service do
   context "with no devices for user" do
     before { allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true) }
 
-    it "does nothing" do
+    it "does nothing", :aggregate_failures do
       expect(user.devices.count).to eq(0)
       expect do
         described_class.call(params)
