@@ -20,7 +20,7 @@ RSpec.describe "User devices routes", type: :routing do
     )
   end
 
-  it "does not render the user devices routes if the mobile_notifications feature flag is disabled" do
+  it "does not render the user devices routes if the mobile_notifications feature flag is disabled", :aggregate_failures do
     allow(FeatureFlag).to receive(:enabled?).at_least(:twice).with(:mobile_notifications).and_return(false)
 
     expect(post: devices_path).not_to route_to(
