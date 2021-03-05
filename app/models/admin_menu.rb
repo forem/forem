@@ -9,8 +9,8 @@ class AdminMenu
     scope :content_manager, [
       item(name: "posts", controller: "articles"),
       item(name: "badges", children: [
-             item(name: "badge library", controller: "badges"),
-             item(name: "badge achievements"),
+             item(name: "library", controller: "badges"),
+             item(name: "achievements"),
            ]),
       item(name: "organizations"),
       item(name: "podcasts"),
@@ -19,14 +19,14 @@ class AdminMenu
 
     scope :customization, [
       item(name: "config"),
-      item(name: "HTML variants", controller: "html_variants"),
-      item(name: "display_ads"),
+      item(name: "html variants", controller: "html_variants"),
+      item(name: "display ads"),
       item(name: "navigation links"),
       item(name: "pages"),
     ]
 
     scope :admin_team, [
-      item(name: "admin_team", controller: "permissions"),
+      item(name: "admin team", controller: "permissions"),
     ]
 
     scope :moderation, [
@@ -39,7 +39,7 @@ class AdminMenu
 
     scope :advanced, [
       item(name: "broadcasts"),
-      item(name: "response_templates"),
+      item(name: "response templates"),
       item(name: "sponsorships"),
       item(name: "developer tools", controller: "tools", children: [
              item(name: "tools"),

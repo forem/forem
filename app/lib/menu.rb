@@ -1,4 +1,6 @@
 class Menu
+  # Used to build the data structure for the Admin Menu model.
+
   def self.define(&block)
     builder = new
     builder.instance_exec(&block)

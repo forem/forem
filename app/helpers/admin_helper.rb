@@ -53,7 +53,12 @@ module AdminHelper
     request.path.split("/").last
   end
 
+  # is there a chance deduced_scope() returns nil?
   def deduced_scope(request)
     request.path.split("/").second_to_last
+  end
+
+  def display_name(group_name)
+    group_name.to_s.gsub("_", " ").titleize
   end
 end
