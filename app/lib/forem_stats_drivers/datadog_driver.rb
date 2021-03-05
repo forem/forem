@@ -16,6 +16,8 @@ module ForemStatsDrivers
         c.use :http, split_by_domain: true
         c.use :faraday, split_by_domain: true
         c.use :excon, split_by_domain: true
+        c.use :httpclient, split_by_domain: true
+        c.use :httprb, split_by_domain: true
         c.use :aws
         c.use :rest_client
         c.use :concurrent_ruby
