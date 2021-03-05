@@ -44,8 +44,8 @@ RSpec.describe "admin sidebar", type: :request do
 
       get admin_content_manager_badges_url
 
-      expect(response.body).to include("Badge Library")
-      expect(response.body).to include("Badge Achievements")
+      expect(response.body).to include("Library")
+      expect(response.body).to include("Achievements")
     end
   end
 end
