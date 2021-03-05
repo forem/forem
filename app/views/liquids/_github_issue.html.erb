@@ -1,29 +1,27 @@
-<div class="ltag-github-issue-tag">
-  <h4 class="ltag-github-issue__heading">
+<div class="ltag_github-liquid-tag">
+  <h1>
     <a href="<%= html_url %>">
       <img class="github-logo" alt="GitHub logo" src="<%= ActionController::Base.helpers.asset_path("github-logo.svg") %>">
-      <span class="ltag-github-issue__title">
+      <span class="issue-title">
         <%= title %>
       </span>
-      <span class="ltag-github-issue__number">#<%= issue_number %></span>
+      <span class="issue-number">#<%= issue_number %></span>
     </a>
-  </h4>
-  <div class="ltag-github-issue-thread">
-    <div class="ltag-github-issue-comment-header">
-      <a href="<%= user_html_url %>" class="ltag-github-issue__avatar">
-        <img class="ltag-github-issue__avatar-img" src="<%= user_avatar_url %>" alt="<%= username %> avatar">
+  </h1>
+  <div class="github-thread">
+    <div class="timeline-comment-header">
+      <a href="<%= user_html_url %>">
+        <img class="github-liquid-tag-img" src="<%= user_avatar_url %>" alt="<%= username %> avatar">
       </a>
-      <div class="ltag-github-issue-comment-header-info">
+      <div class="timeline-comment-header-text">
         <strong>
           <a href="<%= user_html_url %>"><%= username %></a>
-        </strong>
-        <%= tagline %>
-        <a href="<%= html_url %>"><time datetime="<%= created_at %>"><%= date %></time></a>
+        </strong> <%= tagline %> <a href="<%= html_url %>"><time datetime="<%= created_at %>"><%= date %></time></a>
       </div>
     </div>
     <div class="ltag-github-body">
       <%= body %>
     </div>
-    <div class="gh-btn-container"><a class="crayons-btn crayons-btn--secondary" href="<%= html_url %>">View on GitHub</a></div>
+    <div class="gh-btn-container"><a class="gh-btn" href="<%= html_url %>">View on GitHub</a></div>
   </div>
 </div>

@@ -1,15 +1,15 @@
 @import '../variables';
 
-.ltag-github-issue-tag {
+.ltag_github-liquid-tag {
   margin: 1.1em auto 1.3em;
   max-width: 580px;
   position: relative;
   z-index: 1;
 
-  .ltag-github-issue__heading {
-    font-size: var(--fs-xl);
-    line-height: var(--lh-base);
-    margin: 0 0 0.7em;
+  h1 {
+    font-size: var(--fs-xl) !important;
+    line-height: var(--lh-base) !important;
+    margin: 0 0 0.7em !important;
 
     @media screen and (min-width: 500px) {
       margin-bottom: 10px;
@@ -20,11 +20,11 @@
       color: var(--body-color);
     }
 
-    .ltag-github-issue__title {
+    .issue-title {
       font-weight: var(--fw-normal);
     }
 
-    .ltag-github-issue__number {
+    .issue-number {
       color: var(--base-60);
       font-weight: var(--fw-normal);
       letter-spacing: -1px;
@@ -44,7 +44,7 @@
   }
 }
 
-.ltag-github-issue-thread {
+.github-thread {
   font-family: var(--ff-sans-serif);
   background-color: var(--card-bg);
   border: 1px solid var(--base-60);
@@ -56,7 +56,7 @@
   width: 98%;
   overflow: hidden;
 
-  .ltag-github-issue-comment-header {
+  .timeline-comment-header {
     display: flex;
     align-items: center;
     background: var(--card-bg);
@@ -67,20 +67,15 @@
       align-items: center;
     }
 
-    .ltag-github-issue__avatar {
-      max-height: 38px;
+    .github-liquid-tag-img {
       margin: 10px 10px 10px 0;
-    }
-
-    .ltag-github-issue__avatar-img {
       width: 38px;
       height: 38px;
       padding: 0;
-      margin: 0;
     }
   }
 
-  .ltag-github-issue-comment-header-info {
+  .timeline-comment-header-text {
     padding: 10px 0;
 
     a {
@@ -339,7 +334,59 @@
   position: relative;
   z-index: 100;
 
-  .crayons-btn--secondary {
+  .gh-btn {
+    --border-width: 0px;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --vertical-padding: var(--su-2);
+    --horizontal-padding: var(--su-4);
+    --font-size: var(--fs-base);
+    --with-icon-padding: var(--su-3);
+    --icon-margin: var(--su-2);
+    --border: transparent;
+    --border-hover: transparent;
+    --shadow: 0 1px 3px var(--shadow-color);
+    --shadow-hover: 0 2px 5px var(--shadow-color);
+
+    --bg: var(--button-secondary-bg);
+    --bg-hover: var(--button-secondary-bg-hover);
+    --color: var(--button-secondary-color);
+    --color-hover: var(--button-secondary-color-hover);
+    --bg-inverted: var(--button-secondary-inverted-bg);
+    --bg-inverted-hover: var(--button-secondary-inverted-bg-hover);
+    --color-inverted: var(--button-secondary-inverted-color);
+    --color-inverted-hover: var(--button-secondary-inverted-color-hover);
+
+    position: relative;
+    display: inline-block;
+    padding: calc(var(--vertical-padding) - var(--border-width))
+      calc(var(--horizontal-padding) - var(--border-width));
+    border-radius: var(--radius);
+    outline: none;
+    font-family: inherit;
+    font-size: var(--font-size);
+    line-height: var(--su-6);
+    font-weight: var(--fw-medium);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--transition-props);
+    border: var(--border-width) solid;
+    background-color: var(--bg);
+    border-color: var(--border);
+    box-shadow: var(--shadow);
     color: var(--color);
+
+    &[href]:hover,
+    &[href]:focus,
+    &:hover:enabled,
+    &:active:enabled,
+    &:focus:enabled,
+    &:focus-within {
+      background-color: var(--bg-hover);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-hover);
+      color: var(--color-hover);
+      z-index: var(--z-elevate);
+    }
   }
 }
