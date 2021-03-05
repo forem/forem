@@ -32,7 +32,7 @@
       <% if user_signed_in? %>
         <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto">Write a post</a>
 
-        <a id="moderation-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded trusted-visible-block m:flex" aria-label="Moderation" href="<%= mod_path %>">
+        <a id="moderation-link" class="crayons-header__link hidden crayons-btn crayons-btn--ghost crayons-btn--icon-rounded m:flex trusted-visible-block" aria-label="Moderation" href="<%= mod_path %>">
           <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
         </a>
 
