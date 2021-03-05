@@ -31,9 +31,20 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
   const handleSearchTermChange = useCallback(
     (searchTerm) => {
       const { textBefore, textAfter } = cursorPlacementData;
+      const { current: textArea } = textAreaRef;
 
       const newValue = `${textBefore}${searchTerm}${textAfter}`;
-      textAreaRef.current.value = newValue;
+      textArea.value = newValue;
+
+      const { y: currentYPlacement } = cursorPlacementData;
+      const { y: newY, x: newX } = getCursorXY(
+        textArea,
+        textArea.selectionStart,
+      );
+      if (currentYPlacement !== newY) {
+        // Line has wrapped mid-way through typing username
+        setCursorPlacementData({ ...cursorPlacementData, y: newY, x: newX });
+      }
     },
     [cursorPlacementData, textAreaRef],
   );
