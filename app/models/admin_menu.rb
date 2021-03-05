@@ -10,7 +10,7 @@ class AdminMenu
       item(name: "posts", controller: "articles"),
       item(name: "badges", children: [
              item(name: "library", controller: "badges"),
-             item(name: "achievements"),
+             item(name: "achievements", controller: "badge_achievements"),
            ]),
       item(name: "organizations"),
       item(name: "podcasts"),
