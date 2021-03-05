@@ -7,8 +7,8 @@
       <nav class="crayons-tabs crayons-tabs--wrapped">
         <% nested_menu_items[:children].each do |item| %>
           <a
-            href="/admin/<%= request.path.split("/")[-2] %>/<%= item[:controller] %>"
-            class="crayons-tabs__item <%= "crayons-tabs__item--current" if request.path.split("/")[-1]&.match?(item[:controller]) %>" <>
+            href="/admin/<%= deduced_scope(request) %>/<%= item[:controller] %>"
+            class="crayons-tabs__item <%= "crayons-tabs__item--current" if deduced_controller(request)&.match?(item[:controller]) %>" <>
             <%= item[:name].to_s.titleize %>
           </a>
         <% end %>

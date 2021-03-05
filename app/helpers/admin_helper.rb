@@ -3,6 +3,8 @@ module AdminHelper
   # side navbar in alphabetical order.
   # If you add an item before "config", please update the insert call in
   # admin_menu_items below.
+
+  # @ridhwana to delete these when we move over to new admin layout
   MENU_ITEMS = [
     { name: "articles",              controller: "articles" },
     { name: "broadcasts",            controller: "broadcasts" },
@@ -44,5 +46,14 @@ module AdminHelper
     return MENU_ITEMS unless FeatureFlag.enabled?(:profile_admin)
 
     MENU_ITEMS.dup.insert(7, PROFILE_ADMIN)
+  end
+  # @ridhwana end delete
+
+  def deduced_controller(request)
+    request.path.split("/")[-1]
+  end
+
+  def deduced_scope(request)
+    request.path.split("/")[-2]
   end
 end
