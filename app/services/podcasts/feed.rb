@@ -15,9 +15,18 @@ module Podcasts
       set_unreachable(status: :unparsable, force_update: force_update) && return unless feed
 
       get_episode = Podcasts::GetEpisode.new(podcast)
-      feed.items.first(limit).each do |item|
-        get_episode.call(item: item, force_update: force_update)
+
+      if feed.items.first.pubDate > feed.items.last.pubDate
+        feed.items.first(limit).each do |item|
+          get_episode.call(item: item, force_update: force_update)
+        end
+      else
+        feed.items.last(limit).each do |item|
+          binding.pry
+          get_episode.call(item: item, force_update: force_update)
+        end
       end
+
       podcast.update_columns(reachable: true, status_notice: "")
       feed.items.size
     rescue Net::OpenTimeout, Errno::ECONNREFUSED, SocketError, HTTParty::RedirectionTooDeep
