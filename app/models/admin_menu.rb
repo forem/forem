@@ -1,5 +1,6 @@
 class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
+  # rubocop:disable Metrics/BlockLength
   ITEMS = Menu.define do
     scope :people, [
       item(name: "people", controller: "users"),
@@ -54,6 +55,7 @@ class AdminMenu
       item(name: "welcome"),
     ]
   end
+  # rubocop:enable Metrics/BlockLength
 
   def self.get_nested_menu_items(group_name, child_nav_item)
     ITEMS[group_name.to_sym].each do |items|
