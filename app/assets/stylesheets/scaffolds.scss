@@ -93,6 +93,11 @@ body.ten-x-hacker-theme {
 
 body.trusted-status-true .trusted-visible-block {
   display: flex !important;
+  &.hidden {
+    @media screen and (max-width: $breakpoint-s) {
+      display: none !important;
+    }
+  }
 }
 
 .app-shell-loader {
