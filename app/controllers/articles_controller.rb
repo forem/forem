@@ -127,8 +127,6 @@ class ArticlesController < ApplicationController
     authorize @article
     @user = @article.user || current_user
 
-    not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
-
     updated = Articles::Updater.call(@user, @article, article_params_json)
 
     respond_to do |format|
