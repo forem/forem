@@ -93,7 +93,7 @@ function initializeCommentsPage() {
       const allReplyCommentTextAreas = document.querySelectorAll('[id^="textarea"]');
       for (var i = 0; i < allReplyCommentTextAreas.length; i++) {
         const element = allReplyCommentTextAreas[i];
-        element.addEventListener('focusin', () => initializeMentionAutocomplete(element));
+        element.addEventListener('focusin', intializeAutocompleteListener);
       }
     }
 
@@ -189,6 +189,10 @@ function initializeCommentsPage() {
     }
   }
   listenForDetailsToggle();
+}
+
+function intializeAutocompleteListener(event) {
+  initializeMentionAutocomplete(event.target)
 }
 
 function toggleCodeOfConduct() {

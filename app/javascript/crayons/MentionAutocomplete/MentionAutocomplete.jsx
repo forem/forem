@@ -63,8 +63,9 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
       textAreaRef.current.value = `${newValueUntilEndOfSearch}${textAfter}`;
 
       const nextCursorPosition = newValueUntilEndOfSearch.length;
+
       setIsAutocompleteActive(false);
-      textAreaRef.current.focus();
+
       textAreaRef.current.setSelectionRange(
         nextCursorPosition,
         nextCursorPosition,
@@ -134,6 +135,7 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
       );
     } else {
       render(null, container);
+      textAreaRef.current.focus();
     }
   }, [
     cursorPlacementData,
@@ -141,6 +143,7 @@ export const MentionAutocomplete = ({ textAreaRef, fetchSuggestions }) => {
     handleSearchTermChange,
     handleSelection,
     isAutocompleteActive,
+    textAreaRef,
   ]);
 
   return <span id="mention-autocomplete-container" />;

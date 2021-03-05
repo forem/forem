@@ -10,6 +10,8 @@ import {
 } from '@reach/combobox';
 import '@reach/combobox/styles.css';
 
+// @ sign + 2 chars
+const MIN_SEARCH_CHARACTERS = 3;
 const MAX_RESULTS_DISPLAYED = 6;
 
 const UserListItemContent = ({ user }) => {
@@ -39,7 +41,7 @@ const UserListItemContent = ({ user }) => {
  * @param {string} props.startText The initial search term to use
  * @param {function} props.onSelect Callback function for using the selected user
  * @param {function} props.fetchSuggestions The async call to use for the search
- * @param {object} props.placementCoords The x/y coordinates for placement of the popover
+ * @param {object} props.placementCoords The x/y coordinates for placement of the popover and input. Used to position the invisible combobox input over the current cursor placement (to avoid scroll jumps on focus), and the dropdown under it.
  * @param {function} props.onSearchTermChange A callback for each time the searchTerm changes
  *
  * @example
@@ -64,7 +66,7 @@ export const MentionAutocompleteCombobox = ({
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (searchTerm.length >= 3) {
+    if (searchTerm.length >= MIN_SEARCH_CHARACTERS) {
       // Remove the '@' symbol for search
       const trimmedSearchTerm = searchTerm.substring(1);
 
@@ -168,7 +170,7 @@ export const MentionAutocompleteCombobox = ({
           </ComboboxList>
         ) : (
           <span className="crayons-autocomplete__empty">
-            {searchTerm.length >= 3
+            {searchTerm.length >= MIN_SEARCH_CHARACTERS
               ? 'No results found'
               : 'Type to search for a user'}
           </span>
