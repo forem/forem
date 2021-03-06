@@ -5,7 +5,7 @@
 <% end %>
 
 <% if flash[:error].present? %>
-  <div class="crayons-banner crayons-banner--error" style="margin-bottom: 25px;">
+  <div class="crayons-banner crayons-banner--error" style="margin-bottom: 25px;" role="alert">
     <%= flash[:error] %>
   </div>
 <% end %>
