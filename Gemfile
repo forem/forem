@@ -147,7 +147,7 @@ group :development, :test do
   gem "faker", "~> 2.16" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
-  gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
+  gem "rspec-rails", "~> 4.1" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.11", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.10", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.9", require: false # Automatic Rails code style checking tool
