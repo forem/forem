@@ -1,4 +1,4 @@
-require 'httpclient'
+require "httpclient"
 
 module ForemStatsDrivers
   class DatadogDriver
