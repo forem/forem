@@ -1,5 +1,5 @@
 class DevicesController < ApplicationController
-  # Devices can only be created for authenticated users. 
+  # Devices can only be created for authenticated users.
   # This replaces the Authenticated Users Pusher Beams solution.
   # See: https://github.com/forem/forem/pull/12419/files#r563906038
   before_action :authenticate_user!, only: [:create]
@@ -18,12 +18,14 @@ class DevicesController < ApplicationController
   end
 
   def destroy
-    device = Device.where(user_id: params[:id],
-                          token: params[:token],
-                          platform: params[:platform],
-                          app_bundle: params[:app_bundle]).first
+    device = Device.find_by(device_params)
     device&.destroy
-    render json: { error: device.errors_as_sentence }, status: :bad_request
+
+    if device&.destroyed?
+      head :no_content
+    else
+      render json: { error: device.errors_as_sentence }, status: :bad_request
+    end
   end
 
   private
