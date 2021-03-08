@@ -388,7 +388,8 @@ class Article < ApplicationRecord
 
   def plain_html
     doc = Nokogiri::HTML.fragment(processed_html)
-    doc.search("highlight__panel").each(&:remove).to_html
+    doc.search(".highlight__panel").each(&:remove)
+    doc.to_html
   end
 
   private
