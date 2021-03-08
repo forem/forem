@@ -98,6 +98,8 @@ RSpec.describe Comment, type: :model do
 
         subject.body_markdown = "hi @#{user.username}! " * 7
         expect(subject).not_to be_valid
+        expect(subject.errors[:base])
+          .to include("You cannot mention more than 6 users in a comment!")
       end
     end
     # rubocop:enable RSpec/NamedSubject
