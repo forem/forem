@@ -3,7 +3,7 @@ Rpush.configure do |config|
   config.client = :redis
 
   # Options passed to Redis.new
-  # config.redis_options = {}
+  config.redis_options = { url: ENV["REDIS_RPUSH_URL"], driver: :ruby }
 
   # Frequency in seconds to check for new notifications.
   config.push_poll = 2
