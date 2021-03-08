@@ -93,12 +93,6 @@ export class FollowUsers extends Component {
     }
   }
 
-  handleKeyPress(event, user) {
-    if (event.key === ' ') {
-      this.handleClick(user);
-    }
-  }
-
   renderFollowCount() {
     const { users, selectedUsers } = this.state;
     let followingStatus;
