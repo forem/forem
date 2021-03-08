@@ -185,8 +185,6 @@ function initializeCommentsPage() {
   listenForDetailsToggle();
 }
 
-
-
 function toggleCodeOfConduct() {
   var user = userData();
   if (!user) {
@@ -312,7 +310,7 @@ function handleFocus(event) {
       form.classList.add("comment-form--initiated");
     }
     handleSizeChange(event);
-    initializeMentionAutocomplete(area)
+    initializeMentionAutocomplete(area);
   }
 }
 
