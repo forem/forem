@@ -6,7 +6,10 @@ import {
 } from '../topNavigation/utilities';
 import { fetchSearch } from '@utilities/search';
 
-window.initializeMentionAutocomplete = async (element) => {
+// Namespace for functions which need to be accessed in plain JS initializers
+window.Forem = {};
+
+window.Forem.initializeMentionAutocomplete = async (element) => {
   const [
     { MentionAutocomplete },
     { render, h, createRef },
