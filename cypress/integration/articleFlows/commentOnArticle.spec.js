@@ -12,6 +12,11 @@ describe('Comment on articles', () => {
   });
 
   it('should comment on an article with user mention autocomplete suggesting max 6 users', () => {
+    cy.intercept(
+      { method: 'GET', url: '/search/usernames' },
+      { fixture: 'search/usernames.json' },
+    );
+
     cy.findByLabelText('Add a comment to the discussion').as('commentBox');
     startAutocompleteInTextArea('@commentBox');
 
@@ -38,19 +43,21 @@ describe('Comment on articles', () => {
 
     cy.findByText('@search_user_3').click();
     cy.findByDisplayValue('Some text @search_user_3').should('exist');
-
-    cy.findByRole('button', { name: /Submit/ }).click();
-    cy.findByRole('link', { name: /@search_user_3/ }).should('exist');
   });
 
   it('should select a mention autocomplete suggestion by keyboard', () => {
+    cy.intercept(
+      { method: 'GET', url: '/search/usernames' },
+      { fixture: 'search/usernames.json' },
+    );
+
     cy.findByLabelText('Add a comment to the discussion').as('commentBox');
     startAutocompleteInTextArea('@commentBox');
 
     cy.findByLabelText('mention user').as('comboboxHiddenInput');
     cy.get('@comboboxHiddenInput').should('have.focus');
 
-    cy.get('@comboboxHiddenInput').type('search_user_1');
+    cy.get('@comboboxHiddenInput').type('search_user');
     cy.get('@comboboxHiddenInput').type('{downarrow}');
     cy.get('@comboboxHiddenInput').type('{enter}');
 
@@ -58,6 +65,11 @@ describe('Comment on articles', () => {
   });
 
   it('should accept entered comment text without user mention if no autocomplete suggestions', () => {
+    cy.intercept(
+      { method: 'GET', url: '/search/usernames' },
+      { fixture: 'search/emptyUsernamesSearch.json' },
+    );
+
     cy.findByLabelText('Add a comment to the discussion').as('commentBox');
     startAutocompleteInTextArea('@commentBox');
 
@@ -69,28 +81,34 @@ describe('Comment on articles', () => {
     cy.findByText('No results found').should('exist');
     cy.get('@comboboxHiddenInput').type(' ');
     cy.findByText('No results found').should('not.exist');
-
-    cy.findByRole('button', { name: /Submit/ }).click();
-    cy.findByRole('link', { name: /@user/ }).should('not.exist');
     cy.findByDisplayValue('Some text @user').should('exist');
   });
 
-  it('should update mention autocomplete suggestions on text delete', () => {
+  it('stop showing mention autocomplete suggestions on text delete', () => {
+    cy.intercept(
+      { method: 'GET', url: '/search/usernames' },
+      { fixture: 'search/usernames.json' },
+    );
+
     cy.findByLabelText('Add a comment to the discussion').as('commentBox');
     startAutocompleteInTextArea('@commentBox');
 
     cy.findByLabelText('mention user').as('comboboxHiddenInput');
     cy.get('@comboboxHiddenInput').should('have.focus');
 
-    cy.get('@comboboxHiddenInput').type('search_user_1');
+    cy.get('@comboboxHiddenInput').type('se');
     cy.findByText('@search_user_1').should('exist');
-    cy.findByText('@search_user_2').should('not.exist');
 
-    cy.get('@comboboxHiddenInput').type('{backspace}');
-    cy.findByText('@search_user_2').should('exist');
+    cy.get('@comboboxHiddenInput').type('{backspace}{backspace}{backspace}');
+    cy.findByText('@search_user_1').should('not.exist');
   });
 
   it('should close the autocomplete suggestions on Escape press', () => {
+    cy.intercept(
+      { method: 'GET', url: '/search/usernames' },
+      { fixture: 'search/usernames.json' },
+    );
+
     cy.findByLabelText('Add a comment to the discussion').as('commentBox');
     startAutocompleteInTextArea('@commentBox');
 
@@ -105,6 +123,11 @@ describe('Comment on articles', () => {
   });
 
   it('should reply to a comment with user mention autocomplete', () => {
+    cy.intercept(
+      { method: 'GET', url: '/search/usernames' },
+      { fixture: 'search/usernames.json' },
+    );
+
     cy.findByLabelText('Add a comment to the discussion').as('commentBox');
     cy.get('@commentBox').type('first comment');
     cy.findByRole('button', { name: /Submit/ }).click();
@@ -119,8 +142,7 @@ describe('Comment on articles', () => {
     cy.get('@comboboxHiddenInput').type('search_user');
 
     cy.findByText('@search_user_1').click();
-    cy.findByRole('button', { name: /Submit/ }).click();
-    cy.findByRole('link', { name: /@search_user_1/ }).should('exist');
+    cy.findByDisplayValue('Some text @search_user_1');
   });
 
   const startAutocompleteInTextArea = (textAreaSelector) => {
