@@ -96,7 +96,7 @@ GEM
       activerecord (>= 5.0, < 6.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    ahoy_email (1.1.0)
+    ahoy_email (2.0.0)
       actionmailer (>= 5)
       addressable (>= 2.3.2)
       nokogiri
@@ -860,7 +860,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 7.0)
   acts_as_follower!
   addressable (~> 2.7)
-  ahoy_email (~> 1.1)
+  ahoy_email (~> 2.0)
   ahoy_matey (~> 3.2)
   amazing_print (~> 1.2)
   ancestry (~> 3.2)
