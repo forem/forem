@@ -1,6 +1,6 @@
 <% menu_items.each do |group_name, group| %>
   <% if group[:children].length == 1 %>
-    <a class="crayons-link crayons-link--block"
+    <a class="crayons-link crayons-link--block <%= "crayons-link--current" if (deduced_controller(request) == group[:children][0][:controller]) %>"
        href="/admin/<%= group[:children][0][:controller] %>"
     >
       <%= inline_svg_tag("#{group[:svg]}", aria: true, class: "dropdown-icon crayons-icon", title: "#{group_name}") %>
