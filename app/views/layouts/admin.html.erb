@@ -53,7 +53,6 @@
   <div class="crayons-layout crayons-layout--2-cols">
     <div class="crayons-layout__left-sidebar">
       <nav class="hidden m:block">
-
         <% if FeatureFlag.enabled?(:admin_restructure) %>
           <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/">
             <%= inline_svg_tag("stack-line.svg", aria: true, class: "dropdown-icon crayons-icon", title: "overview") %>

@@ -24,7 +24,7 @@ xml.rss version: "2.0" do
         xml.pubDate article.published_at.to_s(:rfc822) if article.published_at
         xml.link app_url(article.path)
         xml.guid app_url(article.path)
-        xml.description sanitize(article.processed_html, tags: allowed_tags, attributes: allowed_attributes)
+        xml.description sanitize(article.plain_html, tags: allowed_tags, attributes: allowed_attributes)
         article.tag_list.each do |tag_name|
           xml.category tag_name
         end

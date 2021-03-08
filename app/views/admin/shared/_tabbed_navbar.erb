@@ -1,0 +1,19 @@
+<% nested_menu_items = AdminMenu.nested_menu_items_from_request(request) %>
+
+<% if nested_menu_items[:children].any? %>
+  <header class="mb-3">
+    <h2 class="crayons-title"><%= nested_menu_items[:name].to_s.titleize %></h2>
+    <div class="block s:flex items-center space-between">
+      <nav class="crayons-tabs crayons-tabs--wrapped">
+        <% nested_menu_items[:children].each do |item| %>
+          <a
+            href="/admin/<%= deduced_scope(request) %>/<%= item[:controller] %>"
+            class="crayons-tabs__item <%= "crayons-tabs__item--current" if deduced_controller(request)&.match?(item[:controller]) %>" <>
+            <%= item[:name].to_s.titleize %>
+          </a>
+        <% end %>
+      </nav>
+    </div>
+  </header>
+
+<% end %>
