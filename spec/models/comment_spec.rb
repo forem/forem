@@ -84,6 +84,22 @@ RSpec.describe Comment, type: :model do
         expect(subject).not_to be_valid
       end
     end
+
+    describe "#mention_total" do
+      it "is valid with less than six mentions in markdown" do
+        subject.commentable_type = "Article"
+
+        subject.body_markdown = "hi @#{user.username}! " * 6
+        expect(subject).to be_valid
+      end
+
+      it "is invalid with more than six mentions in markdown" do
+        subject.commentable_type = "Article"
+
+        subject.body_markdown = "hi @#{user.username}! " * 7
+        expect(subject).not_to be_valid
+      end
+    end
     # rubocop:enable RSpec/NamedSubject
 
     describe "#after_commit" do
