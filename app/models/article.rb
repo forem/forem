@@ -215,8 +215,7 @@ class Article < ApplicationRecord
     stories = if time_ago == "latest"
                 stories.order(published_at: :desc).where(score: -4..).presence || stories.order(published_at: :desc)
               elsif time_ago
-                stories.order(comments_count: :desc)
-                  .where(published_at: time_ago.., score: -4..).presence ||
+                stories.order(comments_count: :desc).where(published_at: time_ago.., score: -4..).presence ||
                   stories.order(comments_count: :desc)
               else
                 stories.order(last_comment_at: :desc)

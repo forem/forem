@@ -702,25 +702,30 @@ RSpec.describe Article, type: :model do
       create(:article, user: user, score: -2, tags: "discuss, watercooler")
     end
 
-    it "returns the latest published article within the score constraints" do
-      articles = described_class.active_threads("discuss", "latest", 1)
-      expect(articles.first[0]).to eq(filtered_article.path)
+    context "when the articles fall within the constraints" do
+      it "returns the latest published article within the score constraints" do
+        articles = described_class.active_threads("discuss", "latest", 10)
+        expect(articles.first[0]).to eq(filtered_article.path)
+      end
+
+      it "returns the published article within the time_ago and score constraints" do
+        articles = described_class.active_threads("discuss", 1.hour.ago, 10)
+        expect(articles.first[0]).to eq(filtered_article.path)
+      end
+
+      it "returns the published article within the published_at and score constraints" do
+        articles = described_class.active_threads("discuss", 6.days.ago, 10)
+        expect(articles.first[0]).to eq(filtered_article.path)
+      end
     end
 
-    it "returns the published article within the time_ago and score constraints" do
-      articles = described_class.active_threads("discuss", 1.hour.ago, 1)
-      expect(articles.first[0]).to eq(filtered_article.path)
-    end
-
-    it "returns the published article within the published_at and score constraints" do
-      articles = described_class.active_threads("discuss", 6.days.ago, 1)
-      expect(articles.first[0]).to eq(filtered_article.path)
-    end
-
-    it "returns the published article with the corresponding tag even if it does not fall within the constraints" do
-      unfiltered_article = create(:article, user: user, published: true, score: -25, tags: "discuss, watercooler")
-      articles = described_class.active_threads("discuss", "latest", 1)
-      expect(articles.first[0]).to eq(unfiltered_article.path)
+    context "when the articles do not fall within the constraints" do
+      it "returns the published article with the corresponding tag even if it does not fall within the constraints" do
+        article.update_columns(score: -25, cached_tag_list: "discuss")
+        articles = described_class.active_threads("discuss", nil, 10)
+        expect(articles.first[0]).to eq(filtered_article.path)
+        article.update_columns(score: -2, cached_tag_list: "")
+      end
     end
   end
 
