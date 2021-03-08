@@ -481,8 +481,9 @@ class User < ApplicationRecord
   def resave_articles
     articles.find_each do |article|
       if article.path
-        EdgeCache::Bust.call(article.path)
-        EdgeCache::Bust.call("#{article.path}?i=i")
+        cache_bust = EdgeCache::Bust.new
+        cache_bust.call(article.path)
+        cache_bust.call("#{article.path}?i=i")
       end
       article.save
     end

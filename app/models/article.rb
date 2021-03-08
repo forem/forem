@@ -390,6 +390,11 @@ class Article < ApplicationRecord
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
   end
 
+  def plain_html
+    doc = Nokogiri::HTML.fragment(processed_html)
+    doc.search("highlight__panel").each(&:remove).to_html
+  end
+
   private
 
   def search_score
@@ -668,9 +673,10 @@ class Article < ApplicationRecord
   end
 
   def bust_cache
-    EdgeCache::Bust.call(path)
-    EdgeCache::Bust.call("#{path}?i=i")
-    EdgeCache::Bust.call("#{path}?preview=#{password}")
+    cache_bust = EdgeCache::Bust.new
+    cache_bust.call(path)
+    cache_bust.call("#{path}?i=i")
+    cache_bust.call("#{path}?preview=#{password}")
     async_bust
     touch_actor_latest_article_updated_at
   end

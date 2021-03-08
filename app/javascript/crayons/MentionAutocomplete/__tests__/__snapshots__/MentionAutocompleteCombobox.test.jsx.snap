@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MentionAutocomplete /> should render 1`] = `"<div class=\\"crayons-autocomplete\\" data-reach-combobox=\\"\\" data-state=\\"idle\\"><input aria-autocomplete=\\"both\\" aria-controls=\\"listbox--5\\" aria-expanded=\\"false\\" aria-haspopup=\\"listbox\\" aria-label=\\"mention user\\" role=\\"combobox\\" style=\\"opacity: 0.000001;\\" data-reach-combobox-input=\\"\\" data-state=\\"idle\\"></div>"`;
