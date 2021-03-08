@@ -3,7 +3,7 @@ module RSpec
     # Version information for RSpec Rails.
     module Version
       # Current version of RSpec Rails, in semantic versioning format.
-      STRING = '4.1.0.pre'
+      STRING = '5.0.0.pre'
     end
   end
 end

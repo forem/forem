@@ -33,7 +33,7 @@ RSpec.describe "Verify required rspec dependencies" do
     end
   end
 
-  it "passes when libraries are required", unless: RSpec::Support::Ruby.jruby? do
+  it "passes when libraries are required", skip: RSpec::Support::Ruby.jruby? do
     script = tmp_root.join("pass_sanity_check")
     File.open(script, "w") do |f|
       f.write <<-EOF.gsub(/^\s+\|/, '')

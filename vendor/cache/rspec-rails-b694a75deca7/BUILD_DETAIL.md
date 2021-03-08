@@ -1,5 +1,5 @@
 <!---
-This file was generated on 2019-12-05T21:32:23+00:00 from the rspec-dev repo.
+This file was generated on 2020-12-25T18:48:30+00:00 from the rspec-dev repo.
 DO NOT modify it by hand as your changes will get lost the next time it is generated.
 -->
 
@@ -112,22 +112,23 @@ $ bundle exec yard doc --no-cache
 $ bin/yard doc --no-cache
 ```
 
-## Rubocop
+## RuboCop
 
-We use [Rubocop](https://github.com/rubocop-hq/rubocop) to enforce style conventions on the project so
-that the code has stylistic consistency throughout. Run with:
+We use [RuboCop](https://github.com/rubocop-hq/rubocop) to enforce style
+conventions on the project so that the code has stylistic consistency
+throughout. Run with:
 
 ```
-$ bundle exec rubocop
+$ bundle exec rubocop lib
 
 # or, if you installed your bundle with `--standalone --binstubs`:
 
-$ bin/rubocop
+$ bin/rubocop lib
 ```
 
-Our Rubocop configuration is a work-in-progress, so if you get a failure
-due to a Rubocop default, feel free to ask about changing the
-configuration. Otherwise, you'll need to address the Rubocop failure,
+Our RuboCop configuration is a work-in-progress, so if you get a failure
+due to a RuboCop default, feel free to ask about changing the
+configuration. Otherwise, you'll need to address the RuboCop failure,
 or, as a measure of last resort, by wrapping the offending code in
 comments like `# rubocop:disable SomeCheck` and `# rubocop:enable SomeCheck`.
 
@@ -161,4 +162,3 @@ build for another repo, so our CI build includes a spec that runs the
 spec suite of each of the _other_ project repos. Note that we only run
 the spec suite, not the full build, of the other projects, as the spec
 suite runs very quickly compared to the full build.
-

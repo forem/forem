@@ -20,7 +20,7 @@ module RSpec
           klass.include(RSpec::Rails::FeatureCheck)
         end
 
-        shared_examples_for 'a model generator with fixtures' do |name, class_name|
+        RSpec.shared_examples_for 'a model generator with fixtures' do |name, class_name|
           before { run_generator [name, '--fixture'] }
 
           describe 'the spec' do
@@ -38,7 +38,7 @@ module RSpec
           end
         end
 
-        shared_examples_for "a request spec generator" do
+        RSpec.shared_examples_for "a request spec generator" do
           describe 'generated with flag `--no-request-specs`' do
             before do
               run_generator %w[posts --no-request-specs]

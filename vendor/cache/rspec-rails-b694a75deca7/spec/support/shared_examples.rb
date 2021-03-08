@@ -1,6 +1,6 @@
 require 'pathname'
 
-shared_examples_for "an rspec-rails example group mixin" do |type, *paths|
+RSpec.shared_examples_for "an rspec-rails example group mixin" do |type, *paths|
   let(:mixin) { described_class }
 
   def define_group_in(path, group_definition)

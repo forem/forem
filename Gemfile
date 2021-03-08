@@ -153,7 +153,7 @@ group :development, :test do
   gem "rspec-core", github: "rspec/rspec-core", branch: "main"
   gem "rspec-expectations", github: "rspec/rspec-expectations", branch: "main"
   gem "rspec-mocks", github: "rspec/rspec-mocks", branch: "main"
-  gem "rspec-rails", github: "rspec/rspec-rails", branch: "rails-6-1-dev"
+  gem "rspec-rails", github: "rspec/rspec-rails", branch: "main"
   gem "rspec-support", github: "rspec/rspec-support", branch: "main"
 
   gem "rubocop", "~> 1.11", require: false # Automatic Ruby code style checking tool

@@ -46,10 +46,10 @@ GIT
 
 GIT
   remote: https://github.com/rspec/rspec-rails.git
-  revision: 5874755a3e6043a0dada6d24c7414728900f9401
-  branch: rails-6-1-dev
+  revision: b694a75deca74f1c0a034efee00118b5d07bd00b
+  branch: main
   specs:
-    rspec-rails (4.1.0.pre)
+    rspec-rails (5.0.0.pre)
       actionpack (>= 4.2)
       activesupport (>= 4.2)
       railties (>= 4.2)

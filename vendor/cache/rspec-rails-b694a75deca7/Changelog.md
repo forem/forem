@@ -1,15 +1,10 @@
-### Rails 6.1 Development
-[Full Changelog](https://github.com/rspec/rspec-rails/compare/main...rails-6-1-dev)
+### Development
+[Full Changelog](https://github.com/rspec/rspec-rails/compare/v4.1.0...main)
 
 * Support new #file_fixture_path and new fixture test support code. (Jon Rowe, #2398)
+* Support for Rails 6.1. (Benoit Tigeot, Jon Rowe, Phil Pirozhkov, and more #2398)
 
-Bug Fixes:
-
-* Prevent collisions with `let(:name)` for Rails 6.1 and `let(:method_name)` on older
-  Rails. (Benoit Tigeot, #2461)
-
-### Development
-[Full Changelog](https://github.com/rspec/rspec-rails/compare/v4.0.1...main)
+### 4.1.0 / 2021-03-06
 
 Enhancements:
 
@@ -22,6 +17,11 @@ Enhancements:
 * Improve request spec "controller" scafold when no action is specified.
   (Thomas Hareau, #2399)
 * Introduce testing snippets concept (Phil Pirozhkov, Benoit Tigeot, #2423)
+* Prevent collisions with `let(:name)` for Rails 6.1 and `let(:method_name)` on older
+  Rails. (Benoit Tigeot, #2461)
+
+### 4.0.2 / 2020-12-26
+[Full Changelog](https://github.com/rspec/rspec-rails/compare/v4.0.1...v4.0.2)
 
 Bug Fixes:
 

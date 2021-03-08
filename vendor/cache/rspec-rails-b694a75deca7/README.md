@@ -1,4 +1,4 @@
-# rspec-rails [![Build Status][]][travis-ci] [![Code Climate][]][code-climate] [![Gem Version][]](gem-version)
+# rspec-rails [![Code Climate][]][code-climate] [![Gem Version][]][gem-version]
 
 `rspec-rails` brings the [RSpec][] testing framework to [Ruby on Rails][]
 as a drop-in alternative to its default testing framework, Minitest.
@@ -25,7 +25,7 @@ Use **[`rspec-rails` 1.x][]** for Rails 2.x.
 ## Installation
 
 **IMPORTANT** This README / branch refers to the current development build.
-See the `4-0-maintenance` branch on Github if you want or require the latest stable release.
+See the [`4-1-maintenance` branch on Github](https://github.com/rspec/rspec-rails/tree/4-0-maintenance) if you want or require the latest stable release.
 
 1. Add `rspec-rails` to **both** the `:development` and `:test` groups
    of your app’s `Gemfile`:
@@ -33,7 +33,7 @@ See the `4-0-maintenance` branch on Github if you want or require the latest sta
    ```ruby
    # Run against the latest stable release
    group :development, :test do
-     gem 'rspec-rails', '~> 4.0.1'
+     gem 'rspec-rails', '~> 4.1.0'
    end
 
    # Or, run against the main branch

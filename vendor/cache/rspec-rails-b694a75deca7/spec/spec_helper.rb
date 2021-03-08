@@ -38,7 +38,8 @@ end
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
-    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+    # include_chain_clauses_in_custom_matcher_descriptions is removed in RSpec Expectations 4
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true if expectations.respond_to?(:include_chain_clauses_in_custom_matcher_descriptions=)
     expectations.max_formatted_output_length = 1000
   end
 
@@ -47,15 +48,16 @@ RSpec.configure do |config|
     mocks.verify_doubled_constant_names = true
   end
 
-  config.filter_run :focus
-  config.run_all_when_everything_filtered = true
+  config.filter_run_when_matching :focus
 
   config.order = :random
   Kernel.srand config.seed
 
-  config.shared_context_metadata_behavior = :apply_to_host_groups
+  # shared_context_metadata_behavior is removed in RSpec 4
+  config.shared_context_metadata_behavior = :apply_to_host_groups if config.respond_to?(:shared_context_metadata_behavior=)
 
-  config.disable_monkey_patching!
+  # Zero monkey patching mode is the default and only mode in RSpec 4
+  config.disable_monkey_patching! if config.respond_to?(:disable_monkey_patching!)
 
   config.warnings = true
   config.raise_on_warning = true
