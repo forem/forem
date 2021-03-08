@@ -26,12 +26,11 @@ to the [Design Guide](/design) documentation.
 
 ## Crayons
 
-Crayons is the design system used by Forem. There is a
-[storybook](https://storybook.js.org/) for Crayons that has different elements of
-the design system. You can access hosted version of the storybook in
-https://storybook.forem.com/
+Crayons is the design system used by Forem. A
+[storybook](https://storybook.js.org/) listing the various elements is available
+at https://storybook.forem.com/
 
-or you can run the storybook locally by running the command
+You can also run it locally with the following command
 
 ```
 $ yarn storybook
