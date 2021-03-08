@@ -190,7 +190,7 @@ export class FollowUsers extends Component {
                       <img
                         className="user-avatar"
                         src={user.profile_image_url}
-                        alt="profile"
+                        alt=""
                       />
                     </figure>
                     <div className="user-info">
