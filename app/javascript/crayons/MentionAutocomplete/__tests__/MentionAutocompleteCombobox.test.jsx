@@ -19,7 +19,7 @@ describe('<MentionAutocomplete />', () => {
       <MentionAutocompleteCombobox
         onSelect={mockOnSelect}
         onSearchTermChange={mockOnSearchtermChange}
-        fetchSuggestions={() => Promise.resolve({ result: [] })}
+        fetchSuggestions={async () => ({ result: [] })}
         placementCoords={mockCoords}
       />,
     );
@@ -34,7 +34,7 @@ describe('<MentionAutocomplete />', () => {
       <MentionAutocompleteCombobox
         onSelect={mockOnSelect}
         onSearchTermChange={mockOnSearchtermChange}
-        fetchSuggestions={() => Promise.resolve({ result: [] })}
+        fetchSuggestions={async () => ({ result: [] })}
         placementCoords={mockCoords}
       />,
     );
@@ -43,7 +43,7 @@ describe('<MentionAutocomplete />', () => {
   });
 
   it('should not fetch suggestions with less than three characters', async () => {
-    const mockFetchSuggestions = jest.fn(() => Promise.resolve([]));
+    const mockFetchSuggestions = jest.fn(async () => []);
 
     const { getByLabelText } = render(
       <MentionAutocompleteCombobox
@@ -67,9 +67,9 @@ describe('<MentionAutocomplete />', () => {
       name: 'User One',
       profile_image_90: 'example.png',
     };
-    const mockFetchSuggestions = jest.fn(() =>
-      Promise.resolve({ result: [mockMatchingUser] }),
-    );
+    const mockFetchSuggestions = jest.fn(async () => ({
+      result: [mockMatchingUser],
+    }));
 
     const { getByLabelText, getByText } = render(
       <MentionAutocompleteCombobox
@@ -93,7 +93,7 @@ describe('<MentionAutocomplete />', () => {
   it('should display empty matches state', async () => {
     const { getByText, getByLabelText } = render(
       <MentionAutocompleteCombobox
-        fetchSuggestions={() => Promise.resolve({ result: [] })}
+        fetchSuggestions={async () => ({ result: [] })}
         onSelect={mockOnSelect}
         onSearchTermChange={mockOnSearchtermChange}
         placementCoords={mockCoords}

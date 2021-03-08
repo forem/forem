@@ -4,7 +4,7 @@ import {
   getInstantClick,
   initializeTouchDevice,
 } from '../topNavigation/utilities';
-import { fetchSearch } from '../utilities/search';
+import { fetchSearch } from '@utilities/search';
 
 window.initializeMentionAutocomplete = async (element) => {
   const [
