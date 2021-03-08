@@ -7,19 +7,19 @@
       <%= display_name(group_name) %>
     </a>
   <% else %>
-    <div
-      class="crayons-link crayons-link--block cursor-pointer <%= "crayons-link--current" if (deduced_scope(request) == group_name.to_s) %>" data-toggle="collapse"
+    <div class="crayons-link crayons-link--block cursor-pointer <%= "crayons-link--current" if (deduced_scope(request) == group_name.to_s) %>"
+      data-toggle="collapse"
       data-target="#<%= group_name %>"
       aria-expanded="<%= (deduced_scope(request) == group_name.to_s).to_s %>"
-      aria-controls="<%= group_name %>"
-      >
+      aria-controls="<%= group_name %>">
       <%= inline_svg_tag("#{group[:svg]}", aria: true, class: "dropdown-icon crayons-icon", title: "#{group_name}") %>
       <%= display_name(group_name) %>
     </div>
-    <div id="<%= group_name %>" class="<%= (deduced_scope(request) == group_name.to_s) ? "expand show" : "collapse hide" %>" aria-labelledby="<%= group_name %>">
+    <div id="<%= group_name %>"
+         class="<%= (deduced_scope(request) == group_name.to_s) ? "expand show" : "collapse hide" %>" aria-labelledby="<%= group_name %>">
       <% group[:children].each do |item| %>
         <a class="crayons-link crayons-link--block ml-7 <%= "fw-bold" if deduced_controller(request) == item[:controller].to_s %>"
-           href="/admin/<%= group_name %>/<%= item[:controller] %>"
+          href="/admin/<%= group_name %>/<%= item[:controller] %>"
         >
           <%= item[:name].to_s.titleize %>
         </a>
