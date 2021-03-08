@@ -2,11 +2,11 @@ class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   # rubocop:disable Metrics/BlockLength
   ITEMS = Menu.define do
-    scope :people, "twemoji/fire.svg", [
+    scope :people, "group-2-line.svg", [
       item(name: "people", controller: "users"),
     ]
 
-    scope :content_manager, "twemoji/heart.svg", [
+    scope :content_manager, "dashboard-line.svg", [
       item(name: "posts", controller: "articles"),
       item(name: "badges", children: [
              item(name: "library", controller: "badges"),
@@ -17,7 +17,7 @@ class AdminMenu
       item(name: "tags"),
     ]
 
-    scope :customization, "twemoji/heart.svg", [
+    scope :customization, "tools-line.svg", [
       item(name: "config"),
       item(name: "html variants", controller: "html_variants"),
       item(name: "display ads"),
@@ -25,11 +25,11 @@ class AdminMenu
       item(name: "pages"),
     ]
 
-    scope :admin_team, "twemoji/fire.svg", [
+    scope :admin_team, "user-line.svg", [
       item(name: "admin team", controller: "permissions"),
     ]
 
-    scope :moderation, "twemoji/heart.svg", [
+    scope :moderation, "shield-flash-line.svg", [
       item(name: "reports"),
       item(name: "mods"),
       item(name: "moderator actions ads", controller: "moderator_actions"),
@@ -37,7 +37,7 @@ class AdminMenu
       # item(name: "interaction limits", controller: "" )
     ]
 
-    scope :advanced, "twemoji/fire.svg", [
+    scope :advanced, "flashlight-line.svg", [
       item(name: "broadcasts"),
       item(name: "response templates"),
       item(name: "sponsorships"),
@@ -48,7 +48,7 @@ class AdminMenu
            ]),
     ]
 
-    scope :apps, "twemoji/heart.svg", [
+    scope :apps, "palette-line.svg", [
       item(name: "chat channels"),
       item(name: "events"),
       item(name: "listings"),
