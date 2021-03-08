@@ -12,6 +12,7 @@ class Comment < ApplicationRecord
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
+  MAX_USER_MENTIONS = 6
 
   belongs_to :commentable, polymorphic: true, optional: true
   belongs_to :user
@@ -39,7 +40,7 @@ class Comment < ApplicationRecord
   after_save :bust_cache
 
   validate :published_article, if: :commentable
-  validate :mention_total
+  validate :user_mentions_in_markdown
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
   validates :commentable_id, presence: true, if: :commentable_type
@@ -304,13 +305,15 @@ class Comment < ApplicationRecord
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
   end
 
-  def mention_total
+  def user_mentions_in_markdown
     # The "comment-mentioned-user" css is added by Html::Parser#user_link_if_exists
-    mentions_in_markdown = Nokogiri::HTML(processed_html).css(".comment-mentioned-user").map do |link|
+    mentions = Nokogiri::HTML(processed_html).css(".comment-mentioned-user").map do |link|
       link.text.delete("@").downcase
     end
 
-    errors.add(:base, "You cannot mention more than 6 users in a comment!") if mentions_in_markdown.size > 6
+    return unless mentions.size > MAX_USER_MENTIONS
+
+    errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a comment!")
   end
 
   def record_field_test_event
