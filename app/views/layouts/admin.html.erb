@@ -54,11 +54,15 @@
     <div class="admin__left-sidebar crayons-layout__left-sidebar">
       <nav class="hidden m:block">
         <% if FeatureFlag.enabled?(:admin_restructure) %>
-          <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/">
-            <%= inline_svg_tag("stack-line.svg", aria: true, class: "dropdown-icon crayons-icon", title: "overview") %>
-            Overview
-          </a>
-          <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu::ITEMS %>
+          <ul>
+            <li>
+              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/">
+                <%= inline_svg_tag("stack-line.svg", aria: true, class: "dropdown-icon crayons-icon", title: "overview") %>
+                Overview
+              </a>
+            </li>
+            <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu::ITEMS %>
+          </ul>
         <% else %>
           <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/">
             Overview
