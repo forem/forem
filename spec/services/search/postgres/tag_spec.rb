@@ -50,7 +50,7 @@ RSpec.describe Search::Postgres::Tag, type: :service do
       result = described_class.search_documents("jav")
       tags = result.map { |r| r["name"] }
 
-      expect(tags).to match_array([javascript.name, java.name])
+      expect(tags).to eq([javascript.name, java.name])
     end
   end
 end
