@@ -1,7 +1,7 @@
 <% menu_items.each do |group_name, group| %>
   <li>
     <% if group[:children].length == 1 %>
-      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if (deduced_controller(request) == group[:children][0][:controller]) %>"
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if deduced_controller(request) == group[:children][0][:controller] %>"
          href="/admin/<%= group[:children][0][:controller] %>"
          aria-page="<%= "page" if deduced_controller(request) == group[:children][0][:controller] %>"
       >
@@ -9,7 +9,7 @@
         <%= display_name(group_name) %>
       </a>
     <% else %>
-      <button class="crayons-link crayons-link--block cursor-pointer <%= "crayons-link--current" if (deduced_scope(request) == group_name.to_s) %>"
+      <button class="crayons-link crayons-link--block cursor-pointer <%= "crayons-link--current" if deduced_scope(request) == group_name.to_s %>"
         data-toggle="collapse"
         data-target="#<%= group_name %>"
         aria-expanded="<%= (deduced_scope(request) == group_name.to_s).to_s %>"
