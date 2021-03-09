@@ -3,6 +3,7 @@
     <% if group[:children].length == 1 %>
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if (deduced_controller(request) == group[:children][0][:controller]) %>"
          href="/admin/<%= group[:children][0][:controller] %>"
+         aria-page="<%= "page" if deduced_controller(request) == group[:children][0][:controller] %>"
       >
         <%= inline_svg_tag("#{group[:svg]}", aria: true, class: "dropdown-icon crayons-icon", title: "#{group_name}") %>
         <%= display_name(group_name) %>
@@ -23,6 +24,7 @@
           <li>
             <a class="crayons-link crayons-link--block ml-7 <%= "fw-bold" if deduced_controller(request) == item[:controller].to_s %>"
               href="/admin/<%= group_name %>/<%= item[:controller] %>"
+              aria-page="<%= "page" if deduced_controller(request) == item[:controller].to_s %>"
             >
               <%= item[:name].to_s.titleize %>
             </a>
