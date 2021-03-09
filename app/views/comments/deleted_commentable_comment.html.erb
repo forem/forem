@@ -42,7 +42,7 @@
         <div
           class="body
           <%= "low-quality-comment" if decorated_comment.low_quality %>
-          <%= "color-base-60" if comment.decorate.low_quality %>">
+          <%= "color-base-60" if @root_comment.decorate.low_quality %>">
           <%= sanitize @root_comment.processed_html %>
           <button class="reaction-button reacted" disabled>
             <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />
