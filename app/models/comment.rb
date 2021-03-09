@@ -13,6 +13,7 @@ class Comment < ApplicationRecord
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
   MAX_USER_MENTIONS = 6
+  MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 11).freeze
 
   belongs_to :commentable, polymorphic: true, optional: true
   belongs_to :user
@@ -306,6 +307,8 @@ class Comment < ApplicationRecord
   end
 
   def user_mentions_in_markdown
+    return if created_at.present? && (created_at < MAX_USER_MENTION_LIVE_AT)
+
     # The "comment-mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".comment-mentioned-user").size
     return if mentions_count <= MAX_USER_MENTIONS
