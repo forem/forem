@@ -1285,10 +1285,7 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
   create_table "users", force: :cascade do |t|
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
-    t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
-    t.string "behance_url"
-    t.string "bg_color_hex"
     t.bigint "blocked_by_count", default: 0, null: false
     t.bigint "blocking_others_count", default: 0, null: false
     t.boolean "checked_code_of_conduct", default: false
@@ -1304,13 +1301,9 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.integer "credits_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.inet "current_sign_in_ip"
-    t.string "currently_hacking_on"
-    t.string "currently_learning"
     t.boolean "display_announcements", default: true
     t.boolean "display_sponsors", default: true
-    t.string "dribbble_url"
     t.string "editor_version", default: "v1"
-    t.string "education"
     t.string "email"
     t.boolean "email_badge_notifications", default: true
     t.boolean "email_comment_notifications", default: true
@@ -1321,17 +1314,12 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.boolean "email_membership_newsletter", default: false
     t.boolean "email_mention_notifications", default: true
     t.boolean "email_newsletter", default: false
-    t.boolean "email_public", default: false
     t.boolean "email_tag_mod_newsletter", default: false
     t.boolean "email_unread_notifications", default: true
-    t.string "employer_name"
-    t.string "employer_url"
-    t.string "employment_title"
     t.string "encrypted_password", default: "", null: false
     t.integer "experience_level"
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
-    t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
@@ -1343,10 +1331,8 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.integer "following_users_count", default: 0, null: false
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
-    t.string "gitlab_url"
     t.string "inbox_guidelines"
     t.string "inbox_type", default: "private"
-    t.string "instagram_url"
     t.datetime "invitation_accepted_at"
     t.datetime "invitation_created_at"
     t.integer "invitation_limit"
@@ -1365,15 +1351,10 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.datetime "latest_article_updated_at"
-    t.string "linkedin_url"
-    t.string "location"
     t.datetime "locked_at"
-    t.string "mastodon_url"
-    t.string "medium_url"
     t.boolean "mobile_comment_notifications", default: true
     t.boolean "mod_roundrobin_notifications", default: true
     t.integer "monthly_dues", default: 0
-    t.string "mostly_work_with"
     t.string "name"
     t.string "old_old_username"
     t.string "old_username"
@@ -1399,22 +1380,16 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.integer "sign_in_count", default: 0, null: false
     t.string "signup_cta_variant"
     t.integer "spent_credits_count", default: 0, null: false
-    t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.integer "subscribed_to_user_subscriptions_count", default: 0, null: false
-    t.text "summary"
-    t.string "text_color_hex"
-    t.string "twitch_url"
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.string "unlock_token"
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "username"
-    t.string "website_url"
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
-    t.string "youtube_url"
     t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
     t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_users_on_username_as_tsvector", using: :gin
     t.index ["apple_username"], name: "index_users_on_apple_username"
