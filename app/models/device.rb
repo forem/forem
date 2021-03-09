@@ -5,7 +5,7 @@ class Device < ApplicationRecord
   ANDROID = "Android".freeze
 
   validates :token, uniqueness: { scope: %i[user_id platform app_bundle] }
-  validates :platform, inclusion: { in: %w[iOS Android] }
+  validates :platform, inclusion: { in: [IOS, ANDROID] }
 
   def create_notification(title, body, payload)
     case platform

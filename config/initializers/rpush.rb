@@ -64,7 +64,7 @@ Rpush.reflect do |on|
       Device.where(token: notification.device_token, platform: "iOS").destroy_all
     end
 
-    DatadogStatsClient.increment("push_notifications.errors",
+    ForemStatsClient.increment("push_notifications.errors",
                                  tags: ["error:#{e.class}", "message:#{e.error_description}"])
   end
 
