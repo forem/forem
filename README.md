@@ -163,6 +163,7 @@ A more complete overview of our stack is available in
 - [@phannon716](https://dev.to/phannon716)
 - [@s_aitchison](https://dev.to/s_aitchison)
 - [@jgaskins](https://dev.to/jgaskins)
+- [@djuber](https://dev.to/djuber)
 
 ## Vulnerability disclosure
 
