@@ -14,7 +14,7 @@ class Menu
   end
 
   def scope(name, svg, children)
-    @items[name] = { svg: svg, children: children }
+    @items[name] = { svg: "#{svg}.svg", children: children }
   end
 
   def item(name:, controller: name, children: [])
