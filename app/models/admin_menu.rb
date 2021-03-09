@@ -58,7 +58,7 @@ class AdminMenu
   # rubocop:enable Metrics/BlockLength
 
   def self.nested_menu_items(scope_name, nav_item)
-    ITEMS[scope_name.to_sym][:children].each do |items|
+    ITEMS.dig(scope_name.to_sym, :children).each do |items|
       return items if items[:controller] == nav_item
 
       next unless items[:children]&.any?
