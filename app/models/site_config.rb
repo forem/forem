@@ -170,6 +170,7 @@ class SiteConfig < RailsSettings::Base
   # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
+  field :rate_limit_comment_antispam_creation, type: :integer, default: 1
   field :rate_limit_listing_creation, type: :integer, default: 1
   field :rate_limit_published_article_creation, type: :integer, default: 9
   field :rate_limit_published_article_antispam_creation, type: :integer, default: 1
@@ -182,7 +183,6 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_feedback_message_creation, type: :integer, default: 5
   field :rate_limit_user_update, type: :integer, default: 15
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
-  field :rate_limit_published_comment_antispam_creation, type: :integer, default: 1
 
   field :spam_trigger_terms, type: :array, default: []
 
