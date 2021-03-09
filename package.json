@@ -85,7 +85,7 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
-    "@stoplight/spectral": "5.8.1",
+    "@stoplight/spectral": "5.9.0",
     "@storybook/addon-a11y": "^6.1.21",
     "@storybook/addon-actions": "^6.1.21",
     "@storybook/addon-docs": "^6.1.21",
@@ -123,7 +123,7 @@
     "faker": "^5.4.0",
     "gitdocs": "^2.0.0",
     "husky": "^4.3.8",
-    "ibm-openapi-validator": "0.35.0",
+    "ibm-openapi-validator": "0.35.1",
     "jest": "26.6.3",
     "jest-axe": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
@@ -142,11 +142,11 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@babel/core": "^7.13.8",
+    "@babel/core": "^7.13.10",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-react-jsx": "^7.12.17",
-    "@babel/preset-env": "^7.13.9",
+    "@babel/preset-env": "^7.13.10",
     "@github/clipboard-copy-element": "^1.1.2",
     "@honeybadger-io/webpack": "^1.2.0",
     "@rails/webpacker": "5.2.1",
