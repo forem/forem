@@ -210,4 +210,13 @@ label {
     list-style: none;
     padding: 0;
   }
+
+  :focus-visible {
+    outline: 2px auto blue;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
 }
