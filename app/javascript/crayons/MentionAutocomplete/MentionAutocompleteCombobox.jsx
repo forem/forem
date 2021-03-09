@@ -76,10 +76,10 @@ export const MentionAutocompleteCombobox = ({
       }
 
       fetchSuggestions(trimmedSearchTerm).then(({ result: fetchedUsers }) => {
-        const resultLength =
-          fetchedUsers.length > MAX_RESULTS_DISPLAYED
-            ? MAX_RESULTS_DISPLAYED
-            : fetchedUsers.length;
+        const resultLength = Math.min(
+          fetchedUsers.length,
+          MAX_RESULTS_DISPLAYED,
+        );
 
         const results = fetchedUsers.slice(0, resultLength);
 
