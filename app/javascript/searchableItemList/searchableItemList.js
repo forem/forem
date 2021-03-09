@@ -115,11 +115,11 @@ export function search(query, { page, tags, statusView, appendItems = false }) {
 export function loadNextPage() {
   const component = this;
 
-  const { query, selectedTags, page, statusView } = component.state;
+  const { query, selectedTag, page, statusView } = component.state;
   component.setState({ page: page + 1 });
   component.search(query, {
     page: page + 1,
-    tags: selectedTags,
+    tags: [selectedTag],
     statusView,
     appendItems: true,
   });
