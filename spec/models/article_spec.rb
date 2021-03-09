@@ -724,7 +724,7 @@ RSpec.describe Article, type: :model do
         article.update_columns(score: -25, cached_tag_list: "discuss")
         articles = described_class.active_threads("discuss", nil, 10)
         expect(articles.first[0]).to eq(filtered_article.path)
-        article.update_columns(score: -2, cached_tag_list: "")
+        article.update_columns(score: 0, cached_tag_list: "javascript, html, css")
       end
     end
   end
