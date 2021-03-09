@@ -12,10 +12,7 @@ module Articles
     end
 
     def for_update(update_edited_at: false)
-      hash = {}
-      ATTRIBUTES.each do |attr|
-        hash[attr] = attributes[attr] if attributes.key?(attr)
-      end
+      hash = attributes.slice(*ATTRIBUTES)
       # don't reset the collection when no series was passed
       hash[:collection] = collection if attributes.key?(:series)
       hash[:tag_list] = tag_list
@@ -26,11 +23,7 @@ module Articles
     private
 
     def collection
-      if attributes[:series].present?
-        Collection.find_series(attributes[:series], article_user)
-      elsif attributes[:series] == "" # reset collection?
-        nil
-      end
+      Collection.find_series(attributes[:series], article_user) if attributes[:series].present?
     end
 
     def tag_list
