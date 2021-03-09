@@ -2,11 +2,11 @@ class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   # rubocop:disable Metrics/BlockLength
   ITEMS = Menu.define do
-    scope :people, "group-2-line.svg", [
+    scope :people, "group-2-line", [
       item(name: "people", controller: "users"),
     ]
 
-    scope :content_manager, "dashboard-line.svg", [
+    scope :content_manager, "dashboard-line", [
       item(name: "posts", controller: "articles"),
       item(name: "badges", children: [
              item(name: "library", controller: "badges"),
@@ -17,7 +17,7 @@ class AdminMenu
       item(name: "tags"),
     ]
 
-    scope :customization, "tools-line.svg", [
+    scope :customization, "tools-line", [
       item(name: "config"),
       item(name: "html variants", controller: "html_variants"),
       item(name: "display ads"),
@@ -25,11 +25,11 @@ class AdminMenu
       item(name: "pages"),
     ]
 
-    scope :admin_team, "user-line.svg", [
+    scope :admin_team, "user-line", [
       item(name: "admin team", controller: "permissions"),
     ]
 
-    scope :moderation, "shield-flash-line.svg", [
+    scope :moderation, "shield-flash-line", [
       item(name: "reports"),
       item(name: "mods"),
       item(name: "moderator actions ads", controller: "moderator_actions"),
@@ -37,7 +37,7 @@ class AdminMenu
       # item(name: "interaction limits", controller: "" )
     ]
 
-    scope :advanced, "flashlight-line.svg", [
+    scope :advanced, "flashlight-line", [
       item(name: "broadcasts"),
       item(name: "response templates"),
       item(name: "sponsorships"),
@@ -48,7 +48,7 @@ class AdminMenu
            ]),
     ]
 
-    scope :apps, "palette-line.svg", [
+    scope :apps, "palette-line", [
       item(name: "chat channels"),
       item(name: "events"),
       item(name: "listings"),
