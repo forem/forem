@@ -10260,10 +10260,10 @@ husky@^4.3.8:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-ibm-openapi-validator@0.35.1:
-  version "0.35.1"
-  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.35.1.tgz#6871007a44d86189dd81fe468f391898b7859be4"
-  integrity sha512-Q+wHzR+IXnHHNwGExxO1H/noOdHGiOgZkabOdBOrI/TMWrxCOEUYglVXCdxVot9Ct2qMSWheAtVwupLu3soqpA==
+ibm-openapi-validator@0.35.2:
+  version "0.35.2"
+  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.35.2.tgz#20c53fcb91885befe8ae8fc1223721654850699c"
+  integrity sha512-MMqsFA8OEKPs9xW5lOfKqiBe6SiWVMDtPJylAgR0kxa0scJ0pwan1bqrm0xPWULnJaByLmmZpBM7cMJ3cQ7Wfw==
   dependencies:
     "@stoplight/spectral" "^5.8.1"
     chalk "^4.1.0"
