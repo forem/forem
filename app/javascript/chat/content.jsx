@@ -75,7 +75,7 @@ export class Content extends Component {
           type="button"
           className="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
           data-content="fullscreen"
-          style={{ left: "15px", marginLeft: "0px" }}
+          style={{ left: "-80px", marginLeft: "0px" }}
           title="fullscreen"
         >
           {' '}
