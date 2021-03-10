@@ -386,6 +386,12 @@ class Article < ApplicationRecord
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
   end
 
+  def plain_html
+    doc = Nokogiri::HTML.fragment(processed_html)
+    doc.search(".highlight__panel").each(&:remove)
+    doc.to_html
+  end
+
   private
 
   def search_score

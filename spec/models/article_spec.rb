@@ -980,4 +980,32 @@ RSpec.describe Article, type: :model do
       expect(article.co_author_ids).to match_array([co_author1.id, co_author2.id])
     end
   end
+
+  describe "#plain_html" do
+    let(:body_markdown) do
+      <<~MD
+        ---
+        title: Test highlight panel
+        published: false
+        ---
+
+        text before
+
+          ```ruby
+          def foo():
+            puts "bar"
+          ```
+
+        text after
+      MD
+    end
+
+    it "doesn't include highlight panel markup" do
+      article = create(:article, body_markdown: body_markdown)
+
+      expect(article.plain_html).to include("text before")
+      expect(article.plain_html).to include("highlight")
+      expect(article.plain_html).not_to include("highlight__panel")
+    end
+  end
 end
