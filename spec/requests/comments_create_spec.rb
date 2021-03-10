@@ -39,6 +39,8 @@ RSpec.describe "CommentsCreate", type: :request do
     end
 
     it "returns 429 Too Many Requests when a user reaches their rate limit" do
+      # avoid hitting new user rate limit check
+      allow(user).to receive(:created_at).and_return(1.week.ago)
       allow(rate_limit_checker).to receive(:limit_by_action)
         .with(:comment_creation)
         .and_return(true)
