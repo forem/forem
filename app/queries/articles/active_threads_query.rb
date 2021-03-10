@@ -3,16 +3,16 @@ module Articles
     DEFAULT_OPTIONS = {
       tags: ["discuss"],
       time_ago: nil,
-      number: 10
+      count: 10
     }.with_indifferent_access.freeze
 
     MINIMUM_SCORE = -4
 
     def self.call(relation: Article.published, options: {})
       options = DEFAULT_OPTIONS.merge(options)
-      tags, time_ago, number = options.values_at(:tags, :time_ago, :number)
+      tags, time_ago, count = options.values_at(:tags, :time_ago, :count)
 
-      relation.limit(number)
+      relation.limit(count)
       relation = if time_ago == "latest"
                    relation.order(published_at: :desc).where(score: MINIMUM_SCORE..).presence ||
                      relation.order(published_at: :desc)
