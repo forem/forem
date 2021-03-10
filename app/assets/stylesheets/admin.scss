@@ -205,12 +205,10 @@ label {
     border: 0;
     width: 100%;
   }
+}
 
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-
+.admin__tabbed-navbar,
+.admin__left-sidebar{
   :focus-visible {
     outline: 2px auto blue;
   }
@@ -219,4 +217,8 @@ label {
     outline: none;
   }
 
+  ul {
+    list-style: none;
+    padding: 0;
+  }
 }
