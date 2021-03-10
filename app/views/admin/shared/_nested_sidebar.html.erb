@@ -15,7 +15,7 @@
         aria-expanded="<%= (deduced_scope(request) == group_name.to_s).to_s %>"
         aria-controls="<%= group_name %>"
       >
-        <%= inline_svg_tag("#{group[:svg]}", aria: true, class: "dropdown-icon crayons-icon", title: "#{group_name}") %>
+        <%= inline_svg_tag(group[:svg], aria: true, class: "dropdown-icon crayons-icon", title: group_name) %>
         <%= display_name(group_name) %>
       </button>
       <ul id="<%= group_name %>"
