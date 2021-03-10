@@ -5,7 +5,7 @@
 <style>.app-shell-loader {display: none;}</style>
 <div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>">
   <% if flash[:global_notice] %>
-    <div class="crayons-banner">
+    <div class="crayons-banner" aria-live="polite">
       <%= flash[:global_notice] %>
     </div>
   <% end %>
