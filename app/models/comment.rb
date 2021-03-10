@@ -308,7 +308,7 @@ class Comment < ApplicationRecord
   end
 
   def user_mentions_in_markdown
-    return if created_at.present? && (created_at < MAX_USER_MENTION_LIVE_AT)
+    return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
     # The "comment-mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".comment-mentioned-user").size
