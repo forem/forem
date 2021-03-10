@@ -59,47 +59,102 @@ describe('Reading List', () => {
       .should('not.exist');
   });
 
-  it('should load the reading list with items on screens smaller than the medium breakpoint', () => {
-    cy.viewport(BREAKPOINTS.Medium - 1, BREAKPOINTS.Medium);
-    cy.visit('/readinglist', pageVisitOptions);
-    cy.intercept(
-      Cypress.config().baseUrl +
-        'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
-      { fixture: 'search/readingList.json' },
-    ).as('readingList');
-    cy.wait('@readingList');
-    cy.findByRole('main')
-      .as('main')
-      .findByText(/^Your reading list is empty$/i)
-      .should('not.exist');
-    cy.get('@main').findByText(/^View Archive$/i);
-    cy.get('@main').findByLabelText(/Search...$/i);
-    cy.get('@main').findByText(/^Reading list \(3\)$/);
-    cy.get('@main').findByLabelText(/^Filter by tag$/i, { selector: 'select' });
-    cy.get('@main')
-      .findByText(/^Filter by tag$/i, { selector: 'legend' })
-      .should('not.exist');
+  describe('small screens', () => {
+    beforeEach(() => {
+      cy.viewport(BREAKPOINTS.Medium - 1, BREAKPOINTS.Medium);
+      cy.visit('/readinglist', pageVisitOptions);
+      cy.intercept(
+        Cypress.config().baseUrl +
+          'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingList.json' },
+      ).as('readingList');
+      cy.wait('@readingList');
+    });
+
+    it('should load the reading list with items', () => {
+      cy.findByRole('main')
+        .as('main')
+        .findByText(/^Your reading list is empty$/i)
+        .should('not.exist');
+      cy.get('@main').findByText(/^View Archive$/i);
+      cy.get('@main').findByLabelText(/Search...$/i);
+      cy.get('@main').findByText(/^Reading list \(3\)$/);
+      cy.get('@main').findByLabelText(/^Filter by tag$/i, {
+        selector: 'select',
+      });
+      cy.get('@main')
+        .findByText(/^Filter by tag$/i, { selector: 'legend' })
+        .should('not.exist');
+
+      cy.get('@main').findByText('Test Article 1');
+      cy.get('@main').findByText('Test Article 2');
+      cy.get('@main').findByText('Test Article 3');
+    });
+
+    it('should filter by tag', () => {
+      cy.findByRole('main').as('main');
+      cy.get('@main')
+        .findByLabelText('Filter by tag')
+        .as('tagFilter')
+        .select('productivity');
+
+      cy.intercept(
+        Cypress.config().baseUrl +
+          'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingListFilterByTagProductivity.json' },
+      ).as('filteredReadingList');
+      cy.wait('@filteredReadingList');
+
+      cy.get('@main').findByText('Test Article 1');
+      cy.get('@main').findByText('Test Article 2').should('not.exist');
+      cy.get('@main').findByText('Test Article 3');
+    });
   });
 
-  it('should load the reading list with items on screens larger than the medium breakpoint', () => {
-    cy.viewport(BREAKPOINTS.Large, 600);
-    cy.visit('/readinglist', pageVisitOptions);
-    cy.intercept(
-      Cypress.config().baseUrl +
-        'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
-      { fixture: 'search/readingList.json' },
-    ).as('readingList');
-    cy.wait('@readingList');
-    cy.findByRole('main')
-      .as('main')
-      .findByText(/^Your reading list is empty$/i)
-      .should('not.exist');
-    cy.get('@main').findByText(/^View Archive$/i);
-    cy.get('@main').findByLabelText(/Search...$/i);
-    cy.get('@main').findByText(/^Reading list \(3\)$/);
-    cy.get('@main').findByText(/^Filter by tag$/i, { selector: 'legend' });
-    cy.get('@main')
-      .findByLabelText(/^Filter by tag$/i, { selector: 'select' })
-      .should('not.exist');
+  describe('large screens', () => {
+    beforeEach(() => {
+      cy.viewport(BREAKPOINTS.Large, 600);
+      cy.visit('/readinglist', pageVisitOptions);
+      cy.intercept(
+        Cypress.config().baseUrl +
+          'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingList.json' },
+      ).as('readingList');
+      cy.wait('@readingList');
+    });
+
+    it('should load the reading list with items', () => {
+      cy.findByRole('main')
+        .as('main')
+        .findByText(/^Your reading list is empty$/i)
+        .should('not.exist');
+      cy.get('@main').findByText(/^View Archive$/i);
+      cy.get('@main').findByLabelText(/Search...$/i);
+      cy.get('@main').findByText(/^Reading list \(3\)$/);
+      cy.get('@main').findByText(/^Filter by tag$/i, { selector: 'legend' });
+      cy.get('@main')
+        .findByLabelText(/^Filter by tag$/i, { selector: 'select' })
+        .should('not.exist');
+
+      cy.get('@main').findByText('Test Article 1');
+      cy.get('@main').findByText('Test Article 2');
+      cy.get('@main').findByText('Test Article 3');
+    });
+
+    it('should filter by tag', () => {
+      cy.findByRole('main').as('main');
+      cy.get('@main').findByLabelText('productivity tag').click();
+
+      cy.intercept(
+        Cypress.config().baseUrl +
+          'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingListFilterByTagProductivity.json' },
+      ).as('filteredReadingList');
+      cy.wait('@filteredReadingList');
+
+      cy.get('@main').findByText('Test Article 1');
+      cy.get('@main').findByText('Test Article 2').should('not.exist');
+      cy.get('@main').findByText('Test Article 3');
+    });
   });
 });
