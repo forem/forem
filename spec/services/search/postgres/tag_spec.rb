@@ -44,13 +44,21 @@ RSpec.describe Search::Postgres::Tag, type: :service do
     end
 
     it "order tags by decreasing hotness score" do
-      java = create(:tag, name: "java", hotness_score: 10)
-      javascript = create(:tag, name: "javascript", hotness_score: 20)
+      tag1 = create(:tag, name: "javascript1")
+      tag2 = create(:tag, name: "javascript2")
+
+      # see Tag#calculate_hotness_score
+      create(:article, score: 50, tags: [], tag_list: tag1.name)
+      create(:article, score: 100, tags: [], tag_list: tag2.name)
+
+      # to re-calculate the score
+      tag1.save!
+      tag2.save!
 
       result = described_class.search_documents("jav")
       tags = result.map { |r| r["name"] }
 
-      expect(tags).to eq([javascript.name, java.name])
+      expect(tags).to eq([tag2.name, tag1.name])
     end
   end
 end

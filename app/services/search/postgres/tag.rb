@@ -7,7 +7,7 @@ module Search
         ::Tag
           .search_by_name(term)
           .where(supported: true)
-          .order(hotness_score: :desc)
+          .reorder(hotness_score: :desc)
           .select(*ATTRIBUTES)
           .as_json
       end
