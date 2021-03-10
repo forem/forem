@@ -189,18 +189,7 @@ label {
   min-width: 120px;
 }
 
-// Navbar links have text-decorations that are being
-// rendered from boostrap. We want to remove these to be
-// consistent with links in the crayons design system.
 .admin__left-sidebar {
-  .crayons-link {
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: none;
-    }
-  }
-
   button {
     border: 0;
     width: 100%;
@@ -208,7 +197,19 @@ label {
 }
 
 .admin__tabbed-navbar,
-.admin__left-sidebar{
+.admin__left-sidebar {
+  // Navbar links have text-decorations that are being
+  // rendered from boostrap. We want to remove these to be
+  // consistent with links in the crayons design system.
+  .crayons-link,
+  .crayons-tabs__item  {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
   :focus-visible {
     outline: 2px auto blue;
   }
