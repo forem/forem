@@ -23,6 +23,7 @@ class AdminMenu
       item(name: "display ads"),
       item(name: "navigation links"),
       item(name: "pages"),
+      item(name: "profile fields", visible: FeatureFlag.enabled?(:profile_admin)),
     ]
 
     scope :admin_team, "user-line", [
@@ -45,6 +46,7 @@ class AdminMenu
              item(name: "tools"),
              item(name: "vault secrets", controller: "secrets"),
              item(name: "webhooks", controller: "webhook_endpoints"),
+             item(name: "data update scripts", visible: FeatureFlag.enabled?(:data_update_scripts)),
            ]),
     ]
 
