@@ -19,37 +19,6 @@ describe('Reading List Archive', () => {
     cy.wait('@filteredReadingList');
   }
 
-  const mediaMatch = {
-    addListener: () => {},
-    removeListener: () => {},
-  };
-  const pageVisitOptions = {
-    onBeforeLoad(window) {
-      cy.stub(window, 'matchMedia', (query) => {
-        // We need to know the implementation details here, but it's
-        // required since Cypress can't evaluate the match.
-        switch (query) {
-          case `(width <= ${BREAKPOINTS.Medium - 1}px)`:
-            return {
-              ...mediaMatch,
-              matches: window.innerWidth <= BREAKPOINTS.Medium - 1,
-            };
-          case `(width >= ${BREAKPOINTS.Medium}px)`:
-            return {
-              ...mediaMatch,
-              matches: window.innerWidth >= BREAKPOINTS.Medium,
-            };
-
-          default:
-            return {
-              ...mediaMatch,
-              matches: false,
-            };
-        }
-      });
-    },
-  };
-
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
@@ -78,7 +47,7 @@ describe('Reading List Archive', () => {
   });
 
   it('should filter by text', () => {
-    cy.visit('/readinglist/archive', pageVisitOptions);
+    cy.visit('/readinglist/archive');
 
     loadReadingList();
 
@@ -102,7 +71,7 @@ describe('Reading List Archive', () => {
   describe('small screens', () => {
     beforeEach(() => {
       cy.viewport(BREAKPOINTS.Medium - 1, BREAKPOINTS.Medium);
-      cy.visit('/readinglist/archive', pageVisitOptions);
+      cy.visit('/readinglist/archive');
       loadReadingList();
     });
 
@@ -144,7 +113,7 @@ describe('Reading List Archive', () => {
   describe('large screens', () => {
     beforeEach(() => {
       cy.viewport(BREAKPOINTS.Large, 600);
-      cy.visit('/readinglist/archive', pageVisitOptions);
+      cy.visit('/readinglist/archive');
       loadReadingList();
     });
 

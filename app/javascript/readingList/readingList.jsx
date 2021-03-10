@@ -218,7 +218,7 @@ export class ReadingList extends Component {
               className="crayons-textfield"
             />
             <MediaQuery
-              query={`(width <= ${BREAKPOINTS.Medium - 1}px)`}
+              query={`(max-width: ${BREAKPOINTS.Medium - 1}px)`}
               render={(matches) => {
                 return (
                   matches && (
@@ -235,7 +235,7 @@ export class ReadingList extends Component {
           </fieldset>
         </header>
         <MediaQuery
-          query={`(width >= ${BREAKPOINTS.Medium}px)`}
+          query={`(min-width: ${BREAKPOINTS.Medium}px)`}
           render={(matches) => {
             return (
               <div
