@@ -212,9 +212,9 @@ export class ReadingList extends Component {
               {isStatusViewValid ? 'View archive' : 'View reading list'}
             </Button>
             <input
-              aria-label="Search..."
+              aria-label="Filter reading list by text"
               onKeyUp={this.onSearchBoxType}
-              placeholder="Search..."
+              placeholder="Enter some text to filter on..."
               className="crayons-textfield"
             />
             <MediaQuery

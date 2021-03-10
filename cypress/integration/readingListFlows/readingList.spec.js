@@ -52,7 +52,7 @@ describe('Reading List', () => {
       .as('main')
       .findByText(/^Your reading list is empty$/i);
     cy.get('@main').findByText(/^View Archive$/i);
-    cy.get('@main').findByLabelText(/^Search...$/i);
+    cy.get('@main').findByLabelText(/^Filter reading list by text$/i);
     cy.get('@main').findByText(/^Reading list \(0\)$/i);
     cy.get('@main')
       .findByLabelText(/^Filter by tag$/i)
@@ -77,7 +77,7 @@ describe('Reading List', () => {
         .findByText(/^Your reading list is empty$/i)
         .should('not.exist');
       cy.get('@main').findByText(/^View Archive$/i);
-      cy.get('@main').findByLabelText(/Search...$/i);
+      cy.get('@main').findByLabelText(/Filter reading list by text$/i);
       cy.get('@main').findByText(/^Reading list \(3\)$/);
       cy.get('@main').findByLabelText(/^Filter by tag$/i, {
         selector: 'select',
@@ -129,7 +129,7 @@ describe('Reading List', () => {
         .findByText(/^Your reading list is empty$/i)
         .should('not.exist');
       cy.get('@main').findByText(/^View Archive$/i);
-      cy.get('@main').findByLabelText(/Search...$/i);
+      cy.get('@main').findByLabelText(/Filter reading list by text$/i);
       cy.get('@main').findByText(/^Reading list \(3\)$/);
       cy.get('@main').findByText(/^Filter by tag$/i, { selector: 'legend' });
       cy.get('@main')
