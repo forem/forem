@@ -5,9 +5,9 @@ module PushNotifications
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform
-      redis = Redis.new(url: ENV["REDIS_RPUSH_URL"])
+      redis = Redis.new(url: ENV["REDIS_RPUSH_URL"] || ENV["REDIS_URL"])
       cursor = 0
-      until (cursor, keys = redis.scan(cursor)).first.to_i.zero?
+      until (cursor, keys = redis.scan(cursor, match: "rpush:notifications:*")).first.to_i.zero?
         keys.each do |key|
           next unless redis.ttl(key) == -1
           next unless redis.type(key) == "hash"
