@@ -193,6 +193,7 @@ label {
   button {
     border: 0;
     width: 100%;
+    background: transparent;
   }
 }
 
@@ -208,14 +209,18 @@ label {
     &:hover {
       text-decoration: none;
     }
-  }
 
-  :focus-visible {
-    outline: 2px auto blue;
-  }
+    &:focus {
+      outline: 2px auto blue;
+    }
 
-  :focus:not(:focus-visible) {
-    outline: none;
+    &:focus-visible {
+      outline: 2px auto blue;
+    }
+
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
   }
 
   ul {

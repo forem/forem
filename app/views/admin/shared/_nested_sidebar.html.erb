@@ -21,7 +21,11 @@
         <%= display_name(group_name) %>
       </button>
       <ul id="<%= group_name %>"
+<<<<<<< HEAD
           class="<%= (deduced_scope(request) == group_name.to_s) ? "expand show" : "collapse hide" %>" aria-labelledby="<%= group_name %>">
+=======
+           class="<%= (deduced_scope(request) == group_name.to_s) ? "expand show" : "collapse hide" %>"
+>>>>>>> Ridhwana/rfc#50-admin-navigation-p3
         <% group[:children].each do |item| %>
           <% if item[:visible] %>
             <li>
