@@ -188,3 +188,40 @@ label {
 .data_update_script__status {
   min-width: 120px;
 }
+
+// Navbar links have text-decorations that are being
+// rendered from boostrap. We want to remove these to be
+// consistent with links in the crayons design system.
+.admin__left-sidebar {
+  .crayons-link {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: 2px auto blue;
+    }
+
+    &:focus-visible {
+      outline: 2px auto blue;
+    }
+
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+  }
+
+  button {
+    border: 0;
+    width: 100%;
+    background: transparent;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+}

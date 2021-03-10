@@ -2,11 +2,11 @@ class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   # rubocop:disable Metrics/BlockLength
   ITEMS = Menu.define do
-    scope :people, [
+    scope :people, "group-2-line", [
       item(name: "people", controller: "users"),
     ]
 
-    scope :content_manager, [
+    scope :content_manager, "dashboard-line", [
       item(name: "posts", controller: "articles"),
       item(name: "badges", children: [
              item(name: "library", controller: "badges"),
@@ -17,7 +17,7 @@ class AdminMenu
       item(name: "tags"),
     ]
 
-    scope :customization, [
+    scope :customization, "tools-line", [
       item(name: "config"),
       item(name: "html variants", controller: "html_variants"),
       item(name: "display ads"),
@@ -25,11 +25,11 @@ class AdminMenu
       item(name: "pages"),
     ]
 
-    scope :admin_team, [
+    scope :admin_team, "user-line", [
       item(name: "admin team", controller: "permissions"),
     ]
 
-    scope :moderation, [
+    scope :moderation, "shield-flash-line", [
       item(name: "reports"),
       item(name: "mods"),
       item(name: "moderator actions ads", controller: "moderator_actions"),
@@ -37,7 +37,7 @@ class AdminMenu
       # item(name: "interaction limits", controller: "" )
     ]
 
-    scope :advanced, [
+    scope :advanced, "flashlight-line", [
       item(name: "broadcasts"),
       item(name: "response templates"),
       item(name: "sponsorships"),
@@ -48,7 +48,7 @@ class AdminMenu
            ]),
     ]
 
-    scope :apps, [
+    scope :apps, "palette-line", [
       item(name: "chat channels"),
       item(name: "events"),
       item(name: "listings"),
@@ -57,20 +57,20 @@ class AdminMenu
   end
   # rubocop:enable Metrics/BlockLength
 
-  def self.nested_menu_items(group_name, child_nav_item)
-    ITEMS[group_name.to_sym].each do |items|
-      return items if items[:controller] == child_nav_item
+  def self.nested_menu_items(scope_name, nav_item)
+    ITEMS.dig(scope_name.to_sym, :children).each do |items|
+      return items if items[:controller] == nav_item
 
       next unless items[:children]&.any?
 
       items[:children].each do |child|
-        return items if child[:controller] == child_nav_item
+        return items if child[:controller] == nav_item
       end
     end
   end
 
   def self.nested_menu_items_from_request(request)
-    group, child_nav_item = request.path.split("/").last(2)
-    nested_menu_items(group, child_nav_item)
+    scope, nav_item = request.path.split("/").last(2)
+    nested_menu_items(scope, nav_item)
   end
 end
