@@ -3,7 +3,7 @@ Rpush.configure do |config|
   config.client = :redis
 
   # Options passed to Redis.new
-  config.redis_options = { url: ENV["REDIS_RPUSH_URL"], driver: :ruby }
+  config.redis_options = { url: ENV["REDIS_RPUSH_URL"] || ENV["REDIS_URL"], driver: :ruby }
 
   # Frequency in seconds to check for new notifications.
   config.push_poll = 2
@@ -15,19 +15,19 @@ Rpush.configure do |config|
   config.batch_size = 100
 
   # Path to write PID file. Relative to current directory unless absolute.
-  config.pid_file = "tmp/rpush.pid"
+  # config.pid_file = "tmp/rpush.pid"
 
   # Path to log file. Relative to current directory unless absolute.
-  config.log_file = "log/rpush.log"
+  # config.log_file = "log/rpush.log"
 
   config.log_level = (defined?(Rails) && Rails.logger ? Rails.logger.level : ::Logger::Severity::INFO)
 
   # Define a custom logger.
-  # config.logger = MyLogger.new
+  config.logger = Rails.logger
 
   # By default in foreground mode logs are directed both to the logger and to stdout.
   # If the logger goes to stdout, you can disable foreground logging to avoid duplication.
-  # config.foreground_logging = false
+  config.foreground_logging = false
 
   # config.apns.feedback_receiver.enabled = true
   # config.apns.feedback_receiver.frequency = 60
@@ -64,8 +64,13 @@ Rpush.reflect do |on|
       Device.where(token: notification.device_token, platform: "iOS").destroy_all
     end
 
-    ForemStatsClient.increment("push_notifications.errors",
-                                 tags: ["error:#{e.class}", "message:#{e.error_description}"])
+    ForemStatsClient.increment(
+      "push_notifications.errors",
+      tags: [
+        "error:#{e.class}",
+        "message:#{e.error_description}",
+      ],
+    )
   end
 
   # Called when the notification delivery failed and only the notification ID

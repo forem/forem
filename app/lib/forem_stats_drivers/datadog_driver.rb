@@ -14,6 +14,7 @@ module ForemStatsDrivers
         c.use :redis, service_name: "redis", describes: { url: ENV["REDIS_URL"] }
         c.use :redis, service_name: "redis-sessions", describes: { url: ENV["REDIS_SESSIONS_URL"] }
         c.use :redis, service_name: "redis-sidekiq", describes: { url: ENV["REDIS_SIDEKIQ_URL"] }
+        c.use :redis, service_name: "redis-rpush", describes: { url: ENV["REDIS_RPUSH_URL"] }
         c.use :rails
         c.use :http, split_by_domain: false
         c.use :faraday, split_by_domain: true
