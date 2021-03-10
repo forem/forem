@@ -1,12 +1,13 @@
 <% menu_items.each do |group_name, group| %>
   <li>
     <% if group[:children].length == 1 %>
-      <% if group[:children][0][:visibile] && group[:children][0][:controller]  %>
+      <% if group[:children][0][:visibile] && group[:children][0][:controller] %>
         <a class="crayons-link crayons-link--block <%= "crayons-link--current" if deduced_controller(request) == group[:children][0][:controller] %>"
            href="/admin/<%= group[:children][0][:controller] %>"
            aria-page="<%= "page" if deduced_controller(request) == group[:children][0][:controller] %>"
+           data-action="click->sidebar#expandDropdown"
         >
-          <%= inline_svg_tag("#{group[:svg]}", aria: true, class: "dropdown-icon crayons-icon") %>
+          <%= inline_svg_tag(group[:svg], aria: true, class: "dropdown-icon crayons-icon") %>
           <%= display_name(group_name) %>
         </a>
       <% end %>
@@ -16,22 +17,21 @@
         data-target="#<%= group_name %>"
         aria-expanded="<%= (deduced_scope(request) == group_name.to_s).to_s %>"
         aria-controls="<%= group_name %>"
+        data-action="click->sidebar#expandDropdown"
       >
-        <%= inline_svg_tag(group[:svg], aria: true, class: "dropdown-icon crayons-icon") %>
-        <%= display_name(group_name) %>
+          <%= inline_svg_tag(group[:svg], aria: true, class: "dropdown-icon crayons-icon") %>
+          <%= display_name(group_name) %>
       </button>
       <ul id="<%= group_name %>"
-<<<<<<< HEAD
-          class="<%= (deduced_scope(request) == group_name.to_s) ? "expand show" : "collapse hide" %>" aria-labelledby="<%= group_name %>">
-=======
-           class="<%= (deduced_scope(request) == group_name.to_s) ? "expand show" : "collapse hide" %>"
->>>>>>> Ridhwana/rfc#50-admin-navigation-p3
+          data-sidebar-target="submenu"
+          class="<%= deduced_scope(request) == group_name.to_s ? "expand show" : "collapse hide" %>"
+      >
         <% group[:children].each do |item| %>
           <% if item[:visible] %>
             <li>
               <a class="crayons-link crayons-link--block ml-7 <%= "fw-bold" if deduced_controller(request) == item[:controller].to_s %>"
-                href="/admin/<%= group_name %>/<%= item[:controller] %>"
-                aria-page="<%= "page" if deduced_controller(request) == item[:controller].to_s %>"
+                 href="/admin/<%= group_name %>/<%= item[:controller] %>"
+                 aria-page="<%= "page" if deduced_controller(request) == item[:controller].to_s %>"
               >
                 <%= item[:name].to_s.titleize %>
               </a>
