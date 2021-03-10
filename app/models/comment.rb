@@ -12,7 +12,7 @@ class Comment < ApplicationRecord
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
-  MAX_USER_MENTIONS = 6
+  MAX_USER_MENTIONS = 7
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 11).freeze
 
   belongs_to :commentable, polymorphic: true, optional: true

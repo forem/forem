@@ -87,7 +87,7 @@ RSpec.describe Comment, type: :model do
 
     describe "#mention_total" do
       before do
-        stub_const("Comment::MAX_USER_MENTIONS", 6)
+        stub_const("Comment::MAX_USER_MENTIONS", 7)
         stub_const("Comment::MAX_USER_MENTION_LIVE_AT", 1.day.ago) # Set live_at date to a time in the past
       end
 
@@ -96,24 +96,24 @@ RSpec.describe Comment, type: :model do
         subject.created_at = 3.days.ago
         subject.commentable_type = "Article"
 
+        subject.body_markdown = "hi @#{user.username}! " * 8
+        expect(subject).to be_valid
+      end
+
+      it "is valid with seven or fewer mentions if created after MAX_USER_MENTION_LIVE_AT date" do
+        subject.commentable_type = "Article"
+
         subject.body_markdown = "hi @#{user.username}! " * 7
         expect(subject).to be_valid
       end
 
-      it "is valid with less than six mentions if created after MAX_USER_MENTION_LIVE_AT date" do
+      it "is invalid with more than seven mentions if created after MAX_USER_MENTION_LIVE_AT date" do
         subject.commentable_type = "Article"
 
-        subject.body_markdown = "hi @#{user.username}! " * 6
-        expect(subject).to be_valid
-      end
-
-      it "is invalid with more than six mentions if created after MAX_USER_MENTION_LIVE_AT date" do
-        subject.commentable_type = "Article"
-
-        subject.body_markdown = "hi @#{user.username}! " * 7
+        subject.body_markdown = "hi @#{user.username}! " * 8
         expect(subject).not_to be_valid
         expect(subject.errors[:base])
-          .to include("You cannot mention more than 6 users in a comment!")
+          .to include("You cannot mention more than 7 users in a comment!")
       end
     end
     # rubocop:enable RSpec/NamedSubject
