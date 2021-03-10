@@ -19,7 +19,7 @@
         <%= display_name(group_name) %>
       </button>
       <ul id="<%= group_name %>"
-           class="<%= (deduced_scope(request) == group_name.to_s) ? "expand show" : "collapse hide" %>" aria-labelledby="<%= group_name %>">
+          class="<%= (deduced_scope(request) == group_name.to_s) ? "expand show" : "collapse hide" %>" aria-labelledby="<%= group_name %>">
         <% group[:children].each do |item| %>
           <li>
             <a class="crayons-link crayons-link--block ml-7 <%= "fw-bold" if deduced_controller(request) == item[:controller].to_s %>"
