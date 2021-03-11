@@ -6,9 +6,4 @@ class ServiceWorkerController < ApplicationController
     set_surrogate_key_header "serviceworker-js"
     render formats: [:js]
   end
-
-  def manifest
-    set_surrogate_key_header "manifest-json"
-    render formats: [:json]
-  end
 end
