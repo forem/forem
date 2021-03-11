@@ -1,21 +1,25 @@
-<h2 class="crayons-title mb-3">Overview</h2>
+<h2 class="crayons-title">
+  Overview
+</h2>
 <div class="px-0 crayons-layout crayons-layout--2-cols crayons-layout--2-cols--1-2 crayons-layout--2-cols--inverted">
   <article class="crayons-layout__content">
-    <section class="crayons-card mb-3">
-      <div class="crayons-card__body" data-controller="ahoy">
-        <h3 class="crayons-subtitle-2">Welcome Checklist</h3>
-        <p class="crayons-field__description mb-3">Here are a few things we recommend doing now that you're using Forem!</p>
+    <section class="crayons-card mb-4">
+      <div class="crayons-card__body p-4" data-controller="ahoy">
+        <h3 class="crayons-subtitle-1">Welcome Checklist</h3>
+        <p class="crayons-subtitle-4 color-base-70 mb-3">Here are a few things we recommend doing now that you're using Forem!</p>
         <ol>
-          <li>Set up and configure your Forem under <a href="/admin/config" data-action="click->ahoy#trackOverviewLink">Config</a></li>
-          <li><a href="/admin/invitations" data-action="click->ahoy#trackOverviewLink">Invite people</a> to join your Forem</li>
-          <li><a href="/admin/tags" data-action="click->ahoy#trackOverviewLink">Update your Forem tags</a></li>
-          <li><a href="/admin/pages" data-action="click->ahoy#trackOverviewLink">Create pages</a> and <a href="/admin/navigation_links" data-action="click->ahoy#trackOverviewLink">sort them in the navigation sidebar</a></li>
-          <li>Read the <a href="https://forem.gitbook.io/forem-admin-guide/quick-start-guide" data-action="click->ahoy#trackOverviewLink">Quick Start Guide</a></li>
-          <li><a href="/admin/welcome" data-action="click->ahoy#trackOverviewLink">Set up a Welcome Thread</a></li>
-          <li>Browse the <a href="https://forem.gitbook.io/forem-admin-guide" data-action="click->ahoy#trackOverviewLink">Forem Admin Guide</a></li>
-          <li>Join the private <a href="https://creators.forem.com">Creators Forem</a> (email <a href="mailto:support@forem.com" data-action="click->ahoy#trackOverviewLink">support@forem.com</a> if you need an invite)</li>
+          <li class="mb-1 -ml-4">Set up and configure your Forem under <a href="/admin/config" data-action="click->ahoy#trackOverviewLink">Config</a></li>
+          <li class="mb-1 -ml-4"><a href="/admin/invitations" data-action="click->ahoy#trackOverviewLink">Invite people</a> to join your Forem</li>
+          <li class="mb-1 -ml-4"><a href="/admin/tags" data-action="click->ahoy#trackOverviewLink">Update your Forem tags</a></li>
+          <li class="mb-1 -ml-4"><a href="/admin/pages" data-action="click->ahoy#trackOverviewLink">Create pages</a> and <a href="/admin/navigation_links" data-action="click->ahoy#trackOverviewLink">sort them in the navigation sidebar</a></li>
+          <li class="mb-1 -ml-4">Read the <a href="https://forem.gitbook.io/forem-admin-guide/quick-start-guide" data-action="click->ahoy#trackOverviewLink">Quick Start Guide</a></li>
+          <li class="mb-1 -ml-4"><a href="/admin/welcome" data-action="click->ahoy#trackOverviewLink">Set up a Welcome Thread</a></li>
+          <li class="mb-1 -ml-4">Browse the <a href="https://forem.gitbook.io/forem-admin-guide" data-action="click->ahoy#trackOverviewLink">Forem Admin Guide</a></li>
+          <li class="-ml-4">Join the private <a href="https://creators.forem.com">Creators Forem</a> (email <a href="mailto:support@forem.com" data-action="click->ahoy#trackOverviewLink">support@forem.com</a> if you need an invite)</li>
         </ol>
-        <p class="m-3 align-center"><a href="https://forem.gitbook.io/forem-admin-guide" data-action="click->ahoy#trackOverviewLink">Visit Forem Admin Guide</a></p>
+        <div class="align-center">
+          <a class="crayons-btn crayons-btn--ghost-brand" href="https://forem.gitbook.io/forem-admin-guide" data-action="click->ahoy#trackOverviewLink">Visit Forem Admin Guide</a>
+        </div>
       </div>
     </section>
     <h2 class="crayons-subtitle-1 mb-3">Resources</h2>
@@ -25,7 +29,10 @@
           <h3 class="crayons-subtitle-2">Forem Admin Guide</h3>
         </div>
         <div class="crayons-card__body flex flex-wrap" style="min-height: 150px;">
-          <p>This guide gives you the best practices on how you can manage and grow your community on Forem.</p>
+          <p class="mb-2">
+            This guide gives you the best practices on how you can manage and
+            grow your community on Forem.
+          </p>
           <a role="button" href="https://forem.gitbook.io/forem-admin-guide" class="crayons-btn mt-1 w-100 self-end" data-action="click->ahoy#trackOverviewLink">Visit Guide</a>
         </div>
       </section>
@@ -34,7 +41,10 @@
           <h3 class="crayons-subtitle-2">Forem Creators Community</h3>
         </div>
         <div class="crayons-card__body flex flex-wrap" style="min-height: 150px;">
-          <p>Meet other creators using Forem so that you can share tips with each other.</p>
+          <p class="mb-2">
+            Meet other creators using Forem so that you can share tips with
+            each other.
+          </p>
           <a role="button" href="https://creators.forem.com" class="crayons-btn mt-1 w-100 self-end" data-action="click->ahoy#trackOverviewLink">Join Community</a>
         </div>
       </section>
@@ -46,10 +56,18 @@
         <h3 class="crayons-subtitle-2">Deployment</h3>
       </div>
       <div class="crayons-card__body">
-        <p class="crayons-field__description">Last Deployed</p>
-        <p><%= ForemInstance.deployed_at %></p>
-        <p class="crayons-field__description">Latest Commit ID</p>
-        <p><%= ForemInstance.latest_commit_id || "Not Available" %></p>
+        <small class="crayons-field__description">
+          Last Deployed
+        </small>
+        <p class="mb-2">
+          <%= ForemInstance.deployed_at %>
+        </p>
+        <small class="crayons-field__description">
+          Latest Commit ID
+        </small>
+        <p>
+          <%= ForemInstance.latest_commit_id || "Not Available" %>
+        </p>
       </div>
     </article>
   </div>
