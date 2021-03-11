@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_04_195203) do
+ActiveRecord::Schema.define(version: 2021_03_10_154630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1142,6 +1142,7 @@ ActiveRecord::Schema.define(version: 2021_03_04_195203) do
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
     t.index ["social_preview_template"], name: "index_tags_on_social_preview_template"
+    t.index ["supported"], name: "index_tags_on_supported"
   end
 
   create_table "tweets", force: :cascade do |t|
