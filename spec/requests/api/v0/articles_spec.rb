@@ -1180,6 +1180,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
       end
+
+      it "fails when article is not saved" do
+        put_article(title: nil, body_markdown: nil)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
     end
   end
 end

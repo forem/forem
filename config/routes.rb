@@ -219,7 +219,7 @@ Rails.application.routes.draw do
           resources :webhook_endpoints, only: :index
         end
 
-        scope path: :app do
+        scope path: :apps do
           resources :chat_channels, only: %i[index create update destroy] do
             member do
               delete :remove_user

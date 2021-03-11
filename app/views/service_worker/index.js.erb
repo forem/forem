@@ -35,10 +35,20 @@
     self.clients.claim();
   });
 
+  function includesUnsupportedPath(url) {
+    return [
+      '/%F0%9F%92%B8',         // 💸 (hiring)
+      '/admin',                // Don't run on admin dashboard.
+      '/oauth/',               // Skip oauth apps
+      '/onboarding',           // Don't run on onboarding.
+      '/users/auth',           // Don't run on authentication.
+    ].some(path => url.includes(path))
+  }
+
   self.addEventListener("fetch", (event) => {
     // We only want to call event.respondWith() if this is a navigation request
-    // for an HTML page.
-    if (event.request.mode === "navigate") {
+    // for an HTML page with a few exceptions.
+    if (event.request.mode === "navigate" && !includesUnsupportedPath(event.request.url)) {
       event.respondWith(
         (async () => {
           try {
