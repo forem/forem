@@ -1,7 +1,7 @@
 <% menu_items.each do |group_name, group| %>
   <li>
     <% if group[:children].length == 1 %>
-      <% if group[:children][0][:visibile] && group[:children][0][:controller] %>
+      <% if group[:children][0][:visible] %>
         <a class="crayons-link crayons-link--block <%= "crayons-link--current" if deduced_controller(request) == group[:children][0][:controller] %>"
            href="/admin/<%= group[:children][0][:controller] %>"
            aria-page="<%= "page" if deduced_controller(request) == group[:children][0][:controller] %>"
