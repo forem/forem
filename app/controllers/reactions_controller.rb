@@ -73,7 +73,9 @@ class ReactionsController < ApplicationController
     ).first
 
     # if the reaction already exists, destroy it
-    if reaction
+    # NOTE: @citizen Temporarily we ingore vomit reactions, to avoid accidental
+    # unflagging. A better solution will be added in the future.
+    if reaction && category != "vomit"
       result = handle_existing_reaction(reaction)
     else
       reaction = build_reaction(category)
