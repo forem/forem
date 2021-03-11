@@ -18,9 +18,9 @@ RSpec.describe CodepenTag, type: :liquid_tag do
     end
 
     it "accepts codepen link" do
-      liquid = generate_new_liquid(codepen_link)
-      rendered_codepen_iframe = liquid.render
-      Approvals.verify(rendered_codepen_iframe, name: "codepen_liquid_tag", format: :html)
+      expect do
+        generate_new_liquid(codepen_link)
+      end.not_to raise_error
     end
 
     it "accepts codepen link with a / at the end" do
