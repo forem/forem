@@ -190,17 +190,33 @@ RSpec.describe "Reactions", type: :request do
     context "when reacting to an article" do
       before do
         sign_in user
-        post "/reactions", params: article_params
       end
 
       it "creates reaction" do
-        expect(Reaction.last.reactable_id).to eq(article.id)
+        expect do
+          post "/reactions", params: article_params
+        end.to change(Reaction, :count).by(1)
       end
 
       it "destroys existing reaction" do
-        # same route to destroy, so sending POST request again
         post "/reactions", params: article_params
-        expect(Reaction.all.size).to eq(0)
+        expect do
+          # same route to destroy, so sending POST request again
+          post "/reactions", params: article_params
+        end.to change(Reaction, :count).by(-1)
+      end
+
+      it "does not destroy existing vomit reactions" do
+        params = {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "vomit"
+        }
+        post "/reactions", params: params
+
+        expect do
+          post "/reactions", params: params
+        end.not_to change(Reaction, :count)
       end
     end
 
@@ -270,17 +286,20 @@ RSpec.describe "Reactions", type: :request do
     context "when vomiting on a user" do
       before do
         sign_in trusted_user
-        post "/reactions", params: user_params
       end
 
       it "creates reaction" do
-        expect(Reaction.last.reactable_id).to eq(user.id)
+        expect do
+          post "/reactions", params: user_params
+        end.to change(Reaction, :count).by(1)
       end
 
-      it "destroys existing reaction" do
-        # same route to destroy, so sending POST request again
+      it "does not destroy an existing reaction" do
         post "/reactions", params: user_params
-        expect(Reaction.all.size).to eq(0)
+        expect do
+          # same route to destroy, so sending POST request again
+          post "/reactions", params: user_params
+        end.not_to change(Reaction, :count)
       end
     end
 
