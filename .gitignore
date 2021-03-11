@@ -14,7 +14,6 @@ vendor/bundle
 /tmp
 .DS_Store
 .swp
-.approvals
 .torus.json
 coverage
 /tags
