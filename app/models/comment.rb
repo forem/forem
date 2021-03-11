@@ -12,9 +12,9 @@ class Comment < ApplicationRecord
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
-  MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accomodate DEV Top Seven Posts
-  # The date that we began limiting the nubmer of user mentions in a comment.
-  MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 11).freeze
+  MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
+  # The date that we began limiting the number of user mentions in a comment.
+  MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
 
   belongs_to :commentable, polymorphic: true, optional: true
   belongs_to :user
