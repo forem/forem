@@ -244,13 +244,13 @@ export class ReadingList extends Component {
                 }`}
               >
                 {matches && hasTags && (
-                  <aside className="crayons-layout__sidebar-left">
+                  <div className="crayons-layout__sidebar-left">
                     <TagList
                       availableTags={availableTags}
                       selectedTag={selectedTag}
                       onSelectTag={this.toggleTag}
                     />
-                  </aside>
+                  </div>
                 )}
                 <section className="crayons-layout__content">
                   <div className="crayons-card mb-4">
