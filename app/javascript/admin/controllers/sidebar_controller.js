@@ -7,13 +7,15 @@ export default class SidebarController extends Controller {
   ];
 
   expandDropdown(event) {
-    console.log("in here");
-    // dont reopen teh current menu
-    // event.target.getAttribute('data-target');
-    // debugger
+    window.location.href = event.target.getAttribute('data-target-href');
+
     this.submenuTargets.map((item) => {
       if(item.classList.contains("show")) {
-        item.classList.remove("show");
+        const expandedList = ['expand', 'show'];
+        item.classList.remove(...expandedList);
+
+        const collapsedList = ['collapse', 'hide'];
+        item.classList.add(...collapsedList);
       }
     });
   }

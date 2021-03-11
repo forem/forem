@@ -14,7 +14,7 @@
     <% else %>
       <button class="crayons-link crayons-link--block cursor-pointer <%= "crayons-link--current" if deduced_scope(request) == group_name.to_s %>"
         data-toggle="collapse"
-        data-target="#<%= group_name %>"
+        data-target-href="/admin/<%= group_name %>/<%= group[:children][0][:controller] %>"
         aria-expanded="<%= (deduced_scope(request) == group_name.to_s).to_s %>"
         aria-controls="<%= group_name %>"
         data-action="click->sidebar#expandDropdown"
