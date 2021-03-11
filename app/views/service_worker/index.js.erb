@@ -54,13 +54,13 @@
   self.addEventListener("fetch", (event) => {
     // We only want to call event.respondWith() if this is a navigation request
     // for an HTML page with a few exceptions.
-    if (event.request.mode === "navigate" && !includesUnsupportedPath(event.request.url)) {
+    if (event.request.mode === "navigate") {
       event.respondWith(
         (async () => {
           try {
             // First, try to use the navigation preload response if it's supported.
             const preloadResponse = await event.preloadResponse;
-            if (preloadResponse) {
+            if (!includesUnsupportedPath(event.request.url) && preloadResponse) {
               return preloadResponse;
             }
 
