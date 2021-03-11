@@ -371,9 +371,9 @@ GEM
     hashie (4.1.0)
     heapy (0.2.0)
       thor
-    honeybadger (4.7.3)
     hiredis (0.6.3)
     hkdf (0.3.0)
+    honeybadger (4.7.3)
     honeycomb-beeline (2.4.0)
       libhoney (~> 1.14, >= 1.14.2)
     html_tokenizer (0.0.7)
@@ -471,9 +471,6 @@ GEM
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
     minitest (5.14.4)
-    msgpack (1.4.2)
-    mini_racer (0.3.1)
-      libv8 (~> 8.4.255)
     modis (3.3.0)
       activemodel (>= 4.2)
       activesupport (>= 4.2)
@@ -481,6 +478,7 @@ GEM
       hiredis (>= 0.5)
       msgpack (>= 0.5)
       redis (>= 3.0)
+    msgpack (1.4.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
@@ -1051,4 +1049,4 @@ RUBY VERSION
    ruby 2.7.2p137
 
 BUNDLED WITH
-   2.2.10
+   2.2.11
