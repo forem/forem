@@ -307,12 +307,16 @@ function handleFocus(event) {
     showLoginModal();
     area.blur();
   } else {
+    if(area.getAttribute('data-mention-autocomplete-active') !== 'true') {
+      Forem.initializeMentionAutocomplete(area);
+    }
+    
     var form = event.target.closest(".comment-form");
     if (form) {
       form.classList.add("comment-form--initiated");
     }
     handleSizeChange(event);
-    Forem.initializeMentionAutocomplete(area);
+    
   }
 }
 

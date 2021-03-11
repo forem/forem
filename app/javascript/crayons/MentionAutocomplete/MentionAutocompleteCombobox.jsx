@@ -53,128 +53,119 @@ const UserListItemContent = ({ user }) => {
  *    onSearchTermChange={updateSearchTermText}
  * />
  */
-export const MentionAutocompleteCombobox = ({
-  onSelect,
-  fetchSuggestions,
-  placementCoords,
-  onSearchTermChange,
-}) => {
-  const [searchTerm, setSearchTerm] = useState('@');
-  const [cachedSearches, setCachedSearches] = useState({});
-  const [users, setUsers] = useState([]);
+export const MentionAutocompleteCombobox = ({ replaceElement }) => {
+  // const [searchTerm, setSearchTerm] = useState('@');
+  // const [cachedSearches, setCachedSearches] = useState({});
+  // const [users, setUsers] = useState([]);
 
-  const inputRef = useRef(null);
+  // const inputRef = useRef(null);
 
-  useEffect(() => {
-    if (searchTerm.length >= MIN_SEARCH_CHARACTERS) {
-      // Remove the '@' symbol for search
-      const trimmedSearchTerm = searchTerm.substring(1);
+  // useEffect(() => {
+  //   if (searchTerm.length >= MIN_SEARCH_CHARACTERS) {
+  //     // Remove the '@' symbol for search
+  //     const trimmedSearchTerm = searchTerm.substring(1);
 
-      if (cachedSearches[trimmedSearchTerm]) {
-        setUsers(cachedSearches[trimmedSearchTerm]);
-        return;
-      }
+  //     if (cachedSearches[trimmedSearchTerm]) {
+  //       setUsers(cachedSearches[trimmedSearchTerm]);
+  //       return;
+  //     }
 
-      fetchSuggestions(trimmedSearchTerm).then(({ result: fetchedUsers }) => {
-        const resultLength = Math.min(
-          fetchedUsers.length,
-          MAX_RESULTS_DISPLAYED,
-        );
+  //     fetchSuggestions(trimmedSearchTerm).then(({ result: fetchedUsers }) => {
+  //       const resultLength = Math.min(
+  //         fetchedUsers.length,
+  //         MAX_RESULTS_DISPLAYED,
+  //       );
 
-        const results = fetchedUsers.slice(0, resultLength);
+  //       const results = fetchedUsers.slice(0, resultLength);
 
-        setCachedSearches({
-          ...cachedSearches,
-          [trimmedSearchTerm]: results,
-        });
-        setUsers(results);
-      });
-    }
-  }, [searchTerm, fetchSuggestions, cachedSearches]);
+  //       setCachedSearches({
+  //         ...cachedSearches,
+  //         [trimmedSearchTerm]: results,
+  //       });
+  //       setUsers(results);
+  //     });
+  //   }
+  // }, [searchTerm, fetchSuggestions, cachedSearches]);
 
-  useEffect(() => {
-    inputRef.current.focus();
-  }, [inputRef]);
+  // useEffect(() => {
+  //   inputRef.current.focus();
+  // }, [inputRef]);
+
+  // useLayoutEffect(() => {
+  //   const popover = document.getElementById('mention-autocomplete-popover');
+  //   if (!popover) {
+  //     return;
+  //   }
+
+  //   const closeOnClickOutsideListener = (event) => {
+  //     if (!popover.contains(event.target)) {
+  //       // User clicked outside, exit with current search term
+  //       onSelect(searchTerm);
+  //     }
+  //   };
+
+  //   document.addEventListener('click', closeOnClickOutsideListener);
+
+  //   return () =>
+  //     document.removeEventListener('click', closeOnClickOutsideListener);
+  // }, [searchTerm, onSelect]);
+
+  // const handleSearchTermChange = (event) => {
+  //   const {
+  //     target: { value },
+  //   } = event;
+
+  //   if (value.charAt(value.length - 1) === ' ' || value === '') {
+  //     // User has spaced away from a complete word or deleted everything - finish the autocomplete
+  //     onSelect(value);
+  //     return;
+  //   }
+  //   setSearchTerm(value);
+  //   onSearchTermChange(value);
+  // };
 
   useLayoutEffect(() => {
-    const popover = document.getElementById('mention-autocomplete-popover');
-    if (!popover) {
-      return;
+    if (inputRef.current) {
+      const attributes = replaceElement.attributes;
+      Object.keys(attributes).forEach((attributeKey) => {
+        inputRef.current.setAttribute(
+          attributes[attributeKey].name,
+          attributes[attributeKey].value,
+        );
+      });
+
+      // We need to manually remove the element, as Preact's diffing algorithm won't replace it in render
+      replaceElement.remove();
+      inputRef.current.focus();
     }
+  }, [replaceElement]);
 
-    const closeOnClickOutsideListener = (event) => {
-      if (!popover.contains(event.target)) {
-        // User clicked outside, exit with current search term
-        onSelect(searchTerm);
-      }
-    };
-
-    document.addEventListener('click', closeOnClickOutsideListener);
-
-    return () =>
-      document.removeEventListener('click', closeOnClickOutsideListener);
-  }, [searchTerm, onSelect]);
-
-  const handleSearchTermChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-
-    if (value.charAt(value.length - 1) === ' ' || value === '') {
-      // User has spaced away from a complete word or deleted everything - finish the autocomplete
-      onSelect(value);
-      return;
-    }
-    setSearchTerm(value);
-    onSearchTermChange(value);
-  };
+  const inputRef = useRef(null);
 
   return (
     <Combobox
       aria-label="mention user"
-      onSelect={(item) => onSelect(`@${item}`)}
+      id="combobox-container"
+      onSelect={(item) => console.log('selected', item)}
       className="crayons-autocomplete"
     >
       <ComboboxInput
-        style={{
-          opacity: 0.000001,
-          position: 'absolute',
-          top: placementCoords.y,
-          left: placementCoords.x,
-        }}
         ref={inputRef}
-        onChange={handleSearchTermChange}
-        value={searchTerm}
+        data-mention-autocomplete-active="true"
+        as="textarea"
         selectOnClick
         autocomplete={false}
       />
       <ComboboxPopover
         className="crayons-autocomplete__popover"
         id="mention-autocomplete-popover"
-        style={{
-          position: 'absolute',
-          top: `calc(${placementCoords.y}px + 1.5rem)`,
-          left: `${placementCoords.x}px`,
-        }}
       >
-        {users.length > 0 ? (
-          <ComboboxList>
-            {users.map((user) => (
-              <ComboboxOption
-                value={user.username}
-                className="crayons-autocomplete__option flex items-center"
-              >
-                <UserListItemContent user={user} />
-              </ComboboxOption>
-            ))}
-          </ComboboxList>
-        ) : (
-          <span className="crayons-autocomplete__empty">
-            {searchTerm.length >= MIN_SEARCH_CHARACTERS
-              ? 'No results found'
-              : 'Type to search for a user'}
-          </span>
-        )}
+        <ComboboxList>
+          <ComboboxOption
+            value="one"
+            className="crayons-autocomplete__option flex items-center"
+          ></ComboboxOption>
+        </ComboboxList>
       </ComboboxPopover>
     </Combobox>
   );

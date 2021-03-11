@@ -10,36 +10,43 @@ import { fetchSearch } from '@utilities/search';
 window.Forem = {};
 
 window.Forem.initializeMentionAutocomplete = async (element) => {
-  const [
-    { MentionAutocomplete },
-    { render, h, createRef },
-  ] = await Promise.all([
+  // const [
+  //   { MentionAutocomplete },
+  //   { render, h, createRef },
+  // ] = await Promise.all([
+  //   import('@crayons/MentionAutocomplete'),
+  //   import('preact'),
+  // ]);
+
+  // let autocompleteContainer = document.getElementById('autocomplete-container');
+  // if (!autocompleteContainer) {
+  //   autocompleteContainer = document.createElement('span');
+  //   autocompleteContainer.id = 'autocomplete-container';
+  //   document.body.appendChild(autocompleteContainer);
+  // }
+
+  const [{ addMentionAutocomplete }, { h, createRef }] = await Promise.all([
     import('@crayons/MentionAutocomplete'),
     import('preact'),
   ]);
 
-  let autocompleteContainer = document.getElementById('autocomplete-container');
-  if (!autocompleteContainer) {
-    autocompleteContainer = document.createElement('span');
-    autocompleteContainer.id = 'autocomplete-container';
-    document.body.appendChild(autocompleteContainer);
-  }
-
   const elementRef = createRef();
   elementRef.current = element;
 
-  render(
-    <MentionAutocomplete
-      textAreaRef={elementRef}
-      fetchSuggestions={(username) => {
-        return fetchSearch('usernames', {
-          username,
-        });
-      }}
-    />,
-    autocompleteContainer,
-    autocompleteContainer.lastChild,
-  );
+  addMentionAutocomplete({ textAreaRef: elementRef });
+
+  // render(
+  //   <MentionAutocomplete
+  //     textAreaRef={elementRef}
+  //     fetchSuggestions={(username) => {
+  //       return fetchSearch('usernames', {
+  //         username,
+  //       });
+  //     }}
+  //   />,
+  //   autocompleteContainer,
+  //   autocompleteContainer.lastChild,
+  // );
 };
 
 window.showModal = async ({
