@@ -5,6 +5,11 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  include PgSearch::Model
+  pg_search_scope :search_by_username,
+                  against: :username,
+                  using: { tsearch: { prefix: true } }
+
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
     available_for
