@@ -19,7 +19,10 @@ class DevicesController < ApplicationController
 
   def destroy
     device = Device.find_by(device_params)
-    render json: { error: "Not Found", status: 404 }, status: :not_found unless device
+    unless device
+      render json: { error: "Not Found", status: 404 }, status: :not_found
+      return
+    end
 
     device&.destroy
     if device&.destroyed?
