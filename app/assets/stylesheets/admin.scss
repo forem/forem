@@ -193,7 +193,10 @@ label {
   button {
     border: 0;
     width: 100%;
-    background: transparent;
+
+    &:not(.crayons-link--current) {
+      background: transparent;
+    }
   }
 }
 
