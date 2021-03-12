@@ -23,45 +23,45 @@ top.addSnackbarItem = addSnackbarItem;
 const userDataIntervalID = setInterval(async () => {
   const { user = null, userStatus } = document.body.dataset;
 
-  clearInterval(userDataIntervalID);
-  const root = document.getElementById('comment-subscription');
-  const isLoggedIn = userStatus === 'logged-in';
+    clearInterval(userDataIntervalID);
+    const root = document.getElementById('comment-subscription');
+    const isLoggedIn = userStatus === 'logged-in';
 
-  try {
-    const {
-      getCommentSubscriptionStatus,
-      setCommentSubscriptionStatus,
-      CommentSubscription,
-    } = await import('../CommentSubscription');
+    try {
+      const {
+        getCommentSubscriptionStatus,
+        setCommentSubscriptionStatus,
+        CommentSubscription,
+      } = await import('../CommentSubscription');
 
-    const { articleId } = document.getElementById('article-body').dataset;
+      const { articleId } = document.getElementById('article-body').dataset;
 
-    let subscriptionType = 'not_subscribed';
+      let subscriptionType = 'not_subscribed';
 
-    if (isLoggedIn && user !== null) {
-      ({ config: subscriptionType } = await getCommentSubscriptionStatus(
-        articleId,
-      ));
+      if (isLoggedIn && user !== null) {
+        ({ config: subscriptionType } = await getCommentSubscriptionStatus(
+          articleId,
+        ));
+      }
+
+      const subscriptionRequestHandler = async (type) => {
+        const message = await setCommentSubscriptionStatus(articleId, type);
+
+        addSnackbarItem({ message, addCloseButton: true });
+      };
+
+      render(
+        <CommentSubscription
+          subscriptionType={subscriptionType}
+          positionType="static"
+          onSubscribe={subscriptionRequestHandler}
+          onUnsubscribe={subscriptionRequestHandler}
+          isLoggedIn={isLoggedIn}
+        />,
+        root,
+      );
+    } catch (e) {
+      document.getElementById('comment-subscription').innerHTML =
+        '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
     }
-
-    const subscriptionRequestHandler = async (type) => {
-      const message = await setCommentSubscriptionStatus(articleId, type);
-
-      addSnackbarItem({ message, addCloseButton: true });
-    };
-
-    render(
-      <CommentSubscription
-        subscriptionType={subscriptionType}
-        positionType="static"
-        onSubscribe={subscriptionRequestHandler}
-        onUnsubscribe={subscriptionRequestHandler}
-        isLoggedIn={isLoggedIn}
-      />,
-      root,
-    );
-  } catch (e) {
-    document.getElementById('comment-subscription').innerHTML =
-      '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
-  }
 });
