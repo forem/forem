@@ -181,7 +181,7 @@ export const MentionAutocompleteTextArea = ({
     // Update the text area value
     setTextContent(textWithSelection);
 
-    // Updated the cursor to directly after the selection
+    // Update the cursor to directly after the selection
     const newCursorPosition = selectionInsertIndex + username.length + 1;
     setCursorPosition(newCursorPosition);
   };

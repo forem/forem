@@ -304,7 +304,7 @@ function handleFocus(event) {
     event.preventDefault();
     showLoginModal();
     area.blur();
-  } else {    
+  } else {
     var form = event.target.closest(".comment-form");
     form.classList.add("comment-form--initiated");
     handleSizeChange(event);
