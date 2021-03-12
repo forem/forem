@@ -17,10 +17,10 @@ RSpec.describe CodepenTag, type: :liquid_tag do
       Liquid::Template.parse("{% codepen #{link} %}")
     end
 
-    it "accepts codepen link" do
-      expect do
-        generate_new_liquid(codepen_link)
-      end.not_to raise_error
+    xit "accepts codepen link" do
+      liquid = generate_new_liquid(codepen_link)
+      rendered_codepen_iframe = liquid.render
+      Approvals.verify(rendered_codepen_iframe, name: "codepen_liquid_tag", format: :html)
     end
 
     it "accepts codepen link with a / at the end" do
