@@ -1,8 +1,6 @@
 /* eslint-disable no-alert */
 export function initFlag() {
-  const flagButton = document.getElementById(
-    'user-profile-dropdownmenu-flag-button',
-  );
+  const flagButton = document.getElementById('user-profile-dropdownmenu-flag-button');
 
   if (!flagButton) {
     // button not always present when this is called
