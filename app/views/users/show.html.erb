@@ -38,7 +38,15 @@
                   <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>
                 <% end %>
                 <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= user_url(@user) %>"></span>
-                <a href="javascript:void(0);" id="user-profile-dropdownmenu-flag-button" data-profile-user-id="<%= @user.id %>" class="border-none crayons-link crayons-link--block">Flag @<%= @user.username %></a>
+                <a
+                  href="javascript:void(0);"
+                  id="user-profile-dropdownmenu-flag-button"
+                  data-profile-user-id="<%= @user.id %>"
+                  data-profile-user-name="@<%= @user.username %>"
+                  data-flag-status="<%= @flag_status %>"
+                  class="border-none crayons-link crayons-link--block">
+                  <%= @flag_status ? "Unflag" : "Flag" %> @<%= @user.username %>
+                </a>
               </div>
             </div>
             <% if user_signed_in? %>

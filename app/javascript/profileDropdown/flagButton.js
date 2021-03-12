@@ -9,21 +9,28 @@ export function initFlag() {
     return;
   }
 
-  const { profileUserId } = flagButton.dataset;
-
   /* eslint-disable-next-line no-undef */
   const user = userData();
   if (!user) {
     return;
   }
 
+  const { profileUserId, profileUserName } = flagButton.dataset;
+  let flagStatus = flagButton.dataset.flagStatus === 'true';
+
   if (user.id === parseInt(profileUserId, 10) || !user.trusted) {
     flagButton.remove();
   }
 
+  const confirmFlagMessage =
+    'Are you sure you want to flag this person? This will make all of their posts less visible.';
+
+  const confirmUnflagMessage =
+    "Are you sure you want to unflag this person? This will restore their posts' visibility.";
+
   function flag() {
     const confirmFlag = window.confirm(
-      `Are you sure you want to flag this person? This will make all of their posts less visible and cannot be undone.`,
+      flagStatus ? confirmUnflagMessage : confirmFlagMessage,
     );
 
     if (confirmFlag) {
@@ -42,10 +49,14 @@ export function initFlag() {
         .then((response) => response.json())
         .then((response) => {
           if (response.result === 'create') {
+            flagStatus = true;
+            flagButton.innerHTML = `Unflag ${profileUserName}`;
             window.alert('All posts by this author will be less visible.');
-          } else if (response.result === null) {
+          } else {
+            flagStatus = false;
+            flagButton.innerHTML = `Flag ${profileUserName}`;
             window.alert(
-              "It seems you've already reduced the visibility of this author's posts.",
+              'Unflagged the author, the visibility of their posts has been restored.',
             );
           }
         })

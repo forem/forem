@@ -62,9 +62,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
     end
 
     def interact_with_each_emojis
-      # %w[heart thumbsdown vomit].each do |emoji|
-      # NOTE: citizen428 - Temporarily removed the vomit emoj from this spec.
-      %w[heart thumbsdown].each do |emoji|
+      %w[heart thumbsdown vomit].each do |emoji|
         click_button(emoji)
         expect(page).to have_css(".reacted")
         click_button(emoji)

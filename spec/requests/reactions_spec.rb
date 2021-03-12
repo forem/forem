@@ -205,19 +205,6 @@ RSpec.describe "Reactions", type: :request do
           post "/reactions", params: article_params
         end.to change(Reaction, :count).by(-1)
       end
-
-      it "does not destroy existing vomit reactions" do
-        params = {
-          reactable_id: article.id,
-          reactable_type: "Article",
-          category: "vomit"
-        }
-        post "/reactions", params: params
-
-        expect do
-          post "/reactions", params: params
-        end.not_to change(Reaction, :count)
-      end
     end
 
     context "when creating readinglist" do
@@ -294,12 +281,11 @@ RSpec.describe "Reactions", type: :request do
         end.to change(Reaction, :count).by(1)
       end
 
-      it "does not destroy an existing reaction" do
+      it "destroys existing reaction" do
         post "/reactions", params: user_params
         expect do
-          # same route to destroy, so sending POST request again
           post "/reactions", params: user_params
-        end.not_to change(Reaction, :count)
+        end.to change(Reaction, :count).by(-1)
       end
     end
 
