@@ -715,14 +715,6 @@ export class Chat extends Component {
     // should check if user has the privilege
     if (message.startsWith('/code')) {
       this.setActiveContentState(activeChannelId, { type_of: 'code_editor' });
-    } else if (message.startsWith('/call')) {
-      const messageObject = {
-        activeChannelId,
-        message: '/call',
-        mentionedUsersId: this.getMentionedUsers(message),
-      };
-      this.setState({ videoPath: `/video_chats/${activeChannelId}` });
-      sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     } else if (message.startsWith('/play ')) {
       const messageObject = {
         activeChannelId,
