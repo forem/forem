@@ -22,15 +22,11 @@ export function initFlag() {
     flagButton.remove();
   }
 
-  const confirmFlagMessage =
-    'Are you sure you want to flag this person? This will make all of their posts less visible.';
-
-  const confirmUnflagMessage =
-    "Are you sure you want to unflag this person? This will restore their posts' visibility.";
-
   function flag() {
     const confirmFlag = window.confirm(
-      flagStatus ? confirmUnflagMessage : confirmFlagMessage,
+      flagStatus
+        ? "Are you sure you want to unflag this person? This will restore their posts' visibility."
+        : 'Are you sure you want to flag this person? This will make all of their posts less visible.',
     );
 
     if (confirmFlag) {
