@@ -22,6 +22,8 @@ module Search
           .search_by_username(term)
           .select(*ATTRIBUTES)
       end
+
+      private_class_method :search_users
     end
   end
 end
