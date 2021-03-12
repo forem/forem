@@ -141,8 +141,10 @@ export const MentionAutocompleteTextArea = ({
     const { selectionStart } = inputRef.current;
 
     if (isUserMention) {
+      const searchTermStartPosition = indexOfMentionStart + 1;
+
       const mentionText = value.substring(
-        indexOfMentionStart + 1,
+        searchTermStartPosition,
         selectionStart,
       );
 
@@ -157,7 +159,7 @@ export const MentionAutocompleteTextArea = ({
 
       setDropdownPositionPoints({ x: dropdownX, y });
       setSearchTerm(mentionText);
-      setSelectionInsertIndex(indexOfMentionStart + 1);
+      setSelectionInsertIndex(searchTermStartPosition);
     } else if (searchTerm) {
       // User has moved away from an in-progress @mention - clear current search
       setSearchTerm('');
@@ -247,7 +249,7 @@ export const MentionAutocompleteTextArea = ({
               </ComboboxList>
             ) : (
               <span className="crayons-autocomplete__empty">
-                {searchTerm.length >= 2
+                {searchTerm.length >= MIN_SEARCH_CHARACTERS
                   ? 'No results found'
                   : 'Type to search for a user'}
               </span>

@@ -185,8 +185,6 @@ function initializeCommentsPage() {
   listenForDetailsToggle();
 }
 
-
-
 function toggleCodeOfConduct() {
   var user = userData();
   if (!user) {
@@ -306,17 +304,10 @@ function handleFocus(event) {
     event.preventDefault();
     showLoginModal();
     area.blur();
-  } else {
-    if(area.getAttribute('data-mention-autocomplete-active') !== 'true') {
-      Forem.initializeMentionAutocomplete(area);
-    }
-    
+  } else {    
     var form = event.target.closest(".comment-form");
-    if (form) {
-      form.classList.add("comment-form--initiated");
-    }
+    form.classList.add("comment-form--initiated");
     handleSizeChange(event);
-    
   }
 }
 
@@ -443,17 +434,14 @@ function handleSizeChange(event) {
 
 function handleButtonsActivation(event) {
   var textarea = event.target;
-  var commentForm = textarea.closest('.comment-form');
-  if (commentForm) {
-    var buttons = commentForm.getElementsByClassName('js-btn-enable');
-    Array.from(buttons).forEach(function(button) {
-      if (textarea.value.length > 0) {
-        button.disabled = false;
-      } else {
-        button.disabled = true;
-      }
-    });
-  }
+  var buttons = textarea.closest('.comment-form').getElementsByClassName('js-btn-enable');
+  Array.from(buttons).forEach(function(button) {
+    if (textarea.value.length > 0) {
+      button.disabled = false;
+    } else {
+      button.disabled = true;
+    }
+  });
 }
 
 function validateField(event) {
