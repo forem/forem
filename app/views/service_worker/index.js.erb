@@ -39,9 +39,15 @@
     return [
       '/%F0%9F%92%B8',         // 💸 (hiring)
       '/admin',                // Don't run on admin dashboard.
+      '/new',                  // Don't run on editor.
+      '/enter',                // Don't run on sign in page.
       '/oauth/',               // Skip oauth apps
       '/onboarding',           // Don't run on onboarding.
+      '/shop',                 // Don't run on Shop
+      '/sidekiq',              // Skip for Sidekiq dashboard
       '/users/auth',           // Don't run on authentication.
+      '/users/sign_in',        // Don't run on sign in page.
+      '/welcome',              // Don't run on welcome reroutes.
     ].some(path => url.includes(path))
   }
 
