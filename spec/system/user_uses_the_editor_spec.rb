@@ -43,7 +43,7 @@ RSpec.describe "Using the editor", type: :system do
       page.evaluate_script("window.onbeforeunload = function(){}")
     end
 
-    it "fills out form with rich content and click preview" do
+    xit "fills out form with rich content and click preview" do
       article_body = find("div.crayons-article__body")["innerHTML"]
       article_body.gsub!(%r{"https://res\.cloudinary\.com/.{1,}"}, "cloudinary_link")
 
@@ -52,7 +52,7 @@ RSpec.describe "Using the editor", type: :system do
   end
 
   describe "Submitting an article", js: true do
-    it "fill out form and submit" do
+    xit "fill out form and submit" do
       fill_markdown_with(read_from_file(raw_text))
       find("button", text: /\ASave changes\z/).click
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
