@@ -18,7 +18,7 @@ class DevicesController < ApplicationController
   end
 
   def destroy
-    device = Device.find_by(device_params)
+    device = Device.find_by(id: params[:id])
     unless device
       render json: { error: "Not Found", status: 404 }, status: :not_found
       return
