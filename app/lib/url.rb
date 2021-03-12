@@ -70,4 +70,15 @@ module URL
   def self.organization(organization)
     url(organization.slug)
   end
+
+  # Ensures we don't consider an empty referer
+  #
+  # @param referer [String] the unsanitized referer
+  # @example A safe referer
+  #  sanitized_referer("/some/path") #=> "/some/path"
+  # @example An empty string
+  #  sanitized_referer("") #=> nil
+  def self.sanitized_referer(referer)
+    referer.presence
+  end
 end
