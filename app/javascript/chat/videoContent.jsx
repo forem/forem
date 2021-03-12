@@ -7,6 +7,7 @@ const smartSvgIcon = (content, d) => (
     viewBox="0 0 24 24"
     width="24"
     height="24"
+
   >
     <path data-content={content} fill="none" d="M0 0h24v24H0z" />
     <path data-content={content} d={d} />
@@ -51,7 +52,7 @@ export function VideoContent(props) {
         aria-label={fullscreen ? 'Fullscreen' : 'Leave fullscreen'}
         className="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
         data-content="fullscreen"
-        style={{ left: '39px' }}
+        style={{ left: '-80px', marginLeft:'0px' }}
       >
         {fullscreen
           ? smartSvgIcon(
