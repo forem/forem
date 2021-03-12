@@ -1,6 +1,8 @@
 module Search
   module Postgres
     class Username
+      MAX_RESULTS = 6
+
       ATTRIBUTES = %i[
         id
         name
@@ -20,6 +22,7 @@ module Search
       def self.search_users(term)
         ::User
           .search_by_username(term)
+          .limit(MAX_RESULTS)
           .select(*ATTRIBUTES)
       end
 
