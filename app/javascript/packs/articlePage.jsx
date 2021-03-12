@@ -25,7 +25,7 @@ const userDataIntervalID = setInterval(async () => {
 
     clearInterval(userDataIntervalID);
     const root = document.getElementById('comment-subscription');
-    const isLoggedIn = userStatus === 'logged-in';
+    const isLoggedIn = (userStatus === "logged-in");
 
     try {
       const {
