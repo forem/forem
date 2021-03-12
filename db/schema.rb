@@ -445,6 +445,15 @@ ActiveRecord::Schema.define(version: 2021_03_10_154630) do
     t.index ["file_name"], name: "index_data_update_scripts_on_file_name", unique: true
   end
 
+  create_table "devices", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.string "platform", null: false
+    t.string "token", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "token", "platform"], name: "index_devices_on_user_id_and_token_and_platform", unique: true
+  end
+
   create_table "display_ad_events", force: :cascade do |t|
     t.string "category"
     t.string "context_type"
@@ -1051,6 +1060,66 @@ ActiveRecord::Schema.define(version: 2021_03_10_154630) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "rpush_apps", force: :cascade do |t|
+    t.string "access_token"
+    t.datetime "access_token_expiration"
+    t.string "auth_key"
+    t.text "certificate"
+    t.string "client_id"
+    t.string "client_secret"
+    t.integer "connections", default: 1, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.string "environment"
+    t.string "name", null: false
+    t.string "password"
+    t.string "type", null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "rpush_feedback", force: :cascade do |t|
+    t.integer "app_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.string "device_token", limit: 64, null: false
+    t.datetime "failed_at", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["device_token"], name: "index_rpush_feedback_on_device_token"
+  end
+
+  create_table "rpush_notifications", force: :cascade do |t|
+    t.text "alert"
+    t.boolean "alert_is_json", default: false
+    t.integer "app_id", null: false
+    t.integer "badge"
+    t.string "category"
+    t.string "collapse_key"
+    t.boolean "content_available", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.text "data"
+    t.boolean "delay_while_idle", default: false, null: false
+    t.datetime "deliver_after"
+    t.boolean "delivered", default: false, null: false
+    t.datetime "delivered_at"
+    t.string "device_token", limit: 64
+    t.integer "error_code"
+    t.text "error_description"
+    t.integer "expiry", default: 86400
+    t.datetime "fail_after"
+    t.boolean "failed", default: false, null: false
+    t.datetime "failed_at"
+    t.boolean "mutable_content", default: false
+    t.text "notification"
+    t.integer "priority"
+    t.boolean "processing", default: false, null: false
+    t.text "registration_ids"
+    t.integer "retries", default: 0
+    t.string "sound"
+    t.string "type", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "uri"
+    t.text "url_args"
+    t.index ["delivered", "failed"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))"
+  end
+
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1423,6 +1492,7 @@ ActiveRecord::Schema.define(version: 2021_03_10_154630) do
   add_foreign_key "credits", "organizations", on_delete: :restrict
   add_foreign_key "credits", "users", on_delete: :cascade
   add_foreign_key "custom_profile_fields", "profiles", on_delete: :cascade
+  add_foreign_key "devices", "users"
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade

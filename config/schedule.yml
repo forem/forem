@@ -136,4 +136,7 @@ update_latest_github_repos:
   description: "Fetches the latest info about stored GitHub repositories (runs hourly, 45 min after the hour)"
   cron: "45 * * * *"
   class: "GithubRepos::UpdateLatestWorker"
-
+push_notifications_deliver:
+  description: "Deliver pending Push Notifications (runs every 10 minutes)"
+  cron: "*/1 * * * *"
+  class: "PushNotificationsWorker"
