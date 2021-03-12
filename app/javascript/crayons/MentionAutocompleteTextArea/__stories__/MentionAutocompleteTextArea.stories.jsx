@@ -51,6 +51,28 @@ async function fetchUsers(searchTerm) {
 export const Default = () => {
   const textAreaRef = createRef(null);
 
+  const handleAreaFocused = () => {
+    const container = document.getElementById('story-container');
+    if (
+      textAreaRef.current &&
+      !container.getAttribute('autocomplete-initialized')
+    ) {
+      const storybookElement = textAreaRef.current;
+
+      render(
+        <MentionAutocompleteTextArea
+          replaceElement={storybookElement}
+          fetchSuggestions={fetchUsers}
+          labelId="storybook-autocomplete-label"
+        />,
+        container,
+        storybookElement,
+      );
+
+      container.setAttribute('autocomplete-initialized', 'true');
+    }
+  };
+
   return (
     <div id="story-container">
       <label id="storybook-autocomplete-label">
@@ -59,22 +81,7 @@ export const Default = () => {
           <textarea
             ref={textAreaRef}
             aria-labelledby="storybook-autocomplete-label"
-            onFocus={() => {
-              if (textAreaRef.current) {
-                const container = document.getElementById('story-container');
-                const storybookElement = textAreaRef.current;
-
-                render(
-                  <MentionAutocompleteTextArea
-                    replaceElement={storybookElement}
-                    fetchSuggestions={fetchUsers}
-                    labelId="storybook-autocomplete-label"
-                  />,
-                  container,
-                  storybookElement,
-                );
-              }
-            }}
+            onFocus={handleAreaFocused}
             style={{
               width: '500px',
               maxWidth: '100%',

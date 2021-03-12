@@ -128,11 +128,7 @@ export const MentionAutocompleteTextArea = ({
     inputRef.current.setSelectionRange(cursorPosition, cursorPosition - 1);
   }, [cursorPosition]);
 
-  const handleValueChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-
+  const handleValueChange = ({ target: { value } }) => {
     setTextContent(value);
     const { isUserMention, indexOfMentionStart } = getMentionWordData(
       inputRef.current,
@@ -141,6 +137,7 @@ export const MentionAutocompleteTextArea = ({
     const { selectionStart } = inputRef.current;
 
     if (isUserMention) {
+      // search term begins after the @ character
       const searchTermStartPosition = indexOfMentionStart + 1;
 
       const mentionText = value.substring(
@@ -222,7 +219,6 @@ export const MentionAutocompleteTextArea = ({
           value={textContent}
           data-mention-autocomplete-active="true"
           as="textarea"
-          selectOnClick
           autocomplete={false}
           onChange={handleValueChange}
         />
