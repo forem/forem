@@ -63,3 +63,55 @@ export const getCursorXY = (input, selectionPoint) => {
     y: inputY + spanY,
   };
 };
+
+/**
+ * A helper function that searches back to the beginning of the currently typed word (indicated by cursor position) and verifies whether it begins with an '@' symbol for user mention
+ *
+ * @param {element} textArea The text area or input to inspect the current word of
+ * @returns {{isUserMention: boolean, indexOfMentionStart: number}} Object with the word's mention data
+ *
+ * @example
+ * const { isUserMention, indexOfMentionStart } = getMentionWordData(textArea);
+ * if (isUserMention) {
+ *  // Do something
+ * }
+ */
+export const getMentionWordData = (textArea) => {
+  const { selectionStart, value: valueBeforeKeystroke } = textArea;
+
+  if (selectionStart === 0 || valueBeforeKeystroke === '') {
+    return {
+      isUserMention: false,
+      indexOfMentionStart: -1,
+    };
+  }
+
+  const indexOfAutocompleteStart = getIndexOfCurrentWordAutocompleteSymbol(
+    valueBeforeKeystroke,
+    selectionStart,
+  );
+
+  return {
+    isUserMention: indexOfAutocompleteStart !== -1,
+    indexOfMentionStart: indexOfAutocompleteStart,
+  };
+};
+
+const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
+  const currentCharacter = content.charAt(selectionIndex);
+  const previousCharacter = content.charAt(selectionIndex - 1);
+
+  if (
+    selectionIndex !== 0 &&
+    previousCharacter !== ' ' &&
+    previousCharacter !== ''
+  ) {
+    return getIndexOfCurrentWordAutocompleteSymbol(content, selectionIndex - 1);
+  }
+
+  if (currentCharacter === '@') {
+    return selectionIndex;
+  }
+
+  return -1;
+};
