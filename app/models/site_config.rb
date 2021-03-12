@@ -232,6 +232,9 @@ class SiteConfig < RailsSettings::Base
     xlarge: 250
   }
 
+  # Push Notifications
+  field :push_notifications_ios_pem, type: :string
+
   # Returns true if we are operating on a local installation, false otherwise
   def self.local?
     app_domain.include?("localhost")

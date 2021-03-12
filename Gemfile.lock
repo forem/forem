@@ -371,6 +371,8 @@ GEM
     hashie (4.1.0)
     heapy (0.2.0)
       thor
+    hiredis (0.6.3)
+    hkdf (0.3.0)
     honeybadger (4.7.3)
     honeycomb-beeline (2.4.0)
       libhoney (~> 1.14, >= 1.14.2)
@@ -378,6 +380,7 @@ GEM
     html_truncator (0.4.2)
       nokogiri (~> 1.5)
     htmlentities (4.3.4)
+    http-2 (0.11.0)
     http (4.4.1)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
@@ -468,6 +471,13 @@ GEM
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
     minitest (5.14.4)
+    modis (3.3.0)
+      activemodel (>= 4.2)
+      activesupport (>= 4.2)
+      connection_pool (>= 2)
+      hiredis (>= 0.5)
+      msgpack (>= 0.5)
+      redis (>= 3.0)
     msgpack (1.4.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
@@ -475,6 +485,10 @@ GEM
     nakayoshi_fork (0.0.4)
     naught (1.1.0)
     nenv (0.3.0)
+    net-http-persistent (4.0.1)
+      connection_pool (~> 2.2)
+    net-http2 (0.18.4)
+      http-2 (~> 0.11)
     netrc (0.11.0)
     nio4r (2.5.5)
     nokogiri (1.11.1)
@@ -644,6 +658,18 @@ GEM
     rexml (3.2.4)
     rolify (5.3.0)
     rouge (3.26.0)
+    rpush (5.3.0)
+      activesupport (>= 5.0)
+      jwt (>= 1.5.6)
+      multi_json (~> 1.0)
+      net-http-persistent
+      net-http2 (~> 0.18, >= 0.18.3)
+      railties
+      rainbow
+      thor (>= 0.18.1, < 2.0)
+      webpush (~> 1.0)
+    rpush-redis (1.1.0)
+      modis (~> 3.0)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -839,6 +865,9 @@ GEM
       rack-proxy (>= 0.6.1)
       railties (>= 5.2)
       semantic_range (>= 2.3.0)
+    webpush (1.1.0)
+      hkdf (~> 0.2)
+      jwt (~> 2.0)
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -968,6 +997,8 @@ DEPENDENCIES
   reverse_markdown (~> 2.0)
   rolify (~> 5.3)
   rouge (~> 3.26)
+  rpush (~> 5.3)
+  rpush-redis (~> 1.1)
   rspec-rails (~> 4.1)
   rspec-retry (~> 0.6)
   rubocop (~> 1.11)
@@ -1018,4 +1049,4 @@ RUBY VERSION
    ruby 2.7.2p137
 
 BUNDLED WITH
-   2.2.10
+   2.2.11
