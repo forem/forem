@@ -13,7 +13,7 @@ RSpec.describe ParlerTag, type: :liquid_tag do
       Liquid::Template.parse("{% parler #{id} %}")
     end
 
-    it "accepts a valid Parler URL" do
+    xit "accepts a valid Parler URL" do
       liquid = generate_new_liquid(valid_id)
       verify(format: :html) { liquid.render }
     end

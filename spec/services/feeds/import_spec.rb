@@ -12,7 +12,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       end
     end
 
-    it "fetch only articles from a feed_url", vcr: { cassette_name: "feeds_import" } do
+    xit "fetch only articles from a feed_url", vcr: { cassette_name: "feeds_import" } do
       num_articles = described_class.call
 
       verify(format: :txt) { num_articles }
@@ -24,7 +24,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       expect { described_class.call }.not_to change(Article, :count)
     end
 
-    it "parses correctly", vcr: { cassette_name: "feeds_import" } do
+    xit "parses correctly", vcr: { cassette_name: "feeds_import" } do
       described_class.call
 
       verify format: :txt do
@@ -87,13 +87,13 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
     end
 
     context "with an explicit set of users", vcr: { cassette_name: "feeds_import" } do
-      it "accepts a subset of users" do
+      xit "accepts a subset of users" do
         num_articles = described_class.call(users: User.with_feed.limit(1))
 
         verify(format: :txt) { num_articles }
       end
 
-      it "imports no articles if given users are without feed" do
+      xit "imports no articles if given users are without feed" do
         create(:user, feed_url: nil)
 
         described_class.call(users: User.where(feed_url: nil))

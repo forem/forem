@@ -7,7 +7,7 @@ RSpec.describe KatexTag, type: :liquid_tag do
       Liquid::Template.parse("{% katex %}#{content}{% endkatex %}")
     end
 
-    it "generates Katex output" do
+    xit "generates Katex output" do
       content = "c = \\pm\\sqrt{a^2 + b^2}"
       rendered = generate_katex_liquid(content).render
       verify(format: :html) { rendered.gsub(/katex-.{64}\.css/, "katex-fingerprint.css") }

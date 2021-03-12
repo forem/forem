@@ -17,7 +17,7 @@ RSpec.describe SoundcloudTag, type: :liquid_tag do
       CGI.parse(iframe_src[0].value)
     end
 
-    it "accepts soundcloud link" do
+    xit "accepts soundcloud link" do
       liquid = generate_new_liquid(soundcloud_link)
       rendered_soundcloud_iframe = liquid.render
       Approvals.verify(rendered_soundcloud_iframe, name: "soundcloud_liquid_tag", format: :html)

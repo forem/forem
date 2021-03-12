@@ -9,7 +9,7 @@ RSpec.describe NextTechTag, type: :liquid_template do
       Liquid::Template.parse("{% nexttech #{link} %}")
     end
 
-    it "accepts nexttech link" do
+    xit "accepts nexttech link" do
       liquid = generate_new_liquid(nexttech_link)
       rendered_nexttech_iframe = liquid.render
       Approvals.verify(rendered_nexttech_iframe, name: "nexttech_liquid_tag", format: :html)

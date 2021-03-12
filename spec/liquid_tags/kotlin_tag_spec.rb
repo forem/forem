@@ -49,7 +49,7 @@ RSpec.describe KotlinTag, type: :liquid_tag do
       expect(described_class.embedded_url(valid_link)).to eq(expected)
     end
 
-    it "renders correctly a Kotlin Playground link" do
+    xit "renders correctly a Kotlin Playground link" do
       liquid = generate_new_liquid(valid_link)
       rendered_kotlin_iframe = liquid.render
       Approvals.verify(rendered_kotlin_iframe, name: "kotlin_liquid_tag", format: :html)
