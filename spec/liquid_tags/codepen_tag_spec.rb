@@ -17,10 +17,23 @@ RSpec.describe CodepenTag, type: :liquid_tag do
       Liquid::Template.parse("{% codepen #{link} %}")
     end
 
-    xit "accepts codepen link" do
+    def page_with_codepen_tag
+      <<~HTML
+        <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml">
+          <body>
+            <iframe height="600" src="https://codepen.io/twhite96/embed/XKqrJX?height=600&amp;default-tab=result&amp;embed-version=2" scrolling="no" frameborder="no" allowtransparency="true" loading="lazy" style="width: 100%;">
+            </iframe>
+          </body>
+        </html>
+      HTML
+    end
+
+    it "accepts codepen link" do
       liquid = generate_new_liquid(codepen_link)
       rendered_codepen_iframe = liquid.render
-      Approvals.verify(rendered_codepen_iframe, name: "codepen_liquid_tag", format: :html)
+      # Approvals.verify(rendered_codepen_iframe, name: "codepen_liquid_tag", format: :html)
+      expect(page_with_codepen_tag).to include(rendered_codepen_iframe)
     end
 
     it "accepts codepen link with a / at the end" do
