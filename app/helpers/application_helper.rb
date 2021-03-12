@@ -262,7 +262,7 @@ module ApplicationHelper
   end
 
   def sanitized_referer(referer)
-    referer.presence
+    URL.sanitized_referer(referer)
   end
 
   def sanitize_and_decode(str)
