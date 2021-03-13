@@ -3,28 +3,22 @@ import PropTypes from 'prop-types';
 
 function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
   return (
-    <fieldset className="hidden grid grid-cols-1 gap-2">
-      <legend className="hidden">Filter by tag</legend>
+    <div className="hidden grid grid-cols-1 gap-2">
       {availableTags.map((tag) => (
-        <label
+        <a
           className={`crayons-link crayons-link--block${
             selectedTag === tag ? ' crayons-link--current' : ''
           }`}
-          aria-label={`${tag} tag`}
+          data-no-instant
+          data-tag={tag}
+          onClick={onSelectTag}
+          key={tag}
+          href={`t/${tag}`}
         >
-          <input
-            type="radio"
-            name="filterTag"
-            onClick={onSelectTag}
-            key={tag}
-            className="opacity-0"
-            checked={selectedTag === tag}
-            value={tag}
-          />
           #{tag}
-        </label>
+        </a>
       ))}
-    </fieldset>
+    </div>
   );
 }
 
@@ -45,17 +39,6 @@ export function TagList({
     <select
       class="crayons-select"
       aria-label="Filter by tag"
-      onBlur={(event) => {
-        // We need blur for a11y, but we also don't want to make the same search query twice
-        // if the tag hasn't changed since the previous onChange.
-        const { value } = event.target;
-
-        if (value === selectedTag) {
-          return;
-        }
-
-        onSelectTag(event);
-      }}
       onChange={onSelectTag}
     >
       {selectedTag === '' && <option>Select a tag...</option>}

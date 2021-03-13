@@ -6,7 +6,7 @@ import {
   onSearchBoxType,
   performInitialSearch,
   search,
-  toggleTag,
+  selectTag,
   clearSelectedTags,
 } from '../searchableItemList/searchableItemList';
 import { ItemListItem } from './components/ItemListItem';
@@ -65,7 +65,7 @@ export class ReadingList extends Component {
     this.loadNextPage = loadNextPage.bind(this);
     this.performInitialSearch = performInitialSearch.bind(this);
     this.search = search.bind(this);
-    this.toggleTag = toggleTag.bind(this);
+    this.selectTag = selectTag.bind(this);
     this.clearSelectedTags = clearSelectedTags.bind(this);
   }
 
@@ -225,7 +225,7 @@ export class ReadingList extends Component {
                     <TagList
                       availableTags={availableTags}
                       selectedTag={selectedTag}
-                      onSelectTag={this.toggleTag}
+                      onSelectTag={this.selectTag}
                       isMobile={true}
                     />
                   )
@@ -248,7 +248,7 @@ export class ReadingList extends Component {
                     <TagList
                       availableTags={availableTags}
                       selectedTag={selectedTag}
-                      onSelectTag={this.toggleTag}
+                      onSelectTag={this.selectTag}
                     />
                   </div>
                 )}

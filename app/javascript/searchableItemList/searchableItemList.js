@@ -16,10 +16,11 @@ export function onSearchBoxType(event) {
   });
 }
 
-export function toggleTag(event) {
-  const { value: selectedTag } = event.target;
+export function selectTag(event) {
+  event.preventDefault();
+  const { value, dataset } = event.target;
+  const selectedTag = value ?? dataset.tag;
   const component = this;
-
   const { query, statusView } = component.state;
 
   component.setState({ selectedTag, page: 0, items: [] });
