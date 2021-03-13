@@ -1,4 +1,5 @@
 @import '../variables';
+@import '../components/buttons';
 
 .ltag_github-liquid-tag {
   margin: 1.1em auto 1.3em;
@@ -335,58 +336,7 @@
   z-index: 100;
 
   .gh-btn {
-    --border-width: 0px;
-    --shadow-color: rgba(0, 0, 0, 0.05);
-    --vertical-padding: var(--su-2);
-    --horizontal-padding: var(--su-4);
-    --font-size: var(--fs-base);
-    --with-icon-padding: var(--su-3);
-    --icon-margin: var(--su-2);
-    --border: transparent;
-    --border-hover: transparent;
-    --shadow: 0 1px 3px var(--shadow-color);
-    --shadow-hover: 0 2px 5px var(--shadow-color);
-
-    --bg: var(--button-secondary-bg);
-    --bg-hover: var(--button-secondary-bg-hover);
-    --color: var(--button-secondary-color);
-    --color-hover: var(--button-secondary-color-hover);
-    --bg-inverted: var(--button-secondary-inverted-bg);
-    --bg-inverted-hover: var(--button-secondary-inverted-bg-hover);
-    --color-inverted: var(--button-secondary-inverted-color);
-    --color-inverted-hover: var(--button-secondary-inverted-color-hover);
-
-    position: relative;
-    display: inline-block;
-    padding: calc(var(--vertical-padding) - var(--border-width))
-      calc(var(--horizontal-padding) - var(--border-width));
-    border-radius: var(--radius);
-    outline: none;
-    font-family: inherit;
-    font-size: var(--font-size);
-    line-height: var(--su-6);
-    font-weight: var(--fw-medium);
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all var(--transition-props);
-    border: var(--border-width) solid;
-    background-color: var(--bg);
-    border-color: var(--border);
-    box-shadow: var(--shadow);
-    color: var(--color);
-
-    &[href]:hover,
-    &[href]:focus,
-    &:hover:enabled,
-    &:active:enabled,
-    &:focus:enabled,
-    &:focus-within {
-      background-color: var(--bg-hover);
-      border-color: var(--border-hover);
-      box-shadow: var(--shadow-hover);
-      color: var(--color-hover);
-      z-index: var(--z-elevate);
-    }
+    @extend .crayons-btn;
+    @extend .crayons-btn--secondary;
   }
 }
