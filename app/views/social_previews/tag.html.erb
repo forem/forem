@@ -1,6 +1,6 @@
-<% accent_color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).biggest %>
-<% color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(1.4) %>
-<% dark_color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(0.7) %>
+<% accent_color = Color::CompareHex.new([@tag.bg_color_hex, @tag.text_color_hex]).biggest %>
+<% color = Color::CompareHex.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(1.4) %>
+<% dark_color = Color::CompareHex.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(0.7) %>
 <% not_so_rand = Random.new(@tag.id) # Using ID as seed ensures we get the same "random" numbers on each page load, Improves caching %>
 <style>
   body {
@@ -84,9 +84,9 @@
         <%# Use a seed in Random so we don't break cache on every render %>
         <% @badge = Badge.find(@tag.badge_id) %>
         <% not_so_rand = Random.new(@badge.id) %>
-        <img src="<%= @badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" loading="lazy" />
+        <img src="<%= @badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" />
       <% end %>
-      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" loading="lazy" />
+      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
     </div>
   </div>
   </div>

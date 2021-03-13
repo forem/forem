@@ -10,6 +10,11 @@ class Tag < ActsAsTaggableOn::Tag
   include Purgeable
   include Searchable
 
+  include PgSearch::Model
+  pg_search_scope :search_by_name,
+                  against: :name,
+                  using: { tsearch: { prefix: true } }
+
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
 
@@ -17,6 +22,7 @@ class Tag < ActsAsTaggableOn::Tag
   belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true
 
   has_many :buffer_updates, dependent: :nullify
+  has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
 
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
 
@@ -89,20 +95,23 @@ class Tag < ActsAsTaggableOn::Tag
     errors.add(:name, "contains non-ASCII characters") unless name.match?(/\A[[a-z0-9]]+\z/i)
   end
 
+  def errors_as_sentence
+    errors.full_messages.to_sentence
+  end
+
   private
 
   def evaluate_markdown
-    self.rules_html = MarkdownParser.new(rules_markdown).evaluate_markdown
-    self.wiki_body_html = MarkdownParser.new(wiki_body_markdown).evaluate_markdown
+    self.rules_html = MarkdownProcessor::Parser.new(rules_markdown).evaluate_markdown
+    self.wiki_body_html = MarkdownProcessor::Parser.new(wiki_body_markdown).evaluate_markdown
   end
 
   def calculate_hotness_score
     self.hotness_score = Article.tagged_with(name)
       .where("articles.featured_number > ?", 7.days.ago.to_i)
-      .map do |article|
+      .sum do |article|
         (article.comments_count * 14) + article.score + rand(6) + ((taggings_count + 1) / 2)
       end
-      .sum
   end
 
   def bust_cache

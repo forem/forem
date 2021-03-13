@@ -12,15 +12,6 @@ const frontPageFeedPathNames = new Map([
   ['/latest', 'latest'],
 ]);
 
-const mainNavMoreTrigger = document.getElementById('main-nav-more-trigger');
-function toggleMainNavMore() {
-  document.getElementById('main-nav-more').classList.remove('hidden');
-  mainNavMoreTrigger.classList.add('hidden');
-}
-if (mainNavMoreTrigger) {
-  mainNavMoreTrigger.addEventListener('click', toggleMainNavMore);
-}
-
 /**
  * Renders tags followed in the left side bar of the homepage.
  *
@@ -28,12 +19,16 @@ if (mainNavMoreTrigger) {
  * @param {object} user The currently logged on user, null if not logged on.
  */
 
-function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
-  if (user === null || document.getElementById('followed-tags-wrapper')) {
-    return;
+function renderTagsFollowed(user = userData()) {
+  const tagsFollowedContainer = document.getElementById(
+    'sidebar-nav-followed-tags',
+  );
+  if (user === null || !tagsFollowedContainer) {
+    // Return and do not render if the user is not logged in
+    // or if this is not the home page.
+    return false;
   }
 
-  // Only render if a user is logged on.
   const { followed_tags } = user; // eslint-disable-line camelcase
   const followedTags = JSON.parse(followed_tags);
 
@@ -47,17 +42,31 @@ function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
     );
   });
 
-  render(
-    <TagsFollowed tags={followedTags} />,
-    tagsFollowedContainer,
-    tagsFollowedContainer.firstElementChild,
-  );
+  render(<TagsFollowed tags={followedTags} />, tagsFollowedContainer);
+}
+
+function renderSidebar() {
+  const sidebarContainer = document.getElementById('sidebar-wrapper-right');
+
+  // If the screen's width is less than 640 we don't need this extra data.
+  if (
+    sidebarContainer &&
+    screen.width >= 640 &&
+    window.location.pathname === '/'
+  ) {
+    window
+      .fetch('/sidebars/home')
+      .then((res) => res.text())
+      .then((response) => {
+        sidebarContainer.innerHTML = response;
+      });
+  }
 }
 
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
 
 if (!document.getElementById('featured-story-marker')) {
-  const waitingForDataLoad = setInterval(function dataLoadedCheck() {
+  const waitingForDataLoad = setInterval(() => {
     const { user = null, userStatus } = document.body.dataset;
     if (userStatus === 'logged-out') {
       return;
@@ -89,7 +98,9 @@ if (!document.getElementById('featured-story-marker')) {
           renderFeed(changedFeedTimeFrame);
         });
       });
-      renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
+
+      renderTagsFollowed();
+      renderSidebar();
     }
   }, 2);
 }
@@ -100,15 +111,7 @@ InstantClick.on('change', () => {
     return false;
   }
 
-  const tagsFollowedContainer = document.body.querySelector(
-    '#sidebar-nav-followed-tags',
-  );
-
-  if (!tagsFollowedContainer) {
-    // Not on the homepage, so nothing to do.
-    return false;
-  }
-
-  renderTagsFollowed(tagsFollowedContainer);
+  renderTagsFollowed();
+  renderSidebar();
 });
 InstantClick.init();

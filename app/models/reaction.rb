@@ -36,7 +36,6 @@ class Reaction < ApplicationRecord
   after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
-  after_create_commit :record_field_test_event
   after_commit :async_bust
   after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
 
@@ -81,11 +80,7 @@ class Reaction < ApplicationRecord
   end
 
   def target_user
-    if reactable_type == "User"
-      reactable
-    else
-      reactable.user
-    end
+    reactable_type == "User" ? reactable : reactable.user
   end
 
   def negative?
@@ -94,12 +89,8 @@ class Reaction < ApplicationRecord
 
   private
 
-  def indexable?
-    category == "readinglist" && reactable && reactable.published
-  end
-
   def update_reactable
-    Reactions::UpdateReactableWorker.perform_async(id)
+    Reactions::UpdateRelevantScoresWorker.perform_async(id)
   end
 
   def bust_reactable_cache
@@ -115,45 +106,11 @@ class Reaction < ApplicationRecord
   end
 
   def update_reactable_without_delay
-    Reactions::UpdateReactableWorker.new.perform(id)
+    Reactions::UpdateRelevantScoresWorker.new.perform(id)
   end
 
   def reading_time
     reactable.reading_time if category == "readinglist"
-  end
-
-  def reactable_user
-    return unless category == "readinglist"
-
-    {
-      username: reactable.user_username,
-      name: reactable.user_name,
-      profile_image_90: reactable.user.profile_image_90
-    }
-  end
-
-  def reactable_published_date
-    reactable.readable_publish_date if category == "readinglist"
-  end
-
-  def searchable_reactable_title
-    reactable.title if category == "readinglist"
-  end
-
-  def searchable_reactable_text
-    reactable.body_text[0..350] if category == "readinglist"
-  end
-
-  def searchable_reactable_tags
-    reactable.cached_tag_list if category == "readinglist"
-  end
-
-  def searchable_reactable_path
-    reactable.path if category == "readinglist"
-  end
-
-  def reactable_tags
-    reactable.decorate.cached_tag_list_array if category == "readinglist"
   end
 
   def viewable_by
@@ -178,10 +135,6 @@ class Reaction < ApplicationRecord
     return if user&.any_admin? || user&.id == SiteConfig.mascot_user_id
 
     negative? && !user.trusted
-  end
-
-  def record_field_test_event
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_reaction")
   end
 
   def notify_slack_channel_about_vomit_reaction

@@ -260,7 +260,7 @@ RSpec.describe "ChatChannels", type: :request do
 
     context "when user is logged-in and authorized" do
       before do
-        user.add_role :codeland_admin
+        user.add_role(:codeland_admin)
         chat_channel.add_users([user, test_subject])
         sign_in user
         allow(Pusher).to receive(:trigger).and_return(true)
@@ -431,6 +431,31 @@ RSpec.describe "ChatChannels", type: :request do
         expect(expected_updated_at).to eq(pending_user.updated_at.to_i)
         expect(response_pending_user_select_fields["username"]).to eq(pending_user.username)
       end
+    end
+  end
+
+  describe "POST /create_channel" do
+    it "create channel by mod users only" do
+      user.add_role(:tag_moderator)
+      post "/create_channel", params: {
+        chat_channel: {
+          channel_name: "dummy test",
+          invitation_usernames: ""
+        }
+      }
+      expect(response.status).to eq(200)
+      expect(response.parsed_body["success"]).to eq(true)
+    end
+
+    it "when non mod user logged in" do
+      expect do
+        post "/create_channel", params: {
+          chat_channel: {
+            channel_name: "dummy test",
+            invitation_usernames: ""
+          }
+        }
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end

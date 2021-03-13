@@ -1,27 +1,8 @@
 /* global filterXSS */
-
-function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile--avatar').src =
-    user.profile_image_90;
-  document.getElementById('sidebar-profile--avatar').alt = user.username;
-
-  document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
-    user.name,
-  );
-  document.getElementById('sidebar-profile--username').innerHTML =
-    '@' + user.username;
-  document.getElementById('sidebar-profile').href = '/' + user.username;
-}
-
 function initializeProfileImage(user) {
   if (!document.getElementById('comment-primary-user-profile--avatar')) return;
   document.getElementById('comment-primary-user-profile--avatar').src =
     user.profile_image_90;
-}
-
-function initializeUserSidebar(user) {
-  if (!document.getElementById('sidebar-nav')) return;
-  initializeUserProfileContent(user);
 }
 
 function addRelevantButtonsToArticle(user) {
@@ -31,6 +12,10 @@ function addRelevantButtonsToArticle(user) {
       let actions = [
         `<a class="crayons-btn crayons-btn--s crayons-btn--secondary" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
       ];
+      let clickToEditButton = document.getElementById('author-click-to-edit');
+      if (clickToEditButton) {
+        clickToEditButton.style.display = 'inline-block';
+      }
       if (JSON.parse(articleContainer.dataset.published) === true) {
         actions.push(
           `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
@@ -93,12 +78,14 @@ function addRelevantButtonsToComments(user) {
 function setCurrentUserToNavBar(user) {
   const userNavLink = document.getElementById('first-nav-link');
   userNavLink.href = `/${user.username}`;
-  userNavLink.querySelector('span').textContent = user.name;
-  userNavLink.querySelector('small').textContent = `@${user.username}`;
+  userNavLink.getElementsByTagName('span')[0].textContent = user.name;
+  userNavLink.getElementsByTagName(
+    'small',
+  )[0].textContent = `@${user.username}`;
   document.getElementById('nav-profile-image').src = user.profile_image_90;
   if (user.admin) {
     document
-      .querySelector('.js-header-menu-admin-link')
+      .getElementsByClassName('js-header-menu-admin-link')[0]
       .classList.remove('hidden');
   }
 }
@@ -106,7 +93,6 @@ function setCurrentUserToNavBar(user) {
 function initializeBaseUserData() {
   const user = userData();
   setCurrentUserToNavBar(user);
-  initializeUserSidebar(user);
   initializeProfileImage(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);

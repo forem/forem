@@ -2,6 +2,8 @@ module Admin
   class DisplayAdsController < Admin::ApplicationController
     layout "admin"
 
+    after_action :bust_ad_caches, only: %i[create update destroy]
+
     def index
       @display_ads = DisplayAd.order(id: :desc)
         .joins(:organization)
@@ -65,6 +67,10 @@ module Admin
 
     def authorize_admin
       authorize DisplayAd, :access?, policy_class: InternalPolicy
+    end
+
+    def bust_ad_caches
+      EdgeCache::BustSidebar.call
     end
   end
 end

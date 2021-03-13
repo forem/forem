@@ -13,12 +13,20 @@ class ApplicationController < ActionController::Base
   include ImageUploads
   include VerifySetupCompleted
   include DevelopmentDependencyChecks if Rails.env.development?
+  include EdgeCacheSafetyCheck unless Rails.env.production?
   include Devise::Controllers::Rememberable
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
   rescue_from RateLimitChecker::LimitReached do |exc|
     error_too_many_requests(exc)
+  end
+
+  rescue_from ActionController::InvalidAuthenticityToken do
+    ForemStatsClient.increment(
+      "users.invalid_authenticity_token",
+      tags: ["controller_name:#{controller_name}", "path:#{request.fullpath}"],
+    )
   end
 
   PUBLIC_CONTROLLERS = %w[shell
@@ -32,6 +40,19 @@ class ApplicationController < ActionController::Base
                           passwords
                           health_checks].freeze
   private_constant :PUBLIC_CONTROLLERS
+
+  # TODO: Remove the "shell" endpoints, because they are for service worker
+  # functionality we no longer need.  We are keeping these around mid-March
+  # 2021 because previously-installed service workers may still expect them.
+  CONTENT_CHANGE_PATHS = [
+    "/tags/onboarding", # Needs to change when suggested_tags is edited.
+    "/shell_top", # Cached at edge, sent to service worker.
+    "/shell_bottom", # Cached at edge, sent to service worker.
+    "/async_info/shell_version", # Checks if current users should be busted.
+    "/onboarding", # Page is cached at edge.
+    "/", # Page is cached at edge.
+  ].freeze
+  private_constant :CONTENT_CHANGE_PATHS
 
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
@@ -77,6 +98,10 @@ class ApplicationController < ActionController::Base
       format.html { redirect_to sign_up_path }
       format.json { render json: { error: "Please sign in" }, status: :unauthorized }
     end
+  end
+
+  def redirect_permanently_to(location)
+    redirect_to location + internal_nav_param, status: :moved_permanently
   end
 
   def customize_params
@@ -172,9 +197,20 @@ class ApplicationController < ActionController::Base
     redirect_to URL.url(request.fullpath)
   end
 
+  def bust_content_change_caches
+    EdgeCache::Bust.call(CONTENT_CHANGE_PATHS)
+    SiteConfig.admin_action_taken_at = Time.current # Used as cache key
+  end
+
   protected
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
+  end
+
+  def internal_nav_param
+    return "" unless params[:i] == "i"
+
+    "?i=i"
   end
 end

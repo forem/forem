@@ -58,11 +58,14 @@
 
   &__main {
     padding: var(--content-padding-y) var(--content-padding-x);
-    gap: var(--su-7);
   }
 
   &__body {
     overflow-wrap: break-word;
+  }
+
+  .reaction-button[disabled] {
+    cursor: pointer;
   }
 }
 
@@ -74,7 +77,7 @@
   padding: var(--su-2);
   background: var(--body-bg);
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1);
-  z-index: 100;
+  z-index: var(--z-sticky);
 
   @media (min-width: $breakpoint-m) {
     padding: 0;
@@ -86,6 +89,7 @@
     box-shadow: none;
     justify-content: stretch;
     top: calc(var(--header-height) + var(--layout-padding) + 6vh);
+    z-index: var(--z-elevate);
   }
 
   &__inner {

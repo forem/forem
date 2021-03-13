@@ -130,6 +130,11 @@ export const articleWithReactions = {
   public_reactions_count: 232,
 };
 
+export const articleWithoutReactions = {
+  ...article,
+  public_reactions_count: 428,
+};
+
 export const articleWithComments = {
   id: 62407,
   title: 'Unbranded Home Loan Account',
@@ -266,7 +271,7 @@ export const podcastArticle = {
     image_url: '/images/16.png',
     image_90: '/images/16.png',
   },
-  slug: 'episode-slug'
+  slug: 'episode-slug',
 };
 
 export const podcastEpisodeArticle = {

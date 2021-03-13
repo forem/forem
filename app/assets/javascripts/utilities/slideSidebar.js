@@ -1,5 +1,3 @@
-
-
 function slideSidebar(side, direction) {
   if (!document.getElementById('sidebar-wrapper-' + side)) {
     return;
@@ -16,9 +14,6 @@ function slideSidebar(side, direction) {
   } else {
     document.getElementById('articles-list').classList.remove('modal-open');
     document.body.classList.remove('modal-open');
-    document
-      .getElementById('sidebar-wrapper-' + side)
-      .querySelector('.side-bar').scrollTop = 0;
     document
       .getElementById('sidebar-wrapper-' + side)
       .classList.remove('swiped-in');

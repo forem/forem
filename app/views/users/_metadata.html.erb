@@ -1,12 +1,16 @@
-<% if @user.employment_title.present? || (@user.looking_for_work_publicly == true && @user.looking_for_work == true) || @user.education.present? %>
+<% if (header_fields = @profile.ui_attributes_for(area: :header)).present? %>
   <div class="profile-header__bottom fs-base">
-    <% if @user.education.present? %>
+    <% header_fields.each do |title, value| %>
+      <% next if Profile.special_attributes.include?(title) %>
       <div class="crayons-definition">
-        <strong class="crayons-definition__title">Education</strong>
-        <p class="crayons-definition__value"><%= @user.education %></p>
+        <strong class="crayons-definition__title">
+          <%= sanitized_sidebar title.titleize %>
+        </strong>
+        <p class="crayons-definition__value">
+          <%= sanitized_sidebar value %>
+        </p>
       </div>
     <% end %>
-
     <% if @user.employment_title.present? %>
       <div class="crayons-definition">
         <strong class="crayons-definition__title">Work</strong>
@@ -21,13 +25,6 @@
             <% end %>
           <% end %>
         </p>
-      </div>
-    <% end %>
-
-    <% if @user.looking_for_work_publicly == true && @user.looking_for_work == true %>
-      <div class="crayons-definition">
-        <strong class="crayons-definition__title">Work status</strong>
-        <p class="crayons-definition__value">I'm looking for work!</p>
       </div>
     <% end %>
   </div>

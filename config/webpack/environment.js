@@ -22,25 +22,10 @@ environment.splitChunks((config) => {
         ...(config.resolve ? config.resolve.alias : {}),
         '@crayons': path.resolve(__dirname, '../../app/javascript/crayons'),
         '@utilities': path.resolve(__dirname, '../../app/javascript/utilities'),
-      },
-    },
-    optimization: {
-      ...config.optimization,
-      splitChunks: {
-        ...config.optimization.splitChunks,
-        cacheGroups: {
-          vendor: {
-            test: /node_modules/,
-            chunks: 'initial',
-            name: 'vendor',
-            enforce: true,
-          },
-          default: {
-            minChunks: 2,
-            priority: -20,
-            reuseExistingChunk: true,
-          },
-        },
+        '@components': path.resolve(
+          __dirname,
+          '../../app/javascript/shared/components',
+        ),
       },
     },
   };

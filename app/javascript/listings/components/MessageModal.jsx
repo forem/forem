@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-const MessageModal = ({
+export const MessageModal = ({
   currentUserId,
   message,
   listing,
@@ -35,10 +35,9 @@ const MessageModal = ({
         id="new-message"
         className="crayons-textfield mb-0"
         placeholder="Enter your message here..."
+        aria-label="Message"
       />
-      <p
-        className="mb-4 fs-s color-base-60"
-      >
+      <p className="mb-4 fs-s color-base-60">
         {isCurrentUserOnListing &&
           'Message must be relevant and on-topic with the listing.'}
         All private interactions <b>must</b> abide by the{' '}
@@ -73,5 +72,3 @@ MessageModal.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChangeDraftingMessage: PropTypes.func.isRequired,
 };
-
-export default MessageModal;

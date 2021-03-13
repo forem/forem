@@ -1,4 +1,4 @@
-<% title "[Moderate] " + @moderatable.title %>
+<% title "[Moderate] #{@moderatable.title}" %>
 
 <%= javascript_packs_with_chunks_tag "commentModPage", defer: true %>
 
@@ -9,7 +9,7 @@
 <% end %>
 
 <% if flash[:error].present? %>
-  <div class="crayons-banner crayons-banner--error">
+  <div class="crayons-banner crayons-banner--error" role="alert">
     <%= flash[:error] %>
   </div>
 <% end %>
@@ -40,7 +40,7 @@
           data-reactable-type="<%= @moderatable.class.name %>">
     <div class="reaction-button-circle">
       <%= image_tag("emoji/emoji-one-thumbs-up-gray.png", alt: "Thumbs up emoji", class: "emoji-grey") %>
-      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-up.png") %>" alt="Thumbs up emoji" loading="lazy" />
+      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-up.png") %>" alt="Thumbs up emoji" />
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
     </div>
     <span class="vote-text">High Quality</span>
@@ -51,7 +51,7 @@
             data-reactable-type="<%= @moderatable.class.name %>">
       <div class="reaction-button-circle">
         <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji", class: "emoji-grey") %>
-        <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" loading="lazy" />
+        <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
       </div>
       <span class="vote-text">Low Quality</span>
@@ -62,7 +62,7 @@
             data-reactable-type="<%= @moderatable.class.name %>">
       <div class="reaction-button-circle">
         <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
-        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" loading="lazy" />
+        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
       </div>
       <span class="vote-text">Flag to Admins</span>
@@ -95,7 +95,7 @@
             data-reactable-type="<%= @moderatable.user.class.name %>">
       <div class="reaction-button-circle">
         <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
-        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" loading="lazy" />
+        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
       </div>
       <span class="vote-text">Flag User</span>
@@ -189,7 +189,7 @@
         value="<%= rating_level %>"
         name="rating_vote_<%= rating_level %>"
         id="js__rating__vote__<%= rating_level %>"
-        class="level-rating-button article-mod-page <%= "selected" if @rating_vote&.rating == rating_level.to_f %>"
+        class="level-rating-button article-mod-page <%= "selected" if @rating_vote&.rating.to_d == rating_level.to_d %>"
         data-user-id="<%= current_user.id %>"
         data-article-id="<%= @moderatable.id %>"
         data-group="experience_level"

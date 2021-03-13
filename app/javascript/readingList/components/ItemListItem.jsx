@@ -25,7 +25,6 @@ export const ItemListItem = ({ item, children }) => {
           src={adaptedItem.user.profile_image_90}
           alt={adaptedItem.user.name}
           className="crayons-avatar__image"
-          loading="lazy"
         />
       </a>
 
@@ -85,11 +84,6 @@ const readingListItemPropTypes = PropTypes.shape({
   },
 });
 
-ItemListItem.defaultProps = {
-  children: {},
-};
-
 ItemListItem.propTypes = {
   item: PropTypes.oneOfType([readingListItemPropTypes]).isRequired,
-  children: PropTypes.element,
 };

@@ -22,7 +22,7 @@ RSpec.describe "Admin awards badges", type: :system do
   before do
     create_list :badge, 5
     sign_in admin
-    visit "/admin/badge_achievements/award_badges"
+    visit admin_badge_achievements_award_badges_path
   end
 
   it "loads the view" do
@@ -43,7 +43,7 @@ RSpec.describe "Admin awards badges", type: :system do
 
     visit "/#{user.username}/"
 
-    expect(page).to have_link(href: "/badge/#{Badge.last.slug}")
+    expect(page).to have_link(href: badge_path(Badge.last.slug))
   end
 
   it "does not award badges if no badge is selected", js: true do

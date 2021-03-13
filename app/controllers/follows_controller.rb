@@ -10,12 +10,12 @@ class FollowsController < ApplicationController
       return
     end
 
-    following_them_check = FollowChecker.new(current_user, params[:followable_type], params[:id]).cached_follow_check
+    following_them_check = Follows::CheckCached.call(current_user, params[:followable_type], params[:id])
 
     return render plain: following_them_check unless params[:followable_type] == "User"
 
-    following_you_check = FollowChecker.new(User.find_by(id: params[:id]), params[:followable_type],
-                                            current_user.id).cached_follow_check
+    following_you_check = Follows::CheckCached.call(User.find_by(id: params[:id]), params[:followable_type],
+                                                    current_user.id)
 
     if following_them_check && following_you_check
       render plain: "mutual"
@@ -34,9 +34,9 @@ class FollowsController < ApplicationController
       if current_user.id == id
         "self"
       else
-        following_them_check = FollowChecker.new(current_user, params[:followable_type], id).cached_follow_check
-        following_you_check = FollowChecker.new(User.find_by(id: id), params[:followable_type],
-                                                current_user.id).cached_follow_check
+        following_them_check = Follows::CheckCached.call(current_user, params[:followable_type], id)
+        following_you_check = Follows::CheckCached.call(User.find_by(id: id), params[:followable_type],
+                                                        current_user.id)
         if following_them_check && following_you_check
           "mutual"
         elsif following_you_check
@@ -79,16 +79,25 @@ class FollowsController < ApplicationController
     render json: { outcome: @result }
   end
 
-  def update
-    @follow = Follow.find(params[:id])
-    authorize @follow
-    redirect_to "/dashboard/following" if @follow.update(follow_params)
+  def bulk_update
+    @follows = Follow.where(id: params_for_update.keys).includes(:follower, :followable)
+    authorize @follows
+    Follow.transaction do
+      @follows.each { |follow| follow.update!(params_for_update[follow.id.to_s]) }
+    end
+    redirect_to dashboard_following_path
   end
 
   private
 
-  def follow_params
-    params.require(:follow).permit(policy(Follow).permitted_attributes)
+  def follows_params
+    params.permit(follows: policy(Follow).permitted_attributes)
+  end
+
+  def params_for_update
+    follows_params[:follows].each_with_object({}) do |follow, params|
+      params[follow[:id]] = follow.slice(:explicit_points)
+    end
   end
 
   def follow(followable, need_notification: false)
@@ -96,7 +105,7 @@ class FollowsController < ApplicationController
     Notification.send_new_follower_notification(user_follow) if need_notification
     "followed"
   rescue ActiveRecord::RecordInvalid
-    DatadogStatsClient.increment("users.invalid_follow")
+    ForemStatsClient.increment("users.invalid_follow")
     "already followed"
   end
 

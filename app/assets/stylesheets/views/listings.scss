@@ -53,7 +53,7 @@
     left: 0;
     right: 0;
     top: calc(100%);
-    z-index: 100;
+    z-index: var(--z-dropdown);
     padding: var(--su-1);
     left: calc(var(--su-1) * -1);
     right: calc(var(--su-1) * -1);
@@ -89,5 +89,11 @@
   &__tagsoptionsbottomrow,
   &__tagrules--inactive {
     display: none;
+  }
+}
+
+.listings-modal {
+  .crayons-modal__box__body {
+    padding: 0;
   }
 }

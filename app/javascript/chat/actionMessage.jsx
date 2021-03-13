@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { adjustTimestamp } from './util';
 
-const ActionMessage = ({
+export const ActionMessage = ({
   user,
   message,
   color,
@@ -37,7 +37,6 @@ const ActionMessage = ({
             alt={`${user} profile`}
             data-content="sidecar-user"
             onClick={onContentTrigger}
-            loading="lazy"
           />
         </a>
       </div>
@@ -87,5 +86,3 @@ ActionMessage.defaultProps = {
   profileImageUrl: '',
   timestamp: null,
 };
-
-export default ActionMessage;

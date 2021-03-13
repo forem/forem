@@ -49,8 +49,14 @@ export const Article = ({
       }`}
       id={isFeatured ? 'featured-story-marker' : `article-${article.id}`}
       data-content-user-id={article.user_id}
-      data-testid={isFeatured ? 'featured-article' : `article-${article.id}`}
     >
+      <a
+        href={article.path}
+        aria-labelledby={`article-link-${article.id}`}
+        className="crayons-story__hidden-navigation-link"
+      >
+        {article.title}
+      </a>
       <div
         role="presentation"
         onClick={(event) => {

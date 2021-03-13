@@ -54,6 +54,9 @@ package-lock.json
 #Jetbrains Tools
 .idea/
 
+#Nova from Panic
+.nova/
+
 #sitemap
 /public/sitemap.xml.gz
 
@@ -82,5 +85,18 @@ db_data
 es_data
 gem_cache
 
+# Compose generated files
+bundle_finished
+
 # Auto-generated Storybook stories
 app/javascript/generated_stories/
+
+# Cypress test run artifacts
+cypress/videos
+cypress/screenshots
+
+# PostCSS error log
+postcss_error.log
+
+# ripgrep ignore file
+.rgignore

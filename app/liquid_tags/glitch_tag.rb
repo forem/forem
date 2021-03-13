@@ -36,7 +36,7 @@ class GlitchTag < LiquidTagBase
   end
 
   def parse_id(input)
-    id = input.split(" ").first
+    id = input.split.first
     id.sub!(TILDE_PREFIX_REGEXP, "")
     raise StandardError, "Invalid Glitch ID" unless valid_id?(id)
 
@@ -61,7 +61,7 @@ class GlitchTag < LiquidTagBase
   end
 
   def parse_options(input)
-    _, *options = input.split(" ")
+    _, *options = input.split
 
     # 'app' and 'code' should cancel each other out
     options -= %w[app code] if (options & %w[app code]) == %w[app code]

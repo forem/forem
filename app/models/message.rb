@@ -14,7 +14,7 @@ class Message < ApplicationRecord
 
   def preferred_user_color
     color_options = [user.bg_color_hex || "#000000", user.text_color_hex || "#000000"]
-    HexComparer.new(color_options).brightness(0.9)
+    Color::CompareHex.new(color_options).brightness(0.9)
   end
 
   def direct_receiver
@@ -45,7 +45,7 @@ class Message < ApplicationRecord
   end
 
   def evaluate_markdown
-    html = MarkdownParser.new(message_markdown).evaluate_markdown
+    html = MarkdownProcessor::Parser.new(message_markdown).evaluate_markdown
     html = target_blank_links(html)
     html = append_rich_links(html)
     html = wrap_mentions_with_links(html)
@@ -115,14 +115,14 @@ class Message < ApplicationRecord
           target='_blank' rel='noopener' data-content='sidecar-article'>
             #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(#{cl_path(article.main_image)})' data-content='sidecar-article' ></div>" if article.main_image.present?}
           <h1 data-content='sidecar-article'>#{article.title}</h1>
-          <h4 data-content='sidecar-article'><img src='#{Images::Profile.call(article.cached_user.profile_image_url, length: 90)}' loading='lazy' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
+          <h4 data-content='sidecar-article'><img src='#{Images::Profile.call(article.cached_user.profile_image_url, length: 90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
           </a>".html_safe
       elsif (tag = rich_link_tag(anchor))
         html += "<a href='/t/#{tag.name}'
         class='chatchannels__richlink'
           target='_blank' rel='noopener' data-content='sidecar-tag'>
           <h1 data-content='sidecar-tag'>
-            #{"<img src='#{cl_path(tag.badge.badge_image_url)}' data-content='sidecar-tag' style='transform:rotate(-5deg)' loading='lazy' />" if tag.badge_id.present?}
+            #{"<img src='#{cl_path(tag.badge.badge_image_url)}' data-content='sidecar-tag' style='transform:rotate(-5deg)' />" if tag.badge_id.present?}
             ##{tag.name}
           </h1>
           </a>".html_safe
@@ -131,7 +131,7 @@ class Message < ApplicationRecord
         class='chatchannels__richlink'
           target='_blank' rel='noopener' data-content='sidecar-user'>
           <h1 data-content='sidecar-user'>
-            <img src='#{Images::Profile.call(user.profile_image_url, length: 90)}' data-content='sidecar-user' class='chatchannels__richlinkprofilepic' loading='lazy' />
+            <img src='#{Images::Profile.call(user.profile_image_url, length: 90)}' data-content='sidecar-user' class='chatchannels__richlinkprofilepic' />
             #{user.name}
           </h1>
           </a>".html_safe

@@ -59,7 +59,7 @@ module Authentication
 
       if log_to_datadog
         # Notify DataDog if a new identity was successfully created.
-        DatadogStatsClient.increment("identity.created", tags: ["provider:#{id_provider}"])
+        ForemStatsClient.increment("identity.created", tags: ["provider:#{id_provider}"])
       end
 
       # Return the successfully-authed used from the transaction.
@@ -67,7 +67,7 @@ module Authentication
     rescue StandardError => e
       # Notify DataDog if something goes wrong in the transaction,
       # and then ensure that we re-raise and bubble up the error.
-      DatadogStatsClient.increment("identity.errors", tags: ["error:#{e.class}", "message:#{e.message}"])
+      ForemStatsClient.increment("identity.errors", tags: ["error:#{e.class}", "message:#{e.message}"])
       raise e
     end
 
@@ -96,8 +96,12 @@ module Authentication
     end
 
     def find_or_create_user!
+      username = provider.user_nickname
+      banned_user = Users::SuspendedUsername.previously_banned?(username)
+      raise ::Authentication::Errors::PreviouslyBanned if banned_user
+
       existing_user = User.where(
-        provider.user_username_field => provider.user_nickname,
+        provider.user_username_field => username,
       ).take
       return existing_user if existing_user
 

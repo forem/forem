@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <%= csrf_meta_tags %>
-  <%= favicon_link_tag SiteConfig.favicon_url %>
+  <%= favicon_link_tag Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>
   <title><%= controller_name.titleize %></title>
 
   <!-- StimulusJS -->
@@ -26,22 +26,19 @@
 </head>
 <body class="admin default-header"
   data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
-  data-release-footprint="<%= ApplicationConfig["RELEASE_FOOTPRINT"] %>"
+  data-deployed-at="<%= ForemInstance.deployed_at %>"
+  data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
   data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
   <header class="crayons-header" role="banner">
     <div class="crayons-header__container">
       <%= render "layouts/logo" %>
 
       <h1 class="pl-4 fs-l">
-        <% if controller_name == "admin_portals" %>
-          Admin
-        <% else %>
-          <a href="/admin">Admin</a>
-          <span class="color-base-40">&raquo;</span> <span class="fw-bold"><%= controller_name.titleize %></span>
-        <% end %>
+        <a href="/admin">Admin</a>
+        <span class="color-base-60">&raquo;</span> <span class="fw-bold"><%= controller_name.titleize %></span>
       </h1>
 
-      <div class="crayons-header__links">
+      <div class="flex items-center h-100 ml-auto">
         <a href="https://forem.gitbook.io/forem-admin-guide/" class="crayons-btn crayons-btn--ghost-brand hidden mr-2 whitespace-nowrap s:block">
           Forem Admin Guide
         </a>
@@ -53,14 +50,31 @@
     </div>
   </header>
 
-  <div class="crayons-layout <%= controller_name == "admin_portals" ? "" : "crayons-layout--2-cols" %>">
-    <% unless controller_name == "admin_portals" %>
-    <div class="crayons-layout__left-sidebar">
+  <div class="crayons-layout crayons-layout--2-cols">
+    <div class="admin__left-sidebar crayons-layout__left-sidebar">
       <nav class="hidden m:block">
-        <%= render "admin/shared/navbar" %>
+        <% if FeatureFlag.enabled?(:admin_restructure) %>
+          <ul>
+            <li>
+              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/" aria-page="<%= "page" if controller.controller_name == "overview" %>">
+                <%= inline_svg_tag("stack-line.svg", aria: true, class: "dropdown-icon crayons-icon") %>
+                Overview
+              </a>
+            </li>
+            <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu::ITEMS %>
+          </ul>
+        <% else %>
+          <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/">
+            Overview
+          </a>
+          <%= render "admin/shared/navbar", menu_items: admin_menu_items %>
+          <% if FeatureFlag.enabled?(:data_update_scripts) %>
+            <p class="crayons-field__description mt-4 mb-3">Tech Resources</p>
+            <%= render "admin/shared/navbar", menu_items: AdminHelper::TECH_MENU_ITEMS %>
+          <% end %>
+        <% end %>
       </nav>
     </div>
-    <% end %>
     <main class="crayons-layout__content min-w-0">
       <% flash.each do |type, message| %>
         <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
@@ -70,7 +84,21 @@
           <%= message %>
         </div>
       <% end %>
+
+      <% if FeatureFlag.enabled?(:admin_restructure) %>
+      <!-- hack to ensure that when you go to the old admin view nothing breaks -->
+        <% if request.path.split("/")[-3] == "admin" %>
+          <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu::ITEMS %>
+        <% end %>
+      <% end %>
+
+
       <%= yield %>
+      <% if @help_url %>
+        <a class="admin-help-button crayons-btn crayons-btn--icon-rounded crayons-btn--s" href="<%= @help_url %>" target="_blank" rel="noopener noreferer">
+          <%= inline_svg_tag("circle-question.svg", aria: true, title: "Forem Admin Guide") %>
+        </a>
+      <% end %>
     </main>
   </div>
 

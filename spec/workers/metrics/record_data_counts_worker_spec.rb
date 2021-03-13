@@ -21,20 +21,20 @@ RSpec.describe Metrics::RecordDataCountsWorker, type: :worker do
     end
 
     it "logs estimated counts in Datadog" do
-      allow(DatadogStatsClient).to receive(:gauge)
+      allow(ForemStatsClient).to receive(:gauge)
       described_class.new.perform
 
       expect(
-        DatadogStatsClient,
+        ForemStatsClient,
       ).to have_received(:gauge).with("postgres.db_table_size", 0, tags: Array).at_least(1)
     end
 
     it "logs index counts in Datadog" do
-      allow(DatadogStatsClient).to receive(:gauge)
+      allow(ForemStatsClient).to receive(:gauge)
       described_class.new.perform
 
       expect(
-        DatadogStatsClient,
+        ForemStatsClient,
       ).to have_received(:gauge).with("elasticsearch.document_count", Integer, tags: Array).at_least(1)
     end
   end

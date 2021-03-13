@@ -7,7 +7,7 @@ import {
 } from '../CommentSubscription';
 
 export default {
-  title: '4_App Components/Comment Subscription',
+  title: 'App Components/Comment Subscription',
   decorators: [withKnobs],
 };
 

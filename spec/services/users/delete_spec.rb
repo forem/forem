@@ -1,9 +1,15 @@
 require "rails_helper"
 
 RSpec.describe Users::Delete, type: :service do
-  before { omniauth_mock_github_payload }
-
+  let(:cache_bust) { instance_double(EdgeCache::Bust) }
   let(:user) { create(:user, :trusted, :with_identity, identities: ["github"]) }
+
+  before do
+    omniauth_mock_github_payload
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
+    allow(cache_bust).to receive(:call)
+  end
 
   it "deletes user" do
     described_class.call(user)
@@ -11,9 +17,8 @@ RSpec.describe Users::Delete, type: :service do
   end
 
   it "busts user profile page" do
-    allow(CacheBuster).to receive(:bust)
     described_class.new(user).call
-    expect(CacheBuster).to have_received(:bust).with("/#{user.username}")
+    expect(cache_bust).to have_received(:call).with("/#{user.username}")
   end
 
   it "deletes user's follows" do
@@ -171,6 +176,15 @@ RSpec.describe Users::Delete, type: :service do
       chat_channel = ChatChannels::CreateWithUsers.call(users: [user, other_user], channel_type: "open")
       described_class.call(user)
       expect(ChatChannel.find_by(id: chat_channel.id)).not_to be_nil
+    end
+  end
+
+  context "when the user was banned" do
+    it "stores a hash of the username so the user can't sign up again" do
+      user = create(:user, :banned)
+      expect do
+        described_class.call(user)
+      end.to change(Users::SuspendedUsername, :count).by(1)
     end
   end
 end

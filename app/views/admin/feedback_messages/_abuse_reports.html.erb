@@ -23,16 +23,21 @@
         <div class="card-body" style="overflow: scroll; max-height: 500px;">
           <% @vomits.each do |reaction| %>
             <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
-            <div class="d-flex justify-content-between" data-controller="reaction" data-reaction-id="<%= reaction.id %>">
+
+            <div
+              class="d-flex justify-content-between"
+              data-controller="reaction"
+              data-reaction-id-value="<%= reaction.id %>"
+              data-reaction-url-value="<%= admin_reaction_path(reaction.id) %>">
               <span>
-                🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
+                🤢 <a href="<%= reaction.user.path %>" target="_blank" rel="noopener">@<%= reaction.user.username %></a>
                 <% if reaction.user_id == SiteConfig.mascot_user_id %>
                   <strong>(auto-generated)</strong>
                 <% end %>
               </span>
               <span>
                 <strong><%= reaction.reactable_type %>:</strong>
-                <a href="<%= reaction.reactable.path %>"><%= reaction.reactable_type == "User" ? reaction.reactable.username : reaction.reactable.title %></a>
+                <a href="<%= reaction.reactable.path %>" target="_blank" rel="noopener"><%= reaction.reactable_type == "User" ? reaction.reactable.username : reaction.reactable.title %></a>
                 <% if reaction.reactable_type == "User" && reaction.reactable.banned %>
                   <span class="badge badge-danger">Suspended</span>
                 <% end %>
@@ -48,7 +53,7 @@
                       type="button"
                       data-reactable="user"
                       data-status="confirmed"
-                      data-target="reaction.confirmed"
+                      data-reaction-target="confirmed"
                       data-action="reaction#reactableUserCheck">
                       CONFIRM
                     </button>
@@ -58,7 +63,7 @@
                       type="button"
                       data-reactable="non-user"
                       data-status="confirmed"
-                      data-target="reaction.confirmed"
+                      data-reaction-target="confirmed"
                       data-action="reaction#reactableUserCheck">
                       CONFIRM
                     </button>
@@ -67,7 +72,7 @@
                     class="btn btn-danger btn-sm"
                     type="button"
                     data-altstatus="invalid"
-                    data-target="reaction.invalid"
+                    data-reaction-target="invalid"
                     data-action="reaction#updateReactionInvalid">
                     INVALID
                   </button>
@@ -77,7 +82,7 @@
                     class="btn btn-warning text-white btn-sm"
                     type="button"
                     data-altstatus="invalid"
-                    data-target="reaction.invalid"
+                    data-reaction-target="invalid"
                     data-action="reaction#updateReactionInvalid">
                     INVALIDATE
                   </button>
@@ -86,7 +91,7 @@
                     class="btn btn-success btn-sm"
                     type="button"
                     data-status="confirmed"
-                    data-target="reaction.confirmed"
+                    data-reaction-target="confirmed"
                     data-action="reaction#updateReactionConfirmed">
                     MARK AS VALID
                   </button>

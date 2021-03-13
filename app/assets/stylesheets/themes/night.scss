@@ -74,11 +74,14 @@
   --card-headline-color: var(--base-100);
   --card-border: rgba(255, 255, 255, 0.15);
   --card-secondary-border: rgba(255, 255, 255, 0.1);
+  --card-hover-bg: var(--accent-brand-lighter);
+  --card-selected-bg: var(--accent-brand-darker);
 
   // Header
   --header-bg: var(--base-10);
   --header-bg-hover: var(--base-0);
   --header-bg-current: var(--base-20);
+  --header-button-focus-color: var(--accent-brand);
   --header-shadow: rgba(0, 0, 0, 0.3);
   --header-icons-color: rgba(255, 255, 255, 0.8);
   --header-icons-color-hover: #fff;

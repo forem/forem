@@ -1,6 +1,8 @@
 let isFullScreenModeCodeOn = false;
 let screenScroll = 0;
-const fullScreenWindow = document.querySelector('.js-fullscreen-code');
+const fullScreenWindow = document.getElementsByClassName(
+  'js-fullscreen-code',
+)[0];
 const body = document.body;
 
 function setAfterFullScreenScrollPosition() {
@@ -33,7 +35,7 @@ function toggleOverflowForDocument(overflow) {
   }
 }
 
-function addFullScreenModeControl(elements) {
+export function addFullScreenModeControl(elements) {
   if (elements) {
     for (let element of elements) {
       element.addEventListener('click', fullScreenModeControl);
@@ -54,7 +56,7 @@ function fullScreenModeControl(event) {
     ? event.currentTarget.closest('.js-code-highlight').cloneNode(true)
     : null;
   const codeBlockControls = codeBlock
-    ? codeBlock.querySelectorAll('.js-fullscreen-code-action')
+    ? codeBlock.getElementsByClassName('js-fullscreen-code-action')
     : null;
 
   if (isFullScreenModeCodeOn) {
@@ -80,5 +82,3 @@ function fullScreenModeControl(event) {
     isFullScreenModeCodeOn = true;
   }
 }
-
-export default addFullScreenModeControl;

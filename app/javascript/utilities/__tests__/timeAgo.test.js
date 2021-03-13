@@ -21,7 +21,7 @@ describe('timeAgo', () => {
     expect(
       timeAgo({
         oldTimeInSeconds,
-        formatter: x => `[${x}]`,
+        formatter: (x) => `[${x}]`,
       }),
     ).toEqual('[just now]');
   });

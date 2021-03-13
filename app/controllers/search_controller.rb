@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-  before_action :authenticate_user!, only: %i[tags chat_channels reactions]
+  before_action :authenticate_user!, only: %i[tags chat_channels reactions usernames]
   before_action :format_integer_params
   before_action :sanitize_params, only: %i[listings reactions feed_content]
 
@@ -50,16 +50,20 @@ class SearchController < ApplicationController
   ].freeze
 
   def tags
-    tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
+    result = if FeatureFlag.enabled?(:search_2_tags)
+               Search::Postgres::Tag.search_documents(params[:name])
+             else
+               Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
+             end
 
-    render json: { result: tag_docs }
+    render json: { result: result }
   rescue Search::Errors::Transport::BadRequest
     render json: { result: [] }
   end
 
   def chat_channels
     search_user_id = if chat_channel_params[:user_id].present?
-                       [current_user.id, SiteConfig.mascot_user_id]
+                       [current_user.id, SiteConfig.mascot_user_id, chat_channel_params[:user_id]].reject(&:blank?)
                      else
                        [current_user.id]
                      end
@@ -80,6 +84,14 @@ class SearchController < ApplicationController
 
   def users
     render json: { result: user_search }
+  end
+
+  def usernames
+    usernames = Search::User.search_usernames(params[:username])
+
+    render json: { result: usernames }
+  rescue Search::Errors::Transport::BadRequest
+    render json: { result: [] }
   end
 
   def feed_content

@@ -12,7 +12,7 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to have_many(:credits).dependent(:restrict_with_error) }
       it { is_expected.to have_many(:display_ads).dependent(:destroy) }
       it { is_expected.to have_many(:listings).dependent(:destroy) }
-      it { is_expected.to have_many(:notifications).dependent(:destroy) }
+      it { is_expected.to have_many(:notifications).dependent(:delete_all) }
       it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
       it { is_expected.to have_many(:profile_pins).dependent(:destroy) }
       it { is_expected.to have_many(:sponsorships).dependent(:destroy) }
@@ -81,13 +81,14 @@ RSpec.describe Organization, type: :model do
       expect(article.elasticsearch_doc.dig("_source", "organization", "name")).to eq(new_org_name)
     end
 
-    it "on destroy removes data from elasticsearch" do
+    it "on destroy updates related article data" do
       article = create(:article, organization: organization)
-      sidekiq_perform_enqueued_jobs
+      drain_all_sidekiq_jobs
       expect(article.elasticsearch_doc.dig("_source", "organization", "id")).to eq(organization.id)
       organization.destroy
       sidekiq_perform_enqueued_jobs
       expect(article.elasticsearch_doc.dig("_source", "organization")).to be_nil
+      expect(article.reload.cached_organization).to be_nil
     end
   end
 

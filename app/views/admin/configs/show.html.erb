@@ -1,29 +1,40 @@
 <div class="grid gap-6" data-controller="config">
-  <div class="crayons-notice crayons-notice--info" role="alert">
-    <p class="mb-1">
-      Only admins with explicit <strong>single resource admin</strong> role may make changes to site config. Even super admins require this permission.
-    </p>
-      <% if current_user.has_role?(:single_resource_admin, Config) %>
-        <p class="fw-bold">You have permission to make config changes. Do so with care.</p>
-      <% else %>
-        <p>You do not have permission to make config changes. (Read Only)</p>
-      <% end %>
-    </h2>
-  </div>
+  <% unless current_user.has_role?(:super_admin) %>
+    <div class="crayons-notice crayons-notice--info" role="alert">
+      <p class="mb-1">
+        Only users with <strong>Super Admin</strong> privileges may edit this page.
+      </p>
+    </div>
+  <% end %>
 
   <div id="getStarted">
     <div class="card w-100">
-      <div class="card-header" id="getStartedHeader" data-toggle="collapse"
-        data-target="#getStartedBodyContainer" aria-expanded="true" aria-controls="getStartedBodyContainer">
+      <div
+        id="getStartedHeader"
+        class="card-header"
+        data-toggle="collapse"
+        data-target="#getStartedBodyContainer"
+        aria-expanded="true"
+        aria-controls="getStartedBodyContainer">
+
         <h2 class="d-inline">Get Started</h2>
-        <button class="btn btn-secondary float-right" type="button">
-          Toggle Get Started
+
+        <button
+          class="crayons-btn crayons-btn--secondary float-right"
+          type="button"
+          data-action="click->config#toggleAccordionButtonLabel">
+
+          <%= VerifySetupCompleted.setup_completed? ? "Show Getting Started" : "Hide Getting Started" %>
         </button>
       </div>
 
-      <div id="getStartedBodyContainer" class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3" aria-labelledby="siteConfigHeader">
+      <div
+        id="getStartedBodyContainer"
+        class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3"
+        aria-labelledby="getStartedHeader">
+
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
-          <fieldset class="flex flex-column gap-4">
+          <fieldset class="grid gap-4">
 
           <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
             <%# we need to list the config as separate fields if the data structure is a Hash %>
@@ -64,7 +75,7 @@
             <% end %>
           <% end %>
 
-          <% if current_user.has_role?(:single_resource_admin, Config) %>
+          <% if current_user.has_role?(:super_admin) %>
             <div class="crayons-notice p-4 mt-4">
               <div class="crayons-field">
                 <%= label_tag :confirmation_update, "Confirmation update", class: "crayons-field__label" %>
@@ -84,25 +95,36 @@
 
   <div id="siteConfig">
     <div class="card w-100">
-      <div class="card-header" id="siteConfigHeader" data-toggle="collapse"
-        data-target="#siteConfigBodyContainer" aria-expanded="true" aria-controls="siteConfigBodyContainer">
+      <div
+        id="siteConfigHeader"
+        class="card-header"
+        data-toggle="collapse"
+        data-target="#siteConfigBodyContainer"
+        aria-expanded="true"
+        aria-controls="siteConfigBodyContainer">
+
         <h2 class="d-inline">All Site Configuration</h2>
-        <button class="btn btn-secondary float-right" type="button">
-          Toggle Site Configuration
+
+        <button
+          class="crayons-btn crayons-btn--secondary float-right"
+          type="button"
+          data-action="click->config#toggleAccordionButtonLabel">
+          Hide Site Configuration
         </button>
       </div>
-      <div id="siteConfigBodyContainer" class="p-3" aria-labelledby="siteConfigHeader">
+
+      <div id="siteConfigBodyContainer" class="show expand p-3" aria-labelledby="siteConfigHeader">
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "API Tokens",
                          state: "collapse",
                          target: "apiBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="apiBodyContainer" class="card-body collapse hide" aria-labelledby="apiBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :health_check_token %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:health_check_token][:description] %>
@@ -125,236 +147,215 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm", testid: "authSectionForm" } }) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Authentication",
                          state: "collapse",
                          target: "authenticationBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
               <section class="mb-6">
                 <h3 class="crayons-subtitle-3 mb-3">
-                  General
+                  General settings
                 </h3>
-                <div class="form-group">
-                  <div class="crayons-field--checkbox">
-                    <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" }, class: "crayons-checkbox" %>
-                    <div class="mt-0">
-                      <%= admin_config_label :invite_only_mode %>
-                      <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
-                    </div>
+                <div
+                  class="crayons-field crayons-field--checkbox <%= invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : "" %>"
+                  data-tooltip="Unchecking this will enable Email Registration">
+                  <%= f.check_box :invite_only_mode,
+                                  checked: invite_only_mode_or_no_enabled_auth_options,
+                                  data: { action: "config#adjustAuthenticationOptions", target: "config.inviteOnlyMode" },
+                                  class: "crayons-checkbox" %>
+                  <div class="mt-0">
+                    <%= admin_config_label :invite_only_mode, "Invite-only mode" %>
+                    <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
                   </div>
                 </div>
               </section>
               <section>
-                <h3 class="crayons-subtitle-3 mb-3">
-                  Authentication methods
-                </h3>
-                <div class="form-group">
-                  <%= admin_config_label :authentication_providers %>
+                <header class="mb-2">
+                  <h3 class="crayons-subtitle-3">
+                    Registration options
+                  </h3>
                   <p class="crayons-field__description">
-                    <%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %>
+                    How can people create an account on your community?
                   </p>
-                  <%= select_tag "site_config[authentication_providers]",
-                                 options_from_collection_for_select(
-                                   authentication_available_providers,
-                                   :provider_name,
-                                   :official_name,
-                                   authentication_enabled_providers.map(&:provider_name),
-                                 ),
-                                 multiple: true,
-                                 class: "form-control selectpicker",
-                                 data: { target: "config.authenticationProviders" } %>
-                </div>
+                </header>
 
-                <section class="config-authentication__item">
+                <section class="config-authentication__item mb-0">
                   <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                    <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Email icon") %>
                   </figure>
                   <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Email address and password
-                      </p>
+                    <div
+                      class="config-authentication__item--row flex items-center justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
+                      data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
+
+                      <div class="config-authentication__item--label">
+                        <p class="crayons-field__label <%= SiteConfig.allow_email_password_registration ? "pb-0" : "" %>">
+                          Email address
+                        </p>
+                        <div
+                          class="enabled-indicator <%= SiteConfig.allow_email_password_registration ? "visible" : "" %>"
+                          data-config-target="enabledIndicator">
+                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Email enabled") %>
+                          <small class="crayons-field__description ml-1">Enabled</small>
+                        </div>
+                      </div>
+
+                      <button
+                        class="crayons-btn crayons-btn--secondary"
+                        id="email-auth-enable-edit-btn"
+                        data-button-text="<%= SiteConfig.allow_email_password_registration ? "edit" : "enable" %>"
+                        data-config-target="emailAuthSettingsBtn"
+                        data-action="click->config#enableOrEditEmailAuthSettings"
+                        <%= disabled_attr_on_auth_provider_enable_btn %>>
+                        <%= SiteConfig.allow_email_password_registration ? "Edit" : "Enable" %>
+                      </button>
+
                     </div>
-                    <div class="config-authentication__item--body">
+                    <div id="email-auth-settings-section" class="config-authentication__item--body hidden">
                       <fieldset class="config-authentication-form">
-                        <div class="crayons-field--checkbox">
-                          <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration, class: "crayons-checkbox" %>
-                          <div>
-                            <%= admin_config_label :allow_email_password_registration %>
-                            <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %>
-                            </p>
-                          </div>
+                        <div class="crayons-field--checkbox hidden">
+                          <%= f.check_box :allow_email_password_registration,
+                                          checked: SiteConfig.allow_email_password_registration,
+                                          id: "email-registration-checkbox",
+                                          class: "crayons-checkbox" %>
+                        </div>
+                        <div class="crayons-field">
+                          <%= admin_config_label :allowed_registration_email_domains, "Allowed email domains" %>
+                          <%= admin_config_description Constants::SiteConfig::DETAILS[:allowed_registration_email_domains][:description] %>
+                          <%= f.text_field :allowed_registration_email_domains,
+                                           class: "crayons-textfield",
+                                           value: SiteConfig.allowed_registration_email_domains.join(","),
+                                           placeholder: Constants::SiteConfig::DETAILS[:allowed_registration_email_domains][:placeholder] %>
                         </div>
                         <div class="crayons-field--checkbox">
-                          <%= f.check_box :allow_email_password_login, checked: SiteConfig.allow_email_password_login, class: "crayons-checkbox" %>
+                          <%= f.check_box :display_email_domain_allow_list_publicly,
+                                          checked: SiteConfig.display_email_domain_allow_list_publicly,
+                                          id: "email-display-emails-publicly-checkbox",
+                                          class: "crayons-checkbox mt-2" %>
                           <div>
-                            <%= admin_config_label :allow_email_password_login %>
-                            <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_login][:description] %>
-                            </p>
+                            <%= admin_config_label :display_email_domain_allow_list_publicly %>
+                            <%= admin_config_description Constants::SiteConfig::DETAILS[:display_email_domain_allow_list_publicly][:description] %>
                           </div>
                         </div>
                         <div class="crayons-field--checkbox">
                           <%= f.check_box :require_captcha_for_email_password_registration,
                                           checked: SiteConfig.require_captcha_for_email_password_registration,
-                                          data: { action: "config#toggleGoogleRecaptchaFields", target: "config.requireCaptchaForEmailPasswordRegistration" },
-                                          class: "crayons-checkbox" %>
+                                          data: {
+                                            action: "config#toggleGoogleRecaptchaFields",
+                                            "config-target": "requireCaptchaForEmailPasswordRegistration"
+                                          },
+                                          class: "crayons-checkbox mt-2" %>
                           <div>
                             <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration" %>
-                            <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:require_captcha_for_email_password_registration][:description] %>
-                            </p>
+                            <%= admin_config_description Constants::SiteConfig::DETAILS[:require_captcha_for_email_password_registration][:description] %>
                           </div>
                         </div>
-                        <div id="recaptchaContainer" class="<%= SiteConfig.require_captcha_for_email_password_registration ? "" : "collapse" %> ml-7" aria-labelledby="recaptchaContainer">
-                          <div class="form-group">
+                        <div id="recaptchaContainer" class="ml-7 <%= SiteConfig.require_captcha_for_email_password_registration ? "grid gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
+                          <div class="crayons-field">
                             <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
-                            <p class="crayons-field__description mb-1">
-                              <%= Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
-                            </p>
+                            <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
                             <%= f.text_field :recaptcha_site_key,
-                                             class: "form-control",
+                                             class: "crayons-textfield",
                                              value: SiteConfig.recaptcha_site_key,
                                              placeholder: Constants::SiteConfig::DETAILS[:recaptcha_site_key][:placeholder] %>
                           </div>
-                          <div class="form-group">
+                          <div class="crayons-field">
                             <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key" %>
-                            <p class="crayons-field__description mb-1">
-                              <%= Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %>
-                            </p>
+                            <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %>
                             <%= f.text_field :recaptcha_secret_key,
-                                             class: "form-control",
+                                             class: "crayons-textfield",
                                              value: SiteConfig.recaptcha_secret_key,
                                              placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
                           </div>
                         </div>
-                      </fieldset>
-                    </div>
-                  </div>
-                </section>
-
-                <section class="config-authentication__item">
-                  <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("twitter.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
-                  </figure>
-                  <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Twitter
-                      </p>
-                    </div>
-                    <div class="config-authentication__item--body">
-                      <fieldset class="config-authentication-form">
-                        <div class="crayons-field">
-                          <%= admin_config_label :twitter_key %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:twitter_key][:description] %>
-                          </p>
-                          <%= f.text_field :twitter_key,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.twitter_key,
-                                           placeholder: Constants::SiteConfig::DETAILS[:twitter_key][:placeholder] %>
-                        </div>
-
-                        <div class="crayons-field">
-                          <%= admin_config_label :twitter_secret %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:twitter_secret][:description] %>
-                          <p>
-                          <%= f.text_field :twitter_secret,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.twitter_secret,
-                                           placeholder: Constants::SiteConfig::DETAILS[:twitter_secret][:placeholder] %>
+                        <div class="crayons-btn-actions">
+                          <% if SiteConfig.allow_email_password_registration %>
+                            <button
+                              class="crayons-btn crayons-btn--danger"
+                              data-action="click->config#activateEmailAuthModal">
+                              Disable
+                            </button>
+                             <button
+                              class="crayons-btn crayons-btn--secondary"
+                              data-action="click->config#hideEmailAuthSettings">
+                              Close
+                            </button>
+                          <% else %>
+                            <button
+                              class="crayons-btn crayons-btn--secondary"
+                              data-action="click->config#disableEmailAuth">
+                              Undo
+                            </button>
+                          <% end %>
                         </div>
                       </fieldset>
                     </div>
                   </div>
                 </section>
+                <hr class="my-0" />
 
-                <section class="config-authentication__item">
-                  <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
-                  </figure>
-                  <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Github
-                      </p>
-                    </div>
-                    <div class="config-authentication__item--body">
-                      <fieldset class="config-authentication-form">
-                        <div class="crayons-field">
-                          <%= admin_config_label :github_key %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:github_key][:description] %>
-                          </p>
-                          <%= f.text_field :github_key,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.github_key,
-                                           placeholder: Constants::SiteConfig::DETAILS[:github_key][:placeholder] %>
-
-                        </div>
-                        <div class="crayons-field">
-                          <%= admin_config_label :github_secret %>
-                          <p class="config-authentication__row--subtitle">
-                            <%= Constants::SiteConfig::DETAILS[:github_secret][:description] %>
-                          </p>
-                          <%= f.text_field :github_secret,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.github_secret,
-                                           placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
-                        </div>
-                      </fieldset>
-                    </div>
+                <section class="mb-6">
+                  <div class="form-group mb-0">
+                    <%= f.text_field :auth_providers_to_enable,
+                                     id: "auth_providers_to_enable",
+                                     class: "form-control hidden",
+                                     value: SiteConfig.authentication_providers.join(","),
+                                     readonly: true %>
                   </div>
-                </section>
-
-                <section class="config-authentication__item">
-                  <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("facebook.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
-                  </figure>
-                  <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Facebook
-                      </p>
-                    </div>
-                    <div class="config-authentication__item--body">
-                      <fieldset class="config-authentication-form">
-                        <div class="crayons-field">
-                          <%= admin_config_label :facebook_key %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:facebook_key][:description] %>
-                          </p>
-                          <%= f.text_field :facebook_key,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.facebook_key,
-                                           placeholder: Constants::SiteConfig::DETAILS[:facebook_key][:placeholder] %>
-                        </div>
-
-                        <div class="crayons-field">
-                          <%= admin_config_label :facebook_secret %>
-                            <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:facebook_secret][:description] %>
+                  <% authentication_available_providers.each do |provider| %>
+                    <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
+                    <section class="config-authentication__item mb-0">
+                      <figure class="config-authentication__item--icon">
+                        <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
+                      </figure>
+                      <div class="config-authentication__item--container">
+                        <div
+                          class="flex items-center justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
+                          data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
+                          <div class="config-authentication__item--label">
+                            <p class="crayons-field__label <%= authentication_provider_enabled?(provider) ? "pb-0" : "" %>">
+                              <%= provider.official_name %>
                             </p>
-                          <%= f.text_field :facebook_secret,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.facebook_secret,
-                                           placeholder: Constants::SiteConfig::DETAILS[:facebook_secret][:placeholder] %>
+                            <div
+                              id="<%= provider.provider_name %>-enabled-indicator"
+                              class="enabled-indicator <%= authentication_provider_enabled?(provider) ? "visible" : "" %>">
+                              <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "#{provider.official_name} enabled") %>
+                              <small class="crayons-field__description ml-1">Enabled</small>
+                            </div>
+                          </div>
+                          <button
+                            class="crayons-btn crayons-btn--secondary"
+                            id="<%= provider.provider_name %>-auth-btn"
+                            data-button-text="<%= authentication_provider_enabled?(provider) ? "edit" : "enable" %>"
+                            data-action="click->config#enableOrEditAuthProvider"
+                            data-provider-name="<%= provider.provider_name %>"
+                            data-provider-official-name="<%= provider.official_name %>"
+                            data-enable-auth="<%= authentication_provider_enabled?(provider) ? "true" : "false" %>"
+                            <%= disabled_attr_on_auth_provider_enable_btn %>>
+                            <%= authentication_provider_enabled?(provider) ? "Edit" : "Enable" %>
+                          </button>
                         </div>
-                      </fieldset>
-                    </div>
-                  </div>
+                        <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
+                          <% auth_partial = provider.provider_name == :apple ? "apple_auth_provider_settings" : "auth_provider_settings" %>
+                          <%= render partial: auth_partial,
+                                     locals: {
+                                       f: f,
+                                       provider: provider
+                                     } %>
+                        </div>
+                      </div>
+                    </section>
+                    <hr class="my-0" />
+                  <% end %>
                 </section>
               </section>
               <div class="crayons-notice crayons-notice--info mb-4">
-                Changing authentication keys will not take affect until this forem instance is restarted.
+                Changing authentication keys will not take effect until this Forem instance is restarted.
               </div>
 
               <%= render "form_submission", f: f %>
@@ -364,15 +365,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Campaign",
                          state: "collapse",
                          target: "campaignBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="campaignBodyContainer" class="card-body collapse hide" aria-labelledby="campaignBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :campaign_hero_html_variant_name, "Campaign hero HTML variant name" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_hero_html_variant_name][:description] %>
@@ -400,7 +401,7 @@
                   <% if SiteConfig.campaign_sidebar_image.present? %>
                     <div class="row mt-2">
                       <div class="col-12">
-                        <img alt="Campaign sidebar image" class="img-fluid" src="<%= SiteConfig.campaign_sidebar_image %>" loading="lazy" />
+                        <img alt="Campaign sidebar image" class="img-fluid" src="<%= SiteConfig.campaign_sidebar_image %>" />
                       </div>
                     </div>
                   <% end %>
@@ -437,6 +438,15 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:campaign_call_to_action][:placeholder] %>
                 </div>
 
+                <div class="crayons-field">
+                  <%= admin_config_label :campaign_articles_expiry_time, "Campaign article expiry time" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:description] %>
+                  <%= f.number_field :campaign_articles_expiry_time,
+                                     class: "crayons-textfield",
+                                     value: SiteConfig.campaign_articles_expiry_time,
+                                     placeholder: Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:placeholder] %>
+                </div>
+
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>
@@ -445,15 +455,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Community Content",
                          state: "collapse",
                          target: "contentBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :community_name %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:community_name][:description] %>
@@ -461,6 +471,15 @@
                                    class: "crayons-textfield",
                                    value: SiteConfig.community_name,
                                    placeholder: Constants::SiteConfig::DETAILS[:community_name][:placeholder] %>
+                </div>
+
+                <div class="crayons-field">
+                  <%= admin_config_label :community_emoji %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:community_emoji][:description] %>
+                  <%= f.text_field :community_emoji,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.community_emoji,
+                                   placeholder: Constants::SiteConfig::DETAILS[:community_emoji][:placeholder] %>
                 </div>
 
                 <div class="crayons-field">
@@ -533,16 +552,16 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Credits",
                          state: "collapse",
                          target: "creditsBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
 
             <div id="creditsBodyContainer" class="card-body collapse hide" aria-labelledby="creditsBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <%= f.fields_for :credit_prices_in_cents do |price_field| %>
                   <div class="crayons-field">
                     <%= admin_config_label "Credit price in cents (S)" %>
@@ -584,15 +603,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Emails",
                          state: "collapse",
                          target: "emailBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                   <div class="crayons-field">
                     <label for="site_config_email_addresses_default" class="crayons-field__label">
                       Default
@@ -623,15 +642,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Email digest frequency",
                          state: "collapse",
                          target: "emailDigestBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="emailDigestBodyContainer" class="card-body collapse hide" aria-labelledby="emailDigestBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :periodic_email_digest_max %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:description] %>
@@ -647,7 +666,7 @@
                   <%= f.number_field :periodic_email_digest_min,
                                      class: "crayons-textfield",
                                      value: SiteConfig.periodic_email_digest_min,
-                                     placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:placeholder] %>
+                                     placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_min][:placeholder] %>
                 </div>
 
                 <%= render "form_submission", f: f %>
@@ -658,15 +677,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Jobs",
                          state: "collapse",
                          target: "jobsBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="jobsBodyContainer" class="card-body collapse hide" aria-labelledby="jobsBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :jobs_url, "Jobs URL" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:jobs_url][:description] %>
@@ -691,15 +710,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
-                         header: "Google Analytics Reporting API v4",
+                         header: "Google Analytics",
                          state: "collapse",
                          target: "gaBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="gaBodyContainer" class="card-body collapse hide" aria-labelledby="gaBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :ga_tracking_id, "View ID" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:ga_tracking_id][:description] %>
@@ -716,15 +735,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Images",
                          state: "collapse",
                          target: "imagesBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="imagesBodyContainer" class="card-body collapse hide" aria-labelledby="imagesBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :main_social_image %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:main_social_image][:description] %>
@@ -733,7 +752,7 @@
                                    value: SiteConfig.main_social_image,
                                    placeholder: Constants::SiteConfig::DETAILS[:main_social_image][:placeholder] %>
                   <% if SiteConfig.main_social_image.present? %>
-                    <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" loading="lazy" />
+                    <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" width="600px" height="337px" />
                   <% end %>
                 </div>
 
@@ -744,7 +763,7 @@
                                    class: "form-control",
                                    value: SiteConfig.favicon_url,
                                    placeholder: Constants::SiteConfig::DETAILS[:favicon_url][:placeholder] %>
-                  <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" loading="lazy" />
+                  <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>" width="32px" height="32px" />
                 </div>
 
                 <div class="crayons-field">
@@ -755,7 +774,7 @@
                                    value: SiteConfig.logo_png,
                                    placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
                   <% if SiteConfig.logo_png.present? %>
-                    <img src="<%= SiteConfig.logo_png %>" width="128" height="128" loading="lazy" />
+                    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 128) %>" width="128px" height="128px" />
                   <% end %>
                 </div>
 
@@ -782,30 +801,8 @@
                                    value: SiteConfig.secondary_logo_url,
                                    placeholder: Constants::SiteConfig::DETAILS[:secondary_logo_url][:placeholder] %>
                   <% if SiteConfig.secondary_logo_url.present? %>
-                    <img alt="secondary logo image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" loading="lazy" />
+                    <img alt="secondary logo image" class="img-fluid" src="<%= Images::Optimizer.call(SiteConfig.secondary_logo_url, width: 256) %>" width="128px" height="128px" />
                   <% end %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :left_navbar_svg_icon %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:description] %>
-                  <%= f.text_area :left_navbar_svg_icon,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.left_navbar_svg_icon,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:placeholder] %>
-                  <%= SiteConfig.left_navbar_svg_icon.html_safe %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :right_navbar_svg_icon %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:description] %>
-                  <%= f.text_area :right_navbar_svg_icon,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.right_navbar_svg_icon,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:placeholder] %>
-                  <%= SiteConfig.right_navbar_svg_icon.html_safe %>
                 </div>
 
                 <%= render "form_submission", f: f %>
@@ -816,15 +813,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Mascot",
                          state: "collapse",
                          target: "mascotBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="mascotBodyContainer" class="card-body collapse hide" aria-labelledby="mascotBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :mascot_user_id, "Mascot user ID" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_user_id][:description] %>
@@ -844,8 +841,9 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:mascot_image_url][:placeholder] %>
 
                   <div class="col-12">
-                    <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" loading="lazy" />
+                    <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
                   </div>
+
                 </div>
 
                 <div class="crayons-field">
@@ -857,7 +855,7 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:placeholder] %>
 
                   <div class="col-12">
-                    <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_footer_image_url %>" loading="lazy" />
+                    <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_footer_image_url %>" />
                   </div>
                 </div>
 
@@ -893,15 +891,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Meta Keywords",
                          state: "collapse",
                          target: "metaKeywordsBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="metaKeywordsBodyContainer" class="card-body collapse hide" aria-labelledby="metaKeywordsBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <%= f.fields_for :meta_keywords do |meta_keywords_field| %>
                   <% SiteConfig.meta_keywords.each do |area, keywords| %>
                     <div class="crayons-field">
@@ -925,15 +923,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Monetization",
                          state: "collapse",
                          target: "monetizationBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="monetizationBodyContainer" class="card-body collapse hide" aria-labelledby="monetizationBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :shop_url, "Shop URL" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:shop_url][:description] %>
@@ -978,15 +976,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Newsletter",
                          state: "collapse",
                          target: "newsletterBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :mailchimp_api_key, "Mailchimp API Key" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_api_key][:description] %>
@@ -1035,29 +1033,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Onboarding",
                          state: "collapse",
                          target: "onboardingBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
-              <fieldset class="flex flex-column gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :onboarding_logo_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_logo_image][:description] %>
-                  <%= f.text_field :onboarding_logo_image,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.onboarding_logo_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:onboarding_logo_image][:placeholder] %>
-                  <div class="row mt-2">
-                    <div class="col-12">
-                      <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" loading="lazy" />
-                    </div>
-                  </div>
-                </div>
-
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :onboarding_background_image %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_background_image][:description] %>
@@ -1067,21 +1051,7 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:onboarding_background_image][:placeholder] %>
                   <div class="row mt-2">
                     <div class="col-12">
-                      <img alt="onboarding background image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" loading="lazy" />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :onboarding_taskcard_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:description] %>
-                  <%= f.text_field :onboarding_taskcard_image,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.onboarding_taskcard_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:placeholder] %>
-                  <div class="row mt-2">
-                    <div class="col-12">
-                      <img alt="onboarding taskcard image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" loading="lazy" />
+                      <img alt="onboarding background image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
                     </div>
                   </div>
                 </div>
@@ -1095,6 +1065,16 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:suggested_users][:placeholder] %>
                 </div>
 
+                <div class="crayons-field crayons-field--checkbox">
+                  <%= f.check_box :prefer_manual_suggested_users, checked: SiteConfig.prefer_manual_suggested_users, class: "crayons-checkbox" %>
+                  <div class="mt-0">
+                    <%= admin_config_label :prefer_manual_suggested_users %>
+                    <p class="crayons-field__description">
+                      <%= Constants::SiteConfig::DETAILS[:prefer_manual_suggested_users][:description] %>
+                    </p>
+                  </div>
+                </div>
+
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>
@@ -1103,15 +1083,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Rate limits and anti-spam",
                          state: "collapse",
                          target: "rateLimitsBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <% configurable_rate_limits.each do |key, field_hash| %>
                   <div class="crayons-field">
                     <%= admin_config_label field_hash[:title] %>
@@ -1142,15 +1122,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Social Media",
                          state: "collapse",
                          target: "socialMediaBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :twitter_hashtag %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:twitter_hashtag][:description] %>
@@ -1182,15 +1162,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Sponsors",
                          state: "collapse",
                          target: "sponsorsContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="sponsorsContainer" class="card-body collapse hide" aria-labelledby="sponsorsContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :sponsor_headline %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:sponsor_headline][:description] %>
@@ -1208,15 +1188,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Tags",
                          state: "collapse",
                          target: "tagsBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="tagsBodyContainer" class="card-body collapse hide" aria-labelledby="tagsBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :sidebar_tags %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %>
@@ -1235,15 +1215,15 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class=" card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "User Experience and Brand",
                          state: "collapse",
                          target: "uxBodyContainer",
-                         expanded: "false"
+                         expanded: false
                        } %>
             <div id="uxBodyContainer" class="card-body collapse hide" aria-labelledby="uxBodyContainer">
-              <fieldset class="flex flex-column gap-4">
+              <fieldset class="grid gap-4">
                 <div class="crayons-fieldx">
                   <%= admin_config_label :feed_style %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:feed_style][:description] %>
@@ -1301,7 +1281,7 @@
                   <div class="mt-0">
                     <%= admin_config_label :public %>
                     <p class="crayons-field__description">
-                      Are most of the site pages (e.g. posts, profiles) public? <strong>Be very cautious about changing thing.</strong>
+                      Are most of the site pages (e.g. posts, profiles) public? <strong>Please take precaution when changing this setting.</strong>
                     </p>
                   </div>
                 </div>
@@ -1314,4 +1294,5 @@
       </div>
     </div>
   </div>
+  <div data-config-target="configModalAnchor"></div>
 </div>

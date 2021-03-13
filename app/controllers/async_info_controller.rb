@@ -25,12 +25,14 @@ class AsyncInfoController < ApplicationController
     end
   end
 
+  # TODO: Remove these "shell_version", because they are for service worker functionality we no longer need.
+  # We are keeping these around mid-March 2021 because previously-installed service workers may still expect them.
   def shell_version
     set_surrogate_key_header "shell-version-endpoint"
     # shell_version will change on every deploy.
     # *Technically* could be only on changes to assets and shell, but this is more fool-proof.
-    shell_version = ApplicationConfig["RELEASE_FOOTPRINT"]
-    render json: { version: Rails.env.production? ? shell_version : rand(1000) }.to_json
+    shell_version = ForemInstance.deployed_at.to_s + SiteConfig.admin_action_taken_at.to_s
+    render json: { version: shell_version }.to_json
   end
 
   def broadcast_data
@@ -55,7 +57,7 @@ class AsyncInfoController < ApplicationController
                                                           methods: [:points]),
         followed_podcast_ids: @user.cached_following_podcasts_ids,
         reading_list_ids: @user.cached_reading_list_article_ids,
-        blocked_user_ids: @user.all_blocking.pluck(:blocked_id),
+        blocked_user_ids: UserBlock.cached_blocked_ids_for_blocker(@user.id),
         saw_onboarding: @user.saw_onboarding,
         checked_code_of_conduct: @user.checked_code_of_conduct,
         checked_terms_and_conditions: @user.checked_terms_and_conditions,

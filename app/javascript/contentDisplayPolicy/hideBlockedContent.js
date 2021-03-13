@@ -1,6 +1,6 @@
 /* global userData */
 
-export default function hideBlockedContent() {
+export function hideBlockedContent() {
   const contentUserElements = Array.from(
     document.querySelectorAll('div[data-content-user-id]'),
   );
@@ -13,10 +13,10 @@ export default function hideBlockedContent() {
   });
 
   divsToHide.forEach((div) => {
-    if (div.className.includes('single-article')) {
+    if (div.className.includes('crayons-story')) {
       div.style.display = 'none';
     } else if (div.className.includes('single-comment-node')) {
-      const divInnerComment = div.querySelector('div.inner-comment');
+      const divInnerComment = div.getElementsByClassName('inner-comment')[0];
       divInnerComment.innerHTML = `
         <div class="body " style="padding-bottom:32px;opacity:0.3;user-select:none;cursor:default">
           [blocked content]

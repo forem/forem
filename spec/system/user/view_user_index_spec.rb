@@ -5,6 +5,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
   let!(:article) { create(:article, user: user) }
   let!(:other_article) { create(:article) }
   let!(:comment) { create(:comment, user: user, commentable: other_article) }
+  let!(:comment2) { create(:comment, user: user, commentable: other_article) }
   let(:organization) { create(:organization) }
 
   context "when user is unauthorized" do
@@ -22,6 +23,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
         shows_articles
         shows_comments
         shows_comment_timestamp
+        shows_last_comments
       end
 
       def shows_header
@@ -43,26 +45,27 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       end
 
       def shows_comments
-        within("#substories div.index-comments") do
-          expect(page).to have_content("Recent Comments")
+        within("#substories div.profile-comment-card") do
+          expect(page).to have_content("Recent comments")
           expect(page).to have_link(nil, href: comment.path)
+          expect(page).to have_link(nil, href: comment2.path)
         end
 
         within("#substories") do
-          expect(page).to have_selector(".index-comments", count: 1)
+          expect(page).to have_selector(".profile-comment-card", count: 1)
         end
 
-        within("#substories .index-comments .single-comment") do
+        within("#substories .profile-comment-card .profile-comment-row:first-of-type") do
           comment_date = comment.readable_publish_date.gsub("  ", " ")
           expect(page).to have_selector(".comment-date", text: comment_date)
         end
       end
 
       def shows_comment_timestamp
-        within("#substories .index-comments .single-comment") do
-          ts = comment.decorate.published_timestamp
-          timestamp_selector = ".comment-date time[datetime='#{ts}']"
-          expect(page).to have_selector(timestamp_selector)
+        within("#substories .profile-comment-card .profile-comment-row:first-of-type") do
+          iso8601_date_time = /^((\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z)$/
+          timestamp = page.find(".comment-date time")[:datetime]
+          expect(timestamp).to match(iso8601_date_time)
         end
       end
     end
@@ -76,7 +79,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
 
     it "shows organizations", js: true do
       Capybara.current_session.driver.browser.manage.window.resize_to(1920, 1080)
-      expect(page).to have_css("#sidebar-wrapper-right h4", text: "organizations")
+      expect(page).to have_css(".spec-org-titles", text: "Organizations")
     end
   end
 
@@ -90,6 +93,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       shows_header
       shows_articles
       shows_comments
+      shows_last_comments
     end
 
     def shows_header
@@ -107,10 +111,18 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
     end
 
     def shows_comments
-      within("#substories div.index-comments") do
-        expect(page).to have_content("Recent Comments")
+      within("#substories div.profile-comment-card") do
+        expect(page).to have_content("Recent comments")
         expect(page).to have_link(nil, href: comment.path)
       end
+    end
+  end
+
+  def shows_last_comments
+    stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
+    visit "/#{user.username}"
+    within("#substories .profile-comment-card .pt-3 .fs-base") do
+      expect(page).to have_content("View last 1 Comment")
     end
   end
 end

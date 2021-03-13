@@ -1,8 +1,21 @@
 /* global activateRunkitTags */
 
 function getAndShowPreview(preview, editor) {
+  function attachTwitterTimelineScript() {
+    const script = document.createElement('script');
+    script.src = 'https://platform.twitter.com/widgets.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }
+
   function successCb(body) {
     preview.innerHTML = body.processed_html; // eslint-disable-line no-param-reassign
+    if (body.processed_html.includes('twitter-timeline')) {
+      attachTwitterTimelineScript();
+    }
     activateRunkitTags();
   }
 
@@ -26,9 +39,9 @@ function getAndShowPreview(preview, editor) {
 function handleCommentPreview(event) {
   event.preventDefault();
   const { form } = event.target;
-  const editor = form.querySelector('.comment-textarea');
-  const preview = form.querySelector('.comment-form__preview');
-  const trigger = form.querySelector('.preview-toggle');
+  const editor = form.getElementsByClassName('comment-textarea')[0];
+  const preview = form.getElementsByClassName('comment-form__preview')[0];
+  const trigger = form.getElementsByClassName('preview-toggle')[0];
 
   if (editor.value !== '') {
     if (form.classList.contains('preview-open')) {
@@ -45,7 +58,7 @@ function handleCommentPreview(event) {
 }
 
 function initializeCommentPreview() {
-  const previewButton = document.querySelector('.preview-toggle');
+  const previewButton = document.getElementsByClassName('preview-toggle')[0];
 
   if (!previewButton) {
     return;

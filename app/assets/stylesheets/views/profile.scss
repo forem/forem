@@ -142,3 +142,29 @@
     );
   }
 }
+
+.profile-comment-card {
+  border-radius: 0;
+
+  @media screen and (min-width: $breakpoint-s) {
+    border-radius: var(--radius);
+  }
+}
+
+.profile-comment-row {
+  color: var(--base-90);
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--card-border);
+  padding: var(--su-3) var(--su-4);
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: var(--card-secondary-border);
+  }
+
+  &:last-child {
+    border-bottom: unset;
+  }
+}

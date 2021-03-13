@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "feedback_messages", type: :request do
+  let(:user) { create(:user) }
+
   describe "POST /feedback_messages" do
     def mock_recaptcha_verification
       # rubocop:disable RSpec/AnyInstance
@@ -8,6 +10,11 @@ RSpec.describe "feedback_messages", type: :request do
         receive(:recaptcha_verified?).and_return(true),
       )
       # rubocop:enable RSpec/AnyInstance
+    end
+
+    def mock_recaptcha_config_enabled
+      allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+      allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
     end
 
     valid_abuse_report_params = {
@@ -21,7 +28,7 @@ RSpec.describe "feedback_messages", type: :request do
 
     headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
 
-    context "with valid params" do
+    context "with valid params and recaptcha passed" do
       before do
         mock_recaptcha_verification
       end
@@ -42,12 +49,40 @@ RSpec.describe "feedback_messages", type: :request do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
         end
       end
+
+      it "doesn't try to send an email" do
+        expect do
+          perform_enqueued_jobs do
+            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+          end
+        end.not_to change { ActionMailer::Base.deliveries.count }
+      end
     end
 
-    context "with no recaptcha keys set" do
+    context "when feedback is created by chat" do
       before do
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("")
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("")
+        sign_in user
+        post "/feedback_messages", params: {
+          feedback_message: {
+            message: "Test Message",
+            feedback_type: "connect",
+            category: "rude or vulgar",
+            offender_id: user.id
+          }
+        }, as: :json
+      end
+
+      it "creates a feedback message" do
+        expect(response.status).to eq(200)
+        expect(response.parsed_body["success"]).to eq(true)
+        expect(FeedbackMessage.where(offender_id: user.id).count).to eq(1)
+      end
+    end
+
+    context "with valid params and recaptcha not configured" do
+      before do
+        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return(nil)
+        allow(SiteConfig).to receive(:recaptcha_site_key).and_return(nil)
       end
 
       it "does not show the recaptcha tag" do
@@ -59,19 +94,6 @@ RSpec.describe "feedback_messages", type: :request do
         expect do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
         end.to change(FeedbackMessage, :count).by(1)
-      end
-    end
-
-    context "with invalid recaptcha" do
-      it "rerenders page" do
-        post "/feedback_messages", params: valid_abuse_report_params, headers: headers
-        expect(response.body).to include("Make sure the forms are filled")
-      end
-
-      it "queues a slack message to be sent" do
-        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-        end
       end
     end
 
@@ -87,16 +109,112 @@ RSpec.describe "feedback_messages", type: :request do
       end
     end
 
-    context "when a user submits a report" do
-      let(:user) { create(:user) }
+    context "with valid params but recaptcha not passed" do
+      before { mock_recaptcha_config_enabled }
+
+      it "rerenders page" do
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+        expect(response.body).to include("Make sure the forms are filled")
+      end
+
+      it "doesn't queues a slack message" do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
+          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+        end
+      end
+    end
+
+    context "when a user qualifies to bypass the recaptcha submits a report" do
+      let(:user) { create(:user, created_at: 3.months.ago) }
 
       before do
-        mock_recaptcha_verification
-
+        mock_recaptcha_config_enabled
         sign_in user
       end
 
-      it "creates a feedback message reported by the user" do
+      it "creates a feedback message reported by the user without recaptcha" do
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+
+        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
+      end
+
+      it "queues a slack message to be sent" do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
+          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+        end
+      end
+
+      it "sends an email when no cache" do
+        expect do
+          perform_enqueued_jobs do
+            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+          end
+        end.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
+      it "queues a correct email when no cache" do
+        mailer_class = NotifyMailer
+        mailer = double
+        message_delivery = double
+        allow(mailer_class).to receive(:with).and_return(mailer)
+        allow(mailer).to receive(:feedback_response_email).and_return(message_delivery)
+        allow(message_delivery).to receive(:deliver_later)
+
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+
+        expect(mailer_class).to have_received(:with).with(email_to: user.email)
+        expect(mailer).to have_received(:feedback_response_email)
+        expect(message_delivery).to have_received(:deliver_later)
+      end
+
+      it "doesn't queue an email when cache is set" do
+        allow(Rails.cache).to receive(:read).and_return(Time.current)
+        expect do
+          perform_enqueued_jobs do
+            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+          end
+        end.not_to change { ActionMailer::Base.deliveries.count }
+      end
+    end
+
+    context "when a user doesn't qualify to bypass the recaptcha submits a report" do
+      let(:user) do
+        user = create(:user, created_at: 2.months.ago)
+        create(:reaction,
+               category: "vomit",
+               reactable: user,
+               user: create(:user, :trusted),
+               status: "confirmed")
+        user
+      end
+
+      before do
+        mock_recaptcha_config_enabled
+        sign_in user
+      end
+
+      it "fails to create a feedback message reported without recaptcha" do
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+
+        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(false)
+      end
+
+      it "doesn't queue a slack message to be sent" do
+        sidekiq_assert_enqueued_jobs(0, only: Slack::Messengers::Worker) do
+          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+        end
+      end
+    end
+
+    context "when a moderator submits a report" do
+      let(:user) { create(:user, :tag_moderator) }
+
+      before do
+        mock_recaptcha_config_enabled
+        sign_in user
+      end
+
+      it "creates a feedback message reported by the moderator without recaptcha" do
         post feedback_messages_path, params: valid_abuse_report_params, headers: headers
 
         expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
@@ -111,6 +229,7 @@ RSpec.describe "feedback_messages", type: :request do
 
     context "when an anonymous user submits a report" do
       before do
+        mock_recaptcha_config_enabled
         mock_recaptcha_verification
       end
 

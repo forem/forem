@@ -1,4 +1,4 @@
-/* global showModal */
+/* global showLoginModal */
 
 function initializeAllFollowButts() {
   var followButts = document.getElementsByClassName('follow-action-button');
@@ -88,7 +88,7 @@ function addModalEventListener(butt) {
   assignState(butt, 'login');
   butt.onclick = function (e) {
     e.preventDefault();
-    showModal('follow-button');
+    showLoginModal();
     return;
   };
 }
@@ -158,7 +158,7 @@ function handleOptimisticButtRender(butt) {
   if (butt.dataset.verb === 'self') {
     window.location.href = '/settings';
   } else if (butt.dataset.verb === 'login') {
-    showModal('follow-button');
+    showLoginModal();
   } else {
     // Handles actual following of tags/users
     try {
@@ -166,24 +166,25 @@ function handleOptimisticButtRender(butt) {
       var evFabUserId = JSON.parse(butt.dataset.info).id;
       var requestVerb = butt.dataset.verb;
       //now for all follow action buttons
-      document
-        .querySelectorAll('.follow-action-button')
-        .forEach(function (fab) {
-          try {
-            //lets check they have info data attributes
-            if (fab.dataset.info) {
-              //and attempt to parse those, to grab that buttons info user id
-              var fabUserId = JSON.parse(fab.dataset.info).id;
-              //now does that user id match our event buttons user id?
-              if (fabUserId && fabUserId === evFabUserId) {
-                //yes - time to assign the same state!
-                assignState(fab, requestVerb);
-              }
+      let actionButtons = document.getElementsByClassName(
+        'follow-action-button',
+      );
+      Array.from(actionButtons).forEach(function (fab) {
+        try {
+          //lets check they have info data attributes
+          if (fab.dataset.info) {
+            //and attempt to parse those, to grab that buttons info user id
+            var fabUserId = JSON.parse(fab.dataset.info).id;
+            //now does that user id match our event buttons user id?
+            if (fabUserId && fabUserId === evFabUserId) {
+              //yes - time to assign the same state!
+              assignState(fab, requestVerb);
             }
-          } catch (err) {
-            return;
           }
-        });
+        } catch (err) {
+          return;
+        }
+      });
     } catch (err) {
       return;
     }

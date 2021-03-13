@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
-import listingPropTypes from './listingPropTypes';
+import { listingPropTypes } from './listingPropTypes';
 
 const LocationText = ({ location }) => {
   return location ? (
@@ -25,7 +25,7 @@ LocationText.defaultProps = {
   location: null,
 };
 
-const AuthorInfo = ({ listing, onCategoryClick }) => {
+export const AuthorInfo = ({ listing, onCategoryClick }) => {
   const { category, location, author = {} } = listing;
   const { username, name, profile_image_90 } = author;
   return (
@@ -40,15 +40,11 @@ const AuthorInfo = ({ listing, onCategoryClick }) => {
           width="32"
           height="32"
           className="crayons-avatar__image"
-          loading="lazy"
         />
       </a>
 
       <div>
-        <a
-          href={`/${username}`}
-          className="crayons-link fw-medium"
-        >
+        <a href={`/${username}`} className="crayons-link fw-medium">
           {name}
         </a>
         <p className="fs-xs">
@@ -75,5 +71,3 @@ AuthorInfo.propTypes = {
 AuthorInfo.defaultProps = {
   onCategoryClick: () => {},
 };
-
-export default AuthorInfo;

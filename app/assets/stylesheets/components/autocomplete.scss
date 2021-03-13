@@ -1,0 +1,51 @@
+@import '../config/import';
+
+.crayons-autocomplete {
+  &__popover {
+    min-width: 300px;
+    padding: var(--su-1);
+
+    &[data-reach-popover] {
+      @include generate-box(
+        $level: 1,
+        $bg: var(--card-bg),
+        $border: var(--card-color),
+        $color: var(--card-color)
+      );
+    }
+  }
+
+  &__option {
+    border-bottom: 1px solid var(--base-10);
+    padding-top: var(--su-2);
+    padding-bottom: var(--su-2);
+
+    &[data-reach-combobox-option]:hover,
+    &[data-reach-combobox-option][aria-selected='true'] {
+      & .crayons-autocomplete__name {
+        color: var(--link-color-hover);
+      }
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__name {
+    font-size: var(--fs-m);
+    font-weight: var(--fw-medium);
+  }
+
+  &__username {
+    color: var(--base-60);
+    font-size: var(--fs-s);
+  }
+
+  &__empty {
+    display: block;
+    margin: var(--su-2);
+    color: var(--base-60);
+    font-size: var(--fs-s);
+  }
+}

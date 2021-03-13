@@ -1,12 +1,14 @@
 module ArticlesHelper
+  DASHBOARD_POSTS_SORT_OPTIONS = [
+    ["Recently Created", "creation-desc"],
+    ["Recently Published", "published-desc"],
+    ["Most Views", "views-desc"],
+    ["Most Reactions", "reactions-desc"],
+    ["Most Comments", "comments-desc"],
+  ].freeze
+
   def sort_options
-    [
-      ["Recently Created", "creation-desc"],
-      ["Recently Published", "published-desc"],
-      ["Most Views", "views-desc"],
-      ["Most Reactions", "reactions-desc"],
-      ["Most Comments", "comments-desc"],
-    ]
+    DASHBOARD_POSTS_SORT_OPTIONS
   end
 
   def has_vid?(article)

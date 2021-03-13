@@ -73,7 +73,7 @@ function buildFollowsHTML(follows) {
     follows.username +
     ' profile image" class="crayons-avatar__image" src="' +
     follows.profile_image +
-    '" loading="lazy" />' +
+    '" />' +
     '</a>' +
     '<div class="pl-4 s:pl-0 self-center">' +
     '<h3 class="s:mb-1 p-0">' +
@@ -121,22 +121,12 @@ function buildTagsHTML(tag) {
     antifollow +
     '</h3>' +
     '<p class="grid-cell__summary truncate-at-3"></p>' +
-    '<form class="edit_follow flex items-center flex-nowrap mb-4" id="edit_follow_' +
+    '<input name="follows[][id]" id="follow_id" type="hidden" form="follows_update_form" value="' +
     tag.id +
-    '" action="/follows/' +
-    tag.id +
-    '" accept-charset="UTF-8" method="post">' +
-    '<input name="utf8" type="hidden" value="✓">' +
-    '<input type="hidden" name="_method" value="patch">' +
-    '<input type="hidden" name="authenticity_token" value="' +
-    tag.token +
     '">' +
-    '<label for="follow_points" class="fs-s flex-1 pr-2 color-base-60 align-right whitespace-nowrap">Follow weight:</label>' +
-    '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" style="max-width:90px" value="' +
+    '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="' +
     tag.points +
-    '" name="follow[points]" id="follow_points">' +
-    '<button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s" name="commit">Save</button>' +
-    '</form>' +
+    '" name="follows[][explicit_points]" id="follow_points">' +
     '</div>'
   );
 }
@@ -382,29 +372,33 @@ function fetchNextPageIfNearBottom() {
   var indexWhich = indexContainer.dataset.which;
 
   var fetchCallback;
-  var scrollableElemId;
+  var scrollableElem;
+
   if (indexWhich === 'podcast-episodes') {
-    scrollableElemId = 'articles-list';
+    scrollableElem = document.getElementById('main-content');
     fetchCallback = function fetch() {
       fetchNextPodcastPage(indexContainer);
     };
   } else if (indexWhich === 'videos') {
-    scrollableElemId = 'video-collection';
+    scrollableElem = document.getElementById('video-collection');
     fetchCallback = function fetch() {
       fetchNextVideoPage(indexContainer);
     };
   } else if (indexWhich === 'followers') {
-    scrollableElemId = 'user-dashboard';
+    scrollableElem = document.getElementById('user-dashboard');
     fetchCallback = function fetch() {
       fetchNextFollowersPage(indexContainer);
     };
   } else if (indexWhich === 'following') {
-    scrollableElemId = 'user-dashboard';
+    scrollableElem = document.getElementById('user-dashboard');
     fetchCallback = function fetch() {
       fetchNextFollowingPage(indexContainer);
     };
   } else {
-    scrollableElemId = 'articles-list';
+    scrollableElem =
+      document.getElementById('main-content') ||
+      document.getElementById('articles-list');
+
     fetchCallback = function fetch() {
       paginate(
         indexContainer.dataset.tag,
@@ -413,8 +407,6 @@ function fetchNextPageIfNearBottom() {
       );
     };
   }
-
-  var scrollableElem = document.getElementById(scrollableElemId);
 
   if (
     !done &&

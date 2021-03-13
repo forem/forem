@@ -60,11 +60,11 @@ it.
 
 ### Redis
 
-Forem requires Redis version 4.0 or higher.
+Forem requires Redis version 6.0 or higher.
 
-We recommend following Digital Ocean's extensive
-[How To Install and Configure Redis on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-redis-on-ubuntu-16-04)
-(available for other Linux distributions as well) to setup Redis.
+We recommend following Digital Ocean's extensive guides
+[How to Install and Secure Redis](https://www.digitalocean.com/community/tutorial_collections/how-to-install-and-secure-redis)
+to setup Redis.
 
 ### Elasticsearch
 
@@ -108,10 +108,6 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
       export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
      ```
 
-   - If you are missing `ENV` variables on bootup, the
-     [envied](https://rubygems.org/gems/envied) gem will alert you with messages
-     similar to
-     `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 

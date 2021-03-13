@@ -1,14 +1,14 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-import ModSection from './ModSection';
-import PersonalSettings from './PersonalSetting';
-import LeaveMembershipSection from './LeaveMembershipSection';
-import ModFaqSection from './ModFaqSection';
-import ChannelDescriptionSection from './ChannelDescriptionSection';
-import ChatChannelMembershipSection from './ChatChannelMembershipSection';
+import { ModSection } from './ModSection';
+import { PersonalSettings } from './PersonalSetting';
+import { LeaveMembershipSection } from './LeaveMembershipSection';
+import { ModFaqSection } from './ModFaqSection';
+import { ChannelDescriptionSection } from './ChannelDescriptionSection';
+import { ChatChannelMembershipSection } from './ChatChannelMembershipSection';
 
-const ChatChannelSettingsSection = ({
+export const ChatChannelSettingsSection = ({
   channelDiscoverable,
   updateCurrentMembershipNotificationSettings,
   handleleaveChannelMembership,
@@ -101,5 +101,3 @@ ChatChannelSettingsSection.propTypes = {
   handlePersonChannelSetting: PropTypes.func.isRequired,
   updateCurrentMembershipNotificationSettings: PropTypes.func.isRequired,
 };
-
-export default ChatChannelSettingsSection;

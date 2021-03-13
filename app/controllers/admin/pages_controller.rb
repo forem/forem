@@ -23,14 +23,25 @@ module Admin
 
     def update
       @page = Page.find(params[:id])
-      @page.update!(page_params)
-      redirect_to "/admin/pages"
+      @page.assign_attributes(page_params)
+      if @page.valid?
+        @page.update!(page_params)
+        redirect_to admin_pages_path
+      else
+        flash.now[:error] = @page.errors_as_sentence
+        render :edit
+      end
     end
 
     def create
       @page = Page.new(page_params)
-      @page.save!
-      redirect_to "/admin/pages"
+      if @page.valid?
+        @page.save!
+        redirect_to admin_pages_path
+      else
+        flash.now[:error] = @page.errors_as_sentence
+        render :new
+      end
     end
 
     def destroy
@@ -48,49 +59,39 @@ module Admin
     end
 
     def prepopulate_new_form(slug)
-      if slug == "code-of-conduct"
-        html = view_context.render partial: "pages/coc_text",
-                                   locals: {
-                                     community_name: view_context.community_name,
-                                     community_qualified_name: view_context.community_qualified_name,
-                                     email_link: view_context.email_link
-                                   }
-        @page = Page.new(
-          slug: params[:slug],
-          body_html: html,
-          title: "Code of Conduct",
-          description: "A page that describes how to behave on this platform",
-          is_top_level_path: true,
-        )
-      elsif slug == "privacy"
-        html = view_context.render partial: "pages/privacy_text",
-                                   locals: {
-                                     community_name: view_context.community_name,
-                                     email_link: view_context.email_link
-                                   }
-        @page = Page.new(
-          slug: params[:slug],
-          body_html: html,
-          title: "Privacy Policy",
-          description: "A page that describes the privacy policy",
-          is_top_level_path: true,
-        )
-      elsif slug == "terms"
-        html = view_context.render partial: "pages/terms_text",
-                                   locals: {
-                                     community_name: view_context.community_name,
-                                     email_link: view_context.email_link
-                                   }
-        @page = Page.new(
-          slug: params[:slug],
-          body_html: html,
-          title: "Terms of Use",
-          description: "A page that describes the terms of use for the application",
-          is_top_level_path: true,
-        )
-      else
-        @page = Page.new
-      end
+      html = view_context.render partial: "pages/coc_text",
+                                 locals: {
+                                   community_name: view_context.community_name,
+                                   email_link: view_context.email_link
+                                 }
+      @page = case slug
+              when "code-of-conduct"
+                Page.new(
+                  slug: params[:slug],
+                  body_html: html,
+                  title: "Code of Conduct",
+                  description: "A page that describes how to behave on this platform",
+                  is_top_level_path: true,
+                )
+              when "privacy"
+                Page.new(
+                  slug: params[:slug],
+                  body_html: html,
+                  title: "Privacy Policy",
+                  description: "A page that describes the privacy policy",
+                  is_top_level_path: true,
+                )
+              when "terms"
+                Page.new(
+                  slug: params[:slug],
+                  body_html: html,
+                  title: "Terms of Use",
+                  description: "A page that describes the terms of use for the application",
+                  is_top_level_path: true,
+                )
+              else
+                Page.new
+              end
     end
   end
 end

@@ -36,6 +36,7 @@ class OrganizationsController < ApplicationController
     end
 
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
+      @organization.users.touch_all(:organization_info_updated_at)
       flash[:settings_notice] = "Your organization was successfully updated."
       redirect_to "/settings/organization"
     else
@@ -52,12 +53,12 @@ class OrganizationsController < ApplicationController
     authorize organization
     if organization.destroy
       current_user.touch(:organization_info_updated_at)
-      CacheBuster.bust_user(current_user)
+      EdgeCache::BustUser.call(current_user)
       flash[:settings_notice] = "Your organization: \"#{organization.name}\" was successfully deleted."
       redirect_to user_settings_path(:organization)
     else
       flash[:settings_notice] = "#{organization.errors.full_messages.to_sentence}.
-        Please email #{SiteConfig.email_addresses['default']} for assistance."
+        Please email #{SiteConfig.email_addresses[:contact]} for assistance."
       redirect_to user_settings_path(:organization, id: organization.id)
     end
   rescue Pundit::NotAuthorizedError
@@ -71,7 +72,7 @@ class OrganizationsController < ApplicationController
     @organization.secret = @organization.generated_random_secret
     @organization.save
     flash[:settings_notice] = "Your org secret was updated"
-    redirect_to "/settings/organization"
+    redirect_to user_settings_path(:organization)
   end
 
   private

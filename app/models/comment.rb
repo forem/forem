@@ -12,6 +12,9 @@ class Comment < ApplicationRecord
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
+  MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
+  # The date that we began limiting the number of user mentions in a comment.
+  MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
 
   belongs_to :commentable, polymorphic: true, optional: true
   belongs_to :user
@@ -39,6 +42,7 @@ class Comment < ApplicationRecord
   after_save :bust_cache
 
   validate :published_article, if: :commentable
+  validate :user_mentions_in_markdown
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
   validates :commentable_id, presence: true, if: :commentable_type
@@ -99,7 +103,7 @@ class Comment < ApplicationRecord
   end
 
   def custom_css
-    MarkdownParser.new(body_markdown).tags_used.map do |tag|
+    MarkdownProcessor::Parser.new(body_markdown).tags_used.map do |tag|
       Rails.application.assets["ltags/#{tag}.css"].to_s
     end.join
   end
@@ -162,8 +166,8 @@ class Comment < ApplicationRecord
   end
 
   def evaluate_markdown
-    fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
-    parsed_markdown = MarkdownParser.new(fixed_body_markdown, source: self, user: user)
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixForComment.call(body_markdown)
+    parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: self, user: user)
     self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
@@ -238,7 +242,7 @@ class Comment < ApplicationRecord
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     user.touch(:last_comment_at)
-    CacheBuster.bust(commentable.path.to_s) if commentable
+    EdgeCache::Bust.call(commentable.path.to_s) if commentable
     expire_root_fragment
   end
 
@@ -272,8 +276,8 @@ class Comment < ApplicationRecord
       author_id: SiteConfig.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
-      reason: "automatic_ban",
-      content: "User banned for too many spammy articles, triggered by autovomit.",
+      reason: "automatic_suspend",
+      content: "User suspended for too many spammy articles, triggered by autovomit.",
     )
   end
 
@@ -303,8 +307,21 @@ class Comment < ApplicationRecord
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
   end
 
+  def user_mentions_in_markdown
+    return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
+
+    # The "comment-mentioned-user" css is added by Html::Parser#user_link_if_exists
+    mentions_count = Nokogiri::HTML(processed_html).css(".comment-mentioned-user").size
+    return if mentions_count <= MAX_USER_MENTIONS
+
+    errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a comment!")
+  end
+
   def record_field_test_event
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_comment")
+    return if FieldTest.config["experiments"].nil?
+
+    Users::RecordFieldTestEventWorker
+      .perform_async(user_id, "user_creates_comment")
   end
 
   def notify_slack_channel_about_warned_users

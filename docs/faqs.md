@@ -4,6 +4,20 @@ title: FAQs
 
 # Frequently Asked Questions
 
+## How do I log in after starting up Forem for the first time?
+
+Seeding the database create an admin user (see
+[Database](/getting-started/db/#default-admin-user)) with the following
+credentials:
+
+```
+email: admin@forem.local
+password: password
+```
+
+Once logged in as this admin user, you can turn on any authentication methods
+you'd like (see [Authentication](/backend/authentication/))
+
 ## How do I build my local copy of the Ruby source code documentation?
 
 ```shell

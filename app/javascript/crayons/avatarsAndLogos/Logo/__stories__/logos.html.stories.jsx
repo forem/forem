@@ -3,7 +3,7 @@ import '../../../storybook-utilities/designSystem.scss';
 import notes from '../../avatars-and-logos.md';
 
 export default {
-  title: '3_Components/Avatars & Logos/Logos/HTML',
+  title: 'Components/Avatars & Logos/Logos/HTML',
   parameters: { notes },
 };
 
@@ -13,7 +13,6 @@ export const Default = () => (
       src="/images/apple-icon.png"
       className="crayons-logo__image"
       alt="Acme Inc."
-      loading="lazy"
     />
   </span>
 );
@@ -26,7 +25,6 @@ export const Large = () => (
       src="/images/apple-icon.png"
       className="crayons-logo__image"
       alt="Acme Inc."
-      loading="lazy"
     />
   </span>
 );
@@ -39,7 +37,6 @@ export const ExtraLarge = () => (
       src="/images/apple-icon.png"
       className="crayons-logo__image"
       alt="Acme Inc."
-      loading="lazy"
     />
   </span>
 );
@@ -52,7 +49,6 @@ export const DoubleXL = () => (
       src="/images/apple-icon.png"
       className="crayons-logo__image"
       alt="Acme Inc."
-      loading="lazy"
     />
   </span>
 );
@@ -65,7 +61,6 @@ export const TripleXL = () => (
       src="/images/apple-icon.png"
       className="crayons-logo__image"
       alt="Acme Inc."
-      loading="lazy"
     />
   </span>
 );

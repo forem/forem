@@ -19,23 +19,25 @@ export const Options = ({
 
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name) => {
-      return (
-        <button
-          type="button"
-          name="series"
-          onClick={onConfigChange}
-          value={name}
-        >
-          {name}
-        </button>
-      );
+      return <option value={name}>{name}</option>;
     });
     existingSeries = (
-      <p className="crayons-field__description">
+      <div className="crayons-field__description">
         Existing series:
         {` `}
-        {seriesNames}
-      </p>
+        <select
+          value=""
+          name="series"
+          onInput={onConfigChange}
+          required
+          aria-label="Select one of the existing series"
+        >
+          <option value="" disabled>
+            Select...
+          </option>
+          {seriesNames}
+        </select>
+      </div>
     );
   }
 
@@ -55,7 +57,7 @@ export const Options = ({
     <Dropdown
       className={
         moreConfigShowing &&
-        'inline-block bottom-100 left-2 s:left-0 right-2 s:left-auto'
+        'inline-block bottom-2 s:bottom-100 left-2 s:left-0 right-2 s:left-auto'
       }
       style={{ zIndex: 100 }}
     >

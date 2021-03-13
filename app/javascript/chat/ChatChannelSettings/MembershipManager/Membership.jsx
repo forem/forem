@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import adminEmoji from '../../../../assets/images/emoji/apple-fire.png';
 import { Button } from '@crayons';
 
-const Membership = ({
+export const Membership = ({
   membership,
   currentMembership,
   removeMembership,
@@ -89,7 +89,6 @@ const Membership = ({
               className="crayons-avatar__image align-middle"
               src={membership.image}
               alt={`${membership.name} profile`}
-              loading="lazy"
             />
           </span>
           <span className="mr-2 user_name">{membership.name}</span>
@@ -101,7 +100,6 @@ const Membership = ({
                 data-content="admin emoji"
                 className="admin-emoji"
                 title="MOD"
-                loading="lazy"
               />
             ) : null}
           </span>
@@ -129,5 +127,3 @@ Membership.propTypes = {
   handleUpdateMembershipRole: PropTypes.func.isRequired,
   showActionButton: PropTypes.bool.isRequired,
 };
-
-export default Membership;

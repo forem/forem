@@ -20,12 +20,16 @@ body {
     }
   }
 
-  &.user-tags-followed-0, &.user-tags-followed-1, &.user-tags-followed-2{
+  &.user-tags-followed-0,
+  &.user-tags-followed-1,
+  &.user-tags-followed-2 {
     #sidebar-nav-followed-tags {
       height: 90px;
     }
   }
-  &.user-tags-followed-3, &.user-tags-followed-4, &.user-tags-followed-5{
+  &.user-tags-followed-3,
+  &.user-tags-followed-4,
+  &.user-tags-followed-5 {
     #sidebar-nav-followed-tags {
       height: 205px;
     }
@@ -39,6 +43,10 @@ body {
   &.default-header {
     padding-top: var(--header-height);
     min-height: calc(100vh - var(--header-height));
+  }
+
+  #main-content {
+    scroll-margin-top: var(--header-height);
   }
 }
 

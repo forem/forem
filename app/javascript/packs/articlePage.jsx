@@ -1,9 +1,9 @@
 import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
-import addFullScreenModeControl from '../utilities/codeFullscreenModeSwitcher';
+import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 
-const fullscreenActionElements = document.querySelectorAll(
-  '.js-fullscreen-code-action',
+const fullscreenActionElements = document.getElementsByClassName(
+  'js-fullscreen-code-action',
 );
 
 if (fullscreenActionElements) {
@@ -23,16 +23,9 @@ top.addSnackbarItem = addSnackbarItem;
 const userDataIntervalID = setInterval(async () => {
   const { user = null, userStatus } = document.body.dataset;
 
-  if (userStatus === 'logged-out') {
-    // User is not logged on so nothing dynamic to add to the page.
     clearInterval(userDataIntervalID);
-    return;
-  }
-
-  if (userStatus === 'logged-in' && user !== null) {
-    // Load the comment subscription button for logged on users.
-    clearInterval(userDataIntervalID);
-    const root = document.querySelector('#comment-subscription');
+    const root = document.getElementById('comment-subscription');
+    const isLoggedIn = (userStatus === "logged-in");
 
     try {
       const {
@@ -41,10 +34,16 @@ const userDataIntervalID = setInterval(async () => {
         CommentSubscription,
       } = await import('../CommentSubscription');
 
-      const { articleId } = document.querySelector('#article-body').dataset;
-      const { config: subscriptionType } = await getCommentSubscriptionStatus(
-        articleId,
-      );
+      const { articleId } = document.getElementById('article-body').dataset;
+
+      let subscriptionType = 'not_subscribed';
+
+      if (isLoggedIn && user !== null) {
+        ({ config: subscriptionType } = await getCommentSubscriptionStatus(
+          articleId,
+        ));
+      }
+
       const subscriptionRequestHandler = async (type) => {
         const message = await setCommentSubscriptionStatus(articleId, type);
 
@@ -57,12 +56,12 @@ const userDataIntervalID = setInterval(async () => {
           positionType="static"
           onSubscribe={subscriptionRequestHandler}
           onUnsubscribe={subscriptionRequestHandler}
+          isLoggedIn={isLoggedIn}
         />,
         root,
       );
     } catch (e) {
-      document.querySelector('#comment-subscription').innerHTML =
+      document.getElementById('comment-subscription').innerHTML =
         '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
     }
-  }
 });

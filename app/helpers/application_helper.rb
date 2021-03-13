@@ -1,8 +1,10 @@
 module ApplicationHelper
   # rubocop:disable Performance/OpenStruct
+  USER_COLORS = ["#19063A", "#dce9f3"].freeze
+
   DELETED_USER = OpenStruct.new(
     id: nil,
-    darker_color: HexComparer.new(bg: "#19063A", text: "#dce9f3").brightness,
+    darker_color: Color::CompareHex.new(USER_COLORS).brightness,
     username: "[deleted user]",
     name: "[Deleted User]",
     summary: nil,
@@ -12,6 +14,14 @@ module ApplicationHelper
   # rubocop:enable Performance/OpenStruct
 
   LARGE_USERBASE_THRESHOLD = 1000
+
+  SUBTITLES = {
+    "week" => "Top posts this week",
+    "month" => "Top posts this month",
+    "year" => "Top posts this year",
+    "infinity" => "All posts",
+    "latest" => "Latest posts"
+  }.freeze
 
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
@@ -37,7 +47,7 @@ module ApplicationHelper
     derived_title = if page_title.include?(community_name)
                       page_title
                     elsif user_signed_in?
-                      "#{page_title} - #{community_qualified_name} 👩‍💻👨‍💻"
+                      "#{page_title} - #{community_name} #{community_emoji}"
                     else
                       "#{page_title} - #{community_name}"
                     end
@@ -46,36 +56,12 @@ module ApplicationHelper
   end
 
   def title_with_timeframe(page_title:, timeframe:, content_for: false)
-    sub_titles = {
-      "week" => "Top posts this week",
-      "month" => "Top posts this month",
-      "year" => "Top posts this year",
-      "infinity" => "All posts",
-      "latest" => "Latest posts"
-    }
-
-    if timeframe.blank? || sub_titles[timeframe].blank?
+    if timeframe.blank? || SUBTITLES[timeframe].blank?
       return content_for ? title(page_title) : page_title
     end
 
-    title_text = "#{page_title} - #{sub_titles.fetch(timeframe)}"
+    title_text = "#{page_title} - #{SUBTITLES.fetch(timeframe)}"
     content_for ? title(title_text) : title_text
-  end
-
-  def icon(name, pixels = "20")
-    image_tag(icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels)
-  end
-
-  def icon_url(name)
-    postfix = {
-      "twitter" => "v1456342401/twitter-logo-silhouette_1_letrqc.png",
-      "github" => "v1456342401/github-logo_m841aq.png",
-      "link" => "v1456342401/link-symbol_apfbll.png",
-      "volume" => "v1461589297/technology_1_aefet2.png",
-      "volume-mute" => "v1461589297/technology_jiugwb.png"
-    }.fetch(name, "v1456342953/star-in-black-of-five-points-shape_sor40l.png")
-
-    "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
   def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto", random_fallback: true)
@@ -83,7 +69,8 @@ module ApplicationHelper
 
     return unless (image_url = url.presence || fallback_image)
 
-    Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: fetch_format)
+    normalized_url = Addressable::URI.parse(image_url).normalize.to_s
+    Images::Optimizer.call(normalized_url, width: width, quality: quality, fetch_format: fetch_format)
   end
 
   def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
@@ -140,7 +127,7 @@ module ApplicationHelper
     return if followable == DELETED_USER
 
     tag :button, # Yikes
-        class: "crayons-btn follow-action-button #{classes}",
+        class: "crayons-btn follow-action-button #{classes} whitespace-nowrap",
         data: {
           :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
@@ -184,12 +171,12 @@ module ApplicationHelper
     @community_name ||= SiteConfig.community_name
   end
 
-  def community_qualified_name
-    "#{community_name} Community"
+  def community_emoji
+    @community_emoji ||= SiteConfig.community_emoji
   end
 
   def release_adjusted_cache_key(path)
-    release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
+    release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
     "#{path}-#{params[:locale]}-#{release_footprint}-#{SiteConfig.admin_action_taken_at.rfc3339}"
@@ -211,10 +198,10 @@ module ApplicationHelper
     link_to body, collection.path, **kwargs
   end
 
-  def email_link(type = :default, text: nil, additional_info: nil)
-    # The allowed types for type is :default, :business, :privacy, and members.
-    # These options can be found in field :email_addresses of models/site_config.rb
-    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:default]
+  def email_link(type = :contact, text: nil, additional_info: nil)
+    # The allowed types for type are the keys of `SiteConfig.email_addresses`
+    # :default, :contact, :business, :privacy, :members
+    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:contact]
     mail_to email, text || email, additional_info
   end
 
@@ -291,18 +278,22 @@ module ApplicationHelper
     estimated_user_count > LARGE_USERBASE_THRESHOLD
   end
 
-  # rubocop:disable Rails/OutputSafety
   def admin_config_label(method, content = nil)
-    content ||= raw("<span>#{method.to_s.humanize}</span>")
+    content ||= tag.span(method.to_s.humanize)
+
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-      content = safe_join([content, raw("<span class='crayons-indicator crayons-indicator--critical'>Required</span>")])
+      required = tag.span("Required", class: "crayons-indicator crayons-indicator--critical")
+      content = safe_join([content, required])
     end
 
     tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
   end
-  # rubocop:enable Rails/OutputSafety
 
   def admin_config_description(content)
     tag.p(content, class: "crayons-field__description") unless content.empty?
+  end
+
+  def role_display_name(role)
+    role.name == "banned" ? "Suspended" : role.name.titlecase
   end
 end

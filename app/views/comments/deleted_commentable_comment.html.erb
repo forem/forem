@@ -1,4 +1,3 @@
-<div class="single-comment-header"></div>
 <div class="comments-container comments-dedicated-page-container">
   <h3>Comment from a deleted article or podcast</h3>
   <div class="single-comment-node root">
@@ -23,7 +22,7 @@
 
         <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
           <a href="/<%= @user.username %>">
-            <img class="profile-pic" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" loading="lazy" />
+            <img class="profile-pic" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" />
             <span class="comment-username">
               <span class="comment-username-inner">
                 <%= @user.name %>
@@ -44,7 +43,7 @@
         <div class="body <%= "low-quality-comment" if decorated_comment.low_quality %>">
           <%= sanitize @root_comment.processed_html %>
           <button class="reaction-button reacted" disabled>
-            <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" loading="lazy" />
+            <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />
             <span class="reactions-count"><%= @root_comment.reactions_count %></span>
           </button>
         </div>

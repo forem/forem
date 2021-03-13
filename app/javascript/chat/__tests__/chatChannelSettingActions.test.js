@@ -12,7 +12,7 @@ import {
 
 /* global globalThis */
 
-describe('Chat cahnnel API requestes', () => {
+describe('Chat channel API requests', () => {
   const csrfToken = 'this-is-a-csrf-token';
   const chanChannelMembershipId = 26; // Just a random chatChannelMembershipId ID.
   const channelId = 2;
