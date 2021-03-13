@@ -25,7 +25,7 @@ export function selectTag(event) {
 
   component.setState({ selectedTag, page: 0, items: [] });
   component.search(query, {
-    tags: [selectedTag],
+    tags: selectedTag ? [selectedTag] : [],
     statusView,
     appendItems: false,
   });

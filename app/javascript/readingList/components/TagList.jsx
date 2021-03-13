@@ -4,6 +4,16 @@ import PropTypes from 'prop-types';
 function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
   return (
     <div className="hidden grid grid-cols-1 gap-2">
+      <a
+        className={`crayons-link crayons-link--block${
+          !selectedTag ? ' crayons-link--current' : ''
+        }`}
+        data-no-instant
+        onClick={onSelectTag}
+        href="/t"
+      >
+        all tags
+      </a>
       {availableTags.map((tag) => (
         <a
           className={`crayons-link crayons-link--block${
@@ -41,7 +51,7 @@ export function TagList({
       aria-label="Filter by tag"
       onChange={onSelectTag}
     >
-      {selectedTag === '' && <option>Select a tag...</option>}
+      <option>all tags</option>
       {availableTags.map((tag) => (
         <option
           selected={tag === selectedTag}
