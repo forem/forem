@@ -126,12 +126,6 @@
         <%= f.check_box :boosted_additional_articles, id: "boosted_additional_articles-#{article.id}" %>
         <label for="boosted_additional_articles-<%= article.id %>">Boosted</label>
       </div>
-      <% unless article.last_buffered %>
-      <div class="form-check col">
-        <%= f.check_box :last_buffered, id: "last_buffered-#{article.id}" %>
-        <label for="last_buffered-<%= article.id %>">Mark as buffered</label>
-      </div>
-      <% end %>
       <div class="col">
           <button class="btn btn-primary float-right">Submit</button>
       </div>

@@ -157,8 +157,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
-           :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-           :email_digest_eligible, :processed_html, :co_author_ids)
+           :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
   }
 
   scope :boosted_via_additional_articles, lambda {
