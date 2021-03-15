@@ -95,7 +95,8 @@ Rails.application.routes.draw do
       get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
       get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
 
-      # NOTE: @ridhwana These routes below will be deleted once we remove the admin_restructure feature flag, hence they've been regrouped them in this manner.
+      # NOTE: @ridhwana These routes below will be deleted once we remove the
+      # admin_restructure feature flag, hence they've been regrouped in this manner.
       resources :articles, only: %i[index show update]
       resources :badges, only: %i[index edit update new create]
       resources :badge_achievements, only: %i[index destroy]
@@ -325,7 +326,13 @@ Rails.application.routes.draw do
       end
     end
     resources :comment_mutes, only: %i[update]
-    resources :users, only: %i[index], defaults: { format: :json } # internal API
+    resources :users, only: %i[index], defaults: { format: :json } do # internal API
+      constraints(-> { FeatureFlag.enabled?(:mobile_notifications) }) do
+        collection do
+          resources :devices, only: %i[create destroy]
+        end
+      end
+    end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]
