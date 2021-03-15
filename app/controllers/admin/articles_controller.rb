@@ -7,11 +7,6 @@ module Admin
     end
 
     def index
-      @pending_buffer_updates = BufferUpdate.where(status: "pending").includes(:article)
-      @user_buffer_updates = BufferUpdate.where(status: "sent_direct", approver_user_id: current_user.id).where(
-        "created_at > ?", 24.hours.ago
-      )
-
       case params[:state]
       when /not-buffered/
         days_ago = params[:state].split("-")[2].to_f
@@ -72,7 +67,7 @@ module Admin
 
     def articles_satellite
       Article.published.where(last_buffered: nil)
-        .includes(:user, :buffer_updates)
+        .includes(:user)
         .tagged_with(Tag.bufferized_tags, any: true).unscope(:select)
         .limited_columns_internal_select
         .order(hotness_score: :desc)
@@ -82,7 +77,7 @@ module Admin
 
     def articles_boosted_additional
       Article.boosted_via_additional_articles
-        .includes(:user, :buffer_updates)
+        .includes(:user)
         .limited_columns_internal_select
         .order(published_at: :desc)
         .page(params[:page])
@@ -111,7 +106,7 @@ module Admin
       Article.published.or(Article.where(published_from_feed: true))
         .where(featured: true)
         .where("featured_number > ?", Time.current.to_i)
-        .includes(:user, :buffer_updates)
+        .includes(:user)
         .limited_columns_internal_select
         .order(featured_number: :desc)
     end

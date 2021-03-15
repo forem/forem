@@ -1,4 +1,6 @@
 class Article < ApplicationRecord
+  self.ignored_columns = %w[facebook_last_buffered last_buffered].freeze
+
   include CloudinaryHelper
   include ActionView::Helpers
   include Storext.model
@@ -29,7 +31,6 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
-  has_many :buffer_updates, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify

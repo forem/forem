@@ -1,13 +1,7 @@
 module DataUpdateScripts
   class RemoveOrphanedBufferUpdatesByArticle
     def run
-      # Delete all BufferUpdates belonging to Articles that don't exist anymore
-      ActiveRecord::Base.connection.execute(
-        <<~SQL.squish,
-          DELETE FROM buffer_updates
-          WHERE article_id NOT IN (SELECT id FROM articles);
-        SQL
-      )
+      # We removed Buffer updates from the codebase, so this is now a no-op.
     end
   end
 end
