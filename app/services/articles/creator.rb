@@ -1,7 +1,7 @@
 module Articles
   class Creator
     def initialize(user, article_params, event_dispatcher = Webhook::DispatchEvent)
-      @user = user.decorate
+      @user = user
       @article_params = article_params
       @event_dispatcher = event_dispatcher
     end
@@ -31,7 +31,7 @@ module Articles
     attr_reader :user, :article_params, :event_dispatcher
 
     def rate_limit!
-      rate_limit_to_use = if user.considered_new?
+      rate_limit_to_use = if user.decorate.considered_new?
                             :published_article_antispam_creation
                           else
                             :published_article_creation
