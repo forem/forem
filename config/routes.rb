@@ -577,6 +577,9 @@ Rails.application.routes.draw do
     get "/open-search", to: "open_search#show",
                         constraints: { format: /xml/ }
 
+    get "/shell_top", to: "shell#top"
+    get "/shell_bottom", to: "shell#bottom"
+
     get "/new", to: "articles#new"
     get "/new/:template", to: "articles#new"
 
