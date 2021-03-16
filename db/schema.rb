@@ -1338,7 +1338,7 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
-    t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_usernames_as_tsvector", using: :gin
+    t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_users_on_username_as_tsvector", using: :gin
     t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
