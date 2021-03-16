@@ -8,7 +8,9 @@ module Moderator
       user = User.find_by(id: user_id)
       return unless user
 
-      Article.where(user: user).each(&:update_score)
+      Article.where(user: user).select(:id).each do |article|
+        Articles::ScoreCalcWorker.perform_async(article.id)
+      end
     rescue StandardError => e
       ForemStatsClient.count("moderators.sink", 1, tags: ["action:failed", "user_id:#{user.id}"])
       Honeybadger.notify(e)

@@ -15,7 +15,9 @@ RSpec.describe Moderator::SinkArticles, type: :service do
       vomit_reaction
       expect do
         sidekiq_perform_enqueued_jobs do
-          described_class.call(spam_user.id)
+          sidekiq_perform_enqueued_jobs do
+            described_class.call(spam_user.id)
+          end
         end
       end.to change(scores, :call).from([0, 0, 0]).to([-25, -25, -25])
     end
@@ -24,7 +26,9 @@ RSpec.describe Moderator::SinkArticles, type: :service do
       vomit_reaction.update(status: "confirmed")
       expect do
         sidekiq_perform_enqueued_jobs do
-          described_class.call(spam_user.id)
+          sidekiq_perform_enqueued_jobs do
+            described_class.call(spam_user.id)
+          end
         end
       end.to change(scores, :call).from([0, 0, 0]).to([-50, -50, -50])
     end
@@ -38,7 +42,9 @@ RSpec.describe Moderator::SinkArticles, type: :service do
       it "raises all of the user's articles but the moderation score" do
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.call(spam_user.id)
+            sidekiq_perform_enqueued_jobs do
+              described_class.call(spam_user.id)
+            end
           end
         end.to change(scores, :call).from([-50, -50, -50]).to([0, 0, 0])
       end
