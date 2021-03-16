@@ -24,8 +24,8 @@ class DevicesController < ApplicationController
       return
     end
 
-    device&.destroy
-    if device&.destroyed?
+    device.destroy
+    if device.destroyed?
       head :no_content
     else
       render json: { error: device.errors_as_sentence }, status: :bad_request
