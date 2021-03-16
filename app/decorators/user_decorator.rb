@@ -106,4 +106,9 @@ class UserDecorator < ApplicationDecorator
   def stackbit_integration?
     access_tokens.any?
   end
+
+  def considered_new?
+    min_days = SiteConfig.user_considered_new_days
+    created_at.after?(min_days.days.ago.beginning_of_day)
+  end
 end
