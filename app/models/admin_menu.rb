@@ -1,5 +1,5 @@
 # This "model" is not backed by the database. Its main purpose is to
-# setup and provide methods of to interact with the admin sidebar and tabbed menu
+# setup and provide methods to interact with the admin sidebar and tabbed menu
 class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   # rubocop:disable Metrics/BlockLength
