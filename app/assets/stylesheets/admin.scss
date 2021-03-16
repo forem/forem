@@ -194,6 +194,7 @@ label {
     border: 0;
     width: 100%;
 
+    // In safari the links show up with a grey background
     &:not(.crayons-link--current) {
       background: transparent;
     }
