@@ -48,6 +48,8 @@ class BadgeAchievement < ApplicationRecord
   end
 
   def award_credits
-    Credit.add_to(user, 5)
+    return if badge.credits_awarded.zero?
+
+    Credit.add_to(user, badge.credits_awarded)
   end
 end
