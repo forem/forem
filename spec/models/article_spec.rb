@@ -1008,4 +1008,13 @@ RSpec.describe Article, type: :model do
       expect(article.plain_html).not_to include("highlight__panel")
     end
   end
+
+  describe "#update_score" do
+    it "stably sets the correct blackbox values" do
+      create(:reaction, reactable: article, points: 1)
+
+      article.update_score
+      expect { article.update_score }.not_to change { article.reload.hotness_score }
+    end
+  end
 end
