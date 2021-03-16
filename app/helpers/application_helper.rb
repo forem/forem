@@ -261,6 +261,10 @@ module ApplicationHelper
     URL.organization(organization)
   end
 
+  def sanitized_referer(referer)
+    URL.sanitized_referer(referer)
+  end
+
   def sanitize_and_decode(str)
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)

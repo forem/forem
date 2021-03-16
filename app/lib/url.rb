@@ -1,5 +1,7 @@
 # Utilities methods to safely build app wide URLs
 module URL
+  SERVICE_WORKER = "/serviceworker.js".freeze
+
   def self.protocol
     ApplicationConfig["APP_PROTOCOL"]
   end
@@ -69,5 +71,20 @@ module URL
 
   def self.organization(organization)
     url(organization.slug)
+  end
+
+  # Ensures we don't consider serviceworker.js as referer
+  #
+  # @param referer [String] the unsanitized referer
+  # @example A safe referer
+  #  sanitized_referer("/some/path") #=> "/some/path"
+  # @example serviceworker.js as referer
+  #  sanitized_referer("serviceworker.js") #=> nil
+  # @example An empty string
+  #  sanitized_referer("") #=> nil
+  def self.sanitized_referer(referer)
+    return if referer.blank? || URI(referer).path == SERVICE_WORKER
+
+    referer
   end
 end

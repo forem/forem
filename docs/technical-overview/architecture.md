@@ -25,18 +25,18 @@ caching.
 ## Content precision
 
 In some situations we may want more precise content than in others. Often when
-we do not need a precise number, it offers an opportunity to either estimate the
-content or bust the cache less frequently.
+we do not need a precise number, it offers an opportunity to either estimate
+the content or bust the cache less frequently.
 
 ### Examples
 
 - We use the `estimated_count` for a more efficient query of registered users on
-  the home page. We have deemed that this is probably close enough.
-- On posts and comment trees without recent comments, we do not asynchronously
-  fetch the absolute latest individual reaction counts for logged-out users
-  because this number is likely to be correct without the async call, and if it
-  is off-by-one, we can make the choice that it is not important that it be more
-  precise than this.
+the home page. We have deemed that this is probably close enough.
+- On posts and comment trees without recent comments, we do not asynchronously fetch
+the absolute latest individual reaction counts for logged-out users because this
+number is likely to be correct without the async call, and if it is off-by-one, we
+can make the choice that it is not important that it be more precise than this. 
+
 
 ## We Mostly defer scripts for usage performance improvements
 
@@ -53,6 +53,16 @@ We have also experimented with different techniques involving inline CSS
 We use [PreactJS](/frontend/preact), a lightweight alternative to ReactJS, and
 we try to reduce our bundle size with
 [dynamic imports](/frontend/dynamic-imports).
+
+## Service workers and shell architecture
+
+We make use of serviceworkers to cache portions of the page.
+
+Serviceworkers can be controlled in the `application` tab of Chrome.
+Serviceworkers are a reverse proxy that runs in the browser in a non-blocking
+thread, supported by most major browsers. You may want to disable or bypass
+Serviceworkers in development while making changes to avoid having everything
+cached.
 
 ## Worst technical debt
 

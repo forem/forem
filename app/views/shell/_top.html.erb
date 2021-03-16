@@ -1,0 +1,88 @@
+<% # TODO: This file supports removed service worker functionality. We are keeping it around until mid-March to support previously downloaded service workers. %>
+<% # After that, these contents can be moved right into application.html. %>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <% title = yield(:title) %>
+    <title><%= title || community_name.to_s %></title>
+    <% unless internal_navigation? %>
+      <meta name="last-updated" content="<%= Time.current %>">
+      <meta name="user-signed-in" content="<%= user_signed_in? %>">
+      <meta name="head-cached-at" content="<%= Time.current.to_i %>">
+      <% if SiteConfig.payment_pointer.present? %>
+        <!-- Experimental web monetization payment pointer for micropayments -->
+        <!-- It lets readers make micropayments to websites they visit. -->
+        <!-- This is step 1: Get live in production to test for platform-wide payment pointer. -->
+        <!-- Step 2: Allow authors to set their payment pointer so they can directly monetize their content based on visitors. -->
+        <!-- Step 3: Enable further functionality based on what we learn from this experimentation and how the ecosystem evolves. -->
+        <meta name="monetization" content="<%= SiteConfig.payment_pointer %>">
+      <% end %>
+      <meta name="environment" content="<%= Rails.env %>">
+      <%= render "layouts/styles", qualifier: "main" %>
+      <% unless user_signed_in? %>
+        <%= javascript_packs_with_chunks_tag "base", "Search", defer: true %>
+      <% end %>
+      <%= javascript_include_tag "base", defer: true %>
+      <% if user_signed_in? %>
+        <%= javascript_packs_with_chunks_tag "base", "Search", "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
+      <% end %>
+      <%= yield(:page_meta) %>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+      <%= favicon_link_tag Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>
+      <link rel="apple-touch-icon" href="<%= optimized_image_url(SiteConfig.logo_png, width: 180, fetch_format: "png") %>">
+      <link rel="apple-touch-icon" sizes="152x152" href="<%= optimized_image_url(SiteConfig.logo_png, width: 152, fetch_format: "png") %>">
+      <link rel="apple-touch-icon" sizes="180x180" href="<%= optimized_image_url(SiteConfig.logo_png, width: 180, fetch_format: "png") %>">
+      <link rel="apple-touch-icon" sizes="167x167" href="<%= optimized_image_url(SiteConfig.logo_png, width: 167, fetch_format: "png") %>">
+      <link href="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" rel="icon" sizes="192x192" />
+      <link href="<%= optimized_image_url(SiteConfig.logo_png, width: 128, fetch_format: "png") %>" rel="icon" sizes="128x128" />
+      <meta name="apple-mobile-web-app-title" content="<%= SiteConfig.app_domain %>">
+      <meta name="application-name" content="<%= SiteConfig.app_domain %>">
+      <meta name="theme-color" content="#000000" />
+      <link rel="manifest" href="/manifest.json" />
+      <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_name %>" />
+
+      <meta property="forem:name" content="<%= community_name %>" />
+      <meta property="forem:logo" content="<%= optimized_image_url(SiteConfig.logo_png, width: 512, fetch_format: "png") %>" />
+      <meta property="forem:domain" content="<%= SiteConfig.app_domain %>" />
+    <% end %>
+  </head>
+  <% unless internal_navigation? %>
+    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
+      <body
+        data-user-status="<%= user_logged_in_status %>"
+        class="<%= SiteConfig.default_font.tr("_", "-") %>-article-body default-header"
+        data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
+        data-app-domain="<%= ChatChannel.urlsafe_encoded_app_domain %>"
+        data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
+        data-deployed-at="<%= ForemInstance.deployed_at %>"
+        data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
+        data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
+        <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
+        <%= render "layouts/styles", qualifier: "secondary" %>
+        <div id="body-styles">
+          <style>
+            :root {
+              --accent-brand: <%= SiteConfig.primary_brand_color_hex %>;
+              --accent-brand-darker: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).brightness(0.85) %>;
+              --accent-brand-lighter: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).brightness(1.1) %>;
+              --accent-brand-a10: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).opacity(0.1) %>;
+            }
+          </style>
+        </div>
+        <% if user_signed_in? %>
+          <%= render "layouts/user_config" %>
+        <% end %>
+        <div id="audiocontent" data-podcast="">
+          <%= yield(:audio) %>
+        </div>
+        <%= render "layouts/top_bar" %>
+        <div id="active-broadcast" class="broadcast-wrapper"></div>
+        <div id="message-notice"></div>
+        <div class="app-shell-loader">
+          loading...
+        </div>
+    <% end %>
+    <!-- End Top Shell -->
+  <% end %>
