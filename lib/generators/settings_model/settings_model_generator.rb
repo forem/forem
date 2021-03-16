@@ -21,7 +21,7 @@ class SettingsModelGenerator < Rails::Generators::NamedBase
         Time.now.utc.strftime("%Y%m%d%H%M%S")
       end
     else
-      format "%.3d", current_migration_number(dirname) + 1
+      format "%.3<number>d", number: current_migration_number(dirname) + 1
     end
   end
 
