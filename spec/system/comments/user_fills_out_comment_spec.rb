@@ -29,6 +29,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     let(:rate_limit_checker) { RateLimitChecker.new(user) }
 
     before do
+      # avoid hitting new user rate limit check
+      allow(user).to receive(:created_at).and_return(1.week.ago)
       allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
       allow(rate_limit_checker).to receive(:limit_by_action)
         .with(:comment_creation)

@@ -35,10 +35,26 @@
     self.clients.claim();
   });
 
+  function includesUnsupportedPath(url) {
+    return [
+      '/%F0%9F%92%B8',         // 💸 (hiring)
+      '/admin',                // Don't run on admin dashboard.
+      '/new',                  // Don't run on editor.
+      '/enter',                // Don't run on sign in page.
+      '/oauth/',               // Skip oauth apps
+      '/onboarding',           // Don't run on onboarding.
+      '/shop',                 // Don't run on Shop
+      '/sidekiq',              // Skip for Sidekiq dashboard
+      '/users/auth',           // Don't run on authentication.
+      '/users/sign_in',        // Don't run on sign in page.
+      '/welcome',              // Don't run on welcome reroutes.
+    ].some(path => url.includes(path))
+  }
+
   self.addEventListener("fetch", (event) => {
     // We only want to call event.respondWith() if this is a navigation request
-    // for an HTML page.
-    if (event.request.mode === "navigate") {
+    // for an HTML page with a few exceptions.
+    if (event.request.mode === "navigate" && !includesUnsupportedPath(event.request.url)) {
       event.respondWith(
         (async () => {
           try {

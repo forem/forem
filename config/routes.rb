@@ -51,7 +51,6 @@ Rails.application.routes.draw do
         mount flipper_ui, at: "feature_flags"
       end
       resources :buffer_updates, only: %i[create update]
-      resource :config
       resources :feedback_messages, only: %i[index show]
       resources :invitations, only: %i[index new create destroy]
       resources :organization_memberships, only: %i[update destroy create]
@@ -109,6 +108,7 @@ Rails.application.routes.draw do
         end
       end
       resources :comments, only: [:index]
+      resource :config
       resources :display_ads, only: %i[index edit update new create destroy]
       resources :events, only: %i[index create update new edit]
       resources :html_variants, only: %i[index edit update new create show destroy]
@@ -161,8 +161,8 @@ Rails.application.routes.draw do
         # People
         # get "admin/users", to: ""
 
-        scope path: :content_manager do
-          resources :articles, only: %i[index show update] #done: index
+        scope path: :content_manager, as: "content_manager" do
+          resources :articles, only: %i[index show update]
           resources :badges, only: %i[index edit update new create]
           resources :badge_achievements, only: %i[index destroy]
           get "/badge_achievements/award_badges", to: "badge_achievements#award"
@@ -184,14 +184,15 @@ Rails.application.routes.draw do
           end
         end
 
-        scope path: :customization do
+        scope path: :customization, as: "customization" do
+          resource :config
           resources :display_ads, only: %i[index edit update new create destroy]
           resources :html_variants, only: %i[index edit update new create show destroy]
           resources :navigation_links, only: %i[index update create destroy]
           resources :pages, only: %i[index new create edit update destroy]
         end
 
-        scope path: :moderation do
+        scope path: :moderation, as: "moderation" do
           resources :reports, only: %i[index show], controller: "feedback_messages" do
             collection do
               post "send_email"
@@ -204,7 +205,7 @@ Rails.application.routes.draw do
           resources :privileged_reactions, only: %i[index]
         end
 
-        scope path: :advanced do
+        scope path: :advanced, as: "advanced" do
           resources :broadcasts
           resources :response_templates, only: %i[index new edit create update destroy]
           resources :secrets, only: %i[index]
@@ -218,7 +219,7 @@ Rails.application.routes.draw do
           resources :webhook_endpoints, only: :index
         end
 
-        scope path: :app do
+        scope path: :apps do
           resources :chat_channels, only: %i[index create update destroy] do
             member do
               delete :remove_user
@@ -324,7 +325,13 @@ Rails.application.routes.draw do
       end
     end
     resources :comment_mutes, only: %i[update]
-    resources :users, only: %i[index], defaults: { format: :json } # internal API
+    resources :users, only: %i[index], defaults: { format: :json } do # internal API
+      constraints(-> { FeatureFlag.enabled?(:mobile_notifications) }) do
+        collection do
+          resources :devices, only: %i[create destroy]
+        end
+      end
+    end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]

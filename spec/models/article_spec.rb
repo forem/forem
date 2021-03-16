@@ -982,8 +982,30 @@ RSpec.describe Article, type: :model do
   end
 
   describe "#plain_html" do
-    it "doesn't include js panel markup" do
-      expect(article.plain_html).not_to include("Enter fullscreen mode")
+    let(:body_markdown) do
+      <<~MD
+        ---
+        title: Test highlight panel
+        published: false
+        ---
+
+        text before
+
+          ```ruby
+          def foo():
+            puts "bar"
+          ```
+
+        text after
+      MD
+    end
+
+    it "doesn't include highlight panel markup" do
+      article = create(:article, body_markdown: body_markdown)
+
+      expect(article.plain_html).to include("text before")
+      expect(article.plain_html).to include("highlight")
+      expect(article.plain_html).not_to include("highlight__panel")
     end
   end
 end
