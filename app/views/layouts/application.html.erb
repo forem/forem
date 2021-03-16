@@ -24,4 +24,13 @@
     <%= yield %>
   </div>
 </div>
+<% if Flipper.enabled?(:runtime_banner) %>
+  <div class="Browser-iOS Browser-Android runtime-banner">
+    <div class="runtime-banner__box">
+      <div class="runtime-banner__inner">
+        <span>Open with the Forem app</span>
+      </div>
+    </div>
+  </div>
+<% end %>
 <%= render "shell/bottom" %>
