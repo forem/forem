@@ -10,6 +10,11 @@ class Tag < ActsAsTaggableOn::Tag
   include Purgeable
   include Searchable
 
+  include PgSearch::Model
+  pg_search_scope :search_by_name,
+                  against: :name,
+                  using: { tsearch: { prefix: true } }
+
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
 
