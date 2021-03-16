@@ -10,6 +10,7 @@ RSpec.describe "/admin/badges", type: :request do
         title: "Hello, world!",
         slug: "greeting-badge",
         description: "Awarded to welcoming users",
+        credits_awarded: 10,
         badge_image: Rack::Test::UploadedFile.new("spec/support/fixtures/images/image1.jpeg", "image/jpeg")
       }
     }
@@ -38,6 +39,12 @@ RSpec.describe "/admin/badges", type: :request do
       expect do
         patch "/admin/badges/#{badge.id}", params: params
       end.to change { badge.reload.title }.to("Hello, world!")
+    end
+
+    it "successfully updates badge's credits_awarded" do
+      expect do
+        patch "/admin/badges/#{badge.id}", params: params
+      end.to change { badge.reload.credits_awarded }.to(10)
     end
   end
 end
