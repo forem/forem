@@ -23,4 +23,12 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ['**/*.stories.jsx'],
+      rules: {
+        'no-restricted-syntax': 'off',
+      },
+    },
+  ],
 };
