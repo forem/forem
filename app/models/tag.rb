@@ -67,12 +67,6 @@ class Tag < ActsAsTaggableOn::Tag
     User.with_role(:tag_moderator, self).order(id: :asc).ids
   end
 
-  def self.bufferized_tags
-    Rails.cache.fetch("bufferized_tags_cache", expires_in: 2.hours) do
-      where.not(buffer_profile_id_code: nil).pluck(:name)
-    end
-  end
-
   def self.valid_categories
     ALLOWED_CATEGORIES
   end

@@ -14,29 +14,6 @@
           href="<%= admin_articles_path(state: :satellite) %>"
           class="nav-link <%= "active" if params[:state] == "satellite" %>">Satellite</a>
       </li>
-      <li class="nav-item">
-        <span class="nav-link disabled">Not Buffered:</span>
-      </li>
-      <li class="nav-item">
-        <a
-          href="<%= admin_articles_path(state: "not-buffered-0.25") %>"
-          class="nav-link <%= "active" if params[:state] == "not-buffered-0.25" %>">6hr</a>
-      </li>
-      <li class="nav-item">
-        <a
-          href="<%= admin_articles_path(state: "not-buffered-1") %>"
-          class="nav-link <%= "active" if params[:state] == "not-buffered-1" %>">1d</a>
-      </li>
-      <li class="nav-item">
-        <a
-          href="<%= admin_articles_path(state: "not-buffered-7") %>"
-          class="nav-link <%= "active" if params[:state] == "not-buffered-7" %>">7d</a>
-      </li>
-      <li class="nav-item">
-        <a
-          href="<%= admin_articles_path(state: "satellite-not-buffered") %>"
-          class="nav-link <%= "active" if params[:state] == "satellite-not-buffered" %>">Satellite</a>
-      </li>
     </ul>
     <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
       <h1 style="color:red">

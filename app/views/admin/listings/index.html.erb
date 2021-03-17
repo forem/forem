@@ -58,24 +58,6 @@
         <td><%= listing.published ? "Yes" : "No" %></td>
         <td><%= listing.bumped_at ? "#{time_ago_in_words(listing.bumped_at)} ago" : "Draft" %></td>
       </tr>
-      <tr>
-        <td
-          class="buffer-cell border-0"
-          colspan="7"
-          data-controller="buffer"
-          data-action="load@window->buffer#autosizeBodyText"
-          data-buffer-bg-highlighted-class="bg-highlighted"
-          data-buffer-border-highlighted-class="border-highlighted">
-          <button
-            class="btn btn-secondary"
-            data-toggle="collapse"
-            data-target="#buffering-area-for-listing-<%= listing.id %>"
-            aria-expanded="false"
-            aria-controls="buffering-area-for-listing-<%= listing.id %>">
-            Share to Buffer
-          </button>
-        </td>
-      </tr>
     <% end %>
   </tbody>
 </table>
