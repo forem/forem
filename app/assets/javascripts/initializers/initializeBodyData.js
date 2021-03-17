@@ -47,6 +47,10 @@ function fetchBaseData() {
             ga('set', 'userId', JSON.parse(json.user).id);
           }
         }, 400);
+      } else {
+        // Ensure user data is not exposed if no one is logged in
+        document.body.dataset.user = undefined;
+        browserStoreCache('remove');
       }
     }
   };
