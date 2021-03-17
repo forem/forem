@@ -44,6 +44,19 @@ RSpec.describe "Devices", type: :request do
 
   describe "DELETE /users/devices/:id" do
     let(:device) { create(:device, user: user) }
+    let(:params) do
+      {
+        token: device.token,
+        platform: device.platform,
+        app_bundle: device.app_bundle
+      }
+    end
+    let(:incomplete_params) do
+      {
+        platform: device.platform,
+        app_bundle: device.app_bundle
+      }
+    end
 
     context "when device not found" do
       it "returns an error" do
@@ -52,11 +65,18 @@ RSpec.describe "Devices", type: :request do
         expect(response.parsed_body["error"]).to eq("Not Found")
         expect(response.parsed_body["status"]).to eq(404)
       end
+
+      it "return an error if device id doesn't match params" do
+        delete "/users/devices/123", params: incomplete_params
+        expect(response.status).to eq(404)
+        expect(response.parsed_body["error"]).to eq("Not Found")
+        expect(response.parsed_body["status"]).to eq(404)
+      end
     end
 
     context "when device deleted" do
       it "deletes the device" do
-        delete "/users/devices/#{device.id}"
+        delete "/users/devices/#{device.user.id}", params: params
         expect(user.devices.count).to eq(0)
         expect(response.status).to eq(204)
         expect(Device.find_by(id: device.id)).to be_nil
