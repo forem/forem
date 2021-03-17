@@ -26,8 +26,6 @@ environment.splitChunks((config) => {
           __dirname,
           '../../app/javascript/shared/components',
         ),
-        react: 'preact/compat',
-        'react-dom': 'preact/compat',
       },
     },
   };
