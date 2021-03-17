@@ -340,7 +340,7 @@ module Constants
         placeholder: ""
       },
       user_considered_new_days: {
-        description: "The number of days a user is considered new",
+        description: "The number of days a user is considered new. Use 0 to disable these checks.",
         placeholder: ::SiteConfig.user_considered_new_days
       },
       video_encoder_key: {

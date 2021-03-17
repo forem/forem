@@ -109,6 +109,8 @@ class UserDecorator < ApplicationDecorator
 
   def considered_new?
     min_days = SiteConfig.user_considered_new_days
-    created_at.after?(min_days.days.ago.beginning_of_day)
+    return false unless min_days.positive?
+
+    created_at.after?(min_days.days.ago)
   end
 end
