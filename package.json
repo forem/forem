@@ -101,7 +101,7 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/preact": "^2.0.1",
     "@testing-library/preact-hooks": "^1.1.0",
-    "@testing-library/user-event": "^12.8.3",
+    "@testing-library/user-event": "^13.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.3",
@@ -123,7 +123,7 @@
     "faker": "^5.4.0",
     "gitdocs": "^2.0.0",
     "husky": "^4.3.8",
-    "ibm-openapi-validator": "0.36.0",
+    "ibm-openapi-validator": "0.37.1",
     "jest": "26.6.3",
     "jest-axe": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
@@ -177,7 +177,6 @@
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",
     "stimulus": "^2.0.0",
-    "twilio-video": "^2.13.0",
     "web-share-wrapper": "^0.2.1"
   },
   "resolutions": {
