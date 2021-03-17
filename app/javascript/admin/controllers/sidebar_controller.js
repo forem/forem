@@ -6,9 +6,22 @@ export default class SidebarController extends Controller {
     'submenu'
   ];
 
-  expandDropdown(event) {
-    window.location.href = event.target.getAttribute('data-target-href');
+  disableCurrentNavItem(event) {
+    let activeMenuId = this.submenuTargets.filter((item) => item.classList.contains("show"))[0].id
+    let activeButton = event.target.getElementById(`${activeMenuId}_button`);
+    activeButton.setAttribute("disabled", true)
+  }
 
+  expandDropdown(event) {
+    this.redirectToFirstChildNavItem();
+    this.closeOtherMenus();
+  }
+
+  redirectToFirstChildNavItem() {
+    window.location.href = event.target.getAttribute('data-target-href');
+  }
+
+  closeOtherMenus() {
     this.submenuTargets.map((item) => {
       if(item.classList.contains("show")) {
         const expandedList = ['expand', 'show'];
