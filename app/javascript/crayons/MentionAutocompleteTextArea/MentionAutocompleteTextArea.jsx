@@ -113,6 +113,7 @@ export const MentionAutocompleteTextArea = ({
       if (!popover.contains(event.target)) {
         // User clicked outside, reset to not searching state
         setSearchTerm('');
+        setAriaHelperText('');
         setUsers([]);
       }
     };
@@ -160,6 +161,7 @@ export const MentionAutocompleteTextArea = ({
     } else if (searchTerm) {
       // User has moved away from an in-progress @mention - clear current search
       setSearchTerm('');
+      setAriaHelperText('');
       setUsers([]);
     }
   };
