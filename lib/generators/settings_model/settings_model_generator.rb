@@ -28,7 +28,7 @@ class SettingsModelGenerator < Rails::Generators::NamedBase
   def create_migration_file
     migration_template(
       "migration.erb",
-      "db/migrate/create_settings.rb",
+      "db/migrate/create_#{table_name}.rb",
       migration_version: migration_version,
       table_name: table_name,
     )
@@ -54,6 +54,6 @@ class SettingsModelGenerator < Rails::Generators::NamedBase
   end
 
   def table_name
-    @table_name ||= ":settings_#{class_name.underscore.pluralize}"
+    @table_name ||= "settings_#{class_name.underscore.pluralize}"
   end
 end

@@ -5,7 +5,7 @@ Examples:
     * Generating a settings model (you don't need to specify the Settings::
       namespace)
 
-        $ rails generate settings_model Notificiation
+        $ rails generate settings_model Notification
 
         # db/migrate/<timestamp>_create_settings.rb
         class CreateSettings < ActiveRecord::Migration[6.0]
