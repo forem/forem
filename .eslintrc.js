@@ -25,7 +25,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/*.stories.jsx'],
+      files: ['**/*.stories.jsx', 'app/javascript/admin/controllers/*.js'],
       rules: {
         'no-restricted-syntax': 'off',
       },
