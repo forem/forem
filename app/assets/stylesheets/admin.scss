@@ -199,6 +199,10 @@ label {
       background: transparent;
     }
   }
+
+  .crayons-link--current {
+    cursor: default;
+  }
 }
 
 .admin__tabbed-navbar,
