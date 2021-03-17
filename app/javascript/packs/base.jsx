@@ -4,6 +4,35 @@ import {
   getInstantClick,
   initializeTouchDevice,
 } from '../topNavigation/utilities';
+import { fetchSearch } from '@utilities/search';
+
+// Namespace for functions which need to be accessed in plain JS initializers
+window.Forem = {};
+
+window.Forem.initializeMentionAutocompleteTextArea = async (
+  originalTextArea,
+) => {
+  const parentContainer = originalTextArea.parentElement;
+
+  const alreadyInitialized = parentContainer.id === 'combobox-container';
+  if (alreadyInitialized) {
+    return;
+  }
+
+  const [{ MentionAutocompleteTextArea }, { render, h }] = await Promise.all([
+    import('@crayons/MentionAutocompleteTextArea'),
+    import('preact'),
+  ]);
+
+  render(
+    <MentionAutocompleteTextArea
+      replaceElement={originalTextArea}
+      fetchSuggestions={(username) => fetchSearch('usernames', { username })}
+    />,
+    parentContainer,
+    originalTextArea,
+  );
+};
 
 window.showModal = async ({
   title,
