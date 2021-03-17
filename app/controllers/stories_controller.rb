@@ -46,7 +46,7 @@ class StoriesController < ApplicationController
       handle_possible_redirect
     else
       @podcast = Podcast.available.find_by!(slug: params[:username])
-      @episode = PodcastEpisode.available.find_by!(slug: params[:slug])
+      @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
       handle_podcast_show
     end
   end
