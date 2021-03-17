@@ -7,8 +7,8 @@ Examples:
 
         $ rails generate settings_model Notification
 
-        # db/migrate/<timestamp>_create_settings.rb
-        class CreateSettings < ActiveRecord::Migration[6.0]
+        # db/migrate/<timestamp>_create_settings_notifications.rb
+        class CreateSettingsNotifications < ActiveRecord::Migration[6.0]
           def self.up
             create_table :settings_notifications do |t|
               t.string :var, null: false
@@ -26,7 +26,7 @@ Examples:
         end
 
         # app/models/settings/notification.rb
-        module Settngs
+        module Settings
           class Notification < RailsSettings::Base
             self.table_name = :settings_notifications
 
