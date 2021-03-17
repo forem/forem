@@ -49,7 +49,7 @@ function fetchBaseData() {
         }, 400);
       } else {
         // Ensure user data is not exposed if no one is logged in
-        document.body.dataset.user = undefined;
+        delete document.body.dataset.user;
         browserStoreCache('remove');
       }
     }
