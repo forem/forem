@@ -1,5 +1,6 @@
 # TODO: [@rhymes]:
 # => add index on reactions.status
+# => add GIN index on tags.name
 module Search
   module Postgres
     class ReadingList
@@ -19,7 +20,7 @@ module Search
       DEFAULT_PER_PAGE = 60
       DEFAULT_STATUSES = %w[confirmed valid].freeze
 
-      def self.search_documents(user, statuses: [], page: 1, per_page: DEFAULT_PER_PAGE)
+      def self.search_documents(user, statuses: [], tags: [], page: 1, per_page: DEFAULT_PER_PAGE)
         statuses = statuses.presence || DEFAULT_STATUSES
 
         # NOTE: [@rhymes] we should eventually update the frontend
@@ -30,7 +31,11 @@ module Search
         total = user.reactions.readinglist.where(status: statuses).count
 
         articles = find_articles(
-          user_id: user.id, statuses: statuses, page: page, per_page: per_page,
+          user_id: user.id,
+          statuses: statuses,
+          tags: tags,
+          page: page,
+          per_page: per_page,
         )
 
         # NOTE: [@rhymes] an earlier version used `Article.includes(:user)`
@@ -52,16 +57,28 @@ module Search
         }
       end
 
-      def self.find_articles(user_id:, statuses:, page:, per_page:)
-        ::Article
+      def self.find_articles(user_id:, statuses:, tags:, page:, per_page:)
+        relation = ::Article
           .joins(:reactions)
           .select(*ATTRIBUTES)
           .where("reactions.category": :readinglist)
           .where("reactions.user_id": user_id)
           .where("reactions.status": statuses)
           .order("reactions.created_at": :desc)
-          .page(page)
-          .per(per_page)
+
+        # NOTE: [@rhymes] A few details:
+        # =>`.tagged_with()` merges `articles.*` to the SQL, thus we need to
+        #    use `reselect()`, see https://github.com/forem/forem/pull/12420
+        # => `.tagged_with()` with multiple tags constructs a monster query,
+        #    see https://explain.depesz.com/s/CqQV / https://explain.dalibo.com/plan/1Lm
+        # This is because the `acts-as-taggable-on` query creates a separate INNER JOIN
+        # each tag is added to filter for, each new clause uses the `LIKE` operator on `tags.name`
+        # A possible way to improve a bit would be to add a GIN index on `tags.name`, see
+        # https://www.cybertec-postgresql.com/en/postgresql-more-performance-for-like-and-ilike-statements/
+        # and a similar discussion https://github.com/forem/forem/pull/12584#discussion_r570756176
+        relation = relation.tagged_with(tags, any: false).reselect(*ATTRIBUTES) if tags.present?
+
+        relation.page(page).per(per_page)
       end
       private_class_method :find_articles
 

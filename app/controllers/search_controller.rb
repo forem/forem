@@ -125,6 +125,7 @@ class SearchController < ApplicationController
         page: reaction_params[:page],
         per_page: reaction_params[:per_page],
         statuses: reaction_params[:status],
+        tags: reaction_params[:tag_names],
       )
 
       render json: { result: result[:items], total: result[:total] }
