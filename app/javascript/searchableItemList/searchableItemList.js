@@ -74,6 +74,8 @@ export function performInitialSearch({ searchOptions = {} }) {
   const responsePromise = fetchSearch('reactions', dataHash);
   return responsePromise.then((response) => {
     const reactions = response.result;
+    // FIXME: [@rhymes] the list of tags in the left column of the reading list
+    // is populated with only the tags belonging to items in the first page
     const availableTags = [
       ...new Set(reactions.flatMap((rxn) => rxn.reactable.tag_list)),
     ].sort();

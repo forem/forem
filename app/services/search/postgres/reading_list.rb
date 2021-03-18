@@ -24,6 +24,7 @@ module Search
         # https://dev.to/admin/blazer/queries/349-reading-list-articles-query-plan
         results = Article
           .joins(:reactions)
+          .includes(:taggings, :user)
           .select(*ATTRIBUTES)
           .where("reactions.category": :readinglist)
           .where("reactions.user_id": user.id)
