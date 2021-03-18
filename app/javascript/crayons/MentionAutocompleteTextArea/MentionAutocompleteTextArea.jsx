@@ -15,6 +15,33 @@ import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
 const MIN_SEARCH_CHARACTERS = 2;
 const MAX_RESULTS_DISPLAYED = 6;
 
+/**
+ * Helper function to copy all styles and attributes from the original textarea to new autocomplete textarea before removing the original node
+ *
+ * @param {element} originalNodeToReplace The DOM element that should be replaced
+ * @param {element} newNode The DOM element that will receive all attributes and styles of the original node.
+ */
+const replaceTextArea = (originalNodeToReplace, newNode) => {
+  // Make sure all attributes are copied to the autocomplete textarea
+  const attributes = originalNodeToReplace.attributes;
+  Object.keys(attributes).forEach((attributeKey) => {
+    newNode.setAttribute(
+      attributes[attributeKey].name,
+      attributes[attributeKey].value,
+    );
+  });
+
+  // Make sure all styles are copied to the autocomplete textarea
+  newNode.style.cssText = document.defaultView.getComputedStyle(
+    originalNodeToReplace,
+    '',
+  ).cssText;
+
+  // We need to manually remove the element, as Preact's diffing algorithm won't replace it in render
+  originalNodeToReplace.remove();
+  newNode.focus();
+};
+
 const UserListItemContent = ({ user }) => {
   return (
     <Fragment>
@@ -187,22 +214,8 @@ export const MentionAutocompleteTextArea = ({
 
   useLayoutEffect(() => {
     if (inputRef.current) {
-      const attributes = replaceElement.attributes;
-      Object.keys(attributes).forEach((attributeKey) => {
-        inputRef.current.setAttribute(
-          attributes[attributeKey].name,
-          attributes[attributeKey].value,
-        );
-      });
-
-      inputRef.current.style.cssText = document.defaultView.getComputedStyle(
-        replaceElement,
-        '',
-      ).cssText;
-
-      // We need to manually remove the element, as Preact's diffing algorithm won't replace it in render
-      replaceElement.remove();
-      inputRef.current.focus();
+      // Replace the whole textarea passed in props with the autocomplete textarea
+      replaceTextArea(replaceElement, inputRef.current);
     }
   }, [replaceElement]);
 
