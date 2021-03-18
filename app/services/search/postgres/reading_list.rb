@@ -1,7 +1,5 @@
 # TODO: [@rhymes]:
 # => add index on reactions.status
-# => preload data to optimize serialization queries?
-# => ArticleSerializer serializes everything and it's for ES, but do we need all that data for the frontend?
 module Search
   module Postgres
     class ReadingList
@@ -56,7 +54,7 @@ module Search
           .index_by(&:id)
 
         {
-          results: serialize(articles, users),
+          items: serialize(articles, users),
           total: total
         }
       end
