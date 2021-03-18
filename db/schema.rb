@@ -446,12 +446,12 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "token", null: false
-    t.string "platform", null: false
     t.string "app_bundle", null: false
     t.datetime "created_at", precision: 6, null: false
+    t.string "platform", null: false
+    t.string "token", null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
     t.index ["user_id", "token", "platform", "app_bundle"], name: "index_devices_on_user_id_and_token_and_platform_and_app_bundle", unique: true
   end
 
@@ -1406,20 +1406,20 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
   create_table "users_settings", force: :cascade do |t|
     t.string "brand_color1", default: "#000000"
     t.string "brand_color2", default: "#ffffff"
-    t.string "config_font", default: "default", null: false
-    t.string "config_navbar", default: "default", null: false
-    t.string "config_theme", default: "default", null: false
+    t.integer "config_font", default: 0, null: false
+    t.integer "config_navbar", default: 0, null: false
+    t.integer "config_theme", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.boolean "display_announcements", default: true, null: false
     t.boolean "display_email_on_profile", default: false, null: false
     t.boolean "display_sponsors", default: true, null: false
-    t.string "editor_version", default: "v1"
+    t.integer "editor_version", default: 0, null: false
     t.integer "experience_level"
     t.boolean "feed_mark_canonical", default: false, null: false
     t.boolean "feed_referential_link", default: true, null: false
     t.string "feed_url"
     t.string "inbox_guidelines"
-    t.string "inbox_type", default: "private"
+    t.integer "inbox_type", default: 0, null: false
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
