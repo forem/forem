@@ -219,10 +219,6 @@ GEM
       puma (>= 3.8.0)
       railties (>= 5.2.0)
     dante (0.2.0)
-    database_cleaner-active_record (2.0.0)
-      activerecord (>= 5.a)
-      database_cleaner-core (~> 2.0.0)
-    database_cleaner-core (2.0.0)
     ddtrace (0.46.0)
       msgpack
     dead_end (1.1.4)
@@ -908,7 +904,6 @@ DEPENDENCIES
   cloudinary (~> 1.19)
   counter_culture (~> 2.8)
   cypress-rails (~> 0.4.2)
-  database_cleaner-active_record (~> 2.0.0)
   ddtrace (~> 0.46.0)
   derailed_benchmarks (~> 2.0)
   devise!

@@ -1,8 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncation do
-  self.use_transactional_tests = false
-
+RSpec.describe Feeds::Import, type: :service, vcr: true do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
