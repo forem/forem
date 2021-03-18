@@ -1,6 +1,6 @@
 # TODO: [@rhymes]:
 # => add index on reactions.status
-# => add GIN index on tags.name
+# => add GIN index on tags.name OR on articles.cached_tag_list
 module Search
   module Postgres
     class ReadingList
@@ -76,7 +76,16 @@ module Search
         # A possible way to improve a bit would be to add a GIN index on `tags.name`, see
         # https://www.cybertec-postgresql.com/en/postgresql-more-performance-for-like-and-ilike-statements/
         # and a similar discussion https://github.com/forem/forem/pull/12584#discussion_r570756176
-        relation = relation.tagged_with(tags, any: false).reselect(*ATTRIBUTES) if tags.present?
+        # relation = relation.tagged_with(tags, any: false).reselect(*ATTRIBUTES) if tags.present?
+
+        # An alternative solution, as we don't need the `Tag` model, is to use
+        # `articles.cached_tag_list` and the `LIKE` operator, this could be further
+        # improved, if needed, by adding a GIN index on `cached_tag_list`
+        # It seems not to be needed as this approach is roughly 1850 times faster
+        # see https://explain.depesz.com/s/ajoP / https://explain.dalibo.com/plan/PZb
+        tags.each do |tag|
+          relation = relation.where("articles.cached_tag_list LIKE ?", "%#{tag}%")
+        end
 
         relation.page(page).per(per_page)
       end
