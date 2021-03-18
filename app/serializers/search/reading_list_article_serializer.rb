@@ -7,6 +7,8 @@ module Search
     # => the `<ItemListItem>` Preact component: https://github.com/forem/forem/blob/33d0e03dbd94fc6797693b84fcafb5040ea399d0/app/javascript/readingList/components/ItemListItem.jsx#L72-L85
     # => the `performInitialSearch` function: https://github.com/forem/forem/blob/33d0e03dbd94fc6797693b84fcafb5040ea399d0/app/javascript/searchableItemList/searchableItemList.js#L78
     attribute :reactable do |article|
+      tags = article.cached_tag_list.to_s.split(", ")
+
       {
         path: article.path,
         readable_publish_date_string: article.readable_publish_date,
@@ -14,8 +16,8 @@ module Search
 
         # TODO: once we switch to PG we should revisit how we handle tags in the
         # frontend, we're sending back tags twice in slightly different formats
-        tag_list: article.tag_list,
-        tags: article.tag_list.map { |tag| { name: tag } },
+        tag_list: tags,
+        tags: tags.map { |tag| { name: tag } },
 
         title: article.title,
 

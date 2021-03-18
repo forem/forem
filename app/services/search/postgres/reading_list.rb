@@ -6,7 +6,13 @@ module Search
   module Postgres
     class ReadingList
       ATTRIBUTES = [
-        "articles.*",
+        "articles.cached_tag_list",
+        "articles.crossposted_at",
+        "articles.path",
+        "articles.published_at",
+        "articles.reading_time",
+        "articles.title",
+        "articles.user_id",
         "reactions.id AS reaction_id",
         "reactions.user_id AS reaction_user_id",
       ].freeze
@@ -24,7 +30,7 @@ module Search
         # https://dev.to/admin/blazer/queries/349-reading-list-articles-query-plan
         results = Article
           .joins(:reactions)
-          .includes(:taggings, :user)
+          .includes(:user)
           .select(*ATTRIBUTES)
           .where("reactions.category": :readinglist)
           .where("reactions.user_id": user.id)
