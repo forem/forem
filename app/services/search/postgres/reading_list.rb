@@ -18,7 +18,7 @@ module Search
       ].freeze
       USER_ATTRIBUTES = %i[id name profile_image username].freeze
       DEFAULT_PER_PAGE = 60
-      DEFAULT_STATUSES = %w[valid confirmed].freeze
+      DEFAULT_STATUSES = %w[confirmed valid].freeze
 
       def self.search_documents(user, statuses: [], page: 1, per_page: DEFAULT_PER_PAGE)
         statuses = statuses.presence || DEFAULT_STATUSES
@@ -28,7 +28,8 @@ module Search
         page = page.to_i.zero? ? 1 : page.to_i
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, 100].min
 
-        # https://dev.to/admin/blazer/queries/350-reading-list-articles-query-plan-test-2
+        total = user.reactions.readinglist.where(status: statuses).count
+
         articles = Article
           .joins(:reactions)
           .select(*ATTRIBUTES)
@@ -54,7 +55,10 @@ module Search
           .select(*USER_ATTRIBUTES)
           .index_by(&:id)
 
-        serialize(articles, users)
+        {
+          results: serialize(articles, users),
+          total: total
+        }
       end
 
       def self.serialize(articles, users)
