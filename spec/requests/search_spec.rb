@@ -96,22 +96,45 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/usernames" do
-    let(:authorized_user) { create(:user) }
-    let(:result) do
-      {
-        "username" => "molly",
-        "name" => "Molly",
-        "profile_image_90" => "something"
-      }
+    before do
+      sign_in authorized_user
     end
 
-    it "returns json" do
-      sign_in authorized_user
-      allow(Search::User).to receive(:search_usernames).and_return(
-        result,
-      )
-      get "/search/usernames"
-      expect(response.parsed_body).to eq("result" => result)
+    context "when using Elasticsearch" do
+      let(:result) do
+        {
+          "username" => "molly",
+          "name" => "Molly",
+          "profile_image_90" => "something"
+        }
+      end
+
+      it "returns json" do
+        allow(Search::User).to receive(:search_usernames).and_return(
+          result,
+        )
+        get "/search/usernames"
+        expect(response.parsed_body).to eq("result" => result)
+      end
+    end
+
+    context "when using PostgreSQL" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_usernames).and_return(true)
+      end
+
+      it "returns nothing if there is no username parameter" do
+        get search_usernames_path
+        expect(response.parsed_body["result"]).to be_empty
+      end
+
+      it "finds a username by a partial name" do
+        user = create(:user, username: "Sloan")
+
+        get search_usernames_path(username: "slo")
+
+        expect(response.parsed_body["result"].first).to include("username" => user.username)
+      end
     end
   end
 

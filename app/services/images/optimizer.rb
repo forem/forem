@@ -51,6 +51,7 @@ module Images
       end
 
       options[:crop] = nil
+      options[:fetch_format] = nil
       options
     end
 
