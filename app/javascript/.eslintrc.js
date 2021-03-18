@@ -53,6 +53,7 @@ module.exports = {
       },
     ],
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
+    'jsx-a11y/no-onchange': 'off',
   },
   overrides: [
     {
