@@ -17,7 +17,7 @@ module Notifications
         return if comment.score.negative?
 
         user_ids = Set.new(comment_user_ids + subscribed_user_ids + top_level_user_ids + author_subscriber_user_ids)
-        user_ids = user_ids.delete(comment.user_id)
+        user_ids.delete(comment.user_id)
 
         json_data = {
           user: user_data(comment.user),
