@@ -60,7 +60,7 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
       it "returns article with no ac" do
         article = create(:article, last_comment_at: Time.zone.now, tags: "discuss",
                                    score: described_class::MINIMUM_SCORE)
-        create(:article, last_comment_at: 2.days.ago, tags: "discuss", score: described_class::MINIMUM_SCORE)
+        create(:article, last_comment_at: nil, tags: "discuss", score: described_class::MINIMUM_SCORE)
 
         result = described_class.call(options: { tags: "discuss", time_ago: nil, count: 10 })
         expect(result.length).to eq(2)
