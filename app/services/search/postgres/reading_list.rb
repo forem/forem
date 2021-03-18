@@ -15,6 +15,7 @@ module Search
         "reactions.user_id AS reaction_user_id",
       ].freeze
       USER_ATTRIBUTES = %i[id name profile_image username].freeze
+
       DEFAULT_PER_PAGE = 60
       DEFAULT_STATUSES = %w[confirmed valid].freeze
 
@@ -28,15 +29,9 @@ module Search
 
         total = user.reactions.readinglist.where(status: statuses).count
 
-        articles = Article
-          .joins(:reactions)
-          .select(*ATTRIBUTES)
-          .where("reactions.category": :readinglist)
-          .where("reactions.user_id": user.id)
-          .where("reactions.status": statuses)
-          .order("reactions.created_at": :desc)
-          .page(page)
-          .per(per_page)
+        articles = find_articles(
+          user_id: user.id, statuses: statuses, page: page, per_page: per_page,
+        )
 
         # NOTE: [@rhymes] an earlier version used `Article.includes(:user)`
         # to preload users, unfortunately it's not possible in Rails to specify
@@ -48,16 +43,35 @@ module Search
         # (see https://github.com/forem/forem/pull/4744#discussion_r345698674
         # and https://github.com/rails/rails/issues/15185#issuecomment-351868335
         # for additional context)
-        users = ::User
-          .where(id: articles.pluck(:user_id))
-          .select(*USER_ATTRIBUTES)
-          .index_by(&:id)
+        user_ids = articles.pluck(:user_id)
+        users = find_users(user_ids)
 
         {
           items: serialize(articles, users),
           total: total
         }
       end
+
+      def self.find_articles(user_id:, statuses:, page:, per_page:)
+        ::Article
+          .joins(:reactions)
+          .select(*ATTRIBUTES)
+          .where("reactions.category": :readinglist)
+          .where("reactions.user_id": user_id)
+          .where("reactions.status": statuses)
+          .order("reactions.created_at": :desc)
+          .page(page)
+          .per(per_page)
+      end
+      private_class_method :find_articles
+
+      def self.find_users(user_ids)
+        ::User
+          .where(id: user_ids)
+          .select(*USER_ATTRIBUTES)
+          .index_by(&:id)
+      end
+      private_class_method :find_users
 
       def self.serialize(articles, users)
         Search::ReadingListArticleSerializer
