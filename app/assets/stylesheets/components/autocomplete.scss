@@ -2,9 +2,8 @@
 
 .crayons-autocomplete {
   &__popover {
-    max-width: 300px;
+    min-width: 300px;
     padding: var(--su-1);
-    z-index: var(--z-elevate);
 
     &[data-reach-popover] {
       @include generate-box(

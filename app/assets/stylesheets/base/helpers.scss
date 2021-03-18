@@ -36,15 +36,6 @@
   border-top: var(--su-7) solid var(--accent-brand);
 }
 
-.screen-reader-only {
-  position: absolute;
-  left: -10000px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
 @media print {
   .print-hidden {
     display: none;
