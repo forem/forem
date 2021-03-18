@@ -6,7 +6,8 @@ module Search
     # NOTE: the list of attributes for `reactable` comes from two places:
     # => the `<ItemListItem>` Preact component: https://github.com/forem/forem/blob/33d0e03dbd94fc6797693b84fcafb5040ea399d0/app/javascript/readingList/components/ItemListItem.jsx#L72-L85
     # => the `performInitialSearch` function: https://github.com/forem/forem/blob/33d0e03dbd94fc6797693b84fcafb5040ea399d0/app/javascript/searchableItemList/searchableItemList.js#L78
-    attribute :reactable do |article|
+    attribute :reactable do |article, params|
+      user = params[:users][article.user_id]
       tags = article.cached_tag_list.to_s.split(", ")
 
       {
@@ -25,9 +26,9 @@ module Search
         # the `pro` flag on the frontend, and we also avoid hitting Redis to
         # fetch the cached value
         user: {
-          name: article.user.name,
-          profile_image_90: article.user.profile_image_90,
-          username: article.user.username
+          name: user.name,
+          profile_image_90: user.profile_image_90,
+          username: user.username
         }
       }
     end

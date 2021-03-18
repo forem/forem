@@ -16,6 +16,7 @@ module Search
         "reactions.id AS reaction_id",
         "reactions.user_id AS reaction_user_id",
       ].freeze
+      USER_ATTRIBUTES = %i[id name profile_image username].freeze
       DEFAULT_PER_PAGE = 60
       DEFAULT_STATUSES = %w[valid confirmed].freeze
 
@@ -27,10 +28,9 @@ module Search
         page = page.to_i.zero? ? 1 : page.to_i
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, 100].min
 
-        # https://dev.to/admin/blazer/queries/349-reading-list-articles-query-plan
-        results = Article
+        # https://dev.to/admin/blazer/queries/350-reading-list-articles-query-plan-test-2
+        articles = Article
           .joins(:reactions)
-          .includes(:user)
           .select(*ATTRIBUTES)
           .where("reactions.category": :readinglist)
           .where("reactions.user_id": user.id)
@@ -39,11 +39,27 @@ module Search
           .page(page)
           .per(per_page)
 
-        serialize(results)
+        # NOTE: [@rhymes] an earlier version used `Article.includes(:user)`
+        # to preload users, unfortunately it's not possible in Rails to specify
+        # which fields of the included relation's table to select ahead of time.
+        # The `users` table is massive (115 columns on March 2021) and thus we
+        # shouldn't load it all in memory just to select a few fields.
+        # For these reasons I decided to avoid preloading altogether and issue
+        # an additional SQL query to load User objects
+        # (see https://github.com/forem/forem/pull/4744#discussion_r345698674
+        # and https://github.com/rails/rails/issues/15185#issuecomment-351868335
+        # for additional context)
+        users = ::User
+          .where(id: articles.pluck(:user_id))
+          .select(*USER_ATTRIBUTES)
+          .index_by(&:id)
+
+        serialize(articles, users)
       end
 
-      def self.serialize(results)
-        Search::ReadingListArticleSerializer.new(results, is_collection: true)
+      def self.serialize(articles, users)
+        Search::ReadingListArticleSerializer
+          .new(articles, params: { users: users }, is_collection: true)
           .serializable_hash[:data]
           .pluck(:attributes)
       end
