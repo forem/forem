@@ -21,7 +21,7 @@ module Articles
                      .where(published_at: time_ago.., score: MINIMUM_SCORE..).presence ||
                      relation.order(comments_count: :desc)
                  else
-                   relation.order(last_comment_at: :desc)
+                   relation.order("last_comment_at DESC NULLS LAST")
                      .where(published_at: (tags.present? ? 5 : 2).days.ago.., score: MINIMUM_SCORE..).presence ||
                      relation.order(last_comment_at: :desc)
                  end
