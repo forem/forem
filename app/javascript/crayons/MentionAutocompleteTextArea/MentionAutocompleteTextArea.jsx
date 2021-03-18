@@ -94,44 +94,38 @@ export const MentionAutocompleteTextArea = ({
   const isSmallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Small}px)`);
 
   const inputRef = useRef(null);
+  const popoverRef = useRef(null);
 
-  useEffect(() => {
-    if (searchTerm.length >= MIN_SEARCH_CHARACTERS) {
-      if (cachedSearches[searchTerm]) {
-        setUsers(cachedSearches[searchTerm]);
-        return;
-      }
+  useEffect(async () => {
+    if (searchTerm.length < MIN_SEARCH_CHARACTERS) {
+      return;
+    }
 
-      fetchSuggestions(searchTerm).then(({ result: fetchedUsers }) => {
-        const resultLength = Math.min(
-          fetchedUsers.length,
-          MAX_RESULTS_DISPLAYED,
-        );
+    if (cachedSearches[searchTerm]) {
+      setUsers(cachedSearches[searchTerm]);
+      return;
+    }
 
-        const results = fetchedUsers.slice(0, resultLength);
+    const { result: fetchedUsers } = await fetchSuggestions(searchTerm);
+    const resultLength = Math.min(fetchedUsers.length, MAX_RESULTS_DISPLAYED);
 
-        setCachedSearches({
-          ...cachedSearches,
-          [searchTerm]: results,
-        });
+    const results = fetchedUsers.slice(0, resultLength);
 
-        setUsers(results);
+    setCachedSearches({
+      ...cachedSearches,
+      [searchTerm]: results,
+    });
 
-        // Let screen reader users know a list has populated
-        const requiresAriaLiveAnnouncement =
-          !ariaHelperText && fetchedUsers.length > 0;
+    setUsers(results);
 
-        if (requiresAriaLiveAnnouncement) {
-          setAriaHelperText(
-            `Mention user, ${fetchedUsers.length} results found`,
-          );
-        }
-      });
+    // Let screen reader users know a list has populated
+    if (!ariaHelperText && fetchedUsers.length > 0) {
+      setAriaHelperText(`Mention user, ${fetchedUsers.length} results found`);
     }
   }, [searchTerm, fetchSuggestions, cachedSearches, ariaHelperText]);
 
   useLayoutEffect(() => {
-    const popover = document.getElementById('mention-autocomplete-popover');
+    const popover = popoverRef.current;
     if (!popover) {
       return;
     }
@@ -152,11 +146,12 @@ export const MentionAutocompleteTextArea = ({
   }, [searchTerm]);
 
   useLayoutEffect(() => {
-    inputRef.current.focus();
-    inputRef.current.setSelectionRange(cursorPosition, cursorPosition - 1);
+    const { current: input } = inputRef;
+    input.focus();
+    input.setSelectionRange(cursorPosition, cursorPosition - 1);
   }, [cursorPosition]);
 
-  const handleValueChange = ({ target: { value } }) => {
+  const handleTextInputChange = ({ target: { value } }) => {
     setTextContent(value);
     const { isUserMention, indexOfMentionStart } = getMentionWordData(
       inputRef.current,
@@ -194,6 +189,7 @@ export const MentionAutocompleteTextArea = ({
   };
 
   const handleSelect = (username) => {
+    // Construct the new textArea content with selected username inserted
     const textWithSelection = `${textContent.substring(
       0,
       selectionInsertIndex,
@@ -235,14 +231,14 @@ export const MentionAutocompleteTextArea = ({
           data-mention-autocomplete-active="true"
           as="textarea"
           autocomplete={false}
-          onChange={handleValueChange}
+          onChange={handleTextInputChange}
         />
         {searchTerm && (
           <ComboboxPopover
-            className="crayons-autocomplete__popover"
+            ref={popoverRef}
+            className="crayons-autocomplete__popover absolute"
             id="mention-autocomplete-popover"
             style={{
-              position: 'absolute',
               top: `calc(${dropdownPositionPoints.y}px + 1.5rem)`,
               left: `${dropdownPositionPoints.x}px`,
             }}

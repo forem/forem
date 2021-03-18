@@ -3,7 +3,7 @@ import { MentionAutocompleteTextArea } from '../MentionAutocompleteTextArea';
 import notes from './mention-autocomplete.md';
 
 export default {
-  title: 'Components/MentionAutocompleteTextArea',
+  title: 'App Components/MentionAutocompleteTextArea',
   parameters: { notes },
 };
 
