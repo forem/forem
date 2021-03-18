@@ -22,10 +22,11 @@ module Search
 
       def self.search_documents(user, statuses: [], tags: [], page: 1, per_page: DEFAULT_PER_PAGE)
         statuses = statuses.presence || DEFAULT_STATUSES
+        tags ||= []
 
         # NOTE: [@rhymes] we should eventually update the frontend
         # to start from page 1
-        page = page.to_i.zero? ? 1 : page.to_i
+        page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, 100].min
 
         total = user.reactions.readinglist.where(status: statuses).count
