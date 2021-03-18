@@ -890,6 +890,18 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#trusted" do
+    it "memoizes the result from rolify" do
+      allow(Rails.cache)
+        .to receive(:fetch)
+        .with("user-#{user.id}/has_trusted_role", expires_in: 200.hours)
+        .and_return(false)
+        .once
+
+      2.times { user.trusted }
+    end
+  end
+
   describe "profiles" do
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)

@@ -36,7 +36,7 @@ module Mentions
     end
 
     def extract_usernames_from_mentions_in_text
-      # Paired with the process that creates the "comment-mentioned-user"
+      # The "comment-mentioned-user" css is added by Html::Parser#user_link_if_exists
       doc = Nokogiri::HTML(notifiable.processed_html)
       doc.css(".comment-mentioned-user").map do |link|
         link.text.delete("@").downcase

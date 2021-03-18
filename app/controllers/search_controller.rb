@@ -50,9 +50,13 @@ class SearchController < ApplicationController
   ].freeze
 
   def tags
-    tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
+    result = if FeatureFlag.enabled?(:search_2_tags)
+               Search::Postgres::Tag.search_documents(params[:name])
+             else
+               Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
+             end
 
-    render json: { result: tag_docs }
+    render json: { result: result }
   rescue Search::Errors::Transport::BadRequest
     render json: { result: [] }
   end
@@ -83,9 +87,13 @@ class SearchController < ApplicationController
   end
 
   def usernames
-    usernames = Search::User.search_usernames(params[:username])
+    result = if FeatureFlag.enabled?(:search_2_usernames)
+               Search::Postgres::Username.search_documents(params[:username])
+             else
+               Search::User.search_usernames(params[:username])
+             end
 
-    render json: { result: usernames }
+    render json: { result: result }
   rescue Search::Errors::Transport::BadRequest
     render json: { result: [] }
   end

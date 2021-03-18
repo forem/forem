@@ -56,7 +56,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    rate_limit!(:comment_creation)
+    rate_limit!(rate_limit_to_use)
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
@@ -282,5 +282,13 @@ class CommentsController < ApplicationController
   def redirect_to_comment_path
     flash[:error] = "Something went wrong; Comment NOT deleted."
     redirect_to "#{@comment.path}/mod"
+  end
+
+  def rate_limit_to_use
+    if current_user.created_at.before?(3.days.ago.beginning_of_day)
+      :comment_creation
+    else
+      :comment_antispam_creation
+    end
   end
 end

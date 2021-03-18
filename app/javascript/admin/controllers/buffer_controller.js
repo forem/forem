@@ -5,7 +5,6 @@ const CONFIRM_BADGE_HTML =
 const DISMISS_BADGE_HTML =
   '<span class="ml-2 badge badge-danger">Dismiss</span>';
 
-// eslint-disable-next-line no-restricted-syntax
 export default class BufferController extends Controller {
   static classes = ['bgHighlighted', 'borderHighlighted'];
   static targets = ['header', 'bodyText'];

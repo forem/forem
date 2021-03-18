@@ -86,5 +86,14 @@ RSpec.describe Search::User, type: :service do
     it "does not allow leading wildcards" do
       expect { described_class.search_usernames("*star") }.to raise_error(Search::Errors::Transport::BadRequest)
     end
+
+    it "limits the number of results to the value of MAX_RESULTS" do
+      max_results = 1
+      stub_const("Search::Postgres::Username::MAX_RESULTS", max_results)
+
+      usernames = described_class.search_usernames("star*")
+      expect(usernames.size).to eq(max_results)
+      expect([user1.username, user2.username]).to include(usernames.first["username"])
+    end
   end
 end
