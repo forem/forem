@@ -9,10 +9,16 @@ RSpec.describe NextTechTag, type: :liquid_template do
       Liquid::Template.parse("{% nexttech #{link} %}")
     end
 
-    xit "accepts nexttech link" do
+    it "accepts nexttech link" do
       liquid = generate_new_liquid(nexttech_link)
-      rendered_nexttech_iframe = liquid.render
-      Approvals.verify(rendered_nexttech_iframe, name: "nexttech_liquid_tag", format: :html)
+
+      # rubocop:disable Style/StringLiterals
+      expect(liquid.render).to include('<iframe')
+      expect(liquid.render).to include('src="https://next.tech/projects/6ba1fffbd09e/embed"')
+      expect(liquid.render).to include(
+        'style="width:100%; height:calc(350px + 8vw); border:0; border-radius: 4px; overflow:hidden;"',
+      )
+      # rubocop:enable Style/StringLiterals
     end
 
     it "accepts nexttech link with a / at the end" do

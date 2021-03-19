@@ -43,22 +43,34 @@ RSpec.describe "Using the editor", type: :system do
       page.evaluate_script("window.onbeforeunload = function(){}")
     end
 
-    xit "fills out form with rich content and click preview" do
+    it "fills out form with rich content and click preview" do
       article_body = find("div.crayons-article__body")["innerHTML"]
       article_body.gsub!(%r{"https://res\.cloudinary\.com/.{1,}"}, "cloudinary_link")
 
-      Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
+      # TODO: Convert this to an E2E test?
+      # rubocop:disable Style/StringLiterals
+      expect(article_body).to include('<a name="multiword-heading-with-weird-punctuampation"')
+      expect(article_body).to include('<a name="emoji-heading"')
+      expect(article_body).to include('<blockquote>')
+      expect(article_body).to include('Format: <a href=cloudinary_link></a>')
+      # rubocop:enable Style/StringLiterals
     end
   end
 
   describe "Submitting an article", js: true do
-    xit "fill out form and submit" do
+    it "fill out form and submit" do
       fill_markdown_with(read_from_file(raw_text))
       find("button", text: /\ASave changes\z/).click
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
       article_body.gsub!(%r{"https://res\.cloudinary\.com/.{1,}"}, "cloudinary_link")
 
-      Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
+      # TODO: Convert this to an E2E test?
+      # rubocop:disable Style/StringLiterals
+      expect(article_body).to include('<a name="multiword-heading-with-weird-punctuampation"')
+      expect(article_body).to include('<a name="emoji-heading"')
+      expect(article_body).to include('<blockquote>')
+      expect(article_body).to include('Format: <a href=cloudinary_link></a>')
+      # rubocop:enable Style/StringLiterals
     end
 
     it "user write and publish an article" do

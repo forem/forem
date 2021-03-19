@@ -10,11 +10,17 @@ RSpec.describe InstagramTag, type: :liquid_tag do
       Liquid::Template.parse("{% instagram #{id} %}")
     end
 
-    xit "checks that the tag is properly parsed" do
+    it "checks that the tag is properly parsed" do
       valid_id = "BXgGcAUjM39"
       liquid = generate_instagram_tag(valid_id)
-      rendered_instagram = liquid.render
-      Approvals.verify(rendered_instagram, name: "instagram_liquid_tag", format: :html)
+
+      # rubocop:disable Style/StringLiterals
+      expect(liquid.render).to include('<iframe')
+      expect(liquid.render).to include('id="instagram-liquid-tag"')
+      expect(liquid.render).to include("https://www.instagram.com/p/#{valid_id}/embed/captioned")
+      expect(liquid.render).to include('src="https://platform.instagram.com/en_US/embeds.js"')
+      expect(liquid.render).to include('<div class="instagram-position">')
+      # rubocop:enable Style/StringLiterals
     end
 
     it "rejects invalid ids" do
