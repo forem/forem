@@ -1,0 +1,29 @@
+describe('User Login', () => {
+  beforeEach(() => {
+    cy.testSetup();
+
+    cy.fixture('users/changePasswordUser.json').as('user');
+
+    cy.get('@user').then((user) => {
+      cy.loginUser(user).then(() => {
+        cy.visit('/');
+      });
+    });
+  });
+
+  it('should allow a user to logout', () => {
+    // Click on the sign out button
+    cy.findByText('Sign Out').click({ force: true });
+
+    // Sign out confirmation page is rendered
+    cy.url().should('contains', '/signout_confirm');
+    cy.findByText('Yes, sign out').click();
+
+    // User should be redirected to the homepage
+    const { baseUrl } = Cypress.config();
+    cy.url().should('equal', `${baseUrl}`);
+
+    // User data should not exist on the document
+    cy.document().should('not.have.nested.property', 'body.dataset.user');
+  });
+});

@@ -32,5 +32,8 @@ describe('User Login', () => {
     // User should be redirected to onboarding
     const { baseUrl } = Cypress.config();
     cy.url().should('equal', `${baseUrl}?signin=true`);
+
+    // User data should exist on the document
+    cy.document().should('have.nested.property', 'body.dataset.user');
   });
 });
