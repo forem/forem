@@ -34,7 +34,7 @@ module Notifications
           )
         end
 
-        targets = User.where(id: user_ids, mobile_comment_notifications: true).order(:id).ids
+        targets = User.where(id: user_ids, mobile_comment_notifications: true).ids
 
         # Pusher Beams uses named Pub/Sub channels instead of raw user_ids
         target_channels = targets.map { |id| "user-notifications-#{id}" }
@@ -44,11 +44,12 @@ module Notifications
 
         if FeatureFlag.enabled?(:mobile_notifications)
           # Send PNs using Rpush
+          url_path = Rails.application.routes.url_helpers.notifications_path(:comments)
           PushNotifications::Send.call(
             user_ids: targets,
             title: "@#{comment.user.username}",
-            body: "re: #{comment.parent_or_root_article.title.strip}",
-            payload: { url: URL.url("/notifications/comments") },
+            body: "Re: #{comment.parent_or_root_article.title.strip}",
+            payload: { url: URL.url(url_path) },
           )
         end
 
