@@ -20,7 +20,7 @@ module Search
       DEFAULT_PER_PAGE = 60
       DEFAULT_STATUSES = %w[confirmed valid].freeze
 
-      def self.search_documents(user, statuses: [], tags: [], page: 1, per_page: DEFAULT_PER_PAGE)
+      def self.search_documents(user, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE)
         statuses = statuses.presence || DEFAULT_STATUSES
         tags ||= []
 
