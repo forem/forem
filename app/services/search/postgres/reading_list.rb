@@ -70,22 +70,23 @@ module Search
 
         relation = relation.search_reading_list(term) if term.present?
 
-        # NOTE: [@rhymes] A few details:
-        # =>`.tagged_with()` merges `articles.*` to the SQL, thus we need to
+        # NOTE: [@rhymes] A previous version was implemented with:
+        # `.tagged_with(tags, any: false).reselect(*ATTRIBUTES)`
+        #
+        # =>`.tagged_with()` merges `articles.*` to the SQL, thus we needed to
         #    use `reselect()`, see https://github.com/forem/forem/pull/12420
         # => `.tagged_with()` with multiple tags constructs a monster query,
         #    see https://explain.depesz.com/s/CqQV / https://explain.dalibo.com/plan/1Lm
         # This is because the `acts-as-taggable-on` query creates a separate INNER JOIN
-        # each tag is added to filter for, each new clause uses the `LIKE` operator on `tags.name`
-        # A possible way to improve a bit would be to add a GIN index on `tags.name`, see
+        # per each tag that is added to the list, each new clause uses the `LIKE` operator on `tags.name`.
+        # That could have been improved by by adding a GIN index on `tags.name`, see
         # https://www.cybertec-postgresql.com/en/postgresql-more-performance-for-like-and-ilike-statements/
         # and a similar discussion https://github.com/forem/forem/pull/12584#discussion_r570756176
-        # relation = relation.tagged_with(tags, any: false).reselect(*ATTRIBUTES) if tags.present?
-
-        # An alternative solution, as we don't need the `Tag` model, is to use
-        # `articles.cached_tag_list` and the `LIKE` operator, this could be further
+        #
+        # An alternative solution, as we don't need the `Tag` model itself, is to use
+        # `articles.cached_tag_list` and the `LIKE` operator on it, this could be further
         # improved, if needed, by adding a GIN index on `cached_tag_list`
-        # It seems not to be needed as this approach is roughly 1850 times faster
+        # It seems not to be needed as this approach is roughly 1850 times faster than the previous
         # see https://explain.depesz.com/s/ajoP / https://explain.dalibo.com/plan/PZb
         tags.each do |tag|
           relation = relation.where("articles.cached_tag_list LIKE ?", "%#{tag}%")
