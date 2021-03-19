@@ -190,8 +190,6 @@ GEM
       activesupport (>= 3.2.0)
       carrierwave
       fastimage
-    caze (0.2.2)
-      activesupport (>= 3)
     chartkick (3.4.2)
     childprocess (3.0.0)
     cloudinary (1.19.0)
@@ -560,8 +558,7 @@ GEM
       httpclient (~> 2.8)
       multi_json (~> 1.15)
       pusher-signature (~> 0.1.8)
-    pusher-push-notifications (1.3.0)
-      caze (~> 0)
+    pusher-push-notifications (2.0.1)
       jwt (~> 2.1, >= 2.1.0)
       rest-client (~> 2.0, >= 2.0.2)
     pusher-signature (0.1.8)
@@ -970,7 +967,7 @@ DEPENDENCIES
   pundit (~> 2.1)
   pundit-matchers (~> 1.6)
   pusher (~> 1.4)
-  pusher-push-notifications (~> 1.3)
+  pusher-push-notifications (~> 2.0)
   rack-attack (~> 6.5.0)
   rack-cors (~> 1.1)
   rack-host-redirect (~> 1.3)
