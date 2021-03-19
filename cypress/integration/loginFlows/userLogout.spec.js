@@ -23,7 +23,10 @@ describe('User Logout', () => {
     const { baseUrl } = Cypress.config();
     cy.url().should('equal', `${baseUrl}`);
 
-    // User data should not exist on the document
-    cy.document().should('not.have.nested.property', 'body.dataset.user');
+    // User data should not exist on the document or in localStorage
+    cy.document().should((doc) => {
+      expect(doc.body.dataset).not.to.have.property('user');
+      expect(localStorage.getItem('current_user')).to.be.null;
+    });
   });
 });
