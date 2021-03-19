@@ -183,7 +183,6 @@ export class ReadingList extends Component {
 
     const isStatusViewValid = this.statusViewValid();
     const archiveButtonLabel = isStatusViewValid ? 'Archive' : 'Unarchive';
-    const hasTags = availableTags.length > 0;
 
     const snackBar = archiving ? (
       <div className="snackbar">
@@ -238,12 +237,8 @@ export class ReadingList extends Component {
           query={`(min-width: ${BREAKPOINTS.Medium}px)`}
           render={(matches) => {
             return (
-              <div
-                className={`crayons-layout ${
-                  hasTags ? 'crayons-layout--2-cols' : 'grid-cols-1'
-                }`}
-              >
-                {matches && hasTags && (
+              <div className="crayons-layout crayons-layout--2-cols">
+                {matches && (
                   <div className="crayons-layout__sidebar-left">
                     <TagList
                       availableTags={availableTags}
