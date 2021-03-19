@@ -36,6 +36,12 @@ module Notifications
 
         targets = User.where(id: user_ids, mobile_comment_notifications: true).ids
 
+        # Pusher Beams uses named Pub/Sub channels instead of raw user_ids
+        target_channels = targets.map { |id| "user-notifications-#{id}" }
+        # Sends the push notification to Pusher Beams channels.
+        # Batch is in place to respect Pusher 100 channel limit.
+        target_channels.each_slice(100) { |batch| send_push_notifications(batch) }
+
         if FeatureFlag.enabled?(:mobile_notifications)
           # Send PNs using Rpush
           PushNotifications::Send.call(
@@ -44,12 +50,6 @@ module Notifications
             body: "re: #{comment.parent_or_root_article.title.strip}",
             payload: { url: URL.url("/notifications/comments") },
           )
-        else
-          # Pusher Beams uses named Pub/Sub channels instead of raw user_ids
-          targets.map! { |user_id| "user-notifications-#{user_id}" }
-          # Sends the push notification to Pusher Beams channels.
-          # Batch is in place to respect Pusher 100 channel limit.
-          targets.each_slice(100) { |batch| send_push_notifications(batch) }
         end
 
         return unless comment.commentable.organization_id
