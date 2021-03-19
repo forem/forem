@@ -196,7 +196,7 @@ export const MentionAutocompleteTextArea = ({
     const textWithSelection = `${textContent.substring(
       0,
       selectionInsertIndex,
-    )}${username}${textContent.substring(inputRef.current.selectionStart)}`;
+    )}${username} ${textContent.substring(inputRef.current.selectionStart)}`;
 
     // Clear the current search
     setSearchTerm('');
@@ -206,8 +206,8 @@ export const MentionAutocompleteTextArea = ({
     // Update the text area value
     setTextContent(textWithSelection);
 
-    // Update the cursor to directly after the selection
-    const newCursorPosition = selectionInsertIndex + username.length + 1;
+    // Update the cursor to directly after the selection (+2 accounts for the @ sign, and adding a space after the username)
+    const newCursorPosition = selectionInsertIndex + username.length + 2;
     setCursorPosition(newCursorPosition);
   };
 
