@@ -135,7 +135,6 @@
     "redoc-cli": "0.10.4",
     "sass": "1.32.8",
     "sass-loader": "^10.1.1",
-    "start-server-and-test": "^1.12.0",
     "style-loader": "^2.0.0",
     "svgo": "2.2.2",
     "webpack-bundle-analyzer": "^4.4.0",
