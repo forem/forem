@@ -34,7 +34,7 @@ module Notifications
           )
         end
 
-        targets = User.where(id: user_ids, mobile_comment_notifications: true).ids
+        targets = User.where(id: user_ids, mobile_comment_notifications: true).order(:id).ids
 
         # Pusher Beams uses named Pub/Sub channels instead of raw user_ids
         target_channels = targets.map { |id| "user-notifications-#{id}" }
