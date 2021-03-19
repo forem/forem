@@ -106,7 +106,7 @@ GEM
       device_detector
       geocoder (>= 1.4.5)
       safely_block (>= 0.2.1)
-    amazing_print (1.2.2)
+    amazing_print (1.3.0)
     ancestry (3.2.1)
       activerecord (>= 4.2.0)
     anyway_config (2.1.0)
@@ -887,7 +887,7 @@ DEPENDENCIES
   addressable (~> 2.7)
   ahoy_email (~> 1.1)
   ahoy_matey (~> 3.2)
-  amazing_print (~> 1.2)
+  amazing_print (~> 1.3)
   ancestry (~> 3.2)
   approvals (~> 0.0)
   better_errors (~> 2.9)
