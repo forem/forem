@@ -441,11 +441,7 @@ function handleButtonsActivation(event) {
   if (commentForm) {
     var buttons = textarea.closest('.comment-form').getElementsByClassName('js-btn-enable');
     Array.from(buttons).forEach(function(button) {
-      if (textarea.value.length > 0) {
-        button.disabled = false;
-      } else {
-        button.disabled = true;
-      }
+      button.disabled = textarea.value.length === 0;
     });
   };
 }
