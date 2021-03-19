@@ -54,9 +54,9 @@ RSpec.describe KotlinTag, type: :liquid_tag do
 
       # rubocop:disable Style/StringLiterals
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include(
-        "https://play.kotlinlang.org/embed?short=owreUFFUG&amp;from&amp;to&amp;theme=darcula&amp;readOnly",
-      )
+        .and include(
+          "https://play.kotlinlang.org/embed?short=owreUFFUG&amp;from&amp;to&amp;theme=darcula&amp;readOnly",
+        )
       # rubocop:enable Style/StringLiterals
     end
   end

@@ -21,7 +21,7 @@ RSpec.describe JsFiddleTag, type: :liquid_tag do
 
       # rubocop:disable Style/StringLiterals
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include('src="http://jsfiddle.net/link2twenty/v2kx9jcd/embedded//dark"')
+        .and include('src="http://jsfiddle.net/link2twenty/v2kx9jcd/embedded//dark"')
       # rubocop:enable Style/StringLiterals
     end
 

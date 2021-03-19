@@ -18,7 +18,7 @@ RSpec.describe ParlerTag, type: :liquid_tag do
 
       # rubocop:disable Style/StringLiterals
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include("https://api.parler.io/ss/player?url=#{valid_id}")
+        .and include("https://api.parler.io/ss/player?url=#{valid_id}")
       # rubocop:enable Style/StringLiterals
     end
 

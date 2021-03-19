@@ -22,7 +22,7 @@ RSpec.describe SoundcloudTag, type: :liquid_tag do
 
       # rubocop:disable Style/StringLiterals
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include("#{url_segment}=#{soundcloud_link}&auto_play=false")
+        .and include("#{url_segment}=#{soundcloud_link}&auto_play=false")
       # rubocop:enable Style/StringLiterals
     end
 

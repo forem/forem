@@ -19,7 +19,7 @@ RSpec.describe DotnetFiddleTag, type: :liquid_tag do
       liquid = generate_new_liquid(dotnetfiddle_link)
 
       expect(liquid.render).to include("<iframe")
-      expect(liquid.render).to include('src="https://dotnetfiddle.net/Widget/v2kx9jcd"')
+        .and include('src="https://dotnetfiddle.net/Widget/v2kx9jcd"')
     end
 
     it "accepts dotnet link with a / at the end" do

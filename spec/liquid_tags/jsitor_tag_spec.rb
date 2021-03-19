@@ -24,7 +24,7 @@ RSpec.describe JsitorTag, type: :liquid_tag do
       liquid = create_jsitor_liquid_tag(jsitor_link)
 
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include('src="https://jsitor.com/embed/B7FQ5tHbY"')
+        .and include('src="https://jsitor.com/embed/B7FQ5tHbY"')
     end
 
     it "parses the link with spaces before and after" do
@@ -32,7 +32,7 @@ RSpec.describe JsitorTag, type: :liquid_tag do
       liquid = create_jsitor_liquid_tag(link)
 
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include('src="https://jsitor.com/embed/B7FQ5tHbY"')
+        .and include('src="https://jsitor.com/embed/B7FQ5tHbY"')
     end
 
     it "accepts jsitor link with query params" do
@@ -40,7 +40,7 @@ RSpec.describe JsitorTag, type: :liquid_tag do
       liquid = create_jsitor_liquid_tag(link)
 
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include('src="https://jsitor.com/embed/B7FQ5tHbY?html&amp;css"')
+        .and include('src="https://jsitor.com/embed/B7FQ5tHbY?html&amp;css"')
     end
 
     it "accepts jsitor id" do
@@ -48,7 +48,7 @@ RSpec.describe JsitorTag, type: :liquid_tag do
       liquid = create_jsitor_liquid_tag(link)
 
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include("https://jsitor.com/embed/#{link}")
+        .and include("https://jsitor.com/embed/#{link}")
     end
 
     it "accepts jsitor id with parameters" do
@@ -56,7 +56,7 @@ RSpec.describe JsitorTag, type: :liquid_tag do
       liquid = create_jsitor_liquid_tag(link)
 
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include("https://jsitor.com/embed/#{link}")
+        .and include("https://jsitor.com/embed/#{link}")
     end
 
     it "accepts jsitor link with hyphen id" do
@@ -64,7 +64,7 @@ RSpec.describe JsitorTag, type: :liquid_tag do
       liquid = create_jsitor_liquid_tag(link)
 
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include(link)
+        .and include(link)
     end
 
     it "accepts jsitor id with hyphen" do
@@ -72,7 +72,7 @@ RSpec.describe JsitorTag, type: :liquid_tag do
       liquid = create_jsitor_liquid_tag(link)
 
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include("https://jsitor.com/embed/#{link}")
+        .and include("https://jsitor.com/embed/#{link}")
     end
     # rubocop:enable Style/StringLiterals
 

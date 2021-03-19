@@ -14,10 +14,10 @@ RSpec.describe NextTechTag, type: :liquid_template do
 
       # rubocop:disable Style/StringLiterals
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include('src="https://next.tech/projects/6ba1fffbd09e/embed"')
-      expect(liquid.render).to include(
-        'style="width:100%; height:calc(350px + 8vw); border:0; border-radius: 4px; overflow:hidden;"',
-      )
+        .and include('src="https://next.tech/projects/6ba1fffbd09e/embed"')
+        .and include(
+          'style="width:100%; height:calc(350px + 8vw); border:0; border-radius: 4px; overflow:hidden;"',
+        )
       # rubocop:enable Style/StringLiterals
     end
 

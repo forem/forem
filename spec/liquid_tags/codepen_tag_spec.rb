@@ -21,9 +21,9 @@ RSpec.describe CodepenTag, type: :liquid_tag do
       liquid = generate_new_liquid(codepen_link)
 
       expect(liquid.render).to include("<iframe")
-      expect(liquid.render).to include(
-        'src="https://codepen.io/twhite96/embed/XKqrJX?height=600&default-tab=result&embed-version=2"',
-      )
+        .and include(
+          'src="https://codepen.io/twhite96/embed/XKqrJX?height=600&default-tab=result&embed-version=2"',
+        )
     end
 
     it "accepts codepen link with a / at the end" do

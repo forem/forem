@@ -16,10 +16,10 @@ RSpec.describe InstagramTag, type: :liquid_tag do
 
       # rubocop:disable Style/StringLiterals
       expect(liquid.render).to include('<iframe')
-      expect(liquid.render).to include('id="instagram-liquid-tag"')
-      expect(liquid.render).to include("https://www.instagram.com/p/#{valid_id}/embed/captioned")
-      expect(liquid.render).to include('src="https://platform.instagram.com/en_US/embeds.js"')
-      expect(liquid.render).to include('<div class="instagram-position">')
+        .and include('id="instagram-liquid-tag"')
+        .and include("https://www.instagram.com/p/#{valid_id}/embed/captioned")
+        .and include('src="https://platform.instagram.com/en_US/embeds.js"')
+        .and include('<div class="instagram-position">')
       # rubocop:enable Style/StringLiterals
     end
 

@@ -50,9 +50,9 @@ RSpec.describe "Using the editor", type: :system do
       # TODO: Convert this to an E2E test?
       # rubocop:disable Style/StringLiterals
       expect(article_body).to include('<a name="multiword-heading-with-weird-punctuampation"')
-      expect(article_body).to include('<a name="emoji-heading"')
-      expect(article_body).to include('<blockquote>')
-      expect(article_body).to include('Format: <a href=cloudinary_link></a>')
+        .and include('<a name="emoji-heading"')
+        .and include('<blockquote>')
+        .and include('Format: <a href=cloudinary_link></a>')
       # rubocop:enable Style/StringLiterals
     end
   end
@@ -67,9 +67,9 @@ RSpec.describe "Using the editor", type: :system do
       # TODO: Convert this to an E2E test?
       # rubocop:disable Style/StringLiterals
       expect(article_body).to include('<a name="multiword-heading-with-weird-punctuampation"')
-      expect(article_body).to include('<a name="emoji-heading"')
-      expect(article_body).to include('<blockquote>')
-      expect(article_body).to include('Format: <a href=cloudinary_link></a>')
+        .and include('<a name="emoji-heading"')
+        .and include('<blockquote>')
+        .and include('Format: <a href=cloudinary_link></a>')
       # rubocop:enable Style/StringLiterals
     end
 
