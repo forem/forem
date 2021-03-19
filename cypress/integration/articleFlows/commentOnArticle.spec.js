@@ -156,11 +156,12 @@ describe('Comment on articles', () => {
     cy.findByRole('button', { name: /Submit/ }).click();
 
     cy.findByRole('link', { name: /Reply/ }).click();
-    cy.findByLabelText('Reply to a comment...').click();
 
-    cy.findAllByRole('combobox')[1];
-
-    cy.findByLabelText('Reply to a comment...').type('Some text @search_user');
+    cy.findByRole('combobox', { name: /Reply to a comment/ }).as(
+      'replyCombobox',
+    );
+    cy.get('@replyCombobox').click();
+    cy.get('@replyCombobox').type('Some text @search_user');
 
     cy.findByText('@search_user_1').click();
     cy.findByDisplayValue('Some text @search_user_1');
