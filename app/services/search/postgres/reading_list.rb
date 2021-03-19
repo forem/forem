@@ -20,7 +20,7 @@ module Search
       DEFAULT_PER_PAGE = 60
       DEFAULT_STATUSES = %w[confirmed valid].freeze
 
-      def self.search_documents(user, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE)
+      def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE)
         statuses = statuses.presence || DEFAULT_STATUSES
         tags ||= []
 
@@ -33,6 +33,7 @@ module Search
 
         articles = find_articles(
           user_id: user.id,
+          term: term,
           statuses: statuses,
           tags: tags,
           page: page,
@@ -58,7 +59,7 @@ module Search
         }
       end
 
-      def self.find_articles(user_id:, statuses:, tags:, page:, per_page:)
+      def self.find_articles(user_id:, term:, statuses:, tags:, page:, per_page:)
         relation = ::Article
           .joins(:reactions)
           .select(*ATTRIBUTES)
@@ -66,6 +67,8 @@ module Search
           .where("reactions.user_id": user_id)
           .where("reactions.status": statuses)
           .order("reactions.created_at": :desc)
+
+        relation = relation.search_reading_list(term) if term.present?
 
         # NOTE: [@rhymes] A few details:
         # =>`.tagged_with()` merges `articles.*` to the SQL, thus we need to
