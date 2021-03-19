@@ -104,7 +104,8 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
   if (
     selectionIndex !== 0 &&
     previousCharacter !== ' ' &&
-    previousCharacter !== ''
+    previousCharacter !== '' &&
+    previousCharacter !== '\n'
   ) {
     return getIndexOfCurrentWordAutocompleteSymbol(content, selectionIndex - 1);
   }
