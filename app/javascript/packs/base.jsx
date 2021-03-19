@@ -4,7 +4,6 @@ import {
   getInstantClick,
   initializeTouchDevice,
 } from '../topNavigation/utilities';
-import { fetchSearch } from '@utilities/search';
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {};
@@ -19,8 +18,13 @@ window.Forem.initializeMentionAutocompleteTextArea = async (
     return;
   }
 
-  const [{ MentionAutocompleteTextArea }, { render, h }] = await Promise.all([
+  const [
+    { MentionAutocompleteTextArea },
+    { fetchSearch },
+    { render, h },
+  ] = await Promise.all([
     import('@crayons/MentionAutocompleteTextArea'),
+    import('@utilities/search'),
     import('preact'),
   ]);
 
