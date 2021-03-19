@@ -96,7 +96,7 @@ export const MentionAutocompleteTextArea = ({
   const inputRef = useRef(null);
   const popoverRef = useRef(null);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (searchTerm.length < MIN_SEARCH_CHARACTERS) {
       return;
     }
@@ -106,22 +106,23 @@ export const MentionAutocompleteTextArea = ({
       return;
     }
 
-    const { result: fetchedUsers } = await fetchSuggestions(searchTerm);
-    const resultLength = Math.min(fetchedUsers.length, MAX_RESULTS_DISPLAYED);
+    fetchSuggestions(searchTerm).then(({ result: fetchedUsers }) => {
+      const resultLength = Math.min(fetchedUsers.length, MAX_RESULTS_DISPLAYED);
 
-    const results = fetchedUsers.slice(0, resultLength);
+      const results = fetchedUsers.slice(0, resultLength);
 
-    setCachedSearches({
-      ...cachedSearches,
-      [searchTerm]: results,
+      setCachedSearches({
+        ...cachedSearches,
+        [searchTerm]: results,
+      });
+
+      setUsers(results);
+
+      // Let screen reader users know a list has populated
+      if (!ariaHelperText && fetchedUsers.length > 0) {
+        setAriaHelperText(`Mention user, ${fetchedUsers.length} results found`);
+      }
     });
-
-    setUsers(results);
-
-    // Let screen reader users know a list has populated
-    if (!ariaHelperText && fetchedUsers.length > 0) {
-      setAriaHelperText(`Mention user, ${fetchedUsers.length} results found`);
-    }
   }, [searchTerm, fetchSuggestions, cachedSearches, ariaHelperText]);
 
   useLayoutEffect(() => {
