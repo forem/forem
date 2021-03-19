@@ -110,7 +110,11 @@ class Article < ApplicationRecord
   serialize :cached_user
   serialize :cached_organization
 
-  scope :published, -> { where(published: true) }
+  scope :published, -> {
+    self
+      .where(published: true)
+      .where(Arel.sql("published_at < now()"))
+  }
   scope :unpublished, -> { where(published: false) }
 
   scope :admin_published_with, lambda { |tag_name|
