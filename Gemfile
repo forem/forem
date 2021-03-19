@@ -41,7 +41,7 @@ gem "flipper-ui", "~> 0.20.4"
 gem "fog-aws", "~> 3.9" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
-gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
+gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "honeybadger", "~> 4.8" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.4.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
@@ -140,7 +140,7 @@ group :development do
 end
 
 group :development, :test do
-  gem "amazing_print", "~> 1.2" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
+  gem "amazing_print", "~> 1.3" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.4.2" # For end to end tests (E2E)
