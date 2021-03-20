@@ -5,6 +5,7 @@ FactoryBot.define do
     transient do
       title { generate :title }
       published { true }
+      published_at { Time.now }
       date { "01/01/2015" }
       tags { "javascript, html, css" }
       canonical_url { Faker::Internet.url }
