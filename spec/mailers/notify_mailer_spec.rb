@@ -196,6 +196,10 @@ RSpec.describe NotifyMailer, type: :mailer do
           CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain)),
         )
       end
+
+      it "includes number of credits" do
+        expect(email_with_credits.html_part.body).to include("7 new credits")
+      end
     end
 
     context "when rendering the text email for badge with credits" do
@@ -211,6 +215,10 @@ RSpec.describe NotifyMailer, type: :mailer do
         expect(email_with_credits.text_part.body).not_to include(
           CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain)),
         )
+      end
+
+      it "includes number of credits" do
+        expect(email_with_credits.text_part.body).to include("7 new credits")
       end
     end
 
