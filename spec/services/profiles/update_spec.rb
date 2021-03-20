@@ -80,7 +80,7 @@ RSpec.describe Profiles::Update, type: :service do
     end
 
     it "enqueues resave articles job when changing profile_image" do
-      profile_image = fixture_file_upload("files/800x600.jpg")
+      profile_image = fixture_file_upload("800x600.jpg")
 
       sidekiq_assert_resave_article_worker(user) do
         described_class.call(user, user: { profile_image: profile_image })
