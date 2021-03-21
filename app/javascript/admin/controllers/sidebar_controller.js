@@ -6,9 +6,9 @@ export default class SidebarController extends Controller {
     'submenu'
   ];
 
-  disableCurrentNavItem(event) {
+  disableCurrentNavItem() {
     let activeMenuId = this.submenuTargets.filter((item) => item.classList.contains("show"))[0].id
-    let activeButton = event.target.getElementById(`${activeMenuId}_button`);
+    let activeButton = document.getElementById(`${activeMenuId}_button`);
     activeButton.setAttribute("disabled", true)
   }
 
