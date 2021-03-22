@@ -118,7 +118,7 @@ class Article < ApplicationRecord
   scope :published, -> {
     self
       .where(published: true)
-      .where(Arel.sql("published_at < now()"))
+      .where("published_at <= ?", Time.current)
   }
   scope :unpublished, -> { where(published: false) }
 
