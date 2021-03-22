@@ -15,7 +15,7 @@ RSpec.describe WikipediaTag, type: :liquid_tag, vcr: true do
       VCR.use_cassette("wikipedia_tag") do
         liquid = generate_new_liquid(valid_url)
         expect(liquid.render).to include("ltag__wikipedia")
-        expect(liquid.render).to include("<b>Wikipedia</b> is a multilingual online encyclopedia")
+          .and include("<b>Wikipedia</b> is a multilingual online encyclopedia")
       end
     end
 
@@ -23,7 +23,7 @@ RSpec.describe WikipediaTag, type: :liquid_tag, vcr: true do
       VCR.use_cassette("wikipedia_section_tag") do
         liquid = generate_new_liquid(valid_section_url)
         expect(liquid.render).to include("ltag__wikipedia")
-        expect(liquid.render).to include("Several studies have shown that most of the Wikipedia contributors are male.")
+          .and include("Several studies have shown that most of the Wikipedia contributors are male.")
       end
     end
 
