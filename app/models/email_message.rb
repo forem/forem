@@ -6,8 +6,8 @@ class EmailMessage < Ahoy::Message
   # reasons to define behavior here, similar to how we use the Tag model.
   def body_html_content
     doctype_index = content.index("<!DOCTYPE")
-    closing_html_index = content.index("</html>") + 6
-    content[doctype_index..closing_html_index]
+    closing_body_index = content.index("</body>") + 6
+    content[doctype_index..closing_body_index]
   end
 
   def self.find_for_reports(feedback_message_ids)
