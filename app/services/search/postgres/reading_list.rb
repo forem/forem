@@ -28,9 +28,7 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, 100].min
 
-        total = user.reactions.readinglist.where(status: statuses).count
-
-        articles = find_articles(
+        result = find_articles(
           user_id: user.id,
           term: term,
           statuses: statuses,
@@ -49,23 +47,21 @@ module Search
         # (see https://github.com/forem/forem/pull/4744#discussion_r345698674
         # and https://github.com/rails/rails/issues/15185#issuecomment-351868335
         # for additional context)
-        user_ids = articles.pluck(:user_id)
+        user_ids = result[:items].pluck(:user_id)
         users = find_users(user_ids)
 
         {
-          items: serialize(articles, users),
-          total: total
+          items: serialize(result[:items], users),
+          total: result[:total]
         }
       end
 
       def self.find_articles(user_id:, term:, statuses:, tags:, page:, per_page:)
         relation = ::Article
           .joins(:reactions)
-          .select(*ATTRIBUTES)
           .where("reactions.category": :readinglist)
           .where("reactions.user_id": user_id)
           .where("reactions.status": statuses)
-          .order("reactions.created_at": :desc)
 
         relation = relation.search_reading_list(term) if term.present?
 
@@ -91,7 +87,17 @@ module Search
           relation = relation.where("articles.cached_tag_list LIKE ?", "%#{tag}%")
         end
 
-        relation.page(page).per(per_page)
+        # here we issue a COUNT(*) after all the conditions are applied,
+        # because we need to fetch the total number of articles, pre pagination
+        total = relation.count
+
+        relation = relation.select(*ATTRIBUTES).order("reactions.created_at": :desc)
+        relation = relation.page(page).per(per_page)
+
+        {
+          items: relation,
+          total: total
+        }
       end
       private_class_method :find_articles
 
