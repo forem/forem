@@ -108,14 +108,27 @@
           <h4 class="fw-bold">Email Form:</h4>
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="nav-item">
-              <a class="nav-link active" href="#offender-<%= feedback_message.id %>" aria-controls="offender-<%= feedback_message.id %>" role="tab" data-toggle="tab">Offender</a>
+              <a class="nav-link active" href="#reporter-<%= feedback_message.id %>" aria-controls="reporter-<%= feedback_message.id %>" role="tab" data-toggle="tab">Reporter</a>
+            </li>
+            <li role="presentation" class="nav-item">
+              <a class="nav-link" href="#offender-<%= feedback_message.id %>" aria-controls="offender-<%= feedback_message.id %>" role="tab" data-toggle="tab">Offender</a>
             </li>
             <li role="presentation" class="nav-item">
               <a class="nav-link" href="#affected-<%= feedback_message.id %>" aria-controls="affected-<%= feedback_message.id %>" role="tab" data-toggle="tab">Affected</a>
             </li>
           </ul>
           <div class="tab-content my-3">
-            <div role="tabcard" class="tab-pane fade active show" data-id="<%= feedback_message.id %>" data-userType="offender" id="offender-<%= feedback_message.id %>">
+            <div role="tabcard" class="tab-pane fade active show" data-id="<%= feedback_message.id %>" data-userType="reporter" id="reporter-<%= feedback_message.id %>">
+              <div class="crayons-notice crayons-notice--info">Please note that all users who report abuse receive an automatic confirmation email. You can send an additional, follow-up email to this user by using the form below.</div>
+              <br>
+              <h5 class="fw-bold">Send To:</h5>
+              <%= email_field_tag :reporter_email_to, feedback_message.reporter&.email, class: "form-control my-1", id: "reporter__emailto__#{feedback_message.id}", required: true %>
+              <h5 class="fw-bold">Subject:</h5>
+              <%= text_field_tag :reporter_email_subject, reporter_email_details[:subject], class: "form-control my-1", id: "reporter__subject__#{feedback_message.id}" %>
+              <h5 class="fw-bold">Body:</h5>
+              <%= text_area_tag :reporter_email_body, reporter_email_details[:body], class: "form-control my-1", style: "height: 300px;", id: "reporter__body__#{feedback_message.id}" %>
+            </div>
+            <div role="tabcard" class="tab-pane fade" data-id="<%= feedback_message.id %>" data-userType="offender" id="offender-<%= feedback_message.id %>">
               <h5 class="fw-bold">Send To:</h5>
               <%= email_field_tag :offender_email_to, feedback_message.offender&.email, class: "form-control my-1", id: "offender__emailto__#{feedback_message.id}", required: true %>
               <h5 class="fw-bold">Subject:</h5>
