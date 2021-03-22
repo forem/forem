@@ -13,38 +13,38 @@ describe('SidebarController', () => {
       <nav class="hidden m:block">
         <ul>
           <li>
-                <a class="crayons-link crayons-link--block " href="/admin/permissions" aria-page="" data-action="click->sidebar#expandDropdown">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="dropdown-icon crayons-icon" role="img"><path d="M4 22a8 8 0 1 1 16 0h-2a6 6 0 1 0-12 0H4zm8-9c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"></path></svg>
-                  Admin Team
-                </a>
+              <a class="crayons-link crayons-link--block " href="/admin/permissions" aria-page="" data-action="click->sidebar#expandDropdown">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="dropdown-icon crayons-icon" role="img"><path d="M4 22a8 8 0 1 1 16 0h-2a6 6 0 1 0-12 0H4zm8-9c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"></path></svg>
+                Admin Team
+              </a>
           </li>
           <li>
-              <button class="crayons-link crayons-link--block cursor-pointer " id="advanced_button" data-toggle="collapse" data-target="#advanced" data-target-href="/admin/advanced/broadcasts" aria-expanded="false" aria-controls="advanced" data-action="click->sidebar#expandDropdown">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="dropdown-icon crayons-icon" role="img"><path d="M13 9h8L11 24v-9H4l9-15v9zm-2 2V7.22L7.532 13H13v4.394L17.263 11H11z"></path></svg>
-                Advanced
-              </button>
-              <ul id="advanced" data-sidebar-target="submenu" class="collapse hide">
-                    <li>
-                      <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/broadcasts" aria-page="">
-                        Broadcasts
-                      </a>
-                    </li>
-                    <li>
-                      <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/response_templates" aria-page="">
-                        Response Templates
-                      </a>
-                    </li>
-                    <li>
-                      <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/sponsorships" aria-page="">
-                        Sponsorships
-                      </a>
-                    </li>
-                    <li>
-                      <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/tools" aria-page="">
-                        Developer Tools
-                      </a>
-                    </li>
-              </ul>
+            <button class="crayons-link crayons-link--block cursor-pointer " id="advanced_button" data-toggle="collapse" data-target="#advanced" data-target-href="/admin/advanced/broadcasts" aria-expanded="false" aria-controls="advanced" data-action="click->sidebar#expandDropdown">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="dropdown-icon crayons-icon" role="img"><path d="M13 9h8L11 24v-9H4l9-15v9zm-2 2V7.22L7.532 13H13v4.394L17.263 11H11z"></path></svg>
+              Advanced
+            </button>
+            <ul id="advanced" data-sidebar-target="submenu" class="collapse hide">
+              <li>
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/broadcasts" aria-page="">
+                  Broadcasts
+                </a>
+              </li>
+              <li>
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/response_templates" aria-page="">
+                  Response Templates
+                </a>
+              </li>
+              <li>
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/sponsorships" aria-page="">
+                  Sponsorships
+                </a>
+              </li>
+              <li>
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/tools" aria-page="">
+                  Developer Tools
+                </a>
+              </li>
+            </ul>
           </li>
           <li>
             <button class="crayons-link crayons-link--block cursor-pointer crayons-link--current" id="apps_button" data-toggle="collapse" data-target="#apps" data-target-href="/admin/apps/chat_channels" aria-expanded="true" aria-controls="apps" data-action="click->sidebar#expandDropdown">
