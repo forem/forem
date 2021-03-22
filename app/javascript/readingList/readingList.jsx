@@ -94,7 +94,7 @@ export class ReadingList extends Component {
 
     this.search(query, {
       page: 0,
-      tags: [],
+      tags: selectedTag ? [selectedTag] : [],
       statusView: newStatusView,
     });
 
