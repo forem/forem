@@ -12,6 +12,7 @@ export function defaultState(options) {
 
     items: [],
     itemsLoaded: false,
+    itemsTotal: 0,
 
     availableTags: [],
     selectedTags: [],
@@ -83,6 +84,7 @@ export function performInitialSearch({ searchOptions = {} }) {
       page: 0,
       items: reactions,
       itemsLoaded: true,
+      itemsTotal: response.total,
       showLoadMoreButton: hitsPerPage < response.total,
       availableTags,
     });
@@ -130,6 +132,7 @@ export function search(query, { page, tags, statusView, appendItems = false }) {
       query,
       page: newPage,
       items,
+      itemsTotal: response.total,
       showLoadMoreButton: items.length < response.total,
     });
   });
