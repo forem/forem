@@ -8,7 +8,6 @@ import {
   ComboboxList,
   ComboboxOption,
 } from '@reach/combobox';
-import '@reach/combobox/styles.css';
 import { getMentionWordData, getCursorXY } from '@utilities/textAreaUtils';
 import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
 
