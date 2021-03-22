@@ -1,5 +1,3 @@
-# TODO: [@rhymes]:
-# => add GIN index on tags.name OR on articles.cached_tag_list
 module Search
   module Postgres
     class ReadingList

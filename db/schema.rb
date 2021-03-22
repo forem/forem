@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_19_185315) do
+ActiveRecord::Schema.define(version: 2021_03_22_152837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(version: 2021_03_19_185315) do
     t.string "video_thumbnail_url"
     t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
+    t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
