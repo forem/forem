@@ -306,8 +306,11 @@ function handleFocus(event) {
     area.blur();
   } else {
     var form = event.target.closest(".comment-form");
-    form.classList.add("comment-form--initiated");
+    if (form) {
+      form.classList.add("comment-form--initiated");
+    }
     handleSizeChange(event);
+    window.Forem.initializeMentionAutocompleteTextArea(area);
   }
 }
 
@@ -434,14 +437,13 @@ function handleSizeChange(event) {
 
 function handleButtonsActivation(event) {
   var textarea = event.target;
-  var buttons = textarea.closest('.comment-form').getElementsByClassName('js-btn-enable');
-  Array.from(buttons).forEach(function(button) {
-    if (textarea.value.length > 0) {
-      button.disabled = false;
-    } else {
-      button.disabled = true;
-    }
-  });
+  var commentForm = textarea.closest('.comment-form');
+  if (commentForm) {
+    var buttons = textarea.closest('.comment-form').getElementsByClassName('js-btn-enable');
+    Array.from(buttons).forEach(function(button) {
+      button.disabled = textarea.value.length === 0;
+    });
+  };
 }
 
 function validateField(event) {

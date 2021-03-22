@@ -3001,10 +3001,10 @@
   dependencies:
     "@testing-library/dom" "^7.16.2"
 
-"@testing-library/user-event@^13.0.2":
-  version "13.0.2"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.0.2.tgz#f629bfd44fb09c9e3b18e048076b397e6e97952d"
-  integrity sha512-OYlNDcoqNZJhQvP5tsNM4/i27XIyA5DMi8xMwAJ0VLGW5BqjsSrYtL29WvHEdHu+cI6wo6UMHy6atdwtTNVUiw==
+"@testing-library/user-event@^13.0.6":
+  version "13.0.6"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.0.6.tgz#06ace823532775251b864212b6b1405c9c46c06d"
+  integrity sha512-61Rv1/9pr7rCilwnQ+uLdiaCBFSQp2GRmF2PHrX6gIy0mWqnR43p5pMJAdMA7PZ3JUN+8YyN5S2d1fq9DyYnYw==
   dependencies:
     "@babel/runtime" "^7.12.5"
 
@@ -7096,10 +7096,10 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-cypress-file-upload@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-5.0.2.tgz#538722e64747b5bf309399a7df26b470431859cb"
-  integrity sha512-QRPnQPeEaW+HMVB62/htIsKh7Kd/x2uzoHKEQxh7LCD+4IaG0rAjLZupCIjjUh+JnRymgfir8wOYtFSJCNWlpA==
+cypress-file-upload@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-5.0.3.tgz#e2b90ac523b254074a61acd30f8fc92abd5a35ba"
+  integrity sha512-MEwXssCtcTbmcay2SJW+evwbgT4fEXns2pSBOqto9L50/QWl7llgrzRbC4Tl0b9q4w6hfs/X42gDCqmNrmZctA==
   dependencies:
     mime "^2.5.0"
 
@@ -10173,10 +10173,10 @@ husky@^4.3.8:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-ibm-openapi-validator@0.37.1:
-  version "0.37.1"
-  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.37.1.tgz#9c7faa9692e84fbb0a8d5ebfee0c5ab40013a625"
-  integrity sha512-iyVdc05lcitZ9b4ZLHydEp4Zdpd8LMpsX4H0673srn/pWrELksCsWGdtThtdst2PRDmeLTU5qfp0neosg0zyIA==
+ibm-openapi-validator@0.38.0:
+  version "0.38.0"
+  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.38.0.tgz#62ec0b5158ef8058c8835d26fe82a474b26a7a5e"
+  integrity sha512-c4X7HsKqQ4nIKkm6DqI9zWWuGy3L6Z+MzrLD6J5gPMGNEdXTYKFrbywc24ZDUodCdlEI8R7G2GWhtXhJmstT3w==
   dependencies:
     "@stoplight/spectral" "^5.8.1"
     chalk "^4.1.0"
