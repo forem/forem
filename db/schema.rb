@@ -197,6 +197,7 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
   create_table "badges", force: :cascade do |t|
     t.string "badge_image"
     t.datetime "created_at", null: false
+    t.integer "credits_awarded", default: 0
     t.string "description", null: false
     t.string "slug", null: false
     t.string "title", null: false
