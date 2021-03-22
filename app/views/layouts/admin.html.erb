@@ -88,7 +88,7 @@
       <% if FeatureFlag.enabled?(:admin_restructure) %>
       <!-- hack to ensure that when you go to the old admin view nothing breaks -->
         <% if request.path.split("/")[-3] == "admin" %>
-          <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu::ITEMS %>
+          <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu.nested_menu_items_from_request(request) %>
         <% end %>
       <% end %>
 
