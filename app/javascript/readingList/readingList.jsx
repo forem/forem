@@ -11,7 +11,6 @@ import {
 } from '../searchableItemList/searchableItemList';
 import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
-import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
 import { TagList } from './components/TagList';
 import { MediaQuery } from '@components/MediaQuery';
 import { BREAKPOINTS } from '@components/useMediaQuery';
@@ -247,23 +246,27 @@ export class ReadingList extends Component {
                     />
                   </div>
                 )}
-                <section className="crayons-layout__content">
-                  <div className="crayons-card mb-4">
-                    {items.length > 0 ? (
-                      <ItemList
-                        items={items}
-                        archiveButtonLabel={archiveButtonLabel}
-                        toggleArchiveStatus={this.toggleArchiveStatus}
-                      />
-                    ) : (
-                      this.renderEmptyItems()
-                    )}
-                  </div>
-
-                  <ItemListLoadMoreButton
-                    show={showLoadMoreButton}
-                    onClick={this.loadNextPage}
-                  />
+                <section className="crayons-layout__content crayons-card mb-4">
+                  {items.length > 0 ? (
+                    <ItemList
+                      items={items}
+                      archiveButtonLabel={archiveButtonLabel}
+                      toggleArchiveStatus={this.toggleArchiveStatus}
+                    />
+                  ) : (
+                    this.renderEmptyItems()
+                  )}
+                  {showLoadMoreButton && (
+                    <div className="flex justify-center my-2">
+                      <Button
+                        onClick={this.loadNextPage}
+                        variant="secondary"
+                        className="w-max"
+                      >
+                        Load more
+                      </Button>
+                    </div>
+                  )}
                 </section>
               </div>
             );
