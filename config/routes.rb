@@ -160,7 +160,6 @@ Rails.application.routes.draw do
 
       # @ridhwana Feature Flag that implements the updated routes for the admin restructure is a work in progress.
       constraints(->(_request) { FeatureFlag.enabled?(:admin_restructure) }) do
-
         scope path: :content_manager, as: "content_manager" do
           resources :articles, only: %i[index show update]
           resources :badges, only: %i[index edit update new create]
