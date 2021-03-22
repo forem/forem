@@ -65,6 +65,7 @@ blockquote.ltag__twitter-tweet {
       left: calc(0.3vw + 13px);
       top: calc(0.3vw + 13px);
       background-color: #ececec;
+      margin: 0;
     }
     .ltag__twitter-tweet__twitter-logo {
       position: absolute;
@@ -150,6 +151,7 @@ blockquote.ltag__twitter-tweet {
     img {
       height: 20px;
       min-height: 20px;
+      margin: 0;
     }
   }
 }

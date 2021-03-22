@@ -1,3 +1,5 @@
+/* global showLoginModal */
+
 function loadFunctionality() {
   if (!document.getElementById('notification-subscriptions-area')) {
     return;
@@ -33,9 +35,7 @@ function loadFunctionality() {
 
   if (userStatus === 'logged-out') {
     updateStatus = () => {
-      // Disabled because showModal() is globally defined in asset pipeline
-      // eslint-disable-next-line no-undef
-      showModal('notification-subscription');
+      showLoginModal();
     };
   } else {
     updateStatus = (target) => {

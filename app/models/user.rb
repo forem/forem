@@ -5,6 +5,11 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  include PgSearch::Model
+  pg_search_scope :search_by_username,
+                  against: :username,
+                  using: { tsearch: { prefix: true } }
+
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
     available_for
@@ -180,6 +185,7 @@ class User < ApplicationRecord
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :tweets, dependent: :nullify
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
+  has_many :devices, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -397,7 +403,9 @@ class User < ApplicationRecord
   end
 
   def trusted
-    @trusted ||= Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
+    return @trusted if defined? @trusted
+
+    @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
     end
   end
@@ -468,9 +476,9 @@ class User < ApplicationRecord
   end
 
   def subscribe_to_mailchimp_newsletter
-    return unless registered
-    return unless email.present? && email.include?("@")
-    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+    return unless registered && email.present?
+    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
+    return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
     return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
@@ -483,8 +491,9 @@ class User < ApplicationRecord
   def resave_articles
     articles.find_each do |article|
       if article.path
-        EdgeCache::Bust.call(article.path)
-        EdgeCache::Bust.call("#{article.path}?i=i")
+        cache_bust = EdgeCache::Bust.new
+        cache_bust.call(article.path)
+        cache_bust.call("#{article.path}?i=i")
       end
       article.save
     end

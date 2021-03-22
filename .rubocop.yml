@@ -652,6 +652,11 @@ Style/TrailingCommaInBlockArgs:
   Description: 'Checks for useless trailing commas in block arguments.'
   Enabled: true
 
+Style/UnlessLogicalOperators:
+  Description: >-
+                 Checks for use of logical operators in an unless condition.
+  Enabled: false
+
 # Performance cops from rubocop-performance
 # https://github.com/rubocop-hq/rubocop-performance/blob/master/config/default.yml
 Performance/AncestorsInclude:
@@ -681,12 +686,22 @@ Performance/IoReadlines:
   Reference: 'https://docs.gitlab.com/ee/development/performance.html#reading-from-files-and-other-data-sources'
   Enabled: true
 
+Performance/RedundantEqualityComparisonBlock:
+  Description: >-
+                  Checks for uses `Enumerable#all?`, `Enumerable#any?`, `Enumerable#one?`,
+                  or `Enumerable#none?` are compared with `===` or similar methods in block.
+  Enabled: true
+
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
   Enabled: true
 
 Performance/RedundantSortBlock:
   Description: 'Use `sort` instead of `sort { |a, b| a <=> b }`.'
+  Enabled: true
+
+Performance/RedundantSplitRegexpArgument:
+  Description: 'This cop identifies places where `split` argument can be replaced from a deterministic regexp to a string.'
   Enabled: true
 
 Performance/RedundantStringChars:

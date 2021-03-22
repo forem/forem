@@ -30,7 +30,17 @@ RSpec.describe GithubRepos::RepoSyncWorker, type: :worker do
 
       Timecop.freeze(3.days.from_now) do
         worker.perform(repo.id)
-        expect(old_updated_at).not_to eq(GithubRepo.find(repo.id).updated_at)
+        expect(old_updated_at).not_to eq(repo.reload.updated_at)
+      end
+    end
+
+    it "updates repo updated_at even if data is unchanged" do
+      worker.perform(repo.id)
+      old_updated_at = repo.updated_at.to_date
+
+      Timecop.freeze(3.days.from_now) do
+        worker.perform(repo.id)
+        expect(old_updated_at).not_to eq(repo.reload.updated_at.to_date)
       end
     end
 

@@ -9,7 +9,7 @@
 <% end %>
 
 <% if flash[:error].present? %>
-  <div class="crayons-banner crayons-banner--error">
+  <div class="crayons-banner crayons-banner--error" role="alert">
     <%= flash[:error] %>
   </div>
 <% end %>

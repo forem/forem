@@ -1,12 +1,15 @@
 require "rails_helper"
 
 RSpec.describe Users::Delete, type: :service do
+  let(:cache_bust) { instance_double(EdgeCache::Bust) }
+  let(:user) { create(:user, :trusted, :with_identity, identities: ["github"]) }
+
   before do
     omniauth_mock_github_payload
     allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
+    allow(cache_bust).to receive(:call)
   end
-
-  let(:user) { create(:user, :trusted, :with_identity, identities: ["github"]) }
 
   it "deletes user" do
     described_class.call(user)
@@ -14,9 +17,8 @@ RSpec.describe Users::Delete, type: :service do
   end
 
   it "busts user profile page" do
-    allow(EdgeCache::Bust).to receive(:call).with("/#{user.username}")
     described_class.new(user).call
-    expect(EdgeCache::Bust).to have_received(:call).with("/#{user.username}")
+    expect(cache_bust).to have_received(:call).with("/#{user.username}")
   end
 
   it "deletes user's follows" do

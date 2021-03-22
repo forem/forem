@@ -133,10 +133,9 @@ class Article < ApplicationRecord
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
   scope :active_help, lambda {
-    published
-      .cached_tagged_with("help")
-      .order(created_at: :desc)
-      .where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
+    stories = published.cached_tagged_with("help").order(created_at: :desc)
+
+    stories.where(published_at: 12.hours.ago.., comments_count: ..5, score: -3..).presence || stories
   }
 
   scope :limited_column_select, lambda {
@@ -385,6 +384,12 @@ class Article < ApplicationRecord
 
   def co_author_ids_list=(list_of_co_author_ids)
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
+  end
+
+  def plain_html
+    doc = Nokogiri::HTML.fragment(processed_html)
+    doc.search(".highlight__panel").each(&:remove)
+    doc.to_html
   end
 
   private
@@ -665,9 +670,10 @@ class Article < ApplicationRecord
   end
 
   def bust_cache
-    EdgeCache::Bust.call(path)
-    EdgeCache::Bust.call("#{path}?i=i")
-    EdgeCache::Bust.call("#{path}?preview=#{password}")
+    cache_bust = EdgeCache::Bust.new
+    cache_bust.call(path)
+    cache_bust.call("#{path}?i=i")
+    cache_bust.call("#{path}?preview=#{password}")
     async_bust
     touch_actor_latest_article_updated_at
   end

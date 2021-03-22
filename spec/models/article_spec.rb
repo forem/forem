@@ -681,6 +681,22 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe ".active_help" do
+    it "returns properly filtered articles under the 'help' tag" do
+      filtered_article = create(:article, user: user, tags: "help",
+                                          published_at: 13.hours.ago, comments_count: 5, score: -3)
+      articles = described_class.active_help
+      expect(articles).to include(filtered_article)
+    end
+
+    it "returns any published articles tagged with 'help' when there are no articles that fit the criteria" do
+      unfiltered_article = create(:article, user: user, tags: "help",
+                                            published_at: 10.hours.ago, comments_count: 8, score: -5)
+      articles = described_class.active_help
+      expect(articles).to include(unfiltered_article)
+    end
+  end
+
   describe ".seo_boostable" do
     let!(:top_article) do
       create(:article, organic_page_views_past_month_count: 20, score: 30, tags: "good, greatalicious", user: user)
@@ -962,6 +978,34 @@ RSpec.describe Article, type: :model do
       co_author2 = create(:user)
       article.co_author_ids_list = "#{co_author1.id}, #{co_author2.id}"
       expect(article.co_author_ids).to match_array([co_author1.id, co_author2.id])
+    end
+  end
+
+  describe "#plain_html" do
+    let(:body_markdown) do
+      <<~MD
+        ---
+        title: Test highlight panel
+        published: false
+        ---
+
+        text before
+
+          ```ruby
+          def foo():
+            puts "bar"
+          ```
+
+        text after
+      MD
+    end
+
+    it "doesn't include highlight panel markup" do
+      article = create(:article, body_markdown: body_markdown)
+
+      expect(article.plain_html).to include("text before")
+      expect(article.plain_html).to include("highlight")
+      expect(article.plain_html).not_to include("highlight__panel")
     end
   end
 end

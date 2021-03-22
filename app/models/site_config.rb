@@ -170,6 +170,7 @@ class SiteConfig < RailsSettings::Base
   # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
+  field :rate_limit_comment_antispam_creation, type: :integer, default: 1
   field :rate_limit_listing_creation, type: :integer, default: 1
   field :rate_limit_published_article_creation, type: :integer, default: 9
   field :rate_limit_published_article_antispam_creation, type: :integer, default: 1
@@ -231,6 +232,9 @@ class SiteConfig < RailsSettings::Base
     large: 300,
     xlarge: 250
   }
+
+  # Push Notifications
+  field :push_notifications_ios_pem, type: :string
 
   # Returns true if we are operating on a local installation, false otherwise
   def self.local?
