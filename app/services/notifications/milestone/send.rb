@@ -11,8 +11,8 @@ module Notifications
         @next_milestone = next_milestone
       end
 
-      def self.call(*args)
-        new(*args).call
+      def self.call(...)
+        new(...).call
       end
 
       def call

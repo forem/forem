@@ -16,8 +16,8 @@ module Notifications
 
       delegate :user_data, to: Notifications
 
-      def self.call(*args)
-        new(*args).call
+      def self.call(...)
+        new(...).call
       end
 
       # @return [OpenStruct, #action, #notification_id]

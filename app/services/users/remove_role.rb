@@ -2,8 +2,8 @@ module Users
   class RemoveRole
     Response = Struct.new(:success, :error_message, keyword_init: true)
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     def initialize(user:, role:, resource_type:, admin:)

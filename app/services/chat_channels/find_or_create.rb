@@ -6,8 +6,8 @@ module ChatChannels
       @contrived_name = contrived_name
     end
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     def call

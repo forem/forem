@@ -10,8 +10,8 @@ module Articles
       @editor_version2 = @user&.editor_version == "v2"
     end
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     # the Builder returns a pair of [article, needs_authorization?]
