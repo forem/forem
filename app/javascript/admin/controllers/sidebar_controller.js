@@ -7,8 +7,8 @@ export default class SidebarController extends Controller {
   ];
 
   disableCurrentNavItem() {
-    let activeMenuId = this.submenuTargets.filter((item) => item.classList.contains("show"))[0].id
-    let activeButton = document.getElementById(`${activeMenuId}_button`);
+    const activeMenuId = this.submenuTargets.filter((item) => item.classList.contains("show"))[0].id
+    const activeButton = document.getElementById(`${activeMenuId}_button`);
     activeButton.setAttribute("disabled", true)
   }
 
@@ -22,12 +22,12 @@ export default class SidebarController extends Controller {
   }
 
   closeOtherMenus() {
+    const expandedList = ['expand', 'show'];
+    const collapsedList = ['collapse', 'hide'];
+
     this.submenuTargets.map((item) => {
       if(item.classList.contains("show")) {
-        const expandedList = ['expand', 'show'];
         item.classList.remove(...expandedList);
-
-        const collapsedList = ['collapse', 'hide'];
         item.classList.add(...collapsedList);
       }
     });

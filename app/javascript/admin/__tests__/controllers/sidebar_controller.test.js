@@ -84,7 +84,7 @@ describe('SidebarController', () => {
   });
 
   describe('#disableCurrentNavItem', () => {
-    it('sets attribute the disabled on the open menu parent', () => {
+    it('sets the disabled attribute on the open menu button', () => {
       window.dispatchEvent(new Event('load'))
       const button = document.getElementById('apps_button');
 
@@ -93,7 +93,6 @@ describe('SidebarController', () => {
   });
 
   describe('#expandDropdown', () => {
-
     beforeEach(() => {
       let assignMock = jest.fn();
 
@@ -112,7 +111,7 @@ describe('SidebarController', () => {
       expect(window.location.href).toEqual("/admin/advanced/broadcasts")
     });
 
-    it('closes other menus', () => {
+    it('closes other menu items', () => {
       const button = document.getElementById('advanced_button');
       button.click();
 

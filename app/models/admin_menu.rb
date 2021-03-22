@@ -64,24 +64,7 @@ class AdminMenu
   def self.navigation_items
     return ITEMS unless FeatureFlag.enabled?(:profile_admin) || FeatureFlag.enabled?(:data_update_scripts)
 
-    # We default to creating a ITEMS constant with visibility set to false
-    # and then simply amend the visibility of the feature flag when it's
-    # turned on, instead of creating the payload dynamically each time.
-    menu_items = ITEMS.dup
-
-    if FeatureFlag.enabled?(:profile_admin)
-      profile_hash = menu_items.dig(:customization, :children).detect { |item| item[:controller] == "profile_fields" }
-      profile_hash[:visible] = FeatureFlag.enabled?(:profile_admin)
-    end
-
-    if FeatureFlag.enabled?(:data_update_scripts)
-      data_update_script_hash = menu_items.dig(:advanced, :children)
-        .detect { |item| item[:controller] ==  "tools" }[:children]
-        .detect { |item| item[:controller] ==  "data_update_scripts" }
-      data_update_script_hash[:visible] = FeatureFlag.enabled?(:data_update_scripts)
-    end
-
-    menu_items
+    feature_flagged_menu_items
   end
 
   def self.nested_menu_items(scope_name, nav_item)
@@ -101,5 +84,26 @@ class AdminMenu
   def self.nested_menu_items_from_request(request)
     scope, nav_item = request.path.split("/").last(2)
     nested_menu_items(scope, nav_item)
+  end
+
+  def self.feature_flagged_menu_items
+    # We default to creating a ITEMS constant with visibility set to false
+    # and then simply amend the visibility of the feature flag when it's
+    # turned on, instead of creating the payload dynamically each time.
+    menu_items = ITEMS.dup
+
+    if FeatureFlag.enabled?(:profile_admin)
+      profile_hash = menu_items.dig(:customization, :children).detect { |item| item[:controller] == "profile_fields" }
+      profile_hash[:visible] = FeatureFlag.enabled?(:profile_admin)
+    end
+
+    if FeatureFlag.enabled?(:data_update_scripts)
+      data_update_script_hash = menu_items.dig(:advanced, :children)
+        .detect { |item| item[:controller] ==  "tools" }[:children]
+        .detect { |item| item[:controller] ==  "data_update_scripts" }
+      data_update_script_hash[:visible] = FeatureFlag.enabled?(:data_update_scripts)
+    end
+
+    menu_items
   end
 end

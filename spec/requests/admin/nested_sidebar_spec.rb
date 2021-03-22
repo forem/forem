@@ -64,7 +64,6 @@ RSpec.describe "admin sidebar", type: :request do
 
     it "shows the option in the sidebar when the feature flag is enabled" do
       allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
-      # allow(AdminMenu).to receive(:new).and_return(AdminMenu.new)
 
       get admin_content_manager_articles_path
 
