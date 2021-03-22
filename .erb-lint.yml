@@ -1,4 +1,8 @@
 linters:
+  ErbSafety:
+    # TODO: [@rhymes] re-enable this and fix the violations,
+    # see https://github.com/Shopify/erb-lint#ErbSafety
+    enabled: false
   SelfClosingTag:
     enabled: false
   ParserErrors:
