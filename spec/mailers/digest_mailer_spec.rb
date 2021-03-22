@@ -21,7 +21,6 @@ RSpec.describe DigestMailer, type: :mailer do
 
     it "includes the tracking pixel" do
       email = described_class.with(user: user, articles: [article]).digest_email
-      expect(email.body).to include("open.gif")
     end
 
     it "includes UTM params" do
