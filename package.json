@@ -179,7 +179,9 @@
     "web-share-wrapper": "^0.2.1"
   },
   "resolutions": {
-    "gitdocs/markdown-to-jsx": "^6.11.4"
+    "gitdocs/markdown-to-jsx": "^6.11.4",
+    "gitdocs/prismjs": "^1.23.0",
+    "gitdocs/axios": "^0.21.1"
   },
   "jest": {
     "setupFiles": [
