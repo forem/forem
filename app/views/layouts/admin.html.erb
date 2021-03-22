@@ -61,7 +61,7 @@
                 Overview
               </a>
             </li>
-            <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu::ITEMS %>
+            <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
           </ul>
         <% else %>
           <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/">
