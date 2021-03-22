@@ -1,5 +1,11 @@
+Rails.application.config.to_prepare do
+  Dir.glob(Rails.root.join("lib/slack/notifier/util/*.rb")).each do |filename|
+    require_dependency filename
+  end
+end
+
 class NoOpHTTPClient
-  def self.post(uri, **kwargs)
+  def self.post(uri, kwargs = {})
     # bonus, you could log or observe posted params here
   end
 end
