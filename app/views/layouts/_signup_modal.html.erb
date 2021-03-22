@@ -1,46 +1,32 @@
-<div id="global-signup-modal" class="authentication-modal crayons-modal crayons-modal--s fixed hidden">
-  <div class="authentication-modal__box crayons-modal__box">
-    <button type="button" class="authentication-modal__close-btn close-modal-button crayons-btn crayons-btn--icon crayons-btn--ghost">
-      <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-      </svg>
-    </button>
-    <div class="crayons-modal__box__body p-0">
-      <div class="authentication-modal__container">
-        <figure class="authentication-modal__image-container">
-          <img class="authentication-modal__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
-              alt="Secondary <%= community_name %> logo" />
-        </figure>
-        <div class="authentication-modal__content">
-          <h1 class="authentication-modal__title">
-            Log in to continue
-          </h1>
-          <p class="authentication-modal__description">
-            <% if SiteConfig.tagline.present? %>
-              <%= SiteConfig.tagline %>
-            <% else %>
-              We’d love for you to be a part of this community.
-            <% end %>
-          </p>
-        </div>
-      </div>
-
-      <div class="authentication-modal__actions">
-        <a href="<%= sign_up_path %>" class="crayons-btn" aria-label="Log in" data-no-instant>
-          Log in
-        </a>
-        <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn crayons-btn--ghost-brand" aria-label="Create new account" data-no-instant>
-          Create new account
-        </a>
-      </div>
-      <footer class="authentication-modal__footer">
-        <p class="authentication-modal__footer-label">
-          We strive for transparency and don't collect excess data.
-        </p>
-      </footer>
-    </div>
+<div id="global-signup-modal" class="authentication-modal hidden">
+<div class="authentication-modal__container">
+  <figure class="authentication-modal__image-container">
+    <img class="authentication-modal__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
+      alt="<%= community_name %>" />
+  </figure>
+  <div class="authentication-modal__content">
+    <p class="authentication-modal__description">
+      <% if SiteConfig.tagline.present? %>
+        <%= SiteConfig.tagline %>
+      <% else %>
+        We’d love for you to be a part of this community.
+      <% end %>
+    </p>
   </div>
-  <div class="crayons-modal__overlay"></div>
+  <div class="authentication-modal__actions">
+    <a href="<%= sign_up_path %>" class="crayons-btn" aria-label="Log in" data-no-instant>
+      Log in
+    </a>
+    <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn crayons-btn--ghost-brand" aria-label="Create new account" data-no-instant>
+      Create new account
+    </a>
+  </div>
+  <footer class="authentication-modal__footer">
+    <p class="authentication-modal__footer-label">
+      We strive for transparency and don't collect excess data.
+    </p>
+  </footer>
+  </div>
 </div>
 
 <%= javascript_packs_with_chunks_tag "signupModalShortcuts", defer: true %>

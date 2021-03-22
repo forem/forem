@@ -50,6 +50,8 @@ module Images
         options[:resizing_type] = "fill"
       end
 
+      options[:crop] = nil
+      options[:fetch_format] = nil
       options
     end
 

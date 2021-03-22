@@ -51,8 +51,13 @@ RSpec.describe KotlinTag, type: :liquid_tag do
 
     it "renders correctly a Kotlin Playground link" do
       liquid = generate_new_liquid(valid_link)
-      rendered_kotlin_iframe = liquid.render
-      Approvals.verify(rendered_kotlin_iframe, name: "kotlin_liquid_tag", format: :html)
+
+      # rubocop:disable Style/StringLiterals
+      expect(liquid.render).to include('<iframe')
+        .and include(
+          "https://play.kotlinlang.org/embed?short=owreUFFUG&amp;from&amp;to&amp;theme=darcula&amp;readOnly",
+        )
+      # rubocop:enable Style/StringLiterals
     end
   end
 end

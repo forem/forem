@@ -261,10 +261,6 @@ module ApplicationHelper
     URL.organization(organization)
   end
 
-  def sanitized_referer(referer)
-    URL.sanitized_referer(referer)
-  end
-
   def sanitize_and_decode(str)
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
@@ -291,5 +287,9 @@ module ApplicationHelper
 
   def admin_config_description(content)
     tag.p(content, class: "crayons-field__description") unless content.empty?
+  end
+
+  def role_display_name(role)
+    role.name == "banned" ? "Suspended" : role.name.titlecase
   end
 end

@@ -1,8 +1,6 @@
 <% if decorated_comment.low_quality %>
-  <div class="low-quality-comment-marker comment__quality-marker">
-    <%= inline_svg_tag("info.svg", aria: true, class: "crayons-icon mr-2", title: "Info") %>
-    Comment marked as low quality/non-constructive by the community.
-    <a href="/code-of-conduct">View code of conduct</a>
+  <div class="crayons-notice crayons-notice--warning low-quality-comment-marker">
+    Comment marked as low quality/non-constructive by the community. <a href="/code-of-conduct"><strong>View Code of Conduct</strong></a>
   </div>
 <% end %>
 

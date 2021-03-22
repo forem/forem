@@ -1,30 +1,29 @@
 <html>
-<body style='font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;'>
-<table style="width:100%;max-width:700px;margin:auto;font-size:18px">
-  <tr>
-    <td style="padding:4%;">
-      <%= yield %>
-    </td>
-  </tr>
-  <% if @user %>
-    <tr>
-      <td style="padding:3% 12% 2% 4%;font-size:18px;line-height:22px;color:#7d7d7d">
-        <% providers = authentication_enabled_providers_for_user(@user).map(&:official_name) %>
-        Reminder: You used <b><%= providers.to_sentence %></b> to authenticate your account, so use <%= providers.size == 1 ? "that" : "any of those" %> to sign in if prompted.
+  <body style='font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;'>
+    <table style="width:100%;max-width:700px;margin:auto;font-size:18px">
+      <tr>
+        <td style="padding:4%;">
+          <%= yield %>
+        </td>
+      </tr>
+      <% if @user %>
+        <tr>
+          <td style="padding:3% 12% 2% 4%;font-size:18px;line-height:22px;color:#7d7d7d">
+            <%= signed_up_with(@user) %>
 
-        <br /><br />
-        <div style="font-size:0.78em">
-          <% if @unsubscribe %>
-            <%= link_to "Unsubscribe", email_subscriptions_unsubscribe_url(ut: @unsubscribe), style: "color:#7d7d7d" %> |
-            <a href="<%= app_url(user_settings_path(:notifications)) %>" style="color:#7d7d7d">Adjust your email settings</a>
-          <% else %>
-            Don't want to get emails like this? Adjust your email settings at
-            <a href="<%= app_url(user_settings_path(:notifications)) %>"><%= app_url(user_settings_path(:notifications)) %></a>
-          <% end %>
-        </div>
-      </td>
-    </tr>
-  <% end %>
-</table>
-</body>
+            <br /><br />
+            <div style="font-size:0.78em">
+              <% if @unsubscribe %>
+                <%= link_to "Unsubscribe", email_subscriptions_unsubscribe_url(ut: @unsubscribe), style: "color:#7d7d7d" %> |
+                <a href="<%= app_url(user_settings_path(:notifications)) %>" style="color:#7d7d7d">Adjust your email settings</a>
+              <% else %>
+                Don't want to get emails like this? Adjust your email settings at
+                <a href="<%= app_url(user_settings_path(:notifications)) %>"><%= app_url(user_settings_path(:notifications)) %></a>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </body>
 </html>

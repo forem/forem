@@ -13,7 +13,8 @@ class RateLimitChecker
     reaction_creation: { retry_after: 30 },
     send_email_confirmation: { retry_after: 120 },
     user_subscription_creation: { retry_after: 30 },
-    user_update: { retry_after: 30 }
+    user_update: { retry_after: 30 },
+    comment_antispam_creation: { retry_after: 300 }
   }.with_indifferent_access.freeze
 
   def initialize(user = nil)
@@ -95,6 +96,12 @@ class RateLimitChecker
     # TODO: Vaidehi Joshi - We should make this time frame configurable.
     user.articles.published.where("created_at > ?", 5.minutes.ago).size >
       SiteConfig.rate_limit_published_article_antispam_creation
+  end
+
+  def check_comment_antispam_creation_limit
+    # TODO: We should make this time frame configurable.
+    user.comments.where(created_at: 5.minutes.ago...).size >
+      SiteConfig.rate_limit_comment_antispam_creation
   end
 
   def check_follow_account_limit

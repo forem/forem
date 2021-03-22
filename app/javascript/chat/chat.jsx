@@ -36,7 +36,6 @@ import { Compose } from './compose';
 import { Message } from './message';
 import { ActionMessage } from './actionMessage';
 import { Content } from './content';
-import { VideoContent } from './videoContent';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
 import { dragAndUpload } from '@utilities/dragAndUpload';
 import { Button } from '@crayons';
@@ -83,7 +82,6 @@ export class Chat extends Component {
       notificationsPermission: null,
       activeContent: {},
       fullscreenContent: null,
-      videoPath: null,
       expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
       isMobileDevice: typeof window.orientation !== 'undefined',
       subscribedPusherChannels: [],
@@ -715,14 +713,6 @@ export class Chat extends Component {
     // should check if user has the privilege
     if (message.startsWith('/code')) {
       this.setActiveContentState(activeChannelId, { type_of: 'code_editor' });
-    } else if (message.startsWith('/call')) {
-      const messageObject = {
-        activeChannelId,
-        message: '/call',
-        mentionedUsersId: this.getMentionedUsers(message),
-      };
-      this.setState({ videoPath: `/video_chats/${activeChannelId}` });
-      sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     } else if (message.startsWith('/play ')) {
       const messageObject = {
         activeChannelId,
@@ -1008,17 +998,6 @@ export class Chat extends Component {
           path: `/chat_channel_memberships/${activeChannel.id}/edit`,
           type_of: 'article',
         });
-      } else if (content.startsWith('sidecar-content-plus-video')) {
-        this.setActiveContentState(activeChannelId, {
-          type_of: 'loading-post',
-        });
-        this.setActiveContent({
-          path: target.href || target.parentElement.href,
-          type_of: 'article',
-        });
-        this.setState({ videoPath: `/video_chats/${activeChannelId}` });
-      } else if (content.startsWith('sidecar-video')) {
-        this.setState({ videoPath: target.href || target.parentElement.href });
       } else if (
         content.startsWith('sidecar') ||
         content.startsWith('article')
@@ -1596,11 +1575,6 @@ export class Chat extends Component {
           fullscreen={state.fullscreenContent === 'sidecar'}
           closeReportAbuseForm={this.closeReportAbuseForm}
         />
-        <VideoContent
-          videoPath={state.videoPath}
-          onTriggerVideoContent={this.onTriggerVideoContent}
-          fullscreen={state.fullscreenContent === 'video'}
-        />
       </div>
     );
   };
@@ -1623,23 +1597,6 @@ export class Chat extends Component {
         this.handleImageSuccess,
         this.handleImageFailure,
       );
-    }
-  };
-
-  onTriggerVideoContent = (e) => {
-    if (e.target.dataset.content === 'exit') {
-      this.setState({
-        videoPath: null,
-        fullscreenContent: null,
-        expanded: window.innerWidth > 600,
-      });
-    } else if (this.state.fullscreenContent === 'video') {
-      this.setState({ fullscreenContent: null });
-    } else {
-      this.setState({
-        fullscreenContent: 'video',
-        expanded: window.innerWidth > WIDE_WIDTH_LIMIT,
-      });
     }
   };
 
@@ -2010,12 +1967,10 @@ export class Chat extends Component {
         data-testid="chat"
         className={`chat chat--expanded
          chat--${
-           state.videoPath ? 'video-visible' : 'video-not-visible'
-         } chat--${
-          state.activeContent[state.activeChannelId]
-            ? 'content-visible'
-            : 'content-not-visible'
-        } ${fullscreenMode}`}
+           state.activeContent[state.activeChannelId]
+             ? 'content-visible'
+             : 'content-not-visible'
+         } ${fullscreenMode}`}
         data-no-instant
         aria-expanded={state.expanded}
       >

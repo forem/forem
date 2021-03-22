@@ -21,7 +21,14 @@
               decorated_comment: decorated_comment
             } %>
 
-        <div class="comment__body text-styles text-styles--secondary body">
+        <div
+          class="
+            comment__body
+            text-styles
+            text-styles--secondary
+            body
+            <%= "color-base-60" if comment.decorate.low_quality %>
+          ">
           <%= comment.safe_processed_html %>
         </div>
       <% end %>

@@ -1,0 +1,36 @@
+<% menu_items.each do |group_name, group| %>
+  <li>
+    <% if group[:children].length == 1 %>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if deduced_controller(request) == group[:children][0][:controller] %>"
+         href="/admin/<%= group[:children][0][:controller] %>"
+         aria-page="<%= "page" if deduced_controller(request) == group[:children][0][:controller] %>"
+      >
+        <%= inline_svg_tag("#{group[:svg]}", aria: true, class: "dropdown-icon crayons-icon") %>
+        <%= display_name(group_name) %>
+      </a>
+    <% else %>
+      <button class="crayons-link crayons-link--block cursor-pointer <%= "crayons-link--current" if deduced_scope(request) == group_name.to_s %>"
+        data-toggle="collapse"
+        data-target="#<%= group_name %>"
+        aria-expanded="<%= (deduced_scope(request) == group_name.to_s).to_s %>"
+        aria-controls="<%= group_name %>"
+      >
+        <%= inline_svg_tag(group[:svg], aria: true, class: "dropdown-icon crayons-icon") %>
+        <%= display_name(group_name) %>
+      </button>
+      <ul id="<%= group_name %>"
+           class="<%= (deduced_scope(request) == group_name.to_s) ? "expand show" : "collapse hide" %>"
+        <% group[:children].each do |item| %>
+          <li>
+            <a class="crayons-link crayons-link--block ml-7 <%= "fw-bold" if deduced_controller(request) == item[:controller].to_s %>"
+              href="/admin/<%= group_name %>/<%= item[:controller] %>"
+              aria-page="<%= "page" if deduced_controller(request) == item[:controller].to_s %>"
+            >
+              <%= item[:name].to_s.titleize %>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </li>
+<% end %>

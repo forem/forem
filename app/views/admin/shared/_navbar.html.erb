@@ -1,5 +1,5 @@
 <% menu_items.each do |menu_item| %>
-  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if request.path.split("/")[2].match?(menu_item[:controller]) %>" href="/admin/<%= menu_item[:controller] %>">
+  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if request.path.split("/")[2]&.match?(menu_item[:controller]) %>" href="/admin/<%= menu_item[:controller] %>">
     <%= menu_item[:name].to_s.titleize %>
   </a>
 <% end %>

@@ -1,9 +1,10 @@
 module EdgeCache
-  class BustPodcast < Bust
+  class BustPodcast
     def self.call(path)
       return unless path
 
-      bust("/#{path}")
+      cache_bust = EdgeCache::Bust.new
+      cache_bust.call("/#{path}")
     end
   end
 end

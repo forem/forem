@@ -487,12 +487,6 @@ RSpec.describe User, type: :model do
         end
       end
 
-      it "does not enqueue with an invalid email" do
-        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
-          user.update(email: "foobar")
-        end
-      end
-
       it "does not enqueue with an unconfirmed email" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
@@ -502,6 +496,13 @@ RSpec.describe User, type: :model do
       it "does not enqueue with a non-registered user" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(registered: false)
+        end
+      end
+
+      it "does not enqueue if Mailchimp is not enabled" do
+        allow(SiteConfig).to receive(:mailchimp_api_key).and_return(nil)
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(email: "something@real.com")
         end
       end
 
@@ -886,6 +887,18 @@ RSpec.describe User, type: :model do
       user = create(:user, :with_identity)
 
       expect(user.authenticated_with_all_providers?).to be(true)
+    end
+  end
+
+  describe "#trusted" do
+    it "memoizes the result from rolify" do
+      allow(Rails.cache)
+        .to receive(:fetch)
+        .with("user-#{user.id}/has_trusted_role", expires_in: 200.hours)
+        .and_return(false)
+        .once
+
+      2.times { user.trusted }
     end
   end
 

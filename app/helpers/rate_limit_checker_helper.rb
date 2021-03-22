@@ -10,7 +10,7 @@ module RateLimitCheckerHelper
       min: 0,
       placeholder: 1,
       title: "Limit number of posts created by a new member",
-      description: "How many posts can a 3-day-old member create within any 5 minute period?"
+      description: "How many posts can a new member (3 days or less) create within any 5 minute period?"
     },
     rate_limit_article_update: {
       min: 1,
@@ -53,6 +53,12 @@ module RateLimitCheckerHelper
       placeholder: 9,
       title: "Limit number of comments created",
       description: "How many comments can someone create within any 30 second period?"
+    },
+    rate_limit_comment_antispam_creation: {
+      min: 0,
+      placeholder: 1,
+      title: "Limit number of comments created by a new member",
+      description: "How many comments can a new member (3 days or less) create within any 5 minute period?"
     },
     rate_limit_listing_creation: {
       min: 1,

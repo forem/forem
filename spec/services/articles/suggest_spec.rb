@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Articles::Suggest, type: :service do
-  it "returns proper number of articles with post with the same tags" do
+  it "returns proper number of articles with post with the same tags", :flaky do
     create_list(:article, 4, featured: true, tags: ["discuss"], score: 10)
     article = create(:article, featured: true, tags: ["discuss"])
     expect(described_class.call(article).size).to eq(4)
@@ -20,7 +20,7 @@ RSpec.describe Articles::Suggest, type: :service do
     expect(described_class.call(article).size).to eq(4)
   end
 
-  it "returns the number of articles requested" do
+  it "returns the number of articles requested", :flaky do
     articles = create_list(:article, 3, featured: true)
     expect(described_class.call(articles.first).size).to eq(2)
   end
