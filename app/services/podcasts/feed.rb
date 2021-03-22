@@ -16,14 +16,10 @@ module Podcasts
 
       get_episode = Podcasts::GetEpisode.new(podcast)
 
-      if feed.items.first.pubDate > feed.items.last.pubDate
-        feed.items.first(limit).each do |item|
-          get_episode.call(item: item, force_update: force_update)
-        end
-      else
-        feed.items.last(limit).each do |item|
-          get_episode.call(item: item, force_update: force_update)
-        end
+      sorted_feed = feed.items.sort { |item1, item2| item2.pubDate <=> item1.pubDate }.first(limit)
+
+      sorted_feed.each do |item|
+        get_episode.call(item: item, force_update: force_update)
       end
 
       podcast.update_columns(reachable: true, status_notice: "")
