@@ -4,7 +4,7 @@
   initializeBaseTracking, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeCommentDropdown, initializeSettings,
-  initializeCommentPreview,
+  initializeCommentPreview, Runtime,
   initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
   initializeEllipsisMenu, initializeArchivedPostFilter, initializeCreditsPage,
   initializeUserProfilePage, initializeProfileInfoToggle, initializePodcastPlayback,
@@ -64,7 +64,6 @@ function callInitializers() {
   initializeOnboardingTaskCard();
   initializeDateHelpers();
   initializeColorPicker();
-  initializeRuntime();
 
   function freezeScrolling(event) {
     event.preventDefault();
@@ -80,6 +79,9 @@ function callInitializers() {
   if (!initScrolling.called) {
     initScrolling();
   }
+
+  // Initialize data-runtime context to the body data-attribute
+  document.body.dataset.runtime = Runtime.currentContext();
 }
 
 function initializePage() {
