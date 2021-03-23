@@ -365,7 +365,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     it "fails with an unpublished article" do
-      article.update_columns(published: false)
+      article.update_columns(published: false, published_at: nil)
       get api_article_path(article.id)
       expect(response).to have_http_status(:not_found)
     end
@@ -424,7 +424,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     it "fails with an unpublished article" do
-      article.update_columns(published: false)
+      article.update_columns(published: false, published_at: nil)
       get slug_api_articles_path(username: article.username, slug: article.slug)
       expect(response).to have_http_status(:not_found)
     end
@@ -867,7 +867,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   describe "PUT /api/articles/:id" do
     let!(:api_secret)   { create(:api_secret) }
     let!(:user)         { api_secret.user }
-    let(:article)       { create(:article, user: user, published: false) }
+    let(:article)       { create(:article, user: user, published: false, published_at: nil) }
     let(:path)          { api_article_path(article.id) }
     let!(:organization) { create(:organization) }
 
@@ -1092,7 +1092,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put_article(body_markdown: "Yo ho ho", published: true)
         expect(response).to have_http_status(:ok)
 
-        article.update_columns(published: false)
+        article.update_columns(published: false, published_at: nil)
         put_article(published: true)
         expect(response).to have_http_status(:ok)
 
