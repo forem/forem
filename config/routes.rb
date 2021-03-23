@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     controllers tokens: "oauth/tokens"
   end
 
-  # Devise does not support scoping omniauth callbacks under a dynamic segment
+  # Devise does not support scoping omniauth callbacks under a dynamic segmentn gjdfdghjalk;ldad dsafyjgkhjladgcgdsajkd wdqtyjhkjldahsgjhkl sadfhjgkhdljsk;dshadsg fsgdhaj
   # so this lives outside our i18n scope.
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
