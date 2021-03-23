@@ -46,7 +46,6 @@ class EmailDigestArticleCollector
   end
 
   def days_until_next_email
-    # Relies on hyperbolic tangent function to model the frequency of the digest email
     max_day = SiteConfig.periodic_email_digest_max
     min_day = SiteConfig.periodic_email_digest_min
     rand(min_day..max_day)
