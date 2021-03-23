@@ -1,4 +1,4 @@
-<%= form_tag(admin_organizations_path, method: "get") do %>
+<%= form_tag(FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_organizations_path : admin_organizations_path, method: "get") do %>
   <div class="form-row">
     <div class="form-group">
       <%= text_field_tag(:search, params[:search], aria: { label: "Search" }) %>
