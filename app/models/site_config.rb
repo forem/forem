@@ -186,6 +186,8 @@ class SiteConfig < RailsSettings::Base
 
   field :spam_trigger_terms, type: :array, default: []
 
+  field :user_considered_new_days, type: :integer, default: 3
+
   # Social Media
   field :social_media_handles, type: :hash, default: {
     twitter: nil,
