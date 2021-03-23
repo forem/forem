@@ -64,5 +64,3 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
     end
   end
 end
-
-exi
