@@ -2,6 +2,8 @@ FactoryBot.define do
   sequence(:title) { |n| "#{Faker::Book.title}#{n}" }
 
   factory :article do
+    published_at { Time.current }
+
     transient do
       title { generate :title }
       published { true }
