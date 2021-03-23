@@ -29,7 +29,13 @@ module Admin
       if result.success?
         Audit::Logger.log(:internal, current_user, params.dup)
         bust_content_change_caches
-        redirect_to admin_config_path, notice: "Site configuration was successfully updated."
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to admin_customization_config_path, notice: "Site configuration was successfully updated."
+        else
+          redirect_to admin_config_path, notice: "Site configuration was successfully updated."
+        end
+      elsif FeatureFlag.enabled?(:admin_restructure)
+        redirect_to admin_customization_config_path, alert: "😭 #{result.errors.to_sentence}"
       else
         redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
       end
