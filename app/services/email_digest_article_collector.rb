@@ -49,20 +49,7 @@ class EmailDigestArticleCollector
     # Relies on hyperbolic tangent function to model the frequency of the digest email
     max_day = SiteConfig.periodic_email_digest_max
     min_day = SiteConfig.periodic_email_digest_min
-    result = max_day * (1 - Math.tanh(2 * open_rate))
-    result = result.round
-
-    [result, min_day].max
-  end
-
-  def open_rate
-    email_count = last_user_emails.count
-
-    # Will stick with 50% open rate if @user has no/not-enough email digest history
-    return 0.5 if email_count < 10
-
-    past_opened_emails_count = last_user_emails.count { |msg| msg.opened_at.present? }
-    past_opened_emails_count / email_count
+    rand(min_day..max_day)
   end
 
   def last_email_sent_at
@@ -81,7 +68,6 @@ class EmailDigestArticleCollector
   end
 
   def last_user_emails
-    @last_user_emails ||= @user.email_messages.select(:sent_at,
-                                                      :opened_at).where(mailer: "DigestMailer#digest_email").limit(10)
+    @last_user_emails ||= @user.email_messages.select(:sent_at).where(mailer: "DigestMailer#digest_email").limit(10)
   end
 end
