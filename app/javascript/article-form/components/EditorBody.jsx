@@ -1,7 +1,7 @@
-import { h } from 'preact';
+import { h, render } from 'preact';
 import PropTypes from 'prop-types';
 import Textarea from 'preact-textarea-autosize';
-import { useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
 import {
@@ -17,7 +17,7 @@ function handleImageSuccess(textAreaRef) {
   return function (response) {
     // Function is within the component to be able to access
     // textarea ref.
-    const editableBodyElement = textAreaRef.current.base;
+    const editableBodyElement = textAreaRef.current;
     const { links, image } = response;
     const altText = image[0]
       ? image[0].name.replace(/\.[^.]+$/, '')
@@ -45,6 +45,10 @@ export const EditorBody = ({
   version,
 }) => {
   const textAreaRef = useRef(null);
+  const uninitializedTextAreaRef = useRef(null);
+  const containerRef = useRef(null);
+  const [textAreaInitialized, setTextAreaInitialized] = useState(false);
+
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
       handleImageSuccess(textAreaRef),
@@ -62,32 +66,65 @@ export const EditorBody = ({
   });
 
   useEffect(() => {
-    if (textAreaRef.current) {
-      setElement(textAreaRef.current.base);
-      setPasteElement(textAreaRef.current.base);
+    if (textAreaRef.current && textAreaInitialized) {
+      setElement(textAreaRef.current);
+      setPasteElement(textAreaRef.current);
     }
-  });
+  }, [setElement, setPasteElement, textAreaInitialized]);
+
+  const initializeEnhancedTextArea = async () => {
+    if (textAreaInitialized) {
+      return;
+    }
+
+    const [
+      { MentionAutocompleteTextArea },
+      { fetchSearch },
+    ] = await Promise.all([
+      import('@crayons/MentionAutocompleteTextArea'),
+      import('@utilities/search'),
+    ]);
+
+    render(
+      <MentionAutocompleteTextArea
+        ref={textAreaRef}
+        replaceElement={uninitializedTextAreaRef.current.base}
+        fetchSuggestions={(username) => fetchSearch('usernames', { username })}
+        events={{
+          onChange,
+          onFocus: switchHelpContext,
+        }}
+      />,
+      containerRef.current,
+      uninitializedTextAreaRef.current.base,
+    );
+
+    setTextAreaInitialized(true);
+  };
 
   return (
     <div
+      ref={containerRef}
       data-testid="article-form__body"
       className="crayons-article-form__body drop-area text-padding"
     >
       <Toolbar version={version} />
-
-      <Textarea
-        className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l"
-        id="article_body_markdown"
-        aria-label="Post Content"
-        placeholder="Write your post content here..."
-        value={defaultValue}
-        onInput={onChange}
-        onFocus={(_event) => {
-          switchHelpContext(_event);
-        }}
-        name="body_markdown"
-        ref={textAreaRef}
-      />
+      {textAreaInitialized ? null : (
+        <Textarea
+          className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l"
+          id="article_body_markdown"
+          aria-label="Post Content"
+          placeholder="Write your post content here..."
+          value={defaultValue}
+          onInput={onChange}
+          onFocus={(_event) => {
+            initializeEnhancedTextArea();
+            switchHelpContext(_event);
+          }}
+          name="body_markdown"
+          ref={uninitializedTextAreaRef}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { h, Fragment } from 'preact';
 import { useState, useEffect, useRef, useLayoutEffect } from 'preact/hooks';
+import { forwardRef } from 'preact/compat';
 import PropTypes from 'prop-types';
 import {
   Combobox,
@@ -21,6 +22,22 @@ const MAX_RESULTS_DISPLAYED = 6;
  * @param {element} newNode The DOM element that will receive all attributes and styles of the original node.
  */
 const replaceTextArea = (originalNodeToReplace, newNode) => {
+  const eventTypes = [];
+  for (let event in window) {
+    // Remove the "on" as the event is accessed without this part of the name
+    if (/^on/.test(event)) eventTypes.push(event.substring(2));
+  }
+
+  eventTypes.forEach((event) => {
+    if (typeof originalNodeToReplace[event] === 'function') {
+      console.log('adding event listener', event, originalNodeToReplace[event]);
+      newNode.addEventListener(event, originalNodeToReplace[event]);
+    }
+  });
+
+  // Make sure any existing value is copied to the new area
+  newNode.value = originalNodeToReplace.value;
+
   // Make sure all attributes are copied to the autocomplete textarea
   const attributes = originalNodeToReplace.attributes;
   Object.keys(attributes).forEach((attributeKey) => {
@@ -62,6 +79,14 @@ const UserListItemContent = ({ user }) => {
   );
 };
 
+const mergeInputRefs = (refs) => (value) => {
+  refs.forEach((ref) => {
+    if (ref) {
+      ref.current = value;
+    }
+  });
+};
+
 /**
  * A component for dynamically searching for users and displaying results in a dropdown.
  * This component will replace the textarea passed in props, copying all styles and attributes, and allowing for progressive enhancement
@@ -76,199 +101,210 @@ const UserListItemContent = ({ user }) => {
  *    fetchSuggestions={fetchUsersByUsername}
  * />
  */
-export const MentionAutocompleteTextArea = ({
-  replaceElement,
-  fetchSuggestions,
-}) => {
-  const [textContent, setTextContent] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [cachedSearches, setCachedSearches] = useState({});
-  const [dropdownPositionPoints, setDropdownPositionPoints] = useState({
-    x: 0,
-    y: 0,
-  });
-  const [selectionInsertIndex, setSelectionInsertIndex] = useState(0);
-  const [users, setUsers] = useState([]);
-  const [cursorPosition, setCursorPosition] = useState(null);
-  const [ariaHelperText, setAriaHelperText] = useState('');
-
-  const isSmallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Small}px)`);
-
-  const inputRef = useRef(null);
-  const popoverRef = useRef(null);
-
-  useEffect(() => {
-    if (searchTerm.length < MIN_SEARCH_CHARACTERS) {
-      return;
-    }
-
-    if (cachedSearches[searchTerm]) {
-      setUsers(cachedSearches[searchTerm]);
-      return;
-    }
-
-    fetchSuggestions(searchTerm).then(({ result: fetchedUsers }) => {
-      const resultLength = Math.min(fetchedUsers.length, MAX_RESULTS_DISPLAYED);
-
-      const results = fetchedUsers.slice(0, resultLength);
-
-      setCachedSearches({
-        ...cachedSearches,
-        [searchTerm]: results,
-      });
-
-      setUsers(results);
-
-      // Let screen reader users know a list has populated
-      if (!ariaHelperText && fetchedUsers.length > 0) {
-        setAriaHelperText(`Mention user, ${fetchedUsers.length} results found`);
-      }
+export const MentionAutocompleteTextArea = forwardRef(
+  ({ replaceElement, fetchSuggestions, events = {} }, forwardedRef) => {
+    const [textContent, setTextContent] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [cachedSearches, setCachedSearches] = useState({});
+    const [dropdownPositionPoints, setDropdownPositionPoints] = useState({
+      x: 0,
+      y: 0,
     });
-  }, [searchTerm, fetchSuggestions, cachedSearches, ariaHelperText]);
+    const [selectionInsertIndex, setSelectionInsertIndex] = useState(0);
+    const [users, setUsers] = useState([]);
+    const [cursorPosition, setCursorPosition] = useState(null);
+    const [ariaHelperText, setAriaHelperText] = useState('');
 
-  useLayoutEffect(() => {
-    const popover = popoverRef.current;
-    if (!popover) {
-      return;
-    }
+    const isSmallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Small}px)`);
 
-    const closeOnClickOutsideListener = (event) => {
-      if (!popover.contains(event.target)) {
-        // User clicked outside, reset to not searching state
+    const inputRef = useRef(null);
+    const popoverRef = useRef(null);
+
+    useEffect(() => {
+      if (searchTerm.length < MIN_SEARCH_CHARACTERS) {
+        return;
+      }
+
+      if (cachedSearches[searchTerm]) {
+        setUsers(cachedSearches[searchTerm]);
+        return;
+      }
+
+      fetchSuggestions(searchTerm).then(({ result: fetchedUsers }) => {
+        const resultLength = Math.min(
+          fetchedUsers.length,
+          MAX_RESULTS_DISPLAYED,
+        );
+
+        const results = fetchedUsers.slice(0, resultLength);
+
+        setCachedSearches({
+          ...cachedSearches,
+          [searchTerm]: results,
+        });
+
+        setUsers(results);
+
+        // Let screen reader users know a list has populated
+        if (!ariaHelperText && fetchedUsers.length > 0) {
+          setAriaHelperText(
+            `Mention user, ${fetchedUsers.length} results found`,
+          );
+        }
+      });
+    }, [searchTerm, fetchSuggestions, cachedSearches, ariaHelperText]);
+
+    useLayoutEffect(() => {
+      const popover = popoverRef.current;
+      if (!popover) {
+        return;
+      }
+
+      const closeOnClickOutsideListener = (event) => {
+        if (!popover.contains(event.target)) {
+          // User clicked outside, reset to not searching state
+          setSearchTerm('');
+          setAriaHelperText('');
+          setUsers([]);
+        }
+      };
+
+      document.addEventListener('click', closeOnClickOutsideListener);
+
+      return () =>
+        document.removeEventListener('click', closeOnClickOutsideListener);
+    }, [searchTerm]);
+
+    useLayoutEffect(() => {
+      const { current: input } = inputRef;
+      input.focus();
+      input.setSelectionRange(cursorPosition, cursorPosition - 1);
+    }, [cursorPosition]);
+
+    const handleTextInputChange = ({ target: { value } }) => {
+      setTextContent(value);
+      const { isUserMention, indexOfMentionStart } = getMentionWordData(
+        inputRef.current,
+      );
+
+      const { selectionStart } = inputRef.current;
+
+      if (isUserMention) {
+        // search term begins after the @ character
+        const searchTermStartPosition = indexOfMentionStart + 1;
+
+        const mentionText = value.substring(
+          searchTermStartPosition,
+          selectionStart,
+        );
+
+        const { x: cursorX, y } = getCursorXY(
+          inputRef.current,
+          indexOfMentionStart,
+        );
+        const textAreaX = inputRef.current.offsetLeft;
+
+        // On small screens always show dropdown at start of textarea
+        const dropdownX = isSmallScreen ? textAreaX : cursorX;
+
+        setDropdownPositionPoints({ x: dropdownX, y });
+        setSearchTerm(mentionText);
+        setSelectionInsertIndex(searchTermStartPosition);
+      } else if (searchTerm) {
+        // User has moved away from an in-progress @mention - clear current search
         setSearchTerm('');
         setAriaHelperText('');
         setUsers([]);
       }
     };
 
-    document.addEventListener('click', closeOnClickOutsideListener);
+    const handleSelect = (username) => {
+      // Construct the new textArea content with selected username inserted
+      const textWithSelection = `${textContent.substring(
+        0,
+        selectionInsertIndex,
+      )}${username} ${textContent.substring(inputRef.current.selectionStart)}`;
 
-    return () =>
-      document.removeEventListener('click', closeOnClickOutsideListener);
-  }, [searchTerm]);
-
-  useLayoutEffect(() => {
-    const { current: input } = inputRef;
-    input.focus();
-    input.setSelectionRange(cursorPosition, cursorPosition - 1);
-  }, [cursorPosition]);
-
-  const handleTextInputChange = ({ target: { value } }) => {
-    setTextContent(value);
-    const { isUserMention, indexOfMentionStart } = getMentionWordData(
-      inputRef.current,
-    );
-
-    const { selectionStart } = inputRef.current;
-
-    if (isUserMention) {
-      // search term begins after the @ character
-      const searchTermStartPosition = indexOfMentionStart + 1;
-
-      const mentionText = value.substring(
-        searchTermStartPosition,
-        selectionStart,
-      );
-
-      const { x: cursorX, y } = getCursorXY(
-        inputRef.current,
-        indexOfMentionStart,
-      );
-      const textAreaX = inputRef.current.offsetLeft;
-
-      // On small screens always show dropdown at start of textarea
-      const dropdownX = isSmallScreen ? textAreaX : cursorX;
-
-      setDropdownPositionPoints({ x: dropdownX, y });
-      setSearchTerm(mentionText);
-      setSelectionInsertIndex(searchTermStartPosition);
-    } else if (searchTerm) {
-      // User has moved away from an in-progress @mention - clear current search
+      // Clear the current search
       setSearchTerm('');
-      setAriaHelperText('');
       setUsers([]);
-    }
-  };
+      setAriaHelperText('');
 
-  const handleSelect = (username) => {
-    // Construct the new textArea content with selected username inserted
-    const textWithSelection = `${textContent.substring(
-      0,
-      selectionInsertIndex,
-    )}${username} ${textContent.substring(inputRef.current.selectionStart)}`;
+      // Update the text area value
+      setTextContent(textWithSelection);
 
-    // Clear the current search
-    setSearchTerm('');
-    setUsers([]);
-    setAriaHelperText('');
+      // Allow any other attached change event to receive the updated text
+      events.onChange?.(textWithSelection);
 
-    // Update the text area value
-    setTextContent(textWithSelection);
+      // Update the cursor to directly after the selection (+2 accounts for the @ sign, and adding a space after the username)
+      const newCursorPosition = selectionInsertIndex + username.length + 2;
+      setCursorPosition(newCursorPosition);
+    };
 
-    // Update the cursor to directly after the selection (+2 accounts for the @ sign, and adding a space after the username)
-    const newCursorPosition = selectionInsertIndex + username.length + 2;
-    setCursorPosition(newCursorPosition);
-  };
+    useLayoutEffect(() => {
+      if (inputRef.current) {
+        // Replace the whole textarea passed in props with the autocomplete textarea
+        replaceTextArea(replaceElement, inputRef.current);
+      }
+    }, [replaceElement]);
 
-  useLayoutEffect(() => {
-    if (inputRef.current) {
-      // Replace the whole textarea passed in props with the autocomplete textarea
-      replaceTextArea(replaceElement, inputRef.current);
-    }
-  }, [replaceElement]);
-
-  return (
-    <Fragment>
-      <div aria-live="polite" class="screen-reader-only">
-        {ariaHelperText}
-      </div>
-      <Combobox
-        id="combobox-container"
-        onSelect={handleSelect}
-        className="crayons-autocomplete"
-      >
-        <ComboboxInput
-          ref={inputRef}
-          value={textContent}
-          data-mention-autocomplete-active="true"
-          as="textarea"
-          autocomplete={false}
-          onChange={handleTextInputChange}
-        />
-        {searchTerm && (
-          <ComboboxPopover
-            ref={popoverRef}
-            className="crayons-autocomplete__popover absolute"
-            id="mention-autocomplete-popover"
-            style={{
-              top: `calc(${dropdownPositionPoints.y}px + 1.5rem)`,
-              left: `${dropdownPositionPoints.x}px`,
+    return (
+      <Fragment>
+        <div aria-live="polite" class="screen-reader-only">
+          {ariaHelperText}
+        </div>
+        <Combobox
+          id="combobox-container"
+          onSelect={handleSelect}
+          className="crayons-autocomplete"
+        >
+          <ComboboxInput
+            {...events}
+            ref={mergeInputRefs([inputRef, forwardedRef])}
+            value={textContent}
+            data-mention-autocomplete-active="true"
+            as="textarea"
+            autocomplete={false}
+            onChange={(e) => {
+              events.onChange?.(e);
+              handleTextInputChange(e);
             }}
-          >
-            {users.length > 0 ? (
-              <ComboboxList>
-                {users.map((user) => (
-                  <ComboboxOption
-                    value={user.username}
-                    className="crayons-autocomplete__option flex items-center"
-                  >
-                    <UserListItemContent user={user} />
-                  </ComboboxOption>
-                ))}
-              </ComboboxList>
-            ) : (
-              <span className="crayons-autocomplete__empty">
-                {searchTerm.length >= MIN_SEARCH_CHARACTERS
-                  ? 'No results found'
-                  : 'Type to search for a user'}
-              </span>
-            )}
-          </ComboboxPopover>
-        )}
-      </Combobox>
-    </Fragment>
-  );
-};
+          />
+          {searchTerm && (
+            <ComboboxPopover
+              ref={popoverRef}
+              className="crayons-autocomplete__popover absolute"
+              id="mention-autocomplete-popover"
+              style={{
+                top: `calc(${dropdownPositionPoints.y}px + 1.5rem)`,
+                left: `${dropdownPositionPoints.x}px`,
+              }}
+            >
+              {users.length > 0 ? (
+                <ComboboxList>
+                  {users.map((user) => (
+                    <ComboboxOption
+                      value={user.username}
+                      className="crayons-autocomplete__option flex items-center"
+                    >
+                      <UserListItemContent user={user} />
+                    </ComboboxOption>
+                  ))}
+                </ComboboxList>
+              ) : (
+                <span className="crayons-autocomplete__empty">
+                  {searchTerm.length >= MIN_SEARCH_CHARACTERS
+                    ? 'No results found'
+                    : 'Type to search for a user'}
+                </span>
+              )}
+            </ComboboxPopover>
+          )}
+        </Combobox>
+      </Fragment>
+    );
+  },
+);
 
 MentionAutocompleteTextArea.propTypes = {
   replaceElement: PropTypes.node.isRequired,
