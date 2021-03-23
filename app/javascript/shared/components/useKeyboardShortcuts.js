@@ -34,7 +34,7 @@ function isFormField(element) {
  * @param {Object} shortcuts object containing callback functions
  */
 const callShortcut = (e, keys, chain, shortcuts) => {
-  let shortcut =
+  const shortcut =
     chain && chain.length > 0
       ? shortcuts[`${chain.join("~")}~${e.code}`]
       : shortcuts[`${keys}${e.code}`] ||
@@ -185,4 +185,3 @@ KeyboardShortcuts.defaultProps = {
   options: {},
   eventTarget: window
 };
-
