@@ -67,7 +67,6 @@ module Admin
         end
       else
         flash[:danger] = @html_variant.errors_as_sentence
-        # TODO: @ridhwana to add a feature flag
         render :edit
       end
     end
@@ -84,7 +83,6 @@ module Admin
         end
       else
         flash[:danger] = "Something went wrong with deleting the HTML Variant."
-        # TODO: @ridhwana to add a feature flag
         render :edit
       end
     end

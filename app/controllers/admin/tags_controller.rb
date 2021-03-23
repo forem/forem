@@ -37,8 +37,7 @@ module Admin
       else
         flash[:danger] = @tag.errors_as_sentence
 
-        # TODO: @ridhwana - need to fix this
-        render new_admin_tag_path
+        render :new
       end
     end
 
