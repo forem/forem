@@ -26,12 +26,14 @@ function isFormField(element) {
 }
 
 /**
- * Function to handle 
+ * Function to handle converting key presses to callback functions
  * 
  * @param {KeyboardEvent} e Keyboard event
  * @param {String} keys special keys formatted in a string
  * @param {Array} chain array of past keys
  * @param {Object} shortcuts object containing callback functions
+ *
+ * @returns {Array} New chain
  */
 const callShortcut = (e, keys, chain, shortcuts) => {
   const shortcut =
