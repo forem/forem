@@ -9,7 +9,7 @@ export default class ImageUploadController extends Controller {
 
     const token = document.getElementsByName('authenticity_token')[0].value;
     const image = this.fileFieldTarget.files[0];
-    let formData = new FormData();
+    const formData = new FormData();
 
     formData.append('authenticity_token', token);
     formData.append('image', image);
