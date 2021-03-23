@@ -1092,7 +1092,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put_article(body_markdown: "Yo ho ho", published: true)
         expect(response).to have_http_status(:ok)
 
-        article.update_columns(published: false, published_at: nil)
+        article.update_columns(published: false)
         put_article(published: true)
         expect(response).to have_http_status(:ok)
 
