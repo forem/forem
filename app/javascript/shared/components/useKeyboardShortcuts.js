@@ -12,15 +12,15 @@ function isFormField(element) {
   if (element instanceof HTMLElement === false) return false;
 
   const name = element.nodeName.toLowerCase();
-  const type = (element.getAttribute("type") || "").toLowerCase();
+  const type = (element.getAttribute('type') || '').toLowerCase();
   return (
-    name === "select" ||
-    name === "textarea" ||
-    (name === "input" &&
-      type !== "submit" &&
-      type !== "reset" &&
-      type !== "checkbox" &&
-      type !== "radio") ||
+    name === 'select' ||
+    name === 'textarea' ||
+    (name === 'input' &&
+      type !== 'submit' &&
+      type !== 'reset' &&
+      type !== 'checkbox' &&
+      type !== 'radio') ||
     element.isContentEditable
   );
 }
@@ -38,7 +38,7 @@ function isFormField(element) {
 const callShortcut = (e, keys, chain, shortcuts) => {
   const shortcut =
     chain && chain.length > 0
-      ? shortcuts[`${chain.join("~")}~${e.code}`]
+      ? shortcuts[`${chain.join('~')}~${e.code}`]
       : shortcuts[`${keys}${e.code}`] ||
         shortcuts[`${keys}${e.key.toLowerCase()}`];
 
@@ -49,7 +49,7 @@ const callShortcut = (e, keys, chain, shortcuts) => {
   }
 
   // if we have keys don't add to the chain
-  if (keys || e.key === "Shift") {
+  if (keys || e.key === 'Shift') {
     return [];
   }
 
@@ -58,7 +58,7 @@ const callShortcut = (e, keys, chain, shortcuts) => {
 
 // Default options to be used if null
 const defaultOptions = {
-  timeout: 0 // The default is zero as we want no delays between keystrokes by default.
+  timeout: 0, // The default is zero as we want no delays between keystrokes by default.
 };
 
 /**
@@ -67,15 +67,15 @@ const defaultOptions = {
  *
  * @example
  * const shortcuts = {
- *   "ctrl+alt+KeyG": (e) => {
+ *   'ctrl+alt+KeyG': (e) => {
  *     e.preventDefault();
- *     alert("Control Alt G has been pressed");
+ *     alert('Control Alt G has been pressed');
  *   },
- *   "KeyG~KeyH": (e) => {
+ *   'KeyG~KeyH': (e) => {
  *     e.preventDefault();
- *     alert("G has been pressed quickly followed by H");
+ *     alert('G has been pressed quickly followed by H');
  *   },
- *   "?": (e) => {
+ *   '?': (e) => {
  *     setIsHelpVisible(true);
  *   }
  * }
@@ -90,7 +90,7 @@ const defaultOptions = {
 export function useKeyboardShortcuts(
   shortcuts,
   eventTarget = window,
-  options = {}
+  options = {},
 ) {
   const [storedShortcuts] = useState(shortcuts);
   const [keyChain, setKeyChain] = useState([]);
@@ -102,7 +102,7 @@ export function useKeyboardShortcuts(
   // update mergedOptions if options prop changes
   useEffect(() => {
     const newOptions = {};
-    if (typeof options.timeout === "number")
+    if (typeof options.timeout === 'number')
       newOptions.timeout = options.timeout;
     setMergedOptions({ ...defaultOptions, ...newOptions });
   }, [options.timeout]);
@@ -129,9 +129,9 @@ export function useKeyboardShortcuts(
       if (e.defaultPrevented) return;
 
       // Get special keys
-      const keys = `${e.ctrlKey || e.metaKey ? "ctrl+" : ""}${
-        e.altKey ? "alt+" : ""
-      }${(e.ctrlKey || e.metaKey || e.altKey) && e.shiftKey ? "shift+" : ""}`;
+      const keys = `${e.ctrlKey || e.metaKey ? 'ctrl+' : ''}${
+        e.altKey ? 'alt+' : ''
+      }${(e.ctrlKey || e.metaKey || e.altKey) && e.shiftKey ? 'shift+' : ''}`;
 
       // If no special keys, except shift, are pressed and focus is inside a field return
       if (e.target instanceof Node && isFormField(e.target) && !keys) return;
@@ -142,9 +142,9 @@ export function useKeyboardShortcuts(
       setKeyChain(newChain);
     };
 
-    eventTarget.addEventListener("keydown", keyEvent);
+    eventTarget.addEventListener('keydown', keyEvent);
 
-    return () => eventTarget.removeEventListener("keydown", keyEvent);
+    return () => eventTarget.removeEventListener('keydown', keyEvent);
   }, [keyChain, storedShortcuts, eventTarget]);
 }
 
@@ -154,9 +154,9 @@ export function useKeyboardShortcuts(
  *
  * @example
  * const shortcuts = {
- *   "ctrl+alt+KeyG": (e) => {
+ *   'ctrl+alt+KeyG': (e) => {
  *     e.preventDefault();
- *     alert("Control Alt G has been pressed")
+ *     alert('Control Alt G has been pressed')
  *   }
  * }
  *
@@ -177,13 +177,13 @@ export function KeyboardShortcuts({ shortcuts, eventTarget, options }) {
 KeyboardShortcuts.propTypes = {
   shortcuts: PropTypes.object.isRequired,
   options: PropTypes.shape({
-    timeout: PropTypes.number
+    timeout: PropTypes.number,
   }),
-  eventTarget: PropTypes.instanceOf(Element)
+  eventTarget: PropTypes.instanceOf(Element),
 };
 
 KeyboardShortcuts.defaultProps = {
   shortcuts: {},
   options: {},
-  eventTarget: window
+  eventTarget: window,
 };
