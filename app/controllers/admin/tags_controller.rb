@@ -29,10 +29,16 @@ module Admin
 
       if @tag.save
         flash[:success] = "Tag has been created!"
-        redirect_to edit_admin_tag_path(@tag)
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to edit_admin_content_manager_tag_path(@tag)
+        else
+          redirect_to edit_admin_tag_path(@tag)
+        end
       else
         flash[:danger] = @tag.errors_as_sentence
-        render :new
+
+        # TODO: @ridhwana - need to fix this
+        render new_admin_tag_path
       end
     end
 
@@ -49,7 +55,11 @@ module Admin
       else
         flash[:error] = "The tag update failed: #{@tag.errors_as_sentence}"
       end
-      redirect_to edit_admin_tag_path(@tag.id)
+      if FeatureFlag.enabled?(:admin_restructure)
+        redirect_to edit_admin_content_manager_tag_path(@tag.id)
+      else
+        redirect_to edit_admin_tag_path(@tag.id)
+      end
     end
 
     private
