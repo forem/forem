@@ -13,7 +13,7 @@ module Moderator
     end
 
     def merge
-      raise "You cannot merge the same two user id#s" if @delete_user.id == @keep_user.id
+      raise "You cannot merge the same two user ID#s" if @delete_user.id == @keep_user.id
 
       handle_identities
       merge_content
