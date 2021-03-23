@@ -4,10 +4,10 @@
 
 <div class="flex">
   <div>
-    <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>
+    <%= link_to "Award Badge", FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_badge_achievements_award_badges_path : admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>
   </div>
   <div class="ml-auto">
-    <%= search_form_for @q, url: admin_badge_achievements_path, class: "form-inline justify-content-end" do |f| %>
+    <%= search_form_for @q, url: FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_badge_achievements_path : admin_badge_achievements_path, class: "form-inline justify-content-end" do |f| %>
 
       <%= f.label :user_id_eq, "User ID", class: "sr-only" %>
       <%= f.search_field :user_id_eq, placeholder: "User ID", class: "form-control mx-3" %>

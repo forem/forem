@@ -19,10 +19,18 @@ module Admin
 
       if @badge.save
         flash[:success] = "Badge has been created!"
-        redirect_to admin_badges_path
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to admin_content_manager_badges_path
+        else
+          redirect_to admin_badges_path
+        end
       else
         flash[:danger] = @badge.errors_as_sentence
-        render new_admin_badge_path
+        if FeatureFlag.enabled?(:admin_restructure)
+          render new_admin_content_manager_badge_path
+        else
+          render new_admin_badge_path
+        end
       end
     end
 
@@ -31,7 +39,11 @@ module Admin
 
       if @badge.update(badge_params)
         flash[:success] = "Badge has been updated!"
-        redirect_to admin_badges_path
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to admin_content_manager_badges_path
+        else
+          redirect_to admin_badges_path
+        end
       else
         flash[:danger] = @badge.errors_as_sentence
         render :edit

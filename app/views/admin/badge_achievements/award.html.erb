@@ -16,6 +16,6 @@
       <%= f.text_area :message_markdown, size: "40x10", class: "form-control" %>
     </div>
     <%= f.submit "Award Badges", class: "btn btn-primary mb-4" %>
-    <%= link_to "Back to Badge Achievements", admin_badge_achievements_path, class: "btn btn-primary float-right" %>
+    <%= link_to "Back to Badge Achievements", FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_badge_achievements_path : admin_badge_achievements_path, class: "btn btn-primary float-right" %>
   <% end %>
 </div>

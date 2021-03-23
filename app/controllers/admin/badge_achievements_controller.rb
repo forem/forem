@@ -19,7 +19,11 @@ module Admin
       else
         flash[:danger] = @badge_achievement.errors_as_sentence
       end
-      redirect_to admin_badge_achievements_path
+      if FeatureFlag.enabled?(:admin_restructure)
+        redirect_to admin_content_manager_badge_achievements_path
+      else
+        redirect_to admin_badge_achievements_path
+      end
     end
 
     def award
@@ -34,10 +38,18 @@ module Admin
       BadgeAchievements::BadgeAwardWorker.perform_async(usernames, permitted_params[:badge], message)
 
       flash[:success] = "Badges are being rewarded. The task will finish shortly."
-      redirect_to admin_badge_achievements_path
+      if FeatureFlag.enabled?(:admin_restructure)
+        redirect_to admin_content_manager_badge_achievements_path
+      else
+        redirect_to admin_badge_achievements_path
+      end
     rescue ArgumentError => e
       flash[:danger] = e.message
-      redirect_to admin_badge_achievements_path
+      if FeatureFlag.enabled?(:admin_restructure)
+        redirect_to admin_content_manager_badge_achievements_path
+      else
+        redirect_to admin_badge_achievements_path
+      end
     end
 
     private

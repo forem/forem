@@ -5,8 +5,8 @@
   <% end %>
 
   <div class="ml-auto">
-    <%= link_to "Create Badge", new_admin_badge_path, class: "btn btn-primary" %>
-    <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, style: "margin-left: 20px;", class: "btn btn-primary" %>
+    <%= link_to "Create Badge", FeatureFlag.enabled?(:admin_restructure) ? new_admin_content_manager_badge_path : new_admin_badge_path, class: "btn btn-primary" %>
+    <%= link_to "Award Badge", FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_badge_achievements_award_badges_path : admin_badge_achievements_award_badges_path, style: "margin-left: 20px;", class: "btn btn-primary" %>
   </div>
 </header>
 
@@ -21,7 +21,7 @@
   <tbody class="crayons-card">
     <% @badges.each do |badge| %>
       <tr>
-        <td><%= link_to badge.title, edit_admin_badge_path(badge.id) %></td>
+        <td><%= link_to badge.title, FeatureFlag.enabled?(:admin_restructure) ? edit_admin_content_manager_badge_path(badge.id) : edit_admin_badge_path(badge.id) %></td>
         <td class="justify-content-center"><%= badge.slug %></td>
         <td class="justify-content-center">
           <img class="mx-auto mt-3" width="40" height="40" src="<%= badge.badge_image %>" alt="badge image">
