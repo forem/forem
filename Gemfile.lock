@@ -289,7 +289,7 @@ GEM
     feedjira (3.1.2)
       loofah (>= 2.3.1)
       sax-machine (>= 1.0)
-    ffi (1.14.2)
+    ffi (1.15.0)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -1019,4 +1019,4 @@ RUBY VERSION
    ruby 2.7.2p137
 
 BUNDLED WITH
-   2.2.10
+   2.2.14
