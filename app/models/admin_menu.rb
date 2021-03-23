@@ -94,14 +94,14 @@ class AdminMenu
 
     if FeatureFlag.enabled?(:profile_admin)
       profile_hash = menu_items.dig(:customization, :children).detect { |item| item[:controller] == "profile_fields" }
-      profile_hash[:visible] = FeatureFlag.enabled?(:profile_admin)
+      profile_hash[:visible] = true
     end
 
     if FeatureFlag.enabled?(:data_update_scripts)
       data_update_script_hash = menu_items.dig(:advanced, :children)
         .detect { |item| item[:controller] ==  "tools" }[:children]
         .detect { |item| item[:controller] ==  "data_update_scripts" }
-      data_update_script_hash[:visible] = FeatureFlag.enabled?(:data_update_scripts)
+      data_update_script_hash[:visible] = true
     end
 
     menu_items
