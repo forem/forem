@@ -26,7 +26,7 @@ export default class SidebarController extends Controller {
     const collapsedList = ['collapse', 'hide'];
 
     this.submenuTargets.map((item) => {
-      if(item.classList.contains("show")) {
+      if (item.classList.contains("show")) {
         item.classList.remove(...expandedList);
         item.classList.add(...collapsedList);
       }
