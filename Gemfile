@@ -81,20 +81,19 @@ gem "ransack", "~> 2.4" # Searching and sorting
 gem "recaptcha", "~> 5.7", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.2.5" # Redis ruby client
-gem "rpush", "~> 5.4" # Push Notification library for Rails
-gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
-
+gem "redis-actionpack", "5.1.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 # NOTE: [@rhymes]: sign in doesn't work with the redis-rack 2.1.0+ or with redis-actionpack 5.2.0+
 # We need to investigate why exactly, in the meantime we are hardcoding these two transitive dependencies
 # (added by redis-rails) to keep them at the latest working version
-gem "redis-actionpack", "5.1.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 gem "redis-rack", "2.0.6" # Redis Store for Rack applications
-
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
 gem "rolify", "~> 5.3" # Very simple Roles library
 gem "rouge", "~> 3.26" # A pure-ruby code highlighter
+gem "rpush", "~> 5.4" # Push Notification library for Rails
+gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
+gem "rss", "~> 0.2" # Ruby's offical RSS parser
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.2.0" # Sidekiq is used to process background jobs with the help of Redis
