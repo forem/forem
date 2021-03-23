@@ -38,7 +38,7 @@ module Admin
         if FeatureFlag.enabled?(:admin_restructure)
           redirect_to new_admin_customization_display_ads_path
         else
-          redirect_to new_admin_display_ads_path
+          redirect_to new_admin_display_ad_path
         end
       end
     end
