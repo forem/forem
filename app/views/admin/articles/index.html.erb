@@ -18,16 +18,16 @@
   <div class="col-12">
     <ul class="nav nav-tabs nav-fill">
       <li class="nav-item">
-        <a href="<%= admin_articles_path %>" class="nav-link <%= "active" if params[:state].blank? %>">Hot</a>
+        <a href="<%= FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_articles_path : admin_articles_path %>" class="nav-link <%= "active" if params[:state].blank? %>">Hot</a>
       </li>
       <li class="nav-item">
         <a
-          href="<%= admin_articles_path(state: :chronological) %>"
+          href="<%= FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_articles_path(state: :chronological) : admin_articles_path(state: :chronological) %>"
           class="nav-link <%= "active" if params[:state] == "chronological" %>">Chronological</a>
       </li>
       <li class="nav-item">
         <a
-          href="<%= admin_articles_path(state: :satellite) %>"
+          href="<%= FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_articles_path(state: :satellite) : admin_articles_path(state: :satellite) %>"
           class="nav-link <%= "active" if params[:state] == "satellite" %>">Satellite</a>
       </li>
       <li class="nav-item">
@@ -35,22 +35,22 @@
       </li>
       <li class="nav-item">
         <a
-          href="<%= admin_articles_path(state: "not-buffered-0.25") %>"
+          href="<%= FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_articles_path(state: "not-buffered-0.25") : admin_articles_path(state: "not-buffered-0.25") %>"
           class="nav-link <%= "active" if params[:state] == "not-buffered-0.25" %>">6hr</a>
       </li>
       <li class="nav-item">
         <a
-          href="<%= admin_articles_path(state: "not-buffered-1") %>"
+          href="<%= FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_articles_path(state: "not-buffered-1") : admin_articles_path(state: "not-buffered-1") %>"
           class="nav-link <%= "active" if params[:state] == "not-buffered-1" %>">1d</a>
       </li>
       <li class="nav-item">
         <a
-          href="<%= admin_articles_path(state: "not-buffered-7") %>"
+          href="<%= FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_articles_path(state: "not-buffered-7") : admin_articles_path(state: "not-buffered-7") %>"
           class="nav-link <%= "active" if params[:state] == "not-buffered-7" %>">7d</a>
       </li>
       <li class="nav-item">
         <a
-          href="<%= admin_articles_path(state: "satellite-not-buffered") %>"
+          href="<%= FeatureFlag.enabled?(:admin_restructure) ? admin_content_manager_articles_path(state: "satellite-not-buffered") : admin_articles_path(state: "satellite-not-buffered") %>"
           class="nav-link <%= "active" if params[:state] == "satellite-not-buffered" %>">Satellite</a>
       </li>
     </ul>
