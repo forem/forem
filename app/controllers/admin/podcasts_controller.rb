@@ -21,7 +21,11 @@ module Admin
 
     def update
       if @podcast.update(podcast_params)
-        redirect_to admin_podcasts_path, notice: "Podcast updated"
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to admin_content_manager_podcasts_path, notice: "Podcast updated"
+        else
+          redirect_to admin_podcasts_path, notice: "Podcast updated"
+        end
       else
         render :edit
       end
@@ -32,13 +36,23 @@ module Admin
       force = params[:force].to_i == 1
       Podcasts::GetEpisodesWorker.perform_async(podcast_id: @podcast.id, limit: limit, force: force)
       flash[:notice] = "Podcast's episodes fetching was scheduled (#{@podcast.title}, ##{@podcast.id})"
-      redirect_to admin_podcasts_path
+      if FeatureFlag.enabled?(:admin_restructure)
+        redirect_to admin_content_manager_podcasts_path
+      else
+        redirect_to admin_podcasts_path
+      end
     end
 
     def add_owner
       @podcast_ownership = @podcast.podcast_ownerships.build(user_id: params["podcast"]["user_id"])
       if @podcast_ownership.save
-        redirect_to admin_podcasts_path, notice: "New owner added!"
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to admin_content_manager_podcasts_path, notice: "New owner added!"
+        else
+          redirect_to admin_podcasts_path, notice: "New owner added!"
+        end
+      elsif FeatureFlag.enabled?(:admin_restructure)
+        redirect_to edit_admin_content_manager_podcast_path(@podcast), notice: @podcast_ownership.errors_as_sentence
       else
         redirect_to edit_admin_podcast_path(@podcast), notice: @podcast_ownership.errors_as_sentence
       end
@@ -52,7 +66,11 @@ module Admin
 
     def find_user
       @user = User.find_by(id: params[:podcast][:user_id])
-      redirect_to edit_admin_podcast_path(@podcast), notice: "No such user" unless @user
+      if FeatureFlag.enabled?(:admin_restructure)
+        redirect_to edit_content_manager_admin_podcast_path(@podcast), notice: "No such user" unless @user
+      else
+        redirect_to edit_admin_podcast_path(@podcast), notice: "No such user" unless @user
+      end
     end
 
     def podcast_params
