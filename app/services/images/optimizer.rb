@@ -1,12 +1,12 @@
 module Images
   module Optimizer
-    def self.call(img_src, **kwargs)
+    def self.call(img_src, ...)
       return img_src if img_src.blank? || img_src.starts_with?("/")
 
       if imgproxy_enabled?
-        imgproxy(img_src, **kwargs)
+        imgproxy(img_src, ...)
       else
-        cloudinary(img_src, **kwargs)
+        cloudinary(img_src, ...)
       end
     end
 
@@ -21,7 +21,7 @@ module Images
       sign_url: true
     }.freeze
 
-    def self.cloudinary(img_src, **kwargs)
+    def self.cloudinary(img_src, kwargs = {})
       options = DEFAULT_CL_OPTIONS.merge(kwargs).reject { |_, v| v.blank? }
 
       if img_src&.include?(".gif")
@@ -38,7 +38,7 @@ module Images
       resizing_type: nil
     }.freeze
 
-    def self.imgproxy(img_src, **kwargs)
+    def self.imgproxy(img_src, kwargs = {})
       translated_options = translate_cloudinary_options(kwargs)
       options = DEFAULT_IMGPROXY_OPTIONS.merge(translated_options).reject { |_, v| v.blank? }
       Imgproxy.config.endpoint ||= get_imgproxy_endpoint
