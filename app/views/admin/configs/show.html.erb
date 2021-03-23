@@ -1092,6 +1092,15 @@
                        } %>
             <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
               <fieldset class="grid gap-4">
+                <div class="crayons-field">
+                  <%= admin_config_label :user_considered_new_days %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:user_considered_new_days][:description] %>
+                  <%= f.number_field :user_considered_new_days,
+                                     class: "crayons-textfield",
+                                     value: SiteConfig.user_considered_new_days,
+                                     placeholder: Constants::SiteConfig::DETAILS[:user_considered_new_days][:placeholder] %>
+                </div>
+
                 <% configurable_rate_limits.each do |key, field_hash| %>
                   <div class="crayons-field">
                     <%= admin_config_label field_hash[:title] %>

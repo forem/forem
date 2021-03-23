@@ -38,7 +38,7 @@ gem "field_test", "~> 0.4" # A/B testing
 gem "flipper", "~> 0.20.4" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.20.4" # Store Flipper flags in ActiveRecord
 gem "flipper-ui", "~> 0.20.4"
-gem "fog-aws", "~> 3.9" # 'fog' gem to support Amazon Web Services
+gem "fog-aws", "~> 3.10" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
@@ -123,7 +123,7 @@ group :development do
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
 
   gem "brakeman", "~> 5.0", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
-  gem "bundler-audit", "~> 0.7" # bundler-audit provides patch-level verification for Bundled apps
+  gem "bundler-audit", "~> 0.8" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 2.0", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", github: "thepracticaldev/erb-lint", branch: "jess/remove-version-pinning", require: false # ERB Linter tool
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications

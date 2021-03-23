@@ -51,7 +51,7 @@
   </header>
 
   <div class="crayons-layout crayons-layout--2-cols">
-    <div class="admin__left-sidebar crayons-layout__left-sidebar">
+    <div class="admin__left-sidebar crayons-layout__left-sidebar" data-controller="sidebar" data-action="load@window->sidebar#disableCurrentNavItem">
       <nav class="hidden m:block">
         <% if FeatureFlag.enabled?(:admin_restructure) %>
           <ul>
@@ -61,7 +61,7 @@
                 Overview
               </a>
             </li>
-            <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu::ITEMS %>
+            <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
           </ul>
         <% else %>
           <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/">
@@ -88,7 +88,7 @@
       <% if FeatureFlag.enabled?(:admin_restructure) %>
       <!-- hack to ensure that when you go to the old admin view nothing breaks -->
         <% if request.path.split("/")[-3] == "admin" %>
-          <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu::ITEMS %>
+          <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu.nested_menu_items_from_request(request) %>
         <% end %>
       <% end %>
 

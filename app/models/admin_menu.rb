@@ -1,3 +1,5 @@
+# This "model" is not backed by the database. Its main purpose is to
+# setup and provide methods to interact with the admin sidebar and tabbed menu
 class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   # rubocop:disable Metrics/BlockLength
@@ -23,6 +25,7 @@ class AdminMenu
       item(name: "display ads"),
       item(name: "navigation links"),
       item(name: "pages"),
+      item(name: "profile fields", visible: false),
     ]
 
     scope :admin_team, "user-line", [
@@ -34,7 +37,7 @@ class AdminMenu
       item(name: "mods"),
       item(name: "moderator actions ads", controller: "moderator_actions"),
       item(name: "privileged reactions"),
-      # item(name: "interaction limits", controller: "" )
+      # item(name: "interaction limits")
     ]
 
     scope :advanced, "flashlight-line", [
@@ -45,6 +48,7 @@ class AdminMenu
              item(name: "tools"),
              item(name: "vault secrets", controller: "secrets"),
              item(name: "webhooks", controller: "webhook_endpoints"),
+             item(name: "data update scripts", visible: false),
            ]),
     ]
 
@@ -54,11 +58,19 @@ class AdminMenu
       item(name: "listings"),
       item(name: "welcome"),
     ]
-  end
+  end.freeze
   # rubocop:enable Metrics/BlockLength
 
+  def self.navigation_items
+    return ITEMS unless FeatureFlag.enabled?(:profile_admin) || FeatureFlag.enabled?(:data_update_scripts)
+
+    feature_flagged_menu_items
+  end
+
   def self.nested_menu_items(scope_name, nav_item)
-    ITEMS.dig(scope_name.to_sym, :children).each do |items|
+    return unless navigation_items.dig(scope_name.to_sym, :children)
+
+    navigation_items.dig(scope_name.to_sym, :children).each do |items|
       return items if items[:controller] == nav_item
 
       next unless items[:children]&.any?
@@ -72,5 +84,26 @@ class AdminMenu
   def self.nested_menu_items_from_request(request)
     scope, nav_item = request.path.split("/").last(2)
     nested_menu_items(scope, nav_item)
+  end
+
+  def self.feature_flagged_menu_items
+    # We default to creating a ITEMS constant with visibility set to false
+    # and then simply amend the visibility of the feature flag when it's
+    # turned on, instead of creating the payload dynamically each time.
+    menu_items = ITEMS.dup
+
+    if FeatureFlag.enabled?(:profile_admin)
+      profile_hash = menu_items.dig(:customization, :children).detect { |item| item[:controller] == "profile_fields" }
+      profile_hash[:visible] = true
+    end
+
+    if FeatureFlag.enabled?(:data_update_scripts)
+      data_update_script_hash = menu_items.dig(:advanced, :children)
+        .detect { |item| item[:controller] ==  "tools" }[:children]
+        .detect { |item| item[:controller] ==  "data_update_scripts" }
+      data_update_script_hash[:visible] = true
+    end
+
+    menu_items
   end
 end

@@ -111,7 +111,7 @@ class Article < ApplicationRecord
   serialize :cached_user
   serialize :cached_organization
 
-  # NOTE: [@rhymes] this is adapted from the `search_fields` property in
+  # [@rhymes] this is adapted from the `search_fields` property in
   # `config/elasticsearch/mappings/feed_content.json`
   pg_search_scope :search_reading_list,
                   against: %i[body_markdown title cached_tag_list],
@@ -121,7 +121,16 @@ class Article < ApplicationRecord
                   },
                   using: { tsearch: { prefix: true } }
 
-  scope :published, -> { where(published: true) }
+  # [@jgaskins] We use an index on `published`, but since it's a boolean value
+  #   the Postgres query planner often skips it due to lack of diversity of the
+  #   data in the column. However, since `published_at` is a *very* diverse
+  #   column and can scope down the result set significantly, the query planner
+  #   can make heavy use of it.
+  scope :published, -> {
+    self
+      .where(published: true)
+      .where("published_at <= ?", Time.current)
+  }
   scope :unpublished, -> { where(published: false) }
 
   scope :admin_published_with, lambda { |tag_name|
