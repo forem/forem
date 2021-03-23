@@ -36,7 +36,7 @@ module Admin
       else
         flash[:danger] = @display_ad.errors_as_sentence
         if FeatureFlag.enabled?(:admin_restructure)
-          redirect_to new_admin_customization_display_ads_path
+          redirect_to new_admin_customization_display_ad_path
         else
           redirect_to new_admin_display_ad_path
         end
