@@ -19,10 +19,6 @@ RSpec.describe DigestMailer, type: :mailer do
       expect(email["from"].value).to eq(expected_from)
     end
 
-    it "includes the tracking pixel" do
-      email = described_class.with(user: user, articles: [article]).digest_email
-    end
-
     it "includes UTM params" do
       email = described_class.with(user: user, articles: [article]).digest_email
       expect(email.body).to include(CGI.escape("utm_medium=email"))
