@@ -194,7 +194,7 @@ export class Chat extends Component {
     getChannelRequestInfo().then((response) => {
       const { result } = response;
       const { user_joining_requests, channel_joining_memberships } = result;
-      let totalRequest =
+      const totalRequest =
         user_joining_requests?.length + channel_joining_memberships?.length;
       this.setState({
         userRequestCount: totalRequest,
@@ -811,7 +811,7 @@ export class Chat extends Component {
       newUnopenedChannelIds.splice(index, 1);
     }
 
-    let updatedActiveChannel = this.filterForActiveChannel(
+    const updatedActiveChannel = this.filterForActiveChannel(
       channelList,
       id,
       currentUserId,
@@ -1251,8 +1251,8 @@ export class Chat extends Component {
       const { notificationsPermission } = state;
       const notificationsButton = '';
       let notificationsState = '';
-      let invitesButton = '';
-      let joiningRequestButton = '';
+      const invitesButton = '';
+      const joiningRequestButton = '';
       if (notificationsPermission === 'granted') {
         notificationsState = (
           <div className="chat_chatconfig chat_chatconfig--on">
