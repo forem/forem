@@ -1,6 +1,5 @@
 import { Controller } from 'stimulus';
 
-// eslint-disable-next-line no-restricted-syntax
 export default class DataUpdateScriptController extends Controller {
   forceRun(event) {
     event.preventDefault();

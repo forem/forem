@@ -14,7 +14,7 @@ RSpec.describe Search::Postgres::Tag, type: :service do
       result = described_class.search_documents(tag.name)
 
       expect(result.first.keys).to match_array(
-        %w[id name hotness_score rules_html supported short_summary],
+        %i[id name hotness_score rules_html supported short_summary],
       )
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Search::Postgres::Tag, type: :service do
       ruby = create(:tag, name: "ruby")
 
       result = described_class.search_documents("jav")
-      tags = result.map { |r| r["name"] }
+      tags = result.pluck(:name)
 
       expect(tags).to include(java.name)
       expect(tags).to include(javascript.name)
@@ -56,7 +56,7 @@ RSpec.describe Search::Postgres::Tag, type: :service do
       tag2.save!
 
       result = described_class.search_documents("jav")
-      tags = result.map { |r| r["name"] }
+      tags = result.pluck(:name)
 
       expect(tags).to eq([tag2.name, tag1.name])
     end
