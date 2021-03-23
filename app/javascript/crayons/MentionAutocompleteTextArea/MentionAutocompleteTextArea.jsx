@@ -10,6 +10,7 @@ import {
   ComboboxOption,
 } from '@reach/combobox';
 import { getMentionWordData, getCursorXY } from '@utilities/textAreaUtils';
+import { mergeRefs } from '@utilities/mergeRefs';
 import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
 
 const MIN_SEARCH_CHARACTERS = 2;
@@ -22,19 +23,6 @@ const MAX_RESULTS_DISPLAYED = 6;
  * @param {element} newNode The DOM element that will receive all attributes and styles of the original node.
  */
 const replaceTextArea = (originalNodeToReplace, newNode) => {
-  const eventTypes = [];
-  for (let event in window) {
-    // Remove the "on" as the event is accessed without this part of the name
-    if (/^on/.test(event)) eventTypes.push(event.substring(2));
-  }
-
-  eventTypes.forEach((event) => {
-    if (typeof originalNodeToReplace[event] === 'function') {
-      console.log('adding event listener', event, originalNodeToReplace[event]);
-      newNode.addEventListener(event, originalNodeToReplace[event]);
-    }
-  });
-
   // Make sure any existing value is copied to the new area
   newNode.value = originalNodeToReplace.value;
 
@@ -79,21 +67,15 @@ const UserListItemContent = ({ user }) => {
   );
 };
 
-const mergeInputRefs = (refs) => (value) => {
-  refs.forEach((ref) => {
-    if (ref) {
-      ref.current = value;
-    }
-  });
-};
-
 /**
  * A component for dynamically searching for users and displaying results in a dropdown.
- * This component will replace the textarea passed in props, copying all styles and attributes, and allowing for progressive enhancement
+ * If a textarea replaceElement prop is provided, this component will replace it, copying all styles and attributes, and allowing for progressive enhancement.
+ * A ref may be given to the component, which will be forwarded to the new textarea
  *
  * @param {object} props
- * @param {element} props.replaceElement The textarea DOM element that should be replaced
+ * @param {element} props.replaceElement Optional textarea DOM element that should be replaced by the textarea
  * @param {function} props.fetchSuggestions The async call to use for the search
+ * @param {object} props.inputProps Any additional props to be attached to the textarea element
  *
  * @example
  * <MentionAutocompleteCombobox
@@ -102,8 +84,10 @@ const mergeInputRefs = (refs) => (value) => {
  * />
  */
 export const MentionAutocompleteTextArea = forwardRef(
-  ({ replaceElement, fetchSuggestions, events = {} }, forwardedRef) => {
-    const [textContent, setTextContent] = useState('');
+  ({ replaceElement, fetchSuggestions, inputProps = {} }, forwardedRef) => {
+    const [textContent, setTextContent] = useState(
+      inputProps.defaultValue ? inputProps.defaultValue : '',
+    );
     const [searchTerm, setSearchTerm] = useState('');
     const [cachedSearches, setCachedSearches] = useState({});
     const [dropdownPositionPoints, setDropdownPositionPoints] = useState({
@@ -234,7 +218,7 @@ export const MentionAutocompleteTextArea = forwardRef(
       setTextContent(textWithSelection);
 
       // Allow any other attached change event to receive the updated text
-      events.onChange?.(textWithSelection);
+      inputProps.onChange?.(textWithSelection);
 
       // Update the cursor to directly after the selection (+2 accounts for the @ sign, and adding a space after the username)
       const newCursorPosition = selectionInsertIndex + username.length + 2;
@@ -244,7 +228,9 @@ export const MentionAutocompleteTextArea = forwardRef(
     useLayoutEffect(() => {
       if (inputRef.current) {
         // Replace the whole textarea passed in props with the autocomplete textarea
-        replaceTextArea(replaceElement, inputRef.current);
+        if (replaceElement) {
+          replaceTextArea(replaceElement, inputRef.current);
+        }
       }
     }, [replaceElement]);
 
@@ -259,14 +245,14 @@ export const MentionAutocompleteTextArea = forwardRef(
           className="crayons-autocomplete"
         >
           <ComboboxInput
-            {...events}
-            ref={mergeInputRefs([inputRef, forwardedRef])}
+            {...inputProps}
+            ref={mergeRefs([inputRef, forwardedRef])}
             value={textContent}
             data-mention-autocomplete-active="true"
             as="textarea"
             autocomplete={false}
             onChange={(e) => {
-              events.onChange?.(e);
+              inputProps.onChange?.(e);
               handleTextInputChange(e);
             }}
           />
@@ -307,6 +293,7 @@ export const MentionAutocompleteTextArea = forwardRef(
 );
 
 MentionAutocompleteTextArea.propTypes = {
-  replaceElement: PropTypes.node.isRequired,
+  replaceElement: PropTypes.node,
   fetchSuggestions: PropTypes.func.isRequired,
+  inputProps: PropTypes.object,
 };
