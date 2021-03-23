@@ -119,7 +119,7 @@
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.3.1",
-    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react": "^7.23.0",
     "faker": "^5.4.0",
     "gitdocs": "^2.0.0",
     "husky": "^4.3.8",
