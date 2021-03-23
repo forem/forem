@@ -18,8 +18,10 @@ module Search
       DEFAULT_STATUSES = %w[confirmed valid].freeze
 
       def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE)
+        return {} unless user
+
         statuses = statuses.presence || DEFAULT_STATUSES
-        tags ||= []
+        tags = tags.presence || []
 
         # NOTE: [@rhymes] we should eventually update the frontend
         # to start from page 1
