@@ -13,7 +13,7 @@ RSpec.describe Search::Postgres::Username, type: :service do
       result = described_class.search_documents(user.username)
 
       expect(result.first.keys).to match_array(
-        %w[id name profile_image_90 username],
+        %i[id name profile_image_90 username],
       )
     end
 
@@ -35,7 +35,7 @@ RSpec.describe Search::Postgres::Username, type: :service do
       rhymes = create(:user, username: "rhymes")
 
       result = described_class.search_documents("ale")
-      usernames = result.map { |r| r["username"] }
+      usernames = result.pluck(:username)
 
       expect(usernames).to include(alex.username)
       expect(usernames).to include(alexsmith.username)
@@ -52,7 +52,7 @@ RSpec.describe Search::Postgres::Username, type: :service do
       results = described_class.search_documents("alex")
 
       expect(results.size).to eq(max_results)
-      expect([alex.username, alexsmith.username]).to include(results.first["username"])
+      expect([alex.username, alexsmith.username]).to include(results.first[:username])
     end
   end
 end

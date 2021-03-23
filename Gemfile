@@ -38,11 +38,11 @@ gem "field_test", "~> 0.4" # A/B testing
 gem "flipper", "~> 0.20.4" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.20.4" # Store Flipper flags in ActiveRecord
 gem "flipper-ui", "~> 0.20.4"
-gem "fog-aws", "~> 3.9" # 'fog' gem to support Amazon Web Services
+gem "fog-aws", "~> 3.10" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
-gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
-gem "honeybadger", "~> 4.7" # Used for tracking application errors
+gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
+gem "honeybadger", "~> 4.8" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.4.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
@@ -51,7 +51,7 @@ gem "imgproxy", "~> 2.0" # A gem that easily generates imgproxy URLs for your im
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.4" #  A gem to automate using jQuery with Rails
-gem "jsonapi-serializer", "~> 2.1" # Serializer for Ruby objects
+gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.6.1" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.0" # A secure, non-evaling end user template engine with aesthetic markup
@@ -71,7 +71,7 @@ gem "pg_search", "~> 2.3.5" # PgSearch builds Active Record named scopes that ta
 gem "puma", "~> 5.2.2" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.4" # Ruby library for Pusher Channels HTTP API
-gem "pusher-push-notifications", "~> 1.3" # Pusher Push Notifications Ruby server SDK
+gem "pusher-push-notifications", "~> 2.0" # Pusher Push Notifications Ruby server SDK
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
@@ -97,9 +97,9 @@ gem "rolify", "~> 5.3" # Very simple Roles library
 gem "rouge", "~> 3.26" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
-gem "sidekiq", "~> 6.1.3" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq", "~> 6.2.0" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.0.4" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.0.7" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
@@ -112,7 +112,7 @@ gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
-gem "vault", "~> 0.15" # Used to store secrets
+gem "vault", "~> 0.16" # Used to store secrets
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.2.1" # Use webpack to manage app-like JavaScript modules in Rails
 
@@ -123,7 +123,7 @@ group :development do
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
 
   gem "brakeman", "~> 5.0", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
-  gem "bundler-audit", "~> 0.7" # bundler-audit provides patch-level verification for Bundled apps
+  gem "bundler-audit", "~> 0.8" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 2.0", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", github: "thepracticaldev/erb-lint", branch: "jess/remove-version-pinning", require: false # ERB Linter tool
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
@@ -140,12 +140,12 @@ group :development do
 end
 
 group :development, :test do
-  gem "amazing_print", "~> 1.2" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
+  gem "amazing_print", "~> 1.3" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.4.2" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
-  gem "faker", "~> 2.16" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "faker", "~> 2.17" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
@@ -159,8 +159,6 @@ group :development, :test do
 end
 
 group :test do
-  gem "approvals", "~> 0.0" # A library to make it easier to do golden-master style testing in Ruby
-  gem "database_cleaner-active_record", "~> 2.0.0", require: false # Strategies for cleaning databases using ActiveRecord. Can be used to ensure a clean state for testing.
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
   gem "factory_bot_rails", "~> 6.1" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.

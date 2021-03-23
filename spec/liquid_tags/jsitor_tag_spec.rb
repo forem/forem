@@ -19,53 +19,62 @@ RSpec.describe JsitorTag, type: :liquid_tag do
       Liquid::Template.parse("{% jsitor #{link} %}")
     end
 
+    # rubocop:disable Style/StringLiterals
     it "renders jsitor liquid tag" do
       liquid = create_jsitor_liquid_tag(jsitor_link)
-      render_jsitor_iframe = liquid.render
-      Approvals.verify(render_jsitor_iframe, name: "jsitor_liquid_tag", format: :html)
+
+      expect(liquid.render).to include('<iframe')
+        .and include('src="https://jsitor.com/embed/B7FQ5tHbY"')
     end
 
     it "parses the link with spaces before and after" do
       link = "   https://jsitor.com/embed/B7FQ5tHbY     "
       liquid = create_jsitor_liquid_tag(link)
-      render_jsitor_iframe = liquid.render
-      Approvals.verify(render_jsitor_iframe, name: "jsitor_liquid_tag", format: :html)
+
+      expect(liquid.render).to include('<iframe')
+        .and include('src="https://jsitor.com/embed/B7FQ5tHbY"')
     end
 
     it "accepts jsitor link with query params" do
       link = "https://jsitor.com/embed/B7FQ5tHbY?html&css"
       liquid = create_jsitor_liquid_tag(link)
-      render_jsitor_iframe = liquid.render
-      Approvals.verify(render_jsitor_iframe, name: "jsitor_liquid_tag_with_params", format: :html)
+
+      expect(liquid.render).to include('<iframe')
+        .and include('src="https://jsitor.com/embed/B7FQ5tHbY?html&amp;css"')
     end
 
     it "accepts jsitor id" do
       link = "B7FQ5tHbY"
       liquid = create_jsitor_liquid_tag(link)
-      render_jsitor_iframe = liquid.render
-      Approvals.verify(render_jsitor_iframe, name: "jsitor_liquid_tag", format: :html)
+
+      expect(liquid.render).to include('<iframe')
+        .and include("https://jsitor.com/embed/#{link}")
     end
 
     it "accepts jsitor id with parameters" do
-      link = "B7FQ5tHbY?html&css"
+      link = "B7FQ5tHbY&amp;html&amp;css"
       liquid = create_jsitor_liquid_tag(link)
-      render_jsitor_iframe = liquid.render
-      Approvals.verify(render_jsitor_iframe, name: "jsitor_liquid_tag_with_params", format: :html)
+
+      expect(liquid.render).to include('<iframe')
+        .and include("https://jsitor.com/embed/#{link}")
     end
 
     it "accepts jsitor link with hyphen id" do
       link = "https://jsitor.com/embed/2o-syYxmi"
       liquid = create_jsitor_liquid_tag(link)
-      render_jsitor_iframe = liquid.render
-      Approvals.verify(render_jsitor_iframe, name: "jsitor_liquid_tag_with_hyphen", format: :html)
+
+      expect(liquid.render).to include('<iframe')
+        .and include(link)
     end
 
     it "accepts jsitor id with hyphen" do
       link = "2o-syYxmi"
       liquid = create_jsitor_liquid_tag(link)
-      render_jsitor_iframe = liquid.render
-      Approvals.verify(render_jsitor_iframe, name: "jsitor_liquid_tag_with_hyphen", format: :html)
+
+      expect(liquid.render).to include('<iframe')
+        .and include("https://jsitor.com/embed/#{link}")
     end
+    # rubocop:enable Style/StringLiterals
 
     it "doesnt accepts jsitor link with a / at the end" do
       link = "https://jsitor.com/embed/1QgJVmCam/"

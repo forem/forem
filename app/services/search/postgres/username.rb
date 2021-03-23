@@ -11,22 +11,18 @@ module Search
       ].freeze
 
       def self.search_documents(term)
-        users = search_users(term)
+        results = ::User.search_by_username(term).limit(MAX_RESULTS).select(*ATTRIBUTES)
 
-        users.map do |user|
-          user.as_json(only: %i[id name username])
-            .merge("profile_image_90" => user.profile_image_90)
-        end
+        serialize(results)
       end
 
-      def self.search_users(term)
-        ::User
-          .search_by_username(term)
-          .limit(MAX_RESULTS)
-          .select(*ATTRIBUTES)
+      def self.serialize(results)
+        Search::UsernameSerializer
+          .new(results, is_collection: true)
+          .serializable_hash[:data]
+          .pluck(:attributes)
       end
-
-      private_class_method :search_users
+      private_class_method :serialize
     end
   end
 end
