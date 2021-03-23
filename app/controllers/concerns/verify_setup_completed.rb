@@ -38,7 +38,7 @@ module VerifySetupCompleted
     return if flash[:global_notice].present?
     return if config_path? || setup_completed? || SiteConfig.waiting_on_first_user
 
-    link = helpers.tag.a("the configuration page", href: admin_config_path, data: { "no-instant" => true })
+    link = helpers.tag.a("the configuration page", href: "#{FeatureFlag.enabled?(:admin_restructure) ? admin_customization_config_path : admin_config_path}", data: { "no-instant" => true })
 
     flash[:global_notice] = helpers.safe_join(["Setup not completed yet, missing ",
                                                missing_configs_text,
