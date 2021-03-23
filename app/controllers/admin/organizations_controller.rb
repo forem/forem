@@ -31,7 +31,6 @@ module Admin
       add_note(org)
 
       flash[:notice] = "Sucessfully updated credits"
-
       if FeatureFlag.enabled?(:admin_restructure)
         redirect_to admin_content_manager_organization_path(org)
       else

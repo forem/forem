@@ -44,7 +44,6 @@ module Admin
       else
         flash[:danger] = article.errors_as_sentence
       end
-
       if FeatureFlag.enabled?(:admin_restructure)
         redirect_to admin_content_manager_article_path(article.id)
       else

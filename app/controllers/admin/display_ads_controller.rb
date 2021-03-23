@@ -28,10 +28,18 @@ module Admin
 
       if @display_ad.save
         flash[:success] = "Display Ad has been created!"
-        redirect_to admin_display_ads_path
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to admin_customization_display_ads_path
+        else
+          redirect_to admin_display_ads_path
+        end
       else
         flash[:danger] = @display_ad.errors_as_sentence
-        render new_admin_display_ad_path
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to new_admin_customization_display_ads_path
+        else
+          redirect_to new_admin_display_ads_path
+        end
       end
     end
 
@@ -52,7 +60,11 @@ module Admin
 
       if @display_ad.destroy
         flash[:success] = "Display Ad has been deleted!"
-        redirect_to admin_display_ads_path
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to admin_customization_display_ads_path
+        else
+          redirect_to admin_display_ads_path
+        end
       else
         flash[:danger] = "Something went wrong with deleting the Display Ad."
         render :edit
