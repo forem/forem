@@ -1,15 +1,16 @@
 <nav class="flex mb-4" aria-label="Sponsorships navigation">
   <div class="crayons-tabs">
-    <%= link_to "Leaderboard", admin_html_variants_path, class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state].blank?}" %>
-    <%= link_to "Mine", admin_html_variants_path(state: "mine"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == 'mine'}" %>
-    <%= link_to "Admin", admin_html_variants_path(state: "admin"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == 'admin'}" %>
+    <%= link_to "Leaderboard", FeatureFlag.enabled?(:admin_restructure) ? admin_customization_html_variants_path : admin_html_variants_path, class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state].blank?}" %>
+    <%= link_to "Mine", FeatureFlag.enabled?(:admin_restructure) ? admin_customization_html_variants_path(state: "mine") : admin_html_variants_path(state: "mine"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == 'mine'}" %>
+    <%= link_to "Admin", FeatureFlag.enabled?(:admin_restructure) ? admin_customization_html_variants_path(state: "admin") : admin_html_variants_path(state: "admin"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == 'admin'}" %>
     <% HtmlVariant::GROUP_NAMES.each do |group_name| %>
-      <%= link_to group_name.humanize.capitalize, admin_html_variants_path(state: group_name), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == group_name}" %>
+      <%= link_to group_name.humanize.capitalize, FeatureFlag.enabled?(:admin_restructure) ? admin_customization_html_variants_path(state: group_name) : admin_html_variants_path(state: group_name),
+                  class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == group_name}" %>
     <% end %>
   </div>
   <div class="ml-auto">
     <div class="justify-content-end">
-      <%= link_to "New HTML Variant", new_admin_html_variant_path, class: "crayons-btn" %>
+      <%= link_to "New HTML Variant", FeatureFlag.enabled?(:admin_restructure) ? new_admin_customization_html_variant_path : new_admin_html_variant_path, class: "crayons-btn" %>
     </div>
   </div>
 </nav>
@@ -32,19 +33,19 @@
   <tbody class="crayons-card">
     <% @html_variants.each do |html_variant| %>
         <tr>
-          <td><%= link_to html_variant.name, admin_html_variant_path(html_variant) %></td>
+          <td><%= link_to html_variant.name, FeatureFlag.enabled?(:admin_restructure) ? admin_customization_html_variant_path(html_variant) : admin_html_variant_path(html_variant) %></td>
           <td><%= link_to "@#{html_variant.user.username}", "/#{html_variant.user.username}" %></td>
           <td><%= html_variant.group %></td>
           <td><%= html_variant.published %></td>
           <td><%= html_variant.approved %></td>
           <td>
-            <%= link_to "Fork", new_admin_html_variant_path(fork_id: html_variant.id), class: "crayons-btn crayons-btn--outlined" %>
+            <%= link_to "Fork", FeatureFlag.enabled?(:admin_restructure) ? new_admin_customization_html_variant_path(fork_id: html_variant.id) : new_admin_html_variant_path(fork_id: html_variant.id), class: "crayons-btn crayons-btn--outlined" %>
           </td>
           <td>
-            <%= link_to "Edit", edit_admin_html_variant_path(html_variant), class: "crayons-btn" %>
+            <%= link_to "Edit", FeatureFlag.enabled?(:admin_restructure) ? edit_admin_customization_html_variant_path(html_variant) : edit_admin_html_variant_path(html_variant), class: "crayons-btn" %>
           </td>
           <td>
-            <%= link_to "Destroy", admin_html_variant_path(html_variant), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %>
+            <%= link_to "Destroy", FeatureFlag.enabled?(:admin_restructure) ? admin_customization_html_variant_path(html_variant) : admin_html_variant_path(html_variant), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %>
           </td>
         </tr>
     <% end %>

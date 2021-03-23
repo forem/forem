@@ -40,10 +40,18 @@ module Admin
 
       if @html_variant.save
         flash[:success] = "HTML Variant has been created!"
-        redirect_to admin_html_variants_path(state: "mine")
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to admin_customization_html_variants_path(state: "mine")
+        else
+          redirect_to admin_html_variants_path(state: "mine")
+        end
       else
         flash[:danger] = @html_variant.errors_as_sentence
-        render new_admin_html_variant_path
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to new_admin_customization_html_variant_path
+        else
+          render new_admin_html_variant_path
+        end
       end
     end
 
@@ -52,9 +60,14 @@ module Admin
 
       if @html_variant.update(html_variant_params)
         flash[:success] = "HTML Variant has been updated!"
-        redirect_to edit_admin_html_variant_path(@html_variant)
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to edit_admin_customization_html_variant_path(@html_variant)
+        else
+          redirect_to edit_admin_html_variant_path(@html_variant)
+        end
       else
         flash[:danger] = @html_variant.errors_as_sentence
+        # TODO: @ridhwana to add a feature flag
         render :edit
       end
     end
@@ -64,9 +77,14 @@ module Admin
 
       if @html_variant.destroy
         flash[:success] = "HTML Variant has been deleted!"
-        redirect_to admin_html_variants_path
+        if FeatureFlag.enabled?(:admin_restructure)
+          redirect_to admin_customization_html_variants_path
+        else
+          redirect_to admin_html_variants_path
+        end
       else
         flash[:danger] = "Something went wrong with deleting the HTML Variant."
+        # TODO: @ridhwana to add a feature flag
         render :edit
       end
     end
