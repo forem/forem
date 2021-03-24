@@ -95,8 +95,6 @@ RSpec.describe Users::Delete, type: :service do
         affected_feedback_messages
         audit_logs
         banished_users
-        buffer_updates_approved
-        buffer_updates_composed
         created_podcasts
         offender_feedback_messages
         page_views
