@@ -26,9 +26,9 @@ gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter
 gem "ddtrace", "~> 0.46.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", github: "heartcombo/devise", ref: "0cd72a5" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.3" # Allows invitations to be sent for joining
-gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
+gem "dogstatsd-ruby", "~> 4.9" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.5" # Oauth 2 provider
-gem "elasticsearch", "~> 7.11" # Powers DEVs core search functionality
+gem "elasticsearch", "~> 7.12" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
@@ -69,7 +69,7 @@ gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_search", "~> 2.3.5" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
 gem "puma", "~> 5.2.2" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
-gem "pusher", "~> 1.4" # Ruby library for Pusher Channels HTTP API
+gem "pusher", "~> 2.0" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 2.0" # Pusher Push Notifications Ruby server SDK
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
@@ -127,7 +127,7 @@ group :development do
   gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
-  gem "listen", "~> 3.4", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
+  gem "listen", "~> 3.5", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
