@@ -204,15 +204,5 @@
         Who <em>might</em> find this post most valuable, based on overall experience level?
       </p>
     </div>
-    <% if @moderatable.last_buffered.blank? %>
-      <div class="tag-mod-form">
-        <%= form_for(BufferUpdate.new) do |f| %>
-          <h2>Suggest a Tweet for @<%= SiteConfig.social_media_handles["twitter"] %></h2>
-          <%= f.hidden_field :article_id, value: @moderatable.id %>
-          <%= f.text_area :body_text, maxlength: 220, placeholder: "Can be a TLDR of the post, an interesting quote from the post, or bullet points from topics covered in the post, etc." %>
-          <%= f.submit "Share Tweet Suggestion" %>
-        <% end %>
-      </div>
-    <% end %>
   <% end %>
 </div>

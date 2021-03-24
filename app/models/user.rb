@@ -5,6 +5,11 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  include PgSearch::Model
+  pg_search_scope :search_by_username,
+                  against: :username,
+                  using: { tsearch: { prefix: true } }
+
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
     available_for
@@ -126,10 +131,6 @@ class User < ApplicationRecord
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
-  has_many :buffer_updates_approved, class_name: "BufferUpdate", foreign_key: :approver_user_id,
-                                     inverse_of: :approver_user, dependent: :nullify
-  has_many :buffer_updates_composed, class_name: "BufferUpdate", foreign_key: :composer_user_id,
-                                     inverse_of: :composer_user, dependent: :nullify
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :collections, dependent: :destroy
@@ -179,6 +180,7 @@ class User < ApplicationRecord
   has_many :tweets, dependent: :nullify
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
   has_many :devices, dependent: :delete_all
+  has_many :sponsorships, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 

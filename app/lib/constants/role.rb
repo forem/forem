@@ -17,7 +17,6 @@ module Constants
       "Resource Admin: Badge",
       "Resource Admin: BadgeAchievement",
       "Resource Admin: Broadcast",
-      "Resource Admin: BufferUpdate",
       "Resource Admin: ChatChannel",
       "Resource Admin: Comment",
       "Resource Admin: Config",
