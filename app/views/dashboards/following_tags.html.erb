@@ -1,62 +1,64 @@
 <% title("Dashboard - #{community_name}") %>
 
-<main id="index-container"
-    data-params="<%= params.to_json(only: %i[action per_page]) %>"
-    data-which="following">
-  <header class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Following tags</h1>
-    <%= render "actions_mobile" %>
-  </header>
+<div id="index-container"
+  data-params="<%= params.to_json(only: %i[action per_page]) %>"
+  data-which="following">
+  <main id="main-content">
+    <header class="crayons-layout">
+      <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Following tags</h1>
+      <%= render "actions_mobile" %>
+    </header>
 
-  <div class="crayons-layout crayons-layout--2-cols">
-    <aside class="crayons-layout__sidebar-left">
-      <%= render "actions" %>
-    </aside>
+    <div class="crayons-layout crayons-layout--2-cols">
+      <aside class="crayons-layout__sidebar-left">
+        <%= render "actions" %>
+      </aside>
 
-    <div class="crayons-layout__content mb-5" id="user-dashboard">
-      <% if @followed_tags.any? %>
-        <%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
+      <div class="crayons-layout__content mb-5" id="user-dashboard">
+        <% if @followed_tags.any? %>
+          <%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
 
-        <div class="crayons-notice p-4 px-6 mb-4 mx-2 m:mx-0">
-            Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
-            <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
-        </div>
-        <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
-          <% negative_follow_shown_once = false %>
-          <% @followed_tags.each do |follow| %>
-            <% tag = follow.followable %>
-            <% if tag %>
-              <% color = Color::CompareHex.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-              <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.explicit_points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
-                <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
-                  <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">
-                    <span class="crayons-tag__prefix">#</span><%= tag.name %>
-                  </a>
-                  <% if follow.explicit_points < 0 %>
-                    <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>
+          <div class="crayons-notice p-4 px-6 mb-4 mx-2 m:mx-0">
+              Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
+              <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
+          </div>
+          <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
+            <% negative_follow_shown_once = false %>
+            <% @followed_tags.each do |follow| %>
+              <% tag = follow.followable %>
+              <% if tag %>
+                <% color = Color::CompareHex.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+                <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.explicit_points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
+                  <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
+                    <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">
+                      <span class="crayons-tag__prefix">#</span><%= tag.name %>
+                    </a>
+                    <% if follow.explicit_points < 0 %>
+                      <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>
+                    <% end %>
+                  </h3>
+
+                  <p class="grid-cell__summary truncate-at-2 mb-4 fs-m h-50">
+                    <%= strip_tags(tag.short_summary) %>
+                  </p>
+
+                  <%= fields(follow) do |f| %>
+                    <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form") %>
+                    <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form") %>
                   <% end %>
-                </h3>
-
-                <p class="grid-cell__summary truncate-at-2 mb-4 fs-m h-50">
-                  <%= strip_tags(tag.short_summary) %>
-                </p>
-
-                <%= fields(follow) do |f| %>
-                  <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form") %>
-                  <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form") %>
-                <% end %>
-              </div>
+                </div>
+              <% end %>
             <% end %>
-          <% end %>
-        </div>
+          </div>
 
-        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, class: "sticky bg-base-10 pt-3 pb-1 z-elevate", html: { style: "bottom: 0;margin-left:-1px"}, id: "follows_update_form" do |f| %>
-          <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit">Update Weights</button>
+          <%= form_with url: bulk_update_follows_path, method: :patch, local: true, class: "sticky bg-base-10 pt-3 pb-1 z-elevate", html: { style: "bottom: 0;margin-left:-1px" }, id: "follows_update_form" do |f| %>
+            <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit">Update Weights</button>
+          <% end %>
+        <% else %>
+          <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any tags yet...</div>
         <% end %>
-      <% else %>
-        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any tags yet...</div>
-      <% end %>
-      <%= render "sublist" %>
+        <%= render "sublist" %>
+      </div>
     </div>
-  </div>
-</main>
+  </main>
+</div>
