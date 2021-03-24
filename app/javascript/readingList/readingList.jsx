@@ -158,6 +158,7 @@ export class ReadingList extends Component {
   render() {
     const {
       items = [],
+      itemsTotal,
       availableTags,
       selectedTags,
       showLoadMoreButton,
@@ -190,7 +191,7 @@ export class ReadingList extends Component {
         <header className="crayons-layout flex justify-between items-center pb-0">
           <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
-            {` (${items.length})`}
+            {` (${itemsTotal})`}
           </h1>
 
           <div class="flex items-center">

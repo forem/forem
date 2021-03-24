@@ -7,6 +7,7 @@ class Article < ApplicationRecord
   include Reactable
   include Searchable
   include UserSubscriptionSourceable
+  include PgSearch::Model
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
@@ -110,6 +111,16 @@ class Article < ApplicationRecord
 
   serialize :cached_user
   serialize :cached_organization
+
+  # [@rhymes] this is adapted from the `search_fields` property in
+  # `config/elasticsearch/mappings/feed_content.json`
+  pg_search_scope :search_reading_list,
+                  against: %i[body_markdown title cached_tag_list],
+                  associated_against: {
+                    organization: %i[name],
+                    user: %i[name username]
+                  },
+                  using: { tsearch: { prefix: true } }
 
   # [@jgaskins] We use an index on `published`, but since it's a boolean value
   #   the Postgres query planner often skips it due to lack of diversity of the

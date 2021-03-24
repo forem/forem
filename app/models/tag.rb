@@ -13,9 +13,6 @@ class Tag < ActsAsTaggableOn::Tag
   include Searchable
 
   include PgSearch::Model
-  pg_search_scope :search_by_name,
-                  against: :name,
-                  using: { tsearch: { prefix: true } }
 
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
@@ -47,6 +44,10 @@ class Tag < ActsAsTaggableOn::Tag
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: [:update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
+
+  pg_search_scope :search_by_name,
+                  against: :name,
+                  using: { tsearch: { prefix: true } }
 
   scope :eager_load_serialized_data, -> {}
 
