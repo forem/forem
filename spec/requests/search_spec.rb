@@ -242,7 +242,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
         expect(response.parsed_body["total"]).to eq(1)
       end
 
-      it "support the search params" do
+      it "supports the search params" do
         article.update_columns(title: "Title", cached_tag_list: "ruby, python")
 
         get search_reactions_path(page: 0, per_page: 1, status: %w[valid], tags: %w[ruby], term: "title")
