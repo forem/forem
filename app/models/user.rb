@@ -131,10 +131,6 @@ class User < ApplicationRecord
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
-  has_many :buffer_updates_approved, class_name: "BufferUpdate", foreign_key: :approver_user_id,
-                                     inverse_of: :approver_user, dependent: :nullify
-  has_many :buffer_updates_composed, class_name: "BufferUpdate", foreign_key: :composer_user_id,
-                                     inverse_of: :composer_user, dependent: :nullify
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :collections, dependent: :destroy

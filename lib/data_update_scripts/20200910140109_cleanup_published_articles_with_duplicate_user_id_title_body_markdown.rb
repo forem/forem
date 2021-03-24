@@ -66,7 +66,6 @@ module DataUpdateScripts
       # Poll is ignored because it's related to the liquid tag inside the article, also user's can't use polls
       # TagAdjustment is ignored as there's likely no reason for article to have an adjustment moved over
       models_with_a_direct_relation = [
-        BufferUpdate,
         HtmlVariantSuccess,
         HtmlVariantSuccess,
         HtmlVariantTrial,

@@ -1,4 +1,6 @@
 class Article < ApplicationRecord
+  self.ignored_columns = %w[facebook_last_buffered last_buffered].freeze
+
   include CloudinaryHelper
   include ActionView::Helpers
   include Storext.model
@@ -29,7 +31,6 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
-  has_many :buffer_updates, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
@@ -115,9 +116,8 @@ class Article < ApplicationRecord
   #   data in the column. However, since `published_at` is a *very* diverse
   #   column and can scope down the result set significantly, the query planner
   #   can make heavy use of it.
-  scope :published, -> {
-    self
-      .where(published: true)
+  scope :published, lambda {
+    where(published: true)
       .where("published_at <= ?", Time.current)
   }
   scope :unpublished, -> { where(published: false) }
@@ -165,8 +165,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
-           :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-           :email_digest_eligible, :processed_html, :co_author_ids)
+           :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
   }
 
   scope :boosted_via_additional_articles, lambda {
