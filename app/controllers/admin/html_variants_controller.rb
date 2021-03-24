@@ -43,7 +43,7 @@ module Admin
         redirect_to admin_html_variants_path(state: "mine")
       else
         flash[:danger] = @html_variant.errors_as_sentence
-        render new_admin_html_variant_path
+        render :new
       end
     end
 

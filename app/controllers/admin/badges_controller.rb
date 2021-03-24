@@ -22,7 +22,7 @@ module Admin
         redirect_to admin_badges_path
       else
         flash[:danger] = @badge.errors_as_sentence
-        render new_admin_badge_path
+        render :new
       end
     end
 

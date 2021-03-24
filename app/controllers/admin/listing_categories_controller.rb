@@ -28,7 +28,7 @@ module Admin
         redirect_to admin_listing_categories_path
       else
         flash[:danger] = @listing_category.errors_as_sentence
-        render new_admin_listing_category_path
+        render :new
       end
     end
 

@@ -31,7 +31,7 @@ module Admin
         redirect_to admin_display_ads_path
       else
         flash[:danger] = @display_ad.errors_as_sentence
-        render new_admin_display_ad_path
+        render :new
       end
     end
 

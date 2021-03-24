@@ -26,7 +26,7 @@ module Admin
         redirect_to admin_events_path
       else
         flash[:danger] = @event.errors.full_messages
-        render new_admin_event_path
+        render :new
       end
     end
 

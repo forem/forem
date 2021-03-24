@@ -28,7 +28,7 @@ module Admin
         redirect_to admin_sponsorships_path
       else
         flash[:danger] = @sponsorship.errors_as_sentence
-        render new_admin_sponsorship_path
+        render :new
       end
     end
 
