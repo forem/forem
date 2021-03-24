@@ -272,8 +272,6 @@ GEM
       multipart-post (>= 1.2, < 3)
       ruby2_keywords
     faraday-net_http (1.0.1)
-    faraday_middleware (1.0.0)
-      faraday (~> 1.0)
     fastimage (2.2.3)
     fastly (3.0.1)
     feedjira (3.1.2)
