@@ -2,22 +2,22 @@
   <div class="crayons-field">
     <%= admin_config_label :"#{provider.provider_name}_key" %>
     <p class="crayons-field__description">
-      <%= Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_key"][:description] %>
+      <%= Constants::Settings::Authentication::DETAILS[:"#{provider.provider_name}_key"][:description] %>
     </p>
     <%= f.text_field :"#{provider.provider_name}_key",
                      class: "crayons-textfield",
-                     value: SiteConfig.public_send("#{provider.provider_name}_key"),
-                     placeholder: Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_key"][:placeholder] %>
+                     value: Settings::Authentication.public_send("#{provider.provider_name}_key"),
+                     placeholder: Constants::Settings::Authentication::DETAILS[:"#{provider.provider_name}_key"][:placeholder] %>
   </div>
   <div class="crayons-field">
     <%= admin_config_label :"#{provider.provider_name}_secret" %>
     <p class="crayons-field__description">
-      <%= Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_secret"][:description] %>
+      <%= Constants::Settings::Authentication::DETAILS[:"#{provider.provider_name}_secret"][:description] %>
     <p>
     <%= f.text_field :"#{provider.provider_name}_secret",
                      class: "crayons-textfield",
-                     value: SiteConfig.public_send("#{provider.provider_name}_secret"),
-                     placeholder: Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_secret"][:placeholder] %>
+                     value: Settings::Authentication.public_send("#{provider.provider_name}_secret"),
+                     placeholder: Constants::Settings::Authentication::DETAILS[:"#{provider.provider_name}_secret"][:placeholder] %>
   </div>
   <div class="crayons-btn-actions">
     <% if authentication_provider_enabled?(provider) %>

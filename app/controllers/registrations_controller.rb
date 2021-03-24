@@ -13,7 +13,8 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    not_authorized unless SiteConfig.allow_email_password_registration || SiteConfig.waiting_on_first_user
+    not_authorized unless Settings::Authentication.allow_email_password_registration ||
+      SiteConfig.waiting_on_first_user
     not_authorized if SiteConfig.waiting_on_first_user && ENV["FOREM_OWNER_SECRET"].present? &&
       ENV["FOREM_OWNER_SECRET"] != params[:user][:forem_owner_secret]
 

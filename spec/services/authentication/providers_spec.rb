@@ -9,7 +9,7 @@ RSpec.describe Authentication::Providers, type: :service do
     end
 
     it "raises an exception if a provider is available but not enabled" do
-      allow(SiteConfig).to receive(:authentication_providers).and_return(%w[github])
+      allow(Settings::Authentication).to receive(:providers).and_return(%w[github])
 
       expect do
         described_class.get!(:twitter)
@@ -17,7 +17,7 @@ RSpec.describe Authentication::Providers, type: :service do
     end
 
     it "loads the correct provider class" do
-      allow(SiteConfig).to receive(:authentication_providers).and_return(described_class.available)
+      allow(Settings::Authentication).to receive(:providers).and_return(described_class.available)
 
       is_subclass_of = (
         described_class.get!(:twitter) < Authentication::Providers::Provider
@@ -36,7 +36,7 @@ RSpec.describe Authentication::Providers, type: :service do
   describe ".enabled" do
     context "when one of the available providers is disabled" do
       it "only lists those that remain enabled" do
-        allow(SiteConfig).to receive(:authentication_providers).and_return(%w[github])
+        allow(Settings::Authentication).to receive(:providers).and_return(%w[github])
 
         expect(described_class.enabled).to eq(%i[github])
       end
@@ -45,13 +45,13 @@ RSpec.describe Authentication::Providers, type: :service do
 
   describe ".enabled?" do
     it "returns true if a provider is enabled" do
-      allow(SiteConfig).to receive(:authentication_providers).and_return(%w[github])
+      allow(Settings::Authentication).to receive(:providers).and_return(%w[github])
 
       expect(described_class.enabled?(:github)).to be(true)
     end
 
     it "returns false if a provider is not enabled" do
-      allow(SiteConfig).to receive(:authentication_providers).and_return(%w[twitter])
+      allow(Settings::Authentication).to receive(:providers).and_return(%w[twitter])
 
       expect(described_class.enabled?(:github)).to be(false)
     end

@@ -78,10 +78,6 @@ class SiteConfig < RailsSettings::Base
   # Google Analytics Tracking ID, e.g. UA-71991000-1
   field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
 
-  # Google ReCATPCHA keys
-  field :recaptcha_site_key, type: :string, default: ApplicationConfig["RECAPTCHA_SITE"]
-  field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
-
   # Images
   field :main_social_image,
         type: :string,
@@ -225,17 +221,6 @@ class SiteConfig < RailsSettings::Base
   def self.dev_to?
     app_domain == "dev.to"
   end
-
-  # Apple uses different keys than the usual `PROVIDER_NAME_key` or
-  # `PROVIDER_NAME_secret` so these will help the generalized authentication
-  # code to work, i.e. https://github.com/forem/forem/blob/master/app/helpers/authentication_helper.rb#L26-L29
-  def self.apple_key
-    return unless apple_client_id.present? && apple_key_id.present? &&
-      apple_pem.present? && apple_team_id.present?
-
-    "present"
-  end
-  singleton_class.__send__(:alias_method, :apple_secret, :apple_key)
 
   # To get default values
   def self.get_default(field)

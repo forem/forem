@@ -1,27 +1,27 @@
 TWITTER_OMNIAUTH_SETUP = lambda do |env|
-  env["omniauth.strategy"].options[:consumer_key] = SiteConfig.twitter_key
-  env["omniauth.strategy"].options[:consumer_secret] = SiteConfig.twitter_secret
+  env["omniauth.strategy"].options[:consumer_key] = Settings::Authentication.twitter_key
+  env["omniauth.strategy"].options[:consumer_secret] = Settings::Authentication.twitter_secret
 end
 
 GITHUB_OMNIUATH_SETUP = lambda do |env|
-  env["omniauth.strategy"].options[:client_id] = SiteConfig.github_key
-  env["omniauth.strategy"].options[:client_secret] = SiteConfig.github_secret
+  env["omniauth.strategy"].options[:client_id] = Settings::Authentication.github_key
+  env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.github_secret
   env["omniauth.strategy"].options[:scope] = "user:email"
 end
 
 FACEBOOK_OMNIAUTH_SETUP = lambda do |env|
-  env["omniauth.strategy"].options[:client_id] = SiteConfig.facebook_key
-  env["omniauth.strategy"].options[:client_secret] = SiteConfig.facebook_secret
+  env["omniauth.strategy"].options[:client_id] = Settings::Authentication.facebook_key
+  env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.facebook_secret
   env["omniauth.strategy"].options[:token_params][:parse] = :json
 end
 
 APPLE_OMNIAUTH_SETUP = lambda do |env|
-  env["omniauth.strategy"].options[:client_id] = SiteConfig.apple_client_id
+  env["omniauth.strategy"].options[:client_id] = Settings::Authentication.apple_client_id
   env["omniauth.strategy"].options[:scope] = "email name"
-  env["omniauth.strategy"].options[:key_id] = SiteConfig.apple_key_id
-  env["omniauth.strategy"].options[:pem] = SiteConfig.apple_pem.to_s.gsub("\\n", "\n")
+  env["omniauth.strategy"].options[:key_id] = Settings::Authentication.apple_key_id
+  env["omniauth.strategy"].options[:pem] = Settings::Authentication.apple_pem.to_s.gsub("\\n", "\n")
   env["omniauth.strategy"].options[:provider_ignores_state] = true
-  env["omniauth.strategy"].options[:team_id] = SiteConfig.apple_team_id
+  env["omniauth.strategy"].options[:team_id] = Settings::Authentication.apple_team_id
 end
 
 Devise.setup do |config|

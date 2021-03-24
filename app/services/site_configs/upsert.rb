@@ -64,12 +64,13 @@ module SiteConfigs
       enabled_providers = value.split(",").filter_map do |entry|
         entry unless invalid_provider_entry(entry)
       end
-      SiteConfig.public_send("authentication_providers=", enabled_providers) unless
-        email_login_disabled_with_one_or_less_auth_providers(enabled_providers)
+      return if email_login_disabled_with_one_or_less_auth_providers(enabled_providers)
+
+      Settings::Authentication.public_send("providers=", enabled_providers)
     end
 
     def email_login_disabled_with_one_or_less_auth_providers(enabled_providers)
-      !SiteConfig.allow_email_password_login && enabled_providers.count <= 1
+      !Settings::Authentication.allow_email_password_login && enabled_providers.count <= 1
     end
 
     def invalid_provider_entry(entry)

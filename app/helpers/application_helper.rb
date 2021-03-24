@@ -96,7 +96,7 @@ module ApplicationHelper
   end
 
   def invite_only_mode?
-    SiteConfig.invite_only_mode?
+    Settings::Authentication.invite_only_mode?
   end
 
   def any_enabled_auth_providers?

@@ -145,33 +145,33 @@ RSpec.describe "/admin/config", type: :request do
         it "enables display_email_domain_allow_list_publicly" do
           post "/admin/config", params: { site_config: { display_email_domain_allow_list_publicly: true },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.display_email_domain_allow_list_publicly).to be(true)
+          expect(Settings::Authentication.display_email_domain_allow_list_publicly).to be(true)
         end
 
         it "enables email authentication" do
           post "/admin/config", params: { site_config: { allow_email_password_registration: true },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.allow_email_password_registration).to be(true)
-          expect(SiteConfig.allow_email_password_login).to be(true)
+          expect(Settings::Authentication.allow_email_password_registration).to be(true)
+          expect(Settings::Authentication.allow_email_password_login).to be(true)
         end
 
         it "disables email authentication" do
           post "/admin/config", params: { site_config: { allow_email_password_registration: false },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.allow_email_password_registration).to be(false)
-          expect(SiteConfig.allow_email_password_login).to be(true)
+          expect(Settings::Authentication.allow_email_password_registration).to be(false)
+          expect(Settings::Authentication.allow_email_password_login).to be(true)
         end
 
         it "enables invite-only-mode" do
           post "/admin/config", params: { site_config: { invite_only_mode: true },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.invite_only_mode).to be(true)
+          expect(Settings::Authentication.invite_only_mode).to be(true)
         end
 
         it "disables invite-only-mode & enables just email registration" do
           post "/admin/config", params: { site_config: { invite_only_mode: false },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.invite_only_mode).to be(false)
+          expect(Settings::Authentication.invite_only_mode).to be(false)
         end
       end
 
