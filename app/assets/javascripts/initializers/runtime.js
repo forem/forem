@@ -46,21 +46,20 @@ class Runtime {
     const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
     const windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
     const iosPlatforms = ['iPhone', 'iPad', 'iPod'];
-    let os = 'Unsupported';
 
     if (macosPlatforms.includes(window.navigator.platform)) {
-      os = 'macOS';
+      return 'macOS';
     } else if (iosPlatforms.includes(window.navigator.platform)) {
-      os = 'iOS';
+      return 'iOS';
     } else if (windowsPlatforms.includes(window.navigator.platform)) {
-      os = 'Windows';
+      return 'Windows';
     } else if (/Android/i.test(window.navigator.userAgent)) {
-      os = 'Android';
+      return 'Android';
     } else if (/Linux/i.test(window.navigator.platform)) {
-      os = 'Linux';
+     return 'Linux';
     }
 
-    return os;
+    return 'Unsupported';
   }
 
   /**
