@@ -47,7 +47,7 @@ module Admin
     def destroy
       @page = Page.find(params[:id])
       @page.destroy
-      redirect_to "/admin/pages"
+      redirect_to admin_pages_path
     end
 
     private

@@ -1,5 +1,5 @@
 <nav class="flex mb-4" aria-label="Display Ads navigation">
-  <%= form_tag("/admin/display_ads", method: "get") do %>
+  <%= form_tag(admin_display_ads_path, method: "get") do %>
     <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search by Org name") %>
   <% end %>
   <div class="ml-auto">

@@ -15,10 +15,10 @@ module Admin
                           handle_article_cache
                           "Article ##{params[:bust_article]} was successfully busted"
                         end
-      redirect_to "/admin/tools"
+      redirect_to admin_tools_path
     rescue StandardError => e
       flash[:danger] = e.message
-      redirect_to "/admin/tools"
+      redirect_to admin_tools_path
     end
 
     private
