@@ -126,33 +126,9 @@
         <%= f.check_box :boosted_additional_articles, id: "boosted_additional_articles-#{article.id}" %>
         <label for="boosted_additional_articles-<%= article.id %>">Boosted</label>
       </div>
-      <% unless article.last_buffered %>
-      <div class="form-check col">
-        <%= f.check_box :last_buffered, id: "last_buffered-#{article.id}" %>
-        <label for="last_buffered-<%= article.id %>">Mark as buffered</label>
-      </div>
-      <% end %>
       <div class="col">
           <button class="btn btn-primary float-right">Submit</button>
       </div>
-    </div>
-    <% end %>
-
-    <% if article.last_buffered %>
-    <div class="mt-5">
-      <em>Last Buffered <%= article.last_buffered %></em>
-      <% article.buffer_updates.order(created_at: :asc).each do |buffer_update| %>
-      <h5>
-        <a href="https://buffer.com/app/profile/<%= buffer_update.buffer_profile_id_code %>/buffer/queue/list">
-          <%= buffer_update.social_service_name %>
-          <%= " MAIN" if buffer_update.buffer_profile_id_code == ApplicationConfig["BUFFER_TWITTER_ID"] %>
-        </a>
-      </h5>
-      <%= time_ago_in_words(buffer_update.created_at) %> ago
-      <p class="bg-warning">
-        <%= buffer_update.body_text %>
-      </p>
-      <% end %>
     </div>
     <% end %>
 
@@ -173,53 +149,5 @@
       <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at: nil).where.not(opened_at: nil).where("sent_at > ?", 1.week.ago).size %>
       OPENED EMAILS IN THE PAST WEEK</b>
     <% end %>
-
-    <div class="d-flex justify-content-between" style="padding-top:15px;">
-      <button class="btn btn-dark btn-lg btn-block" data-toggle="collapse" data-target="#article-<%= article.id %>-buffer-area"
-        area-expanded="false" area-controls="article-<%= article.id %>-buffer-area">
-        Social Distribution
-      </button>
-    </div>
-
-    <div id="article-<%= article.id %>-buffer-area" class="buffering-area-for-single-article collapse" style="padding-top:25px;">
-      <div class="row">
-        <div class="article-body-html col col-7" style="background:white;max-height: 800px;padding-top:8px;overflow:auto;border-radius: 3px;">
-          <%= article.processed_html&.html_safe %>
-        </div>
-
-        <div class="col col-5">
-          <%= form_with url: admin_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
-          <input type="hidden" name="social_channel" value="main_twitter" />
-          <input type="hidden" name="article_id" value="<%= article.id %>" />
-          <h5>Twitter MAIN</h5>
-          <div class="form-group">
-            <textarea rows="5" wrap="hard" name="tweet" maxlength="255" class="form-control"><%= BufferUpdate.twitter_default_text(article) %></textarea>
-          </div>
-          <button class="btn btn-primary mb-2">🦅 Tweet to @<%= SiteConfig.social_media_handles["twitter"] %></button>
-          <% end %>
-
-          <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
-          <%= form_with url: admin_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
-          <input type="hidden" name="social_channel" value="satellite_twitter" />
-          <input type="hidden" name="article_id" value="<%= article.id %>" />
-          <h5>Twitter Satellite</h5>
-          <div class="form-group">
-            <textarea rows="5" wrap="hard" name="tweet" maxlength="255" class="form-control"><%= BufferUpdate.twitter_default_text(article) %></textarea>
-          </div>
-          <button class="btn btn-primary mb-2">🐦 Tweet to satellites</button>
-          <% end %>
-          <% end %>
-          <%= form_with url: admin_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
-          <input type="hidden" name="social_channel" value="facebook" />
-          <input type="hidden" name="article_id" value="<%= article.id %>" />
-          <h5>Facebook & LinkedIn</h5>
-          <div class="form-group">
-            <textarea rows="5" wrap="hard" name="fb_post" class="form-control" required></textarea>
-          </div>
-          <button class="btn btn-primary mb-2">📘 Post to Facebook</button>
-          <% end %>
-        </div>
-      </div>
-    </div>
   </div>
 </div>

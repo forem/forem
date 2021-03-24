@@ -85,16 +85,16 @@ describe('SidebarController', () => {
 
   describe('#disableCurrentNavItem', () => {
     it('sets the disabled attribute on the open menu button', () => {
-      window.dispatchEvent(new Event('load'))
+      window.dispatchEvent(new Event('load'));
       const button = document.getElementById('apps_button');
 
-      expect(button.getAttribute("disabled")).toEqual("true");
+      expect(button.getAttribute('disabled')).toEqual('true');
     });
   });
 
   describe('#expandDropdown', () => {
     beforeEach(() => {
-      let assignMock = jest.fn();
+      const assignMock = jest.fn();
 
       delete window.location;
       window.location = { href: assignMock };
@@ -108,15 +108,14 @@ describe('SidebarController', () => {
       const button = document.getElementById('advanced_button');
       button.click();
 
-      expect(window.location.href).toEqual("/admin/advanced/broadcasts")
+      expect(window.location.href).toEqual('/admin/advanced/broadcasts');
     });
 
     it('closes other menu items', () => {
       const button = document.getElementById('advanced_button');
       button.click();
 
-      expect(document.getElementById('apps').classList).toContain("hide");
+      expect(document.getElementById('apps').classList).toContain('hide');
     });
-
-  })
+  });
 });
