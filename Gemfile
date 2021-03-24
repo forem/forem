@@ -26,7 +26,7 @@ gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter
 gem "ddtrace", "~> 0.46.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", github: "heartcombo/devise", ref: "0cd72a5" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.3" # Allows invitations to be sent for joining
-gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
+gem "dogstatsd-ruby", "~> 4.9" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.5" # Oauth 2 provider
 gem "elasticsearch", "~> 7.11" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
