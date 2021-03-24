@@ -111,9 +111,7 @@ export function useKeyboardShortcuts(
   useEffect(() => {
     if (keyChain.length <= 0) return;
 
-    let timeout;
-
-    timeout = window.setTimeout(() => {
+    const timeout = window.setTimeout(() => {
       clearTimeout(timeout);
       setKeyChain([]);
     }, mergedOptions.timeout);
