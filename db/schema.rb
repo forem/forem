@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_12_191925) do
+ActiveRecord::Schema.define(version: 2021_03_23_190443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -197,6 +197,7 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
   create_table "badges", force: :cascade do |t|
     t.string "badge_image"
     t.datetime "created_at", null: false
+    t.integer "credits_awarded", default: 0, null: false
     t.string "description", null: false
     t.string "slug", null: false
     t.string "title", null: false
@@ -1362,6 +1363,7 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
+    t.index ["old_username"], name: "index_users_on_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true

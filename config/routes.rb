@@ -48,7 +48,6 @@ Rails.application.routes.draw do
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
       end
-      resources :buffer_updates, only: %i[create update]
       resources :feedback_messages, only: %i[index show]
       resources :invitations, only: %i[index new create destroy]
       resources :organization_memberships, only: %i[update destroy create]
@@ -383,7 +382,6 @@ Rails.application.routes.draw do
     resources :credits, only: %i[index new create] do
       get "purchase", on: :collection, to: "credits#new"
     end
-    resources :buffer_updates, only: [:create]
     resources :reading_list_items, only: [:update]
     resources :poll_votes, only: %i[show create]
     resources :poll_skips, only: [:create]

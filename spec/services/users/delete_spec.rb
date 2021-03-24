@@ -21,6 +21,14 @@ RSpec.describe Users::Delete, type: :service do
     expect(cache_bust).to have_received(:call).with("/#{user.username}")
   end
 
+  it "deletes user's sponsorships" do
+    create(:sponsorship, user: user)
+
+    expect do
+      described_class.call(user)
+    end.to change(Sponsorship, :count).by(-1)
+  end
+
   it "deletes user's follows" do
     create(:follow, follower: user)
     create(:follow, followable: user)
@@ -87,8 +95,6 @@ RSpec.describe Users::Delete, type: :service do
         affected_feedback_messages
         audit_logs
         banished_users
-        buffer_updates_approved
-        buffer_updates_composed
         created_podcasts
         offender_feedback_messages
         page_views

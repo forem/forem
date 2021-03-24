@@ -94,7 +94,7 @@ describe('SidebarController', () => {
 
   describe('#expandDropdown', () => {
     beforeEach(() => {
-      let assignMock = jest.fn();
+      const assignMock = jest.fn();
 
       delete window.location;
       window.location = { href: assignMock };

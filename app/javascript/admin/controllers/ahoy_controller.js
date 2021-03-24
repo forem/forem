@@ -9,7 +9,7 @@ ahoy.configure({
 export default class AhoyController extends Controller {
   trackOverviewLink(event) {
     event.preventDefault();
-    let properties = {
+    const properties = {
       action: event.type,
       target: event.target.toString(),
     };
