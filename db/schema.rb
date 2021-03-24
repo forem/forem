@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(version: 2021_03_23_190443) do
     t.string "video_thumbnail_url"
     t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
+    t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
@@ -1036,6 +1037,7 @@ ActiveRecord::Schema.define(version: 2021_03_23_190443) do
     t.index ["points"], name: "index_reactions_on_points"
     t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
+    t.index ["status"], name: "index_reactions_on_status"
     t.index ["user_id", "reactable_id", "reactable_type", "category"], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
   end
 
