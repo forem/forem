@@ -30,15 +30,15 @@
 // matches that Medium regardless of OS
 body[data-runtime='ForemWebView-iOS'] .ForemWebView,
 body[data-runtime='ForemWebView-Android'] .ForemWebView {
-  display: block;
+  display: var(--runtime-display, block);
 }
 
 // Elements that need to match both 'ForemWebView' Medium and OS
 body[data-runtime='ForemWebView-iOS'] .ForemWebView-iOS {
-  display: block;
+  display: var(--runtime-display, block);
 }
 body[data-runtime='ForemWebView-Android'] .ForemWebView-Android {
-  display: block;
+  display: var(--runtime-display, block);
 }
 
 // Elements with class 'Browser' should be visible on any attribute that
@@ -48,24 +48,24 @@ body[data-runtime='Browser-iOS'] .Browser,
 body[data-runtime='Browser-Linux'] .Browser,
 body[data-runtime='Browser-Windows'] .Browser,
 body[data-runtime='Browser-macOS'] .Browser {
-  display: block;
+  display: var(--runtime-display, block);
 }
 
 // Elements that need to match both 'Browser' Medium and OS
 body[data-runtime='Browser-Android'] .Browser-Android {
-  display: block;
+  display: var(--runtime-display, block);
 }
 body[data-runtime='Browser-iOS'] .Browser-iOS {
-  display: block;
+  display: var(--runtime-display, block);
 }
 body[data-runtime='Browser-Linux'] .Browser-Linux {
-  display: block;
+  display: var(--runtime-display, block);
 }
 body[data-runtime='Browser-Windows'] .Browser-Windows {
-  display: block;
+  display: var(--runtime-display, block);
 }
 body[data-runtime='Browser-macOS'] .Browser-macOS {
-  display: block;
+  display: var(--runtime-display, block);
 }
 
 // Elements with class 'PWA' should be visible on any attribute that
@@ -75,22 +75,22 @@ body[data-runtime='PWA-iOS'] .PWA,
 body[data-runtime='PWA-Linux'] .PWA,
 body[data-runtime='PWA-Windows'] .PWA,
 body[data-runtime='PWA-macOS'] .PWA {
-  display: block;
+  display: var(--runtime-display, block);
 }
 
 // Elements that need to match both 'PWA' Medium and OS
 body[data-runtime='PWA-Android'] .PWA-Android {
-  display: block;
+  display: var(--runtime-display, block);
 }
 body[data-runtime='PWA-iOS'] .PWA-iOS {
-  display: block;
+  display: var(--runtime-display, block);
 }
 body[data-runtime='PWA-Linux'] .PWA-Linux {
-  display: block;
+  display: var(--runtime-display, block);
 }
 body[data-runtime='PWA-Windows'] .PWA-Windows {
-  display: block;
+  display: var(--runtime-display, block);
 }
 body[data-runtime='PWA-macOS'] .PWA-macOS {
-  display: block;
+  display: var(--runtime-display, block);
 }
