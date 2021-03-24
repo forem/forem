@@ -14,8 +14,10 @@ module Search
       ].freeze
       USER_ATTRIBUTES = %i[id name profile_image username].freeze
 
-      DEFAULT_PER_PAGE = 60
       DEFAULT_STATUSES = %w[confirmed valid].freeze
+
+      DEFAULT_PER_PAGE = 60
+      MAX_PER_PAGE = 100 # to avoid querying too many items, we set a maximum amount for a page
 
       def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE)
         return {} unless user
@@ -26,7 +28,7 @@ module Search
         # NOTE: [@rhymes] we should eventually update the frontend
         # to start from page 1
         page = page.to_i + 1
-        per_page = [(per_page || DEFAULT_PER_PAGE).to_i, 100].min
+        per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
         result = find_articles(
           user_id: user.id,

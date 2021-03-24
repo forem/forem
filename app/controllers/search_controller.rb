@@ -120,6 +120,8 @@ class SearchController < ApplicationController
 
   def reactions
     if FeatureFlag.enabled?(:search_2_reading_list)
+      # [@rhymes] we're recyling the existing params as we want to change the frontend as
+      # little as possible, we might simplify in the future
       result = Search::Postgres::ReadingList.search_documents(
         current_user,
         page: reaction_params[:page],
