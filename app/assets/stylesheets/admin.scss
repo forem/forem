@@ -211,7 +211,7 @@ label {
   // rendered from boostrap. We want to remove these to be
   // consistent with links in the crayons design system.
   .crayons-link,
-  .crayons-tabs__item  {
+  .crayons-tabs__item {
     text-decoration: none;
 
     &:hover {
