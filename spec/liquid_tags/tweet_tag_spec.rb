@@ -23,11 +23,14 @@ RSpec.describe TweetTag, type: :liquid_tag do
     end
   end
 
-  xit "render properly", :vcr do
+  it "render properly", :vcr do
     VCR.use_cassette("twitter_client_status_extended") do
       Time.use_zone("Asia/Tokyo") do
         rendered = generate_tweet_liquid_tag(twitter_id).render
-        Approvals.verify(rendered, name: "liquid_tweet_tag_spec", format: :html)
+
+        expect(rendered).to include('<blockquote class="ltag__twitter-tweet"')
+        expect(rendered).to include('<div class="ltag__twitter-tweet__main"')
+        expect(rendered).to include('<div class="ltag__twitter-tweet__actions">')
       end
     end
   end

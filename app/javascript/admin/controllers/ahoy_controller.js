@@ -6,11 +6,10 @@ ahoy.configure({
   trackVisits: false,
 });
 
-// eslint-disable-next-line no-restricted-syntax
 export default class AhoyController extends Controller {
   trackOverviewLink(event) {
     event.preventDefault();
-    let properties = {
+    const properties = {
       action: event.type,
       target: event.target.toString(),
     };

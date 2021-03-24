@@ -87,9 +87,13 @@ class SearchController < ApplicationController
   end
 
   def usernames
-    usernames = Search::User.search_usernames(params[:username])
+    result = if FeatureFlag.enabled?(:search_2_usernames)
+               Search::Postgres::Username.search_documents(params[:username])
+             else
+               Search::User.search_usernames(params[:username])
+             end
 
-    render json: { result: usernames }
+    render json: { result: result }
   rescue Search::Errors::Transport::BadRequest
     render json: { result: [] }
   end

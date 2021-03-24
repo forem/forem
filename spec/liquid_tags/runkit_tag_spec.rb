@@ -24,7 +24,12 @@ RSpec.describe RunkitTag, type: :liquid_tag do
 
     it "generates proper div with content" do
       rendered = generate_runkit_liquid(preamble, content).render
-      Approvals.verify(rendered, name: "runkit_liquid_tag_spec", format: :html)
+
+      # rubocop:disable Style/StringLiterals
+      expect(rendered).to include('<code')
+      expect(rendered).to include('style="display: none"')
+      expect(rendered).to include('await getJSON(&quot;https://storage.googleapis.com/maps-devrel/google.json&quot;);')
+      # rubocop:enable Style/StringLiterals
     end
   end
 end
