@@ -52,8 +52,15 @@ Rpush.reflect do |on|
   # end
 
   # Called when a notification is successfully delivered.
-  # on.notification_delivered do |notification|
-  # end
+  on.notification_delivered do |notification|
+    ForemStatsClient.increment(
+      "push_notifications.delivered",
+      tags: [
+        "app_id:#{notification.app_id}",
+        "bundle_id:#{notification&.app&.bundle_id}",
+      ],
+    )
+  end
 
   # Called when notification delivery failed.
   # Call 'error_code' and 'error_description' on the notification for the cause.
@@ -69,6 +76,8 @@ Rpush.reflect do |on|
       tags: [
         "error:#{e.class}",
         "message:#{e.error_description}",
+        "app_id:#{notification.app_id}",
+        "bundle_id:#{notification&.app&.bundle_id}",
       ],
     )
   end
