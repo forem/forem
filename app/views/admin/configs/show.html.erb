@@ -258,19 +258,19 @@
                         <div id="recaptchaContainer" class="ml-7 <%= Settings::Authentication.require_captcha_for_email_password_registration ? "grid gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
                           <div class="crayons-field">
                             <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
-                            <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
+                            <%= admin_config_description Constants::Settings::Authentication::DETAILS[:recaptcha_site_key][:description] %>
                             <%= f.text_field :recaptcha_site_key,
                                              class: "crayons-textfield",
-                                             value: SiteConfig.recaptcha_site_key,
-                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_site_key][:placeholder] %>
+                                             value: Settings::Authentication.recaptcha_site_key,
+                                             placeholder: Constants::Settings::Authentication::DETAILS[:recaptcha_site_key][:placeholder] %>
                           </div>
                           <div class="crayons-field">
                             <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key" %>
-                            <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %>
+                            <%= admin_config_description Constants::Settings::Authentication::DETAILS[:recaptcha_secret_key][:description] %>
                             <%= f.text_field :recaptcha_secret_key,
                                              class: "crayons-textfield",
-                                             value: SiteConfig.recaptcha_secret_key,
-                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
+                                             value: Settings::Authentication.recaptcha_secret_key,
+                                             placeholder: Constants::Settings::Authentication::DETAILS[:recaptcha_secret_key][:placeholder] %>
                           </div>
                         </div>
                         <div class="crayons-btn-actions">

@@ -748,8 +748,8 @@ RSpec.describe "/admin/config", type: :request do
             site_config: { recaptcha_site_key: site_key, recaptcha_secret_key: secret_key },
             confirmation: confirmation_message
           }
-          expect(SiteConfig.recaptcha_site_key).to eq site_key
-          expect(SiteConfig.recaptcha_secret_key).to eq secret_key
+          expect(Settings::Authentication.recaptcha_site_key).to eq site_key
+          expect(Settings::Authentication.recaptcha_secret_key).to eq secret_key
         end
       end
 

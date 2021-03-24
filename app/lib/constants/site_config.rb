@@ -207,14 +207,6 @@ module Constants
         description: "Determines the mininum for the periodic email digest",
         placeholder: 2
       },
-      recaptcha_site_key: {
-        description: "Add the site key for Google reCAPTCHA, which is used for reporting abuse",
-        placeholder: "What is the Google reCAPTCHA site key?"
-      },
-      recaptcha_secret_key: {
-        description: "Add the secret key for Google reCAPTCHA, which is used for reporting abuse",
-        placeholder: "What is the Google reCAPTCHA secret key?"
-      },
       secondary_logo_url: {
         description: "A place for an alternate logo, if you have one. Used throughout member onboarding and in some sign in forms.",
         placeholder: IMAGE_PLACEHOLDER

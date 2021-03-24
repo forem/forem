@@ -90,8 +90,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email registration allowed and captcha required" do
       before do
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
+        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
         allow(Settings::Authentication).to receive(:require_captcha_for_email_password_registration).and_return(true)
       end
@@ -274,8 +274,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site configured to accept email registration AND require captcha" do
       before do
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
+        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
         allow(Settings::Authentication).to receive(:require_captcha_for_email_password_registration).and_return(true)
       end

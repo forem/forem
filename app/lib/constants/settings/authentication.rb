@@ -48,6 +48,14 @@ module Constants
           description: "Only users invited by email can join this community.",
           placeholder: ""
         },
+        recaptcha_site_key: {
+          description: "Add the site key for Google reCAPTCHA, which is used for reporting abuse",
+          placeholder: "What is the Google reCAPTCHA site key?"
+        },
+        recaptcha_secret_key: {
+          description: "Add the secret key for Google reCAPTCHA, which is used for reporting abuse",
+          placeholder: "What is the Google reCAPTCHA secret key?"
+        },
         require_captcha_for_email_password_registration: {
           description: "People will be required to fill out a captcha when
           they're creating a new account in your community",
