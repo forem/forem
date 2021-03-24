@@ -30,21 +30,6 @@
 
 <div class="dashboard-container crayons-layout">
   <%= render "dashboards/dashboard_article", article: @article, organization: @article.organization, org_admin: @user.org_admin?(@article.organization), manage_view: true %>
-  <% if @buffer_updates.any? %>
-    <div class="single-article thanks-for-suggesting-a-tweet">
-      Tweet Suggestion Sent 🙏
-    </div>
-  <% else %>
-    <div class="single-article single-article-manage-form-wrapper">
-      <%= form_for(BufferUpdate.new) do |f| %>
-        <h2>Suggest a Tweet</h2>
-        <%= f.hidden_field :article_id, value: @article.id %>
-        <%= f.text_area :body_text, minlength: 10, maxlength: 220 %>
-        <%= f.submit "Share Tweet Suggestion" %>
-        <p>Suggestion can be a quote, summary, or bullet points from the post.</p>
-      <% end %>
-    </div>
-  <% end %>
   <div class="single-article single-article-manage-form-wrapper">
     <%= form_for(RatingVote.new) do |f| %>
       <h2>Experience Level of Post</h2>

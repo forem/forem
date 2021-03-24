@@ -1,6 +1,8 @@
 require_relative "../lib/acts_as_taggable_on/tag"
 
 class Tag < ActsAsTaggableOn::Tag
+  self.ignored_columns = ["buffer_profile_id_code"].freeze
+
   attr_accessor :points, :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
@@ -21,7 +23,6 @@ class Tag < ActsAsTaggableOn::Tag
   belongs_to :badge, optional: true
   belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true
 
-  has_many :buffer_updates, dependent: :nullify
   has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
 
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
@@ -64,12 +65,6 @@ class Tag < ActsAsTaggableOn::Tag
 
   def tag_moderator_ids
     User.with_role(:tag_moderator, self).order(id: :asc).ids
-  end
-
-  def self.bufferized_tags
-    Rails.cache.fetch("bufferized_tags_cache", expires_in: 2.hours) do
-      where.not(buffer_profile_id_code: nil).pluck(:name)
-    end
   end
 
   def self.valid_categories

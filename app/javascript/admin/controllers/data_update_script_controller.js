@@ -4,10 +4,10 @@ export default class DataUpdateScriptController extends Controller {
   forceRun(event) {
     event.preventDefault();
     const id = event.target.dataset.value;
-    let statusColumn = document.getElementById(
+    const statusColumn = document.getElementById(
       `data_update_script_${id}_status`,
     );
-    let runAtColumn = document.getElementById(
+    const runAtColumn = document.getElementById(
       `data_update_script_${id}_run_at`,
     );
 
@@ -47,7 +47,7 @@ export default class DataUpdateScriptController extends Controller {
 
   pollForScriptResponse(id, statusColumn, runAtColumn) {
     let counter = 0;
-    let pollForStatus = setInterval(() => {
+    const pollForStatus = setInterval(() => {
       counter++;
       this.checkForUpdatedDataScript(id, runAtColumn, statusColumn).then(
         (updatedDataScript) => {
@@ -60,12 +60,12 @@ export default class DataUpdateScriptController extends Controller {
               if (updatedDataScript.error) {
                 // we need to show the html as text instead of a parsed version,
                 // hence we manipulate the DOM through this longer process.
-                let errorElem = document.createElement('div');
+                const errorElem = document.createElement('div');
                 errorElem.setAttribute('class', 'fs-xs');
                 errorElem.setAttribute('id', `data_update_script_${id}_error`);
                 statusColumn.appendChild(errorElem);
 
-                let completedErrorElem = document.getElementById(
+                const completedErrorElem = document.getElementById(
                   `data_update_script_${id}_error`,
                 );
                 completedErrorElem.innerText = updatedDataScript.error;
@@ -114,7 +114,7 @@ export default class DataUpdateScriptController extends Controller {
     }).then((response) => {
       if (response.ok) {
         return response.json().then((json) => {
-          let script = json.response;
+          const script = json.response;
           if (script.status === 'succeeded' || script.status === 'failed') {
             return script;
           }
@@ -134,7 +134,7 @@ export default class DataUpdateScriptController extends Controller {
   }
 
   setErrorBanner(runAtColumn, statusColumn, error, bannerClass) {
-    let classList = document.getElementsByClassName(
+    const classList = document.getElementsByClassName(
       'data-update-script__alert',
     )[0].classList;
 

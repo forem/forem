@@ -18,7 +18,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:user) }
 
-    it { is_expected.to have_many(:buffer_updates).dependent(:destroy) }
     it { is_expected.to have_many(:comments).dependent(:nullify) }
     it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
     it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
@@ -437,7 +436,7 @@ RSpec.describe Article, type: :model do
 
   describe "#published_at" do
     it "does not have a published_at if not published" do
-      unpublished_article = build(:article, published: false)
+      unpublished_article = build(:article, published: false, published_at: nil)
       unpublished_article.validate # to make sure the front matter extraction happens
       expect(unpublished_article.published_at).to be_nil
     end
