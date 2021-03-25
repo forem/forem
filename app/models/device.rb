@@ -60,7 +60,8 @@ class Device < ApplicationRecord
   def recreate_ios_app!
     app = Rpush::Apns2::App.new
     app.name = app_bundle
-    app.certificate = Base64.decode64(ApplicationConfig["RPUSH_IOS_PEM"])
+    sanitized_pem = ApplicationConfig["RPUSH_IOS_PEM"].to_s.gsub("\\n", "\n")
+    app.certificate = Base64.decode64(sanitized_pem)
     app.environment = Rails.env.production? ? "production" : "development"
     app.password = ""
     app.bundle_id = app_bundle

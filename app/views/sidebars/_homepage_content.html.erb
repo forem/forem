@@ -42,7 +42,7 @@
               <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
             <% end %>
           <% else %>
-            <% Article.active_threads([tag], Timeframe.datetime(params[:timeframe]), 5).each do |plucked_article| %>
+            <% active_threads(options: { tags: [tag], time_ago: Timeframe.datetime(params[:timeframe]), count: 5 }).each do |plucked_article| %>
               <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
             <% end %>
           <% end %>
