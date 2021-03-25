@@ -1,0 +1,10 @@
+HTTP/1.1 200 Awesome
+Content-Type: application/json;charset=UTF-8
+Date: Thu, 16 May 2013 04:48:14 GMT
+Server: Apache
+Vary: Accept-Encoding,User-Agent
+x-frame-options: SAMEORIGIN
+Content-Length: 737
+Connection: keep-alive
+
+{"total":1,"updates":[{"_id":"519464f2872cad3734000028","created_at":1368679666,"day":"Today","due_at":1368699180,"due_time":"6:13 am","id":"519464f2872cad3734000028","profile_id":"5160746d13d04a5e3a00000f","profile_service":"twitter","shared_now":false,"status":"buffer","text":"Exciting to have even 1 person fork my fork of a repo :) jaysonlane\/buffer-ruby \u00b7 GitHub http:\/\/bit.ly\/15OS4ap","text_formatted":"Exciting to have even 1 person fork my fork of a repo :) jaysonlane\/buffer-ruby \u00b7 GitHub <a class=\"url\" href=\"http:\/\/bit.ly\/15OS4ap\" rel=\"external nofollow\" target=\"_blank\">http:\/\/bit.ly\/15OS4ap<\/a>","type":"link","updated_at":1368679666,"user_id":"5160746d54f04a5e3a00000d","via":"bookmarklet"}]}

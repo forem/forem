@@ -1,0 +1,18 @@
+Encoding:
+  Enabled: true
+
+LineLength:
+  Enabled: true
+  Max: 79
+
+StringLiterals:
+  Enabled: false
+
+AllCops:
+  # Includes:
+  Excludes:
+    - spec/**
+    - bin/**
+    - utility.rb
+    - Rakefile
+    - tmp/*

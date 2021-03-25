@@ -1,0 +1,9 @@
+HTTP/1.1 401 Authorization Required
+Content-Type: text/html; charset=UTF-8
+Date: Fri, 17 May 2013 02:46:37 GMT
+Server: Apache
+Vary: Accept-Encoding,User-Agent
+WWW-Authenticate: OAuth realm='Service', error='invalid_request', error_description='The request is missing a required parameter, includes an unsupported parameter or parameter value, repeats the same parameter, uses more than one method for including an access token, or is otherwise malformed.'
+Content-Length: 0
+Connection: keep-alive
+

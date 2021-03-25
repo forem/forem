@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+require 'buffer'
+require 'logger'
+
+log_level = ENV['BUFFER_DEBUG'] ? Logger::INFO : Logger::ERROR
+
+LOG = Logger.new(STDOUT) { |l| l.log_level = log_level }
+
+def gather_message(argv)
+  args = argv.dup
+  case args.count
+  when 0 then abort("Please supply a message for Buffer Post.")
+  when 1 then args.first
+  else
+    args.join(" ")
+  end
+end
+
+def parse_profile_ids(env = ENV)
+  profile = ENV.fetch('BUFFER_PROFILE_ID', "0")
+  profiles = if profile.include?(",")
+               profile.split(",")
+             else
+               Array(profile)
+             end
+  profiles.map { |i| Integer(i) }
+end
+
+def main
+  token = Env.BUFFER_ACCESS_TOKEN
+  message = gather_message(ARGV)
+  client = Buffer::Client.new(token)
+  all_profiles = client.profiles
+  desired_profiles = parse_profile_ids.map do |i|
+    begin
+      all_profiles[i]["_id"]
+    rescue
+      abort("ERROR: Unable to find all the requested profiles. Profile Index #{i} was the issue.")
+    end
+  end
+  post_args = {text: message, profile_ids: desired_profiles}
+  LOG.info('#main.post_args') { post_args }
+  unless ENV['BUFFER_DEBUG']
+    client.create_update(body: post_args)
+    puts "Posted message."
+  end
+end
+
+main

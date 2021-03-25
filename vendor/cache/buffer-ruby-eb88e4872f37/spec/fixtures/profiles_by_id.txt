@@ -1,0 +1,10 @@
+HTTP/1.1 200 Awesome
+Content-Type: application/json;charset=UTF-8
+Date: Wed, 15 May 2013 01:43:34 GMT
+Server: Apache
+Vary: Accept-Encoding,User-Agent
+x-frame-options: SAMEORIGIN
+Content-Length: 828
+Connection: keep-alive
+
+{"_id":"5160746d13d04a5e3a00000f","avatar":"http:\/\/a0.twimg.com\/profile_images\/3604112130.jpeg","avatar_https":"https:\/\/twimg0-a.akamaihd.net\/profile_images\/3604112130.jpeg","counts":{"pending":1,"sent":46},"created_at":1365275757,"disconnected":null,"formatted_service":"Twitter","formatted_username":"@example","id":"5160746d13d04a5e3a00000f","quick_signin":true,"schedules":[{"days":["mon","tue","wed","thu","fri","sat","sun"],"times":["06:13","09:10","11:58","12:17","13:49","18:07","21:04","22:13"]}],"service":"twitter","service_id":"737649619","service_type":"profile","service_username":"example","statistics":{"followers":179},"timezone":"America\/New_York","user_id":"5160746d13d04a5e3a00000d","utm_tracking":"enabled","verb":"tweet"}
