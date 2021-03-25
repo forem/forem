@@ -20,7 +20,7 @@ RSpec.describe Search::Postgres::Listing, type: :service do
       published_listing = create(:listing, title: "Published Listing", published: true)
       unpublished_listing = create(:listing, title: "Unpublished Listing", published: false)
       result = described_class.search_documents(term: "Listing")
-      titles = result.map { |r| r.pluck(:title) }
+      titles = result.pluck(:title)
 
       expect(titles).not_to include(unpublished_listing.title)
       expect(titles).to include(published_listing.title)
@@ -117,7 +117,9 @@ RSpec.describe Search::Postgres::Listing, type: :service do
         )
 
         result = described_class.search_documents(term: "Ruby on Rails", category: job_listing.category)
-        ids = result.ids
+        # rubocop:disable Rails/PluckId
+        ids = result.pluck(:id)
+        # rubocop:enable Rails/PluckId
 
         expect(ids).to include(job_listing.id)
         expect(ids).not_to include(listing.id)
