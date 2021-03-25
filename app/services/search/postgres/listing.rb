@@ -37,6 +37,7 @@ module Search
         relation = relation.search_listings(term) if term.present?
 
         relation = relation.select(*ATTRIBUTES).order(bumped_at: :desc)
+
         results = relation.page(page).per(per_page)
 
         serialize(results)
