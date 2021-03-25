@@ -16,9 +16,12 @@ module Moderator
       raise "You cannot merge the same two user ID#s" if @delete_user.id == @keep_user.id
 
       handle_identities
-      merge_content
+      merge_reactions
+      merge_comments_and_mentions
+      merge_articles
       merge_follows
-      merge_chat_mentions
+      merge_chat_channels
+      merge_sponsorships
       merge_profile
       update_social
       Users::DeleteWorker.new.perform(@delete_user.id, true)
@@ -55,45 +58,77 @@ module Moderator
       end
     end
 
+    def merge_sponsorships
+      @delete_user.sponsorships.update_all(user_id: @keep_user.id)
+    end
+
     def merge_profile
-      if @delete_user.github_repos.any?
-        @delete_user.github_repos.update_all(user_id: @keep_user.id)
-        @keep_user.touch(:github_repos_updated_at)
-      end
-      if @delete_user.badge_achievements.any?
-        @delete_user.badge_achievements.update_all(user_id: @keep_user.id)
-        BadgeAchievement.counter_culture_fix_counts(where: { users: { id: @keep_user.id } })
-      end
+      @delete_user.github_repos.update_all(user_id: @keep_user.id)
+      @keep_user.touch(:github_repos_updated_at)
 
       @keep_user.update_columns(created_at: @delete_user.created_at) if @delete_user.created_at < @keep_user.created_at
     end
 
-    def merge_chat_mentions
-      any_memberships = @delete_user.chat_channel_memberships.any?
-      @delete_user.chat_channel_memberships.update_all(user_id: @keep_user.id) if any_memberships
-      @delete_user.mentions.update_all(user_id: @keep_user.id) if @delete_user.mentions.any?
+    def merge_badge_achievements
+      duplicate_badges = @delete_user.badge_achievements.pluck(:badge_id).intersection(
+        @keep_user.badge_achievements.pluck(:badge_id),
+      )
+      @delete_user.badge_achievements.where(badge_id: duplicate_badges).delete_all
+      @delete_user.badge_achievements.update_all(user_id: @keep_user.id)
+      BadgeAchievement.counter_culture_fix_counts(where: { users: { id: @keep_user.id } })
+    end
+
+    def merge_chat_channels
+      duplicate_moderator_memberships = @delete_user.chat_channel_memberships.where(
+        status: "active", role: "mod",
+      ).pluck(:chat_channel_id).intersection(
+        @keep_user.chat_channel_memberships.where(
+          status: "active", role: "mod",
+        ).pluck(:chat_channel_id),
+      )
+      @delete_user.chat_channel_memberships.where(chat_channel_id: duplicate_moderator_memberships).delete_all
+
+      moderator_memberships = @delete_user.chat_channel_memberships.where(
+        status: "active", role: "mod",
+      ).pluck(:chat_channel_id)
+
+      duplicate_memberships = @delete_user.chat_channel_memberships.where(
+        status: "active",
+      ).pluck(:chat_channel_id).intersection(
+        @keep_user.chat_channel_memberships.where(status: "active").pluck(:chat_channel_id),
+      )
+      @delete_user.chat_channel_memberships.where(chat_channel_id: duplicate_memberships).delete_all
+      @keep_user.chat_channel_memberships.where(chat_channel_id: moderator_memberships).update_all(role: "mod")
+      @delete_user.chat_channel_memberships.update_all(user_id: @keep_user.id)
     end
 
     def merge_follows
-      @delete_user.follows&.update_all(follower_id: @keep_user.id) if @delete_user.follows.any?
-      @delete_user_followers = Follow.followable_user(@delete_user.id)
-      @delete_user_followers.update_all(followable_id: @keep_user.id) if @delete_user_followers.any?
-    end
+      duplicate_followers = Follow.where(followable: @delete_user).pluck(:follower_id, :follower_type).intersection(
+        Follow.where(followable: @keep_user).pluck(:follower_id, :follower_type),
+      )
+      Follow.where(follower: duplicate_followers, followable: @delete_user).delete_all
+      Follow.where(followable: @delete_user).update_all(followable_id: @keep_user.id)
 
-    def merge_content
-      merge_reactions if @delete_user.reactions.any?
-      merge_comments if @delete_user.comments.any?
-      merge_articles if @delete_user.articles.any?
+      duplicate_followables = Follow.where(follower: @delete_user).pluck(:followable_id, :followable_type).intersection(
+        Follow.where(follower: @keep_user).pluck(:followable_id, :followable_type),
+      )
+      Follow.where(followable: duplicate_followables, follower: @delete_user).delete_all
+      Follow.where(follower: @delete_user).update_all(follower_id: @keep_user.id)
     end
 
     def merge_reactions
+      duplicate_reactions = @delete_user.reactions.pluck(:category, :reactable_type, :reactable_id).intersection(
+        @keep_user.reactions.pluck(:category, :reactable_type, :reactable_id),
+      )
+      @delete_user.reactions.where(category: duplicate_reactions, reactable: duplicate_reactions).delete_all
       @delete_user.reactions.update_all(user_id: @keep_user.id)
       @keep_user.reactions_count = @keep_user.reactions.size
     end
 
-    def merge_comments
+    def merge_comments_and_mentions
       @delete_user.comments.update_all(user_id: @keep_user.id)
       @keep_user.comments_count = @keep_user.comments.size
+      @delete_user.mentions.update_all(user_id: @keep_user.id)
     end
 
     def merge_articles
