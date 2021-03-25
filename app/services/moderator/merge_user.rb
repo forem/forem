@@ -23,6 +23,7 @@ module Moderator
       merge_chat_channels
       merge_sponsorships
       merge_profile
+      merge_badge_achievements
       update_social
       Users::DeleteWorker.new.perform(@delete_user.id, true)
       @keep_user.touch(:profile_updated_at)
