@@ -1,7 +1,7 @@
 <div class="crayons-card p-6" data-controller="image-upload" data-image-upload-url-value="<%= image_uploads_path %>">
   <h2 class="crayons-title mb-4">Upload an Image</h2>
   <p class="mb-6">Quickly upload an image.</p>
-# Multipart, remote forms are tricky, the data is actually sent in the Stimulus controller. %>
+<%# Multipart, remote forms are tricky, the data is actually sent in the Stimulus controller. %>
   <%= form_with(url: image_uploads_path, multipart: true) do |f| %>
     <div class="form-group">
       <%= f.label(:image, "Image:") %>

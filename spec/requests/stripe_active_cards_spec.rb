@@ -50,7 +50,7 @@ RSpec.describe "StripeActiveCards", type: :request do
     end
 
     it "increments sidekiq.errors in Datadog on failure" do
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
       invalid_error = Stripe::InvalidRequestError.new("message", "param")
       allow(Stripe::Customer).to receive(:create).and_raise(invalid_error)
 
@@ -59,7 +59,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(flash[:error]).to eq(invalid_error.message)
 
       tags = hash_including(tags: array_including("error:InvalidRequestError"))
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
+      expect(ForemStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
 
     it "updates the user's updated_at" do
@@ -73,13 +73,13 @@ RSpec.describe "StripeActiveCards", type: :request do
     end
 
     it "increments sidekiq.errors.new_subscription in Datadog on failure" do
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
       invalid_error = Stripe::InvalidRequestError.new(nil, nil)
       allow(Stripe::Customer).to receive(:create).and_raise(invalid_error)
       post "/stripe_active_cards", params: { stripe_token: stripe_helper.generate_card_token }
 
       tags = hash_including(tags: array_including("action:create_card", "user_id:#{user.id}"))
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
+      expect(ForemStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
 
@@ -124,7 +124,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       _, source = create_user_with_card(user, card_token)
       original_card_id = source.id
 
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
       card_error = Stripe::CardError.new("message", "param")
       allow(Stripe::Customer).to receive(:retrieve).and_raise(card_error)
 
@@ -133,7 +133,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(flash[:error]).to eq(card_error.message)
 
       tags = hash_including(tags: array_including("error:CardError"))
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
+      expect(ForemStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
 
     it "updates the user's updated_at" do
@@ -151,7 +151,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       _, source = create_user_with_card(user, card_token)
       original_card_id = source.id
 
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
       card_error = Stripe::CardError.new("message", "param")
       allow(Stripe::Customer).to receive(:retrieve).and_raise(card_error)
 
@@ -159,7 +159,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(response).to redirect_to(user_settings_path(:billing))
       expect(flash[:error]).to eq(card_error.message)
       tags = hash_including(tags: array_including("action:update_card", "user_id:#{user.id}"))
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
+      expect(ForemStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
 

@@ -2,11 +2,11 @@
 title: Testing/QA Guide
 items:
   - acceptance-tests.md
-  - approvals-tests.md
   - integration-tests.md
   - unit-functional-tests.md
   - frontend-tests.md
   - accessibility-tests.md
+  - e2e-tests.md
   - regression-tests.md
   - code-coverage.md
   - codeclimate.md

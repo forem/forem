@@ -1,5 +1,5 @@
 <base target="_parent">
-<% cache "liquid_tag_styles_#{ApplicationConfig['RELEASE_FOOTPRINT']}", expires_in: 8.hours do #TODO: Render specific ltag class instead of everything %>
+<% cache "liquid_tag_styles_#{ForemInstance.deployed_at}", expires_in: 8.hours do #TODO: Render specific ltag class instead of everything %>
   <style><%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %></style>
 <% end %>
 <% begin %>

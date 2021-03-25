@@ -9,6 +9,7 @@ module Users
       delete_profile_info(user)
       user.access_grants.delete_all
       user.access_tokens.delete_all
+      user.api_secrets.delete_all
       user.created_podcasts.update_all(creator_id: nil)
       user.blocker_blocks.delete_all
       user.blocked_blocks.delete_all

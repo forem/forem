@@ -1,13 +1,17 @@
 class Article < ApplicationRecord
+  self.ignored_columns = %w[facebook_last_buffered last_buffered].freeze
+
   include CloudinaryHelper
   include ActionView::Helpers
   include Storext.model
   include Reactable
   include Searchable
   include UserSubscriptionSourceable
+  include PgSearch::Model
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
 
   acts_as_taggable_on :tags
   resourcify
@@ -28,7 +32,6 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
-  has_many :buffer_updates, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
@@ -94,20 +97,40 @@ class Article < ApplicationRecord
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
-  after_save :bust_cache, :detect_human_language
+  after_save :bust_cache
   after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
+
   after_commit :async_score_calc, :touch_collection, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   serialize :cached_user
   serialize :cached_organization
 
-  scope :published, -> { where(published: true) }
+  # [@rhymes] this is adapted from the `search_fields` property in
+  # `config/elasticsearch/mappings/feed_content.json`
+  pg_search_scope :search_reading_list,
+                  against: %i[body_markdown title cached_tag_list],
+                  associated_against: {
+                    organization: %i[name],
+                    user: %i[name username]
+                  },
+                  using: { tsearch: { prefix: true } }
+
+  # [@jgaskins] We use an index on `published`, but since it's a boolean value
+  #   the Postgres query planner often skips it due to lack of diversity of the
+  #   data in the column. However, since `published_at` is a *very* diverse
+  #   column and can scope down the result set significantly, the query planner
+  #   can make heavy use of it.
+  scope :published, lambda {
+    where(published: true)
+      .where("published_at <= ?", Time.current)
+  }
   scope :unpublished, -> { where(published: false) }
 
   scope :admin_published_with, lambda { |tag_name|
@@ -130,10 +153,9 @@ class Article < ApplicationRecord
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
   scope :active_help, lambda {
-    published
-      .cached_tagged_with("help")
-      .order(created_at: :desc)
-      .where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
+    stories = published.cached_tagged_with("help").order(created_at: :desc)
+
+    stories.where(published_at: 12.hours.ago.., comments_count: ..5, score: -3..).presence || stories
   }
 
   scope :limited_column_select, lambda {
@@ -141,7 +163,7 @@ class Article < ApplicationRecord
            :comments_count, :public_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
-           :video_thumbnail_url, :video_closed_caption_track_url, :language,
+           :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
            :last_comment_at)
@@ -154,8 +176,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
-           :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-           :email_digest_eligible, :processed_html, :co_author_ids)
+           :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
   }
 
   scope :boosted_via_additional_articles, lambda {
@@ -206,21 +227,6 @@ class Article < ApplicationRecord
     boosted_additional_articles Boolean, default: false
     boosted_dev_digest_email Boolean, default: false
     boosted_additional_tags String, default: ""
-  end
-
-  def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)
-    stories = published.limit(number)
-    stories = if time_ago == "latest"
-                stories.order(published_at: :desc).where("score > ?", -5)
-              elsif time_ago
-                stories.order(comments_count: :desc)
-                  .where("published_at > ? AND score > ?", time_ago, -5)
-              else
-                stories.order(last_comment_at: :desc)
-                  .where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5)
-              end
-    stories = tags.size == 1 ? stories.cached_tagged_with(tags.first) : stories.tagged_with(tags)
-    stories.pluck(:path, :title, :comments_count, :created_at)
   end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
@@ -296,7 +302,7 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
-    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed.front_matter["title"].present?
@@ -373,8 +379,8 @@ class Article < ApplicationRecord
   end
 
   def update_score
-    new_score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
-    update_columns(score: new_score,
+    self.score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    update_columns(score: score,
                    comment_score: comments.sum(:score),
                    hotness_score: BlackBox.article_hotness_score(self),
                    spaminess_rating: BlackBox.calculate_spaminess(self))
@@ -382,6 +388,12 @@ class Article < ApplicationRecord
 
   def co_author_ids_list=(list_of_co_author_ids)
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
+  end
+
+  def plain_html
+    doc = Nokogiri::HTML.fragment(processed_html)
+    doc.search(".highlight__panel").each(&:remove)
+    doc.to_html
   end
 
   private
@@ -414,9 +426,9 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownParser.new(parsed.content, source: self, user: user)
+    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
 
@@ -435,12 +447,6 @@ class Article < ApplicationRecord
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
     self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
-  end
-
-  def detect_human_language
-    return if language.present?
-
-    update_column(:language, Articles::DetectLanguage.call(self))
   end
 
   def async_score_calc
@@ -469,6 +475,7 @@ class Article < ApplicationRecord
 
   def before_destroy_actions
     bust_cache
+    touch_actor_latest_article_updated_at(destroying: true)
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)
@@ -659,11 +666,20 @@ class Article < ApplicationRecord
     self.canonical_url = nil if canonical_url == ""
   end
 
+  def touch_actor_latest_article_updated_at(destroying: false)
+    return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list]).present?
+
+    user.touch(:latest_article_updated_at)
+    organization&.touch(:latest_article_updated_at)
+  end
+
   def bust_cache
-    EdgeCache::Bust.call(path)
-    EdgeCache::Bust.call("#{path}?i=i")
-    EdgeCache::Bust.call("#{path}?preview=#{password}")
+    cache_bust = EdgeCache::Bust.new
+    cache_bust.call(path)
+    cache_bust.call("#{path}?i=i")
+    cache_bust.call("#{path}?preview=#{password}")
     async_bust
+    touch_actor_latest_article_updated_at
   end
 
   def calculate_base_scores

@@ -36,7 +36,6 @@ class Reaction < ApplicationRecord
   after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
-  after_create_commit :record_field_test_event
   after_commit :async_bust
   after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
 
@@ -136,11 +135,6 @@ class Reaction < ApplicationRecord
     return if user&.any_admin? || user&.id == SiteConfig.mascot_user_id
 
     negative? && !user.trusted
-  end
-
-  def record_field_test_event
-    Users::RecordFieldTestEventWorker
-      .perform_async(user_id, :follow_implicit_points, "user_creates_reaction")
   end
 
   def notify_slack_channel_about_vomit_reaction

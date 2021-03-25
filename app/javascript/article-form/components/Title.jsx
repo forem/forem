@@ -18,7 +18,7 @@ export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
       className="crayons-article-form__title"
     >
       <Textarea
-        className="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight"
+        className="crayons-textfield crayons-textfield--ghost fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight"
         type="text"
         id="article-form-title"
         aria-label="Post Title"

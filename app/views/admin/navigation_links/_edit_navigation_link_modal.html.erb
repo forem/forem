@@ -1,36 +1,16 @@
-<div onclick="toggleEditNavigationLinkModal('<%= link[:id] %>')" class="color-accent-warning-darker cursor-pointer">
-  Edit Link
-</div>
+<span data-controller="modal" data-modal-root-selector-value="#edit-navigation-link-<%= link[:id] %>-modal-root" data-modal-content-selector-value="#edit-navigation-link-<%= link[:id] %>-modal" data-modal-title-value="Edit Link" data-modal-size-value="l">
+  <button data-action="modal#toggleModal" class="color-accent-brand crayons-btn crayons-btn--ghost-brand">
+    Edit Link
+  </button>
 
-<div id="edit-navigation-link-<%= link[:id] %>-modal" class="hidden">
-  <div class="crayons-modal crayons-modal--l">
-    <div class="crayons-modal__box">
-      <header class="crayons-modal__box__header">
-        <h2>Edit Link</h2>
-        <button type="button" onclick="toggleEditNavigationLinkModal('<%= link[:id] %>')" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
-          <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-          </svg>
-        </button>
-      </header>
-      <div class="crayons-modal__box__body">
-        <div class="form-group grid p-6 mb-6 gap-1">
-          <%= form_for [:admin, link] do |form| %>
-            <%= render "form", form: form %>
-            <%= form.submit class: "btn btn-primary" %>
-          <% end %>
-        </div>
-      </div>
+  <div id="edit-navigation-link-<%= link[:id] %>-modal" class="hidden">
+    <div class="form-group grid p-6 mb-6 gap-1">
+      <%= form_for [:admin, link] do |form| %>
+        <%= render "form", form: form %>
+        <%= form.submit class: "btn btn-primary" %>
+      <% end %>
     </div>
-    <div class="crayons-modal__overlay"></div>
   </div>
-</div>
 
-<script>
-  function toggleEditNavigationLinkModal(link_id) {
-    const confirmationModal = document.getElementById(`edit-navigation-link-${link_id}-modal`);
-    if (confirmationModal) {
-      confirmationModal.classList.toggle("hidden");
-    }
-  }
-</script>
+   <div id="edit-navigation-link-<%= link[:id] %>-modal-root"></div>
+</span>

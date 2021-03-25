@@ -1,3 +1,15 @@
+<style>
+  .permalink-heading svg {
+    fill: currentColor;
+    visibility: hidden;
+  }
+
+  .permalink-heading a:focus svg,
+  .permalink-heading:hover svg {
+    visibility: visible;
+  }
+
+</style>
 <div class="container article" id="editor-help-guide">
   <div class="title help-guide-title">
     <h1>Editor Guide 🤓</h1>
@@ -7,7 +19,7 @@
       <%= render "pages/v1_editor_guide_preamble" %>
     <% else %>
       <p><em><b>We have two editor versions</b>. If you prefer Jekyll-style "frontmatter", switch to "basic markdown" in <a href="/settings/customization">/settings/customization</a>.</em></p>
-      <h2 style="font-size:2.8em"><strong>Things to Know</strong></h2>
+      <h2 style="font-size:2.8em" id="#things-to-know" class="permalink-heading"><strong>Things to Know</strong><a href="#things-to-know"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Things to know") %></a></h2>
       <ul>
         <li>Use <a href="#markdown"><strong>markdown</strong></a> to write and format <a href="/"><%= community_name %></a> posts.</li>
         <li>Most of the time, you can write inline HTML directly into your posts.</li>
@@ -16,14 +28,14 @@
         <li>The best size for your <b>cover image</b> is 1000 X 420.</li>
       </ul>
     <% end %>
-    <h2 style="font-size:2.8em" id="markdown"><strong>✍ Markdown Basics</strong></h2>
+    <h2 style="font-size:2.8em" id="markdown" class="permalink-heading"><strong>✍ Markdown Basics</strong><a href="#markdown"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Markdown") %></a></h2>
     <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out
       <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">this cheat sheet.</a>
     </p>
-    <h3><strong>Bold & Italic</strong></h3>
+    <h3 id="markdown-bold-and-italic" class="permalink-heading"><strong>Bold & Italic</strong><a href="#markdown-bold-and-italic"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Bold & Italic") %></a></h3>
     <p><em>Italics</em>: <code>*asterisks* or _underscores_</code></p>
     <p><strong>Bold</strong>: <code>**double asterisks** or __double underscores__</code></p>
-    <h3><strong>Links</strong></h3>
+    <h3 id="markdown-links" class="permalink-heading"><strong>Links</strong><a href="#markdown-links"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Links") %></a></h3>
     <p><a href="<%= app_url %>">I'm an inline link</a>: <code>[I'm an inline link](put-link-here)</code></p>
     <p><a name="anchored">Anchored links</a> (For things like a Table of Contents)</p>
     <pre>
@@ -33,27 +45,27 @@
 
       ### Chapter 1 <%= "<a name=\"chapter-1\"></a>" %>
     </pre>
-    <h3><strong>Inline Images</strong></h3>
+    <h3 id="markdown-inline-images" class="permalink-heading"><strong>Inline Images</strong><a href="#markdown-inline-images"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Inline Images") %></a></h3>
     <p>
       When adding GIFs to posts and comments, please note that there is a limit of 200 megapixels per frame/page.
       <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_220,q_auto,w_220/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" />
     </p>
     <pre>![Alt text of image](put-link-to-image-here)</pre>
     <figcaption> You can even add a caption using the HTML <code>figcaption</code> tag!</figcaption>
-    <h3><strong>Headers</strong></h3>
+    <h3 id="markdown-headers" class="permalink-heading"><strong>Headers</strong><a href="#markdown-headers"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Headers") %></a></h3>
     <p>Add a header to your post with this syntax:</p>
     <pre># One '#' for a h1 header<br>## Two '#'s for a h2 header<br>...<br>###### Six '#'s for a h6 header</pre>
     <h1>One '#' for a h1 header</h1>
     <h2>Two '#'s for a h2 header</h2>
     <h6>Six '#'s for a h6 header</h6>
-    <h3><strong>Author Notes/Comments</strong></h3>
+    <h3 id="author-notes" class="permalink-heading"><strong>Author Notes/Comments</strong><a href="#author-notes"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Author Notes/Comments") %></a></h3>
     <p>Add some hidden notes/comments to your article with this syntax:</p>
     <pre>&lt;!-- This won't show up in the content! --&gt;</pre>
-    <h2 style="font-size:2.8em" id="liquidtags"><strong>🌊 Liquid Tags</strong></h2>
+    <h2 style="font-size:2.8em" id="liquidtags" class="permalink-heading"><strong>🌊 Liquid Tags</strong><a href="#liquidtags"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Liquid Tags") %></a></h2>
     <p>We support native
       <a href="https://shopify.github.io/liquid" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:
     </p>
-    <h3><strong><%= community_name %> Article/Post Embed</strong></h3>
+    <h3 id="article-post-embed" class="permalink-heading"><strong><%= community_name %> Article/Post Embed</strong><a href="#article-post-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Article/Post Embed") %></a></h3>
     <p>All you need is the full link of the article:</p>
     <code>{% link <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</code>
     <p>You can also use the slug like this:</p>
@@ -62,27 +74,27 @@
     <code>{% post <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</code>
     <p>or this:</p>
     <code>{% post kazz/boost-your-productivity-using-markdown-1be %}</code>
-    <h3><strong><%= community_name %> User Embed</strong></h3>
+    <h3 id="user-embed" class="permalink-heading"><strong><%= community_name %> User Embed</strong><a href="#user-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for User Embed") %></a></h3>
     <p>All you need is the <%= community_name %> username:</p>
     <code>{% user jess %}</code>
-    <h3><strong><%= community_name %> Tag Embed</strong></h3>
+    <h3 id="tag-embed" class="permalink-heading"><strong><%= community_name %> Tag Embed</strong><a href="#tag-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Tag Embed") %></a></h3>
     <p>All you need is the tag name:</p>
     <code>{% tag git %}</code>
-    <h3><strong><%= community_name %> Comment Embed</strong></h3>
+    <h3 id="comment-embed" class="permalink-heading"><strong><%= community_name %> Comment Embed</strong><a href="#comment-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Comment Embed") %></a></h3>
     <p>All you need is the
       <code>ID</code> at the end of a comment URL. To get the comment link, click either the timestamp or the menu button in the top right corner on a comment and then click "Permalink". Here's an example:
     </p>
     <code>{% comment 2d1a %}</code>
-    <h3><strong><%= community_name %> Podcast Episode Embed</strong></h3>
+    <h3 id="podcast-episode-embed" class="permalink-heading"><strong><%= community_name %> Podcast Episode Embed</strong><a href="#podcast-episode-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Podcast Episode Embed") %></a></h3>
     <p>All you need is the full link of the podcast episode:</p>
     <code>{% podcast <%= app_url("/basecspodcast/s2e2--queues-irl") %> %}</code>
-    <h3><strong><%= community_name %> Listing Embed</strong></h3>
+    <h3 id="listing-embed" class="permalink-heading"><strong><%= community_name %> Listing Embed</strong><a href="#listing-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Listing Embed") %></a></h3>
     <p>All you need is the full link of the listing:</p>
     <code>{% listing <%= app_url("/listings/collabs/dev-is-open-source-823") %> %}</code>
     <p>You can also use the category and slug like this:</p>
     <code>{% listing collabs/dev-is-open-source-823 %}</code>
     <p>Note: Expired listings will raise an error. Make sure the listing is published or recently bumped.</p>
-    <h3><strong>Details Embed</strong></h3>
+    <h3 id="details-embed" class="permalink-heading"><strong>Details Embed</strong><a href="#details-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Details Embed") %></a></h3>
     <p>You can embed a details HTML element by using details, spoiler, or
     collapsible. The <em>summary</em> will be what the dropdown title displays.
     The <em>content</em> will be the text hidden behind the dropdown. This is
@@ -91,15 +103,15 @@
     <p><code>{% details summary %} content {% enddetails %}</code></p>
     <p><code>{% spoiler summary %} content {% endspoiler %}</code></p>
     <p><code>{% collapsible summary %} content {% endcollapsible %}</code></p>
-    <h3><strong>Twitter Embed</strong></h3>
+    <h3 id="twitter-embed" class="permalink-heading"><strong>Twitter Embed</strong><a href="#twitter-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Twitter Embed") %></a></h3>
     <p>Using the Twitter Liquid tag will allow the tweet to pre-render from the server, providing your reader with a better experience. All you need is the tweet
       <code>id</code> from the url.</p>
     <code>{% twitter 834439977220112384 %}</code>
-    <h3><strong>Twitter Timeline</strong></h3>
+    <h3 id="twitter-timeline" class="permalink-heading"><strong>Twitter Timeline</strong><a href="#twitter-timeline"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Twitter Timeline") %></a></h3>
     <p>Using the Twitter Timeline Liquid tag will allow the Twitter Timeline to pre-render from the server. All you need is the Twitter Timeline
       <code>link</code>.</p>
     <code>{% twitter_timeline https://twitter.com/username/timelines/834439977220112384 %}</code>
-    <h3><strong>Glitch embed</strong></h3>
+    <h3 id="glitch-embed" class="permalink-heading"><strong>Glitch embed</strong><a href="#glitch-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Glitch embed") %></a></h3>
     <p>All you need is the Glitch project slug</p>
     <code>{% glitch earthy-course %}</code>
     <p>There are several
@@ -137,7 +149,7 @@
         <code>{% glitch earthy-course file=script.js %}</code>
       </dd>
     </dl>
-    <h3><strong>GitHub Repo Embed</strong></h3>
+    <h3 id="github-repo-embed" class="permalink-heading"><strong>GitHub Repo Embed</strong><a href="#github-repo-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for GitHub Repo Embed") %></a></h3>
     <p>All you need is the GitHub username and repo:</p>
     <code>{% github forem/forem %}</code>
     <dl>
@@ -147,10 +159,10 @@
         <code>{% github forem/forem no-readme %}</code>
       </dd>
     </dl>
-    <h3><strong>GitHub Issue, Pull request or Comment Embed</strong></h3>
+    <h3 id="github-issue-pr-comment-embed" class="permalink-heading"><strong>GitHub Issue, Pull request or Comment Embed</strong><a href="#github-issue-pr-comment-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for GitHub Issue, Pull request or Comment Embed") %></a></h3>
     <p>All you need is the GitHub issue, PR or comment URL:</p>
     <code>{% github https://github.com/forem/forem/issues/9 %}</code>
-    <h3><strong>GitHub Gist Embed</strong></h3>
+    <h3 id="github-gist-embed" class="permalink-heading"><strong>GitHub Gist Embed</strong><a href="#github-gist-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for GitHub Gist Embed") %></a></h3>
     <p>All you need is the gist link:</p>
     <code>
       {% gist https://gist.github.com/CristinaSolana/1885435 %}
@@ -180,25 +192,25 @@
         </code></p>
       </dd>
     </dl>
-    <h3><strong>GitPitch Embed</strong></h3>
+    <h3 id="gitpitch-embed" class="permalink-heading"><strong>GitPitch Embed</strong><a href="#gitpitch-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for GitPitch Embed") %></a></h3>
     <p>All you need is the GitPitch link:</p>
     <code>
       {% gitpitch https://gitpitch.com/gitpitch/in-60-seconds %}
     </code>
-    <h3><strong>Video Embed</strong></h3>
+    <h3 id="video-embed" class="permalink-heading"><strong>Video Embed</strong><a href="#video-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Video Embed") %></a></h3>
     <p>All you need is the <code>id</code> from the URL.
       <ul>
         <li><strong>YouTube:</strong> <code>{% youtube dQw4w9WgXcQ %}</code></li>
         <li><strong>Vimeo:</strong> <code>{% vimeo 193110695 %}</code></li>
         <li><strong>Twitch:</strong> <code>{% twitch ClumsyPrettiestOilLitFam %}</code></li>
       </ul>
-      <h3><strong>Medium Embed</strong></h3>
+      <h3 id="medium-embed" class="permalink-heading"><strong>Medium Embed</strong><a href="#medium-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Medium Embed") %></a></h3>
       <p>Just enter the full URL of the Medium article you are trying to embed.</p>
       <code>{% medium https://medium.com/s/story/boba-science-how-can-i-drink-a-bubble-tea-to-ensure-that-i-dont-finish-the-tea-before-the-bobas-7fc5fd0e442d %}</code>
-      <h3><strong>SlideShare Embed</strong></h3>
+      <h3 id="slideshare-embed" class="permalink-heading"><strong>SlideShare Embed</strong><a href="#slideshare-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for SlideShare Embed") %></a></h3>
       <p>All you need is the SlideShare <code>key</code>:</p>
       <code>{% slideshare rdOzN9kr1yK5eE %}</code>
-      <h3><strong>CodePen Embed</strong></h3>
+      <h3 id="codepen-embed" class="permalink-heading"><strong>CodePen Embed</strong><a href="#codepen-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for CodePen Embed") %></a></h3>
       <p>All you need is the full CodePen <code>link</code>, ending in the pen ID code, as follows:</p>
       <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX %}</code>
       <dl>
@@ -208,21 +220,21 @@
           <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result %}</code>
         </dd>
       </dl>
-      <h3><strong>Kotlin Playground</strong></h3>
+      <h3 id="kotlin-playground" class="permalink-heading"><strong>Kotlin Playground</strong><a href="#kotlin-playground"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Kotlin Playground") %></a></h3>
       <p>To create a runnable kotlin snippet, create a Kotlin Snippet at <a href="https://play.kotlinlang.org">https://play.kotlinlang.org</a></p>
       <p>Go to <code>Share</code> dialog and copy the full <code>link</code> from the <code>Medium</code> tab. Use it as follows:</p>
       <code>{% kotlin https://pl.kotl.in/owreUFFUG?theme=darcula&from=3&to=6&readOnly=true %}</code>
-      <h3><strong>RunKit Embed</strong></h3>
+      <h3 id="runkit-embed" class="permalink-heading"><strong>RunKit Embed</strong><a href="#runkit-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for RunKit Embed") %></a></h3>
       <p>Put executable code within a runkit liquid block, as follows:</p>
       <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}<br></pre>
 
-      <h3><strong>KaTeX Embed</strong></h3>
+      <h3 id="katex-embed" class="permalink-heading"><strong>KaTeX Embed</strong><a href="#katex-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for KaTeX Embed") %></a></h3>
       <p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
       <pre>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
       <p>To render KaTeX inline add the "inline" option:</p>
       <pre>{% katex inline %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
 
-      <h3><strong>Stackblitz Embed</strong></h3>
+      <h3 id="stackblitz-embed" class="permalink-heading"><strong>Stackblitz Embed</strong><a href="#stackblitz-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Stackblitz Embed") %></a></h3>
       <p>All you need is the ID of the Stackblitz:</p>
       <code>{% stackblitz ball-demo %}</code>
       <dl>
@@ -260,7 +272,7 @@
             <code>{% codesandbox ppxnl191zx runonclick=1 %}</code>
           </dd>
         </dl>
-        <h3><strong>JSFiddle Embed</strong></h3>
+        <h3 id="jsfiddle-embed" class="permalink-heading"><strong>JSFiddle Embed</strong><a href="#jsfiddle-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for JSFiddle Embed") %></a></h3>
         <p>All you need is the full JSFiddle <code>link</code>, ending in the fiddle ID code, as follows:</p>
         <code>{% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}</code>
         <dl>
@@ -271,7 +283,7 @@
           </dd>
         </dl>
 
-        <h3><strong>JSitor Liquid Tag</strong></h3>
+        <h3 id="jsitor-liquid-tag" class="permalink-heading"><strong>JSitor Liquid Tag</strong><a href="#jsitor-liquid-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for JSitor Liquid Tag") %></a></h3>
         <p>
           To use JSitor liquid tag you can use the JSitor full <code>link</code>, with or without the parameters
         </p>
@@ -285,45 +297,45 @@
         <br/>
         <code>{% jsitor B7FQ5tHbY?html&js&css&result&light %}</code>
 
-        <h3><strong>repl.it Embed</strong></h3>
+        <h3 id="repl-it-embed" class="permalink-heading"><strong>repl.it Embed</strong><a href="#repl-it-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for repl.it Embed") %></a></h3>
         <p>All you need is the URL after the domain name:</p>
         <code>{% replit @WigWog/PositiveFineOpensource %}</code>
 
-        <h3><strong>Stackery Embed</strong></h3>
+        <h3 id="stackery-embed" class="permalink-heading"><strong>Stackery Embed</strong><a href="#stackery-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Stackery Embed") %></a></h3>
         <p>Visualize your AWS Serverless Application Model templates with <a href="https://www.stackery.io/">Stackery's</a> visualizer embed</p>
         <p>All you need is the repository owner, repository name, and branch that you would like visualized</p>
         <code>{% stackery deeheber lambda-layer-example master %}</code>
         <br/>
         <p>The repository must be a public GitHub repository and have a valid AWS SAM template in the project root titled template.yaml</p>
 
-        <h3><strong>Next Tech Embed</strong></h3>
+        <h3 id="next-tech-embed"><strong>Next Tech Embed</strong><a href="#next-tech-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Next Tech Embed") %></a></h3>
         <p>All you need is the share URL for your sandbox. You can get the share URL by clicking
         the "Share" button in the top right when the sandbox is open.</p>
         <p><img src="https://thepracticaldev.s3.amazonaws.com/i/r449xp8cay3383i139qv.png" alt="Share Replit sandbox" /></p>
         <code>{% nexttech https://nt.dev/s/6ba1fffbd09e %}</code>
-        <h3><strong>Instagram Embed</strong></h3>
+        <h3 id="instagram-embed" class="permalink-heading"><strong>Instagram Embed</strong><a href="#instagram-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Instagram Embed") %></a></h3>
         <p>All you need is the Instagram post <code>id</code> from the URL:</p>
         <code>{% instagram BXgGcAUjM39 %}</code>
-        <h3><strong>Speakerdeck Tag</strong></h3>
+        <h3 id="speakerdeck-tag" class="permalink-heading"><strong>Speakerdeck Tag</strong><a href="#speakerdeck-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Speakerdeck Tag") %></a></h3>
         <p>All you need is the data-id code from the embed link:</p>
         <pre><span style="color: gray;"># Given this embed link:</span><br>&lt;script async class="speakerdeck-embed"<br>    data-id="<span style='color: orange;'>7e9f8c0fa0c949bd8025457181913fd0</span>"<br>    data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"&gt;&lt;/script&gt;</pre>
         <pre>{% speakerdeck <span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span> %}</pre>
-        <h3><strong>Soundcloud Embed</strong></h3>
+        <h3 id="soundcloud-embed" class="permalink-heading"><strong>Soundcloud Embed</strong><a href="#soundcloud-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Soundcloud Embed") %></a></h3>
         <p>Just enter the full URL of the Soundcloud track you are trying to embed.</p>
         <code>{% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}</code>
-        <h3><strong>Spotify Embed</strong></h3>
+        <h3 id="spotify-embed" class="permalink-heading"><strong>Spotify Embed</strong><a href="#spotify-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Spotify Embed") %></a></h3>
         <p>
           Enter the Spotify URI of the Spotify track / playlist /
           album / artist / podcast episode you are trying to embed.
         </p>
         <pre>{% spotify <span style="color: #1DB954;">spotify:episode:5V4XZWqZQJvbddd31n56mf</span> %}</pre>
-        <h3><strong>Blogcast Tag</strong></h3>
+        <h3 id="blogcast-tag" class="permalink-heading"><strong>Blogcast Tag</strong><a href="#blogcast-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Blogcast Tag") %></a></h3>
         <p>All you need is the article id code from the embed code:</p>
         <pre>{% blogcast <span style="color: orange;">1234</span> %}</pre>
-        <h3><strong>Parler Tag</strong></h3>
+        <h3 id="parler-tag" class="permalink-heading"><strong>Parler Tag</strong><a href="#parler-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Parler Tag") %></a></h3>
         <p>Enter the full url of the Parler.io audio file you want to embed. </p>
         <pre>{% parler https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3 %}</pre>
-        <h3><strong>Stack Exchange / Stack Overflow Tag</strong></h3>
+        <h3 id="stack-exchange-overflow-tag" class="permalink-heading"><strong>Stack Exchange / Stack Overflow Tag</strong><a href="#stack-exchange-overflow-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Stack Exchange / Stack Overflow Tag") %></a></h3>
         <p>
           You'll need the question or answer's ID code, and the site. When using <code>{% stackoverflow %}</code> as the tag, the site will default to Stack Overflow.
           For example:
@@ -354,31 +366,32 @@
         </ul>
         <pre>{% stackexchange <span style="color: aquamarine;">170185</span> <span style="color: orange;">diy</span> %}</pre>
         </p>
-        <h3><strong>Wikipedia Embed</strong></h3>
+        <h3 id="wikipedia-embed" class="permalink-heading"><strong>Wikipedia Embed</strong><a href="#wikipedia-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Wikipedia Embed") %></a></h3>
         <p>Enter the full URL of the Wikipedia article you want to embed, with or without the anchor.</p>
         <p>
           <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia %}</code>
           <br/>
           <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia#Diversity %}</code>
         </p>
-        <h3><strong>Asciinema Embed</strong></h3>
+        <h3 id="asciinema-embed" class="permalink-heading"><strong>Asciinema Embed</strong><a href="#asciinema-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Asciinema Embed") %></a></h3>
         <p>All you need is an Asciinema id or URL:</p>
         <code>{% asciinema 239367 %}</code>
         <code>{% asciinema https://asciinema.org/a/239367 %}</code>
 
-        <h3><strong>Reddit Tag</strong></h3>
+        <h3 id="reddit-tag" class="permalink-heading"><strong>Reddit Tag</strong><a href="#reddit-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Reddit Tag") %></a></h3>
         <p>Enter the full URL of the post you want to embed</p>
         <pre>
 {% reddit https://www.reddit.com/r/aww/comments/ag3s4b/ive_waited_28_years_to_finally_havr_my_first_pet %}
         </pre>
 
-        <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
+        <h3 id="parsing-liquid-tags-as-code-example" class="permalink-heading"><strong>Parsing Liquid Tags as a Code Example</strong><a href="#parsing-liquid-tags-as-code-example"><%= inline_svg_tag("small-link.svg", aria: true,
+                                                                                                                                                                                                                         title: "permalink for Parsing Liquid Tags as a Code Example") %></a></h3>
         <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>
         <p><code>`{% mytag %}{{ site.SOMETHING }}{% endmytag %}`</code></p>
         <p>One specific edge case is with using the <code>raw</code> tag. To properly escape it, use this format:
         </p>
         <p><code>`{% raw %}{{site.SOMETHING }} {% ``endraw`` %}`</code></p>
-        <h3><strong>Common Gotchas</strong></h3>
+        <h3 id="common-gotchas" class="permalink-heading"><strong>Common Gotchas</strong><a href="#common-gotchas"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Common Gotchas") %></a></h3>
         <p>
           Lists are written just like any other Markdown editor.
           If you're adding an image in between numbered list, though, be sure to tab the image,

@@ -24,9 +24,7 @@
       Upcoming Events
     </h1>
 
-    <% @events.each do |event| %>
-      <%= render "event", event: event %>
-    <% end %>
+    <%= render partial: "event", collection: @events, as: :event %>
 
     <% if @events.none? %>
       <div class="crayons-notice">
@@ -38,11 +36,7 @@
       <h1>
         Past Events
       </h1>
+      <%= render partial: "event", collection: @past_events, as: :event %>
     <% end %>
-
-    <% @past_events.each do |event| %>
-      <%= render "event", event: event %>
-    <% end %>
-
   </div>
 </div>

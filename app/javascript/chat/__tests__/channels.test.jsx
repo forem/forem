@@ -1,8 +1,8 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, fireEvent } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
-import Channels from '../channels';
+import { Channels } from '../channels';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
 global.document = doc;
@@ -107,7 +107,9 @@ describe('<Channels />', () => {
       expect(queryByRole('alert')).toBeNull();
 
       // configFooter should exist
-      getByRole('menu');
+      fireEvent.click(
+        getByRole('button', { name: /configuration navigation menu/i }),
+      );
       const settings = getByText('Settings');
       expect(settings.getAttribute('href')).toEqual('/settings');
 
@@ -121,7 +123,9 @@ describe('<Channels />', () => {
       // should show "Welcome to Connect message....."
       getByRole('alert');
 
-      getByRole('menu');
+      fireEvent.click(
+        getByRole('button', { name: /configuration navigation menu/i }),
+      );
       const settings = getByText('Settings');
       expect(settings.getAttribute('href')).toEqual('/settings');
 

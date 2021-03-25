@@ -31,6 +31,6 @@ class Poll < ApplicationRecord
   end
 
   def evaluate_markdown
-    self.prompt_html = MarkdownParser.new(prompt_markdown).evaluate_inline_limited_markdown
+    self.prompt_html = MarkdownProcessor::Parser.new(prompt_markdown).evaluate_inline_limited_markdown
   end
 end

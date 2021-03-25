@@ -4,8 +4,8 @@
       <% if params[:view] == "comments" %>
         <div class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
-            <% if @user.comments_count > 250 %>
-              Last 250 comments
+            <% if high_number_of_comments?(@user.comments_count) %>
+              Last <%= number_of_comments_to_render %> comments
             <% else %>
               All <%= @user.comments_count %> comments
             <% end %>
@@ -30,24 +30,24 @@
           <h4 class="fw-bold fs-base m-0 mb-1">
             <%= comment.commentable.title %>
           </h4>
-          <div class="inline-flex items-center fs-s gap-2">
+          <div class="flex items-center fs-s">
             <p class="color-base-80">
               <%= truncate(strip_tags(comment.processed_html), length: 64).html_safe %>
             <p>
-            <small class="color-base-60 fs-s comment-date whitespace-nowrap">
+            <small class="ml-2 color-base-60 fs-s comment-date whitespace-nowrap">
               <time datetime="<%= comment.decorate.published_timestamp %>"><%= comment.readable_publish_date %></time>
             </small>
           </div>
         </a>
       <% end %>
     <% end %>
-    <% if params[:view] != "comments" && @user.comments_count > 250 %>
+    <% if params[:view] != "comments" && high_number_of_comments?(@user.comments_count) %>
       <div class="pt-3 pl-4 pb-3 pr-4">
         <a href="<%= @user.path %>/comments" class="fs-base">
-          View last 250 Comments
+          View last <%= pluralize(number_of_comments_to_render, "Comment") %>
         </a>
       </div>
-    <% elsif params[:view] != "comments" && @user.comments_count > 8 %>
+    <% elsif params[:view] != "comments" && view_all_comments?(@user.comments_count) %>
       <div class="py-3 px-4">
         <a href="<%= @user.path %>/comments" class="fs-base">
           View all <%= @user.comments_count %> comments

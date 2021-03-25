@@ -159,6 +159,22 @@ RSpec.describe "Articles", type: :request do
     end
   end
 
+  describe "GET /feed/latest" do
+    let!(:last_article) { create(:article, featured: true) }
+    let!(:not_featured_article) { create(:article, featured: false) }
+    let!(:article_with_low_score) do
+      create(:article, score: Articles::Feeds::LargeForemExperimental::MINIMUM_SCORE_LATEST_FEED)
+    end
+
+    before { get "/feed/latest" }
+
+    it "contains latest articles" do
+      expect(response.body).to include(last_article.title)
+      expect(response.body).to include(not_featured_article.title)
+      expect(response.body).not_to include(article_with_low_score.title)
+    end
+  end
+
   describe "GET /feed/tag" do
     context "when :tag param is given and tag exists" do
       before do

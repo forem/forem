@@ -33,7 +33,6 @@ that major sections of the websites are bootstrapped, for example:
 
 ```javascript
 initializeBaseTracking();
-initializeTouchDevice();
 initializeCommentsPage();
 initEditorResize();
 initLeaveEditorWarning();

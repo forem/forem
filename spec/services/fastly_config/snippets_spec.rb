@@ -35,7 +35,7 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
     end
 
     it "logs success messages" do
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
       allow(fastly_version).to receive(:number).and_return(1)
       allow(fastly).to receive(:get_snippet).and_return(fastly_snippet)
       allow(fastly_snippet).to receive(:content).and_return("test")
@@ -48,7 +48,7 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
       tags = hash_including(tags: array_including("snippet_update_type:update", "snippet_name:test",
                                                   "new_version:#{fastly_version.number}"))
 
-      expect(DatadogStatsClient).to have_received(:increment).with("fastly.snippets", tags).at_least(:once)
+      expect(ForemStatsClient).to have_received(:increment).with("fastly.snippets", tags).at_least(:once)
     end
   end
 end

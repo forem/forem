@@ -4,8 +4,14 @@
   data-target="#<%= target %>"
   aria-expanded="<%= expanded %>"
   aria-controls="<%= target %>">
+
   <h6 class="mb-0"><%= header %></h6>
-  <button type="button" class="card-header__toggle crayons-btn crayons-btn--secondary ml-auto">
-    Toggle
+
+  <button
+    class="card-header__toggle crayons-btn crayons-btn--secondary ml-auto"
+    type="button"
+    data-action="click->config#toggleAccordionButtonLabel">
+
+    <%= expanded ? "Hide info" : "Show info" %>
   </button>
 </div>

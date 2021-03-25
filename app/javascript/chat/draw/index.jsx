@@ -16,7 +16,7 @@ import { Button } from '@crayons';
  * @param {object} props
  * @param {function} props.sendCanvasImage
  */
-function Draw({ sendCanvasImage }) {
+export function Draw({ sendCanvasImage }) {
   const canvasRef = useRef(null);
   const canvasWidth = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -185,5 +185,3 @@ function usePrevious(value) {
 Draw.propTypes = {
   sendCanvasImage: PropTypes.func.isRequired,
 };
-
-export default Draw;

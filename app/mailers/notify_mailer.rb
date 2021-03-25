@@ -58,6 +58,10 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: "You just got a badge")
   end
 
+  def feedback_response_email
+    mail(to: params[:email_to], subject: "Thanks for your report on #{SiteConfig.community_name}")
+  end
+
   def feedback_message_resolution_email
     @user = User.find_by(email: params[:email_to])
     @email_body = params[:email_body]

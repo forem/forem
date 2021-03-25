@@ -73,7 +73,7 @@ module Github
 
       Honeycomb.add_field("github.result", "error")
       Honeycomb.add_field("github.error", class_name)
-      DatadogStatsClient.increment(
+      ForemStatsClient.increment(
         "github.errors",
         tags: ["error:#{class_name}", "message:#{exception.message}"],
       )

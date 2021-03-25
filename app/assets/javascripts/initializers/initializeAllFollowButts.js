@@ -1,4 +1,4 @@
-/* global showModal */
+/* global showLoginModal */
 
 function initializeAllFollowButts() {
   var followButts = document.getElementsByClassName('follow-action-button');
@@ -88,7 +88,7 @@ function addModalEventListener(butt) {
   assignState(butt, 'login');
   butt.onclick = function (e) {
     e.preventDefault();
-    showModal('follow-button');
+    showLoginModal();
     return;
   };
 }
@@ -158,7 +158,7 @@ function handleOptimisticButtRender(butt) {
   if (butt.dataset.verb === 'self') {
     window.location.href = '/settings';
   } else if (butt.dataset.verb === 'login') {
-    showModal('follow-button');
+    showLoginModal();
   } else {
     // Handles actual following of tags/users
     try {

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import Tags from '../../shared/components/tags';
+import { Tags } from '../../shared/components/tags';
 
 export const DEFAULT_TAG_FORMAT = '[0-9A-Za-z, ]+';
 

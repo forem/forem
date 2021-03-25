@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
-import Membership from './Membership';
+import { defaultMembershipPropType } from '../../common-prop-types/membership-prop-type';
+import { Membership } from './Membership';
 import { Button } from '@crayons';
 
-const ActiveMembershipSection = ({
+export const ActiveMembershipsSection = ({
   activeMemberships,
   removeMembership,
   currentMembershipRole,
@@ -43,11 +43,9 @@ const ActiveMembershipSection = ({
   );
 };
 
-ActiveMembershipSection.propTypes = {
-  activeMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
+ActiveMembershipsSection.propTypes = {
+  activeMemberships: PropTypes.arrayOf(defaultMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
   toggleScreens: PropTypes.func.isRequired,
 };
-
-export default ActiveMembershipSection;

@@ -9,7 +9,7 @@ module TagModerators
       NotifyMailer.with(user: user).trusted_role_email.deliver_now
       return unless community_mod_newsletter_enabled?
 
-      MailchimpBot.new(user).manage_community_moderator_list
+      Mailchimp::Bot.new(user).manage_community_moderator_list
     end
 
     def self.community_mod_newsletter_enabled?

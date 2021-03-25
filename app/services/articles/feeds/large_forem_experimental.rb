@@ -1,15 +1,14 @@
 module Articles
   module Feeds
     class LargeForemExperimental
-      RANDOM_OFFSET_VALUES = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].freeze
+      include FieldTest::Helpers
       MINIMUM_SCORE_LATEST_FEED = -20
 
-      def initialize(user: nil, number_of_articles: 35, page: 1, tag: nil)
+      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil)
         @user = user
         @number_of_articles = number_of_articles
         @page = page
         @tag = tag
-        @randomness = 3 # default number for randomly adjusting feed
         @tag_weight = 1 # default weight tags play in rankings
         @comment_weight = 0 # default weight comments play in rankings
         @experience_level_weight = 1 # default weight for user experience level
@@ -29,11 +28,10 @@ module Articles
       end
 
       def published_articles_by_tag
-        articles = Article.published.limited_column_select
+        articles = @tag.present? ? Tag.find_by(name: @tag).articles : Article
+        articles.published.limited_column_select
           .includes(top_comments: :user)
           .page(@page).per(@number_of_articles)
-        articles = articles.cached_tagged_with(@tag) if @tag.present? # More efficient than tagged_with
-        articles
       end
 
       # Timeframe values from Timeframe::DATETIMES
@@ -66,9 +64,8 @@ module Articles
       end
 
       def more_comments_minimal_weight_randomized_at_end
-        @randomness = 0
         results = more_comments_minimal_weight
-        first_half(results).shuffle + last_half(results)
+        first_quarter(results).shuffle + last_three_quarters(results)
       end
 
       def rank_and_sort_articles(articles)
@@ -85,8 +82,6 @@ module Articles
         article_points += score_followed_user(article)
         article_points += score_followed_organization(article)
         article_points += score_followed_tags(article)
-        article_points += score_randomness
-        article_points += score_language(article)
         article_points += score_experience_level(article)
         article_points += score_comments(article)
         article_points
@@ -109,14 +104,6 @@ module Articles
         user_following_org_ids.include?(article.organization_id) ? 1 : 0
       end
 
-      def score_randomness
-        rand(3) * @randomness
-      end
-
-      def score_language(article)
-        @user&.preferred_languages_array&.include?(article.language || "en") ? 1 : -15
-      end
-
       def score_experience_level(article)
         - (((article.experience_level_rating - (@user&.experience_level || 5)).abs / 2) * @experience_level_weight)
       end
@@ -126,25 +113,33 @@ module Articles
       end
 
       def globally_hot_articles(user_signed_in)
-        hot_stories = published_articles_by_tag
-          .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
-          .order(hotness_score: :desc)
-        featured_story = hot_stories.where.not(main_image: nil).first
         if user_signed_in
-          hot_story_count = hot_stories.count
-          offset = RANDOM_OFFSET_VALUES.select do |i|
-            i < hot_story_count
-          end.sample # random offset, weighted more towards zero
-          hot_stories = hot_stories.offset(offset)
+          hot_stories = experimental_hot_story_grab
+          hot_stories = hot_stories.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
+          featured_story = hot_stories.where.not(main_image: nil).first
           new_stories = Article.published
             .where("score > ?", -15)
             .limited_column_select.includes(top_comments: :user).order(published_at: :desc).limit(rand(15..80))
           hot_stories = hot_stories.to_a + new_stories.to_a
+        else
+          hot_stories = Article.published.limited_column_select
+            .page(@page).per(@number_of_articles)
+            .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
+            .order(hotness_score: :desc)
+          featured_story = hot_stories.where.not(main_image: nil).first
         end
         [featured_story, hot_stories.to_a]
       end
 
       private
+
+      def experimental_hot_story_grab
+        start_time = [(@user.page_views.second_to_last&.created_at || 7.days.ago) - 18.hours, 7.days.ago].max
+        Article.published.limited_column_select.includes(top_comments: :user)
+          .where("published_at > ?", start_time)
+          .page(@page).per(@number_of_articles)
+          .order(score: :desc)
+      end
 
       def user_followed_tags
         @user_followed_tags ||= (@user&.decorate&.cached_followed_tags || [])
@@ -158,12 +153,12 @@ module Articles
         @user_following_users_ids ||= (@user&.cached_following_users_ids || [])
       end
 
-      def first_half(array)
-        array[0...(array.length / 2)]
+      def first_quarter(array)
+        array[0...(array.length / 4)]
       end
 
-      def last_half(array)
-        array[(array.length / 2)..array.length]
+      def last_three_quarters(array)
+        array[(array.length / 4)..array.length]
       end
     end
   end

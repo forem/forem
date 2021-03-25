@@ -4,16 +4,26 @@ RSpec.describe EdgeCache::Bust, type: :service do
   let(:user) { create(:user) }
   let(:path) { "/#{user.username}" }
 
-  it "defines TIMEFRAMES" do
-    expect(described_class.const_defined?(:TIMEFRAMES)).to be true
-  end
+  context "when passing an Array of paths" do
+    let(:fastly_provider_class) { EdgeCache::Bust::Fastly }
 
-  it "adjusts TIMEFRAMES according to the current time" do
-    current_year = Time.current.year
+    before do
+      configure_fastly
+      stub_nginx
+    end
 
-    Timecop.freeze(3.years.ago) do
-      timestamp, _interval = described_class::TIMEFRAMES.first
-      expect(timestamp.call.year).to be <= current_year - 3
+    it "busts each path" do
+      bust_paths = ["/path1", "/path2", "/path3"]
+
+      bust_paths.each do |bust_path|
+        allow(fastly_provider_class).to receive(:call).with(bust_path)
+      end
+
+      described_class.call(bust_paths)
+
+      bust_paths.each do |bust_path|
+        expect(fastly_provider_class).to have_received(:call).with(bust_path)
+      end
     end
   end
 

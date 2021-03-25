@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import { axe } from 'jest-axe';
-import Article from '../article';
+import { Article } from '../article';
 
 global.fetch = fetch;
 

@@ -2,7 +2,7 @@
 import { h, Fragment } from 'preact';
 import { axe } from 'jest-axe';
 import { render, getNodeText } from '@testing-library/preact';
-import SingleArticle from '../index';
+import { SingleArticle } from '../index';
 
 const getTestArticle = () => ({
   id: 1,

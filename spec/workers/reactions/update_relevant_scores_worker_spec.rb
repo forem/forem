@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Reactions::UpdateRelevantScoresWorker, type: :worker do
+RSpec.describe Reactions::UpdateRelevantScoresWorker, type: :worker, throttled_call: true do
   describe "#perform" do
     let(:article) { create(:article) }
     let(:reaction) { create(:reaction, reactable: article) }
@@ -44,6 +44,13 @@ RSpec.describe Reactions::UpdateRelevantScoresWorker, type: :worker do
       expect do
         worker.perform(Reaction.maximum(:id).to_i + 1)
       end.not_to raise_error
+    end
+
+    it "uses a throttled call for syncing the reactions count" do
+      worker.perform(reaction.id)
+
+      expect(ThrottledCall).to have_received(:perform)
+        .with(:sync_reactions_count, throttle_for: instance_of(ActiveSupport::Duration))
     end
   end
 end

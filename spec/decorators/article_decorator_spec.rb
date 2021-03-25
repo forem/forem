@@ -38,6 +38,23 @@ RSpec.describe ArticleDecorator, type: :decorator do
     end
   end
 
+  describe "has_recent_comment_activity?" do
+    it "returns false if no comment activity" do
+      article.last_comment_at = nil
+      expect(article.decorate.has_recent_comment_activity?).to eq(false)
+    end
+
+    it "returns true if more recent than passed in value" do
+      article.last_comment_at = 1.week.ago
+      expect(article.decorate.has_recent_comment_activity?(2.weeks.ago)).to eq(true)
+    end
+
+    it "returns false if less recent than passed in value" do
+      article.last_comment_at = 4.weeks.ago
+      expect(article.decorate.has_recent_comment_activity?(2.weeks.ago)).to eq(false)
+    end
+  end
+
   describe "#processed_canonical_url" do
     it "strips canonical_url" do
       article.canonical_url = " http://google.com "

@@ -1,4 +1,4 @@
-/* global sendHapticMessage, showModal */
+/* global sendHapticMessage, showLoginModal */
 
 // Set reaction count to correct number
 function setReactionCount(reactionName, newCount) {
@@ -63,7 +63,7 @@ function reactToArticle(articleId, reaction) {
   var userStatus = document.body.getAttribute('data-user-status');
   sendHapticMessage('medium');
   if (userStatus === 'logged-out') {
-    showModal('react-to-article');
+    showLoginModal();
     return;
   }
   toggleReaction();

@@ -15,5 +15,20 @@ module.exports = {
   },
   rules: {
     'no-console': ['error', { allow: ['error'] }],
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'ExportDefaultDeclaration',
+        message: 'Prefer named exports',
+      },
+    ],
   },
+  overrides: [
+    {
+      files: ['**/*.stories.jsx', 'app/javascript/admin/controllers/*.js'],
+      rules: {
+        'no-restricted-syntax': 'off',
+      },
+    },
+  ],
 };

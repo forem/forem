@@ -37,6 +37,15 @@ loading split chunks multiple times.
 <%= javascript_packs_with_chunks_tag "webShare", "someOtherPack", defer: true %>
 ```
 
+## Webpack aliases
+
+The project uses
+[webpack aliases](https://webpack.js.org/configuration/resolve/#resolvealias).
+The aliases used in the project can be found under `alias` in
+https://github.com/forem/forem/blob/master/config/webpack/environment.js
+
+## Additional Resources
+
 For more information in regards to `javascript_packs_with_chunks_tag`, see
 https://github.com/rails/webpacker/blob/master/lib/webpacker/helper.rb
 

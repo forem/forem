@@ -3,7 +3,7 @@ import { fireEvent, render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
-import Chat from '../chat';
+import { Chat } from '../chat';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
 global.document = doc;

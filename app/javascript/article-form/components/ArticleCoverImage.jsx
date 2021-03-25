@@ -59,6 +59,7 @@ export class ArticleCoverImage extends Component {
     e.preventDefault();
     window.webkit.messageHandlers.imageUpload.postMessage({
       id: 'native-cover-image-upload-message',
+      ratio: `${100.0 / 42.0}`,
     });
   };
 

@@ -30,7 +30,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count(2)
         shows_main_article
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(days_old_article.title)
         end
@@ -44,7 +44,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
         shows_correct_articles_count(3)
         shows_main_article
 
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(days_old_article.title)
           expect(page).to have_text(weeks_old_article.title)
@@ -59,7 +59,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
         shows_correct_articles_count(4)
         shows_main_article
 
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(days_old_article.title)
           expect(page).to have_text(weeks_old_article.title)
@@ -76,7 +76,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
         shows_main_article
         expect(page).to have_selector(".authentication-feed__card", count: 1)
 
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(days_old_article.title)
           expect(page).to have_text(weeks_old_article.title)
@@ -94,7 +94,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
         shows_main_article
         expect(page).to have_selector(".authentication-feed__card", count: 1)
 
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(days_old_article.title)
           expect(page).to have_text(weeks_old_article.title)
@@ -117,7 +117,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       shows_correct_articles_count_via_xpath(1)
       shows_main_article
 
-      within("#articles-list") do
+      within("#main-content") do
         expect(page).to have_text(article.title)
         expect(page).to have_text(days_old_article.title)
       end
@@ -130,7 +130,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
         shows_correct_articles_count_via_xpath(2)
         shows_main_article
 
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(days_old_article.title)
           expect(page).to have_text(weeks_old_article.title)
@@ -145,7 +145,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
         shows_correct_articles_count_via_xpath(3)
         shows_main_article
 
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(days_old_article.title)
           expect(page).to have_text(weeks_old_article.title)
@@ -161,7 +161,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
         shows_correct_articles_count_via_xpath(4)
         shows_main_article
 
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(days_old_article.title)
           expect(page).to have_text(weeks_old_article.title)
@@ -178,7 +178,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
         shows_correct_articles_count_via_xpath(4)
         shows_main_article
 
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(days_old_article.title)
           expect(page).to have_text(weeks_old_article.title)

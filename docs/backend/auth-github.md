@@ -12,10 +12,10 @@ keys. Then you'll need to provide these keys to the Rails application.
    you will be redirected to sign in to Github account if you have not already.
 
 2. Fill in the form with an application name, description, and the URL
-   `http://localhost:3000/`. Replace the port `3000` if you run Forem on another
+   `http://localhost:3000/users/auth/github/callback`. Replace the port `3000` if you run Forem on another
    port.
 
-   ![github-1](https://user-images.githubusercontent.com/22895284/51085500-877a6c00-173a-11e9-913a-0dccad234cf3.png)
+   ![github-1](https://user-images.githubusercontent.com/8124558/107048692-37dec100-6797-11eb-83d0-1e72db033522.png)
 
 3. You will be redirected to the app's **Developer settings**. Here you will
    find the keys. Add them to your `.env` file accordingly (name of GitHub key

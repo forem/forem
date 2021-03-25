@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const ErrorMessage = ({ message }) => {
+export const ErrorMessage = ({ message }) => {
   const errorStyle = { color: 'darksalmon', 'font-size': '13px' };
   return (
     <div className="chatmessage">
@@ -19,5 +19,3 @@ const ErrorMessage = ({ message }) => {
 ErrorMessage.propTypes = {
   message: PropTypes.string.isRequired,
 };
-
-export default ErrorMessage;

@@ -36,6 +36,6 @@ class DisplayAd < ApplicationRecord
     #                                                         attributes: %w[href target src height width style]
     stripped_html = initial_html.html_safe # rubocop:disable Rails/OutputSafety
     html = stripped_html.delete("\n")
-    self.processed_html = MarkdownParser.new(html).prefix_all_images(html, 350)
+    self.processed_html = Html::Parser.new(html).prefix_all_images(350).html
   end
 end

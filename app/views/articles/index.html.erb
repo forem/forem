@@ -30,12 +30,12 @@
       data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
       data-tag=""
       data-feed="<%= params[:timeframe] || "base-feed" %>"
-      data-articles-since="<%= Timeframe.datetime(params[:timeframe]) %>">
+      data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
 
     <%= render "articles/sidebar" %>
 
     <%# BEGIN Feed menu bar %>
-    <main class="articles-list crayons-layout__content" id="articles-list" role="main">
+    <main class="articles-list crayons-layout__content" id="main-content" role="main">
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
       <header class="flex justify-between items-center p-2 px-3 m:p-0 m:px-0 m:pb-2">

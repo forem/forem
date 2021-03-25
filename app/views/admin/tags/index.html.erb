@@ -1,23 +1,25 @@
 <div class="flex items-center mb-6">
   <div class="crayons-tabs">
     <div class="nav-item">
-      <a href="/admin/tags" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:state].blank? %>">All</a>
+      <a href="/admin/tags?q[supported_not_null]=true" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params.dig(:q, :supported_not_null) %>" aria-label="All Tags">All</a>
     </div>
     <div class="nav-item">
-      <a href="/admin/tags?state=supported" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:state] == "supported" %>">Supported</a>
+      <a href="/admin/tags?q[supported_eq]=true" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params.dig(:q, :supported_eq) == "true" %>" aria-label="Supported Tags">Supported</a>
     </div>
     <div class="nav-item">
-      <a href="/admin/tags?state=unsupported" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:state] == "unsupported" %>">Unsupported</a>
+      <a href="/admin/tags?q[supported_eq]=false" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params.dig(:q, :supported_eq) == "false" %>" aria-label="Unsupported Tags">Unsupported</a>
     </div>
   </div>
 
   <div class="m-auto">
-    <%= form_tag(admin_tags_path, method: "get", class: "inline-flex") do %>
-      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-textfield") %>
-      <% if params[:state].present? %>
-        <%= hidden_field_tag(:state, params[:state]) %>
+    <%= search_form_for(@q, url: admin_tags_path, class: "inline-flex") do |f| %>
+      <%= f.search_field(:name_cont, aria: { label: "Search" }, class: "crayons-textfield") %>
+      <% if params.dig(:q, :supported_eq) %>
+        <%= f.hidden_field(:supported_eq) %>
+      <% else %>
+        <%= f.hidden_field(:supported_not_null) %>
       <% end %>
-      <%= submit_tag("Search", class: "crayons-btn ml-2") %>
+      <%= f.submit "Search", class: "crayons-btn ml-2" %>
     <% end %>
   </div>
 
@@ -31,18 +33,18 @@
 <table class="crayons-table" width="100%">
   <thead>
     <tr>
-      <th scope="col">Tag</th>
-      <th scope="col">ID</th>
-      <th scope="col">Alias For</th>
-      <th scope="col">Taggings Count</th>
-      <th scope="col">Category</th>
+      <th scope="col"><%= sort_link(@q, :name, {}, { aria: { label: "Sort by Name" } }) %></th>
+      <th scope="col"><%= sort_link(@q, :id, {}, { aria: { label: "Sort by ID" } }) %></th>
+      <th scope="col"><%= sort_link(@q, :alias_for, {}, { aria: { label: "Sort by Alias For" } }) %></th>
+      <th scope="col"><%= sort_link(@q, :taggings_count, {}, { aria: { label: "Sort by Taggings Count" } }) %></th>
+      <th scope="col"><%= sort_link(@q, :category, {}, { aria: { label: "Sort by Category" } }) %></th>
       <th scope="col">Is Moderated?</th>
     </tr>
   </thead>
   <tbody class="crayons-card">
     <% @tags.each do |tag| %>
       <tr>
-        <td><%= link_to tag.name, edit_admin_tag_path(tag.id) %></td>
+        <td><%= link_to tag.name, edit_admin_tag_path(tag.id), aria: { label: "#{tag.name} tag" } %></td>
         <td><%= tag.id %></td>
         <td><%= tag.alias_for %></td>
         <td><%= tag.taggings_count %></td>

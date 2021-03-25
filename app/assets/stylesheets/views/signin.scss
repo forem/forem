@@ -25,7 +25,6 @@
   &__container {
     @media (min-width: $breakpoint-s) {
       display: flex;
-      grid-gap: var(--su-7);
       flex-direction: row;
       align-items: center;
     }
@@ -39,6 +38,7 @@
     @media (min-width: $breakpoint-s) {
       height: 80px;
       width: 80px;
+      margin-right: var(--su-7);
     }
   }
 

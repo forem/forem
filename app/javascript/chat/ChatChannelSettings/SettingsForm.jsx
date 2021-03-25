@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-const SettingsFrom = ({
+export const SettingsForm = ({
   channelDescription,
   handleDescriptionChange,
   channelDiscoverable,
@@ -51,12 +51,10 @@ const SettingsFrom = ({
   );
 };
 
-SettingsFrom.propTypes = {
+SettingsForm.propTypes = {
   channelDescription: PropTypes.string.isRequired,
   handleDescriptionChange: PropTypes.func.isRequired,
   handleChannelDiscoverableStatus: PropTypes.func.isRequired,
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
   channelDiscoverable: PropTypes.bool.isRequired,
 };
-
-export default SettingsFrom;

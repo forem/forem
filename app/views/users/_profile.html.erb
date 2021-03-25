@@ -41,8 +41,8 @@
       <div class="flex items-center">
         <% if @user.profile_image_url.present? %>
           <span class="crayons-avatar crayons-avatar--xl mr-2"><img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" /></span>
-          <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
         <% end %>
+        <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
     </div>
   </div>

@@ -3,7 +3,7 @@ import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
-import FollowTags from '../FollowTags';
+import { FollowTags } from '../FollowTags';
 
 global.fetch = fetch;
 

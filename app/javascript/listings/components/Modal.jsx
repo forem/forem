@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { SingleListing } from '../singleListing/SingleListing';
-import MessageModal from './MessageModal';
-import { Button } from '@crayons';
+import { MessageModal } from './MessageModal';
+import { Modal as CrayonsModal } from '@crayons';
 
-const Modal = ({
+export const Modal = ({
   currentUserId,
   onAddTag,
   onChangeDraftingMessage,
@@ -17,41 +17,13 @@ const Modal = ({
 }) => {
   const shouldRenderMessageModal = listing && listing.contact_via_connect;
 
-  const Icon = () => (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      className="crayons-icon pointer-events-none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-    </svg>
-  );
-
-  // TODO: Why are we not using the crayons modal component and instead recreating it here?
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="listing modal"
-      id="single-listing-container__inner"
-      className="single-listing-container__inner crayons-modal__box"
-    >
-      <div className="crayons-modal__box__header flex s:hidden">
-        <Button
-          type="button"
-          id="close-listing-modal"
-          tagName="button"
-          contentType="icon"
-          variant="ghost"
-          className="ml-auto"
-          icon={Icon}
-          onClick={onClick}
-          aria-label="Close listing"
-        />
-      </div>
-      <div className="crayons-modal__box__body p-0">
+    <div className="listings-modal" data-testid="listings-modal">
+      <CrayonsModal
+        onClose={onClick}
+        closeOnClickOutside={true}
+        title="Listing"
+      >
         <div className="p-3 m:p-6 l:p-8">
           <SingleListing
             onAddTag={onAddTag}
@@ -72,7 +44,7 @@ const Modal = ({
             />
           </div>
         )}
-      </div>
+      </CrayonsModal>
     </div>
   );
 };
@@ -92,5 +64,3 @@ Modal.propTypes = {
 Modal.defaultProps = {
   currentUserId: null,
 };
-
-export default Modal;

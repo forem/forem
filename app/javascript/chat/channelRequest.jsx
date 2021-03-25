@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
+export const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
   <div>
     <div className="joining-message">
       <h2>Hey {data.user.name} !</h2>
@@ -45,4 +45,3 @@ ChannelRequest.propTypes = {
   }).isRequired,
   handleJoiningRequest: PropTypes.func.isRequired,
 };
-export default ChannelRequest;

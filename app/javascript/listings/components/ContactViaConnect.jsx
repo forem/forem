@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const ContactViaConnect = ({ onChange, checked }) => (
+export const ContactViaConnect = ({ onChange, checked }) => (
   <div className="crayons-field crayons-field--checkbox">
     <input
       type="checkbox"
@@ -29,5 +29,3 @@ ContactViaConnect.propTypes = {
   onChange: PropTypes.func.isRequired,
   checked: PropTypes.bool.isRequired,
 };
-
-export default ContactViaConnect;

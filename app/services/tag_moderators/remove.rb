@@ -6,7 +6,7 @@ module TagModerators
       Rails.cache.delete("user-#{user.id}/tag_moderators_list")
       return unless tag_mod_newsletter_enabled?
 
-      MailchimpBot.new(user).manage_tag_moderator_list
+      Mailchimp::Bot.new(user).manage_tag_moderator_list
     end
 
     def self.tag_mod_newsletter_enabled?

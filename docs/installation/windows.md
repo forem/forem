@@ -151,7 +151,7 @@ password for PostgreSQL:
    PostgreSQL by executing the command `\quit`.
 
 For additional configuration options, check our
-[PostgreSQL setup guide](/docs/installation/postgresql).
+[PostgreSQL setup guide](/installation/postgresql).
 
 ### ImageMagick
 
@@ -260,9 +260,8 @@ To install Elasticsearch perform the following steps:
      use and provides a fake default for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
-   - The [backend guide](/docs/backend) will show you how to get free API keys
-     for additional services that may be required to run certain parts of the
-     app.
+   - The [backend guide](/backend) will show you how to get free API keys for
+     additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
 
      1. Create `.env` by copying from the provided template (ie. with bash:

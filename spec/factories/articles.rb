@@ -2,6 +2,8 @@ FactoryBot.define do
   sequence(:title) { |n| "#{Faker::Book.title}#{n}" }
 
   factory :article do
+    published_at { Time.current }
+
     transient do
       title { generate :title }
       published { true }
@@ -22,7 +24,6 @@ FactoryBot.define do
     association :user, factory: :user, strategy: :create
     description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
     main_image    { with_main_image ? Faker::Avatar.image : nil }
-    language { "en" }
     experience_level_rating { rand(4..6) }
     body_markdown do
       <<~HEREDOC

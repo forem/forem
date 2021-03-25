@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import InviationLinkManager from '../ChatChannelSettings/MembershipManager/InvitationLinkManager';
+import { InviationLinkManager } from '../ChatChannelSettings/MembershipManager/InvitationLinkManager';
 
 const currentModMembership = {
   name: 'dummy user',

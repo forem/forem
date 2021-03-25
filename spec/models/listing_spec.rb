@@ -12,7 +12,6 @@ RSpec.describe Listing, type: :model do
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }
   it { is_expected.to have_many(:credits) }
-  it { is_expected.to have_many(:endorsements) }
 
   describe "valid associations" do
     it "is not valid w/o user and org" do

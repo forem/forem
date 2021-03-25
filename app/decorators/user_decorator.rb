@@ -32,7 +32,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def darker_color(adjustment = 0.88)
-    HexComparer.new([enriched_colors[:bg], enriched_colors[:text]]).brightness(adjustment)
+    Color::CompareHex.new([enriched_colors[:bg], enriched_colors[:text]]).brightness(adjustment)
   end
 
   def enriched_colors
@@ -105,5 +105,12 @@ class UserDecorator < ApplicationDecorator
 
   def stackbit_integration?
     access_tokens.any?
+  end
+
+  def considered_new?
+    min_days = SiteConfig.user_considered_new_days
+    return false unless min_days.positive?
+
+    created_at.after?(min_days.days.ago)
   end
 end

@@ -1,8 +1,10 @@
 module ApplicationHelper
   # rubocop:disable Performance/OpenStruct
+  USER_COLORS = ["#19063A", "#dce9f3"].freeze
+
   DELETED_USER = OpenStruct.new(
     id: nil,
-    darker_color: HexComparer.new(bg: "#19063A", text: "#dce9f3").brightness,
+    darker_color: Color::CompareHex.new(USER_COLORS).brightness,
     username: "[deleted user]",
     name: "[Deleted User]",
     summary: nil,
@@ -125,7 +127,7 @@ module ApplicationHelper
     return if followable == DELETED_USER
 
     tag :button, # Yikes
-        class: "crayons-btn follow-action-button #{classes}",
+        class: "crayons-btn follow-action-button #{classes} whitespace-nowrap",
         data: {
           :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
@@ -174,7 +176,7 @@ module ApplicationHelper
   end
 
   def release_adjusted_cache_key(path)
-    release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
+    release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
     "#{path}-#{params[:locale]}-#{release_footprint}-#{SiteConfig.admin_action_taken_at.rfc3339}"
@@ -259,10 +261,6 @@ module ApplicationHelper
     URL.organization(organization)
   end
 
-  def sanitized_referer(referer)
-    URL.sanitized_referer(referer)
-  end
-
   def sanitize_and_decode(str)
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
@@ -289,5 +287,9 @@ module ApplicationHelper
 
   def admin_config_description(content)
     tag.p(content, class: "crayons-field__description") unless content.empty?
+  end
+
+  def role_display_name(role)
+    role.name == "banned" ? "Suspended" : role.name.titlecase
   end
 end

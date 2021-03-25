@@ -79,7 +79,7 @@
         var sortString = buildSortString(sortBy, sortDirection);
 
         if (e.target.classList.contains("my-posts-query-button") && !checkUserLoggedIn()) {
-          showModal("search-my-posts");
+          showLoginModal();
           return;
         }
         var filters = e.target.dataset.filter;

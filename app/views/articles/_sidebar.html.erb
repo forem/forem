@@ -12,12 +12,10 @@
             <%= SiteConfig.sponsor_headline %>
             <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default ml-1", title: "Love") %>
           </h4>
-            <div class="grid grid-cols-1 gap-6">
-              <% @sponsorships.each do |sponsorship| %>
-                <%= render "articles/single_sponsor", sponsorship: sponsorship %>
-              <% end %>
-              <a href="/sponsorships" class="crayons-btn crayons-btn--secondary fs-s">Become a sponsor</a>
-            </div>
+          <div class="grid grid-cols-1 gap-6">
+            <%= render partial: "articles/single_sponsor", collection: @sponsorships, as: :sponsorship %>
+            <a href="/sponsorships" class="crayons-btn crayons-btn--secondary fs-s">Become a sponsor</a>
+          </div>
         </div>
       <% end %>
     <% end %>

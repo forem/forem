@@ -44,18 +44,13 @@ export const ClipboardButton = ({
       value={linksToMarkdownForm(imageUrls)}
     />
     <Button
-      className="spec__image-markdown-copy"
+      className="spec__image-markdown-copy whitespace-nowrap fw-normal"
       variant="ghost"
-      contentType="icon"
+      contentType="icon-left"
       icon={CopyIcon}
-    />
-    <span
-      id="image-markdown-copy-link-announcer"
-      role="alert"
-      className={`fs-s ${showCopyMessage ? '' : 'opacity-0'}`}
     >
-      Copied!
-    </span>
+      {showCopyMessage ? 'Copied!' : 'Copy...'}
+    </Button>
   </clipboard-copy>
 );
 

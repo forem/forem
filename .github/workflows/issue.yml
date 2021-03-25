@@ -15,10 +15,12 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Thanks for the issue! We'll take your request into consideration and follow up if we decide to tackle this issue.
+            Thanks for the issue, we will take it into consideration! Our team of engineers is busy working on many types of features, please give us time to get back to you.
+            
+            Feature requests that require more discussion may be closed. Read more about our [feature request process](https://forem.dev/foremteam/internal-rfc-process-and-forem-dev-discussions-3gl4) on forem.dev.
 
             To our amazing contributors: issues labeled `type: bug` are always up for grabs, but for feature requests, please wait until we add a `ready for dev` before starting to work on it.
 
-            To claim an issue to work on, please leave a comment. If you've claimed the issue and need help, please ping @forem/oss and we will follow up within 3 business days.
+            To claim an issue to work on, please leave a comment. If you've claimed the issue and need help, please ping @forem/oss. The OSS Community Manager or the engineers on OSS rotation will follow up.
 
             For full info on how to contribute, please check out our [contributors guide](https://github.com/forem/forem/blob/master/CONTRIBUTING.md).

@@ -14,7 +14,7 @@ class Message < ApplicationRecord
 
   def preferred_user_color
     color_options = [user.bg_color_hex || "#000000", user.text_color_hex || "#000000"]
-    HexComparer.new(color_options).brightness(0.9)
+    Color::CompareHex.new(color_options).brightness(0.9)
   end
 
   def direct_receiver
@@ -45,7 +45,7 @@ class Message < ApplicationRecord
   end
 
   def evaluate_markdown
-    html = MarkdownParser.new(message_markdown).evaluate_markdown
+    html = MarkdownProcessor::Parser.new(message_markdown).evaluate_markdown
     html = target_blank_links(html)
     html = append_rich_links(html)
     html = wrap_mentions_with_links(html)
@@ -158,14 +158,6 @@ class Message < ApplicationRecord
   # rubocop:disable Rails/OutputSafety
   def handle_slash_command(html)
     response = case html.to_s.strip
-               when "<p>/call</p>"
-                 "<a href='/video_chats/#{chat_channel_id}'
-                    class='chatchannels__richlink chatchannels__richlink--base'
-                    target='_blank' rel='noopener' data-content='sidecar-video'>
-                    <h1 data-content='sidecar-video'>
-                      Let's video chat 😄
-                    </h1>
-                    </a>".html_safe
                when "<p>/play codenames</p>" # proof of concept
                  "<a href='https://www.horsepaste.com/connect-channel-#{rand(1_000_000_000)}'
                     class='chatchannels__richlink chatchannels__richlink--base'

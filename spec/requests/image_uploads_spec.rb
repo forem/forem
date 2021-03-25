@@ -16,6 +16,7 @@ RSpec.describe "ImageUploads", type: :request do
         "image/jpeg",
       )
     end
+    let(:image_directory_regex) { "\/uploads\/articles\/.+\." }
 
     context "when not logged-in" do
       it "responds with 401" do
@@ -38,13 +39,13 @@ RSpec.describe "ImageUploads", type: :request do
         # this test is a little flimsy
         post "/image_uploads", headers: headers, params: { image: [image] }
         expect(response.parsed_body["links"].length).to eq(1)
-        expect(response.body).to match("\/i\/.+\.")
+        expect(response.body).to match(image_directory_regex)
       end
 
       it "supports for uploading a single image not in an array" do
         post "/image_uploads", headers: headers, params: { image: image }
         expect(response.parsed_body["links"].length).to eq(1)
-        expect(response.body).to match("\/i\/.+\.")
+        expect(response.body).to match(image_directory_regex)
       end
 
       it "supports upload of more than one image at a time" do
@@ -53,7 +54,7 @@ RSpec.describe "ImageUploads", type: :request do
         )
         post "/image_uploads", headers: headers, params: { image: [image, image2] }
 
-        expect(response.body).to match("\/i\/.+\.")
+        expect(response.body).to match(image_directory_regex)
         expect(response.parsed_body["links"].length).to eq(2)
       end
 

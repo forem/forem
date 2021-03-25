@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import Textarea from 'preact-textarea-autosize';
 
-const Compose = ({
+export const Compose = ({
   handleKeyDown,
   handleKeyDownEdit,
   handleSubmitOnClick,
@@ -123,5 +123,3 @@ Compose.propTypes = {
   handleFilePaste: PropTypes.func.isRequired,
   activeChannelName: PropTypes.string.isRequired,
 };
-
-export default Compose;

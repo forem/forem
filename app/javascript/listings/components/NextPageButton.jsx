@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-const NextPageButton = ({ onClick }) => (
+export const NextPageButton = ({ onClick }) => (
   <div className="flex justify-center">
     <Button variant="secondary" onClick={onClick} type="button">
       Load more...
@@ -13,5 +13,3 @@ const NextPageButton = ({ onClick }) => (
 NextPageButton.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
-
-export default NextPageButton;

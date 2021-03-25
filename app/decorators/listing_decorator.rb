@@ -9,6 +9,6 @@ class ListingDecorator < ApplicationDecorator
   def social_preview_color(brightness: 1.0)
     category = object.listing_category
     color = category.social_preview_color.presence || DEFAULT_COLOR
-    HexComparer.new([color]).brightness(brightness)
+    Color::CompareHex.new([color]).brightness(brightness)
   end
 end

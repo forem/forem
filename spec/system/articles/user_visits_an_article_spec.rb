@@ -26,6 +26,20 @@ RSpec.describe "Views an article", type: :system do
     expect { visit("/#{user.username}/#{article.slug}/mod") }.to raise_error(Pundit::NotAuthorizedError)
   end
 
+  describe "sticky nav sidebar" do
+    it "suggests articles by other users if the author has no other articles" do
+      create(:article, user: create(:user))
+      visit article.path
+      expect(page).to have_text("Trending on #{SiteConfig.community_name}")
+    end
+
+    it "suggests more articles by the author if there are any" do
+      create(:article, user: user)
+      visit article.path
+      expect(page).to have_text("More from #{user.name}")
+    end
+  end
+
   describe "when showing the date" do
     # TODO: @sre ideally this spec should have js:true enabled since we use
     # js helpers to ensure the datetime is locale. However, testing locale
@@ -128,8 +142,6 @@ RSpec.describe "Views an article", type: :system do
   describe "when an article is not published" do
     let(:article) { create(:article, user: article_user, published: false) }
     let(:article_path) { article.path + query_params }
-    let(:href) { "#{article.path}/edit" }
-    let(:link_text) { "Click to edit" }
 
     context "with the article password, and the logged-in user is authorized to update the article" do
       let(:query_params) { "?preview=#{article.password}" }
@@ -137,7 +149,8 @@ RSpec.describe "Views an article", type: :system do
 
       it "shows the article edit link", js: true do
         visit article_path
-        expect(page.body).to include('display: inline-block;">Click to edit</a>')
+        edit_link = find("a#author-click-to-edit")
+        expect(edit_link.matches_style?(display: "inline-block")).to be true
       end
     end
 

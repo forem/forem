@@ -1,40 +1,44 @@
 @import '../variables';
+@import '../components/buttons';
 
 .ltag_github-liquid-tag {
   margin: 1.1em auto 1.3em;
   max-width: 580px;
-  z-index: 1;
   position: relative;
+  z-index: 1;
 
   h1 {
-    font-size: 1.05em !important;
-    line-height: 1.2em !important;
-    margin: 0 0 0.7em;
+    font-size: var(--fs-xl) !important;
+    line-height: var(--lh-base) !important;
+    margin: 0 0 0.7em !important;
+
     @media screen and (min-width: 500px) {
-      word-wrap: break-word;
       margin-bottom: 10px;
+      word-wrap: break-word;
     }
+
     a {
       color: var(--body-color);
     }
+
     .issue-title {
-      font-weight: normal;
+      font-weight: var(--fw-normal);
     }
+
     .issue-number {
-      font-weight: 300;
-      color: #a3aab1;
+      color: var(--base-60);
+      font-weight: var(--fw-normal);
       letter-spacing: -1px;
     }
-    img.github-logo {
-      width: 1.15em !important;
-      max-width: 1.1em !important;
+
+    .github-logo {
       display: inline-block;
-      left: 0px;
+      max-width: 1.1em;
+      width: 1.15em;
+      vertical-align: middle;
+      margin: 0;
       margin-right: 0.3em;
-      vertical-align: -0.18em;
-      display: inline-block !important;
-      margin-left: 0 !important;
-      left: 0 !important;
+      left: 0;
       filter: invert(0);
       filter: var(--theme-social-icon-invert, invert(0));
     }
@@ -42,11 +46,9 @@
 }
 
 .github-thread {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
-    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  background-color: #fff;
+  font-family: var(--ff-sans-serif);
   background-color: var(--card-bg);
-  border: 1px solid #d1d5da;
+  border: 1px solid var(--base-60);
   box-shadow: $shadow;
   border-radius: 3px;
   font-size: 0.77em;
@@ -54,44 +56,36 @@
   margin: 0;
   width: 98%;
   overflow: hidden;
+
   .timeline-comment-header {
     display: flex;
-    background: #f6f8fa;
+    align-items: center;
     background: var(--card-bg);
-    border-bottom: 1px solid #d1d5da;
-    padding: 0px 15px;
+    border-bottom: 1px solid var(--base-60);
+    padding: 0 10px;
 
     @media screen and (min-width: 500px) {
-      display: block;
+      align-items: center;
     }
 
     .github-liquid-tag-img {
-      min-height: inherit;
+      margin: 10px 10px 10px 0;
       width: 38px;
       height: 38px;
-      border-radius: 3px;
-      float: none;
-      padding: 10px 12px 10px 0px;
-      margin: inherit;
-
-      @media screen and (min-width: 500px) {
-        float: left;
-        padding: 0;
-        margin-left: -9px;
-      }
+      padding: 0;
     }
   }
 
   .timeline-comment-header-text {
-    padding: 10px 0px;
+    padding: 10px 0;
 
     a {
-      color: rgb(88, 96, 105);
-    }
+      color: var(--base-60);
 
-    a:hover {
-      color: rgb(88, 96, 105);
-      text-decoration: underline;
+      &:hover {
+        color: var(--base-60);
+        text-decoration: underline;
+      }
     }
   }
 }
@@ -337,23 +331,12 @@
 .gh-btn-container {
   text-align: center;
   padding: 0.35em 0 1.35em;
-  box-shadow: -0px -0px 60px 42px #fff;
-  box-shadow: -0px -0px 60px 42px var(--card-bg);
+  box-shadow: -0 -0 60px 42px var(--card-bg);
   position: relative;
   z-index: 100;
-}
 
-.gh-btn {
-  color: #0366d6;
-  background-color: #f1f8ff;
-  border-radius: 3px;
-  line-height: 20px;
-  padding: 0.25em 1.2em;
-  opacity: 0.9;
-  font-size: 0.94em;
-  font-weight: bold;
-  border: 1px solid #0366d6;
-  &:hover {
-    opacity: 1;
+  .gh-btn {
+    @extend .crayons-btn;
+    @extend .crayons-btn--secondary;
   }
 }

@@ -9,7 +9,7 @@ RSpec.describe Users::SubscribeToMailchimpNewsletterWorker, type: :worker do
 
     it "subscribes user to mailchimp newsletter" do
       mailchimp_bot = double
-      allow(MailchimpBot).to receive(:new).and_return(mailchimp_bot)
+      allow(Mailchimp::Bot).to receive(:new).and_return(mailchimp_bot)
       allow(mailchimp_bot).to receive(:upsert)
 
       worker.perform(user.id)

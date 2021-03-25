@@ -14,13 +14,13 @@ class StripeActiveCardsController < ApplicationController
       flash[:settings_notice] = "Your billing information has been updated"
       audit_log("add")
     else
-      DatadogStatsClient.increment("stripe.errors", tags: ["action:create_card", "user_id:#{current_user.id}"])
+      ForemStatsClient.increment("stripe.errors", tags: ["action:create_card", "user_id:#{current_user.id}"])
 
       flash[:error] = "There was a problem updating your billing info."
     end
     redirect_to user_settings_path(:billing)
   rescue Payments::CardError, Payments::InvalidRequestError => e
-    DatadogStatsClient.increment("stripe.errors", tags: ["action:create_card", "user_id:#{current_user.id}"])
+    ForemStatsClient.increment("stripe.errors", tags: ["action:create_card", "user_id:#{current_user.id}"])
     redirect_to user_settings_path(:billing), flash: { error: e.message }
   end
 
@@ -36,13 +36,13 @@ class StripeActiveCardsController < ApplicationController
       flash[:settings_notice] = "Your billing information has been updated"
       audit_log("update")
     else
-      DatadogStatsClient.increment("stripe.errors", tags: ["action:update_card", "user_id:#{current_user.id}"])
+      ForemStatsClient.increment("stripe.errors", tags: ["action:update_card", "user_id:#{current_user.id}"])
       flash[:error] = "There was a problem updating your billing info."
     end
 
     redirect_to user_settings_path(:billing)
   rescue Payments::CardError, Payments::InvalidRequestError => e
-    DatadogStatsClient.increment("stripe.errors", tags: ["action:update_card", "user_id:#{current_user.id}"])
+    ForemStatsClient.increment("stripe.errors", tags: ["action:update_card", "user_id:#{current_user.id}"])
 
     redirect_to user_settings_path(:billing), flash: { error: e.message }
   end
@@ -65,7 +65,7 @@ class StripeActiveCardsController < ApplicationController
 
     redirect_to user_settings_path(:billing)
   rescue Payments::InvalidRequestError => e
-    DatadogStatsClient.increment("stripe.errors")
+    ForemStatsClient.increment("stripe.errors")
 
     redirect_to user_settings_path(:billing), flash: { error: e.message }
   end

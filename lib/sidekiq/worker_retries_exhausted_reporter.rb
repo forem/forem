@@ -11,7 +11,7 @@ module Sidekiq
         "retry:#{job['retry']}",
         "retry_count:#{job['retry_count']}",
       ]
-      DatadogStatsClient.increment(
+      ForemStatsClient.increment(
         "sidekiq.worker.retries_exhausted", tags: tags
       )
     end

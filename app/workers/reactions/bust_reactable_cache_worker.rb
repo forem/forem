@@ -8,14 +8,16 @@ module Reactions
       reaction = Reaction.find_by(id: reaction_id)
       return unless reaction&.reactable
 
-      EdgeCache::Bust.call(reaction.user.path)
+      cache_bust = EdgeCache::Bust.new
+      cache_bust.call(reaction.user.path)
+
       case reaction.reactable_type
       when "Article"
-        EdgeCache::Bust.call("/reactions?article_id=#{reaction.reactable_id}")
+        cache_bust.call("/reactions?article_id=#{reaction.reactable_id}")
       when "Comment"
         path = "/reactions?commentable_id=#{reaction.reactable.commentable_id}&" \
           "commentable_type=#{reaction.reactable.commentable_type}"
-        EdgeCache::Bust.call(path)
+        cache_bust.call(path)
       end
     end
   end

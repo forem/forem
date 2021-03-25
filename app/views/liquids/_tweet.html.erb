@@ -60,16 +60,14 @@
 
     <div class="ltag__twitter-tweet__actions">
       <a href="https://twitter.com/intent/tweet?in_reply_to=<%= id %>" class="ltag__twitter-tweet__actions__button">
-        <img src="/assets/twitter-reply-action.svg" alt="Twitter reply action">
+        <img src="<%= ActionController::Base.helpers.asset_path("twitter-reply-action.svg") %>" alt="Twitter reply action">
       </a>
       <a href="https://twitter.com/intent/retweet?tweet_id=<%= id %>" class="ltag__twitter-tweet__actions__button">
-        <img src="/assets/twitter-retweet-action.svg" alt="Twitter retweet action">
+        <img src="<%= ActionController::Base.helpers.asset_path("twitter-retweet-action.svg") %>" alt="Twitter retweet action">
       </a>
-      <%= tweet.retweet_count.to_s %>
       <a href="https://twitter.com/intent/like?tweet_id=<%= id %>" class="ltag__twitter-tweet__actions__button">
-        <img src="/assets/twitter-like-action.svg" alt="Twitter like action">
+        <img src="<%= ActionController::Base.helpers.asset_path("twitter-like-action.svg") %>" alt="Twitter like action">
       </a>
-      <%= tweet.favorite_count.to_s %>
     </div>
   </div>
 </blockquote>

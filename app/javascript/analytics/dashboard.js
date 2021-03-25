@@ -227,7 +227,7 @@ function drawInfinityCharts({ organizationId, articleId }) {
   callAnalyticsAPI(beginningOfTime, '', { organizationId, articleId });
 }
 
-export default function initCharts({ organizationId, articleId }) {
+export function initCharts({ organizationId, articleId }) {
   const weekButton = document.getElementById('week-button');
   weekButton.addEventListener(
     'click',

@@ -33,6 +33,9 @@ module VerifySetupCompleted
   end
 
   def verify_setup_completed
+    # This is the only flash in our application layout, don't override it if
+    # there's already another message.
+    return if flash[:global_notice].present?
     return if config_path? || setup_completed? || SiteConfig.waiting_on_first_user
 
     link = helpers.tag.a("the configuration page", href: admin_config_path, data: { "no-instant" => true })

@@ -2,9 +2,12 @@ require "rails_helper"
 
 RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   let(:user) { create(:user) }
+  let(:second_user) { create(:user) }
   let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
   let!(:article) { create(:article) }
-  let!(:hot_story) { create(:article, hotness_score: 1000, score: 1000, published_at: 3.hours.ago) }
+  let!(:hot_story) do
+    create(:article, hotness_score: 1000, score: 1000, published_at: 3.hours.ago, user_id: second_user.id)
+  end
   let!(:old_story) { create(:article, published_at: 3.days.ago) }
   let!(:low_scoring_article) { create(:article, score: -1000) }
   let!(:month_old_story) { create(:article, published_at: 1.month.ago) }
@@ -12,7 +15,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   describe "#published_articles_by_tag" do
     let(:unpublished_article) { create(:article, published: false) }
     let(:tag) { "foo" }
-    let(:tagged_article) { create(:article, tags: tag) }
+    let!(:tagged_article) { create(:article, tags: tag) }
 
     it "returns published articles" do
       result = feed.published_articles_by_tag
@@ -76,6 +79,11 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
         expect(stories).to include(article)
         expect(stories).to include(hot_story)
       end
+
+      it "does not load blocked articles" do
+        create(:user_block, blocker: user, blocked: second_user, config: "default")
+        expect(result).not_to include(hot_story)
+      end
     end
 
     context "when ranking is true" do
@@ -124,6 +132,23 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       it "includes stories " do
         expect(stories).to include(old_story)
         expect(stories).to include(new_story)
+      end
+    end
+
+    context "when experiment is running" do
+      it "works with every variant" do
+        # Basic test to see that these all work.
+        %i[base
+           base_with_more_articles
+           only_followed_tags
+           top_articles_since_last_pageview_3_days_max
+           top_articles_since_last_pageview_7_days_max
+           combination_only_tags_followed_and_top_max_7_days].each do |experiment|
+          create(:field_test_membership,
+                 experiment: experiment, variant: "base", participant_id: user.id)
+          stories = feed.default_home_feed(user_signed_in: true)
+          expect(stories.size).to be > 0
+        end
       end
     end
   end
@@ -176,53 +201,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
 
       it "returns a score of 0" do
         expect(feed.score_followed_organization(article)).to eq 0
-      end
-    end
-  end
-
-  describe "#score_randomness" do
-    context "when random number is less than 0.6 but greater than 0.3" do
-      it "returns 6" do
-        allow(feed).to receive(:rand).and_return(2)
-        expect(feed.score_randomness).to eq 6
-      end
-    end
-
-    context "when random number is less than 0.3" do
-      it "returns 3" do
-        allow(feed).to receive(:rand).and_return(1)
-        expect(feed.score_randomness).to eq 3
-      end
-    end
-
-    context "when random number is greater than 0.6" do
-      it "returns 0" do
-        allow(feed).to receive(:rand).and_return(0)
-        expect(feed.score_randomness).to eq 0
-      end
-    end
-  end
-
-  describe "#score_language" do
-    context "when article is in a user's preferred language" do
-      it "returns a score of 1" do
-        expect(feed.score_language(article)).to eq 1
-      end
-    end
-
-    context "when article is not in user's prferred language" do
-      before { article.language = "de" }
-
-      it "returns a score of -10" do
-        expect(feed.score_language(article)).to eq(-15)
-      end
-    end
-
-    context "when article doesn't have a language, assume english" do
-      before { article.language = nil }
-
-      it "returns a score of 1" do
-        expect(feed.score_language(article)).to eq 1
       end
     end
   end

@@ -71,16 +71,6 @@
           </div>
         </li>
       <% end %>
-      <% if @user.looking_for_work_publicly == true && @user.looking_for_work == true %>
-        <li>
-          <div class="key">
-            Work status
-          </div>
-          <div class="value">
-            I'm looking for work!
-          </div>
-        </li>
-      <% end %>
       <% if @user.education.present? %>
         <li>
           <div class="key">

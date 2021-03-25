@@ -545,7 +545,8 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     text-align: left;
     width: 100%;
 
-    &:hover {
+    &:hover,
+    &:focus-within {
       background-color: #eef0f1 !important;
     }
   }
@@ -565,10 +566,6 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   .user-name,
   .user-summary {
     margin: 0;
-  }
-
-  .user-following-status {
-    margin-left: 32px;
   }
 }
 
@@ -609,6 +606,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     @extend .crayons-field;
     @extend .crayons-field__label;
 
+    a {
+      margin-top: 0;
+    }
+
     &:last-child {
       margin-bottom: 0;
     }
@@ -648,10 +649,6 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
       &:last-child {
         margin-bottom: 0;
-      }
-
-      a {
-        display: contents;
       }
 
       input[type='checkbox'] {

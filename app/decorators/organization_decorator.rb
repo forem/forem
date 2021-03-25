@@ -1,6 +1,6 @@
 class OrganizationDecorator < ApplicationDecorator
   def darker_color(adjustment = 0.88)
-    HexComparer.new([enriched_colors[:bg], enriched_colors[:text]]).brightness(adjustment)
+    Color::CompareHex.new([enriched_colors[:bg], enriched_colors[:text]]).brightness(adjustment)
   end
 
   def enriched_colors

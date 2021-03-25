@@ -26,6 +26,12 @@ RSpec.describe "User visits articles by tag", type: :system do
         within("header.tag-header") { expect(page).to have_button("Follow") }
       end
 
+      # Regression test for https://github.com/forem/forem/pull/12724
+      it "does not display a comment count of 0", js: true, stub_elasticsearch: true do
+        expect(page).to have_text("Add Comment")
+        expect(page).not_to have_text("0 comments")
+      end
+
       it "shows correct articles count" do
         expect(page).to have_selector(".crayons-story", count: 2)
       end

@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-export default function initHiddenComments() {
+export function initHiddenComments() {
   function hide(commentId) {
     const confirmMsg = `
 Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.

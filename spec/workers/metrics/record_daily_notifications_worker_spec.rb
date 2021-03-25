@@ -9,15 +9,15 @@ RSpec.describe Metrics::RecordDailyNotificationsWorker, type: :worker do
     let(:event_title_count) { Metrics::RecordDailyNotificationsWorker::EVENT_TITLES.count }
 
     before do
-      allow(DatadogStatsClient).to receive(:count)
+      allow(ForemStatsClient).to receive(:count)
       ahoy_event
       described_class.new.perform
     end
 
     it "logs welcome notification click events created in the past day" do
-      expect(DatadogStatsClient).to have_received(:count).exactly(event_title_count).times
+      expect(ForemStatsClient).to have_received(:count).exactly(event_title_count).times
       expect(
-        DatadogStatsClient,
+        ForemStatsClient,
       ).to have_received(:count)
         .with("ahoy_events", 1, { tags: ["title:welcome_notification_welcome_thread"] })
         .at_least(1)

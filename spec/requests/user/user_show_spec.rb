@@ -40,11 +40,6 @@ RSpec.describe "UserShow", type: :request do
         "email" => user.email,
         "jobTitle" => user.employment_title,
         "description" => user.summary,
-        "disambiguatingDescription" => [
-          user.mostly_work_with,
-          user.currently_hacking_on,
-          user.currently_learning,
-        ],
         "worksFor" => [
           {
             "@type" => "Organization",

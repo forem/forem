@@ -1,4 +1,4 @@
-import addFullScreenModeControl from '../utilities/codeFullscreenModeSwitcher';
+import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 
 document.addEventListener('DOMContentLoaded', () => {
   const fullscreenActionElements = document.querySelectorAll(

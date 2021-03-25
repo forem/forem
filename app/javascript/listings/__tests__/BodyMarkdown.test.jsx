@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import BodyMarkdown from '../components/BodyMarkdown';
+import { BodyMarkdown } from '../components/BodyMarkdown';
 
 describe('<BodyMarkdown />', () => {
   const getProps = () => ({

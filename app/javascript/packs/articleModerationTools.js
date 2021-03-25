@@ -6,7 +6,7 @@ const { authorId: articleAuthorId, path } = document.getElementById(
 ).dataset;
 
 const initializeModerationsTools = async () => {
-  const { default: initializeActionsPanel } = await import(
+  const { initializeActionsPanel } = await import(
     '../actionsPanel/initializeActionsPanelToggle'
   );
   const { initializeFlagUserModal } = await import('./flagUserModal');

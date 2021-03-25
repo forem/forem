@@ -3,7 +3,8 @@ import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import { axe } from 'jest-axe';
 import { beforeEach } from '@jest/globals';
-import RequestManager from '../RequestManager/RequestManager';
+import { RequestManager } from '../RequestManager/RequestManager';
+import '@testing-library/jest-dom';
 
 function getData() {
   const data = [
@@ -41,12 +42,10 @@ describe('<RequestManager />', () => {
   });
 
   it('should have the proper elements', () => {
-    const { queryByText } = render(
+    const { getByText } = render(
       <RequestManager resource={getData()} updateRequestCount={jest.fn()} />,
     );
 
-    expect(
-      queryByText('You have no pending invitations/Joining Requests.'),
-    ).toBeDefined();
+    expect(getByText('You have no pending invitations.')).toBeInTheDocument();
   });
 });

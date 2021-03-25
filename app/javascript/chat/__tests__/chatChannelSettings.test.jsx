@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ChatChannelSettings from '../ChatChannelSettings/ChatChannelSettings';
+import { ChatChannelSettings } from '../ChatChannelSettings/ChatChannelSettings';
 
 // TODO: These tests are imcomplete, but currently
 // this is simply a migration to preact-testing-library.

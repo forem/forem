@@ -55,7 +55,7 @@ USER root
 
 RUN dnf install --setopt install_weak_deps=false -y bash curl ImageMagick \
                 iproute jemalloc less libcurl \
-                postgresql tzdata \
+                postgresql tzdata nodejs \
                 && dnf -y clean all \
                 && rm -rf /var/cache/yum
 

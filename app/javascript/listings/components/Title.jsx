@@ -3,7 +3,7 @@ import { h } from 'preact';
 
 const domId = 1;
 
-const Title = ({ onChange, defaultValue }) => (
+export const Title = ({ onChange, defaultValue }) => (
   <div className="crayons-field">
     <label className="crayons-field__label" htmlFor={domId}>
       Title
@@ -27,5 +27,3 @@ Title.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
 };
-
-export default Title;

@@ -54,6 +54,9 @@ package-lock.json
 #Jetbrains Tools
 .idea/
 
+#Nova from Panic
+.nova/
+
 #sitemap
 /public/sitemap.xml.gz
 
@@ -94,3 +97,6 @@ cypress/screenshots
 
 # PostCSS error log
 postcss_error.log
+
+# ripgrep ignore file
+.rgignore

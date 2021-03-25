@@ -21,6 +21,7 @@ RSpec.describe "Display articles search spec", type: :system, js: true, elastics
   it "returns all expected article fields" do
     allow(found_article_one).to receive(:reading_time).and_return(5)
     allow(found_article_one).to receive(:comments_count).and_return(2)
+    allow(found_article_one).to receive(:public_reactions_count).and_return(3)
     found_article_one.tags << create(:tag, name: "ruby")
     index_documents_for_search_class([found_article_one], Search::FeedContent)
     visit "/search?q=ruby&filters=class_name:Article"
@@ -31,7 +32,16 @@ RSpec.describe "Display articles search spec", type: :system, js: true, elastics
     expect(page).to have_content("5 min read")
     expect(find_link("#ruby")["href"]).to include("/t/ruby")
     expect(find_link(found_article_one.user.name)["href"]).to include(found_article_one.username)
-    expect(page).to have_content("0 reactions")
+    expect(page).to have_content("3 reactions")
     expect(page).to have_content("2 comments")
+  end
+
+  it "does not show reaction data if article has no reactions" do
+    allow(found_article_one).to receive(:public_reactions_count).and_return(0)
+    found_article_one.tags << create(:tag, name: "ruby")
+    index_documents_for_search_class([found_article_one], Search::FeedContent)
+    visit "/search?q=ruby&filters=class_name:Article"
+
+    expect(page).not_to have_content("0 reactions")
   end
 end

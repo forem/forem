@@ -18,8 +18,8 @@ RSpec.describe "/admin/tags/:id/moderator", type: :request do
   describe "DELETE /admin/tags/:id/moderator" do
     before do
       sign_in super_admin
-      user.add_role :trusted
-      user.add_role :tag_moderator, tag
+      user.add_role(:trusted)
+      user.add_role(:tag_moderator, tag)
     end
 
     it "removes the tag moderator role from the user" do

@@ -1,4 +1,4 @@
-import initializeActionsPanel from '../initializeActionsPanelToggle';
+import { initializeActionsPanel } from '../initializeActionsPanelToggle';
 
 describe('toggling the actions panel', () => {
   describe('when the page is the article show page', () => {

@@ -40,6 +40,24 @@ module Admin
       redirect_to "/admin/users/#{params[:id]}"
     end
 
+    def destroy
+      role = params[:role].to_sym
+      resource_type = params[:resource_type]
+
+      @user = User.find(params[:user_id])
+
+      response = ::Users::RemoveRole.call(user: @user,
+                                          role: role,
+                                          resource_type: resource_type,
+                                          admin: current_user)
+      if response.success
+        flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
+      else
+        flash[:danger] = response.error_message
+      end
+      redirect_to edit_admin_user_path(@user.id)
+    end
+
     def user_status
       @user = User.find(params[:id])
       begin

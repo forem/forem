@@ -3,7 +3,7 @@ import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import { axe } from 'jest-axe';
 
-import EmailPreferencesForm from '../EmailPreferencesForm';
+import { EmailPreferencesForm } from '../EmailPreferencesForm';
 
 global.fetch = fetch;
 

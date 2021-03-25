@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
+import { defaultMembershipPropType } from '../../common-prop-types/membership-prop-type';
 
-import Membership from './Membership';
+import { Membership } from './Membership';
 
-const RequestedMembershipSection = ({
+export const RequestedMembershipSection = ({
   requestedMemberships,
   removeMembership,
   chatChannelAcceptMembership,
@@ -39,10 +39,8 @@ const RequestedMembershipSection = ({
 };
 
 RequestedMembershipSection.propTypes = {
-  requestedMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
+  requestedMemberships: PropTypes.arrayOf(defaultMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.func.isRequired,
 };
-
-export default RequestedMembershipSection;

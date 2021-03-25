@@ -25,7 +25,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
 
-function TextArea(props) {
+export function TextArea(props) {
   const { onFieldChange } = props;
   const { attribute_name, placeholder_text, description, label } = props.field;
 
@@ -55,5 +55,3 @@ TextArea.propTypes = {
     input_type: PropTypes.string.isRequired,
   }).isRequired,
 };
-
-export default TextArea;

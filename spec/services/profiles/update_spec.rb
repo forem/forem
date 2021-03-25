@@ -11,14 +11,14 @@ RSpec.describe Profiles::Update, type: :service do
   end
 
   let(:profile) do
-    create(:profile, data: { looking_for_work: true, removed: "Bla" })
+    create(:profile, data: { education: "maybe", removed: "Bla" })
   end
   let(:user) { profile.user }
 
   it "correctly typecasts new attributes", :aggregate_failures do
-    described_class.call(user, profile: { location: 123, looking_for_work: "false" })
+    described_class.call(user, profile: { location: 123, education: "false" })
     expect(user.location).to eq "123"
-    expect(profile.looking_for_work).to be false
+    expect(profile.education).to eq "false"
   end
 
   it "removes old attributes from the profile" do
@@ -43,7 +43,7 @@ RSpec.describe Profiles::Update, type: :service do
 
   it "updates the profile_updated_at column" do
     expect do
-      described_class.call(user, profile: { looking_for_work: "false" })
+      described_class.call(user, profile: { education: "false" })
     end.to change { user.reload.profile_updated_at }
   end
 

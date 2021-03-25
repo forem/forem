@@ -4,7 +4,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-export class CategoryLinks extends Component {
+export class CategoryLinksMobile extends Component {
   componentDidMount() {
     selectNavigation('mobile_nav_listings');
   }
@@ -39,7 +39,7 @@ export class CategoryLinks extends Component {
   }
 }
 
-CategoryLinks.propTypes = {
+CategoryLinksMobile.propTypes = {
   categories: PropTypes.arrayOf(
     PropTypes.shape({
       slug: PropTypes.string.isRequired,
@@ -48,5 +48,3 @@ CategoryLinks.propTypes = {
   ).isRequired,
   selectedCategory: PropTypes.string.isRequired,
 };
-
-export default CategoryLinks;

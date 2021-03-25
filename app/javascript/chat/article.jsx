@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const Article = ({ resource: article }) => (
+export const Article = ({ resource: article }) => (
   <div className="activechatchannel__activeArticle">
     <iframe
       id="activecontent-iframe"
@@ -16,4 +16,3 @@ Article.propTypes = {
     id: PropTypes.string,
   }).isRequired,
 };
-export default Article;

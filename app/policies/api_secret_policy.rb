@@ -1,6 +1,6 @@
 class ApiSecretPolicy < ApplicationPolicy
   def create?
-    true
+    !user_is_banned?
   end
 
   def destroy?

@@ -1,12 +1,12 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
-import ActiveMembershipSection from './ActiveMembershipsSection';
-import PendingMembershipSection from './PendingMembershipSection';
-import RequestedMembershipSection from './RequestedMembershipSection';
+import { defaultMembershipPropType } from '../../common-prop-types/membership-prop-type';
+import { ActiveMembershipsSection } from './ActiveMembershipsSection';
+import { PendingMembershipSection } from './PendingMembershipSection';
+import { RequestedMembershipSection } from './RequestedMembershipSection';
 
-const ChatChannelMembershipSection = ({
+export const ChatChannelMembershipSection = ({
   pendingMemberships,
   requestedMemberships,
   chatChannelAcceptMembership,
@@ -17,7 +17,7 @@ const ChatChannelMembershipSection = ({
 }) => {
   return (
     <div className="membership-list">
-      <ActiveMembershipSection
+      <ActiveMembershipsSection
         activeMemberships={activeMemberships}
         removeMembership={removeMembership}
         currentMembershipRole={currentMembershipRole}
@@ -39,13 +39,11 @@ const ChatChannelMembershipSection = ({
 };
 
 ChatChannelMembershipSection.propTypes = {
-  pendingMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
-  requestedMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
-  activeMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
+  pendingMemberships: PropTypes.arrayOf(defaultMembershipPropType).isRequired,
+  requestedMemberships: PropTypes.arrayOf(defaultMembershipPropType).isRequired,
+  activeMemberships: PropTypes.arrayOf(defaultMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
   toggleScreens: PropTypes.func.isRequired,
 };
-
-export default ChatChannelMembershipSection;

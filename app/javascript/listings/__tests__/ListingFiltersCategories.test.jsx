@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ListingFiltersCategories from '../components/ListingFiltersCategories';
+import { ListingFiltersCategories } from '../components/ListingFiltersCategories';
 
 describe('<ListingFiltersCategories />', () => {
   beforeEach(() => {

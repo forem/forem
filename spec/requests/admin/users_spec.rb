@@ -34,14 +34,14 @@ RSpec.describe "admin/users", type: :request do
       it "only displays limited information about the user" do
         user.update_columns(registered: false)
         get "/admin/users/#{user.id}"
-        expect(response.body).not_to include("Current Roles")
+        expect(response.body).not_to include("Activity")
       end
     end
 
     context "when a user is registered" do
       it "renders the Admin User profile as expected" do
         get "/admin/users/#{user.id}"
-        expect(response.body).to include("Current Roles")
+        expect(response.body).to include("Activity")
       end
     end
 
@@ -70,6 +70,11 @@ RSpec.describe "admin/users", type: :request do
     it "does not show banish button for non-admins" do
       sign_out(admin)
       expect { get "/admin/users/#{user.id}/edit" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "displays the 'Current Roles' section" do
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include("Current Roles")
     end
 
     it "displays the 'Recent Reactions' section" do

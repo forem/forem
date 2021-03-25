@@ -28,6 +28,24 @@ RSpec.describe AuthenticationHelper, type: :helper do
     end
   end
 
+  describe "#signed_up_with" do
+    it "returns an authentication reminder when a user auths with a provider" do
+      providers = Authentication::Providers.available.last(2)
+      allow(Authentication::Providers).to receive(:enabled).and_return(providers)
+      allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
+
+      expect(helper.signed_up_with(user)).to match(/GitHub and Twitter/)
+      expect(helper.signed_up_with(user)).to match(/use any of those/)
+    end
+
+    it "returns an authentication reminder when a user signs up with email" do
+      allow(Authentication::Providers).to receive(:enabled).and_return([])
+
+      expect(helper.signed_up_with(user)).to match(/Email & Password/)
+      expect(helper.signed_up_with(user)).to match(/use that/)
+    end
+  end
+
   describe "#available_providers_array" do
     it "returns array of available providers in lowercase" do
       provider = Authentication::Providers.available.first
@@ -38,26 +56,20 @@ RSpec.describe AuthenticationHelper, type: :helper do
     end
   end
 
-  describe "#provider_keys_configured?(provider)" do
-    let(:provider) { "facebook" }
-
-    it "returns true if provider key and secret both present" do
-      allow(SiteConfig).to receive(:"#{provider}_key").and_return("someKey")
-      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("someSecret")
-
-      expect(provider_keys_configured?(provider)).to be(true)
+  describe "#authentication_provider_enabled?" do
+    before do
+      allow(SiteConfig).to receive(:invite_only_mode).and_return(false)
+      allow(SiteConfig).to receive(:authentication_providers).and_return(%i[twitter github])
     end
 
-    it "returns false if either provider key or secret is missing" do
-      allow(SiteConfig).to receive(:"#{provider}_key").and_return("someKey")
-      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("")
+    it "returns true when a provider has been enabled" do
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Twitter)).to be true
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Github)).to be true
+    end
 
-      expect(provider_keys_configured?(provider)).to be(false)
-
-      allow(SiteConfig).to receive(:"#{provider}_key").and_return("")
-      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("someSecret")
-
-      expect(provider_keys_configured?(provider)).to be(false)
+    it "returns false when a provider has not yet been enabled" do
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Facebook)).to be false
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Apple)).to be false
     end
   end
 
@@ -74,7 +86,7 @@ RSpec.describe AuthenticationHelper, type: :helper do
       end
 
       it "returns 'disabled' attribute for relevant helper" do
-        expect(disabled_attr_on_auth_provider_enablebtn).to eq("disabled")
+        expect(disabled_attr_on_auth_provider_enable_btn).to eq("disabled")
       end
 
       it "returns appropriate text for 'tooltip_text_email_or_auth_provider_btns' helper" do

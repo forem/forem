@@ -9,10 +9,10 @@ export function defaultState(options) {
 
     page: 0,
     hitsPerPage: 80,
-    totalCount: 0,
 
     items: [],
     itemsLoaded: false,
+    itemsTotal: 0,
 
     availableTags: [],
     selectedTags: [],
@@ -75,6 +75,8 @@ export function performInitialSearch({ searchOptions = {} }) {
   const responsePromise = fetchSearch('reactions', dataHash);
   return responsePromise.then((response) => {
     const reactions = response.result;
+    // FIXME: [@rhymes] the list of tags in the left column of the reading list
+    // is populated with only the tags belonging to items in the first page
     const availableTags = [
       ...new Set(reactions.flatMap((rxn) => rxn.reactable.tag_list)),
     ].sort();
@@ -82,7 +84,7 @@ export function performInitialSearch({ searchOptions = {} }) {
       page: 0,
       items: reactions,
       itemsLoaded: true,
-      totalCount: response.total,
+      itemsTotal: response.total,
       showLoadMoreButton: hitsPerPage < response.total,
       availableTags,
     });
@@ -130,7 +132,7 @@ export function search(query, { page, tags, statusView, appendItems = false }) {
       query,
       page: newPage,
       items,
-      totalCount: response.total,
+      itemsTotal: response.total,
       showLoadMoreButton: items.length < response.total,
     });
   });

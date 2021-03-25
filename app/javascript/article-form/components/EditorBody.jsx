@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import Textarea from 'preact-textarea-autosize';
 import { useEffect, useRef } from 'preact/hooks';
 import { Toolbar } from './Toolbar';
+import { handleImagePasted } from './pasteImageHelpers';
 import {
   handleImageDrop,
   handleImageFailure,
   onDragOver,
   onDragExit,
 } from './dragAndDropHelpers';
+import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 
 function handleImageSuccess(textAreaRef) {
@@ -17,7 +19,9 @@ function handleImageSuccess(textAreaRef) {
     // textarea ref.
     const editableBodyElement = textAreaRef.current.base;
     const { links, image } = response;
-    const altText = image[0].name.replace(/\.[^.]+$/, '');
+    const altText = image[0]
+      ? image[0].name.replace(/\.[^.]+$/, '')
+      : 'alt text';
     const markdownImageLink = `![${altText}](${links[0]})\n`;
     const { selectionStart, selectionEnd, value } = editableBodyElement;
     const before = value.substring(0, selectionStart);
@@ -50,9 +54,17 @@ export const EditorBody = ({
     onDragExit,
   });
 
+  const setPasteElement = usePasteImage({
+    onPaste: handleImagePasted(
+      handleImageSuccess(textAreaRef),
+      handleImageFailure,
+    ),
+  });
+
   useEffect(() => {
     if (textAreaRef.current) {
       setElement(textAreaRef.current.base);
+      setPasteElement(textAreaRef.current.base);
     }
   });
 
@@ -64,7 +76,7 @@ export const EditorBody = ({
       <Toolbar version={version} />
 
       <Textarea
-        className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field"
+        className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l"
         id="article_body_markdown"
         aria-label="Post Content"
         placeholder="Write your post content here..."

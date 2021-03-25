@@ -1,6 +1,6 @@
 class ArticleImageUploader < BaseUploader
   def store_dir
-    "i/"
+    "uploads/articles/"
   end
 
   def filename

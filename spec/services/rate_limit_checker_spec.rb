@@ -26,10 +26,11 @@ RSpec.describe RateLimitChecker, type: :service do
       expect { limiter.limit_by_action(action) }.to raise_error("Invalid Cache Key: no unique component present")
     end
 
-    # We check published_article_creation + :published_article_antispam_creation
-    # limit against database, rather than our cache.
-    described_class::ACTION_LIMITERS.except(:published_article_creation,
-                                            :published_article_antispam_creation).each do |action, _options|
+    # We check the excepted limits against the database, rather than our cache.
+    described_class::ACTION_LIMITERS
+      .except(:published_article_creation,
+              :published_article_antispam_creation,
+              :comment_antispam_creation).each do |action, _options|
       it "returns true if #{action} limit has been reached" do
         allow(Rails.cache).to receive(:read).with(
           cache_key(action), raw: true
@@ -110,10 +111,10 @@ RSpec.describe RateLimitChecker, type: :service do
       allow(Rails.cache)
         .to receive(:read).with("#{user.id}_organization_creation", raw: true)
         .and_return(SiteConfig.rate_limit_organization_creation + 1)
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
       described_class.new(user).limit_by_action("organization_creation")
 
-      expect(DatadogStatsClient).to have_received(:increment).with(
+      expect(ForemStatsClient).to have_received(:increment).with(
         "rate_limit.limit_reached",
         tags: ["user:#{user.id}", "action:organization_creation"],
       )

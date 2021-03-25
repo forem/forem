@@ -333,6 +333,21 @@
   }
 }
 
+.crayons-btn-actions {
+  --btn-wrap-gap: var(--su-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  // add negative margin to correct for the bottom margin on the buttons
+  margin-bottom: calc(0rem - var(--btn-wrap-gap));
+  margin-left: calc(0rem - var(--btn-wrap-gap));
+
+  .crayons-btn {
+    margin-left: var(--btn-wrap-gap);
+    margin-bottom: var(--btn-wrap-gap);
+  }
+}
+
 // Grouped buttons
 .crayons-btn-group {
   display: flex;

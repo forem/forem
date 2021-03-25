@@ -3,8 +3,8 @@ import { addDecorator, addParameters } from '@storybook/preact';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 
 import '../../assets/stylesheets/minimal.scss';
-import '../../assets/stylesheets/crayons.scss';
 import '../../assets/stylesheets/views.scss';
+import '../../assets/stylesheets/crayons.scss';
 import '../../assets/javascripts/lib/xss';
 import '../../assets/javascripts/utilities/timeAgo';
 import './storybook.scss';
@@ -67,6 +67,7 @@ const themeSwitcherDecorator = (storyFn) => {
 };
 
 addDecorator(themeSwitcherDecorator);
+addDecorator((Story) => <Story />);
 
 addParameters({
   options: {

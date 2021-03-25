@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import ListingFiltersCategories from './ListingFiltersCategories';
-import ListingFiltersTags from './ListingFiltersTags';
+import { ListingFiltersCategories } from './ListingFiltersCategories';
+import { ListingFiltersTags } from './ListingFiltersTags';
 
-const ListingFilters = ({
+export const ListingFilters = ({
   categories,
   category,
   onSelectCategory,
@@ -50,5 +50,3 @@ ListingFilters.propTypes = {
   onKeyPress: PropTypes.func.isRequired,
   query: PropTypes.string.isRequired,
 };
-
-export default ListingFilters;

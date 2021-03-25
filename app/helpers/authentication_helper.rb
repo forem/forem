@@ -15,17 +15,26 @@ module AuthenticationHelper
     end
   end
 
+  def authentication_provider_enabled?(provider_name)
+    authentication_enabled_providers.include?(provider_name)
+  end
+
   def authentication_enabled_providers_for_user(user = current_user)
     Authentication::Providers.enabled_for_user(user)
   end
 
-  def available_providers_array
-    Authentication::Providers.available.map(&:to_s)
+  def signed_up_with(user = current_user)
+    providers = Authentication::Providers.enabled_for_user(user)
+
+    # If the user did not authenticate with any provider, they signed up with an email.
+    auth_method = providers.any? ? providers.map(&:official_name).to_sentence : "Email & Password"
+    verb = providers.size > 1 ? "any of those" : "that"
+
+    "Reminder: you used #{auth_method} to authenticate your account, so please use #{verb} to sign in if prompted."
   end
 
-  def provider_keys_configured?(provider)
-    SiteConfig.public_send("#{provider}_key").present? &&
-      SiteConfig.public_send("#{provider}_secret").present?
+  def available_providers_array
+    Authentication::Providers.available.map(&:to_s)
   end
 
   def forem_creator_flow_enabled?
@@ -45,7 +54,7 @@ module AuthenticationHelper
     invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : ""
   end
 
-  def disabled_attr_on_auth_provider_enablebtn
+  def disabled_attr_on_auth_provider_enable_btn
     invite_only_mode_or_no_enabled_auth_options ? "disabled" : ""
   end
 

@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 
-import NextPageButton from '../components/NextPageButton';
+import { NextPageButton } from '../components/NextPageButton';
 
 describe('<NextPageButton />', () => {
   const defaultProps = {

@@ -1,8 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncation do
-  self.use_transactional_tests = false
-
+RSpec.describe Feeds::Import, type: :service, vcr: true do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
@@ -14,10 +12,11 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
       end
     end
 
+    # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
     it "fetch only articles from a feed_url", vcr: { cassette_name: "feeds_import" } do
       num_articles = described_class.call
 
-      verify(format: :txt) { num_articles }
+      expect(num_articles).to eq(21)
     end
 
     it "does not recreate articles if they already exist", vcr: { cassette_name: "feeds_import_twice" } do
@@ -27,11 +26,9 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
     end
 
     it "parses correctly", vcr: { cassette_name: "feeds_import" } do
-      described_class.call
-
-      verify format: :txt do
-        User.find_by(feed_url: nonpermanent_link).articles.first.body_markdown
-      end
+      expect do
+        described_class.call
+      end.to change(User.find_by(feed_url: nonpermanent_link).articles, :count).by(1)
     end
 
     it "sets feed_fetched_at to the current time", vcr: { cassette_name: "feeds_import" } do
@@ -41,25 +38,6 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
         user = User.find_by(feed_url: nonpermanent_link)
         feed_fetched_at = user.feed_fetched_at
         expect(feed_fetched_at.to_i).to eq(Time.current.to_i)
-      end
-    end
-
-    it "does refetch same user over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
-      user = User.find_by(feed_url: nonpermanent_link)
-
-      Timecop.freeze(Time.current) do
-        user.update_columns(feed_fetched_at: Time.current)
-
-        fetched_at_time = user.reload.feed_fetched_at
-
-        # travel a few seconds in the future to simulate a new time
-        3.times do |i|
-          Timecop.travel((i + 5).seconds.from_now) do
-            described_class.call
-          end
-        end
-
-        expect(user.reload.feed_fetched_at > fetched_at_time).to be(true)
       end
     end
 
@@ -108,23 +86,76 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
     end
 
     context "with an explicit set of users", vcr: { cassette_name: "feeds_import" } do
+      # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
       it "accepts a subset of users" do
         num_articles = described_class.call(users: User.with_feed.limit(1))
 
-        verify(format: :txt) { num_articles }
+        expect(num_articles).to eq(10)
       end
 
       it "imports no articles if given users are without feed" do
         create(:user, feed_url: nil)
 
-        described_class.call(users: User.where(feed_url: nil))
-        verify(format: :txt) { 0 }
+        expect(described_class.call(users: User.where(feed_url: nil))).to eq(0)
       end
     end
   end
 
+  context "when refetching" do
+    before do
+      [link, nonmedium_link, nonpermanent_link].each do |feed_url|
+        create(:user, feed_url: feed_url)
+      end
+    end
+
+    it "does refetch same user over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
+      user = User.find_by(feed_url: nonpermanent_link)
+
+      Timecop.freeze(Time.current) do
+        user.update_columns(feed_fetched_at: Time.current)
+
+        fetched_at_time = user.reload.feed_fetched_at
+
+        # travel a few seconds in the future to simulate a new time
+        3.times do |i|
+          Timecop.travel((i + 5).seconds.from_now) do
+            described_class.call
+          end
+        end
+
+        expect(user.reload.feed_fetched_at > fetched_at_time).to be(true)
+      end
+    end
+
+    it "does not refetch recently fetched users if earlier_than is given", vcr: { cassette_name: "feeds_import" } do
+      time = 30.minutes.ago
+
+      Timecop.freeze(time) do
+        described_class.call
+      end
+
+      # we delete the articles to make sure it won't trigger the duplicate check
+      Article.delete_all
+
+      expect { described_class.call(earlier_than: 1.hour.ago) }.not_to change(Article, :count)
+    end
+
+    it "refetches recently fetched users if earlier_than is now", vcr: { cassette_name: "feeds_import_twice" } do
+      time = 30.minutes.ago
+
+      Timecop.freeze(time) do
+        described_class.call
+      end
+
+      # we delete the articles to make sure it won't trigger the duplicate check
+      Article.delete_all
+
+      expect { described_class.call(earlier_than: Time.current) }.to change(Article, :count)
+    end
+  end
+
   context "when feed_referential_link is false" do
-    it "does not self-reference links for user" do
+    it "does not self-reference links for user", vcr: { cassette_name: "feeds_import_non_referential" } do
       # Article.find_by is used by find_and_replace_possible_links!
       # checking its invocation is a shortcut to testing the functionality.
       allow(Article).to receive(:find_by).and_call_original

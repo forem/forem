@@ -1,10 +1,10 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import MembershipSection from './MembershipSection';
-import InvitationLinkManager from './InvitationLinkManager';
+import { MembershipSection } from './MembershipSection';
+import { InvitationLinkManager } from './InvitationLinkManager';
 
-export default class ManageActiveMembership extends Component {
+export class ManageActiveMembership extends Component {
   static propTypes = {
     activeMemberships: PropTypes.arrayOf(
       PropTypes.shape({

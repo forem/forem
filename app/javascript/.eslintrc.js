@@ -27,6 +27,7 @@ module.exports = {
             alias: {
               '@crayons': path.join(__dirname, './crayons'),
               '@utilities': path.join(__dirname, './utilities'),
+              '@components': path.join(__dirname, './shared/components'),
             },
             extensions: ['.js', '.jsx'],
           },
@@ -52,6 +53,8 @@ module.exports = {
       },
     ],
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
+    'jsx-a11y/no-onchange': 'off',
+    'prefer-const': ['error'],
   },
   overrides: [
     {

@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 
-export default function initBlock() {
+export function initBlock() {
   const blockButton = document.getElementById(
     'user-profile-dropdownmenu-block-button',
   );

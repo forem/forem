@@ -101,7 +101,7 @@ class ChatChannelsController < ApplicationController
       user = User.find_by(username: username)
       membership = user&.chat_channel_memberships&.find_by(chat_channel: chat_channel)
       if user && membership
-        user.add_role :banned
+        user.add_role(:banned)
         user.messages.where(chat_channel: chat_channel).delete_all
         membership.update(status: "removed_from_channel")
         Pusher.trigger(chat_channel.pusher_channels, "user-banned", { userId: user.id }.to_json)
@@ -116,7 +116,7 @@ class ChatChannelsController < ApplicationController
     when "/unban"
       user = User.find_by(username: username)
       if user
-        user.remove_role :banned
+        user.remove_role(:banned)
         render json: { status: "moderation-success", message: "#{username} was unsuspended." }, status: :ok
       else
         render json: {

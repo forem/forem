@@ -228,4 +228,20 @@ RSpec.describe UserDecorator, type: :decorator do
       expect(user.decorate.stackbit_integration?).to be(true)
     end
   end
+
+  describe "#considered_new?" do
+    before do
+      allow(SiteConfig).to receive(:user_considered_new_days).and_return(3)
+    end
+
+    it "returns true for new users" do
+      user.created_at = 1.day.ago
+      expect(user.decorate.considered_new?).to be(true)
+    end
+
+    it "returns false for new users" do
+      user.created_at = 1.year.ago
+      expect(user.decorate.considered_new?).to be(false)
+    end
+  end
 end

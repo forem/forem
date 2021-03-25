@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const BodyMarkdown = ({ onChange, defaultValue }) => (
+export const BodyMarkdown = ({ onChange, defaultValue }) => (
   <div className="crayons-field">
     <label className="crayons-field__label" htmlFor="body_markdown">
       Body Markdown
@@ -26,5 +26,3 @@ BodyMarkdown.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
 };
-
-export default BodyMarkdown;

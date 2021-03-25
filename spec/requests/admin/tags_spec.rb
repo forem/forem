@@ -60,5 +60,19 @@ RSpec.describe "/admin/tags", type: :request do
       expect(tag.bg_color_hex).to eq(params[:bg_color_hex])
       expect(tag.text_color_hex).to eq(params[:text_color_hex])
     end
+
+    it "updates posts when making a tag an alias for another tag" do
+      create(:tag, name: "rails")
+      article1 = create(:article, tags: "ruby, ror")
+      article2 = create(:article, tags: "ror, webdev")
+      alias_tag = Tag.find_by(name: "ror")
+
+      sidekiq_perform_enqueued_jobs do
+        put admin_tag_path(alias_tag), params: { tag: { alias_for: "rails" } }
+      end
+
+      expect(article1.reload.cached_tag_list).to eq "ruby, rails"
+      expect(article2.reload.cached_tag_list).to eq "rails, webdev"
+    end
   end
 end

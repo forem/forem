@@ -11,9 +11,7 @@ module Admin
         campaign_sidebar_image
         mascot_image_url
         mascot_footer_image_url
-        onboarding_logo_image
         onboarding_background_image
-        onboarding_taskcard_image
       ].freeze
 
     VALID_URL = %r{\A(http|https)://([/|.\w\s-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
