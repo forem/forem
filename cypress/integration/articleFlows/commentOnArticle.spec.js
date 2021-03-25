@@ -18,15 +18,21 @@ describe('Comment on articles', () => {
     );
 
     cy.findByLabelText('Add a comment to the discussion').click();
-    cy.findByRole('combobox');
 
-    cy.findByLabelText('Add a comment to the discussion').as(
+    // Wait for the new autocomplete text areas to be mounted
+    cy.findByTestId('autocomplete-textarea', {
+      role: 'textbox',
+      name: /Add a comment to the discussion/,
+    }).as('plainCommentBox');
+    cy.get('@plainCommentBox').type('Some text @s');
+
+    // Verify the combobox has appeared
+    cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
       'autocompleteCommentBox',
     );
+    cy.get('@autocompleteCommentBox').should('have.focus');
 
-    cy.get('@autocompleteCommentBox').type('Some text @s');
     cy.findByText('Type to search for a user').should('exist');
-
     cy.get('@autocompleteCommentBox').type('earch');
 
     const expectedUsernames = [
@@ -43,7 +49,12 @@ describe('Comment on articles', () => {
     cy.findByText('@search_user_7').should('not.exist');
 
     cy.findByText('@search_user_3').click();
-    cy.findByDisplayValue('Some text @search_user_3').should('exist');
+
+    cy.get('@plainCommentBox').should('have.focus');
+    cy.get('@plainCommentBox').should(
+      'have.value',
+      'Some text @search_user_3 ',
+    );
   });
 
   it('should select a mention autocomplete suggestion by keyboard', () => {
@@ -53,13 +64,26 @@ describe('Comment on articles', () => {
     );
 
     cy.findByLabelText('Add a comment to the discussion').click();
-    cy.findByRole('combobox');
 
-    cy.findByLabelText('Add a comment to the discussion').type(
-      'Some text @search_user{downarrow}{enter}',
+    // Wait for the new autocomplete text areas to be mounted
+    cy.findByTestId('autocomplete-textarea', {
+      role: 'textbox',
+      name: /Add a comment to the discussion/,
+    }).as('plainCommentBox');
+
+    cy.get('@plainCommentBox').type('Some text @s');
+    // Verify the combobox has appeared
+    cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
+      'autocompleteCommentBox',
     );
+    cy.get('@autocompleteCommentBox').should('have.focus');
+    cy.get('@autocompleteCommentBox').type('earch_user{downarrow}{enter}');
 
-    cy.findByDisplayValue('Some text @search_user_1').should('exist');
+    cy.get('@plainCommentBox').should('have.focus');
+    cy.get('@plainCommentBox').should(
+      'have.value',
+      'Some text @search_user_1 ',
+    );
   });
 
   it('should accept entered comment text without user mention if no autocomplete suggestions', () => {
@@ -69,18 +93,27 @@ describe('Comment on articles', () => {
     );
 
     cy.findByLabelText('Add a comment to the discussion').click();
-    cy.findByRole('combobox');
+    // Wait for the new autocomplete text areas to be mounted
+    cy.findByTestId('autocomplete-textarea', {
+      role: 'textbox',
+      name: /Add a comment to the discussion/,
+    }).as('plainCommentBox');
 
-    cy.findByLabelText('Add a comment to the discussion').as(
+    cy.get('@plainCommentBox').type('Some text @u');
+    // Verify the combobox has appeared
+    cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
       'autocompleteCommentBox',
     );
+    cy.get('@autocompleteCommentBox').should('have.focus');
 
-    cy.get('@autocompleteCommentBox').type('Some text @user');
+    cy.get('@autocompleteCommentBox').type('ser');
 
     cy.findByText('No results found').should('exist');
     cy.get('@autocompleteCommentBox').type(' ');
+
     cy.findByText('No results found').should('not.exist');
-    cy.findByDisplayValue('Some text @user').should('exist');
+    cy.get('@plainCommentBox').should('have.focus');
+    cy.get('@plainCommentBox').should('have.value', 'Some text @user ');
   });
 
   it('should stop showing mention autocomplete suggestions on text delete', () => {
@@ -90,13 +123,20 @@ describe('Comment on articles', () => {
     );
 
     cy.findByLabelText('Add a comment to the discussion').click();
-    cy.findByRole('combobox');
+    // Wait for the new autocomplete text areas to be mounted
+    cy.findByTestId('autocomplete-textarea', {
+      role: 'textbox',
+      name: /Add a comment to the discussion/,
+    }).as('plainCommentBox');
 
-    cy.findByLabelText('Add a comment to the discussion').as(
+    cy.get('@plainCommentBox').type('Some text @s');
+    // Verify the combobox has appeared
+    cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
       'autocompleteCommentBox',
     );
 
-    cy.get('@autocompleteCommentBox').type('Some text @se');
+    cy.get('@autocompleteCommentBox').should('have.focus');
+    cy.get('@autocompleteCommentBox').type('e');
     cy.findByText('@search_user_1').should('exist');
 
     cy.get('@autocompleteCommentBox').type('{backspace}{backspace}{backspace}');
@@ -110,15 +150,23 @@ describe('Comment on articles', () => {
     );
 
     cy.findByLabelText('Add a comment to the discussion').click();
-    cy.findByRole('combobox');
+    // Wait for the new autocomplete text areas to be mounted
+    cy.findByTestId('autocomplete-textarea', {
+      role: 'textbox',
+      name: /Add a comment to the discussion/,
+    }).as('plainCommentBox');
 
-    cy.findByLabelText('Add a comment to the discussion').as(
+    cy.get('@plainCommentBox').type('Some text @se');
+
+    // Verify the combobox has appeared
+    cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
       'autocompleteCommentBox',
     );
 
-    cy.get('@autocompleteCommentBox').type('Some text @se');
+    cy.get('@autocompleteCommentBox').should('have.focus');
     cy.get('@autocompleteCommentBox').type('{backspace}{backspace}');
     cy.findByText('@search_user_1').should('not.exist');
+
     cy.get('@autocompleteCommentBox').type('se');
     cy.findByText('@search_user_1').should('exist');
   });
@@ -130,13 +178,19 @@ describe('Comment on articles', () => {
     );
 
     cy.findByLabelText('Add a comment to the discussion').click();
-    cy.findByRole('combobox');
+    // Wait for the new autocomplete text areas to be mounted
+    cy.findByTestId('autocomplete-textarea', {
+      role: 'textbox',
+      name: /Add a comment to the discussion/,
+    }).as('plainCommentBox');
+    cy.get('@plainCommentBox').type('Some text @s');
 
-    cy.findByLabelText('Add a comment to the discussion').as(
+    // Verify the combobox has appeared
+    cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
       'autocompleteCommentBox',
     );
 
-    cy.get('@autocompleteCommentBox').type('Some text @search');
+    cy.get('@autocompleteCommentBox').type('earch');
     cy.findByText('@search_user_1').should('be.visible');
 
     cy.get('@autocompleteCommentBox').type('{Esc}');
@@ -150,20 +204,65 @@ describe('Comment on articles', () => {
     );
 
     cy.findByLabelText('Add a comment to the discussion').click();
-    cy.findByRole('combobox');
+    // Wait for the new autocomplete text areas to be mounted
+    cy.findByTestId('autocomplete-textarea', {
+      role: 'textbox',
+      name: /Add a comment to the discussion/,
+    }).as('plainCommentBox');
 
-    cy.findByLabelText('Add a comment to the discussion').type('first comment');
+    cy.get('@plainCommentBox').type('first comment');
     cy.findByRole('button', { name: /Submit/ }).click();
 
     cy.findByRole('link', { name: /Reply/ }).click();
 
-    cy.findByRole('combobox', { name: /Reply to a comment/ }).as(
-      'replyCombobox',
-    );
-    cy.get('@replyCombobox').click();
-    cy.get('@replyCombobox').type('Some text @search_user');
+    cy.findAllByTestId('autocomplete-textarea', {
+      role: 'textbox',
+      name: /Reply to a comment/,
+    })
+      .last()
+      .as('replyCommentBox');
 
+    cy.get('@replyCommentBox').click();
+    cy.get('@replyCommentBox').type('Some text @s');
+
+    // Verify the combobox has appeared
+    cy.findByRole('combobox', { name: /Reply to a comment/ }).as(
+      'autocompleteCommentBox',
+    );
+
+    cy.get('@autocompleteCommentBox').type('earch');
     cy.findByText('@search_user_1').click();
-    cy.findByDisplayValue('Some text @search_user_1');
+
+    cy.get('@replyCommentBox').should(
+      'have.value',
+      'Some text @search_user_1 ',
+    );
+  });
+
+  it('should pre-populate a comment field when editing', () => {
+    cy.intercept(
+      { method: 'GET', url: '/search/usernames' },
+      { fixture: 'search/usernames.json' },
+    );
+
+    cy.findByLabelText('Add a comment to the discussion').click();
+    // Wait for the new autocomplete text areas to be mounted
+    cy.findByTestId('autocomplete-textarea', {
+      role: 'textbox',
+      name: /Add a comment to the discussion/,
+    }).as('plainCommentBox');
+
+    cy.get('@plainCommentBox').type('first comment');
+    cy.findByRole('button', { name: /Submit/ }).click();
+
+    cy.findByRole('link', { name: /Reply/ });
+
+    // Wait for the comment to save
+    cy.findByText('Edit');
+
+    cy.findAllByLabelText('Toggle dropdown menu').last().click();
+    cy.findByText('Edit').click();
+
+    cy.findByDisplayValue('first comment').should('exist');
   });
 });
