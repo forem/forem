@@ -259,6 +259,7 @@ Rails.application.routes.draw do
           collection do
             get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
             get "/:username/:slug", to: "articles#show_by_slug", as: :slug
+            get "/latest", to: "articles#index", defaults: { sort: "desc" }
           end
         end
         resources :comments, only: %i[index show]
