@@ -17,7 +17,7 @@ describe('Home Page Left Sidebar', () => {
 
     // go back to the homepage with InstantClick
     cy.intercept('/?i=i').as('homepage');
-    cy.get('.site-logo').click();
+    cy.findAllByLabelText('DEV(local) Home').first().click();
     cy.wait('@homepage');
 
     // repeat and assert
