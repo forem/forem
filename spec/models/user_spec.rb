@@ -146,22 +146,6 @@ RSpec.describe User, type: :model do
       end
 
       it do
-        expect(subject).to have_many(:buffer_updates_approved)
-          .class_name("BufferUpdate")
-          .with_foreign_key("approver_user_id")
-          .inverse_of(:approver_user)
-          .dependent(:nullify)
-      end
-
-      it do
-        expect(subject).to have_many(:buffer_updates_composed)
-          .class_name("BufferUpdate")
-          .with_foreign_key("composer_user_id")
-          .inverse_of(:composer_user)
-          .dependent(:nullify)
-      end
-
-      it do
         expect(subject).to have_many(:created_podcasts)
           .class_name("Podcast")
           .with_foreign_key(:creator_id)

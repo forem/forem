@@ -285,10 +285,10 @@ class CommentsController < ApplicationController
   end
 
   def rate_limit_to_use
-    if current_user.created_at.before?(3.days.ago.beginning_of_day)
-      :comment_creation
-    else
+    if current_user.decorate.considered_new?
       :comment_antispam_creation
+    else
+      :comment_creation
     end
   end
 end

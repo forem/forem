@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Creating Comment", type: :system, js: true do
+RSpec.xdescribe "Creating Comment", type: :system, js: true do
   include_context "with runkit_tag"
 
   let(:user) { create(:user) }

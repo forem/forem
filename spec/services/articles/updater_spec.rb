@@ -4,7 +4,7 @@ RSpec.describe Articles::Updater, type: :service do
   let(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
   let(:attributes) { { body_markdown: "sample" } }
-  let(:draft) { create(:article, user: user, published: false) }
+  let(:draft) { create(:article, user: user, published: false, published_at: nil) }
 
   it "updates an article" do
     described_class.call(user, article, attributes)

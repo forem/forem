@@ -268,6 +268,10 @@ module Constants
         description: "Used as the twitter hashtag of the community",
         placeholder: "#DEVCommunity"
       },
+      user_considered_new_days: {
+        description: "The number of days a user is considered new. The default is 3 days, but you can disable this entirely by inputting 0.",
+        placeholder: ::SiteConfig.user_considered_new_days
+      },
       video_encoder_key: {
         description: "Secret key used to allow AWS video encoding through the VideoStatesController",
         placeholder: ""

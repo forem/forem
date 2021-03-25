@@ -8,7 +8,6 @@ RSpec.describe Tag, type: :model do
       subject { tag }
 
       it { is_expected.to belong_to(:badge).optional }
-      it { is_expected.to have_many(:buffer_updates).dependent(:nullify) }
       it { is_expected.to have_one(:sponsorship).inverse_of(:sponsorable).dependent(:destroy) }
 
       it { is_expected.to validate_length_of(:name).is_at_most(30) }
