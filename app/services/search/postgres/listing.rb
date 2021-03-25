@@ -30,10 +30,7 @@ module Search
 
         relation = ::Listing.where(published: true)
 
-        if category.present?
-          listing_category = ListingCategory.find_by(slug: category)
-          relation = relation.where(classified_listing_category_id: listing_category.id)
-        end
+        relation = filter_by_category(category, relation) if category.present?
 
         relation = relation.search_listings(term) if term.present?
 
@@ -50,6 +47,12 @@ module Search
           .pluck(:attributes)
       end
       private_class_method :serialize
+
+      def self.filter_by_category(category, relation)
+        listing_category = ListingCategory.find_by(slug: category)
+        relation.where(classified_listing_category_id: listing_category.id)
+      end
+      private_class_method :filter_by_category
     end
   end
 end
