@@ -1,0 +1,15 @@
+.runtime-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(65px + env(safe-area-inset-bottom));
+  z-index: var(--z-sticky);
+
+  &__inner {
+    background-color: #0b0c0c;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+}
