@@ -36,14 +36,6 @@ RSpec.describe Users::DeleteArticles, type: :service do
       expect(Comment.where(commentable_id: article.id, commentable_type: "Article").any?).to be false
     end
 
-    it "deletes articles' buffer updates" do
-      BufferUpdate.buff!(article.id, "twitter_buffer_text")
-
-      described_class.call(user)
-
-      expect(BufferUpdate.where(article_id: article.id).any?).to be false
-    end
-
     it "busts cache" do
       described_class.call(user)
       expect(EdgeCache::BustComment).to have_received(:call).with(article).twice

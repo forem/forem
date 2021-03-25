@@ -1,10 +1,13 @@
 class Article < ApplicationRecord
+  self.ignored_columns = %w[facebook_last_buffered last_buffered].freeze
+
   include CloudinaryHelper
   include ActionView::Helpers
   include Storext.model
   include Reactable
   include Searchable
   include UserSubscriptionSourceable
+  include PgSearch::Model
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
@@ -29,7 +32,6 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
-  has_many :buffer_updates, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
@@ -110,7 +112,25 @@ class Article < ApplicationRecord
   serialize :cached_user
   serialize :cached_organization
 
-  scope :published, -> { where(published: true) }
+  # [@rhymes] this is adapted from the `search_fields` property in
+  # `config/elasticsearch/mappings/feed_content.json`
+  pg_search_scope :search_reading_list,
+                  against: %i[body_markdown title cached_tag_list],
+                  associated_against: {
+                    organization: %i[name],
+                    user: %i[name username]
+                  },
+                  using: { tsearch: { prefix: true } }
+
+  # [@jgaskins] We use an index on `published`, but since it's a boolean value
+  #   the Postgres query planner often skips it due to lack of diversity of the
+  #   data in the column. However, since `published_at` is a *very* diverse
+  #   column and can scope down the result set significantly, the query planner
+  #   can make heavy use of it.
+  scope :published, lambda {
+    where(published: true)
+      .where("published_at <= ?", Time.current)
+  }
   scope :unpublished, -> { where(published: false) }
 
   scope :admin_published_with, lambda { |tag_name|
@@ -156,8 +176,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
-           :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-           :email_digest_eligible, :processed_html, :co_author_ids)
+           :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
   }
 
   scope :boosted_via_additional_articles, lambda {

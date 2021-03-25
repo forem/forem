@@ -75,7 +75,6 @@ class ArticlesController < ApplicationController
     @article = @article.decorate
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
-    @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
     @organizations = @user&.organizations
     # TODO: fix this for multi orgs
     @org_members = @organization.users.pluck(:name, :id) if @organization

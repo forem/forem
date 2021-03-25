@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_12_191925) do
+ActiveRecord::Schema.define(version: 2021_03_25_040245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -105,12 +105,10 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
     t.boolean "email_digest_eligible", default: true
     t.float "experience_level_rating", default: 5.0
     t.float "experience_level_rating_distribution", default: 5.0
-    t.datetime "facebook_last_buffered"
     t.boolean "featured", default: false
     t.integer "featured_number"
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
-    t.datetime "last_buffered"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_experience_level_rating_at"
     t.string "main_image"
@@ -156,6 +154,7 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
     t.string "video_thumbnail_url"
     t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
+    t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
@@ -197,6 +196,7 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
   create_table "badges", force: :cascade do |t|
     t.string "badge_image"
     t.datetime "created_at", null: false
+    t.integer "credits_awarded", default: 0, null: false
     t.string "description", null: false
     t.string "slug", null: false
     t.string "title", null: false
@@ -285,21 +285,6 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
     t.index ["title", "type_of"], name: "index_broadcasts_on_title_and_type_of", unique: true
   end
 
-  create_table "buffer_updates", force: :cascade do |t|
-    t.bigint "approver_user_id"
-    t.bigint "article_id", null: false
-    t.text "body_text"
-    t.string "buffer_id_code"
-    t.string "buffer_profile_id_code"
-    t.text "buffer_response", default: "--- {}\n"
-    t.bigint "composer_user_id"
-    t.datetime "created_at", null: false
-    t.string "social_service_name"
-    t.string "status", default: "pending"
-    t.bigint "tag_id"
-    t.datetime "updated_at", null: false
-  end
-
   create_table "chat_channel_memberships", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
@@ -348,7 +333,6 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
     t.datetime "expires_at"
-    t.datetime "last_buffered"
     t.string "location"
     t.bigint "organization_id"
     t.datetime "originally_published_at"
@@ -403,6 +387,7 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
     t.bigint "user_id"
     t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
     t.index ["ancestry"], name: "index_comments_on_ancestry"
+    t.index ["ancestry"], name: "index_comments_on_ancestry_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
     t.index ["score"], name: "index_comments_on_score"
@@ -1035,6 +1020,7 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
     t.index ["points"], name: "index_reactions_on_points"
     t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
+    t.index ["status"], name: "index_reactions_on_status"
     t.index ["user_id", "reactable_id", "reactable_type", "category"], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
   end
 
@@ -1128,7 +1114,6 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
     t.string "alias_for"
     t.bigint "badge_id"
     t.string "bg_color_hex"
-    t.string "buffer_profile_id_code"
     t.string "category", default: "uncategorized", null: false
     t.datetime "created_at"
     t.integer "hotness_score", default: 0
@@ -1362,6 +1347,7 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
+    t.index ["old_username"], name: "index_users_on_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
@@ -1464,10 +1450,6 @@ ActiveRecord::Schema.define(version: 2021_03_12_191925) do
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "badge_achievements", "users", column: "rewarder_id", on_delete: :nullify
   add_foreign_key "banished_users", "users", column: "banished_by_id", on_delete: :nullify
-  add_foreign_key "buffer_updates", "articles", on_delete: :cascade
-  add_foreign_key "buffer_updates", "tags", on_delete: :nullify
-  add_foreign_key "buffer_updates", "users", column: "approver_user_id", on_delete: :nullify
-  add_foreign_key "buffer_updates", "users", column: "composer_user_id", on_delete: :nullify
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"
