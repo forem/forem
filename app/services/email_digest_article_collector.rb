@@ -42,13 +42,7 @@ class EmailDigestArticleCollector
     return true unless last_email_sent_at
 
     # Has it been at least x days since @user received an email?
-    Time.current - last_email_sent_at >= days_until_next_email
-  end
-
-  def days_until_next_email
-    max_day = SiteConfig.periodic_email_digest_max
-    min_day = SiteConfig.periodic_email_digest_min
-    rand(min_day..max_day)
+    Time.current - last_email_sent_at >= SiteConfig.periodic_email_digest
   end
 
   def last_email_sent_at

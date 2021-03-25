@@ -25,7 +25,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
     end
 
-    context "when it's been less than the minimum number of digest email days " do
+    context "when it's been less than the set number of digest email days" do
       before do
         author = create(:user)
         user.follow(author)
@@ -36,27 +36,25 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
 
       it "will return no articles when user shouldn't receive any" do
-        Timecop.freeze(SiteConfig.periodic_email_digest_min.days.from_now) do
+        Timecop.freeze(SiteConfig.periodic_email_digest.days.from_now - 1) do
           articles = described_class.new(user).articles_to_send
           expect(articles).to be_empty
         end
       end
     end
 
-    context "when a user's open_percentage is high" do
+    context "when it's been more than the set number of digest email days" do
       before do
-        10.times do
-          Ahoy::Message.create(mailer: "DigestMailer#digest_email", user_id: user.id,
-                               sent_at: Time.current.utc)
-          author = create(:user)
-          user.follow(author)
-          user.update(following_users_count: 1)
-          create_list(:article, 3, user_id: author.id, public_reactions_count: 40, score: 40)
-        end
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email", user_id: user.id,
+                             sent_at: Time.current.utc)
+        author = create(:user)
+        user.follow(author)
+        user.update(following_users_count: 1)
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 40, score: 40)
       end
 
       it "evaluates that user is ready to receive an email" do
-        Timecop.freeze((SiteConfig.periodic_email_digest_max + 1).days.from_now) do
+        Timecop.freeze((SiteConfig.periodic_email_digest + 1).days.from_now) do
           articles = described_class.new(user).articles_to_send
           expect(articles).not_to be_empty
         end
