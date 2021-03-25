@@ -83,8 +83,7 @@ class PagesController < ApplicationController
   end
 
   def report_abuse
-    referer = URL.sanitized_referer(request.referer)
-    reported_url = params[:reported_url] || params[:url] || referer
+    reported_url = params[:reported_url] || params[:url] || request.referer.presence
     @feedback_message = FeedbackMessage.new(
       reported_url: reported_url&.chomp("?i=i"),
     )

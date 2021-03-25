@@ -545,7 +545,8 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     text-align: left;
     width: 100%;
 
-    &:hover {
+    &:hover,
+    &:focus-within {
       background-color: #eef0f1 !important;
     }
   }
@@ -565,10 +566,6 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   .user-name,
   .user-summary {
     margin: 0;
-  }
-
-  .user-following-status {
-    margin-left: 32px;
   }
 }
 

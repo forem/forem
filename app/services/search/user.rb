@@ -29,7 +29,8 @@ module Search
               analyze_wildcard: true,
               allow_leading_wildcard: false
             }
-          }
+          },
+          size: Search::Postgres::Username::MAX_RESULTS # Limit the number of results we return to the frontend
         }
       end
 

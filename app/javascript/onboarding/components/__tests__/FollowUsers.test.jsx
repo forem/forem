@@ -93,7 +93,9 @@ describe('FollowUsers', () => {
 
     const { queryByText, findByText, findAllByTestId } = renderFollowUsers();
 
-    const userButtons = await findAllByTestId('onboarding-user-button');
+    const userButtons = await findAllByTestId(
+      'onboarding-user-following-status',
+    );
 
     expect(queryByText(/skip for now/i)).toBeDefined();
     expect(queryByText(/You're not following anyone/i)).toBeDefined();

@@ -1,19 +1,19 @@
 <% title "Settings" %>
 
 <% if flash[:settings_notice] %>
-  <div class="crayons-banner">
+  <div class="crayons-banner" aria-live="polite">
     <%= flash[:settings_notice] %>
   </div>
 <% end %>
 
 <% if flash[:error].present? %>
-  <div class="crayons-banner crayons-banner--error">
+  <div class="crayons-banner crayons-banner--error" role="alert">
     <%= flash[:error] %>
   </div>
 <% end %>
 
 <% if params[:state] == "previous-registration" %>
-  <div class="crayons-banner crayons-banner--error">
+  <div class="crayons-banner crayons-banner--error" role="alert">
     There is an existing account authorized with that social account. Contact
     <%= email_link %> if this is a mistake.
   </div>

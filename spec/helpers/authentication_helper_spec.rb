@@ -28,6 +28,24 @@ RSpec.describe AuthenticationHelper, type: :helper do
     end
   end
 
+  describe "#signed_up_with" do
+    it "returns an authentication reminder when a user auths with a provider" do
+      providers = Authentication::Providers.available.last(2)
+      allow(Authentication::Providers).to receive(:enabled).and_return(providers)
+      allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
+
+      expect(helper.signed_up_with(user)).to match(/GitHub and Twitter/)
+      expect(helper.signed_up_with(user)).to match(/use any of those/)
+    end
+
+    it "returns an authentication reminder when a user signs up with email" do
+      allow(Authentication::Providers).to receive(:enabled).and_return([])
+
+      expect(helper.signed_up_with(user)).to match(/Email & Password/)
+      expect(helper.signed_up_with(user)).to match(/use that/)
+    end
+  end
+
   describe "#available_providers_array" do
     it "returns array of available providers in lowercase" do
       provider = Authentication::Providers.available.first

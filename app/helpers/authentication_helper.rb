@@ -23,6 +23,16 @@ module AuthenticationHelper
     Authentication::Providers.enabled_for_user(user)
   end
 
+  def signed_up_with(user = current_user)
+    providers = Authentication::Providers.enabled_for_user(user)
+
+    # If the user did not authenticate with any provider, they signed up with an email.
+    auth_method = providers.any? ? providers.map(&:official_name).to_sentence : "Email & Password"
+    verb = providers.size > 1 ? "any of those" : "that"
+
+    "Reminder: you used #{auth_method} to authenticate your account, so please use #{verb} to sign in if prompted."
+  end
+
   def available_providers_array
     Authentication::Providers.available.map(&:to_s)
   end

@@ -16,7 +16,8 @@
         <strong class="fw-medium">Published:</strong>
         <%= local_date(article.published_timestamp, show_year: article.displayable_published_at.year != Time.current.year) %>
         <% if article.edited? %>
-          <strong class="fw-medium pl-2">Edited:</strong> <time datetime="<%= article.edited_at.utc.iso8601 %>"><%= article.readable_edit_date %></time>
+          <strong class="fw-medium pl-2">Edited:</strong>
+          <%= local_date(article.edited_at, show_year: article.edited_at.year != Time.current.year) %>
         <% end %>
         <% if article.collection_id %>
           <strong class="fw-medium pl-2">Series:</strong> <%= article.series %>

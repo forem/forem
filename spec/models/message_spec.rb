@@ -68,13 +68,6 @@ RSpec.describe Message, type: :model do
         expect(message.message_html).to include("sidecar-user")
       end
 
-      it "creates rich call link" do
-        message.message_markdown = "/call"
-        message.validate!
-
-        expect(message.message_html).to include("sidecar-video")
-      end
-
       it "creates rich embeddable link" do
         message.message_markdown = "https://docs.google.com/ https://www.figma.com/file/"
         message.validate!

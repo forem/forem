@@ -14,6 +14,7 @@ const smartSvgIcon = (content, d) => (
     viewBox="0 0 24 24"
     width="24"
     height="24"
+    style={{ marginLeft: '-12px', marginTop: '-4px' }}
   >
     <path data-content={content} fill="none" d="M0 0h24v24H0z" />
     <path data-content={content} d={d} />
@@ -74,7 +75,7 @@ export class Content extends Component {
           type="button"
           className="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
           data-content="fullscreen"
-          style={{ left: '39px' }}
+          style={{ left: '-80px', marginLeft: '0px' }}
           title="fullscreen"
         >
           {' '}

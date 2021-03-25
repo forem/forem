@@ -1,5 +1,8 @@
 <header class="flex mb-6">
-  <h2 class="crayons-title">Badges</h2>
+  <!-- @ridhwana: temporary duplicate header removed. Will remove this with old navigation code -->
+  <% unless FeatureFlag.enabled?(:admin_restructure) %>
+    <h2 class="crayons-title">Badges</h2>
+  <% end %>
 
   <div class="ml-auto">
     <%= link_to "Create Badge", new_admin_badge_path, class: "btn btn-primary" %>

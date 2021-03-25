@@ -28,6 +28,7 @@ module GithubRepos
           stargazers_count: fetched_repo.stargazers_count,
           info_hash: fetched_repo.to_hash,
         )
+        repo.touch(:updated_at)
         if repo.user&.github_repos_updated_at&.before?(TOUCH_USER_COOLDOWN.ago)
           repo.user.touch(:github_repos_updated_at)
         end

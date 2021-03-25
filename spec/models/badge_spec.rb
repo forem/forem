@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Badge, type: :model do
   let(:badge) { create(:badge) }
+  let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
   describe "validations" do
     describe "builtin validations" do
@@ -35,19 +36,20 @@ RSpec.describe Badge, type: :model do
 
     describe "cache busting" do
       before do
-        allow(EdgeCache::Bust).to receive(:bust)
+        allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
+        allow(cache_bust).to receive(:call)
       end
 
       it "calls the cache buster with the path" do
         badge.save
 
-        expect(EdgeCache::Bust).to have_received(:bust).with(badge.path)
+        expect(cache_bust).to have_received(:call).with(badge.path)
       end
 
       it "calls the cache buster with the internal path" do
         badge.save
 
-        expect(EdgeCache::Bust).to have_received(:bust).with("#{badge.path}?i=i")
+        expect(cache_bust).to have_received(:call).with("#{badge.path}?i=i")
       end
     end
   end
