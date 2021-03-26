@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_25_040245) do
+ActiveRecord::Schema.define(version: 2021_03_25_183834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -828,6 +828,7 @@ ActiveRecord::Schema.define(version: 2021_03_25_040245) do
     t.datetime "created_at", null: false
     t.string "description"
     t.boolean "is_top_level_path", default: false
+    t.boolean "landing_page", default: false, null: false
     t.text "processed_html"
     t.string "slug"
     t.string "social_image"
