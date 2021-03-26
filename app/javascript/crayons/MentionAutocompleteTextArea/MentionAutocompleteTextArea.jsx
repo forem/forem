@@ -101,7 +101,7 @@ const UserListItemContent = ({ user }) => {
 
 export const MentionAutocompleteTextArea = forwardRef(
   (
-    { replaceElement, fetchSuggestions, inputProps = {}, autoResize = false },
+    { replaceElement, fetchSuggestions, autoResize = false, ...inputProps },
     forwardedRef,
   ) => {
     const [textContent, setTextContent] = useState(
@@ -125,6 +125,8 @@ export const MentionAutocompleteTextArea = forwardRef(
     const popoverRef = useRef(null);
 
     const { setTextArea, setAdditionalElements } = useTextAreaAutoResize();
+
+    const { onChange, id: inputId, ...autocompleteInputProps } = inputProps;
 
     useLayoutEffect(() => {
       if (autoResize && comboboxRef.current && plainTextAreaRef.current) {
@@ -278,7 +280,7 @@ export const MentionAutocompleteTextArea = forwardRef(
       plainTextAreaRef.current.classList.remove('hidden');
 
       // Allow any other attached change event to receive the updated text
-      inputProps.onChange?.(textWithSelection);
+      onChange?.(textWithSelection);
 
       // Update the cursor to directly after the selection (+2 accounts for the @ sign, and adding a space after the username)
       const newCursorPosition = selectionInsertIndex + username.length + 2;
@@ -316,25 +318,27 @@ export const MentionAutocompleteTextArea = forwardRef(
           className="crayons-autocomplete"
         >
           <ComboboxInput
-            {...inputProps}
+            {...autocompleteInputProps}
+            aria-label="Mention user"
             ref={mergeRefs([comboboxRef, forwardedRef])}
             value={textContent}
             data-mention-autocomplete-active="true"
             as="textarea"
             autocomplete={false}
             onChange={(e) => {
-              inputProps.onChange?.(e);
+              onChange?.(e);
               handleTextInputChange(e);
             }}
           />
 
           <textarea
-            {...inputProps}
+            {...autocompleteInputProps}
+            id={inputId}
             data-testid="autocomplete-textarea"
             data-mention-autocomplete-active="true"
             ref={mergeRefs([plainTextAreaRef, forwardedRef])}
             onChange={(e) => {
-              inputProps.onChange?.(e);
+              onChange?.(e);
               handleTextInputChange(e);
             }}
             value={textContent}
@@ -379,5 +383,5 @@ export const MentionAutocompleteTextArea = forwardRef(
 MentionAutocompleteTextArea.propTypes = {
   replaceElement: PropTypes.node,
   fetchSuggestions: PropTypes.func.isRequired,
-  inputProps: PropTypes.object,
+  autoResize: PropTypes.bool,
 };

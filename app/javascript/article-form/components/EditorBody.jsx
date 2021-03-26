@@ -80,17 +80,14 @@ export const EditorBody = ({
         ref={textAreaRef}
         fetchSuggestions={(username) => fetchSearch('usernames', { username })}
         autoResize
-        inputProps={{
-          onChange,
-          onFocus: switchHelpContext,
-          'aria-label': 'Post Content',
-          name: 'body_markdown',
-          defaultValue,
-          placeholder: 'Write your post content here...',
-          id: 'article_body_markdown',
-          className:
-            'crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l',
-        }}
+        onChange={onChange}
+        onFocus={switchHelpContext}
+        aria-label="Post Content"
+        name="body_markdown"
+        id="article_body_markdown"
+        defaultValue={defaultValue}
+        placeholder="Write your post content here..."
+        className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l"
       />
     </div>
   );
