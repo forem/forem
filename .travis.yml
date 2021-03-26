@@ -1,3 +1,6 @@
+branches:
+  only:
+    - rhymes/rails-61
 language: ruby
 cache:
   directories:
