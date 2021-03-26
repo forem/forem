@@ -1,4 +1,4 @@
-module SiteConfigs
+module Settings
   class Upsert
     EMOJI_ONLY_FIELDS = %w[community_emoji].freeze
     VALID_DOMAIN = /^[a-zA-Z0-9]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.freeze

@@ -1,6 +1,6 @@
 module Admin
   class ConfigsController < Admin::ApplicationController
-    include SiteConfigParams
+    include SettingsParams
 
     EMOJI_ONLY_FIELDS = %w[community_emoji].freeze
     IMAGE_FIELDS =
@@ -25,7 +25,7 @@ module Admin
     end
 
     def create
-      result = SiteConfigs::Upsert.call(site_config_params)
+      result = Settings::Upsert.call(settings_params)
       if result.success?
         Audit::Logger.log(:internal, current_user, params.dup)
         bust_content_change_caches
