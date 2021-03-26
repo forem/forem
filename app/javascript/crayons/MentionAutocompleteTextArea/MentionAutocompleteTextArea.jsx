@@ -9,7 +9,11 @@ import {
   ComboboxList,
   ComboboxOption,
 } from '@reach/combobox';
-import { getMentionWordData, getCursorXY } from '@utilities/textAreaUtils';
+import {
+  getMentionWordData,
+  getCursorXY,
+  useTextAreasAutoResize,
+} from '@utilities/textAreaUtils';
 import { mergeRefs } from '@utilities/mergeRefs';
 import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
 
@@ -56,10 +60,6 @@ const replaceTextArea = ({
 
   // We need to manually remove the original element, as Preact's diffing algorithm won't replace it in render
   originalNodeToReplace.remove();
-
-  // Initialize the new text areas in the "non-autosuggest" state, hiding the combobox until a search begins
-  comboboxTextArea.classList.add('hidden');
-  plainTextArea.focus();
 };
 
 const UserListItemContent = ({ user }) => {
@@ -100,7 +100,10 @@ const UserListItemContent = ({ user }) => {
  */
 
 export const MentionAutocompleteTextArea = forwardRef(
-  ({ replaceElement, fetchSuggestions, inputProps = {} }, forwardedRef) => {
+  (
+    { replaceElement, fetchSuggestions, inputProps = {}, autoResize = false },
+    forwardedRef,
+  ) => {
     const [textContent, setTextContent] = useState(
       inputProps.defaultValue ? inputProps.defaultValue : '',
     );
@@ -120,6 +123,14 @@ export const MentionAutocompleteTextArea = forwardRef(
     const plainTextAreaRef = useRef(null);
     const comboboxRef = useRef(null);
     const popoverRef = useRef(null);
+
+    const { setTextAreas } = useTextAreasAutoResize();
+
+    useLayoutEffect(() => {
+      if (autoResize && comboboxRef.current && plainTextAreaRef.current) {
+        setTextAreas([comboboxRef.current, plainTextAreaRef.current]);
+      }
+    }, [autoResize, setTextAreas]);
 
     useEffect(() => {
       if (searchTerm.length < MIN_SEARCH_CHARACTERS) {
@@ -277,12 +288,18 @@ export const MentionAutocompleteTextArea = forwardRef(
       const { current: comboboxTextArea } = comboboxRef;
       const { current: plainTextArea } = plainTextAreaRef;
 
-      if (comboboxTextArea && plainTextArea && replaceElement) {
-        replaceTextArea({
-          originalNodeToReplace: replaceElement,
-          plainTextArea,
-          comboboxTextArea,
-        });
+      if (comboboxTextArea && plainTextArea) {
+        if (replaceElement) {
+          replaceTextArea({
+            originalNodeToReplace: replaceElement,
+            plainTextArea,
+            comboboxTextArea,
+          });
+        }
+
+        // Initialize the new text areas in the "non-autosuggest" state, hiding the combobox until a search begins
+        comboboxTextArea.classList.add('hidden');
+        plainTextArea.focus();
       }
     }, [replaceElement]);
 

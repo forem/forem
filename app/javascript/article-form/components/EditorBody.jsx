@@ -12,7 +12,6 @@ import {
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
-import { useTextAreaAutoResize } from '@utilities/textAreaUtils';
 import { MentionAutocompleteTextArea } from '@crayons/MentionAutocompleteTextArea';
 
 function handleImageSuccess(textAreaRef) {
@@ -64,13 +63,10 @@ export const EditorBody = ({
     ),
   });
 
-  const { setTextArea } = useTextAreaAutoResize();
-
   useLayoutEffect(() => {
     if (textAreaRef.current) {
       setElement(textAreaRef.current);
       setPasteElement(textAreaRef.current);
-      setTextArea(textAreaRef.current);
     }
   });
 
@@ -83,6 +79,7 @@ export const EditorBody = ({
       <MentionAutocompleteTextArea
         ref={textAreaRef}
         fetchSuggestions={(username) => fetchSearch('usernames', { username })}
+        autoResize
         inputProps={{
           onChange,
           onFocus: switchHelpContext,

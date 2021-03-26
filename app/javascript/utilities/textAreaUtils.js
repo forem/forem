@@ -116,33 +116,44 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
 };
 
 /**
- * This hook can be used to keep the height of a textarea in step with the current content height, avoiding a scrolling textarea
+ * This hook can be used to keep the height of a group of textareas in step with the current max content height, avoiding a scrolling textarea.
+ * If more than one textarea is passed in the array, all textareas will receive the height of the largest text area
  *
  * @example
  *
- * const { setTextArea } = useTextAreaAutoResize();
- * setTextArea(myTextAreaRef.current);
+ * const { setTextAreas } = useTextAreasAutoResize();
+ * setTextAreas([myTextAreaRef.current]);
  */
-export const useTextAreaAutoResize = () => {
-  const [textArea, setTextArea] = useState(null);
+export const useTextAreasAutoResize = () => {
+  const [textAreas, setTextAreas] = useState(null);
 
   useEffect(() => {
-    if (!textArea) {
+    if (!textAreas || textAreas.length === 0) {
       return;
     }
 
     const resizeTextArea = () => {
-      const { height } = calculateTextAreaHeight(textArea);
-      textArea.style.height = `${height}px`;
+      const allTextAreaHeights = textAreas.map(
+        (area) => calculateTextAreaHeight(area).height,
+      );
+      const maxHeight = Math.max(...allTextAreaHeights);
+      textAreas.forEach((area) => {
+        area.style.height = `${maxHeight}px`;
+      });
     };
 
     // Resize on first attach
     resizeTextArea();
     // Resize on subsequent value changes
-    textArea.addEventListener('input', resizeTextArea);
+    textAreas.forEach((area) => {
+      area.addEventListener('input', resizeTextArea);
+    });
 
-    return () => textArea.removeEventListener('input', resizeTextArea);
-  }, [textArea]);
+    return () =>
+      textAreas.forEach((area) => {
+        area.removeEventListener('input', resizeTextArea);
+      });
+  }, [textAreas]);
 
-  return { setTextArea };
+  return { setTextAreas };
 };
