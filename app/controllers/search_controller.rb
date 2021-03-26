@@ -119,11 +119,26 @@ class SearchController < ApplicationController
   end
 
   def reactions
-    result = Search::ReadingList.search_documents(
-      params: reaction_params.to_h, user: current_user,
-    )
+    if FeatureFlag.enabled?(:search_2_reading_list)
+      # [@rhymes] we're recyling the existing params as we want to change the frontend as
+      # little as possible, we might simplify in the future
+      result = Search::Postgres::ReadingList.search_documents(
+        current_user,
+        page: reaction_params[:page],
+        per_page: reaction_params[:per_page],
+        statuses: reaction_params[:status],
+        tags: reaction_params[:tag_names],
+        term: reaction_params[:search_fields],
+      )
 
-    render json: { result: result["reactions"], total: result["total"] }
+      render json: { result: result[:items], total: result[:total] }
+    else
+      result = Search::ReadingList.search_documents(
+        params: reaction_params.to_h, user: current_user,
+      )
+
+      render json: { result: result["reactions"], total: result["total"] }
+    end
   end
 
   private

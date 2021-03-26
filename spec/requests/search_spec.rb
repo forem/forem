@@ -198,29 +198,57 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/reactions" do
-    let(:authorized_user) { create(:user) }
-    let(:mock_response) do
-      { "reactions" => [{ id: 123 }], "total" => 100 }
+    before do
+      sign_in authorized_user
     end
 
-    it "returns json with reactions and total" do
-      sign_in authorized_user
-      allow(Search::ReadingList).to receive(:search_documents).and_return(
-        mock_response,
-      )
-      get "/search/reactions"
-      expect(response.parsed_body).to eq("result" => [{ "id" => 123 }], "total" => 100)
+    context "when using Elasticsearch" do
+      let(:mock_response) do
+        { "reactions" => [{ id: 123 }], "total" => 100 }
+      end
+
+      before do
+        allow(Search::ReadingList).to receive(:search_documents).and_return(mock_response)
+      end
+
+      it "returns json with reactions and total" do
+        get search_reactions_path
+
+        expect(response.parsed_body).to eq("result" => [{ "id" => 123 }], "total" => 100)
+      end
+
+      it "accepts array of tag names" do
+        get search_reactions_path(tag_names: [1, 2])
+
+        expect(Search::ReadingList).to(
+          have_received(:search_documents)
+            .with(params: { "tag_names" => %w[1 2] }, user: authorized_user),
+        )
+      end
     end
 
-    it "accepts array of tag names" do
-      sign_in authorized_user
-      allow(Search::ReadingList).to receive(:search_documents).and_return(
-        mock_response,
-      )
-      get "/search/reactions?tag_names[]=1&tag_names[]=2"
-      expect(Search::ReadingList).to have_received(
-        :search_documents,
-      ).with(params: { "tag_names" => %w[1 2] }, user: authorized_user)
+    context "when using PostgreSQL" do
+      let(:article) { create(:article) }
+
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_reading_list).and_return(true)
+        create(:reaction, category: :readinglist, reactable: article, user: authorized_user)
+      end
+
+      it "returns the correct keys", :aggregate_failures do
+        get search_reactions_path
+
+        expect(response.parsed_body["result"]).to be_present
+        expect(response.parsed_body["total"]).to eq(1)
+      end
+
+      it "supports the search params" do
+        article.update_columns(title: "Title", cached_tag_list: "ruby, python")
+
+        get search_reactions_path(page: 0, per_page: 1, status: %w[valid], tags: %w[ruby], term: "title")
+
+        expect(response.parsed_body["result"].first["reactable"]).to include("title" => "Title")
+      end
     end
   end
 end

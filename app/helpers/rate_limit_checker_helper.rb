@@ -1,4 +1,12 @@
 module RateLimitCheckerHelper
+  NEW_USER_MESSAGE = "How many %<thing>s can a new member (%<timeframe>s or less) " \
+    "create within any 5 minute period?".freeze
+
+  def self.new_user_message(thing)
+    timeframe = "day".pluralize(SiteConfig.user_considered_new_days)
+    format(NEW_USER_MESSAGE, thing: thing, timeframe: timeframe)
+  end
+
   CONFIGURABLE_RATES = {
     rate_limit_published_article_creation: {
       min: 0,
@@ -10,7 +18,7 @@ module RateLimitCheckerHelper
       min: 0,
       placeholder: 1,
       title: "Limit number of posts created by a new member",
-      description: "How many posts can a new member (3 days or less) create within any 5 minute period?"
+      description: new_user_message("posts")
     },
     rate_limit_article_update: {
       min: 1,
@@ -58,7 +66,7 @@ module RateLimitCheckerHelper
       min: 0,
       placeholder: 1,
       title: "Limit number of comments created by a new member",
-      description: "How many comments can a new member (3 days or less) create within any 5 minute period?"
+      description: new_user_message("comments")
     },
     rate_limit_listing_creation: {
       min: 1,

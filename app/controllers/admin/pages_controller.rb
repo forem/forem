@@ -26,6 +26,7 @@ module Admin
       @page.assign_attributes(page_params)
       if @page.valid?
         @page.update!(page_params)
+        flash[:success] = "Page has been successfully updated."
         redirect_to admin_pages_path
       else
         flash.now[:error] = @page.errors_as_sentence
@@ -37,6 +38,7 @@ module Admin
       @page = Page.new(page_params)
       if @page.valid?
         @page.save!
+        flash[:success] = "Page has been successfully created."
         redirect_to admin_pages_path
       else
         flash.now[:error] = @page.errors_as_sentence
@@ -47,7 +49,8 @@ module Admin
     def destroy
       @page = Page.find(params[:id])
       @page.destroy
-      redirect_to "/admin/pages"
+      flash[:success] = "Page has been successfully deleted."
+      redirect_to admin_pages_path
     end
 
     private
