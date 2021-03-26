@@ -17,6 +17,8 @@ class Article < ApplicationRecord
   resourcify
 
   attr_accessor :publish_under_org
+
+  attr_readonly :tsv
   attr_writer :series
 
   delegate :name, to: :user, prefix: true
@@ -115,12 +117,23 @@ class Article < ApplicationRecord
   # [@rhymes] this is adapted from the `search_fields` property in
   # `config/elasticsearch/mappings/feed_content.json`
   pg_search_scope :search_reading_list,
-                  against: %i[body_markdown title cached_tag_list],
-                  associated_against: {
-                    organization: %i[name],
-                    user: %i[name username]
-                  },
-                  using: { tsearch: { prefix: true } }
+                  against: %i[body_markdown cached_tag_list title],
+                  # TODO: find out how to handle this data, since it's not part of this table we have to
+                  # either denormalize it (and then keep it in sync) or add a trigger on each of these tables
+                  # to update the `tsv` column each time any of these columns are updated
+                  # associated_against: {
+                  #   organization: %i[name],
+                  #   user: %i[name username]
+                  # },
+                  using: {
+                    tsearch: {
+                      prefix: true,
+                      # [@rhymes] by using a custom `tsvector` column, managed by a database trigger,
+                      # we can dramatically improve FTS search times and avoid nested loops on each column
+                      # we search against.
+                      tsvector_column: %w[tsv]
+                    }
+                  }
 
   # [@jgaskins] We use an index on `published`, but since it's a boolean value
   #   the Postgres query planner often skips it due to lack of diversity of the

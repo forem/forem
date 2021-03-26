@@ -67,6 +67,10 @@ module PracticalDeveloper
     # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.
     config.action_dispatch.use_cookies_with_metadata = false
 
+    # Controls the format for dumping the database schema to a file.
+    # We use SQL to dump PostgreSQL triggers
+    config.active_record.schema_format = :sql
+
     # After-initialize checker to add routes to reserved words
     config.after_initialize do
       # Add routes to reserved words
