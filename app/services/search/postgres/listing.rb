@@ -18,9 +18,13 @@ module Search
         title
         user_id
       ].freeze
+      private_constant :ATTRIBUTES
 
       DEFAULT_PER_PAGE = 75
+      private_constant :DEFAULT_PER_PAGE
+
       MAX_PER_PAGE = 150 # to avoid querying too many items, we set a maximum amount for a page
+      private_constant :MAX_PER_PAGE
 
       def self.search_documents(category: nil, page: 0, per_page: DEFAULT_PER_PAGE, term: nil)
         # NOTE: [@rhymes/atsmith813] we should eventually update the frontend

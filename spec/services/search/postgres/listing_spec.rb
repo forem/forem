@@ -3,18 +3,6 @@ require "rails_helper"
 RSpec.describe Search::Postgres::Listing, type: :service do
   let(:listing) { create(:listing) }
 
-  it "defines necessary constants", :aggregate_failures do
-    constants = [
-      described_class::ATTRIBUTES,
-      described_class::DEFAULT_PER_PAGE,
-      described_class::MAX_PER_PAGE,
-    ]
-
-    constants.each do |constant|
-      expect(constant).not_to be_nil
-    end
-  end
-
   describe "::search_documents" do
     it "does not include a listing that is unpublished", :aggregate_failures do
       published_listing = create(:listing, title: "Published Listing", published: true)
