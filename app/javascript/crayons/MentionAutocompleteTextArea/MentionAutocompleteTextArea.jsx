@@ -268,6 +268,7 @@ export const MentionAutocompleteTextArea = ({
       });
     }
   }, [replaceElement]);
+  const hasSearchTerm = searchTerm !== '';
 
   return (
     <Fragment>
@@ -287,6 +288,7 @@ export const MentionAutocompleteTextArea = ({
           as="textarea"
           autocomplete={false}
           onChange={handleTextInputChange}
+          data-active={hasSearchTerm}
         />
 
         <textarea
@@ -295,9 +297,10 @@ export const MentionAutocompleteTextArea = ({
           ref={plainTextAreaRef}
           onChange={handleTextInputChange}
           value={textContent}
+          data-active={!hasSearchTerm}
         />
 
-        {searchTerm && (
+        {hasSearchTerm && (
           <ComboboxPopover
             ref={popoverRef}
             className="crayons-autocomplete__popover absolute"

@@ -126,7 +126,7 @@ function addClickListeners(form) {
   insertButtons.forEach((button) => {
     button.addEventListener('click', (e) => {
       const { content } = e.target.dataset;
-      const textArea = form.getElementsByTagName('textarea')[0];
+      const textArea = form.querySelector('textarea[data-active]');
       const textAreaReplaceable =
         textArea.value === null ||
         textArea.value === '' ||
