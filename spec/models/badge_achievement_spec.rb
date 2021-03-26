@@ -21,7 +21,7 @@ RSpec.describe BadgeAchievement, type: :model do
     expect(achievement.rewarding_context_message).to include("</a>")
   end
 
-  it "doesn't award credits id credits_awarded is zero" do
+  it "doesn't award credits if credits_awarded is zero" do
     expect(achievement.user.credits.size).to eq(0)
   end
 
