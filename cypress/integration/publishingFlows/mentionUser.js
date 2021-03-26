@@ -17,11 +17,14 @@ describe('Article Editor', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByRole('combobox').as('articleForm');
-
+      cy.findByLabelText('Post Content').as('articleForm');
       cy.get('@articleForm').type('Post content @s');
+
+      cy.findByLabelText('Mention user').as('autocompleteForm');
+      cy.get('@autocompleteForm').should('have.focus');
       cy.findByText('Type to search for a user').should('exist');
-      cy.get('@articleForm').type('earch');
+
+      cy.get('@autocompleteForm').type('earch');
 
       const expectedUsernames = [
         '@search_user_1',
@@ -36,7 +39,11 @@ describe('Article Editor', () => {
       expectedUsernames.forEach((name) => cy.findByText(name).should('exist'));
       cy.findByText('@search_user_7').should('not.exist');
       cy.findByText('@search_user_3').click();
-      cy.findByDisplayValue('Post content @search_user_3').should('exist');
+      cy.get('@articleForm').should('have.focus');
+
+      cy.get('@articleForm')
+        .contains('Post content @search_user_3')
+        .should('exist');
     });
   });
 
@@ -58,11 +65,14 @@ describe('Article Editor', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByRole('combobox').as('articleForm');
-
+      cy.findByLabelText('Post Content').as('articleForm');
       cy.get('@articleForm').type('Post content @s');
+
+      cy.findByLabelText('Mention user').as('autocompleteForm');
+      cy.get('@autocompleteForm').should('have.focus');
       cy.findByText('Type to search for a user').should('exist');
-      cy.get('@articleForm').type('earch');
+
+      cy.get('@autocompleteForm').type('earch');
 
       const expectedUsernames = [
         '@search_user_1',
@@ -77,7 +87,12 @@ describe('Article Editor', () => {
       expectedUsernames.forEach((name) => cy.findByText(name).should('exist'));
       cy.findByText('@search_user_7').should('not.exist');
       cy.findByText('@search_user_3').click();
-      cy.findByDisplayValue('Post content @search_user_3').should('exist');
+      cy.get('@articleForm').should('have.focus');
+
+      cy.get('@articleForm').should(
+        'have.value',
+        'Post content @search_user_3 ',
+      );
     });
   });
 });
