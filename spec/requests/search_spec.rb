@@ -70,10 +70,6 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/listings" do
-    before do
-      sign_in authorized_user
-    end
-
     context "when using Elasticsearch" do
       let(:mock_documents) do
         [{ "title" => "listing1" }]
