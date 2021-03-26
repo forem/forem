@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_25_183834) do
+ActiveRecord::Schema.define(version: 2021_03_26_172406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -344,6 +344,7 @@ ActiveRecord::Schema.define(version: 2021_03_25_183834) do
     t.bigint "user_id"
     t.index ["classified_listing_category_id"], name: "index_classified_listings_on_classified_listing_category_id"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
+    t.index ["published"], name: "index_classified_listings_on_published"
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
 
@@ -431,12 +432,12 @@ ActiveRecord::Schema.define(version: 2021_03_25_183834) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "token", null: false
-    t.string "platform", null: false
     t.string "app_bundle", null: false
     t.datetime "created_at", precision: 6, null: false
+    t.string "platform", null: false
+    t.string "token", null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
     t.index ["user_id", "token", "platform", "app_bundle"], name: "index_devices_on_user_id_and_token_and_platform_and_app_bundle", unique: true
   end
 
