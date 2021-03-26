@@ -229,21 +229,6 @@ class Article < ApplicationRecord
     boosted_additional_tags String, default: ""
   end
 
-  def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)
-    stories = published.limit(number)
-    stories = if time_ago == "latest"
-                stories.order(published_at: :desc).where("score > ?", -5)
-              elsif time_ago
-                stories.order(comments_count: :desc)
-                  .where("published_at > ? AND score > ?", time_ago, -5)
-              else
-                stories.order(last_comment_at: :desc)
-                  .where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5)
-              end
-    stories = tags.size == 1 ? stories.cached_tagged_with(tags.first) : stories.tagged_with(tags)
-    stories.pluck(:path, :title, :comments_count, :created_at)
-  end
-
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     # Time ago sometimes returns this phrase instead of a date
     time_ago = 5.days.ago if time_ago == "latest"

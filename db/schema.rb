@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_23_190443) do
+ActiveRecord::Schema.define(version: 2021_03_25_183834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -105,12 +105,10 @@ ActiveRecord::Schema.define(version: 2021_03_23_190443) do
     t.boolean "email_digest_eligible", default: true
     t.float "experience_level_rating", default: 5.0
     t.float "experience_level_rating_distribution", default: 5.0
-    t.datetime "facebook_last_buffered"
     t.boolean "featured", default: false
     t.integer "featured_number"
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
-    t.datetime "last_buffered"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_experience_level_rating_at"
     t.string "main_image"
@@ -287,21 +285,6 @@ ActiveRecord::Schema.define(version: 2021_03_23_190443) do
     t.index ["title", "type_of"], name: "index_broadcasts_on_title_and_type_of", unique: true
   end
 
-  create_table "buffer_updates", force: :cascade do |t|
-    t.bigint "approver_user_id"
-    t.bigint "article_id", null: false
-    t.text "body_text"
-    t.string "buffer_id_code"
-    t.string "buffer_profile_id_code"
-    t.text "buffer_response", default: "--- {}\n"
-    t.bigint "composer_user_id"
-    t.datetime "created_at", null: false
-    t.string "social_service_name"
-    t.string "status", default: "pending"
-    t.bigint "tag_id"
-    t.datetime "updated_at", null: false
-  end
-
   create_table "chat_channel_memberships", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
@@ -350,7 +333,6 @@ ActiveRecord::Schema.define(version: 2021_03_23_190443) do
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
     t.datetime "expires_at"
-    t.datetime "last_buffered"
     t.string "location"
     t.bigint "organization_id"
     t.datetime "originally_published_at"
@@ -405,6 +387,7 @@ ActiveRecord::Schema.define(version: 2021_03_23_190443) do
     t.bigint "user_id"
     t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
     t.index ["ancestry"], name: "index_comments_on_ancestry"
+    t.index ["ancestry"], name: "index_comments_on_ancestry_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
     t.index ["score"], name: "index_comments_on_score"
@@ -845,6 +828,7 @@ ActiveRecord::Schema.define(version: 2021_03_23_190443) do
     t.datetime "created_at", null: false
     t.string "description"
     t.boolean "is_top_level_path", default: false
+    t.boolean "landing_page", default: false, null: false
     t.text "processed_html"
     t.string "slug"
     t.string "social_image"
@@ -1131,7 +1115,6 @@ ActiveRecord::Schema.define(version: 2021_03_23_190443) do
     t.string "alias_for"
     t.bigint "badge_id"
     t.string "bg_color_hex"
-    t.string "buffer_profile_id_code"
     t.string "category", default: "uncategorized", null: false
     t.datetime "created_at"
     t.integer "hotness_score", default: 0
@@ -1423,10 +1406,6 @@ ActiveRecord::Schema.define(version: 2021_03_23_190443) do
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "badge_achievements", "users", column: "rewarder_id", on_delete: :nullify
   add_foreign_key "banished_users", "users", column: "banished_by_id", on_delete: :nullify
-  add_foreign_key "buffer_updates", "articles", on_delete: :cascade
-  add_foreign_key "buffer_updates", "tags", on_delete: :nullify
-  add_foreign_key "buffer_updates", "users", column: "approver_user_id", on_delete: :nullify
-  add_foreign_key "buffer_updates", "users", column: "composer_user_id", on_delete: :nullify
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"

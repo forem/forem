@@ -26,7 +26,7 @@ gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter
 gem "ddtrace", "~> 0.46.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", github: "heartcombo/devise", ref: "0cd72a5" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.3" # Allows invitations to be sent for joining
-gem "dogstatsd-ruby", "~> 4.9" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
+gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.5" # Oauth 2 provider
 gem "elasticsearch", "~> 7.12" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
@@ -147,7 +147,7 @@ group :development, :test do
   gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.11", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.12", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.10", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.9", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.2", require: false # Code style checking for RSpec files

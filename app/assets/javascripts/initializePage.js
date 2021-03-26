@@ -12,7 +12,7 @@
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
   initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
-  initializeColorPicker
+  initializeColorPicker, Runtime
 */
 
 function callInitializers() {
@@ -79,6 +79,9 @@ function callInitializers() {
   if (!initScrolling.called) {
     initScrolling();
   }
+
+  // Initialize data-runtime context to the body data-attribute
+  document.body.dataset.runtime = Runtime.currentContext();
 }
 
 function initializePage() {
