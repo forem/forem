@@ -12,7 +12,7 @@ import {
 import {
   getMentionWordData,
   getCursorXY,
-  useTextAreasAutoResize,
+  useTextAreaAutoResize,
 } from '@utilities/textAreaUtils';
 import { mergeRefs } from '@utilities/mergeRefs';
 import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
@@ -124,13 +124,14 @@ export const MentionAutocompleteTextArea = forwardRef(
     const comboboxRef = useRef(null);
     const popoverRef = useRef(null);
 
-    const { setTextAreas } = useTextAreasAutoResize();
+    const { setTextArea, setAdditionalElements } = useTextAreaAutoResize();
 
     useLayoutEffect(() => {
       if (autoResize && comboboxRef.current && plainTextAreaRef.current) {
-        setTextAreas([comboboxRef.current, plainTextAreaRef.current]);
+        setTextArea(plainTextAreaRef.current);
+        setAdditionalElements([comboboxRef.current]);
       }
-    }, [autoResize, setTextAreas]);
+    }, [autoResize, setTextArea, setAdditionalElements]);
 
     useEffect(() => {
       if (searchTerm.length < MIN_SEARCH_CHARACTERS) {

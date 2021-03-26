@@ -116,44 +116,40 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
 };
 
 /**
- * This hook can be used to keep the height of a group of textareas in step with the current max content height, avoiding a scrolling textarea.
- * If more than one textarea is passed in the array, all textareas will receive the height of the largest text area
+ * This hook can be used to keep the height of a textarea in step with the current content height, avoiding a scrolling textarea.
+ * An optional array of additional elements can be set. If provided, all additional elements will receive the same height.
  *
  * @example
  *
- * const { setTextAreas } = useTextAreasAutoResize();
- * setTextAreas([myTextAreaRef.current]);
+ * const { setTextArea } = useTextAreaAutoResize();
+ * setTextArea(myTextAreaRef.current);
+ * setAdditionalElements([myOtherElement.current]);
  */
-export const useTextAreasAutoResize = () => {
-  const [textAreas, setTextAreas] = useState(null);
+export const useTextAreaAutoResize = () => {
+  const [textArea, setTextArea] = useState(null);
+  const [additionalElements, setAdditionalElements] = useState([]);
 
   useEffect(() => {
-    if (!textAreas || textAreas.length === 0) {
+    if (!textArea) {
       return;
     }
 
     const resizeTextArea = () => {
-      const allTextAreaHeights = textAreas.map(
-        (area) => calculateTextAreaHeight(area).height,
-      );
-      const maxHeight = Math.max(...allTextAreaHeights);
-      textAreas.forEach((area) => {
-        area.style.height = `${maxHeight}px`;
+      const { height } = calculateTextAreaHeight(textArea);
+      const newHeight = `${height}px`;
+      textArea.style.height = newHeight;
+      additionalElements.forEach((element) => {
+        element.style.height = newHeight;
       });
     };
 
     // Resize on first attach
     resizeTextArea();
     // Resize on subsequent value changes
-    textAreas.forEach((area) => {
-      area.addEventListener('input', resizeTextArea);
-    });
+    textArea.addEventListener('input', resizeTextArea);
 
-    return () =>
-      textAreas.forEach((area) => {
-        area.removeEventListener('input', resizeTextArea);
-      });
-  }, [textAreas]);
+    return () => textArea.removeEventListener('input', resizeTextArea);
+  }, [textArea, additionalElements]);
 
-  return { setTextAreas };
+  return { setTextArea, setAdditionalElements };
 };
