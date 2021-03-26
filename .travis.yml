@@ -89,7 +89,6 @@ jobs:
     #     - bin/e2e-ci
     - stage: Deploy
       name: Deploy BenHalpern
-      if: type = pull_request
       install: skip
       script: skip
       after_script: skip
