@@ -29,7 +29,7 @@ const replaceTextArea = ({
 }) => {
   const newNodes = [plainTextArea, comboboxTextArea];
 
-  const attributes = originalNodeToReplace.attributes;
+  const { attributes } = originalNodeToReplace;
   const { cssText } = document.defaultView.getComputedStyle(
     originalNodeToReplace,
     '',
