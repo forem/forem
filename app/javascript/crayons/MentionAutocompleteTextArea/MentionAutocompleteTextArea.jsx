@@ -29,24 +29,22 @@ const replaceTextArea = ({
 }) => {
   const newNodes = [plainTextArea, comboboxTextArea];
 
-  // Make sure all attributes are copied to the autocomplete & plain textareas
   const attributes = originalNodeToReplace.attributes;
-  Object.keys(attributes).forEach((attributeKey) => {
-    newNodes.forEach((node) => {
-      node.setAttribute(
-        attributes[attributeKey].name,
-        attributes[attributeKey].value,
-      );
-    });
-  });
-
-  // Make sure all styles are copied to the autocomplete & plain textareas
   const { cssText } = document.defaultView.getComputedStyle(
     originalNodeToReplace,
     '',
   );
 
   newNodes.forEach((node) => {
+    // Make sure all attributes are copied to the autocomplete & plain textareas
+    Object.keys(attributes).forEach((attributeKey) => {
+      node.setAttribute(
+        attributes[attributeKey].name,
+        attributes[attributeKey].value,
+      );
+    });
+
+    // Make sure all styles are copied to the autocomplete & plain textareas
     node.style.cssText = cssText;
     // Make sure no transition replays when the new textareas are mounted
     node.style.transition = 'none';
