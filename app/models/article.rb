@@ -1,6 +1,4 @@
 class Article < ApplicationRecord
-  self.ignored_columns = %w[facebook_last_buffered last_buffered].freeze
-
   include CloudinaryHelper
   include ActionView::Helpers
   include Storext.model
