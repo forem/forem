@@ -41,10 +41,10 @@ const replaceTextArea = ({
   });
 
   // Make sure all styles are copied to the autocomplete & plain textareas
-  const cssText = document.defaultView.getComputedStyle(
+  const { cssText } = document.defaultView.getComputedStyle(
     originalNodeToReplace,
     '',
-  ).cssText;
+  );
 
   newNodes.forEach((node) => {
     node.style.cssText = cssText;
