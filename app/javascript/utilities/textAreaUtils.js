@@ -101,11 +101,7 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
   const currentCharacter = content.charAt(selectionIndex);
   const previousCharacter = content.charAt(selectionIndex - 1);
 
-  if (
-    selectionIndex !== 0 &&
-    previousCharacter !== ' ' &&
-    previousCharacter !== ''
-  ) {
+  if (selectionIndex !== 0 && ![' ', '', '\n'].includes(previousCharacter)) {
     return getIndexOfCurrentWordAutocompleteSymbol(content, selectionIndex - 1);
   }
 
