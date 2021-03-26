@@ -28,9 +28,11 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-        relation = ::Listing.where(published: true)
+        relation = ::Listing
+          .includes(:user, :organization, :listing_category)
+          .where(published: true)
 
-        relation = filter_by_category(category, relation) if category.present?
+        relation = relation.where("classified_listing_categories.slug": category) if category.present?
 
         relation = relation.search_listings(term) if term.present?
 
@@ -47,12 +49,6 @@ module Search
           .pluck(:attributes)
       end
       private_class_method :serialize
-
-      def self.filter_by_category(category, relation)
-        listing_category = ListingCategory.find_by(slug: category)
-        relation.where(classified_listing_category_id: listing_category.id)
-      end
-      private_class_method :filter_by_category
     end
   end
 end
