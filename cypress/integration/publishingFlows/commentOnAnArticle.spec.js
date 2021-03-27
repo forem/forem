@@ -20,6 +20,8 @@ describe('Comment on an article', () => {
   it('should add a comment', () => {
     cy.findByRole('main')
       .as('main')
+      .findByRole('heading', { name: 'Discussion (0)' });
+    cy.get('@main')
       .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
       .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
       .type('this is a comment');
@@ -48,6 +50,8 @@ describe('Comment on an article', () => {
     }).then((_response) => {
       cy.findByRole('main')
         .as('main')
+        .findByRole('heading', { name: 'Discussion (0)' });
+      cy.get('@main')
         .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
         .focus(); // Focus activates the Submit button and mini toolbar below a comment textbox
 
