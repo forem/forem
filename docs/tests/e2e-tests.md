@@ -140,7 +140,7 @@ cy.createArticle({
   tags: ['beginner', 'discuss'], // tags are optional
   content: 'This is a test article',
 }).then((response) => {
-  cy.visit('/');
+  cy.visit(response.body.current_state_path); // path to article
 });
 ```
 
