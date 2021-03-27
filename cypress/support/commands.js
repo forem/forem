@@ -140,3 +140,59 @@ Cypress.Commands.add(
     );
   },
 );
+
+/**
+ * Creates an article.
+ *
+ * @param {string} title The title of an article.
+ * @param {Array<string>} [tags=[]] The tags of an article.
+ * @param {string} [content=''] The content of the article.
+ * @param {boolean} [published=true] Whether or not an article should be published.
+ * @param {string} [description=''] The description of the article.
+ * @param {string} [canonicalUrl=''] The canonical URL for the article.
+ * @param {string} [series=''] The series the article is associated with.
+ * @param {string} [allSeries=[]] The list of available series the article can be a part of.
+ * @param {string} [organizations=[]] The list of organizations the author of the article belongs to.
+ * @param {string} [organizationId=null] The selected organization's ID to create the article under.
+ * @param {'v1'|'v2'} [editorVersion='v2'] The editor version.
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for creating an article.
+ */
+Cypress.Commands.add(
+  'createArticle',
+  ({
+    title,
+    tags = [],
+    content = '',
+    published = true,
+    description = '',
+    canonicalUrl = '',
+    series = '',
+    allSeries = [],
+    organizations = [],
+    organizationId = null,
+    editorVersion = 'v2',
+  }) => {
+    return cy.request('POST', '/articles', {
+      article: {
+        id: null,
+        title,
+        tagList: tags.join(','),
+        description,
+        canonicalUrl,
+        series,
+        allSeries,
+        bodyMarkdown: content,
+        published,
+        submitting: false,
+        editing: false,
+        mainImage: null,
+        organizations,
+        organizationId,
+        edited: true,
+        updatedAt: null,
+        version: editorVersion,
+      },
+    });
+  },
+);
