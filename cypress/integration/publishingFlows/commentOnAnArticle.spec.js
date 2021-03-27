@@ -70,7 +70,6 @@ describe('Comment on an article', () => {
       // Comment was saved so the new comment textbox should be empty.
       cy.get('@main')
         .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-        .should('be.visible')
         .should('have.value', '');
 
       // TODO: Fix query
