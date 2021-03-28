@@ -7,7 +7,6 @@ module Api
       rescue_from UnauthorizedError, with: :error_unauthorized
 
       before_action :authenticate_with_api_key_or_current_user!
-      before_action :authorize_pro_user
       before_action :authorize_user_organization
       before_action :load_owner
       before_action :validate_date_params, only: [:historical]
@@ -45,10 +44,6 @@ module Api
       end
 
       private
-
-      def authorize_pro_user
-        raise UnauthorizedError unless @user&.pro?
-      end
 
       def authorize_user_organization
         return unless analytics_params[:organization_id]

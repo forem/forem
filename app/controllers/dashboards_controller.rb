@@ -1,14 +1,11 @@
 class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
-  before_action :fetch_and_authorize_user, except: :pro
+  before_action :fetch_and_authorize_user, except: :analytics
   before_action :set_source, only: %i[subscriptions]
-  before_action -> { limit_per_page(default: 80, max: 1000) }, except: %i[show pro]
-  after_action :verify_authorized
+  before_action -> { limit_per_page(default: 80, max: 1000) }, except: %i[show analytics]
 
   def show
-    @current_user_pro = current_user.pro?
-
     target = @user
     not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id] || @user.any_admin?)
 
@@ -55,13 +52,10 @@ class DashboardsController < ApplicationController
       .includes(:follower).order(created_at: :desc).limit(@follows_limit)
   end
 
-  def pro
+  def analytics
     @user_or_org = if params[:org_id]
-                     org = Organization.find_by(id: params[:org_id])
-                     authorize org, :pro_org_user?
-                     org
+                     Organization.find_by(id: params[:org_id])
                    else
-                     authorize current_user, :pro_user?
                      current_user
                    end
     @organizations = current_user.member_organizations
