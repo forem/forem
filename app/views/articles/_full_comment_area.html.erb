@@ -6,12 +6,13 @@
         <div id="comment-subscription">
           <div role="presentation" class="crayons-btn-group">
             <span class="crayons-btn crayons-btn--outlined">Subscribe</span>
-          </div>  
+          </div>
         </div>
       </header>
 
       <div
         id="comments-container"
+        data-testid="comments-container"
         data-commentable-id="<%= @article.id %>"
         data-commentable-type="Article"
         data-has-recent-comment-activity="<%= @article.has_recent_comment_activity? %>">
