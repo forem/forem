@@ -7,7 +7,11 @@ import BasicEditor from './BasicEditor';
 import EditorFormattingHelp from './EditorFormattingHelp';
 import { Modal } from '@crayons';
 
-const renderModal = (onClose, title, helpHtml) => {
+const renderModal = (onClose, title, selector) => {
+  const helpHtml =
+    document.getElementById(selector) &&
+    document.getElementById(selector).innerHTML;
+
   return (
     <Modal onClose={onClose} title={title}>
       <div
@@ -20,15 +24,6 @@ const renderModal = (onClose, title, helpHtml) => {
 
 export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
   const [state, setState] = useState({
-    liquidHelpHTML:
-      document.getElementById('editor-liquid-help') &&
-      document.getElementById('editor-liquid-help').innerHTML,
-    markdownHelpHTML:
-      document.getElementById('editor-markdown-help') &&
-      document.getElementById('editor-markdown-help').innerHTML,
-    frontmatterHelpHTML:
-      document.getElementById('editor-frontmatter-help') &&
-      document.getElementById('editor-frontmatter-help').innerHTML,
     liquidShowing: false,
     markdownShowing: false,
     frontmatterShowing: false,
@@ -41,14 +36,7 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
     }));
   };
 
-  const {
-    liquidHelpHTML,
-    markdownHelpHTML,
-    frontmatterHelpHTML,
-    liquidShowing,
-    markdownShowing,
-    frontmatterShowing,
-  } = state;
+  const { liquidShowing, markdownShowing, frontmatterShowing } = state;
 
   return (
     <div className="crayons-article-form__aside">
@@ -68,26 +56,24 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
           )}
         </div>
       )}
-
       {liquidShowing &&
         renderModal(
           toggleModal('liquidShowing'),
           '🌊 Liquid Tags',
-          liquidHelpHTML,
+          'editor-liquid-help',
         )}
 
       {markdownShowing &&
         renderModal(
           toggleModal('markdownShowing'),
           '✍️ Markdown',
-          markdownHelpHTML,
+          'editor-markdown-help',
         )}
-
       {frontmatterShowing &&
         renderModal(
           toggleModal('frontmatterShowing'),
           'Jekyll Front Matter',
-          frontmatterHelpHTML,
+          'editor-frontmatter-help',
         )}
     </div>
   );
