@@ -20,7 +20,9 @@ module Search
       DEFAULT_PER_PAGE = 60
       MAX_PER_PAGE = 100 # to avoid querying too many items, we set a maximum amount for a page
 
-      def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE)
+      def self.search_documents(
+        user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE, multisearch: false
+      )
         return {} unless user
 
         statuses = statuses.presence || DEFAULT_STATUSES
@@ -31,14 +33,25 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-        result = find_articles(
-          user: user,
-          term: term,
-          statuses: statuses,
-          tags: tags,
-          page: page,
-          per_page: per_page,
-        )
+        result = if multisearch
+                   find_articles_multisearch(
+                     user: user,
+                     term: term,
+                     statuses: statuses,
+                     tags: tags,
+                     page: page,
+                     per_page: per_page,
+                   )
+                 else
+                   find_articles(
+                     user: user,
+                     term: term,
+                     statuses: statuses,
+                     tags: tags,
+                     page: page,
+                     per_page: per_page,
+                   )
+                 end
 
         # NOTE: [@rhymes] an earlier version used `Article.includes(:user)`
         # to preload users, unfortunately it's not possible in Rails to specify
@@ -107,6 +120,40 @@ module Search
 
         {
           items: relation,
+          total: total
+        }
+      end
+      private_class_method :find_articles
+
+      # [@rhymes] this is at least 10 times slower than the trigger based solution
+      # => not surprising as, even if it uses a tsvector index, it doesn't use a tsvector column
+      def self.find_articles_multisearch(user:, term:, statuses:, page:, per_page:)
+        reactions = user.reactions.readinglist
+          .where(status: statuses, reactable_type: "Article")
+          .order(created_at: :desc)
+          .select(*REACTION_ATTRIBUTES)
+
+        relation = PgSearch.multisearch(term)
+          .preload(:searchable)
+          .where(searchable_type: "Article")
+          .where(searchable_id: reactions.reselect(:reactable_id))
+          .page(page).per(per_page)
+
+        total = relation.count
+
+        reactions = reactions.index_by(&:reactable_id)
+        items = relation.map do |doc|
+          article = doc.searchable
+          reaction = reactions[article.id]
+
+          article.reaction_id = reaction.id
+          article.reaction_user_id = reaction.user_id
+
+          article
+        end
+
+        {
+          items: items,
           total: total
         }
       end

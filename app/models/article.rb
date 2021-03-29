@@ -14,7 +14,7 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
-  attr_accessor :publish_under_org
+  attr_accessor :publish_under_org, :reaction_id, :reaction_user_id
 
   attr_readonly :tsv
   attr_writer :series
@@ -114,6 +114,17 @@ class Article < ApplicationRecord
 
   # [@rhymes] this is adapted from the `search_fields` property in
   # `config/elasticsearch/mappings/feed_content.json`
+  multisearchable against: %i[body_markdown cached_tag_list title pg_search_org pg_search_user],
+                  # limiting to only articles belonging to any reading list
+                  if: ->(article) { article.reactions.readinglist.any? }
+  def pg_search_org
+    organization&.name
+  end
+
+  def pg_search_user
+    "#{user&.name} #{user&.username}"
+  end
+
   pg_search_scope :search_reading_list,
                   against: %i[body_markdown cached_tag_list title],
                   # TODO: find out how to handle this data, since it's not part of this table we have to
@@ -131,7 +142,8 @@ class Article < ApplicationRecord
                       # we search against.
                       tsvector_column: %w[tsv]
                     }
-                  }
+                  },
+                  ignoring: :accents
 
   # [@jgaskins] We use an index on `published`, but since it's a boolean value
   #   the Postgres query planner often skips it due to lack of diversity of the
