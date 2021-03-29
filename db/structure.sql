@@ -2130,7 +2130,8 @@ CREATE TABLE public.pages (
     social_image character varying,
     template character varying,
     title character varying,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    landing_page boolean DEFAULT false NOT NULL
 );
 
 
@@ -7414,6 +7415,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210324031252'),
 ('20210324031738'),
 ('20210325040245'),
+('20210325183834'),
 ('20210326155612'),
 ('20210326160257'),
 ('20210326172446');
