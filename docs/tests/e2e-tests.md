@@ -116,7 +116,8 @@ of Forem, we need custom commands to create an article, for example.
 
 A custom command is prefixed like any Cypress command by `cy.` All custom
 commands can be found in the
-[commands.js](https://github.com/forem/forem/blob/master/cypress/support/commands.js) file.
+[commands.js](https://github.com/forem/forem/blob/master/cypress/support/commands.js)
+file.
 
 ### Creating a Custom Article Command
 
@@ -141,6 +142,18 @@ cy.createArticle({
   content: 'This is a test article',
 }).then((response) => {
   cy.visit(response.body.current_state_path); // path to article
+});
+```
+
+### Creating a Canned Response Command
+
+To create a canned as part of your test's setup, use the `cy.cannedResponse`
+custom command. It can be called like so:
+
+```javascript
+cy.createCannedResponse({
+  title: 'Test Canned Response',
+  content: 'This is a test canned response',
 });
 ```
 

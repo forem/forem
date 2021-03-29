@@ -196,3 +196,22 @@ Cypress.Commands.add(
     });
   },
 );
+
+/**
+ * Creates a canned response.
+ *
+ * @param {string} title The title of a canned response.
+ * @param {string} [content=''] The content of the canned response.
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for creating a canned response.
+ */
+Cypress.Commands.add('createCannedResponse', ({ title, content }) => {
+  const encodedTitle = encodeURIComponent(title);
+  const encodedContent = encodeURIComponent(content);
+
+  return cy.request(
+    'POST',
+    '/response_templates',
+    `utf8=%E2%9C%93&response_template%5Btitle%5D=${encodedTitle}&response_template%5Bcontent%5D=${encodedContent}`,
+  );
+});
