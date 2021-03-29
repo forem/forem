@@ -257,11 +257,12 @@ describe('Comment on articles', () => {
 
     cy.findByRole('link', { name: /Reply/ });
 
-    // Wait for the comment to save
-    cy.findByText('Edit');
-
-    cy.findAllByLabelText('Toggle dropdown menu').last().click();
-    cy.findByText('Edit').click();
+    cy.findByTestId('comments-container').within(() => {
+      cy.findByLabelText('Toggle dropdown menu').click();
+      // Wait for the menu to be visible
+      cy.findByText('Edit').should('be.visible');
+      cy.findByText('Edit').click();
+    });
 
     cy.findByDisplayValue('first comment').should('exist');
   });
