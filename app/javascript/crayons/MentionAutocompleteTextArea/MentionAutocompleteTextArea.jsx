@@ -274,6 +274,7 @@ export const MentionAutocompleteTextArea = ({
       <div aria-live="polite" class="screen-reader-only">
         {ariaHelperText}
       </div>
+
       <Combobox
         id="combobox-container"
         onSelect={handleSelect}
@@ -287,6 +288,7 @@ export const MentionAutocompleteTextArea = ({
           autocomplete={false}
           onChange={handleTextInputChange}
         />
+
         <textarea
           data-testid="autocomplete-textarea"
           data-mention-autocomplete-active="true"
@@ -294,6 +296,7 @@ export const MentionAutocompleteTextArea = ({
           onChange={handleTextInputChange}
           value={textContent}
         />
+
         {searchTerm && (
           <ComboboxPopover
             ref={popoverRef}
