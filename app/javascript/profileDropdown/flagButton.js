@@ -23,7 +23,7 @@ export function initFlag() {
   function flag() {
     const confirmFlag = window.confirm(
       flagStatus
-        ? "Are you sure you want to unflag this person? This will restore their posts' visibility."
+        ? "Are you sure you want to unflag this person? This will make all of their posts visible again."
         : 'Are you sure you want to flag this person? This will make all of their posts less visible.',
     );
 
