@@ -52,13 +52,9 @@ export function initFlag() {
           if (response.result === 'create') {
             flagStatus = true;
             flagButton.innerHTML = `Unflag ${profileUserName}`;
-            window.alert('All posts by this author will be less visible.');
           } else {
             flagStatus = false;
             flagButton.innerHTML = `Flag ${profileUserName}`;
-            window.alert(
-              'Unflagged the author, the visibility of their posts has been restored.',
-            );
           }
         })
         .catch((e) => window.alert(`Something went wrong: ${e}`));
