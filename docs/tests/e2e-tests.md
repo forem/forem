@@ -118,7 +118,7 @@ A custom command is prefixed like any Cypress command by `cy.` All custom
 commands can be found in the
 [commands.js](https://github.com/forem/forem/blob/master/cypress/support/commands.js) file.
 
-### Create Article Custom Command
+### Creating a Custom Article Command
 
 To create an article as part of your test's setup, use the `cy.createArticle`
 custom command. It can be called like so:
