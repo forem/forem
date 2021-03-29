@@ -23,7 +23,10 @@ export function initFlag() {
   const { profileUserId, profileUserName } = flagButton.dataset;
   let flagStatus = flagButton.dataset.flagStatus === 'true';
 
-  if (user.id === parseInt(profileUserId, 10) || !user.trusted) {
+  if (
+    (!user.trusted && !user.admin) ||
+    user.id === parseInt(profileUserId, 10)
+  ) {
     flagButton.remove();
   }
 
