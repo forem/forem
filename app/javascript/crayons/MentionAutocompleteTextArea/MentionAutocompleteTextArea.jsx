@@ -294,7 +294,7 @@ export const MentionAutocompleteTextArea = ({
           onChange={handleTextInputChange}
           value={textContent}
         />
-        {searchTerm !== '' && (
+        {searchTerm && (
           <ComboboxPopover
             ref={popoverRef}
             className="crayons-autocomplete__popover absolute"
