@@ -137,6 +137,7 @@ function addClickListeners(form) {
 
       if (textAreaReplaceable) {
         textArea.value = content;
+        textArea.dispatchEvent(new Event('input', { target: textArea }));
         textArea.focus();
         responsesContainer.classList.toggle('hidden');
       }
