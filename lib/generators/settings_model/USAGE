@@ -1,0 +1,42 @@
+Description:
+    Generates a settings model.
+
+Examples:
+    * Generating a settings model (you don't need to specify the Settings::
+      namespace)
+
+        $ rails generate settings_model Notification
+
+        # db/migrate/<timestamp>_create_settings_notifications.rb
+        class CreateSettingsNotifications < ActiveRecord::Migration[6.0]
+          def self.up
+            create_table :settings_notifications do |t|
+              t.string :var, null: false
+              t.text :value, null: true
+
+              t.timestamps
+            end
+
+            add_index :settings_notifications, :var, unique: true
+          end
+
+          def self.down
+            drop_table :settings_notifications
+          end
+        end
+
+        # app/models/settings/notification.rb
+        module Settings
+          class Notification < RailsSettings::Base
+            self.table_name = :settings_notifications
+
+            # The configuration is cached, change this if you want to force update
+            # the cache, or call Setting::Notification.clear_cache
+            cache_prefix { "v1" }
+
+            # Define your fields
+            # field :host, type: :string, default: "http://localhost:3000"
+            # field :default_locale, default: "en", type: :string
+          end
+        end
+

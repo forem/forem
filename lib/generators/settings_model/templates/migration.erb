@@ -1,0 +1,16 @@
+class Create<%= table_name.camelize %> < ActiveRecord::Migration<%= migration_version %>
+  def self.up
+    create_table :<%= table_name %> do |t|
+      t.string :var, null: false
+      t.text :value, null: true
+
+      t.timestamps
+    end
+
+    add_index :<%= table_name %>, :var, unique: true
+  end
+
+  def self.down
+    drop_table :<%= table_name %>
+  end
+end

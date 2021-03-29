@@ -12,10 +12,11 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       end
     end
 
+    # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
     it "fetch only articles from a feed_url", vcr: { cassette_name: "feeds_import" } do
       num_articles = described_class.call
 
-      verify(format: :txt) { num_articles }
+      expect(num_articles).to eq(21)
     end
 
     it "does not recreate articles if they already exist", vcr: { cassette_name: "feeds_import_twice" } do
@@ -25,11 +26,9 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
     end
 
     it "parses correctly", vcr: { cassette_name: "feeds_import" } do
-      described_class.call
-
-      verify format: :txt do
-        User.find_by(feed_url: nonpermanent_link).articles.first.body_markdown
-      end
+      expect do
+        described_class.call
+      end.to change(User.find_by(feed_url: nonpermanent_link).articles, :count).by(1)
     end
 
     it "sets feed_fetched_at to the current time", vcr: { cassette_name: "feeds_import" } do
@@ -87,17 +86,17 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
     end
 
     context "with an explicit set of users", vcr: { cassette_name: "feeds_import" } do
+      # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
       it "accepts a subset of users" do
         num_articles = described_class.call(users: User.with_feed.limit(1))
 
-        verify(format: :txt) { num_articles }
+        expect(num_articles).to eq(10)
       end
 
       it "imports no articles if given users are without feed" do
         create(:user, feed_url: nil)
 
-        described_class.call(users: User.where(feed_url: nil))
-        verify(format: :txt) { 0 }
+        expect(described_class.call(users: User.where(feed_url: nil))).to eq(0)
       end
     end
   end

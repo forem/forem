@@ -2,11 +2,20 @@ require "rails_helper"
 
 RSpec.describe PushNotifications::Send, type: :service do
   let(:user) { create(:user) }
+  let(:user2) { create(:user) }
   let(:params) do
     {
-      user: user,
+      user_ids: [user.id],
       title: "Alert",
       body: "some alert here",
+      payload: ""
+    }
+  end
+  let(:many_targets_params) do
+    {
+      user_ids: [user.id, user2.id],
+      title: "Alert 2",
+      body: "some other alert",
       payload: ""
     }
   end
@@ -33,7 +42,7 @@ RSpec.describe PushNotifications::Send, type: :service do
     end
   end
 
-  context "with devices for user" do
+  context "with devices for one user" do
     before do
       allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("dGVzdGluZw==")
@@ -53,6 +62,30 @@ RSpec.describe PushNotifications::Send, type: :service do
       expect { described_class.call(params) }
         .to change { Rpush::Client::Redis::Notification.all.count }.by(2)
         .and change(PushNotifications::DeliverWorker.jobs, :size).by(1)
+    end
+  end
+
+  context "with devices for multiple users" do
+    before do
+      allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
+      allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("dGVzdGluZw==")
+      allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("Forem")
+      create(:device, user: user)
+      create(:device, user: user2)
+    end
+
+    it "creates a notification and enqueues it" do
+      expect { described_class.call(many_targets_params) }
+        .to change { Rpush::Client::Redis::Notification.all.count }.by(2)
+        .and change { PushNotifications::DeliverWorker.jobs.size }.by(1)
+    end
+
+    it "creates a single notification for each of the user's devices when they have multiple" do
+      create(:device, user: user)
+
+      expect { described_class.call(many_targets_params) }
+        .to change { Rpush::Client::Redis::Notification.all.count }.by(3)
+        .and change { PushNotifications::DeliverWorker.jobs.size }.by(1)
     end
   end
 end

@@ -10,7 +10,7 @@ import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { SearchForm } from './SearchForm';
 
 const GLOBAL_MINIMIZE_KEY = 'Digit0';
-const GLOBAL_SEARCH_KEY = 'Slash';
+const GLOBAL_SEARCH_KEY = '/';
 const ENTER_KEY = 'Enter';
 
 export class Search extends Component {

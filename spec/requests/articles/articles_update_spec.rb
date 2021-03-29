@@ -130,7 +130,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
   end
 
   it "creates a notification job if published the first time" do
-    draft = create(:article, published: false, user_id: user.id)
+    draft = create(:article, published: false, published_at: nil, user_id: user.id)
     sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
       put "/articles/#{draft.id}", params: {
         article: { published: true, body_markdown: "blah"  }

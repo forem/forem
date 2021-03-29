@@ -380,7 +380,7 @@ function fetchNextPageIfNearBottom() {
       fetchNextPodcastPage(indexContainer);
     };
   } else if (indexWhich === 'videos') {
-    scrollableElem = document.getElementById('video-collection');
+    scrollableElem = document.getElementById('main-content');
     fetchCallback = function fetch() {
       fetchNextVideoPage(indexContainer);
     };

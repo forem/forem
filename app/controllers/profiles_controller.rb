@@ -6,10 +6,16 @@ class ProfilesController < ApplicationController
     update_result = Profiles::Update.call(current_user, update_params)
     if update_result.success?
       flash[:settings_notice] = "Your profile has been updated"
+      redirect_to user_settings_path
     else
+      @user = current_user
+      @tab = "profile"
       flash[:error] = "Error: #{update_result.errors_as_sentence}"
+      render template: "users/edit", locals: {
+        user: update_params[:user],
+        profile: update_params[:profile]
+      }
     end
-    redirect_to user_settings_path
   end
 
   private

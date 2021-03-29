@@ -1,9 +1,11 @@
 <% title "Listings Dashboard" %>
 
-<div id="listings-dashboard"
-  data-listings="<%= @listings_json %>"
-  data-usercredits="<%= @user_credits %>"
-  data-orglistings="<%= @org_listings_json %>"
-  data-orgs="<%= @orgs_json %>">
-</div>
-<%= javascript_packs_with_chunks_tag "listingDashboard", defer: true %>
+<main id="main-content">
+  <div id="listings-dashboard"
+    data-listings="<%= @listings_json %>"
+    data-usercredits="<%= @user_credits %>"
+    data-orglistings="<%= @org_listings_json %>"
+    data-orgs="<%= @orgs_json %>">
+  </div>
+  <%= javascript_packs_with_chunks_tag "listingDashboard", defer: true %>
+</main>
