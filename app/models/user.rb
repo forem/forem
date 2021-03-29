@@ -313,7 +313,7 @@ class User < ApplicationRecord
 
   def followed_articles
     Article
-      .tagged_with(cached_followed_tag_names, any: true).unscope(:select)
+      .cached_tagged_with(cached_followed_tag_names).unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
   end
 
