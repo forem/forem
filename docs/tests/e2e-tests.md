@@ -112,7 +112,7 @@ package.
 
 [Cypress custom commands](https://docs.cypress.io/api/cypress-api/custom-commands.html)
 allow you to extend the functionality of the E2E testing framework. In the case
-of Forem, we need custom commands. For example, like creating an article.
+of Forem, we need custom commands to create an article, for example.
 
 A custom command is prefixed like any Cypress command by `cy.` All custom
 commands can be found in the
