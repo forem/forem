@@ -75,11 +75,19 @@ class SearchController < ApplicationController
   end
 
   def listings
-    cl_docs = Search::Listing.search_documents(
-      params: listing_params.to_h,
-    )
+    result =
+      if FeatureFlag.enabled?(:search_2_listings)
+        Search::Postgres::Listing.search_documents(
+          category: listing_params[:category],
+          page: listing_params[:page],
+          per_page: listing_params[:per_page],
+          term: listing_params[:listing_search],
+        )
+      else
+        Search::Listing.search_documents(params: listing_params.to_h)
+      end
 
-    render json: { result: cl_docs }
+    render json: { result: result }
   end
 
   def users
