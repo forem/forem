@@ -145,6 +145,18 @@ cy.createArticle({
 });
 ```
 
+### Creating a Response Template Command
+
+To create a response template as part of your test's setup, use the
+`cy.createResponseTemplate` custom command. It can be called like so:
+
+```javascript
+cy.createResponseTemplate({
+  title: 'Test Canned Response',
+  content: 'This is a test canned response',
+});
+```
+
 ## Additional Resources
 
 - [Cypress documentation](https://docs.cypress.io)
