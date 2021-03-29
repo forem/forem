@@ -116,7 +116,7 @@ of Forem, we need custom commands to create an article, for example.
 
 A custom command is prefixed like any Cypress command by `cy.` All custom
 commands can be found in the
-https://github.com/forem/forem/blob/master/cypress/support/commands.js file.
+[commands.js](https://github.com/forem/forem/blob/master/cypress/support/commands.js) file.
 
 ### Create Article Custom Command
 
