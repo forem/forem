@@ -200,7 +200,6 @@ ActiveRecord::Schema.define(version: 2021_03_25_183834) do
     t.string "slug", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
-    t.integer "credits_awarded", default: 0, null: false
     t.index ["slug"], name: "index_badges_on_slug", unique: true
     t.index ["title"], name: "index_badges_on_title", unique: true
   end
