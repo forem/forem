@@ -7,7 +7,7 @@ import {
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
-  mentionAutoCompleteImports, // eslint-disable-line no-undef
+  mentionAutoCompleteImports: undefined,
   getMentionAutoCompleteImports() {
     if (!this.mentionAutoCompleteImports) {
       this.mentionAutoCompleteImports = [
