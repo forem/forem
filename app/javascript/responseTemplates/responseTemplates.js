@@ -124,9 +124,12 @@ function addClickListeners(form) {
   );
 
   insertButtons.forEach((button) => {
-    button.addEventListener('click', (e) => {
-      const { content } = e.target.dataset;
-      const textArea = form.querySelector('textarea[data-active]');
+    button.addEventListener('click', (event) => {
+      const { content } = event.target.dataset;
+      // We need to grab the textarea that is not the comment mention auto-complete component
+      const textArea = event.target.form.querySelector(
+        '.comment-textarea:not([role=combobox])',
+      );
       const textAreaReplaceable =
         textArea.value === null ||
         textArea.value === '' ||

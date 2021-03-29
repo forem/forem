@@ -146,28 +146,6 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(Article, "title", "Test article") do
-  markdown = <<~MARKDOWN
-    ---
-    title:  Test article
-    published: true
-    cover_image: #{Faker::Company.logo}
-    ---
-
-    #{Faker::Hipster.paragraph(sentence_count: 2)}
-    #{Faker::Markdown.random}
-    #{Faker::Hipster.paragraph(sentence_count: 2)}
-  MARKDOWN
-  Article.create(
-    body_markdown: markdown,
-    featured: true,
-    show_comments: true,
-    user_id: User.order(Arel.sql("RANDOM()")).first.id,
-  )
-end
-
-##############################################################################
-
 seeder.create_if_none(ListingCategory) do
   ListingCategory.create!(
     slug: "cfp",
