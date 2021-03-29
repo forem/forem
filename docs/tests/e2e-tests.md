@@ -108,6 +108,42 @@ Pro as there were issues integrating the cypress-rails gem with the
 [knapsack-pro-cypress](https://github.com/KnapsackPro/knapsack-pro-cypress) npm
 package.
 
+## Cypress Custom commands
+
+[Cypress custom commands](https://docs.cypress.io/api/cypress-api/custom-commands.html)
+allow you to extend the functionality of the E2E testing framework. In the case
+of Forem, we need custom commands to create an article, for example.
+
+A custom command is prefixed like any Cypress command by `cy.` All custom
+commands can be found in the
+[commands.js](https://github.com/forem/forem/blob/master/cypress/support/commands.js) file.
+
+### Creating a Custom Article Command
+
+To create an article as part of your test's setup, use the `cy.createArticle`
+custom command. It can be called like so:
+
+```javascript
+cy.createArticle({
+  title: 'Test Article',
+  tags: ['beginner', 'discuss'], // tags are optional
+  content: 'This is a test article',
+});
+```
+
+If you want to do something with the article creation's response, you can call
+it like so.
+
+```javascript
+cy.createArticle({
+  title: 'Test Article',
+  tags: ['beginner', 'discuss'], // tags are optional
+  content: 'This is a test article',
+}).then((response) => {
+  cy.visit(response.body.current_state_path); // path to article
+});
+```
+
 ## Additional Resources
 
 - [Cypress documentation](https://docs.cypress.io)
