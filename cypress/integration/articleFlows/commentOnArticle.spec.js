@@ -17,14 +17,14 @@ describe('Comment on articles', () => {
     });
   });
 
-  describe.skip('Comments using mention autocomplete', () => {
+  describe('Comments using mention autocomplete', () => {
     it('should comment on an article with user mention autocomplete suggesting max 6 users', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText('Add a comment to the discussion').click();
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
 
       // Wait for the new autocomplete text areas to be mounted
       cy.findByTestId('autocomplete-textarea', {
@@ -70,7 +70,7 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText('Add a comment to the discussion').click();
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
 
       // Wait for the new autocomplete text areas to be mounted
       cy.findByTestId('autocomplete-textarea', {
@@ -99,7 +99,7 @@ describe('Comment on articles', () => {
         { fixture: 'search/emptyUsernamesSearch.json' },
       );
 
-      cy.findByLabelText('Add a comment to the discussion').click();
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
       // Wait for the new autocomplete text areas to be mounted
       cy.findByTestId('autocomplete-textarea', {
         role: 'textbox',
@@ -129,7 +129,7 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText('Add a comment to the discussion').click();
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
       // Wait for the new autocomplete text areas to be mounted
       cy.findByTestId('autocomplete-textarea', {
         role: 'textbox',
@@ -158,7 +158,7 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText('Add a comment to the discussion').click();
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
       // Wait for the new autocomplete text areas to be mounted
       cy.findByTestId('autocomplete-textarea', {
         role: 'textbox',
@@ -186,7 +186,7 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText('Add a comment to the discussion').click();
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
       // Wait for the new autocomplete text areas to be mounted
       cy.findByTestId('autocomplete-textarea', {
         role: 'textbox',
@@ -212,7 +212,7 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText('Add a comment to the discussion').click();
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
       // Wait for the new autocomplete text areas to be mounted
       cy.findByTestId('autocomplete-textarea', {
         role: 'textbox',
@@ -254,7 +254,7 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText('Add a comment to the discussion').click();
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
       // Wait for the new autocomplete text areas to be mounted
       cy.findByTestId('autocomplete-textarea', {
         role: 'textbox',
@@ -277,34 +277,34 @@ describe('Comment on articles', () => {
     });
   });
 
-  // it('should add a comment', () => {
-  //   cy.findByRole('main')
-  //     .as('main')
-  //     .findByRole('heading', { name: 'Discussion (0)' });
-  //   cy.get('@main')
-  //     .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-  //     .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
-  //     .type('this is a comment');
+  it('should add a comment', () => {
+    cy.findByRole('main')
+      .as('main')
+      .findByRole('heading', { name: 'Discussion (0)' });
+    cy.get('@main')
+      .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
+      .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
+      .type('this is a comment');
 
-  //   cy.get('@main')
-  //     .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-  //     .should('have.value', 'this is a comment');
+    cy.get('@main')
+      .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
+      .should('have.value', 'this is a comment');
 
-  //   cy.get('@main')
-  //     .findByRole('button', { name: /^Submit$/i })
-  //     .click();
+    cy.get('@main')
+      .findByRole('button', { name: /^Submit$/i })
+      .click();
 
-  //   // Comment was saved so the new comment textbox should be empty.
-  //   cy.get('@main')
-  //     .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-  //     .should('have.value', '');
+    // Comment was saved so the new comment textbox should be empty.
+    cy.get('@main')
+      .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
+      .should('have.value', '');
 
-  //   cy.get('@main').findByText(/^this is a comment$/i);
-  //   cy.get('@main').findByRole('heading', { name: 'Discussion (1)' });
-  // });
+    cy.get('@main').findByText(/^this is a comment$/i);
+    cy.get('@main').findByRole('heading', { name: 'Discussion (1)' });
+  });
 
-  it('should add a comment from a canned response', () => {
-    cy.createCannedResponse({
+  it('should add a comment from a response template', () => {
+    cy.createResponseTemplate({
       title: 'Test Canned Response',
       content: 'This is a test canned response',
     }).then((_response) => {

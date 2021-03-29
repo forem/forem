@@ -205,7 +205,7 @@ Cypress.Commands.add(
  *
  * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for creating a canned response.
  */
-Cypress.Commands.add('createCannedResponse', ({ title, content }) => {
+Cypress.Commands.add('createResponseTemplate', ({ title, content }) => {
   const encodedTitle = encodeURIComponent(title);
   const encodedContent = encodeURIComponent(content);
 
