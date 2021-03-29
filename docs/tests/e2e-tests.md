@@ -145,13 +145,13 @@ cy.createArticle({
 });
 ```
 
-### Creating a Canned Response Command
+### Creating a Response Template Command
 
-To create a canned response as part of your test's setup, use the `cy.cannedResponse`
-custom command. It can be called like so:
+To create a response template as part of your test's setup, use the
+`cy.createResponseTemplate` custom command. It can be called like so:
 
 ```javascript
-cy.createCannedResponse({
+cy.createResponseTemplate({
   title: 'Test Canned Response',
   content: 'This is a test canned response',
 });
