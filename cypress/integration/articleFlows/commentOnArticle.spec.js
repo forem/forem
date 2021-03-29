@@ -197,7 +197,7 @@ describe('Comment on articles', () => {
     cy.findByText('@search_user_1').should('not.be.visible');
   });
 
-  it('should reply to a comment with user mention autocomplete', () => {
+  xit('should reply to a comment with user mention autocomplete', () => {
     cy.intercept(
       { method: 'GET', url: '/search/usernames' },
       { fixture: 'search/usernames.json' },
