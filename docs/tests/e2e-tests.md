@@ -147,7 +147,7 @@ cy.createArticle({
 
 ### Creating a Canned Response Command
 
-To create a canned as part of your test's setup, use the `cy.cannedResponse`
+To create a canned response as part of your test's setup, use the `cy.cannedResponse`
 custom command. It can be called like so:
 
 ```javascript
