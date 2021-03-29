@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const EditorFormattingHelp = ({ toggleModal }) => (
+export const EditorFormattingHelp = ({ openModal }) => (
   <div
     data-testid="format-help"
     className="crayons-article-form__help crayons-article-form__help--body"
@@ -10,7 +10,7 @@ const EditorFormattingHelp = ({ toggleModal }) => (
     <ul className="list-disc pl-6 color-base-70">
       <li>
         Use{' '}
-        <a href="#markdown" onClick={toggleModal('markdownShowing')}>
+        <a href="#markdown" onClick={() => openModal('markdownShowing')}>
           Markdown
         </a>{' '}
         to write and format posts.
@@ -109,7 +109,7 @@ const EditorFormattingHelp = ({ toggleModal }) => (
       </li>
       <li>
         You can use{' '}
-        <a href="#liquid" onClick={toggleModal('liquidShowing')}>
+        <a href="#liquid" onClick={() => openModal('liquidShowing')}>
           Liquid tags
         </a>{' '}
         to add rich content such as Tweets, YouTube videos, etc.
@@ -125,5 +125,3 @@ const EditorFormattingHelp = ({ toggleModal }) => (
 EditorFormattingHelp.propTypes = {
   toggleModal: PropTypes.func.isRequired,
 };
-
-export default EditorFormattingHelp;

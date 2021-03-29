@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import ArticleFormTitle from './ArticleFormTitle';
-import TagInput from './TagInput';
-import BasicEditor from './BasicEditor';
-import EditorFormattingHelp from './EditorFormattingHelp';
+import { ArticleFormTitle } from './ArticleFormTitle';
+import { TagInput } from './TagInput';
+import { BasicEditor } from './BasicEditor';
+import { EditorFormattingHelp } from './EditorFormattingHelp';
 import { Modal } from '@crayons';
 
 const renderModal = (onClose, title, selector) => {
@@ -29,11 +29,16 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
     frontmatterShowing: false,
   });
 
-  const toggleModal = (varShowing) => (e) => {
-    e.preventDefault();
-    setState((prevState) => ({
-      [varShowing]: !prevState[varShowing],
-    }));
+  const openModal = (varShowing) => {
+    setState({
+      [varShowing]: true,
+    });
+  };
+
+  const closeModal = (varShowing) => {
+    setState({
+      [varShowing]: false,
+    });
   };
 
   const { liquidShowing, markdownShowing, frontmatterShowing } = state;
@@ -49,29 +54,29 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
           {helpFor === 'article-form-title' && <ArticleFormTitle />}
           {helpFor === 'tag-input' && <TagInput />}
 
-          {version === 'v1' && <BasicEditor toggleModal={toggleModal} />}
+          {version === 'v1' && <BasicEditor openModal={openModal} />}
 
           {(helpFor === 'article_body_markdown' || version === 'v1') && (
-            <EditorFormattingHelp toggleModal={toggleModal} />
+            <EditorFormattingHelp openModal={openModal} />
           )}
         </div>
       )}
       {liquidShowing &&
         renderModal(
-          toggleModal('liquidShowing'),
+          () => closeModal('liquidShowing'),
           '🌊 Liquid Tags',
           'editor-liquid-help',
         )}
 
       {markdownShowing &&
         renderModal(
-          toggleModal('markdownShowing'),
+          () => closeModal('markdownShowing'),
           '✍️ Markdown',
           'editor-markdown-help',
         )}
       {frontmatterShowing &&
         renderModal(
-          toggleModal('frontmatterShowing'),
+          () => closeModal('frontmatterShowing'),
           'Jekyll Front Matter',
           'editor-frontmatter-help',
         )}

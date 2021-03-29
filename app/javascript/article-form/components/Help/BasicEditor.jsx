@@ -1,13 +1,13 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const BasicEditor = ({ toggleModal }) => (
+export const BasicEditor = ({ openModal }) => (
   <div
     data-testid="basic-editor-help"
     className="crayons-card crayons-card--secondary p-4 mb-6"
   >
     You are currently using the basic markdown editor that uses{' '}
-    <a href="#frontmatter" onClick={toggleModal('frontmatterShowing')}>
+    <a href="#frontmatter" onClick={() => openModal('frontmatterShowing')}>
       Jekyll front matter
     </a>
     . You can also use the <em>rich+markdown</em> editor you can find in{' '}
@@ -33,5 +33,3 @@ const BasicEditor = ({ toggleModal }) => (
 BasicEditor.propTypes = {
   toggleModal: PropTypes.func.isRequired,
 };
-
-export default BasicEditor;

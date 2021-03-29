@@ -1,6 +1,6 @@
 import { h } from 'preact';
 
-const ArticleFormTitle = () => (
+export const ArticleFormTitle = () => (
   <div
     data-testid="title-help"
     className="crayons-article-form__help crayons-article-form__help--title"
@@ -18,5 +18,3 @@ const ArticleFormTitle = () => (
     </ul>
   </div>
 );
-
-export default ArticleFormTitle;

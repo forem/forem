@@ -1,6 +1,6 @@
 import { h } from 'preact';
 
-const TagInput = () => (
+export const TagInput = () => (
   <div
     data-testid="basic-tag-input-help"
     className="crayons-article-form__help crayons-article-form__help--tags"
@@ -23,5 +23,3 @@ const TagInput = () => (
     </ul>
   </div>
 );
-
-export default TagInput;
