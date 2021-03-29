@@ -1,6 +1,13 @@
 /* eslint-disable no-alert */
+/**
+ * Adds a flag button visible only to trusted users on profile pages.
+ * @function initFlag
+ * @returns {(void|undefined)} This function has no useable return value.
+ */
 export function initFlag() {
-  const flagButton = document.getElementById('user-profile-dropdownmenu-flag-button');
+  const flagButton = document.getElementById(
+    'user-profile-dropdownmenu-flag-button',
+  );
 
   if (!flagButton) {
     // button not always present when this is called
@@ -23,7 +30,7 @@ export function initFlag() {
   function flag() {
     const confirmFlag = window.confirm(
       flagStatus
-        ? "Are you sure you want to unflag this person? This will make all of their posts visible again."
+        ? 'Are you sure you want to unflag this person? This will make all of their posts visible again.'
         : 'Are you sure you want to flag this person? This will make all of their posts less visible.',
     );
 
