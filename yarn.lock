@@ -8210,10 +8210,10 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-faker@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/faker/-/faker-5.4.0.tgz#f18e55993c6887918182b003d163df14daeb3011"
-  integrity sha512-Y9n/Ky/xZx/Bj8DePvXspUYRtHl/rGQytoIT5LaxmNwSe3wWyOeOXb3lT6Dpipq240PVpeFaGKzScz/5fvff2g==
+faker@^5.5.1:
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/faker/-/faker-5.5.1.tgz#30e4e8ba15c8c08d0494ba935f247d8e2469675d"
+  integrity sha512-JCFXcVesClQ6RlSWmBMFQmGDAZq6hjbJAFgKALx31uPaQC6p3SWT2ojaJGD8bMQri+8VNqDOkI2F8QC+ABvZng==
 
 fast-deep-equal@^1.0.0:
   version "1.1.0"
