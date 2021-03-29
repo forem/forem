@@ -123,7 +123,7 @@
     "faker": "^5.4.0",
     "gitdocs": "^2.0.0",
     "husky": "^4.3.8",
-    "ibm-openapi-validator": "0.38.0",
+    "ibm-openapi-validator": "0.39.0",
     "jest": "26.6.3",
     "jest-axe": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
@@ -141,7 +141,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@babel/core": "^7.13.10",
+    "@babel/core": "^7.13.13",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-react-jsx": "^7.13.12",
