@@ -40,30 +40,32 @@
 </script>
 
 <% if user_signed_in? %>
-  <header class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4 flex items-center justify-between">
-    <h1 class="crayons-title">Notifications</h1>
-    <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost">Settings</a>
-  </header>
+  <main id="main-content">
+    <header class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4 flex items-center justify-between">
+      <h1 class="crayons-title">Notifications</h1>
+      <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost">Settings</a>
+    </header>
 
-  <div class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols pt-0" id="notifications-container">
-    <div class="crayons-layout__sidebar-left">
-      <%= render "notifications/nav_menu" %>
-    </div>
-    <main class="crayons-layout__content">
-      <div id="articles-list">
-        <%= render "notifications_list", params: params %>
+    <div class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols pt-0" id="notifications-container">
+      <div class="crayons-layout__sidebar-left">
+        <%= render "notifications/nav_menu" %>
       </div>
+      <main class="crayons-layout__content">
+        <div id="articles-list">
+          <%= render "notifications_list", params: params %>
+        </div>
 
-      <%# new or less active users that don't have a page worth of notifications
-          won't be shown the "load more" button %>
-      <% if @notifications.size >= @initial_page_size %>
-        <button id="load-more-button" type="button" class="crayons-btn crayons-btn--secondary crayons-btn--l my-6 w-100">
-          Load More
-        </button>
-      <% end %>
-    </main>
-  </div>
-  <%= render "articles/fitvids" %>
+        <%# new or less active users that don't have a page worth of notifications
+            won't be shown the "load more" button %>
+        <% if @notifications.size >= @initial_page_size %>
+          <button id="load-more-button" type="button" class="crayons-btn crayons-btn--secondary crayons-btn--l my-6 w-100">
+            Load More
+          </button>
+        <% end %>
+      </main>
+    </div>
+    <%= render "articles/fitvids" %>
+  </main>
 <% else %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>

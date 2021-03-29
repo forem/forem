@@ -146,22 +146,6 @@ RSpec.describe User, type: :model do
       end
 
       it do
-        expect(subject).to have_many(:buffer_updates_approved)
-          .class_name("BufferUpdate")
-          .with_foreign_key("approver_user_id")
-          .inverse_of(:approver_user)
-          .dependent(:nullify)
-      end
-
-      it do
-        expect(subject).to have_many(:buffer_updates_composed)
-          .class_name("BufferUpdate")
-          .with_foreign_key("composer_user_id")
-          .inverse_of(:composer_user)
-          .dependent(:nullify)
-      end
-
-      it do
         expect(subject).to have_many(:created_podcasts)
           .class_name("Podcast")
           .with_foreign_key(:creator_id)
@@ -887,6 +871,18 @@ RSpec.describe User, type: :model do
       user = create(:user, :with_identity)
 
       expect(user.authenticated_with_all_providers?).to be(true)
+    end
+  end
+
+  describe "#trusted" do
+    it "memoizes the result from rolify" do
+      allow(Rails.cache)
+        .to receive(:fetch)
+        .with("user-#{user.id}/has_trusted_role", expires_in: 200.hours)
+        .and_return(false)
+        .once
+
+      2.times { user.trusted }
     end
   end
 

@@ -13,10 +13,9 @@
         <% decorated_comment = @root_comment.decorate %>
 
         <% if decorated_comment.low_quality %>
-          <div class="low-quality-comment-marker">
+          <div class="crayons-notice crayons-notice--warning low-quality-comment-marker">
             <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_image_url, width: 50, height: 50, crop: "imagga_scale"), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
-            Comment marked as low quality/non-constructive by the community
-            <a href="/code-of-conduct">View code of conduct</a>
+            Comment marked as low quality/non-constructive by the community. <a href="/code-of-conduct">View Code of Conduct</a>
           </div>
         <% end %>
 
@@ -40,7 +39,10 @@
           <% end %>
           <%= render "comments/comment_date", decorated_comment: decorated_comment %>
         </div>
-        <div class="body <%= "low-quality-comment" if decorated_comment.low_quality %>">
+        <div
+          class="body
+          <%= "low-quality-comment" if decorated_comment.low_quality %>
+          <%= "color-base-60" if @root_comment.decorate.low_quality %>">
           <%= sanitize @root_comment.processed_html %>
           <button class="reaction-button reacted" disabled>
             <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />

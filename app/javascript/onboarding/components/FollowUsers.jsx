@@ -174,42 +174,51 @@ export class FollowUsers extends Component {
               </div>
             </header>
 
-            <div data-testid="onboarding-users">
-              {users.map((user) => (
-                <button
-                  data-testid="onboarding-user-button"
-                  type="button"
-                  onClick={() => this.handleClick(user)}
-                  onKeyDown={() => this.handleKeyDown(user)}
-                  className={
-                    selectedUsers.includes(user)
-                      ? 'user content-row selected'
-                      : 'user content-row unselected'
-                  }
-                >
-                  <figure className="user-avatar-container">
-                    <img
-                      className="user-avatar"
-                      src={user.profile_image_url}
-                      alt="profile"
-                    />
-                  </figure>
-                  <div className="user-info">
-                    <h4 className="user-name">{user.name}</h4>
-                    <p className="user-summary">
-                      {he.unescape(user.summary || '')}
-                    </p>
-                  </div>
-                  <button
-                    data-testid="onboarding-user-following-status"
-                    type="button"
-                    className="user-following-status"
+            <fieldset data-testid="onboarding-users">
+              {users.map((user) => {
+                const selected = selectedUsers.includes(user);
+
+                return (
+                  <div
+                    data-testid="onboarding-user-button"
+                    className={`user content-row ${
+                      selected ? 'selected' : 'unselected'
+                    }`}
                   >
-                    {selectedUsers.includes(user) ? 'Following' : 'Follow'}
-                  </button>
-                </button>
-              ))}
-            </div>
+                    <figure className="user-avatar-container">
+                      <img
+                        className="user-avatar"
+                        src={user.profile_image_url}
+                        alt=""
+                      />
+                    </figure>
+                    <div className="user-info">
+                      <h4 className="user-name">{user.name}</h4>
+                      <p className="user-summary">
+                        {he.unescape(user.summary || '')}
+                      </p>
+                    </div>
+                    <label
+                      className={`relative user-following-status crayons-btn ${
+                        selected
+                          ? 'color-base-inverted'
+                          : 'crayons-btn--outlined'
+                      }`}
+                    >
+                      <input
+                        aria-label={`Follow ${user.name}`}
+                        type="checkbox"
+                        checked={selected}
+                        className="absolute opacity-0 absolute top-0 bottom-0 right-0 left-0"
+                        onClick={() => this.handleClick(user)}
+                        data-testid="onboarding-user-following-status"
+                      />
+                      {selected ? 'Following' : 'Follow'}
+                    </label>
+                  </div>
+                );
+              })}
+            </fieldset>
           </div>
         </div>
       </div>

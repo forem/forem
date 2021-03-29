@@ -5,8 +5,7 @@ class RegistrationsController < Devise::RegistrationsController
     if user_signed_in?
       redirect_to root_path(signin: "true")
     else
-      referer_path = URI(request.referer || "").path
-      if URI(request.referer || "").host == URI(request.base_url).host && referer_path != "/serviceworker.js"
+      if URI(request.referer || "").host == URI(request.base_url).host
         store_location_for(:user, request.referer)
       end
       super

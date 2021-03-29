@@ -1,7 +1,7 @@
 module Follows
   class UpdatePointsWorker
     include Sidekiq::Worker
-    sidekiq_options queue: :low_priority, retry: 10
+    sidekiq_options queue: :low_priority, retry: 10, lock: :until_executing
 
     def perform(article_id, user_id)
       article = Article.find_by(id: article_id)

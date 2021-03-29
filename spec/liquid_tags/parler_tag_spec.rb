@@ -15,7 +15,11 @@ RSpec.describe ParlerTag, type: :liquid_tag do
 
     it "accepts a valid Parler URL" do
       liquid = generate_new_liquid(valid_id)
-      verify(format: :html) { liquid.render }
+
+      # rubocop:disable Style/StringLiterals
+      expect(liquid.render).to include('<iframe')
+        .and include("https://api.parler.io/ss/player?url=#{valid_id}")
+      # rubocop:enable Style/StringLiterals
     end
 
     it "raises an error for invalid IDs" do

@@ -62,7 +62,7 @@ RSpec.describe Images::Optimizer, type: :service do
   describe "#imgproxy" do
     it "works" do
       allow(described_class).to receive(:imgproxy_enabled?).and_return(true)
-      imgproxy_url = described_class.imgproxy(image_url, service: :imgproxy, width: 500, height: 500)
+      imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500)
       expect(imgproxy_url).to match(%r{/s:500:500/mb:500000/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end

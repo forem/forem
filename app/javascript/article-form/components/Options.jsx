@@ -28,6 +28,7 @@ export const Options = ({
         <select
           value=""
           name="series"
+          className="crayons-select"
           onInput={onConfigChange}
           required
           aria-label="Select one of the existing series"

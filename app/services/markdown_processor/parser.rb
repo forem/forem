@@ -20,7 +20,8 @@ module MarkdownProcessor
       renderer = Redcarpet::Render::HTMLRouge.new(options)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       catch_xss_attempts(@content)
-      escaped_content = escape_liquid_tags_in_codeblock(@content)
+      code_tag_content = convert_code_tags_to_triple_backticks(@content)
+      escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
       sanitized_content = sanitize_rendered_markdown(html)
       begin
@@ -125,6 +126,17 @@ module MarkdownProcessor
           "{% raw %}#{codeblock}{% endraw %}"
         end
       end
+    end
+
+    def convert_code_tags_to_triple_backticks(content)
+      # return content if there is not a <code> tag
+      return content unless /^<code>$/.match?(content)
+
+      # return content if there is a <pre> and <code> tag
+      return content if /<code>/.match?(content) && /<pre>/.match?(content)
+
+      # Convert all multiline code tags to triple backticks
+      content.gsub(%r{^</?code>$}, "\n```\n")
     end
 
     private

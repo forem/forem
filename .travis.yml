@@ -60,7 +60,6 @@ install:
 script:
   - bundle exec rails db:create db:schema:load webpacker:compile
   - bin/knapsack_pro_rspec
-  - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
 notifications:
   slack:
     if: branch = master

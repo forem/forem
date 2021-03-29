@@ -12,7 +12,9 @@ RSpec.describe DetailsTag, type: :liquid_tag do
 
     it "generates proper details div with summary" do
       rendered = generate_details_liquid(summary, content).render
-      Approvals.verify(rendered, name: "details_liquid_tag_spec", format: :html)
+
+      expect(rendered).to include("<details")
+      expect(rendered).to include('<summary>Click to see the answer!') # rubocop:disable Style/StringLiterals
     end
   end
 end

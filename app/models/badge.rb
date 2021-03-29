@@ -29,7 +29,8 @@ class Badge < ApplicationRecord
   end
 
   def bust_path
-    EdgeCache::Bust.call(path)
-    EdgeCache::Bust.call("#{path}?i=i")
+    cache_bust = EdgeCache::Bust.new
+    cache_bust.call(path)
+    cache_bust.call("#{path}?i=i")
   end
 end

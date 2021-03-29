@@ -5,8 +5,9 @@ module Articles
 
     def perform(article_ids)
       Article.select(:id, :path).where(id: article_ids).find_each do |article|
-        EdgeCache::Bust.call(article.path)
-        EdgeCache::Bust.call("#{article.path}?i=i")
+        cache_bust = EdgeCache::Bust.new
+        cache_bust.call(article.path)
+        cache_bust.call("#{article.path}?i=i")
       end
     end
   end

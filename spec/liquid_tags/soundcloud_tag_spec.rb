@@ -19,8 +19,11 @@ RSpec.describe SoundcloudTag, type: :liquid_tag do
 
     it "accepts soundcloud link" do
       liquid = generate_new_liquid(soundcloud_link)
-      rendered_soundcloud_iframe = liquid.render
-      Approvals.verify(rendered_soundcloud_iframe, name: "soundcloud_liquid_tag", format: :html)
+
+      # rubocop:disable Style/StringLiterals
+      expect(liquid.render).to include('<iframe')
+        .and include("#{url_segment}=#{soundcloud_link}&auto_play=false")
+      # rubocop:enable Style/StringLiterals
     end
 
     it "rejects invalid soundcloud link" do

@@ -50,9 +50,13 @@ class SearchController < ApplicationController
   ].freeze
 
   def tags
-    tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
+    result = if FeatureFlag.enabled?(:search_2_tags)
+               Search::Postgres::Tag.search_documents(params[:name])
+             else
+               Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
+             end
 
-    render json: { result: tag_docs }
+    render json: { result: result }
   rescue Search::Errors::Transport::BadRequest
     render json: { result: [] }
   end
@@ -83,9 +87,13 @@ class SearchController < ApplicationController
   end
 
   def usernames
-    usernames = Search::User.search_usernames(params[:username])
+    result = if FeatureFlag.enabled?(:search_2_usernames)
+               Search::Postgres::Username.search_documents(params[:username])
+             else
+               Search::User.search_usernames(params[:username])
+             end
 
-    render json: { result: usernames }
+    render json: { result: result }
   rescue Search::Errors::Transport::BadRequest
     render json: { result: [] }
   end
@@ -111,11 +119,26 @@ class SearchController < ApplicationController
   end
 
   def reactions
-    result = Search::ReadingList.search_documents(
-      params: reaction_params.to_h, user: current_user,
-    )
+    if FeatureFlag.enabled?(:search_2_reading_list)
+      # [@rhymes] we're recyling the existing params as we want to change the frontend as
+      # little as possible, we might simplify in the future
+      result = Search::Postgres::ReadingList.search_documents(
+        current_user,
+        page: reaction_params[:page],
+        per_page: reaction_params[:per_page],
+        statuses: reaction_params[:status],
+        tags: reaction_params[:tag_names],
+        term: reaction_params[:search_fields],
+      )
 
-    render json: { result: result["reactions"], total: result["total"] }
+      render json: { result: result[:items], total: result[:total] }
+    else
+      result = Search::ReadingList.search_documents(
+        params: reaction_params.to_h, user: current_user,
+      )
+
+      render json: { result: result["reactions"], total: result["total"] }
+    end
   end
 
   private

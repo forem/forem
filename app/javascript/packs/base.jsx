@@ -48,25 +48,24 @@ function getPageEntries() {
   });
 }
 
-const menuTriggers = [
-  ...document.querySelectorAll(
-    '.js-hamburger-trigger, .hamburger a:not(.js-nav-more-trigger)',
-  ),
-];
-const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
+function initializeNav() {
+  const { currentPage } = document.getElementById('page-content').dataset;
+  const menuTriggers = [
+    ...document.querySelectorAll(
+      '.js-hamburger-trigger, .hamburger a:not(.js-nav-more-trigger)',
+    ),
+  ];
+  const memberMenu = document.getElementById('crayons-header__menu');
+  const menuNavButton = document.getElementById('member-menu-button');
+  const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
+
+  setCurrentPageIconLink(currentPage, getPageEntries());
+  initializeMobileMenu(menuTriggers, moreMenus);
+  initializeTouchDevice(memberMenu, menuNavButton);
+}
 
 getInstantClick().then((spa) => {
-  spa.on('change', () => {
-    const { currentPage } = document.getElementById('page-content').dataset;
-
-    setCurrentPageIconLink(currentPage, getPageEntries());
-  });
+  spa.on('change', initializeNav);
 });
 
-const { currentPage } = document.getElementById('page-content').dataset;
-const memberMenu = document.getElementById('crayons-header__menu');
-const menuNavButton = document.getElementById('member-menu-button');
-
-setCurrentPageIconLink(currentPage, getPageEntries());
-initializeMobileMenu(menuTriggers, moreMenus);
-initializeTouchDevice(memberMenu, menuNavButton);
+initializeNav();
