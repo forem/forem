@@ -58,6 +58,7 @@ Rpush.reflect do |on|
       tags: [
         "app_id:#{notification.app_id}",
         "bundle_id:#{notification&.app&.bundle_id}",
+        "type:#{notification&.payload&.fetch(:type) || 'unknown'}",
       ],
     )
   end
