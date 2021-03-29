@@ -77,9 +77,6 @@ module Constants
       default_font: {
         description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
       },
-      display_email_domain_allow_list_publicly: {
-        description: "Do you want to display the list of allowed domains, or keep it private?"
-      },
       display_jobs_banner: {
         description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
         "or 'jobs' in the search box",

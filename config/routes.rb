@@ -56,6 +56,9 @@ Rails.application.routes.draw do
       namespace :users do
         resources :gdpr_delete_requests, only: %i[index destroy]
       end
+      namespace :settings do
+        resources :authentications, only: [:create]
+      end
       resources :users, only: %i[index show edit update destroy] do
         resources :email_messages, only: :show
         member do
