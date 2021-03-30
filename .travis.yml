@@ -23,6 +23,7 @@ services:
 env:
   global:
     - RAILS_ENV=test
+    - RUBYOPT="-W:deprecated"
     - DATABASE_URL=postgres://postgres@localhost/Forem_prod_test
     - DATABASE_NAME=Forem_prod_test
     - DATABASE_URL_TEST=postgres://postgres@localhost/Forem_test
