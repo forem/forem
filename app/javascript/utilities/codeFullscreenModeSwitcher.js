@@ -3,7 +3,7 @@ let screenScroll = 0;
 const fullScreenWindow = document.getElementsByClassName(
   'js-fullscreen-code',
 )[0];
-const body = document.body;
+const { body } = body;
 
 function setAfterFullScreenScrollPosition() {
   window.scrollTo(0, screenScroll);
