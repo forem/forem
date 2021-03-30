@@ -45,7 +45,7 @@ module Images
     end
 
     def optimize_image(path)
-      Images::Optimizer.call("#{URL.url}/social_previews#{path}", OPTIMIZER_OPTIONS)
+      Images::Optimizer.call("#{URL.url}/social_previews#{path}", **OPTIMIZER_OPTIONS)
     end
   end
 end
