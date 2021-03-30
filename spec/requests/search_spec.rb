@@ -70,16 +70,43 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/listings" do
-    let(:mock_documents) do
-      [{ "title" => "listing1" }]
+    context "when using Elasticsearch" do
+      let(:mock_documents) do
+        [{ "title" => "listing1" }]
+      end
+
+      it "returns json" do
+        allow(Search::Listing).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+        get "/search/listings"
+        expect(response.parsed_body).to eq("result" => mock_documents)
+      end
     end
 
-    it "returns json" do
-      allow(Search::Listing).to receive(:search_documents).and_return(
-        mock_documents,
-      )
-      get "/search/listings"
-      expect(response.parsed_body).to eq("result" => mock_documents)
+    context "when using PostgreSQL" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_listings).and_return(true)
+      end
+
+      it "returns the correct keys" do
+        create(:listing)
+        get search_listings_path
+        expect(response.parsed_body["result"]).to be_present
+      end
+
+      it "supports the search params" do
+        listing = create(:listing)
+
+        get search_listings_path(
+          category: listing.category,
+          page: 0,
+          per_page: 1,
+          term: listing.title.downcase,
+        )
+
+        expect(response.parsed_body["result"].first).to include("title" => listing.title)
+      end
     end
   end
 

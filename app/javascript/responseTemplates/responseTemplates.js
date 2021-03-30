@@ -124,9 +124,12 @@ function addClickListeners(form) {
   );
 
   insertButtons.forEach((button) => {
-    button.addEventListener('click', (e) => {
-      const { content } = e.target.dataset;
-      const textArea = form.getElementsByTagName('textarea')[0];
+    button.addEventListener('click', (event) => {
+      const { content } = event.target.dataset;
+      // We need to grab the textarea that is not the comment mention auto-complete component
+      const textArea = event.target.form.querySelector(
+        '.comment-textarea:not([role=combobox])',
+      );
       const textAreaReplaceable =
         textArea.value === null ||
         textArea.value === '' ||
@@ -134,6 +137,7 @@ function addClickListeners(form) {
 
       if (textAreaReplaceable) {
         textArea.value = content;
+        textArea.dispatchEvent(new Event('input', { target: textArea }));
         textArea.focus();
         responsesContainer.classList.toggle('hidden');
       }

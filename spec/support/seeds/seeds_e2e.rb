@@ -153,7 +153,6 @@ seeder.create_if_doesnt_exist(Article, "title", "Test article") do
     published: true
     cover_image: #{Faker::Company.logo}
     ---
-
     #{Faker::Hipster.paragraph(sentence_count: 2)}
     #{Faker::Markdown.random}
     #{Faker::Hipster.paragraph(sentence_count: 2)}

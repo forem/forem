@@ -1,8 +1,6 @@
 require_relative "../lib/acts_as_taggable_on/tag"
 
 class Tag < ActsAsTaggableOn::Tag
-  self.ignored_columns = ["buffer_profile_id_code"].freeze
-
   attr_accessor :points, :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
