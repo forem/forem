@@ -21,6 +21,6 @@ module SettingsParams
   private
 
   def settings_keys
-    Settings::Authentication.keys + SiteConfig.keys + SPECIAL_PARAMS_TO_ADD
+    SiteConfig.keys + SPECIAL_PARAMS_TO_ADD
   end
 end

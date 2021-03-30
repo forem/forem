@@ -1,7 +1,5 @@
 module Admin
   class SettingsController < Admin::ApplicationController
-    include SettingsParams
-
     MISMATCH_ERROR = "The confirmation key does not match".freeze
 
     before_action :extra_authorization_and_confirmation, only: [:create]

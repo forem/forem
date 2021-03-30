@@ -1,11 +1,6 @@
 module Admin
   module Settings
     class AuthenticationsController < Admin::ApplicationController
-      SPECIAL_PARAMS = %w[
-        auth_providers_to_enable
-        authentication_providers
-      ].freeze
-
       def create
         result = ::Settings::Authentications::Upsert.call(settings_params)
 
@@ -20,8 +15,8 @@ module Admin
       def settings_params
         params
           .require(:settings_authentication)
-          .permit(::Settings::Authentication.keys + SPECIAL_PARAMS)
-        # TODO: authentication_providers: [],
+          .permit(*::Settings::Authentication.keys, :providers_to_enable,
+                  providers: [])
       end
     end
   end

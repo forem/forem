@@ -1,5 +1,7 @@
 module Admin
   class ConfigsController < Admin::SettingsController
+    include SettingsParams
+
     def create
       result = ::Settings::Upsert.call(settings_params)
       if result.success?

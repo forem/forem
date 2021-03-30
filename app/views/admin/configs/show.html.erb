@@ -301,8 +301,8 @@
 
                 <section class="mb-6">
                   <div class="form-group mb-0">
-                    <%= f.text_field :auth_providers_to_enable,
-                                     id: "auth_providers_to_enable",
+                    <%= f.text_field :providers_to_enable,
+                                     id: "providers_to_enable",
                                      class: "form-control hidden",
                                      value: Settings::Authentication.providers.join(","),
                                      readonly: true %>
