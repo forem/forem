@@ -2,9 +2,9 @@ require "rails_helper"
 # rubocop:disable Layout/LineLength
 RSpec.describe Users::Setting, type: :model do
   describe "validations" do
-    subject { users_setting }
+    subject { setting }
 
-    let(:users_setting) { create(:users_setting, user: user) }
+    let(:setting) { create(:users_setting, user: user) }
     let(:user) { create(:user) }
 
     it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
@@ -15,57 +15,57 @@ RSpec.describe Users::Setting, type: :model do
 
     describe "when validating feed_url", vcr: true do
       it "is valid with no feed_url" do
-        users_setting.feed_url = nil
+        setting.feed_url = nil
 
-        expect(users_setting).to be_valid
+        expect(setting).to be_valid
       end
 
       it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
-        users_setting.feed_url = "http://example.com"
+        setting.feed_url = "http://example.com"
 
-        expect(users_setting).not_to be_valid
+        expect(setting).not_to be_valid
       end
 
       it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
-        users_setting.feed_url = "https://medium.com/feed/@vaidehijoshi"
+        setting.feed_url = "https://medium.com/feed/@vaidehijoshi"
 
-        expect(users_setting).to be_valid
+        expect(setting).to be_valid
       end
     end
 
     describe "#config_theme" do
       it "accepts valid theme" do
-        users_setting.config_theme = 2
-        expect(users_setting).to be_valid
-        expect(users_setting.night_theme?).to be true
+        setting.config_theme = 2
+        expect(setting).to be_valid
+        expect(setting.night_theme?).to be true
       end
 
       it "does not accept invalid theme" do
-        expect { users_setting.config_theme = 10 }.to raise_error(ArgumentError)
+        expect { setting.config_theme = 10 }.to raise_error(ArgumentError)
       end
     end
 
     describe "#config_font" do
       it "accepts valid font" do
-        users_setting.config_font = 4
-        expect(users_setting).to be_valid
-        expect(users_setting.sans_serif?).to be true
+        setting.config_font = 4
+        expect(setting).to be_valid
+        expect(setting.sans_serif?).to be true
       end
 
       it "does not accept invalid font" do
-        expect { users_setting.config_font = 10 }.to raise_error(ArgumentError)
+        expect { setting.config_font = 10 }.to raise_error(ArgumentError)
       end
     end
 
     describe "#config_navbar" do
       it "accepts valid navbar" do
-        users_setting.config_navbar = 1
-        expect(users_setting).to be_valid
-        expect(users_setting.static_navbar?).to be true
+        setting.config_navbar = 1
+        expect(setting).to be_valid
+        expect(setting.static_navbar?).to be true
       end
 
       it "does not accept invalid navbar" do
-        expect { users_setting.config_navbar = 10 }.to raise_error(ArgumentError)
+        expect { setting.config_navbar = 10 }.to raise_error(ArgumentError)
       end
     end
   end
