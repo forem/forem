@@ -290,7 +290,6 @@ export const MentionAutocompleteTextArea = ({
         />
 
         <textarea
-          data-testid="autocomplete-textarea"
           data-mention-autocomplete-active="true"
           ref={plainTextAreaRef}
           onChange={handleTextInputChange}
