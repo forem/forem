@@ -135,15 +135,13 @@ RSpec.describe NotifyMailer, type: :mailer do
     context "when rendering the HTML email for badge with credits" do
       it "includes the listings URL" do
         expect(email_with_credits.html_part.body).to include(
-          CGI.escape(
-            Rails.application.routes.url_helpers.listings_url(host: SiteConfig.app_domain),
-          ),
+          Rails.application.routes.url_helpers.listings_url(host: SiteConfig.app_domain),
         )
       end
 
       it "includes the about listings URL" do
         expect(email_with_credits.html_part.body).to include(
-          CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain)),
+          Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain),
         )
       end
 
@@ -173,12 +171,8 @@ RSpec.describe NotifyMailer, type: :mailer do
     end
 
     context "when rendering the HTML email for badge w/o credits" do
-      it "includes the tracking pixel" do
-        expect(email.html_part.body).to include("open.gif")
-      end
-
       it "includes the user URL" do
-        expect(email.html_part.body).to include(CGI.escape(URL.user(user)))
+        expect(email.html_part.body).to include(URL.user(user))
       end
 
       it "doesn't include the listings URL" do
@@ -197,21 +191,21 @@ RSpec.describe NotifyMailer, type: :mailer do
 
       it "includes the rewarding_context_message in the email" do
         expect(email.html_part.body).to include("Hello <a")
-        expect(email.html_part.body).to include(CGI.escape(URL.url("/hey")))
+        expect(email.html_part.body).to include(URL.url("/hey"))
       end
 
       it "does not include the nil rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
 
         expect(email.html_part.body).not_to include("Hello <a")
-        expect(email.html_part.body).not_to include(CGI.escape(URL.url("/hey")))
+        expect(email.html_part.body).not_to include(URL.url("/hey"))
       end
 
       it "does not include the empty rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return("")
 
         expect(email.html_part.body).not_to include("Hello <a")
-        expect(email.html_part.body).not_to include(CGI.escape(URL.url("/hey")))
+        expect(email.html_part.body).not_to include(URL.url("/hey"))
       end
     end
 
