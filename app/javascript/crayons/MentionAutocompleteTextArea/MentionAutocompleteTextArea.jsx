@@ -9,16 +9,29 @@ import {
   ComboboxList,
   ComboboxOption,
 } from '@reach/combobox';
+import { UserListItemContent } from './UserListItemContent';
 import {
   getMentionWordData,
   getCursorXY,
   useTextAreaAutoResize,
 } from '@utilities/textAreaUtils';
-import { mergeRefs } from '@utilities/mergeRefs';
 import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
 
 const MIN_SEARCH_CHARACTERS = 2;
 const MAX_RESULTS_DISPLAYED = 6;
+
+/**
+ * Helper function to merge any additional ref passed to the MentionAutocompleteTextArea with the inputRefs used internally by this component.
+ *
+ * @param {Array} refs Array of all references
+ */
+const mergeInputRefs = (refs) => (value) => {
+  refs.forEach((ref) => {
+    if (ref) {
+      ref.current = value;
+    }
+  });
+};
 
 /**
  * Helper function to copy all styles and attributes from the original textarea to new autocomplete textareas before removing the original node
@@ -60,25 +73,6 @@ const replaceTextArea = ({
 
   // We need to manually remove the original element, as Preact's diffing algorithm won't replace it in render
   originalNodeToReplace.remove();
-};
-
-const UserListItemContent = ({ user }) => {
-  return (
-    <Fragment>
-      <span className="crayons-avatar crayons-avatar--l mr-2 shrink-0">
-        <img
-          src={user.profile_image_90}
-          alt=""
-          className="crayons-avatar__image "
-        />
-      </span>
-
-      <div>
-        <p className="crayons-autocomplete__name">{user.name}</p>
-        <p className="crayons-autocomplete__username">{`@${user.username}`}</p>
-      </div>
-    </Fragment>
-  );
 };
 
 /**
@@ -320,7 +314,7 @@ export const MentionAutocompleteTextArea = forwardRef(
           <ComboboxInput
             {...autocompleteInputProps}
             aria-label="Mention user"
-            ref={mergeRefs([comboboxRef, forwardedRef])}
+            ref={comboboxRef}
             value={textContent}
             data-mention-autocomplete-active="true"
             as="textarea"
@@ -336,7 +330,7 @@ export const MentionAutocompleteTextArea = forwardRef(
             id={inputId}
             data-testid="autocomplete-textarea"
             data-mention-autocomplete-active="true"
-            ref={mergeRefs([plainTextAreaRef, forwardedRef])}
+            ref={mergeInputRefs([plainTextAreaRef, forwardedRef])}
             onChange={(e) => {
               onChange?.(e);
               handleTextInputChange(e);
