@@ -4,7 +4,7 @@ class ReadingList < ApplicationRecord
   include PgSearch::Model
 
   pg_search_scope :search_reading_list,
-                  against: [],
+                  against: :document,
                   using: {
                     tsearch: {
                       prefix: true,

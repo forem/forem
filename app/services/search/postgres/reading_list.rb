@@ -14,6 +14,10 @@ module Search
       ].freeze
       REACTION_ATTRIBUTES = %i[id reactable_id user_id].freeze
       USER_ATTRIBUTES = %i[id name profile_image username].freeze
+      READING_LIST_ATTRIBUTES = %i[
+        cached_tag_list crossposted_at path published_at reading_time title user_id
+        reaction_id reaction_user_id reaction_created_at reaction_status
+      ].freeze
 
       DEFAULT_STATUSES = %w[confirmed valid].freeze
 
@@ -156,7 +160,10 @@ module Search
 
         total = relation.count
 
-        relation = relation.order(reaction_created_at: :desc).page(page).per(per_page)
+        relation = relation
+          .select(*READING_LIST_ATTRIBUTES)
+          .order(reaction_created_at: :desc)
+          .page(page).per(per_page)
 
         {
           items: relation,
