@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_30_144948) do
+ActiveRecord::Schema.define(version: 2021_03_30_152738) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1498,6 +1498,35 @@ ActiveRecord::Schema.define(version: 2021_03_30_144948) do
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
+
+  create_view "reading_lists", materialized: true, sql_definition: <<-SQL
+      SELECT articles.cached_tag_list,
+      articles.crossposted_at,
+      articles.path,
+      articles.published_at,
+      articles.reading_time,
+      articles.title,
+      articles.user_id,
+      reactions.id AS reaction_id,
+      reactions.user_id AS reaction_user_id,
+      reactions.created_at AS reaction_created_at,
+      reactions.status AS reaction_status,
+      users.name AS user_name,
+      users.profile_image AS user_profile_image,
+      users.username AS user_username,
+      (((((to_tsvector('simple'::regconfig, articles.body_markdown) || to_tsvector('simple'::regconfig, (articles.cached_tag_list)::text)) || to_tsvector('simple'::regconfig, (articles.title)::text)) || to_tsvector('simple'::regconfig, (COALESCE(organizations.name, ''::character varying))::text)) || to_tsvector('simple'::regconfig, (users.name)::text)) || to_tsvector('simple'::regconfig, (users.username)::text)) AS document
+     FROM (((articles
+       JOIN reactions ON ((reactions.reactable_id = articles.id)))
+       JOIN users ON ((users.id = articles.user_id)))
+       LEFT JOIN organizations ON ((organizations.id = articles.organization_id)))
+    WHERE ((reactions.reactable_type)::text = 'Article'::text);
+  SQL
+  add_index "reading_lists", ["cached_tag_list"], name: "index_reading_lists_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
+  add_index "reading_lists", ["document"], name: "index_reading_lists_on_document", using: :gin
+  add_index "reading_lists", ["path", "reaction_user_id"], name: "index_reading_lists_on_path_and_reaction_user_id", unique: true
+  add_index "reading_lists", ["reaction_status"], name: "index_reading_lists_on_reaction_status"
+  add_index "reading_lists", ["reaction_user_id"], name: "index_reading_lists_on_reaction_user_id"
+
   create_trigger("tsv_tsvector_update", :generated => true, :compatibility => 1).
       on("articles").
       name("tsv_tsvector_update").
