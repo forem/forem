@@ -117,6 +117,7 @@ export const MentionAutocompleteTextArea = forwardRef(
     const plainTextAreaRef = useRef(null);
     const comboboxRef = useRef(null);
     const popoverRef = useRef(null);
+    const containerRef = useRef(null);
 
     const { setTextArea, setAdditionalElements } = useTextAreaAutoResize();
 
@@ -125,7 +126,7 @@ export const MentionAutocompleteTextArea = forwardRef(
     useLayoutEffect(() => {
       if (autoResize && comboboxRef.current && plainTextAreaRef.current) {
         setTextArea(plainTextAreaRef.current);
-        setAdditionalElements([comboboxRef.current]);
+        setAdditionalElements([comboboxRef.current, containerRef.current]);
       }
     }, [autoResize, setTextArea, setAdditionalElements]);
 
@@ -307,9 +308,10 @@ export const MentionAutocompleteTextArea = forwardRef(
         </div>
 
         <Combobox
+          ref={containerRef}
           id="combobox-container"
           onSelect={handleSelect}
-          className="crayons-autocomplete"
+          className={`crayons-autocomplete${autoResize ? ' full-height' : ''}`}
         >
           <ComboboxInput
             {...autocompleteInputProps}

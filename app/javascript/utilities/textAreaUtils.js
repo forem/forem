@@ -137,9 +137,9 @@ export const useTextAreaAutoResize = () => {
     const resizeTextArea = () => {
       const { height } = calculateTextAreaHeight(textArea);
       const newHeight = `${height}px`;
-      textArea.style.height = newHeight;
+      textArea.style['min-height'] = newHeight;
       additionalElements.forEach((element) => {
-        element.style.height = newHeight;
+        element.style['min-height'] = newHeight;
       });
     };
 
