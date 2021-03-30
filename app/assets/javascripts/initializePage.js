@@ -4,7 +4,7 @@
   initializeBaseTracking, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeCommentDropdown, initializeSettings,
-  initializeCommentPreview,
+  initializeCommentPreview, initializeRuntimeBanner,
   initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
   initializeEllipsisMenu, initializeArchivedPostFilter, initializeCreditsPage,
   initializeUserProfilePage, initializeProfileInfoToggle, initializePodcastPlayback,
@@ -39,6 +39,7 @@ function callInitializers() {
   }, 1);
 
   initializeBaseTracking();
+  initializeRuntimeBanner();
   initializePaymentPointers();
   initializeCommentsPage();
   initializeArticleDate();
