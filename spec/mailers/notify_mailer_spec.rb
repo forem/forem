@@ -23,12 +23,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([comment.user.email])
     end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_reply_email"))
-    end
   end
 
   describe "#new_follower_email" do
@@ -49,12 +43,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_follower_email"))
-    end
   end
 
   describe "#new_mention_email" do
@@ -74,12 +62,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user2.email])
     end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_mention_email"))
-    end
   end
 
   describe "#unread_notifications_email" do
@@ -98,12 +80,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=unread_notifications_email"))
-    end
   end
 
   describe "#video_upload_complete_email" do
@@ -121,12 +97,6 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([article.user.email])
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=video_upload_complete_email"))
     end
   end
 
@@ -159,12 +129,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     end
 
     context "when rendering the HTML email" do
-      it "includes UTM params" do
-        expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-        expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-        expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_badge_email"))
-      end
-
       it "includes the user URL" do
         expect(email.html_part.body).to include(CGI.escape(URL.user(user)))
       end
@@ -268,12 +232,6 @@ RSpec.describe NotifyMailer, type: :mailer do
       expect(email.to).to eq([user.email])
     end
 
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=#{email_params[:email_type]}"))
-    end
-
     it "tracks the feedback message ID after delivery" do
       assert_emails 1 do
         email.deliver_now
@@ -328,9 +286,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=user_contact"))
-    end
   end
 
   describe "#new_message_email" do
@@ -351,12 +306,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([direct_message.direct_receiver.email])
     end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_message_email"))
-    end
   end
 
   describe "#account_deleted_email" do
@@ -374,12 +323,6 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
-    end
-
-    it "does not include UTM params" do
-      expect(email.html_part.body).not_to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).not_to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).not_to include(CGI.escape("utm_campaign=account_deleted_email"))
     end
   end
 
@@ -429,12 +372,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=tag_moderator_confirmation_email"))
-    end
   end
 
   describe "#trusted_role_email" do
@@ -454,12 +391,6 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=trusted_role_email"))
     end
   end
 

@@ -1,9 +1,6 @@
 class NotifyMailer < ApplicationMailer
-  utm_params utm_campaign: -> { params[:email_type] }, only: :feedback_message_resolution_email
   has_history extra: -> { { feedback_message_id: params[:feedback_message_id] } },
               only: :feedback_message_resolution_email
-
-  utm_params utm_campaign: -> { "user_contact" }, only: :user_contact_email
 
   def new_reply_email
     @comment = params[:comment]
