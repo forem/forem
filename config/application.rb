@@ -69,7 +69,7 @@ module PracticalDeveloper
 
     # Controls the format for dumping the database schema to a file.
     # We use SQL to dump PostgreSQL triggers
-    config.active_record.schema_format = :sql
+    # config.active_record.schema_format = :sql
 
     # After-initialize checker to add routes to reserved words
     config.after_initialize do

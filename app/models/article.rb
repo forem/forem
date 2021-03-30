@@ -109,6 +109,10 @@ class Article < ApplicationRecord
   after_commit :sync_related_elasticsearch_docs, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
+  trigger.name(:tsv_tsvector_update).before(:insert, :update) do
+    "SELECT tsvector_update_trigger(tsv, 'pg_catalog.simple', body_markdown, cached_tag_list, title);"
+  end
+
   serialize :cached_user
   serialize :cached_organization
 
@@ -125,7 +129,29 @@ class Article < ApplicationRecord
     "#{user&.name} #{user&.username}"
   end
 
-  pg_search_scope :search_reading_list,
+  pg_search_scope :search_reading_list_single_table,
+                  against: %i[body_markdown cached_tag_list title],
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  },
+                  ignoring: :accents
+
+  pg_search_scope :search_reading_list_joined_tables,
+                  against: %i[body_markdown cached_tag_list title],
+                  associated_against: {
+                    organization: %i[name],
+                    user: %i[name username]
+                  },
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  },
+                  ignoring: :accents
+
+  pg_search_scope :search_reading_list_tsvector_column,
                   against: %i[body_markdown cached_tag_list title],
                   # TODO: find out how to handle this data, since it's not part of this table we have to
                   # either denormalize it (and then keep it in sync) or add a trigger on each of these tables

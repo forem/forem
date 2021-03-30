@@ -21,7 +21,8 @@ module Search
       MAX_PER_PAGE = 100 # to avoid querying too many items, we set a maximum amount for a page
 
       def self.search_documents(
-        user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE, multisearch: false
+        user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE,
+        multisearch: false, joined_tables: false, tsvector_column: false
       )
         return {} unless user
 
@@ -38,7 +39,7 @@ module Search
                      user: user,
                      term: term,
                      statuses: statuses,
-                     tags: tags,
+                     # tags: tags,
                      page: page,
                      per_page: per_page,
                    )
@@ -50,6 +51,8 @@ module Search
                      tags: tags,
                      page: page,
                      per_page: per_page,
+                     joined_tables: joined_tables,
+                     tsvector_column: tsvector_column,
                    )
                  end
 
@@ -72,7 +75,7 @@ module Search
         }
       end
 
-      def self.find_articles(user:, term:, statuses:, tags:, page:, per_page:)
+      def self.find_articles(user:, term:, statuses:, tags:, page:, per_page:, joined_tables:, tsvector_column:)
         # [@jgaskins, @rhymes] as `reactions` is potentially a big table, adding pagination
         # to an INNER JOIN (eg. `joins(:reactions)`) exponentially decreases the performance,
         # incrementing query time as the database has to scan all the rows just to discard
@@ -87,7 +90,15 @@ module Search
 
         relation = Article.joins("INNER JOIN (#{reaction_query_sql}) reactions ON reactions.reactable_id = articles.id")
 
-        relation = relation.search_reading_list(term) if term.present?
+        if term.present?
+          relation = if tsvector_column
+                       relation.search_reading_list_tsvector_column(term)
+                     elsif joined_tables
+                       relation.search_reading_list_joined_tables(term)
+                     else
+                       relation.search_reading_list_single_table(term)
+                     end
+        end
 
         # NOTE: [@rhymes] A previous version was implemented with:
         # `.tagged_with(tags, any: false).reselect(*ATTRIBUTES)`
