@@ -2,7 +2,7 @@
   <section id="comments" data-updated-at="<%= Time.current %>" class="text-padding mb-4 border-t-1 border-0 border-solid border-base-10">
     <% if @article.show_comments %>
       <header class="relative flex justify-between items-center mb-6">
-        <h2 class="crayons-subtitle-1">Discussion <span class="js-comments-count" data-comments-count="<%= @article.comments_count %>">(<%= @article.comments_count %>)</span> </h2>
+        <h2 class="crayons-subtitle-1">Discussion <span class="js-comments-count" data-comments-count="<%= @article.comments_count %>">(<%= @article.comments_count %>)</span></h2>
         <div id="comment-subscription">
           <div role="presentation" class="crayons-btn-group">
             <span class="crayons-btn crayons-btn--outlined">Subscribe</span>
