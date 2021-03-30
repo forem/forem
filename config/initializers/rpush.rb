@@ -1,3 +1,15 @@
+# Utility to pull out notification type from the payload string
+module Rpush
+  class NotificationTypeParser
+    def self.parse(payload)
+      JSON.parse(payload).dig("data", "type") || "unknown"
+    rescue StandardError
+      # JSON parsing failed
+      "unknown"
+    end
+  end
+end
+
 Rpush.configure do |config|
   # Supported clients are :active_record and :redis
   config.client = :redis
@@ -56,9 +68,8 @@ Rpush.reflect do |on|
     ForemStatsClient.increment(
       "push_notifications.delivered",
       tags: [
-        "app_id:#{notification.app_id}",
-        "bundle_id:#{notification&.app&.bundle_id}",
-        "type:#{notification&.payload&.fetch(:type) || 'unknown'}",
+        "app_bundle:#{notification.app&.bundle_id}",
+        "type:#{Rpush::NotificationTypeParser.parse(notification.payload)}",
       ],
     )
   end
@@ -75,10 +86,9 @@ Rpush.reflect do |on|
     ForemStatsClient.increment(
       "push_notifications.errors",
       tags: [
-        "error:#{e.class}",
-        "message:#{e.error_description}",
-        "app_id:#{notification.app_id}",
-        "bundle_id:#{notification&.app&.bundle_id}",
+        "app_bundle:#{notification.app&.bundle_id}",
+        "error_code:#{notification.error_code}",
+        "error_description:#{notification.error_description}",
       ],
     )
   end
