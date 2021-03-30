@@ -53,7 +53,7 @@ RSpec.describe "/admin/config", type: :request do
           allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
           post "/admin/config", params: { site_config: { health_check_token: "token" },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.admin_action_taken_at).to eq(5.minutes.ago)
+          expect(SiteConfig.admin_action_taken_at).to eq(4.minutes.ago)
         end
       end
 
@@ -123,53 +123,61 @@ RSpec.describe "/admin/config", type: :request do
 
         it "enables proper domains to allow list" do
           proper_list = "dev.to, forem.com, forem.dev"
-          post "/admin/config", params: { site_config: { allowed_registration_email_domains: proper_list },
+          post "/admin/config", params: { settings_authentication: { allowed_registration_email_domains: proper_list },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.allowed_registration_email_domains).to eq(%w[dev.to forem.com forem.dev])
+          expect(Settings::Authentication.allowed_registration_email_domains).to eq(%w[dev.to forem.com forem.dev])
         end
 
         it "allows 2-character domains" do
           proper_list = "dev.to, forem.com, 2u.com"
-          post "/admin/config", params: { site_config: { allowed_registration_email_domains: proper_list },
+          post "/admin/config", params: { settings_authentication: { allowed_registration_email_domains: proper_list },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.allowed_registration_email_domains).to eq(%w[dev.to forem.com 2u.com])
+          expect(Settings::Authentication.allowed_registration_email_domains).to eq(%w[dev.to forem.com 2u.com])
         end
 
         it "does not allow improper domain list" do
           impproper_list = "dev.to, foremcom, forem.dev"
-          post "/admin/config", params: { site_config: { allowed_registration_email_domains: impproper_list },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.allowed_registration_email_domains).not_to eq(%w[dev.to foremcom forem.dev])
+          post "/admin/config", params: {
+            settings_authentication: { allowed_registration_email_domains: impproper_list },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Authentication.allowed_registration_email_domains).not_to eq(%w[dev.to foremcom forem.dev])
         end
 
         it "enables display_email_domain_allow_list_publicly" do
-          post "/admin/config", params: { site_config: { display_email_domain_allow_list_publicly: true },
+          post "/admin/config", params: { settings_authentication: { display_email_domain_allow_list_publicly: true },
                                           confirmation: confirmation_message }
           expect(Settings::Authentication.display_email_domain_allow_list_publicly).to be(true)
         end
 
         it "enables email authentication" do
-          post "/admin/config", params: { site_config: { allow_email_password_registration: true },
-                                          confirmation: confirmation_message }
+          post "/admin/config", params: {
+            settings_authentication: { allow_email_password_registration: true },
+            confirmation: confirmation_message
+          }
           expect(Settings::Authentication.allow_email_password_registration).to be(true)
           expect(Settings::Authentication.allow_email_password_login).to be(true)
         end
 
         it "disables email authentication" do
-          post "/admin/config", params: { site_config: { allow_email_password_registration: false },
-                                          confirmation: confirmation_message }
+          post "/admin/config", params: {
+            settings_authentication: { allow_email_password_registration: false },
+            confirmation: confirmation_message
+          }
           expect(Settings::Authentication.allow_email_password_registration).to be(false)
           expect(Settings::Authentication.allow_email_password_login).to be(true)
         end
 
         it "enables invite-only-mode" do
-          post "/admin/config", params: { site_config: { invite_only_mode: true },
-                                          confirmation: confirmation_message }
+          post "/admin/config", params: {
+            settings_authentication: { invite_only_mode: true },
+            confirmation: confirmation_message
+          }
           expect(Settings::Authentication.invite_only_mode).to be(true)
         end
 
         it "disables invite-only-mode & enables just email registration" do
-          post "/admin/config", params: { site_config: { invite_only_mode: false },
+          post "/admin/config", params: { settings_authentication: { invite_only_mode: false },
                                           confirmation: confirmation_message }
           expect(Settings::Authentication.invite_only_mode).to be(false)
         end
@@ -455,7 +463,7 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.mascot_footer_image_width).to eq(expected_default_mascot_footer_image_width)
 
           post "/admin/config", params: { site_config:
-                                            { mascot_footer_image_width: expected_mascot_footer_image_width },
+                                          { mascot_footer_image_width: expected_mascot_footer_image_width },
                                           confirmation: confirmation_message }
           expect(SiteConfig.mascot_footer_image_width).to eq(expected_mascot_footer_image_width)
         end
@@ -467,7 +475,7 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.mascot_footer_image_height).to eq(expected_default_mascot_footer_image_height)
 
           post "/admin/config", params: { site_config:
-                                            { mascot_footer_image_height: expected_mascot_footer_image_height },
+                                          { mascot_footer_image_height: expected_mascot_footer_image_height },
                                           confirmation: confirmation_message }
           expect(SiteConfig.mascot_footer_image_height).to eq(expected_mascot_footer_image_height)
         end
@@ -745,7 +753,7 @@ RSpec.describe "/admin/config", type: :request do
           site_key = "hi-ho"
           secret_key = "lets-go"
           post "/admin/config", params: {
-            site_config: { recaptcha_site_key: site_key, recaptcha_secret_key: secret_key },
+            settings_authentication: { recaptcha_site_key: site_key, recaptcha_secret_key: secret_key },
             confirmation: confirmation_message
           }
           expect(Settings::Authentication.recaptcha_site_key).to eq site_key

@@ -49,7 +49,7 @@ module Settings
         end
         return if email_login_disabled_with_one_or_less_auth_providers(enabled_providers)
 
-        Settings::Authentication.public_send("providers=", enabled_providers)
+        Settings::Authentication.providers = enabled_providers
       end
 
       def invalid_provider_entry(entry)

@@ -52,13 +52,13 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def recaptcha_verified?
-    recaptcha_params = { secret_key: SiteConfig.recaptcha_secret_key }
+    recaptcha_params = { secret_key: Settings::Authentication.recaptcha_secret_key }
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
   end
 
   def check_allowed_email(resource)
     domain = resource.email.split("@").last
-    allow_list = SiteConfig.allowed_registration_email_domains
+    allow_list = Settings::Authentication.allowed_registration_email_domains
     return if allow_list.empty? || allow_list.include?(domain)
 
     resource.email = nil
