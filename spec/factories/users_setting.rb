@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :setting, class: "Users::Setting" do
+  factory :users_setting, class: "Users::Setting" do
     config_font { "sans_serif" }
     config_navbar { "default_navbar" }
     config_theme { "night_theme" }
