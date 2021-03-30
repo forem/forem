@@ -87,7 +87,7 @@ export const EditorBody = ({
         id="article_body_markdown"
         defaultValue={defaultValue}
         placeholder="Write your post content here..."
-        className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l full-height"
+        className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100"
       />
     </div>
   );

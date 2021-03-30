@@ -189,8 +189,9 @@ export const MentionAutocompleteTextArea = forwardRef(
       const { current: plainTextInput } = plainTextAreaRef;
       const { current: combobox } = comboboxRef;
 
-      const isComboboxVisible = !combobox.classList.contains('hidden');
-      const activeInput = isComboboxVisible ? combobox : plainTextInput;
+      const activeInput = combobox.classList.contains('hidden')
+        ? plainTextInput
+        : combobox;
       activeInput.focus();
       activeInput.setSelectionRange(cursorPosition, cursorPosition - 1);
     }, [cursorPosition]);
@@ -311,7 +312,7 @@ export const MentionAutocompleteTextArea = forwardRef(
           ref={containerRef}
           id="combobox-container"
           onSelect={handleSelect}
-          className={`crayons-autocomplete${autoResize ? ' full-height' : ''}`}
+          className={`crayons-autocomplete${autoResize ? ' h-100' : ''}`}
         >
           <ComboboxInput
             {...autocompleteInputProps}
