@@ -26,7 +26,6 @@ module Moderator
 
     def remove_privileges
       @user.remove_role(:workshop_pass)
-      @user.remove_role(:pro)
       remove_mod_roles
       remove_tag_moderator_role
     end
@@ -68,7 +67,6 @@ module Moderator
         regular_member
       when "Trusted"
         remove_negative_roles
-        user.remove_role(:pro)
         TagModerators::AddTrustedRole.call(user)
       when "Admin"
         check_super_admin
@@ -90,10 +88,6 @@ module Moderator
         check_super_admin
         remove_negative_roles
         user.add_role(:single_resource_admin, role.split("Resource Admin: ").last.safe_constantize)
-      when "Pro"
-        remove_negative_roles
-        TagModerators::AddTrustedRole.call(user)
-        user.add_role(:pro)
       end
       create_note(role, note)
     end
@@ -110,7 +104,6 @@ module Moderator
 
     def regular_member
       remove_negative_roles
-      user.remove_role(:pro)
       remove_mod_roles
     end
 

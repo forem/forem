@@ -9,7 +9,7 @@ RSpec.describe "Api::V0::Analytics", type: :request do
     include_examples "GET /api/analytics/:endpoint authorization examples", "historical", "&start=2019-03-29"
 
     context "when the start parameter is not included" do
-      before { get "/api/analytics/historical", headers: { "api-key" => pro_api_token.secret } }
+      before { get "/api/analytics/historical", headers: { "api-key" => api_token.secret } }
 
       it "fails with an unprocessable entity HTTP error" do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -22,7 +22,7 @@ RSpec.describe "Api::V0::Analytics", type: :request do
     end
 
     context "when the start parameter has the incorrect format" do
-      before { get "/api/analytics/historical?start=2019/2/2", headers: { "api-key" => pro_api_token.secret } }
+      before { get "/api/analytics/historical?start=2019/2/2", headers: { "api-key" => api_token.secret } }
 
       it "fails with an unprocessable entity HTTP error" do
         expect(response).to have_http_status(:unprocessable_entity)

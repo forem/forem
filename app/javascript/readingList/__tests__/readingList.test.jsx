@@ -34,7 +34,6 @@ describe('<ReadingList />', () => {
             user: {
               id: 318840,
               name: 'Bobby Tables',
-              pro: null,
               profile_image_90: 'https://picsum.photos/90/90',
               username: 'bobbytables',
             },
