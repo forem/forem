@@ -5107,6 +5107,13 @@ CREATE INDEX index_classified_listings_on_organization_id ON public.classified_l
 
 
 --
+-- Name: index_classified_listings_on_published; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_classified_listings_on_published ON public.classified_listings USING btree (published);
+
+
+--
 -- Name: index_classified_listings_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -7480,6 +7487,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210325183834'),
 ('20210326155612'),
 ('20210326160257'),
+('20210326172406'),
 ('20210326172446'),
 ('20210329141442'),
 ('20210329164447');

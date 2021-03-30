@@ -21,6 +21,11 @@
       <%= form.label :badge_image, "Badge Image:" %>
       <%= form.file_field :badge_image, class: "form-control" %>
     </div>
+
+    <div class="form-group">
+      <%= form.label :credits_awarded, "Credits awarded:" %>
+      <%= form.text_field :credits_awarded, class: "form-control" %>
+    </div>
     <%= submit_tag "Create Badge", class: "btn btn-primary" %>
   <% end %>
 </div>
