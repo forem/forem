@@ -11,8 +11,6 @@ module Users
     enum config_theme: { default_theme: 0, minimal_light_theme: 1, night_theme: 2, pink_theme: 3,
                          ten_x_hacker_theme: 4 }
 
-    before_validation :normalize_config_values
-
     validates :user_id, presence: true
     validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
     validates :feed_referential_link, inclusion: { in: [true, false] }
@@ -30,12 +28,6 @@ module Users
       errors.add(:feed_url, "is not a valid RSS/Atom feed") unless valid
     rescue StandardError => e
       errors.add(:feed_url, e.message)
-    end
-
-    def normalize_config_values
-      self.config_theme = config_theme&.tr(" ", "_")
-      self.config_font = config_font&.tr(" ", "_")
-      self.config_navbar = config_navbar&.tr(" ", "_")
     end
   end
 end
