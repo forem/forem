@@ -22,7 +22,7 @@ module Search
 
       def self.search_documents(
         user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE,
-        multisearch: false, joined_tables: false, tsvector_column: false
+        multisearch: false, joined_tables: false, tsvector_column: false, view: false
       )
         return {} unless user
 
@@ -39,7 +39,16 @@ module Search
                      user: user,
                      term: term,
                      statuses: statuses,
-                     # tags: tags,
+                     tags: tags,
+                     page: page,
+                     per_page: per_page,
+                   )
+                 elsif view
+                   find_articles_from_view(
+                     user: user,
+                     term: term,
+                     statuses: statuses,
+                     tags: tags,
                      page: page,
                      per_page: per_page,
                    )
@@ -70,7 +79,7 @@ module Search
         users = find_users(user_ids)
 
         {
-          items: serialize(result[:items], users),
+          items: serialize(result[:items], users, view: view),
           total: result[:total]
         }
       end
@@ -136,9 +145,29 @@ module Search
       end
       private_class_method :find_articles
 
+      def self.find_articles_from_view(user:, term:, statuses:, tags:, page:, per_page:)
+        relation = ::ReadingList.where(reaction_user_id: user.id, reaction_status: statuses)
+
+        relation = relation.search_reading_list(term) if term.present?
+
+        tags.each do |tag|
+          relation = relation.where("cached_tag_list LIKE ?", "%#{tag}%")
+        end
+
+        total = relation.count
+
+        relation = relation.order(reaction_created_at: :desc).page(page).per(per_page)
+
+        {
+          items: relation,
+          total: total
+        }
+      end
+      private_class_method :find_articles_from_view
+
       # [@rhymes] this is at least 10 times slower than the trigger based solution
       # => not surprising as, even if it uses a tsvector index, it doesn't use a tsvector column
-      def self.find_articles_multisearch(user:, term:, statuses:, page:, per_page:)
+      def self.find_articles_multisearch(user:, term:, statuses:, tags:, page:, per_page:)
         reactions = user.reactions.readinglist
           .where(status: statuses, reactable_type: "Article")
           .order(created_at: :desc)
@@ -148,9 +177,20 @@ module Search
           .preload(:searchable)
           .where(searchable_type: "Article")
           .where(searchable_id: reactions.reselect(:reactable_id))
-          .page(page).per(per_page)
+
+        # NOTE: this could be simplified by moving `cached_tag_list` as an attribute of `pg_search_documents`
+        if tags.present?
+          relation = relation
+            .joins("INNER JOIN articles ON pg_search_documents.searchable_id = articles.id")
+
+          tags.each do |tag|
+            relation = relation.where("articles.cached_tag_list LIKE ?", "%#{tag}%")
+          end
+        end
 
         total = relation.count
+
+        relation = relation.page(page).per(per_page)
 
         reactions = reactions.index_by(&:reactable_id)
         items = relation.map do |doc|
@@ -178,8 +218,9 @@ module Search
       end
       private_class_method :find_users
 
-      def self.serialize(articles, users)
-        ::Search::ReadingListArticleSerializer
+      def self.serialize(articles, users, view:)
+        serializer = view ? ::Search::ReadingListItemSerializer : ::Search::ReadingListArticleSerializer
+        serializer
           .new(articles, params: { users: users }, is_collection: true)
           .serializable_hash[:data]
           .pluck(:attributes)
