@@ -136,7 +136,7 @@
     "sass": "1.32.8",
     "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
-    "svgo": "2.2.2",
+    "svgo": "2.3.0",
     "webpack-bundle-analyzer": "^4.4.0",
     "webpack-dev-server": "^3.11.2"
   },
