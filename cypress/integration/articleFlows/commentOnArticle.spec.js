@@ -26,11 +26,11 @@ describe('Comment on articles', () => {
 
       cy.findByLabelText(/^Add a comment to the discussion$/i).click();
 
-      // Wait for the new autocomplete text areas to be mounted
-      cy.findByTestId('autocomplete-textarea', {
-        role: 'textbox',
-        name: /Add a comment to the discussion/,
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
       }).as('plainCommentBox');
+
       cy.get('@plainCommentBox').type('Some text @s');
 
       // Verify the combobox has appeared
@@ -72,10 +72,9 @@ describe('Comment on articles', () => {
 
       cy.findByLabelText(/^Add a comment to the discussion$/i).click();
 
-      // Wait for the new autocomplete text areas to be mounted
-      cy.findByTestId('autocomplete-textarea', {
-        role: 'textbox',
-        name: /Add a comment to the discussion/,
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
       }).as('plainCommentBox');
 
       cy.get('@plainCommentBox').type('Some text @s');
@@ -100,10 +99,10 @@ describe('Comment on articles', () => {
       );
 
       cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-      // Wait for the new autocomplete text areas to be mounted
-      cy.findByTestId('autocomplete-textarea', {
-        role: 'textbox',
-        name: /Add a comment to the discussion/,
+
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
       }).as('plainCommentBox');
 
       cy.get('@plainCommentBox').type('Some text @u');
@@ -130,10 +129,10 @@ describe('Comment on articles', () => {
       );
 
       cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-      // Wait for the new autocomplete text areas to be mounted
-      cy.findByTestId('autocomplete-textarea', {
-        role: 'textbox',
-        name: /Add a comment to the discussion/,
+
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
       }).as('plainCommentBox');
 
       cy.get('@plainCommentBox').type('Some text @s');
@@ -159,13 +158,11 @@ describe('Comment on articles', () => {
       );
 
       cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-      // Wait for the new autocomplete text areas to be mounted
-      cy.findByTestId('autocomplete-textarea', {
-        role: 'textbox',
-        name: /Add a comment to the discussion/,
-      }).as('plainCommentBox');
 
-      cy.get('@plainCommentBox').type('Some text @se');
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).type('Some text @se');
 
       // Verify the combobox has appeared
       cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
@@ -187,12 +184,11 @@ describe('Comment on articles', () => {
       );
 
       cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-      // Wait for the new autocomplete text areas to be mounted
-      cy.findByTestId('autocomplete-textarea', {
-        role: 'textbox',
-        name: /Add a comment to the discussion/,
-      }).as('plainCommentBox');
-      cy.get('@plainCommentBox').type('Some text @s');
+
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).type('Some text @s');
 
       // Verify the combobox has appeared
       cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
@@ -206,33 +202,26 @@ describe('Comment on articles', () => {
       cy.findByText('@search_user_1').should('not.be.visible');
     });
 
-    xit('should reply to a comment with user mention autocomplete', () => {
+    it('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
       );
 
       cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-      // Wait for the new autocomplete text areas to be mounted
-      cy.findByTestId('autocomplete-textarea', {
-        role: 'textbox',
-        name: /Add a comment to the discussion/,
-      }).as('plainCommentBox');
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).type('first comment');
 
-      cy.get('@plainCommentBox').type('first comment');
       cy.findByRole('button', { name: /Submit/ }).click();
-
       cy.findByRole('link', { name: /Reply/ }).click();
 
-      cy.findAllByTestId('autocomplete-textarea', {
-        role: 'textbox',
-        name: /Reply to a comment/,
-      })
-        .last()
-        .as('replyCommentBox');
+      cy.findByRole('textbox', {
+        name: /Reply to a comment.../,
+      }).as('replyCommentBox');
 
-      cy.get('@replyCommentBox').click();
-      cy.get('@replyCommentBox').type('Some text @s');
+      cy.get('@replyCommentBox').click().type('Some text @s');
 
       // Verify the combobox has appeared
       cy.findByRole('combobox', { name: /Reply to a comment/ }).as(
@@ -255,15 +244,12 @@ describe('Comment on articles', () => {
       );
 
       cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-      // Wait for the new autocomplete text areas to be mounted
-      cy.findByTestId('autocomplete-textarea', {
-        role: 'textbox',
-        name: /Add a comment to the discussion/,
-      }).as('plainCommentBox');
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).type('first comment');
 
-      cy.get('@plainCommentBox').type('first comment');
       cy.findByRole('button', { name: /Submit/ }).click();
-
       cy.findByRole('link', { name: /Reply/ });
 
       cy.findByTestId('comments-container').within(() => {

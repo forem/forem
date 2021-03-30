@@ -330,7 +330,6 @@ export const MentionAutocompleteTextArea = forwardRef(
           <textarea
             {...autocompleteInputProps}
             id={inputId}
-            data-testid="autocomplete-textarea"
             data-mention-autocomplete-active="true"
             ref={mergeInputRefs([plainTextAreaRef, forwardedRef])}
             onChange={(e) => {
