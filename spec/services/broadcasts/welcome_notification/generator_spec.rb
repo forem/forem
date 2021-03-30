@@ -20,7 +20,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     allow(Notification).to receive(:send_welcome_notification).and_call_original
     allow(User).to receive(:mascot_account).and_return(mascot_account)
     allow(SiteConfig).to receive(:staff_user_id).and_return(mascot_account.id)
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   it "requires a valid user id" do

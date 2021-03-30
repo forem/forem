@@ -5,7 +5,7 @@ RSpec.describe "Authenticating with Facebook" do
 
   before do
     omniauth_mock_facebook_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   context "when a user is new" do

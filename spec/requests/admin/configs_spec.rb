@@ -76,14 +76,14 @@ RSpec.describe "/admin/config", type: :request do
         it "updates enabled authentication providers" do
           enabled = Authentication::Providers.available.last.to_s
           post admin_config_path, params: {
-            site_config: {
+            settings_authentication: {
               "#{enabled}_key": "someKey",
               "#{enabled}_secret": "someSecret",
               auth_providers_to_enable: enabled
             },
             confirmation: confirmation_message
           }
-          expect(SiteConfig.authentication_providers).to eq([enabled])
+          expect(Settings::Authentication.providers).to eq([enabled])
         end
 
         describe "Campaigns" do
@@ -98,27 +98,27 @@ RSpec.describe "/admin/config", type: :request do
           provider = Authentication::Providers.available.last.to_s
           enabled = "#{provider}, '', nil"
           post admin_config_path, params: {
-            site_config: {
+            settings_authentication: {
               "#{provider}_key": "someKey",
               "#{provider}_secret": "someSecret",
               auth_providers_to_enable: enabled
             },
             confirmation: confirmation_message
           }
-          expect(SiteConfig.authentication_providers).to eq([provider])
+          expect(Settings::Authentication.providers).to eq([provider])
         end
 
         it "does not update enabled authentication providers if any associated key missing" do
           enabled = Authentication::Providers.available.first.to_s
           post admin_config_path, params: {
-            site_config: {
+            settings_authentication: {
               "#{enabled}_key": "someKey",
               "#{enabled}_secret": "",
               auth_providers_to_enable: enabled
             },
             confirmation: confirmation_message
           }
-          expect(SiteConfig.authentication_providers).to eq([])
+          expect(Settings::Authentication.providers).to eq([])
         end
 
         it "enables proper domains to allow list" do
