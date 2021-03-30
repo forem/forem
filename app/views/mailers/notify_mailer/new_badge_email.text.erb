@@ -6,8 +6,10 @@ Congratulations, <%= @user.name %>! You got the <%= @badge.title %> badge! Be su
 
 <%= user_url(@user) %>
 
-You also get 5 new credits to use for community listings if you have anything you'd like to promote: <%= listings_url %>
+<% unless @badge.credits_awarded.zero? %>
+  You also get <%= @badge.credits_awarded %> new credits to use for community listings if you have anything you'd like to promote: <%= listings_url %>
 
-To manage your credits: visit: <%= credits_url %>
+  To manage your credits visit: <%= credits_url %>
 
-For more information about listings, visit: <%= app_url(about_listings_url) %>
+  For more information about listings, visit: <%= app_url(about_listings_url) %>
+<% end %>
