@@ -64,9 +64,8 @@
     <% elsif @user == article.user %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--danger">Delete</a>
     <% end %>
-    <% if @current_user_pro %>
-      <a href="<%= article.path %>/stats" data-no-instant class="crayons-btn">Stats</a>
-    <% end %>
+
+    <a href="<%= article.path %>/stats" data-no-instant class="crayons-btn">Stats</a>
 
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="crayons-btn dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">

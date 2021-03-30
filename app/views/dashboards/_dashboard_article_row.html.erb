@@ -100,9 +100,7 @@
         <% if article.user_subscriptions_count > 0 %>
           <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="crayons-link crayons-link--block w-100"><%= "Subscriptions (#{article.user_subscriptions_count})" %></a>
         <% end %>
-        <% if @current_user_pro %>
-          <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100">Stats</a>
-        <% end %>
+        <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100">Stats</a>
         <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "js-archive-toggle" }) do |f| %>
           <%= f.hidden_field :archived, value: !article.archived, id: "article_archived_#{article.id}" %>
 

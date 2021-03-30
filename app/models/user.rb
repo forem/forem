@@ -94,7 +94,7 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
-  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
+  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password
 
@@ -385,12 +385,6 @@ class User < ApplicationRecord
 
   def tech_admin?
     has_role?(:tech_admin) || has_role?(:super_admin)
-  end
-
-  def pro?
-    Rails.cache.fetch("user-#{id}/has_pro_role", expires_in: 200.hours) do
-      has_role?(:pro)
-    end
   end
 
   def vomitted_on?

@@ -99,10 +99,6 @@ FactoryBot.define do
       end
     end
 
-    trait :pro do
-      after(:build) { |user| user.add_role(:pro) }
-    end
-
     trait :org_member do
       after(:create) do |user|
         org = create(:organization)

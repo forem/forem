@@ -759,17 +759,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#pro?" do
-    it "returns false if the user is not a pro" do
-      expect(user.pro?).to be(false)
-    end
-
-    it "returns true if the user has the pro role" do
-      user.add_role(:pro)
-      expect(user.pro?).to be(true)
-    end
-  end
-
   describe "#enough_credits?" do
     it "returns false if the user has less unspent credits than neeed" do
       expect(user.enough_credits?(1)).to be(false)
