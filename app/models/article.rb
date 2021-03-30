@@ -152,6 +152,8 @@ class Article < ApplicationRecord
       where("cached_tag_list ~ ?", "[[:<:]]#{tag}[[:>:]]")
     when Array
       tag.reduce(self) { |acc, elem| acc.cached_tagged_with(elem) }
+    when Tag
+      cached_tagged_with(tag.name)
     else
       raise TypeError, "Cannot search tags for: #{tag.inspect}"
     end
@@ -165,6 +167,8 @@ class Article < ApplicationRecord
       tags
         .map { |tag| cached_tagged_with(tag) }
         .reduce { |acc, elem| acc.or(elem) }
+    when Tag
+      cached_tagged_with(tag.name)
     else
       raise TypeError, "Cannot search tags for: #{tag.inspect}"
     end

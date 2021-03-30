@@ -785,7 +785,7 @@ RSpec.describe Article, type: :model do
 
       expect(articles).to include(*included)
       expect(articles).not_to include excluded
-      expect(articles.to_a).to eq described_class.tagged_with("omg").to_a
+      expect(articles.to_a).to include(*described_class.tagged_with("omg").to_a)
     end
 
     it "can search for multiple tags" do
