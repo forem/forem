@@ -79,7 +79,7 @@ module Settings
     end
 
     def provider_keys_missing(entry)
-      SiteConfig.public_send("#{entry}_key").blank? || SiteConfig.public_send("#{entry}_secret").blank?
+      SiteConfig.public_send("#{entry}_key").blank? || Settings::Authentication.public_send("#{entry}_secret").blank?
     end
 
     def create_tags_if_not_created

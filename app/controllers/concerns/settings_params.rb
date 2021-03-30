@@ -1,7 +1,5 @@
 module SettingsParams
   SPECIAL_PARAMS_TO_ADD = %w[
-    auth_providers_to_enable
-    authentication_providers
     credit_prices_in_cents
     email_addresses
     meta_keywords
@@ -13,7 +11,6 @@ module SettingsParams
 
     params.require(:site_config)&.permit(
       settings_keys.map(&:to_sym),
-      authentication_providers: [],
       social_media_handles: SiteConfig.social_media_handles.keys,
       email_addresses: SiteConfig.email_addresses.keys,
       meta_keywords: SiteConfig.meta_keywords.keys,
