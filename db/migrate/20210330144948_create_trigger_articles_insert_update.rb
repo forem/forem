@@ -8,7 +8,7 @@ class CreateTriggerArticlesInsertUpdate < ActiveRecord::Migration[6.0]
         on("articles").
         name("tsv_tsvector_update").
         before(:insert, :update) do
-      "SELECT tsvector_update_trigger(tsv, 'pg_catalog.simple', body_markdown, cached_tag_list, title);"
+      "NEW.tsv := to_tsvector('simple'::regconfig, NEW.body_markdown) || to_tsvector('simple'::regconfig, NEW.cached_tag_list) || to_tsvector('simple'::regconfig, NEW.title); return NEW"
     end
   end
 
