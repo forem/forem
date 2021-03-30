@@ -215,12 +215,9 @@ describe('Comment on articles', () => {
 
     cy.findByRole('link', { name: /Reply/ }).click();
 
-    cy.findAllByTestId('autocomplete-textarea', {
-      role: 'textbox',
-      name: /Reply to a comment/,
-    })
-      .last()
-      .as('replyCommentBox');
+    cy.findByRole('textbox', {
+      name: /Reply to a comment.../,
+    }).as('replyCommentBox');
 
     cy.get('@replyCommentBox').click();
     cy.get('@replyCommentBox').type('Some text @s');
