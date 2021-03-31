@@ -374,7 +374,7 @@ class User < ApplicationRecord
   end
 
   def warned
-    has_role? :warned
+    has_role?(:warned)
   end
 
   def admin?
@@ -397,7 +397,7 @@ class User < ApplicationRecord
     return @trusted if defined? @trusted
 
     @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
-      has_role? :trusted
+      has_role?(:trusted)
     end
   end
 
@@ -408,7 +408,7 @@ class User < ApplicationRecord
     end
   end
 
-  def comment_suspended
+  def comment_suspended?
     has_role?(:comment_suspended) || has_role?(:comment_banned)
   end
 

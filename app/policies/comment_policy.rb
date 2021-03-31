@@ -66,7 +66,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def user_comment_suspended?
-    user.has_role? :comment_suspended
+    user.has_role?(:comment_suspended)
   end
 
   def user_is_author?
