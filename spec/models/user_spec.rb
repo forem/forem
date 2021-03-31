@@ -590,7 +590,6 @@ RSpec.describe User, type: :model do
 
     it "persists extracts relevant identity data from new twitter user" do
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.twitter_followers_count).to eq(100)
       expect(new_user.twitter_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
     end
 
