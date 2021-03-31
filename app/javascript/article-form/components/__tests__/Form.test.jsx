@@ -6,6 +6,13 @@ import { Form } from '../Form';
 let bodyMarkdown;
 let mainImage;
 
+// Axe flags an error for the multi-line combobox we use for Autosuggest, since a combobox should be a single line input.
+// This is a known issue documented on https://github.com/forem/forem/pull/13044, and these custom rules only apply to the two tests referencing them below.
+const customAxeRules = {
+  'aria-allowed-role': { enabled: false },
+  'aria-required-children': { enabled: false },
+};
+
 describe('<Form />', () => {
   beforeEach(() => {
     global.Runtime = {
@@ -13,6 +20,15 @@ describe('<Form />', () => {
         return false;
       }),
     };
+
+    global.window.matchMedia = jest.fn((query) => {
+      return {
+        matches: false,
+        media: query,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      };
+    });
   });
 
   describe('v1', () => {
@@ -40,7 +56,10 @@ describe('<Form />', () => {
           switchHelpContext={null}
         />,
       );
-      const results = await axe(container);
+
+      const results = await axe(container, {
+        rules: customAxeRules,
+      });
 
       expect(results).toHaveNoViolations();
     });
@@ -96,7 +115,9 @@ describe('<Form />', () => {
           switchHelpContext={null}
         />,
       );
-      const results = await axe(container);
+      const results = await axe(container, {
+        rules: customAxeRules,
+      });
 
       expect(results).toHaveNoViolations();
     });
