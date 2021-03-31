@@ -8,7 +8,7 @@ RSpec.describe Role, type: :model do
   describe "::ROLES" do
     it "contains the correct values" do
       expected_roles = %w[
-        admin banned chatroom_beta_tester codeland_admin comment_banned podcast_admin pro restricted_liquid_tag
+        admin banned chatroom_beta_tester codeland_admin comment_banned podcast_admin restricted_liquid_tag
         single_resource_admin super_admin tag_moderator mod_relations_admin support_admin tech_admin trusted
         warned workshop_pass
       ]

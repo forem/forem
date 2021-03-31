@@ -1,7 +1,10 @@
 require "rails_helper"
 
 RSpec.describe BadgeAchievement, type: :model do
-  let(:achievement) { create(:badge_achievement) }
+  let(:badge_with_credits) { create(:badge, credits_awarded: 10) }
+  let(:badge) { create(:badge, credits_awarded: 0) }
+  let(:achievement) { create(:badge_achievement, badge: badge) }
+  let(:credits_achievement) { create(:badge_achievement, badge: badge_with_credits) }
 
   describe "validations" do
     describe "builtin validations" do
@@ -18,8 +21,12 @@ RSpec.describe BadgeAchievement, type: :model do
     expect(achievement.rewarding_context_message).to include("</a>")
   end
 
-  it "awards credits after create" do
-    expect(achievement.user.credits.size).to eq(5)
+  it "doesn't award credits if credits_awarded is zero" do
+    expect(achievement.user.credits.size).to eq(0)
+  end
+
+  it "awards credits after create if credits_awarded exist" do
+    expect(credits_achievement.user.credits.size).to eq(10)
   end
 
   it "notifies recipients after commit" do

@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   resourcify
+  self.ignored_columns = %w[twitter_following_count twitter_followers_count]
 
   include CloudinaryHelper
   include Searchable
@@ -94,7 +95,7 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
-  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
+  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password
 
@@ -108,6 +109,8 @@ class User < ApplicationRecord
   acts_as_follower
 
   has_one :profile, dependent: :destroy
+  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :destroy
+  has_one :setting, class_name: "Users::Setting", dependent: :destroy
 
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id,
                            inverse_of: :resource_owner, dependent: :delete_all
@@ -385,12 +388,6 @@ class User < ApplicationRecord
 
   def tech_admin?
     has_role?(:tech_admin) || has_role?(:super_admin)
-  end
-
-  def pro?
-    Rails.cache.fetch("user-#{id}/has_pro_role", expires_in: 200.hours) do
-      has_role?(:pro)
-    end
   end
 
   def vomitted_on?
