@@ -166,7 +166,7 @@
                   data-tooltip="Unchecking this will enable Email Registration">
                   <%= f.check_box :invite_only_mode,
                                   checked: invite_only_mode_or_no_enabled_auth_options,
-                                  data: { action: "config#adjustAuthenticationOptions", target: "config.inviteOnlyMode" },
+                                  data: { action: "config#adjustAuthenticationOptions", "config-target": "inviteOnlyMode" },
                                   class: "crayons-checkbox" %>
                   <div class="mt-0">
                     <%= admin_config_label :invite_only_mode, "Invite-only mode" %>
@@ -301,8 +301,8 @@
 
                 <section class="mb-6">
                   <div class="form-group mb-0">
-                    <%= f.text_field :providers_to_enable,
-                                     id: "providers_to_enable",
+                    <%= f.text_field :auth_providers_to_enable,
+                                     id: "auth_providers_to_enable",
                                      class: "form-control hidden",
                                      value: Settings::Authentication.providers.join(","),
                                      readonly: true %>

@@ -35,9 +35,7 @@ module Api
         def auth_settings_params
           params
             .require(:site_config)
-            .permit(*::Settings::Authentication.keys,
-                    :providers_to_enable,
-                    providers: [])
+            .permit(*::Settings::Authentication.keys, :providers_to_enable)
         end
       end
     end
