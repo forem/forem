@@ -108,6 +108,8 @@ class User < ApplicationRecord
   acts_as_follower
 
   has_one :profile, dependent: :destroy
+  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :destroy
+  has_one :setting, class_name: "Users::Setting", dependent: :destroy
 
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id,
                            inverse_of: :resource_owner, dependent: :delete_all
