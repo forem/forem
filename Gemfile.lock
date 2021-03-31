@@ -426,7 +426,7 @@ GEM
       addressable (~> 2.0)
       http (>= 2.0, < 5.0)
     liquid (5.0.1)
-    listen (3.5.0)
+    listen (3.5.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.9.0)
