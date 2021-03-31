@@ -34,9 +34,7 @@ module Settings
 
     def upsert_configs
       @configs.each do |key, value|
-        if key == "auth_providers_to_enable"
-          update_enabled_auth_providers(value) unless value.class.name != "String"
-        elsif value.is_a?(Array)
+        if value.is_a?(Array)
           SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
         elsif value.respond_to?(:to_h)
           SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
@@ -58,28 +56,6 @@ module Settings
         @configs[param] = @configs[param]&.downcase&.delete(" ") if @configs[param]
       end
       @configs[:credit_prices_in_cents]&.transform_values!(&:to_i)
-    end
-
-    def update_enabled_auth_providers(value)
-      enabled_providers = value.split(",").filter_map do |entry|
-        entry unless invalid_provider_entry(entry)
-      end
-      return if email_login_disabled_with_one_or_less_auth_providers(enabled_providers)
-
-      Settings::Authentication.public_send("providers=", enabled_providers)
-    end
-
-    def email_login_disabled_with_one_or_less_auth_providers(enabled_providers)
-      !Settings::Authentication.allow_email_password_login && enabled_providers.count <= 1
-    end
-
-    def invalid_provider_entry(entry)
-      entry.blank? || Authentication::Providers.available.map(&:to_s).exclude?(entry) ||
-        provider_keys_missing(entry)
-    end
-
-    def provider_keys_missing(entry)
-      SiteConfig.public_send("#{entry}_key").blank? || Settings::Authentication.public_send("#{entry}_secret").blank?
     end
 
     def create_tags_if_not_created
