@@ -48,13 +48,12 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       it "updates site config admin action taken" do
-        Timecop.freeze do
-          expect(SiteConfig.admin_action_taken_at).not_to eq(5.minutes.ago)
-          allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
-          post "/admin/config", params: { site_config: { health_check_token: "token" },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.admin_action_taken_at).to eq(4.minutes.ago)
-        end
+        expect do
+          post "/admin/config", params: {
+            site_config: { health_check_token: "token" },
+            confirmation: confirmation_message
+          }
+        end.to change(SiteConfig, :admin_action_taken_at)
       end
 
       describe "API tokens" do
@@ -75,7 +74,7 @@ RSpec.describe "/admin/config", type: :request do
       describe "Authentication" do
         it "updates enabled authentication providers" do
           enabled = Authentication::Providers.available.last.to_s
-          post admin_config_path, params: {
+          post admin_settings_authentications_path, params: {
             settings_authentication: {
               "#{enabled}_key": "someKey",
               "#{enabled}_secret": "someSecret",
@@ -97,7 +96,7 @@ RSpec.describe "/admin/config", type: :request do
         it "strips empty elements" do
           provider = Authentication::Providers.available.last.to_s
           enabled = "#{provider}, '', nil"
-          post admin_config_path, params: {
+          post admin_settings_authentications_path, params: {
             settings_authentication: {
               "#{provider}_key": "someKey",
               "#{provider}_secret": "someSecret",
@@ -110,7 +109,7 @@ RSpec.describe "/admin/config", type: :request do
 
         it "does not update enabled authentication providers if any associated key missing" do
           enabled = Authentication::Providers.available.first.to_s
-          post admin_config_path, params: {
+          post admin_settings_authentications_path, params: {
             settings_authentication: {
               "#{enabled}_key": "someKey",
               "#{enabled}_secret": "",
@@ -123,21 +122,25 @@ RSpec.describe "/admin/config", type: :request do
 
         it "enables proper domains to allow list" do
           proper_list = "dev.to, forem.com, forem.dev"
-          post "/admin/config", params: { settings_authentication: { allowed_registration_email_domains: proper_list },
-                                          confirmation: confirmation_message }
+          post admin_settings_authentications_path, params: {
+            settings_authentication: { allowed_registration_email_domains: proper_list },
+            confirmation: confirmation_message
+          }
           expect(Settings::Authentication.allowed_registration_email_domains).to eq(%w[dev.to forem.com forem.dev])
         end
 
         it "allows 2-character domains" do
           proper_list = "dev.to, forem.com, 2u.com"
-          post "/admin/config", params: { settings_authentication: { allowed_registration_email_domains: proper_list },
-                                          confirmation: confirmation_message }
+          post admin_settings_authentications_path, params: {
+            settings_authentication: { allowed_registration_email_domains: proper_list },
+            confirmation: confirmation_message
+          }
           expect(Settings::Authentication.allowed_registration_email_domains).to eq(%w[dev.to forem.com 2u.com])
         end
 
         it "does not allow improper domain list" do
           impproper_list = "dev.to, foremcom, forem.dev"
-          post "/admin/config", params: {
+          post admin_settings_authentications_path, params: {
             settings_authentication: { allowed_registration_email_domains: impproper_list },
             confirmation: confirmation_message
           }
@@ -145,13 +148,15 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "enables display_email_domain_allow_list_publicly" do
-          post "/admin/config", params: { settings_authentication: { display_email_domain_allow_list_publicly: true },
-                                          confirmation: confirmation_message }
+          post admin_settings_authentications_path, params: {
+            settings_authentication: { display_email_domain_allow_list_publicly: true },
+            confirmation: confirmation_message
+          }
           expect(Settings::Authentication.display_email_domain_allow_list_publicly).to be(true)
         end
 
         it "enables email authentication" do
-          post "/admin/config", params: {
+          post admin_settings_authentications_path, params: {
             settings_authentication: { allow_email_password_registration: true },
             confirmation: confirmation_message
           }
@@ -160,7 +165,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "disables email authentication" do
-          post "/admin/config", params: {
+          post admin_settings_authentications_path, params: {
             settings_authentication: { allow_email_password_registration: false },
             confirmation: confirmation_message
           }
@@ -169,7 +174,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "enables invite-only-mode" do
-          post "/admin/config", params: {
+          post admin_settings_authentications_path, params: {
             settings_authentication: { invite_only_mode: true },
             confirmation: confirmation_message
           }
@@ -177,8 +182,10 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "disables invite-only-mode & enables just email registration" do
-          post "/admin/config", params: { settings_authentication: { invite_only_mode: false },
-                                          confirmation: confirmation_message }
+          post admin_settings_authentications_path, params: {
+            settings_authentication: { invite_only_mode: false },
+            confirmation: confirmation_message
+          }
           expect(Settings::Authentication.invite_only_mode).to be(false)
         end
       end
@@ -752,7 +759,7 @@ RSpec.describe "/admin/config", type: :request do
         it "updates recaptcha_site_key and recaptcha_secret_key" do
           site_key = "hi-ho"
           secret_key = "lets-go"
-          post "/admin/config", params: {
+          post admin_settings_authentications_path, params: {
             settings_authentication: { recaptcha_site_key: site_key, recaptcha_secret_key: secret_key },
             confirmation: confirmation_message
           }
