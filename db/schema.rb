@@ -432,12 +432,12 @@ ActiveRecord::Schema.define(version: 2021_03_26_172406) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "token", null: false
-    t.string "platform", null: false
     t.string "app_bundle", null: false
     t.datetime "created_at", precision: 6, null: false
+    t.string "platform", null: false
+    t.string "token", null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
     t.index ["user_id", "token", "platform", "app_bundle"], name: "index_devices_on_user_id_and_token_and_platform_and_app_bundle", unique: true
   end
 
@@ -1363,10 +1363,55 @@ ActiveRecord::Schema.define(version: 2021_03_26_172406) do
     t.string "username"
   end
 
+  create_table "users_notification_settings", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "email_badge_notifications", default: true, null: false
+    t.boolean "email_comment_notifications", default: true, null: false
+    t.boolean "email_community_mod_newsletter", default: false, null: false
+    t.boolean "email_connect_messages", default: true, null: false
+    t.boolean "email_digest_periodic", default: false, null: false
+    t.boolean "email_follower_notifications", default: true, null: false
+    t.boolean "email_membership_newsletter", default: false, null: false
+    t.boolean "email_mention_notifications", default: true, null: false
+    t.boolean "email_newsletter", default: false, null: false
+    t.boolean "email_tag_mod_newsletter", default: false, null: false
+    t.boolean "email_unread_notifications", default: true, null: false
+    t.boolean "mobile_comment_notifications", default: true, null: false
+    t.boolean "mod_roundrobin_notifications", default: true, null: false
+    t.boolean "reaction_notifications", default: true, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.boolean "welcome_notifications", default: true, null: false
+    t.index ["user_id"], name: "index_users_notification_settings_on_user_id"
+  end
+
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "role_id"
     t.bigint "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+  end
+
+  create_table "users_settings", force: :cascade do |t|
+    t.string "brand_color1", default: "#000000"
+    t.string "brand_color2", default: "#ffffff"
+    t.integer "config_font", default: 0, null: false
+    t.integer "config_navbar", default: 0, null: false
+    t.integer "config_theme", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "display_announcements", default: true, null: false
+    t.boolean "display_email_on_profile", default: false, null: false
+    t.boolean "display_sponsors", default: true, null: false
+    t.integer "editor_version", default: 0, null: false
+    t.integer "experience_level"
+    t.boolean "feed_mark_canonical", default: false, null: false
+    t.boolean "feed_referential_link", default: true, null: false
+    t.string "feed_url"
+    t.string "inbox_guidelines"
+    t.integer "inbox_type", default: 0, null: false
+    t.boolean "permit_adjacent_sponsors", default: true
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_users_settings_on_user_id"
   end
 
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|
@@ -1480,8 +1525,10 @@ ActiveRecord::Schema.define(version: 2021_03_26_172406) do
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
+  add_foreign_key "users_notification_settings", "users"
   add_foreign_key "users_roles", "roles", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade
+  add_foreign_key "users_settings", "users"
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
 end
