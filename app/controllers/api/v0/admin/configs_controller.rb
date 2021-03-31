@@ -13,15 +13,31 @@ module Api
         end
 
         def update
-          result = SiteConfigs::Upsert.call(site_config_params)
-          if result.success?
-            @site_configs = SiteConfig.all
+          # NOTE: citizen428 - this is not going to scale but I want to wait
+          # until we extract at least one more settings model before deciding
+          # how to change this.
+          settings_result = ::Settings::Upsert.call(settings_params)
+          auth_settings_result = ::Authentication::SettingsUpsert.call(auth_settings_params)
+
+          if settings_result.success? && auth_settings_result.success?
+            @site_configs = SiteConfig.all + Settings::Authentication.all
             Audit::Logger.log(:internal, @user, params.dup)
             bust_content_change_caches
             render "show"
           else
-            render json: { error: result.errors.to_sentence, status: 422 }, status: :unprocessable_entity
+            errors = settings_result.errors + auth_settings_result.errors
+            render json: { error: errors.to_sentence, status: 422 }, status: :unprocessable_entity
           end
+        end
+
+        private
+
+        def auth_settings_params
+          params
+            .require(:site_config)
+            .permit(*::Settings::Authentication.keys,
+                    :providers_to_enable,
+                    providers: [])
         end
       end
     end
