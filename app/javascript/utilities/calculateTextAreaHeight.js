@@ -1,3 +1,5 @@
+// These styles are applied to the hidden element we use to measure the height.
+// !important styles are used to ensure no matter what style properties are attached to the given textarea, the hidden textarea will never become visible or cause layout jumps
 const HIDDEN_TEXTAREA_STYLE = `
 min-height:0 !important;
 max-height:none !important;

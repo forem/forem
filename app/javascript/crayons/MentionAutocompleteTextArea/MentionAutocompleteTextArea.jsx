@@ -19,6 +19,8 @@ import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
 
 const MIN_SEARCH_CHARACTERS = 2;
 const MAX_RESULTS_DISPLAYED = 6;
+// Used to ensure dropdown appears just below search text
+const DROPDOWN_VERTICAL_OFFSET = '1.5rem';
 
 /**
  * Helper function to merge any additional ref passed to the MentionAutocompleteTextArea with the inputRefs used internally by this component.
@@ -141,6 +143,7 @@ export const MentionAutocompleteTextArea = forwardRef(
       }
 
       fetchSuggestions(searchTerm).then(({ result: fetchedUsers }) => {
+        // If the fetchSuggestion call yields more than the MAX, truncate the results
         const resultLength = Math.min(
           fetchedUsers.length,
           MAX_RESULTS_DISPLAYED,
@@ -346,7 +349,7 @@ export const MentionAutocompleteTextArea = forwardRef(
               className="crayons-autocomplete__popover absolute"
               id="mention-autocomplete-popover"
               style={{
-                top: `calc(${dropdownPositionPoints.y}px + 1.5rem)`,
+                top: `calc(${dropdownPositionPoints.y}px + ${DROPDOWN_VERTICAL_OFFSET}`,
                 left: `${dropdownPositionPoints.x}px`,
               }}
             >

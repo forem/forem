@@ -1,4 +1,4 @@
-describe('Article Editor', () => {
+describe('Article Editor (Mention User)', () => {
   describe('v1 Editor', () => {
     beforeEach(() => {
       cy.testSetup();
