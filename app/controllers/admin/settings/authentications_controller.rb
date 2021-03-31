@@ -15,7 +15,8 @@ module Admin
       def settings_params
         params
           .require(:settings_authentication)
-          .permit(*::Settings::Authentication.keys, :providers_to_enable,
+          .permit(*::Settings::Authentication.keys,
+                  :providers_to_enable,
                   providers: [])
       end
     end
