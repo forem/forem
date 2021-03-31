@@ -290,6 +290,7 @@ module ApplicationHelper
   end
 
   def role_display_name(role)
+    # TODO: [@jacobherrington] remove the check in this method
     role.name == "banned" ? "Suspended" : role.name.titlecase
   end
 end

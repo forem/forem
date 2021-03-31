@@ -39,7 +39,7 @@ RSpec.describe CommentPolicy, type: :policy do
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide admin_delete]) }
     end
 
-    context "with banned_comment status" do
+    context "with comment_suspended role" do
       before { user.add_role(:comment_suspended) }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide admin_delete]) }
@@ -91,7 +91,7 @@ RSpec.describe CommentPolicy, type: :policy do
       end
     end
 
-    context "with banned_comment status" do
+    context "with comment_suspended role" do
       before { user.add_role(:comment_suspended) }
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }

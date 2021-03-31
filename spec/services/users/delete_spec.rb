@@ -185,9 +185,9 @@ RSpec.describe Users::Delete, type: :service do
     end
   end
 
-  context "when the user was banned" do
+  context "when the user was suspended" do
     it "stores a hash of the username so the user can't sign up again" do
-      user = create(:user, :banned)
+      user = create(:user, :suspended)
       expect do
         described_class.call(user)
       end.to change(Users::SuspendedUsername, :count).by(1)

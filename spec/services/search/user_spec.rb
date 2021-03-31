@@ -48,7 +48,7 @@ RSpec.describe Search::User, type: :service do
         user1.add_role(:admin)
         user2.add_role(:suspended)
         index_documents([user1, user2])
-        query_params = { size: 5, exclude_roles: ["suspended"] }
+        query_params = { size: 5, exclude_roles: %w[suspended banned] }
 
         user_docs = described_class.search_documents(params: query_params)
         expect(user_docs.count).to eq(1)

@@ -4,7 +4,7 @@ module Admin
       state: :trusted
     }.with_indifferent_access.freeze
 
-    VALID_ROLES = %i[suspended warned trusted comment_suspended].freeze
+    VALID_ROLES = %i[banned comment_banned comment_suspended suspended trusted warned].freeze
 
     def self.call(relation: User.all, options: {})
       options = DEFAULT_OPTIONS.merge(options)

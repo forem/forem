@@ -8,7 +8,7 @@ module Users
       Digest::SHA256.hexdigest(username)
     end
 
-    def self.previously_banned?(username)
+    def self.previously_suspended?(username)
       where(username_hash: hash_username(username)).any?
     end
 
