@@ -40,7 +40,7 @@
                     id="user-profile-dropdownmenu-flag-button"
                     data-profile-user-id="<%= @user.id %>"
                     data-profile-user-name="@<%= @user.username %>"
-                    data-flag-status="<%= @flag_status %>"
+                    data-is-user-flagged="<%= @is_user_flagged %>"
                     class="border-none crayons-link crayons-link--block">
                     <%= @flag_status ? "Unflag" : "Flag" %> @<%= @user.username %>
                   </a>
