@@ -13,7 +13,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user_params: { note_for_current_role: "warning user", user_status: "Warn" },
     )
     expect(user.warned).to be true
-    expect(user.suspended).to be false
+    expect(user.suspended?).to be false
   end
 
   it "updates user to super admin" do
@@ -60,7 +60,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user: user,
       user_params: { note_for_current_role: "user in good standing", user_status: "Regular Member" },
     )
-    expect(user.suspended).to be false
+    expect(user.suspended?).to be false
     expect(user.roles.count).to eq(0)
   end
 

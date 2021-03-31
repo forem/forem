@@ -369,8 +369,7 @@ class User < ApplicationRecord
     end
   end
 
-  # methods for Administrate field
-  def suspended
+  def suspended?
     has_role?(:suspended) || has_role?(:banned)
   end
 

@@ -1,6 +1,6 @@
 class MessagePolicy < ApplicationPolicy
   def create?
-    !user_is_suspended?
+    !user_suspended?
   end
 
   def destroy?

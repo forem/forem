@@ -51,7 +51,7 @@ RSpec.describe "Admin bans user", type: :system do
   # to-do: add spec for invalid bans
   it "checks that the user is suspended and has note" do
     suspend_user
-    expect(user.suspended).to eq(true)
+    expect(user.suspended?).to eq(true)
     expect(Note.last.reason).to eq "Suspend"
   end
 
@@ -60,7 +60,7 @@ RSpec.describe "Admin bans user", type: :system do
     add_tag_moderator_role
     suspend_user
 
-    expect(user.suspended).to eq(true)
+    expect(user.suspended?).to eq(true)
     expect(user.trusted).to eq(false)
     expect(user.warned).to eq(false)
     expect(user.has_role?(:tag_modertor)).to eq(false)

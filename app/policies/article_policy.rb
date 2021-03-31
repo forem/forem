@@ -12,7 +12,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def create?
-    !user_is_suspended?
+    !user_suspended?
   end
 
   def delete_confirm?

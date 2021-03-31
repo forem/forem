@@ -1,10 +1,10 @@
 class StripeActiveCardPolicy < ApplicationPolicy
   def create?
-    !user_is_suspended?
+    !user_suspended?
   end
 
   def update?
-    !user_is_suspended?
+    !user_suspended?
   end
 
   def destroy?

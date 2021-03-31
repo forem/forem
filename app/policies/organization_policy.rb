@@ -1,6 +1,6 @@
 class OrganizationPolicy < ApplicationPolicy
   def create?
-    !user.suspended
+    !user.suspended?
   end
 
   def update?

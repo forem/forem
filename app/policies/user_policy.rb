@@ -93,7 +93,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def join_org?
-    !user_is_suspended?
+    !user_suspended?
   end
 
   def leave_org?
@@ -109,7 +109,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def moderation_routes?
-    (user.has_role?(:trusted) || minimal_admin?) && !user.suspended
+    (user.has_role?(:trusted) || minimal_admin?) && !user.suspended?
   end
 
   def update_password?
