@@ -7,9 +7,6 @@
   bottom: calc(60px + env(safe-area-inset-bottom));
   left: 20px;
   right: 20px;
-  --runtime-display: flex;
-  align-items: center;
-  justify-content: center;
   @include themeable(
     background,
     theme-container-accent-background,
@@ -20,8 +17,15 @@
   border-radius: var(--radius);
   font-weight: var(--fw-bold);
 
-  iframe {
-    display: none;
+  a,
+  a:hover,
+  a:focus,
+  a:active {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__icon {
@@ -41,5 +45,21 @@
     width: 40px;
     height: 40px;
     display: inline-block;
+  }
+}
+
+.mobile-deep-link-banner {
+  margin: 30px;
+  text-align: center;
+
+  .crayons-card {
+    max-width: 500px;
+    margin: 30px auto;
+  }
+}
+
+#mobile-deep-link-spinner {
+  svg {
+    margin: 30px auto;
   }
 }

@@ -86,4 +86,22 @@ class AsyncInfoController < ApplicationController
     #{current_user&.pro?}__
     #{current_user&.blocking_others_count}__"
   end
+
+  # Apple Application Site Association
+  def aasa
+    forem_app_id = "1550146455.com.forem.app"
+    render json: {
+      applinks: {
+        details: [
+          {
+            appIDs: [forem_app_id],
+            components: [{ "/" => "*" }]
+          },
+        ]
+      },
+      webcredentials: {
+        apps: [forem_app_id]
+      }
+    }
+  end
 end
