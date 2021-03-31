@@ -1,6 +1,5 @@
 class User < ApplicationRecord
   resourcify
-  self.ignored_columns = %w[twitter_following_count twitter_followers_count]
 
   include CloudinaryHelper
   include Searchable
