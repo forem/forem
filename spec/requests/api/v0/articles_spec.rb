@@ -4,6 +4,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, name: "discuss") }
   let(:article) { create(:article, featured: true, tags: "discuss") }
+  let(:new_article) { create(:article) }
 
   before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
@@ -267,6 +268,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
         get api_articles_path(state: "rising")
         expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns articles sorted by publish date" do
+        article.update_columns(published_at: 500.years.ago)
+        new_article.update_columns(published_at: 1.minute.ago)
+
+        get latest_api_articles_path
+        first_article_published_at = response.parsed_body.first["published_at"]
+        last_article_published_at = response.parsed_body.last["published_at"]
+        expect(first_article_published_at.to_date).to be > last_article_published_at.to_date
       end
 
       it "returns nothing if the state is unknown" do
