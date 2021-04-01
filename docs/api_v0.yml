@@ -2150,6 +2150,33 @@ paths:
             -d '{"article":{"body_markdown":"---\ntitle:A sample article about...\npublished:false\n---\n..."}}' \
             https://dev.to/api/articles
 
+  /articles/latest:
+    get:
+      operationId: getLatestArticles
+      summary: Published articles sorted by publish date
+      description: |
+        This endpoint allows the client to retrieve a list of articles.
+        ordered by descending publish date.
+
+        It supports pagination, each page will contain `30` articles by default.
+      tags:
+        - articles
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
+      responses:
+        "200":
+          description: A list of articles sorted by descending publish date 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ArticleIndex"
+              examples:
+                articles-success:
+                  $ref: "#/components/examples/ArticlesIndex"
+
   /articles/{id}:
     parameters:
       - name: id
