@@ -27,7 +27,7 @@ module Authentication
     # this as-is.
     def upsert_configs
       @configs.each do |key, value|
-        if key == "providers_to_enable"
+        if key == "auth_providers_to_enable"
           update_enabled_providers(value) unless value.class.name != "String"
         elsif value.is_a?(Array) && value.any?
           Settings::Authentication.public_send("#{key}=", value.reject(&:blank?))
