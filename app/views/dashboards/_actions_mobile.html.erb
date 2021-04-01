@@ -9,13 +9,11 @@
 
     <option value="/listings/dashboard">Listings</option>
 
-    <% if @current_user_pro %>
-      <option value="<%= dashboard_pro_path %>">Pro Analytics</option>
+    <option value="<%= dashboard_analytics_path %>">Analytics</option>
 
-      <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-        <% @organizations.each do |org| %>
-          <option value="<%= dashboard_pro_org_path(org.id) %>">Pro Analytics for <%= org.name %></option>
-        <% end %>
+    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
+      <% @organizations.each do |org| %>
+        <option value="<%= dashboard_analytics_org_path(org.id) %>">Analytics for <%= org.name %></option>
       <% end %>
     <% end %>
 

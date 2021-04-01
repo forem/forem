@@ -21,9 +21,9 @@ gem "blazer", "~> 2.4.2" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
-gem "cloudinary", "~> 1.19" # Client library for easily using the Cloudinary service
+gem "cloudinary", "~> 1.20" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.46.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.47.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", github: "heartcombo/devise", ref: "0cd72a5" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.3" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -142,7 +142,7 @@ group :development, :test do
   gem "amazing_print", "~> 1.3" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
-  gem "cypress-rails", "~> 0.4.2" # For end to end tests (E2E)
+  gem "cypress-rails", "~> 0.5.0" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.17" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
