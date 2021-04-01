@@ -11,8 +11,8 @@ module Notifications
 
       delegate :user_data, :article_data, :organization_data, to: Notifications
 
-      def self.call(*args)
-        new(*args).call
+      def self.call(...)
+        new(...).call
       end
 
       def call
