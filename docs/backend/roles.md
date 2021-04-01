@@ -33,21 +33,21 @@ at the console.
 rails console
 ```
 
-- after verifying the user `test_user_name` is missing the `pro` role we proceed
-  to add it and then verify the role has been added:
+- after verifying the user `test_user_name` is missing the `trusted` role we
+  proceed to add it and then verify the role has been added:
 
 ```ruby
 > user = User.find_by(username: "test_user_name")
-> user.has_role? :pro
+> user.has_role? :trusted
 => false
 
-> user.add_role(:pro)
+> user.add_role(:trusted)
 => #<Role:
 ...
-name: "pro"
+name: "trusted"
 .. >
 
-> user.has_role? :pro
+> user.has_role? :trusted
 => true
 ```
 

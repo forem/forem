@@ -66,7 +66,6 @@ class AsyncInfoController < ApplicationController
         trusted: @user.trusted,
         moderator_for_tags: @user.moderator_for_tags,
         config_body_class: @user.config_body_class,
-        pro: @user.pro?,
         feed_style: feed_style_preference,
         created_at: @user.created_at,
         admin: @user.any_admin?
@@ -83,7 +82,6 @@ class AsyncInfoController < ApplicationController
     #{current_user&.updated_at}__
     #{current_user&.reactions_count}__
     #{current_user&.articles_count}__
-    #{current_user&.pro?}__
     #{current_user&.blocking_others_count}__"
   end
 end

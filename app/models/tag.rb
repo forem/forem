@@ -11,9 +11,6 @@ class Tag < ActsAsTaggableOn::Tag
   include Searchable
 
   include PgSearch::Model
-  pg_search_scope :search_by_name,
-                  against: :name,
-                  using: { tsearch: { prefix: true } }
 
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
@@ -21,7 +18,6 @@ class Tag < ActsAsTaggableOn::Tag
   belongs_to :badge, optional: true
   belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true
 
-  has_many :buffer_updates, dependent: :nullify
   has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
 
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
@@ -47,6 +43,10 @@ class Tag < ActsAsTaggableOn::Tag
   after_commit :sync_related_elasticsearch_docs, on: [:update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
+  pg_search_scope :search_by_name,
+                  against: :name,
+                  using: { tsearch: { prefix: true } }
+
   scope :eager_load_serialized_data, -> {}
 
   SEARCH_SERIALIZER = Search::TagSerializer
@@ -64,12 +64,6 @@ class Tag < ActsAsTaggableOn::Tag
 
   def tag_moderator_ids
     User.with_role(:tag_moderator, self).order(id: :asc).ids
-  end
-
-  def self.bufferized_tags
-    Rails.cache.fetch("bufferized_tags_cache", expires_in: 2.hours) do
-      where.not(buffer_profile_id_code: nil).pluck(:name)
-    end
   end
 
   def self.valid_categories

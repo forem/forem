@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'preact/hooks';
+import { calculateTextAreaHeight } from '@utilities/calculateTextAreaHeight';
+
 /**
  * A helper function to get the X/Y coordinates of the current cursor position within an element.
  * For a full explanation see the post by Jhey Tompkins: https://medium.com/@jh3y/how-to-where-s-the-caret-getting-the-xy-position-of-the-caret-a24ba372990a
@@ -110,4 +113,43 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
   }
 
   return -1;
+};
+
+/**
+ * This hook can be used to keep the height of a textarea in step with the current content height, avoiding a scrolling textarea.
+ * An optional array of additional elements can be set. If provided, all additional elements will receive the same height.
+ *
+ * @example
+ *
+ * const { setTextArea } = useTextAreaAutoResize();
+ * setTextArea(myTextAreaRef.current);
+ * setAdditionalElements([myOtherElement.current]);
+ */
+export const useTextAreaAutoResize = () => {
+  const [textArea, setTextArea] = useState(null);
+  const [additionalElements, setAdditionalElements] = useState([]);
+
+  useEffect(() => {
+    if (!textArea) {
+      return;
+    }
+
+    const resizeTextArea = () => {
+      const { height } = calculateTextAreaHeight(textArea);
+      const newHeight = `${height}px`;
+      textArea.style['min-height'] = newHeight;
+      additionalElements.forEach((element) => {
+        element.style['min-height'] = newHeight;
+      });
+    };
+
+    // Resize on first attach
+    resizeTextArea();
+    // Resize on subsequent value changes
+    textArea.addEventListener('input', resizeTextArea);
+
+    return () => textArea.removeEventListener('input', resizeTextArea);
+  }, [textArea, additionalElements]);
+
+  return { setTextArea, setAdditionalElements };
 };

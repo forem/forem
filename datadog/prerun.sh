@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Disable the Datadog Agent for scheduler workers
-if [ "$DYNOTYPE" == "scheduler" ] || [ "$DYNOTYPE" == "run" ]; then
+if [ "$DYNOTYPE" == "run" ]; then
   DISABLE_DATADOG_AGENT="true"
   # Disable Automatic Beeline integrations to prevent unnecessary
   # data from being tracked in Honeycomb

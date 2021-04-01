@@ -108,17 +108,18 @@ Pro as there were issues integrating the cypress-rails gem with the
 [knapsack-pro-cypress](https://github.com/KnapsackPro/knapsack-pro-cypress) npm
 package.
 
-## Custom Cypress commands
+## Cypress Custom commands
 
 [Cypress custom commands](https://docs.cypress.io/api/cypress-api/custom-commands.html)
 allow you to extend the functionality of the E2E testing framework. In the case
-of Forem, we need custom commands. For example, like creating an article.
+of Forem, we need custom commands to create an article, for example.
 
 A custom command is prefixed like any Cypress command by `cy.` All custom
 commands can be found in the
-https://github.com/forem/forem/blob/master/cypress/support/commands.js file.
+[commands.js](https://github.com/forem/forem/blob/master/cypress/support/commands.js)
+file.
 
-### Create Article Custom Command
+### Creating a Custom Article Command
 
 To create an article as part of your test's setup, use the `cy.createArticle`
 custom command. It can be called like so:
@@ -140,7 +141,19 @@ cy.createArticle({
   tags: ['beginner', 'discuss'], // tags are optional
   content: 'This is a test article',
 }).then((response) => {
-  cy.visit('/');
+  cy.visit(response.body.current_state_path); // path to article
+});
+```
+
+### Creating a Response Template Command
+
+To create a response template as part of your test's setup, use the
+`cy.createResponseTemplate` custom command. It can be called like so:
+
+```javascript
+cy.createResponseTemplate({
+  title: 'Test Canned Response',
+  content: 'This is a test canned response',
 });
 ```
 

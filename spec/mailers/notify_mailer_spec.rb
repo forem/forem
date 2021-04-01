@@ -155,6 +155,10 @@ RSpec.describe NotifyMailer, type: :mailer do
     let(:badge_achievement) { create_badge_achievement(user, badge, user2) }
     let(:email) { described_class.with(badge_achievement: badge_achievement).new_badge_email }
 
+    let(:badge_with_credits) { create(:badge, credits_awarded: 7) }
+    let(:badge_achievement_with_credits) { create_badge_achievement(user, badge_with_credits, user2) }
+    let(:email_with_credits) { described_class.with(badge_achievement: badge_achievement_with_credits).new_badge_email }
+
     def create_badge_achievement(user, badge, rewarder)
       BadgeAchievement.create(
         user: user,
@@ -178,7 +182,47 @@ RSpec.describe NotifyMailer, type: :mailer do
       expect(email.to).to eq([user.email])
     end
 
-    context "when rendering the HTML email" do
+    context "when rendering the HTML email for badge with credits" do
+      it "includes the listings URL" do
+        expect(email_with_credits.html_part.body).to include(
+          CGI.escape(
+            Rails.application.routes.url_helpers.listings_url(host: SiteConfig.app_domain),
+          ),
+        )
+      end
+
+      it "includes the about listings URL" do
+        expect(email_with_credits.html_part.body).to include(
+          CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain)),
+        )
+      end
+
+      it "includes number of credits" do
+        expect(email_with_credits.html_part.body).to include("7 new credits")
+      end
+    end
+
+    context "when rendering the text email for badge with credits" do
+      it "includes the listings URL" do
+        expect(email_with_credits.text_part.body).not_to include(
+          CGI.escape(
+            Rails.application.routes.url_helpers.listings_url(host: SiteConfig.app_domain),
+          ),
+        )
+      end
+
+      it "includes the about listings URL" do
+        expect(email_with_credits.text_part.body).not_to include(
+          CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain)),
+        )
+      end
+
+      it "includes number of credits" do
+        expect(email_with_credits.text_part.body).to include("7 new credits")
+      end
+    end
+
+    context "when rendering the HTML email for badge w/o credits" do
       it "includes the tracking pixel" do
         expect(email.html_part.body).to include("open.gif")
       end
@@ -193,16 +237,16 @@ RSpec.describe NotifyMailer, type: :mailer do
         expect(email.html_part.body).to include(CGI.escape(URL.user(user)))
       end
 
-      it "includes the listings URL" do
-        expect(email.html_part.body).to include(
+      it "doesn't include the listings URL" do
+        expect(email.html_part.body).not_to include(
           CGI.escape(
             Rails.application.routes.url_helpers.listings_url(host: SiteConfig.app_domain),
           ),
         )
       end
 
-      it "includes the about listings URL" do
-        expect(email.html_part.body).to include(
+      it "doesn't include the about listings URL" do
+        expect(email.html_part.body).not_to include(
           CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain)),
         )
       end
@@ -232,14 +276,14 @@ RSpec.describe NotifyMailer, type: :mailer do
         expect(email.text_part.body).to include(URL.user(user))
       end
 
-      it "includes the listings URL" do
-        expect(email.text_part.body).to include(
+      it "doesn't include the listings URL" do
+        expect(email.text_part.body).not_to include(
           Rails.application.routes.url_helpers.listings_url(host: SiteConfig.app_domain),
         )
       end
 
-      it "includes the about listings URL" do
-        expect(email.text_part.body).to include(
+      it "doesn't include the about listings URL" do
+        expect(email.text_part.body).not_to include(
           Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain),
         )
       end

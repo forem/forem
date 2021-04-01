@@ -75,11 +75,19 @@ class SearchController < ApplicationController
   end
 
   def listings
-    cl_docs = Search::Listing.search_documents(
-      params: listing_params.to_h,
-    )
+    result =
+      if FeatureFlag.enabled?(:search_2_listings)
+        Search::Postgres::Listing.search_documents(
+          category: listing_params[:category],
+          page: listing_params[:page],
+          per_page: listing_params[:per_page],
+          term: listing_params[:listing_search],
+        )
+      else
+        Search::Listing.search_documents(params: listing_params.to_h)
+      end
 
-    render json: { result: cl_docs }
+    render json: { result: result }
   end
 
   def users
@@ -119,11 +127,26 @@ class SearchController < ApplicationController
   end
 
   def reactions
-    result = Search::ReadingList.search_documents(
-      params: reaction_params.to_h, user: current_user,
-    )
+    if FeatureFlag.enabled?(:search_2_reading_list)
+      # [@rhymes] we're recyling the existing params as we want to change the frontend as
+      # little as possible, we might simplify in the future
+      result = Search::Postgres::ReadingList.search_documents(
+        current_user,
+        page: reaction_params[:page],
+        per_page: reaction_params[:per_page],
+        statuses: reaction_params[:status],
+        tags: reaction_params[:tag_names],
+        term: reaction_params[:search_fields],
+      )
 
-    render json: { result: result["reactions"], total: result["total"] }
+      render json: { result: result[:items], total: result[:total] }
+    else
+      result = Search::ReadingList.search_documents(
+        params: reaction_params.to_h, user: current_user,
+      )
+
+      render json: { result: result["reactions"], total: result["total"] }
+    end
   end
 
   private

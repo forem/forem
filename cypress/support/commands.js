@@ -196,3 +196,22 @@ Cypress.Commands.add(
     });
   },
 );
+
+/**
+ * Creates a response template.
+ *
+ * @param {string} title The title of a response template.
+ * @param {string} content The content of the response template.
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for creating a response template.
+ */
+Cypress.Commands.add('createResponseTemplate', ({ title, content }) => {
+  const encodedTitle = encodeURIComponent(title);
+  const encodedContent = encodeURIComponent(content);
+
+  return cy.request(
+    'POST',
+    '/response_templates',
+    `utf8=%E2%9C%93&response_template%5Btitle%5D=${encodedTitle}&response_template%5Bcontent%5D=${encodedContent}`,
+  );
+});

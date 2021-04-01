@@ -175,6 +175,7 @@ export class ReadingList extends Component {
   render() {
     const {
       items = [],
+      itemsTotal,
       availableTags,
       selectedTag = '',
       showLoadMoreButton,
@@ -196,7 +197,7 @@ export class ReadingList extends Component {
         <header className="crayons-layout l:grid-cols-2 pb-0">
           <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
-            {` (${items.length})`}
+            {` (${itemsTotal})`}
           </h1>
           <fieldset className="grid gap-2 m:flex m:justify-end l:mb-0 mb-2 px-2 m:px-0">
             <legend className="hidden">Filter</legend>
