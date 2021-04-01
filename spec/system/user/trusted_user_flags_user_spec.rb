@@ -12,7 +12,7 @@ RSpec.describe "Flagging users from profile pages", type: :system, js: true do
     end
   end
 
-  context "when signed in as a non-trusted user" do
+  context "when signed in as a non-trusted user", :flaky do
     it "does not show the flag button" do
       sign_in create(:user)
 
