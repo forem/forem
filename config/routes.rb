@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   end
 
   get "/r/mobile", to: "deep_links#mobile"
+  get "/apple-app-site-association", to: "deep_links#aasa"
 
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.

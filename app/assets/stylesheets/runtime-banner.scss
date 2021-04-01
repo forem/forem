@@ -7,15 +7,18 @@
   bottom: calc(60px + env(safe-area-inset-bottom));
   left: 20px;
   right: 20px;
+  --runtime-display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 8px;
+  z-index: var(--z-popover);
+  border-radius: var(--radius);
   @include themeable(
     background,
     theme-container-accent-background,
     $dark-medium-gray
   );
-  padding: 8px 12px;
-  z-index: var(--z-popover);
-  border-radius: var(--radius);
-  font-weight: var(--fw-bold);
 
   a,
   a:hover,
@@ -23,28 +26,34 @@
   a:active {
     text-decoration: none;
     color: inherit;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-flex;
   }
 
   &__icon {
     width: 40px;
     height: 40px;
-    display: inline-block;
+
+    svg {
+      width: 40px;
+      height: 40px;
+    }
   }
 
-  &__text {
+  &__link {
     text-align: center;
-    display: inline-block;
     margin: 0 10px;
     flex-grow: 1;
   }
 
   &__dismiss {
+    display: inline-flex;
     width: 40px;
     height: 40px;
-    display: inline-block;
+
+    svg {
+      width: 40px;
+      height: 40px;
+    }
   }
 }
 

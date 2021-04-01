@@ -1,6 +1,6 @@
 /* global Runtime */
 
-function handleDismissRuntimeBanner() {
+function handleDismissRuntimeBanner(event) {
   const runtimeBanner = document.querySelectorAll('.runtime-banner')[0];
   if (runtimeBanner) {
     runtimeBanner.remove();

@@ -1,6 +1,6 @@
 <div id="mobile-deep-link-spinner" class="flex flex-col">
   <svg class="crayons-icon crayons-spinner" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.364 5.636L16.95 7.05A7 7 0 1019 12h2a9 9 0 11-2.636-6.364z" fill="currentColor" class="grow-1"></path></svg>
-  <p class="align-center">Please wait...</p>
+  <p class="align-center">Attempting to open the mobile app...</p>
 </div>
 
 <div class="mobile-deep-link-banner invisible">
@@ -15,20 +15,20 @@
 
   <div class="crayons-card">
     <div class="flex w-100">
-      <a href="javascript:history.back()" class="crayons-btn crayons-btn--l crayons-btn--outlined grow-1 whitespace-nowrap my-7 mx-5">
+      <a href="javascript:history.back()" class="crayons-btn crayons-btn--l crayons-btn--secondary grow-1 whitespace-nowrap mt-5 mx-5">
         Take me back
       </a>
     </div>
 
     <div class="flex w-100">
-      <a id="link-to-mobile-install" href="/" class="crayons-btn crayons-btn--l grow-1 whitespace-nowrap mx-5">
-        Install the app now
+      <a id="link-to-mobile-install-retry" href="/" class="crayons-btn crayons-btn--l crayons-btn--secondary grow-1 whitespace-nowrap my-5 mx-5">
+        Try again
       </a>
     </div>
 
     <div class="flex w-100">
-      <a id="link-to-mobile-install-retry" href="/" class="crayons-btn crayons-btn--l crayons-btn--outlined grow-1 whitespace-nowrap my-7 mx-5">
-        Try again
+      <a id="link-to-mobile-install" href="/" class="crayons-btn crayons-btn--l grow-1 whitespace-nowrap mb-5 mx-5">
+        Install the app
       </a>
     </div>
   </div>
@@ -38,5 +38,5 @@
   setTimeout(function() {
     document.getElementById('mobile-deep-link-spinner').remove();
     document.querySelectorAll('.mobile-deep-link-banner')[0].classList.remove('invisible');
-  }, 3000);
+  }, 3333);
 </script>
