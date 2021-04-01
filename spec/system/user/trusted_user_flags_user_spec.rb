@@ -17,8 +17,8 @@ RSpec.describe "Flagging users from profile pages", type: :system, js: true do
       sign_in create(:user)
 
       # TODO: Fix me! Loading the page twice here ensures that the dropdown menu
-      # does not include the "Flag @username." This is a band-aid solution
-      # in order to in order to get this spec to consistently pass and unblock builds.
+      # does not include the "Flag @username" option. This is a band-aid solution
+      # in order to get this spec to consistently pass and unblock builds.
       2.times do
         visit user_profile_path(user.username)
       end
