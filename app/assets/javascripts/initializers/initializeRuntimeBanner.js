@@ -7,6 +7,15 @@ function handleDismissRuntimeBanner(event) {
   }
 }
 
+// A separate function is needed for this because it's impossible to test a
+// custom scheme launch in Cypress. More about this here:
+// https://medium.com/cypress-io-thailand/understand-stub-spy-apis-that-will-make-your-test-better-than-ever-on-cypress-io-797cb9eb205a
+function launchCustomSchemeDeepLink(targetURL) {
+  window.location.href = targetURL;
+}
+// Making it visible for testing (in order to stub it)
+window.launchCustomSchemeDeepLink = launchCustomSchemeDeepLink;
+
 function initializeRuntimeBanner() {
   // This will provide the dismiss functionality for the Runtime Banner
   const bannerDismiss = document.querySelectorAll(
@@ -38,11 +47,11 @@ function initializeRuntimeBanner() {
     installNowButton.href =
       'https://apps.apple.com/us/app/dev-community/id1439094790';
 
-    // We try to deep link directly using the custom scheme and populate the
-    // retry button in case the user will need it
-    const targetDeepLink = `com.forem.app://${window.location.host}${targetPath}`;
-    retryButton.href = targetDeepLink;
-    window.location.href = targetDeepLink;
+    // We try to deep link directly by launching a custom scheme and populate
+    // the retry button in case the user will need it
+    const targetLink = `com.forem.app://${window.location.host}${targetPath}`;
+    retryButton.href = targetLink;
+    launchCustomSchemeDeepLink(targetLink);
   } else if (Runtime.currentOS() === 'Android') {
     const targetIntent =
       'intent://scan/#Intent;scheme=zxing;package=com.google.zxing.client.android;end';
