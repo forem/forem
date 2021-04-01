@@ -51,6 +51,7 @@ export class ReadingList extends Component {
       hitsPerPage: 80,
       items: [],
       itemsLoaded: false,
+      itemsTotal: 0,
       availableTags: [],
       selectedTag: '',
       showLoadMoreButton: false,

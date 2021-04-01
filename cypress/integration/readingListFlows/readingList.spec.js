@@ -1,24 +1,6 @@
 import { BREAKPOINTS } from '../../../app/javascript/shared/components/useMediaQuery';
 
 describe('Reading List Archive', () => {
-  function loadReadingList() {
-    cy.intercept(
-      Cypress.config().baseUrl +
-        'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
-      { fixture: 'search/readingList.json' },
-    ).as('readingList');
-    cy.wait('@readingList');
-  }
-
-  function loadReadingListFilteredByTag() {
-    cy.intercept(
-      Cypress.config().baseUrl +
-        'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=valid&status%5B%5D=confirmed',
-      { fixture: 'search/readingListFilterByTagProductivity.json' },
-    ).as('filteredReadingList');
-    cy.wait('@filteredReadingList');
-  }
-
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
@@ -28,13 +10,15 @@ describe('Reading List Archive', () => {
   });
 
   it('should load an empty reading list', () => {
-    cy.visit('/readinglist');
     cy.intercept(
       Cypress.config().baseUrl +
         'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
       { fixture: 'search/emptyReadingList.json' },
     ).as('emptyReadingList');
+
+    cy.visit('/readinglist');
     cy.wait('@emptyReadingList');
+
     cy.findByRole('main')
       .as('main')
       .findByText(/^Your reading list is empty$/i);
@@ -42,25 +26,31 @@ describe('Reading List Archive', () => {
     cy.get('@main').findByLabelText(/^Filter reading list by text$/i);
     cy.get('@main').findByText(/^Reading list \(0\)$/i);
     cy.get('@main')
-      .findByLabelText(/^Filter by tag$/i)
-      .should('not.exist');
+      .findByRole('navigation', { name: /^Filter by tag$/i })
+      .findByText(/all tags/i);
   });
 
   it('should filter by text', () => {
-    cy.visit('/readinglist');
-
-    loadReadingList();
-
-    cy.findByRole('main').as('main');
-    cy.get('@main')
-      .findByLabelText(/^Filter reading list by text$/i)
-      .type('article 3');
+    cy.intercept(
+      Cypress.config().baseUrl +
+        'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
+      { fixture: 'search/readingList.json' },
+    ).as('readingList');
 
     cy.intercept(
       Cypress.config().baseUrl +
         'search/reactions?search_fields=article+3&page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
       { fixture: 'search/readingListFilterByText.json' },
     ).as('readingListFilteredByText');
+
+    cy.visit('/readinglist');
+    cy.wait('@readingList');
+
+    cy.findByRole('main').as('main');
+    cy.get('@main')
+      .findByLabelText(/^Filter reading list by text$/i)
+      .type('article 3');
+
     cy.wait('@readingListFilteredByText');
 
     cy.get('@main').findByText('Test Article 1').should('not.exist');
@@ -70,9 +60,15 @@ describe('Reading List Archive', () => {
 
   describe('small screens', () => {
     beforeEach(() => {
+      cy.intercept(
+        Cypress.config().baseUrl +
+          'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingList.json' },
+      ).as('readingList');
+
       cy.viewport(BREAKPOINTS.Medium - 1, BREAKPOINTS.Medium);
       cy.visit('/readinglist');
-      loadReadingList();
+      cy.wait('@readingList');
     });
 
     it('should load the reading list with items', () => {
@@ -96,13 +92,19 @@ describe('Reading List Archive', () => {
     });
 
     it('should filter by tag', () => {
-      cy.findByRole('main').as('main');
-      cy.get('@main')
+      cy.intercept(
+        Cypress.config().baseUrl +
+          'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingListFilterByTagProductivity.json' },
+      ).as('filteredReadingList');
+
+      cy.findByRole('main')
+        .as('main')
         .findByLabelText('Filter by tag')
         .as('tagFilter')
         .select('productivity');
 
-      loadReadingListFilteredByTag();
+      cy.wait('@filteredReadingList');
 
       cy.get('@main').findByText('Test Article 1');
       cy.get('@main').findByText('Test Article 2').should('not.exist');
@@ -112,9 +114,15 @@ describe('Reading List Archive', () => {
 
   describe('large screens', () => {
     beforeEach(() => {
+      cy.intercept(
+        Cypress.config().baseUrl +
+          'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingList.json' },
+      ).as('readingList');
+
       cy.viewport(BREAKPOINTS.Large, 600);
       cy.visit('/readinglist');
-      loadReadingList();
+      cy.wait('@readingList');
     });
 
     it('should load the reading list with items', () => {
@@ -125,9 +133,9 @@ describe('Reading List Archive', () => {
       cy.get('@main').findByText(/^View archive$/i);
       cy.get('@main').findByLabelText(/Filter reading list by text$/i);
       cy.get('@main').findByText(/^Reading list \(3\)$/);
-      cy.get('@main').findByText(/^Filter by tag$/i, { selector: 'legend' });
+      cy.get('@main').findByRole('navigation', { name: /^Filter by tag$/i });
       cy.get('@main')
-        .findByLabelText(/^Filter by tag$/i, { selector: 'select' })
+        .findByRole('select', { name: /^Filter by tag$/i })
         .should('not.exist');
 
       cy.get('@main').findByText('Test Article 1');
@@ -136,10 +144,19 @@ describe('Reading List Archive', () => {
     });
 
     it('should filter by tag', () => {
-      cy.findByRole('main').as('main');
-      cy.get('@main').findByLabelText('productivity tag').click();
+      cy.intercept(
+        Cypress.config().baseUrl +
+          'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingListFilterByTagProductivity.json' },
+      ).as('filteredReadingList');
 
-      loadReadingListFilteredByTag();
+      cy.findByRole('main')
+        .as('main')
+        .findByRole('navigation', { name: /^Filter by tag$/i })
+        .findByText('#productivity')
+        .click();
+
+      cy.wait('@filteredReadingList');
 
       cy.get('@main').findByText('Test Article 1');
       cy.get('@main').findByText('Test Article 2').should('not.exist');

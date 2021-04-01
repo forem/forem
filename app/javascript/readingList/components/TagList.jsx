@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
   return (
-    <div className="hidden grid grid-cols-1 gap-2">
+    <nav aria-label="Filter by tag" className="hidden grid grid-cols-1 gap-2">
       <a
         className={`crayons-link crayons-link--block${
           !selectedTag ? ' crayons-link--current' : ''
@@ -28,7 +28,7 @@ function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
           #{tag}
         </a>
       ))}
-    </div>
+    </nav>
   );
 }
 
