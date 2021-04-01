@@ -169,7 +169,7 @@
                                   data: { action: "config#adjustAuthenticationOptions", "config-target": "inviteOnlyMode" },
                                   class: "crayons-checkbox" %>
                   <div class="mt-0">
-                    <%= admin_config_label :invite_only_mode, "Invite-only mode" %>
+                    <%= admin_config_label :invite_only_mode, "Invite-only mode", model: Settings::Authentication %>
                     <%= admin_config_description Constants::Settings::Authentication::DETAILS[:invite_only_mode][:description] %>
                   </div>
                 </div>
@@ -225,7 +225,7 @@
                                           class: "crayons-checkbox" %>
                         </div>
                         <div class="crayons-field">
-                          <%= admin_config_label :allowed_registration_email_domains, "Allowed email domains" %>
+                          <%= admin_config_label :allowed_registration_email_domains, "Allowed email domains", model: Settings::Authentication %>
                           <%= admin_config_description Constants::Settings::Authentication::DETAILS[:allowed_registration_email_domains][:description] %>
                           <%= f.text_field :allowed_registration_email_domains,
                                            class: "crayons-textfield",
@@ -238,7 +238,7 @@
                                           id: "email-display-emails-publicly-checkbox",
                                           class: "crayons-checkbox mt-2" %>
                           <div>
-                            <%= admin_config_label :display_email_domain_allow_list_publicly %>
+                            <%= admin_config_label :display_email_domain_allow_list_publicly, model: Settings::Authentication %>
                             <%= admin_config_description Constants::Settings::Authentication::DETAILS[:display_email_domain_allow_list_publicly][:description] %>
                           </div>
                         </div>
@@ -251,13 +251,13 @@
                                           },
                                           class: "crayons-checkbox mt-2" %>
                           <div>
-                            <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration" %>
+                            <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration", model: Settings::Authentication %>
                             <%= admin_config_description Constants::Settings::Authentication::DETAILS[:require_captcha_for_email_password_registration][:description] %>
                           </div>
                         </div>
                         <div id="recaptchaContainer" class="ml-7 <%= Settings::Authentication.require_captcha_for_email_password_registration ? "grid gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
                           <div class="crayons-field">
-                            <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
+                            <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key", model: Settings::Authentication %>
                             <%= admin_config_description Constants::Settings::Authentication::DETAILS[:recaptcha_site_key][:description] %>
                             <%= f.text_field :recaptcha_site_key,
                                              class: "crayons-textfield",
@@ -265,7 +265,7 @@
                                              placeholder: Constants::Settings::Authentication::DETAILS[:recaptcha_site_key][:placeholder] %>
                           </div>
                           <div class="crayons-field">
-                            <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key" %>
+                            <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key", model: Settings::Authentication %>
                             <%= admin_config_description Constants::Settings::Authentication::DETAILS[:recaptcha_secret_key][:description] %>
                             <%= f.text_field :recaptcha_secret_key,
                                              class: "crayons-textfield",
