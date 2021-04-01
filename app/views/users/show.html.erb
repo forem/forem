@@ -33,8 +33,17 @@
               </button>
 
               <div id="user-profile-dropdownmenu" class="crayons-dropdown top-100 right-0 p-1">
-                <a href="javascript:void(0);" id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="border-none crayons-link crayons-link--block">Block @<%= @user.username %></a>
                 <% if user_signed_in? %>
+                  <a href="javascript:void(0);" id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="border-none crayons-link crayons-link--block">Block @<%= @user.username %></a>
+                  <a
+                    href="javascript:void(0);"
+                    id="user-profile-dropdownmenu-flag-button"
+                    data-profile-user-id="<%= @user.id %>"
+                    data-profile-user-name="@<%= @user.username %>"
+                    data-is-user-flagged="<%= @is_user_flagged %>"
+                    class="border-none crayons-link crayons-link--block">
+                    <%= @flag_status ? "Unflag" : "Flag" %> @<%= @user.username %>
+                  </a>
                   <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>
                 <% end %>
                 <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= user_url(@user) %>"></span>
@@ -75,9 +84,9 @@
             <% end %>
             <span class="profile-header__meta__item -ml-1">
               <% Profile.special_social_link_attributes.each do |attribute| %>
-                <% if @user.send(attribute).present? %>
-                  <a href="<%= @user.send(attribute) %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                    <%= inline_svg_tag("#{attribute.gsub("_url","")}.svg", class: "crayons-icon", aria: true, title: "#{attribute.split("_").first.titleize} logo") %>
+                <% if @user.public_send(attribute).present? %>
+                  <a href="<%= @user.public_send(attribute) %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("#{attribute.gsub('_url', '')}.svg", class: "crayons-icon", aria: true, title: "#{attribute.split('_').first.titleize} logo") %>
                   </a>
                 <% end %>
               <% end %>

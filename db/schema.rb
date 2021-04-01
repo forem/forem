@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_26_172406) do
+ActiveRecord::Schema.define(version: 2021_03_31_181505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1323,8 +1323,6 @@ ActiveRecord::Schema.define(version: 2021_03_26_172406) do
     t.string "text_color_hex"
     t.string "twitch_url"
     t.datetime "twitter_created_at"
-    t.integer "twitter_followers_count"
-    t.integer "twitter_following_count"
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.string "unlock_token"
