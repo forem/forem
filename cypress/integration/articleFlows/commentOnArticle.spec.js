@@ -208,27 +208,32 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
       // Get a handle to the newly substituted textbox
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).type('first comment');
+      cy.findByRole('main')
+        .as('main')
+        .findByRole('textbox', /^Add a comment to the discussion$/i)
+        .focus()
+        .type('first comment');
 
-      cy.findByRole('button', { name: /Submit/ }).click();
-      cy.findByRole('link', { name: /Reply/ }).click();
+      cy.get('@main')
+        .findByRole('button', { name: /Submit/ })
+        .click();
+      cy.get('@main').findByRole('link', { name: /Reply/ }).click();
 
-      cy.findByRole('textbox', {
-        name: /Reply to a comment.../,
-      }).as('replyCommentBox');
+      cy.get('@main')
+        .findByRole('textbox', {
+          name: /Reply to a comment.../,
+        })
+        .as('replyCommentBox');
 
-      cy.get('@replyCommentBox').click().type('Some text @s');
+      cy.get('@main').get('@replyCommentBox').click().type('Some text @s');
 
       // Verify the combobox has appeared
-      cy.findByRole('combobox', { name: /Reply to a comment/ }).as(
-        'autocompleteCommentBox',
-      );
+      cy.get('@main')
+        .findByRole('combobox', { name: /Reply to a comment/ })
+        .as('autocompleteCommentBox');
 
-      cy.get('@autocompleteCommentBox').type('earch');
+      cy.get('@main').get('@autocompleteCommentBox').type('earch');
       cy.findByText('@search_user_1').click();
 
       cy.get('@replyCommentBox').should(
@@ -253,7 +258,7 @@ describe('Comment on articles', () => {
       cy.findByRole('link', { name: /Reply/ });
 
       cy.findByTestId('comments-container').within(() => {
-        cy.findByLabelText('Toggle dropdown menu').click();
+        cy.findByRole('button', { name: 'Toggle dropdown menu' }).click();
         // Wait for the menu to be visible
         cy.findByText('Edit').should('be.visible');
         cy.findByText('Edit').click();

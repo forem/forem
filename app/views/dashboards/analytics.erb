@@ -1,0 +1,29 @@
+<% title "Analytics" %>
+
+<div class="dashboard-container analytics-container crayons-layout" id="user-dashboard">
+  <a href="/dashboard" class="rounded-btn rounded-btn--transparent">👈 Back to Main Dashboard</a>
+
+  <a class="rounded-btn <%= "active" unless params[:org_id] %>" href="<%= dashboard_analytics_path %>">
+    Your Dashboard
+  </a>
+
+  <% @organizations.each do |org| %>
+    <a
+      class="rounded-btn organization <%= "active" if params[:org_id].to_i == org.id %>"
+      href="<%= dashboard_analytics_org_path(org.id) %>"
+      href="<%= dashboard_analytics_path %>"
+      data-organization-id="<%= org.id %>">
+      <%= org.name %> Analytics Dashboard
+    </a>
+  <% end %>
+
+  <section class="header-card card">
+    <h1 class="analytics-header">Analytics Dashboard for <%= @user_or_org.name %></h1>
+    <p>Welcome to the Analytics Dashboard, the home of in-depth user metrics so that authors can make data-driven decisions about the  <%= SiteConfig.community_member_label %> ecosystem.</p>
+    <p>This dashboard highlights deep insights especially relevant to  <%= SiteConfig.community_member_label %> relations, authors, and serious bloggers.</p>
+  </section>
+
+  <%= render "shared/stats" %>
+</div>
+
+<%= javascript_packs_with_chunks_tag "analyticsDashboard", defer: true %>

@@ -9,7 +9,7 @@ class EmailDigestArticleCollector
 
   def articles_to_send
     # rubocop:disable Metrics/BlockLength
-    instrument ARTICLES_TO_SEND, tags: %W[user_id:#{@user.id}] do
+    instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless should_receive_email?
 
       articles = if user_has_followings?

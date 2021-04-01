@@ -301,13 +301,7 @@ RSpec.describe "Articles", type: :request do
       expect { get "#{article.path}/stats" }.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "returns unauthorized if the user is not pro" do
-      article = create(:article, user: user)
-      expect { get "#{article.path}/stats" }.to raise_error(Pundit::NotAuthorizedError)
-    end
-
     it "works successfully" do
-      user.add_role(:pro)
       article = create(:article, user: user)
       get "#{article.path}/stats"
       expect(response).to have_http_status(:ok)

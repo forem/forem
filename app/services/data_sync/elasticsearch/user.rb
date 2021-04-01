@@ -11,7 +11,6 @@ module DataSync
       SHARED_FIELDS = %i[
         username
         name
-        pro
         profile_image_url
       ].freeze
 
