@@ -38,7 +38,7 @@ rails console
 
 ```ruby
 > user = User.find_by(username: "test_user_name")
-> user.has_role? :trusted
+> user.has_role?(:trusted)
 => false
 
 > user.add_role(:trusted)
@@ -47,7 +47,7 @@ rails console
 name: "trusted"
 .. >
 
-> user.has_role? :trusted
+> user.has_role?(:trusted)
 => true
 ```
 
