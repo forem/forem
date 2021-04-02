@@ -78,7 +78,7 @@ RSpec.describe "/admin/config", type: :request do
             settings_authentication: {
               "#{enabled}_key": "someKey",
               "#{enabled}_secret": "someSecret",
-              providers_to_enable: enabled
+              auth_providers_to_enable: enabled
             },
             confirmation: confirmation_message
           }
@@ -100,7 +100,7 @@ RSpec.describe "/admin/config", type: :request do
             settings_authentication: {
               "#{provider}_key": "someKey",
               "#{provider}_secret": "someSecret",
-              providers_to_enable: enabled
+              auth_providers_to_enable: enabled
             },
             confirmation: confirmation_message
           }
