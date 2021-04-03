@@ -15,29 +15,7 @@
   initializeColorPicker, Runtime
 */
 
-function initializePage() {
-  initializeLocalStorageRender();
-  initializeBodyData();
-
-  var waitingForDataLoad = setInterval(function wait() {
-    if (document.body.getAttribute('data-loaded') === 'true') {
-      clearInterval(waitingForDataLoad);
-      if (document.body.getAttribute('data-user-status') === 'logged-in') {
-        initializeBaseUserData();
-        initializeAllChatButtons();
-        initializeAllTagEditButtons();
-      }
-      initializeBroadcast();
-      initializeAllFollowButts();
-      initializeUserFollowButts();
-      initializeReadingListIcons();
-      initializeSponsorshipVisibility();
-      if (document.getElementById('sidebar-additional')) {
-        document.getElementById('sidebar-additional').classList.add('showing');
-      }
-    }
-  }, 1);
-
+function callInitializers() {
   initializeBaseTracking();
   initializePaymentPointers();
   initializeCommentsPage();
@@ -64,6 +42,32 @@ function initializePage() {
   initializeOnboardingTaskCard();
   initializeDateHelpers();
   initializeColorPicker();
+}
+
+function initializePage() {
+  initializeLocalStorageRender();
+  initializeBodyData();
+
+  var waitingForDataLoad = setInterval(function wait() {
+    if (document.body.getAttribute('data-loaded') === 'true') {
+      clearInterval(waitingForDataLoad);
+      if (document.body.getAttribute('data-user-status') === 'logged-in') {
+        initializeBaseUserData();
+        initializeAllChatButtons();
+        initializeAllTagEditButtons();
+      }
+      initializeBroadcast();
+      initializeAllFollowButts();
+      initializeUserFollowButts();
+      initializeReadingListIcons();
+      initializeSponsorshipVisibility();
+      if (document.getElementById('sidebar-additional')) {
+        document.getElementById('sidebar-additional').classList.add('showing');
+      }
+    }
+  }, 1);
+
+  callInitializers();
 
   function freezeScrolling(event) {
     event.preventDefault();
