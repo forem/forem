@@ -15,7 +15,7 @@
   initializeColorPicker, Runtime
 */
 
-function callInitializers() {
+function initializePage() {
   initializeLocalStorageRender();
   initializeBodyData();
 
@@ -82,8 +82,4 @@ function callInitializers() {
 
   // Initialize data-runtime context to the body data-attribute
   document.body.dataset.runtime = Runtime.currentContext();
-}
-
-function initializePage() {
-  callInitializers();
 }
