@@ -85,6 +85,5 @@ function callInitializers() {
 }
 
 function initializePage() {
-  initializeLocalStorageRender();
   callInitializers();
 }
