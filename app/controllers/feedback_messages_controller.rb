@@ -33,7 +33,8 @@ class FeedbackMessagesController < ApplicationController
       end
     else
       @previous_message = feedback_message_params[:message]
-      flash[:notice] = "Make sure the forms are filled 🤖"
+      flash[:notice] =
+        "Make sure the forms are filled 🤖. Other possible errors: #{@feedback_message.errors_as_sentence}"
 
       respond_to do |format|
         format.html { render "pages/report_abuse" }
