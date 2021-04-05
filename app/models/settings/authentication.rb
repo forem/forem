@@ -39,6 +39,6 @@ module Settings
 
       "present"
     end
-    singleton_class.__send__(:alias_method, :apple_secret, :apple_key)
+    singleton_class.alias_method(:apple_secret, :apple_key)
   end
 end

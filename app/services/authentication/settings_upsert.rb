@@ -31,8 +31,6 @@ module Authentication
           update_enabled_providers(value) unless value.class.name != "String"
         elsif value.is_a?(Array) && value.any?
           Settings::Authentication.public_send("#{key}=", value.reject(&:blank?))
-        elsif value.respond_to?(:to_h) && value.any?
-          Settings::Authentication.public_send("#{key}=", value.to_h)
         elsif value.present?
           Settings::Authentication.public_send("#{key}=", value.strip)
         end
