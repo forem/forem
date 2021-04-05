@@ -85,7 +85,7 @@ RSpec.describe Comment, type: :model do
       end
     end
 
-    describe "#mention_total" do
+    describe "#user_mentions_in_markdown" do
       before do
         stub_const("Comment::MAX_USER_MENTIONS", 7)
         stub_const("Comment::MAX_USER_MENTION_LIVE_AT", 1.day.ago) # Set live_at date to a time in the past
