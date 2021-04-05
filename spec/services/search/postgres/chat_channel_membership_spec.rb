@@ -31,4 +31,18 @@ RSpec.describe Search::Postgres::ChatChannelMembership, type: :service do
       end
     end
   end
+
+  it "orders the results by chat_channel.last_message at in descending order" do
+    cc_older = create(:chat_channel, last_message_at: 1.hour.ago)
+    cc_newer = create(:chat_channel, last_message_at: Time.zone.now)
+    ccm_older = create(:chat_channel_membership, user: user, chat_channel: cc_older)
+    ccm_newer = create(:chat_channel_membership, user: user, chat_channel: cc_newer)
+    result = described_class.search_documents(user_ids: [user.id])
+
+    # rubocop:disable Rails/PluckId
+    ids = result.pluck(:id)
+    # rubocop:enable Rails/PluckId
+
+    expect(ids).to eq([ccm_newer.id, ccm_older.id])
+  end
 end
