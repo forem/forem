@@ -370,6 +370,8 @@ class User < ApplicationRecord
   end
 
   def suspended?
+    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
+    # and data scripts have successfully removed the banned role, we can remove `has_role?(:banned)`
     has_role?(:suspended) || has_role?(:banned)
   end
 
@@ -409,6 +411,9 @@ class User < ApplicationRecord
   end
 
   def comment_suspended?
+    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
+    # and data scripts have successfully removed the comment_banned role,
+    # we can remove `has_role?(:comment_banned)`
     has_role?(:comment_suspended) || has_role?(:comment_banned)
   end
 
