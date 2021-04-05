@@ -4,8 +4,8 @@ RSpec.describe "User with suspended username tried to sign up via OAuth" do
   before do
     omniauth_mock_twitter_payload
 
-    allow(SiteConfig)
-      .to receive(:authentication_providers)
+    allow(Settings::Authentication)
+      .to receive(:providers)
       .and_return(Authentication::Providers.available)
 
     allow(ForemStatsClient).to receive(:increment)
