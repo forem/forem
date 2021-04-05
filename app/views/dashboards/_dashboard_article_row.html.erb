@@ -85,15 +85,15 @@
         <% end %>
       <% end %>
     <% elsif article.published %>
-      <a href="<%= article.path %>/manage" class="crayons-btn crayons-btn--ghost crayons-btn--s">Manage</a>
+      <a href="<%= article.path %>/manage" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Manage post: <%= article.title %>">Manage</a>
     <% elsif @user == article.user %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
     <% end %>
-    <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s">Edit</a>
+    <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Edit post: <%= article.title %>">Edit</a>
 
     <div class="js-ellipsis-menu relative inline-block">
       <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon js-ellipsis-menu-trigger">
-        <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More...") %>
+        <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More options for post: #{article.title}") %>
       </button>
 
       <div class="crayons-dropdown top-100 right-0 align-left js-ellipsis-menu-dropdown p-1">
