@@ -107,8 +107,8 @@ describe('Authentication Section', () => {
 
         cy.get('@authSectionForm').findByText('Authentication').click();
         cy.get('#facebook-auth-btn').click();
-        cy.get('#site_config_facebook_key').type('randomkey');
-        cy.get('#site_config_facebook_secret').type('randomsecret');
+        cy.get('#settings_authentication_facebook_key').type('randomkey');
+        cy.get('#settings_authentication_facebook_secret').type('randomsecret');
         cy.get('@user').then(({ username }) => {
           cy.get('@authSectionForm')
             .findByPlaceholderText('Confirmation text')

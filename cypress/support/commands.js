@@ -127,16 +127,16 @@ Cypress.Commands.add(
   ) => {
     return cy.request(
       'POST',
-      '/admin/config',
-      `utf8=%E2%9C%93&site_config%5Binvite_only_mode%5D=${toPayload(
+      '/admin/settings/authentications',
+      `utf8=%E2%9C%93&settings_authentication%5Binvite_only_mode%5D=${toPayload(
         inviteOnlyMode,
-      )}&site_config%5Ballow_email_password_registration%5D=${toPayload(
+      )}&settings_authentication%5Ballow_email_password_registration%5D=${toPayload(
         emailRegistration,
-      )}&site_config%5Ballowed_registration_email_domains%5D=${allowedEmailDomains}&site_config%5Bdisplay_email_domain_allow_list_publicly%5D=${toPayload(
+      )}&settings_authentication%5Ballowed_registration_email_domains%5D=${allowedEmailDomains}&settings_authentication%5Bdisplay_email_domain_allow_list_publicly%5D=${toPayload(
         publicEmailDomainList,
-      )}&site_config%5Brequire_captcha_for_email_password_registration%5D=${toPayload(
+      )}&settings_authentication%5Brequire_captcha_for_email_password_registration%5D=${toPayload(
         requireRecaptcha,
-      )}&site_config%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&site_config%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&site_config%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&site_config%5Bfacebook_key%5D=${facebookKey}&site_config%5Bfacebook_secret%5D=${facebookSecret}&site_config%5Bgithub_key%5D=${githubKey}&site_config%5Bgithub_secret%5D=${githubSecret}&site_config%5Btwitter_key%5D=${twitterKey}&site_config%5Btwitter_secret%5D=${twitterSecret}&confirmation=My+username+is+%40${username}+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Site+Configuration`,
+      )}&settings_authentication%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&settings_authentication%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&settings_authentication%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&settings_authentication%5Bfacebook_key%5D=${facebookKey}&settings_authentication%5Bfacebook_secret%5D=${facebookSecret}&settings_authentication%5Bgithub_key%5D=${githubKey}&settings_authentication%5Bgithub_secret%5D=${githubSecret}&settings_authentication%5Btwitter_key%5D=${twitterKey}&settings_authentication%5Btwitter_secret%5D=${twitterSecret}&confirmation=My+username+is+%40${username}+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Site+Configuration`,
     );
   },
 );
