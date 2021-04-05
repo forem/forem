@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_30_152738) do
+ActiveRecord::Schema.define(version: 2021_03_31_181505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1063,6 +1063,14 @@ ActiveRecord::Schema.define(version: 2021_03_30_152738) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "settings_authentications", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_authentications_on_var", unique: true
+  end
+
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1337,8 +1345,6 @@ ActiveRecord::Schema.define(version: 2021_03_30_152738) do
     t.string "text_color_hex"
     t.string "twitch_url"
     t.datetime "twitter_created_at"
-    t.integer "twitter_followers_count"
-    t.integer "twitter_following_count"
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.string "unlock_token"
@@ -1377,10 +1383,55 @@ ActiveRecord::Schema.define(version: 2021_03_30_152738) do
     t.string "username"
   end
 
+  create_table "users_notification_settings", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "email_badge_notifications", default: true, null: false
+    t.boolean "email_comment_notifications", default: true, null: false
+    t.boolean "email_community_mod_newsletter", default: false, null: false
+    t.boolean "email_connect_messages", default: true, null: false
+    t.boolean "email_digest_periodic", default: false, null: false
+    t.boolean "email_follower_notifications", default: true, null: false
+    t.boolean "email_membership_newsletter", default: false, null: false
+    t.boolean "email_mention_notifications", default: true, null: false
+    t.boolean "email_newsletter", default: false, null: false
+    t.boolean "email_tag_mod_newsletter", default: false, null: false
+    t.boolean "email_unread_notifications", default: true, null: false
+    t.boolean "mobile_comment_notifications", default: true, null: false
+    t.boolean "mod_roundrobin_notifications", default: true, null: false
+    t.boolean "reaction_notifications", default: true, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.boolean "welcome_notifications", default: true, null: false
+    t.index ["user_id"], name: "index_users_notification_settings_on_user_id"
+  end
+
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "role_id"
     t.bigint "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+  end
+
+  create_table "users_settings", force: :cascade do |t|
+    t.string "brand_color1", default: "#000000"
+    t.string "brand_color2", default: "#ffffff"
+    t.integer "config_font", default: 0, null: false
+    t.integer "config_navbar", default: 0, null: false
+    t.integer "config_theme", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "display_announcements", default: true, null: false
+    t.boolean "display_email_on_profile", default: false, null: false
+    t.boolean "display_sponsors", default: true, null: false
+    t.integer "editor_version", default: 0, null: false
+    t.integer "experience_level"
+    t.boolean "feed_mark_canonical", default: false, null: false
+    t.boolean "feed_referential_link", default: true, null: false
+    t.string "feed_url"
+    t.string "inbox_guidelines"
+    t.integer "inbox_type", default: 0, null: false
+    t.boolean "permit_adjacent_sponsors", default: true
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_users_settings_on_user_id"
   end
 
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|
@@ -1494,8 +1545,10 @@ ActiveRecord::Schema.define(version: 2021_03_30_152738) do
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
+  add_foreign_key "users_notification_settings", "users"
   add_foreign_key "users_roles", "roles", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade
+  add_foreign_key "users_settings", "users"
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
 
@@ -1531,7 +1584,20 @@ ActiveRecord::Schema.define(version: 2021_03_30_152738) do
       on("articles").
       name("tsv_tsvector_update").
       before(:insert, :update) do
-    "NEW.tsv := to_tsvector('simple'::regconfig, NEW.body_markdown) || to_tsvector('simple'::regconfig, NEW.cached_tag_list) || to_tsvector('simple'::regconfig, NEW.title); return NEW;"
+    <<-SQL_ACTIONS
+NEW.tsv := (
+  SELECT to_tsvector('simple'::regconfig, unaccent(body_markdown)) ||
+         to_tsvector('simple'::regconfig, unaccent(cached_tag_list)) ||
+         to_tsvector('simple'::regconfig, unaccent(title)) ||
+         to_tsvector('simple'::regconfig, unaccent(coalesce(organizations.name, ''))) ||
+         to_tsvector('simple'::regconfig, unaccent(coalesce(users.name, ''))) ||
+         to_tsvector('simple'::regconfig, unaccent(coalesce(users.username, ''))) AS tsvector
+  FROM articles
+  LEFT OUTER JOIN organizations ON organizations.id = articles.organization_id
+  LEFT OUTER JOIN users ON users.id = articles.user_id
+  WHERE articles.id = NEW.id
+);
+    SQL_ACTIONS
   end
 
 end

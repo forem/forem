@@ -14,13 +14,17 @@ class Organization < ApplicationRecord
   before_validation :downcase_slug
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
-  before_save :update_articles
   before_save :remove_at_from_usernames
   before_save :generate_secret
   # You have to put before_destroy callback BEFORE the dependent: :nullify
   # to ensure they execute before the records are updated
   # https://guides.rubyonrails.org/active_record_callbacks.html#destroying-an-object
   before_destroy :cache_article_ids
+
+  # this call back uses `saved_change_to_attribute` which should run in `after_` callbacks
+  # see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Dirty.html#method-i-saved_change_to_attribute
+  # NOTE: [@rhymes] this is also needed to invoke the trigger on `articles` when the organization name is changed
+  after_save :update_articles
 
   has_many :articles, dependent: :nullify
   has_many :collections, dependent: :nullify
@@ -139,7 +143,10 @@ class Organization < ApplicationRecord
   end
 
   def update_articles
-    return unless saved_change_to_slug || saved_change_to_name || saved_change_to_profile_image
+    return unless
+      saved_change_to_attribute?(:slug) ||
+        saved_change_to_attribute?(:name) ||
+        saved_change_to_attribute?(:profile_image)
 
     articles.update(cached_organization: Articles::CachedEntity.from_object(self))
   end
