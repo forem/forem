@@ -4,6 +4,11 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::FixProfileFieldEdgeCases do
+  before do
+    create(:profile_field, attribute_name: "git_lab_url", display_area: "left_sidebar")
+    create(:profile_field, attribute_name: "skills_languages", display_area: "settings_only")
+  end
+
   it "migrates profile fields to proper areas" do
     # Run the script
     described_class.new.run
