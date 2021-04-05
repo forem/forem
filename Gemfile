@@ -41,6 +41,7 @@ gem "fog-aws", "~> 3.10" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
+gem "hairtrigger", "~> 0.2.24" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 4.8" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.4.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
