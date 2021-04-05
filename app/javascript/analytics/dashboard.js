@@ -223,7 +223,7 @@ function drawMonthCharts({ organizationId, articleId }) {
 function drawInfinityCharts({ organizationId, articleId }) {
   resetActive(document.getElementById('infinity-button'));
   // April 1st is when the DEV analytics feature went into place
-  const beginningOfTime = new Date('2019-4-1');
+  const beginningOfTime = new Date('2019-04-01');
   callAnalyticsAPI(beginningOfTime, '', { organizationId, articleId });
 }
 
