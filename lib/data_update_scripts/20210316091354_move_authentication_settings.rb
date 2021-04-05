@@ -21,6 +21,8 @@ module DataUpdateScripts
     ATTRIBUTES = %i[var value created_at updated_at].freeze
 
     def run
+      return if Settings::Authentication.any?
+      
       SiteConfig.transaction do
         config_relation = SiteConfig.where(var: AUTHENTICATION_SETTINGS)
         config_values = config_relation.pluck(*ATTRRIBUTES).map do |values|
