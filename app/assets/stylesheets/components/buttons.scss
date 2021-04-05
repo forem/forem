@@ -48,6 +48,7 @@
   cursor: pointer;
   transition: all var(--transition-props);
   border: var(--border-width) solid;
+  overflow-wrap: normal;
 
   // Styles
   --bg: var(--button-primary-bg);
