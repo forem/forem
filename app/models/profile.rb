@@ -17,10 +17,6 @@ class Profile < ApplicationRecord
     location
   ].freeze
 
-  SPECIAL_SOCIAL_LINK_ATTRIBUTES = %w[
-    website_url
-  ].freeze
-
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
   MAPPED_ATTRIBUTES = {
@@ -51,11 +47,7 @@ class Profile < ApplicationRecord
   end
 
   def self.special_attributes
-    SPECIAL_DISPLAY_ATTRIBUTES + SPECIAL_SOCIAL_LINK_ATTRIBUTES
-  end
-
-  def self.special_social_link_attributes
-    SPECIAL_SOCIAL_LINK_ATTRIBUTES.freeze
+    SPECIAL_DISPLAY_ATTRIBUTES
   end
 
   def custom_profile_attributes
