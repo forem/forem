@@ -4,10 +4,10 @@ class SearchController < ApplicationController
   before_action :sanitize_params, only: %i[listings reactions feed_content]
 
   CHAT_CHANNEL_PARAMS = %i[
-    per_page
-    page
-    channel_type
     channel_status
+    channel_type
+    page
+    per_page
     status
     user_id
   ].freeze
