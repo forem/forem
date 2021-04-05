@@ -25,7 +25,7 @@ module Notifications
         json_data[:organization] = organization_data(notifiable.organization) if notifiable.organization_id
 
         notifications_attributes = []
-        notifiable.authors_followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
+        notifiable.followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
           now = Time.current
           notifications_attributes.push(
             user_id: follower.id,
