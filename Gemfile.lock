@@ -622,7 +622,7 @@ GEM
       netrc (~> 0.8)
     reverse_markdown (2.0.0)
       nokogiri
-    rexml (3.2.4)
+    rexml (3.2.5)
     rolify (5.3.0)
     rouge (3.26.0)
     rpush (5.4.0)
@@ -656,7 +656,7 @@ GEM
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
     rspec-support (3.10.2)
-    rubocop (1.12.0)
+    rubocop (1.12.1)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
