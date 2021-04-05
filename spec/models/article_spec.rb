@@ -1118,13 +1118,13 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "#authors_followers" do
-    it "returns article_ID" do
+  describe "#followers" do
+    it "returns an array of users who follow the article's author" do
       following_user = create(:user)
       following_user.follow(user)
 
-      expect(article.authors_followers.length).to eq(1)
-      expect(article.authors_followers.first.username).to eq(following_user.username)
+      expect(article.followers.length).to eq(1)
+      expect(article.followers.first.username).to eq(following_user.username)
     end
   end
 
