@@ -74,7 +74,7 @@ gem "pusher-push-notifications", "~> 2.0" # Pusher Push Notifications Ruby serve
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 6.0.3" # Ruby on Rails
+gem "rails", "~> 6.1" # Ruby on Rails
 gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "ransack", "~> 2.4" # Searching and sorting
 gem "recaptcha", "~> 5.7", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
@@ -124,10 +124,9 @@ group :development do
   gem "brakeman", "~> 5.0", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.8" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 2.0", require: false # A series of things you can use to benchmark a Rails or Ruby app
-  gem "erb_lint", github: "thepracticaldev/erb-lint", branch: "jess/remove-version-pinning", require: false # ERB Linter tool
+  gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
-  gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
   gem "listen", "~> 3.5", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
