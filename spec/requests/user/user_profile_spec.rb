@@ -202,14 +202,14 @@ RSpec.describe "UserProfiles", type: :request do
       end
 
       it "renders emoji in description of featured repository" do
-        GithubRepo.upsert(github_user, params)
+        GithubRepo.upsert(github_user, **params)
 
         get "/#{github_user.username}"
         expect(response.body).to include("A book bot 🤖")
       end
 
       it "does not show a non featured repository" do
-        GithubRepo.upsert(github_user, params.merge(featured: false))
+        GithubRepo.upsert(github_user, **params.merge(featured: false))
 
         get "/#{github_user.username}"
         expect(response.body).not_to include("A book bot 🤖")
