@@ -14,7 +14,7 @@ class ChatChannelsController < ApplicationController
     when "unopened"
       authorize ChatChannel
       @chat_channels_memberships = unopened_json_response
-      render "index.json"
+      render "index", formats: :json
     when "unopened_ids"
       authorize ChatChannel
       @unopened_ids = unopened_ids_response
@@ -22,11 +22,11 @@ class ChatChannelsController < ApplicationController
     when "pending"
       authorize ChatChannel
       @chat_channels_memberships = pending_json_response
-      render "index.json"
+      render "index", formats: :json
     when "joining_request"
       authorize ChatChannel
       @chat_channels_memberships = joining_request_json_response
-      render "index.json"
+      render "index", formats: :json
     else
       skip_authorization
       render_channels_html
