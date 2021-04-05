@@ -52,7 +52,10 @@
     "app/views/**/*.jbuilder": [
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
-    "Gemfile": [
+    "./Gemfile": [
+      "bundle exec rubocop --require rubocop-rspec --auto-correct"
+    ],
+    "docs/Gemfile": [
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
     "*.rake": [

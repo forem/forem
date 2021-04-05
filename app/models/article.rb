@@ -400,6 +400,10 @@ class Article < ApplicationRecord
 
   def video_duration_in_minutes
     duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
+
+    # add default hours and minutes for the substitutions below
+    duration = duration.reverse_merge(seconds: 0, minutes: 0, hours: 0)
+
     minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", duration)
     return minutes_and_seconds if duration[:hours] < 1
 
@@ -468,7 +472,7 @@ class Article < ApplicationRecord
 
     self.description = processed_description if description.blank?
   rescue StandardError => e
-    errors[:base] << ErrorMessages::Clean.call(e.message)
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 
   def set_tag_list(tags)
