@@ -31,7 +31,7 @@ module Search
       MAX_PER_PAGE = 60 # to avoid querying too many items, we set a maximum amount for a page
       private_constant :MAX_PER_PAGE
 
-      def self.search_documents(user_ids: [], page: 0, per_page: DEFAULT_PER_PAGE)
+      def self.search_documents(user_ids:, page: 0, per_page: DEFAULT_PER_PAGE)
         # NOTE: [@rhymes/atsmith813] we should eventually update the frontend
         # to start from page 1
         page = page.to_i + 1
