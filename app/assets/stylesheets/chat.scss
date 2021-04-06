@@ -1114,6 +1114,23 @@
   color: gray;
   width: max-content;
 }
+
+.mbutton {
+  width: 100%;
+  border: none;
+  text-align: left;
+  background: var(--card-bg);
+}
+
+.ulist {
+  list-style-type: none; /* Remove bullets */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margins */
+}
+.llist:hover {
+  background: var(--theme-container-background-hover, #f5f6f7);
+}
+
 .comment-mentioned-all {
   color: rgb(213, 138, 0);
 }

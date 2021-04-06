@@ -1733,34 +1733,37 @@ export class Chat extends Component {
           ? Object.values(channelUsers[activeChannelId])
               .filter((user) => user.username.match(filterRegx))
               .map((user) => (
-                <div
-                  key={user.username}
-                  className="mention__user"
-                  role="button"
-                  onClick={this.addUserName}
-                  tabIndex="0"
-                  data-content={user.username}
-                  onKeyUp={(e) => {
-                    if (e.keyCode === 13) this.addUserName();
-                  }}
-                >
-                  <img
-                    className="mention__user__image"
-                    src={user.profile_image}
-                    alt={user.name}
-                    style={!user.profile_image ? { display: 'none' } : ' '}
-                  />
-                  <span
-                    style={{
-                      padding: '3px 0px',
-                      'font-size': '16px',
-                    }}
-                  >
-                    {'@'}
-                    {user.username}
-                    <p>{user.name}</p>
-                  </span>
-                </div>
+                <ul className="ulist">
+                  <li className="llist">
+                    <button
+                      key={user.username}
+                      className="mention__user mbutton llist"
+                      onClick={this.addUserName}
+                      tabIndex="0"
+                      data-content={user.username}
+                      onKeyUp={(e) => {
+                        if (e.keyCode === 13) this.addUserName();
+                      }}
+                    >
+                      <img
+                        className="mention__user__image"
+                        src={user.profile_image}
+                        alt={user.name}
+                        style={!user.profile_image ? { display: 'none' } : ' '}
+                      />
+                      <span
+                        style={{
+                          padding: '3px 0px',
+                          'font-size': '16px',
+                        }}
+                      >
+                        {'@'}
+                        {user.username}
+                        <p>{user.name}</p>
+                      </span>
+                    </button>
+                  </li>
+                </ul>
               ))
           : ' '}
       </div>
