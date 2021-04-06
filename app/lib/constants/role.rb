@@ -6,7 +6,6 @@ module Constants
       "Suspend",
       "Regular Member",
       "Trusted",
-      "Pro",
     ].freeze
 
     SPECIAL_ROLES = [
@@ -17,7 +16,6 @@ module Constants
       "Resource Admin: Badge",
       "Resource Admin: BadgeAchievement",
       "Resource Admin: Broadcast",
-      "Resource Admin: BufferUpdate",
       "Resource Admin: ChatChannel",
       "Resource Admin: Comment",
       "Resource Admin: Config",

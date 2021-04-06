@@ -50,7 +50,6 @@ Rails.application.routes.draw do
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
       end
-      resources :buffer_updates, only: %i[create update]
       resources :feedback_messages, only: %i[index show]
       resources :invitations, only: %i[index new create destroy]
       resources :organization_memberships, only: %i[update destroy create]
@@ -100,6 +99,7 @@ Rails.application.routes.draw do
           collection do
             get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
             get "/:username/:slug", to: "articles#show_by_slug", as: :slug
+            get "/latest", to: "articles#index", defaults: { sort: "desc" }
           end
         end
         resources :comments, only: %i[index show]
@@ -223,7 +223,6 @@ Rails.application.routes.draw do
     resources :credits, only: %i[index new create] do
       get "purchase", on: :collection, to: "credits#new"
     end
-    resources :buffer_updates, only: [:create]
     resources :reading_list_items, only: [:update]
     resources :poll_votes, only: %i[show create]
     resources :poll_skips, only: [:create]
@@ -399,8 +398,8 @@ Rails.application.routes.draw do
     get "/settings/:tab/:id", to: "users#edit", constraints: { tab: /response-templates/ }
     get "/signout_confirm", to: "users#signout_confirm"
     get "/dashboard", to: "dashboards#show"
-    get "/dashboard/pro", to: "dashboards#pro"
-    get "dashboard/pro/org/:org_id", to: "dashboards#pro", as: :dashboard_pro_org
+    get "/dashboard/analytics", to: "dashboards#analytics"
+    get "dashboard/analytics/org/:org_id", to: "dashboards#analytics", as: :dashboard_analytics_org
     get "dashboard/following", to: "dashboards#following_tags"
     get "dashboard/following_tags", to: "dashboards#following_tags"
     get "dashboard/following_users", to: "dashboards#following_users"

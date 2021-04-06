@@ -23,7 +23,7 @@ function toggleHeaderMenu(memberMenu, navigationButton) {
     return;
   }
 
-  let crayonsHeaderMenuClassList = memberMenu.classList;
+  const crayonsHeaderMenuClassList = memberMenu.classList;
   if (crayonsHeaderMenuClassList.contains('showing')) {
     crayonsHeaderMenuClassList.remove('showing');
     navigationButton.setAttribute('aria-expanded', 'false');
@@ -31,7 +31,7 @@ function toggleHeaderMenu(memberMenu, navigationButton) {
     crayonsHeaderMenuClassList.add('showing');
     navigationButton.setAttribute('aria-expanded', 'true');
 
-    let firstNavLink = document.getElementById('first-nav-link');
+    const firstNavLink = document.getElementById('first-nav-link');
     if (firstNavLink) {
       setTimeout(() => {
         // focus first item on open
@@ -53,7 +53,7 @@ export function initializeTouchDevice(memberTopMenu, menuNavButton) {
   }
 
   if (memberTopMenu) {
-    let crayonsHeaderMenuClassList = memberTopMenu.classList;
+    const crayonsHeaderMenuClassList = memberTopMenu.classList;
 
     setTimeout(() => {
       closeHeaderMenu(memberTopMenu, menuNavButton);
@@ -148,11 +148,11 @@ export async function getInstantClick(waitTime = 2000) {
  */
 export function initializeMobileMenu(menuTriggers, moreMenus) {
   menuTriggers.forEach((trigger) => {
-    trigger.addEventListener('click', toggleBurgerMenu);
+    trigger.onclick = toggleBurgerMenu;
   });
 
   moreMenus.forEach((trigger) => {
-    trigger.addEventListener('click', showMoreMenu);
+    trigger.onclick = showMoreMenu;
   });
 }
 

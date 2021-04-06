@@ -236,6 +236,7 @@ class StoriesController < ApplicationController
     # 2nd with 1 badge (!) <-- and that would look off.
     @badges_limit = 6
     @profile = @user.profile.decorate
+    @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld

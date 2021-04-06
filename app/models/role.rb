@@ -6,7 +6,6 @@ class Role < ApplicationRecord
     codeland_admin
     comment_banned
     podcast_admin
-    pro
     restricted_liquid_tag
     single_resource_admin
     super_admin

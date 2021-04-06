@@ -12,7 +12,7 @@ module Notifications
       validates :followable_type, inclusion: { in: %w[User Organization] }
       validates :follower_id, numericality: { only_integer: true }
 
-      def initialize(*args, **kwargs)
+      def initialize(attributes)
         super
         raise DataError unless valid?
       end

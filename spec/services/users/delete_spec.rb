@@ -21,6 +21,14 @@ RSpec.describe Users::Delete, type: :service do
     expect(cache_bust).to have_received(:call).with("/#{user.username}")
   end
 
+  it "deletes user's sponsorships" do
+    create(:sponsorship, user: user)
+
+    expect do
+      described_class.call(user)
+    end.to change(Sponsorship, :count).by(-1)
+  end
+
   it "deletes user's follows" do
     create(:follow, follower: user)
     create(:follow, followable: user)
@@ -87,8 +95,6 @@ RSpec.describe Users::Delete, type: :service do
         affected_feedback_messages
         audit_logs
         banished_users
-        buffer_updates_approved
-        buffer_updates_composed
         created_podcasts
         offender_feedback_messages
         page_views
@@ -145,7 +151,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should exist" do
         kept_associations.each do |kept_association|
-          expect { kept_association.reload }.not_to raise_error, kept_association
+          expect { kept_association.reload }.not_to raise_error
         end
       end
     end
@@ -157,7 +163,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should not exist" do
         user_associations.each do |user_association|
-          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound), user_association
+          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
     end
