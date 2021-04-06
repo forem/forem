@@ -71,7 +71,6 @@ RSpec.describe "/admin/reports", type: :request do
         {
           feedback_message_id: send_email_params[:feedback_message_id],
           subject: send_email_params[:email_subject],
-          utm_campaign: send_email_params[:email_type],
           to: send_email_params[:email_to]
         }.stringify_keys
       end

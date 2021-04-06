@@ -279,24 +279,18 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Email digest frequency" do
-        it "updates periodic_email_digest_max" do
-          post "/admin/config", params: { site_config: { periodic_email_digest_max: 1 },
+        it "updates periodic_email_digest" do
+          post "/admin/config", params: { site_config: { periodic_email_digest: 1 },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.periodic_email_digest_max).to eq(1)
-        end
-
-        it "updates periodic_email_digest_min" do
-          post "/admin/config", params: { site_config: { periodic_email_digest_min: 3 },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.periodic_email_digest_min).to eq(3)
+          expect(SiteConfig.periodic_email_digest).to eq(1)
         end
 
         it "rejects update without proper confirmation" do
           expect do
-            post "/admin/config", params: { site_config: { periodic_email_digest_min: 6 },
+            post "/admin/config", params: { site_config: { periodic_email_digest: 6 },
                                             confirmation: "Incorrect yo!" }
           end.to raise_error ActionController::BadRequest
-          expect(SiteConfig.periodic_email_digest_min).not_to eq(6)
+          expect(SiteConfig.periodic_email_digest).not_to eq(6)
         end
       end
 
