@@ -1,7 +1,7 @@
 /* global userData */
 /* eslint-disable no-alert */
-import { request } from '@utilities/http';
 import { getUserDataAndCsrfToken } from '../chat/util';
+import { request } from '@utilities/http';
 
 /**
  * Adds a flag button visible only to trusted users on profile pages.
@@ -38,7 +38,13 @@ function addFlagUserBehavior(flagButton, userId, userName) {
             flagButton.innerHTML = `Flag ${userName}`;
           }
         })
-        .catch((e) => window.alert(`Something went wrong: ${e}`));
+        .catch((e) => {
+          const message = isUserFlagged
+            ? 'Unable to unflag user'
+            : 'Unable to flag user';
+          Honeybadger.notify(message, userData.profileUserID);
+          window.alert(`Something went wrong: ${e}`);
+        });
     }
   }
 
