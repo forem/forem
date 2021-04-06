@@ -118,7 +118,6 @@ export const createDataHash = (additionalFilters, searchParams) => {
   }
   dataHash.per_page = 30;
   dataHash.page = searchParams.paginationNumber;
-  dataHash.channel_text = searchParams.query;
   if (searchParams.searchType === 'discoverable') {
     dataHash.user_id = 'all';
   }

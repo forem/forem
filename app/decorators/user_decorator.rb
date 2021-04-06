@@ -100,7 +100,7 @@ class UserDecorator < ApplicationDecorator
 
   # returns true if the user has been suspended and has no content
   def fully_banished?
-    articles_count.zero? && comments_count.zero? && banned
+    articles_count.zero? && comments_count.zero? && suspended?
   end
 
   def stackbit_integration?

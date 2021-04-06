@@ -1,6 +1,6 @@
 class RatingVotePolicy < ApplicationPolicy
   def create?
-    !user_is_banned?
+    !user_suspended?
   end
 
   def permitted_attributes

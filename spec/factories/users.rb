@@ -79,8 +79,8 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:trusted) }
     end
 
-    trait :banned do
-      after(:build) { |user| user.add_role(:banned) }
+    trait :suspended do
+      after(:build) { |user| user.add_role(:suspended) }
     end
 
     trait :invited do

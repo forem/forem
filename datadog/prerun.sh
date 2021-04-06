@@ -9,3 +9,8 @@ if [ "$DYNOTYPE" == "run" ]; then
   export HONEYCOMB_DISABLE_AUTOCONFIGURE="true"
   export HONEYCOMB_INTEGRATIONS=rails,rake,active_support
 fi
+
+# Set app version based on HEROKU_SLUG_COMMIT
+if [ -n "$HEROKU_SLUG_COMMIT" ]; then
+  DD_VERSION=$HEROKU_SLUG_COMMIT
+fi

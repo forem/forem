@@ -1,4 +1,7 @@
 class NotifyMailer < ApplicationMailer
+  has_history extra: -> { { feedback_message_id: params[:feedback_message_id] } },
+              only: :feedback_message_resolution_email
+
   def new_reply_email
     @comment = params[:comment]
     @user = @comment.parent_user
@@ -66,17 +69,12 @@ class NotifyMailer < ApplicationMailer
     @user = User.find_by(email: params[:email_to])
     @email_body = params[:email_body]
 
-    track utm_campaign: params[:email_type]
-    track extra: { feedback_message_id: params[:feedback_message_id] }
-
     mail(to: params[:email_to], subject: params[:email_subject])
   end
 
   def user_contact_email
     @user = User.find(params[:user_id])
     @email_body = params[:email_body]
-
-    track utm_campaign: "user_contact"
 
     mail(to: @user.email, subject: params[:email_subject])
   end
