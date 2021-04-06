@@ -27,10 +27,13 @@ class ArticlesController < ApplicationController
                 elsif params[:tag]
                   handle_tag_feed
                 elsif request.path == latest_feed_path
-                  @articles.where("score > ?", Articles::Feeds::LargeForemExperimental::MINIMUM_SCORE_LATEST_FEED)
+                  @articles
+                    .where("score > ?", Articles::Feeds::LargeForemExperimental::MINIMUM_SCORE_LATEST_FEED)
                     .includes(:user)
                 else
-                  @articles.where(featured: true).includes(:user)
+                  @articles
+                    .where(featured: true).or(@articles.where(score: SiteConfig.home_feed_minimum_score..))
+                    .includes(:user)
                 end
 
     not_found unless @articles&.any?
