@@ -76,7 +76,7 @@
           <% end %>
 
           <% if current_user.has_role?(:super_admin) %>
-            <div class="crayons-notice p-4 mt-4">
+            <div class="crayons-notice p-4 mt-4" role="status" aria-live="polite">
               <div class="crayons-field">
                 <%= label_tag :confirmation_update, "Confirmation update", class: "crayons-field__label" %>
                 <p class="crayons-field__description">Type the sentence: <strong><%= @confirmation_text %></strong></p>
@@ -354,7 +354,7 @@
                   <% end %>
                 </section>
               </section>
-              <div class="crayons-notice crayons-notice--info mb-4">
+              <div class="crayons-notice crayons-notice--info mb-4" role="status" aria-live="polite">
                 Changing authentication keys will not take effect until this Forem instance is restarted.
               </div>
 
