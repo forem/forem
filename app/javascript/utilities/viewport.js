@@ -5,7 +5,7 @@
  * const element = document.getElementById('element');
  * isInViewport({element, allowPartialVisibility = true}); // true or false
  *
- * @param {object} element - The HTML element to check
+ * @param {HTMLElement} element - The HTML element to check
  * @param {number} [offsetTop=0] - Part of the screen to ignore counting from the top
  * @param {boolean} [allowPartialVisibility=false] - A boolean to flip the check between partial or completely visible in the viewport
  * @returns {boolean} isInViewport - true if the element is visible in the viewport
