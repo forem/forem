@@ -760,7 +760,7 @@ GEM
       activerecord (>= 4.0, < 6.2)
       virtus
     stripe (5.32.1)
-    stripe-ruby-mock (3.0.1)
+    stripe-ruby-mock (3.1.0.rc2)
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (> 5, < 6)
@@ -979,7 +979,7 @@ DEPENDENCIES
   store_attribute (~> 0.8.1)
   storext (~> 3.3)
   stripe (~> 5.32)
-  stripe-ruby-mock (~> 3.0)
+  stripe-ruby-mock (= 3.1.0.rc2)
   strong_migrations (~> 0.7)
   test-prof (~> 1.0)
   timecop (~> 0.9)
