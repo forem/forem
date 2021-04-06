@@ -1,7 +1,7 @@
 /* global userData */
 /* eslint-disable no-alert */
-import { getUserDataAndCsrfToken } from '../chat/util';
 import { request } from '@utilities/http';
+import { getUserDataAndCsrfToken } from '../chat/util';
 
 /**
  * Adds a flag button visible only to trusted users on profile pages.
