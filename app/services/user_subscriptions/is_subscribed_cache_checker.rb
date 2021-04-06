@@ -4,8 +4,8 @@ module UserSubscriptions
   class IsSubscribedCacheChecker
     attr_accessor :user, :source_type, :source_id
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     def initialize(user, params)

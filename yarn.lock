@@ -15372,11 +15372,6 @@ postscribe@^2.0.8:
   dependencies:
     prescribe ">=1.1.2"
 
-preact-textarea-autosize@^4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/preact-textarea-autosize/-/preact-textarea-autosize-4.0.7.tgz#aa654ce1a0ed57027dca21e4710a78cb6f007457"
-  integrity sha1-qmVM4aDtVwJ9yiHkcQp4y28AdFc=
-
 preact@^10.5.13:
   version "10.5.13"
   resolved "https://registry.yarnpkg.com/preact/-/preact-10.5.13.tgz#85f6c9197ecd736ce8e3bec044d08fd1330fa019"
