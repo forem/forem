@@ -7,33 +7,21 @@ module RailsSettings
   class Base < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
     def self.inherited(subclass)
       super
-      subclass_cache_key = subclass.name.underscore.tr("/", "_")
 
       # Define a unique RequestCache class for each settings klass
-      request_cache = Class.new(BasicObject) do
-        define_singleton_method(:cache_key) do
-          scope = [subclass_cache_key]
-          scope << @cache_prefix.call if @cache_prefix
-          scope.join("/")
-        end
-
-        def self.settings
-          RequestStore.store[cache_key]
-        end
-
-        def self.settings=(val)
-          RequestStore.store[cache_key] = val
-        end
-
-        def self.reset
-          self.settings = nil
-        end
+      request_cache = Class.new(ActiveSupport::CurrentAttributes) do
+        attribute :settings
       end
       subclass.const_set(:RequestCache, request_cache)
 
       # Override existing methods to use the local RequestCache class
       subclass.instance_eval do
-        define_singleton_method(:cache_key) { subclass::RequestCache.cache_key }
+        define_singleton_method(:cache_key) do
+          subclass_cache_key = subclass.name.underscore.tr("/", "_")
+          scope = [subclass_cache_key]
+          scope << @cache_prefix.call if @cache_prefix
+          scope.join("/")
+        end
 
         define_singleton_method(:clear_cache) do
           subclass::RequestCache.reset
@@ -49,7 +37,6 @@ module RailsSettings
               result.with_indifferent_access
             end
         end
-
         singleton_class.instance_eval { private :_all_settings }
       end
     end
