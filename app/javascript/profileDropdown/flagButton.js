@@ -39,10 +39,11 @@ function addFlagUserBehavior(flagButton, userId, userName) {
           }
         })
         .catch((e) => {
-          const message = isUserFlagged
-            ? 'Unable to unflag user'
-            : 'Unable to flag user';
-          Honeybadger.notify(message, userData.profileUserID);
+          Honeybadger.notify(
+            isUserFlagged ? 'Unable to unflag user' : 'Unable to flag user',
+            userData.profileUserID,
+          );
+          // do we want to alert here, or _only_ log to honeybadger?
           window.alert(`Something went wrong: ${e}`);
         });
     }
