@@ -12,13 +12,14 @@ import { useTextAreaAutoResize } from '@utilities/textAreaUtils';
 
 export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
   const textAreaRef = useRef(null);
-  const { setTextArea } = useTextAreaAutoResize();
+  const { setTextArea, setConstrainToContentHeight } = useTextAreaAutoResize();
 
   useLayoutEffect(() => {
     if (textAreaRef.current) {
+      setConstrainToContentHeight(true);
       setTextArea(textAreaRef.current);
     }
-  }, [setTextArea]);
+  }, [setTextArea, setConstrainToContentHeight]);
 
   return (
     <div

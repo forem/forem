@@ -118,6 +118,7 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
 /**
  * This hook can be used to keep the height of a textarea in step with the current content height, avoiding a scrolling textarea.
  * An optional array of additional elements can be set. If provided, all additional elements will receive the same height.
+ * Optionally, it can be specified to also constrain the max-height to the content height. Otherwise the max-height will continue to be managed only by the textarea's CSS
  *
  * @example
  *
@@ -127,6 +128,9 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
  */
 export const useTextAreaAutoResize = () => {
   const [textArea, setTextArea] = useState(null);
+  const [constrainToContentHeight, setConstrainToContentHeight] = useState(
+    false,
+  );
   const [additionalElements, setAdditionalElements] = useState([]);
 
   useEffect(() => {
@@ -137,9 +141,13 @@ export const useTextAreaAutoResize = () => {
     const resizeTextArea = () => {
       const { height } = calculateTextAreaHeight(textArea);
       const newHeight = `${height}px`;
-      textArea.style['min-height'] = newHeight;
-      additionalElements.forEach((element) => {
+
+      [textArea, ...additionalElements].forEach((element) => {
         element.style['min-height'] = newHeight;
+        if (constrainToContentHeight) {
+          // Don't allow the textarea to grow to a size larger than the content
+          element.style['max-height'] = newHeight;
+        }
       });
     };
 
@@ -149,7 +157,7 @@ export const useTextAreaAutoResize = () => {
     textArea.addEventListener('input', resizeTextArea);
 
     return () => textArea.removeEventListener('input', resizeTextArea);
-  }, [textArea, additionalElements]);
+  }, [textArea, additionalElements, constrainToContentHeight]);
 
-  return { setTextArea, setAdditionalElements };
+  return { setTextArea, setAdditionalElements, setConstrainToContentHeight };
 };
