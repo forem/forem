@@ -79,7 +79,7 @@ RSpec.describe "Dashboards", type: :request do
 
         get dashboard_path
 
-        expect(response.body).to include("Analytics for #{organization.name}")
+        expect(response.body).to include(CGI.escapeHTML("Analytics for #{organization.name}"))
       end
 
       it "does not render a link to upload a video when enable_video_upload is false" do
