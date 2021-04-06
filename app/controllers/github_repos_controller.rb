@@ -24,7 +24,7 @@ class GithubReposController < ApplicationController
       return
     end
 
-    repo = GithubRepo.upsert(current_user, fetched_repo_params(fetched_repo))
+    repo = GithubRepo.upsert(current_user, **fetched_repo_params(fetched_repo))
 
     current_user.touch(:github_repos_updated_at)
 

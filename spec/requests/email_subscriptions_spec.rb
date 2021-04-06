@@ -8,11 +8,11 @@ RSpec.describe "EmailSubscriptions", type: :request do
   end
 
   def generate_token(user_id)
-    Rails.application.message_verifier(:unsubscribe).generate(
-      user_id: user_id,
-      email_type: :email_mention_notifications,
-      expires_at: 31.days.from_now,
-    )
+    Rails.application.message_verifier(:unsubscribe).generate({
+                                                                user_id: user_id,
+                                                                email_type: :email_mention_notifications,
+                                                                expires_at: 31.days.from_now
+                                                              })
   end
 
   describe "GET /email_subscriptions/unsubscribe" do
