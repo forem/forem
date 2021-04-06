@@ -195,8 +195,16 @@ export const MentionAutocompleteTextArea = forwardRef(
       const activeInput = combobox.classList.contains('hidden')
         ? plainTextInput
         : combobox;
-      activeInput.focus();
-      activeInput.setSelectionRange(cursorPosition, cursorPosition - 1);
+
+      if (
+        document.activeElement === combobox ||
+        document.activeElement === plainTextInput
+      ) {
+        // Check if the currently focused element is one of the mention autocomplete's
+        // inputs. This check is necessary to prevent an issue in iOS browsers only.
+        activeInput.focus();
+        activeInput.setSelectionRange(cursorPosition, cursorPosition - 1);
+      }
     }, [cursorPosition]);
 
     const handleTextInputChange = ({ target: { value } }) => {
@@ -290,19 +298,17 @@ export const MentionAutocompleteTextArea = forwardRef(
       const { current: comboboxTextArea } = comboboxRef;
       const { current: plainTextArea } = plainTextAreaRef;
 
-      if (comboboxTextArea && plainTextArea) {
-        if (replaceElement) {
-          replaceTextArea({
-            originalNodeToReplace: replaceElement,
-            plainTextArea,
-            comboboxTextArea,
-          });
-        }
-
-        // Initialize the new text areas in the "non-autosuggest" state, hiding the combobox until a search begins
-        comboboxTextArea.classList.add('hidden');
+      if (comboboxTextArea && plainTextArea && replaceElement) {
+        replaceTextArea({
+          originalNodeToReplace: replaceElement,
+          plainTextArea,
+          comboboxTextArea,
+        });
         plainTextArea.focus();
       }
+
+      // Initialize the new text areas in the "non-autosuggest" state, hiding the combobox until a search begins
+      comboboxTextArea.classList.add('hidden');
     }, [replaceElement]);
 
     return (
