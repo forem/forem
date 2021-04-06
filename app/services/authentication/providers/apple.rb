@@ -10,11 +10,9 @@ module Authentication
       def new_user_data
         # Apple sends `first_name` and `last_name` as separate fields
         name = "#{info.first_name} #{info.last_name}"
-        timestamp = raw_info.id_info.auth_time
 
         user_data = {
           email: info.email,
-          apple_created_at: Time.zone.at(timestamp),
           apple_username: user_nickname,
           name: name
         }
@@ -34,9 +32,8 @@ module Authentication
         # Apple authorization, signs in again and then changes their name,
         # we update the username only if the name is not nil
         apple_username = info.first_name.present? ? info.first_name.downcase : nil
-        timestamp = raw_info.id_info.auth_time
 
-        data = { apple_created_at: Time.zone.at(timestamp) }
+        data = {}
         data[:apple_username] = apple_username if apple_username
         data
       end
