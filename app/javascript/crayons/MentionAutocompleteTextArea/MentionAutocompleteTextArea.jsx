@@ -113,6 +113,7 @@ export const MentionAutocompleteTextArea = forwardRef(
     const [users, setUsers] = useState([]);
     const [cursorPosition, setCursorPosition] = useState(null);
     const [ariaHelperText, setAriaHelperText] = useState('');
+    const [focusable, setFocusable] = useState(false);
 
     const isSmallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Small}px)`);
 
@@ -197,6 +198,7 @@ export const MentionAutocompleteTextArea = forwardRef(
         : combobox;
 
       if (
+        focusable ||
         document.activeElement === combobox ||
         document.activeElement === plainTextInput
       ) {
@@ -204,8 +206,9 @@ export const MentionAutocompleteTextArea = forwardRef(
         // inputs. This check is necessary to prevent an issue in iOS browsers only.
         activeInput.focus();
         activeInput.setSelectionRange(cursorPosition, cursorPosition - 1);
+        setFocusable(true);
       }
-    }, [cursorPosition]);
+    }, [cursorPosition, focusable]);
 
     const handleTextInputChange = ({ target: { value } }) => {
       setTextContent(value);
