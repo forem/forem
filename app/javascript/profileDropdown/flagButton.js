@@ -1,6 +1,7 @@
 /* global userData */
 /* eslint-disable no-alert */
 import { getUserDataAndCsrfToken } from '../chat/util';
+import { request } from '@utilities/http';
 
 /**
  * Adds a flag button visible only to trusted users on profile pages.
@@ -19,17 +20,13 @@ function addFlagUserBehavior(flagButton, userId, userName) {
     );
 
     if (confirmFlag) {
-      fetch('/reactions', {
+      request('/reactions', {
         method: 'POST',
-        headers: {
-          'X-CSRF-Token': window.csrfToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        body: {
           reactable_type: 'User',
           category: 'vomit',
           reactable_id: userId,
-        }),
+        },
       })
         .then((response) => response.json())
         .then((response) => {
