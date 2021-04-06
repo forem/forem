@@ -3,12 +3,6 @@
 import { request } from '@utilities/http';
 import { getUserDataAndCsrfToken } from '../chat/util';
 
-/**
- * Adds a flag button visible only to trusted users on profile pages.
- * @function initFlag
- * @returns {(void|undefined)} This function has no useable return value.
- */
-
 function addFlagUserBehavior(flagButton) {
   const { profileUserId, profileUserName } = flagButton.dataset;
 
@@ -52,6 +46,12 @@ function addFlagUserBehavior(flagButton) {
 
   flagButton.addEventListener('click', flag);
 }
+
+/**
+ * Adds a flag button visible only to trusted users on profile pages.
+ * @function initFlag
+ * @returns {(void|undefined)} This function has no useable return value.
+ */
 
 export function initFlag() {
   const flagButton = document.getElementById(
