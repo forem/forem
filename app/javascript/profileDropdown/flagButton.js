@@ -37,7 +37,7 @@ function addFlagUserBehavior(flagButton) {
         .catch((e) => {
           Honeybadger.notify(
             isUserFlagged ? 'Unable to unflag user' : 'Unable to flag user',
-            userData.profileUserID,
+            profileUserId,
           );
           window.alert(`Something went wrong: ${e}`);
         });
