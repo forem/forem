@@ -748,7 +748,7 @@ class Article < ApplicationRecord
 
     return unless Reaction.article_vomits.where(reactable_id: user.articles.pluck(:id)).size > 2
 
-    user.add_role(:banned)
+    user.add_role(:suspended)
     Note.create(
       author_id: SiteConfig.mascot_user_id,
       noteable_id: user_id,

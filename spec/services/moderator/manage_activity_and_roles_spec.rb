@@ -5,7 +5,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
   let(:admin) { create(:user, :super_admin) }
 
   it "updates user status" do
-    user.add_role(:banned)
+    user.add_role(:suspended)
     user.reload
     described_class.handle_user_roles(
       admin: admin,
@@ -13,7 +13,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user_params: { note_for_current_role: "warning user", user_status: "Warn" },
     )
     expect(user.warned).to be true
-    expect(user.banned).to be false
+    expect(user.suspended?).to be false
   end
 
   it "updates user to super admin" do
@@ -54,13 +54,13 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
   end
 
   it "updates negative role to positive role" do
-    user.add_role(:comment_banned)
+    user.add_role(:comment_suspended)
     described_class.handle_user_roles(
       admin: admin,
       user: user,
       user_params: { note_for_current_role: "user in good standing", user_status: "Regular Member" },
     )
-    expect(user.banned).to be false
+    expect(user.suspended?).to be false
     expect(user.roles.count).to eq(0)
   end
 

@@ -52,11 +52,11 @@ RSpec.describe ReCaptcha::CheckEnabled, type: :request do
         expect(described_class.call(vomitted_user)).to be(true)
       end
 
-      it "marks ReCaptcha as enabled when a banned user is logged in" do
-        older_user.add_role(:banned)
+      it "marks ReCaptcha as enabled when a suspended user is logged in" do
+        older_user.add_role(:suspended)
         sign_in older_user
         expect(described_class.call(older_user)).to be(true)
-        older_user.remove_role(:banned)
+        older_user.remove_role(:suspended)
       end
     end
   end
