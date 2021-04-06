@@ -9,7 +9,9 @@ import { request } from '@utilities/http';
  * @returns {(void|undefined)} This function has no useable return value.
  */
 
-function addFlagUserBehavior(flagButton, userId, userName) {
+function addFlagUserBehavior(flagButton) {
+  const { profileUserId, profileUserName } = flagButton.dataset;
+
   let isUserFlagged = flagButton.dataset.isUserFlagged === 'true';
 
   function flag() {
@@ -25,17 +27,17 @@ function addFlagUserBehavior(flagButton, userId, userName) {
         body: {
           reactable_type: 'User',
           category: 'vomit',
-          reactable_id: userId,
+          reactable_id: profileUserId,
         },
       })
         .then((response) => response.json())
         .then((response) => {
           if (response.result === 'create') {
             isUserFlagged = true;
-            flagButton.innerHTML = `Unflag ${userName}`;
+            flagButton.innerHTML = `Unflag ${profileUserName}`;
           } else {
             isUserFlagged = false;
-            flagButton.innerHTML = `Flag ${userName}`;
+            flagButton.innerHTML = `Flag ${profileUserName}`;
           }
         })
         .catch((e) => {
@@ -70,12 +72,12 @@ export function initFlag() {
     }
 
     const trustedOrAdmin = user.trusted || user.admin;
-    const { profileUserId, profileUserName } = flagButton.dataset;
+    const { profileUserId } = flagButton.dataset;
 
     if (!trustedOrAdmin || user.id === parseInt(profileUserId, 10)) {
       flagButton.remove();
     }
-    addFlagUserBehavior(flagButton, profileUserId, profileUserName);
+    addFlagUserBehavior(flagButton);
   });
 }
 /* eslint-enable no-alert */
