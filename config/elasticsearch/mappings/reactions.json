@@ -78,9 +78,6 @@
             },
             "profile_image_90": {
               "type": "keyword"
-            },
-            "pro": {
-              "type": "boolean"
             }
           }
         }

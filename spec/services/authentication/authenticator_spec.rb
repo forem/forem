@@ -541,8 +541,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.name).to eq(raw_info.name)
         expect(user.remote_profile_image_url).to eq(info.image.to_s.gsub("_normal", ""))
         expect(user.twitter_created_at.to_i).to eq(Time.zone.parse(raw_info.created_at).to_i)
-        expect(user.twitter_followers_count).to eq(raw_info.followers_count.to_i)
-        expect(user.twitter_following_count).to eq(raw_info.friends_count.to_i)
         expect(user.twitter_username).to eq(info.nickname)
       end
 
@@ -639,8 +637,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         raw_info = auth_payload.extra.raw_info
 
         expect(user.twitter_created_at.to_i).to eq(Time.zone.parse(raw_info.created_at).to_i)
-        expect(user.twitter_followers_count).to eq(raw_info.followers_count.to_i)
-        expect(user.twitter_following_count).to eq(raw_info.friends_count.to_i)
       end
 
       it "sets remember_me for the existing user" do

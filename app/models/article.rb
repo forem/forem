@@ -30,6 +30,12 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
+  # TODO: Vaidehi Joshi - Extract this into a constant or SiteConfig variable
+  # after https://github.com/forem/rfcs/pull/22 has been completed?
+  MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
+  # The date that we began limiting the number of user mentions in an article.
+  MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
+
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
@@ -80,6 +86,7 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validate :validate_tag
   validate :validate_video
+  validate :user_mentions_in_markdown
   validate :validate_co_authors, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
@@ -146,7 +153,37 @@ class Article < ApplicationRecord
       .tagged_with(tag_name)
   }
 
-  scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
+  scope :cached_tagged_with, lambda { |tag|
+    case tag
+    when String
+      # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
+      # word" and "end of word", respectively. They're similar to `\b` in Perl-
+      # compatible regexes (PCRE), but that matches at either end of a word.
+      # They're more comparable to how vim's `\<` and `\>` work.
+      where("cached_tag_list ~ ?", "[[:<:]]#{tag}[[:>:]]")
+    when Array
+      tag.reduce(self) { |acc, elem| acc.cached_tagged_with(elem) }
+    when Tag
+      cached_tagged_with(tag.name)
+    else
+      raise TypeError, "Cannot search tags for: #{tag.inspect}"
+    end
+  }
+
+  scope :cached_tagged_with_any, lambda { |tags|
+    case tags
+    when String
+      cached_tagged_with(tags)
+    when Array
+      tags
+        .map { |tag| cached_tagged_with(tag) }
+        .reduce { |acc, elem| acc.or(elem) }
+    when Tag
+      cached_tagged_with(tag.name)
+    else
+      raise TypeError, "Cannot search tags for: #{tag.inspect}"
+    end
+  }
 
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
@@ -370,6 +407,10 @@ class Article < ApplicationRecord
 
   def video_duration_in_minutes
     duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
+
+    # add default hours and minutes for the substitutions below
+    duration = duration.reverse_merge(seconds: 0, minutes: 0, hours: 0)
+
     minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", duration)
     return minutes_and_seconds if duration[:hours] < 1
 
@@ -438,7 +479,7 @@ class Article < ApplicationRecord
 
     self.description = processed_description if description.blank?
   rescue StandardError => e
-    errors[:base] << ErrorMessages::Clean.call(e.message)
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 
   def set_tag_list(tags)
@@ -593,6 +634,16 @@ class Article < ApplicationRecord
     return unless canonical_url.to_s.match?(/[[:space:]]/)
 
     errors.add(:canonical_url, "must not have spaces")
+  end
+
+  def user_mentions_in_markdown
+    return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
+
+    # The "comment-mentioned-user" css is added by Html::Parser#user_link_if_exists
+    mentions_count = Nokogiri::HTML(processed_html).css(".comment-mentioned-user").size
+    return if mentions_count <= MAX_USER_MENTIONS
+
+    errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a post!")
   end
 
   def create_slug

@@ -90,7 +90,7 @@ class ArticlesController < ApplicationController
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
-      @article.errors[:base] << ErrorMessages::Clean.call(e.message)
+      @article.errors.add(:base, ErrorMessages::Clean.call(e.message))
     end
 
     respond_to do |format|
@@ -172,7 +172,6 @@ class ArticlesController < ApplicationController
   end
 
   def stats
-    authorize current_user, :pro_user?
     authorize @article
     @organization_id = @article.organization_id
   end

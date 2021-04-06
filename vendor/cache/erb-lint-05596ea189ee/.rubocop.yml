@@ -1,9 +1,0 @@
-inherit_gem:
-  rubocop-shopify: rubocop.yml
-
-AllCops:
-  TargetRubyVersion: 2.5
-  Exclude:
-    - 'vendor/**/*'
-    - 'gemfiles/vendor/**/*'
-  DisplayCopNames: true

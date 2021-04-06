@@ -7,8 +7,8 @@ module Notifications
         @notifiable = notifiable
       end
 
-      def self.call(*args)
-        new(*args).call
+      def self.call(...)
+        new(...).call
       end
 
       delegate :user_data, :comment_data, to: Notifications

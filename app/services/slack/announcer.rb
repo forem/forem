@@ -9,8 +9,8 @@ module Slack
       @icon_emoji = icon_emoji
     end
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     def call
