@@ -12,6 +12,7 @@ RSpec.describe "viewing podcast comments", type: :system, js: true do
   end
 
   it "renders comment" do
+    # TODO: this spec is broken
     expect(page).to have_content(comment.body_html)
   end
 end

@@ -58,6 +58,6 @@ module ArticlesHelper
   end
 
   def active_threads(**options)
-    Articles::ActiveThreadsQuery.call(options)
+    Articles::ActiveThreadsQuery.call(**options)
   end
 end
