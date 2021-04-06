@@ -240,7 +240,7 @@ GEM
     em-websocket (0.5.2)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
-    email_validator (2.2.2)
+    email_validator (2.2.3)
       activemodel
     emoji_regex (3.2.2)
     equalizer (0.0.11)
