@@ -118,11 +118,11 @@ RSpec.describe Profiles::Update, type: :service do
         end
       end
 
-      it "doesn't enqueue resave articles job when changing #{username_field} for a banned user" do
-        banned_user = create(:user, :banned)
+      it "doesn't enqueue resave articles job when changing #{username_field} for a suspended user" do
+        suspended_user = create(:user, :suspended)
 
         expect do
-          described_class.call(banned_user, user: { username_field => "greatnewusername" })
+          described_class.call(suspended_user, user: { username_field => "greatnewusername" })
         end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
       end
     end

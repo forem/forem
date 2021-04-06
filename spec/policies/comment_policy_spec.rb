@@ -33,14 +33,14 @@ RSpec.describe CommentPolicy, type: :policy do
 
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create) }
 
-    context "with banned status" do
-      before { user.add_role(:banned) }
+    context "with suspended status" do
+      before { user.add_role(:suspended) }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide admin_delete]) }
     end
 
-    context "with banned_comment status" do
-      before { user.add_role(:comment_banned) }
+    context "with comment_suspended role" do
+      before { user.add_role(:comment_suspended) }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide admin_delete]) }
     end
@@ -80,8 +80,8 @@ RSpec.describe CommentPolicy, type: :policy do
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create) }
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update) }
 
-    context "with banned status" do
-      before { user.add_role(:banned) }
+    context "with suspended status" do
+      before { user.add_role(:suspended) }
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
       it { is_expected.to forbid_actions(%i[create hide unhide moderator_create admin_delete]) }
@@ -91,8 +91,8 @@ RSpec.describe CommentPolicy, type: :policy do
       end
     end
 
-    context "with banned_comment status" do
-      before { user.add_role(:comment_banned) }
+    context "with comment_suspended role" do
+      before { user.add_role(:comment_suspended) }
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
       it { is_expected.to forbid_actions(%i[create hide unhide moderator_create admin_delete]) }

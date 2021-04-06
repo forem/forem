@@ -562,8 +562,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:unauthorized)
       end
 
-      it "fails with a banned user" do
-        user.add_role(:banned)
+      it "fails with a suspended user" do
+        user.add_role(:suspended)
         post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end

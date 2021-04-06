@@ -290,6 +290,8 @@ module ApplicationHelper
   end
 
   def role_display_name(role)
+    # TODO: [@jacobherrington] After all Forems have successfully deployed and the banned role
+    # has been deleted, removed this ternary.
     role.name == "banned" ? "Suspended" : role.name.titlecase
   end
 end

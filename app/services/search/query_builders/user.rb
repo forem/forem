@@ -21,8 +21,9 @@ module Search
 
         @params = params.deep_symbolize_keys
 
-        # default to excluding users who are banned
-        @params[:exclude_roles] = ["banned"]
+        # default to excluding users who are suspended
+        # TODO: [@jacobherrington] banned can be removed once the data scripts have succesfully run on all Forems
+        @params[:exclude_roles] = %w[suspended banned]
 
         build_body
       end

@@ -29,8 +29,8 @@ RSpec.describe GithubRepoPolicy, type: :policy do
     it { is_expected.to permit_actions(%i[index update_or_create]) }
   end
 
-  context "when user is banned" do
-    let(:user) { build(:user, :banned) }
+  context "when user is suspended" do
+    let(:user) { build(:user, :suspended) }
     let(:github_repo) { build(:github_repo, user: user) }
 
     it { is_expected.to forbid_actions(%i[index update_or_create]) }

@@ -916,7 +916,7 @@ RSpec.describe Article, type: :model do
       it "does not suspend user if only single vomit" do
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
         article.save
-        expect(article.user.banned).to be false
+        expect(article.user.suspended?).to be false
       end
 
       it "suspends user with 3 comment vomits" do
@@ -929,7 +929,7 @@ RSpec.describe Article, type: :model do
         article.save
         second_article.save
         third_article.save
-        expect(article.user.banned).to be true
+        expect(article.user.suspended?).to be true
         expect(Note.last.reason).to eq "automatic_suspend"
       end
 
