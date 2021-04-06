@@ -1,6 +1,5 @@
 /* global userData */
-/* eslint-disable no-alert */
-/* eslint-disable import/order */
+/* eslint-disable no-alert, import/order */
 import { request } from '@utilities/http';
 import { getUserDataAndCsrfToken } from '../chat/util';
 
