@@ -204,6 +204,8 @@ export const MentionAutocompleteTextArea = forwardRef(
       ) {
         // Check if the currently focused element is one of the mention autocomplete's
         // inputs. This check is necessary to prevent an issue in iOS browsers only.
+        // An additional check to see if the component can be focusable
+        // covers the use case for clicking on elements in the mention autocomplete list.
         activeInput.focus();
         activeInput.setSelectionRange(cursorPosition, cursorPosition - 1);
         setFocusable(true);
