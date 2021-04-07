@@ -13,7 +13,7 @@ module Api
         @follows = Follow.followable_user(@user.id)
           .includes(:follower)
           .select(USERS_ATTRIBUTES_FOR_SERIALIZATION)
-          .order(created_at: :desc)
+          .order(created_at: sort_param)
           .page(params[:page])
           .per(@follows_limit)
       end
@@ -23,6 +23,12 @@ module Api
       def limit_per_page(default:, max:)
         per_page = (params[:per_page] || default).to_i
         @follows_limit = [per_page, max].min
+      end
+
+      def sort_param
+        return :asc if params[:sort] == "asc"
+
+        :desc
       end
     end
   end
