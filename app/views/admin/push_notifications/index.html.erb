@@ -1,0 +1,28 @@
+<table class="crayons-table" width="100%">
+  <thead>
+    <tr>
+      <th scope="col">App Bundle</th>
+      <th scope="col">Authentication Key</th>
+      <th scope="col">Enabled</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody class="crayons-card">
+    <% @pn_targets.each do |pn_target| %>
+        <tr>
+          <td><%= link_to pn_target.app_bundle, edit_admin_push_notification_path(pn_target) %></td>
+          <td>*******</td>
+          <% if pn_target.enabled? %>
+            <td><span class="crayons-icon" role="img" aria-label="Code of Conduct">✅</span></td>
+          <% else %>
+            <td><span class="crayons-icon" role="img" aria-label="Code of Conduct">❌</span></td>
+          <% end %>
+          <td>
+            <% unless pn_target.forem_app? %>
+              <%= link_to "Destroy", admin_push_notification_path(pn_target), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %>
+            <% end %>
+          </td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>
