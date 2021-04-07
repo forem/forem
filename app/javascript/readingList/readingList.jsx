@@ -199,7 +199,7 @@ export class ReadingList extends Component {
             {isStatusViewValid ? 'Reading list' : 'Archive'}
             {` (${itemsTotal})`}
           </h1>
-          <fieldset className="grid gap-2 m:flex m:justify-end l:mb-0 mb-2 px-2 m:px-0">
+          <fieldset className="grid gap-2 m:flex m:justify-end m:items-center l:mb-0 mb-2 px-2 m:px-0">
             <legend className="hidden">Filter</legend>
             <Button
               onClick={(e) => this.toggleStatusView(e)}
