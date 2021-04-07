@@ -281,6 +281,14 @@ RSpec.describe NotifyMailer, type: :mailer do
 
       expect(user.email_messages.last.feedback_message_id).to eq(feedback_message.id)
     end
+
+    it "tracks the email_type as the UTM campaign" do
+      assert_emails 1 do
+        email.deliver_now
+      end
+
+      expect(user.email_messages.last.utm_campaign).to eq("Reporter")
+    end
   end
 
   describe "#feedback_response_email" do
