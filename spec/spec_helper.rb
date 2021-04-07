@@ -20,6 +20,7 @@ require "zonebie/rspec"
 
 # This makes Rspec fail if there's any output
 RSpec::Matchers.define_negated_matcher :avoid_outputting, :output
+RSpec::Matchers.define_negated_matcher :exclude, :include
 ############
 RSpec.configure do |config|
   # makes example fail if there's any output
