@@ -6,11 +6,11 @@ export function onSearchBoxType(event) {
   const component = this;
 
   const query = event.target.value;
-  const { selectedTags, statusView } = component.state;
+  const { selectedTag, statusView } = component.state;
 
   component.setState({ page: 0 });
   component.search(query, {
-    tags: selectedTags,
+    tags: selectedTag ? [selectedTag] : [],
     statusView,
     appendItems: false,
   });
