@@ -97,7 +97,7 @@
     "@storybook/addon-notes": "^5.3.21",
     "@storybook/addon-storyshots": "^6.1.8",
     "@storybook/addon-storysource": "^6.2.1",
-    "@storybook/addons": "^6.1.16",
+    "@storybook/addons": "^6.2.5",
     "@storybook/preact": "^6.2.1",
     "@testing-library/cypress": "^7.0.5",
     "@testing-library/dom": "^7.30.3",
