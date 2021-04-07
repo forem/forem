@@ -435,6 +435,19 @@ class Article < ApplicationRecord
     doc.to_html
   end
 
+  def followers
+    # This will return an array, but the items will NOT be ActiveRecord objects.
+    # The followers may also occasionally be nil because orphaned follows can possibly exist in the database.
+    followers = user.followers_scoped.where(subscription_status: "all_articles").map(&:follower)
+
+    if organization_id
+      org_followers = organization.followers_scoped.where(subscription_status: "all_articles")
+      followers += org_followers.map(&:follower)
+    end
+
+    followers.uniq.compact
+  end
+
   private
 
   def search_score
