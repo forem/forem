@@ -1,13 +1,13 @@
 import { callHistoricalAPI, callReferrersAPI } from './client';
 
 function resetActive(activeButton) {
-  const buttons = document.getElementsByClassName('timerange-button');
+  const buttons = document.querySelectorAll('.crayons-tabs--analytics .crayons-tabs__item');
   for (let i = 0; i < buttons.length; i += 1) {
     const button = buttons[i];
-    button.classList.remove('selected');
+    button.classList.remove('crayons-tabs__item--current');
   }
 
-  activeButton.classList.add('selected');
+  activeButton.classList.add('crayons-tabs__item--current');
 }
 
 function sumAnalytics(data, key) {

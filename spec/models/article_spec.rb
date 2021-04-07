@@ -1118,6 +1118,16 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "#followers" do
+    it "returns an array of users who follow the article's author" do
+      following_user = create(:user)
+      following_user.follow(user)
+
+      expect(article.followers.length).to eq(1)
+      expect(article.followers.first.username).to eq(following_user.username)
+    end
+  end
+
   describe "#update_score" do
     it "stably sets the correct blackbox values" do
       create(:reaction, reactable: article, points: 1)
