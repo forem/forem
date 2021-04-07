@@ -180,6 +180,7 @@ export class ReadingList extends Component {
       selectedTag = '',
       showLoadMoreButton,
       archiving,
+      loading = false,
     } = this.state;
 
     const isStatusViewValid = this.statusViewValid();
@@ -255,7 +256,7 @@ export class ReadingList extends Component {
                       archiveButtonLabel={archiveButtonLabel}
                       toggleArchiveStatus={this.toggleArchiveStatus}
                     />
-                  ) : (
+                  ) : loading ? null : (
                     this.renderEmptyItems()
                   )}
                   {showLoadMoreButton && (

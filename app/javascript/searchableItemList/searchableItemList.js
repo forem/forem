@@ -46,6 +46,8 @@ export function performInitialSearch({ searchOptions = {} }) {
   const { hitsPerPage } = component.state;
   const dataHash = { page: 0, per_page: hitsPerPage };
 
+  component.setState({ loading: true });
+
   if (searchOptions.status) {
     dataHash.status = searchOptions.status.split(',');
   }
@@ -65,6 +67,7 @@ export function performInitialSearch({ searchOptions = {} }) {
       itemsTotal: response.total,
       showLoadMoreButton: hitsPerPage < response.total,
       availableTags,
+      loading: false,
     });
   });
 }
@@ -72,6 +75,8 @@ export function performInitialSearch({ searchOptions = {} }) {
 // Main search function
 export function search(query, { page, tags, statusView, appendItems = false }) {
   const component = this;
+
+  component.setState({ loading: true });
 
   // allow the page number to come from the calling function
   // we check `undefined` because page can be 0
@@ -112,6 +117,7 @@ export function search(query, { page, tags, statusView, appendItems = false }) {
       items,
       itemsTotal: response.total,
       showLoadMoreButton: items.length < response.total,
+      loading: false,
     });
   });
 }
