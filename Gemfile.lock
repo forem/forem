@@ -223,7 +223,7 @@ GEM
     dogstatsd-ruby (4.8.3)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    doorkeeper (5.5.0)
+    doorkeeper (5.5.1)
       railties (>= 5)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
@@ -462,6 +462,8 @@ GEM
       http-2 (~> 0.11)
     netrc (0.11.0)
     nio4r (2.5.7)
+    nokogiri (1.11.2-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.11.2-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.11.2-x86_64-linux)
@@ -842,7 +844,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-20
-  x86_64-darwin-18 
+  x86_64-darwin
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-linux
