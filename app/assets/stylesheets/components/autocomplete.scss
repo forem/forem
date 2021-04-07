@@ -2,6 +2,11 @@
 @import '@reach/combobox/styles';
 
 .crayons-autocomplete {
+  // Override of the default hidden class to make sure it takes priority over any display style attached to the 'replaceElement' textarea
+  .hidden {
+    display: none !important;
+  }
+
   &__popover {
     max-width: 300px;
     padding: var(--su-1);

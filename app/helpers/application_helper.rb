@@ -76,7 +76,7 @@ module ApplicationHelper
   def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
     image_options[:width] ||= optimizer_options[:width]
     image_options[:height] ||= optimizer_options[:height]
-    updated_image_url = Images::Optimizer.call(image_url, optimizer_options)
+    updated_image_url = Images::Optimizer.call(image_url, **optimizer_options)
 
     image_tag(updated_image_url, image_options)
   end
@@ -290,6 +290,8 @@ module ApplicationHelper
   end
 
   def role_display_name(role)
+    # TODO: [@jacobherrington] After all Forems have successfully deployed and the banned role
+    # has been deleted, removed this ternary.
     role.name == "banned" ? "Suspended" : role.name.titlecase
   end
 end

@@ -2,9 +2,9 @@ class Listing < ApplicationRecord
   # We used to use both "classified listing" and "listing" throughout the app.
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listings"
-  self.ignored_columns = ["last_buffered"].freeze
 
   include Searchable
+  include PgSearch::Model
 
   SEARCH_SERIALIZER = Search::ListingSerializer
   SEARCH_CLASS = Search::Listing
@@ -32,6 +32,12 @@ class Listing < ApplicationRecord
   validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
+
+  # [@atsmith813] this is adapted from the `listing_search` property in
+  # `config/elasticsearch/mappings/listings.json`
+  pg_search_scope :search_listings,
+                  against: %i[body_markdown cached_tag_list location slug title],
+                  using: { tsearch: { prefix: true } }
 
   scope :published, -> { where(published: true) }
 

@@ -259,6 +259,7 @@ Rails.application.routes.draw do
           collection do
             get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
             get "/:username/:slug", to: "articles#show_by_slug", as: :slug
+            get "/latest", to: "articles#index", defaults: { sort: "desc" }
           end
         end
         resources :comments, only: %i[index show]
@@ -557,8 +558,8 @@ Rails.application.routes.draw do
     get "/settings/:tab/:id", to: "users#edit", constraints: { tab: /response-templates/ }
     get "/signout_confirm", to: "users#signout_confirm"
     get "/dashboard", to: "dashboards#show"
-    get "/dashboard/pro", to: "dashboards#pro"
-    get "dashboard/pro/org/:org_id", to: "dashboards#pro", as: :dashboard_pro_org
+    get "/dashboard/analytics", to: "dashboards#analytics"
+    get "dashboard/analytics/org/:org_id", to: "dashboards#analytics", as: :dashboard_analytics_org
     get "dashboard/following", to: "dashboards#following_tags"
     get "dashboard/following_tags", to: "dashboards#following_tags"
     get "dashboard/following_users", to: "dashboards#following_users"

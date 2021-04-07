@@ -1,6 +1,6 @@
 module Authentication
   module Errors
-    PREVIOUSLY_BANNED_MESSAGE = "It appears that your previous %<community_name>s " \
+    PREVIOUSLY_SUSPENDED_MESSAGE = "It appears that your previous %<community_name>s " \
       "account was suspended. As such, we've taken measures to prevent you from " \
       "creating a new account with %<community_name>s and its community. If you " \
       "think that there has been a mistake, please email us at %<community_email>s, " \
@@ -15,9 +15,9 @@ module Authentication
     class ProviderNotEnabled < Error
     end
 
-    class PreviouslyBanned < Error
+    class PreviouslySuspended < Error
       def message
-        format(PREVIOUSLY_BANNED_MESSAGE,
+        format(PREVIOUSLY_SUSPENDED_MESSAGE,
                community_name: SiteConfig.community_name,
                community_email: SiteConfig.email_addresses[:contact])
       end

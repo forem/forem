@@ -5,6 +5,47 @@ import {
   initializeTouchDevice,
 } from '../topNavigation/utilities';
 
+// Namespace for functions which need to be accessed in plain JS initializers
+window.Forem = {
+  mentionAutoCompleteImports: undefined,
+  getMentionAutoCompleteImports() {
+    if (!this.mentionAutoCompleteImports) {
+      this.mentionAutoCompleteImports = [
+        import('@crayons/MentionAutocompleteTextArea'),
+        import('@utilities/search'),
+        import('preact'),
+      ];
+    }
+
+    // We're still returning Promises, but if the they have already been imported
+    // they will now be fulfilled instead of pending, i.e. a network request is no longer made.
+    return Promise.all(this.mentionAutoCompleteImports);
+  },
+  initializeMentionAutocompleteTextArea: async (originalTextArea) => {
+    const parentContainer = originalTextArea.parentElement;
+
+    const alreadyInitialized = parentContainer.id === 'combobox-container';
+    if (alreadyInitialized) {
+      return;
+    }
+
+    const [
+      { MentionAutocompleteTextArea },
+      { fetchSearch },
+      { render, h },
+    ] = await window.Forem.getMentionAutoCompleteImports();
+
+    render(
+      <MentionAutocompleteTextArea
+        replaceElement={originalTextArea}
+        fetchSuggestions={(username) => fetchSearch('usernames', { username })}
+      />,
+      parentContainer,
+      originalTextArea,
+    );
+  },
+};
+
 window.showModal = async ({
   title,
   contentSelector,

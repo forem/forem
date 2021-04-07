@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_25_040245) do
+ActiveRecord::Schema.define(version: 2021_03_31_181505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -36,7 +36,6 @@ ActiveRecord::Schema.define(version: 2021_03_25_040245) do
     t.text "content"
     t.bigint "feedback_message_id"
     t.string "mailer"
-    t.datetime "opened_at"
     t.datetime "sent_at"
     t.text "subject"
     t.text "to"
@@ -344,6 +343,7 @@ ActiveRecord::Schema.define(version: 2021_03_25_040245) do
     t.bigint "user_id"
     t.index ["classified_listing_category_id"], name: "index_classified_listings_on_classified_listing_category_id"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
+    t.index ["published"], name: "index_classified_listings_on_published"
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
 
@@ -431,12 +431,12 @@ ActiveRecord::Schema.define(version: 2021_03_25_040245) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "token", null: false
-    t.string "platform", null: false
     t.string "app_bundle", null: false
     t.datetime "created_at", precision: 6, null: false
+    t.string "platform", null: false
+    t.string "token", null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
     t.index ["user_id", "token", "platform", "app_bundle"], name: "index_devices_on_user_id_and_token_and_platform_and_app_bundle", unique: true
   end
 
@@ -828,6 +828,7 @@ ActiveRecord::Schema.define(version: 2021_03_25_040245) do
     t.datetime "created_at", null: false
     t.string "description"
     t.boolean "is_top_level_path", default: false
+    t.boolean "landing_page", default: false, null: false
     t.text "processed_html"
     t.string "slug"
     t.string "social_image"
@@ -1321,8 +1322,6 @@ ActiveRecord::Schema.define(version: 2021_03_25_040245) do
     t.string "text_color_hex"
     t.string "twitch_url"
     t.datetime "twitter_created_at"
-    t.integer "twitter_followers_count"
-    t.integer "twitter_following_count"
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.string "unlock_token"
@@ -1361,10 +1360,55 @@ ActiveRecord::Schema.define(version: 2021_03_25_040245) do
     t.string "username"
   end
 
+  create_table "users_notification_settings", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "email_badge_notifications", default: true, null: false
+    t.boolean "email_comment_notifications", default: true, null: false
+    t.boolean "email_community_mod_newsletter", default: false, null: false
+    t.boolean "email_connect_messages", default: true, null: false
+    t.boolean "email_digest_periodic", default: false, null: false
+    t.boolean "email_follower_notifications", default: true, null: false
+    t.boolean "email_membership_newsletter", default: false, null: false
+    t.boolean "email_mention_notifications", default: true, null: false
+    t.boolean "email_newsletter", default: false, null: false
+    t.boolean "email_tag_mod_newsletter", default: false, null: false
+    t.boolean "email_unread_notifications", default: true, null: false
+    t.boolean "mobile_comment_notifications", default: true, null: false
+    t.boolean "mod_roundrobin_notifications", default: true, null: false
+    t.boolean "reaction_notifications", default: true, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.boolean "welcome_notifications", default: true, null: false
+    t.index ["user_id"], name: "index_users_notification_settings_on_user_id"
+  end
+
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "role_id"
     t.bigint "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+  end
+
+  create_table "users_settings", force: :cascade do |t|
+    t.string "brand_color1", default: "#000000"
+    t.string "brand_color2", default: "#ffffff"
+    t.integer "config_font", default: 0, null: false
+    t.integer "config_navbar", default: 0, null: false
+    t.integer "config_theme", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "display_announcements", default: true, null: false
+    t.boolean "display_email_on_profile", default: false, null: false
+    t.boolean "display_sponsors", default: true, null: false
+    t.integer "editor_version", default: 0, null: false
+    t.integer "experience_level"
+    t.boolean "feed_mark_canonical", default: false, null: false
+    t.boolean "feed_referential_link", default: true, null: false
+    t.string "feed_url"
+    t.string "inbox_guidelines"
+    t.integer "inbox_type", default: 0, null: false
+    t.boolean "permit_adjacent_sponsors", default: true
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_users_settings_on_user_id"
   end
 
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|
@@ -1478,8 +1522,10 @@ ActiveRecord::Schema.define(version: 2021_03_25_040245) do
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
+  add_foreign_key "users_notification_settings", "users"
   add_foreign_key "users_roles", "roles", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade
+  add_foreign_key "users_settings", "users"
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
 end

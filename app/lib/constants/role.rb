@@ -6,7 +6,6 @@ module Constants
       "Suspend",
       "Regular Member",
       "Trusted",
-      "Pro",
     ].freeze
 
     SPECIAL_ROLES = [

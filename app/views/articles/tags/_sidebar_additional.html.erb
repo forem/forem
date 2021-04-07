@@ -2,7 +2,7 @@
   <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
     <div class="sidebar-bg" id="sidebar-bg-right"></div>
     <div class="side-bar sidebar-additional showing" id="sidebar-additional">
-      <% active_threads = active_threads(options: { tags: [@tag, "discuss"], time_ago: Timeframe.datetime(params[:timeframe]) }) %>
+      <% active_threads = active_threads(tags: [@tag, "discuss"], time_ago: Timeframe.datetime(params[:timeframe])) %>
       <% if active_threads.present? %>
         <div class="widget">
           <header>

@@ -619,6 +619,10 @@ Style/SlicingWithRange:
   Description: 'Checks array slicing is done with endless ranges when suitable.'
   Enabled: true
 
+Style/StringChars:
+  Description: 'Checks for uses of `String#split` with empty string or regexp literal argument.'
+  Enabled: true
+
 Style/StringConcatenation:
   Description: 'Checks for places where string concatenation can be replaced with string interpolation.'
   StyleGuide: '#string-interpolation'

@@ -8,25 +8,25 @@ RSpec.describe Users::SuspendedUsername, type: :model do
     it { is_expected.to validate_uniqueness_of(:username_hash) }
   end
 
-  describe ".previously_banned?" do
-    it "returns true if the user has been previously banned" do
-      user = create(:user, :banned)
+  describe ".previously_suspended?" do
+    it "returns true if the user has been previously suspended" do
+      user = create(:user, :suspended)
       described_class.create_from_user(user)
 
-      expect(described_class.previously_banned?(user.username)).to be true
+      expect(described_class.previously_suspended?(user.username)).to be true
     end
 
-    it "returns false if the user has not been previously_banned" do
+    it "returns false if the user has not been previously_suspended" do
       user = create(:user)
 
-      expect(described_class.previously_banned?(user.username)).to be false
+      expect(described_class.previously_suspended?(user.username)).to be false
     end
   end
 
   describe ".create_from_user" do
     it "records a hash of the username in the database" do
       expect do
-        described_class.create_from_user(create(:user, :banned))
+        described_class.create_from_user(create(:user, :suspended))
       end.to change(described_class, :count).by(1)
     end
   end

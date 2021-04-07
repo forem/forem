@@ -39,15 +39,13 @@
     <%= inline_svg_tag("external-link.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
   </a>
 
-  <% if @current_user_pro %>
-    <a class="crayons-link crayons-link--block" href="<%= dashboard_pro_path %>">
-      Pro Analytics
-    </a>
+  <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_path %>">
+    Analytics
+  </a>
 
-    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-      <% @organizations.each do |org| %>
-        <a class="crayons-link crayons-link--block" href="<%= dashboard_pro_org_path(org.id) %>">Pro Analytics for <%= org.name %></a>
-      <% end %>
+  <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
+    <% @organizations.each do |org| %>
+      <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_org_path(org.id) %>">Analytics for <%= org.name %></a>
     <% end %>
   <% end %>
 

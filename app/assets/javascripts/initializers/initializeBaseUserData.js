@@ -21,11 +21,9 @@ function addRelevantButtonsToArticle(user) {
           `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
         );
       }
-      if (user.pro) {
-        actions.push(
-          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
-        );
-      }
+      actions.push(
+        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
+      );
       document.getElementById('action-space').innerHTML = actions.join('');
     }
   }
