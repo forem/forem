@@ -20,8 +20,8 @@ RSpec.describe UserPolicy, type: :policy do
 
     it { is_expected.to permit_actions(permitted_actions) }
 
-    context "with banned status" do
-      before { user.add_role(:banned) }
+    context "with suspended status" do
+      before { user.add_role(:suspended) }
 
       it { is_expected.to forbid_actions(%i[join_org moderation_routes]) }
     end

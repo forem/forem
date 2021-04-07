@@ -3,6 +3,15 @@ class SearchController < ApplicationController
   before_action :format_integer_params
   before_action :sanitize_params, only: %i[listings reactions feed_content]
 
+  CHAT_CHANNEL_PARAMS = %i[
+    channel_status
+    channel_type
+    page
+    per_page
+    status
+    user_id
+  ].freeze
+
   LISTINGS_PARAMS = [
     :category,
     :listing_search,
@@ -62,16 +71,20 @@ class SearchController < ApplicationController
   end
 
   def chat_channels
-    search_user_id = if chat_channel_params[:user_id].present?
-                       [current_user.id, SiteConfig.mascot_user_id, chat_channel_params[:user_id]].reject(&:blank?)
-                     else
-                       [current_user.id]
-                     end
-    ccm_docs = Search::ChatChannelMembership.search_documents(
-      params: chat_channel_params.merge(user_id: search_user_id).to_h,
+    user_ids =
+      if chat_channel_params[:user_id].present?
+        [current_user.id, SiteConfig.mascot_user_id, chat_channel_params[:user_id]].reject(&:blank?)
+      else
+        [current_user.id]
+      end
+
+    result = Search::Postgres::ChatChannelMembership.search_documents(
+      user_ids: user_ids,
+      page: chat_channel_params[:page],
+      per_page: chat_channel_params[:per_page],
     )
 
-    render json: { result: ccm_docs }
+    render json: { result: result }
   end
 
   def listings
@@ -160,17 +173,7 @@ class SearchController < ApplicationController
   end
 
   def chat_channel_params
-    accessible = %i[
-      per_page
-      page
-      channel_text
-      channel_type
-      channel_status
-      status
-      user_id
-    ]
-
-    params.permit(accessible)
+    params.permit(CHAT_CHANNEL_PARAMS)
   end
 
   def listing_params

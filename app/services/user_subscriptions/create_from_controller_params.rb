@@ -6,8 +6,8 @@ module UserSubscriptions
 
     Response = Struct.new(:success, :data, :error, keyword_init: true)
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     def initialize(user, user_subscription_params)

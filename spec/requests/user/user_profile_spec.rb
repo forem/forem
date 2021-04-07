@@ -56,13 +56,13 @@ RSpec.describe "UserProfiles", type: :request do
       expect { get "/#{user.username}" }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "renders noindex meta if banned" do
-      user.add_role(:banned)
+    it "renders noindex meta if suspended" do
+      user.add_role(:suspended)
       get "/#{user.username}"
       expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
     end
 
-    it "does not render noindex meta if not banned" do
+    it "does not render noindex meta if not suspended" do
       get "/#{user.username}"
       expect(response.body).not_to include("<meta name=\"robots\" content=\"noindex\">")
     end
@@ -202,14 +202,14 @@ RSpec.describe "UserProfiles", type: :request do
       end
 
       it "renders emoji in description of featured repository" do
-        GithubRepo.upsert(github_user, params)
+        GithubRepo.upsert(github_user, **params)
 
         get "/#{github_user.username}"
         expect(response.body).to include("A book bot 🤖")
       end
 
       it "does not show a non featured repository" do
-        GithubRepo.upsert(github_user, params.merge(featured: false))
+        GithubRepo.upsert(github_user, **params.merge(featured: false))
 
         get "/#{github_user.username}"
         expect(response.body).not_to include("A book bot 🤖")

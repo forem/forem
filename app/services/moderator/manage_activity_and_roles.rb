@@ -57,12 +57,12 @@ module Moderator
     def handle_user_status(role, note)
       case role
       when "Suspend" || "Spammer"
-        user.add_role(:banned)
+        user.add_role(:suspended)
         remove_privileges
       when "Warn"
         warned
       when "Comment Suspend"
-        comment_banned
+        comment_suspended
       when "Regular Member"
         regular_member
       when "Trusted"
@@ -96,9 +96,9 @@ module Moderator
       raise "You need super admin status to take this action" unless @admin.has_role?(:super_admin)
     end
 
-    def comment_banned
-      user.add_role(:comment_banned)
-      user.remove_role(:banned)
+    def comment_suspended
+      user.add_role(:comment_suspended)
+      user.remove_role(:suspended)
       remove_privileges
     end
 
@@ -109,14 +109,14 @@ module Moderator
 
     def warned
       user.add_role(:warned)
-      user.remove_role(:banned)
+      user.remove_role(:suspended)
       remove_privileges
     end
 
     def remove_negative_roles
-      user.remove_role(:banned) if user.banned
+      user.remove_role(:suspended) if user.suspended?
       user.remove_role(:warned) if user.warned
-      user.remove_role(:comment_banned) if user.comment_banned
+      user.remove_role(:comment_suspended) if user.comment_suspended?
     end
 
     def update_trusted_cache

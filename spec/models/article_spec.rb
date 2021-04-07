@@ -762,6 +762,89 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe ".cached_tagged_with" do
+    it "can search for a single tag" do
+      included = create(:article, tags: "includeme")
+      excluded = create(:article, tags: "lol, nope")
+
+      articles = described_class.cached_tagged_with("includeme")
+
+      expect(articles).to include included
+      expect(articles).not_to include excluded
+      expect(articles.to_a).to eq described_class.tagged_with("includeme").to_a
+    end
+
+    it "can search among multiple tags" do
+      included = [
+        create(:article, tags: "omg, wtf"),
+        create(:article, tags: "omg, lol"),
+      ]
+      excluded = create(:article, tags: "nope, excluded")
+
+      articles = described_class.cached_tagged_with("omg")
+
+      expect(articles).to include(*included)
+      expect(articles).not_to include excluded
+      expect(articles.to_a).to include(*described_class.tagged_with("omg").to_a)
+    end
+
+    it "can search for multiple tags" do
+      included = create(:article, tags: "includeme, please, lol")
+      excluded_partial_match = create(:article, tags: "excluded, please")
+      excluded_no_match = create(:article, tags: "excluded, omg")
+
+      articles = described_class.cached_tagged_with(%w[includeme please])
+
+      expect(articles).to include included
+      expect(articles).not_to include excluded_partial_match
+      expect(articles).not_to include excluded_no_match
+      expect(articles.to_a).to eq described_class.tagged_with(%w[includeme please]).to_a
+    end
+  end
+
+  describe ".cached_tagged_with_any" do
+    it "can search for a single tag" do
+      included = create(:article, tags: "includeme")
+      excluded = create(:article, tags: "lol, nope")
+
+      articles = described_class.cached_tagged_with_any("includeme")
+
+      expect(articles).to include included
+      expect(articles).not_to include excluded
+      expect(articles.to_a).to eq described_class.tagged_with("includeme", any: true).to_a
+    end
+
+    it "can search among multiple tags" do
+      included = [
+        create(:article, tags: "omg, wtf"),
+        create(:article, tags: "omg, lol"),
+      ]
+      excluded = create(:article, tags: "nope, excluded")
+
+      articles = described_class.cached_tagged_with_any("omg")
+      expected = described_class.tagged_with("omg", any: true).to_a
+
+      expect(articles).to include(*included)
+      expect(articles).not_to include excluded
+      expect(articles.to_a).to include(*expected)
+    end
+
+    it "can search for multiple tags" do
+      included = create(:article, tags: "includeme, please, lol")
+      included_partial_match = create(:article, tags: "includeme, omg")
+      excluded_no_match = create(:article, tags: "excluded, omg")
+
+      articles = described_class.cached_tagged_with_any(%w[includeme please])
+      expected = described_class.tagged_with(%w[includeme please], any: true).to_a
+
+      expect(articles).to include included
+      expect(articles).to include included_partial_match
+      expect(articles).not_to include excluded_no_match
+
+      expect(articles.to_a).to include(*expected)
+    end
+  end
+
   context "when callbacks are triggered before save" do
     it "assigns path on save" do
       expect(article.path).to eq("/#{article.username}/#{article.slug}")
@@ -833,7 +916,7 @@ RSpec.describe Article, type: :model do
       it "does not suspend user if only single vomit" do
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
         article.save
-        expect(article.user.banned).to be false
+        expect(article.user.suspended?).to be false
       end
 
       it "suspends user with 3 comment vomits" do
@@ -846,7 +929,7 @@ RSpec.describe Article, type: :model do
         article.save
         second_article.save
         third_article.save
-        expect(article.user.banned).to be true
+        expect(article.user.suspended?).to be true
         expect(Note.last.reason).to eq "automatic_suspend"
       end
 
@@ -1005,6 +1088,33 @@ RSpec.describe Article, type: :model do
       expect(article.plain_html).to include("text before")
       expect(article.plain_html).to include("highlight")
       expect(article.plain_html).not_to include("highlight__panel")
+    end
+  end
+
+  describe "#user_mentions_in_markdown" do
+    before do
+      stub_const("Article::MAX_USER_MENTIONS", 7)
+      stub_const("Article::MAX_USER_MENTION_LIVE_AT", 1.day.ago) # Set live_at date to a time in the past
+    end
+
+    it "is valid with any number of mentions if created before MAX_USER_MENTION_LIVE_AT date" do
+      # Explicitly set created_at date to a time before MAX_USER_MENTION_LIVE_AT
+      article = create(:article, created_at: 3.days.ago)
+
+      article.body_markdown = "hi @#{user.username}! " * (Article::MAX_USER_MENTIONS + 1)
+      expect(article).to be_valid
+    end
+
+    it "is valid with seven or fewer mentions if created after MAX_USER_MENTION_LIVE_AT date" do
+      article.body_markdown = "hi @#{user.username}! " * Article::MAX_USER_MENTIONS
+      expect(article).to be_valid
+    end
+
+    it "is invalid with more than seven mentions if created after MAX_USER_MENTION_LIVE_AT date" do
+      article.body_markdown = "hi @#{user.username}! " * (Article::MAX_USER_MENTIONS + 1)
+      expect(article).not_to be_valid
+      expect(article.errors[:base])
+        .to include("You cannot mention more than #{Article::MAX_USER_MENTIONS} users in a post!")
     end
   end
 

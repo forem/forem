@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe "Banned user", type: :system do
-  let(:banned_user)   { create(:user, :banned) }
+RSpec.describe "Suspended user", type: :system do
+  let(:suspended_user)   { create(:user, :suspended) }
 
   it "tries to create an article" do
-    sign_in banned_user
-    expect { visit "/new" }.to raise_error("SUSPENDED")
+    sign_in suspended_user
+    expect { visit "/new" }.to raise_error(SuspendedError)
   end
 end

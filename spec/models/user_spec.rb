@@ -624,6 +624,34 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#suspended?" do
+    subject { user.suspended? }
+
+    context "with suspended role" do
+      before do
+        user.add_role(:suspended)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    it { is_expected.to be false }
+  end
+
+  describe "#comment_suspended?" do
+    subject { user.comment_suspended? }
+
+    context "with comment_suspended role" do
+      before do
+        user.add_role(:comment_suspended)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    it { is_expected.to be false }
+  end
+
   describe "#moderator_for_tags" do
     let(:tags) { create_list(:tag, 2) }
 

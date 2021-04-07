@@ -23,16 +23,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([comment.user.email])
     end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_reply_email"))
-    end
   end
 
   describe "#new_follower_email" do
@@ -53,16 +43,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_follower_email"))
-    end
   end
 
   describe "#new_mention_email" do
@@ -82,16 +62,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user2.email])
     end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_mention_email"))
-    end
   end
 
   describe "#unread_notifications_email" do
@@ -110,16 +80,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=unread_notifications_email"))
-    end
   end
 
   describe "#video_upload_complete_email" do
@@ -137,16 +97,6 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([article.user.email])
-    end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=video_upload_complete_email"))
     end
   end
 
@@ -185,15 +135,13 @@ RSpec.describe NotifyMailer, type: :mailer do
     context "when rendering the HTML email for badge with credits" do
       it "includes the listings URL" do
         expect(email_with_credits.html_part.body).to include(
-          CGI.escape(
-            Rails.application.routes.url_helpers.listings_url(host: SiteConfig.app_domain),
-          ),
+          Rails.application.routes.url_helpers.listings_url(host: SiteConfig.app_domain),
         )
       end
 
       it "includes the about listings URL" do
         expect(email_with_credits.html_part.body).to include(
-          CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain)),
+          Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain),
         )
       end
 
@@ -223,18 +171,8 @@ RSpec.describe NotifyMailer, type: :mailer do
     end
 
     context "when rendering the HTML email for badge w/o credits" do
-      it "includes the tracking pixel" do
-        expect(email.html_part.body).to include("open.gif")
-      end
-
-      it "includes UTM params" do
-        expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-        expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-        expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_badge_email"))
-      end
-
       it "includes the user URL" do
-        expect(email.html_part.body).to include(CGI.escape(URL.user(user)))
+        expect(email.html_part.body).to include(URL.user(user))
       end
 
       it "doesn't include the listings URL" do
@@ -253,21 +191,21 @@ RSpec.describe NotifyMailer, type: :mailer do
 
       it "includes the rewarding_context_message in the email" do
         expect(email.html_part.body).to include("Hello <a")
-        expect(email.html_part.body).to include(CGI.escape(URL.url("/hey")))
+        expect(email.html_part.body).to include(URL.url("/hey"))
       end
 
       it "does not include the nil rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
 
         expect(email.html_part.body).not_to include("Hello <a")
-        expect(email.html_part.body).not_to include(CGI.escape(URL.url("/hey")))
+        expect(email.html_part.body).not_to include(URL.url("/hey"))
       end
 
       it "does not include the empty rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return("")
 
         expect(email.html_part.body).not_to include("Hello <a")
-        expect(email.html_part.body).not_to include(CGI.escape(URL.url("/hey")))
+        expect(email.html_part.body).not_to include(URL.url("/hey"))
       end
     end
 
@@ -336,16 +274,6 @@ RSpec.describe NotifyMailer, type: :mailer do
       expect(email.to).to eq([user.email])
     end
 
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=#{email_params[:email_type]}"))
-    end
-
     it "tracks the feedback message ID after delivery" do
       assert_emails 1 do
         email.deliver_now
@@ -400,14 +328,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=user_contact"))
-    end
   end
 
   describe "#new_message_email" do
@@ -428,16 +348,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([direct_message.direct_receiver.email])
     end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_message_email"))
-    end
   end
 
   describe "#account_deleted_email" do
@@ -455,16 +365,6 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
-    end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "does not include UTM params" do
-      expect(email.html_part.body).not_to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).not_to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).not_to include(CGI.escape("utm_campaign=account_deleted_email"))
     end
   end
 
@@ -493,10 +393,6 @@ RSpec.describe NotifyMailer, type: :mailer do
       expected_filename = "devto-export-#{Date.current.iso8601}.zip"
       expect(email.attachments[0].filename).to eq(expected_filename)
     end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
   end
 
   describe "#tag_moderator_confirmation_email" do
@@ -518,16 +414,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=tag_moderator_confirmation_email"))
-    end
   end
 
   describe "#trusted_role_email" do
@@ -547,16 +433,6 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
-    end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=trusted_role_email"))
     end
   end
 

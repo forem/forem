@@ -20,7 +20,7 @@ RSpec.describe Slack::Messengers::Sponsorship, type: :service do
 
   it "contains the correct info for a regular sponsorship", :aggregate_failures do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-      described_class.call(default_params)
+      described_class.call(**default_params)
     end
 
     message = get_argument_from_last_job("message")
@@ -32,7 +32,7 @@ RSpec.describe Slack::Messengers::Sponsorship, type: :service do
 
   it "contains the correct info for a tag sponsorship", :aggregate_failures do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-      described_class.call(default_params.merge(level: "tag", tag: tag))
+      described_class.call(**default_params.merge(level: "tag", tag: tag))
     end
 
     message = get_argument_from_last_job("message")
@@ -45,7 +45,7 @@ RSpec.describe Slack::Messengers::Sponsorship, type: :service do
 
   it "messages the proper channel with the proper username and emoji", :aggregate_failures do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-      described_class.call(default_params)
+      described_class.call(**default_params)
     end
 
     job = sidekiq_enqueued_jobs(worker: Slack::Messengers::Worker).last

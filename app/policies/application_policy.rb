@@ -71,9 +71,7 @@ class ApplicationPolicy
     user.has_role?(:support_admin)
   end
 
-  def user_is_banned?
-    user.banned
-  end
+  delegate :suspended?, to: :user, prefix: true
 
   def user_is_trusted?
     user.has_role?(:trusted)

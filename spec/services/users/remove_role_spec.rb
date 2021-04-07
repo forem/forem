@@ -9,7 +9,7 @@ RSpec.describe Users::RemoveRole, type: :service do
       role = super_admin.roles.first.name.to_sym
       resource_type = nil
       args = { user: super_admin, role: role, resource_type: resource_type, admin: current_user }
-      role_removal = described_class.call(args)
+      role_removal = described_class.call(**args)
 
       expect(role_removal.success).to be false
       expect(role_removal.error_message).to eq "Super Admin roles cannot be removed."
@@ -21,7 +21,7 @@ RSpec.describe Users::RemoveRole, type: :service do
       role = current_user.roles.first
       resource_type = nil
       args = { user: current_user, role: role, resource_type: resource_type, admin: current_user }
-      role_removal = described_class.call(args)
+      role_removal = described_class.call(**args)
 
       expect(role_removal.success).to be false
       expect(role_removal.error_message).to eq "Admins cannot remove roles from themselves."
@@ -33,7 +33,7 @@ RSpec.describe Users::RemoveRole, type: :service do
     role = user.roles.first
     resource_type = nil
     args = { user: user, role: role, resource_type: resource_type, admin: current_user }
-    role_removal = described_class.call(args)
+    role_removal = described_class.call(**args)
 
     expect(role_removal.success).to be true
     expect(role_removal.error_message).to be_nil
@@ -45,7 +45,7 @@ RSpec.describe Users::RemoveRole, type: :service do
     role = user.roles.first
     resource_type = "Comment"
     args = { user: user, role: role, resource_type: resource_type, admin: current_user }
-    role_removal = described_class.call(args)
+    role_removal = described_class.call(**args)
 
     expect(role_removal.success).to be true
     expect(role_removal.error_message).to be_nil
@@ -56,7 +56,7 @@ RSpec.describe Users::RemoveRole, type: :service do
     user = create(:user)
     allow(user).to receive(:remove_role).and_raise(StandardError)
     args = { user: user, role: nil, resource_type: nil, admin: current_user }
-    role_removal = described_class.call(args)
+    role_removal = described_class.call(**args)
 
     expect(role_removal.success).to be false
   end
