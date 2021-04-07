@@ -15,6 +15,8 @@ class Organization < ApplicationRecord
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
 
+  # TODO: [@rhymes] revisit this callback, `update_articles_cached_organization` and `article_sync`
+  # when we remove Elasticsearch
   before_save :update_articles
   before_save :remove_at_from_usernames
   before_save :generate_secret
