@@ -18,7 +18,11 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
     @tags.include?(node.name) || valid_codeblock_div?(node)
   end
 
+  # Overrides scrub_attributes in
+  # https://github.com/rails/rails-html-sanitizer/blob/master/lib/rails/html/scrubbers.rb
   def scrub_attributes(node)
+    # We only want to call super if we aren't in a codeblock
+    # because the `class` attribute will be stripped
     if inside_codeblock?(node)
       node.attribute_nodes.each do |attr|
         scrub_attribute(node, attr)
