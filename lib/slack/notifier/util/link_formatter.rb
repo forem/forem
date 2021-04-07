@@ -3,9 +3,11 @@ module Slack
     module Util
       class LinkFormatter
         class << self
-          def format string, opts={}
+          # rubocop:disable Style/OptionHash
+          def format(string, opts = {})
             LinkFormatter.new(string, **opts).formatted
           end
+          # rubocop:enable Style/OptionHash
         end
       end
     end
