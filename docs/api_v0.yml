@@ -687,6 +687,7 @@ components:
       type: object
       required:
         - type_of
+        - created_at
         - id
         - name
         - path
@@ -694,6 +695,8 @@ components:
         - profile_image
       properties:
         type_of:
+          type: string
+        created_at:
           type: string
         id:
           description: Follow id
@@ -1552,12 +1555,14 @@ components:
       value:
         - type_of: user_follower
           id: 12
+          created_at: "2021-04-07 08:29:42 UTC"
           name: Mrs. Neda Morissette
           path: "/nedamrsmorissette"
           username: nedamrsmorissette
           profile_image: https://res.cloudinary.com/...
         - type_of: user_follower
           id: 11
+          created_at: "2021-04-07 08:29:42 UTC"
           name: Yoko Hintz
           path: "/yokohintz"
           username: yokohintz
@@ -1567,6 +1572,7 @@ components:
       value:
         - type_of: listing
           id: 1157
+          created_at: "2021-04-07 08:29:42 UTC"
           title: TestBash Detroit
           slug: testbash-detroit-50gb
           body_markdown: "Do you want to learn about automation? Maybe you're interested in
@@ -2166,7 +2172,7 @@ paths:
         - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
-          description: A list of articles sorted by descending publish date 
+          description: A list of articles sorted by descending publish date
           content:
             application/json:
               schema:
@@ -2709,6 +2715,16 @@ paths:
       parameters:
         - $ref: '#/components/parameters/pageParam'
         - $ref: '#/components/parameters/perPageParam80to1000'
+        - in: query
+          name: sort
+          schema:
+            type: string
+            default: desc
+          required: false
+          description: |
+            Specifies the sort order for the `created_at` param of the follow
+            relationship. It defaults to `desc`, to get reverse order `asc` can
+            be used.
       responses:
         "200":
           description: A list of followers
