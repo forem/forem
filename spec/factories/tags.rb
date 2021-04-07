@@ -6,7 +6,9 @@ FactoryBot.define do
     supported { true }
 
     trait :search_indexed do
-      after(:create, &:index_to_elasticsearch_inline)
+      # rubocop:disable Style/SymbolProc
+      after(:create) { |tag| tag.index_to_elasticsearch_inline }
+      # rubocop:enable Style/SymbolProc
     end
   end
 end
