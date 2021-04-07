@@ -62,7 +62,7 @@ describe('Reading List Archive', () => {
       cy.intercept(
         Cypress.config().baseUrl +
           'search/reactions?page=0&per_page=80&status%5B%5D=archived',
-        { fixture: 'search/readinglist.json' },
+        { fixture: 'search/readingList.json' },
       ).as('archiveList');
 
       cy.viewport(BREAKPOINTS.Medium - 1, BREAKPOINTS.Medium);
@@ -118,7 +118,7 @@ describe('Reading List Archive', () => {
       cy.intercept(
         Cypress.config().baseUrl +
           'search/reactions?page=0&per_page=80&status%5B%5D=archived',
-        { fixture: 'search/readinglist.json' },
+        { fixture: 'search/readingList.json' },
       ).as('archiveList');
 
       cy.viewport(BREAKPOINTS.Large, 600);
