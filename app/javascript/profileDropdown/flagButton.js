@@ -66,7 +66,7 @@ export function initFlag() {
   getUserDataAndCsrfToken().then(() => {
     const user = userData();
     if (!user) {
-      flagButton.remove;
+      flagButton.remove();
       return;
     }
 
