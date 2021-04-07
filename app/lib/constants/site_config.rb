@@ -196,12 +196,8 @@ module Constants
         "See: https://github.com/thepracticaldev/dev.to/pull/6345",
         placeholder: "$pay.somethinglikethis.co/value"
       },
-      periodic_email_digest_max: {
-        description: "Determines the maximum for the periodic email digest",
-        placeholder: 0
-      },
-      periodic_email_digest_min: {
-        description: "Determines the mininum for the periodic email digest",
+      periodic_email_digest: {
+        description: "Determines how often periodic email digests are sent",
         placeholder: 2
       },
       secondary_logo_url: {

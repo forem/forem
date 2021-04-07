@@ -9,7 +9,7 @@ RSpec.describe Admin::ModeratorsQuery, type: :query do
   let!(:user4) { create(:user, :admin, name: "Susi", comments_count: 10) }
   let(:user5) { create(:user, :trusted, :admin, name: "Beth") }
   let(:user6) { create(:user, :admin, name: "Jean", comments_count: 5) }
-  let(:user7) { create(:user, :banned, name: "Harry") }
+  let(:user7) { create(:user, :suspended, name: "Harry") }
 
   describe ".call" do
     context "when no arguments are given" do

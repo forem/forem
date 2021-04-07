@@ -7,6 +7,6 @@ module Ahoy
     belongs_to :visit
     belongs_to :user, optional: true
 
-    scope :overview_link_clicks, -> { where(name: "Overview Link Clicked") }
+    scope :overview_link_clicks, -> { where(name: "Admin Overview Link Clicked") }
   end
 end

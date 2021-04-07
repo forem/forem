@@ -14,16 +14,16 @@ gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to
 gem "acts-as-taggable-on", "~> 7.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.7" # A replacement for the URI implementation that is part of Ruby's standard library
-gem "ahoy_email", "~> 1.1" # Email analytics for Rails
+gem "ahoy_email", "~> 2.0.2" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.2" # Tracking analytics for Rails
 gem "ancestry", "~> 3.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.4.2" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
-gem "cloudinary", "~> 1.19" # Client library for easily using the Cloudinary service
+gem "cloudinary", "~> 1.20" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.46.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.47.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", github: "heartcombo/devise", ref: "0cd72a5" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.3" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -74,7 +74,7 @@ gem "pusher-push-notifications", "~> 2.0" # Pusher Push Notifications Ruby serve
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 6.0.3" # Ruby on Rails
+gem "rails", "~> 6.1" # Ruby on Rails
 # Pinned since we have a monkey-patch against this version
 gem "rails-settings-cached", "= 2.5.2" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "ransack", "~> 2.4" # Searching and sorting
@@ -106,7 +106,7 @@ gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "store_attribute", "~> 0.8.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.30" # Ruby library for the Stripe API
+gem "stripe", "~> 5.32" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
@@ -125,10 +125,9 @@ group :development do
   gem "brakeman", "~> 5.0", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.8" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 2.0", require: false # A series of things you can use to benchmark a Rails or Ruby app
-  gem "erb_lint", github: "thepracticaldev/erb-lint", branch: "jess/remove-version-pinning", require: false # ERB Linter tool
+  gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
-  gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
   gem "listen", "~> 3.5", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
@@ -143,13 +142,13 @@ group :development, :test do
   gem "amazing_print", "~> 1.3" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
-  gem "cypress-rails", "~> 0.4.2" # For end to end tests (E2E)
+  gem "cypress-rails", "~> 0.5.0" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.17" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.11", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.12", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.10", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.9", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.2", require: false # Code style checking for RSpec files
@@ -168,7 +167,7 @@ group :test do
   gem "shoulda-matchers", "~> 4.5.1", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "~> 0.21.2", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
-  gem "stripe-ruby-mock", "~> 3.0", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
+  gem "stripe-ruby-mock", "3.1.0.rc2", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 1.0" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 6.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests

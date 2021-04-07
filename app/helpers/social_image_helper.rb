@@ -18,7 +18,7 @@ module SocialImageHelper
   end
 
   def article_social_image_url(article, **options)
-    Articles::SocialImage.new(article, options).url
+    Articles::SocialImage.new(article, **options).url
   end
 
   def comment_social_image_url(comment)

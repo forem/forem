@@ -29,8 +29,8 @@ RSpec.describe ApiSecretPolicy, type: :policy do
     it { is_expected.to permit_mass_assignment_of(valid_attributes) }
   end
 
-  context "when the user is banned" do
-    let(:user) { create(:user, :banned) }
+  context "when the user is suspended" do
+    let(:user) { create(:user, :suspended) }
     let(:api_secret) { build_stubbed(:api_secret) }
 
     it { is_expected.to forbid_actions %i[create] }

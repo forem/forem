@@ -649,25 +649,6 @@
                          target: "emailDigestBodyContainer",
                          expanded: false
                        } %>
-          <div id="emailDigestBodyContainer" class="card-body collapse hide" aria-labelledby="emailDigestBodyContainer">
-            <fieldset class="grid gap-4">
-              <div class="crayons-field">
-                <%= admin_config_label :periodic_email_digest_max %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:description] %>
-                <%= f.number_field :periodic_email_digest_max,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.periodic_email_digest_max,
-                                   placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:placeholder] %>
-              </div>
-
-              <div class="crayons-field">
-                <%= admin_config_label :periodic_email_digest_min %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:description] %>
-                <%= f.number_field :periodic_email_digest_min,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.periodic_email_digest_min,
-                                   placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_min][:placeholder] %>
-              </div>
 
               <%= render "form_submission", f: f %>
             </fieldset>

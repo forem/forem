@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, waitFor } from '@testing-library/preact';
 import '@testing-library/jest-dom';
 import { MentionAutocompleteTextArea } from '../MentionAutocompleteTextArea';
 
@@ -7,6 +7,7 @@ describe('<MentionAutocompleteTextArea />', () => {
   const textArea = document.createElement('textarea');
   textArea.setAttribute('aria-label', 'test text area');
   textArea.setAttribute('id', 'test-text-area');
+  textArea.value = 'some text';
 
   beforeAll(() => {
     global.window.matchMedia = jest.fn((query) => {
@@ -34,8 +35,8 @@ describe('<MentionAutocompleteTextArea />', () => {
     expect(container.innerHTML).toMatchSnapshot();
   });
 
-  it('should replace the given textarea with a combobox textarea', () => {
-    const { getByRole, getAllByLabelText } = render(
+  it('should replace the given textarea with a hidden combobox and a plain textarea', () => {
+    const { getByRole } = render(
       <MentionAutocompleteTextArea
         replaceElement={textArea}
         fetchSuggestions={async () => ({ result: [] })}
@@ -43,10 +44,16 @@ describe('<MentionAutocompleteTextArea />', () => {
     );
 
     const combobox = getByRole('combobox');
-    expect(combobox).toBeInTheDocument();
+
+    waitFor(() => expect(combobox).not.toBeVisible());
     expect(combobox.id).toEqual('test-text-area');
+    expect(combobox.value).toEqual('some text');
     expect(combobox.getAttribute('aria-label')).toEqual('test text area');
 
-    expect(getAllByLabelText('test text area')).toHaveLength(1);
+    const textarea = getByRole('textbox');
+    expect(textarea).toBeVisible();
+    expect(textarea.id).toEqual('test-text-area');
+    expect(textarea.value).toEqual('some text');
+    expect(textarea.getAttribute('aria-label')).toEqual('test text area');
   });
 });

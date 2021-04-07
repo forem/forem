@@ -6,36 +6,44 @@ import {
 } from '../topNavigation/utilities';
 
 // Namespace for functions which need to be accessed in plain JS initializers
-window.Forem = {};
+window.Forem = {
+  mentionAutoCompleteImports: undefined,
+  getMentionAutoCompleteImports() {
+    if (!this.mentionAutoCompleteImports) {
+      this.mentionAutoCompleteImports = [
+        import('@crayons/MentionAutocompleteTextArea'),
+        import('@utilities/search'),
+        import('preact'),
+      ];
+    }
 
-window.Forem.initializeMentionAutocompleteTextArea = async (
-  originalTextArea,
-) => {
-  const parentContainer = originalTextArea.parentElement;
+    // We're still returning Promises, but if the they have already been imported
+    // they will now be fulfilled instead of pending, i.e. a network request is no longer made.
+    return Promise.all(this.mentionAutoCompleteImports);
+  },
+  initializeMentionAutocompleteTextArea: async (originalTextArea) => {
+    const parentContainer = originalTextArea.parentElement;
 
-  const alreadyInitialized = parentContainer.id === 'combobox-container';
-  if (alreadyInitialized) {
-    return;
-  }
+    const alreadyInitialized = parentContainer.id === 'combobox-container';
+    if (alreadyInitialized) {
+      return;
+    }
 
-  const [
-    { MentionAutocompleteTextArea },
-    { fetchSearch },
-    { render, h },
-  ] = await Promise.all([
-    import('@crayons/MentionAutocompleteTextArea'),
-    import('@utilities/search'),
-    import('preact'),
-  ]);
+    const [
+      { MentionAutocompleteTextArea },
+      { fetchSearch },
+      { render, h },
+    ] = await window.Forem.getMentionAutoCompleteImports();
 
-  render(
-    <MentionAutocompleteTextArea
-      replaceElement={originalTextArea}
-      fetchSuggestions={(username) => fetchSearch('usernames', { username })}
-    />,
-    parentContainer,
-    originalTextArea,
-  );
+    render(
+      <MentionAutocompleteTextArea
+        replaceElement={originalTextArea}
+        fetchSuggestions={(username) => fetchSearch('usernames', { username })}
+      />,
+      parentContainer,
+      originalTextArea,
+    );
+  },
 };
 
 window.showModal = async ({
@@ -81,25 +89,24 @@ function getPageEntries() {
   });
 }
 
-const menuTriggers = [
-  ...document.querySelectorAll(
-    '.js-hamburger-trigger, .hamburger a:not(.js-nav-more-trigger)',
-  ),
-];
-const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
+function initializeNav() {
+  const { currentPage } = document.getElementById('page-content').dataset;
+  const menuTriggers = [
+    ...document.querySelectorAll(
+      '.js-hamburger-trigger, .hamburger a:not(.js-nav-more-trigger)',
+    ),
+  ];
+  const memberMenu = document.getElementById('crayons-header__menu');
+  const menuNavButton = document.getElementById('member-menu-button');
+  const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
+
+  setCurrentPageIconLink(currentPage, getPageEntries());
+  initializeMobileMenu(menuTriggers, moreMenus);
+  initializeTouchDevice(memberMenu, menuNavButton);
+}
 
 getInstantClick().then((spa) => {
-  spa.on('change', () => {
-    const { currentPage } = document.getElementById('page-content').dataset;
-
-    setCurrentPageIconLink(currentPage, getPageEntries());
-  });
+  spa.on('change', initializeNav);
 });
 
-const { currentPage } = document.getElementById('page-content').dataset;
-const memberMenu = document.getElementById('crayons-header__menu');
-const menuNavButton = document.getElementById('member-menu-button');
-
-setCurrentPageIconLink(currentPage, getPageEntries());
-initializeMobileMenu(menuTriggers, moreMenus);
-initializeTouchDevice(memberMenu, menuNavButton);
+initializeNav();

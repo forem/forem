@@ -1271,13 +1271,6 @@ export class Chat extends Component {
         <div className="chat__channels">
           {notificationsButton}
 
-          <input
-            placeholder="Search Channels"
-            onKeyUp={this.debouncedChannelFilter}
-            id="chatchannelsearchbar"
-            className="crayons-textfield"
-            aria-label="Search Channels"
-          />
           {invitesButton}
           {joiningRequestButton}
           <div className="chat__channeltypefilter">

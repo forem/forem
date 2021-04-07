@@ -94,7 +94,7 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
-  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
+  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password
 
@@ -108,6 +108,8 @@ class User < ApplicationRecord
   acts_as_follower
 
   has_one :profile, dependent: :destroy
+  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :destroy
+  has_one :setting, class_name: "Users::Setting", dependent: :destroy
 
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id,
                            inverse_of: :resource_owner, dependent: :delete_all
@@ -313,7 +315,7 @@ class User < ApplicationRecord
 
   def followed_articles
     Article
-      .tagged_with(cached_followed_tag_names, any: true).unscope(:select)
+      .cached_tagged_with_any(cached_followed_tag_names).unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
   end
 
@@ -366,13 +368,14 @@ class User < ApplicationRecord
     end
   end
 
-  # methods for Administrate field
-  def banned
-    has_role? :banned
+  def suspended?
+    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
+    # and data scripts have successfully removed the banned role, we can remove `has_role?(:banned)`
+    has_role?(:suspended) || has_role?(:banned)
   end
 
   def warned
-    has_role? :warned
+    has_role?(:warned)
   end
 
   def admin?
@@ -387,12 +390,6 @@ class User < ApplicationRecord
     has_role?(:tech_admin) || has_role?(:super_admin)
   end
 
-  def pro?
-    Rails.cache.fetch("user-#{id}/has_pro_role", expires_in: 200.hours) do
-      has_role?(:pro)
-    end
-  end
-
   def vomitted_on?
     Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
   end
@@ -401,7 +398,7 @@ class User < ApplicationRecord
     return @trusted if defined? @trusted
 
     @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
-      has_role? :trusted
+      has_role?(:trusted)
     end
   end
 
@@ -412,8 +409,11 @@ class User < ApplicationRecord
     end
   end
 
-  def comment_banned
-    has_role? :comment_banned
+  def comment_suspended?
+    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
+    # and data scripts have successfully removed the comment_banned role,
+    # we can remove `has_role?(:comment_banned)`
+    has_role?(:comment_suspended) || has_role?(:comment_banned)
   end
 
   def workshop_eligible?
