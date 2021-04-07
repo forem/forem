@@ -52,7 +52,10 @@
     "app/views/**/*.jbuilder": [
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
-    "Gemfile": [
+    "./Gemfile": [
+      "bundle exec rubocop --require rubocop-rspec --auto-correct"
+    ],
+    "docs/Gemfile": [
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
     "*.rake": [
@@ -172,7 +175,6 @@
     "postcss-smart-import": "^0.7.6",
     "postscribe": "^2.0.8",
     "preact": "^10.5.13",
-    "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.7.2",
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",

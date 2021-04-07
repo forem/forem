@@ -5,11 +5,11 @@ require "exifr/jpeg"
 describe ArticleImageUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
-  let(:image_jpg) { fixture_file_upload("files/800x600.jpg", "image/jpeg") }
-  let(:image_png) { fixture_file_upload("files/800x600.png", "image/png") }
-  let(:image_webp) { fixture_file_upload("files/800x600.webp", "image/webp") }
-  let(:image_with_gps) { fixture_file_upload("files/image_gps_data.jpg", "image/jpeg") }
-  let(:high_frame_count) { fixture_file_upload("files/high_frame_count.gif", "image/gif") }
+  let(:image_jpg) { fixture_file_upload("800x600.jpg", "image/jpeg") }
+  let(:image_png) { fixture_file_upload("800x600.png", "image/png") }
+  let(:image_webp) { fixture_file_upload("800x600.webp", "image/webp") }
+  let(:image_with_gps) { fixture_file_upload("image_gps_data.jpg", "image/jpeg") }
+  let(:high_frame_count) { fixture_file_upload("high_frame_count.gif", "image/gif") }
 
   # we need a new uploader before each test, and since the uploader is not a model
   # we can recreate it quickly in memory with `let!`
@@ -68,7 +68,7 @@ describe ArticleImageUploader, type: :uploader do
     end
 
     it "raises a CarrierWave error which can be parsed if MiniMagick timeout occurs" do
-      allow(MiniMagick::Image).to receive(:new).and_raise(TimeoutError)
+      allow(MiniMagick::Image).to receive(:new).and_raise(Timeout::Error)
 
       expect { uploader.store!(image_jpg) }.to raise_error(CarrierWave::IntegrityError, /Image processing timed out/)
     end

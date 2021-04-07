@@ -29,7 +29,7 @@ RSpec.describe Search::QueryBuilders::User, type: :service do
     it "applies EXCLUDED_TERM_KEYS by default" do
       filter = described_class.new(params: {})
       expected_filters = [
-        { "terms" => { "roles" => ["banned"] } },
+        { "terms" => { "roles" => %w[suspended banned] } },
       ]
       expect(filter.as_hash.dig("query", "bool", "must_not")).to match_array(expected_filters)
     end
@@ -43,7 +43,7 @@ RSpec.describe Search::QueryBuilders::User, type: :service do
         }
       }]
       expected_filters = [
-        { "terms" => { "roles" => ["banned"] } },
+        { "terms" => { "roles" => %w[suspended banned] } },
       ]
       expect(filter.as_hash.dig("query", "bool", "must_not")).to match_array(expected_filters)
       expect(filter.as_hash.dig("query", "bool", "must")).to match_array(expected_query)

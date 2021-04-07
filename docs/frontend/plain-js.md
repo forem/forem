@@ -27,7 +27,7 @@ which is included globally in the primary template,
 //= require_tree .
 ```
 
-One JS file in particular, `app/assets/javascripts/initializePage.js.erb`,
+One JS file in particular, `app/assets/javascripts/initializePage.js`,
 bootstraps the majority of the functionality. You will notice, within this file,
 that major sections of the websites are bootstrapped, for example:
 

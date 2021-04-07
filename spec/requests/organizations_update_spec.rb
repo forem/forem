@@ -33,7 +33,7 @@ RSpec.describe "OrganizationsUpdate", type: :request do
 
   it "updates nav_image" do
     put "/organizations/#{org_id}", params: { organization: { id: org_id,
-                                                              nav_image: fixture_file_upload("files/podcast.png",
+                                                              nav_image: fixture_file_upload("podcast.png",
                                                                                              "image/png") } }
     expect(Organization.find(org_id).nav_image_url).to be_present
   end
@@ -48,7 +48,7 @@ RSpec.describe "OrganizationsUpdate", type: :request do
   it "returns error if profile image file name is too long" do
     organization = user.organizations.first
     allow(Organization).to receive(:find_by).and_return(organization)
-    image = fixture_file_upload("files/800x600.png", "image/png")
+    image = fixture_file_upload("800x600.png", "image/png")
     allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
 
     put "/organizations/#{org_id}", params: { organization: { id: org_id, profile_image: image } }

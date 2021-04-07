@@ -36,7 +36,6 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.text "content"
     t.bigint "feedback_message_id"
     t.string "mailer"
-    t.datetime "opened_at"
     t.datetime "sent_at"
     t.text "subject"
     t.text "to"

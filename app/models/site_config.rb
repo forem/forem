@@ -89,8 +89,7 @@ class SiteConfig < RailsSettings::Base
   }
 
   # Email digest frequency
-  field :periodic_email_digest_max, type: :integer, default: 2
-  field :periodic_email_digest_min, type: :integer, default: 0
+  field :periodic_email_digest, type: :integer, default: 2
 
   # Jobs
   field :jobs_url, type: :string
