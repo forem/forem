@@ -18,9 +18,28 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
     @tags.include?(node.name) || valid_codeblock_div?(node)
   end
 
+  def scrub_attributes(node)
+    if inside_codeblock?(node)
+      node.attribute_nodes.each do |attr|
+        scrub_attribute(node, attr)
+      end
+
+      scrub_css_attribute(node)
+    else
+      super
+    end
+  end
+
   private
 
+  def inside_codeblock?(node)
+    node.attributes["class"]&.value&.include?("highlight") ||
+      (node.name == "span" && node.ancestors.first.name == "code")
+  end
+
   def valid_codeblock_div?(node)
+    return false if node.nil?
+
     node.name == "div" &&
       node.attributes.count == 1 &&
       node.children.first&.name == "pre" &&
