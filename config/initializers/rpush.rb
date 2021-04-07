@@ -3,8 +3,9 @@ module Rpush
   class NotificationTypeParser
     def self.parse(payload)
       JSON.parse(payload).dig("data", "type") || "unknown"
-    rescue StandardError
+    rescue StandardError => e
       # JSON parsing failed
+      HoneyBadger.notify(e)
       "unknown"
     end
   end
@@ -83,6 +84,8 @@ Rpush.reflect do |on|
       Device.where(token: notification.device_token, platform: "iOS").destroy_all
     end
 
+    HoneyBadger.notify(error_message:
+      "error_description: #{notification.error_description}, error_code: #{notification.error_code}")
     ForemStatsClient.increment(
       "push_notifications.errors",
       tags: [
