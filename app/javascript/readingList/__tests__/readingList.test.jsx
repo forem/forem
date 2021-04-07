@@ -5,6 +5,17 @@ import fetch from 'jest-fetch-mock';
 import { ReadingList } from '../readingList';
 
 describe('<ReadingList />', () => {
+  beforeAll(() => {
+    global.window.matchMedia = jest.fn((query) => {
+      return {
+        matches: false,
+        media: query,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      };
+    });
+  });
+
   const getMockResponse = () =>
     JSON.stringify({
       result: [
@@ -54,7 +65,16 @@ describe('<ReadingList />', () => {
     delete global.getCsrfToken;
   });
 
-  it('should have no a11y violations', async () => {
+  it('should have no a11y violations on small screens', async () => {
+    fetch.mockResponse(getMockResponse());
+
+    const { container } = render(<ReadingList availableTags={['discuss']} />);
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
+  it('should have no a11y violations on large screens', async () => {
     fetch.mockResponse(getMockResponse());
 
     const { container } = render(<ReadingList availableTags={['discuss']} />);
