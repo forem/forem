@@ -40,8 +40,8 @@ Rails.application.routes.draw do
     namespace :admin do
       get "/", to: "overview#index"
 
-      # ridhwana - these are the admin routes that have stayed the same,
-      # they'll move into a module once we remove old code
+      # @ridhwana - these are the admin routes that have stayed the same,
+      # they'll move into the admin routes module once we remove old code
       authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
 
@@ -78,11 +78,11 @@ Rails.application.routes.draw do
       get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
       get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
 
-      constraints(->(_request) { FeatureFlag.enabled?(:admin_restructure) }) do
-        extend UpdatedAdminRoutes
-      end
       constraints(->(_request) { !FeatureFlag.enabled?(:admin_restructure) }) do
-        extend AdminRoutes
+        draw :current_admin
+      end
+      constraints(->(_request) { FeatureFlag.enabled?(:admin_restructure) }) do
+        draw :admin
       end
     end
 
