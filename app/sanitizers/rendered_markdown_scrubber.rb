@@ -9,7 +9,7 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
     ]
 
     self.attributes = %w[
-      alt class colspan data-conversation data-lang data-no-instant data-url em height href id loop
+      alt colspan data-conversation data-lang data-no-instant data-url em height href id loop
       name ref rel rowspan size span src start strong title type value width controls
     ]
   end
@@ -18,9 +18,32 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
     @tags.include?(node.name) || valid_codeblock_div?(node)
   end
 
+  # Overrides scrub_attributes in
+  # https://github.com/rails/rails-html-sanitizer/blob/master/lib/rails/html/scrubbers.rb
+  def scrub_attributes(node)
+    # We only want to call super if we aren't in a codeblock
+    # because the `class` attribute will be stripped
+    if inside_codeblock?(node)
+      node.attribute_nodes.each do |attr|
+        scrub_attribute(node, attr)
+      end
+
+      scrub_css_attribute(node)
+    else
+      super
+    end
+  end
+
   private
 
+  def inside_codeblock?(node)
+    node.attributes["class"]&.value&.include?("highlight") ||
+      (node.name == "span" && node.ancestors.first.name == "code")
+  end
+
   def valid_codeblock_div?(node)
+    return false if node.nil?
+
     node.name == "div" &&
       node.attributes.count == 1 &&
       node.children.first&.name == "pre" &&
