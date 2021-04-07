@@ -91,7 +91,6 @@ describe('Authentication Section', () => {
           .findByText('Update Site Configuration')
           .click();
 
-        cy.findByText('Setup not complete').should('be.visible');
         cy.get('.crayons-modal__box__body > ul > li')
           .contains('facebook')
           .should('be.visible');
