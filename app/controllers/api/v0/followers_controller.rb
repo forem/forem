@@ -5,7 +5,7 @@ module Api
       before_action -> { limit_per_page(default: 80, max: 1000) }
 
       USERS_ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id follower_id follower_type
+        id follower_id follower_type created_at
       ].freeze
       private_constant :USERS_ATTRIBUTES_FOR_SERIALIZATION
 
