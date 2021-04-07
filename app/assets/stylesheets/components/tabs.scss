@@ -70,7 +70,7 @@
     }
 
     &--current {
-      font-weight: var(--fw-medium);
+      text-shadow: 0 0 0.075em currentColor;
       color: var(--tab-color-current);
 
       &::after {
