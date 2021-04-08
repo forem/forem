@@ -637,23 +637,6 @@
               <%= render "form_submission", f: f %>
             </fieldset>
           </div>
-          </div>
-        <% end %>
-
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
-          <div class="card mt-3">
-            <%= render partial: "admin/shared/card_header",
-                       locals: {
-                         header: "Email digest frequency",
-                         state: "collapse",
-                         target: "emailDigestBodyContainer",
-                         expanded: false
-                       } %>
-
-              <%= render "form_submission", f: f %>
-            </fieldset>
-          </div>
-          </div>
         <% end %>
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
