@@ -1549,7 +1549,7 @@ NEW.reading_list_document :=
       coalesce(
         array_to_string(
           -- cached_organization is serialized to the DB as a YAML string, we extract only the name attribute
-          regexp_match(NEW.cached_organization, '^name: (.*)$', 'n'),
+          regexp_match(NEW.cached_organization, 'name: (.*)$', 'n'),
           ' '
         ),
         ''
