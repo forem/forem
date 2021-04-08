@@ -25,7 +25,7 @@ module Api
         @follows_limit = [per_page, max].min
       end
 
-      def sort_param
+      def sort_direction
         return :asc if params[:sort] == "asc"
 
         :desc
