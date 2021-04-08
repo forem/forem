@@ -8,7 +8,7 @@
         <h3 class="crayons-subtitle-1">Welcome Checklist</h3>
         <p class="crayons-subtitle-4 color-base-70 mb-3">Here are a few things we recommend doing now that you're using Forem!</p>
         <ol>
-          <li class="mb-1 -ml-4">Set up and configure your Forem under <a href="/admin/config" data-action="click->ahoy#trackOverviewLink">Config</a></li>
+          <li class="mb-1 -ml-4">Set up and configure your Forem under <%= link_to "Config", admin_config_path, 'data-action': "click->ahoy#trackOverviewLink" %></li>
           <li class="mb-1 -ml-4"><a href="/admin/invitations" data-action="click->ahoy#trackOverviewLink">Invite people</a> to join your Forem</li>
 
           <li class="mb-1 -ml-4"><%= link_to "Update your Forem tags", admin_tags_path, 'data-action': "click->ahoy#trackOverviewLink" %></li>

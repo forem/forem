@@ -1,5 +1,6 @@
 module VerifySetupCompleted
   extend ActiveSupport::Concern
+  include FeatureFlagUrlHelper
 
   module_function
 
