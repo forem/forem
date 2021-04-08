@@ -1959,19 +1959,19 @@
     "@stoplight/yaml-ast-parser" "0.0.48"
     tslib "^1.12.0"
 
-"@storybook/addon-a11y@^6.2.1":
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.2.1.tgz#e55867b3e55d79aaeea87cc54faa0bdff44ff95f"
-  integrity sha512-NBBwtiJOgGEgwCYx9H+peREB1mjJGv3WnLTNewsQQCZ8pRSrhpXPFUYhd0vXq0SXQEjX6xWciAp5lEDzmvzl8Q==
+"@storybook/addon-a11y@^6.2.5":
+  version "6.2.5"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.2.5.tgz#7dee38df95dc3a7155c2aae846402a1a0777ec37"
+  integrity sha512-6DRRWVE52OdbnyIbI8pbuWkvL54YAiNEbifN9pGLkoSgQL4HdmtlP96UnQrjF9IfjYVYzJ2rAnBwzFgg8S6L3w==
   dependencies:
-    "@storybook/addons" "6.2.1"
-    "@storybook/api" "6.2.1"
-    "@storybook/channels" "6.2.1"
-    "@storybook/client-api" "6.2.1"
-    "@storybook/client-logger" "6.2.1"
-    "@storybook/components" "6.2.1"
-    "@storybook/core-events" "6.2.1"
-    "@storybook/theming" "6.2.1"
+    "@storybook/addons" "6.2.5"
+    "@storybook/api" "6.2.5"
+    "@storybook/channels" "6.2.5"
+    "@storybook/client-api" "6.2.5"
+    "@storybook/client-logger" "6.2.5"
+    "@storybook/components" "6.2.5"
+    "@storybook/core-events" "6.2.5"
+    "@storybook/theming" "6.2.5"
     axe-core "^4.1.1"
     core-js "^3.8.2"
     global "^4.4.0"
@@ -2474,6 +2474,19 @@
     qs "^6.10.0"
     telejson "^5.1.0"
 
+"@storybook/channel-postmessage@6.2.5":
+  version "6.2.5"
+  resolved "https://registry.yarnpkg.com/@storybook/channel-postmessage/-/channel-postmessage-6.2.5.tgz#22b7069fe8961c23d4dbdb2a25d627f619ab90df"
+  integrity sha512-OK9xTWc13p9VwyA7t/fW8mJ2nhSpA08STFoe3aFH34v/r6LF+inLd+8Wg08S0XLaxd6lMjVoUapA24xUtGK9jw==
+  dependencies:
+    "@storybook/channels" "6.2.5"
+    "@storybook/client-logger" "6.2.5"
+    "@storybook/core-events" "6.2.5"
+    core-js "^3.8.2"
+    global "^4.4.0"
+    qs "^6.10.0"
+    telejson "^5.1.0"
+
 "@storybook/channels@5.3.21":
   version "5.3.21"
   resolved "https://registry.yarnpkg.com/@storybook/channels/-/channels-5.3.21.tgz#53ba622b171d68b3b102983a62aa05149a49497b"
@@ -2575,6 +2588,30 @@
     "@storybook/channels" "6.2.4"
     "@storybook/client-logger" "6.2.4"
     "@storybook/core-events" "6.2.4"
+    "@storybook/csf" "0.0.1"
+    "@types/qs" "^6.9.5"
+    "@types/webpack-env" "^1.16.0"
+    core-js "^3.8.2"
+    global "^4.4.0"
+    lodash "^4.17.20"
+    memoizerific "^1.11.3"
+    qs "^6.10.0"
+    regenerator-runtime "^0.13.7"
+    stable "^0.1.8"
+    store2 "^2.12.0"
+    ts-dedent "^2.0.0"
+    util-deprecate "^1.0.2"
+
+"@storybook/client-api@6.2.5":
+  version "6.2.5"
+  resolved "https://registry.yarnpkg.com/@storybook/client-api/-/client-api-6.2.5.tgz#886f5cf2be59a7fcdbd49df5d9ead9b6ae4c22cb"
+  integrity sha512-p2T+WwiiNmn1xQDSha2fnDDDoOqvjKRUanyrozy9B9LhJefMFlJgpgm/N/0FYN/nsyKfDbJAXYqc0zY8DSDfxQ==
+  dependencies:
+    "@storybook/addons" "6.2.5"
+    "@storybook/channel-postmessage" "6.2.5"
+    "@storybook/channels" "6.2.5"
+    "@storybook/client-logger" "6.2.5"
+    "@storybook/core-events" "6.2.5"
     "@storybook/csf" "0.0.1"
     "@types/qs" "^6.9.5"
     "@types/webpack-env" "^1.16.0"
@@ -2721,6 +2758,36 @@
     "@storybook/client-logger" "6.2.4"
     "@storybook/csf" "0.0.1"
     "@storybook/theming" "6.2.4"
+    "@types/color-convert" "^2.0.0"
+    "@types/overlayscrollbars" "^1.12.0"
+    "@types/react-syntax-highlighter" "11.0.5"
+    color-convert "^2.0.1"
+    core-js "^3.8.2"
+    fast-deep-equal "^3.1.3"
+    global "^4.4.0"
+    lodash "^4.17.20"
+    markdown-to-jsx "^7.1.0"
+    memoizerific "^1.11.3"
+    overlayscrollbars "^1.13.1"
+    polished "^4.0.5"
+    prop-types "^15.7.2"
+    react-colorful "^5.0.1"
+    react-popper-tooltip "^3.1.1"
+    react-syntax-highlighter "^13.5.3"
+    react-textarea-autosize "^8.3.0"
+    regenerator-runtime "^0.13.7"
+    ts-dedent "^2.0.0"
+    util-deprecate "^1.0.2"
+
+"@storybook/components@6.2.5":
+  version "6.2.5"
+  resolved "https://registry.yarnpkg.com/@storybook/components/-/components-6.2.5.tgz#e495a1095a99f81b94da7ee3a4cd73255f7216fa"
+  integrity sha512-wL5cUAkYAHXJ+mhfQUl1FTZYsu0iaRT6uvawiainGsp/ccFw42l49fUuSOtRIdU77IwNU+WfK8l3Vu4MJOVJLA==
+  dependencies:
+    "@popperjs/core" "^2.6.0"
+    "@storybook/client-logger" "6.2.5"
+    "@storybook/csf" "0.0.1"
+    "@storybook/theming" "6.2.5"
     "@types/color-convert" "^2.0.0"
     "@types/overlayscrollbars" "^1.12.0"
     "@types/react-syntax-highlighter" "11.0.5"
