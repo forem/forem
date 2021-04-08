@@ -996,10 +996,10 @@ ActiveRecord::Schema.define(version: 2021_04_07_185420) do
   end
 
   create_table "push_notification_targets", force: :cascade do |t|
+    t.boolean "active", null: false
     t.string "app_bundle", null: false
     t.string "auth_key"
     t.datetime "created_at", precision: 6, null: false
-    t.boolean "enabled", null: false
     t.string "platform", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["app_bundle"], name: "index_push_notification_targets_on_app_bundle"
