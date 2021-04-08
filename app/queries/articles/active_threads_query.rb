@@ -8,7 +8,7 @@ module Articles
 
     MINIMUM_SCORE = -4
 
-    def self.call(relation: Article.published, options: {})
+    def self.call(relation: Article.published, **options)
       options = DEFAULT_OPTIONS.merge(options)
       tags, time_ago, count = options.values_at(:tags, :time_ago, :count)
 

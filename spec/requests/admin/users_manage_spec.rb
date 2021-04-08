@@ -117,7 +117,7 @@ RSpec.describe "Admin::Users", type: :request do
       params = { user: { user_status: "Comment Suspend", note_for_current_role: "comment suspend this user" } }
       patch "/admin/users/#{user.id}/user_status", params: params
 
-      expect(user.roles.first.name).to eq("comment_banned")
+      expect(user.roles.first.name).to eq("comment_suspended")
       expect(Note.first.content).to eq("comment suspend this user")
     end
 
@@ -129,11 +129,11 @@ RSpec.describe "Admin::Users", type: :request do
       patch "/admin/users/#{user.id}/user_status", params: params
 
       expect(user.roles.count).to eq(1)
-      expect(user.roles.last.name).to eq("comment_banned")
+      expect(user.roles.last.name).to eq("comment_suspended")
     end
 
-    it "selects super admin role when user was banned" do
-      user.add_role(:banned)
+    it "selects super admin role when user was suspended" do
+      user.add_role(:suspended)
       user.reload
 
       params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }

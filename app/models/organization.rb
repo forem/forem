@@ -115,7 +115,9 @@ class Organization < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
-  def banned
+  def suspended?
+    # Hacky, yuck!
+    # TODO: [@jacobherrington] Remove this method
     false
   end
 

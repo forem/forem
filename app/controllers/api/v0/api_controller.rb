@@ -35,7 +35,7 @@ module Api
 
       def authenticate!
         @user = authenticated_user
-        return error_unauthorized unless @user && !@user.banned
+        return error_unauthorized unless @user && !@user.suspended?
       end
 
       def authorize_super_admin

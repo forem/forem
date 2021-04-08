@@ -332,12 +332,12 @@ RSpec.describe "/listings", type: :request do
       end
     end
 
-    context "when user is banned" do
+    context "when user is suspended" do
       it "raises error" do
-        user.add_role(:banned)
+        user.add_role(:suspended)
         expect do
           post "/listings", params: listing_params
-        end.to raise_error("SUSPENDED")
+        end.to raise_error(SuspendedError)
       end
     end
 

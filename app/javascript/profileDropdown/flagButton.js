@@ -1,32 +1,12 @@
 /* global userData */
-/* eslint-disable no-alert */
-/**
- * Adds a flag button visible only to trusted users on profile pages.
- * @function initFlag
- * @returns {(void|undefined)} This function has no useable return value.
- */
-export function initFlag() {
-  const flagButton = document.getElementById(
-    'user-profile-dropdownmenu-flag-button',
-  );
+/* eslint-disable no-alert, import/order */
+import { request } from '@utilities/http';
+import { getUserDataAndCsrfToken } from '../chat/util';
 
-  if (!flagButton) {
-    // button not always present when this is called
-    return;
-  }
-
-  const user = userData();
-  if (!user) {
-    return;
-  }
-
+function addFlagUserBehavior(flagButton) {
   const { profileUserId, profileUserName } = flagButton.dataset;
-  let isUserFlagged = flagButton.dataset.isUserFlagged === 'true';
-  const trustedOrAdmin = user.trusted || user.admin;
 
-  if (!trustedOrAdmin || user.id === parseInt(profileUserId, 10)) {
-    flagButton.remove();
-  }
+  let isUserFlagged = flagButton.dataset.isUserFlagged === 'true';
 
   function flag() {
     const confirmFlag = window.confirm(
@@ -36,17 +16,13 @@ export function initFlag() {
     );
 
     if (confirmFlag) {
-      fetch('/reactions', {
+      request('/reactions', {
         method: 'POST',
-        headers: {
-          'X-CSRF-Token': window.csrfToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        body: {
           reactable_type: 'User',
           category: 'vomit',
           reactable_id: profileUserId,
-        }),
+        },
       })
         .then((response) => response.json())
         .then((response) => {
@@ -58,10 +34,49 @@ export function initFlag() {
             flagButton.innerHTML = `Flag ${profileUserName}`;
           }
         })
-        .catch((e) => window.alert(`Something went wrong: ${e}`));
+        .catch((e) => {
+          Honeybadger.notify(
+            isUserFlagged ? 'Unable to unflag user' : 'Unable to flag user',
+            profileUserId,
+          );
+          window.alert(`Something went wrong: ${e}`);
+        });
     }
   }
 
   flagButton.addEventListener('click', flag);
+}
+
+/**
+ * Adds a flag button visible only to trusted users on profile pages.
+ * @function initFlag
+ * @returns {(void|undefined)} This function has no useable return value.
+ */
+
+export function initFlag() {
+  const flagButton = document.getElementById(
+    'user-profile-dropdownmenu-flag-button',
+  );
+
+  if (!flagButton) {
+    // button not always present when this is called
+    return;
+  }
+
+  getUserDataAndCsrfToken().then(() => {
+    const user = userData();
+    if (!user) {
+      flagButton.remove();
+      return;
+    }
+
+    const trustedOrAdmin = user.trusted || user.admin;
+    const { profileUserId } = flagButton.dataset;
+
+    if (!trustedOrAdmin || user.id === parseInt(profileUserId, 10)) {
+      flagButton.remove();
+    }
+    addFlagUserBehavior(flagButton);
+  });
 }
 /* eslint-enable no-alert */
