@@ -42,8 +42,6 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
   end
 
   def valid_codeblock_div?(node)
-    return false if node.nil?
-
     node.name == "div" &&
       node.attributes.count == 1 &&
       node.children.first&.name == "pre" &&
