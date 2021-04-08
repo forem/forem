@@ -194,7 +194,7 @@ export class ReadingList extends Component {
       ''
     );
     return (
-      <main>
+      <main id="main-content">
         <header className="crayons-layout l:grid-cols-2 pb-0">
           <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
