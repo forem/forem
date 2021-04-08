@@ -13,7 +13,7 @@ module Api
         @follows = Follow.followable_user(@user.id)
           .includes(:follower)
           .select(USERS_ATTRIBUTES_FOR_SERIALIZATION)
-          .order(created_at: sort_param)
+          .order(created_at: sort_direction)
           .page(params[:page])
           .per(@follows_limit)
       end
