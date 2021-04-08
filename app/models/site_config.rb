@@ -29,6 +29,13 @@ class SiteConfig < RailsSettings::Base
   field :health_check_token, type: :string
   field :video_encoder_key, type: :string
 
+  # NOTE: @citizen428 These two values will be removed once we fully migrated
+  # to Settings::Authentication. Until then we need them for the data update script.
+  field :allowed_registration_email_domains, type: :array, default: %w[], validates: {
+    valid_domain_csv: true
+  }
+  field :authentication_providers, type: :array, default: %w[]
+
   # Campaign
   field :campaign_call_to_action, type: :string, default: "Share your project"
   field :campaign_hero_html_variant_name, type: :string, default: ""
