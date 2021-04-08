@@ -38,6 +38,7 @@ function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
  * @param {Array<string>} props.availableTags A list of available tags.
  * @param {string} [props.selectedTag=''] The currently selected tag.
  * @param {function} props.onSelectTag A handler for when the selected tag changes.
+ * @param {boolean} [props.isMobile=false] Whether or not we're displaying the mobile view.
  */
 export function TagList({
   availableTags,
