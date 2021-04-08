@@ -22,13 +22,13 @@ module DataUpdateScripts
 
     def run
       return if Settings::Authentication.any?
-      
+
       SiteConfig.transaction do
         config_relation = SiteConfig.where(var: AUTHENTICATION_SETTINGS)
         config_values = config_relation.pluck(*ATTRIBUTES).map do |values|
           ATTRIBUTES.zip(values).to_h
         end
-        Settings::Authentication.insert_all(config_values)
+        Settings::Authentication.insert_all(config_values) if config_values.present?
 
         # This field has a validation we don't want to skip
         Settings::Authentication.allowed_registration_email_domains =
