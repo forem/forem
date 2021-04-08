@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
   return (
-    <nav aria-label="Filter by tag" className="hidden grid grid-cols-1 gap-2">
-      <ul className="list-none">
+    <nav aria-label="Filter by tag">
+      <ul className="list-none grid grid-cols-1 gap-2">
         <li>
           <a
             className={`crayons-link crayons-link--block${
