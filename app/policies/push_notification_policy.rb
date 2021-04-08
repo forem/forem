@@ -1,2 +1,0 @@
-class PushNotificationPolicy < ApplicationPolicy
-end
