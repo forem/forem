@@ -25,7 +25,7 @@ module DataUpdateScripts
       
       SiteConfig.transaction do
         config_relation = SiteConfig.where(var: AUTHENTICATION_SETTINGS)
-        config_values = config_relation.pluck(*ATTRRIBUTES).map do |values|
+        config_values = config_relation.pluck(*ATTRIBUTES).map do |values|
           ATTRIBUTES.zip(values).to_h
         end
         Settings::Authentication.insert_all(config_values)
