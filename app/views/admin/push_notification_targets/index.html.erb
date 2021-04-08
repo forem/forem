@@ -23,12 +23,12 @@
         <tr>
           <td><%= push_notification_target.app_bundle %></td>
           <td><%= push_notification_target.platform %></td>
-          <% if push_notification_target.auth_key? %>
+          <% if push_notification_target.auth_credentials? %>
             <td>*******</td>
           <% else %>
             <td>Not Available</td>
           <% end %>
-          <% if push_notification_target.active? && push_notification_target.auth_key? %>
+          <% if push_notification_target.active? %>
             <td><span class="crayons-icon" role="img" aria-label="Active">✅</span></td>
           <% else %>
             <td><span class="crayons-icon" role="img" aria-label="Active">❌</span></td>
