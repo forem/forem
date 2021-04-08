@@ -697,7 +697,9 @@ components:
         type_of:
           type: string
         created_at:
+          description: Date the user became a follower
           type: string
+          format: date-time
         id:
           description: Follow id
           type: integer
@@ -1555,14 +1557,14 @@ components:
       value:
         - type_of: user_follower
           id: 12
-          created_at: "2021-04-07 08:29:42 UTC"
+          created_at: "2021-04-02T04:21:46Z"
           name: Mrs. Neda Morissette
           path: "/nedamrsmorissette"
           username: nedamrsmorissette
           profile_image: https://res.cloudinary.com/...
         - type_of: user_follower
           id: 11
-          created_at: "2021-04-07 08:29:42 UTC"
+          created_at: "2021-04-02T04:21:46Z"
           name: Yoko Hintz
           path: "/yokohintz"
           username: yokohintz
