@@ -28,10 +28,10 @@ RSpec.describe PushNotificationTarget, type: :model do
     context "with forem apps" do
       it "returns true/false based on the ENV variable for the forem apps" do
         allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("asdf123")
-        expect(described_class.forem_app(platform: Device::IOS).active?).to be true
+        expect(described_class.forem_app_target(platform: Device::IOS).active?).to be true
 
         allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return(nil)
-        expect(described_class.forem_app(platform: Device::IOS).active?).to be false
+        expect(described_class.forem_app_target(platform: Device::IOS).active?).to be false
       end
     end
   end

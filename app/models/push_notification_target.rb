@@ -71,7 +71,7 @@ class PushNotificationTarget < ApplicationRecord
     PushNotificationTarget.all
   end
 
-  def self.forem_app(platform:)
+  def self.forem_app_target(platform:)
     target = PushNotificationTarget.find_by(app_bundle: FOREM_BUNDLE, platform: platform)
     target || PushNotificationTarget.create(app_bundle: FOREM_BUNDLE, platform: platform, active: true)
   end
@@ -106,7 +106,8 @@ class PushNotificationTarget < ApplicationRecord
       Rpush::Gcm::App.where(name: app_bundle_was).first&.destroy
     end
 
-    true # Return true to avoid the `destroy` method return false in a callback
+    # This avoids `destroy` method unexpectedly return true/false in callback
+    true
   end
   # rubocop:enable Rails/FindBy
 end
