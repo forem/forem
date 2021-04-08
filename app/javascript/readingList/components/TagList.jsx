@@ -4,30 +4,36 @@ import PropTypes from 'prop-types';
 function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
   return (
     <nav aria-label="Filter by tag" className="hidden grid grid-cols-1 gap-2">
-      <a
-        className={`crayons-link crayons-link--block${
-          !selectedTag ? ' crayons-link--current' : ''
-        }`}
-        data-no-instant
-        onClick={onSelectTag}
-        href="/t"
-      >
-        all tags
-      </a>
-      {availableTags.map((tag) => (
-        <a
-          className={`crayons-link crayons-link--block${
-            selectedTag === tag ? ' crayons-link--current' : ''
-          }`}
-          data-no-instant
-          data-tag={tag}
-          onClick={onSelectTag}
-          key={tag}
-          href={`t/${tag}`}
-        >
-          #{tag}
-        </a>
-      ))}
+      <ul className="list-none">
+        <li>
+          <a
+            className={`crayons-link crayons-link--block${
+              !selectedTag ? ' crayons-link--current' : ''
+            }`}
+            data-no-instant
+            onClick={onSelectTag}
+            href="/t"
+          >
+            all tags
+          </a>
+        </li>
+        {availableTags.map((tag) => (
+          <li>
+            <a
+              className={`crayons-link crayons-link--block${
+                selectedTag === tag ? ' crayons-link--current' : ''
+              }`}
+              data-no-instant
+              data-tag={tag}
+              onClick={onSelectTag}
+              key={tag}
+              href={`t/${tag}`}
+            >
+              #{tag}
+            </a>
+          </li>
+        ))}
+      </ul>
     </nav>
   );
 }
