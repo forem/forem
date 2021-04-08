@@ -73,7 +73,7 @@ class ApplicationPolicy
 
   delegate :suspended?, to: :user, prefix: true
 
-  def user_is_trusted?
+  def user_trusted?
     user.has_role?(:trusted)
   end
 end

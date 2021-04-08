@@ -10,7 +10,7 @@ class ResponseTemplatePolicy < ApplicationPolicy
   end
 
   def moderator_index?
-    user_is_moderator?
+    user_moderator?
   end
 
   def create?
@@ -19,15 +19,15 @@ class ResponseTemplatePolicy < ApplicationPolicy
 
   # comes from comments_controller
   def moderator_create?
-    user_is_moderator? && record_is_mod_comment?
+    user_moderator? && mod_comment?
   end
 
   def destroy?
-    user_is_owner?
+    user_owner?
   end
 
   def update?
-    user_is_owner?
+    user_owner?
   end
 
   def permitted_attributes_for_create
@@ -40,15 +40,15 @@ class ResponseTemplatePolicy < ApplicationPolicy
 
   private
 
-  def user_is_owner?
+  def user_owner?
     user.id == record.user_id
   end
 
-  def user_is_moderator?
+  def user_moderator?
     minimal_admin? || user.moderator_for_tags&.present?
   end
 
-  def record_is_mod_comment?
+  def mod_comment?
     record.type_of == "mod_comment"
   end
 end
