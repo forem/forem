@@ -40,8 +40,10 @@ function writeCards(data, timeRangeLabel) {
 
 function drawChart({ canvas, title, labels, datasets }) {
   const options = {
-    legend: {
-      position: 'bottom',
+    plugins: {
+      legend: {
+        position: 'top',
+      },
     },
     responsive: true,
     title: {
@@ -49,28 +51,46 @@ function drawChart({ canvas, title, labels, datasets }) {
       text: title,
     },
     scales: {
-      yAxes: [
-        {
-          ticks: {
-            suggestedMin: 0,
-            precision: 0,
-          },
+      y: {
+        type: 'linear',
+        suggestedMin: 0,
+
+        ticks: {
+          precision: 0,
         },
-      ],
+      },
     },
   };
 
-  import('chart.js').then(({ Chart }) => {
-    // eslint-disable-next-line no-new
-    new Chart(canvas, {
-      type: 'line',
-      data: {
-        labels,
-        datasets,
-        options,
-      },
-    });
-  });
+  import('chart.js').then(
+    ({
+      Chart,
+      LineController,
+      LinearScale,
+      CategoryScale,
+      PointElement,
+      LineElement,
+      Legend,
+    }) => {
+      Chart.register(
+        LineController,
+        LinearScale,
+        CategoryScale,
+        PointElement,
+        LineElement,
+        Legend,
+      );
+      // eslint-disable-next-line no-new
+      new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels,
+          datasets,
+          options,
+        },
+      });
+    },
+  );
 }
 
 function drawCharts(data, timeRangeLabel) {
@@ -94,6 +114,7 @@ function drawCharts(data, timeRangeLabel) {
         data: reactions,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgb(75, 192, 192)',
         lineTension: 0.1,
       },
       {
@@ -101,6 +122,7 @@ function drawCharts(data, timeRangeLabel) {
         data: likes,
         fill: false,
         borderColor: 'rgb(229, 100, 100)',
+        backgroundColor: 'rgb(229, 100, 100)',
         lineTension: 0.1,
       },
       {
@@ -108,6 +130,7 @@ function drawCharts(data, timeRangeLabel) {
         data: unicorns,
         fill: false,
         borderColor: 'rgb(157, 57, 233)',
+        backgroundColor: 'rgb(157, 57, 233)',
         lineTension: 0.1,
       },
       {
@@ -115,6 +138,7 @@ function drawCharts(data, timeRangeLabel) {
         data: readingList,
         fill: false,
         borderColor: 'rgb(10, 133, 255)',
+        backgroundColor: 'rgb(10, 133, 255)',
         lineTension: 0.1,
       },
     ],
@@ -130,6 +154,7 @@ function drawCharts(data, timeRangeLabel) {
         data: comments,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgb(75, 192, 192)',
         lineTension: 0.1,
       },
     ],
@@ -145,6 +170,7 @@ function drawCharts(data, timeRangeLabel) {
         data: followers,
         fill: false,
         borderColor: 'rgb(10, 133, 255)',
+        backgroundColor: 'rgb(10, 133, 255)',
         lineTension: 0.1,
       },
     ],
@@ -160,6 +186,7 @@ function drawCharts(data, timeRangeLabel) {
         data: readers,
         fill: false,
         borderColor: 'rgb(157, 57, 233)',
+        backgroundColor: 'rgb(157, 57, 233)',
         lineTension: 0.1,
       },
     ],
