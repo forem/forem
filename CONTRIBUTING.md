@@ -5,7 +5,7 @@ We expect contributors to abide by our underlying
 discussions on GitHub (issues, pull requests) and across
 [dev.to](https://dev.to) must be respectful and harassment-free.
 
-If you feel another member of the community has violated our Code of Conduct,
+If you feel like another member of the community has violated our Code of Conduct,
 you may anonymously contact the team with our
 [abuse report form](https://dev.to/report-abuse).
 
