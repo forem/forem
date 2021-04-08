@@ -1,6 +1,8 @@
 module Api
   module V0
     class FollowersController < ApiController
+      include JsonApiSortParams
+
       before_action :authenticate_with_api_key_or_current_user!
       before_action -> { limit_per_page(default: 80, max: 1000) }
 
@@ -13,7 +15,7 @@ module Api
         @follows = Follow.followable_user(@user.id)
           .includes(:follower)
           .select(USERS_ATTRIBUTES_FOR_SERIALIZATION)
-          .order(created_at: sort_direction)
+          .order(order_criteria)
           .page(params[:page])
           .per(@follows_limit)
       end
@@ -25,10 +27,12 @@ module Api
         @follows_limit = [per_page, max].min
       end
 
-      def sort_direction
-        return :asc if params[:sort] == "asc"
-
-        :desc
+      def order_criteria
+        sort_params(
+          params[:sort],
+          allowed_params: [:created_at],
+          default_sort: { created_at: :desc },
+        )
       end
     end
   end

@@ -1,6 +1,6 @@
 module JsonApiSortParams
   def sort_params(param_string, allowed_params:, default_sort:)
-    fields = param_string.split(",")
+    fields = param_string.to_s.split(",")
     unfiltered_hash = fields_to_hash(fields)
     sort = sort_and_filter(unfiltered_hash, allowed_params)
     sort.presence || default_sort
