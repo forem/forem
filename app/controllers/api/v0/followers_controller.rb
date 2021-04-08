@@ -1,7 +1,7 @@
 module Api
   module V0
     class FollowersController < ApiController
-      include JsonApiSortParams
+      include JsonApiSortParam
 
       before_action :authenticate_with_api_key_or_current_user!
       before_action -> { limit_per_page(default: 80, max: 1000) }
@@ -28,9 +28,9 @@ module Api
       end
 
       def order_criteria
-        sort_params(
+        parse_sort_param(
           params[:sort],
-          allowed_params: [:created_at],
+          allowed_fields: [:created_at],
           default_sort: { created_at: :desc },
         )
       end
