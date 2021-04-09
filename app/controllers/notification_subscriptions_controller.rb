@@ -21,10 +21,10 @@ class NotificationSubscriptionsController < ApplicationController
 
     if params[:config] == "not_subscribed"
       @notification_subscription.delete
-      @notification_subscription.notifiable.update(receive_notifications: false) if current_user_is_author?
+      @notification_subscription.notifiable.update(receive_notifications: false) if current_user_author?
     else
       @notification_subscription.config = params[:config] || "all_comments"
-      receive_notifications = (params[:config] == "all_comments" && current_user_is_author?)
+      receive_notifications = (params[:config] == "all_comments" && current_user_author?)
       @notification_subscription.notifiable.update(receive_notifications: true) if receive_notifications
       @notification_subscription.save
     end
@@ -37,7 +37,7 @@ class NotificationSubscriptionsController < ApplicationController
 
   private
 
-  def current_user_is_author?
+  def current_user_author?
     # TODO: think of a better solution for handling mute notifications in dashboard / manage
     current_user.id == @notification_subscription.notifiable.user_id
   end
