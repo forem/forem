@@ -2,6 +2,7 @@ class Comment < ApplicationRecord
   has_ancestry
   resourcify
 
+  include PgSearch::Model
   include Reactable
   include Searchable
 
@@ -67,12 +68,31 @@ class Comment < ApplicationRecord
 
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
+  # [@atsmith813] this is adapted from the `search_field` property in
+  # `config/elasticsearch/mappings/feed_content.json` and
+  # `app/serializers/search/comment_serializer.rb`
+  pg_search_scope :search_comments,
+                  against: %i[body_markdown],
+                  using: { tsearch: { prefix: true } }
+
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
 
   alias touch_by_reaction save
 
   def self.tree_for(commentable, limit = 0)
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+  end
+
+  def self.force_eager_load_serialized_data
+    users_query = "LEFT JOIN users ON comments.user_id = users.id"
+    commentables_query = ""
+
+    COMMENTABLE_TYPES.each do |commentable_type|
+      table_name = "#{commentable_type.underscore}s"
+      commentables_query += " LEFT JOIN #{table_name} ON #{table_name}.id = comments.commentable_id"
+    end
+
+    joins(users_query + commentables_query)
   end
 
   def search_id
