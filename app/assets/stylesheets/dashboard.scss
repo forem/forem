@@ -279,33 +279,8 @@
   }
 }
 
-.toggles {
-  text-align: center;
-}
-
-.toggles button {
-  display: inline-block;
-  padding: 2px 8px;
-  margin: 8px;
-  font-size: 1.3em;
-  border-radius: 2px;
-  border: 1px solid transparent;
-  font-family: $helvetica-condensed;
-  font-stretch: condensed;
-  top: 18px;
-  font-weight: 600;
-  background-color: transparent;
-
-  &:focus {
-    outline: 0;
-  }
-
-  &.selected {
-    background: #cfd7ff;
-    color: #0a0a0a !important;
-    border: 1px solid #4e57ef;
-    box-shadow: 3px 4px 0px #4e57ef;
-  }
+.crayons-tabs--analytics {
+  justify-content: flex-end;
 }
 
 .graphs {
