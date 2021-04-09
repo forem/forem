@@ -40,7 +40,7 @@ module Search
 
         relation = relation.search_comments(term) if term.present?
 
-        relation = relation.select(*ATTRIBUTES).order("comments.score desc")
+        relation = relation.select(*ATTRIBUTES).reorder("comments.score": :desc)
 
         results = relation.page(page).per(per_page)
 
