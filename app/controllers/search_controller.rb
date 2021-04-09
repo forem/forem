@@ -120,19 +120,18 @@ class SearchController < ApplicationController
   end
 
   def feed_content
-    params[:class_name] ||= "Article"
-    class_name = params[:class_name].inquiry
+    class_name = params[:class_name]&.inquiry
     result =
-      if class_name.Comment? && FeatureFlag.enabled?(:search_2_comments)
+      if class_name.blank?
+        # If we are in the main feed and not filtering by type return
+        # all articles, podcast episodes, and users
+        feed_content_search.concat(user_search)
+      elsif class_name.Comment? && FeatureFlag.enabled?(:search_2_comments)
         Search::Postgres::Comment.search_documents(
           term: feed_params[:search_fields],
           page: feed_params[:page],
           per_page: feed_params[:per_page],
         )
-      elsif class_name.blank?
-        # If we are in the main feed and not filtering by type return
-        # all articles, podcast episodes, and users
-        feed_content_search.concat(user_search)
       elsif class_name.User?
         # No need to check for articles or podcast episodes if we know we only want users
         user_search
