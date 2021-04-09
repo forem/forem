@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 
 import {
@@ -251,24 +251,26 @@ export class ReadingList extends Component {
                 )}
                 <section className="crayons-layout__content crayons-card mb-4">
                   {items.length > 0 ? (
-                    <ItemList
-                      items={items}
-                      archiveButtonLabel={archiveButtonLabel}
-                      toggleArchiveStatus={this.toggleArchiveStatus}
-                    />
+                    <Fragment>
+                      <ItemList
+                        items={items}
+                        archiveButtonLabel={archiveButtonLabel}
+                        toggleArchiveStatus={this.toggleArchiveStatus}
+                      />
+                      {showLoadMoreButton && (
+                        <div className="flex justify-center my-2">
+                          <Button
+                            onClick={this.loadNextPage}
+                            variant="secondary"
+                            className="w-max"
+                          >
+                            Load more
+                          </Button>
+                        </div>
+                      )}
+                    </Fragment>
                   ) : loading ? null : (
                     this.renderEmptyItems()
-                  )}
-                  {showLoadMoreButton && (
-                    <div className="flex justify-center my-2">
-                      <Button
-                        onClick={this.loadNextPage}
-                        variant="secondary"
-                        className="w-max"
-                      >
-                        Load more
-                      </Button>
-                    </div>
                   )}
                 </section>
               </div>
