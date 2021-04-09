@@ -2721,12 +2721,13 @@ paths:
           name: sort
           schema:
             type: string
-            default: desc
+            default: 'created_at'
+            pattern: '^-?\w+(,-?\w+)*$'
           required: false
           description: |
             Specifies the sort order for the `created_at` param of the follow
-            relationship. It defaults to `desc`, to get reverse order `asc` can
-            be used.
+            relationship. To sort by newest followers first (descending order)
+            specify `?sort=-created_at`.
       responses:
         "200":
           description: A list of followers
