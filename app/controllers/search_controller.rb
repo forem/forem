@@ -119,6 +119,9 @@ class SearchController < ApplicationController
     render json: { result: [] }
   end
 
+  # TODO: [@rhymes] the homepage feed uses `feed_content_search` as an index,
+  # we should eventually move it to a JSON result
+  # in ArticlesController#Homepage or HomepageController#show
   def feed_content
     feed_docs = if params[:class_name].blank?
                   # If we are in the main feed and not filtering by type return
