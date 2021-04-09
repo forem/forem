@@ -180,6 +180,13 @@ export const MentionAutocompleteTextArea = forwardRef(
           setSearchTerm('');
           setAriaHelperText('');
           setUsers([]);
+
+          const { selectionStart } = comboboxRef.current;
+
+          // Switch back to the plain text area
+          comboboxRef.current.classList.add('hidden');
+          plainTextAreaRef.current.classList.remove('hidden');
+          setCursorPosition(selectionStart + 1);
         }
       };
 
