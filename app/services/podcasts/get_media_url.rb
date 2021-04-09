@@ -4,8 +4,8 @@ module Podcasts
       @enclosure_url = enclosure_url.to_s
     end
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     def call

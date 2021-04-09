@@ -1,49 +1,51 @@
 <% title("Dashboard - #{community_name}") %>
 
-<main id="index-container"
-    data-params="<%= params.to_json(only: %i[action per_page]) %>"
-    data-which="following">
-  <header class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Following organizations</h1>
-    <%= render "actions_mobile" %>
-  </header>
+<div id="index-container"
+  data-params="<%= params.to_json(only: %i[action per_page]) %>"
+  data-which="following">
+  <main id="main-content">
+    <header class="crayons-layout">
+      <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Following organizations</h1>
+      <%= render "actions_mobile" %>
+    </header>
 
-  <div class="crayons-layout crayons-layout--2-cols">
-    <aside class="crayons-layout__sidebar-left">
-      <%= render "actions" %>
-    </aside>
+    <div class="crayons-layout crayons-layout--2-cols">
+      <aside class="crayons-layout__sidebar-left">
+        <%= render "actions" %>
+      </aside>
 
-    <div class="crayons-layout__content" id="user-dashboard">
+      <div class="crayons-layout__content" id="user-dashboard">
 
-      <% if @followed_organizations.any? %>
-        <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
-          <% @followed_organizations.each do |follow| %>
-            <% organization = follow.followable %>
-            <div class="crayons-card p-4 m:p-6 flex s:grid single-article break-word content-center" id="follows-<%= follow.id %>">
-              <a href="<%= organization.path %>" class="crayons-logo crayons-logo--2xl s:mb-2 s:mx-auto">
-                <img alt="<%= organization.name %> logo" class="crayons-logo__image" src="<%= Images::Profile.call(organization.profile_image_url, length: 60) %>" />
-              </a>
+        <% if @followed_organizations.any? %>
+          <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
+            <% @followed_organizations.each do |follow| %>
+              <% organization = follow.followable %>
+              <div class="crayons-card p-4 m:p-6 flex s:grid single-article break-word content-center" id="follows-<%= follow.id %>">
+                <a href="<%= organization.path %>" class="crayons-logo crayons-logo--2xl s:mb-2 s:mx-auto">
+                  <img alt="<%= organization.name %> logo" class="crayons-logo__image" src="<%= Images::Profile.call(organization.profile_image_url, length: 60) %>" />
+                </a>
 
-              <div class="pl-4 s:pl-0 self-center">
-                <h3 class="s:mb-1 p-0">
-                  <a href="<%= organization.path %>">
-                    <%= organization.name %>
-                  </a>
-                </h3>
+                <div class="pl-4 s:pl-0 self-center">
+                  <h3 class="s:mb-1 p-0">
+                    <a href="<%= organization.path %>">
+                      <%= organization.name %>
+                    </a>
+                  </h3>
 
-                <p>
-                  <a href="<%= organization.path %>" class="crayons-link crayons-link--secondary">
-                    @<%= organization.username %>
-                  </a>
-                </p>
+                  <p>
+                    <a href="<%= organization.path %>" class="crayons-link crayons-link--secondary">
+                      @<%= organization.username %>
+                    </a>
+                  </p>
+                </div>
               </div>
-            </div>
-          <% end %>
-        </div>
-      <% else %>
-        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any organizations yet...</div>
-      <% end %>
-      <%= render "sublist" %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any organizations yet...</div>
+        <% end %>
+        <%= render "sublist" %>
+      </div>
     </div>
-  </div>
-</main>
+  </main>
+</div>

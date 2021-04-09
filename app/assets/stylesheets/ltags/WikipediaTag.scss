@@ -1,62 +1,65 @@
 @import '../variables';
+@import '../components/buttons';
+
 .ltag__wikipedia--container {
   border: 1px solid $light-medium-gray;
   border-radius: 3px;
   box-shadow: $shadow;
   margin: 1.1em auto 1.3em;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
-    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   overflow: hidden;
   max-width: 620px;
-  padding: 0.8em 0.5em 0;
-  a {
-    color: #0366d6 !important;
-    color: var(--theme-anchor-color, #0366d6) !important;
-  }
+  padding-top: 1rem;
+
   .ltag__wikipedia--header {
-    font-weight: 400;
-    font-size: 1.2em;
-    line-height: 1.3em;
-    margin: 0em 0px 0.5em;
+    font-weight: var(--fw-normal);
+    font-size: var(--fs-xl);
+    line-height: var(--lh-base);
+    margin: 0em 0 0.5em;
+    padding: 0 var(--su-3);
+
+    > a {
+      color: var(--link-brand-color);
+    }
+
     .ltag__wikipedia--logo {
       width: 1.15em;
       max-width: 1.1em;
       display: inline-block;
-      left: 0px;
-      margin-right: 0.3em;
-      vertical-align: -0.18em;
+      left: 0;
+      margin: 0 var(--su-2) 0 0;
+      vertical-align: middle;
       filter: invert(0);
       filter: var(--theme-social-icon-invert, invert(0));
     }
   }
+
   .ltag__wikipedia--extract {
-    font-weight: 400;
+    font-weight: var(--fw-normal);
     margin: 0;
     margin-left: 0.15em;
-    font-size: 0.75em;
-    line-height: 1.5em;
-    padding-bottom: 1em;
+    font-size: var(--fs-s);
+    line-height: var(--lh-base);
+    padding: 0 var(--su-3);
   }
+
   .ltag__wikipedia--btn--container {
-    padding: 0.1em 0 1.15em;
+    padding: 1rem;
     z-index: var(--z-elevate);
     text-align: center;
     position: relative;
     box-shadow: 0px 0px 60px 42px #fff;
     box-shadow: 0px 0px 60px 42px var(--theme-container-background, #fff);
   }
+
   .ltag__wikipedia--btn {
-    color: #0366d6;
-    background-color: #f1f8ff;
-    border-radius: 3px;
-    line-height: 20px;
-    padding: 0.25em 1.2em;
-    opacity: 0.9;
-    font-weight: bold;
-    border: 1px solid #0366d6;
-    font-size: 0.75em;
-    &:hover {
-      opacity: 1;
+    @extend .crayons-btn;
+    @extend .crayons-btn--secondary;
+
+    > a,
+    > a:hover {
+      color: var(--button-secondary-color);
     }
   }
 }

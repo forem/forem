@@ -79,7 +79,7 @@ class CommentsController < ApplicationController
         return
       end
 
-      render partial: "comments/comment.json"
+      render partial: "comments/comment", formats: :json
 
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,

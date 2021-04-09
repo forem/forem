@@ -151,7 +151,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should exist" do
         kept_associations.each do |kept_association|
-          expect { kept_association.reload }.not_to raise_error, kept_association
+          expect { kept_association.reload }.not_to raise_error
         end
       end
     end
@@ -163,7 +163,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should not exist" do
         user_associations.each do |user_association|
-          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound), user_association
+          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
     end
@@ -185,9 +185,9 @@ RSpec.describe Users::Delete, type: :service do
     end
   end
 
-  context "when the user was banned" do
+  context "when the user was suspended" do
     it "stores a hash of the username so the user can't sign up again" do
-      user = create(:user, :banned)
+      user = create(:user, :suspended)
       expect do
         described_class.call(user)
       end.to change(Users::SuspendedUsername, :count).by(1)

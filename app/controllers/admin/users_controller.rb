@@ -195,7 +195,7 @@ module Admin
     def user_params
       allowed_params = %i[
         new_note note_for_current_role user_status
-        pro merge_user_id add_credits remove_credits
+        merge_user_id add_credits remove_credits
         add_org_credits remove_org_credits
         organization_id identity_id
       ]

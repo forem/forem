@@ -1,6 +1,6 @@
 <% title "Stats for Your Article" %>
 
-<div class="dashboard-container pro-container" id="user-dashboard">
+<div class="dashboard-container analytics-container" id="user-dashboard">
   <a
     href="<%= @article.current_state_path %>"
     class="rounded-btn rounded-btn--transparent"
@@ -11,7 +11,7 @@
   </a>
 
   <section class="header-card card">
-    <h1 class="pro-header">Stats for "<%= @article.title %>"</h1>
+    <h1 class="analytics-header">Stats for "<%= @article.title %>"</h1>
   </section>
 
   <%= render "shared/stats" %>

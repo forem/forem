@@ -20,8 +20,8 @@ module Authentication
       @cta_variant = cta_variant
     end
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     def call
@@ -97,8 +97,8 @@ module Authentication
 
     def find_or_create_user!
       username = provider.user_nickname
-      banned_user = Users::SuspendedUsername.previously_banned?(username)
-      raise ::Authentication::Errors::PreviouslyBanned if banned_user
+      suspended_user = Users::SuspendedUsername.previously_suspended?(username)
+      raise ::Authentication::Errors::PreviouslySuspended if suspended_user
 
       existing_user = User.where(
         provider.user_username_field => username,

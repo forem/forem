@@ -38,6 +38,8 @@ RSpec.describe User, type: :model do
       subject { user }
 
       it { is_expected.to have_one(:profile).dependent(:destroy) }
+      it { is_expected.to have_one(:notification_setting).dependent(:destroy) }
+      it { is_expected.to have_one(:setting).dependent(:destroy) }
 
       it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").dependent(:delete_all) }
       it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").dependent(:delete_all) }
@@ -588,7 +590,6 @@ RSpec.describe User, type: :model do
 
     it "persists extracts relevant identity data from new twitter user" do
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.twitter_followers_count).to eq(100)
       expect(new_user.twitter_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
     end
 
@@ -621,6 +622,34 @@ RSpec.describe User, type: :model do
         user.follow(create(:user))
       end.to change(user.all_follows, :size).by(1)
     end
+  end
+
+  describe "#suspended?" do
+    subject { user.suspended? }
+
+    context "with suspended role" do
+      before do
+        user.add_role(:suspended)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    it { is_expected.to be false }
+  end
+
+  describe "#comment_suspended?" do
+    subject { user.comment_suspended? }
+
+    context "with comment_suspended role" do
+      before do
+        user.add_role(:comment_suspended)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    it { is_expected.to be false }
   end
 
   describe "#moderator_for_tags" do
@@ -756,17 +785,6 @@ RSpec.describe User, type: :model do
 
     it "returns false if nil is given" do
       expect(user.org_admin?(nil)).to be(false)
-    end
-  end
-
-  describe "#pro?" do
-    it "returns false if the user is not a pro" do
-      expect(user.pro?).to be(false)
-    end
-
-    it "returns true if the user has the pro role" do
-      user.add_role(:pro)
-      expect(user.pro?).to be(true)
     end
   end
 

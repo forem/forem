@@ -5,6 +5,17 @@ import fetch from 'jest-fetch-mock';
 import { ReadingList } from '../readingList';
 
 describe('<ReadingList />', () => {
+  beforeAll(() => {
+    global.window.matchMedia = jest.fn((query) => {
+      return {
+        matches: false,
+        media: query,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      };
+    });
+  });
+
   const getMockResponse = () =>
     JSON.stringify({
       result: [
@@ -34,7 +45,6 @@ describe('<ReadingList />', () => {
             user: {
               id: 318840,
               name: 'Bobby Tables',
-              pro: null,
               profile_image_90: 'https://picsum.photos/90/90',
               username: 'bobbytables',
             },
@@ -62,17 +72,5 @@ describe('<ReadingList />', () => {
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
-  });
-
-  it('renders all the elements', () => {
-    const { queryByPlaceholderText, queryByText } = render(
-      <ReadingList availableTags={['discuss']} />,
-    );
-
-    expect(queryByPlaceholderText('search your list')).toBeDefined();
-    expect(queryByText('#discuss')).toBeDefined();
-    expect(queryByText('View Archive')).toBeDefined();
-    expect(queryByText('Your Archive List is Lonely')).toBeDefined();
-    expect(queryByText('Reading List (empty)')).toBeDefined();
   });
 });
