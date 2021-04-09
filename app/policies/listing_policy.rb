@@ -1,10 +1,10 @@
 class ListingPolicy < ApplicationPolicy
   def edit?
-    user_is_author? || authorized_organization_admin_editor?
+    user_author? || authorized_organization_admin_editor?
   end
 
   def update?
-    user_is_author? || authorized_organization_admin_editor?
+    user_author? || authorized_organization_admin_editor?
   end
 
   def authorized_organization_poster?
@@ -21,7 +21,7 @@ class ListingPolicy < ApplicationPolicy
 
   private
 
-  def user_is_author?
+  def user_author?
     record.user_id == user.id
   end
 
