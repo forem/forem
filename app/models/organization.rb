@@ -20,9 +20,6 @@ class Organization < ApplicationRecord
   before_save :update_articles
   before_save :remove_at_from_usernames
   before_save :generate_secret
-  # This callback will eventually invoke Article.update_cached_user to update the organization.name
-  # only when it has been changed, thus invoking the trigger on Article.reading_list_document
-  after_update :update_articles_cached_organization
   # You have to put before_destroy callback BEFORE the dependent: :nullify
   # to ensure they execute before the records are updated
   # https://guides.rubyonrails.org/active_record_callbacks.html#destroying-an-object
@@ -30,8 +27,11 @@ class Organization < ApplicationRecord
 
   after_save :bust_cache
 
-  after_commit :sync_related_elasticsearch_docs, on: :update
-  after_commit :bust_cache, :article_sync, on: :destroy
+  # This callback will eventually invoke Article.update_cached_user to update the organization.name
+  # only when it has been changed, thus invoking the trigger on Article.reading_list_document
+  after_update_commit :update_articles_cached_organization
+  after_update_commit :sync_related_elasticsearch_docs
+  after_destroy_commit :bust_cache, :article_sync
 
   has_many :articles, dependent: :nullify
   has_many :collections, dependent: :nullify
