@@ -8,7 +8,7 @@ module Articles
 
     MINIMUM_SCORE = -4
 
-    def self.call(relation: Article.published, options: {})
+    def self.call(relation: Article.published, **options)
       options = DEFAULT_OPTIONS.merge(options)
       tags, time_ago, count = options.values_at(:tags, :time_ago, :count)
 
@@ -20,9 +20,6 @@ module Articles
                  elsif time_ago
                    relation = relation.where(published_at: time_ago.., score: MINIMUM_SCORE..).presence || relation
                    relation.order(comments_count: :desc)
-                 elsif tags.present?
-                   relation = relation.where(published_at: 5.days.ago.., score: MINIMUM_SCORE..).presence || relation
-                   relation.order("last_comment_at DESC NULLS LAST")
                  else
                    relation = relation.where(published_at: 2.days.ago.., score: MINIMUM_SCORE..).presence || relation
                    relation.order("last_comment_at DESC NULLS LAST")
