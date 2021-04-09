@@ -1948,19 +1948,19 @@
     "@stoplight/yaml-ast-parser" "0.0.48"
     tslib "^1.12.0"
 
-"@storybook/addon-a11y@^6.2.5":
-  version "6.2.5"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.2.5.tgz#7dee38df95dc3a7155c2aae846402a1a0777ec37"
-  integrity sha512-6DRRWVE52OdbnyIbI8pbuWkvL54YAiNEbifN9pGLkoSgQL4HdmtlP96UnQrjF9IfjYVYzJ2rAnBwzFgg8S6L3w==
+"@storybook/addon-a11y@^6.2.7":
+  version "6.2.7"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.2.7.tgz#4e0c4777ed085f81a572724f79576400c42487cf"
+  integrity sha512-pILLWLl3CGLsORDeD76pRphX+nT0C/GpjUOwWZZDqV9aVXY20zUo48EdpyPzgXF1vXzOVIm/6UxnrqorvXnEPg==
   dependencies:
-    "@storybook/addons" "6.2.5"
-    "@storybook/api" "6.2.5"
-    "@storybook/channels" "6.2.5"
-    "@storybook/client-api" "6.2.5"
-    "@storybook/client-logger" "6.2.5"
-    "@storybook/components" "6.2.5"
-    "@storybook/core-events" "6.2.5"
-    "@storybook/theming" "6.2.5"
+    "@storybook/addons" "6.2.7"
+    "@storybook/api" "6.2.7"
+    "@storybook/channels" "6.2.7"
+    "@storybook/client-api" "6.2.7"
+    "@storybook/client-logger" "6.2.7"
+    "@storybook/components" "6.2.7"
+    "@storybook/core-events" "6.2.7"
+    "@storybook/theming" "6.2.7"
     axe-core "^4.1.1"
     core-js "^3.8.2"
     global "^4.4.0"
@@ -6879,10 +6879,10 @@ cli-width@^3.0.0:
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-3.0.0.tgz#a2f48437a2caa9a22436e794bf071ec9e61cedf6"
   integrity sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw==
 
-clipboard-polyfill@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/clipboard-polyfill/-/clipboard-polyfill-3.0.2.tgz#6d45719421395257460e09febb5dffa495a2878b"
-  integrity sha512-1DTdwGicGBAhK4/VjOwFYG3fAu1aj1n/jC/00qkRyDobKSB/PF8mhJkbAlDGbNEc8hIrPElv5j96OE5PwHMUfA==
+clipboard-polyfill@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/clipboard-polyfill/-/clipboard-polyfill-3.0.3.tgz#159ea0768e20edc7ffda404bd13c54c73de4ff40"
+  integrity sha512-hts0o01ZkwjA1qHA5gFePzAj/780W7v+eyN3GdaCRyDnapzcPsKRV5aodv77gcr40NDIcyNjNmc+HvfKV+jD0g==
 
 clipboard@^2.0.0:
   version "2.0.8"
