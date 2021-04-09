@@ -10,7 +10,7 @@ class Comment < ApplicationRecord
   SEARCH_CLASS = Search::FeedContent
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
-  COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
+  COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze # Also used in self.force_eager_load_serialized_data
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
 
