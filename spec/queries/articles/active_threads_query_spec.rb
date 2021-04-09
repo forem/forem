@@ -1,6 +1,10 @@
 require "rails_helper"
 
 RSpec.describe Articles::ActiveThreadsQuery, type: :query do
+  before do
+    create(:article, score: described_class::MINIMUM_SCORE - 1, tags: "watercooler")
+  end
+
   describe "::call" do
     context "when time_ago is latest" do
       it "returns the latest article with a good score", :aggregate_failures do
