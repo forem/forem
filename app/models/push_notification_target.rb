@@ -17,13 +17,12 @@ class PushNotificationTarget < ApplicationRecord
 
   def active?
     # TRUE if it's marked as `active` in the DB && it has credentials available
-    active && auth_credentials?
+    active && auth_credentials.present?
   end
 
-  def auth_credentials?
-    auth_credentials.present?
-  end
-
+  # The Forem apps will get their credentials from an ENV variable, whereas
+  # custom PN targets will get their credentials from the auth_key stored in
+  # the DB (configured by the Forem creator).
   def auth_credentials
     if app_bundle == FOREM_BUNDLE && platform == Device::IOS
       ApplicationConfig["RPUSH_IOS_PEM"]
@@ -36,7 +35,7 @@ class PushNotificationTarget < ApplicationRecord
     app = Rpush::Apns2::App.new
     app.name = app_bundle
     app.certificate = auth_credentials.to_s.gsub("\\n", "\n")
-    app.environment = Rails.env.production? ? "production" : "development"
+    app.environment = Rails.env
     app.password = ""
     app.bundle_id = app_bundle
     app.connections = 1
@@ -53,34 +52,11 @@ class PushNotificationTarget < ApplicationRecord
     app
   end
 
-  def self.fetch_by(app_bundle:, platform:)
-    # This guard clause handles the Forem app special case
-    return forem_app_target(platform: platform) if app_bundle == FOREM_BUNDLE
-
-    # All other PushNotificationTarget are simply fetched as usual
-    PushNotificationTarget.find_by(app_bundle: app_bundle, platform: platform)
-  end
-
-  def self.all_targets
-    forem_app_platforms = PushNotificationTarget.where(app_bundle: FOREM_BUNDLE).pluck(:platform)
-    (FOREM_APP_PLATFORMS - forem_app_platforms).each do |platform|
-      # Re-create the supported Forem apps if they're missing
-      PushNotificationTarget.create(app_bundle: FOREM_BUNDLE, platform: platform, active: true)
-    end
-
-    PushNotificationTarget.all
-  end
-
-  def self.forem_app_target(platform:)
-    target = PushNotificationTarget.find_by(app_bundle: FOREM_BUNDLE, platform: platform)
-    target || PushNotificationTarget.create(app_bundle: FOREM_BUNDLE, platform: platform, active: true)
-  end
-
   # [@forem/backend] `.where().first` is necessary because we use Redis data storage
   # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
   # rubocop:disable Rails/FindBy
   def self.rpush_app(app_bundle:, platform:)
-    target = PushNotificationTarget.fetch_by(app_bundle: app_bundle, platform: platform)
+    target = PushNotifications::Targets::FetchBy.call(app_bundle: app_bundle, platform: platform)
 
     case target&.platform
     when Device::IOS

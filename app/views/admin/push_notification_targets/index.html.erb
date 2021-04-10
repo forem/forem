@@ -19,11 +19,11 @@
     </tr>
   </thead>
   <tbody class="crayons-card">
-    <% @push_notification_targets.each do |push_notification_target| %>
+    <% @targets.each do |push_notification_target| %>
         <tr>
           <td><%= push_notification_target.app_bundle %></td>
           <td><%= push_notification_target.platform %></td>
-          <% if push_notification_target.auth_credentials? %>
+          <% if push_notification_target.auth_credentials.present? %>
             <td>*******</td>
           <% else %>
             <td>Not Available</td>
