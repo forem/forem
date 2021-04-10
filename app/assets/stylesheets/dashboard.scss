@@ -1,5 +1,7 @@
 @import 'variables';
 @import 'mixins';
+@import '../config/import';
+
 .dashboard-container {
   .manage-header {
     background: $bold-blue;
