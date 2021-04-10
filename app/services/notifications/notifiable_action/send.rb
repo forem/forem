@@ -16,6 +16,8 @@ module Notifications
       end
 
       def call
+        return unless notifiable.is_a?(Article)
+
         json_data = {
           user: user_data(notifiable.user),
           article: article_data(notifiable)
@@ -23,9 +25,7 @@ module Notifications
         json_data[:organization] = organization_data(notifiable.organization) if notifiable.organization_id
 
         notifications_attributes = []
-        # followers is an array and not an activerecord object
-        # followers can occasionally be nil because orphaned follows can possibly exist in the db (for now)
-        followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
+        notifiable.followers.sort_by(&:updated_at).last(10_000).reverse_each do |follower|
           now = Time.current
           notifications_attributes.push(
             user_id: follower.id,
@@ -52,17 +52,6 @@ module Notifications
       private
 
       attr_reader :notifiable, :action
-
-      def followers
-        followers = notifiable.user.followers_scoped.where(subscription_status: "all_articles").map(&:follower)
-
-        if notifiable.organization_id
-          org_followers = notifiable.organization.followers_scoped.where(subscription_status: "all_articles")
-          followers += org_followers.map(&:follower)
-        end
-
-        followers.uniq.compact
-      end
 
       def choose_upsert_index(action)
         return :index_notifications_on_user_notifiable_and_action_not_null if action.present?

@@ -4,7 +4,7 @@ class MessagePolicy < ApplicationPolicy
   end
 
   def destroy?
-    user_is_sender?
+    user_sender?
   end
 
   def update?
@@ -17,7 +17,7 @@ class MessagePolicy < ApplicationPolicy
 
   private
 
-  def user_is_sender?
+  def user_sender?
     record.user_id == user.id
   end
 end

@@ -158,6 +158,12 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       test = generate_and_parse_markdown(code_span)
       expect(test).to eq("<p><a href=\"#chapter-1\">Chapter 1</a></p>\n\n")
     end
+
+    it "does not render CSS classes" do
+      expect(generate_and_parse_markdown("<center class=\"w-100\"></center>"))
+        .to exclude("class")
+        .and exclude("w-100")
+    end
   end
 
   describe "mentions" do
