@@ -547,9 +547,12 @@ class User < ApplicationRecord
 
   def authenticated_social_accounts
     user_identities = identities_enabled
-    return {} if user_identities.empty?
+    return {} if user_identities.blank?
 
-    urls = user_identities.pluck(:auth_data_dump).map { |data| data.dig(:info, :urls) }.reduce(&:merge)
+    urls = user_identities.pluck(:auth_data_dump)
+      .map { |data| data.dig(:info, :urls) }
+      .reduce(&:merge) || {}
+
     { github: urls[:GitHub], twitter: urls[:Twitter], facebook: urls[:Facebook] }
   end
 
