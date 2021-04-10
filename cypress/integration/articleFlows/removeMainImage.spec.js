@@ -1,4 +1,5 @@
 describe('Remove main image v2 editor', () => {
+  const title = 'Test Article';
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV2User.json').as('user');
@@ -6,7 +7,7 @@ describe('Remove main image v2 editor', () => {
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
         cy.createArticle({
-          title: 'Test Article',
+          title,
           tags: ['beginner', 'ruby', 'go'],
           content: `This is a test article's contents.`,
           published: true,
@@ -23,7 +24,7 @@ describe('Remove main image v2 editor', () => {
     it('should successfully remove the image', () => {
       cy.findByText('Remove').click();
       cy.findByText('Save changes').click();
-      cy.get('.crayons-article__cover').should('not.exist');
+      cy.findByAltText(`Cover image for ${title}`).should('not.exist');
     });
   });
 });
