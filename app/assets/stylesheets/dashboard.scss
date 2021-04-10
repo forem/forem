@@ -257,45 +257,59 @@
   }
 }
 
-.charts-container {
-  max-width: 500px;
-  height: 250px;
-  margin: 0 auto;
-}
-
 .analytics-container {
   width: 1400px;
   margin: 0 auto;
 }
 
-.summary-stats {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  justify-content: space-between;
-
-  .card {
-    flex: 1 0 150px;
-  }
+.crayons-tabs--analytics {
+  justify-content: center;
 }
 
-.crayons-tabs--analytics {
-  justify-content: flex-end;
+.summary-stats {
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+
+  &__col {
+    flex: 1;
+    width: 10%;
+  }
 }
 
 .graphs {
-  .row {
-    display: flex;
-    flex-wrap: wrap;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
 
-    .card {
-      flex: 1 0;
+  &__col {
+    flex: 1;
+    width: 50%;
+  }
+}
+
+.centered-graph {
+  margin: 10px auto;
+  width: 100%;
+}
+
+@media screen and (max-width: $breakpoint-s) {
+  .summary-stats {
+    display: block;
+    &__col {
+      display: block;
+      width: 90%;
+      margin: 10px auto;
     }
   }
 
-  h2 {
-    margin: 5px;
-    text-align: center;
+  .graphs {
+    display: block;
+    &__col {
+      display: block;
+      width: 90%;
+      margin: 10px auto;
+    }
   }
 }
 
