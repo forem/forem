@@ -18,7 +18,7 @@ module Organizations
       EdgeCache::BustUser.call(user)
 
       # notify user that the org was deleted
-      # NotifyMailer.with(name: user.name, email: user.email).account_deleted_email.deliver_now
+      NotifyMailer.with(name: user.name, org_name: org.name, email: user.email).organization_deleted_email.deliver_now
     end
   end
 end

@@ -7,6 +7,9 @@ RSpec.describe Organizations::DeleteWorker, type: :worker do
     let!(:org) { create(:organization) }
     let!(:user) { create(:user) }
     let(:delete) { Organizations::Delete }
+    let(:mailer_class) { NotifyMailer }
+    let(:mailer) { double }
+    let(:message_delivery) { double }
 
     context "when org and user are found" do
       it "destroys the org" do
@@ -32,6 +35,24 @@ RSpec.describe Organizations::DeleteWorker, type: :worker do
         allow(bust_cache).to receive(:call)
         worker.perform(org.id, user.id)
         expect(bust_cache).to have_received(:call).with(user)
+      end
+
+      it "sends the notification" do
+        expect do
+          worker.perform(org.id, user.id)
+        end.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+
+      it "sends the correct notification" do
+        allow(mailer_class).to receive(:with).and_return(mailer)
+        allow(mailer).to receive(:organization_deleted_email).and_return(message_delivery)
+        allow(message_delivery).to receive(:deliver_now)
+
+        worker.perform(org.id, user.id)
+
+        expect(mailer_class).to have_received(:with).with(org_name: org.name, name: user.name, email: user.email)
+        expect(mailer).to have_received(:organization_deleted_email)
+        expect(message_delivery).to have_received(:deliver_now)
       end
     end
 
