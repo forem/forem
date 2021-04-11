@@ -1,4 +1,4 @@
-scope :content_manager do
+scope :content_manager, as: 'content_manager' do
   resources :articles, only: %i[index show update]
   resources :badges, only: %i[index edit update new create]
   resources :badge_achievements, only: %i[index destroy]
@@ -21,7 +21,7 @@ scope :content_manager do
   end
 end
 
-scope :customization do
+scope :customization, as: 'customization' do
   resource :config
   resources :display_ads, only: %i[index edit update new create destroy]
   resources :html_variants, only: %i[index edit update new create show destroy]
