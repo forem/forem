@@ -280,7 +280,7 @@ module Constants
       },
       sidebar_tags: {
         description: "Determines which tags are shown on the homepage righthand sidebar",
-        placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta"
+        placeholder: "List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta"
       },
       sponsor_headline: {
         description: "Determines the heading text of the main sponsors sidebar above the list of sponsors.",
