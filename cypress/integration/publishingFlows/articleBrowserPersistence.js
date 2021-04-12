@@ -13,7 +13,7 @@ describe('Article Editor', () => {
 
     describe(`revert changes`, () => {
       it('should revert to the initial v1 editor template if it is a new article', () => {
-        cy.findByTestId('article-form').as('articleForm');
+        cy.findByRole('form', { name: /^Edit an article$/i }).as('articleForm');
 
         cy.get('@articleForm')
           .findByLabelText('Post Content')
@@ -44,7 +44,9 @@ describe('Article Editor', () => {
 
           cy.findByText(/^Edit$/i).click();
 
-          cy.findByTestId('article-form').as('articleForm');
+          cy.findByRole('form', { name: /^Edit an article$/i }).as(
+            'articleForm',
+          );
 
           cy.get('@articleForm')
             .findByLabelText('Post Content')
@@ -86,7 +88,7 @@ describe('Article Editor', () => {
 
     describe(`revert changes`, () => {
       it('should revert to empty content if it is a new article', () => {
-        cy.findByTestId('article-form').as('articleForm');
+        cy.findByRole('form', { name: /^Edit an article$/i }).as('articleForm');
 
         cy.get('@articleForm')
           .findByLabelText(/^Post Title$/i)
@@ -129,7 +131,9 @@ describe('Article Editor', () => {
 
           cy.findByText(/^Edit$/i).click();
 
-          cy.findByTestId('article-form').as('articleForm');
+          cy.findByRole('form', { name: /^Edit an article$/i }).as(
+            'articleForm',
+          );
 
           cy.get('@articleForm')
             .findByLabelText(/^Post Title$/i)
