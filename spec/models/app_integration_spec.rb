@@ -22,7 +22,7 @@ RSpec.describe AppIntegration, type: :model do
       it "returns true/false based on the ENV variable for the forem apps" do
         forem_app_integration = AppIntegrations::FetchOrCreateBy.call(
           app_bundle: AppIntegration::FOREM_BUNDLE,
-          platform: Device::IOS,
+          platform: AppIntegration::FOREM_APP_PLATFORMS.sample,
         )
         allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("asdf123")
         expect(forem_app_integration.operational?).to be true
