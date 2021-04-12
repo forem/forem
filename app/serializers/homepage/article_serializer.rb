@@ -4,7 +4,6 @@ module Homepage
       :class_name,
       :cloudinary_video_url,
       :comments_count,
-      # :flare_tag,
       :id,
       :path,
       :public_reactions_count,
@@ -12,12 +11,12 @@ module Homepage
       :reading_time,
       :title,
       :user_id,
-      :video_duration_string,
     )
 
     attribute :video_duration_string, &:video_duration_in_minutes
     attribute :published_at_int, ->(article) { article.published_at.to_i }
     attribute :tag_list, ->(article) { article.cached_tag_list.to_s.split(", ") }
+    attribute :tag_flare, ->(article, params) { params[:tag_flares][article.id] }
 
     attribute :user do |article|
       user = article.user

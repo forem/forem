@@ -1,5 +1,20 @@
 module Homepage
   class ArticlesQuery
+    ATTRIBUTES = %i[
+      cached_tag_list
+      comments_count
+      crossposted_at
+      id
+      organization_id
+      path
+      public_reactions_count
+      published_at
+      reading_time
+      title
+      user_id
+      video_duration_in_seconds
+      video_thumbnail_url
+    ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100
 
@@ -9,8 +24,7 @@ module Homepage
 
     # TODO: [@rhymes] change frontend to start from page 1
     def initialize(sort_by: :hotness_score, sort_direction: :desc, page: 0, per_page: DEFAULT_PER_PAGE)
-      # TODO: transform this into a join to select only the needed fields
-      @relation = Article.published.includes(:user, :organization)
+      @relation = Article.published.select(*ATTRIBUTES)
 
       @sort_by = sort_by
       @sort_direction = sort_direction
