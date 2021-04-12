@@ -30,7 +30,7 @@ RSpec.describe User, type: :model do
 
   before do
     omniauth_mock_providers_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   describe "validations" do
@@ -884,7 +884,7 @@ RSpec.describe User, type: :model do
     end
 
     it "returns true if the user has all the enabled providers" do
-      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+      allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
 
       user = create(:user, :with_identity)
 

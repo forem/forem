@@ -89,7 +89,7 @@ export class ArticleCoverImage extends Component {
     e.preventDefault();
     const { onMainImageUrlChange } = this.props;
     onMainImageUrlChange({
-      links: [],
+      links: [null],
     });
   };
 

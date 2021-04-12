@@ -4,19 +4,6 @@ module Constants
     SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
     DETAILS = {
-      require_captcha_for_email_password_registration: {
-        description: "People will be required to fill out a captcha when
-          they're creating a new account in your community",
-        placeholder: ""
-      },
-      allowed_registration_email_domains: {
-        description: "Restrict registration to only certain emails? (comma-separated list)",
-        placeholder: "dev.to, forem.com, codenewbie.org"
-      },
-      authentication_providers: {
-        description: "How can users sign in?",
-        placeholder: ""
-      },
       campaign_articles_require_approval: {
         description: "",
         placeholder: "Campaign stories show up on sidebar with approval?"
@@ -90,9 +77,6 @@ module Constants
       default_font: {
         description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
       },
-      display_email_domain_allow_list_publicly: {
-        description: "Do you want to display the list of allowed domains, or keep it private?"
-      },
       display_jobs_banner: {
         description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
         "or 'jobs' in the search box",
@@ -109,36 +93,6 @@ module Constants
       experience_high: {
         description: "The label for the top of the experience level range of a post",
         placeholder: "Senior Devs"
-      },
-      facebook_key: {
-        description:
-          "The \"App ID\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
-        placeholder: ""
-      },
-      facebook_secret: {
-        description:
-          "The \"App Secret\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
-        placeholder: ""
-      },
-      apple_client_id: {
-        description:
-          "The \"App Bundle\" code for the Authentication Service configured in the Apple Developer Portal",
-        placeholder: "com.example.app"
-      },
-      apple_team_id: {
-        description:
-          "The \"Team ID\" of your Apple Developer Account",
-        placeholder: ""
-      },
-      apple_key_id: {
-        description:
-          "The \"Key ID\" from the Authentication Service configured in the Apple Developer Portal",
-        placeholder: ""
-      },
-      apple_pem: {
-        description:
-          "The \"PEM\" key from the Authentication Service configured in the Apple Developer Portal",
-        placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\\n"
       },
       favicon_url: {
         description: "Used as the site favicon",
@@ -157,14 +111,6 @@ module Constants
         description: "Determines background/border of buttons etc. Must be dark enough to contrast with white text.",
         placeholder: "#0a0a0a"
       },
-      github_key: {
-        description: "The \"Client ID\" portion of the GitHub Oauth Apps portal",
-        placeholder: ""
-      },
-      github_secret: {
-        description: "The \"Client Secret\" portion of the GitHub Oauth Apps portal",
-        placeholder: ""
-      },
       ga_tracking_id: {
         description: "Google Analytics Tracking ID, e.g. UA-71991000-1",
         placeholder: ""
@@ -176,10 +122,6 @@ module Constants
       home_feed_minimum_score: {
         description: "Minimum score needed for a post to show up on the unauthenticated home page.",
         placeholder: "0"
-      },
-      invite_only_mode: {
-        description: "Only users invited by email can join this community.",
-        placeholder: ""
       },
       jobs_url: {
         description: "URL of the website where open positions are posted",
@@ -258,14 +200,6 @@ module Constants
         description: "Determines how often periodic email digests are sent",
         placeholder: 2
       },
-      recaptcha_site_key: {
-        description: "Add the site key for Google reCAPTCHA, which is used for reporting abuse",
-        placeholder: "What is the Google reCAPTCHA site key?"
-      },
-      recaptcha_secret_key: {
-        description: "Add the secret key for Google reCAPTCHA, which is used for reporting abuse",
-        placeholder: "What is the Google reCAPTCHA secret key?"
-      },
       secondary_logo_url: {
         description: "A place for an alternate logo, if you have one. Used throughout member onboarding and in some sign in forms.",
         placeholder: IMAGE_PLACEHOLDER
@@ -326,14 +260,6 @@ module Constants
       twitter_hashtag: {
         description: "Used as the twitter hashtag of the community",
         placeholder: "#DEVCommunity"
-      },
-      twitter_key: {
-        description: "The \"API key\" portion of consumer keys in the Twitter developer portal.",
-        placeholder: ""
-      },
-      twitter_secret: {
-        description: "The \"API secret key\" portion of consumer keys in the Twitter developer portal.",
-        placeholder: ""
       },
       user_considered_new_days: {
         description: "The number of days a user is considered new. The default is 3 days, but you can disable this entirely by inputting 0.",
