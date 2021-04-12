@@ -13,6 +13,8 @@ class FeedbackMessage < ApplicationRecord
   CATEGORIES = ["spam", "other", "rude or vulgar", "harassment", "bug", "listings"].freeze
   STATUSES = %w[Open Invalid Resolved].freeze
 
+  scope :open_abuse_reports, -> { where(status: "Open", feedback_type: "abuse-reports") }
+
   validates :feedback_type, :message, presence: true
   validates :reported_url, :category, presence: { if: :abuse_report? }, length: { maximum: 250 }
   validates :message, length: { maximum: 2500 }
