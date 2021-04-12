@@ -32,6 +32,7 @@ RSpec.describe Article, type: :model do
     it { is_expected.to have_many(:tags) }
     it { is_expected.to have_many(:user_subscriptions).dependent(:nullify) }
 
+    it { is_expected.to validate_length_of(:body_markdown).is_at_least(0).is_at_most(800.kilobytes) }
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
 
