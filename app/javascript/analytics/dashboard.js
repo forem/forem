@@ -1,7 +1,9 @@
 import { callHistoricalAPI, callReferrersAPI } from './client';
 
 function resetActive(activeButton) {
-  const buttons = document.querySelectorAll('.crayons-tabs--analytics .crayons-tabs__item');
+  const buttons = document.querySelectorAll(
+    '.crayons-tabs--analytics .crayons-tabs__item',
+  );
   for (let i = 0; i < buttons.length; i += 1) {
     const button = buttons[i];
     button.classList.remove('crayons-tabs__item--current');
