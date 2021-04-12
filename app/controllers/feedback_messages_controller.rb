@@ -1,6 +1,8 @@
 class FeedbackMessagesController < ApplicationController
   # No authorization required for entirely public controller
   skip_before_action :verify_authenticity_token
+  FLASH_MESSAGE = "Make sure the forms are filled. 🤖 Other possible errors: "\
+    "%<errors>s".freeze
 
   def create
     flash.clear
@@ -33,7 +35,7 @@ class FeedbackMessagesController < ApplicationController
       end
     else
       @previous_message = feedback_message_params[:message]
-      flash[:notice] = "Make sure the forms are filled 🤖"
+      flash[:notice] = format(FLASH_MESSAGE, errors: @feedback_message.errors_as_sentence.presence || "N/A")
 
       respond_to do |format|
         format.html { render "pages/report_abuse" }
