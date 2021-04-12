@@ -147,7 +147,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm", testid: "authSectionForm" } }) do |f| %>
+        <%= form_for(Settings::Authentication.new, url: admin_settings_authentications_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm", testid: "authSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -166,11 +166,11 @@
                   data-tooltip="Unchecking this will enable Email Registration">
                   <%= f.check_box :invite_only_mode,
                                   checked: invite_only_mode_or_no_enabled_auth_options,
-                                  data: { action: "config#adjustAuthenticationOptions", target: "config.inviteOnlyMode" },
+                                  data: { action: "config#adjustAuthenticationOptions", "config-target": "inviteOnlyMode" },
                                   class: "crayons-checkbox" %>
                   <div class="mt-0">
-                    <%= admin_config_label :invite_only_mode, "Invite-only mode" %>
-                    <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
+                    <%= admin_config_label :invite_only_mode, "Invite-only mode", model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication::DETAILS[:invite_only_mode][:description] %>
                   </div>
                 </div>
               </section>
@@ -194,11 +194,11 @@
                       data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
 
                       <div class="config-authentication__item--label">
-                        <p class="crayons-field__label <%= SiteConfig.allow_email_password_registration ? "pb-0" : "" %>">
+                        <p class="crayons-field__label <%= Settings::Authentication.allow_email_password_registration ? "pb-0" : "" %>">
                           Email address
                         </p>
                         <div
-                          class="enabled-indicator <%= SiteConfig.allow_email_password_registration ? "visible" : "" %>"
+                          class="enabled-indicator <%= Settings::Authentication.allow_email_password_registration ? "visible" : "" %>"
                           data-config-target="enabledIndicator">
                           <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Email enabled") %>
                           <small class="crayons-field__description ml-1">Enabled</small>
@@ -208,11 +208,11 @@
                       <button
                         class="crayons-btn crayons-btn--secondary"
                         id="email-auth-enable-edit-btn"
-                        data-button-text="<%= SiteConfig.allow_email_password_registration ? "edit" : "enable" %>"
+                        data-button-text="<%= Settings::Authentication.allow_email_password_registration ? "edit" : "enable" %>"
                         data-config-target="emailAuthSettingsBtn"
                         data-action="click->config#enableOrEditEmailAuthSettings"
                         <%= disabled_attr_on_auth_provider_enable_btn %>>
-                        <%= SiteConfig.allow_email_password_registration ? "Edit" : "Enable" %>
+                        <%= Settings::Authentication.allow_email_password_registration ? "Edit" : "Enable" %>
                       </button>
 
                     </div>
@@ -220,67 +220,67 @@
                       <fieldset class="config-authentication-form">
                         <div class="crayons-field--checkbox hidden">
                           <%= f.check_box :allow_email_password_registration,
-                                          checked: SiteConfig.allow_email_password_registration,
+                                          checked: Settings::Authentication.allow_email_password_registration,
                                           id: "email-registration-checkbox",
                                           class: "crayons-checkbox" %>
                         </div>
                         <div class="crayons-field">
-                          <%= admin_config_label :allowed_registration_email_domains, "Allowed email domains" %>
-                          <%= admin_config_description Constants::SiteConfig::DETAILS[:allowed_registration_email_domains][:description] %>
+                          <%= admin_config_label :allowed_registration_email_domains, "Allowed email domains", model: Settings::Authentication %>
+                          <%= admin_config_description Constants::Settings::Authentication::DETAILS[:allowed_registration_email_domains][:description] %>
                           <%= f.text_field :allowed_registration_email_domains,
                                            class: "crayons-textfield",
-                                           value: SiteConfig.allowed_registration_email_domains.join(","),
-                                           placeholder: Constants::SiteConfig::DETAILS[:allowed_registration_email_domains][:placeholder] %>
+                                           value: Settings::Authentication.allowed_registration_email_domains.join(","),
+                                           placeholder: Constants::Settings::Authentication::DETAILS[:allowed_registration_email_domains][:placeholder] %>
                         </div>
                         <div class="crayons-field--checkbox">
                           <%= f.check_box :display_email_domain_allow_list_publicly,
-                                          checked: SiteConfig.display_email_domain_allow_list_publicly,
+                                          checked: Settings::Authentication.display_email_domain_allow_list_publicly,
                                           id: "email-display-emails-publicly-checkbox",
                                           class: "crayons-checkbox mt-2" %>
                           <div>
-                            <%= admin_config_label :display_email_domain_allow_list_publicly %>
-                            <%= admin_config_description Constants::SiteConfig::DETAILS[:display_email_domain_allow_list_publicly][:description] %>
+                            <%= admin_config_label :display_email_domain_allow_list_publicly, model: Settings::Authentication %>
+                            <%= admin_config_description Constants::Settings::Authentication::DETAILS[:display_email_domain_allow_list_publicly][:description] %>
                           </div>
                         </div>
                         <div class="crayons-field--checkbox">
                           <%= f.check_box :require_captcha_for_email_password_registration,
-                                          checked: SiteConfig.require_captcha_for_email_password_registration,
+                                          checked: Settings::Authentication.require_captcha_for_email_password_registration,
                                           data: {
                                             action: "config#toggleGoogleRecaptchaFields",
                                             "config-target": "requireCaptchaForEmailPasswordRegistration"
                                           },
                                           class: "crayons-checkbox mt-2" %>
                           <div>
-                            <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration" %>
-                            <%= admin_config_description Constants::SiteConfig::DETAILS[:require_captcha_for_email_password_registration][:description] %>
+                            <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration", model: Settings::Authentication %>
+                            <%= admin_config_description Constants::Settings::Authentication::DETAILS[:require_captcha_for_email_password_registration][:description] %>
                           </div>
                         </div>
-                        <div id="recaptchaContainer" class="ml-7 <%= SiteConfig.require_captcha_for_email_password_registration ? "grid gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
+                        <div id="recaptchaContainer" class="ml-7 <%= Settings::Authentication.require_captcha_for_email_password_registration ? "grid gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
                           <div class="crayons-field">
-                            <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
-                            <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
+                            <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key", model: Settings::Authentication %>
+                            <%= admin_config_description Constants::Settings::Authentication::DETAILS[:recaptcha_site_key][:description] %>
                             <%= f.text_field :recaptcha_site_key,
                                              class: "crayons-textfield",
-                                             value: SiteConfig.recaptcha_site_key,
-                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_site_key][:placeholder] %>
+                                             value: Settings::Authentication.recaptcha_site_key,
+                                             placeholder: Constants::Settings::Authentication::DETAILS[:recaptcha_site_key][:placeholder] %>
                           </div>
                           <div class="crayons-field">
-                            <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key" %>
-                            <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %>
+                            <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key", model: Settings::Authentication %>
+                            <%= admin_config_description Constants::Settings::Authentication::DETAILS[:recaptcha_secret_key][:description] %>
                             <%= f.text_field :recaptcha_secret_key,
                                              class: "crayons-textfield",
-                                             value: SiteConfig.recaptcha_secret_key,
-                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
+                                             value: Settings::Authentication.recaptcha_secret_key,
+                                             placeholder: Constants::Settings::Authentication::DETAILS[:recaptcha_secret_key][:placeholder] %>
                           </div>
                         </div>
                         <div class="crayons-btn-actions">
-                          <% if SiteConfig.allow_email_password_registration %>
+                          <% if Settings::Authentication.allow_email_password_registration %>
                             <button
                               class="crayons-btn crayons-btn--danger"
                               data-action="click->config#activateEmailAuthModal">
                               Disable
                             </button>
-                             <button
+                            <button
                               class="crayons-btn crayons-btn--secondary"
                               data-action="click->config#hideEmailAuthSettings">
                               Close
@@ -304,7 +304,7 @@
                     <%= f.text_field :auth_providers_to_enable,
                                      id: "auth_providers_to_enable",
                                      class: "form-control hidden",
-                                     value: SiteConfig.authentication_providers.join(","),
+                                     value: Settings::Authentication.providers.join(","),
                                      readonly: true %>
                   </div>
                   <% authentication_available_providers.each do |provider| %>
@@ -319,7 +319,7 @@
                           data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
                           <div class="config-authentication__item--label">
                             <p class="crayons-field__label <%= authentication_provider_enabled?(provider) ? "pb-0" : "" %>">
-                              <%= provider.official_name %>
+                            <%= provider.official_name %>
                             </p>
                             <div
                               id="<%= provider.provider_name %>-enabled-indicator"
@@ -372,84 +372,84 @@
                          target: "campaignBodyContainer",
                          expanded: false
                        } %>
-            <div id="campaignBodyContainer" class="card-body collapse hide" aria-labelledby="campaignBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :campaign_hero_html_variant_name, "Campaign hero HTML variant name" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_hero_html_variant_name][:description] %>
-                  <%= f.text_field :campaign_hero_html_variant_name,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.campaign_hero_html_variant_name,
-                                   placeholder: Constants::SiteConfig::DETAILS[:campaign_hero_html_variant_name][:placeholder] %>
-                </div>
+          <div id="campaignBodyContainer" class="card-body collapse hide" aria-labelledby="campaignBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :campaign_hero_html_variant_name, "Campaign hero HTML variant name" %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_hero_html_variant_name][:description] %>
+                <%= f.text_field :campaign_hero_html_variant_name,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.campaign_hero_html_variant_name,
+                                 placeholder: Constants::SiteConfig::DETAILS[:campaign_hero_html_variant_name][:placeholder] %>
+              </div>
 
-                <div class="crayons-field crayons-field--checkbox">
-                  <%= f.check_box :campaign_articles_require_approval, checked: SiteConfig.campaign_articles_require_approval, class: "crayons-checkbox" %>
-                  <%= admin_config_label :campaign_articles_require_approval %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_articles_require_approval][:description] %>
-                </div>
+              <div class="crayons-field crayons-field--checkbox">
+                <%= f.check_box :campaign_articles_require_approval, checked: SiteConfig.campaign_articles_require_approval, class: "crayons-checkbox" %>
+                <%= admin_config_label :campaign_articles_require_approval %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_articles_require_approval][:description] %>
+              </div>
 
-                <div class="crayons-field crayons-field--checkbox">
-                  <%= f.check_box :campaign_sidebar_enabled, checked: SiteConfig.campaign_sidebar_enabled, class: "crayons-checkbox" %>
-                  <%= admin_config_label :campaign_sidebar_enabled %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_sidebar_enabled][:description] %>
-                </div>
+              <div class="crayons-field crayons-field--checkbox">
+                <%= f.check_box :campaign_sidebar_enabled, checked: SiteConfig.campaign_sidebar_enabled, class: "crayons-checkbox" %>
+                <%= admin_config_label :campaign_sidebar_enabled %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_sidebar_enabled][:description] %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :campaign_sidebar_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_sidebar_image][:description] %>
-                  <% if SiteConfig.campaign_sidebar_image.present? %>
-                    <div class="row mt-2">
-                      <div class="col-12">
-                        <img alt="Campaign sidebar image" class="img-fluid" src="<%= SiteConfig.campaign_sidebar_image %>" />
-                      </div>
+              <div class="crayons-field">
+                <%= admin_config_label :campaign_sidebar_image %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_sidebar_image][:description] %>
+                <% if SiteConfig.campaign_sidebar_image.present? %>
+                  <div class="row mt-2">
+                    <div class="col-12">
+                      <img alt="Campaign sidebar image" class="img-fluid" src="<%= SiteConfig.campaign_sidebar_image %>" />
                     </div>
-                  <% end %>
-                  <%= f.text_field :campaign_sidebar_image,
+                  </div>
+                <% end %>
+                <%= f.text_field :campaign_sidebar_image,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.campaign_sidebar_image,
+                                 placeholder: Constants::SiteConfig::DETAILS[:campaign_sidebar_image][:placeholder] %>
+              </div>
+
+              <div class="crayons-field">
+                <%= admin_config_label :campaign_url, "Campaign URL" %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_url][:description] %>
+                <%= f.text_field :campaign_url,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.campaign_url,
+                                 placeholder: Constants::SiteConfig::DETAILS[:campaign_url][:placeholder] %>
+              </div>
+
+              <div class="crayons-field">
+                <%= admin_config_label :campaign_featured_tags %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_featured_tags][:description] %>
+                <%= f.text_field :campaign_featured_tags,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.campaign_featured_tags.join(","),
+                                 placeholder: Constants::SiteConfig::DETAILS[:campaign_featured_tags][:placeholder] %>
+              </div>
+
+              <div class="crayons-field">
+                <%= admin_config_label :campaign_call_to_action, "Campaign Call to Action" %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_call_to_action][:description] %>
+                <%= f.text_field :campaign_call_to_action,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.campaign_call_to_action,
+                                 placeholder: Constants::SiteConfig::DETAILS[:campaign_call_to_action][:placeholder] %>
+              </div>
+
+              <div class="crayons-field">
+                <%= admin_config_label :campaign_articles_expiry_time, "Campaign article expiry time" %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:description] %>
+                <%= f.number_field :campaign_articles_expiry_time,
                                    class: "crayons-textfield",
-                                   value: SiteConfig.campaign_sidebar_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:campaign_sidebar_image][:placeholder] %>
-                </div>
+                                   value: SiteConfig.campaign_articles_expiry_time,
+                                   placeholder: Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:placeholder] %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :campaign_url, "Campaign URL" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_url][:description] %>
-                  <%= f.text_field :campaign_url,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.campaign_url,
-                                   placeholder: Constants::SiteConfig::DETAILS[:campaign_url][:placeholder] %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :campaign_featured_tags %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_featured_tags][:description] %>
-                  <%= f.text_field :campaign_featured_tags,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.campaign_featured_tags.join(","),
-                                   placeholder: Constants::SiteConfig::DETAILS[:campaign_featured_tags][:placeholder] %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :campaign_call_to_action, "Campaign Call to Action" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_call_to_action][:description] %>
-                  <%= f.text_field :campaign_call_to_action,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.campaign_call_to_action,
-                                   placeholder: Constants::SiteConfig::DETAILS[:campaign_call_to_action][:placeholder] %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :campaign_articles_expiry_time, "Campaign article expiry time" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:description] %>
-                  <%= f.number_field :campaign_articles_expiry_time,
-                                     class: "crayons-textfield",
-                                     value: SiteConfig.campaign_articles_expiry_time,
-                                     placeholder: Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:placeholder] %>
-                </div>
-
-                <%= render "form_submission", f: f %>
-              </fieldset>
-            </div>
+              <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -462,91 +462,91 @@
                          target: "contentBodyContainer",
                          expanded: false
                        } %>
-            <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :community_name %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:community_name][:description] %>
-                  <%= f.text_field :community_name,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.community_name,
-                                   placeholder: Constants::SiteConfig::DETAILS[:community_name][:placeholder] %>
-                </div>
+          <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :community_name %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:community_name][:description] %>
+                <%= f.text_field :community_name,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.community_name,
+                                 placeholder: Constants::SiteConfig::DETAILS[:community_name][:placeholder] %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :community_emoji %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:community_emoji][:description] %>
-                  <%= f.text_field :community_emoji,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.community_emoji,
-                                   placeholder: Constants::SiteConfig::DETAILS[:community_emoji][:placeholder] %>
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :community_emoji %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:community_emoji][:description] %>
+                <%= f.text_field :community_emoji,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.community_emoji,
+                                 placeholder: Constants::SiteConfig::DETAILS[:community_emoji][:placeholder] %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :tagline %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:tagline][:description] %>
-                  <%= f.text_field :tagline,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.tagline,
-                                   placeholder: Constants::SiteConfig::DETAILS[:tagline][:placeholder] %>
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :tagline %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:tagline][:description] %>
+                <%= f.text_field :tagline,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.tagline,
+                                 placeholder: Constants::SiteConfig::DETAILS[:tagline][:placeholder] %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :community_description %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:community_description][:description] %>
-                  <%= f.text_field :community_description,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.community_description,
-                                   placeholder: Constants::SiteConfig::DETAILS[:community_description][:placeholder] %>
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :community_description %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:community_description][:description] %>
+                <%= f.text_field :community_description,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.community_description,
+                                 placeholder: Constants::SiteConfig::DETAILS[:community_description][:placeholder] %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :community_member_label %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:community_member_label][:description] %>
-                  <%= f.text_field :community_member_label,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.community_member_label,
-                                   placeholder: Constants::SiteConfig::DETAILS[:community_member_label][:placeholder] %>
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :community_member_label %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:community_member_label][:description] %>
+                <%= f.text_field :community_member_label,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.community_member_label,
+                                 placeholder: Constants::SiteConfig::DETAILS[:community_member_label][:placeholder] %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :community_copyright_start_year %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:community_copyright_start_year][:description] %>
-                  <%= f.text_field :community_copyright_start_year,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.community_copyright_start_year,
-                                   placeholder: Constants::SiteConfig::DETAILS[:community_copyright_start_year][:placeholder] %>
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :community_copyright_start_year %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:community_copyright_start_year][:description] %>
+                <%= f.text_field :community_copyright_start_year,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.community_copyright_start_year,
+                                 placeholder: Constants::SiteConfig::DETAILS[:community_copyright_start_year][:placeholder] %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :staff_user_id %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:staff_user_id][:description] %>
-                  <%= f.text_field :staff_user_id,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.staff_user_id,
-                                   placeholder: Constants::SiteConfig::DETAILS[:staff_user_id][:placeholder] %>
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :staff_user_id %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:staff_user_id][:description] %>
+                <%= f.text_field :staff_user_id,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.staff_user_id,
+                                 placeholder: Constants::SiteConfig::DETAILS[:staff_user_id][:placeholder] %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :experience_low %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:experience_low][:description] %>
-                  <%= f.text_field :experience_low,
-                                   class: "crayons-texfield",
-                                   value: SiteConfig.experience_low,
-                                   placeholder: Constants::SiteConfig::DETAILS[:experience_low][:placeholder] %>
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :experience_low %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:experience_low][:description] %>
+                <%= f.text_field :experience_low,
+                                 class: "crayons-texfield",
+                                 value: SiteConfig.experience_low,
+                                 placeholder: Constants::SiteConfig::DETAILS[:experience_low][:placeholder] %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :experience_high %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:experience_high][:description] %>
-                  <%= f.text_field :experience_high,
-                                   class: "crayons-texfield",
-                                   value: SiteConfig.experience_high,
-                                   placeholder: Constants::SiteConfig::DETAILS[:experience_high][:placeholder] %>
-                </div>
-                <%= render "form_submission", f: f %>
-              </fieldset>
-            </div>
+              <div class="crayons-field">
+                <%= admin_config_label :experience_high %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:experience_high][:description] %>
+                <%= f.text_field :experience_high,
+                                 class: "crayons-texfield",
+                                 value: SiteConfig.experience_high,
+                                 placeholder: Constants::SiteConfig::DETAILS[:experience_high][:placeholder] %>
+              </div>
+              <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -560,44 +560,44 @@
                          expanded: false
                        } %>
 
-            <div id="creditsBodyContainer" class="card-body collapse hide" aria-labelledby="creditsBodyContainer">
-              <fieldset class="grid gap-4">
-                <%= f.fields_for :credit_prices_in_cents do |price_field| %>
-                  <div class="crayons-field">
-                    <%= admin_config_label "Credit price in cents (S)" %>
-                    <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:small][:description] %>
-                    <%= price_field.number_field :small,
-                                                 class: "crayons-textfield",
-                                                 value: SiteConfig.credit_prices_in_cents[:small] %>
-                  </div>
+          <div id="creditsBodyContainer" class="card-body collapse hide" aria-labelledby="creditsBodyContainer">
+            <fieldset class="grid gap-4">
+              <%= f.fields_for :credit_prices_in_cents do |price_field| %>
+                <div class="crayons-field">
+                  <%= admin_config_label "Credit price in cents (S)" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:small][:description] %>
+                  <%= price_field.number_field :small,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.credit_prices_in_cents[:small] %>
+                </div>
 
-                  <div class="crayons-field">
-                    <%= admin_config_label "Credit price in cents (M)" %>
-                    <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:medium][:description] %>
-                    <%= price_field.number_field :medium,
-                                                 class: "crayons-textfield",
-                                                 value: SiteConfig.credit_prices_in_cents[:medium] %>
-                  </div>
-                  <div class="crayons-field">
-                    <%= admin_config_label "Credit price in cents (L)" %>
-                    <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:large][:description] %>
-                    <%= price_field.number_field :large,
-                                                 class: "crayons-textfield",
-                                                 value: SiteConfig.credit_prices_in_cents[:large] %>
-                  </div>
+                <div class="crayons-field">
+                  <%= admin_config_label "Credit price in cents (M)" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:medium][:description] %>
+                  <%= price_field.number_field :medium,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.credit_prices_in_cents[:medium] %>
+                </div>
+                <div class="crayons-field">
+                  <%= admin_config_label "Credit price in cents (L)" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:large][:description] %>
+                  <%= price_field.number_field :large,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.credit_prices_in_cents[:large] %>
+                </div>
 
-                  <div class="crayons-field">
-                    <%= admin_config_label "Credit price in cents (XL)" %>
-                    <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:xlarge][:description] %>
-                    <%= price_field.number_field :xlarge,
-                                                 class: "crayons-textfield",
-                                                 value: SiteConfig.credit_prices_in_cents[:xlarge] %>
-                  </div>
-                <% end %>
+                <div class="crayons-field">
+                  <%= admin_config_label "Credit price in cents (XL)" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:xlarge][:description] %>
+                  <%= price_field.number_field :xlarge,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.credit_prices_in_cents[:xlarge] %>
+                </div>
+              <% end %>
 
-                <%= render "form_submission", f: f %>
-              </fieldset>
-            </div>
+              <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -610,59 +610,32 @@
                          target: "emailBodyContainer",
                          expanded: false
                        } %>
-            <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
-              <fieldset class="grid gap-4">
-                  <div class="crayons-field">
-                    <label for="site_config_email_addresses_default" class="crayons-field__label">
-                      Default
-                    </label>
-                    <div class="crayons-field__description">
-                      Default (set via <span class="ff-monospace">default_email</span> environment variable)
-                    </div>
-                    <input type="text" value="<%= ApplicationConfig["DEFAULT_EMAIL"] %>" class="form-control" readonly>
-                  </div>
-                  <%= f.fields_for :email_addresses do |email_field| %>
-                    <% SiteConfig.email_addresses.except(:default).each do |type, address| %>
-                      <div class="crayons-field">
-                        <%= admin_config_label type %>
-                        <%= admin_config_description Constants::SiteConfig::DETAILS[:email_addresses][:description] %>
-                        <%= email_field.text_field type,
-                                                   class: "crayons-textfield",
-                                                   value: SiteConfig.email_addresses[type],
-                                                   placeholder: Constants::SiteConfig::DETAILS[:email_addresses][:placeholder] %>
-                      </div>
-                    <% end %>
-                  <% end %>
-
-                <%= render "form_submission", f: f %>
-              </fieldset>
-            </div>
-          </div>
-        <% end %>
-
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
-          <div class="card mt-3">
-            <%= render partial: "admin/shared/card_header",
-                       locals: {
-                         header: "Email digest frequency",
-                         state: "collapse",
-                         target: "emailDigestBodyContainer",
-                         expanded: false
-                       } %>
-            <div id="emailDigestBodyContainer" class="card-body collapse hide" aria-labelledby="emailDigestBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :periodic_email_digest %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:periodic_email_digest][:description] %>
-                  <%= f.number_field :periodic_email_digest,
-                                     class: "crayons-textfield",
-                                     value: SiteConfig.periodic_email_digest,
-                                     placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest][:placeholder] %>
+          <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <label for="site_config_email_addresses_default" class="crayons-field__label">
+                  Default
+                </label>
+                <div class="crayons-field__description">
+                  Default (set via <span class="ff-monospace">default_email</span> environment variable)
                 </div>
+                <input type="text" value="<%= ApplicationConfig["DEFAULT_EMAIL"] %>" class="form-control" readonly>
+              </div>
+              <%= f.fields_for :email_addresses do |email_field| %>
+                <% SiteConfig.email_addresses.except(:default).each do |type, address| %>
+                  <div class="crayons-field">
+                    <%= admin_config_label type %>
+                    <%= admin_config_description Constants::SiteConfig::DETAILS[:email_addresses][:description] %>
+                    <%= email_field.text_field type,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.email_addresses[type],
+                                               placeholder: Constants::SiteConfig::DETAILS[:email_addresses][:placeholder] %>
+                  </div>
+                <% end %>
+              <% end %>
 
-                <%= render "form_submission", f: f %>
-              </fieldset>
-            </div>
+              <%= render "form_submission", f: f %>
+            </fieldset>
           </div>
         <% end %>
 
@@ -675,27 +648,27 @@
                          target: "jobsBodyContainer",
                          expanded: false
                        } %>
-            <div id="jobsBodyContainer" class="card-body collapse hide" aria-labelledby="jobsBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :jobs_url, "Jobs URL" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:jobs_url][:description] %>
-                  <%= f.text_field :jobs_url,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.jobs_url,
-                                   placeholder: Constants::SiteConfig::DETAILS[:jobs_url][:placeholder] %>
+          <div id="jobsBodyContainer" class="card-body collapse hide" aria-labelledby="jobsBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :jobs_url, "Jobs URL" %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:jobs_url][:description] %>
+                <%= f.text_field :jobs_url,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.jobs_url,
+                                 placeholder: Constants::SiteConfig::DETAILS[:jobs_url][:placeholder] %>
+              </div>
+              <div class="crayons-field crayons-field--checkbox">
+                <%= f.check_box :display_jobs_banner, checked: SiteConfig.display_jobs_banner, class: "crayons-checkbox" %>
+                <div class="mt-0">
+                  <%= admin_config_label :display_jobs_banner %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:display_jobs_banner][:description] %>
                 </div>
-                <div class="crayons-field crayons-field--checkbox">
-                  <%= f.check_box :display_jobs_banner, checked: SiteConfig.display_jobs_banner, class: "crayons-checkbox" %>
-                  <div class="mt-0">
-                    <%= admin_config_label :display_jobs_banner %>
-                    <%= admin_config_description Constants::SiteConfig::DETAILS[:display_jobs_banner][:description] %>
-                  </div>
-                </div>
+              </div>
 
-                <%= render "form_submission", f: f %>
-              </fieldset>
-            </div>
+              <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -708,19 +681,19 @@
                          target: "gaBodyContainer",
                          expanded: false
                        } %>
-            <div id="gaBodyContainer" class="card-body collapse hide" aria-labelledby="gaBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :ga_tracking_id, "View ID" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:ga_tracking_id][:description] %>
-                  <%= f.text_field :ga_tracking_id,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.ga_tracking_id %>
-                </div>
+          <div id="gaBodyContainer" class="card-body collapse hide" aria-labelledby="gaBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :ga_tracking_id, "View ID" %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:ga_tracking_id][:description] %>
+                <%= f.text_field :ga_tracking_id,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.ga_tracking_id %>
+              </div>
 
-                <%= render "form_submission", f: f %>
-              </fieldset>
-            </div>
+              <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -733,72 +706,72 @@
                          target: "imagesBodyContainer",
                          expanded: false
                        } %>
-            <div id="imagesBodyContainer" class="card-body collapse hide" aria-labelledby="imagesBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :main_social_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:main_social_image][:description] %>
-                  <%= f.text_field :main_social_image,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.main_social_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:main_social_image][:placeholder] %>
-                  <% if SiteConfig.main_social_image.present? %>
-                    <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" width="600px" height="337px" />
-                  <% end %>
-                </div>
+          <div id="imagesBodyContainer" class="card-body collapse hide" aria-labelledby="imagesBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :main_social_image %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:main_social_image][:description] %>
+                <%= f.text_field :main_social_image,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.main_social_image,
+                                 placeholder: Constants::SiteConfig::DETAILS[:main_social_image][:placeholder] %>
+                <% if SiteConfig.main_social_image.present? %>
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" width="600px" height="337px" />
+                <% end %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :favicon_url, "Favicon URL" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:favicon_url][:description] %>
-                  <%= f.text_field :favicon_url,
-                                   class: "form-control",
-                                   value: SiteConfig.favicon_url,
-                                   placeholder: Constants::SiteConfig::DETAILS[:favicon_url][:placeholder] %>
-                  <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>" width="32px" height="32px" />
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :favicon_url, "Favicon URL" %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:favicon_url][:description] %>
+                <%= f.text_field :favicon_url,
+                                 class: "form-control",
+                                 value: SiteConfig.favicon_url,
+                                 placeholder: Constants::SiteConfig::DETAILS[:favicon_url][:placeholder] %>
+                <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>" width="32px" height="32px" />
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :logo_png %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:logo_png][:description] %>
-                  <%= f.text_field :logo_png,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.logo_png,
-                                   placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
-                  <% if SiteConfig.logo_png.present? %>
-                    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 128) %>" width="128px" height="128px" />
-                  <% end %>
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :logo_png %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:logo_png][:description] %>
+                <%= f.text_field :logo_png,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.logo_png,
+                                 placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
+                <% if SiteConfig.logo_png.present? %>
+                  <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 128) %>" width="128px" height="128px" />
+                <% end %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :logo_svg %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:logo_svg][:description] %>
-                  <%= f.text_area :logo_svg,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.logo_svg,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:logo_svg][:placeholder] %>
-                  <% if SiteConfig.logo_svg.present? %>
-                    <div class="site-logo">
-                      <%= SiteConfig.logo_svg.html_safe %>
-                    </div>
-                  <% end %>
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :logo_svg %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:logo_svg][:description] %>
+                <%= f.text_area :logo_svg,
+                                class: "crayons-textfield",
+                                value: SiteConfig.logo_svg,
+                                rows: 6,
+                                placeholder: Constants::SiteConfig::DETAILS[:logo_svg][:placeholder] %>
+                <% if SiteConfig.logo_svg.present? %>
+                  <div class="site-logo">
+                    <%= SiteConfig.logo_svg.html_safe %>
+                  </div>
+                <% end %>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :secondary_logo_url %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:secondary_logo_url][:description] %>
-                  <%= f.text_field :secondary_logo_url,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.secondary_logo_url,
-                                   placeholder: Constants::SiteConfig::DETAILS[:secondary_logo_url][:placeholder] %>
-                  <% if SiteConfig.secondary_logo_url.present? %>
-                    <img alt="secondary logo image" class="img-fluid" src="<%= Images::Optimizer.call(SiteConfig.secondary_logo_url, width: 256) %>" width="128px" height="128px" />
-                  <% end %>
-                </div>
+              <div class="crayons-field">
+                <%= admin_config_label :secondary_logo_url %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:secondary_logo_url][:description] %>
+                <%= f.text_field :secondary_logo_url,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.secondary_logo_url,
+                                 placeholder: Constants::SiteConfig::DETAILS[:secondary_logo_url][:placeholder] %>
+                <% if SiteConfig.secondary_logo_url.present? %>
+                  <img alt="secondary logo image" class="img-fluid" src="<%= Images::Optimizer.call(SiteConfig.secondary_logo_url, width: 256) %>" width="128px" height="128px" />
+                <% end %>
+              </div>
 
-                <%= render "form_submission", f: f %>
-              </fieldset>
-            </div>
+              <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -811,72 +784,72 @@
                          target: "mascotBodyContainer",
                          expanded: false
                        } %>
-            <div id="mascotBodyContainer" class="card-body collapse hide" aria-labelledby="mascotBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :mascot_user_id, "Mascot user ID" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_user_id][:description] %>
-                  <%= f.text_field :mascot_user_id,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.mascot_user_id,
-                                   min: 1,
-                                   placeholder: Constants::SiteConfig::DETAILS[:mascot_user_id][:placeholder] %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :mascot_image_url, "Mascot Image URL" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_image_url][:description] %>
-                  <%= f.text_field :mascot_image_url,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.mascot_image_url,
-                                   placeholder: Constants::SiteConfig::DETAILS[:mascot_image_url][:placeholder] %>
-
-                  <div class="col-12">
-                    <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
-                  </div>
-
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :mascot_footer_image_url %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:description] %>
-                  <%= f.text_field :mascot_footer_image_url,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.mascot_footer_image_url,
-                                   placeholder: Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:placeholder] %>
-
-                  <div class="col-12">
-                    <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_footer_image_url %>" />
-                  </div>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :mascot_footer_image_width %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_footer_image_width][:description] %>
-                  <%= f.text_field :mascot_footer_image_width,
-                                   class: "form-control",
-                                   value: SiteConfig.mascot_footer_image_width %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :mascot_footer_image_height %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_footer_image_height][:description] %>
-                  <%= f.text_field :mascot_footer_image_height,
-                                   class: "form-control",
-                                   value: SiteConfig.mascot_footer_image_height %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :mascot_image_description %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_image_description][:description] %>
-                  <%= f.text_field :mascot_image_description,
-                                   class: "form-control",
-                                   value: SiteConfig.mascot_image_description %>
-                </div>
-
-                <%= render "form_submission", f: f %>
-              </fieldset>
+          <div id="mascotBodyContainer" class="card-body collapse hide" aria-labelledby="mascotBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :mascot_user_id, "Mascot user ID" %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_user_id][:description] %>
+                <%= f.text_field :mascot_user_id,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.mascot_user_id,
+                                 min: 1,
+                                 placeholder: Constants::SiteConfig::DETAILS[:mascot_user_id][:placeholder] %>
             </div>
+
+            <div class="crayons-field">
+              <%= admin_config_label :mascot_image_url, "Mascot Image URL" %>
+              <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_image_url][:description] %>
+              <%= f.text_field :mascot_image_url,
+                               class: "crayons-textfield",
+                               value: SiteConfig.mascot_image_url,
+                               placeholder: Constants::SiteConfig::DETAILS[:mascot_image_url][:placeholder] %>
+
+              <div class="col-12">
+                <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
+              </div>
+
+            </div>
+
+            <div class="crayons-field">
+              <%= admin_config_label :mascot_footer_image_url %>
+              <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:description] %>
+              <%= f.text_field :mascot_footer_image_url,
+                               class: "crayons-textfield",
+                               value: SiteConfig.mascot_footer_image_url,
+                               placeholder: Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:placeholder] %>
+
+              <div class="col-12">
+                <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_footer_image_url %>" />
+              </div>
+            </div>
+
+            <div class="crayons-field">
+              <%= admin_config_label :mascot_footer_image_width %>
+              <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_footer_image_width][:description] %>
+              <%= f.text_field :mascot_footer_image_width,
+                               class: "form-control",
+                               value: SiteConfig.mascot_footer_image_width %>
+          </div>
+
+          <div class="crayons-field">
+            <%= admin_config_label :mascot_footer_image_height %>
+            <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_footer_image_height][:description] %>
+            <%= f.text_field :mascot_footer_image_height,
+                             class: "form-control",
+                             value: SiteConfig.mascot_footer_image_height %>
+        </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label :mascot_image_description %>
+          <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_image_description][:description] %>
+          <%= f.text_field :mascot_image_description,
+                           class: "form-control",
+                           value: SiteConfig.mascot_image_description %>
+      </div>
+
+      <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -889,26 +862,26 @@
                          target: "metaKeywordsBodyContainer",
                          expanded: false
                        } %>
-            <div id="metaKeywordsBodyContainer" class="card-body collapse hide" aria-labelledby="metaKeywordsBodyContainer">
-              <fieldset class="grid gap-4">
-                <%= f.fields_for :meta_keywords do |meta_keywords_field| %>
-                  <% SiteConfig.meta_keywords.each do |area, keywords| %>
-                    <div class="crayons-field">
-                      <%= admin_config_label area.to_s %>
-                      <p class="crayons-field__description">
-                        <%= area.capitalize %><%= "page" unless area == "default" %> keywords
-                      </p>
-                      <%= meta_keywords_field.text_field area,
-                                                         class: "crayons-textfield",
-                                                         value: SiteConfig.meta_keywords[area],
-                                                         placeholder: Constants::SiteConfig::DETAILS[:meta_keywords][:placeholder] %>
-                    </div>
-                  <% end %>
-                <% end %>
+          <div id="metaKeywordsBodyContainer" class="card-body collapse hide" aria-labelledby="metaKeywordsBodyContainer">
+            <fieldset class="grid gap-4">
+              <%= f.fields_for :meta_keywords do |meta_keywords_field| %>
+                <% SiteConfig.meta_keywords.each do |area, keywords| %>
+                  <div class="crayons-field">
+                    <%= admin_config_label area.to_s %>
+                    <p class="crayons-field__description">
+                    <%= area.capitalize %><%= "page" unless area == "default" %> keywords
+                    </p>
+                    <%= meta_keywords_field.text_field area,
+                                                       class: "crayons-textfield",
+                                                       value: SiteConfig.meta_keywords[area],
+                                                       placeholder: Constants::SiteConfig::DETAILS[:meta_keywords][:placeholder] %>
+                </div>
+              <% end %>
+            <% end %>
 
-                <%= render "form_submission", f: f %>
-              </fieldset>
-            </div>
+            <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -921,47 +894,47 @@
                          target: "monetizationBodyContainer",
                          expanded: false
                        } %>
-            <div id="monetizationBodyContainer" class="card-body collapse hide" aria-labelledby="monetizationBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :shop_url, "Shop URL" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:shop_url][:description] %>
-                  <%= f.text_field :shop_url,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.shop_url,
-                                   placeholder: Constants::SiteConfig::DETAILS[:shop_url][:placeholder] %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :stripe_api_key, "Stripe API key" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:stripe_api_key][:description] %>
-                  <%= f.text_field :stripe_api_key,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.stripe_api_key,
-                                   placeholder: Constants::SiteConfig::DETAILS[:stripe_api_key][:placeholder] %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :stripe_publishable_key %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:stripe_publishable_key][:description] %>
-                  <%= f.text_field :stripe_publishable_key,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.stripe_publishable_key,
-                                   placeholder: Constants::SiteConfig::DETAILS[:stripe_publishable_key][:placeholder] %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :payment_pointer %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:payment_pointer][:description] %>
-                  <%= f.text_field :payment_pointer,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.payment_pointer,
-                                   placeholder: Constants::SiteConfig::DETAILS[:payment_pointer][:placeholder] %>
-                </div>
-
-                <%= render "form_submission", f: f %>
-              </fieldset>
+          <div id="monetizationBodyContainer" class="card-body collapse hide" aria-labelledby="monetizationBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :shop_url, "Shop URL" %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:shop_url][:description] %>
+                <%= f.text_field :shop_url,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.shop_url,
+                                 placeholder: Constants::SiteConfig::DETAILS[:shop_url][:placeholder] %>
             </div>
+
+            <div class="crayons-field">
+              <%= admin_config_label :stripe_api_key, "Stripe API key" %>
+              <%= admin_config_description Constants::SiteConfig::DETAILS[:stripe_api_key][:description] %>
+              <%= f.text_field :stripe_api_key,
+                               class: "crayons-textfield",
+                               value: SiteConfig.stripe_api_key,
+                               placeholder: Constants::SiteConfig::DETAILS[:stripe_api_key][:placeholder] %>
+          </div>
+
+          <div class="crayons-field">
+            <%= admin_config_label :stripe_publishable_key %>
+            <%= admin_config_description Constants::SiteConfig::DETAILS[:stripe_publishable_key][:description] %>
+            <%= f.text_field :stripe_publishable_key,
+                             class: "crayons-textfield",
+                             value: SiteConfig.stripe_publishable_key,
+                             placeholder: Constants::SiteConfig::DETAILS[:stripe_publishable_key][:placeholder] %>
+        </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label :payment_pointer %>
+          <%= admin_config_description Constants::SiteConfig::DETAILS[:payment_pointer][:description] %>
+          <%= f.text_field :payment_pointer,
+                           class: "crayons-textfield",
+                           value: SiteConfig.payment_pointer,
+                           placeholder: Constants::SiteConfig::DETAILS[:payment_pointer][:placeholder] %>
+      </div>
+
+      <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -974,51 +947,51 @@
                          target: "newsletterBodyContainer",
                          expanded: false
                        } %>
-            <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :mailchimp_api_key, "Mailchimp API Key" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_api_key][:description] %>
-                  <%= f.text_field :mailchimp_api_key,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.mailchimp_api_key %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :mailchimp_newsletter_id, "Main Newsletter" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_newsletter_id][:description] %>
-                  <%= f.text_field :mailchimp_newsletter_id,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.mailchimp_newsletter_id %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_sustaining_members_id][:description] %>
-                  <%= f.text_field :mailchimp_sustaining_members_id,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.mailchimp_sustaining_members_id %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_tag_moderators_id][:description] %>
-                  <%= f.text_field :mailchimp_tag_moderators_id,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.mailchimp_tag_moderators_id %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_community_moderators_id][:description] %>
-                  <%= f.text_field :mailchimp_community_moderators_id,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.mailchimp_community_moderators_id %>
-                </div>
-
-                <%= render "form_submission", f: f %>
-              </fieldset>
+          <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :mailchimp_api_key, "Mailchimp API Key" %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_api_key][:description] %>
+                <%= f.text_field :mailchimp_api_key,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.mailchimp_api_key %>
             </div>
+
+            <div class="crayons-field">
+              <%= admin_config_label :mailchimp_newsletter_id, "Main Newsletter" %>
+              <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_newsletter_id][:description] %>
+              <%= f.text_field :mailchimp_newsletter_id,
+                               class: "crayons-textfield",
+                               value: SiteConfig.mailchimp_newsletter_id %>
+          </div>
+
+          <div class="crayons-field">
+            <%= admin_config_label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
+            <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_sustaining_members_id][:description] %>
+            <%= f.text_field :mailchimp_sustaining_members_id,
+                             class: "crayons-textfield",
+                             value: SiteConfig.mailchimp_sustaining_members_id %>
+        </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
+          <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_tag_moderators_id][:description] %>
+          <%= f.text_field :mailchimp_tag_moderators_id,
+                           class: "crayons-textfield",
+                           value: SiteConfig.mailchimp_tag_moderators_id %>
+      </div>
+
+      <div class="crayons-field">
+        <%= admin_config_label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
+        <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_community_moderators_id][:description] %>
+        <%= f.text_field :mailchimp_community_moderators_id,
+                         class: "crayons-textfield",
+                         value: SiteConfig.mailchimp_community_moderators_id %>
+    </div>
+
+    <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -1031,44 +1004,44 @@
                          target: "onboardingBodyContainer",
                          expanded: false
                        } %>
-            <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :onboarding_background_image %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_background_image][:description] %>
-                  <%= f.text_field :onboarding_background_image,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.onboarding_background_image,
-                                   placeholder: Constants::SiteConfig::DETAILS[:onboarding_background_image][:placeholder] %>
-                  <div class="row mt-2">
-                    <div class="col-12">
-                      <img alt="onboarding background image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
-                    </div>
+          <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :onboarding_background_image %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_background_image][:description] %>
+                <%= f.text_field :onboarding_background_image,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.onboarding_background_image,
+                                 placeholder: Constants::SiteConfig::DETAILS[:onboarding_background_image][:placeholder] %>
+                <div class="row mt-2">
+                  <div class="col-12">
+                    <img alt="onboarding background image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
                   </div>
                 </div>
+              </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :suggested_users %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:suggested_users][:description] %>
-                  <%= f.text_field :suggested_users,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.suggested_users.join(","),
-                                   placeholder: Constants::SiteConfig::DETAILS[:suggested_users][:placeholder] %>
-                </div>
-
-                <div class="crayons-field crayons-field--checkbox">
-                  <%= f.check_box :prefer_manual_suggested_users, checked: SiteConfig.prefer_manual_suggested_users, class: "crayons-checkbox" %>
-                  <div class="mt-0">
-                    <%= admin_config_label :prefer_manual_suggested_users %>
-                    <p class="crayons-field__description">
-                      <%= Constants::SiteConfig::DETAILS[:prefer_manual_suggested_users][:description] %>
-                    </p>
-                  </div>
-                </div>
-
-                <%= render "form_submission", f: f %>
-              </fieldset>
+              <div class="crayons-field">
+                <%= admin_config_label :suggested_users %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:suggested_users][:description] %>
+                <%= f.text_field :suggested_users,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.suggested_users.join(","),
+                                 placeholder: Constants::SiteConfig::DETAILS[:suggested_users][:placeholder] %>
             </div>
+
+            <div class="crayons-field crayons-field--checkbox">
+              <%= f.check_box :prefer_manual_suggested_users, checked: SiteConfig.prefer_manual_suggested_users, class: "crayons-checkbox" %>
+              <div class="mt-0">
+                <%= admin_config_label :prefer_manual_suggested_users %>
+                <p class="crayons-field__description">
+                <%= Constants::SiteConfig::DETAILS[:prefer_manual_suggested_users][:description] %>
+                </p>
+              </div>
+            </div>
+
+            <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -1081,42 +1054,42 @@
                          target: "rateLimitsBodyContainer",
                          expanded: false
                        } %>
-            <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :user_considered_new_days %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:user_considered_new_days][:description] %>
-                  <%= f.number_field :user_considered_new_days,
-                                     class: "crayons-textfield",
-                                     value: SiteConfig.user_considered_new_days,
-                                     placeholder: Constants::SiteConfig::DETAILS[:user_considered_new_days][:placeholder] %>
-                </div>
-
-                <% configurable_rate_limits.each do |key, field_hash| %>
-                  <div class="crayons-field">
-                    <%= admin_config_label field_hash[:title] %>
-                    <p class="crayons-field__description">
-                      <%= field_hash[:description] %>
-                    </p>
-                    <%= f.number_field key,
-                                       class: "crayons-textfield",
-                                       value: SiteConfig.public_send(key),
-                                       min: field_hash[:min],
-                                       placeholder: field_hash[:placeholder] %>
-                  </div>
-                <% end %>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :spam_trigger_terms %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %>
-                  <%= f.text_area :spam_trigger_terms,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.spam_trigger_terms.join(","),
-                                  placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
-                </div>
-                <%= render "form_submission", f: f %>
-              </fieldset>
+          <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :user_considered_new_days %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:user_considered_new_days][:description] %>
+                <%= f.number_field :user_considered_new_days,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.user_considered_new_days,
+                                   placeholder: Constants::SiteConfig::DETAILS[:user_considered_new_days][:placeholder] %>
             </div>
+
+            <% configurable_rate_limits.each do |key, field_hash| %>
+              <div class="crayons-field">
+                <%= admin_config_label field_hash[:title] %>
+                <p class="crayons-field__description">
+                <%= field_hash[:description] %>
+                </p>
+                <%= f.number_field key,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.public_send(key),
+                                   min: field_hash[:min],
+                                   placeholder: field_hash[:placeholder] %>
+            </div>
+          <% end %>
+
+          <div class="crayons-field">
+            <%= admin_config_label :spam_trigger_terms %>
+            <%= admin_config_description Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %>
+            <%= f.text_area :spam_trigger_terms,
+                            class: "crayons-textfield",
+                            value: SiteConfig.spam_trigger_terms.join(","),
+                            placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
+        </div>
+        <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -1129,34 +1102,34 @@
                          target: "socialMediaBodyContainer",
                          expanded: false
                        } %>
-            <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :twitter_hashtag %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:twitter_hashtag][:description] %>
-                  <%= f.text_field :twitter_hashtag,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.twitter_hashtag.to_s,
-                                   placeholder: Constants::SiteConfig::DETAILS[:twitter_hashtag][:placeholder] %>
-                </div>
-                <%= f.fields_for :social_media_handles do |social_media_field| %>
-                  <% SiteConfig.social_media_handles.each do |platform, username| %>
-                    <div class="crayons-field">
-                      <%= admin_config_label platform %>
-                      <p class="crayons-field__description">
-                        <%= platform.capitalize %> username
-                      </p>
-                      <%= social_media_field.text_field platform,
-                                                        class: "crayons-textfield",
-                                                        value: SiteConfig.social_media_handles[platform],
-                                                        placeholder: "" %>
-                    </div>
-                  <% end %>
-                <% end %>
-
-                <%= render "form_submission", f: f %>
-              </fieldset>
+          <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :twitter_hashtag %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:twitter_hashtag][:description] %>
+                <%= f.text_field :twitter_hashtag,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.twitter_hashtag.to_s,
+                                 placeholder: Constants::SiteConfig::DETAILS[:twitter_hashtag][:placeholder] %>
             </div>
+            <%= f.fields_for :social_media_handles do |social_media_field| %>
+              <% SiteConfig.social_media_handles.each do |platform, username| %>
+                <div class="crayons-field">
+                  <%= admin_config_label platform %>
+                  <p class="crayons-field__description">
+                  <%= platform.capitalize %> username
+                  </p>
+                  <%= social_media_field.text_field platform,
+                                                    class: "crayons-textfield",
+                                                    value: SiteConfig.social_media_handles[platform],
+                                                    placeholder: "" %>
+              </div>
+            <% end %>
+          <% end %>
+
+          <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -1169,20 +1142,20 @@
                          target: "sponsorsContainer",
                          expanded: false
                        } %>
-            <div id="sponsorsContainer" class="card-body collapse hide" aria-labelledby="sponsorsContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :sponsor_headline %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:sponsor_headline][:description] %>
-                  <%= f.text_field :sponsor_headline,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.sponsor_headline,
-                                   placeholder: Constants::SiteConfig::DETAILS[:sponsor_headline][:placeholder] %>
-                </div>
-
-                <%= render "form_submission", f: f %>
-              </fieldset>
+          <div id="sponsorsContainer" class="card-body collapse hide" aria-labelledby="sponsorsContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :sponsor_headline %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:sponsor_headline][:description] %>
+                <%= f.text_field :sponsor_headline,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.sponsor_headline,
+                                 placeholder: Constants::SiteConfig::DETAILS[:sponsor_headline][:placeholder] %>
             </div>
+
+            <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -1195,21 +1168,21 @@
                          target: "tagsBodyContainer",
                          expanded: false
                        } %>
-            <div id="tagsBodyContainer" class="card-body collapse hide" aria-labelledby="tagsBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-field">
-                  <%= admin_config_label :sidebar_tags %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %>
-                  <%= f.text_field :sidebar_tags,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.sidebar_tags.join(","),
-                                   placeholder: Constants::SiteConfig::DETAILS[:sidebar_tags][:placeholder],
-                                   pattern: "[a-z0-9,]+" %>
-                </div>
-
-                <%= render "form_submission", f: f %>
-              </fieldset>
+          <div id="tagsBodyContainer" class="card-body collapse hide" aria-labelledby="tagsBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :sidebar_tags %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %>
+                <%= f.text_field :sidebar_tags,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.sidebar_tags.join(","),
+                                 placeholder: Constants::SiteConfig::DETAILS[:sidebar_tags][:placeholder],
+                                 pattern: "[a-z0-9,]+" %>
             </div>
+
+            <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
 
@@ -1222,73 +1195,73 @@
                          target: "uxBodyContainer",
                          expanded: false
                        } %>
-            <div id="uxBodyContainer" class="card-body collapse hide" aria-labelledby="uxBodyContainer">
-              <fieldset class="grid gap-4">
-                <div class="crayons-fieldx">
-                  <%= admin_config_label :feed_style %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:feed_style][:description] %>
-                  <%= f.text_field :feed_style,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.feed_style,
-                                   placeholder: Constants::SiteConfig::DETAILS[:feed_style][:placeholder] %>
-                </div>
-                <div class="crayons-field">
-                  <%= admin_config_label :feed_strategy %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:feed_strategy][:description] %>
-                  <%= f.text_field :feed_strategy,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.feed_strategy,
-                                   placeholder: Constants::SiteConfig::DETAILS[:feed_strategy][:placeholder] %>
-                </div>
-                <div class="crayons-field">
-                  <%= admin_config_label :tag_feed_minimum_score %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:tag_feed_minimum_score][:description] %>
-                  <%= f.number_field :tag_feed_minimum_score,
-                                     class: "crayons-textfield",
-                                     value: SiteConfig.tag_feed_minimum_score,
-                                     placeholder: Constants::SiteConfig::DETAILS[:tag_feed_minimum_score][:placeholder] %>
-                </div>
-                <div class="crayons-field">
-                  <%= admin_config_label :home_feed_minimum_score %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:home_feed_minimum_score][:description] %>
-                  <%= f.number_field :home_feed_minimum_score,
-                                     class: "crayons-textfield",
-                                     value: SiteConfig.home_feed_minimum_score,
-                                     placeholder: Constants::SiteConfig::DETAILS[:home_feed_minimum_score][:placeholder] %>
-                </div>
-                <div class="crayons-field">
-                  <%= admin_config_label :default_font %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:default_font][:description] %>
-                  <%= select_tag "site_config[default_font]",
-                                 options_for_select(
-                                   [%w[sans-serif sans_serif], %w[serif serif], %w[open-dyslexic open_dyslexic]],
-                                   SiteConfig.default_font,
-                                 ),
-                                 multiple: false,
-                                 class: "selectpicker" %>
-                </div>
-                <div class="crayons-field">
-                  <%= admin_config_label :primary_brand_color_hex %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:description] %>
-                  <%= f.color_field :primary_brand_color_hex,
-                                    class: "crayons-color-selector",
-                                    value: SiteConfig.primary_brand_color_hex,
-                                    pattern: "^#+([a-fA-F0-9]{6})$",
-                                    placeholder: Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:placeholder] %>
-                </div>
-                <div class="crayons-field crayons-field--checkbox">
-                  <%= f.check_box :public, checked: SiteConfig.public, class: "crayons-checkbox" %>
-                  <div class="mt-0">
-                    <%= admin_config_label :public %>
-                    <p class="crayons-field__description">
-                      Are most of the site pages (e.g. posts, profiles) public? <strong>Please take precaution when changing this setting.</strong>
-                    </p>
-                  </div>
-                </div>
-
-                <%= render "form_submission", f: f %>
-              </fieldset>
+          <div id="uxBodyContainer" class="card-body collapse hide" aria-labelledby="uxBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-fieldx">
+                <%= admin_config_label :feed_style %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:feed_style][:description] %>
+                <%= f.text_field :feed_style,
+                                 class: "crayons-textfield",
+                                 value: SiteConfig.feed_style,
+                                 placeholder: Constants::SiteConfig::DETAILS[:feed_style][:placeholder] %>
             </div>
+            <div class="crayons-field">
+              <%= admin_config_label :feed_strategy %>
+              <%= admin_config_description Constants::SiteConfig::DETAILS[:feed_strategy][:description] %>
+              <%= f.text_field :feed_strategy,
+                               class: "crayons-textfield",
+                               value: SiteConfig.feed_strategy,
+                               placeholder: Constants::SiteConfig::DETAILS[:feed_strategy][:placeholder] %>
+          </div>
+          <div class="crayons-field">
+            <%= admin_config_label :tag_feed_minimum_score %>
+            <%= admin_config_description Constants::SiteConfig::DETAILS[:tag_feed_minimum_score][:description] %>
+            <%= f.number_field :tag_feed_minimum_score,
+                               class: "crayons-textfield",
+                               value: SiteConfig.tag_feed_minimum_score,
+                               placeholder: Constants::SiteConfig::DETAILS[:tag_feed_minimum_score][:placeholder] %>
+        </div>
+        <div class="crayons-field">
+          <%= admin_config_label :home_feed_minimum_score %>
+          <%= admin_config_description Constants::SiteConfig::DETAILS[:home_feed_minimum_score][:description] %>
+          <%= f.number_field :home_feed_minimum_score,
+                             class: "crayons-textfield",
+                             value: SiteConfig.home_feed_minimum_score,
+                             placeholder: Constants::SiteConfig::DETAILS[:home_feed_minimum_score][:placeholder] %>
+      </div>
+      <div class="crayons-field">
+        <%= admin_config_label :default_font %>
+        <%= admin_config_description Constants::SiteConfig::DETAILS[:default_font][:description] %>
+        <%= select_tag "site_config[default_font]",
+                       options_for_select(
+                         [%w[sans-serif sans_serif], %w[serif serif], %w[open-dyslexic open_dyslexic]],
+                         SiteConfig.default_font,
+                       ),
+                       multiple: false,
+                       class: "selectpicker" %>
+    </div>
+    <div class="crayons-field">
+      <%= admin_config_label :primary_brand_color_hex %>
+      <%= admin_config_description Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:description] %>
+      <%= f.color_field :primary_brand_color_hex,
+                        class: "crayons-color-selector",
+                        value: SiteConfig.primary_brand_color_hex,
+                        pattern: "^#+([a-fA-F0-9]{6})$",
+                        placeholder: Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:placeholder] %>
+  </div>
+  <div class="crayons-field crayons-field--checkbox">
+    <%= f.check_box :public, checked: SiteConfig.public, class: "crayons-checkbox" %>
+    <div class="mt-0">
+      <%= admin_config_label :public %>
+      <p class="crayons-field__description">
+      Are most of the site pages (e.g. posts, profiles) public? <strong>Please take precaution when changing this setting.</strong>
+      </p>
+    </div>
+  </div>
+
+  <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
           </div>
         <% end %>
       </div>

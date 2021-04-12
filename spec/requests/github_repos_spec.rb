@@ -41,7 +41,7 @@ RSpec.describe "GithubRepos", type: :request do
 
   before do
     omniauth_mock_github_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     allow(Github::OauthClient).to receive(:new).and_return(github_client)
   end
 

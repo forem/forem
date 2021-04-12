@@ -29,15 +29,15 @@
     <% else %>
       <p class="pb-4 fw-bold">Create your account</p>
     <% end %>
-    <% if SiteConfig.display_email_domain_allow_list_publicly &&
-      SiteConfig.allowed_registration_email_domains.any? %>
+    <% if Settings::Authentication.display_email_domain_allow_list_publicly &&
+      Settings::Authentication.allowed_registration_email_domains.any? %>
       <div class="crayons-notice crayons-notice--info">
-        <% if SiteConfig.allowed_registration_email_domains.one? %>
-          Registration restricted to <strong>@<%= SiteConfig.allowed_registration_email_domains.first %></strong> emails.
+        <% if Settings::Authentication.allowed_registration_email_domains.one? %>
+          Registration restricted to <strong>@<%= Settings::Authentication.allowed_registration_email_domains.first %></strong> emails.
         <% else %>
           Registration restricted to the following emails
           <ul>
-            <% SiteConfig.allowed_registration_email_domains.each do |domain| %>
+            <% Settings::Authentication.allowed_registration_email_domains.each do |domain| %>
               <li>
                 <strong>@<%= domain %></strong></strong>
               </li>
@@ -89,7 +89,7 @@
 
     <% if ReCaptcha::CheckRegistrationEnabled.call %>
       <div class="recaptcha-tag-container mt-2">
-        <%= recaptcha_tags site_key: SiteConfig.recaptcha_site_key %>
+        <%= recaptcha_tags site_key: Settings::Authentication.recaptcha_site_key %>
       </div>
     <% end %>
 
