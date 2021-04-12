@@ -53,9 +53,9 @@ module MarkdownProcessor
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       allowed_tags = %w[strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
                         br ul ol li small sup sub img a span hr blockquote kbd]
-      ActionController::Base.helpers.sanitize markdown.render(@content),
+      ActionController::Base.helpers.sanitize(markdown.render(@content),
                                               tags: allowed_tags,
-                                              attributes: ALLOWED_ATTRIBUTES
+                                              attributes: ALLOWED_ATTRIBUTES)
     end
 
     def evaluate_limited_markdown
@@ -64,9 +64,9 @@ module MarkdownProcessor
       renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       allowed_tags = %w[strong i u b em p br code]
-      ActionController::Base.helpers.sanitize markdown.render(@content),
+      ActionController::Base.helpers.sanitize(markdown.render(@content),
                                               tags: allowed_tags,
-                                              attributes: ALLOWED_ATTRIBUTES
+                                              attributes: ALLOWED_ATTRIBUTES)
     end
 
     def evaluate_inline_limited_markdown
@@ -75,9 +75,9 @@ module MarkdownProcessor
       renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       allowed_tags = %w[strong i u b em code]
-      ActionController::Base.helpers.sanitize markdown.render(@content),
+      ActionController::Base.helpers.sanitize(markdown.render(@content),
                                               tags: allowed_tags,
-                                              attributes: ALLOWED_ATTRIBUTES
+                                              attributes: ALLOWED_ATTRIBUTES)
     end
 
     def evaluate_listings_markdown
@@ -87,9 +87,9 @@ module MarkdownProcessor
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       allowed_tags = %w[strong abbr aside em p h4 h5 h6 i u b code pre
                         br ul ol li small sup sub a span hr blockquote kbd]
-      ActionController::Base.helpers.sanitize markdown.render(@content),
+      ActionController::Base.helpers.sanitize(markdown.render(@content),
                                               tags: allowed_tags,
-                                              attributes: ALLOWED_ATTRIBUTES
+                                              attributes: ALLOWED_ATTRIBUTES)
     end
 
     def tags_used
