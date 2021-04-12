@@ -100,28 +100,30 @@
 <% end %>
 
 <% if @comment.persisted? %>
-  <script defer>
-    var editForm = document.getElementById("edit_comment_<%= @comment&.id %>");
-    if ( editForm ) {
-      editForm.onsubmit = function (e) {
-        e.preventDefault();
-        document.getElementsByClassName("comment-form")[0].classList.add("opacity-50");
-        var form = this;
-        var waitingOnCSRF = setInterval(function () {
-          var metaTag = document.querySelector("meta[name='csrf-token']")
-          if (metaTag) {
-            clearInterval(waitingOnCSRF);
-            authToken = metaTag.getAttribute("content");
-            document.getElementById("new_comment_authenticity_token").value = authToken;
-            form.submit();
-          }
-        }, 1);
-      }
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      var editForm = document.getElementById("edit_comment_<%= @comment&.id %>");
+      if ( editForm ) {
+        editForm.onsubmit = function (e) {
+          e.preventDefault();
+          document.getElementsByClassName("comment-form")[0].classList.add("opacity-50");
+          var form = this;
+          var waitingOnCSRF = setInterval(function () {
+            var metaTag = document.querySelector("meta[name='csrf-token']")
+            if (metaTag) {
+              clearInterval(waitingOnCSRF);
+              authToken = metaTag.getAttribute("content");
+              document.getElementById("new_comment_authenticity_token").value = authToken;
+              form.submit();
+            }
+          }, 1);
+        }
 
-      editForm.getElementsByClassName("js-btn-dismiss")[0].classList.remove("hidden");
-      setTimeout(function(){
-        editForm.getElementsByClassName('comment-textarea')[0].focus();
-      }, 50);
-    }
+        editForm.getElementsByClassName("js-btn-dismiss")[0].classList.remove("hidden");
+        setTimeout(function(){
+          editForm.getElementsByClassName('comment-textarea')[0].focus();
+        }, 50);
+      }
+    });
   </script>
 <% end %>

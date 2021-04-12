@@ -119,10 +119,12 @@
     <%= render "layouts/signup_modal" unless user_signed_in? %>
   <% end %>
   <% if @shell %>
-    <script defer>
-      if (!document.title) {
-        document.title = document.getElementsByTagName("TITLE")[1].textContent
-      }
+    <script>
+      window.addEventListener('DOMContentLoaded', function() {
+        if (!document.title) {
+          document.title = document.getElementsByTagName("TITLE")[1].textContent
+        }
+      });
     </script>
   <% end %>
   </body>
