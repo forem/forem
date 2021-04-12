@@ -54,6 +54,9 @@ Rails.application.routes.draw do
       resources :permissions, only: %i[index]
       resources :reactions, only: [:update]
       resources :app_integrations, only: %i[index new create edit update destroy]
+      namespace :settings do
+        resources :authentications, only: [:create]
+      end
       namespace :users do
         resources :gdpr_delete_requests, only: %i[index destroy]
       end

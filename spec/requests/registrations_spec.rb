@@ -18,7 +18,7 @@ RSpec.describe "Registrations", type: :request do
 
       it "only shows the single sign on options if they are present" do
         allow(Authentication::Providers).to receive(:enabled).and_return([])
-        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
+        allow(Settings::Authentication).to receive(:allow_email_password_login).and_return(false)
 
         get sign_up_path
 
@@ -28,7 +28,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email login is enabled in /admin/config" do
       before do
-        allow(SiteConfig).to receive(:allow_email_password_login).and_return(true)
+        allow(Settings::Authentication).to receive(:allow_email_password_login).and_return(true)
       end
 
       it "shows the sign in text for password based authentication" do
@@ -40,7 +40,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email login is disabled in /admin/config" do
       before do
-        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
+        allow(Settings::Authentication).to receive(:allow_email_password_login).and_return(false)
       end
 
       it "does not show the sign in text for password based authentication" do
@@ -62,7 +62,7 @@ RSpec.describe "Registrations", type: :request do
 
   describe "Create Account" do
     context "when email registration allowed" do
-      before { allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true) }
+      before { allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true) }
 
       it "shows the sign in page with email option" do
         get sign_up_path, params: { state: "new-user" }
@@ -78,10 +78,10 @@ RSpec.describe "Registrations", type: :request do
     end
 
     context "when email registration not allowed" do
-      before { allow(SiteConfig).to receive(:allow_email_password_registration).and_return(false) }
+      before { allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(false) }
 
       it "does not show email sign up option" do
-        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(false)
+        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(false)
         get sign_up_path, params: { state: "new-user" }
 
         expect(response.body).not_to include("Sign up with Email")
@@ -90,10 +90,10 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email registration allowed and captcha required" do
       before do
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
-        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
-        allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
+        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
+        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
+        allow(Settings::Authentication).to receive(:require_captcha_for_email_password_registration).and_return(true)
       end
 
       it "displays the captcha box on email signup page" do
@@ -162,7 +162,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site is not configured to accept email registration" do
       before do
-        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(false)
+        allow(Settings::Authentication)
+          .to receive(:allow_email_password_registration).and_return(false)
       end
 
       it "disallows communities where email registration is not allowed" do
@@ -172,7 +173,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site is configured to accept email registration" do
       before do
-        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
+        allow(Settings::Authentication)
+          .to receive(:allow_email_password_registration).and_return(true)
       end
 
       it "does not raise disallowed if community is set to allow email" do
@@ -228,8 +230,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email registration allowed and email allow list empty" do
       before do
-        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
-        allow(SiteConfig).to receive(:allowed_registration_email_domains).and_return([])
+        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
+        allow(Settings::Authentication).to receive(:allowed_registration_email_domains).and_return([])
       end
 
       it "creates user when email in allow list" do
@@ -245,8 +247,9 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email registration allowed and email allow list present" do
       before do
-        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
-        allow(SiteConfig).to receive(:allowed_registration_email_domains).and_return(["dev.to", "forem.com"])
+        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
+        allow(Settings::Authentication).to receive(:allowed_registration_email_domains).and_return(["dev.to",
+                                                                                                    "forem.com"])
       end
 
       it "does not create user when email not in allow list" do
@@ -272,10 +275,10 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site configured to accept email registration AND require captcha" do
       before do
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
-        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
-        allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
+        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
+        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
+        allow(Settings::Authentication).to receive(:require_captcha_for_email_password_registration).and_return(true)
       end
 
       it "creates user when valid params passed and recaptcha completed" do

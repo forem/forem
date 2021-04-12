@@ -14,8 +14,8 @@ RSpec.describe ReCaptcha::CheckEnabled, type: :request do
   describe "ReCaptcha for user actions like Abuse Reports (FeedbackMessages)" do
     context "when recaptcha SiteConfig keys are not configured" do
       it "marks ReCaptcha as not enabled regardless of the param passed in" do
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return(nil)
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return(nil)
+        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return(nil)
+        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return(nil)
 
         expect(described_class.call).to be(false)
         expect(described_class.call(older_user)).to be(false)
@@ -24,8 +24,8 @@ RSpec.describe ReCaptcha::CheckEnabled, type: :request do
 
     context "when recaptcha SiteConfig keys are configured" do
       before do
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSecretKey")
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSiteKey")
+        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSecretKey")
+        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSiteKey")
       end
 
       it "marks ReCaptcha as enabled when logged out (parameter is nil)" do

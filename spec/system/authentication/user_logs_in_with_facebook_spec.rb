@@ -5,7 +5,7 @@ RSpec.describe "Authenticating with Facebook" do
 
   before do
     omniauth_mock_facebook_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   context "when a user is new" do
@@ -225,7 +225,7 @@ RSpec.describe "Authenticating with Facebook" do
 
   context "when community is in invite only mode" do
     before do
-      allow(SiteConfig).to receive(:invite_only_mode).and_return(true)
+      allow(Settings::Authentication).to receive(:invite_only_mode).and_return(true)
     end
 
     it "doesn't present the authentication option" do
