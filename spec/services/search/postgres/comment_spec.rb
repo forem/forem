@@ -4,21 +4,45 @@ RSpec.describe Search::Postgres::Comment, type: :service do
   let(:comment) { create(:comment) }
 
   describe "::search_documents" do
-    it "does not include comments from commentables that are unpublished", :aggregate_failures do
-      comment_text = "Ruby on Rails rocks!"
-      published_article = create(:article, title: "Published Article", published: true)
-      unpublished_article = create(:article, title: "Unpublished Article", published: true)
-      comment_on_published_article = create(:comment, body_markdown: comment_text, commentable: published_article)
-      comment_on_unpublished_article = create(:comment, body_markdown: comment_text, commentable: unpublished_article)
-      unpublished_article.update_columns(published: false)
+    context "when filtering Commentables" do
+      it "does not include comments from Articles that are unpublished", :aggregate_failures do
+        comment_text = "Ruby on Rails rocks!"
+        published_article = create(:article, title: "Published Article", published: true)
+        unpublished_article = create(:article, title: "Unpublished Article", published: true)
+        comment_on_published_article = create(:comment, body_markdown: comment_text, commentable: published_article)
+        comment_on_unpublished_article = create(:comment, body_markdown: comment_text, commentable: unpublished_article)
+        unpublished_article.update_columns(published: false)
 
-      result = described_class.search_documents(term: "rails")
-      # rubocop:disable Rails/PluckId
-      ids = result.pluck(:id)
-      # rubocop:enable Rails/PluckId
+        result = described_class.search_documents(term: "rails")
+        # rubocop:disable Rails/PluckId
+        ids = result.pluck(:id)
+        # rubocop:enable Rails/PluckId
 
-      expect(ids).not_to include(comment_on_unpublished_article.search_id)
-      expect(ids).to include(comment_on_published_article.search_id)
+        expect(ids).not_to include(comment_on_unpublished_article.search_id)
+        expect(ids).to include(comment_on_published_article.search_id)
+      end
+
+      it "does not include comments from PodcastEpisodes that are unpublished", :aggregate_failures do
+        comment_text = "Ruby on Rails rocks!"
+        published_podcast = create(:podcast, published: true)
+        unpublished_podcast = create(:podcast, published: true)
+        published_podcast_episode = create(:podcast_episode, podcast_id: published_podcast.id)
+        unpublished_podcast_episode = create(:podcast_episode, podcast_id: unpublished_podcast.id)
+        comment_on_published_article = create(:comment,
+                                              body_markdown: comment_text,
+                                              commentable: published_podcast_episode)
+        comment_on_unpublished_article = create(:comment,
+                                                body_markdown: comment_text,
+                                                commentable: unpublished_podcast_episode)
+        unpublished_podcast.update_columns(published: false)
+
+        # rubocop:disable Rails/PluckId
+        ids = described_class.search_documents(term: "rails").pluck(:id)
+        # rubocop:enable Rails/PluckId
+
+        expect(ids).not_to include(comment_on_unpublished_article.search_id)
+        expect(ids).to include(comment_on_published_article.search_id)
+      end
     end
 
     context "when describing the result format" do

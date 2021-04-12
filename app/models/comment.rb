@@ -10,7 +10,22 @@ class Comment < ApplicationRecord
   SEARCH_CLASS = Search::FeedContent
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
-  COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze # Also used in self.force_eager_load_serialized_data
+
+  # Also used in Search::Postgres::Comment
+  COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
+  FORCED_EAGER_LOAD_QUERY = <<-SQL.freeze
+    LEFT JOIN users
+      ON comments.user_id = users.id
+    LEFT JOIN articles
+      ON comments.commentable_id = articles.id
+      AND comments.commentable_type = 'Article'
+    LEFT JOIN podcast_episodes
+      ON comments.commentable_id = podcast_episodes.id
+      AND comments.commentable_type = 'PodcastEpisode'
+    LEFT JOIN podcasts
+      ON podcast_episodes.podcast_id = podcasts.id
+  SQL
+
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
 
@@ -29,7 +44,6 @@ class Comment < ApplicationRecord
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
-
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
   before_save :synchronous_spam_score_check
@@ -83,16 +97,8 @@ class Comment < ApplicationRecord
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
   end
 
-  def self.force_eager_load_serialized_data
-    users_query = "LEFT JOIN users ON comments.user_id = users.id"
-    commentables_query = ""
-
-    COMMENTABLE_TYPES.each do |commentable_type|
-      table_name = "#{commentable_type.underscore}s"
-      commentables_query += " LEFT JOIN #{table_name} ON #{table_name}.id = comments.commentable_id"
-    end
-
-    joins(users_query + commentables_query)
+  def self.forced_eager_load_serialized_data
+    joins(FORCED_EAGER_LOAD_QUERY)
   end
 
   def search_id
