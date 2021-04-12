@@ -553,19 +553,15 @@ class User < ApplicationRecord
     search_score
   end
 
-  def connected_authentication_providers
-    identities_enabled.pluck(:provider).map(&:to_sym)
-  end
-
   def authenticated_social_accounts
     user_identities = identities_enabled
     return {} if user_identities.blank?
 
-    urls = user_identities.pluck(:auth_data_dump)
-      .map { |data| data.dig(:info, :urls) }
-      .reduce(&:merge) || {}
+    urls = user_identities.pluck(:auth_data_dump).each_with_object({}) do |data, hash|
+      hash.merge!(data.dig(:info, :urls))
+    end
 
-    { github: urls[:GitHub], twitter: urls[:Twitter], facebook: urls[:Facebook] }
+    { github: urls["GitHub"], twitter: urls["Twitter"], facebook: urls["Facebook"] }.compact
   end
 
   def authenticated_through?(provider_name)
@@ -578,7 +574,8 @@ class User < ApplicationRecord
   def authenticated_with_all_providers?
     # ga_providers refers to Generally Available (not in beta)
     ga_providers = Authentication::Providers.enabled.reject { |sym| sym == :apple }
-    (ga_providers - connected_authentication_providers).empty?
+    enabled_providers = identities.pluck(:provider).map(&:to_sym)
+    (ga_providers - enabled_providers).empty?
   end
 
   def rate_limiter
