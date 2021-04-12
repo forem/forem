@@ -37,6 +37,7 @@ scope :customization, as: 'customization' do
 end
 
 scope :moderation, as: 'moderation' do
+  resources :feedback_messages, only: %i[index show]
   resources :reports, only: %i[index show], controller: "feedback_messages" do
     collection do
       post "send_email"

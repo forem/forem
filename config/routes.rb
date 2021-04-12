@@ -50,7 +50,6 @@ Rails.application.routes.draw do
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
       end
-      resources :feedback_messages, only: %i[index show]
       resources :invitations, only: %i[index new create destroy]
       resources :organization_memberships, only: %i[update destroy create]
       resources :permissions, only: %i[index]

@@ -15,6 +15,7 @@ resources :comments, only: [:index]
 resource :config
 resources :display_ads, only: %i[index edit update new create destroy]
 resources :events, only: %i[index create update new edit]
+resources :feedback_messages, only: %i[index show]
 resources :html_variants, only: %i[index edit update new create show destroy]
 resources :listings, only: %i[index edit update destroy]
 resources :listing_categories, only: %i[index edit update new create
