@@ -202,6 +202,37 @@ describe('Comment on articles', () => {
       cy.findByText('@search_user_1').should('not.be.visible');
     });
 
+    it('should close the autocomplete suggestions and exit combobox on click outside', () => {
+      cy.intercept(
+        { method: 'GET', url: '/search/usernames' },
+        { fixture: 'search/usernames.json' },
+      );
+
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
+
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).as('plainTextArea');
+
+      cy.get('@plainTextArea').type('Some text @s');
+
+      // Verify the combobox has appeared
+      cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
+        'autocompleteCommentBox',
+      );
+
+      cy.get('@autocompleteCommentBox').type('earch');
+      cy.findByText('@search_user_1').should('be.visible');
+
+      // Click away from the dropdown
+      cy.get('@autocompleteCommentBox').click({ position: 'right' });
+      cy.findByText('@search_user_1').should('not.exist');
+
+      // Check the combobox has exited and we are returned to the plainTextArea
+      cy.get('@plainTextArea').should('have.focus');
+    });
+
     // TODO: Flaky spec
     xit('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
