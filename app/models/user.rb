@@ -553,17 +553,6 @@ class User < ApplicationRecord
     search_score
   end
 
-  def authenticated_social_accounts
-    user_identities = identities_enabled
-    return {} if user_identities.blank?
-
-    urls = user_identities.pluck(:auth_data_dump).each_with_object({}) do |data, hash|
-      hash.merge!(data.dig(:info, :urls))
-    end
-
-    { github: urls["GitHub"], twitter: urls["Twitter"], facebook: urls["Facebook"] }.compact
-  end
-
   def authenticated_through?(provider_name)
     return false unless Authentication::Providers.available?(provider_name)
     return false unless Authentication::Providers.enabled?(provider_name)

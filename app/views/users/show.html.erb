@@ -90,7 +90,7 @@
               </a>
             <% end %>
 
-            <% @user.authenticated_social_accounts.each do |provider_name, url| %>
+            <% social_authentication_links_for(@user).each do |provider_name, url| %>
               <a href="<%= url %>" target="_blank" rel="noopener me" class="profile-header__meta__item p-1">
                 <%= inline_svg_tag("#{provider_name}.svg", class: "crayons-icon shrink-0", aria: true, title: "#{provider_name} website") %>
               </a>
