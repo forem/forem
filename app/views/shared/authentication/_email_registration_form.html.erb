@@ -31,7 +31,7 @@
     <% end %>
     <% if SiteConfig.display_email_domain_allow_list_publicly &&
       SiteConfig.allowed_registration_email_domains.any? %>
-      <div class="crayons-notice crayons-notice--info" role="status" aria-live="polite">
+      <div class="crayons-notice crayons-notice--info" aria-live="polite">
         <% if SiteConfig.allowed_registration_email_domains.one? %>
           Registration restricted to <strong>@<%= SiteConfig.allowed_registration_email_domains.first %></strong> emails.
         <% else %>
