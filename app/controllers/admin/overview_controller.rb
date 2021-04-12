@@ -3,9 +3,7 @@ module Admin
     layout "admin"
     def index
       @open_abuse_reports_count =
-        FeedbackMessage
-          .where(status: "Open", feedback_type: "abuse-reports")
-          .count
+        FeedbackMessage.open_abuse_reports.size
     end
   end
 end
