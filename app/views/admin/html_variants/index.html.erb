@@ -41,7 +41,7 @@
             <%= link_to "Fork", new_admin_html_variant_path(fork_id: html_variant.id), class: "crayons-btn crayons-btn--outlined" %>
           </td>
           <td>
-            <%= link_to "Edit", edit_admin_html_variant_path(html_variant.id), class: "crayons-btn" %>
+            <%= link_to "Edit", edit_admin_html_variant_path(html_variant), class: "crayons-btn" %>
           </td>
           <td>
             <%= link_to "Destroy", admin_html_variant_path(html_variant), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %>
