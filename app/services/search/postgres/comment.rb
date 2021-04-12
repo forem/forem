@@ -23,6 +23,26 @@ module Search
       DEFAULT_PER_PAGE = 60
       private_constant :DEFAULT_PER_PAGE
 
+      # Because commentable represents a polymorphic relationship, ActiveRecord
+      # can't eager load the associations so we have to make all the joins
+      # manually.
+      #
+      # NOTE: if Comment::COMMENTABLE_TYPES is updated, this filter will also
+      # need to be updated
+      FORCED_EAGER_LOAD_QUERY = <<-SQL.freeze
+        LEFT JOIN users
+          ON comments.user_id = users.id
+        LEFT JOIN articles
+          ON comments.commentable_id = articles.id
+          AND comments.commentable_type = 'Article'
+        LEFT JOIN podcast_episodes
+          ON comments.commentable_id = podcast_episodes.id
+          AND comments.commentable_type = 'PodcastEpisode'
+        LEFT JOIN podcasts
+          ON podcast_episodes.podcast_id = podcasts.id
+      SQL
+      private_constant :FORCED_EAGER_LOAD_QUERY
+
       MAX_PER_PAGE = 120 # to avoid querying too many items, we set a maximum amount for a page
       private_constant :MAX_PER_PAGE
 
@@ -46,7 +66,7 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-        relation = ::Comment.forced_eager_load_serialized_data.where(QUERY_FILTER)
+        relation = ::Comment.joins(FORCED_EAGER_LOAD_QUERY).where(QUERY_FILTER)
 
         relation = relation.search_comments(term) if term.present?
 

@@ -11,22 +11,10 @@ class Comment < ApplicationRecord
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
 
-  # Updates to this constant also require updates to FORCED_EAGER_LOAD_QUERY
-  # and Search::Postgres::Comment::QUERY_FILTER
+  # Updates to this constant also requires updates to:
+  # - Search::Postgres::Comment::QUERY_FILTER
+  # - Search::Postgres::Comment::FORCED_EAGER_LOAD_QUERY
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
-
-  FORCED_EAGER_LOAD_QUERY = <<-SQL.freeze
-    LEFT JOIN users
-      ON comments.user_id = users.id
-    LEFT JOIN articles
-      ON comments.commentable_id = articles.id
-      AND comments.commentable_type = 'Article'
-    LEFT JOIN podcast_episodes
-      ON comments.commentable_id = podcast_episodes.id
-      AND comments.commentable_type = 'PodcastEpisode'
-    LEFT JOIN podcasts
-      ON podcast_episodes.podcast_id = podcasts.id
-  SQL
 
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
