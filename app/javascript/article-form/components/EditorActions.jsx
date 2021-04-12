@@ -96,6 +96,7 @@ export const EditorActions = ({
           onClick={onClearChanges}
           className="whitespace-nowrap fw-normal"
           size="s"
+          aria-label="Revert new changes"
         >
           Revert <span className="hidden s:inline">new changes</span>
         </Button>
