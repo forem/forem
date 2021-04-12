@@ -1,18 +1,21 @@
-# Forem apps AppIntegration are not meant to be modified by creators
+# AppIntegration::FOREM_APP_PLATFORMS are all the platforms supported by every
+# Forem instance by default. These are App Integrations that populate their
+# credentials from ENV variables and are not meant to be modified by creators.
+# Creator apps are those dynamically managed by creators in the Admin dashboard.
 class AppIntegrationPolicy < ApplicationPolicy
   def create?
-    !@record.forem_app?
+    @record.creator_app?
   end
 
   def edit?
-    !@record.forem_app?
+    @record.creator_app?
   end
 
   def update?
-    !@record.forem_app?
+    @record.creator_app?
   end
 
   def destroy?
-    !@record.forem_app?
+    @record.creator_app?
   end
 end

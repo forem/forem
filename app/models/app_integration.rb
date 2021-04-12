@@ -7,7 +7,6 @@ class AppIntegration < ApplicationRecord
 
   validates :app_bundle, presence: true
   validates :platform, presence: true
-  validates :active, inclusion: { in: [true, false] }
 
   has_many :devices, dependent: :destroy
 
@@ -18,8 +17,15 @@ class AppIntegration < ApplicationRecord
     app_bundle == FOREM_BUNDLE
   end
 
-  def active?
-    # TRUE if it's marked as `active` in the DB && it has credentials available
+  def creator_app?
+    app_bundle != FOREM_BUNDLE
+  end
+
+  # When an error is raised during an attempt to deliver PNs we should catch
+  # them, mark the app as active=false and the error logged into `last_error`
+  # If the app is marked as active and credentials are available it's likely
+  # the AppIntegration is operational.
+  def operational?
     active && auth_credentials.present?
   end
 

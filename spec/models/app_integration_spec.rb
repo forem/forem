@@ -3,32 +3,32 @@ require "rails_helper"
 RSpec.describe AppIntegration, type: :model do
   let!(:app_integration) { create(:app_integration, platform: Device::IOS) }
 
-  describe "active?" do
+  describe "operational?" do
     context "with non-forem apps" do
       it "returns false if not active in DB or credentials are unavailable" do
         inactive_app_integration = create(:app_integration, active: false)
-        expect(inactive_app_integration.active?).to be false
+        expect(inactive_app_integration.operational?).to be false
 
         app_integration_without_credentials = create(:app_integration, auth_key: nil)
-        expect(app_integration_without_credentials.active?).to be false
+        expect(app_integration_without_credentials.operational?).to be false
       end
 
       it "returns true if both active && credentials are available" do
-        expect(app_integration.active?).to be true
+        expect(app_integration.operational?).to be true
       end
     end
 
     context "with forem apps" do
       it "returns true/false based on the ENV variable for the forem apps" do
-        forem_app_integration = AppIntegrations::FetchBy.call(
+        forem_app_integration = AppIntegrations::FetchOrCreateBy.call(
           app_bundle: AppIntegration::FOREM_BUNDLE,
           platform: Device::IOS,
         )
         allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("asdf123")
-        expect(forem_app_integration.active?).to be true
+        expect(forem_app_integration.operational?).to be true
 
         allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return(nil)
-        expect(forem_app_integration.active?).to be false
+        expect(forem_app_integration.operational?).to be false
       end
     end
   end

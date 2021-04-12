@@ -1,5 +1,5 @@
 module AppIntegrations
-  class FetchBy
+  class FetchOrCreateBy
     def self.call(app_bundle:, platform:)
       new(app_bundle: app_bundle, platform: platform).call
     end

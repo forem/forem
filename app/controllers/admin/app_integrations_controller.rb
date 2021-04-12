@@ -17,7 +17,6 @@ module Admin
 
     def create
       @app = AppIntegration.new(app_integration_params)
-      @app.active = true
       authorize @app
 
       if @app.save

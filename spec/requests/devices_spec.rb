@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Devices", type: :request do
   let(:user) { create(:user) }
+  let(:app_integration) { create(:app_integration) }
 
   before do
     allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
@@ -14,7 +15,7 @@ RSpec.describe "Devices", type: :request do
         post "/users/devices", params: {
           token: "123",
           platform: "Android",
-          app_bundle: "hello"
+          app_bundle: app_integration.app_bundle
         }
         expect(user.devices.count).to eq(1)
       end
@@ -25,7 +26,7 @@ RSpec.describe "Devices", type: :request do
         {
           token: "123",
           platform: "unknown",
-          app_bundle: "hello"
+          app_bundle: app_integration.app_bundle
         }
       end
 
@@ -49,7 +50,7 @@ RSpec.describe "Devices", type: :request do
       let(:incomplete_params) do
         {
           platform: device.platform,
-          app_bundle: device.app_bundle
+          app_bundle: device.app_integration.app_bundle
         }
       end
 
@@ -73,7 +74,7 @@ RSpec.describe "Devices", type: :request do
         {
           token: device.token,
           platform: device.platform,
-          app_bundle: device.app_bundle
+          app_bundle: device.app_integration.app_bundle
         }
       end
 

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe AppIntegrations::FetchRpushApp, type: :service do
   let(:app_integration) do
-    AppIntegrations::FetchBy.call(app_bundle: AppIntegration::FOREM_BUNDLE, platform: Device::IOS)
+    AppIntegrations::FetchOrCreateBy.call(app_bundle: AppIntegration::FOREM_BUNDLE, platform: Device::IOS)
   end
 
   describe "Redis-backed rpush app" do

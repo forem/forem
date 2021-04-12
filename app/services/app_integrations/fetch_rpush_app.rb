@@ -7,7 +7,7 @@ module AppIntegrations
     def initialize(app_bundle:, platform:)
       @app_bundle = app_bundle
       @platform = platform
-      @app_integration = AppIntegrations::FetchBy.call(
+      @app_integration = AppIntegrations::FetchOrCreateBy.call(
         app_bundle: @app_bundle,
         platform: @platform,
       )

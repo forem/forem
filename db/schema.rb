@@ -80,11 +80,12 @@ ActiveRecord::Schema.define(version: 2021_04_11_221134) do
   end
 
   create_table "app_integrations", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
     t.string "app_bundle", null: false
-    t.string "platform", null: false
-    t.boolean "active", null: false
     t.string "auth_key"
     t.datetime "created_at", precision: 6, null: false
+    t.string "last_error"
+    t.string "platform", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["app_bundle"], name: "index_app_integrations_on_app_bundle"
     t.index ["platform"], name: "index_app_integrations_on_platform"
@@ -442,13 +443,13 @@ ActiveRecord::Schema.define(version: 2021_04_11_221134) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "token", null: false
-    t.string "platform", null: false
     t.string "app_bundle"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.bigint "app_integration_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.string "platform", null: false
+    t.string "token", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
     t.index ["app_integration_id"], name: "index_devices_on_app_integration_id"
     t.index ["user_id", "token", "platform", "app_integration_id"], name: "index_devices_on_user_id_and_token_and_platform_and_app", unique: true
   end
@@ -1006,16 +1007,6 @@ ActiveRecord::Schema.define(version: 2021_04_11_221134) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
-  end
-
-  create_table "push_notification_targets", force: :cascade do |t|
-    t.boolean "active", null: false
-    t.string "app_bundle", null: false
-    t.string "auth_key"
-    t.datetime "created_at", precision: 6, null: false
-    t.string "platform", null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["app_bundle"], name: "index_push_notification_targets_on_app_bundle"
   end
 
   create_table "rating_votes", force: :cascade do |t|

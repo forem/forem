@@ -2,10 +2,11 @@ require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
 RSpec.describe "/admin/app_integrations", type: :request do
+  let!(:app_integration) { create(:app_integration) }
   let(:get_resource) { get "/admin/app_integrations" }
   let(:params) do
     {
-      app_bundle: "com.app.lol",
+      app_bundle: app_integration.app_bundle,
       platform: Device::IOS,
       auth_key: "sample_data"
     }
