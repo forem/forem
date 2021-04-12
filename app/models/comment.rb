@@ -11,8 +11,10 @@ class Comment < ApplicationRecord
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
 
-  # Also used in Search::Postgres::Comment
+  # Updates to this constant also require updates to FORCED_EAGER_LOAD_QUERY
+  # and Search::Postgres::Comment::QUERY_FILTER
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
+
   FORCED_EAGER_LOAD_QUERY = <<-SQL.freeze
     LEFT JOIN users
       ON comments.user_id = users.id
