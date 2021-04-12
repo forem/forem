@@ -25,8 +25,8 @@ module JsonApiSortParam
     end.symbolize_keys
   end
 
-  def sort_and_filter(params_hash, allowed_fields)
-    param_order = allowed_fields.each_with_index.to_h
-    params_hash.slice(*allowed_fields).sort_by { |k, _v| param_order[k] }.to_h
+  def sort_and_filter(fields_hash, allowed_fields)
+    field_order = allowed_fields.each_with_index.to_h
+    fields_hash.slice(*allowed_fields).sort_by { |k, _v| field_order[k] }.to_h
   end
 end
