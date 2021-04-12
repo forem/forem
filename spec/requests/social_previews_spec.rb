@@ -32,27 +32,6 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(first_request_body).to eq second_request_body
     end
 
-    it "renders custom template when tagged with shecoded" do
-      create(:tag, social_preview_template: "shecoded")
-      she_coded_article = create(:article, tags: "shecoded")
-
-      get "/social_previews/article/#{she_coded_article.id}"
-
-      expect(response.body).to include CGI.escapeHTML(she_coded_article.title)
-    end
-
-    it "includes campaign tags when tagged with 2 campaign tags" do
-      create(:tag, name: "shecoded", social_preview_template: "shecoded")
-      create(:tag, name: "theycoded", social_preview_template: "shecoded")
-
-      she_coded_article = create(:article, tags: "shecoded, theycoded")
-      SiteConfig.campaign_featured_tags = "shecoded,theycoded"
-
-      get "/social_previews/article/#{she_coded_article.id}"
-
-      expect(response.body).to include("#shecoded #theycoded")
-    end
-
     it "renders an image when requested and redirects to image url" do
       get "/social_previews/article/#{article.id}.png"
 
