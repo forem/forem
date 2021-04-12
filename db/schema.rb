@@ -2,8 +2,8 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
@@ -36,7 +36,6 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.text "content"
     t.bigint "feedback_message_id"
     t.string "mailer"
-    t.datetime "opened_at"
     t.datetime "sent_at"
     t.text "subject"
     t.text "to"
@@ -1049,6 +1048,14 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "settings_authentications", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_authentications_on_var", unique: true
+  end
+
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1351,6 +1358,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
+    t.check_constraint "username IS NOT NULL", name: "users_username_not_null"
   end
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|

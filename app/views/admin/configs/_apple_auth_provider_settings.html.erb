@@ -11,42 +11,42 @@ requires a custom partial
   <div class="crayons-field">
     <%= admin_config_label :apple_client_id %>
     <p class="crayons-field__description">
-      <%= Constants::SiteConfig::DETAILS[:apple_client_id][:description] %>
+      <%= Constants::Settings::Authentication::DETAILS[:apple_client_id][:description] %>
     </p>
     <%= f.text_field :apple_client_id,
                      class: "crayons-textfield",
-                     value: SiteConfig.apple_client_id,
-                     placeholder: Constants::SiteConfig::DETAILS[:apple_client_id][:placeholder] %>
+                     value: Settings::Authentication.apple_client_id,
+                     placeholder: Constants::Settings::Authentication::DETAILS[:apple_client_id][:placeholder] %>
   </div>
   <div class="crayons-field">
     <%= admin_config_label :apple_key_id %>
     <p class="crayons-field__description">
-      <%= Constants::SiteConfig::DETAILS[:apple_key_id][:description] %>
+      <%= Constants::Settings::Authentication::DETAILS[:apple_key_id][:description] %>
     <p>
     <%= f.text_field :apple_key_id,
                      class: "crayons-textfield",
-                     value: SiteConfig.apple_key_id,
-                     placeholder: Constants::SiteConfig::DETAILS[:apple_key_id][:placeholder] %>
+                     value: Settings::Authentication.apple_key_id,
+                     placeholder: Constants::Settings::Authentication::DETAILS[:apple_key_id][:placeholder] %>
   </div>
   <div class="crayons-field">
     <%= admin_config_label :apple_pem %>
     <p class="crayons-field__description">
-      <%= Constants::SiteConfig::DETAILS[:apple_pem][:description] %>
+      <%= Constants::Settings::Authentication::DETAILS[:apple_pem][:description] %>
     <p>
     <%= f.text_field :apple_pem,
                      class: "crayons-textfield",
-                     value: SiteConfig.apple_pem,
-                     placeholder: Constants::SiteConfig::DETAILS[:apple_pem][:placeholder] %>
+                     value: Settings::Authentication.apple_pem,
+                     placeholder: Constants::Settings::Authentication::DETAILS[:apple_pem][:placeholder] %>
   </div>
   <div class="crayons-field">
     <%= admin_config_label :apple_team_id %>
     <p class="crayons-field__description">
-      <%= Constants::SiteConfig::DETAILS[:apple_team_id][:description] %>
+      <%= Constants::Settings::Authentication::DETAILS[:apple_team_id][:description] %>
     <p>
     <%= f.text_field :apple_team_id,
                      class: "crayons-textfield",
-                     value: SiteConfig.apple_team_id,
-                     placeholder: Constants::SiteConfig::DETAILS[:apple_team_id][:placeholder] %>
+                     value: Settings::Authentication.apple_team_id,
+                     placeholder: Constants::Settings::Authentication::DETAILS[:apple_team_id][:placeholder] %>
   </div>
   <div class="crayons-btn-actions">
     <% if authentication_provider_enabled?(provider) %>

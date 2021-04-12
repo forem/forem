@@ -1,0 +1,152 @@
+{
+  "result": [
+    {
+      "id": 7375469,
+      "user_id": 9597,
+      "reactable": {
+        "reading_time": 3,
+        "main_image": "https://res.cloudinary.com/practicaldev/image/fetch/s--XE2mPGud--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/9597/68d6245f-3152-4ed2-a245-d015fca4160b.jpeg",
+        "readable_publish_date_string": "Feb 22",
+        "cloudinary_video_url": null,
+        "video_duration_in_minutes": 0,
+        "title": "Test Article 1",
+        "video_duration_string": "00:00",
+        "tags": [
+          {
+            "name": "productivity",
+            "keywords_for_search": ""
+          },
+          {
+            "name": "webdev",
+            "keywords_for_search": "web development"
+          }
+        ],
+        "path": "/somember/web-vitals-explained-114j",
+        "comments_count": 4,
+        "public_reactions_count": 94,
+        "id": 614848,
+        "published_at": "2021-02-22T17:00:55.966Z",
+        "class_name": "Article",
+        "user": {
+          "name": "Some Member",
+          "id": 67245,
+          "pro": null,
+          "profile_image_90": "https://res.cloudinary.com/practicaldev/image/fetch/s--XE2mPGud--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/9597/68d6245f-3152-4ed2-a245-d015fca4160b.jpeg",
+          "username": "somember"
+        },
+        "tag_list": ["productivity", "webdev"],
+        "flare_tag": null,
+        "user_id": 67245,
+        "highlight": null,
+        "readable_publish_date": "Feb 22",
+        "podcast": {
+          "slug": null,
+          "image_url": "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9iebxyedkwozybopkn6e.jpeg",
+          "title": "Test Article 1"
+        },
+        "_score": 0,
+        "published_at_int": 1614013255,
+        "published_timestamp": "2021-02-22T17:00:55.966Z"
+      }
+    },
+    {
+      "id": 7375469,
+      "user_id": 9597,
+      "reactable": {
+        "reading_time": 3,
+        "main_image": "https://res.cloudinary.com/practicaldev/image/fetch/s--XE2mPGud--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/9597/68d6245f-3152-4ed2-a245-d015fca4160b.jpeg",
+        "readable_publish_date_string": "Feb 22",
+        "cloudinary_video_url": null,
+        "video_duration_in_minutes": 0,
+        "title": "Test Article 2",
+        "video_duration_string": "00:00",
+        "tags": [
+          {
+            "name": "performance",
+            "keywords_for_search": null
+          },
+          {
+            "name": "webdev",
+            "keywords_for_search": "web development"
+          }
+        ],
+        "path": "/somember/web-vitals-explained-114j",
+        "comments_count": 4,
+        "public_reactions_count": 94,
+        "id": 614848,
+        "published_at": "2021-02-22T17:00:55.966Z",
+        "class_name": "Article",
+        "user": {
+          "name": "Some Member",
+          "id": 67245,
+          "pro": null,
+          "profile_image_90": "https://res.cloudinary.com/practicaldev/image/fetch/s--XE2mPGud--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/9597/68d6245f-3152-4ed2-a245-d015fca4160b.jpeg",
+          "username": "somember"
+        },
+        "tag_list": ["performance", "webdev"],
+        "flare_tag": null,
+        "user_id": 67245,
+        "highlight": null,
+        "readable_publish_date": "Feb 22",
+        "podcast": {
+          "slug": null,
+          "image_url": "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9iebxyedkwozybopkn6e.jpeg",
+          "title": "Test Article 2"
+        },
+        "_score": 0,
+        "published_at_int": 1614013255,
+        "published_timestamp": "2021-02-22T17:00:55.966Z"
+      }
+    },
+    {
+      "id": 7375469,
+      "user_id": 9597,
+      "reactable": {
+        "reading_time": 3,
+        "main_image": "https://res.cloudinary.com/practicaldev/image/fetch/s--XE2mPGud--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/9597/68d6245f-3152-4ed2-a245-d015fca4160b.jpeg",
+        "readable_publish_date_string": "Feb 22",
+        "cloudinary_video_url": null,
+        "video_duration_in_minutes": 0,
+        "title": "Test Article 3",
+        "video_duration_string": "00:00",
+        "tags": [
+          {
+            "name": "productivity",
+            "keywords_for_search": ""
+          },
+          {
+            "name": "javascript",
+            "keywords_for_search": "js"
+          }
+        ],
+        "path": "/somember/web-vitals-explained-114j",
+        "comments_count": 4,
+        "public_reactions_count": 94,
+        "id": 614848,
+        "published_at": "2021-02-22T17:00:55.966Z",
+        "class_name": "Article",
+        "user": {
+          "name": "Some Member",
+          "id": 67245,
+          "pro": null,
+          "profile_image_90": "https://res.cloudinary.com/practicaldev/image/fetch/s--XE2mPGud--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/9597/68d6245f-3152-4ed2-a245-d015fca4160b.jpeg",
+          "username": "somember"
+        },
+        "tag_list": ["productivity", "javascript"],
+        "flare_tag": null,
+        "user_id": 67245,
+        "highlight": null,
+        "readable_publish_date": "Feb 22",
+        "podcast": {
+          "slug": null,
+          "image_url": "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9iebxyedkwozybopkn6e.jpeg",
+          "title": "Test Article 3"
+        },
+        "_score": 0,
+        "published_at_int": 1614013255,
+        "published_timestamp": "2021-02-22T17:00:55.966Z"
+      }
+    }
+  ],
+  "total": 3
+}

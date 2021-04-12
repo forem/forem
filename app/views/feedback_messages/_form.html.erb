@@ -69,7 +69,7 @@
 
   <% if ReCaptcha::CheckEnabled.call(current_user) %>
     <div class="recaptcha-tag-container">
-      <%= recaptcha_tags site_key: SiteConfig.recaptcha_site_key %>
+      <%= recaptcha_tags site_key: Settings::Authentication.recaptcha_site_key %>
     </div>
   <% end %>
 

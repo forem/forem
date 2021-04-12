@@ -90,7 +90,7 @@
             <% if feedback_message_emails.any? %>
               <% feedback_message_emails.each do |email| %>
                 <div class="email__container">
-                  <p class="to__subject">Type: <%= email.utm_campaign.capitalize %></p>
+                  <p class="to__subject">Type: <%= email.utm_campaign&.capitalize %></p>
                   <p class="to__subject">To: <%= email.to %></p>
                   <p class="to__subject">Subject: <%= email.subject %></p>
                   <%= email.body_html_content.html_safe %>

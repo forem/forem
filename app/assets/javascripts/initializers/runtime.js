@@ -56,7 +56,7 @@ class Runtime {
     } else if (/Android/i.test(window.navigator.userAgent)) {
       return 'Android';
     } else if (/Linux/i.test(window.navigator.platform)) {
-     return 'Linux';
+      return 'Linux';
     }
 
     return 'Unsupported';

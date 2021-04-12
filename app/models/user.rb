@@ -368,13 +368,14 @@ class User < ApplicationRecord
     end
   end
 
-  # methods for Administrate field
-  def banned
-    has_role? :banned
+  def suspended?
+    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
+    # and data scripts have successfully removed the banned role, we can remove `has_role?(:banned)`
+    has_role?(:suspended) || has_role?(:banned)
   end
 
   def warned
-    has_role? :warned
+    has_role?(:warned)
   end
 
   def admin?
@@ -397,7 +398,7 @@ class User < ApplicationRecord
     return @trusted if defined? @trusted
 
     @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
-      has_role? :trusted
+      has_role?(:trusted)
     end
   end
 
@@ -408,8 +409,11 @@ class User < ApplicationRecord
     end
   end
 
-  def comment_banned
-    has_role? :comment_banned
+  def comment_suspended?
+    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
+    # and data scripts have successfully removed the comment_banned role,
+    # we can remove `has_role?(:comment_banned)`
+    has_role?(:comment_suspended) || has_role?(:comment_banned)
   end
 
   def workshop_eligible?

@@ -916,7 +916,7 @@ RSpec.describe Article, type: :model do
       it "does not suspend user if only single vomit" do
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
         article.save
-        expect(article.user.banned).to be false
+        expect(article.user.suspended?).to be false
       end
 
       it "suspends user with 3 comment vomits" do
@@ -929,7 +929,7 @@ RSpec.describe Article, type: :model do
         article.save
         second_article.save
         third_article.save
-        expect(article.user.banned).to be true
+        expect(article.user.suspended?).to be true
         expect(Note.last.reason).to eq "automatic_suspend"
       end
 
@@ -1115,6 +1115,16 @@ RSpec.describe Article, type: :model do
       expect(article).not_to be_valid
       expect(article.errors[:base])
         .to include("You cannot mention more than #{Article::MAX_USER_MENTIONS} users in a post!")
+    end
+  end
+
+  describe "#followers" do
+    it "returns an array of users who follow the article's author" do
+      following_user = create(:user)
+      following_user.follow(user)
+
+      expect(article.followers.length).to eq(1)
+      expect(article.followers.first.username).to eq(following_user.username)
     end
   end
 

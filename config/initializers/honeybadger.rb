@@ -2,7 +2,7 @@
 # https://docs.honeybadger.io/lib/ruby/getting-started/ignoring-errors.html#ignore-programmatically
 
 MESSAGE_FINGERPRINTS = {
-  "SUSPENDED" => "banned",
+  "SuspendedError" => "banned",
   "Rack::Timeout::RequestTimeoutException" => "rack_timeout",
   "Rack::Timeout::RequestTimeoutError" => "rack_timeout",
   "PG::QueryCanceled" => "pg_query_canceled"

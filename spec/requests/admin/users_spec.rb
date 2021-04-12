@@ -151,7 +151,7 @@ RSpec.describe "admin/users", type: :request do
 
     before do
       omniauth_mock_providers_payload
-      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+      allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     end
 
     it "removes the given identity" do

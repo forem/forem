@@ -1,10 +1,10 @@
 class CommentPolicy < ApplicationPolicy
   def edit?
-    user_is_author?
+    user_author?
   end
 
   def create?
-    !user_is_banned? && !user_is_comment_banned? && !user_is_blocked?
+    !user_suspended? && !user.comment_suspended? && !user_blocked?
   end
 
   def update?
@@ -28,15 +28,15 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def moderator_create?
-    !user_is_blocked? && (user_is_moderator? || minimal_admin?)
+    !user_blocked? && (user_moderator? || minimal_admin?)
   end
 
   def hide?
-    user_is_commentable_author?
+    user_commentable_author?
   end
 
   def unhide?
-    user_is_commentable_author?
+    user_commentable_author?
   end
 
   def admin_delete?
@@ -61,25 +61,21 @@ class CommentPolicy < ApplicationPolicy
 
   private
 
-  def user_is_moderator?
+  def user_moderator?
     user.moderator_for_tags.present?
   end
 
-  def user_is_comment_banned?
-    user.has_role? :comment_banned
-  end
-
-  def user_is_author?
+  def user_author?
     record.user_id == user.id
   end
 
-  def user_is_blocked?
+  def user_blocked?
     return false if user.blocked_by_count.zero?
 
     UserBlock.blocking?(record.commentable.user_id, user.id)
   end
 
-  def user_is_commentable_author?
+  def user_commentable_author?
     record.commentable.present? && record.commentable.user_id == user.id
   end
 end

@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Flagging users from profile pages", type: :system, js: true do
   let(:user) { create :user }
+  let(:unflag_text) { "Unflag @#{user.username}" }
   let(:flag_text) { "Flag @#{user.username}" }
 
   context "when not logged in" do
@@ -16,12 +17,7 @@ RSpec.describe "Flagging users from profile pages", type: :system, js: true do
     it "does not show the flag button" do
       sign_in create(:user)
 
-      # TODO: Fix me! Loading the page twice here ensures that the dropdown menu
-      # does not include the "Flag @username" option. This is a band-aid solution
-      # in order to get this spec to consistently pass and unblock builds.
-      2.times do
-        visit user_profile_path(user.username)
-      end
+      visit user_profile_path(user.username)
 
       click_button(id: "user-profile-dropdown")
       expect(page).not_to have_link(flag_text)
@@ -43,7 +39,11 @@ RSpec.describe "Flagging users from profile pages", type: :system, js: true do
 
       visit user_profile_path(user.username)
       click_button(id: "user-profile-dropdown")
-      expect(page).to have_link(flag_text)
+
+      accept_confirm do
+        click_link(id: "user-profile-dropdownmenu-flag-button")
+      end
+      expect(page).to have_link(unflag_text)
     end
   end
 end
