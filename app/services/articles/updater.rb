@@ -28,13 +28,22 @@ module Articles
         user.rate_limiter.track_limit_by_action(:article_update)
 
         # send notification only the first time an article is published
-        send_notification = article.published && article.saved_change_to_published_at.present?
-        Notification.send_to_followers(article, "Published") if send_notification
+        send_notification = was_published && article.saved_change_to_published_at.present?
+        if send_notification
+          # Send notifications to any mentioned users, followed by any users who follow the article's author.
+          Notification.send_to_mentioned_users_and_followers(article, "Published")
+        else
+          # FIXME: clean this up??
+          # Create and send mentions inline if article processed_html now contains mentions
+          Mentions::CreateAll.call(article)
+        end
 
         # remove related notifications if unpublished
         if article.saved_changes["published"] == [true, false]
+          # FIXME: make sure @-mention notifications are removed
           Notification.remove_all_by_action_without_delay(notifiable_ids: article.id, notifiable_type: "Article",
                                                           action: "Published")
+
           if article.comments.exists?
             Notification.remove_all(notifiable_ids: article.comments.ids,
                                     notifiable_type: "Comment")

@@ -44,6 +44,17 @@ class Notification < ApplicationRecord
       Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
+    def send_to_mentioned_users_and_followers(notifiable, _action = nil)
+      return unless notifiable.is_a?(Article) && notifiable.published?
+
+      # FIXME: investigate putting all of this in a worker?
+
+      # Checks to see if there are any @-mentions in the post, and creates the mention and notification inline
+      # Then, kicks of a worker to send any notifications about the post being published, if necessary.
+      Mentions::CreateAll.call(notifiable)
+      Notification.send_to_followers(notifiable, "Published")
+    end
+
     def send_new_comment_notifications_without_delay(comment)
       return if comment.commentable_type == "PodcastEpisode"
       return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
@@ -73,6 +84,12 @@ class Notification < ApplicationRecord
       return if mention.mentionable_type == "User" && UserBlock.blocking?(mention.mentionable_id, mention.user_id)
 
       Notifications::MentionWorker.perform_async(mention.id)
+    end
+
+    def send_mention_notification_without_delay(mention)
+      return if mention.mentionable_type == "User" && UserBlock.blocking?(mention.mentionable_id, mention.user_id)
+
+      Notifications::NewMention::Send.call(mention) if mention
     end
 
     def send_welcome_notification(receiver_id, broadcast_id)

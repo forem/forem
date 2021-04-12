@@ -35,6 +35,14 @@ class NotifyMailer < ApplicationMailer
 
     @mentioner = User.find(@mention.mentionable.user_id)
     @mentionable = @mention.mentionable
+
+    # FIXME: document why we do this!
+    @mentionable_type = if @mention.mentionable_type == "Article"
+                          "post"
+                        else
+                          @mention.mentionable_type.downcase
+                        end
+
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_mention_notifications)
 
     mail(to: @user.email, subject: "#{@mentioner.name} just mentioned you!")

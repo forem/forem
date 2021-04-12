@@ -9,7 +9,7 @@ module Mentions
     end
 
     def call
-      # Only works for comments right now.
+      # Creates mentions + associated notifications for Articles and Comments.
       mentioned_users = users_mentioned_in_text_excluding_author
 
       delete_mentions_removed_from_notifiable_text(mentioned_users)
@@ -61,16 +61,22 @@ module Mentions
     end
 
     def user_has_comment_notifications?(user)
-      user.notifications.exists?(notifiable_id: @notifiable.id)
+      user.notifications.exists?(notifiable_id: @notifiable.id, notifiable_type: "Comment")
     end
 
     def create_mention_for(user)
       return if user_has_comment_notifications?(user)
 
+      # The mentionable_type is the model that created the mention, the user is the user to be mentioned.
       mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id,
                                mentionable_type: @notifiable.class.name)
-      # mentionable_type = model that created the mention, user = user to be mentioned
-      Notification.send_mention_notification(mention)
+
+      # If notifiable is an Article, we need to create the mention and associated notification immediately so
+      # that we have it in the database before kicking off any workers that send other Article-related notifications.
+      # However, if notifiable is a Comment, we can create the mention notification inline.
+      Notification.send_mention_notification_without_delay(mention) if notifiable.is_a?(Article)
+      Notification.send_mention_notification(mention) if notifiable.is_a?(Comment)
+
       mention
     end
 
