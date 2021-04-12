@@ -14,7 +14,7 @@ module Constants
       },
       campaign_featured_tags: {
         description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
-        placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded"
+        placeholder: "List of campaign tags: comma separated, letters only e.g. tagone,tagtwo"
       },
       campaign_hero_html_variant_name: {
         description: "Hero HtmlVariant name",
