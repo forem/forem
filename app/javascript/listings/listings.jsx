@@ -169,6 +169,9 @@ export class Listings extends Component {
       })
       .then(() => {
         window.location.href = destination;
+      })
+      .catch((error) => {
+        Honeybadger.notify(error);
       });
   };
 
