@@ -47,7 +47,7 @@ RSpec.describe PushNotifications::Send, type: :service do
       allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("dGVzdGluZw==")
       allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("Forem")
-      create(:device, user: user, app_bundle: PushNotificationTarget::FOREM_BUNDLE)
+      create(:device, user: user)
     end
 
     it "creates a notification and enqueues it" do
@@ -57,7 +57,7 @@ RSpec.describe PushNotifications::Send, type: :service do
     end
 
     it "creates a single notification for each of the user's devices when they have multiple" do
-      create(:device, user: user, app_bundle: PushNotificationTarget::FOREM_BUNDLE)
+      create(:device, user: user)
 
       expect { described_class.call(**params) }
         .to change { Rpush::Client::Redis::Notification.all.count }.by(2)
@@ -70,8 +70,8 @@ RSpec.describe PushNotifications::Send, type: :service do
       allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("dGVzdGluZw==")
       allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("Forem")
-      create(:device, user: user, app_bundle: PushNotificationTarget::FOREM_BUNDLE)
-      create(:device, user: user2, app_bundle: PushNotificationTarget::FOREM_BUNDLE)
+      create(:device, user: user)
+      create(:device, user: user2)
     end
 
     it "creates a notification and enqueues it" do
@@ -81,7 +81,7 @@ RSpec.describe PushNotifications::Send, type: :service do
     end
 
     it "creates a single notification for each of the user's devices when they have multiple" do
-      create(:device, user: user, app_bundle: PushNotificationTarget::FOREM_BUNDLE)
+      create(:device, user: user)
 
       expect { described_class.call(**many_targets_params) }
         .to change { Rpush::Client::Redis::Notification.all.count }.by(3)

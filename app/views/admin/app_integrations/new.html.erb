@@ -1,6 +1,6 @@
 <h2 class="crayons-title mb-6">New Push Notification Target</h2>
 <div class="crayons-card p-6">
-  <%= form_for([:admin, @target], method: :post) do %>
+  <%= form_for([:admin, @app], method: :post) do %>
     <%= render "form" %>
     <%= submit_tag "Create Push Notification Target", class: "crayons-btn" %>
   <% end %>

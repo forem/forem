@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :push_notification_target do
+  factory :app_integration do
     auth_key { Faker::Alphanumeric.alpha(number: 10) }
     active { true }
     platform { Device::IOS }

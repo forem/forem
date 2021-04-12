@@ -1,4 +1,4 @@
-class PushNotificationTarget < ApplicationRecord
+class AppIntegration < ApplicationRecord
   resourcify
 
   FOREM_BUNDLE = "com.forem.app".freeze
@@ -7,6 +7,9 @@ class PushNotificationTarget < ApplicationRecord
 
   validates :app_bundle, presence: true
   validates :platform, presence: true
+  validates :active, inclusion: { in: [true, false] }
+
+  has_many :devices, dependent: :destroy
 
   # Clear Redis-backed model to ensure it will be recreated with updated values
   after_update :clear_rpush_app
@@ -30,44 +33,6 @@ class PushNotificationTarget < ApplicationRecord
       auth_key
     end
   end
-
-  def recreate_ios_app!
-    app = Rpush::Apns2::App.new
-    app.name = app_bundle
-    app.certificate = auth_credentials.to_s.gsub("\\n", "\n")
-    app.environment = Rails.env
-    app.password = ""
-    app.bundle_id = app_bundle
-    app.connections = 1
-    app.save!
-    app
-  end
-
-  def recreate_android_app!
-    app = Rpush::Gcm::App.new
-    app.name = app_bundle
-    app.auth_key = auth_credentials.to_s
-    app.connections = 1
-    app.save!
-    app
-  end
-
-  # [@forem/backend] `.where().first` is necessary because we use Redis data storage
-  # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
-  # rubocop:disable Rails/FindBy
-  def self.rpush_app(app_bundle:, platform:)
-    target = PushNotifications::Targets::FetchBy.call(app_bundle: app_bundle, platform: platform)
-
-    case target&.platform
-    when Device::IOS
-      ios_app = Rpush::Apns2::App.where(name: app_bundle).first
-      ios_app || target.recreate_ios_app!
-    when Device::ANDROID
-      android_app = Rpush::Gcm::App.where(name: app_bundle).first
-      android_app || target.recreate_android_app!
-    end
-  end
-  # rubocop:enable Rails/FindBy
 
   private
 

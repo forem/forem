@@ -53,10 +53,7 @@ Rails.application.routes.draw do
       resources :organization_memberships, only: %i[update destroy create]
       resources :permissions, only: %i[index]
       resources :reactions, only: [:update]
-      scope "push_notifications" do
-        resources :targets, as: "push_notification_targets", only: %i[index new create edit update destroy],
-                            controller: "push_notification_targets"
-      end
+      resources :app_integrations, only: %i[index new create edit update destroy]
       namespace :users do
         resources :gdpr_delete_requests, only: %i[index destroy]
       end
