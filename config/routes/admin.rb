@@ -36,7 +36,7 @@ scope :customization, as: 'customization' do
   end
 end
 
-scope :moderation do
+scope :moderation, as: 'moderation' do
   resources :reports, only: %i[index show], controller: "feedback_messages" do
     collection do
       post "send_email"
@@ -49,7 +49,7 @@ scope :moderation do
   resources :privileged_reactions, only: %i[index]
 end
 
-scope :advanced do
+scope :advanced, as: 'advanced' do
   resources :broadcasts
   resources :response_templates, only: %i[index new edit create update destroy]
   resources :secrets, only: %i[index]
@@ -72,7 +72,7 @@ scope :advanced do
   end
 end
 
-scope :apps do
+scope :apps, as: 'apps' do
   resources :chat_channels, only: %i[index create update destroy] do
     member do
       delete :remove_user
