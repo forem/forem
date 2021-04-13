@@ -277,8 +277,9 @@ describe('Comment on articles', () => {
       .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
       .click(); // Causes a focus which loads the Submit button and mini toolbar below a comment textbox
 
-    // Can't use an alias here for the texbox because the mention autcomplete is two textareas
-    // and initially it's replacing the server-side rendered one.
+    // The mention autocomplete is two textareas
+    // and initially it's replacing the server-side rendered one,
+    // so we need to get it again to be certain we have the correct reference.
     cy.get('@main')
       .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
       .type('this is a comment');
