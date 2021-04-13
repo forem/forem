@@ -40,7 +40,7 @@ function showUserReaction(reactionName, animatedClass) {
 }
 
 function hideUserReaction(reactionName) {
-  let reactionButton = document.getElementById(
+  const reactionButton = document.getElementById(
     'reaction-butt-' + reactionName,
   );
   reactionButton.classList.remove('user-activated', 'user-animated');
