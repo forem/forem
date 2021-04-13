@@ -15,7 +15,7 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
     it "returns only published articles" do
       article = create(:article)
 
-      expect(described_class.call.ids).to include(article.id)
+      expect(described_class.call.ids).to eq([article.id])
     end
 
     it "paginates by default" do
