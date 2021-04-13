@@ -114,18 +114,55 @@ class Article < ApplicationRecord
   after_commit :sync_related_elasticsearch_docs, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
+  # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
+  #
+  # Its body is inserted in a PostgreSQL trigger function and that joins the columns values
+  # needed to search documents in the context of a "reading list".
+  #
+  # Please refer to https://github.com/jenseng/hair_trigger#usage in case you want to change or update the trigger.
+  #
+  # Additional information on how triggers work can be found in
+  # => https://www.postgresql.org/docs/11/trigger-definition.html
+  # => https://www.cybertec-postgresql.com/en/postgresql-how-to-write-a-trigger/
+  #
+  # Adapted from https://dba.stackexchange.com/a/289361/226575
+  trigger
+    .name(:update_reading_list_document).before(:insert, :update).for_each(:row)
+    .declare("l_org_vector tsvector; l_user_vector tsvector") do
+    <<~SQL
+      NEW.reading_list_document :=
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))) ||
+        to_tsvector('simple'::regconfig,
+          unaccent(
+            coalesce(
+              array_to_string(
+                -- cached_organization is serialized to the DB as a YAML string, we extract only the name attribute
+                regexp_match(NEW.cached_organization, 'name: (.*)$', 'n'),
+                ' '
+              ),
+              ''
+            )
+          )
+        );
+    SQL
+  end
+
   serialize :cached_user
   serialize :cached_organization
 
-  # [@rhymes] this is adapted from the `search_fields` property in
-  # `config/elasticsearch/mappings/feed_content.json`
   pg_search_scope :search_reading_list,
-                  against: %i[body_markdown title cached_tag_list],
-                  associated_against: {
-                    organization: %i[name],
-                    user: %i[name username]
+                  against: :reading_list_document,
+                  using: {
+                    tsearch: {
+                      prefix: true,
+                      tsvector_column: :reading_list_document
+                    }
                   },
-                  using: { tsearch: { prefix: true } }
+                  ignoring: :accents
 
   # [@jgaskins] We use an index on `published`, but since it's a boolean value
   #   the Postgres query planner often skips it due to lack of diversity of the
