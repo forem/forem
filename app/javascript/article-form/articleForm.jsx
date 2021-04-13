@@ -312,7 +312,7 @@ export class ArticleForm extends Component {
         onSubmit={this.onSubmit}
         onInput={this.toggleEdit}
         data-testid="article-form"
-        aria-label="Edit an article"
+        aria-label="Edit post"
       >
         <Header
           onPreview={this.fetchPreview}
