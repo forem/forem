@@ -5,7 +5,7 @@
   data-category="<%= category %>"
   title="<%= description %>">
   <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
-    <%= inline_svg_tag(image_path, aria: true, class: "crayons-icon", title: description) %>
+    <%= inline_svg_tag(image_path, aria_hidden: true, class: "crayons-icon") %>
   </span>
   <% if user_signed_in? # We cannot trigger the action state unless the user is signed in, so no need to render. %>
   <span class="crayons-reaction__icon crayons-reaction__icon--active">
