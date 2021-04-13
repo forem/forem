@@ -24,9 +24,12 @@ module Homepage
     end
 
     # TODO: [@rhymes] change frontend to start from page 1
-    def initialize(published_at: nil, sort_by: nil, sort_direction: nil, page: 0, per_page: DEFAULT_PER_PAGE)
+    def initialize(
+      approved: nil, published_at: nil, sort_by: nil, sort_direction: nil, page: 0, per_page: DEFAULT_PER_PAGE
+    )
       @relation = Article.published.select(*ATTRIBUTES)
 
+      @approved = approved
       @published_at = published_at
       @sort_by = sort_by
       @sort_direction = sort_direction
@@ -41,13 +44,15 @@ module Homepage
 
     private
 
-    attr_accessor :relation
-    attr_reader :published_at, :sort_by, :sort_direction, :page, :per_page
+    attr_reader :relation, :approved, :published_at, :sort_by, :sort_direction, :page, :per_page
 
     def filter
-      return relation unless published_at
+      return relation if approved.nil? && published_at.blank?
 
-      relation.where(published_at: published_at)
+      @relation = @relation.where(approved: approved) unless approved.nil?
+      @relation = @relation.where(published_at: published_at) if published_at
+
+      relation
     end
 
     def sort

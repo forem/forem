@@ -139,6 +139,7 @@ class SearchController < ApplicationController
                     published_at = published_at_gte ? published_at_gte.. : nil
 
                     Homepage::FetchArticles.call(
+                      approved: params[:approved],
                       published_at: published_at,
                       sort_by: params[:sort_by],
                       sort_direction: params[:sort_direction],

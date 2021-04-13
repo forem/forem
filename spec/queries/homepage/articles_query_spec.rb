@@ -12,6 +12,26 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
       expect(described_class.call.ids).not_to include(article.id)
     end
 
+    it "returns both approved and unapproved articles by default" do
+      approved_article = create(:article, approved: true)
+      unapproved_article = create(:article, approved: false)
+
+      expected_result = [approved_article.id, unapproved_article.id]
+      expect(described_class.call.ids).to match_array(expected_result)
+    end
+
+    it "returns approved articles" do
+      article = create(:article, approved: true)
+
+      expect(described_class.call(approved: true).ids).to eq([article.id])
+    end
+
+    it "returns unapproved articles" do
+      article = create(:article, approved: false)
+
+      expect(described_class.call(approved: false).ids).to eq([article.id])
+    end
+
     it "returns only published articles" do
       article = create(:article)
 
