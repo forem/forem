@@ -2,9 +2,9 @@ module Homepage
   class FetchArticles
     DEFAULT_PER_PAGE = 60
 
-    # TODO: add explicit parameters
-    def self.call(sort_by: :hotness_score, sort_direction: :desc, page: 0, per_page: DEFAULT_PER_PAGE)
+    def self.call(published_at: nil, sort_by: nil, sort_direction: nil, page: 0, per_page: DEFAULT_PER_PAGE)
       articles = Homepage::ArticlesQuery.call(
+        published_at: published_at,
         sort_by: sort_by,
         sort_direction: sort_direction,
         page: page,

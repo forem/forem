@@ -132,7 +132,14 @@ class SearchController < ApplicationController
                   user_search
                 elsif params[:class_name] == "Article" && params[:search_fields].blank? # homepage
                   if FeatureFlag.enabled?(:search_2_homepage)
+                    # NOTE: published_at is sent from the frontend in the following ES-friendly format:
+                    # => {"published_at"=>{"gte"=>"2021-04-06T14:53:23Z"}}
+                    published_at_gte = params.dig(:published_at, :gte)
+                    published_at_gte = Time.zone.parse(published_at_gte) if published_at_gte
+                    published_at = published_at_gte ? published_at_gte.. : nil
+
                     Homepage::FetchArticles.call(
+                      published_at: published_at,
                       sort_by: params[:sort_by],
                       sort_direction: params[:sort_direction],
                       page: params[:page],

@@ -23,9 +23,10 @@ module Homepage
     end
 
     # TODO: [@rhymes] change frontend to start from page 1
-    def initialize(sort_by: :hotness_score, sort_direction: :desc, page: 0, per_page: DEFAULT_PER_PAGE)
+    def initialize(published_at: nil, sort_by: nil, sort_direction: nil, page: 0, per_page: DEFAULT_PER_PAGE)
       @relation = Article.published.select(*ATTRIBUTES)
 
+      @published_at = published_at
       @sort_by = sort_by
       @sort_direction = sort_direction
 
@@ -34,15 +35,23 @@ module Homepage
     end
 
     def call
-      sort.merge(paginate)
+      filter.merge(sort).merge(paginate)
     end
 
     private
 
     attr_accessor :relation
-    attr_reader :sort_by, :sort_direction, :page, :per_page
+    attr_reader :published_at, :sort_by, :sort_direction, :page, :per_page
+
+    def filter
+      return relation unless published_at
+
+      relation.where(published_at: published_at)
+    end
 
     def sort
+      return relation unless sort_by
+
       relation.order(sort_by => sort_direction)
     end
 
