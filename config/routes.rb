@@ -40,7 +40,7 @@ Rails.application.routes.draw do
     namespace :admin do
       get "/", to: "overview#index"
 
-      # Note: [@ridhwana] These are the admin routes that have stayed the same even with the
+      # NOTE: [@ridhwana] These are the admin routes that have stayed the same even with the
       # restructure. They'll move into routes/admin.rb once we remove the old code.
       authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
@@ -80,8 +80,7 @@ Rails.application.routes.draw do
       get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
       get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
 
-
-      # Note: [@ridhwana] This is a temporary condition.
+      # NOTE: [@ridhwana] This is a temporary condition.
       # It will require the rails app to be reloaded when the feature flag is toggled
       # You can find more details on why we had to implement it this way in this PR
       # https://github.com/forem/forem/pull/13114
