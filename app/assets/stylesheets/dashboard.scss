@@ -268,13 +268,15 @@
   justify-content: center;
 }
 
+$column-flex: 1;
+
 .summary-stats {
   text-align: center;
   display: flex;
   justify-content: space-between;
 
   &__col {
-    flex: 1;
+    flex: $column-flex;
   }
 }
 
@@ -284,7 +286,7 @@
   justify-content: space-between;
 
   &__col {
-    flex: 1;
+    flex: $column-flex;
   }
 }
 
