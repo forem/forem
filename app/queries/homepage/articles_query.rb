@@ -17,6 +17,7 @@ module Homepage
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100
+    SORT_PARAMS = %i[hotness_score public_reactions_count].freeze
 
     def self.call(...)
       new(...).call
@@ -50,7 +51,7 @@ module Homepage
     end
 
     def sort
-      return relation unless sort_by
+      return relation unless SORT_PARAMS.include?(sort_by&.to_sym)
 
       relation.order(sort_by => sort_direction)
     end
