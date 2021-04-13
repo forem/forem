@@ -118,14 +118,10 @@ class PagesController < ApplicationController
   private
 
   def redirect_daily_thread_request(daily_thread)
-    path = relative_path(daily_thread&.path) || notifications_path
-    redirect_to path
-  end
-
-  # Utility function, could be removed from this class
-  def relative_path(path)
-    return unless path
-
-    URI.parse(path).path
+    if daily_thread
+      redirect_to(URI.parse(daily_thread.path).path)
+    else
+      redirect_to(notifications_path)
+    end
   end
 end
