@@ -231,24 +231,18 @@ RSpec.describe Search::Postgres::ReadingList, type: :service do
       end
 
       it "matches against the article's user's name", :aggregate_failures do
-        article_user = article.user
-        article_user.update_columns(name: "Friday Sunday")
-
-        result = described_class.search_documents(user, term: "Frida")
+        result = described_class.search_documents(user, term: article.user_name.first(3))
         expect(extract_from_results(result, :path)).to include(article.path)
 
-        result = described_class.search_documents(user, term: "Sat")
+        result = described_class.search_documents(user, term: "notaname")
         expect(extract_from_results(result, :path)).to be_empty
       end
 
       it "matches against the article's user's username", :aggregate_failures do
-        article_user = article.user
-        article_user.update_columns(username: "fridaysunday")
-
-        result = described_class.search_documents(user, term: "Frida")
+        result = described_class.search_documents(user, term: article.user_username.first(3))
         expect(extract_from_results(result, :path)).to include(article.path)
 
-        result = described_class.search_documents(user, term: "Sat")
+        result = described_class.search_documents(user, term: "notausername")
         expect(extract_from_results(result, :path)).to be_empty
       end
     end

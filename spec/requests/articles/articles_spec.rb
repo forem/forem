@@ -274,7 +274,7 @@ RSpec.describe "Articles", type: :request do
 
     context "with authorized user with tag param" do
       it "returns a new article" do
-        get "/new", params: { slug: "shecoded" }
+        get "/new", params: { slug: "mytag" }
         expect(response).to have_http_status(:ok)
       end
     end

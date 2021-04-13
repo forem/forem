@@ -198,12 +198,12 @@ RSpec.describe "StoriesIndex", type: :request do
 
     context "with campaign_sidebar" do
       before do
-        allow(SiteConfig).to receive(:campaign_featured_tags).and_return("shecoded,theycoded")
+        allow(SiteConfig).to receive(:campaign_featured_tags).and_return("mytag,yourtag")
         allow(SiteConfig).to receive(:home_feed_minimum_score).and_return(7)
 
-        a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
+        a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,mytag\n---\n\nHello"
         create(:article, approved: true, body_markdown: a_body, score: 1)
-        u_body = "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
+        u_body = "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,mytag\n---\n\nHello"
         create(:article, approved: false, body_markdown: u_body, score: 1)
       end
 
