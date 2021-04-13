@@ -1,4 +1,4 @@
-describe('Article Editor', () => {
+describe('Post Editor', () => {
   describe('v1 Editor', () => {
     beforeEach(() => {
       cy.testSetup();
@@ -11,8 +11,8 @@ describe('Article Editor', () => {
       });
     });
 
-    it('should preview blank content of an article', () => {
-      cy.findByTestId('article-form').as('articleForm');
+    it('should preview blank content of an post', () => {
+      cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
       cy.get('@articleForm')
         .findByText(/^Preview$/i)
@@ -20,10 +20,10 @@ describe('Article Editor', () => {
       cy.findByTestId('error-message').should('not.exist');
     });
 
-    it(`should show error if the article content can't be previewed`, () => {
-      cy.findByTestId('article-form').as('articleForm');
+    it(`should show error if the post content can't be previewed`, () => {
+      cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-      // Cause an error by having a non tag liquid tag without a tag name in the article body.
+      // Cause an error by having a non tag liquid tag without a tag name in the post body.
       cy.get('@articleForm')
         .findByLabelText('Post Content')
         .type('{%tag %}', { parseSpecialCharSequences: false });
@@ -48,8 +48,8 @@ describe('Article Editor', () => {
       });
     });
 
-    it('should preview blank content of an article', () => {
-      cy.findByTestId('article-form').as('articleForm');
+    it('should preview blank content of an post', () => {
+      cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
       cy.get('@articleForm')
         .findByText(/^Preview$/i)
@@ -57,10 +57,10 @@ describe('Article Editor', () => {
       cy.findByTestId('error-message').should('not.exist');
     });
 
-    it(`should show error if the article content can't be previewed`, () => {
-      cy.findByTestId('article-form').as('articleForm');
+    it(`should show error if the post content can't be previewed`, () => {
+      cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-      // Cause an error by having a non tag liquid tag without a tag name in the article body.
+      // Cause an error by having a non tag liquid tag without a tag name in the post body.
       cy.get('@articleForm')
         .findByLabelText('Post Content')
         .type('{%tag %}', { parseSpecialCharSequences: false });
