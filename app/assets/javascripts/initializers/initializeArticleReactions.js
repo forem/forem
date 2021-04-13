@@ -29,7 +29,7 @@ function getReactionAriaLabel(reactionName, reacted) {
 }
 
 function showUserReaction(reactionName, animatedClass) {
-  let reactionButton = document.getElementById(
+  const reactionButton = document.getElementById(
     'reaction-butt-' + reactionName,
   );
   reactionButton.classList.add('user-activated', animatedClass);
