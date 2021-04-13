@@ -166,61 +166,108 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/feed_content" do
-    let(:mock_documents) { [{ "title" => "article1" }] }
+    context "when using Elasticsearch" do
+      let(:mock_documents) { [{ "title" => "article1" }] }
 
-    it "returns json" do
-      allow(Search::FeedContent).to receive(:search_documents).and_return(
-        mock_documents,
-      )
+      it "returns json" do
+        allow(Search::FeedContent).to receive(:search_documents).and_return(
+          mock_documents,
+        )
 
-      get "/search/feed_content"
-      expect(response.parsed_body["result"]).to eq(mock_documents)
+        get search_feed_content_path
+        expect(response.parsed_body["result"]).to eq(mock_documents)
+      end
+
+      it "queries only the user index if class_name=User" do
+        allow(Search::FeedContent).to receive(:search_documents)
+        allow(Search::User).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+
+        get search_feed_content_path(class_name: "User")
+        expect(Search::User).to have_received(:search_documents)
+        expect(Search::FeedContent).not_to have_received(:search_documents)
+      end
+
+      it "queries for Articles, Podcast Episodes and Users if no class_name filter is present" do
+        allow(Search::FeedContent).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+        allow(Search::User).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+
+        get search_feed_content_path
+        expect(Search::User).to have_received(:search_documents)
+        expect(Search::FeedContent).to have_received(:search_documents)
+      end
+
+      it "queries for only Articles and Podcast Episodes if class_name!=User" do
+        allow(Search::FeedContent).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+        allow(Search::User).to receive(:search_documents)
+
+        get search_feed_content_path(class_name: "Article")
+        expect(Search::User).not_to have_received(:search_documents)
+        expect(Search::FeedContent).to have_received(:search_documents)
+      end
+
+      it "queries for approved" do
+        allow(Search::FeedContent).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+
+        get search_feed_content_path(class_name: "Article", approved: "true")
+        expect(Search::FeedContent).to have_received(:search_documents).with(
+          params: { "approved" => "true", "class_name" => "Article" },
+        )
+      end
     end
 
-    it "queries only the user index if class_name=User" do
-      allow(Search::FeedContent).to receive(:search_documents)
-      allow(Search::User).to receive(:search_documents).and_return(
-        mock_documents,
-      )
+    context "when using PostgreSQL" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage).and_return(true)
+      end
 
-      get "/search/feed_content?class_name=User"
-      expect(Search::User).to have_received(:search_documents)
-      expect(Search::FeedContent).not_to have_received(:search_documents)
-    end
+      it "does not call Homepage::FetchArticles with the incorrect combination of params", :aggregate_failures do
+        allow(Homepage::FetchArticles).to receive(:call)
 
-    it "queries for Articles, Podcast Episodes and Users if no class_name filter is present" do
-      allow(Search::FeedContent).to receive(:search_documents).and_return(
-        mock_documents,
-      )
-      allow(Search::User).to receive(:search_documents).and_return(
-        mock_documents,
-      )
+        get search_feed_content_path
+        expect(Homepage::FetchArticles).not_to have_received(:call)
 
-      get "/search/feed_content"
-      expect(Search::User).to have_received(:search_documents)
-      expect(Search::FeedContent).to have_received(:search_documents)
-    end
+        get search_feed_content_path(class_name: "Article", search_fields: "keyword")
+        expect(Homepage::FetchArticles).not_to have_received(:call)
+      end
 
-    it "queries for only Articles and Podcast Episodes if class_name!=User" do
-      allow(Search::FeedContent).to receive(:search_documents).and_return(
-        mock_documents,
-      )
-      allow(Search::User).to receive(:search_documents)
+      it "calls Homepage::FetchArticles with the correct combination of params" do
+        allow(Homepage::FetchArticles).to receive(:call)
 
-      get "/search/feed_content?class_name=Article"
-      expect(Search::User).not_to have_received(:search_documents)
-      expect(Search::FeedContent).to have_received(:search_documents)
-    end
+        get search_feed_content_path(class_name: "Article")
 
-    it "queries for approved" do
-      allow(Search::FeedContent).to receive(:search_documents).and_return(
-        mock_documents,
-      )
+        expect(Homepage::FetchArticles).to have_received(:call)
+      end
 
-      get "/search/feed_content?class_name=Article&approved=true"
-      expect(Search::FeedContent).to have_received(:search_documents).with(
-        params: { "approved" => "true", "class_name" => "Article" },
-      )
+      it "returns the correct keys", :aggregate_failures do
+        create(:article)
+
+        get search_feed_content_path(class_name: "Article")
+
+        expect(response.parsed_body["result"]).to be_present
+        expect(response.parsed_body["display_jobs_banner"]).to eq(SiteConfig.display_jobs_banner)
+        expect(response.parsed_body["jobs_url"]).to eq(SiteConfig.jobs_url)
+      end
+
+      it "parses published_at correctly", :aggregate_failures do
+        article = create(:article)
+
+        get search_feed_content_path(class_name: "Article", published_at: { gte: article.published_at.iso8601 })
+        expect(response.parsed_body["result"].first["id"]).to eq(article.id)
+
+        datetime = article.published_at + 1.minute
+        get search_feed_content_path(class_name: "Article", published_at: { gte: datetime.iso8601 })
+        expect(response.parsed_body["result"]).to be_empty
+      end
     end
   end
 
