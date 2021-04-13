@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Homepage::ArticlesQuery, type: :query do
-  describe "::call" do
+  describe ".call" do
     it "returns a relation object" do
       expect(described_class.call).to be_a(ActiveRecord::Relation)
     end
