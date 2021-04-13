@@ -233,6 +233,32 @@ describe('Comment on articles', () => {
       cy.get('@plainTextArea').should('have.focus');
     });
 
+    it('should exit combobox when blurred and refocused', () => {
+      cy.intercept(
+        { method: 'GET', url: '/search/usernames' },
+        { fixture: 'search/usernames.json' },
+      );
+
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
+
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).as('plainTextArea');
+
+      cy.get('@plainTextArea').type('Some text @s');
+
+      // Verify the combobox has appeared
+      cy.findByRole('combobox', {
+        name: /Add a comment to the discussion/,
+      }).as('combobox');
+
+      // Blur the currently active textarea, and check that the blur results in the plainTextArea being restored
+      cy.get('@combobox').blur();
+      cy.get('@combobox').should('not.be.visible');
+      cy.get('@plainTextArea').should('be.visible');
+    });
+
     // TODO: Flaky spec
     xit('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(

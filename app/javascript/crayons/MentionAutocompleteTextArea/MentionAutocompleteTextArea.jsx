@@ -124,7 +124,12 @@ export const MentionAutocompleteTextArea = forwardRef(
 
     const { setTextArea, setAdditionalElements } = useTextAreaAutoResize();
 
-    const { onChange, id: inputId, ...autocompleteInputProps } = inputProps;
+    const {
+      onChange,
+      onBlur,
+      id: inputId,
+      ...autocompleteInputProps
+    } = inputProps;
 
     useLayoutEffect(() => {
       if (autoResize && comboboxRef.current && plainTextAreaRef.current) {
@@ -277,6 +282,12 @@ export const MentionAutocompleteTextArea = forwardRef(
       }
     };
 
+    const handleComboboxBlur = () => {
+      // User has left the textarea, exit combobox functionality without refocusing plainTextArea
+      comboboxRef.current.classList.add('hidden');
+      plainTextAreaRef.current.classList.remove('hidden');
+    };
+
     const handleSelect = (username) => {
       // Construct the new textArea content with selected username inserted
       const textWithSelection = `${textContent.substring(
@@ -346,6 +357,10 @@ export const MentionAutocompleteTextArea = forwardRef(
             onChange={(e) => {
               onChange?.(e);
               handleTextInputChange(e);
+            }}
+            onBlur={(e) => {
+              onBlur?.(e);
+              handleComboboxBlur();
             }}
           />
 
