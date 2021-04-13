@@ -42,8 +42,11 @@ describe('Post Editor', () => {
 
       it('should revert to the previously saved version of the post if the post was previously edited', () => {
         // Create an post and edit it.
+        const initialContent = `---\ntitle: Test Post\npublished: false\ndescription: \ntags: beginner, ruby, go\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is a Test Post's contents.`;
+        const updatedContent = `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`;
+
         cy.createArticle({
-          content: `---\ntitle: Test Post\npublished: false\ndescription: \ntags: beginner, ruby, go\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is a Test Post's contents.`,
+          content: initialContent,
           published: true,
           editorVersion: 'v1',
         }).then((response) => {
@@ -56,28 +59,17 @@ describe('Post Editor', () => {
           cy.get('@articleForm')
             .findByLabelText('Post Content')
             .as('postContent')
-            .should(
-              'have.value',
-              `---\ntitle: Test Post\npublished: false\ndescription: \ntags: beginner, ruby, go\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is a Test Post's contents.`,
-            )
+            .should('have.value', initialContent)
             // Clearing out the whole content area as this seemed simpler than finding where to add the fields in the v1 editor
             .clear()
             // Update the title, tags, and content for an post.
-            .type(
-              `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`,
-            );
-          cy.get('@postContent').should(
-            'have.value',
-            `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`,
-          );
+            .type(updatedContent);
+          cy.get('@postContent').should('have.value', updatedContent);
 
           cy.findByRole('button', { name: /^Revert new changes$/i }).click();
 
           // The post editor should reset to it's saved version from the server that was initially loaded into the editor.
-          cy.get('@postContent').should(
-            'have.value',
-            `---\ntitle: Test Post\npublished: false\ndescription: \ntags: beginner, ruby, go\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is a Test Post's contents.`,
-          );
+          cy.get('@postContent').should('have.value', initialContent);
         });
       });
     });
