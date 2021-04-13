@@ -198,7 +198,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
     context "with campaign_sidebar" do
       before do
-        allow(Settings::Campaign).to receive(:featured_tags).and_return("shecoded,theycoded")
+        allow(Settings::Campaign).to receive(:featured_tags).and_return("mytag,yourtag")
         allow(SiteConfig).to receive(:home_feed_minimum_score).and_return(7)
 
         a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,mytag\n---\n\nHello"

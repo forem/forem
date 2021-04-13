@@ -397,7 +397,7 @@
 
               <div class="crayons-field">
                 <%= admin_config_label :sidebar_image %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:sidebar_image][:description] %>
+                <%= admin_config_description Constants::Settings::Campaign::DETAILS[:sidebar_image][:description] %>
                 <% if Settings::Campaign.sidebar_image.present? %>
                   <div class="row mt-2">
                     <div class="col-12">
@@ -413,7 +413,7 @@
 
               <div class="crayons-field">
                 <%= admin_config_label :url, "Campaign URL" %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:url][:description] %>
+                <%= admin_config_description Constants::Settings::Campaign::DETAILS[:url][:description] %>
                 <%= f.text_field :url,
                                  class: "crayons-textfield",
                                  value: Settings::Campaign.url,
@@ -425,7 +425,7 @@
                 <%= admin_config_description Constants::Settings::Campaign::DETAILS[:featured_tags][:description] %>
                 <%= f.text_field :featured_tags,
                                  class: "crayons-textfield",
-                                 value: Settings::Campaign.tags.join(","),
+                                 value: Settings::Campaign.featured_tags.join(","),
                                  placeholder: Constants::Settings::Campaign::DETAILS[:featured_tags][:placeholder] %>
               </div>
 
@@ -435,16 +435,16 @@
                 <%= f.text_field :call_to_action,
                                  class: "crayons-textfield",
                                  value: Settings::Campaign.call_to_action,
-                                 placeholder: Constants::SiteConfig::DETAILS[:call_to_action][:placeholder] %>
+                                 placeholder: Constants::Settings::Campaign::DETAILS[:call_to_action][:placeholder] %>
               </div>
 
               <div class="crayons-field">
                 <%= admin_config_label :articles_expiry_time, "Campaign article expiry time" %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:articles_expiry_time][:description] %>
+                <%= admin_config_description Constants::Settings::Campaign::DETAILS[:articles_expiry_time][:description] %>
                 <%= f.number_field :articles_expiry_time,
                                    class: "crayons-textfield",
                                    value: Settings::Campaign.articles_expiry_time,
-                                   placeholder: Constants::SiteConfig::DETAILS[:articles_expiry_time][:placeholder] %>
+                                   placeholder: Constants::Settings::Campaign::DETAILS[:articles_expiry_time][:placeholder] %>
               </div>
 
               <%= render "form_submission", f: f %>
