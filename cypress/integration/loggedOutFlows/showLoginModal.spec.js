@@ -23,9 +23,9 @@ describe('Show log in modal', () => {
   it('should show login modal for article reaction clicks', () => {
     cy.findAllByText('Test article').last().click();
 
-    cy.findByTestId('like').as('heartReaction');
-    cy.findByTestId('unicorn').as('unicornReaction');
-    cy.findByTestId('readinglist').as('bookmarkReaction');
+    cy.findByRole('button', { name: 'Like' }).as('heartReaction');
+    cy.findByRole('button', { name: 'React with unicorn' }).as('unicornReaction');
+    cy.findByRole('button', { name: 'Add to reading list' }).as('bookmarkReaction');
 
     ['@heartReaction', '@unicornReaction', '@bookmarkReaction'].forEach(
       (reaction) => {
