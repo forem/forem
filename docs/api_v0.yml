@@ -687,6 +687,7 @@ components:
       type: object
       required:
         - type_of
+        - created_at
         - id
         - name
         - path
@@ -695,6 +696,10 @@ components:
       properties:
         type_of:
           type: string
+        created_at:
+          description: Date the user became a follower
+          type: string
+          format: date-time
         id:
           description: Follow id
           type: integer
@@ -1552,12 +1557,14 @@ components:
       value:
         - type_of: user_follower
           id: 12
+          created_at: "2021-04-02T04:21:46Z"
           name: Mrs. Neda Morissette
           path: "/nedamrsmorissette"
           username: nedamrsmorissette
           profile_image: https://res.cloudinary.com/...
         - type_of: user_follower
           id: 11
+          created_at: "2021-04-02T04:21:46Z"
           name: Yoko Hintz
           path: "/yokohintz"
           username: yokohintz
@@ -1567,6 +1574,7 @@ components:
       value:
         - type_of: listing
           id: 1157
+          created_at: "2021-04-07 08:29:42 UTC"
           title: TestBash Detroit
           slug: testbash-detroit-50gb
           body_markdown: "Do you want to learn about automation? Maybe you're interested in
@@ -2166,7 +2174,7 @@ paths:
         - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
-          description: A list of articles sorted by descending publish date 
+          description: A list of articles sorted by descending publish date
           content:
             application/json:
               schema:
@@ -2709,6 +2717,17 @@ paths:
       parameters:
         - $ref: '#/components/parameters/pageParam'
         - $ref: '#/components/parameters/perPageParam80to1000'
+        - in: query
+          name: sort
+          schema:
+            type: string
+            default: 'created_at'
+            pattern: '^-?\w+(,-?\w+)*$'
+          required: false
+          description: |
+            Specifies the sort order for the `created_at` param of the follow
+            relationship. To sort by newest followers first (descending order)
+            specify `?sort=-created_at`.
       responses:
         "200":
           description: A list of followers
