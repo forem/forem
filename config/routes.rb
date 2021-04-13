@@ -40,8 +40,8 @@ Rails.application.routes.draw do
     namespace :admin do
       get "/", to: "overview#index"
 
-      # @ridhwana - these are the admin routes that have stayed the same,
-      # they'll move into the admin routes module once we remove old code
+      # Note: [@ridhwana] These are the admin routes that have stayed the same even with the
+      # restructure. They'll move into routes/admin.rb once we remove the old code.
       authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
 
@@ -80,12 +80,13 @@ Rails.application.routes.draw do
       get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
       get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
 
-      constraints(->(_request) { !FeatureFlag.enabled?(:admin_restructure) }) do
-        draw :current_admin
-      end
-      constraints(->(_request) { FeatureFlag.enabled?(:admin_restructure) }) do
-        draw :admin
-      end
+
+      # Note: [@ridhwana] This is a temporary condition.
+      # It will require the rails app to be reloaded when the feature flag is toggled
+      # You can find more details on why we had to implement it this way in this PR
+      # https://github.com/forem/forem/pull/13114
+      admin_routes = FeatureFlag.enabled?(:admin_restructure) ? :admin : :current_admin
+      draw admin_routes
     end
 
     namespace :stories, defaults: { format: "json" } do

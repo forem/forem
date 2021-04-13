@@ -1,4 +1,4 @@
-scope :content_manager, as: 'content_manager' do
+scope :content_manager do
   resources :articles, only: %i[index show update]
   resources :badges, only: %i[index edit update new create]
   resources :badge_achievements, only: %i[index destroy]
@@ -21,7 +21,7 @@ scope :content_manager, as: 'content_manager' do
   end
 end
 
-scope :customization, as: 'customization' do
+scope :customization do
   resource :config
   resources :display_ads, only: %i[index edit update new create destroy]
   resources :html_variants, only: %i[index edit update new create show destroy]
@@ -36,7 +36,7 @@ scope :customization, as: 'customization' do
   end
 end
 
-scope :moderation, as: 'moderation' do
+scope :moderation do
   resources :feedback_messages, only: %i[index show]
   resources :reports, only: %i[index show], controller: "feedback_messages" do
     collection do
@@ -50,7 +50,7 @@ scope :moderation, as: 'moderation' do
   resources :privileged_reactions, only: %i[index]
 end
 
-scope :advanced, as: 'advanced' do
+scope :advanced do
   resources :broadcasts
   resources :response_templates, only: %i[index new edit create update destroy]
   resources :secrets, only: %i[index]
@@ -73,7 +73,7 @@ scope :advanced, as: 'advanced' do
   end
 end
 
-scope :apps, as: 'apps' do
+scope :apps do
   resources :chat_channels, only: %i[index create update destroy] do
     member do
       delete :remove_user
