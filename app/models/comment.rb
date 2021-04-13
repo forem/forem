@@ -75,9 +75,21 @@ class Comment < ApplicationRecord
   # [@atsmith813] this is adapted from the `search_field` property in
   # `config/elasticsearch/mappings/feed_content.json` and
   # `app/serializers/search/comment_serializer.rb`
+  #
+  # highlighter settings are taken from
+  # Search::QueryBuildersFeedContent#add_highlight_fields
   pg_search_scope :search_comments,
                   against: %i[body_markdown],
-                  using: { tsearch: { prefix: true } }
+                  using: {
+                    tsearch: {
+                      prefix: true,
+                      highlight: {
+                        StartSel: "<mark>",
+                        StopSel: "</mark>",
+                        MaxFragments: 2
+                      }
+                    }
+                  }
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
 

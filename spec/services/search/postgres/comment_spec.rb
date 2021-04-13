@@ -50,8 +50,9 @@ RSpec.describe Search::Postgres::Comment, type: :service do
 
       it "returns the correct attributes for the result" do
         expected_keys = %i[
-          id path public_reactions_count body_text class_name hotness_score
-          published published_at readable_publish_date_string title user
+          id path public_reactions_count body_text class_name highlight
+          hotness_score published published_at readable_publish_date_string
+          title user
         ]
 
         expect(result.first.keys).to match_array(expected_keys)
@@ -60,6 +61,13 @@ RSpec.describe Search::Postgres::Comment, type: :service do
       it "returns the correct attributes for the user" do
         expected_keys = %i[username name profile_image_90]
         expect(result.first[:user].keys).to match_array(expected_keys)
+      end
+
+      it "returns highlights" do
+        expected_keys = %i[body_text]
+        expect(result.first[:highlight].keys).to match_array(expected_keys)
+        highlights = result.first[:highlight][:body_text].first
+        expect(highlights).to include("<mark>", "</mark>")
       end
 
       it "orders the results by score (hotness_score) in descending order" do

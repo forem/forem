@@ -68,7 +68,7 @@ module Search
 
         relation = ::Comment.joins(FORCED_EAGER_LOAD_QUERY).where(QUERY_FILTER)
 
-        relation = relation.search_comments(term) if term.present?
+        relation = relation.search_comments(term).with_pg_search_highlight if term.present?
 
         relation = relation.select(*ATTRIBUTES).reorder("comments.score": :desc)
 
@@ -78,7 +78,7 @@ module Search
       end
 
       def self.serialize(results)
-        Search::CommentSerializer
+        Search::PostgresCommentSerializer
           .new(results, is_collection: true)
           .serializable_hash[:data]
           .pluck(:attributes)
