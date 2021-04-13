@@ -275,7 +275,6 @@
 
   &__col {
     flex: 1;
-    width: 10%;
   }
 }
 
@@ -286,25 +285,11 @@
 
   &__col {
     flex: 1;
-    width: 50%;
   }
-}
-
-.centered-graph {
-  margin: 10px auto;
-  width: 100%;
 }
 
 @media screen and (max-width: $breakpoint-s) {
-  .summary-stats {
-    display: block;
-    &__col {
-      display: block;
-      width: 90%;
-      margin: 10px auto;
-    }
-  }
-
+  .summary-stats,
   .graphs {
     display: block;
     &__col {
