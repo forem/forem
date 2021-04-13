@@ -15,7 +15,6 @@ class ApplicationController < ActionController::Base
   include DevelopmentDependencyChecks if Rails.env.development?
   include EdgeCacheSafetyCheck unless Rails.env.production?
   include Devise::Controllers::Rememberable
-  include FeatureFlagUrlHelper
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
