@@ -3710,10 +3710,10 @@
   dependencies:
     "@testing-library/dom" "^7.16.2"
 
-"@testing-library/user-event@^13.1.1":
-  version "13.1.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.1.1.tgz#1e011de944cf4d2a917cef6c3046c26389943e24"
-  integrity sha512-B4roX+0mpXKGj8ndd38YoIo3IV9pmTTWxr/2cOke5apTtrNabEUE0KMBccpcAcYlfPcr7uMu+dxeeC3HdXd9qQ==
+"@testing-library/user-event@^13.1.2":
+  version "13.1.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.1.2.tgz#2dff143155da093f0dc2485cf4717780d12a6235"
+  integrity sha512-89S/QELVCXbcHmgAfPrk0U8kCu9qESqV8/QQaUe5B4+7qi3kJlfQYCiB7Pfi2XInBtO0qm7vDmJb+/Oa+TFdyQ==
   dependencies:
     "@babel/runtime" "^7.12.5"
 
@@ -19996,10 +19996,10 @@ webpack-assets-manifest@^3.1.1:
     tapable "^1.0.0"
     webpack-sources "^1.0.0"
 
-webpack-bundle-analyzer@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/webpack-bundle-analyzer/-/webpack-bundle-analyzer-4.4.0.tgz#74013106e7e2b07cbd64f3a5ae847f7e814802c7"
-  integrity sha512-9DhNa+aXpqdHk8LkLPTBU/dMfl84Y+WE2+KnfI6rSpNRNVKa0VGLjPd2pjFubDeqnWmulFggxmWBxhfJXZnR0g==
+webpack-bundle-analyzer@^4.4.1:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/webpack-bundle-analyzer/-/webpack-bundle-analyzer-4.4.1.tgz#c71fb2eaffc10a4754d7303b224adb2342069da1"
+  integrity sha512-j5m7WgytCkiVBoOGavzNokBOqxe6Mma13X1asfVYtKWM3wxBiRRu1u1iG0Iol5+qp9WgyhkMmBAcvjEfJ2bdDw==
   dependencies:
     acorn "^8.0.4"
     acorn-walk "^8.0.0"
