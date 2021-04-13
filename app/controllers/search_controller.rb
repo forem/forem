@@ -130,8 +130,18 @@ class SearchController < ApplicationController
                 elsif params[:class_name] == "User"
                   # No need to check for articles or podcast episodes if we know we only want users
                   user_search
-                else
-                  # if params[:class_name] == PodcastEpisode, Article, or Comment then skip user lookup
+                elsif params[:class_name] == "Article" && params[:search_fields].blank? # homepage
+                  if FeatureFlag.enabled?(:search_2_homepage)
+                    Homepage::FetchArticles.call(
+                      sort_by: params[:sort_by],
+                      sort_direction: params[:sort_direction],
+                      page: params[:page],
+                      per_page: params[:per_page],
+                    )
+                  else
+                    feed_content_search
+                  end
+                else # search page
                   feed_content_search
                 end
 
