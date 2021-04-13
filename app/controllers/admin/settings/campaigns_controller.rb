@@ -15,7 +15,7 @@ module Admin
       def settings_params
         params
           .require(:settings_campaign)
-          .permit(*::Settings::Campaigns.keys)
+          .permit(*::Settings::Campaign.keys)
       end
     end
   end
