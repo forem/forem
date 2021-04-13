@@ -386,7 +386,7 @@
               <div class="crayons-field crayons-field--checkbox">
                 <%= f.check_box :articles_require_approval, checked: Settings::Campaign.articles_require_approval, class: "crayons-checkbox" %>
                 <%= admin_config_label :articles_require_approval %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:articles_require_approval][:description] %>
+                <%= admin_config_description Constants::Settings::Campaign::DETAILS[:articles_require_approval][:description] %>
               </div>
 
               <div class="crayons-field crayons-field--checkbox">
