@@ -202,8 +202,8 @@ function renderReferrers(data) {
     .map((referrer) => {
       return `
       <tr>
-        <td>${referrer.domain}</td>
-        <td>${referrer.count}</td>
+        <td class="align-left">${referrer.domain}</td>
+        <td class="align-right">${referrer.count}</td>
       </tr>
     `;
     });
@@ -215,8 +215,8 @@ function renderReferrers(data) {
   if (emptyDomainReferrer) {
     tableBody.push(`
       <tr>
-        <td>All other external referrers</td>
-        <td>${emptyDomainReferrer.count}</td>
+        <td class="align-left">All other external referrers</td>
+        <td class="align-right">${emptyDomainReferrer.count}</td>
       </tr>
     `);
   }
