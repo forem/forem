@@ -290,9 +290,14 @@ describe('Comment on articles', () => {
         .findByRole('textbox', {
           name: /^Reply to a comment\.\.\.$/,
         })
-        .as('replyCommentBox');
+        .click();
 
-      cy.get('@main').get('@replyCommentBox').click().type('Some text @s');
+      cy.get('@main')
+        .findByRole('textbox', {
+          name: /^Reply to a comment\.\.\.$/,
+        })
+        .as('replyCommentBox')
+        .type('Some text @s');
 
       // Verify the combobox has appeared
       cy.get('@main')
