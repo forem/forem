@@ -18,7 +18,7 @@ describe('Comment on articles', () => {
   });
 
   describe('Comments using mention autocomplete', () => {
-    it('should comment on an article with user mention autocomplete suggesting max 6 users', () => {
+    xit('should comment on an article with user mention autocomplete suggesting max 6 users', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
