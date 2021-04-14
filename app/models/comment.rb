@@ -99,10 +99,6 @@ class Comment < ApplicationRecord
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
   end
 
-  def self.forced_eager_load_serialized_data
-    joins(FORCED_EAGER_LOAD_QUERY)
-  end
-
   def search_id
     "comment_#{id}"
   end
