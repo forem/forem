@@ -42,7 +42,7 @@ class SiteConfig < RailsSettings::Base
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
   field :campaign_sidebar_image, type: :string, default: nil, validates: {
-    url_format: true
+    url: true
   }
   field :campaign_url, type: :string, default: nil
   field :campaign_articles_require_approval, type: :boolean, default: 0
@@ -87,16 +87,16 @@ class SiteConfig < RailsSettings::Base
   field :main_social_image,
         type: :string,
         default: proc { URL.local_image("social-media-cover.png") },
-        validates: { url_format: true }
+        validates: { url: true }
 
   field :favicon_url, type: :string, default: proc { URL.local_image("favicon.ico") }
   field :logo_png,
         type: :string,
         default: proc { URL.local_image("icon.png") },
-        validates: { url_format: true }
+        validates: { url: true }
 
   field :logo_svg, type: :string
-  field :secondary_logo_url, type: :string, validates: { url_format: true }
+  field :secondary_logo_url, type: :string, validates: { url: true }
 
   field :enable_video_upload, type: :boolean, default: false
 
@@ -105,9 +105,9 @@ class SiteConfig < RailsSettings::Base
   field :mascot_image_url,
         type: :string,
         default: proc { URL.local_image("mascot.png") },
-        validates: { url_format: true }
+        validates: { url: true }
   field :mascot_image_description, type: :string, default: "The community mascot"
-  field :mascot_footer_image_url, type: :string, validates: { url_format: true }
+  field :mascot_footer_image_url, type: :string, validates: { url: true }
   field :mascot_footer_image_width, type: :integer, default: 52
   field :mascot_footer_image_height, type: :integer, default: 120
 
@@ -136,7 +136,7 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Onboarding
-  field :onboarding_background_image, type: :string, validates: { url_format: true }
+  field :onboarding_background_image, type: :string, validates: { url: true }
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
   field :prefer_manual_suggested_users, type: :boolean, default: false
