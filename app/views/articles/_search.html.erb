@@ -104,7 +104,7 @@
     var lowerCaseQuery = query.toLowerCase();
 
     if (displayBanner && lowerCaseQuery.includes("job")) {
-      document.getElementById("banner-section").innerHTML = '<div class="crayons-notice crayons-notice--info mb-3 fs-base">Interested in joining our team? Explore our <a href=' + jobsUrl + '>open roles</a>.</div>';
+      document.getElementById("banner-section").innerHTML = '<div class="crayons-notice crayons-notice--info mb-3 fs-base" aria-live="polite">Interested in joining our team? Explore our <a href=' + jobsUrl + '>open roles</a>.</div>';
     }
   }
 

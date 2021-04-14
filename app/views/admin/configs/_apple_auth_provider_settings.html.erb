@@ -5,7 +5,7 @@ requires a custom partial
 -->
 <fieldset class="config-authentication-form">
   <div
-    class="crayons-notice crayons-notice--warning auth-warning <%= authentication_provider_enabled?(provider) ? "hidden" : "" %>">
+    class="crayons-notice crayons-notice--warning auth-warning <%= authentication_provider_enabled?(provider) ? "hidden" : "" %>" aria-live="polite">
       <strong>Note:</strong> This authentication provider will <strong>not</strong> be enabled if the key or secret are missing. Please make sure that you enter your key and secret correctly.
   </div>
   <div class="crayons-field">

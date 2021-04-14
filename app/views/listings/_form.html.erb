@@ -92,7 +92,7 @@
 
   <div class="px-4 m:px-0">
     <% unless @credits.size > 0 || (@organizations.present? && @organizations.sum(:unspent_credits_count) > 0) %>
-      <div class="crayons-notice mb-4">You need at least one credit to create a listing.</div>
+      <div class="crayons-notice mb-4" aria-live="polite">You need at least one credit to create a listing.</div>
     <% end %>
     <div class="flex mb-4 items-center">
       <% if @credits.size > 0 || (@organizations.present? && @organizations.sum(:unspent_credits_count) > 0) %>

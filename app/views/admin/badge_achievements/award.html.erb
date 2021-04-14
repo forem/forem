@@ -1,6 +1,8 @@
 <h2 class="crayons-title mb-6">Award Badges</h2>
 <div class="crayons-card p-6">
-  <div class="crayons-notice crayons-notice--warning mb-6">Warning: Usernames are case-sensitive and must be all lowercase! This task will fail silently when supplied with incorrect usernames.</div>
+  <div class="crayons-notice crayons-notice--warning mb-6" aria-live="polite">
+    Warning: Usernames are case-sensitive and must be all lowercase! This task will fail silently when supplied with incorrect usernames.
+  </div>
 
   <%= form_with(url: admin_badge_achievements_award_badges_path, local: true) do |f| %>
     <div class="form-group">
