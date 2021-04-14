@@ -123,38 +123,42 @@ class SearchController < ApplicationController
   # we should eventually move it to a JSON result
   # in ArticlesController#Homepage or HomepageController#show
   def feed_content
-    feed_docs = if params[:class_name].blank?
-                  # If we are in the main feed and not filtering by type return
-                  # all articles, podcast episodes, and users
-                  feed_content_search.concat(user_search)
-                elsif params[:class_name] == "User"
-                  # No need to check for articles or podcast episodes if we know we only want users
-                  user_search
-                elsif params[:class_name] == "Article" && params[:search_fields].blank? # homepage
-                  if FeatureFlag.enabled?(:search_2_homepage)
-                    # NOTE: published_at is sent from the frontend in the following ES-friendly format:
-                    # => {"published_at"=>{"gte"=>"2021-04-06T14:53:23Z"}}
-                    published_at_gte = params.dig(:published_at, :gte)
-                    published_at_gte = Time.zone.parse(published_at_gte) if published_at_gte
-                    published_at = published_at_gte ? published_at_gte.. : nil
+    class_name = params[:class_name].to_s.inquiry
 
-                    Homepage::FetchArticles.call(
-                      approved: params[:approved],
-                      published_at: published_at,
-                      sort_by: params[:sort_by],
-                      sort_direction: params[:sort_direction],
-                      page: params[:page],
-                      per_page: params[:per_page],
-                    )
-                  else
-                    feed_content_search
-                  end
-                else # search page
-                  feed_content_search
-                end
+    result =
+      if class_name.blank?
+        # If we are in the main feed and not filtering by type return
+        # all articles, podcast episodes, and users
+        feed_content_search.concat(user_search)
+      elsif class_name.Article? && params[:search_fields].blank?
+        # homepage
+        if FeatureFlag.enabled?(:search_2_homepage)
+          # NOTE: published_at is sent from the frontend in the following ES-friendly format:
+          # => {"published_at"=>{"gte"=>"2021-04-06T14:53:23Z"}}
+          published_at_gte = params.dig(:published_at, :gte)
+          published_at_gte = Time.zone.parse(published_at_gte) if published_at_gte
+          published_at = published_at_gte ? published_at_gte.. : nil
+
+          Homepage::FetchArticles.call(
+            approved: params[:approved],
+            published_at: published_at,
+            sort_by: params[:sort_by],
+            sort_direction: params[:sort_direction],
+            page: params[:page],
+            per_page: params[:per_page],
+          )
+        else
+          feed_content_search
+        end
+      elsif class_name.User?
+        # No need to check for articles or podcast episodes if we know we only want users
+        user_search
+      else # search page
+        feed_content_search
+      end
 
     render json: {
-      result: feed_docs,
+      result: result,
       display_jobs_banner: SiteConfig.display_jobs_banner,
       jobs_url: SiteConfig.jobs_url
     }
