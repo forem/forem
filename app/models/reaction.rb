@@ -65,10 +65,8 @@ class Reaction < ApplicationRecord
   # - reaction is negative
   # - receiver is the same user as the one who reacted
   # - receive_notification is disabled
-  def skip_notification_for?(receiver)
-    points.negative? ||
-      (user_id == reactable.user_id) ||
-      (receiver.is_a?(User) && reactable.receive_notifications == false)
+  def skip_notification_for?(_receiver)
+    points.negative? || (user_id == reactable.user_id)
   end
 
   def vomit_on_user?

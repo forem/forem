@@ -11,9 +11,7 @@ def local_storage_config
     config.storage = :file
     config.enable_processing = !Rails.env.test? # disabled for test
     config.asset_host = if Rails.env.production?
-                          "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
-                        elsif Images::Optimizer.imgproxy_enabled?
-                          "http://#{ApplicationConfig['APP_DOMAIN']}"
+                          "https://#{ApplicationConfig['APP_DOMAIN']}"
                         end
   end
 end
