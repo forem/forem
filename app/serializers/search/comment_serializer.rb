@@ -18,17 +18,10 @@ module Search
       comment.commentable&.title
     end
 
-    # NOTE: not using the `NestedUserSerializer` because we don't need the
-    # the `pro` flag on the frontend, and we also avoid hitting Redis to
-    # fetch the cached value
     attribute :user do |comment|
-      user = comment.user
-
-      {
-        name: user.name,
-        profile_image_90: user.profile_image_90,
-        username: user.username
-      }
+      NestedUserSerializer.new(comment.user).serializable_hash.dig(
+        :data, :attributes
+      )
     end
   end
 end
