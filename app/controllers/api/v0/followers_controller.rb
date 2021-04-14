@@ -29,7 +29,6 @@ module Api
 
       def order_criteria
         parse_sort_param(
-          params[:sort],
           allowed_fields: [:created_at],
           default_sort: { created_at: :desc },
         )
