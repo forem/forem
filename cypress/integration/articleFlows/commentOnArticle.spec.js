@@ -259,8 +259,7 @@ describe('Comment on articles', () => {
       cy.get('@plainTextArea').should('be.visible');
     });
 
-    // TODO: Flaky spec
-    xit('should reply to a comment with user mention autocomplete', () => {
+    it('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
@@ -270,25 +269,39 @@ describe('Comment on articles', () => {
       cy.findByRole('main')
         .as('main')
         .findByRole('textbox', /^Add a comment to the discussion$/i)
-        .focus()
+        .click();
+
+      // The mention autocomplete is two textareas
+      // and initially it's replacing the server-side rendered one,
+      // so we need to get it again to be certain we have the correct reference.
+      cy.get('@main')
+        .findByRole('textbox', /^Add a comment to the discussion$/i)
         .type('first comment');
 
       cy.get('@main')
-        .findByRole('button', { name: /Submit/ })
+        .findByRole('button', { name: /^Submit$/i })
         .click();
-      cy.get('@main').findByRole('link', { name: /Reply/ }).click();
+
+      cy.get('@main')
+        .findByRole('link', { name: /^Reply$/i })
+        .click();
 
       cy.get('@main')
         .findByRole('textbox', {
-          name: /Reply to a comment.../,
+          name: /^Reply to a comment\.\.\.$/,
         })
-        .as('replyCommentBox');
+        .click();
 
-      cy.get('@main').get('@replyCommentBox').click().type('Some text @s');
+      cy.get('@main')
+        .findByRole('textbox', {
+          name: /^Reply to a comment\.\.\.$/,
+        })
+        .as('replyCommentBox')
+        .type('Some text @s');
 
       // Verify the combobox has appeared
       cy.get('@main')
-        .findByRole('combobox', { name: /Reply to a comment/ })
+        .findByRole('combobox', { name: /^Reply to a comment\.\.\.$/ })
         .as('autocompleteCommentBox');
 
       cy.get('@main').get('@autocompleteCommentBox').type('earch');
