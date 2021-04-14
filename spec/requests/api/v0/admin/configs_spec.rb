@@ -64,9 +64,11 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
 
       it "enables proper domains to allow list" do
         proper_list = "dev.to, forem.com, forem.dev"
-        put api_admin_config_path, params: { site_config: { allowed_registration_email_domains: proper_list } }.to_json,
+        put api_admin_config_path, params: {
+          site_config: { allowed_registration_email_domains: proper_list }
+        }.to_json,
                                    headers: headers
-        expect(SiteConfig.allowed_registration_email_domains).to eq(%w[dev.to forem.com forem.dev])
+        expect(Settings::Authentication.allowed_registration_email_domains).to eq(%w[dev.to forem.com forem.dev])
       end
 
       it "does not allow improper domain list" do
@@ -74,7 +76,7 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
         put api_admin_config_path,
             params: { site_config: { allowed_registration_email_domains: improper_list } }.to_json,
             headers: headers
-        expect(SiteConfig.allowed_registration_email_domains).not_to eq(%w[dev.to foremcom forem.dev])
+        expect(Settings::Authentication.allowed_registration_email_domains).not_to eq(%w[dev.to foremcom forem.dev])
       end
 
       it "removes space suggested_tags" do

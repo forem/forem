@@ -254,7 +254,9 @@ RSpec.describe Organization, type: :model do
     context "when dealing with organization articles" do
       before do
         create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
-        create(:article, organization: organization, user: user)
+        article = create(:article, organization: organization, user: user)
+        organization.articles << article
+        organization.save
       end
 
       it "updates the paths of the organization's articles" do
@@ -278,6 +280,39 @@ RSpec.describe Organization, type: :model do
         article = Article.find_by(organization_id: organization.id)
         expect(article.cached_organization.slug).to eq(new_slug)
       end
+
+      # these tests rely on `Organization.update_articles_cached_organization` callback,
+      # which will eventually invoke the trigger
+      # rubocop:disable RSpec/NestedGroups
+      context "when callbacks eventually invoke the trigger on Article.reading_list_document" do
+        it "updates the articles .reading_list_document when updating the name" do
+          article = Article.find_by(organization_id: organization.id)
+          old_reading_list_document = article.reading_list_document
+
+          organization.update(name: "ACME Org")
+
+          expect(article.reload.reading_list_document).not_to eq(old_reading_list_document)
+        end
+
+        it "does not update the articles .reading_list_document when updating the company_size" do
+          article = Article.find_by(organization_id: organization.id)
+          old_reading_list_document = article.reading_list_document
+
+          organization.update(company_size: "200")
+
+          expect(article.reload.reading_list_document).to eq(old_reading_list_document)
+        end
+
+        it "removes the organization name from the .reading_list_document after destroy" do
+          article = Article.find_by(organization_id: organization.id)
+
+          organization.update(name: "ACME")
+          organization.destroy
+
+          expect(article.reload.reading_list_document).not_to include("acme")
+        end
+      end
+      # rubocop:enable RSpec/NestedGroups
     end
   end
 

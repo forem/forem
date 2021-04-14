@@ -997,6 +997,44 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  context "when triggers are invoked" do
+    let(:article) { create(:article) }
+
+    before do
+      article.update(body_markdown: "An intense movie")
+    end
+
+    it "sets .reading_list_document on insert" do
+      expect(article.reload.reading_list_document).to be_present
+    end
+
+    it "updates .reading_list_document with body_markdown" do
+      article.update(body_markdown: "Something has changed")
+
+      expect(article.reload.reading_list_document).to include("something")
+    end
+
+    it "updates .reading_list_document with cached_tag_list" do
+      article.update(tag_list: %w[rust python])
+
+      expect(article.reload.reading_list_document).to include("rust")
+    end
+
+    it "updates .reading_list_document with title" do
+      article.update(title: "Synecdoche, Los Angeles")
+
+      expect(article.reload.reading_list_document).to include("angeles")
+    end
+
+    it "removes a previous value from .reading_list_document on update", :aggregate_failures do
+      tag = article.tags.first.name
+      article.update(tag_list: %w[fsharp go])
+
+      expect(article.reload.reading_list_document).not_to include(tag)
+      expect(article.reload.reading_list_document).to include("fsharp")
+    end
+  end
+
   describe ".feed" do
     it "returns records with a subset of attributes" do
       feed_article = described_class.feed.first

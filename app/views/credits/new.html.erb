@@ -17,7 +17,7 @@
   </div>
 
   <% if flash[:error].present? %>
-    <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger">
+    <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert">
       <p><%= flash[:error] %></p>
     </div>
   <% end %>

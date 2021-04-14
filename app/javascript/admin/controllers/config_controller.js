@@ -293,8 +293,12 @@ export default class ConfigController extends Controller {
       .forEach((provider) => {
         const { providerName } = provider.dataset;
         if (
-          !document.getElementById(`site_config_${providerName}_key`).value ||
-          !document.getElementById(`site_config_${providerName}_secret`).value
+          !document.getElementById(
+            `settings_authentication_${providerName}_key`,
+          ).value ||
+          !document.getElementById(
+            `settings_authentication_${providerName}_secret`,
+          ).value
         ) {
           providersWithMissingKeys.push(providerName);
         }
