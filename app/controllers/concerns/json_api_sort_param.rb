@@ -6,7 +6,7 @@ module JsonApiSortParam
   #   array determines the sort order of the resulting hash.
   # @param default_sort [{Symbol => Symbol}] The default sort order. Used when
   #   the param string is nil/empty or when parsing it results in an empty hash.
-  def parse_sort_param(param_string, allowed_fields:, default_sort:)
+  def parse_sort_param(param_string = params[:sort], allowed_fields:, default_sort:)
     fields = param_string.to_s.split(",")
     unfiltered_hash = fields_to_hash(fields)
     sort = sort_and_filter(unfiltered_hash, allowed_fields)
