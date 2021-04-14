@@ -220,20 +220,18 @@ function getPreviousElement(
  * @returns {object} The first visible element
  */
 function getFirstVisibleElement(selector) {
-  const elements = document.querySelectorAll(selector);
-  const completelyVisibleFirstElement = Array.prototype.find.call(
-    elements,
-    (element) => isInViewport({ element }),
+  const elements = [...document.querySelectorAll(selector)];
+  const completelyVisibleFirstElement = elements.find((element) =>
+    isInViewport({ element }),
   );
   if (completelyVisibleFirstElement) {
     return completelyVisibleFirstElement;
   }
-  const partiallyVisibleFirstElement = Array.prototype.find.call(
-    elements,
-    (element) => isInViewport({ element, allowPartialVisibility: true }),
+  const partiallyVisibleFirstElement = elements.find((element) =>
+    isInViewport({ element, allowPartialVisibility: true }),
   );
   if (partiallyVisibleFirstElement) {
     return partiallyVisibleFirstElement;
   }
-  return elements && elements[0];
+  return elements[0];
 }
