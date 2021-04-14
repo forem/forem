@@ -91,12 +91,10 @@
   </div>
 </div>
 
-<script>
-  window.addEventListener('DOMContentLoaded', function() {
-    window.addeventasync = function () {
-      addeventatc.register('button-dropdown-click', function (obj) {
-        ga('send', 'event', 'click', 'Add Event To Calendar', 'User: <%= user_signed_in? %>');
-      });
-    }
-  });
+<script defer>
+  window.addeventasync = function () {
+    addeventatc.register('button-dropdown-click', function (obj) {
+      ga('send', 'event', 'click', 'Add Event To Calendar', 'User: <%= user_signed_in? %>');
+    });
+  }
 </script>
