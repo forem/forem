@@ -120,7 +120,8 @@ class SearchController < ApplicationController
   end
 
   def feed_content
-    class_name = params[:class_name]&.inquiry
+    class_name = params[:class_name].to_s.inquiry
+
     result =
       if class_name.blank?
         # If we are in the main feed and not filtering by type return
