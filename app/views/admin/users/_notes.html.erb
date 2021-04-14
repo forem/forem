@@ -14,7 +14,7 @@
       </p>
     <% end %>
   <% else %>
-    <div class="crayons-notice mb-6">No notes yet...</div>
+    <div class="crayons-notice mb-6" aria-live="polite">No notes yet...</div>
   <% end %>
   <%= form_with model: @user, url: admin_user_path(@user), method: :patch, html: { class: "mb-2" }, local: true  do |f| %>
     <div class="form-group">

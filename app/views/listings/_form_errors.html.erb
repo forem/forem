@@ -1,5 +1,5 @@
 <% if listing.errors.any? %>
-  <div class="crayons-notice crayons-notice--danger">
+  <div class="crayons-notice crayons-notice--danger" role="alert">
     <h2 class="fs-l"><%= pluralize(listing.errors.count, "error") %> prohibited this listing from being saved:</h2>
     <ul>
     <% listing.errors.full_messages.each do |message| %>
