@@ -7,14 +7,15 @@ class DeepLinksController < ApplicationController
     dev_app = "R9SWHSQNV8.to.dev.ios"
     render json: {
       applinks: {
+        apps: [forem_app, dev_app],
         details: [
           {
             appID: forem_app,
-            paths: ["*"]
+            paths: ["/*"]
           },
           {
             appID: dev_app,
-            paths: ["*"]
+            paths: ["/*"]
           },
         ]
       },
