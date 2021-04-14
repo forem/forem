@@ -7,21 +7,24 @@
                    category: :like,
                    description: "Heart",
                    image_path: "heart.svg",
-                   image_active_path: "heart-filled.svg"
+                   image_active_path: "heart-filled.svg",
+                   aria_label: "Like"
                  } %>
       <%= render partial: "articles/reaction_button",
                  locals: {
                    category: :unicorn,
                    description: "Unicorn",
                    image_path: "unicorn.svg",
-                   image_active_path: "unicorn-filled.svg"
+                   image_active_path: "unicorn-filled.svg",
+                   aria_label: "React with unicorn"
                  } %>
       <%= render partial: "articles/reaction_button",
                  locals: {
                    category: :readinglist,
                    description: "Saved",
                    image_path: "save.svg",
-                   image_active_path: "save-filled.svg"
+                   image_active_path: "save-filled.svg",
+                   aria_label: "Add to reading list"
                  } %>
     <% end %>
 
