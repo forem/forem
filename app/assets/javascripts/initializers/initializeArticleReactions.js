@@ -17,12 +17,26 @@ function setReactionCount(reactionName, newCount) {
   }
 }
 
+function getReactionAriaLabel(reactionName, reacted) {
+  switch (reactionName) {
+    case 'readinglist':
+      return reacted ? 'Remove from reading list' : 'Add to reading list';
+    case 'unicorn':
+      return reacted ? 'Remove unicorn reaction' : 'React with unicorn';
+    case 'like':
+      return reacted ? 'Unlike' : 'Like';
+  }
+}
+
 function showUserReaction(reactionName, animatedClass) {
   const reactionButton = document.getElementById(
     'reaction-butt-' + reactionName,
   );
   reactionButton.classList.add('user-activated', animatedClass);
-  reactionButton.setAttribute('aria-checked', 'true');
+  reactionButton.setAttribute(
+    'aria-label',
+    getReactionAriaLabel(reactionName, true),
+  );
 }
 
 function hideUserReaction(reactionName) {
@@ -30,7 +44,10 @@ function hideUserReaction(reactionName) {
     'reaction-butt-' + reactionName,
   );
   reactionButton.classList.remove('user-activated', 'user-animated');
-  reactionButton.setAttribute('aria-checked', 'false');
+  reactionButton.setAttribute(
+    'aria-label',
+    getReactionAriaLabel(reactionName, false),
+  );
 }
 
 function hasUserReacted(reactionName) {

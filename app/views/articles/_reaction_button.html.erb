@@ -1,16 +1,16 @@
 <button
-  role="checkbox"
   id="reaction-butt-<%= category %>"
+  aria-label="<%= aria_label %>"
   class="crayons-reaction crayons-reaction--<%= category %>"
   data-category="<%= category %>"
   title="<%= description %>">
   <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
-    <%= inline_svg_tag(image_path, aria: true, class: "crayons-icon", title: description) %>
+    <%= inline_svg_tag(image_path, aria_hidden: true, class: "crayons-icon") %>
   </span>
   <% if user_signed_in? # We cannot trigger the action state unless the user is signed in, so no need to render. %>
   <span class="crayons-reaction__icon crayons-reaction__icon--active">
-    <%= inline_svg_tag(image_active_path, aria: true, class: "crayons-icon", title: description) %>
+    <%= inline_svg_tag(image_active_path, aria_hidden: true, class: "crayons-icon") %>
   </span>
   <% end %>
-  <span class="crayons-reaction__count" id="reaction-number-<%= category %>" alt="count"><span class="bg-base-40 opacity-25 p-2 inline-block radius-default"></span></span>
+  <span class="crayons-reaction__count" id="reaction-number-<%= category %>"><span class="bg-base-40 opacity-25 p-2 inline-block radius-default"></span></span>
 </button>
