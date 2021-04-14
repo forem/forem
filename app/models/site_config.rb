@@ -11,8 +11,6 @@ class SiteConfig < RailsSettings::Base
   HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/.freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
-  VALID_URL = %r{\A(http|https)://([/|.\w\s-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
-  URL_MESSAGE = "must be a valid URL".freeze
 
   # Forem Team
   # [forem-fix] Remove channel name from SiteConfig
@@ -76,18 +74,16 @@ class SiteConfig < RailsSettings::Base
   field :main_social_image,
         type: :string,
         default: proc { URL.local_image("social-media-cover.png") },
-        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
+        validates: { url: true }
 
   field :favicon_url, type: :string, default: proc { URL.local_image("favicon.ico") }
   field :logo_png,
         type: :string,
         default: proc { URL.local_image("icon.png") },
-        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
+        validates: { url: true }
 
   field :logo_svg, type: :string
-  field :secondary_logo_url, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
+  field :secondary_logo_url, type: :string, validates: { url: true }
 
   field :enable_video_upload, type: :boolean, default: false
 
@@ -96,11 +92,9 @@ class SiteConfig < RailsSettings::Base
   field :mascot_image_url,
         type: :string,
         default: proc { URL.local_image("mascot.png") },
-        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
+        validates: { url: true }
   field :mascot_image_description, type: :string, default: "The community mascot"
-  field :mascot_footer_image_url, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
+  field :mascot_footer_image_url, type: :string, validates: { url: true }
   field :mascot_footer_image_width, type: :integer, default: 52
   field :mascot_footer_image_height, type: :integer, default: 120
 
@@ -129,9 +123,7 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Onboarding
-  field :onboarding_background_image, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
+  field :onboarding_background_image, type: :string, validates: { url: true }
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
   field :prefer_manual_suggested_users, type: :boolean, default: false

@@ -6,9 +6,6 @@ module Settings
     # the cache, or call Settings::Campaign.clear_cache
     cache_prefix { "v1" }
 
-    VALID_URL = %r{\A(http|https)://([/|.\w\s-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
-    URL_MESSAGE = "must be a valid URL".freeze
-
     # Define your fields
     field :articles_expiry_time, type: :integer, default: 4
     field :articles_require_approval, type: :boolean, default: 0
@@ -16,9 +13,7 @@ module Settings
     field :featured_tags, type: :array, default: %w[]
     field :hero_html_variant_name, type: :string, default: ""
     field :sidebar_enabled, type: :boolean, default: 0
-    field :sidebar_image, type: :string, default: nil, validates: {
-      format: { with: VALID_URL, message: URL_MESSAGE }
-    }
+    field :sidebar_image, type: :string, default: nil, validates: { url: true }
     field :url, type: :string, default: nil
   end
 end
