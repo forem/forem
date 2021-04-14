@@ -63,7 +63,7 @@
 
   <div class="crayons-layout__content">
     <% if current_user.email.blank? %>
-      <div class="crayons-notice crayons-notice--warning mb-6">
+      <div class="crayons-notice crayons-notice--warning mb-6" aria-live="polite">
         <h3 class="mb-2">Confirm your email to complete your profile.</h3>
         <p>
           While you're at it, go ahead and fill everything out.
@@ -77,7 +77,7 @@
     <% end %>
 
     <% if @user.unconfirmed_email.present? %>
-      <div class="crayons-notice crayons-notice--warning mb-6">
+      <div class="crayons-notice crayons-notice--warning mb-6" role="alert">
         <h3 class="mb-2">Email verification.</h3>
         <p>You have requested a change to <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a>. Check your inbox for the verification link to finalize the change.</p>
       </div>

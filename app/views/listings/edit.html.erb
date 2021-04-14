@@ -8,7 +8,7 @@
   <div class="crayons-layout__content">
     <div class="crayons-card mb-6 p-6">
       <%= form_for(@listing, html: { class: "grid gap-6 mb-6" }) do |f| %>
-        <div class="crayons-notice">You can only edit title/body/tags of drafts or within the first 24 hours of listing or bumping</div>
+        <div class="crayons-notice" aria-live="polite">You can only edit title/body/tags of drafts or within the first 24 hours of listing or bumping</div>
 
         <%= render partial: "form_errors", locals: { listing: @listing } %>
 

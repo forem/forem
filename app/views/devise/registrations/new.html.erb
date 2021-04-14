@@ -3,7 +3,7 @@
 <% if params[:state] == "email_signup" && Settings::Authentication.allow_email_password_registration %>
   <%= render "shared/authentication/email_registration_form" %>
 <% elsif params[:state] == "email_signup" %>
-  <div class="crayons-notice crayons-notice--danger mb-10 mt-8 mx-auto" style="width: 680px;max-width:94%;">
+  <div class="crayons-notice crayons-notice--danger mb-10 mt-8 mx-auto" style="width: 680px;max-width:94%;" role="alert">
     Email authentication is not enabled for this Forem.
   </div>
 <% elsif forem_creator_flow_enabled? %>
