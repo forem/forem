@@ -171,11 +171,50 @@ RSpec.describe "UserOrganization", type: :request do
     let(:org_member) { create(:user, :org_member) }
     let(:user) { create(:user) }
 
-    it "deletes the organization" do
-      org_id = org_admin.organizations.first.id
-      sign_in org_admin
-      sidekiq_assert_enqueued_with(job: Organizations::DeleteWorker, args: [org_id, org_admin.id]) do
+    context "when signed in as org_admin" do
+      let(:org) { org_admin.organizations.first }
+      let(:org_id) { org_admin.organizations.first.id }
+
+      before do
+        sign_in org_admin
+      end
+
+      it "deletes the organization" do
+        sidekiq_assert_enqueued_with(job: Organizations::DeleteWorker, args: [org_id, org_admin.id]) do
+          delete organization_path(org_id)
+        end
+      end
+
+      it "does not delete the organization if the organization has an article associated to it" do
+        create(:article, user: org_admin, organization_id: org_id)
+        sidekiq_assert_not_enqueued_with(job: Organizations::DeleteWorker) do
+          delete organization_path(org_id)
+        end
+      end
+
+      it "does not delete the organization if the organization has more than one member" do
+        create(:organization_membership, user: user, organization_id: org_id, type_of_user: "member")
+        sidekiq_assert_not_enqueued_with(job: Organizations::DeleteWorker) do
+          delete organization_path(org_id)
+        end
+      end
+
+      it "does not delete the organization if the organization has credits" do
+        Credit.add_to(org, 1)
+        sidekiq_assert_not_enqueued_with(job: Organizations::DeleteWorker) do
+          delete organization_path(org_id)
+        end
+      end
+
+      it "has the correct flash after deleting an org" do
         delete organization_path(org_id)
+        notice_text = "Your organization: \"#{org.name}\" deletion is scheduled. You'll be notified when it's deleted."
+        expect(flash[:settings_notice]).to include(notice_text)
+      end
+
+      it "redirects after scheduling deleting an org" do
+        delete organization_path(org_id)
+        expect(response).to redirect_to(user_settings_path(:organization))
       end
     end
 
@@ -195,31 +234,12 @@ RSpec.describe "UserOrganization", type: :request do
       end
     end
 
-    it "does not delete the organization if the organization has an article associated to it" do
-      org_id = org_admin.organizations.first.id
-      create(:article, user: org_admin, organization_id: org_id)
-      sign_in org_admin
-      sidekiq_assert_not_enqueued_with(job: Organizations::DeleteWorker) do
-        delete organization_path(org_id)
-      end
-    end
-
-    it "does not delete the organization if the organization has more than one member" do
-      org_id = org_admin.organizations.first.id
-      create(:organization_membership, user: user, organization_id: org_id, type_of_user: "member")
-      sign_in org_admin
-      sidekiq_assert_not_enqueued_with(job: Organizations::DeleteWorker) do
-        delete organization_path(org_id)
-      end
-    end
-
-    it "does not delete the organization if the organization has credits" do
-      org = org_admin.organizations.first
-      sign_in org_admin
-      Credit.add_to(org, 1)
-      sidekiq_assert_not_enqueued_with(job: Organizations::DeleteWorker) do
-        delete organization_path(org.id)
-      end
+    it "redirects correctly when not scheduling" do
+      org_id = org_member.organizations.first.id
+      sign_in org_member
+      delete organization_path(org_id)
+      expect(flash[:error]).to include("Your organization was not deleted")
+      expect(response).to redirect_to(user_settings_path(:organization, id: org_id))
     end
   end
 end
