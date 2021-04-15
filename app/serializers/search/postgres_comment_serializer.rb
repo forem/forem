@@ -7,8 +7,8 @@ module Search
 
     attribute :body_text, &:body_markdown
 
-    attribute :class_name do |comment|
-      comment.class.name
+    attribute :class_name do |_comment|
+      "Comment"
     end
 
     attribute :highlight do |comment|
