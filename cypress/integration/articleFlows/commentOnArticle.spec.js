@@ -42,20 +42,22 @@ describe('Comment on articles', () => {
       cy.findByText('Type to search for a user').should('exist');
       cy.get('@autocompleteCommentBox').type('earch');
 
-      const expectedUsernames = [
-        '@search_user_1',
-        '@search_user_2',
-        '@search_user_2',
-        '@search_user_3',
-        '@search_user_4',
-        '@search_user_5',
-        '@search_user_6',
+      const expectedUsernameMatches = [
+        /@search_user_1/,
+        /@search_user_2/,
+        /@search_user_2/,
+        /@search_user_3/,
+        /@search_user_4/,
+        /@search_user_5/,
+        /@search_user_6/,
       ];
 
-      expectedUsernames.forEach((name) => cy.findByText(name).should('exist'));
-      cy.findByText('@search_user_7').should('not.exist');
+      expectedUsernameMatches.forEach((name) =>
+        cy.findByRole('option', { name }).should('exist'),
+      );
+      cy.findByRole('option', { name: /@search_user_7/ }).should('not.exist');
 
-      cy.findByText('@search_user_3').click();
+      cy.findByRole('option', { name: /@search_user_3/ }).click();
 
       cy.get('@plainCommentBox').should('have.focus');
       cy.get('@plainCommentBox').should(
@@ -143,12 +145,12 @@ describe('Comment on articles', () => {
 
       cy.get('@autocompleteCommentBox').should('have.focus');
       cy.get('@autocompleteCommentBox').type('e');
-      cy.findByText('@search_user_1').should('exist');
+      cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
 
       cy.get('@autocompleteCommentBox').type(
         '{backspace}{backspace}{backspace}',
       );
-      cy.findByText('@search_user_1').should('not.exist');
+      cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
     });
 
     it('should resume search suggestions when user types after deleting', () => {
@@ -171,10 +173,10 @@ describe('Comment on articles', () => {
 
       cy.get('@autocompleteCommentBox').should('have.focus');
       cy.get('@autocompleteCommentBox').type('{backspace}{backspace}');
-      cy.findByText('@search_user_1').should('not.exist');
+      cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
 
       cy.get('@autocompleteCommentBox').type('se');
-      cy.findByText('@search_user_1').should('exist');
+      cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
     });
 
     it('should close the autocomplete suggestions on Escape press', () => {
@@ -196,10 +198,10 @@ describe('Comment on articles', () => {
       );
 
       cy.get('@autocompleteCommentBox').type('earch');
-      cy.findByText('@search_user_1').should('be.visible');
+      cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
 
       cy.get('@autocompleteCommentBox').type('{Esc}');
-      cy.findByText('@search_user_1').should('not.be.visible');
+      cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
     });
 
     it('should close the autocomplete suggestions and exit combobox on click outside', () => {
@@ -223,11 +225,11 @@ describe('Comment on articles', () => {
       );
 
       cy.get('@autocompleteCommentBox').type('earch');
-      cy.findByText('@search_user_1').should('be.visible');
+      cy.findByRole('option', { name: /@search_user_1/ }).should('be.visible');
 
       // Click away from the dropdown
       cy.get('@autocompleteCommentBox').click({ position: 'right' });
-      cy.findByText('@search_user_1').should('not.exist');
+      cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
 
       // Check the combobox has exited and we are returned to the plainTextArea
       cy.get('@plainTextArea').should('have.focus');
@@ -305,7 +307,7 @@ describe('Comment on articles', () => {
         .as('autocompleteCommentBox');
 
       cy.get('@main').get('@autocompleteCommentBox').type('earch');
-      cy.findByText('@search_user_1').click();
+      cy.findByRole('option', { name: /@search_user_1/ }).click();
 
       cy.get('@replyCommentBox').should(
         'have.value',
