@@ -18,7 +18,7 @@ describe('Comment on articles', () => {
   });
 
   describe('Comments using mention autocomplete', () => {
-    xit('should comment on an article with user mention autocomplete suggesting max 6 users', () => {
+    it.skip('should comment on an article with user mention autocomplete suggesting max 6 users', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
@@ -259,7 +259,7 @@ describe('Comment on articles', () => {
       cy.get('@plainTextArea').should('be.visible');
     });
 
-    it('should reply to a comment with user mention autocomplete', () => {
+    it.skip('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
