@@ -1,9 +1,9 @@
 module Settings
-  class CommunityContent < RailsSettings::Base
-    self.table_name = :settings_community_contents
+  class Community < RailsSettings::Base
+    self.table_name = :settings_communities
 
     # The configuration is cached, change this if you want to force update
-    # the cache, or call Settings::CommunityContent.clear_cache
+    # the cache, or call Settings::Community.clear_cache
     cache_prefix { "v1" }
 
     # Define your fields
