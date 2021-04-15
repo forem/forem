@@ -152,7 +152,7 @@ function navigate(
   const nextFocusable = nextContainer?.querySelector(focusableSelector);
   if (nextFocusable) {
     nextFocusable.focus();
-    if (!isInViewport(nextFocusable, 64)) {
+    if (!isInViewport({ element: nextFocusable, offsetTop: 64 })) {
       window.scrollTo({ top: nextContainer.offsetTop - 64 });
     }
   }
@@ -211,15 +211,27 @@ function getPreviousElement(
 }
 
 /**
- * Gets the first visible element that matches a selector
+ * Checks if the first completely visible element is present that matches a selector and returns if it is available
+ * If that isn't visible, it looks for the partially visible element that is present and returns that
+ * If no elements visible(like the banner case which could cover the entire viewport), we select the first element from the list
  *
  * @param {string} selector - The CSS selector
  *
  * @returns {object} The first visible element
  */
 function getFirstVisibleElement(selector) {
-  const elements = document.querySelectorAll(selector);
-  return Array.prototype.find.call(elements, (element) =>
-    isInViewport(element),
+  const elements = [...document.querySelectorAll(selector)];
+  const completelyVisibleFirstElement = elements.find((element) =>
+    isInViewport({ element }),
   );
+  if (completelyVisibleFirstElement) {
+    return completelyVisibleFirstElement;
+  }
+  const partiallyVisibleFirstElement = elements.find((element) =>
+    isInViewport({ element, allowPartialVisibility: true }),
+  );
+  if (partiallyVisibleFirstElement) {
+    return partiallyVisibleFirstElement;
+  }
+  return elements[0];
 }

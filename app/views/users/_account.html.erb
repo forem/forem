@@ -52,7 +52,7 @@
   </h2>
 
   <% if @user.export_requested? %>
-    <div class="crayons-notice crayons-notice--warning">
+    <div class="crayons-notice crayons-notice--warning" aria-live="polite">
       <p>You have recently requested an export of your content. Please check your email.</p>
     </div>
   <% else %>
