@@ -67,7 +67,7 @@ RSpec.describe Articles::Creator, type: :service do
 
       expect(article.decorated?).to be(false)
       expect(article).not_to be_persisted
-      expect(article.errors.size).to eq(1)
+      expect(article.errors.size.positive?).to be(true)
     end
 
     it "doesn't schedule a job" do
