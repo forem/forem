@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { handleGistPreview } from '../shared/components/gist';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
@@ -10,17 +11,11 @@ import { Button, Modal } from '@crayons';
 /* global activateRunkitTags */
 
 /*
-  Although the state fields: id, description, canonicalUrl, series, allSeries and
+  Although the state fields: id, descriptioen, canonicalUrl, series, allSeries and
   editing are not used in this file, they are important to the
   editor.
 */
 export class ArticleForm extends Component {
-  static handleGistPreview() {
-    const els = document.getElementsByClassName('ltag_gist-liquid-tag');
-    for (let i = 0; i < els.length; i += 1) {
-      postscribe(els[i], els[i].firstElementChild.outerHTML);
-    }
-  }
 
   static handleRunkitPreview() {
     activateRunkitTags();
@@ -115,7 +110,7 @@ export class ArticleForm extends Component {
     const { previewResponse } = this.state;
 
     if (previewResponse) {
-      this.constructor.handleGistPreview();
+      handleGistPreview();
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
     }
