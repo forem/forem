@@ -1,0 +1,18 @@
+{
+  "result": [
+    {
+      "id": 1,
+      "title": "Listing title",
+      "body_markdown": "Some listing content",
+      "category": "cfp",
+      "contact_via_connect": false,
+      "expires_at": "2051-05-14T00:00:00.000Z",
+      "bumped_at": "2021-01-14T00:00:00.000Z",
+      "originally_published_at": "2021-04-14T11:41:16.790Z",
+      "published": true,
+      "user_id": 1,
+      "processed_html": "listing content",
+      "slug": "listing-title"
+    }
+  ]
+}

@@ -916,7 +916,7 @@ RSpec.describe Article, type: :model do
       it "does not suspend user if only single vomit" do
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
         article.save
-        expect(article.user.banned).to be false
+        expect(article.user.suspended?).to be false
       end
 
       it "suspends user with 3 comment vomits" do
@@ -929,7 +929,7 @@ RSpec.describe Article, type: :model do
         article.save
         second_article.save
         third_article.save
-        expect(article.user.banned).to be true
+        expect(article.user.suspended?).to be true
         expect(Note.last.reason).to eq "automatic_suspend"
       end
 
@@ -994,6 +994,44 @@ RSpec.describe Article, type: :model do
           end
         end
       end
+    end
+  end
+
+  context "when triggers are invoked" do
+    let(:article) { create(:article) }
+
+    before do
+      article.update(body_markdown: "An intense movie")
+    end
+
+    it "sets .reading_list_document on insert" do
+      expect(article.reload.reading_list_document).to be_present
+    end
+
+    it "updates .reading_list_document with body_markdown" do
+      article.update(body_markdown: "Something has changed")
+
+      expect(article.reload.reading_list_document).to include("something")
+    end
+
+    it "updates .reading_list_document with cached_tag_list" do
+      article.update(tag_list: %w[rust python])
+
+      expect(article.reload.reading_list_document).to include("rust")
+    end
+
+    it "updates .reading_list_document with title" do
+      article.update(title: "Synecdoche, Los Angeles")
+
+      expect(article.reload.reading_list_document).to include("angeles")
+    end
+
+    it "removes a previous value from .reading_list_document on update", :aggregate_failures do
+      tag = article.tags.first.name
+      article.update(tag_list: %w[fsharp go])
+
+      expect(article.reload.reading_list_document).not_to include(tag)
+      expect(article.reload.reading_list_document).to include("fsharp")
     end
   end
 
@@ -1115,6 +1153,16 @@ RSpec.describe Article, type: :model do
       expect(article).not_to be_valid
       expect(article.errors[:base])
         .to include("You cannot mention more than #{Article::MAX_USER_MENTIONS} users in a post!")
+    end
+  end
+
+  describe "#followers" do
+    it "returns an array of users who follow the article's author" do
+      following_user = create(:user)
+      following_user.follow(user)
+
+      expect(article.followers.length).to eq(1)
+      expect(article.followers.first.username).to eq(following_user.username)
     end
   end
 

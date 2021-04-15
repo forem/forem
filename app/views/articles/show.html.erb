@@ -98,7 +98,7 @@
   <main id="main-content" class="crayons-layout__content grid gap-4">
     <div class="article-wrapper">
       <% if !@article.published %>
-        <div class="crayons-notice crayons-notice--danger mb-4">
+        <div class="crayons-notice crayons-notice--danger mb-4" aria-live="polite">
           <strong>Unpublished Post.</strong> This URL is public but secret, so share at your own discretion.
           <% if user_signed_in? %>
             <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none">Click to edit</a>
@@ -107,7 +107,7 @@
       <% end %>
 
       <% if @article.video_state == "PROGRESSING" %>
-        <div class="crayons-notice crayons-notice--warning mb-4">⏳ Video Transcoding In Progress ⏳</div>
+        <div class="crayons-notice crayons-notice--warning mb-4" aria-live="polite">⏳ Video Transcoding In Progress ⏳</div>
       <% end %>
 
       <article class="crayons-card crayons-article mb-4"

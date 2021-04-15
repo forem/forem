@@ -22,6 +22,17 @@
         </div>
       </div>
     </section>
+    <h2 class="crayons-subtitle-1 mb-3">Analytics</h2>
+    <article class="grid s:grid-cols-2 gap-3 mb-4" data-controller="ahoy">
+      <section class="crayons-card">
+        <div class="crayons-card__body">
+          <h2 class="crayons-title"><%= @open_abuse_reports_count %></h2>
+          <p class="crayons-subtitle-4 color-base-70">
+            <%= "Open report".pluralize(@open_abuse_reports_count) %>
+          </p>
+        </div>
+      </section>
+    </article>
     <h2 class="crayons-subtitle-1 mb-3">Resources</h2>
     <article class="grid s:grid-cols-2 gap-3" data-controller="ahoy">
       <section class="crayons-card">

@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_31_181505) do
+ActiveRecord::Schema.define(version: 2021_04_07_172628) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -36,7 +36,6 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.text "content"
     t.bigint "feedback_message_id"
     t.string "mailer"
-    t.datetime "opened_at"
     t.datetime "sent_at"
     t.text "subject"
     t.text "to"
@@ -132,6 +131,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.boolean "published_from_feed", default: false
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
+    t.tsvector "reading_list_document"
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
     t.integer "score", default: 0
@@ -165,6 +165,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
+    t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
@@ -1049,6 +1050,14 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "settings_authentications", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_authentications_on_var", unique: true
+  end
+
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1351,6 +1360,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
+    t.check_constraint "username IS NOT NULL", name: "users_username_not_null"
   end
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
@@ -1529,4 +1539,32 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
   add_foreign_key "users_settings", "users"
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
+  create_trigger("update_reading_list_document", :generated => true, :compatibility => 1).
+      on("articles").
+      name("update_reading_list_document").
+      before(:insert, :update).
+      for_each(:row).
+      declare("l_org_vector tsvector; l_user_vector tsvector") do
+    <<-SQL_ACTIONS
+NEW.reading_list_document :=
+  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))) ||
+  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))) ||
+  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))) ||
+  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))) ||
+  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))) ||
+  to_tsvector('simple'::regconfig,
+    unaccent(
+      coalesce(
+        array_to_string(
+          -- cached_organization is serialized to the DB as a YAML string, we extract only the name attribute
+          regexp_match(NEW.cached_organization, 'name: (.*)$', 'n'),
+          ' '
+        ),
+        ''
+      )
+    )
+  );
+    SQL_ACTIONS
+  end
+
 end

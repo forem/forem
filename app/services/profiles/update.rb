@@ -97,7 +97,7 @@ module Profiles
     end
 
     def conditionally_resave_articles
-      return unless core_profile_details_changed? && !@user.banned
+      return unless core_profile_details_changed? && !@user.suspended?
 
       Users::ResaveArticlesWorker.perform_async(@user.id)
     end

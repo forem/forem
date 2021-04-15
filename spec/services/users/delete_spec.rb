@@ -6,7 +6,7 @@ RSpec.describe Users::Delete, type: :service do
 
   before do
     omniauth_mock_github_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
     allow(cache_bust).to receive(:call)
   end
@@ -185,9 +185,9 @@ RSpec.describe Users::Delete, type: :service do
     end
   end
 
-  context "when the user was banned" do
+  context "when the user was suspended" do
     it "stores a hash of the username so the user can't sign up again" do
-      user = create(:user, :banned)
+      user = create(:user, :suspended)
       expect do
         described_class.call(user)
       end.to change(Users::SuspendedUsername, :count).by(1)

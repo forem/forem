@@ -27,20 +27,6 @@ RSpec.describe SiteConfig, type: :model do
       end
     end
 
-    describe "validating domain lists" do
-      it "allows valid domain lists" do
-        expect do
-          described_class.allowed_registration_email_domains = "example.com, example2.com"
-        end.not_to raise_error
-      end
-
-      it "rejects invalid domain lists" do
-        expect do
-          described_class.allowed_registration_email_domains = "example.com, e.c"
-        end.to raise_error(/must be a comma-separated list of valid domains/)
-      end
-    end
-
     describe "validating emojis strings" do
       it "allows emoji-only strings" do
         expect do

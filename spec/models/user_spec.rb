@@ -30,7 +30,7 @@ RSpec.describe User, type: :model do
 
   before do
     omniauth_mock_providers_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   describe "validations" do
@@ -624,6 +624,34 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#suspended?" do
+    subject { user.suspended? }
+
+    context "with suspended role" do
+      before do
+        user.add_role(:suspended)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    it { is_expected.to be false }
+  end
+
+  describe "#comment_suspended?" do
+    subject { user.comment_suspended? }
+
+    context "with comment_suspended role" do
+      before do
+        user.add_role(:comment_suspended)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    it { is_expected.to be false }
+  end
+
   describe "#moderator_for_tags" do
     let(:tags) { create_list(:tag, 2) }
 
@@ -856,7 +884,7 @@ RSpec.describe User, type: :model do
     end
 
     it "returns true if the user has all the enabled providers" do
-      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+      allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
 
       user = create(:user, :with_identity)
 

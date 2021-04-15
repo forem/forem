@@ -311,7 +311,7 @@ export class ArticleForm extends Component {
         className="crayons-article-form"
         onSubmit={this.onSubmit}
         onInput={this.toggleEdit}
-        data-testid="article-form"
+        aria-label="Edit post"
       >
         <Header
           onPreview={this.fetchPreview}

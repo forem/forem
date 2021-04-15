@@ -68,7 +68,7 @@ describe ArticleImageUploader, type: :uploader do
     end
 
     it "raises a CarrierWave error which can be parsed if MiniMagick timeout occurs" do
-      allow(MiniMagick::Image).to receive(:new).and_raise(TimeoutError)
+      allow(MiniMagick::Image).to receive(:new).and_raise(Timeout::Error)
 
       expect { uploader.store!(image_jpg) }.to raise_error(CarrierWave::IntegrityError, /Image processing timed out/)
     end

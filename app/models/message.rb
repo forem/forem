@@ -86,11 +86,11 @@ class Message < ApplicationRecord
     username = mention.delete("@").downcase
     if User.find_by(username: username) && chat_channel.group?
       <<~HTML
-        <a class='comment-mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank" rel="noopener">@#{username}</a>
+        <a class='mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank" rel="noopener">@#{username}</a>
       HTML
     elsif username == "all" && chat_channel.channel_type == "invite_only"
       <<~HTML
-        <a class='comment-mentioned-user comment-mentioned-all' data-content="chat_channel_setting" href="#">@#{username}</a>
+        <a class='mentioned-user mentioned-all' data-content="chat_channel_setting" href="#">@#{username}</a>
       HTML
     else
       mention

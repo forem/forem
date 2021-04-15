@@ -8,11 +8,11 @@ class ChatChannelPolicy < ApplicationPolicy
   end
 
   def update?
-    user_can_edit_channel
+    user_can_edit_channel?
   end
 
   def moderate?
-    !user_is_banned? && codeland_admin?
+    !user_suspended? && codeland_admin?
   end
 
   def show?
@@ -32,11 +32,11 @@ class ChatChannelPolicy < ApplicationPolicy
   end
 
   def block_chat?
-    user_part_of_channel && channel_is_direct
+    user_part_of_channel && channel_direct?
   end
 
   def update_channel?
-    user_can_edit_channel
+    user_can_edit_channel?
   end
 
   def join_channel_invitation?
@@ -44,7 +44,7 @@ class ChatChannelPolicy < ApplicationPolicy
   end
 
   def set_channel?
-    user_can_edit_channel
+    user_can_edit_channel?
   end
 
   def joining_invitation_response?
@@ -57,7 +57,7 @@ class ChatChannelPolicy < ApplicationPolicy
 
   private
 
-  def user_can_edit_channel
+  def user_can_edit_channel?
     record.present? &&
       (user.has_role?(:super_admin) || record.channel_mod_ids.include?(user.id)) &&
       !record.private_org_channel?
@@ -71,7 +71,7 @@ class ChatChannelPolicy < ApplicationPolicy
     record.present? && record.has_member?(user)
   end
 
-  def channel_is_direct
+  def channel_direct?
     record.channel_type == "direct"
   end
 

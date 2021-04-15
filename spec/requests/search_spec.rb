@@ -61,7 +61,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
     it "returns json" do
       sign_in authorized_user
-      allow(Search::ChatChannelMembership).to receive(:search_documents).and_return(
+      allow(Search::Postgres::ChatChannelMembership).to receive(:search_documents).and_return(
         mock_documents,
       )
       get "/search/chat_channels"

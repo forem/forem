@@ -113,6 +113,7 @@ export const MentionAutocompleteTextArea = forwardRef(
     const [users, setUsers] = useState([]);
     const [cursorPosition, setCursorPosition] = useState(null);
     const [ariaHelperText, setAriaHelperText] = useState('');
+    const [focusable, setFocusable] = useState(false);
 
     const isSmallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Small}px)`);
 
@@ -123,7 +124,12 @@ export const MentionAutocompleteTextArea = forwardRef(
 
     const { setTextArea, setAdditionalElements } = useTextAreaAutoResize();
 
-    const { onChange, id: inputId, ...autocompleteInputProps } = inputProps;
+    const {
+      onChange,
+      onBlur,
+      id: inputId,
+      ...autocompleteInputProps
+    } = inputProps;
 
     useLayoutEffect(() => {
       if (autoResize && comboboxRef.current && plainTextAreaRef.current) {
@@ -179,6 +185,13 @@ export const MentionAutocompleteTextArea = forwardRef(
           setSearchTerm('');
           setAriaHelperText('');
           setUsers([]);
+
+          const { selectionStart } = comboboxRef.current;
+
+          // Switch back to the plain text area
+          comboboxRef.current.classList.add('hidden');
+          plainTextAreaRef.current.classList.remove('hidden');
+          setCursorPosition(selectionStart + 1);
         }
       };
 
@@ -195,9 +208,21 @@ export const MentionAutocompleteTextArea = forwardRef(
       const activeInput = combobox.classList.contains('hidden')
         ? plainTextInput
         : combobox;
-      activeInput.focus();
-      activeInput.setSelectionRange(cursorPosition, cursorPosition - 1);
-    }, [cursorPosition]);
+
+      if (
+        focusable ||
+        document.activeElement === combobox ||
+        document.activeElement === plainTextInput
+      ) {
+        // Check if the currently focused element is one of the mention autocomplete's
+        // inputs. This check is necessary to prevent an issue in iOS browsers only.
+        // An additional check to see if the component can be focusable
+        // covers the use case for clicking on elements in the mention autocomplete list.
+        activeInput.focus();
+        activeInput.setSelectionRange(cursorPosition, cursorPosition - 1);
+        setFocusable(true);
+      }
+    }, [cursorPosition, focusable]);
 
     const handleTextInputChange = ({ target: { value } }) => {
       setTextContent(value);
@@ -257,6 +282,12 @@ export const MentionAutocompleteTextArea = forwardRef(
       }
     };
 
+    const handleComboboxBlur = () => {
+      // User has left the textarea, exit combobox functionality without refocusing plainTextArea
+      comboboxRef.current.classList.add('hidden');
+      plainTextAreaRef.current.classList.remove('hidden');
+    };
+
     const handleSelect = (username) => {
       // Construct the new textArea content with selected username inserted
       const textWithSelection = `${textContent.substring(
@@ -290,19 +321,17 @@ export const MentionAutocompleteTextArea = forwardRef(
       const { current: comboboxTextArea } = comboboxRef;
       const { current: plainTextArea } = plainTextAreaRef;
 
-      if (comboboxTextArea && plainTextArea) {
-        if (replaceElement) {
-          replaceTextArea({
-            originalNodeToReplace: replaceElement,
-            plainTextArea,
-            comboboxTextArea,
-          });
-        }
-
-        // Initialize the new text areas in the "non-autosuggest" state, hiding the combobox until a search begins
-        comboboxTextArea.classList.add('hidden');
+      if (comboboxTextArea && plainTextArea && replaceElement) {
+        replaceTextArea({
+          originalNodeToReplace: replaceElement,
+          plainTextArea,
+          comboboxTextArea,
+        });
         plainTextArea.focus();
       }
+
+      // Initialize the new text areas in the "non-autosuggest" state, hiding the combobox until a search begins
+      comboboxTextArea.classList.add('hidden');
     }, [replaceElement]);
 
     return (
@@ -328,6 +357,10 @@ export const MentionAutocompleteTextArea = forwardRef(
             onChange={(e) => {
               onChange?.(e);
               handleTextInputChange(e);
+            }}
+            onBlur={(e) => {
+              onBlur?.(e);
+              handleComboboxBlur();
             }}
           />
 

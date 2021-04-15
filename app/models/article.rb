@@ -114,18 +114,55 @@ class Article < ApplicationRecord
   after_commit :sync_related_elasticsearch_docs, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
+  # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
+  #
+  # Its body is inserted in a PostgreSQL trigger function and that joins the columns values
+  # needed to search documents in the context of a "reading list".
+  #
+  # Please refer to https://github.com/jenseng/hair_trigger#usage in case you want to change or update the trigger.
+  #
+  # Additional information on how triggers work can be found in
+  # => https://www.postgresql.org/docs/11/trigger-definition.html
+  # => https://www.cybertec-postgresql.com/en/postgresql-how-to-write-a-trigger/
+  #
+  # Adapted from https://dba.stackexchange.com/a/289361/226575
+  trigger
+    .name(:update_reading_list_document).before(:insert, :update).for_each(:row)
+    .declare("l_org_vector tsvector; l_user_vector tsvector") do
+    <<~SQL
+      NEW.reading_list_document :=
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))) ||
+        to_tsvector('simple'::regconfig,
+          unaccent(
+            coalesce(
+              array_to_string(
+                -- cached_organization is serialized to the DB as a YAML string, we extract only the name attribute
+                regexp_match(NEW.cached_organization, 'name: (.*)$', 'n'),
+                ' '
+              ),
+              ''
+            )
+          )
+        );
+    SQL
+  end
+
   serialize :cached_user
   serialize :cached_organization
 
-  # [@rhymes] this is adapted from the `search_fields` property in
-  # `config/elasticsearch/mappings/feed_content.json`
   pg_search_scope :search_reading_list,
-                  against: %i[body_markdown title cached_tag_list],
-                  associated_against: {
-                    organization: %i[name],
-                    user: %i[name username]
+                  against: :reading_list_document,
+                  using: {
+                    tsearch: {
+                      prefix: true,
+                      tsvector_column: :reading_list_document
+                    }
                   },
-                  using: { tsearch: { prefix: true } }
+                  ignoring: :accents
 
   # [@jgaskins] We use an index on `published`, but since it's a boolean value
   #   the Postgres query planner often skips it due to lack of diversity of the
@@ -435,6 +472,19 @@ class Article < ApplicationRecord
     doc.to_html
   end
 
+  def followers
+    # This will return an array, but the items will NOT be ActiveRecord objects.
+    # The followers may also occasionally be nil because orphaned follows can possibly exist in the database.
+    followers = user.followers_scoped.where(subscription_status: "all_articles").map(&:follower)
+
+    if organization_id
+      org_followers = organization.followers_scoped.where(subscription_status: "all_articles")
+      followers += org_followers.map(&:follower)
+    end
+
+    followers.uniq.compact
+  end
+
   private
 
   def search_score
@@ -639,8 +689,8 @@ class Article < ApplicationRecord
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
-    # The "comment-mentioned-user" css is added by Html::Parser#user_link_if_exists
-    mentions_count = Nokogiri::HTML(processed_html).css(".comment-mentioned-user").size
+    # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
+    mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
     return if mentions_count <= MAX_USER_MENTIONS
 
     errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a post!")
@@ -748,7 +798,7 @@ class Article < ApplicationRecord
 
     return unless Reaction.article_vomits.where(reactable_id: user.articles.pluck(:id)).size > 2
 
-    user.add_role(:banned)
+    user.add_role(:suspended)
     Note.create(
       author_id: SiteConfig.mascot_user_id,
       noteable_id: user_id,

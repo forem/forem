@@ -52,7 +52,7 @@ module MarkdownProcessor
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       allowed_tags = %w[strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
                         br ul ol li small sup sub img a span hr blockquote kbd]
-      allowed_attributes = %w[href strong em ref rel src title alt class]
+      allowed_attributes = %w[href strong em ref rel src title alt]
       ActionController::Base.helpers.sanitize markdown.render(@content),
                                               tags: allowed_tags,
                                               attributes: allowed_attributes
@@ -64,7 +64,7 @@ module MarkdownProcessor
       renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       allowed_tags = %w[strong i u b em p br code]
-      allowed_attributes = %w[href strong em ref rel src title alt class]
+      allowed_attributes = %w[href strong em ref rel src title alt]
       ActionController::Base.helpers.sanitize markdown.render(@content),
                                               tags: allowed_tags,
                                               attributes: allowed_attributes
@@ -76,7 +76,7 @@ module MarkdownProcessor
       renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       allowed_tags = %w[strong i u b em code]
-      allowed_attributes = %w[href strong em ref rel src title alt class]
+      allowed_attributes = %w[href strong em ref rel src title alt]
       ActionController::Base.helpers.sanitize markdown.render(@content),
                                               tags: allowed_tags,
                                               attributes: allowed_attributes
@@ -89,7 +89,7 @@ module MarkdownProcessor
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       allowed_tags = %w[strong abbr aside em p h4 h5 h6 i u b code pre
                         br ul ol li small sup sub a span hr blockquote kbd]
-      allowed_attributes = %w[href strong em ref rel src title alt class]
+      allowed_attributes = %w[href strong em ref rel src title alt]
       ActionController::Base.helpers.sanitize markdown.render(@content),
                                               tags: allowed_tags,
                                               attributes: allowed_attributes

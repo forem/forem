@@ -76,7 +76,7 @@ module ApplicationHelper
   def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
     image_options[:width] ||= optimizer_options[:width]
     image_options[:height] ||= optimizer_options[:height]
-    updated_image_url = Images::Optimizer.call(image_url, optimizer_options)
+    updated_image_url = Images::Optimizer.call(image_url, **optimizer_options)
 
     image_tag(updated_image_url, image_options)
   end
@@ -96,7 +96,7 @@ module ApplicationHelper
   end
 
   def invite_only_mode?
-    SiteConfig.invite_only_mode?
+    Settings::Authentication.invite_only_mode?
   end
 
   def any_enabled_auth_providers?
@@ -274,7 +274,7 @@ module ApplicationHelper
     estimated_user_count > LARGE_USERBASE_THRESHOLD
   end
 
-  def admin_config_label(method, content = nil)
+  def admin_config_label(method, content = nil, model: SiteConfig)
     content ||= tag.span(method.to_s.humanize)
 
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
@@ -282,7 +282,8 @@ module ApplicationHelper
       content = safe_join([content, required])
     end
 
-    tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
+    label_prefix = model.name.split("::").map(&:underscore).join("_")
+    tag.label(content, class: "site-config__label crayons-field__label", for: "#{label_prefix}_#{method}")
   end
 
   def admin_config_description(content)
@@ -290,6 +291,8 @@ module ApplicationHelper
   end
 
   def role_display_name(role)
+    # TODO: [@jacobherrington] After all Forems have successfully deployed and the banned role
+    # has been deleted, removed this ternary.
     role.name == "banned" ? "Suspended" : role.name.titlecase
   end
 end
