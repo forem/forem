@@ -16420,10 +16420,10 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redoc-cli@0.11.3:
-  version "0.11.3"
-  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.11.3.tgz#2714e4f7935c50dca763b12b308e4cbc38abf5de"
-  integrity sha512-PqC0gPEh8iYxIrpZN1bSBma+pTjCOOChyxCH9/Zwm4YewIk4wASG2mjZgsvN4kUqTNHzS38twl3fG1P+13ZwYQ==
+redoc-cli@0.11.4:
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.11.4.tgz#c4139936cb758d9cad4369b9503f44eb79e62d29"
+  integrity sha512-Ke/Lvy9fwLuZGpeILZfJOyBtwGhgOFLQdptAf0LdGt9l44DfwGVw7ppaqXoJEr1rXyu2eO0UtH2UnG5/CCigVw==
   dependencies:
     chokidar "^3.4.1"
     handlebars "^4.7.6"
