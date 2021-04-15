@@ -22,7 +22,7 @@ RSpec.describe SiteConfig, type: :model do
         url_fields.each do |attribute|
           expect do
             described_class.public_send("#{attribute}=", "example.com")
-          end.to raise_error(/must be a valid URL/)
+          end.to raise_error(/is not a valid URL/)
         end
       end
     end
