@@ -203,7 +203,7 @@ describe('Comment on articles', () => {
     });
 
     // TODO: Flaky spec
-    xit('should reply to a comment with user mention autocomplete', () => {
+    it.skip('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
