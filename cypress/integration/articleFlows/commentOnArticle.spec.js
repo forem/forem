@@ -259,7 +259,7 @@ describe('Comment on articles', () => {
       cy.get('@plainTextArea').should('be.visible');
     });
 
-    it('should reply to a comment with user mention autocomplete', () => {
+    xit('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
