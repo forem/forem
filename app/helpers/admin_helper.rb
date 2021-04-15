@@ -50,11 +50,11 @@ module AdminHelper
   # @ridhwana end delete
 
   def deduced_controller(request)
-    request.path.split("/").last
+    request.path.split("/").fourth
   end
 
   def deduced_scope(request)
-    request.path.split("/").second_to_last
+    request.path.split("/").third
   end
 
   def display_name(group_name)

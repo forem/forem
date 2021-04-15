@@ -2,7 +2,7 @@
   <li>
     <% if group[:children].length == 1 %>
       <% if group[:children][0][:visible] %>
-        <a class="crayons-link crayons-link--block <%= "crayons-link--current" if deduced_controller(request) == group[:children][0][:controller] %>"
+        <a class="crayons-link crayons-link--block <%= "crayons-link--current" if deduced_scope(request) == group[:children][0][:controller] %>"
            href="/admin/<%= group[:children][0][:controller] %>"
            aria-page="<%= "page" if deduced_controller(request) == group[:children][0][:controller] %>"
            data-action="click->sidebar#expandDropdown">
