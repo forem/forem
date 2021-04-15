@@ -28,24 +28,31 @@ WITH settings_data AS (
          ELSE 0
     END
     config_theme,
-    created_at,
-    display_announcements,
-    display_sponsors,
     CASE WHEN editor_version='v2' THEN 0
           WHEN editor_version='v1' THEN 1
           ELSE 0
     END
     editor_version,
-    feed_mark_canonical,
-    feed_referential_link,
     CASE WHEN inbox_type='private' THEN 0
           WHEN inbox_type='open' THEN 1
           ELSE 0
     END
     inbox_type,
-    updated_at
+    users.created_at,
+    display_announcements,
+    display_sponsors,
+    feed_mark_canonical,
+    feed_referential_link,
+    feed_url,
+    experience_level,
+    inbox_guidelines,
+    users.updated_at,
+    data -> 'brand_color1' AS brand_color1,
+    data -> 'brand_color2' AS brand_color2
   FROM users
+  JOIN profiles
+    ON profiles.user_id = users.id
 )
-INSERT INTO users_settings (user_id, config_font, config_navbar, config_theme, created_at, display_announcements, display_sponsors, editor_version, feed_mark_canonical, feed_referential_link, inbox_type, updated_at)
-SELECT * from settings_data;
+INSERT INTO users_settings (user_id, config_font, config_navbar, config_theme, editor_version, inbox_type, created_at, display_announcements, display_sponsors, feed_mark_canonical, feed_referential_link, feed_url, experience_level, inbox_guidelines, updated_at, brand_color1, brand_color2)
+  SELECT * from settings_data;
 COMMIT;
