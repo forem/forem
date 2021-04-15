@@ -689,8 +689,8 @@ class Article < ApplicationRecord
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
-    # The "comment-mentioned-user" css is added by Html::Parser#user_link_if_exists
-    mentions_count = Nokogiri::HTML(processed_html).css(".comment-mentioned-user").size
+    # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
+    mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
     return if mentions_count <= MAX_USER_MENTIONS
 
     errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a post!")

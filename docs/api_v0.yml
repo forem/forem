@@ -1,7 +1,7 @@
 # This document follows the OpenAPI spec <https://spec.openapis.org/oas/v3.0.3>
-# It contains two Redoc vendor extensions, x-code-samples and x-logo
+# It contains two Redoc vendor extensions, x-codeSamples and x-logo
 # x-logo: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-logo
-# x-code-samples: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+# x-codeSamples: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-codesamples
 
 openapi: "3.0.3"
 info:
@@ -1851,7 +1851,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2030,7 +2030,7 @@ paths:
               examples:
                 articles-success:
                   $ref: "#/components/examples/ArticlesIndex"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all articles)
           source: |
@@ -2142,7 +2142,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2223,7 +2223,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2330,7 +2330,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2382,7 +2382,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2431,7 +2431,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2480,7 +2480,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2529,7 +2529,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2580,7 +2580,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2640,7 +2640,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all comments of an article)
           source: |
@@ -2695,7 +2695,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (a comment and its descendants)
           source: |
@@ -2752,7 +2752,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2792,7 +2792,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2831,7 +2831,7 @@ paths:
               examples:
                 listings-success:
                   $ref: "#/components/examples/Listings"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all listings)
           source: |
@@ -2916,7 +2916,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2978,7 +2978,7 @@ paths:
               examples:
                 listings-success:
                   $ref: "#/components/examples/Listings"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (call for papers listings)
           source: |
@@ -3028,7 +3028,7 @@ paths:
       security:
         - {} # this indicates that authentication is optional
         - api_key: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3115,7 +3115,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (bump)
           source: |
@@ -3169,7 +3169,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3211,7 +3211,7 @@ paths:
               examples:
                 user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3259,7 +3259,7 @@ paths:
               examples:
                 user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3311,7 +3311,7 @@ paths:
               examples:
                 user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3359,7 +3359,7 @@ paths:
               examples:
                 user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3413,7 +3413,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all podcast episodes)
           source: |
@@ -3451,7 +3451,7 @@ paths:
               examples:
                 articles-success:
                   $ref: "#/components/examples/Tags"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all tags)
           source: |
@@ -3505,7 +3505,7 @@ paths:
               examples:
                 user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (by id)
           source: |
@@ -3546,7 +3546,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3588,7 +3588,7 @@ paths:
               examples:
                 profile-image-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3624,7 +3624,7 @@ paths:
               examples:
                 articles-success:
                   $ref: "#/components/examples/ArticleVideo"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all video articles)
           source: |
@@ -3676,7 +3676,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3741,7 +3741,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3800,7 +3800,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3837,7 +3837,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |

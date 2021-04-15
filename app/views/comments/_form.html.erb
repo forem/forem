@@ -2,7 +2,7 @@
 <%= javascript_packs_with_chunks_tag "validateFileInputs", "responseTemplates", defer: true %>
 
 <% if @comment.errors.any? %>
-  <div class="crayons-notice crayons-notice--danger">
+  <div class="crayons-notice crayons-notice--danger" role="alert">
     <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
     <ul>
       <% @comment.errors.full_messages.each do |message| %>

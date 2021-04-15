@@ -1,18 +1,7 @@
 <% title "Stats for Your Article" %>
 
-<div class="dashboard-container analytics-container" id="user-dashboard">
-  <a
-    href="<%= @article.current_state_path %>"
-    class="rounded-btn rounded-btn--transparent"
-    id="article"
-    data-article-id="<%= @article.id %>"
-    data-organization-id="<%= @organization_id %>">
-    👈 Back to the article
-  </a>
-
-  <section class="header-card card">
-    <h1 class="analytics-header">Stats for "<%= @article.title %>"</h1>
-  </section>
+<div id="user-dashboard">
+  <h1 class="fs-4xl fw-medium align-center my-5">Stats for "<%= link_to @article.title, @article.current_state_path, id: "article", data: { "article-id" => @article.id, "organization-id" => @organization_id } %>"</h1>
 
   <%= render "shared/stats" %>
 </div>
