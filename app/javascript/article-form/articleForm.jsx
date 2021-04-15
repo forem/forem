@@ -11,7 +11,7 @@ import { Button, Modal } from '@crayons';
 /* global activateRunkitTags */
 
 /*
-  Although the state fields: id, descriptioen, canonicalUrl, series, allSeries and
+  Although the state fields: id, description, canonicalUrl, series, allSeries and
   editing are not used in this file, they are important to the
   editor.
 */
