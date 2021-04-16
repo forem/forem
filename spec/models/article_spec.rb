@@ -32,6 +32,7 @@ RSpec.describe Article, type: :model do
     it { is_expected.to have_many(:tags) }
     it { is_expected.to have_many(:user_subscriptions).dependent(:nullify) }
 
+    it { is_expected.to validate_length_of(:body_markdown).is_at_least(0) }
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
 
@@ -81,11 +82,25 @@ RSpec.describe Article, type: :model do
     end
 
     describe "#body_markdown" do
-      it "is unique scoped for user_id and title" do
+      it "is unique scoped for user_id and title", :aggregate_failures do
         art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
 
         expect(art2).not_to be_valid
-        expect(art2.errors.full_messages.to_sentence).to match("markdown has already been taken")
+        expect(art2.errors_as_sentence).to match("markdown has already been taken")
+      end
+
+      # using https://unicode-table.com/en/11A15/ multibyte char
+      it "is valid if its bytesize is less than 800 kilobytes" do
+        article.body_markdown = "𑨕" * 204_800 # 4 bytes x 204800 = 800 kilobytes
+
+        expect(article).to be_valid
+      end
+
+      it "is not valid if its bytesize exceeds 800 kilobytes" do
+        article.body_markdown = "𑨕" * 204_801
+
+        expect(article).not_to be_valid
+        expect(article.errors_as_sentence).to match("too long")
       end
     end
 
