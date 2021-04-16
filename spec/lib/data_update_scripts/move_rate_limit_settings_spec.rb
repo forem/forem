@@ -4,5 +4,14 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::MoveRateLimitSettings do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "migrates settings from SiteConfig to Settings::RateLimit" do
+    allow(SiteConfig).to receive(:rate_limit_follow_count_daily).and_return(23)
+    allow(SiteConfig).to receive(:user_considered_new_days).and_return(42)
+
+    expect do
+      described_class.new.run
+    end
+      .to change(Settings::RateLimit, :follow_count_daily)
+      .and change(Settings::RateLimit, :user_considered_new_days)
+  end
 end
