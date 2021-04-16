@@ -14,7 +14,7 @@ class DevicesController < ApplicationController
     if device.persisted?
       # Even if the device ID may be irrelevant for the consumer, this
       # serves as confirmation that it was registered successfully.
-      render json: { id: device.id }
+      render json: { id: device.id }, status: :created
     else
       render json: { error: device.errors_as_sentence }, status: :bad_request
     end
