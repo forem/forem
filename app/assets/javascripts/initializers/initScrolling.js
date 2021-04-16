@@ -121,12 +121,18 @@ function buildTagsHTML(tag) {
     antifollow +
     '</h3>' +
     '<p class="grid-cell__summary truncate-at-3"></p>' +
-    '<input name="follows[][id]" id="follow_id" type="hidden" form="follows_update_form" value="' +
+    '<input name="follows[][id]" id="follow_id_' +
+    tag.name +
+    '" type="hidden" form="follows_update_form" value="' +
     tag.id +
     '">' +
     '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="' +
     tag.points +
-    '" name="follows[][explicit_points]" id="follow_points">' +
+    '" name="follows[][explicit_points]" id="follow_points_' +
+    tag.name +
+    '" aria-label="' +
+    tag.name +
+    ' tag weight">' +
     '</div>'
   );
 }
