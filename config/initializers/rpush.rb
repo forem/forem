@@ -86,6 +86,7 @@ Rpush.reflect do |on|
 
     HoneyBadger.notify(error_message:
       "error_description: #{notification.error_description}, error_code: #{notification.error_code}")
+
     ForemStatsClient.increment(
       "push_notifications.errors",
       tags: [
