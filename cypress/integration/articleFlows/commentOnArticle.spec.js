@@ -24,23 +24,21 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-
-      // Get a handle to the newly substituted textbox
       cy.findByRole('textbox', {
         name: /^Add a comment to the discussion$/i,
-      }).as('plainCommentBox');
+      }).click();
 
-      cy.get('@plainCommentBox').type('Some text @s');
+      // Get a handle to the newly substituted textbox
+      getCommentPlainTextBox();
+      getCommentPlainTextBox().type('Some text @s');
 
       // Verify the combobox has appeared
-      cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
-        'autocompleteCommentBox',
-      );
-      cy.get('@autocompleteCommentBox').should('have.focus');
+      getCommentCombobox();
+      getCommentCombobox().should('have.focus');
 
       cy.findByText('Type to search for a user').should('exist');
-      cy.get('@autocompleteCommentBox').type('earch');
+      getCommentCombobox().type('earch');
+      getCommentDropdown().should('exist');
 
       const expectedUsernameMatches = [
         /@search_user_1/,
@@ -56,11 +54,12 @@ describe('Comment on articles', () => {
         cy.findByRole('option', { name }).should('exist'),
       );
       cy.findByRole('option', { name: /@search_user_7/ }).should('not.exist');
-
       cy.findByRole('option', { name: /@search_user_3/ }).click();
 
-      cy.get('@plainCommentBox').should('have.focus');
-      cy.get('@plainCommentBox').should(
+      getCommentDropdown().should('not.exist');
+
+      getCommentPlainTextBox().should('have.focus');
+      getCommentPlainTextBox().should(
         'have.value',
         'Some text @search_user_3 ',
       );
@@ -261,7 +260,7 @@ describe('Comment on articles', () => {
       cy.get('@plainTextArea').should('be.visible');
     });
 
-    it('should reply to a comment with user mention autocomplete', () => {
+    it.skip('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
@@ -404,3 +403,15 @@ describe('Comment on articles', () => {
     });
   });
 });
+
+const getCommentCombobox = () =>
+  cy.findByRole('combobox', {
+    name: /^Add a comment to the discussion$/i,
+  });
+
+const getCommentDropdown = () => cy.findByRole('listbox');
+
+const getCommentPlainTextBox = () =>
+  cy.findByRole('textbox', {
+    name: /^Add a comment to the discussion$/i,
+  });
