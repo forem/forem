@@ -83,7 +83,7 @@ Rails.application.routes.draw do
       # NOTE: [@ridhwana] All these conditional statements are temporary conditions.
       # We check that the database table exists to avoid the DB setup failing
       # because the code relies on the presence of a table.
-      if Database.table_exists?("flipper_features")
+      if Database.table_available?("flipper_features")
         # NOTE: [@ridhwana] admin_routes will require the rails app to be reloaded when the feature flag is toggled
         # You can find more details on why we had to implement it this way in this PR
         # https://github.com/forem/forem/pull/13114

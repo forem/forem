@@ -50,7 +50,7 @@ class Profile < ApplicationRecord
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
     return if ENV["ENV_AVAILABLE"] == "false"
-    return unless Database.table_exists?("profiles")
+    return unless Database.table_available?("profiles")
 
     ProfileField.find_each do |field|
       store_attribute :data, field.attribute_name.to_sym, field.type
