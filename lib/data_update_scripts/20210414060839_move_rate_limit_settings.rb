@@ -22,7 +22,7 @@ module DataUpdateScripts
       return if Settings::RateLimit.any?
 
       RENAMED_RATE_LIMIT_SETTINGS.each do |setting|
-        Settings::RateLimi.public_send(
+        Settings::RateLimit.public_send(
           "#{setting}=",
           SiteConfig.public_send("rate_limit_#{setting}"),
         )
