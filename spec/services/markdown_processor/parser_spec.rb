@@ -398,4 +398,11 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(generate_and_parse_markdown(code_block)).to include("highlight ada")
     end
   end
+
+  context "when writing an alt attribute" do
+    it "prevents the alt attribute from having Liquid tags inside" do
+      text = '<img src="x" alt="{% 404/404#">%}'
+      expect { generate_and_parse_markdown(text) }.to raise_error ArgumentError
+    end
+  end
 end
