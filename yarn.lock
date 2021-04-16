@@ -3111,10 +3111,10 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@testing-library/cypress@^7.0.5":
-  version "7.0.5"
-  resolved "https://registry.yarnpkg.com/@testing-library/cypress/-/cypress-7.0.5.tgz#0d0d111ba8b0538ddf8565ccaaa43f8658da154b"
-  integrity sha512-bV7CSj5Yeh/mI28sVYNWhNxYQm8eji+FiHHHbP4R0VCijulGScaw/M/zCQJm4X9GLZ5JNRp+lY5XQw3KwCfL8Q==
+"@testing-library/cypress@^7.0.6":
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/@testing-library/cypress/-/cypress-7.0.6.tgz#5445dac4f4852c26901c356e9d3a69371bd20ccf"
+  integrity sha512-atnjqlkEt6spU4Mv7evvpA8fMXeRw7AN2uTKOR1dP6WBvBixVwAYMZY+1fMOaZULWAj9vGLCXXvmw++u3TxuCQ==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^7.28.1"
