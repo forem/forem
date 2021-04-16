@@ -84,7 +84,8 @@ via Sidekiq and set it to run 10 minutes after the deploy script has completed.
 
 ### Working with large collections of rows
 
-From time to time, scripts need to operate on a large amount of rows, in those cases we encourage:
+From time to time, scripts need to operate on a large amount of rows; in those
+cases we encourage:
 
 - adding explicit logging to the script
 - reversing the order, to start processing the most recent records first
@@ -93,10 +94,9 @@ For example:
 
 ```ruby
 def run
-  counter = 0
   Article.find_each(order: :desc).with_index do |article, index|
     Rails.logging.info("...") if index % 1000 == 0 # this will log every 1000 articles
-    
+
     article.save
   end
 end
