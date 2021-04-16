@@ -1,8 +1,11 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import PendingInvitationListItem from './PersonalInvitationListItem';
+import { PendingInvitationListItem } from './PersonalInvitationListItem';
 
-const PersonalInvitationSection = ({ userInvitations, updateMembership }) => {
+export const PersonalInvitationSection = ({
+  userInvitations,
+  updateMembership,
+}) => {
   if (!userInvitations || userInvitations?.length < 0) {
     return null;
   }
@@ -40,5 +43,3 @@ PersonalInvitationSection.propTypes = {
   ).isRequired,
   updateMembership: PropTypes.func.isRequired,
 };
-
-export default PersonalInvitationSection;

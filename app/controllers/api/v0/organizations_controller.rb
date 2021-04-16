@@ -62,7 +62,7 @@ module Api
           .per(num)
           .decorate
 
-        render "api/v0/articles/index.json.jbuilder"
+        render "api/v0/articles/index", formats: :json
       end
 
       private

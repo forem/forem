@@ -40,7 +40,7 @@
     z-index: 999;
   }
 
-  .hamburger-open & {
+  body[data-left-nav-state='open'] & {
     display: block;
     @media (min-width: $breakpoint-m) {
       display: none;

@@ -56,7 +56,7 @@ module FastlyConfig
         "new_version:#{new_version.number}",
       ]
 
-      DatadogStatsClient.increment("fastly.snippets", tags: tags)
+      ForemStatsClient.increment("fastly.snippets", tags: tags)
     end
   end
 end

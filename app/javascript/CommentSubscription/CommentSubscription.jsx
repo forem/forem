@@ -1,3 +1,5 @@
+/* global showLoginModal */
+
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import {
@@ -81,6 +83,7 @@ export class CommentSubscription extends Component {
       onSubscribe,
       onUnsubscribe,
       positionType = 'relative',
+      isLoggedIn
     } = this.props;
 
     const CogIcon = () => (
@@ -107,16 +110,20 @@ export class CommentSubscription extends Component {
           <Button
             variant="outlined"
             onClick={(_event) => {
-              if (subscribed) {
-                onUnsubscribe(COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED);
-                this.setState({
-                  subscriptionType: COMMENT_SUBSCRIPTION_TYPE.ALL,
-                });
-              } else {
-                onSubscribe(subscriptionType);
-              }
+              if (isLoggedIn) {
+                if (subscribed) {
+                  onUnsubscribe(COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED);
+                  this.setState({
+                    subscriptionType: COMMENT_SUBSCRIPTION_TYPE.ALL,
+                  });
+                } else {
+                  onSubscribe(subscriptionType);
+                }
 
-              this.setState({ subscribed: !subscribed });
+                this.setState({ subscribed: !subscribed });
+              } else {
+                showLoginModal();
+              }
             }}
           >
             {subscribed ? 'Unsubscribe' : 'Subscribe'}
@@ -236,4 +243,5 @@ CommentSubscription.propTypes = {
   subscriptionType: PropTypes.oneOf(
     Object.entries(COMMENT_SUBSCRIPTION_TYPE).map(([, value]) => value),
   ).isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
 };

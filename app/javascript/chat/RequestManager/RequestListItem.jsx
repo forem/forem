@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Button } from '@crayons';
 
-const RequestListItem = ({
+export const RequestListItem = ({
   request,
   handleRequestRejection,
   handleRequestApproval,
@@ -55,5 +55,3 @@ RequestListItem.propTypes = {
   handleRequestRejection: PropTypes.func.isRequired,
   handleRequestApproval: PropTypes.func.isRequired,
 };
-
-export default RequestListItem;

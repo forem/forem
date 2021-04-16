@@ -27,7 +27,7 @@ RSpec.describe "Admin bans user", type: :system do
 
   def add_tag_moderator_role
     tag = FactoryBot.create(:tag)
-    user.add_role :tag_moderator, tag
+    user.add_role(:tag_moderator, tag)
   end
 
   def unsuspend_user
@@ -39,7 +39,7 @@ RSpec.describe "Admin bans user", type: :system do
   end
 
   it "checks that the user is warned, has a note, and privileges are removed" do
-    user.add_role :trusted
+    user.add_role(:trusted)
     add_tag_moderator_role
     warn_user
 
@@ -51,25 +51,25 @@ RSpec.describe "Admin bans user", type: :system do
   # to-do: add spec for invalid bans
   it "checks that the user is suspended and has note" do
     suspend_user
-    expect(user.banned).to eq(true)
+    expect(user.suspended?).to eq(true)
     expect(Note.last.reason).to eq "Suspend"
   end
 
   it "removes other roles if user is suspended" do
-    user.add_role :trusted
+    user.add_role(:trusted)
     add_tag_moderator_role
     suspend_user
 
-    expect(user.banned).to eq(true)
+    expect(user.suspended?).to eq(true)
     expect(user.trusted).to eq(false)
     expect(user.warned).to eq(false)
     expect(user.has_role?(:tag_modertor)).to eq(false)
   end
 
-  it "unbans user" do
-    user.add_role :banned
+  it "unsuspends user" do
+    user.add_role(:suspended)
     unsuspend_user
 
-    expect(user.has_role?(:banned)).to eq(false)
+    expect(user.has_role?(:suspended)).to eq(false)
   end
 end

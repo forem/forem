@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ModalBackground from '../components/ModalBackground';
+import { ModalBackground } from '../components/ModalBackground';
 
 describe('<ModalBackground />', () => {
   const defaultProps = {

@@ -3,6 +3,15 @@ class SearchController < ApplicationController
   before_action :format_integer_params
   before_action :sanitize_params, only: %i[listings reactions feed_content]
 
+  CHAT_CHANNEL_PARAMS = %i[
+    channel_status
+    channel_type
+    page
+    per_page
+    status
+    user_id
+  ].freeze
+
   LISTINGS_PARAMS = [
     :category,
     :listing_search,
@@ -50,32 +59,48 @@ class SearchController < ApplicationController
   ].freeze
 
   def tags
-    tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
+    result = if FeatureFlag.enabled?(:search_2_tags)
+               Search::Postgres::Tag.search_documents(params[:name])
+             else
+               Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
+             end
 
-    render json: { result: tag_docs }
+    render json: { result: result }
   rescue Search::Errors::Transport::BadRequest
     render json: { result: [] }
   end
 
   def chat_channels
-    search_user_id = if chat_channel_params[:user_id].present?
-                       [current_user.id, SiteConfig.mascot_user_id, chat_channel_params[:user_id]].reject(&:blank?)
-                     else
-                       [current_user.id]
-                     end
-    ccm_docs = Search::ChatChannelMembership.search_documents(
-      params: chat_channel_params.merge(user_id: search_user_id).to_h,
+    user_ids =
+      if chat_channel_params[:user_id].present?
+        [current_user.id, SiteConfig.mascot_user_id, chat_channel_params[:user_id]].reject(&:blank?)
+      else
+        [current_user.id]
+      end
+
+    result = Search::Postgres::ChatChannelMembership.search_documents(
+      user_ids: user_ids,
+      page: chat_channel_params[:page],
+      per_page: chat_channel_params[:per_page],
     )
 
-    render json: { result: ccm_docs }
+    render json: { result: result }
   end
 
   def listings
-    cl_docs = Search::Listing.search_documents(
-      params: listing_params.to_h,
-    )
+    result =
+      if FeatureFlag.enabled?(:search_2_listings)
+        Search::Postgres::Listing.search_documents(
+          category: listing_params[:category],
+          page: listing_params[:page],
+          per_page: listing_params[:per_page],
+          term: listing_params[:listing_search],
+        )
+      else
+        Search::Listing.search_documents(params: listing_params.to_h)
+      end
 
-    render json: { result: cl_docs }
+    render json: { result: result }
   end
 
   def users
@@ -83,9 +108,13 @@ class SearchController < ApplicationController
   end
 
   def usernames
-    usernames = Search::User.search_usernames(params[:username])
+    result = if FeatureFlag.enabled?(:search_2_usernames)
+               Search::Postgres::Username.search_documents(params[:username])
+             else
+               Search::User.search_usernames(params[:username])
+             end
 
-    render json: { result: usernames }
+    render json: { result: result }
   rescue Search::Errors::Transport::BadRequest
     render json: { result: [] }
   end
@@ -111,11 +140,26 @@ class SearchController < ApplicationController
   end
 
   def reactions
-    result = Search::ReadingList.search_documents(
-      params: reaction_params.to_h, user: current_user,
-    )
+    if FeatureFlag.enabled?(:search_2_reading_list)
+      # [@rhymes] we're recyling the existing params as we want to change the frontend as
+      # little as possible, we might simplify in the future
+      result = Search::Postgres::ReadingList.search_documents(
+        current_user,
+        page: reaction_params[:page],
+        per_page: reaction_params[:per_page],
+        statuses: reaction_params[:status],
+        tags: reaction_params[:tag_names],
+        term: reaction_params[:search_fields],
+      )
 
-    render json: { result: result["reactions"], total: result["total"] }
+      render json: { result: result[:items], total: result[:total] }
+    else
+      result = Search::ReadingList.search_documents(
+        params: reaction_params.to_h, user: current_user,
+      )
+
+      render json: { result: result["reactions"], total: result["total"] }
+    end
   end
 
   private
@@ -129,17 +173,7 @@ class SearchController < ApplicationController
   end
 
   def chat_channel_params
-    accessible = %i[
-      per_page
-      page
-      channel_text
-      channel_type
-      channel_status
-      status
-      user_id
-    ]
-
-    params.permit(accessible)
+    params.permit(CHAT_CHANNEL_PARAMS)
   end
 
   def listing_params

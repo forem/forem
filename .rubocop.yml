@@ -30,6 +30,12 @@ Bundler/OrderedGems:
 
 #################### Layout ###########################
 
+Gemspec/DateAssignment:
+  Description: 'Checks that `date =` is not used in gemspec file, it is set automatically when the gem is packaged.'
+  Enabled: true
+
+#################### Layout ###########################
+
 Lint/AmbiguousAssignment:
   Description: 'Checks for mistyped shorthand assignments.'
   Enabled: true
@@ -37,10 +43,6 @@ Lint/AmbiguousAssignment:
 Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
   StyleGuide: '#consistent-classes'
-  Enabled: true
-
-Lint/DeprecatedConstants:
-  Description: 'Checks for deprecated constants.'
   Enabled: true
 
 Layout/DotPosition:
@@ -129,10 +131,6 @@ Layout/MultilineMethodCallIndentation:
   Enabled: true
   EnforcedStyle: indented
 
-Lint/RedundantDirGlobSort:
-  Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
-  Enabled: true
-
 Layout/SpaceAroundMethodCallOperator:
   Description: 'Checks method call operators to not have spaces around them.'
   Enabled: true
@@ -160,6 +158,10 @@ Lint/BinaryOperatorWithIdenticalOperands:
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
   Enabled: false
+
+Lint/DeprecatedConstants:
+  Description: 'Checks for deprecated constants.'
+  Enabled: true
 
 Lint/DeprecatedOpenSSLConstant:
   Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
@@ -214,9 +216,17 @@ Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
   Enabled: true
 
+Lint/NumberedParameterAssignment:
+  Description: 'Checks for uses of numbered parameter assignment.'
+  Enabled: true
+
 # Lint/NumberConversion:
 #   Description: 'Checks unsafe usage of number conversion methods.'
 #   Enabled: false
+
+Lint/OrAssignmentToConstant:
+  Description: 'Checks unintended or-assignment to constant.'
+  Enabled: true
 
 Lint/OutOfRangeRegexpRef:
   Description: 'Checks for out of range reference for Regexp because it always returns nil.'
@@ -227,6 +237,10 @@ Lint/RaiseException:
   StyleGuide: '#raise-exception'
   Enabled: true
 
+Lint/RedundantDirGlobSort:
+  Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
+  Enabled: true
+
 Lint/SelfAssignment:
   Description: 'Checks for self-assignments.'
   Enabled: true
@@ -235,12 +249,20 @@ Lint/StructNewOverride:
   Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
   Enabled: true
 
+Lint/SymbolConversion:
+  Description: 'Checks for unnecessary symbol conversions.'
+  Enabled: true
+
 Lint/ToEnumArguments:
   Description: 'This cop ensures that `to_enum`/`enum_for`, called for the current method, has correct arguments.'
   Enabled: true
 
 Lint/TopLevelReturnWithArgument:
   Description: 'This cop detects top level return statements with argument.'
+  Enabled: true
+
+Lint/TripleQuotes:
+  Description: 'Checks for useless triple quote constructs.'
   Enabled: true
 
 Lint/UnexpectedBlockArity:
@@ -448,6 +470,10 @@ Style/HashAsLastArrayItem:
   Enabled: true
   EnforcedStyle: braces
 
+Style/HashConversion:
+  Description: 'Avoid Hash[] in favor of ary.to_h or literal hashes.'
+  Enabled: true
+
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
   StyleGuide: '#hash-each'
@@ -489,6 +515,10 @@ Style/IfUnlessModifier:
                  single-line body.
   StyleGuide: '#if-as-a-modifier'
   Enabled: false
+
+Style/IfWithBooleanLiteralBranches:
+  Description: 'Checks for redundant `if` with boolean literal branches.'
+  Enabled: true
 
 # Style/ImplicitRuntimeError:
 #   Description: >-
@@ -589,6 +619,10 @@ Style/SlicingWithRange:
   Description: 'Checks array slicing is done with endless ranges when suitable.'
   Enabled: true
 
+Style/StringChars:
+  Description: 'Checks for uses of `String#split` with empty string or regexp literal argument.'
+  Enabled: true
+
 Style/StringConcatenation:
   Description: 'Checks for places where string concatenation can be replaced with string interpolation.'
   StyleGuide: '#string-interpolation'
@@ -622,6 +656,11 @@ Style/TrailingCommaInBlockArgs:
   Description: 'Checks for useless trailing commas in block arguments.'
   Enabled: true
 
+Style/UnlessLogicalOperators:
+  Description: >-
+                 Checks for use of logical operators in an unless condition.
+  Enabled: false
+
 # Performance cops from rubocop-performance
 # https://github.com/rubocop-hq/rubocop-performance/blob/master/config/default.yml
 Performance/AncestorsInclude:
@@ -651,12 +690,22 @@ Performance/IoReadlines:
   Reference: 'https://docs.gitlab.com/ee/development/performance.html#reading-from-files-and-other-data-sources'
   Enabled: true
 
+Performance/RedundantEqualityComparisonBlock:
+  Description: >-
+                  Checks for uses `Enumerable#all?`, `Enumerable#any?`, `Enumerable#one?`,
+                  or `Enumerable#none?` are compared with `===` or similar methods in block.
+  Enabled: true
+
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
   Enabled: true
 
 Performance/RedundantSortBlock:
   Description: 'Use `sort` instead of `sort { |a, b| a <=> b }`.'
+  Enabled: true
+
+Performance/RedundantSplitRegexpArgument:
+  Description: 'This cop identifies places where `split` argument can be replaced from a deterministic regexp to a string.'
   Enabled: true
 
 Performance/RedundantStringChars:

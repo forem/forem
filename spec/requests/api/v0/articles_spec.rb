@@ -4,6 +4,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, name: "discuss") }
   let(:article) { create(:article, featured: true, tags: "discuss") }
+  let(:new_article) { create(:article) }
 
   before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
@@ -12,7 +13,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
     it "returns CORS headers" do
       origin = "http://example.com"
-      get api_articles_path, headers: { "origin": origin }
+      get api_articles_path, headers: { origin: origin }
 
       expect(response).to have_http_status(:ok)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
@@ -269,6 +270,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.parsed_body.size).to eq(1)
       end
 
+      it "returns articles sorted by publish date" do
+        article.update_columns(published_at: 500.years.ago)
+        new_article.update_columns(published_at: 1.minute.ago)
+
+        get latest_api_articles_path
+        first_article_published_at = response.parsed_body.first["published_at"]
+        last_article_published_at = response.parsed_body.last["published_at"]
+        expect(first_article_published_at.to_date).to be > last_article_published_at.to_date
+      end
+
       it "returns nothing if the state is unknown" do
         get api_articles_path(state: "foobar")
 
@@ -306,7 +317,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   describe "GET /api/articles/:id" do
     it "returns CORS headers" do
       origin = "http://example.com"
-      get api_article_path(article.id), headers: { "origin": origin }
+      get api_article_path(article.id), headers: { origin: origin }
 
       expect(response).to have_http_status(:ok)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
@@ -365,7 +376,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     it "fails with an unpublished article" do
-      article.update_columns(published: false)
+      article.update_columns(published: false, published_at: nil)
       get api_article_path(article.id)
       expect(response).to have_http_status(:not_found)
     end
@@ -386,7 +397,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   describe "GET /api/articles/:username/:slug" do
     it "returns CORS headers" do
       origin = "http://example.com"
-      get slug_api_articles_path(article.username, article.slug), headers: { "origin": origin }
+      get slug_api_articles_path(article.username, article.slug), headers: { origin: origin }
       expect(response).to have_http_status(:ok)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
       expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
@@ -424,7 +435,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     it "fails with an unpublished article" do
-      article.update_columns(published: false)
+      article.update_columns(published: false, published_at: nil)
       get slug_api_articles_path(username: article.username, slug: article.slug)
       expect(response).to have_http_status(:not_found)
     end
@@ -551,6 +562,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:unauthorized)
       end
 
+      it "fails with a suspended user" do
+        user.add_role(:suspended)
+        post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
       it "fails with the wrong api key" do
         post api_articles_path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
@@ -633,7 +650,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "fails if params are unwrapped" do
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
-        post api_articles_path, params: { body_markdown: "Body", "title": "Title" }.to_json, headers: headers
+        post api_articles_path, params: { body_markdown: "Body", title: "Title" }.to_json, headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
@@ -861,7 +878,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   describe "PUT /api/articles/:id" do
     let!(:api_secret)   { create(:api_secret) }
     let!(:user)         { api_secret.user }
-    let(:article)       { create(:article, user: user, published: false) }
+    let(:article)       { create(:article, user: user, published: false, published_at: nil) }
     let(:path)          { api_article_path(article.id) }
     let!(:organization) { create(:organization) }
 
@@ -1171,6 +1188,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
         string_params = "this_string_is_definitely_not_a_hash"
         put path, params: { article: string_params }.to_json, headers: headers
 
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
+
+      it "fails when article is not saved" do
+        put_article(title: nil, body_markdown: nil)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
       end

@@ -22,6 +22,13 @@ class ApplicationController < ActionController::Base
     error_too_many_requests(exc)
   end
 
+  rescue_from ActionController::InvalidAuthenticityToken do
+    ForemStatsClient.increment(
+      "users.invalid_authenticity_token",
+      tags: ["controller_name:#{controller_name}", "path:#{request.fullpath}"],
+    )
+  end
+
   PUBLIC_CONTROLLERS = %w[shell
                           async_info
                           ga_events
@@ -33,6 +40,13 @@ class ApplicationController < ActionController::Base
                           passwords
                           health_checks].freeze
   private_constant :PUBLIC_CONTROLLERS
+
+  CONTENT_CHANGE_PATHS = [
+    "/tags/onboarding", # Needs to change when suggested_tags is edited.
+    "/onboarding", # Page is cached at edge.
+    "/", # Page is cached at edge.
+  ].freeze
+  private_constant :CONTENT_CHANGE_PATHS
 
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
@@ -114,7 +128,7 @@ class ApplicationController < ActionController::Base
   end
 
   def raise_suspended
-    raise "SUSPENDED" if current_user&.banned
+    raise SuspendedError if current_user&.suspended?
   end
 
   def internal_navigation?
@@ -178,12 +192,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bust_content_change_caches
-    EdgeCache::Bust.call("/tags/onboarding") # Needs to change when suggested_tags is edited.
-    EdgeCache::Bust.call("/shell_top") # Cached at edge, sent to service worker.
-    EdgeCache::Bust.call("/shell_bottom") # Cached at edge, sent to service worker.
-    EdgeCache::Bust.call("/async_info/shell_version") # Checks if current users should be busted.
-    EdgeCache::Bust.call("/onboarding") # Page is cached at edge.
-    EdgeCache::Bust.call("/") # Page is cached at edge.
+    EdgeCache::Bust.call(CONTENT_CHANGE_PATHS)
     SiteConfig.admin_action_taken_at = Time.current # Used as cache key
   end
 

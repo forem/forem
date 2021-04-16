@@ -1,4 +1,4 @@
-import initCharts from '../analytics/dashboard';
+import { initCharts } from '../analytics/dashboard';
 
 function initDashboard() {
   const activeOrg = document.querySelector('.organization.active');

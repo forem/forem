@@ -28,6 +28,8 @@ class PageView < ApplicationRecord
   end
 
   def record_field_test_event
+    return if FieldTest.config["experiments"].nil?
+
     return unless user_id
 
     Users::RecordFieldTestEventWorker

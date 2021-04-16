@@ -3,9 +3,12 @@ require "rails_helper"
 RSpec.describe GithubRepo, type: :model do
   let(:user) { create(:user, :with_identity, identities: ["github"]) }
   let(:repo) { create(:github_repo, user: user) }
+  let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
   before do
     omniauth_mock_github_payload
+    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
+    allow(cache_bust).to receive(:call)
   end
 
   describe "validations" do
@@ -36,13 +39,11 @@ RSpec.describe GithubRepo, type: :model do
       end
 
       it "busts the correct caches" do
-        allow(EdgeCache::Bust).to receive(:call)
-
         repo.save
 
-        expect(EdgeCache::Bust).to have_received(:call).with(user.path)
-        expect(EdgeCache::Bust).to have_received(:call).with("#{user.path}?i=i")
-        expect(EdgeCache::Bust).to have_received(:call).with("#{user.path}/?i=i")
+        expect(cache_bust).to have_received(:call).with(user.path)
+        expect(cache_bust).to have_received(:call).with("#{user.path}?i=i")
+        expect(cache_bust).to have_received(:call).with("#{user.path}/?i=i")
       end
     end
   end
@@ -58,12 +59,12 @@ RSpec.describe GithubRepo, type: :model do
 
     it "creates a new repo" do
       expect do
-        described_class.upsert(user, params)
+        described_class.upsert(user, **params)
       end.to change(described_class, :count).by(1)
     end
 
     it "creates a repo for the given user" do
-      repo = described_class.upsert(user, params)
+      repo = described_class.upsert(user, **params)
 
       expect(repo.user_id).to eq(user.id)
     end

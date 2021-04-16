@@ -105,7 +105,7 @@ class FollowsController < ApplicationController
     Notification.send_new_follower_notification(user_follow) if need_notification
     "followed"
   rescue ActiveRecord::RecordInvalid
-    DatadogStatsClient.increment("users.invalid_follow")
+    ForemStatsClient.increment("users.invalid_follow")
     "already followed"
   end
 

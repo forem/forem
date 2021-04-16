@@ -19,7 +19,7 @@ module Users
       # whole object
       NotifyMailer.with(name: user.name, email: user.email).account_deleted_email.deliver_now
     rescue StandardError => e
-      DatadogStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
+      ForemStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
       Honeybadger.context({ user_id: user.id })
       Honeybadger.notify(e)
     end

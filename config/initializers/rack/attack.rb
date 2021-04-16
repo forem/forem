@@ -30,8 +30,8 @@ module Rack
       track_and_return_ip(request.env["HTTP_FASTLY_CLIENT_IP"])
     end
 
-    throttle("message_throttle", limit: 2, period: 1) do |request|
-      if request.path.starts_with?("/messages") && request.post?
+    throttle("message_tag_throttle", limit: 2, period: 1) do |request|
+      if message_or_tag_request(request)
         track_and_return_ip(request.env["HTTP_FASTLY_CLIENT_IP"])
       end
     end
@@ -41,6 +41,11 @@ module Rack
 
       Honeycomb.add_field("fastly_client_ip", ip_address)
       ip_address.to_s
+    end
+
+    def self.message_or_tag_request(request)
+      (request.path.starts_with?("/messages") && request.post?) ||
+        request.path.include?("/t/")
     end
   end
 end

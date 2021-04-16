@@ -5,7 +5,7 @@ RSpec.describe "Authenticating with Twitter" do
 
   before do
     omniauth_mock_twitter_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   context "when a user is new" do
@@ -55,7 +55,7 @@ RSpec.describe "Authenticating with Twitter" do
       before do
         omniauth_setup_invalid_credentials(:twitter)
 
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
       end
 
       after do
@@ -88,7 +88,7 @@ RSpec.describe "Authenticating with Twitter" do
         click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -104,7 +104,7 @@ RSpec.describe "Authenticating with Twitter" do
         click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -117,7 +117,7 @@ RSpec.describe "Authenticating with Twitter" do
         click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -183,7 +183,7 @@ RSpec.describe "Authenticating with Twitter" do
 
   context "when community is in invite only mode" do
     before do
-      allow(SiteConfig).to receive(:invite_only_mode).and_return(true)
+      allow(Settings::Authentication).to receive(:invite_only_mode).and_return(true)
     end
 
     it "doesn't present the authentication option" do

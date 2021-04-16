@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Button } from '@crayons';
 
-const RequestListItem = ({ request, updateMembership }) => (
+export const PendingInvitationListItem = ({ request, updateMembership }) => (
   <div className="crayons-card mb-6">
     <div className="crayons-card__body channel-request-card">
       <div className="request-message d-flex flex-wrap">
@@ -40,7 +40,7 @@ const RequestListItem = ({ request, updateMembership }) => (
   </div>
 );
 
-RequestListItem.propTypes = {
+PendingInvitationListItem.propTypes = {
   request: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
@@ -55,5 +55,3 @@ RequestListItem.propTypes = {
   ).isRequired,
   updateMembership: PropTypes.func.isRequired,
 };
-
-export default RequestListItem;

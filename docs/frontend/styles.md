@@ -23,3 +23,15 @@ assets in Rails.
 
 For more about branding, theming or design in general in regards to Forem, refer
 to the [Design Guide](/design) documentation.
+
+## Crayons
+
+Crayons is the design system used by Forem. A
+[storybook](https://storybook.js.org/) listing the various elements is available
+at https://storybook.forem.com/
+
+You can also run it locally with the following command:
+
+```
+$ yarn storybook
+```

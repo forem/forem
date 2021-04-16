@@ -10,6 +10,8 @@ RSpec.describe "ArticlesUpdate", type: :request do
     user
   end
   let(:article) { create(:article, user_id: user.id) }
+  let(:other_article) { create(:article, user: user2) }
+  let(:collection) { create(:collection, user: user) }
 
   before do
     sign_in user
@@ -80,6 +82,18 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(article.organization_id).to eq(admin_org_id)
   end
 
+  it "allows super_admin to edit an article" do
+    user.add_role(:super_admin)
+    put "/articles/#{other_article.id}", params: { article: { title: "new", body_markdown: "hello" } }
+    expect(other_article.reload.title).to eq("new")
+  end
+
+  it "doesn't allow other user to edit an article" do
+    expect do
+      put "/articles/#{other_article.id}", params: { article: { body_markdown: "hello" } }
+    end.to raise_error(Pundit::NotAuthorizedError)
+  end
+
   it "archives" do
     put "/articles/#{article.id}", params: {
       article: { archived: true }
@@ -87,11 +101,48 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(article.archived).to eq(false)
   end
 
-  it "creates a notification job if published" do
-    article.update_column(:published, false)
-    sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
+  it "updates article collection when new series was passed" do
+    expect do
       put "/articles/#{article.id}", params: {
-        article: { published: true }
+        article: { series: "new slug", body_markdown: "blah" }
+      }
+    end.to change(Collection, :count).by(1)
+    article.reload
+    expect(article.collection_id).not_to be_nil
+  end
+
+  it "updates article collection when series was passed" do
+    put "/articles/#{article.id}", params: {
+      article: { series: collection.slug, body_markdown: "blah" }
+    }
+    article.reload
+    expect(article.collection_id).to eq(collection.id)
+  end
+
+  it "resets article collection when empty series was passed" do
+    article.update_column(:collection_id, collection.id)
+
+    put "/articles/#{article.id}", params: {
+      article: { series: "", body_markdown: "blah" }
+    }
+    article.reload
+    expect(article.collection).to eq(nil)
+  end
+
+  it "creates a notification job if published the first time" do
+    draft = create(:article, published: false, published_at: nil, user_id: user.id)
+    sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
+      put "/articles/#{draft.id}", params: {
+        article: { published: true, body_markdown: "blah"  }
+      }
+    end
+  end
+
+  it "does not create a notification job if published the second time" do
+    article.update_column(:published, false)
+    sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
+      put "/articles/#{article.id}", params: {
+        article: { published: true, body_markdown: "blah"  }
       }
     end
   end

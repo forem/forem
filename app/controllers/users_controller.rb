@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
-  before_action :raise_suspended, only: %i[update]
-  before_action :set_user, only: %i[update request_destroy full_delete remove_identity]
+  before_action :raise_suspended, only: %i[update update_password]
+  before_action :set_user,
+                only: %i[update update_password request_destroy full_delete remove_identity]
   # rubocop:disable Layout/LineLength
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
   # rubocop:enable Layout/LineLength
@@ -9,7 +10,7 @@ class UsersController < ApplicationController
   before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
 
-  ALLOWED_USER_PARAMS = %i[last_onboarding_page].freeze
+  ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -40,10 +41,7 @@ class UsersController < ApplicationController
   def update
     set_current_tab(params["user"]["tab"])
 
-    # preferred_languages is handled manually
-    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
-
-    @user.attributes = permitted_attributes(@user)
+    @user.assign_attributes(permitted_attributes(@user))
 
     if @user.save
       # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
@@ -109,8 +107,11 @@ class UsersController < ApplicationController
     if destroy_token.blank?
       flash[:settings_notice] = "Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated."
       redirect_to user_settings_path("account")
-    else
-      raise ActionController::RoutingError, "Not Found" unless destroy_token == params[:token]
+    elsif destroy_token != params[:token]
+      Honeycomb.add_field("destroy_token", destroy_token)
+      Honeycomb.add_field("token", params[:token])
+
+      raise ActionController::RoutingError, "Not Found"
     end
     # rubocop:enable Layout/LineLength
   end
@@ -121,7 +122,7 @@ class UsersController < ApplicationController
       Users::DeleteWorker.perform_async(@user.id)
       sign_out @user
       flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
-      redirect_to root_path
+      redirect_to new_user_registration_path
     else
       flash[:settings_notice] = "Please, provide an email to delete your account"
       redirect_to user_settings_path("account")
@@ -164,19 +165,20 @@ class UsersController < ApplicationController
   end
 
   def onboarding_update
-    if params[:user]
-      sanitize_user_params
-      current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS))
-      current_user.profile_updated_at = Time.current
-    end
-
-    if current_user.save && params[:profile]
-      update_result = Profiles::Update.call(current_user, { profile: profile_params })
-    end
-
-    current_user.saw_onboarding = true
     authorize User
-    render_update_response(update_result&.success?)
+    user_params = { saw_onboarding: true }
+
+    if params[:user]
+      if params.dig(:user, :username).blank?
+        return render_update_response(false, "Username cannot be blank")
+      end
+
+      sanitize_user_params
+      user_params.merge!(params[:user].permit(ALLOWED_USER_PARAMS))
+    end
+
+    update_result = Profiles::Update.call(current_user, { user: user_params, profile: profile_params })
+    render_update_response(update_result.success?, update_result.errors_as_sentence)
   end
 
   def onboarding_checkbox_update
@@ -269,6 +271,24 @@ class UsersController < ApplicationController
     end
   end
 
+  def update_password
+    set_current_tab("account")
+
+    if @user.update_with_password(password_params)
+      redirect_to user_settings_path(@tab)
+    else
+      Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("errored", true)
+
+      if @tab
+        render :edit, status: :bad_request
+      else
+        flash[:error] = @user.errors_as_sentence
+        redirect_to user_settings_path
+      end
+    end
+  end
+
   private
 
   def sanitize_user_params
@@ -294,11 +314,11 @@ class UsersController < ApplicationController
     recent_suggestions.presence || default_suggested_users
   end
 
-  def render_update_response(success)
-    outcome = success ? "updated successfully" : "update failed"
+  def render_update_response(success, errors = nil)
+    status = success ? 200 : 422
 
     respond_to do |format|
-      format.json { render json: { outcome: outcome } }
+      format.json { render json: { errors: errors }, status: status }
     end
   end
 
@@ -357,6 +377,10 @@ class UsersController < ApplicationController
   end
 
   def profile_params
-    params[:profile].permit(Profile.attributes)
+    params[:profile] ? params[:profile].permit(Profile.attributes) : nil
+  end
+
+  def password_params
+    params.permit(:current_password, :password, :password_confirmation)
   end
 end

@@ -79,8 +79,8 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:trusted) }
     end
 
-    trait :banned do
-      after(:build) { |user| user.add_role(:banned) }
+    trait :suspended do
+      after(:build) { |user| user.add_role(:suspended) }
     end
 
     trait :invited do
@@ -97,10 +97,6 @@ FactoryBot.define do
         # rubocop:enable Lint/EmptyBlock
         # user.class.skip_callback(:validates, :after_create)
       end
-    end
-
-    trait :pro do
-      after(:build) { |user| user.add_role :pro }
     end
 
     trait :org_member do
@@ -144,7 +140,7 @@ FactoryBot.define do
     trait :tag_moderator do
       after(:create) do |user|
         tag = create(:tag)
-        user.add_role :tag_moderator, tag
+        user.add_role(:tag_moderator, tag)
       end
     end
 

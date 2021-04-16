@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-export const defaulMembershipPropType = PropTypes.shape({
+export const defaultMembershipPropType = PropTypes.shape({
   name: PropTypes.string.isRequired,
   membership_id: PropTypes.number.isRequired,
   user_id: PropTypes.number.isRequired,

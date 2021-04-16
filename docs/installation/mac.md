@@ -8,14 +8,18 @@ title: macOS
 
 ### Ruby
 
-1. If you don't already have a Ruby version manager, we highly recommend
-   [rbenv](https://github.com/rbenv/rbenv). Please follow their
-   [installation guide](https://github.com/rbenv/rbenv#installation).
+1. **Note:** MacOS ships with a version of Ruby, needed for various operating systems. 
+   To avoid causing an issue with your operating system you should use a version manager for Ruby.
+
+   If you don't already have a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). This will allow you to have different versions running on a per project basis. The MacOS system version of Ruby will stay intact while giving you the ability to use the version needed for this Forem project.
+Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
 2. With the Ruby version manager, install the Ruby version listed on our badge.
    (i.e. with rbenv: `rbenv install $(cat .ruby-version)`)
+   
+   **Note:** The repository must be forked and cloned before running the `rbenv install $(cat .ruby-version)` command.
+    
 
 ### Yarn
-
 Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 ### PostgreSQL
@@ -235,6 +239,13 @@ your local Elasticsearch installation, for example:
 5. Run `bin/setup`
 
 ### Possible error messages
+
+**Error:** 
+`rbenv install hangs at ruby-build: using readline from homebrew`
+
+**_Solution:_**
+[Stackoverflow answer](https://stackoverflow.com/questions/63599818/rbenv-install-hangs-at-ruby-build-using-readline-from-homebrew)
+`RUBY_CONFIGURE_OPTS=--with-readline-dir="$(brew --prefix readline)" rbenv install 2.0.0`
 
 **Error:**
 `__NSPlaceholderDate initialize] may have been in progress in another thread when fork() was called`

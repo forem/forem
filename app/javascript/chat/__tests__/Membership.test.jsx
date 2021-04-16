@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import Membership from '../ChatChannelSettings/MembershipManager/Membership';
+import { Membership } from '../ChatChannelSettings/MembershipManager/Membership';
 
 const membershipData = {
   name: 'dummy Name',

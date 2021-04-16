@@ -4,19 +4,6 @@ module Constants
     SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
     DETAILS = {
-      require_captcha_for_email_password_registration: {
-        description: "People will be required to fill out a captcha when
-          they're creating a new account in your community",
-        placeholder: ""
-      },
-      allowed_registration_email_domains: {
-        description: "Restrict registration to only certain emails? (comma-separated list)",
-        placeholder: "dev.to, forem.com, codenewbie.org"
-      },
-      authentication_providers: {
-        description: "How can users sign in?",
-        placeholder: ""
-      },
       campaign_articles_require_approval: {
         description: "",
         placeholder: "Campaign stories show up on sidebar with approval?"
@@ -27,7 +14,7 @@ module Constants
       },
       campaign_featured_tags: {
         description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
-        placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded"
+        placeholder: "List of campaign tags: comma separated, letters only e.g. tagone,tagtwo"
       },
       campaign_hero_html_variant_name: {
         description: "Hero HtmlVariant name",
@@ -44,6 +31,10 @@ module Constants
       campaign_url: {
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
+      },
+      campaign_articles_expiry_time: {
+        description: "Sets the expiry time for articles (in weeks) to be displayed in campaign sidebar",
+        placeholder: ""
       },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
@@ -86,9 +77,6 @@ module Constants
       default_font: {
         description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
       },
-      display_email_domain_allow_list_publicly: {
-        description: "Do you want to display the list of allowed domains, or keep it private?"
-      },
       display_jobs_banner: {
         description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
         "or 'jobs' in the search box",
@@ -105,36 +93,6 @@ module Constants
       experience_high: {
         description: "The label for the top of the experience level range of a post",
         placeholder: "Senior Devs"
-      },
-      facebook_key: {
-        description:
-          "The \"App ID\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
-        placeholder: ""
-      },
-      facebook_secret: {
-        description:
-          "The \"App Secret\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
-        placeholder: ""
-      },
-      apple_client_id: {
-        description:
-          "The \"App Bundle\" code for the Authentication Service configured in the Apple Developer Portal",
-        placeholder: "com.example.app"
-      },
-      apple_team_id: {
-        description:
-          "The \"Team ID\" of your Apple Developer Account",
-        placeholder: ""
-      },
-      apple_key_id: {
-        description:
-          "The \"Key ID\" from the Authentication Service configured in the Apple Developer Portal",
-        placeholder: ""
-      },
-      apple_pem: {
-        description:
-          "The \"PEM\" key from the Authentication Service configured in the Apple Developer Portal",
-        placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\\n"
       },
       favicon_url: {
         description: "Used as the site favicon",
@@ -153,14 +111,6 @@ module Constants
         description: "Determines background/border of buttons etc. Must be dark enough to contrast with white text.",
         placeholder: "#0a0a0a"
       },
-      github_key: {
-        description: "The \"Client ID\" portion of the GitHub Oauth Apps portal",
-        placeholder: ""
-      },
-      github_secret: {
-        description: "The \"Client Secret\" portion of the GitHub Oauth Apps portal",
-        placeholder: ""
-      },
       ga_tracking_id: {
         description: "Google Analytics Tracking ID, e.g. UA-71991000-1",
         placeholder: ""
@@ -173,17 +123,9 @@ module Constants
         description: "Minimum score needed for a post to show up on the unauthenticated home page.",
         placeholder: "0"
       },
-      invite_only_mode: {
-        description: "Only users invited by email can join this community.",
-        placeholder: ""
-      },
       jobs_url: {
         description: "URL of the website where open positions are posted",
         placeholder: "Jobs URL"
-      },
-      left_navbar_svg_icon: {
-        description: "The SVG icon used to expand the left navbar navigation menu. Should be a max of 24x24px.",
-        placeholder: SVG_PLACEHOLDER
       },
       logo_png: {
         description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",
@@ -249,41 +191,17 @@ module Constants
         description: "Background for onboarding splash page",
         placeholder: IMAGE_PLACEHOLDER
       },
-      onboarding_logo_image: {
-        description: "Main onboarding display logo image",
-        placeholder: IMAGE_PLACEHOLDER
-      },
-      onboarding_taskcard_image: {
-        description: "Used as the onboarding task-card image",
-        placeholder: IMAGE_PLACEHOLDER
-      },
       payment_pointer: {
         description: "Used for site-wide web monetization. " \
         "See: https://github.com/thepracticaldev/dev.to/pull/6345",
         placeholder: "$pay.somethinglikethis.co/value"
       },
-      periodic_email_digest_max: {
-        description: "Determines the maximum for the periodic email digest",
-        placeholder: 0
-      },
-      periodic_email_digest_min: {
-        description: "Determines the mininum for the periodic email digest",
+      periodic_email_digest: {
+        description: "Determines how often periodic email digests are sent",
         placeholder: 2
       },
-      recaptcha_site_key: {
-        description: "Add the site key for Google reCAPTCHA, which is used for reporting abuse",
-        placeholder: "What is the Google reCAPTCHA site key?"
-      },
-      recaptcha_secret_key: {
-        description: "Add the secret key for Google reCAPTCHA, which is used for reporting abuse",
-        placeholder: "What is the Google reCAPTCHA secret key?"
-      },
-      right_navbar_svg_icon: {
-        description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",
-        placeholder: SVG_PLACEHOLDER
-      },
       secondary_logo_url: {
-        description: "Used as the secondary logo",
+        description: "A place for an alternate logo, if you have one. Used throughout member onboarding and in some sign in forms.",
         placeholder: IMAGE_PLACEHOLDER
       },
       spam_trigger_terms: {
@@ -296,7 +214,7 @@ module Constants
       },
       sidebar_tags: {
         description: "Determines which tags are shown on the homepage righthand sidebar",
-        placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta"
+        placeholder: "List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta"
       },
       sponsor_headline: {
         description: "Determines the heading text of the main sponsors sidebar above the list of sponsors.",
@@ -343,13 +261,9 @@ module Constants
         description: "Used as the twitter hashtag of the community",
         placeholder: "#DEVCommunity"
       },
-      twitter_key: {
-        description: "The \"API key\" portion of consumer keys in the Twitter developer portal.",
-        placeholder: ""
-      },
-      twitter_secret: {
-        description: "The \"API secret key\" portion of consumer keys in the Twitter developer portal.",
-        placeholder: ""
+      user_considered_new_days: {
+        description: "The number of days a user is considered new. The default is 3 days, but you can disable this entirely by inputting 0.",
+        placeholder: ::SiteConfig.user_considered_new_days
       },
       video_encoder_key: {
         description: "Secret key used to allow AWS video encoding through the VideoStatesController",

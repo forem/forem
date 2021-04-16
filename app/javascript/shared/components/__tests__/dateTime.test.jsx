@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { axe } from 'jest-axe';
 import { render } from '@testing-library/preact';
 import '@testing-library/jest-dom';
-import DateTime from '../dateTime';
+import { DateTime } from '../dateTime';
 
 import '../../../../assets/javascripts/utilities/localDateTime';
 

@@ -30,7 +30,7 @@ RSpec.describe User, type: :model do
 
   before do
     omniauth_mock_providers_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   describe "validations" do
@@ -38,6 +38,8 @@ RSpec.describe User, type: :model do
       subject { user }
 
       it { is_expected.to have_one(:profile).dependent(:destroy) }
+      it { is_expected.to have_one(:notification_setting).dependent(:destroy) }
+      it { is_expected.to have_one(:setting).dependent(:destroy) }
 
       it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").dependent(:delete_all) }
       it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").dependent(:delete_all) }
@@ -146,22 +148,6 @@ RSpec.describe User, type: :model do
       end
 
       it do
-        expect(subject).to have_many(:buffer_updates_approved)
-          .class_name("BufferUpdate")
-          .with_foreign_key("approver_user_id")
-          .inverse_of(:approver_user)
-          .dependent(:nullify)
-      end
-
-      it do
-        expect(subject).to have_many(:buffer_updates_composed)
-          .class_name("BufferUpdate")
-          .with_foreign_key("composer_user_id")
-          .inverse_of(:composer_user)
-          .dependent(:nullify)
-      end
-
-      it do
         expect(subject).to have_many(:created_podcasts)
           .class_name("Podcast")
           .with_foreign_key(:creator_id)
@@ -218,11 +204,24 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_presence_of(:spent_credits_count) }
       it { is_expected.to validate_presence_of(:subscribed_to_user_subscriptions_count) }
 
-      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      # rubocop:disable RSpec/NestedGroups
+      context "when evaluating the custom error message for username uniqueness" do
+        subject { create(:user, username: "test_user_123") }
+
+        it { is_expected.to validate_uniqueness_of(:username).with_message("test_user_123 is taken.").case_insensitive }
+      end
+      # rubocop:enable RSpec/NestedGroups
 
       Authentication::Providers.username_fields.each do |username_field|
         it { is_expected.to validate_uniqueness_of(username_field).allow_nil }
       end
+    end
+
+    it "renders custom error message with value of taken username" do
+      create(:user, username: "test_user_123")
+      same_username = build(:user, username: "test_user_123")
+      expect(same_username).not_to be_valid
+      expect(same_username.errors[:username].to_s).to include("test_user_123 is taken.")
     end
 
     it "validates username against reserved words" do
@@ -430,47 +429,6 @@ RSpec.describe User, type: :model do
   context "when callbacks are triggered before and after create" do
     let(:user) { create(:user, email: nil) }
 
-    describe "#language_settings" do
-      it "sets correct language_settings by default" do
-        expect(user.language_settings).to eq("preferred_languages" => %w[en])
-      end
-
-      it "sets correct language_settings by default after the jobs are processed" do
-        sidekiq_perform_enqueued_jobs do
-          expect(user.language_settings).to eq("preferred_languages" => %w[en])
-        end
-      end
-    end
-
-    describe "#estimated_default_language" do
-      it "estimates default language to be nil" do
-        sidekiq_perform_enqueued_jobs do
-          expect(user.estimated_default_language).to be(nil)
-        end
-      end
-
-      it "estimates default language to be japanese with .jp email" do
-        user = nil
-
-        sidekiq_perform_enqueued_jobs do
-          user = create(:user, email: "ben@hello.jp")
-        end
-
-        expect(user.reload.estimated_default_language).to eq("ja")
-      end
-
-      it "estimates default language from Twitter identity" do
-        new_user = nil
-
-        sidekiq_perform_enqueued_jobs(only: Users::EstimateDefaultLanguageWorker) do
-          new_user = user_from_authorization_service(:twitter)
-        end
-
-        lang = new_user.identities.last.auth_data_dump.extra.raw_info.lang
-        expect(new_user.reload.estimated_default_language).to eq(lang)
-      end
-    end
-
     describe "#send_welcome_notification" do
       let(:mascot_account) { create(:user) }
       let!(:set_up_profile_broadcast) { create(:set_up_profile_broadcast) }
@@ -497,24 +455,6 @@ RSpec.describe User, type: :model do
         expect(new_user.reload.notifications.count).to eq(0)
       end
     end
-
-    describe "#preferred_languages_array" do
-      it "returns proper preferred_languages_array" do
-        user = nil
-
-        sidekiq_perform_enqueued_jobs do
-          user = create(:user, email: "ben@hello.jp")
-        end
-
-        expect(user.reload.preferred_languages_array).to eq(%w[en ja])
-      end
-
-      it "returns a correct array for language settings" do
-        language_settings = { estimated_default_language: "en", preferred_languages: %w[en ru it] }
-        user = build(:user, language_settings: language_settings)
-        expect(user.preferred_languages_array).to eq(%w[en ru it])
-      end
-    end
   end
 
   context "when callbacks are triggered after save" do
@@ -533,12 +473,6 @@ RSpec.describe User, type: :model do
         end
       end
 
-      it "does not enqueue with an invalid email" do
-        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
-          user.update(email: "foobar")
-        end
-      end
-
       it "does not enqueue with an unconfirmed email" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
@@ -548,6 +482,13 @@ RSpec.describe User, type: :model do
       it "does not enqueue with a non-registered user" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(registered: false)
+        end
+      end
+
+      it "does not enqueue if Mailchimp is not enabled" do
+        allow(SiteConfig).to receive(:mailchimp_api_key).and_return(nil)
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(email: "something@real.com")
         end
       end
 
@@ -649,7 +590,6 @@ RSpec.describe User, type: :model do
 
     it "persists extracts relevant identity data from new twitter user" do
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.twitter_followers_count).to eq(100)
       expect(new_user.twitter_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
     end
 
@@ -682,6 +622,34 @@ RSpec.describe User, type: :model do
         user.follow(create(:user))
       end.to change(user.all_follows, :size).by(1)
     end
+  end
+
+  describe "#suspended?" do
+    subject { user.suspended? }
+
+    context "with suspended role" do
+      before do
+        user.add_role(:suspended)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    it { is_expected.to be false }
+  end
+
+  describe "#comment_suspended?" do
+    subject { user.comment_suspended? }
+
+    context "with comment_suspended role" do
+      before do
+        user.add_role(:comment_suspended)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    it { is_expected.to be false }
   end
 
   describe "#moderator_for_tags" do
@@ -820,17 +788,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#pro?" do
-    it "returns false if the user is not a pro" do
-      expect(user.pro?).to be(false)
-    end
-
-    it "returns true if the user has the pro role" do
-      user.add_role(:pro)
-      expect(user.pro?).to be(true)
-    end
-  end
-
   describe "#enough_credits?" do
     it "returns false if the user has less unspent credits than neeed" do
       expect(user.enough_credits?(1)).to be(false)
@@ -927,11 +884,23 @@ RSpec.describe User, type: :model do
     end
 
     it "returns true if the user has all the enabled providers" do
-      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+      allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
 
       user = create(:user, :with_identity)
 
       expect(user.authenticated_with_all_providers?).to be(true)
+    end
+  end
+
+  describe "#trusted" do
+    it "memoizes the result from rolify" do
+      allow(Rails.cache)
+        .to receive(:fetch)
+        .with("user-#{user.id}/has_trusted_role", expires_in: 200.hours)
+        .and_return(false)
+        .once
+
+      2.times { user.trusted }
     end
   end
 

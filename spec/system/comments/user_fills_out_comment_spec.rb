@@ -1,12 +1,13 @@
 require "rails_helper"
 
-RSpec.describe "Creating Comment", type: :system, js: true do
+RSpec.xdescribe "Creating Comment", type: :system, js: true do
   include_context "with runkit_tag"
 
   let(:user) { create(:user) }
   let(:raw_comment) { Faker::Lorem.paragraph }
   let(:runkit_comment) { compose_runkit_comment "comment 1" }
   let(:runkit_comment2) { compose_runkit_comment "comment 2" }
+  let(:twitter_comment) { "comment {% twitter_timeline https://twitter.com/NYTNow/timelines/576828964162965504 %}" }
 
   # the article should be created before signing in
   let!(:article) { create(:article, user_id: user.id, show_comments: true) }
@@ -28,6 +29,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     let(:rate_limit_checker) { RateLimitChecker.new(user) }
 
     before do
+      # avoid hitting new user rate limit check
+      allow(user).to receive(:created_at).and_return(1.week.ago)
       allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
       allow(rate_limit_checker).to receive(:limit_by_action)
         .with(:comment_creation)
@@ -113,6 +116,21 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       click_button("Preview")
 
       expect_runkit_tag_to_be_active
+    end
+  end
+
+  context "with TwitterTimeline tag" do
+    before do
+      visit article.path.to_s
+
+      wait_for_javascript
+    end
+
+    it "User fill out comment box with a TwitterTimeline tag, then clicks preview" do
+      fill_in "text-area", with: twitter_comment
+      click_button("Preview")
+
+      expect(page).to have_css(".ltag-twitter-timeline-body iframe", count: 1)
     end
   end
 

@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { adjustTimestamp } from './util';
 
-const ActionMessage = ({
+export const ActionMessage = ({
   user,
   message,
   color,
@@ -86,5 +86,3 @@ ActionMessage.defaultProps = {
   profileImageUrl: '',
   timestamp: null,
 };
-
-export default ActionMessage;

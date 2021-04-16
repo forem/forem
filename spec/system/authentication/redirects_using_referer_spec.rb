@@ -11,7 +11,7 @@ RSpec.describe "Redirects authentication using Referer", type: :system do
 
   before do
     omniauth_mock_twitter_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     OmniAuth.config.mock_auth[:twitter].info.email = user.email
   end
 

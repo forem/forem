@@ -7,8 +7,8 @@ module Github
     # @param credentials [Hash] the OAuth credentials, {client_id:, client_secret:} or {access_token:}
     def initialize(credentials = nil)
       credentials ||= {
-        client_id: SiteConfig.github_key,
-        client_secret: SiteConfig.github_secret
+        client_id: Settings::Authentication.github_key,
+        client_secret: Settings::Authentication.github_secret
       }
       @credentials = check_credentials!(credentials)
     end
@@ -73,7 +73,7 @@ module Github
 
       Honeycomb.add_field("github.result", "error")
       Honeycomb.add_field("github.error", class_name)
-      DatadogStatsClient.increment(
+      ForemStatsClient.increment(
         "github.errors",
         tags: ["error:#{class_name}", "message:#{exception.message}"],
       )

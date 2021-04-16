@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-const PersonalSettings = ({
+export const PersonalSettings = ({
   handlePersonChannelSetting,
   showGlobalBadgeNotification,
   updateCurrentMembershipNotificationSettings,
@@ -40,5 +40,3 @@ PersonalSettings.propTypes = {
   showGlobalBadgeNotification: PropTypes.bool.isRequired,
   handlePersonChannelSetting: PropTypes.func.isRequired,
 };
-
-export default PersonalSettings;

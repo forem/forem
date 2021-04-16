@@ -26,7 +26,7 @@ purpose. For example, if you needed to give a user access to only
 
 ```ruby
 user = User.find(some_user_id)
-user.add_role :single_resource_admin, Welcome
+user.add_role(:single_resource_admin, Welcome)
 ```
 
 This gives the user administration privileges on the controller associated with

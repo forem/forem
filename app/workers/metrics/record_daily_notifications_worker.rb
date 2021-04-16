@@ -23,7 +23,7 @@ module Metrics
           .where("time > ?", 1.day.ago)
           .where("properties->>'title' = ?", title)
 
-        DatadogStatsClient.count(
+        ForemStatsClient.count(
           "ahoy_events",
           event.size,
           tags: ["title:#{title}"],

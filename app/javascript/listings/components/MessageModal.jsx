@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-const MessageModal = ({
+export const MessageModal = ({
   currentUserId,
   message,
   listing,
@@ -72,5 +72,3 @@ MessageModal.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChangeDraftingMessage: PropTypes.func.isRequired,
 };
-
-export default MessageModal;

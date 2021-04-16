@@ -4,74 +4,31 @@ class PageViewsController < ApplicationMetalController
   include ActionController::Head
 
   def create
-    page_view_create_params = if session_current_user_id
-                                page_view_params.merge(user_id: session_current_user_id)
-                              else
-                                page_view_params.merge(counts_for_number_of_views: 10)
-                              end
+    page_view_create_params = params.slice(:article_id, :referrer, :user_agent)
+    if session_current_user_id
+      page_view_create_params[:user_id] = session_current_user_id
+    else
+      page_view_create_params[:counts_for_number_of_views] = 10
+    end
 
-    PageView.create(page_view_create_params)
-
-    update_article_page_views
+    Articles::UpdatePageViewsWorker.perform_at(
+      2.minutes.from_now,
+      page_view_create_params,
+    )
 
     head :ok
   end
 
   def update
     if session_current_user_id
-      page_view = PageView.order(created_at: :desc).find_or_create_by(article_id: params[:id],
-                                                                      user_id: session_current_user_id)
+      page_view = PageView.order(created_at: :desc)
+        .find_or_create_by(article_id: params[:id], user_id: session_current_user_id)
+
       unless page_view.new_record?
         page_view.update_column(:time_tracked_in_seconds, page_view.time_tracked_in_seconds + 15)
       end
     end
 
     head :ok
-  end
-
-  private
-
-  def update_article_page_views
-    return if skip_page_view_update?
-
-    @article = Article.find(page_view_params[:article_id])
-    new_page_views_count = @article.page_views.sum(:counts_for_number_of_views)
-    @article.update_column(:page_views_count, new_page_views_count) if new_page_views_count > @article.page_views_count
-
-    update_organic_page_views
-  end
-
-  def page_view_params
-    params.slice(:article_id, :referrer, :user_agent)
-  end
-
-  def update_organic_page_views
-    return if skip_organic_page_view_update?
-
-    page_views_from_google_com = @article.page_views.where(referrer: "https://www.google.com/")
-
-    organic_count = page_views_from_google_com.sum(:counts_for_number_of_views)
-    if organic_count > @article.organic_page_views_count
-      @article.update_column(:organic_page_views_count,
-                             organic_count)
-    end
-
-    organic_count_past_week_count = page_views_from_google_com
-      .where("created_at > ?", 1.week.ago).sum(:counts_for_number_of_views)
-    @article.update_column(:organic_page_views_past_week_count, organic_count_past_week_count)
-
-    organic_count_past_month_count = page_views_from_google_com
-      .where("created_at > ?", 1.month.ago).sum(:counts_for_number_of_views)
-    @article.update_column(:organic_page_views_past_month_count, organic_count_past_month_count)
-  end
-
-  def skip_page_view_update?
-    # We don't need to update the article page views every time.
-    rand(8) != 1
-  end
-
-  def skip_organic_page_view_update?
-    # We need to do this operation only once in a while.
-    rand(100) != 1
   end
 end

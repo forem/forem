@@ -4,9 +4,9 @@ module Images
       return img_src if img_src.blank? || img_src.starts_with?("/")
 
       if imgproxy_enabled?
-        imgproxy(img_src, kwargs)
+        imgproxy(img_src, **kwargs)
       else
-        cloudinary(img_src, kwargs)
+        cloudinary(img_src, **kwargs)
       end
     end
 
@@ -50,6 +50,8 @@ module Images
         options[:resizing_type] = "fill"
       end
 
+      options[:crop] = nil
+      options[:fetch_format] = nil
       options
     end
 

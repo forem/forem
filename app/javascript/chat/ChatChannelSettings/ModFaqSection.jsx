@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const ModFaqSection = ({ currentMembershipRole }) => {
+export const ModFaqSection = ({ currentMembershipRole }) => {
   if (currentMembershipRole === 'member') {
     return null;
   }
@@ -26,5 +26,3 @@ const ModFaqSection = ({ currentMembershipRole }) => {
 ModFaqSection.propTypes = {
   currentMembershipRole: PropTypes.string.isRequired,
 };
-
-export default ModFaqSection;

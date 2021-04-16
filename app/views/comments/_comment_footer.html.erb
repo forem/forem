@@ -6,8 +6,12 @@
     title="heart">
     <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Favorite heart outline button") %>
     <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: "Favorite heart outline button") %>
-    <span class="reactions-count hidden"></span>
-    <span class="reactions-label hidden m:inline-block">Like</span>
+    <span class="reactions-count">
+      <%= comment.public_reactions_count if comment.public_reactions_count.positive? %>
+    </span>
+    <span class="reactions-label hidden m:inline-block">
+      <%= like_button_text(comment).html_safe %>
+    </span>
   </button>
 
   <% if comment.depth < 2 || is_childless %>

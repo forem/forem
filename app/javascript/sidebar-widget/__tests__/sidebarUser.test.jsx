@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import SidebarUser from '../sidebarUser';
+import { SidebarUser } from '../sidebarUser';
 
 function getUser() {
   return {

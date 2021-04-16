@@ -1,50 +1,52 @@
 <% title("Dashboard - #{community_name}") %>
 
-<main id="index-container"
-    data-params="<%= params.to_json(only: %i[which per_page]) %>"
-    data-which="followers">
-  <header class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Followers</h1>
-    <%= render "actions_mobile" %>
-  </header>
+<div id="index-container"
+  data-params="<%= params.to_json(only: %i[which per_page]) %>"
+  data-which="followers">
+  <main id="main-content">
+    <header class="crayons-layout">
+      <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Followers</h1>
+      <%= render "actions_mobile" %>
+    </header>
 
-  <div class="crayons-layout crayons-layout--2-cols">
-    <aside class="crayons-layout__sidebar-left">
-      <%= render "actions" %>
-    </aside>
+    <div class="crayons-layout crayons-layout--2-cols">
+      <aside class="crayons-layout__sidebar-left">
+        <%= render "actions" %>
+      </aside>
 
-    <div class="crayons-layout__content" id="user-dashboard">
-      <% if @follows.any? %>
-        <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
-          <% @follows.each do |follow| %>
-            <% user = follow.follower %>
-            <% if user %>
-              <div class="crayons-card p-4 m:p-6 flex s:grid single-article break-word content-center" id="follows-<%= follow.id %>">
-                <a href="<%= user.path %>" class="crayons-avatar crayons-avatar--2xl s:mb-2 s:mx-auto">
-                  <img alt="<%= user.username %> profile image" class="crayons-avatar__image" src="<%= Images::Profile.call(user.profile_image_url, length: 60) %>" />
-                </a>
+      <div class="crayons-layout__content" id="user-dashboard">
+        <% if @follows.any? %>
+          <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
+            <% @follows.each do |follow| %>
+              <% user = follow.follower %>
+              <% if user %>
+                <div class="crayons-card p-4 m:p-6 flex s:grid single-article break-word content-center" id="follows-<%= follow.id %>">
+                  <a href="<%= user.path %>" class="crayons-avatar crayons-avatar--2xl s:mb-2 s:mx-auto">
+                    <img alt="<%= user.username %> profile image" class="crayons-avatar__image" src="<%= Images::Profile.call(user.profile_image_url, length: 60) %>" />
+                  </a>
 
-                <div class="pl-4 s:pl-0 self-center">
-                  <h3 class="s:mb-1 p-0">
-                    <a href="<%= user.path %>">
-                      <%= user.name %>
-                    </a>
-                  </h3>
+                  <div class="pl-4 s:pl-0 self-center">
+                    <h3 class="s:mb-1 p-0">
+                      <a href="<%= user.path %>">
+                        <%= user.name %>
+                      </a>
+                    </h3>
 
-                  <p class="s:mb-4">
-                    <a href="<%= user.path %>" class="crayons-link crayons-link--secondary">
-                      @<%= user.username %>
-                    </a>
-                  </p>
+                    <p class="s:mb-4">
+                      <a href="<%= user.path %>" class="crayons-link crayons-link--secondary">
+                        @<%= user.username %>
+                      </a>
+                    </p>
+                  </div>
                 </div>
-              </div>
+              <% end %>
             <% end %>
-          <% end %>
-        </div>
-      <% else %>
-        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l">You don't have any followers yet...</div>
-      <% end %>
-      <%= render "sublist" %>
+          </div>
+        <% else %>
+          <div class="p-9 crayons-card crayons-card--secondary align-center fs-l">You don't have any followers yet...</div>
+        <% end %>
+        <%= render "sublist" %>
+      </div>
     </div>
-  <div>
-</main>
+  </main>
+</div>

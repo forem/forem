@@ -1,36 +1,30 @@
 experiments:
-  feed_top_articles_query:
-    # This tests how we fetch "globally hot articles" — Testing some variants of
-    # more focus on the particpant's tags, some other alternatives which take more into account
-    # when the particpant was last on the site and viewed a post.
-    # -> Recommended experiment duration: 2 weeks.
-    # This experiment has new goals measuring consistently of coming back and clocking a page view
-    # and two weeks should be enough to see results.
-    # Hypotheses. This will be more impactful than past experiments which were too modest.
-    # We'll get more info on bigger levers on experiments, and should be able to pit the winner
-    # against some more variation.
-    # combination_only_tags_followed_and_top_max_7_days will be interesting to observe I think.
-    variants:
-      - base
-      - base_with_more_articles
-      - only_followed_tags
-      - top_articles_since_last_pageview_3_days_max
-      - top_articles_since_last_pageview_7_days_max
-      - combination_only_tags_followed_and_top_max_7_days
-    weights: # "base" gets a few more rolls of the dice
-      - 20
-      - 16
-      - 16
-      - 16
-      - 16
-      - 16
-    goals:
-      - user_creates_comment
-      - user_creates_comment_four_days_in_week
-      - user_views_article_four_days_in_week
-      - user_views_article_four_hours_in_day
-      - user_views_article_nine_days_in_two_week
-      - user_views_article_twelve_hours_in_five_days
+  # No field test running.
+  # To run a test, change the five variants here. You can create more than
+  # five, but five is our typical standard.
+  # Do not change the goals unless you intend to also change the corresponding code in
+  # app/workers/users/record_field_test_event_worker.rb
+
+  # variant_name:
+  #   variants:
+  #     - base
+  #     - variant_1
+  #     - variant_2
+  #     - variant_3
+  #     - variant_4
+  #   weights: # "base" gets a few more rolls of the dice
+  #     - 20
+  #     - 20
+  #     - 20
+  #     - 20
+  #     - 20
+  #   goals:
+  #     - user_creates_comment
+  #     - user_creates_comment_four_days_in_week
+  #     - user_views_article_four_days_in_week
+  #     - user_views_article_four_hours_in_day
+  #     - user_views_article_nine_days_in_two_week
+  #     - user_views_article_twelve_hours_in_five_days
 exclude:
   bots: true
 

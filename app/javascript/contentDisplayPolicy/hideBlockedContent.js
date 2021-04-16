@@ -1,6 +1,6 @@
 /* global userData */
 
-export default function hideBlockedContent() {
+export function hideBlockedContent() {
   const contentUserElements = Array.from(
     document.querySelectorAll('div[data-content-user-id]'),
   );

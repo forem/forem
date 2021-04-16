@@ -6,10 +6,10 @@ describe ProfileImageUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
   let(:mounted_as) { :profile_image }
-  let(:image_jpg) { fixture_file_upload("files/800x600.jpg", "image/jpeg") }
-  let(:image_png) { fixture_file_upload("files/800x600.png", "image/png") }
-  let(:image_webp) { fixture_file_upload("files/800x600.webp", "image/webp") }
-  let(:image_with_gps) { fixture_file_upload("files/image_gps_data.jpg", "image/jpeg") }
+  let(:image_jpg) { fixture_file_upload("800x600.jpg", "image/jpeg") }
+  let(:image_png) { fixture_file_upload("800x600.png", "image/png") }
+  let(:image_webp) { fixture_file_upload("800x600.webp", "image/webp") }
+  let(:image_with_gps) { fixture_file_upload("image_gps_data.jpg", "image/jpeg") }
 
   let(:user) { create(:user) }
 
@@ -50,7 +50,7 @@ describe ProfileImageUploader, type: :uploader do
 
   describe "formats" do
     it "permits a set of extensions" do
-      expect(uploader.extension_whitelist).to eq(%w[jpg jpeg jpe gif png ico bmp dng])
+      expect(uploader.extension_allowlist).to eq(%w[jpg jpeg jpe gif png ico bmp dng])
     end
 
     it "permits jpegs" do

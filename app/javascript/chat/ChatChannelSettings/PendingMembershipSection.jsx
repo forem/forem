@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
-import Membership from './Membership';
+import { defaultMembershipPropType } from '../../common-prop-types/membership-prop-type';
+import { Membership } from './Membership';
 
-const PendingMembershipSection = ({
+export const PendingMembershipSection = ({
   pendingMemberships,
   removeMembership,
   currentMembershipRole,
@@ -36,9 +36,7 @@ const PendingMembershipSection = ({
 };
 
 PendingMembershipSection.propTypes = {
-  pendingMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
+  pendingMemberships: PropTypes.arrayOf(defaultMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.func.isRequired,
 };
-
-export default PendingMembershipSection;

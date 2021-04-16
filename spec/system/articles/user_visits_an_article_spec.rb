@@ -142,8 +142,6 @@ RSpec.describe "Views an article", type: :system do
   describe "when an article is not published" do
     let(:article) { create(:article, user: article_user, published: false) }
     let(:article_path) { article.path + query_params }
-    let(:href) { "#{article.path}/edit" }
-    let(:link_text) { "Click to edit" }
 
     context "with the article password, and the logged-in user is authorized to update the article" do
       let(:query_params) { "?preview=#{article.password}" }
@@ -151,7 +149,8 @@ RSpec.describe "Views an article", type: :system do
 
       it "shows the article edit link", js: true do
         visit article_path
-        expect(page.body).to include('display: inline-block;">Click to edit</a>')
+        edit_link = find("a#author-click-to-edit")
+        expect(edit_link.matches_style?(display: "inline-block")).to be true
       end
     end
 

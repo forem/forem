@@ -15,6 +15,10 @@ export const ReactionsCount = ({ article }) => {
     </svg>
   );
 
+  if (totalReactions === 0) {
+    return;
+  }
+
   return (
     <Button
       variant="ghost"

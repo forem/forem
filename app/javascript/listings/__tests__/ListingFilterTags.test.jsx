@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ListingFiltersTags from '../components/ListingFiltersTags';
+import { ListingFiltersTags } from '../components/ListingFiltersTags';
 
 describe('<ListingFilterTags />', () => {
   const getTags = () => ['clojure', 'java', 'dotnet'];

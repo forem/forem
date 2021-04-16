@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import Alert from '../alert';
+import { Alert } from '../alert';
 
 describe('<Alert />', () => {
   it('should have no a11y violations', async () => {

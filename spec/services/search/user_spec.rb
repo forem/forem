@@ -46,9 +46,9 @@ RSpec.describe Search::User, type: :service do
     context "with a filter" do
       it "searches by excluding roles" do
         user1.add_role(:admin)
-        user2.add_role(:banned)
+        user2.add_role(:suspended)
         index_documents([user1, user2])
-        query_params = { size: 5, exclude_roles: ["banned"] }
+        query_params = { size: 5, exclude_roles: %w[suspended banned] }
 
         user_docs = described_class.search_documents(params: query_params)
         expect(user_docs.count).to eq(1)
@@ -69,7 +69,7 @@ RSpec.describe Search::User, type: :service do
     it "searches with username" do
       usernames = described_class.search_usernames(user1.username)
       expect(usernames.count).to eq(1)
-      expect(usernames).to match([user1.username])
+      expect(usernames.map { |u| u["username"] }).to match([user1.username])
     end
 
     it "analyzes wildcards" do
@@ -77,14 +77,23 @@ RSpec.describe Search::User, type: :service do
       index_documents([user3])
 
       usernames = described_class.search_usernames("star*")
-      expect(usernames).to match(
+      expect(usernames.map { |u| u["username"] }).to match(
         [user1.username, user2.username],
       )
-      expect(usernames).not_to include(user3.username)
+      expect(usernames.map { |u| u["username"] }).not_to include(user3.username)
     end
 
     it "does not allow leading wildcards" do
       expect { described_class.search_usernames("*star") }.to raise_error(Search::Errors::Transport::BadRequest)
+    end
+
+    it "limits the number of results to the value of MAX_RESULTS" do
+      max_results = 1
+      stub_const("Search::Postgres::Username::MAX_RESULTS", max_results)
+
+      usernames = described_class.search_usernames("star*")
+      expect(usernames.size).to eq(max_results)
+      expect([user1.username, user2.username]).to include(usernames.first["username"])
     end
   end
 end

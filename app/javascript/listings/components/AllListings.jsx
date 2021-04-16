@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { SingleListing } from '../singleListing/SingleListing';
-import NextPageButton from './NextPageButton';
+import { NextPageButton } from './NextPageButton';
 
-const AllListings = ({
+export const AllListings = ({
   listings,
   onAddTag,
   onChangeCategory,
@@ -13,7 +13,7 @@ const AllListings = ({
   loadNextPage,
 }) => {
   return (
-    <main class="crayons-layout__content">
+    <main class="crayons-layout__content" id="main-content">
       <div className="listings-columns" id="listings-results">
         {listings.map((listing) => (
           <SingleListing
@@ -45,5 +45,3 @@ AllListings.propTypes = {
 AllListings.defaultProps = {
   currentUserId: null,
 };
-
-export default AllListings;

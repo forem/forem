@@ -27,7 +27,7 @@ module Loggers
       end
 
       def log_to_datadog(metric_name, value, tags = [])
-        DatadogStatsClient.gauge(metric_name, value, tags: tags)
+        ForemStatsClient.gauge(metric_name, value, tags: tags)
       end
     end
   end

@@ -11,7 +11,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
 
     context "with user who is part of field test" do
       before do
-        field_test(:feed_top_articles_query, participant: user)
+        field_test(:wut, participant: user)
       end
 
       it "records user_creates_reaction field test conversion" do

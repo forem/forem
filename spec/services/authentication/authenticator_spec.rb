@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Authentication::Authenticator, type: :service do
   before do
     omniauth_mock_providers_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   context "when authenticating through an unknown provider" do
@@ -83,10 +83,10 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "records successful identity creation metric" do
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
         service.call
 
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "identity.created", tags: ["provider:apple"]
         )
       end
@@ -122,10 +122,10 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "does not record an identity creation metric" do
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
         service.call
 
-        expect(DatadogStatsClient).not_to have_received(:increment)
+        expect(ForemStatsClient).not_to have_received(:increment)
       end
 
       it "updates the proper data from the auth payload" do
@@ -281,10 +281,10 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "records successful identity creation metric" do
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
         service.call
 
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "identity.created", tags: ["provider:github"]
         )
       end
@@ -293,12 +293,12 @@ RSpec.describe Authentication::Authenticator, type: :service do
         # rubocop:disable RSpec/AnyInstance
         allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)
         # rubocop:enable RSpec/AnyInstance
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
 
         expect { described_class.call(auth_payload) }.to raise_error(StandardError)
 
         tags = hash_including(tags: array_including("error:StandardError"))
-        expect(DatadogStatsClient).to have_received(:increment).with("identity.errors", tags)
+        expect(ForemStatsClient).to have_received(:increment).with("identity.errors", tags)
       end
     end
 
@@ -332,10 +332,10 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "does not record an identity creation metric" do
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
         service.call
 
-        expect(DatadogStatsClient).not_to have_received(:increment)
+        expect(ForemStatsClient).not_to have_received(:increment)
       end
 
       it "sets remember_me for the existing user" do
@@ -391,12 +391,12 @@ RSpec.describe Authentication::Authenticator, type: :service do
         # rubocop:disable RSpec/AnyInstance
         allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)
         # rubocop:enable RSpec/AnyInstance
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
 
         expect { described_class.call(auth_payload) }.to raise_error(StandardError)
 
         tags = hash_including(tags: array_including("error:StandardError"))
-        expect(DatadogStatsClient).to have_received(:increment).with("identity.errors", tags)
+        expect(ForemStatsClient).to have_received(:increment).with("identity.errors", tags)
       end
     end
 
@@ -492,10 +492,10 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "records successful identity creation metric" do
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
         service.call
 
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "identity.created", tags: ["provider:facebook"]
         )
       end
@@ -504,12 +504,12 @@ RSpec.describe Authentication::Authenticator, type: :service do
         # rubocop:disable RSpec/AnyInstance
         allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)
         # rubocop:enable RSpec/AnyInstance
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
 
         expect { described_class.call(auth_payload) }.to raise_error(StandardError)
 
         tags = hash_including(tags: array_including("error:StandardError"))
-        expect(DatadogStatsClient).to have_received(:increment).with("identity.errors", tags)
+        expect(ForemStatsClient).to have_received(:increment).with("identity.errors", tags)
       end
     end
   end
@@ -541,8 +541,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.name).to eq(raw_info.name)
         expect(user.remote_profile_image_url).to eq(info.image.to_s.gsub("_normal", ""))
         expect(user.twitter_created_at.to_i).to eq(Time.zone.parse(raw_info.created_at).to_i)
-        expect(user.twitter_followers_count).to eq(raw_info.followers_count.to_i)
-        expect(user.twitter_following_count).to eq(raw_info.friends_count.to_i)
         expect(user.twitter_username).to eq(info.nickname)
       end
 
@@ -584,10 +582,10 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "records successful identity creation metric" do
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
         service.call
 
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "identity.created", tags: ["provider:twitter"]
         )
       end
@@ -623,10 +621,10 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "does not record an identity creation metric" do
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
         service.call
 
-        expect(DatadogStatsClient).not_to have_received(:increment)
+        expect(ForemStatsClient).not_to have_received(:increment)
       end
 
       it "updates the proper data from the auth payload" do
@@ -639,8 +637,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         raw_info = auth_payload.extra.raw_info
 
         expect(user.twitter_created_at.to_i).to eq(Time.zone.parse(raw_info.created_at).to_i)
-        expect(user.twitter_followers_count).to eq(raw_info.followers_count.to_i)
-        expect(user.twitter_following_count).to eq(raw_info.friends_count.to_i)
       end
 
       it "sets remember_me for the existing user" do

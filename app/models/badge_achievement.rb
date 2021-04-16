@@ -1,6 +1,7 @@
 class BadgeAchievement < ApplicationRecord
   CONTEXT_MESSAGE_ALLOWED_TAGS = %w[strong em i b u a code].freeze
   CONTEXT_MESSAGE_ALLOWED_ATTRIBUTES = %w[href name].freeze
+  resourcify
 
   belongs_to :user
   belongs_to :badge
@@ -47,6 +48,8 @@ class BadgeAchievement < ApplicationRecord
   end
 
   def award_credits
-    Credit.add_to(user, 5)
+    return if badge.credits_awarded.zero?
+
+    Credit.add_to(user, badge.credits_awarded)
   end
 end

@@ -6,7 +6,7 @@ RSpec.describe Notifications::WelcomeNotification::Send, type: :service do
 
     before do
       allow(User).to receive(:mascot_account).and_return(create(:user))
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
     end
 
     it "creates a new welcome notification", :aggregate_failures do
@@ -26,7 +26,7 @@ RSpec.describe Notifications::WelcomeNotification::Send, type: :service do
       welcome_notification = Notification.find_by(notifiable_id: welcome_broadcast.id)
       tags = ["user_id:#{welcome_notification.user_id}", "title:#{welcome_notification.notifiable.title}"]
 
-      expect(DatadogStatsClient).to have_received(:increment).with("notifications.welcome", tags: tags)
+      expect(ForemStatsClient).to have_received(:increment).with("notifications.welcome", tags: tags)
     end
   end
 end

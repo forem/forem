@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useListNavigation } from '../shared/components/useListNavigation';
 import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 
-/* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
+/* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
 export const Feed = ({ timeFrame, renderFeed }) => {
   const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
@@ -102,7 +102,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     sendHapticMessage('medium');
 
     if (userStatus === 'logged-out') {
-      showModal('add-to-readinglist-from-index');
+      showLoginModal();
       return;
     }
 

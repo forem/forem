@@ -15,10 +15,10 @@ module Admin
                           handle_article_cache
                           "Article ##{params[:bust_article]} was successfully busted"
                         end
-      redirect_to "/admin/tools"
+      redirect_to admin_tools_path
     rescue StandardError => e
       flash[:danger] = e.message
-      redirect_to "/admin/tools"
+      redirect_to admin_tools_path
     end
 
     private
@@ -43,10 +43,15 @@ module Admin
       if link.starts_with?(URL.url)
         link.sub!(URL.url, "")
       end
-      EdgeCache::Bust.call(link)
-      EdgeCache::Bust.call("#{link}/")
-      EdgeCache::Bust.call("#{link}?i=i")
-      EdgeCache::Bust.call("#{link}/?i=i")
+
+      paths = [
+        link,
+        "#{link}/",
+        "#{link}?i=i",
+        "#{link}/?i=i",
+      ]
+
+      EdgeCache::Bust.call(paths)
     end
   end
 end

@@ -6,7 +6,7 @@ module Metrics
     def perform
       # Articles published in the past 24 hours with at least 15 "score" (positive/negative reactions)
       articles_min_15_score_past_24h = Article.published.where("score >= ? AND published_at > ?", 15, 1.day.ago).size
-      DatadogStatsClient.count(
+      ForemStatsClient.count(
         "articles.min_15_score_past_24h",
         articles_min_15_score_past_24h,
         tags: ["resource:articles"],
@@ -16,7 +16,7 @@ module Metrics
       articles_min_15_comment_score_past_24h = Article.published
         .where("comment_score >= ? AND published_at > ?", 15, 1.day.ago)
         .size
-      DatadogStatsClient.count(
+      ForemStatsClient.count(
         "articles.min_15_comment_score_past_24h",
         articles_min_15_comment_score_past_24h,
         tags: ["resource:articles"],
@@ -24,11 +24,11 @@ module Metrics
 
       # Articles published in the past 24 which were that user's first article
       first_articles_past_24h = Article.where(nth_published_by_author: 1).where("published_at > ?", 1.day.ago).size
-      DatadogStatsClient.count("articles.first_past_24h", first_articles_past_24h, tags: ["resource:articles"])
+      ForemStatsClient.count("articles.first_past_24h", first_articles_past_24h, tags: ["resource:articles"])
 
       # Users who signed up in the past 24 hours who have made at least 1 comment so far
       new_users_min_1_comment_past_24h = User.where("comments_count >= ? AND registered_at > ?", 1, 24.hours.ago).size
-      DatadogStatsClient.count(
+      ForemStatsClient.count(
         "users.new_min_1_comment_past_24h",
         new_users_min_1_comment_past_24h,
         tags: ["resource:users"],
@@ -36,12 +36,12 @@ module Metrics
 
       # Total negative reactions in the past 24 hours
       negative_reactions_past_24h = Reaction.where("points < 0").where("created_at > ?", 1.day.ago).size
-      DatadogStatsClient.count("reactions.negative_past_24h", negative_reactions_past_24h, tags: ["resource:reactions"])
+      ForemStatsClient.count("reactions.negative_past_24h", negative_reactions_past_24h, tags: ["resource:reactions"])
 
       # Total abuse (etc.) reports in the past 24 hours
       categories = ["spam", "other", "rude or vulgar", "harassment"]
       reports_past_24_hours = FeedbackMessage.where(category: categories).where("created_at > ?", 1.day.ago).size
-      DatadogStatsClient.count(
+      ForemStatsClient.count(
         "feedback_messages.reports_past_24_hours",
         reports_past_24_hours,
         tags: ["resource:feedback_messages"],
@@ -76,8 +76,8 @@ module Metrics
       distinct_user_values = user_ids_by_day.flatten.group_by(&:itself).transform_values(&:count).values
       distinct_counts = distinct_user_values.group_by(&:itself).transform_values(&:count)
       distinct_counts.each_key do |key|
-        DatadogStatsClient.count("users.active_days_past_week", distinct_counts[key],
-                                 tags: ["resource:users", "group:#{group}", "day_count:#{key}"])
+        ForemStatsClient.count("users.active_days_past_week", distinct_counts[key],
+                               tags: ["resource:users", "group:#{group}", "day_count:#{key}"])
       end
     end
   end

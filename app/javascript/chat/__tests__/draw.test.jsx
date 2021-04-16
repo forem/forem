@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import Draw from '../draw';
+import { Draw } from '../draw';
 
 describe('<Draw />', () => {
   it('should have no a11y violations', async () => {

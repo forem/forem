@@ -13,6 +13,12 @@ class Comment < ApplicationRecord
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
 
+  # TODO: Vaidehi Joshi - Extract this into a constant or SiteConfig variable
+  # after https://github.com/forem/rfcs/pull/22 has been completed?
+  MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
+  # The date that we began limiting the number of user mentions in a comment.
+  MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
+
   belongs_to :commentable, polymorphic: true, optional: true
   belongs_to :user
 
@@ -39,6 +45,7 @@ class Comment < ApplicationRecord
   after_save :bust_cache
 
   validate :published_article, if: :commentable
+  validate :user_mentions_in_markdown
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
   validates :commentable_id, presence: true, if: :commentable_type
@@ -267,7 +274,7 @@ class Comment < ApplicationRecord
 
     return unless Reaction.comment_vomits.where(reactable_id: user.comments.pluck(:id)).size > 2
 
-    user.add_role(:banned)
+    user.add_role(:suspended)
     Note.create(
       author_id: SiteConfig.mascot_user_id,
       noteable_id: user_id,
@@ -303,7 +310,19 @@ class Comment < ApplicationRecord
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
   end
 
+  def user_mentions_in_markdown
+    return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
+
+    # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
+    mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
+    return if mentions_count <= MAX_USER_MENTIONS
+
+    errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a comment!")
+  end
+
   def record_field_test_event
+    return if FieldTest.config["experiments"].nil?
+
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, "user_creates_comment")
   end

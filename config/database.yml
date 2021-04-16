@@ -19,18 +19,18 @@ default: &default
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("DATABASE_POOL_SIZE") { ENV.fetch("RAILS_MAX_THREADS", 5).to_i } %>
   connect_timeout: 2
   checkout_timeout: 2
   variables:
-      statement_timeout: <%= ENV.fetch('STATEMENT_TIMEOUT', 2500).to_i %>
+      statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 2500).to_i %>
 
 development:
   <<: *default
-  url: <%= ENV.fetch('DATABASE_URL', '') %>
-  database: PracticalDeveloper_development
+  url: <%= ENV.fetch("DATABASE_URL", "postgres:///Forem_development") %>
+  database: <%= ENV.fetch("DATABASE_NAME", "Forem_development") %>
   variables:
-      statement_timeout: <%= ENV.fetch('STATEMENT_TIMEOUT', 10_000).to_i %>
+      statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 10_000).to_i %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -64,10 +64,10 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  url: <%= ENV['DATABASE_URL_TEST'] || ENV['DATABASE_URL'] || ''%>
-  database: PracticalDeveloper_test<%= ENV['TEST_ENV_NUMBER'] %>
+  url: <%= ENV.fetch("DATABASE_URL_TEST", "postgres:///Forem_test") %>
+  database: <%= ENV.fetch("DATABASE_NAME_TEST", "Forem_test") %><%= ENV["TEST_ENV_NUMBER"] %>
   variables:
-      statement_timeout: <%= ENV.fetch('STATEMENT_TIMEOUT', 10_000).to_i %>
+      statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 10_000).to_i %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -86,11 +86,9 @@ test:
 # You can use this database configuration with:
 #
 #   production:
-#     url: <%= ENV['DATABASE_URL'] %>
+#     url: <%= ENV["DATABASE_URL"] %>
 #
 production:
   <<: *default
-  database: PracticalDeveloper_production
-  pool: <%= ENV['DATABASE_POOL_SIZE'] %>
-  username: PracticalDeveloper
-  password: <%= ENV['PRACTICALDEVELOPER_DATABASE_PASSWORD'] %>
+  url: <%= ENV["DATABASE_URL"] %>
+  database: <%= ENV["DATABASE_NAME"] %>

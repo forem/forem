@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ClearQueryButton from '../components/ClearQueryButton';
+import { ClearQueryButton } from '../components/ClearQueryButton';
 
 describe('<ClearQueryButton />', () => {
   it('has no a11y violations', async () => {

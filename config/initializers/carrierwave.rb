@@ -11,9 +11,7 @@ def local_storage_config
     config.storage = :file
     config.enable_processing = !Rails.env.test? # disabled for test
     config.asset_host = if Rails.env.production?
-                          "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
-                        elsif Images::Optimizer.imgproxy_enabled?
-                          "http://#{ApplicationConfig['APP_DOMAIN']}"
+                          "https://#{ApplicationConfig['APP_DOMAIN']}"
                         end
   end
 end
@@ -48,14 +46,16 @@ def forem_cloud_config
   end
 end
 
-if Rails.env.production? && ENV["FILE_STORAGE_LOCATION"] != "file"
-  if ENV["FOREM_CONTEXT"] == "forem_cloud"
-    forem_cloud_config
-  elsif ApplicationConfig["AWS_ID"].present?
-    standard_production_config
+Rails.application.reloader.to_prepare do
+  if Rails.env.production? && ENV["FILE_STORAGE_LOCATION"] != "file"
+    if ENV["FOREM_CONTEXT"] == "forem_cloud"
+      forem_cloud_config
+    elsif ApplicationConfig["AWS_ID"].present?
+      standard_production_config
+    else
+      local_storage_config
+    end
   else
     local_storage_config
   end
-else
-  local_storage_config
 end

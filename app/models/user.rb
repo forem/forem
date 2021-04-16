@@ -5,6 +5,11 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  include PgSearch::Model
+  pg_search_scope :search_by_username,
+                  against: :username,
+                  using: { tsearch: { prefix: true } }
+
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
     available_for
@@ -89,8 +94,9 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
-  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
-                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
+  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
+                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
+                :current_password
 
   rolify after_add: :index_roles, after_remove: :index_roles
 
@@ -102,6 +108,8 @@ class User < ApplicationRecord
   acts_as_follower
 
   has_one :profile, dependent: :destroy
+  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :destroy
+  has_one :setting, class_name: "Users::Setting", dependent: :destroy
 
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id,
                            inverse_of: :resource_owner, dependent: :delete_all
@@ -125,10 +133,6 @@ class User < ApplicationRecord
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
-  has_many :buffer_updates_approved, class_name: "BufferUpdate", foreign_key: :approver_user_id,
-                                     inverse_of: :approver_user, dependent: :nullify
-  has_many :buffer_updates_composed, class_name: "BufferUpdate", foreign_key: :composer_user_id,
-                                     inverse_of: :composer_user, dependent: :nullify
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :collections, dependent: :destroy
@@ -177,6 +181,8 @@ class User < ApplicationRecord
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :tweets, dependent: :nullify
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
+  has_many :devices, dependent: :delete_all
+  has_many :sponsorships, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -218,7 +224,9 @@ class User < ApplicationRecord
   validates :unspent_credits_count, presence: true
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
   validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
-  validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
+  validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
+    "#{data[:value]} is taken."
+  end }, if: :username_changed?
   validates :welcome_notifications, inclusion: { in: [true, false] }
 
   # add validators for provider related usernames
@@ -258,7 +266,6 @@ class User < ApplicationRecord
   before_validation :verify_email
   before_validation :set_username
   before_validation :strip_payment_pointer
-  before_create :set_default_language
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
@@ -267,7 +274,7 @@ class User < ApplicationRecord
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
 
-  after_create_commit :send_welcome_notification, :estimate_default_language
+  after_create_commit :send_welcome_notification
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
@@ -280,12 +287,16 @@ class User < ApplicationRecord
     find_by(id: SiteConfig.mascot_user_id)
   end
 
-  def estimated_default_language
-    language_settings["estimated_default_language"]
-  end
-
   def tag_line
     summary
+  end
+
+  def twitter_url
+    "https://twitter.com/#{twitter_username}" if twitter_username.present?
+  end
+
+  def github_url
+    "https://github.com/#{github_username}" if github_username.present?
   end
 
   def set_remember_fields
@@ -303,9 +314,9 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article.tagged_with(cached_followed_tag_names, any: true)
+    Article
+      .cached_tagged_with_any(cached_followed_tag_names).unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
-      .where(language: preferred_languages_array, published: true)
   end
 
   def cached_following_users_ids
@@ -337,12 +348,6 @@ class User < ApplicationRecord
     end
   end
 
-  def preferred_languages_array
-    return @preferred_languages_array if defined?(@preferred_languages_array)
-
-    @preferred_languages_array = language_settings["preferred_languages"]
-  end
-
   def processed_website_url
     website_url.to_s.strip if website_url.present?
   end
@@ -363,13 +368,14 @@ class User < ApplicationRecord
     end
   end
 
-  # methods for Administrate field
-  def banned
-    has_role? :banned
+  def suspended?
+    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
+    # and data scripts have successfully removed the banned role, we can remove `has_role?(:banned)`
+    has_role?(:suspended) || has_role?(:banned)
   end
 
   def warned
-    has_role? :warned
+    has_role?(:warned)
   end
 
   def admin?
@@ -384,19 +390,15 @@ class User < ApplicationRecord
     has_role?(:tech_admin) || has_role?(:super_admin)
   end
 
-  def pro?
-    Rails.cache.fetch("user-#{id}/has_pro_role", expires_in: 200.hours) do
-      has_role?(:pro)
-    end
-  end
-
   def vomitted_on?
     Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
   end
 
   def trusted
-    @trusted ||= Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
-      has_role? :trusted
+    return @trusted if defined? @trusted
+
+    @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
+      has_role?(:trusted)
     end
   end
 
@@ -407,8 +409,11 @@ class User < ApplicationRecord
     end
   end
 
-  def comment_banned
-    has_role? :comment_banned
+  def comment_suspended?
+    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
+    # and data scripts have successfully removed the comment_banned role,
+    # we can remove `has_role?(:comment_banned)`
+    has_role?(:comment_suspended) || has_role?(:comment_banned)
   end
 
   def workshop_eligible?
@@ -466,9 +471,9 @@ class User < ApplicationRecord
   end
 
   def subscribe_to_mailchimp_newsletter
-    return unless registered
-    return unless email.present? && email.include?("@")
-    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+    return unless registered && email.present?
+    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
+    return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
     return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
@@ -481,8 +486,9 @@ class User < ApplicationRecord
   def resave_articles
     articles.find_each do |article|
       if article.path
-        EdgeCache::Bust.call(article.path)
-        EdgeCache::Bust.call("#{article.path}?i=i")
+        cache_bust = EdgeCache::Bust.new
+        cache_bust.call(article.path)
+        cache_bust.call("#{article.path}?i=i")
       end
       article.save
     end
@@ -494,6 +500,7 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
+    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
@@ -541,14 +548,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def estimate_default_language
-    Users::EstimateDefaultLanguageWorker.perform_async(id)
-  end
-
-  def set_default_language
-    language_settings["preferred_languages"] ||= ["en"]
-  end
 
   def send_welcome_notification
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))

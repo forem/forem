@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import SelectedTags from '../components/SelectedTags';
+import { SelectedTags } from '../components/SelectedTags';
 
 const tags = ['clojure', 'java', 'dotnet'];
 const getProps = () => ({

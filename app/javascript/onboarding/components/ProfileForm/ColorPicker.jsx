@@ -23,7 +23,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
 
-function ColorPicker(props) {
+export function ColorPicker(props) {
   const { onColorChange } = props;
   const { attribute_name, placeholder_text, description, label } = props.field;
 
@@ -62,5 +62,3 @@ ColorPicker.propTypes = {
     label: PropTypes.string.isRequired,
   }).isRequired,
 };
-
-export default ColorPicker;

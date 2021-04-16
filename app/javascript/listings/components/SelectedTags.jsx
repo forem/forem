@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { selectedTagsPropTypes } from '../../common-prop-types';
 
-const SelectedTags = ({ tags, onRemoveTag, onKeyPress }) => {
+export const SelectedTags = ({ tags, onRemoveTag, onKeyPress }) => {
   return (
     <section class="pt-2">
       {tags.map((tag) => (
@@ -36,5 +36,3 @@ const SelectedTags = ({ tags, onRemoveTag, onKeyPress }) => {
 };
 
 SelectedTags.propTypes = selectedTagsPropTypes;
-
-export default SelectedTags;

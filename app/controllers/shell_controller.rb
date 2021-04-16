@@ -1,4 +1,6 @@
 class ShellController < ApplicationController
+  # TODO: Remove these "ShellController", because they are for service worker functionality we no longer need.
+  # We are keeping these around mid-March 2021 because previously-installed service workers may still expect them.
   before_action :set_cache_control_headers, only: %i[top bottom]
 
   layout false

@@ -3,7 +3,8 @@
     "baseUrl": "./",
     "paths": {
       "@crayons/*": ["app/javascript/crayons/*"],
-      "@utilities/*": ["app/javascript/utilities/*"]
+      "@utilities/*": ["app/javascript/utilities/*"],
+      "@components/*": ["app/javascript/shared/components/*"]
     }
   },
   "exclude": ["node_modules", "**/node_modules/*"]

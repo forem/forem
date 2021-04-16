@@ -1,5 +1,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
+/* global showLoginModal */
 
 function toggleTemplateTypeButton(form, e) {
   const { targetType } = e.target.dataset;
@@ -123,9 +124,12 @@ function addClickListeners(form) {
   );
 
   insertButtons.forEach((button) => {
-    button.addEventListener('click', (e) => {
-      const { content } = e.target.dataset;
-      const textArea = form.getElementsByTagName('textarea')[0];
+    button.addEventListener('click', (event) => {
+      const { content } = event.target.dataset;
+      // We need to grab the textarea that is not the comment mention auto-complete component
+      const textArea = event.target.form.querySelector(
+        '.comment-textarea:not([role=combobox])',
+      );
       const textAreaReplaceable =
         textArea.value === null ||
         textArea.value === '' ||
@@ -133,6 +137,7 @@ function addClickListeners(form) {
 
       if (textAreaReplaceable) {
         textArea.value = content;
+        textArea.dispatchEvent(new Event('input', { target: textArea }));
         textArea.focus();
         responsesContainer.classList.toggle('hidden');
       }
@@ -296,10 +301,13 @@ function observeForReplyClick() {
 }
 
 function handleLoggedOut() {
-  // global method from app/assets/javascripts/utilities/showModal.js
   document
     .getElementsByClassName('response-templates-button')[0]
-    ?.addEventListener('click', showModal); /* eslint-disable-line no-undef */
+    ?.addEventListener(
+      'click',
+      // eslint-disable-next-line no-undef
+      showLoginModal,
+    );
 }
 /* eslint-enable no-alert */
 /* eslint-enable no-restricted-globals */

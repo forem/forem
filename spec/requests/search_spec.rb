@@ -1,26 +1,55 @@
 require "rails_helper"
 
 RSpec.describe "Search", type: :request, proper_status: true do
+  let(:authorized_user) { create(:user) }
+
   describe "GET /search/tags" do
-    let(:authorized_user) { create(:user) }
-    let(:mock_documents) do
-      [{ "name" => "tag1" }, { "name" => "tag2" }, { "name" => "tag3" }]
+    before do
+      sign_in authorized_user
     end
 
-    it "returns json" do
-      sign_in authorized_user
-      allow(Search::Tag).to receive(:search_documents).and_return(
-        mock_documents,
-      )
-      get "/search/tags"
-      expect(response.parsed_body).to eq("result" => mock_documents)
+    context "when using Elasticsearch" do
+      let(:mock_documents) do
+        [{ "name" => "tag1" }, { "name" => "tag2" }, { "name" => "tag3" }]
+      end
+
+      it "returns json" do
+        allow(Search::Tag).to receive(:search_documents).and_return(mock_documents)
+
+        get search_tags_path
+
+        expect(response.parsed_body).to eq("result" => mock_documents)
+      end
+
+      it "returns an empty array when a Bad Request error is raised" do
+        allow(Search::Client).to receive(:search).and_raise(Search::Errors::Transport::BadRequest)
+
+        get search_tags_path
+
+        expect(response.parsed_body).to eq("result" => [])
+      end
     end
 
-    it "returns an empty array when a Bad Request error is raised" do
-      sign_in authorized_user
-      allow(Search::Client).to receive(:search).and_raise(Search::Errors::Transport::BadRequest)
-      get "/search/tags"
-      expect(response.parsed_body).to eq("result" => [])
+    context "when using PostgreSQL" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_tags).and_return(true)
+      end
+
+      # NOTE: [@rhymes] ES returns all tags if no parameter is given **but** this endpoint is only used by
+      # the `Tags` Preact component so there's no need for us to return all tags. After all it's a search endpoint,
+      # not an index page
+      it "returns nothing if there is no name parameter" do
+        get search_tags_path
+        expect(response.parsed_body["result"]).to be_empty
+      end
+
+      it "finds a tag by a partial name" do
+        tag = create(:tag, name: "elixir")
+
+        get search_tags_path(name: "eli")
+
+        expect(response.parsed_body["result"].first).to include("name" => tag.name)
+      end
     end
   end
 
@@ -32,7 +61,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
     it "returns json" do
       sign_in authorized_user
-      allow(Search::ChatChannelMembership).to receive(:search_documents).and_return(
+      allow(Search::Postgres::ChatChannelMembership).to receive(:search_documents).and_return(
         mock_documents,
       )
       get "/search/chat_channels"
@@ -41,16 +70,43 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/listings" do
-    let(:mock_documents) do
-      [{ "title" => "listing1" }]
+    context "when using Elasticsearch" do
+      let(:mock_documents) do
+        [{ "title" => "listing1" }]
+      end
+
+      it "returns json" do
+        allow(Search::Listing).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+        get "/search/listings"
+        expect(response.parsed_body).to eq("result" => mock_documents)
+      end
     end
 
-    it "returns json" do
-      allow(Search::Listing).to receive(:search_documents).and_return(
-        mock_documents,
-      )
-      get "/search/listings"
-      expect(response.parsed_body).to eq("result" => mock_documents)
+    context "when using PostgreSQL" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_listings).and_return(true)
+      end
+
+      it "returns the correct keys" do
+        create(:listing)
+        get search_listings_path
+        expect(response.parsed_body["result"]).to be_present
+      end
+
+      it "supports the search params" do
+        listing = create(:listing)
+
+        get search_listings_path(
+          category: listing.category,
+          page: 0,
+          per_page: 1,
+          term: listing.title.downcase,
+        )
+
+        expect(response.parsed_body["result"].first).to include("title" => listing.title)
+      end
     end
   end
 
@@ -67,16 +123,45 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/usernames" do
-    let(:authorized_user) { create(:user) }
-    let(:names) { ["username"] }
-
-    it "returns json" do
+    before do
       sign_in authorized_user
-      allow(Search::User).to receive(:search_usernames).and_return(
-        names,
-      )
-      get "/search/usernames"
-      expect(response.parsed_body).to eq("result" => names)
+    end
+
+    context "when using Elasticsearch" do
+      let(:result) do
+        {
+          "username" => "molly",
+          "name" => "Molly",
+          "profile_image_90" => "something"
+        }
+      end
+
+      it "returns json" do
+        allow(Search::User).to receive(:search_usernames).and_return(
+          result,
+        )
+        get "/search/usernames"
+        expect(response.parsed_body).to eq("result" => result)
+      end
+    end
+
+    context "when using PostgreSQL" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_usernames).and_return(true)
+      end
+
+      it "returns nothing if there is no username parameter" do
+        get search_usernames_path
+        expect(response.parsed_body["result"]).to be_empty
+      end
+
+      it "finds a username by a partial name" do
+        user = create(:user, username: "Sloan")
+
+        get search_usernames_path(username: "slo")
+
+        expect(response.parsed_body["result"].first).to include("username" => user.username)
+      end
     end
   end
 
@@ -140,29 +225,57 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/reactions" do
-    let(:authorized_user) { create(:user) }
-    let(:mock_response) do
-      { "reactions" => [{ id: 123 }], "total" => 100 }
+    before do
+      sign_in authorized_user
     end
 
-    it "returns json with reactions and total" do
-      sign_in authorized_user
-      allow(Search::ReadingList).to receive(:search_documents).and_return(
-        mock_response,
-      )
-      get "/search/reactions"
-      expect(response.parsed_body).to eq("result" => [{ "id" => 123 }], "total" => 100)
+    context "when using Elasticsearch" do
+      let(:mock_response) do
+        { "reactions" => [{ id: 123 }], "total" => 100 }
+      end
+
+      before do
+        allow(Search::ReadingList).to receive(:search_documents).and_return(mock_response)
+      end
+
+      it "returns json with reactions and total" do
+        get search_reactions_path
+
+        expect(response.parsed_body).to eq("result" => [{ "id" => 123 }], "total" => 100)
+      end
+
+      it "accepts array of tag names" do
+        get search_reactions_path(tag_names: [1, 2])
+
+        expect(Search::ReadingList).to(
+          have_received(:search_documents)
+            .with(params: { "tag_names" => %w[1 2] }, user: authorized_user),
+        )
+      end
     end
 
-    it "accepts array of tag names" do
-      sign_in authorized_user
-      allow(Search::ReadingList).to receive(:search_documents).and_return(
-        mock_response,
-      )
-      get "/search/reactions?tag_names[]=1&tag_names[]=2"
-      expect(Search::ReadingList).to have_received(
-        :search_documents,
-      ).with(params: { "tag_names" => %w[1 2] }, user: authorized_user)
+    context "when using PostgreSQL" do
+      let(:article) { create(:article) }
+
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_reading_list).and_return(true)
+        create(:reaction, category: :readinglist, reactable: article, user: authorized_user)
+      end
+
+      it "returns the correct keys", :aggregate_failures do
+        get search_reactions_path
+
+        expect(response.parsed_body["result"]).to be_present
+        expect(response.parsed_body["total"]).to eq(1)
+      end
+
+      it "supports the search params" do
+        article.update_columns(title: "Title", cached_tag_list: "ruby, python")
+
+        get search_reactions_path(page: 0, per_page: 1, status: %w[valid], tags: %w[ruby], term: "title")
+
+        expect(response.parsed_body["result"].first["reactable"]).to include("title" => "Title")
+      end
     end
   end
 end

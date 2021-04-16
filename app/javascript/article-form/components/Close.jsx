@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { Button } from '@crayons';
 
-export const Close = () => {
+export const Close = ({ displayModal = () => {} }) => {
   const Icon = () => (
     <svg
       width="24"
@@ -22,9 +22,8 @@ export const Close = () => {
       <Button
         variant="ghost"
         contentType="icon"
-        url="/"
-        tagName="a"
         icon={Icon}
+        onClick={() => displayModal()}
       />
     </div>
   );

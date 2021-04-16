@@ -19,7 +19,7 @@ function renderPage() {
     communityDescription: dataElement.dataset.communityDescription,
   };
   import('../onboarding/Onboarding')
-    .then(({ default: Onboarding }) => {
+    .then(({ Onboarding }) => {
       render(
         <Onboarding communityConfig={communityConfig} />,
         document.getElementById('onboarding-container'),

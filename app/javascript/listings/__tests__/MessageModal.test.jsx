@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import MessageModal from '../components/MessageModal';
+import { MessageModal } from '../components/MessageModal';
 
 const getDefaultListing = () => ({
   id: 22,

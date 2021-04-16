@@ -1,12 +1,21 @@
-# Global settings applied to the whole site.
-#
-# “publish” is the directory to publish (relative to root of your repo),
-# “command” is your build command,
-# “base” is directory to change to before starting build. if you set base:
-#    that is where we will look for package.json/.nvmrc/etc not repo root!
-
 [build]
-  # base set in Netlify settings UI
-  command = "npm install && npm run build-storybook"
+  # environment variables NODE_VERSION and YARN_VERSION set in Netlify settings UI
+  base = "app/javascript"
+  command = "npm install yarn && yarn install && yarn run build-storybook"
   publish = "storybook-static"
-  ignore = "git diff --quiet HEAD^ HEAD app/javascript && git diff --quiet HEAD^ HEAD app/assets/stylesheets/config"
+  ignore = "git diff --quiet HEAD^ HEAD ./ && git diff --quiet HEAD^ HEAD ../assets/stylesheets/config/"
+[build.environment]
+  NODE_VERSION = "14.14"
+
+# See <https://docs.netlify.com/routing/redirects/redirect-options/> for more options
+[[redirects]]
+from = "http://storybook.dev.to"
+to = "https://storybook.forem.com"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://storybook.dev.to/*"
+to = "https://storybook.forem.com/:splat"
+status = 301
+force = true

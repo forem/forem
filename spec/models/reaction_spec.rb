@@ -124,11 +124,6 @@ RSpec.describe Reaction, type: :model do
         reaction.reactable.user_id = user_id
         expect(reaction.skip_notification_for?(user)).to be(true)
       end
-
-      it "is true when the receive_notifications is false" do
-        reaction.reactable.receive_notifications = false
-        expect(reaction.skip_notification_for?(receiver)).to be(true)
-      end
     end
   end
 

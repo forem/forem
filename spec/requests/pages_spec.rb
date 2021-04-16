@@ -122,6 +122,7 @@ RSpec.describe "Pages", type: :request do
     it "has proper headline" do
       get "/contact"
       expect(response.body).to include("Contact")
+      expect(response.body).to include("@#{SiteConfig.social_media_handles['twitter']}")
     end
   end
 
@@ -243,20 +244,6 @@ RSpec.describe "Pages", type: :request do
       it "prefills with the provided url" do
         url = Faker::Internet.url
         get "/report-abuse", headers: { referer: url }
-        expect(response.body).to include(url)
-      end
-
-      it "does not prefill if the provide url is /serviceworker.js" do
-        url = "https://dev.to/serviceworker.js"
-        get "/report-abuse", headers: { referer: url }
-        expect(response.body).not_to include(url)
-      end
-    end
-
-    context "when provided the params" do
-      it "prefills with the provided param url" do
-        url = "https://dev.to/serviceworker.js"
-        get "/report-abuse", params: { url: url }
         expect(response.body).to include(url)
       end
     end

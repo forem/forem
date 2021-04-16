@@ -24,7 +24,7 @@
         </div>
       <% else %>
         <div class="registration__actions-email" id="sign-in-password-form">
-          <% if SiteConfig.allow_email_password_login %>
+          <% if Settings::Authentication.allow_email_password_login %>
             <div class="registration__hr">
               <span class="registration__hr-label">
                 Have a password? Continue with your email address

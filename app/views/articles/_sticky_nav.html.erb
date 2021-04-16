@@ -35,7 +35,7 @@
     <% end %>
   </div>
 
-  <% cache("article-sticky-nav-articles-0-#{@article.id}-#{@actor.last_article_at}", expires_in: 48.hours) do %>
+  <% cache("article-sticky-nav-articles-#{@article.id}-#{@actor.latest_article_updated_at}", expires_in: 48.hours) do %>
     <% if (user_stickies = Articles::GetUserStickies.call(@article, @actor)).present? %>
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">

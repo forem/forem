@@ -21,28 +21,28 @@
     <h2>User</h2>
 
     <div class="crayons-field">
-      <%= f.label :name, class: "crayons-field__label" %>
+      <%= f.label :name, for: "user[name]", class: "crayons-field__label" %>
       <%= f.text_field "user[name]", maxlength: 30, class: "crayons-textfield", placeholder: "John Doe", value: @user.name %>
     </div>
 
     <div class="crayons-field">
-      <%= f.label :email, class: "crayons-field__label" %>
+      <%= f.label :email, for: "user[email]", class: "crayons-field__label" %>
       <%= f.text_field "user[email]", class: "crayons-textfield", placeholder: "john.doe@example.com", value: @user.email %>
     </div>
 
     <div class="crayons-field">
-      <%= f.label :username, class: "crayons-field__label" %>
+      <%= f.label :username, for: "user[username]", class: "crayons-field__label" %>
       <%= f.text_field "user[username]", maxlength: 30, class: "crayons-textfield", placeholder: "johndoe", value: @user.username %>
     </div>
 
     <div class="crayons-field">
-      <%= f.label :profile_image, class: "crayons-field__label" %>
+      <%= f.label :profile_image, for: "user[profile_image]", class: "crayons-field__label" %>
 
       <div class="flex items-center">
         <% if @user.profile_image_url.present? %>
           <span class="crayons-avatar crayons-avatar--xl mr-2"><img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" /></span>
-          <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
         <% end %>
+        <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
     </div>
   </div>

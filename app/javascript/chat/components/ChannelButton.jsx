@@ -2,27 +2,29 @@ import { h, createRef } from 'preact';
 import { useEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { defaultChannelPropTypes } from '../../common-prop-types/channel-list-prop-type';
-import ChannelImage from './ChannelImage';
+import { ChannelImage } from './ChannelImage';
 import { Button } from '@crayons';
 
 /**
- * Render the channel button
+ * Render a button to switch focus to a channel
+ *
  * @param {object} props
- * 
+ *
  * @component
- * 
+ *
  * @example
- * 
- * <ChannelButton 
- *  channel={channel}
-    newMessagesIndicator={newMessagesIndicator}
-    otherClassname={otherClassname}
-    handleSwitchChannel={handleSwitchChannel}
-    isUnopened={isUnopened}
+ *
+ * <ChannelButton
+ *   channel={channel}
+     newMessagesIndicator={newMessagesIndicator}
+     otherClassname={otherClassname}
+     handleSwitchChannel={handleSwitchChannel}
+     isUnopened={isUnopened}
  * />
  *
  */
-export default function ChannelButton(props) {
+
+export function ChannelButton(props) {
   const buttonRef = createRef();
   const { isActiveChannel = false } = props;
 
@@ -48,8 +50,8 @@ export default function ChannelButton(props) {
       key={channel.id}
       className={
         discoverableChannel
-          ? 'chatchanneltab chatchanneltab--inactive crayons-btn--ghost'
-          : `chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator} crayons-btn--ghost`
+          ? 'chatchanneltab chatchanneltab--inactive crayons-btn--ghost align-left'
+          : `chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator} crayons-btn--ghost align-left`
       }
       onClick={discoverableChannel ? triggerActiveContent : handleSwitchChannel}
       data-content="sidecar-channel-request"

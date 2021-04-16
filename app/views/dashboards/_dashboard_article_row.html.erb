@@ -16,7 +16,8 @@
         <strong class="fw-medium">Published:</strong>
         <%= local_date(article.published_timestamp, show_year: article.displayable_published_at.year != Time.current.year) %>
         <% if article.edited? %>
-          <strong class="fw-medium pl-2">Edited:</strong> <time datetime="<%= article.edited_at.utc.iso8601 %>"><%= article.readable_edit_date %></time>
+          <strong class="fw-medium pl-2">Edited:</strong>
+          <%= local_date(article.edited_at, show_year: article.edited_at.year != Time.current.year) %>
         <% end %>
         <% if article.collection_id %>
           <strong class="fw-medium pl-2">Series:</strong> <%= article.series %>
@@ -84,24 +85,22 @@
         <% end %>
       <% end %>
     <% elsif article.published %>
-      <a href="<%= article.path %>/manage" class="crayons-btn crayons-btn--ghost crayons-btn--s">Manage</a>
+      <a href="<%= article.path %>/manage" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Manage post: <%= article.title %>">Manage</a>
     <% elsif @user == article.user %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
     <% end %>
-    <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s">Edit</a>
+    <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Edit post: <%= article.title %>">Edit</a>
 
     <div class="js-ellipsis-menu relative inline-block">
       <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon js-ellipsis-menu-trigger">
-        <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More...") %>
+        <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More options for post: #{article.title}") %>
       </button>
 
       <div class="crayons-dropdown top-100 right-0 align-left js-ellipsis-menu-dropdown p-1">
         <% if article.user_subscriptions_count > 0 %>
           <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="crayons-link crayons-link--block w-100"><%= "Subscriptions (#{article.user_subscriptions_count})" %></a>
         <% end %>
-        <% if @current_user_pro %>
-          <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100">Stats</a>
-        <% end %>
+        <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100">Stats</a>
         <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "js-archive-toggle" }) do |f| %>
           <%= f.hidden_field :archived, value: !article.archived, id: "article_archived_#{article.id}" %>
 

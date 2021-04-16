@@ -1,5 +1,16 @@
+<style>
+  .permalink-heading svg {
+    fill: currentColor;
+    visibility: hidden;
+  }
 
-<h1><strong>Things to Know</strong></h1>
+  .permalink-heading a:focus svg,
+  .permalink-heading:hover svg {
+    visibility: visible;
+  }
+
+</style>
+<h1 id="things-to-know" class="permalink-heading"><strong>Things to Know</strong><a href="#things-to-know"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Things to know") %></a></h1>
 <ul>
   <li>We use a markdown editor that uses <a href="https://jekyllrb.com/docs/frontmatter">Jekyll front matter</a>.</li>
   <li>Most of the time, you can write inline HTML directly into your posts.</li>
@@ -10,7 +21,7 @@
 
 <p><em><b>We have two editor versions</b>. If you'd prefer to edit title and tags etc. as separate fields, switch to the "rich + markdown" option in <a href="/settings/customization">/settings/customization</a>. Otherwise, continue:</em></p>
 
-<h2><u><strong>Front Matter</strong></u></h2>
+<h2 id="front-matter" class="permalink-heading"><u><strong>Front Matter</strong></u><a href="#front-matter"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Front matter") %></a></h2>
 <p>Custom variables set for each post, located between the triple-dashed lines in your editor. Here is a list of possibilities:</p>
 <ul>
   <li><strong>title:</strong> the title of your article</li>

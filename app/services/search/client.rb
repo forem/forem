@@ -48,7 +48,7 @@ module Search
       def record_error(error_message, class_name)
         Honeycomb.add_field("elasticsearch.result", "error")
         Honeycomb.add_field("elasticsearch.error", class_name)
-        DatadogStatsClient.increment("elasticsearch.errors", tags: ["error:#{class_name}", "message:#{error_message}"])
+        ForemStatsClient.increment("elasticsearch.errors", tags: ["error:#{class_name}", "message:#{error_message}"])
       end
 
       def target

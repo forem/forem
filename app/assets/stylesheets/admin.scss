@@ -108,7 +108,8 @@ label {
 }
 
 .config-authentication__item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 40px 1fr;
   gap: var(--su-2);
   padding-top: var(--su-3);
   padding-bottom: var(--su-3);
@@ -142,8 +143,7 @@ label {
 }
 
 .config-authentication-form {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--su-4);
   padding-top: var(--su-6);
   padding-bottom: var(--su-2);
@@ -179,4 +179,60 @@ label {
 
 .capitalize {
   text-transform: capitalize;
+}
+
+.data_update_script__filename {
+  max-width: 350px;
+}
+
+.data_update_script__status {
+  min-width: 120px;
+}
+
+.admin__left-sidebar {
+  button {
+    border: 0;
+    width: 100%;
+
+    // In safari the links show up with a grey background
+    &:not(.crayons-link--current) {
+      background: transparent;
+    }
+  }
+
+  .crayons-link--current {
+    cursor: default;
+  }
+}
+
+.admin__tabbed-navbar,
+.admin__left-sidebar {
+  // Navbar links have text-decorations that are being
+  // rendered from boostrap. We want to remove these to be
+  // consistent with links in the crayons design system.
+  .crayons-link,
+  .crayons-tabs__item {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: 2px auto blue;
+    }
+
+    &:focus-visible {
+      outline: 2px auto blue;
+    }
+
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
 }

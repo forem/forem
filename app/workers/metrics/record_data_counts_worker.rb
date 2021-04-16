@@ -4,7 +4,7 @@ module Metrics
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform
-      models = [User, Article, Organization, Comment, Podcast, PodcastEpisode, Listing, PageView, Notification]
+      models = [User, Article, Organization, Comment, Podcast, PodcastEpisode, Listing, PageView, Notification, Message]
       models.each do |model|
         db_count = begin
           model.count
@@ -13,7 +13,7 @@ module Metrics
         end
 
         Rails.logger.info(message: "db_table_size", table_info: { table_name: model.table_name, table_size: db_count })
-        DatadogStatsClient.gauge("postgres.db_table_size", db_count, tags: ["table_name:#{model.table_name}"])
+        ForemStatsClient.gauge("postgres.db_table_size", db_count, tags: ["table_name:#{model.table_name}"])
 
         next unless model.const_defined?(:SEARCH_CLASS)
 
@@ -22,8 +22,8 @@ module Metrics
                          else
                            model::SEARCH_CLASS.document_count
                          end
-        DatadogStatsClient.gauge("elasticsearch.document_count", document_count,
-                                 tags: ["table_name:#{model.table_name}"])
+        ForemStatsClient.gauge("elasticsearch.document_count", document_count,
+                               tags: ["table_name:#{model.table_name}"])
       end
     end
   end

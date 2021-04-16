@@ -25,7 +25,7 @@ module Articles
 
       Article
         .published
-        .tagged_with(article_tags, any: true)
+        .tagged_with(article_tags, any: true).unscope(:select)
         .limited_column_select
         .where("public_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num)
         .where.not(id: article.id)
@@ -40,7 +40,7 @@ module Articles
 
       Article
         .published
-        .tagged_with(SUGGESTION_TAGS, any: true)
+        .tagged_with(SUGGESTION_TAGS, any: true).unscope(:select)
         .limited_column_select
         .where("comments_count > ?", comment_count_num)
         .where.not(id: article.id)

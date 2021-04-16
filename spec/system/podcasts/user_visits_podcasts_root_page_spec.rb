@@ -12,7 +12,7 @@ RSpec.describe "User visits /pod page", type: :system do
   before { visit "/pod" }
 
   it "displays the podcasts", js: true do
-    within "#articles-list" do
+    within "#main-content" do
       expect(page).to have_link(nil, href: podcast_episode1.path)
       expect(page).to have_link(nil, href: podcast_episode2.path)
       expect(page).to have_link(nil, href: podcast_episode3.path)
@@ -20,20 +20,20 @@ RSpec.describe "User visits /pod page", type: :system do
   end
 
   it "displays the podcasts with published_at" do
-    within "#articles-list" do
+    within "#main-content" do
       expect(page).to have_selector("time.published-at", count: 2)
       expect(page).to have_selector("span.time-ago-indicator-initial-placeholder", count: 2)
     end
   end
 
   it "doesn't display an unreachable podcast" do
-    within "#articles-list" do
+    within "#main-content" do
       expect(page).not_to have_link(nil, href: un_podcast_episode.path)
     end
   end
 
   it "doesn't dsplay a podcast that is not published" do
-    within "#articles-list" do
+    within "#main-content" do
       expect(page).not_to have_link(nil, href: unpublished_episode.path)
     end
   end

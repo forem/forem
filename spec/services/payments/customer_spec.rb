@@ -21,11 +21,11 @@ RSpec.describe Payments::Customer, type: :service do
     end
 
     it "increments stripe.errors if the customer does not exist" do
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
 
       expect { described_class.get("foobar") }.to raise_error(Payments::InvalidRequestError)
       tags = hash_including(tags: array_including("error:InvalidRequestError"))
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
+      expect(ForemStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
 
     it "raises Payments::PaymentsError for any other known error" do
@@ -34,12 +34,12 @@ RSpec.describe Payments::Customer, type: :service do
     end
 
     it "increments stripe.errors for any other known error" do
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
       allow(Stripe::Customer).to receive(:retrieve).with("foobar").and_raise(Stripe::StripeError)
 
       expect { described_class.get("foobar") }.to raise_error(Payments::PaymentsError)
       tags = hash_including(tags: array_including("error:StripeError"))
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
+      expect(ForemStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
 
@@ -76,11 +76,11 @@ RSpec.describe Payments::Customer, type: :service do
     it "increments stripe.errors if anything in the params is invalid" do
       error = Stripe::InvalidRequestError.new("message", :token)
       allow(Stripe::Customer).to receive(:create_source).and_raise(error)
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
 
       expect { described_class.create_source("customer_id", "token") }.to raise_error(Payments::InvalidRequestError)
       tags = hash_including(tags: array_including("error:InvalidRequestError"))
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
+      expect(ForemStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
 
     it "raises Payments::PaymentsError for any other known error" do
@@ -90,11 +90,11 @@ RSpec.describe Payments::Customer, type: :service do
 
     it "increments stripe.errors for any other known error" do
       allow(Stripe::Customer).to receive(:create_source).and_raise(Stripe::StripeError)
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
 
       expect { described_class.create_source("customer_id", "token") }.to raise_error(Payments::PaymentsError)
       tags = hash_including(tags: array_including("error:StripeError"))
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
+      expect(ForemStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
 
@@ -166,7 +166,7 @@ RSpec.describe Payments::Customer, type: :service do
 
     it "increments stripe.errors if the card has any troubles" do
       StripeMock.prepare_card_error(:expired_card)
-      allow(DatadogStatsClient).to receive(:increment)
+      allow(ForemStatsClient).to receive(:increment)
 
       customer = Stripe::Customer.create
       token = stripe_helper.generate_card_token
@@ -176,7 +176,7 @@ RSpec.describe Payments::Customer, type: :service do
         described_class.charge(customer: customer, amount: 1, description: "Test charge", card_id: card.id)
       end.to raise_error(Payments::CardError)
       tags = hash_including(tags: array_including("error:CardError"))
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
+      expect(ForemStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
 end

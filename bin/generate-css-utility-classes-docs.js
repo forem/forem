@@ -95,15 +95,10 @@ function generateUtilityClassStories(cssProperty, cssRules) {
   for (const [className, cssRule] of Object.entries(cssRules)) {
     const sanitizedCssClassName = className.replace(/[.-]/g, '_');
     const propertiesAndValues = [];
-    let isImportant = false;
 
     for (let i = 0; i < cssRule.style.length; i++) {
       const styleProperty = cssRule.style[i];
       const value = cssRule.style[styleProperty];
-
-      if (!isImportant) {
-        isImportant = cssRule.style._importants[styleProperty] === 'important';
-      }
 
       propertiesAndValues.push(`<li>
           <a
@@ -120,11 +115,6 @@ function generateUtilityClassStories(cssProperty, cssRules) {
       <ul>
         ${propertiesAndValues.join('')}
       </ul>
-      ${
-        isImportant
-          ? '<p>Note that <code>!important</code> is being used to override pre-design system CSS.</p>'
-          : ''
-      }
       <pre><code>{\`${prettier.format(cssRule.cssText, {
         parser: 'css',
       })}\`}</code></pre>
@@ -203,7 +193,7 @@ async function generateDocumentation() {
 
     await generateUtilityClassesDocumentation(styleSheet);
   } catch (error) {
-    throw new Error('Error generating the CSS utilty class Storybook stories');
+    throw new Error('Error generating the CSS utility class Storybook stories');
   }
 }
 

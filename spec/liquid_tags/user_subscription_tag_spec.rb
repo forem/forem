@@ -137,9 +137,9 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
     end
 
     it "allows a user to sign in", type: :system, js: true do
-      expect(page).to have_css("#global-signup-modal", visible: :hidden)
+      expect(page).not_to have_text("Log in to continue")
       click_button("Sign In", id: "sign-in-btn")
-      expect(page).to have_css("#global-signup-modal", visible: :visible)
+      expect(page).to have_text("Log in to continue")
     end
   end
 

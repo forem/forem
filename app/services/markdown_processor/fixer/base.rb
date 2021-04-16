@@ -53,7 +53,7 @@ module MarkdownProcessor
       def self.underscores_in_usernames(markdown)
         return markdown unless markdown.match?(USERNAME_WITH_UNDERSCORE_REGEXP)
 
-        traverser = MarkdownTraverser.new(markdown)
+        traverser = MarkdownProcessor::Traverser.new(markdown)
         traverser.each do |line|
           next if traverser.in_codeblock?
 

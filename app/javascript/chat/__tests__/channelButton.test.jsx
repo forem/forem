@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import ChannelButton from '../components/ChannelButton';
+import { ChannelButton } from '../components/ChannelButton';
 
 const getChannel = () => {
   return {

@@ -1,10 +1,11 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import Article from './article';
-import ChannelRequest from './channelRequest';
-import RequestManager from './RequestManager/RequestManager';
-import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
-import Draw from './draw';
+import { Article } from './article';
+import { ChannelRequest } from './channelRequest';
+import { RequestManager } from './RequestManager/RequestManager';
+import { ChatChannelSettings } from './ChatChannelSettings/ChatChannelSettings';
+import { Draw } from './draw';
+import { ReportAbuse } from './ReportAbuse';
 
 const smartSvgIcon = (content, d) => (
   <svg
@@ -13,13 +14,14 @@ const smartSvgIcon = (content, d) => (
     viewBox="0 0 24 24"
     width="24"
     height="24"
+    style={{ marginLeft: '-12px', marginTop: '-4px' }}
   >
     <path data-content={content} fill="none" d="M0 0h24v24H0z" />
     <path data-content={content} d={d} />
   </svg>
 );
 
-export default class Content extends Component {
+export class Content extends Component {
   static propTypes = {
     resource: PropTypes.shape({
       data: PropTypes.any,
@@ -33,13 +35,20 @@ export default class Content extends Component {
     fullscreen: PropTypes.bool.isRequired,
     onTriggerContent: PropTypes.func.isRequired,
     updateRequestCount: PropTypes.func.isRequired,
+    closeReportAbuseForm: PropTypes.func.isRequired,
   };
 
   render() {
-    const { onTriggerContent, fullscreen, resource } = this.props;
+    const {
+      onTriggerContent,
+      fullscreen,
+      resource,
+      closeReportAbuseForm,
+    } = this.props;
     if (!resource) {
       return '';
     }
+
     return (
       // TODO: A button (role="button") cannot contain other interactive elements, i.e. buttons.
       // TODO: These should have key click events as well.
@@ -66,7 +75,7 @@ export default class Content extends Component {
           type="button"
           className="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
           data-content="fullscreen"
-          style={{ left: '39px' }}
+          style={{ left: '-80px', marginLeft: '0px' }}
           title="fullscreen"
         >
           {' '}
@@ -80,13 +89,16 @@ export default class Content extends Component {
                 'M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z',
               )}
         </button>
-        <Display resource={resource} />
+        <Display
+          resource={resource}
+          closeReportAbuseForm={closeReportAbuseForm}
+        />
       </div>
     );
   }
 }
 
-const Display = ({ resource }) => {
+function Display({ resource, closeReportAbuseForm }) {
   switch (resource.type_of) {
     case 'loading-user':
       return <div className="loading-user" title="Loading user" />;
@@ -116,7 +128,14 @@ const Display = ({ resource }) => {
           handleLeavingChannel={resource.handleLeavingChannel}
         />
       );
+    case 'message-report-abuse':
+      return (
+        <ReportAbuse
+          data={resource.data}
+          closeReportAbuseForm={closeReportAbuseForm}
+        />
+      );
     default:
       return null;
   }
-};
+}

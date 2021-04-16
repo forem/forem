@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe EdgeCache::BustPodcastEpisode, type: :service do
+  let(:cache_bust) { instance_double(EdgeCache::Bust) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:podcast_path) { "/cfp" }
@@ -15,8 +16,10 @@ RSpec.describe EdgeCache::BustPodcastEpisode, type: :service do
   end
 
   before do
+    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
+
     paths.each do |path|
-      allow(described_class).to receive(:bust).with(path).once
+      allow(cache_bust).to receive(:call).with(path).once
     end
 
     allow(podcast_episode).to receive(:purge)
@@ -27,7 +30,7 @@ RSpec.describe EdgeCache::BustPodcastEpisode, type: :service do
     described_class.call(podcast_episode, podcast_path, podcast_slug)
 
     paths.each do |path|
-      expect(described_class).to have_received(:bust).with(path).once
+      expect(cache_bust).to have_received(:call).with(path).once
     end
 
     expect(podcast_episode).to have_received(:purge)
@@ -36,7 +39,7 @@ RSpec.describe EdgeCache::BustPodcastEpisode, type: :service do
 
   it "logs an error" do
     allow(Rails.logger).to receive(:warn)
-    allow(described_class).to receive(:bust).and_raise(StandardError)
+    allow(cache_bust).to receive(:call).and_raise(StandardError)
     described_class.call(podcast_episode, 12, podcast_slug)
     expect(Rails.logger).to have_received(:warn).once
   end

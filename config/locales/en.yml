@@ -27,13 +27,12 @@
 #   'true': 'foo'
 #
 # To learn more, please read the Rails Internationalization guide
-# available at http://guides.rubyonrails.org/i18n.html.
+# available at https://guides.rubyonrails.org/i18n.html.
 
 en:
   hello: "Hello world"
   errors: &errors
     messages:
-       extension_whitelist_error: 'must be one of the following extensions: .jpg, .jpeg, .jpe, .gif, .png, .ico, .bmp, .dng, or .svg'
        bad_uri: is an invalid url
        bad_protocol: must start with %{protocols}
   activemodel:

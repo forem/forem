@@ -2,7 +2,7 @@ class StoriesController < ApplicationController
   DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION = {
     only: %i[
       title path id user_id comments_count public_reactions_count organization_id
-      reading_time video_thumbnail_url video video_duration_in_minutes language
+      reading_time video_thumbnail_url video video_duration_in_minutes
       experience_level_rating experience_level_rating_distribution cached_user cached_organization
       listing_category_id
     ],
@@ -46,7 +46,7 @@ class StoriesController < ApplicationController
       handle_possible_redirect
     else
       @podcast = Podcast.available.find_by!(slug: params[:username])
-      @episode = PodcastEpisode.available.find_by!(slug: params[:slug])
+      @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
       handle_podcast_show
     end
   end
@@ -63,7 +63,7 @@ class StoriesController < ApplicationController
 
   def get_latest_campaign_articles
     campaign_articles_scope = Article.tagged_with(Campaign.current.featured_tags, any: true)
-      .where("published_at > ? AND score > ?", 4.weeks.ago, 0)
+      .where("published_at > ? AND score > ?", SiteConfig.campaign_articles_expiry_time.weeks.ago, 0)
       .order(hotness_score: :desc)
 
     requires_approval = Campaign.current.articles_require_approval?
@@ -85,15 +85,18 @@ class StoriesController < ApplicationController
   end
 
   def handle_possible_redirect
+    if @article.organization
+      redirect_permanently_to(@article.path)
+      return
+    end
+
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
       redirect_permanently_to(URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
-    elsif (@organization = @article.organization)
-      redirect_permanently_to(URI.parse("/#{@organization.slug}/#{params[:slug]}").path)
-      return
     end
+
     not_found
   end
 
@@ -131,12 +134,13 @@ class StoriesController < ApplicationController
     end
 
     @num_published_articles = if @tag_model.requires_approval?
-                                Article.published.cached_tagged_by_approval_with(@tag).size
+                                @tag_model.articles.published.where(approved: true).count
                               elsif SiteConfig.feed_strategy == "basic"
-                                Article.published.cached_tagged_with(@tag)
-                                  .where("score >= ?", SiteConfig.tag_feed_minimum_score).size
+                                tagged_count
                               else
-                                cached_tagged_count
+                                Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
+                                  tagged_count
+                                end
                               end
     @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
     @stories = Articles::Feeds::LargeForemExperimental
@@ -232,6 +236,7 @@ class StoriesController < ApplicationController
     # 2nd with 1 badge (!) <-- and that would look off.
     @badges_limit = 6
     @profile = @user.profile.decorate
+    @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld
@@ -318,7 +323,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_user_comments
-    comment_count = params[:view] == "comments" ? 250 : 8
+    comment_count = helpers.comment_count(params[:view])
     @comments = if @user.comments_count.positive?
                   @user.comments.where(deleted: false)
                     .order(created_at: :desc).includes(:commentable).limit(comment_count)
@@ -374,20 +379,19 @@ class StoriesController < ApplicationController
     @user_json_ld = {
       "@context": "http://schema.org",
       "@type": "Person",
-      "mainEntityOfPage": {
+      mainEntityOfPage: {
         "@type": "WebPage",
         "@id": URL.user(@user)
       },
-      "url": URL.user(@user),
-      "sameAs": user_same_as,
-      "image": Images::Profile.call(@user.profile_image_url, length: 320),
-      "name": @user.name,
-      "email": @user.email_public ? @user.email : nil,
-      "jobTitle": @user.employment_title.presence,
-      "description": @user.summary.presence || "404 bio not found",
-      "disambiguatingDescription": user_disambiguating_description,
-      "worksFor": [user_works_for].compact,
-      "alumniOf": @user.education.presence
+      url: URL.user(@user),
+      sameAs: user_same_as,
+      image: Images::Profile.call(@user.profile_image_url, length: 320),
+      name: @user.name,
+      email: @user.email_public ? @user.email : nil,
+      jobTitle: @user.employment_title.presence,
+      description: @user.summary.presence || "404 bio not found",
+      worksFor: [user_works_for].compact,
+      alumniOf: @user.education.presence
     }.reject { |_, v| v.blank? }
   end
 
@@ -395,34 +399,34 @@ class StoriesController < ApplicationController
     @article_json_ld = {
       "@context": "http://schema.org",
       "@type": "Article",
-      "mainEntityOfPage": {
+      mainEntityOfPage: {
         "@type": "WebPage",
         "@id": URL.article(@article)
       },
-      "url": URL.article(@article),
-      "image": seo_optimized_images,
-      "publisher": {
+      url: URL.article(@article),
+      image: seo_optimized_images,
+      publisher: {
         "@context": "http://schema.org",
         "@type": "Organization",
-        "name": SiteConfig.community_name.to_s,
-        "logo": {
+        name: SiteConfig.community_name.to_s,
+        logo: {
           "@context": "http://schema.org",
           "@type": "ImageObject",
-          "url": ApplicationController.helpers.optimized_image_url(SiteConfig.logo_png, width: 192,
-                                                                                        fetch_format: "png"),
-          "width": "192",
-          "height": "192"
+          url: ApplicationController.helpers.optimized_image_url(SiteConfig.logo_png, width: 192,
+                                                                                      fetch_format: "png"),
+          width: "192",
+          height: "192"
         }
       },
-      "headline": @article.title,
-      "author": {
+      headline: @article.title,
+      author: {
         "@context": "http://schema.org",
         "@type": "Person",
-        "url": URL.user(@user),
-        "name": @user.name
+        url: URL.user(@user),
+        name: @user.name
       },
-      "datePublished": @article.published_timestamp,
-      "dateModified": @article.edited_at&.iso8601 || @article.published_timestamp
+      datePublished: @article.published_timestamp,
+      dateModified: @article.edited_at&.iso8601 || @article.published_timestamp
     }
   end
 
@@ -441,31 +445,27 @@ class StoriesController < ApplicationController
     @organization_json_ld = {
       "@context": "http://schema.org",
       "@type": "Organization",
-      "mainEntityOfPage": {
+      mainEntityOfPage: {
         "@type": "WebPage",
         "@id": URL.organization(@organization)
       },
-      "url": URL.organization(@organization),
-      "image": Images::Profile.call(@organization.profile_image_url, length: 320),
-      "name": @organization.name,
-      "description": @organization.summary.presence || "404 bio not found"
+      url: URL.organization(@organization),
+      image: Images::Profile.call(@organization.profile_image_url, length: 320),
+      name: @organization.name,
+      description: @organization.summary.presence || "404 bio not found"
     }
   end
 
   def user_works_for
-    # For further examples of the worksFor and disambiguatingDescription properties,
-    # please refer to this link: https://jsonld.com/person/
+    # For further examples of the worksFor properties, please refer to this
+    # link: https://jsonld.com/person/
     return unless @user.employer_name.presence || @user.employer_url.presence
 
     {
       "@type": "Organization",
-      "name": @user.employer_name,
-      "url": @user.employer_url
+      name: @user.employer_name,
+      url: @user.employer_url
     }.reject { |_, v| v.blank? }
-  end
-
-  def user_disambiguating_description
-    [@user.mostly_work_with, @user.currently_hacking_on, @user.currently_learning].compact
   end
 
   def user_same_as
@@ -484,9 +484,7 @@ class StoriesController < ApplicationController
     params[:sort_direction] == "desc" ? :newest : :oldest
   end
 
-  def cached_tagged_count
-    Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
-      Article.published.cached_tagged_with(@tag).where("score >= ?", SiteConfig.tag_feed_minimum_score).size
-    end
+  def tagged_count
+    @tag_model.articles.published.where("score >= ?", SiteConfig.tag_feed_minimum_score).count
   end
 end

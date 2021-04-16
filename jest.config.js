@@ -25,16 +25,19 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      statements: 43,
-      branches: 39,
+      statements: 42,
+      branches: 38,
       functions: 41,
       lines: 43,
     },
   },
   moduleNameMapper: {
-    '\\.(svg|png)$': '<rootDir>/empty-module.js',
+    '\\.(svg|png|css)$': '<rootDir>/empty-module.js',
     '^@crayons(.*)$': '<rootDir>/app/javascript/crayons$1',
     '^@utilities(.*)$': '<rootDir>/app/javascript/utilities$1',
+    '^@components(.*)$': '<rootDir>/app/javascript/shared/components$1',
+    '^react$': 'preact/compat',
+    '^react-dom$': 'preact/compat',
   },
   // The webpack config folder for webpacker is excluded as it has a test.js file that gets
   // picked up by jest if this folder is not excluded causing a false negative of a test suite failing.

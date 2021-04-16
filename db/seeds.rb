@@ -2,43 +2,9 @@
 
 return if Rails.env.production?
 
-# NOTE: when adding new data, please use this class to ensure the seed tasks
+# NOTE: when adding new data, please use the Seeder class to ensure the seed tasks
 # stays idempotent.
-class Seeder
-  def initialize
-    @counter = 0
-  end
-
-  # Used when the block is idempotent by itself and needs no further checks.
-  def create(message)
-    @counter += 1
-    puts "  #{@counter}. #{message}."
-    yield
-  end
-
-  def create_if_none(klass, count = nil)
-    @counter += 1
-    plural = klass.name.pluralize
-
-    if klass.none?
-      message = ["Creating", count, plural].compact.join(" ")
-      puts "  #{@counter}. #{message}."
-      yield
-    else
-      puts "  #{@counter}. #{plural} already exist. Skipping."
-    end
-  end
-
-  def create_if_doesnt_exist(klass, attribute_name, attribute_value)
-    record = klass.find_by("#{attribute_name}": attribute_value)
-    if record.nil?
-      puts "  #{klass} with #{attribute_name} = #{attribute_value} not found, proceeding..."
-      yield
-    else
-      puts "  #{klass} with #{attribute_name} = #{attribute_value} found, skipping."
-    end
-  end
-end
+require Rails.root.join("app/lib/seeder")
 
 # we use this to be able to increase the size of the seeded DB at will
 # eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
@@ -51,6 +17,7 @@ puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 SiteConfig.public = true
 SiteConfig.waiting_on_first_user = false
+Settings::Authentication.providers = Authentication::Providers.available
 
 ##############################################################################
 
@@ -180,7 +147,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   )
 
   user.add_role(:super_admin)
-  user.add_role(:single_resource_admin, Config)
+  user.add_role(:tech_admin)
 end
 
 ##############################################################################
@@ -594,28 +561,17 @@ end
 
 puts <<-ASCII
 
-  ```````````````````````````````````````````````````````````````````````````
-  ```````````````````````````````````````````````````````````````````````````
-  ```````````````````````````````````````````````````````````````````````````
-  ```````````````````````````````````````````````````````````````````````````
-  ```````````````````````````````````````````````````````````````````````````
-  ``````````````-oooooooo/-``````.+ooooooooo:``+ooo+````````oooo/````````````
-  ``````````````+MMMMMMMMMMm+```-NMMMMMMMMMMs``+MMMM:``````/MMMM/````````````
-  ``````````````+MMMNyyydMMMMy``/MMMMyyyyyyy/```mMMMd``````mMMMd`````````````
-  ``````````````+MMMm````:MMMM.`/MMMN```````````/MMMM/````/MMMM:`````````````
-  ``````````````+MMMm````.MMMM-`/MMMN````````````dMMMm````mMMMh``````````````
-  ``````````````+MMMm````.MMMM-`/MMMMyyyy+```````:MMMM/``+MMMM-``````````````
-  ``````````````+MMMm````.MMMM-`/MMMMMMMMy````````hMMMm``NMMMy```````````````
-  ``````````````+MMMm````.MMMM-`/MMMMoooo:````````-MMMM+oMMMM-```````````````
-  ``````````````+MMMm````.MMMM-`/MMMN``````````````yMMMmNMMMy````````````````
-  ``````````````+MMMm````+MMMM.`/MMMN``````````````.MMMMMMMM.````````````````
-  ``````````````+MMMMdddNMMMMo``/MMMMddddddd+```````sMMMMMMs`````````````````
-  ``````````````+MMMMMMMMMNh:```.mMMMMMMMMMMs````````yMMMMs``````````````````
-  ``````````````.///////:-````````-/////////-`````````.::.```````````````````
-  ```````````````````````````````````````````````````````````````````````````
-  ```````````````````````````````````````````````````````````````````````````
-  ```````````````````````````````````````````````````````````````````````````
-  ```````````````````````````````````````````````````````````````````````````
+  ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  ::::'########::'#######::'########::'########:'##::::'##::::
+  :::: ##.....::'##.... ##: ##.... ##: ##.....:: ###::'###::::
+  :::: ##::::::: ##:::: ##: ##:::: ##: ##::::::: ####'####::::
+  :::: ######::: ##:::: ##: ########:: ######::: ## ### ##::::
+  :::: ##...:::: ##:::: ##: ##.. ##::: ##...:::: ##. #: ##::::
+  :::: ##::::::: ##:::: ##: ##::. ##:: ##::::::: ##:.:: ##::::
+  :::: ##:::::::. #######:: ##:::. ##: ########: ##:::: ##::::
+  ::::..:::::::::.......:::..:::::..::........::..:::::..:::::
+  ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
   All done!
 ASCII
