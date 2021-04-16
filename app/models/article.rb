@@ -30,7 +30,6 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
-  MAX_BODY_MARKDOWN_SIZE = 800.kilobytes
   # TODO: Vaidehi Joshi - Extract this into a constant or SiteConfig variable
   # after https://github.com/forem/rfcs/pull/22 has been completed?
   MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
@@ -55,7 +54,8 @@ class Article < ApplicationRecord
            inverse_of: :commentable,
            class_name: "Comment"
 
-  validates :body_markdown, length: { in: 0..MAX_BODY_MARKDOWN_SIZE, allow_nil: false }
+  validates :body_markdown, bytesize: { maximum: 800.kilobytes, too_long: "is too long." }
+  validates :body_markdown, length: { minimum: 0, allow_nil: false }
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validates :boost_states, presence: true
   validates :cached_tag_list, length: { maximum: 126 }
