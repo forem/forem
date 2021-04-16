@@ -27,7 +27,7 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     def renders_proper_description
-      expect(response.body).to include(SiteConfig.community_description)
+      expect(response.body).to include(Settings::Community.community_description)
     end
 
     def renders_min_read_time

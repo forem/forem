@@ -6,8 +6,16 @@ module Settings
     # the cache, or call Settings::Community.clear_cache
     cache_prefix { "v1" }
 
-    # Define your fields
-    # field :host, type: :string, default: "http://localhost:3000"
-    # field :default_locale, default: "en", type: :string
+    field :copyright_start_year,
+          type: :integer,
+          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] || Time.zone.today.year
+    field :community_description, type: :string
+    field :community_emoji, type: :string, default: "🌱", validates: { emoji_only: true }
+    field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
+    field :member_label, type: :string, default: "user"
+    field :experience_high, type: :string, default: "Experienced Users"
+    field :experience_low, type: :string, default: "Total Newbies"
+    field :staff_user_id, type: :integer, default: 1
+    field :tagline, type: :string
   end
 end

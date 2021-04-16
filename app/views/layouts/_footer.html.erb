@@ -17,7 +17,7 @@
       <div class="pt-4"><%= render partial: "layouts/social_media" %></div>
     </nav>
     <hr class="crayons-footer__divider">
-    <p class="fs-s crayons-footer__description"><a href="/" aria-label="<%= community_name %> Home" class="crayons-link"><%= community_name %></a> – <%= SiteConfig.community_description %></p>
+    <p class="fs-s crayons-footer__description"><a href="/" aria-label="<%= community_name %> Home" class="crayons-link"><%= community_name %></a> – <%= Settings::Community.community_description %></p>
     <div class="m:-mb-4 crayons-footer__description">
       <%# The following copy is necessary for compatibility with the Forem AGPL licence which requires instances to link back to the source. %>
       <p class="fs-s">Built on <a href="https://www.forem.com" class="crayons-link" target="_blank" rel="noopener">Forem</a> — the <a href="https://dev.to/t/opensource" target="_blank" rel="noopener" class="crayons-link">open source</a> software that powers <a href="https://dev.to" target="_blank" rel="noopener" class="crayons-link">DEV</a> and other inclusive communities.</p>
