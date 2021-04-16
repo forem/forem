@@ -62,9 +62,9 @@ rails generate data_update BackfillColumnForArticles --no-spec
 
 Once your script is in place then you can either run `rails data_updates:run`
 manually or you can let our setup script handle it. In our local
-[bin/setup](https://github.com/forem/forem/blob/master/bin/setup) script you
-will see we have added an additional task to update data. This kicks off the
-rake task `data_updates:run` for you.
+[bin/setup](https://github.com/forem/forem/blob/main/bin/setup) script you will
+see we have added an additional task to update data. This kicks off the rake
+task `data_updates:run` for you.
 
 The rake task itself will check the `lib/data_update_scripts` folder to see if
 there are any new scripts that need to be run. It does this by reading all of
@@ -77,5 +77,5 @@ script.
 
 DataUpdateScripts are also run automatically when a production deploy goes out.
 However, to ensure the new code they need to use has been deployed we use a
-[`DataUpdateWorker`](https://github.com/forem/forem/blob/master/app/workers/data_update_worker.rb)
+[`DataUpdateWorker`](https://github.com/forem/forem/blob/main/app/workers/data_update_worker.rb)
 via Sidekiq and set it to run 10 minutes after the deploy script has completed.
