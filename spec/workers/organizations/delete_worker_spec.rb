@@ -60,6 +60,18 @@ RSpec.describe Organizations::DeleteWorker, type: :worker do
       it "doesn't fail" do
         worker.perform(-1, -1)
       end
+
+      it "doesn't call org delete when a user was not found" do
+        allow(delete).to receive(:call)
+        worker.perform(org.id, -1)
+        expect(delete).not_to have_received(:call)
+      end
+
+      it "doesn't call org delete when an org was not found" do
+        allow(delete).to receive(:call)
+        worker.perform(-1, org.id)
+        expect(delete).not_to have_received(:call)
+      end
     end
   end
 end

@@ -9,10 +9,10 @@ module Organizations
       org = Organization.find_by(id: organization_id)
       return unless org
 
-      Organizations::Delete.call(org)
-
       user = User.find_by(id: user_id)
       return unless user
+
+      Organizations::Delete.call(org)
 
       user.touch(:organization_info_updated_at)
       EdgeCache::BustUser.call(user)
