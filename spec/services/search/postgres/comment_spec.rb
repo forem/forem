@@ -22,7 +22,8 @@ RSpec.describe Search::Postgres::Comment, type: :service do
         expect(ids).to include(comment_on_published_article.search_id)
       end
 
-      it "does not include comments from PodcastEpisodes that are unpublished", :aggregate_failures do
+      # We don't currently search against comments on podcast episodes
+      xit "does not include comments from PodcastEpisodes that are unpublished", :aggregate_failures do
         comment_text = "Ruby on Rails rocks!"
         published_podcast = create(:podcast, published: true)
         unpublished_podcast = create(:podcast, published: true)

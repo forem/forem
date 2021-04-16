@@ -2,61 +2,50 @@ module Search
   module Postgres
     class Comment
       ATTRIBUTES = [
-        "articles.published",
+        "COALESCE(articles.published, false) AS commentable_published",
+        "COALESCE(articles.title, '') AS commentable_title",
         "comments.body_markdown",
-        "comments.commentable_id AS commentable_id",
-        "comments.commentable_type AS commentable_type",
+        "comments.commentable_id",
+        "comments.commentable_type",
         "comments.created_at",
         "comments.id AS id",
         "comments.public_reactions_count",
         "comments.score",
-        "comments.user_id AS comment_user_id",
-        "podcast_episodes.podcast_id AS podcast_id",
-        "podcasts.published",
-        "users.id AS user_id",
-        "users.name",
-        "users.profile_image",
-        "users.username",
+        "comments.user_id",
       ].freeze
       private_constant :ATTRIBUTES
 
-      DEFAULT_PER_PAGE = 60
-      private_constant :DEFAULT_PER_PAGE
+      USER_ATTRIBUTES = %i[
+        id
+        name
+        profile_image
+        username
+      ].freeze
+      private_constant :USER_ATTRIBUTES
 
-      # Because commentable represents a polymorphic relationship, ActiveRecord
-      # can't eager load the associations so we have to make all the joins
-      # manually.
-      #
-      # NOTE: if Comment::COMMENTABLE_TYPES is updated, this filter will also
-      # need to be updated
-      FORCED_EAGER_LOAD_QUERY = <<-SQL.freeze
-        LEFT JOIN users
-          ON comments.user_id = users.id
+      ARTICLE_COMMENTABLE_QUERY = <<-SQL.freeze
         LEFT JOIN articles
           ON comments.commentable_id = articles.id
           AND comments.commentable_type = 'Article'
-        LEFT JOIN podcast_episodes
-          ON comments.commentable_id = podcast_episodes.id
-          AND comments.commentable_type = 'PodcastEpisode'
-        LEFT JOIN podcasts
-          ON podcast_episodes.podcast_id = podcasts.id
       SQL
-      private_constant :FORCED_EAGER_LOAD_QUERY
+      private_constant :ARTICLE_COMMENTABLE_QUERY
+
+      DEFAULT_PER_PAGE = 60
+      private_constant :DEFAULT_PER_PAGE
 
       MAX_PER_PAGE = 120 # to avoid querying too many items, we set a maximum amount for a page
       private_constant :MAX_PER_PAGE
 
       # We filter comments for those that are:
-      # 1. Not deleted
-      # 2. Not hidden by commentable user (i.e. an Article author didn't hide the comment)
-      # 3. Are attached to published content (i.e. Article, Podcast)
-      #
-      # NOTE: if Comment::COMMENTABLE_TYPES is updated, this filter will also
-      # need to be updated
+      # 1. On Articles
+      # 2. Not deleted
+      # 3. Not hidden by commentable user (i.e. an Article author didn't hide the comment)
+      # 4. Are attached to published articles
       QUERY_FILTER = <<-SQL.freeze
+        comments.commentable_type = 'Article' AND
         comments.deleted = false AND
         comments.hidden_by_commentable_user = false AND
-        (articles.published = true OR podcasts.published = true)
+        articles.published = true
       SQL
       private_constant :QUERY_FILTER
 
@@ -66,7 +55,7 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-        relation = ::Comment.joins(FORCED_EAGER_LOAD_QUERY).where(QUERY_FILTER)
+        relation = ::Comment.joins(ARTICLE_COMMENTABLE_QUERY).where(QUERY_FILTER)
 
         relation = relation.search_comments(term).with_pg_search_highlight if term.present?
 
@@ -74,12 +63,33 @@ module Search
 
         results = relation.page(page).per(per_page)
 
-        serialize(results)
+        # NOTE: [@rhymes/atsmith813] an earlier version used `.includes(:user)`
+        # to preload users, unfortunately it's not possible in Rails to specify
+        # which fields of the included relation's table to select ahead of time.
+        # The `users` table is massive (115 columns on March 2021) and thus we
+        # shouldn't load it all in memory just to select a few fields.
+        # For these reasons I decided to avoid preloading altogether and issue
+        # an additional SQL query to load User objects
+        # (see https://github.com/forem/forem/pull/4744#discussion_r345698674
+        # and https://github.com/rails/rails/issues/15185#issuecomment-351868335
+        # for additional context)
+        user_ids = relation.pluck(:user_id)
+        users = find_users(user_ids)
+
+        serialize(results, users)
       end
 
-      def self.serialize(results)
+      def self.find_users(user_ids)
+        ::User
+          .where(id: user_ids)
+          .select(*USER_ATTRIBUTES)
+          .index_by(&:id)
+      end
+      private_class_method :find_users
+
+      def self.serialize(results, users)
         Search::PostgresCommentSerializer
-          .new(results, is_collection: true)
+          .new(results, params: { users: users }, is_collection: true)
           .serializable_hash[:data]
           .pluck(:attributes)
       end

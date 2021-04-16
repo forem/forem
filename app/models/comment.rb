@@ -11,9 +11,6 @@ class Comment < ApplicationRecord
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
 
-  # Updates to this constant also requires updates to:
-  # - Search::Postgres::Comment::QUERY_FILTER
-  # - Search::Postgres::Comment::FORCED_EAGER_LOAD_QUERY
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
   TITLE_DELETED = "[deleted]".freeze

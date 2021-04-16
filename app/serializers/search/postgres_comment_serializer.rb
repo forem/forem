@@ -7,11 +7,11 @@ module Search
 
     attribute :body_text, &:body_markdown
 
-    attribute :class_name do |_comment|
+    attribute :class_name do |_comment, _params|
       "Comment"
     end
 
-    attribute :highlight do |comment|
+    attribute :highlight do |comment, _params|
       {
         body_text: [comment.pg_search_highlight]
       }
@@ -25,26 +25,17 @@ module Search
     end
 
     attribute :hotness_score, &:score
-    attribute :published do |comment|
-      comment.commentable&.published
-    end
+    attribute :published, &:commentable_published
     attribute :published_at, &:created_at
     attribute :readable_publish_date_string, &:readable_publish_date
-    attribute :title do |comment|
-      comment.commentable&.title
-    end
+    attribute :title, &:commentable_title
 
     # NOTE: not using the `NestedUserSerializer` because we don't need the
     # the `pro` flag on the frontend, and we also avoid hitting Redis to
     # fetch the cached value
-    attribute :user do |comment|
-      user = comment.user
-
-      {
-        name: user.name,
-        profile_image_90: user.profile_image_90,
-        username: user.username
-      }
+    attribute :user do |comment, params|
+      user = params[:users][comment.user_id]
+      user.slice(:name, :profile_image_90, :username).symbolize_keys
     end
   end
 end
