@@ -56,8 +56,8 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
       article = create(:article)
 
       expect(described_class.call(published_at: article.published_at).size).to eq(1)
-      expect(described_class.call(published_at: (article.published_at - 1.month)..).size).to eq(1)
-      expect(described_class.call(published_at: (article.published_at + 1.month)).size).to eq(0)
+      expect(described_class.call(published_at: 1.month.ago..).size).to eq(1)
+      expect(described_class.call(published_at: 1.month.from_now)).to be_empty
     end
 
     it "sorts by the hotness_score", :aggregate_failures do
