@@ -396,16 +396,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
-
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "does not include UTM params" do
-      expect(email.html_part.body).not_to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).not_to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).not_to include(CGI.escape("utm_campaign=account_deleted_email"))
-    end
   end
 
   describe "#export_email" do
