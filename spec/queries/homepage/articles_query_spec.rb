@@ -20,16 +20,22 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
       expect(described_class.call.ids).to match_array(expected_result)
     end
 
-    it "returns approved articles" do
-      article = create(:article, approved: true)
+    it "returns approved articles", :aggregate_failures do
+      approved_article = create(:article, approved: true)
+      unapproved_article = create(:article, approved: false)
 
-      expect(described_class.call(approved: true).ids).to eq([article.id])
+      result = described_class.call(approved: true).ids
+      expect(result).to include(approved_article.id)
+      expect(result).not_to include(unapproved_article.id)
     end
 
     it "returns unapproved articles" do
-      article = create(:article, approved: false)
+      approved_article = create(:article, approved: true)
+      unapproved_article = create(:article, approved: false)
 
-      expect(described_class.call(approved: false).ids).to eq([article.id])
+      result = described_class.call(approved: false).ids
+      expect(result).not_to include(approved_article.id)
+      expect(result).to include(unapproved_article.id)
     end
 
     it "returns only published articles" do

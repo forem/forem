@@ -230,7 +230,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
         allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage).and_return(true)
       end
 
-      it "does not call Homepage::FetchArticles with the incorrect combination of params", :aggregate_failures do
+      it "does not call Homepage::FetchArticles when class_name is Article with a search term", :aggregate_failures do
         allow(Homepage::FetchArticles).to receive(:call)
 
         get search_feed_content_path
@@ -240,7 +240,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
         expect(Homepage::FetchArticles).not_to have_received(:call)
       end
 
-      it "calls Homepage::FetchArticles with the correct combination of params" do
+      it "calls Homepage::FetchArticles when class_name is Article" do
         allow(Homepage::FetchArticles).to receive(:call)
 
         get search_feed_content_path(class_name: "Article")
