@@ -1,7 +1,7 @@
 import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
-import { handleGistPreview } from '../shared/components/gist';
+import { embedGists } from '../shared/components/gist';
 
 const fullscreenActionElements = document.getElementsByClassName(
   'js-fullscreen-code-action',
@@ -67,4 +67,4 @@ const userDataIntervalID = setInterval(async () => {
     }
 });
 
-handleGistPreview();
+embedGists();

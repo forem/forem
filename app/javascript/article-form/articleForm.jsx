@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
-import { handleGistPreview } from '../shared/components/gist';
+import { embedGists } from '../shared/components/gist';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
@@ -110,7 +110,7 @@ export class ArticleForm extends Component {
     const { previewResponse } = this.state;
 
     if (previewResponse) {
-      handleGistPreview();
+      embedGists();
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
     }
