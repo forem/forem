@@ -47,8 +47,6 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
     end
 
     it "supports pagination params" do
-      stub_const("Homepage::ArticlesQuery::DEFAULT_PER_PAGE", 1)
-
       create_list(:article, 2)
 
       expect(described_class.call(page: 1, per_page: 1).size).to eq(1)
