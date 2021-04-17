@@ -33,7 +33,7 @@ module Organizations
         user: user,
         category: "user.organization.delete",
         roles: user.roles_name,
-        slug: "user_organization_delete",
+        slug: "organization_delete",
         data: {
           organization_id: org.id,
           organization_slug: org.slug

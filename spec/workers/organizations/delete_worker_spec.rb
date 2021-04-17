@@ -63,7 +63,7 @@ RSpec.describe Organizations::DeleteWorker, type: :worker do
 
       it "creates a correct AuditLog record" do
         worker.perform(org.id, user.id)
-        audit_log = AuditLog.find_by(category: "user.organization.delete", slug: "user_organization_delete",
+        audit_log = AuditLog.find_by(category: "user.organization.delete", slug: "organization_delete",
                                      user_id: user.id)
         expect(audit_log).to be_present
         expect(audit_log.data["organization_id"]).to eq(org.id)
