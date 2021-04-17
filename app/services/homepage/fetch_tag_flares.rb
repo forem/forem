@@ -1,5 +1,5 @@
 module Homepage
-  class FetchTagFlares
+  module FetchTagFlares
     ATTRIBUTES = %i[name bg_color_hex text_color_hex].freeze
 
     def self.call(articles)
