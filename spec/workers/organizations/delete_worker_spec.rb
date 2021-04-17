@@ -54,6 +54,21 @@ RSpec.describe Organizations::DeleteWorker, type: :worker do
         expect(mailer).to have_received(:organization_deleted_email)
         expect(message_delivery).to have_received(:deliver_now)
       end
+
+      it "creates an audit_log record" do
+        expect do
+          worker.perform(org.id, user.id)
+        end.to change(AuditLog, :count).by(1)
+      end
+
+      it "creates a correct AuditLog record" do
+        worker.perform(org.id, user.id)
+        audit_log = AuditLog.find_by(category: "user.organization.delete", slug: "user_organization_delete",
+                                     user_id: user.id)
+        expect(audit_log).to be_present
+        expect(audit_log.data["organization_id"]).to eq(org.id)
+        expect(audit_log.data["organization_slug"]).to eq(org.slug)
+      end
     end
 
     context "when an org or a user is not found" do

@@ -19,11 +19,26 @@ module Organizations
 
       # notify user that the org was deleted
       NotifyMailer.with(name: user.name, org_name: org.name, email: user.email).organization_deleted_email.deliver_now
+
+      audit_log(org, user)
     rescue StandardError => e
       ForemStatsClient.count("organizations.delete", 1,
                              tags: ["action:failed", "organization_id:#{org.id}", "user_id:#{user.id}"])
       Honeybadger.context({ organization_id: org.id, user_id: user.id })
       Honeybadger.notify(e)
+    end
+
+    def audit_log(org, user)
+      AuditLog.create(
+        user: user,
+        category: "user.organization.delete",
+        roles: user.roles_name,
+        slug: "user_organization_delete",
+        data: {
+          organization_id: org.id,
+          organization_slug: org.slug
+        },
+      )
     end
   end
 end
