@@ -67,6 +67,4 @@ const userDataIntervalID = setInterval(async () => {
     } 
 });
 
-window.InstantClick.on('change', () => {
-  embedGists();// todo: still doublon when clicking from a list
-});
+embedGists();
