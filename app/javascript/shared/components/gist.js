@@ -1,23 +1,24 @@
-import postscribe from 'postscribe';
-
 export function embedGists() {
   const waitingOnPostscribe = setInterval(() => {
     clearInterval(waitingOnPostscribe);
-    const els = document.getElementsByClassName("ltag_gist-liquid-tag");
-    if (els.length > 0) {
-      for (let i = 0; i < els.length; i += 1 ) {
-        const current = els[i];
-        postscribe(current, current.firstElementChild.outerHTML, {
-          beforeWrite: function (context) {
-            return function (text) {
-              if (context.childElementCount > 3) {
-                return "";
+    const gistTags = document.querySelectorAll('.ltag_gist-liquid-tag');
+
+    // Only load scripts for gists if needed
+    if (gistTags.length > 0) {
+      import('postscribe').then(({ default: postscribe }) => {
+        for (const gistTag of gistTags) {
+          postscribe(gistTag, gistTag.firstElementChild.outerHTML, {
+            beforeWrite: function (context) {
+              return function (text) {
+                if (context.childElementCount > 3) {
+                  return "";
+                }
+                return text;
               }
-              return text;
-            }
-          }(current)
-        });
-      }
+            }(gistTag)
+          });
+        }
+      });
     }
   }, 500);
 }
