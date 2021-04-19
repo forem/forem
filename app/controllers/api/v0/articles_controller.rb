@@ -16,7 +16,7 @@ module Api
         title description main_image published_at crossposted_at social_image
         cached_tag_list slug path canonical_url comments_count
         public_reactions_count created_at edited_at last_comment_at published
-        updated_at video_thumbnail_url
+        updated_at video_thumbnail_url reading_time
       ].freeze
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
