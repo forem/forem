@@ -27,6 +27,7 @@ export function embedGistsInComments() {
   // allows for getting the gist embed after new comment submit
   const commentForm = document.getElementById("new_comment");
   const previewBtn = document.getElementsByClassName('preview-toggle')[0];
+  const dismissBtn = document.querySelector('.dismiss-comment');
 
   if (commentForm && typeof commentForm !== "undefined") {
     commentForm.addEventListener("submit", (_event) => {
@@ -36,6 +37,12 @@ export function embedGistsInComments() {
 
   if (previewBtn && typeof previewBtn !== "undefined") {
     previewBtn.addEventListener("click", (_event) => {
+      embedGists();
+    });
+  }
+
+  if (dismissBtn && typeof dismissBtn !== "undefined") {
+    dismissBtn.addEventListener("click", (_event) => {
       embedGists();
     });
   }
