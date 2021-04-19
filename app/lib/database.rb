@@ -5,9 +5,9 @@ module Database
   # hasn't been established yet.
   #
   # @param table [String] the name of the table to check for
-  def self.table_exists?(table)
+  def self.table_available?(table)
     ActiveRecord::Base.connection.table_exists?(table)
-  rescue ActiveRecord::NoDatabaseError
+  rescue ActiveRecord::NoDatabaseError, ActiveRecord::ConnectionNotEstablished
     false
   end
 end

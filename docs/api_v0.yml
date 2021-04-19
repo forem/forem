@@ -2055,7 +2055,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Articles API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/articles_spec.rb)
+        - [Rails tests for Articles API](https://github.com/forem/forem/blob/main/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -2244,7 +2244,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Articles API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/articles_spec.rb)
+        - [Rails tests for Articles API](https://github.com/forem/forem/blob/main/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -2853,7 +2853,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Listings API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/listings_spec.rb)
+        - [Rails tests for Listings API](https://github.com/forem/forem/blob/main/spec/requests/api/v0/listings_spec.rb)
       tags:
         - listings
       requestBody:

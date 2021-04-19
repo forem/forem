@@ -49,7 +49,10 @@ module Notifications
             user_ids: targets,
             title: "@#{comment.user.username}",
             body: "Re: #{comment.parent_or_root_article.title.strip}",
-            payload: { url: URL.url(url_path) },
+            payload: {
+              url: URL.url(url_path),
+              type: "new comment"
+            },
           )
         end
 

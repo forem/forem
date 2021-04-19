@@ -4,7 +4,9 @@ RSpec.describe NotifyMailer, type: :mailer do
   let(:user)      { create(:user) }
   let(:user2)     { create(:user) }
   let(:article)   { create(:article, user_id: user.id) }
-  let(:comment)   { create(:comment, user_id: user.id, commentable: article) }
+  let(:organization) { create(:organization) }
+  let(:organization_membership) { create(:organization_membership, user: user, organization: organization) }
+  let(:comment) { create(:comment, user_id: user.id, commentable: article) }
 
   describe "#new_reply_email" do
     let(:email) { described_class.with(comment: comment).new_reply_email }
@@ -363,6 +365,26 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper subject" do
       expect(email.subject).to eq("#{SiteConfig.community_name} - Account Deletion Confirmation")
+    end
+
+    it "renders proper sender" do
+      expect(email.from).to eq([SiteConfig.email_addresses[:default]])
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
+      expect(email["from"].value).to eq(expected_from)
+    end
+
+    it "renders proper receiver" do
+      expect(email.to).to eq([user.email])
+    end
+  end
+
+  describe "#organization_deleted_email" do
+    let(:email) do
+      described_class.with(name: user.name, email: user.email, org_name: organization.name).organization_deleted_email
+    end
+
+    it "renders proper subject" do
+      expect(email.subject).to eq("#{SiteConfig.community_name} - Organization Deletion Confirmation")
     end
 
     it "renders proper sender" do
