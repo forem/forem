@@ -3,7 +3,17 @@ module Search
   class PostgresCommentSerializer < ApplicationSerializer
     attribute :id, &:search_id
 
-    attributes :path, :public_reactions_count
+    attributes :path do |comment, params|
+      user = params[:users][comment.user_id]
+
+      if user
+        "/#{user.username}/comment/#{comment.id_code_generated}"
+      else
+        "/404.html"
+      end
+    end
+
+    attributes :public_reactions_count
 
     attribute :body_text, &:body_markdown
 
