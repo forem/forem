@@ -174,21 +174,21 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "displays hero html when it exists and is set in config" do
-        allow(SiteConfig).to receive(:campaign_hero_html_variant_name).and_return("hero")
+        allow(Settings::Campaign).to receive(:hero_html_variant_name).and_return("hero")
 
         get root_path
         expect(response.body).to include(hero_html.html)
       end
 
-      it "doesn't display when campaign_hero_html_variant_name is not set" do
-        allow(SiteConfig).to receive(:campaign_hero_html_variant_name).and_return("")
+      it "doesn't display when hero_html_variant_name is not set" do
+        allow(Settings::Campaign).to receive(:hero_html_variant_name).and_return("")
 
         get root_path
         expect(response.body).not_to include(hero_html.html)
       end
 
       it "doesn't display when hero html is not approved" do
-        allow(SiteConfig).to receive(:campaign_hero_html_variant_name).and_return("hero")
+        allow(Settings::Campaign).to receive(:hero_html_variant_name).and_return("hero")
         hero_html.update_column(:approved, false)
 
         get root_path
@@ -198,7 +198,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
     context "with campaign_sidebar" do
       before do
-        allow(SiteConfig).to receive(:campaign_featured_tags).and_return("mytag,yourtag")
+        allow(Settings::Campaign).to receive(:featured_tags).and_return("mytag,yourtag")
         allow(SiteConfig).to receive(:home_feed_minimum_score).and_return(7)
 
         a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,mytag\n---\n\nHello"
@@ -208,52 +208,52 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "doesn't display posts with the campaign tags when sidebar is disabled" do
-        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(false)
+        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(false)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-sheep"))
       end
 
       it "doesn't display low-score posts" do
-        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
-        allow(SiteConfig).to receive(:campaign_articles_require_approval).and_return(true)
+        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
+        allow(Settings::Campaign).to receive(:articles_require_approval).and_return(true)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "doesn't display unapproved posts" do
-        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
-        allow(SiteConfig).to receive(:campaign_sidebar_image).and_return("https://example.com/image.png")
-        allow(SiteConfig).to receive(:campaign_articles_require_approval).and_return(true)
+        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
+        allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")
+        allow(Settings::Campaign).to receive(:articles_require_approval).and_return(true)
         Article.last.update_column(:score, -2)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "displays unapproved post if approval is not required" do
-        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
-        allow(SiteConfig).to receive(:campaign_sidebar_image).and_return("https://example.com/image.png")
-        allow(SiteConfig).to receive(:campaign_articles_require_approval).and_return(false)
+        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
+        allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")
+        allow(Settings::Campaign).to receive(:articles_require_approval).and_return(false)
         get "/"
         expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "displays only approved posts with the campaign tags" do
-        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(false)
+        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(false)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
       end
 
-      it "displays sidebar url if campaign_url is set" do
-        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
-        allow(SiteConfig).to receive(:campaign_url).and_return("https://campaign-lander.com")
-        allow(SiteConfig).to receive(:campaign_sidebar_image).and_return("https://example.com/image.png")
+      it "displays sidebar url if url is set" do
+        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
+        allow(Settings::Campaign).to receive(:url).and_return("https://campaign-lander.com")
+        allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")
         get "/"
         expect(response.body).to include('<a href="https://campaign-lander.com"')
       end
 
       it "does not display sidebar url if image is not present is set" do
-        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
-        allow(SiteConfig).to receive(:campaign_url).and_return("https://campaign-lander.com")
+        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
+        allow(Settings::Campaign).to receive(:url).and_return("https://campaign-lander.com")
         get "/"
         expect(response.body).not_to include('<a href="https://campaign-lander.com"')
       end
