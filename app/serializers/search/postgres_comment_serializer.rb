@@ -28,8 +28,7 @@ module Search
     attribute :readable_publish_date_string, &:readable_publish_date
     attribute :title, &:commentable_title
 
-    # NOTE: not using the `NestedUserSerializer` because we don't need the
-    # the `pro` flag on the frontend, and we also avoid hitting Redis to
+    # NOTE: not using the `NestedUserSerializer` to avoid hitting Redis to
     # fetch the cached value
     attribute :user do |comment, params|
       user = params[:users][comment.user_id]
