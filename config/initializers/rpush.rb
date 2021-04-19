@@ -1,16 +1,3 @@
-# Utility to pull out notification type from the payload string
-module Rpush
-  class NotificationTypeParser
-    def self.parse(payload)
-      JSON.parse(payload).dig("data", "type") || "unknown"
-    rescue StandardError => e
-      # JSON parsing failed
-      HoneyBadger.notify(e)
-      "unknown"
-    end
-  end
-end
-
 Rpush.configure do |config|
   # Supported clients are :active_record and :redis
   config.client = :redis
@@ -70,7 +57,7 @@ Rpush.reflect do |on|
       "push_notifications.delivered",
       tags: [
         "app_bundle:#{notification.app&.bundle_id}",
-        "type:#{Rpush::NotificationTypeParser.parse(notification.payload)}",
+        "type:#{JSON.parse(notification.payload).dig('data', 'type') || 'unknown'}",
       ],
     )
   end

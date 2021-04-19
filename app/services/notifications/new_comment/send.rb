@@ -51,7 +51,7 @@ module Notifications
             body: "Re: #{comment.parent_or_root_article.title.strip}",
             payload: {
               url: URL.url(url_path),
-              type: "Notifications::NewComment"
+              type: "new comment"
             },
           )
         end
