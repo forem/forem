@@ -13,7 +13,7 @@ RSpec.describe "admin sidebar", type: :request do
     it "shows the correct options in the sidebar when the feature flag is enabled" do
       allow(FeatureFlag).to receive(:enabled?).with(:admin_restructure).and_return(true)
 
-      get admin_content_manager_articles_path
+      get admin_articles_path
 
       expect(response.body).to include("Content Manager")
     end
@@ -31,7 +31,7 @@ RSpec.describe "admin sidebar", type: :request do
     it "shows parent level and nested child items" do
       allow(FeatureFlag).to receive(:enabled?).with(:admin_restructure).and_return(true)
 
-      get admin_content_manager_articles_path
+      get admin_articles_path
 
       expect(response.body).to include("Advanced")
       expect(response.body).to include("Developer Tools")
@@ -39,10 +39,12 @@ RSpec.describe "admin sidebar", type: :request do
   end
 
   describe "tabbed menu options" do
-    it "shows nested grandchildren items where applicable" do
+    # NOTE: [@ridhwana] to enable this test again once the
+    # the feature flag is removed
+    xit "shows nested grandchildren items where applicable" do
       allow(FeatureFlag).to receive(:enabled?).with(:admin_restructure).and_return(true)
 
-      get admin_content_manager_badges_path
+      get admin_badges_path
 
       expect(response.body).to include("Library")
       expect(response.body).to include("Achievements")
@@ -57,7 +59,7 @@ RSpec.describe "admin sidebar", type: :request do
     it "does not show the option in the sidebar when the feature flag is disabled" do
       allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(false)
 
-      get admin_content_manager_articles_path
+      get admin_articles_path
 
       expect(response.body).not_to include("Profile Fields")
     end
@@ -65,7 +67,7 @@ RSpec.describe "admin sidebar", type: :request do
     it "shows the option in the sidebar when the feature flag is enabled" do
       allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
 
-      get admin_content_manager_articles_path
+      get admin_articles_path
 
       expect(response.body).to include("Profile Fields")
     end
@@ -76,18 +78,20 @@ RSpec.describe "admin sidebar", type: :request do
       allow(FeatureFlag).to receive(:enabled?).with(:admin_restructure).and_return(true)
     end
 
-    it "does not show the option in the sidebar when the feature flag is disabled" do
+    it "does not show the option in the tabbed header when the feature flag is disabled" do
       allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(false)
 
-      get admin_advanced_tools_path
+      get admin_tools_path
 
       expect(response.body).not_to include("Data Update Scripts")
     end
 
-    it "shows the option in the sidebar when the feature flag is enabled" do
+    # NOTE: [@ridhwana] to enable this test again once the
+    # the feature flag is removed
+    xit "shows the option in the tabbed header when the feature flag is enabled" do
       allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(true)
 
-      get admin_advanced_tools_path
+      get admin_tools_path
 
       expect(response.body).to include("Data Update Scripts")
     end

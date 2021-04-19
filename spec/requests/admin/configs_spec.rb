@@ -85,14 +85,6 @@ RSpec.describe "/admin/config", type: :request do
           expect(Settings::Authentication.providers).to eq([enabled])
         end
 
-        describe "Campaigns" do
-          it "sets campaign_articles_expiry_time" do
-            post "/admin/config", params: { site_config: { campaign_articles_expiry_time: 4 },
-                                            confirmation: confirmation_message }
-            expect(SiteConfig.campaign_articles_expiry_time).to eq(4)
-          end
-        end
-
         it "strips empty elements" do
           provider = Authentication::Providers.available.last.to_s
           enabled = "#{provider}, '', nil"
@@ -187,6 +179,16 @@ RSpec.describe "/admin/config", type: :request do
             confirmation: confirmation_message
           }
           expect(Settings::Authentication.invite_only_mode).to be(false)
+        end
+      end
+
+      describe "Campaigns" do
+        it "sets articles_expiry_time" do
+          post admin_settings_campaigns_path, params: {
+            settings_campaign: { articles_expiry_time: 4 },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Campaign.articles_expiry_time).to eq(4)
         end
       end
 
