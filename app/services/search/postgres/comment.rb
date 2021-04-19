@@ -64,6 +64,13 @@ module Search
       )
         # NOTE: [@rhymes/atsmith813] we should eventually update the frontend
         # to start from page 1
+        sort_by ||= DEFAULT_SORT_BY
+        # The UI and serializer rename created_at (the actual DB column name) to
+        # published_at
+        sort_by = "comments.created_at" if sort_by == "published_at"
+
+        sort_direction ||= DEFAULT_SORT_DIRECTION
+
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
@@ -71,9 +78,6 @@ module Search
 
         relation = relation.search_comments(term).with_pg_search_highlight if term.present?
 
-        # The UI and serializer rename created_at (the actual DB column name) to
-        # published_at
-        sort_by = "comments.created_at" if sort_by == "published_at"
         relation = relation.select(*ATTRIBUTES).reorder("#{sort_by}": sort_direction)
 
         results = relation.page(page).per(per_page)

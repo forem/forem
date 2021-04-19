@@ -232,14 +232,14 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
       it "returns the correct keys for comments" do
         create(:comment, body_markdown: "Ruby on Rails rocks!")
-        get search_feed_content_path(q: "rails", class_name: "Comment")
+        get search_feed_content_path(search_fields: "rails", class_name: "Comment")
         expect(response.parsed_body["result"]).to be_present
       end
 
       it "supports the search params for comments" do
         comment = create(:comment, body_markdown: "Ruby on Rails rocks!")
         get search_feed_content_path(
-          q: "rails",
+          search_fields: "rails",
           class_name: "Comment",
           page: 0,
           per_page: 1,
