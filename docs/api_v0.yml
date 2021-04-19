@@ -186,6 +186,7 @@ components:
         - last_comment_at
         - published_timestamp
         - user
+        - reading_time
       properties:
         type_of:
           type: string
@@ -254,6 +255,10 @@ components:
           format: date-time
         user:
           $ref: "#/components/schemas/SharedUser"
+        reading_time:
+          description: Reading time, in minutes
+          type: integer
+          format: int32
         organization:
           $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
@@ -287,6 +292,7 @@ components:
         - body_html
         - body_markdown
         - user
+        - reading_time
       properties:
         type_of:
           type: string
@@ -359,6 +365,10 @@ components:
           type: string
         user:
           $ref: "#/components/schemas/SharedUser"
+        reading_time:
+          description: Reading time, in minutes
+          type: integer
+          format: int32
         organization:
           $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
