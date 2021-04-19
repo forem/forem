@@ -128,7 +128,7 @@ class Organization < ApplicationRecord
   end
 
   def destroyable?
-    organization_memberships.count == 1 && articles.count.zero?
+    organization_memberships.count == 1 && articles.count.zero? && credits.count.zero?
   end
 
   private

@@ -51,16 +51,12 @@ class OrganizationsController < ApplicationController
   def destroy
     organization = Organization.find_by(id: params[:id])
     authorize organization
-    if organization.destroy
-      current_user.touch(:organization_info_updated_at)
-      EdgeCache::BustUser.call(current_user)
-      flash[:settings_notice] = "Your organization: \"#{organization.name}\" was successfully deleted."
-      redirect_to user_settings_path(:organization)
-    else
-      flash[:settings_notice] = "#{organization.errors.full_messages.to_sentence}.
-        Please email #{SiteConfig.email_addresses[:contact]} for assistance."
-      redirect_to user_settings_path(:organization, id: organization.id)
-    end
+
+    Organizations::DeleteWorker.perform_async(organization.id, current_user.id)
+    flash[:settings_notice] =
+      "Your organization: \"#{organization.name}\" deletion is scheduled. You'll be notified when it's deleted."
+
+    redirect_to user_settings_path(:organization)
   rescue Pundit::NotAuthorizedError
     flash[:error] = "Your organization was not deleted; you must be an admin, the only member in the organization,
       and have no articles connected to the organization."
