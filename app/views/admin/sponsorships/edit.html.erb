@@ -52,6 +52,6 @@
       <%= f.datetime_select :instructions_updated_at, required: true, start_year: Time.current.year, end_year: Time.current.year + 2, class: "form-control" %> UTC Time
     </div>
     <%= f.submit "Update Sponsorship", class: "btn btn-primary" %>
-    <%= link_to "Destroy Sponsorship", url_for(action: :destroy, id: @sponsorship.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+    <%= link_to "Destroy Sponsorship", admin_sponsorship_path(@sponsorship), class: "btn btn-danger", method: :delete, data: { confirm: "Are you sure?" } %>
   <% end %>
 </div>
