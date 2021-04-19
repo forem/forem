@@ -104,7 +104,7 @@
       </div>
     <% end %>
     <%= yield %>
-    <% if FeatureFlag.enabled?(:runtime_banner) || Rails.env.test? %>
+    <% if FeatureFlag.enabled?(:runtime_banner) || ENV['E2E'] == 'true' %>
       <div class="Browser-iOS runtime-banner">
         <a href="https://udl.visualcosita.com/?r=<%= CGI.escape(URL.url("/r/mobile?deep_link=#{request.path}")) %>" class="runtime-banner__icon">
           <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 180 180"><defs><style>.cls-1{fill:#1c3a42;}.cls-2{fill:#f6cbf7;}</style></defs><rect class="cls-1" width="180" height="180" rx="34.82" /><rect class="cls-2" x="53.7" y="35.56" width="72.59" height="18.15" rx="3.64" /><rect class="cls-2" x="53.7" y="71.85" width="72.59" height="18.15" rx="3.64" /><path class="cls-2" d="M57.11,108.15a3.41,3.41,0,0,0-3.41,3.4V141a3.41,3.41,0,0,0,3.41,3.4H68.45a3.4,3.4,0,0,0,3.4-3.4V111.55a3.4,3.4,0,0,0-3.4-3.4Z" /></svg>
