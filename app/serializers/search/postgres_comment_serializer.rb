@@ -7,9 +7,7 @@ module Search
 
     attribute :body_text, &:body_markdown
 
-    attribute :class_name do |_comment, _params|
-      "Comment"
-    end
+    attribute :class_name, -> { "Comment" }
 
     attribute :highlight do |comment, _params|
       {
@@ -25,7 +23,7 @@ module Search
     end
 
     attribute :hotness_score, &:score
-    attribute :published, &:commentable_published
+    attribute :published, -> { true }
     attribute :published_at, &:created_at
     attribute :readable_publish_date_string, &:readable_publish_date
     attribute :title, &:commentable_title
