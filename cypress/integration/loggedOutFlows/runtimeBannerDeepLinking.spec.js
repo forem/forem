@@ -17,14 +17,15 @@ describe('Runtime Banner Deep Linking', () => {
     // When visiting the root path the banner should deep link into it
     cy.get('.runtime-banner__link')
       .should('have.attr', 'href')
-      .and('contains', `deep_link=/`);
+      .and('contains', `deep_link%3D%2F`);
+    // NOTE: %3D%2F -> '=/' (URL Encoded)
 
     // When visiting `/tags` the banner should deep link into `/tags`
-    const targetPath = '/tags';
-    cy.visit(targetPath, runtimeStub).then(() => {
+    cy.visit('/tags', runtimeStub).then(() => {
       cy.get('.runtime-banner__link')
         .should('have.attr', 'href')
-        .and('contains', `deep_link=${targetPath}`);
+        .and('contains', `deep_link%3D%2Ftags`);
+      // NOTE: %3D%2Ftags -> '=/tags' (URL Encoded)
     });
   });
 
