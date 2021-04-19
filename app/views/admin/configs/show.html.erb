@@ -36,41 +36,42 @@
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <fieldset class="grid gap-4">
 
-          <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
+          <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key, settings_model| %>
             <%# we need to list the config as separate fields if the data structure is a Hash %>
-            <% if SiteConfig.public_send(config_key).is_a?(Hash) %>
+            <% placeholder_module = Constants.const_get(settings_model.name) %>
+            <% if settings_model.public_send(config_key).is_a?(Hash) %>
               <%= admin_config_label config_key.to_s %>
               <div class="form-group">
                 <%= f.fields_for config_key do |a_field| %>
-                  <% SiteConfig.public_send(config_key).each do |key, value| %>
+                  <% settings_model.public_send(config_key).each do |key, value| %>
                     <div class="crayons-field">
                       <%= admin_config_label key.to_s %>
                       <%= admin_config_description "#{key} #{config_key.to_s.tr! '_', ' '}" %>
                       <%= a_field.text_field key,
                                              class: "crayons-textfield",
-                                             value: SiteConfig.public_send(config_key)[key],
-                                             placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+                                             value: settings_model.public_send(config_key)[key],
+                                             placeholder: placeholer_module::DETAILS[config_key][:placeholder] %>
                     </div>
                   <% end %>
                 <% end %>
               </div>
-            <% elsif SiteConfig.public_send(config_key).is_a?(Array) %>
+            <% elsif settings_model.public_send(config_key).is_a?(Array) %>
               <div class="crayons-field">
                 <%= admin_config_label config_key %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[config_key][:description] %>
+                <%= admin_config_description placeholder_module::DETAILS[config_key][:description] %>
                 <%= f.text_field config_key,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.public_send(config_key).join(","),
-                                 placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+                                 value: settings_model.public_send(config_key).join(","),
+                                 placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
               </div>
             <% else %>
               <div class="crayons-field">
                 <%= admin_config_label config_key %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[config_key][:description] %>
+                <%= admin_config_description placeholder_module::DETAILS[config_key][:description] %>
                 <%= f.text_field config_key,
                                  class: "form-control",
-                                 value: SiteConfig.public_send(config_key),
-                                 placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+                                 value: settings_model.public_send(config_key),
+                                 placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
               </div>
             <% end %>
           <% end %>
@@ -511,7 +512,7 @@
 
               <div class="crayons-field">
                 <%= admin_config_label :copyright_start_year %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:copyright_start_year][:description] %>
+                <%= admin_config_description Constants::Settings::Community::DETAILS[:copyright_start_year][:description] %>
                 <%= f.text_field :copyright_start_year,
                                  class: "crayons-textfield",
                                  value: Settings::Community.copyright_start_year,
