@@ -62,8 +62,6 @@ module Search
         sort_direction: DEFAULT_SORT_DIRECTION,
         term: nil
       )
-        # NOTE: [@rhymes/atsmith813] we should eventually update the frontend
-        # to start from page 1
         sort_by ||= DEFAULT_SORT_BY
         # The UI and serializer rename created_at (the actual DB column name) to
         # published_at
@@ -71,6 +69,8 @@ module Search
 
         sort_direction ||= DEFAULT_SORT_DIRECTION
 
+        # NOTE: [@rhymes/atsmith813] we should eventually update the frontend
+        # to start from page 1
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
