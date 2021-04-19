@@ -275,7 +275,7 @@ function handleCommentSubmit(event) {
           }
           else if (document.getElementById("notifications-container")) {
             var newDiv = document.createElement("span")
-            newDiv.innerHTML = '<div class="crayons-notice align-center p-2 m-2 crayons-notice--success reply-sent-notice reply-sent-notice">Reply sent — <a href="' + newComment.url + '">Check it out</a></div>'
+            newDiv.innerHTML = '<div class="crayons-notice align-center p-2 m-2 crayons-notice--success reply-sent-notice reply-sent-notice" aria-live="polite">Reply sent — <a href="' + newComment.url + '">Check it out</a></div>'
             form.replaceWith(newDiv);
           }
           else {

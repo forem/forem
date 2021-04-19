@@ -1,8 +1,8 @@
 class DevicesController < ApplicationController
-  # Devices can only be created for authenticated users.
-  # This replaces the Authenticated Users Pusher Beams solution.
+  # Device's `belongs_to :user` association enforces that only authenticated
+  # users are able to register devices. This replaces the Authenticated Users
+  # Pusher Beams solution.
   # See: https://github.com/forem/forem/pull/12419/files#r563906038
-  before_action :authenticate_user!, only: [:create]
   skip_before_action :verify_authenticity_token, only: [:destroy]
 
   rescue_from ActiveRecord::ActiveRecordError do |exc|
@@ -12,7 +12,9 @@ class DevicesController < ApplicationController
   def create
     device = Device.find_or_create_by(device_params)
     if device.persisted?
-      head :ok
+      # Even if the device ID may be irrelevant for the consumer, this
+      # serves as confirmation that it was registered successfully.
+      render json: { id: device.id }, status: :created
     else
       render json: { error: device.errors_as_sentence }, status: :bad_request
     end

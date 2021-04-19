@@ -21,9 +21,14 @@ describe('View listing', () => {
   });
 
   it('opens a listing from the listings page', () => {
+    cy.intercept(
+      '/search/listings?category=&listing_search=&page=0&per_page=75&tag_boolean_mode=all',
+      { fixture: 'search/listings.json' },
+    );
+
     cy.visit('/listings');
 
-    cy.findByText('Listing title').as('listingTitle');
+    cy.findByRole('link', { name: 'Listing title' }).as('listingTitle');
     cy.get('@listingTitle').click();
 
     cy.findByTestId('listings-modal').as('listingsModal');

@@ -18,7 +18,7 @@ describe('Comment on articles', () => {
   });
 
   describe('Comments using mention autocomplete', () => {
-    it('should comment on an article with user mention autocomplete suggesting max 6 users', () => {
+    it.skip('should comment on an article with user mention autocomplete suggesting max 6 users', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
@@ -202,8 +202,64 @@ describe('Comment on articles', () => {
       cy.findByText('@search_user_1').should('not.be.visible');
     });
 
-    // TODO: Flaky spec
-    xit('should reply to a comment with user mention autocomplete', () => {
+    it('should close the autocomplete suggestions and exit combobox on click outside', () => {
+      cy.intercept(
+        { method: 'GET', url: '/search/usernames' },
+        { fixture: 'search/usernames.json' },
+      );
+
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
+
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).as('plainTextArea');
+
+      cy.get('@plainTextArea').type('Some text @s');
+
+      // Verify the combobox has appeared
+      cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
+        'autocompleteCommentBox',
+      );
+
+      cy.get('@autocompleteCommentBox').type('earch');
+      cy.findByText('@search_user_1').should('be.visible');
+
+      // Click away from the dropdown
+      cy.get('@autocompleteCommentBox').click({ position: 'right' });
+      cy.findByText('@search_user_1').should('not.exist');
+
+      // Check the combobox has exited and we are returned to the plainTextArea
+      cy.get('@plainTextArea').should('have.focus');
+    });
+
+    it('should exit combobox when blurred and refocused', () => {
+      cy.intercept(
+        { method: 'GET', url: '/search/usernames' },
+        { fixture: 'search/usernames.json' },
+      );
+
+      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
+
+      // Get a handle to the newly substituted textbox
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).as('plainTextArea');
+
+      cy.get('@plainTextArea').type('Some text @s');
+
+      // Verify the combobox has appeared
+      cy.findByRole('combobox', {
+        name: /Add a comment to the discussion/,
+      }).as('combobox');
+
+      // Blur the currently active textarea, and check that the blur results in the plainTextArea being restored
+      cy.get('@combobox').blur();
+      cy.get('@combobox').should('not.be.visible');
+      cy.get('@plainTextArea').should('be.visible');
+    });
+
+    it.skip('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
@@ -213,25 +269,39 @@ describe('Comment on articles', () => {
       cy.findByRole('main')
         .as('main')
         .findByRole('textbox', /^Add a comment to the discussion$/i)
-        .focus()
+        .click();
+
+      // The mention autocomplete is two textareas
+      // and initially it's replacing the server-side rendered one,
+      // so we need to get it again to be certain we have the correct reference.
+      cy.get('@main')
+        .findByRole('textbox', /^Add a comment to the discussion$/i)
         .type('first comment');
 
       cy.get('@main')
-        .findByRole('button', { name: /Submit/ })
+        .findByRole('button', { name: /^Submit$/i })
         .click();
-      cy.get('@main').findByRole('link', { name: /Reply/ }).click();
+
+      cy.get('@main')
+        .findByRole('link', { name: /^Reply$/i })
+        .click();
 
       cy.get('@main')
         .findByRole('textbox', {
-          name: /Reply to a comment.../,
+          name: /^Reply to a comment\.\.\.$/,
         })
-        .as('replyCommentBox');
+        .click();
 
-      cy.get('@main').get('@replyCommentBox').click().type('Some text @s');
+      cy.get('@main')
+        .findByRole('textbox', {
+          name: /^Reply to a comment\.\.\.$/,
+        })
+        .as('replyCommentBox')
+        .type('Some text @s');
 
       // Verify the combobox has appeared
       cy.get('@main')
-        .findByRole('combobox', { name: /Reply to a comment/ })
+        .findByRole('combobox', { name: /^Reply to a comment\.\.\.$/ })
         .as('autocompleteCommentBox');
 
       cy.get('@main').get('@autocompleteCommentBox').type('earch');
