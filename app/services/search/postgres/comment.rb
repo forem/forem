@@ -33,6 +33,12 @@ module Search
       DEFAULT_PER_PAGE = 60
       private_constant :DEFAULT_PER_PAGE
 
+      DEFAULT_SORT_BY = "comments.score".freeze
+      private_constant :DEFAULT_SORT_BY
+
+      DEFAULT_SORT_DIRECTION = :desc
+      private_constant :DEFAULT_SORT_DIRECTION
+
       MAX_PER_PAGE = 120 # to avoid querying too many items, we set a maximum amount for a page
       private_constant :MAX_PER_PAGE
 
@@ -49,7 +55,13 @@ module Search
       SQL
       private_constant :QUERY_FILTER
 
-      def self.search_documents(page: 0, per_page: DEFAULT_PER_PAGE, term: nil)
+      def self.search_documents(
+        page: 0,
+        per_page: DEFAULT_PER_PAGE,
+        sort_by: DEFAULT_SORT_BY,
+        sort_direction: DEFAULT_SORT_DIRECTION,
+        term: nil
+      )
         # NOTE: [@rhymes/atsmith813] we should eventually update the frontend
         # to start from page 1
         page = page.to_i + 1
@@ -59,7 +71,10 @@ module Search
 
         relation = relation.search_comments(term).with_pg_search_highlight if term.present?
 
-        relation = relation.select(*ATTRIBUTES).reorder("comments.score": :desc)
+        # The UI and serializer rename created_at (the actual DB column name) to
+        # published_at
+        sort_by = "comments.created_at" if sort_by == "published_at"
+        relation = relation.select(*ATTRIBUTES).reorder("#{sort_by}": sort_direction)
 
         results = relation.page(page).per(per_page)
 

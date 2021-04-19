@@ -48,7 +48,7 @@ RSpec.describe Search::Postgres::Comment, type: :service do
         expect(highlights).to include("<mark>", "</mark>")
       end
 
-      it "orders the results by score (hotness_score) in descending order" do
+      it "orders the results by score (hotness_score) in descending order by default" do
         comment_text = "Ruby on Rails rocks!"
         comment = create(:comment, body_markdown: comment_text, score: 0)
         hotter_comment = create(:comment, body_markdown: comment_text, score: 99)
@@ -57,6 +57,32 @@ RSpec.describe Search::Postgres::Comment, type: :service do
         scores = result.pluck(:hotness_score)
 
         expect(scores).to eq([hotter_comment.score, comment.score])
+      end
+
+      it "orders the results by published_at (created_at) in descending order" do
+        comment_text = "Ruby on Rails rocks!"
+        comment = create(:comment, body_markdown: comment_text, score: 0)
+        older_comment = create(:comment, body_markdown: comment_text, score: 99, created_at: 1.day.ago)
+
+        result = described_class.search_documents(sort_by: "published_at", sort_direction: "desc", term: "rails")
+        # rubocop:disable Rails/PluckId
+        ids = result.pluck(:id)
+        # rubocop:enable Rails/PluckId
+
+        expect(ids).to eq([comment.search_id, older_comment.search_id])
+      end
+
+      it "orders the results by published_at (created_at) in ascending order" do
+        comment_text = "Ruby on Rails rocks!"
+        comment = create(:comment, body_markdown: comment_text, score: 0)
+        older_comment = create(:comment, body_markdown: comment_text, score: 99, created_at: 1.day.ago)
+
+        result = described_class.search_documents(sort_by: "published_at", sort_direction: "asc", term: "rails")
+        # rubocop:disable Rails/PluckId
+        ids = result.pluck(:id)
+        # rubocop:enable Rails/PluckId
+
+        expect(ids).to eq([older_comment.search_id, comment.search_id])
       end
     end
 
