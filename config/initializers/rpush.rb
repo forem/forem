@@ -52,8 +52,15 @@ Rpush.reflect do |on|
   # end
 
   # Called when a notification is successfully delivered.
-  # on.notification_delivered do |notification|
-  # end
+  on.notification_delivered do |notification|
+    ForemStatsClient.increment(
+      "push_notifications.delivered",
+      tags: [
+        "app_bundle:#{notification.app&.bundle_id}",
+        "type:#{JSON.parse(notification.payload).dig('data', 'type') || 'unknown'}",
+      ],
+    )
+  end
 
   # Called when notification delivery failed.
   # Call 'error_code' and 'error_description' on the notification for the cause.
@@ -64,11 +71,15 @@ Rpush.reflect do |on|
       Device.where(token: notification.device_token, platform: "iOS").destroy_all
     end
 
+    HoneyBadger.notify(error_message:
+      "error_description: #{notification.error_description}, error_code: #{notification.error_code}")
+
     ForemStatsClient.increment(
       "push_notifications.errors",
       tags: [
-        "error:#{e.class}",
-        "message:#{e.error_description}",
+        "app_bundle:#{notification.app&.bundle_id}",
+        "error_code:#{notification.error_code}",
+        "error_description:#{notification.error_description}",
       ],
     )
   end
