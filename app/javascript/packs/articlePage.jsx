@@ -1,7 +1,7 @@
 import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
-import { embedGists } from '../utilities/gist';
+import { embedGists, embedGistsInComments } from '../utilities/gist';
 
 const fullscreenActionElements = document.getElementsByClassName(
   'js-fullscreen-code-action',
@@ -68,19 +68,4 @@ const userDataIntervalID = setInterval(async () => {
 });
 
 embedGists();
-
-// allows for getting the gist embed after new comment submit
-const commentForm = document.getElementById("new_comment");
-const previewBtn = document.getElementsByClassName('preview-toggle')[0];
-
-if (typeof commentForm !== "undefined") {
-  commentForm.addEventListener("submit", (_event) => {
-    embedGists();
-  });
-}
-
-if (typeof previewBtn !== "undefined") {
-  previewBtn.addEventListener("click", (_event) => {
-    embedGists();
-  });
-}
+embedGistsInComments();
