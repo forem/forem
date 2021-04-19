@@ -24,7 +24,7 @@ export function embedGists() {
 }
 
 export function embedGistsInComments() {
-  // allows for getting the gist embed after new comment submit
+  // allows for getting the gist embed after new comment submit and preview
   const commentForm = document.getElementById("new_comment");
   const previewBtn = document.getElementsByClassName('preview-toggle')[0];
   const dismissBtn = document.querySelector('.dismiss-comment');
