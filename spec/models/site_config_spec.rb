@@ -5,7 +5,7 @@ RSpec.describe SiteConfig, type: :model do
     describe "validating URLs" do
       let(:url_fields) do
         %w[
-          campaign_sidebar_image main_social_image logo_png secondary_logo_url
+          main_social_image logo_png secondary_logo_url
           mascot_image_url mascot_footer_image_url onboarding_background_image
         ]
       end
@@ -22,7 +22,7 @@ RSpec.describe SiteConfig, type: :model do
         url_fields.each do |attribute|
           expect do
             described_class.public_send("#{attribute}=", "example.com")
-          end.to raise_error(/must be a valid URL/)
+          end.to raise_error(/is not a valid URL/)
         end
       end
     end

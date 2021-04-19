@@ -10,17 +10,16 @@ class Campaign
   end
 
   METHODS = %w[
-    hero_html_variant_name
+    articles_require_approval?
+    call_to_action
     featured_tags
+    hero_html_variant_name
     sidebar_enabled?
     sidebar_image
     url
-    articles_require_approval?
-    call_to_action
   ].freeze
 
-  # Define delegate methods for SiteConfig
-  METHODS.each { |m| define_method(m) { SiteConfig.public_send("campaign_#{m}") } }
+  delegate(*METHODS, to: Settings::Campaign)
 
   def show_in_sidebar?
     sidebar_enabled? && sidebar_image.present?
