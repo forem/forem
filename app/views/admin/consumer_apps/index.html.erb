@@ -1,5 +1,5 @@
 <div class="crayons-card p-3 mb-5 mt-2">
-  <%= link_to "New App Integration", new_admin_app_integration_path, class: "crayons-btn float-right" %>
+  <%= link_to "New App Integration", new_admin_consumer_app_path, class: "crayons-btn float-right" %>
 
   <h1 class="crayons-title mb-6">Push Notifications</h1>
 
@@ -39,8 +39,8 @@
             <% if app.forem_app? %>
               <span class="fs-xs">Forem apps are supported by default and can't be modified.</span>
             <% else %>
-              <%= link_to "Edit", edit_admin_app_integration_path(app), class: "crayons-btn crayons-btn--outlined" %>
-              <%= link_to "Destroy", admin_app_integration_path(app), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %>
+              <%= link_to "Edit", edit_admin_consumer_app_path(app), class: "crayons-btn crayons-btn--outlined" %>
+              <%= link_to "Destroy", admin_consumer_app_path(app), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %>
             <% end %>
           </td>
         </tr>

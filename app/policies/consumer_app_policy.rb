@@ -2,7 +2,7 @@
 # Forem instance by default. These are App Integrations that populate their
 # credentials from ENV variables and are not meant to be modified by creators.
 # Creator apps are those dynamically managed by creators in the Admin dashboard.
-class AppIntegrationPolicy < ApplicationPolicy
+class ConsumerAppPolicy < ApplicationPolicy
   def create?
     @record.creator_app?
   end

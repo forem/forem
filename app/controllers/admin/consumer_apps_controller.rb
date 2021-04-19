@@ -1,27 +1,27 @@
 module Admin
-  class AppIntegrationsController < Admin::ApplicationController
+  class ConsumerAppsController < Admin::ApplicationController
     layout "admin"
 
     def index
-      @apps = AppIntegrations::FetchAll.call
+      @apps = ConsumerApps::FetchAll.call
     end
 
     def new
-      @app = AppIntegration.new
+      @app = ConsumerApp.new
     end
 
     def edit
-      @app = AppIntegration.find(params[:id])
+      @app = ConsumerApp.find(params[:id])
       authorize @app
     end
 
     def create
-      @app = AppIntegration.new(app_integration_params)
+      @app = ConsumerApp.new(consumer_app_params)
       authorize @app
 
       if @app.save
         flash[:success] = "#{@app.app_bundle} has been created!"
-        redirect_to admin_app_integrations_path
+        redirect_to admin_consumer_apps_path
       else
         flash[:danger] = @app.errors_as_sentence
         render :new
@@ -29,12 +29,12 @@ module Admin
     end
 
     def update
-      @app = AppIntegration.find(params[:id])
+      @app = ConsumerApp.find(params[:id])
       authorize @app
 
-      if @app.update(app_integration_params)
+      if @app.update(consumer_app_params)
         flash[:success] = "#{@app.app_bundle} has been updated!"
-        redirect_to admin_app_integrations_path
+        redirect_to admin_consumer_apps_path
       else
         flash[:danger] = @app.errors_as_sentence
         render :edit
@@ -42,12 +42,12 @@ module Admin
     end
 
     def destroy
-      @app = AppIntegration.find(params[:id])
+      @app = ConsumerApp.find(params[:id])
       authorize @app
 
       if @app.destroy
         flash[:success] = "#{@app.app_bundle} has been deleted!"
-        redirect_to admin_app_integrations_path
+        redirect_to admin_consumer_apps_path
       else
         flash[:danger] = "Something went wrong with deleting #{@app.app_bundle}."
         render :edit
@@ -56,7 +56,7 @@ module Admin
 
     private
 
-    def app_integration_params
+    def consumer_app_params
       params.permit(:app_bundle, :platform, :auth_key)
     end
   end

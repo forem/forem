@@ -1,4 +1,4 @@
-module AppIntegrations
+module ConsumerApp
   class FetchRpushApp
     def self.call(app_bundle:, platform:)
       new(app_bundle: app_bundle, platform: platform).call
@@ -7,14 +7,14 @@ module AppIntegrations
     def initialize(app_bundle:, platform:)
       @app_bundle = app_bundle
       @platform = platform
-      @app_integration = AppIntegrations::FetchOrCreateBy.call(
+      @consumer_app = ConsumerApps::FetchOrCreateBy.call(
         app_bundle: @app_bundle,
         platform: @platform,
       )
     end
 
     def call
-      case @app_integration&.platform
+      case @consumer_app&.platform
       when Device::IOS
         ios_app = Rpush::Apns2::App.where(name: @app_bundle).first
         ios_app || recreate_ios_app!
@@ -29,7 +29,7 @@ module AppIntegrations
     def recreate_ios_app!
       app = Rpush::Apns2::App.new
       app.name = @app_bundle
-      app.certificate = @app_integration.auth_credentials.to_s.gsub("\\n", "\n")
+      app.certificate = @consumer_app.auth_credentials.to_s.gsub("\\n", "\n")
       app.environment = Rails.env
       app.password = ""
       app.bundle_id = @app_bundle
@@ -41,7 +41,7 @@ module AppIntegrations
     def recreate_android_app!
       app = Rpush::Gcm::App.new
       app.name = @app_bundle
-      app.auth_key = @app_integration.auth_credentials.to_s
+      app.auth_key = @consumer_app.auth_credentials.to_s
       app.connections = 1
       app.save!
       app

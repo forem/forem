@@ -1,4 +1,4 @@
-class AppIntegration < ApplicationRecord
+class ConsumerApp < ApplicationRecord
   resourcify
 
   FOREM_BUNDLE = "com.forem.app".freeze
@@ -24,7 +24,7 @@ class AppIntegration < ApplicationRecord
   # When an error is raised during an attempt to deliver PNs we should catch
   # them, mark the app as active=false and the error logged into `last_error`
   # If the app is marked as active and credentials are available it's likely
-  # the AppIntegration is operational.
+  # the ConsumerApp is operational.
   def operational?
     active && auth_credentials.present?
   end

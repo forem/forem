@@ -3,12 +3,12 @@ class Device < ApplicationRecord
   self.ignored_columns = ["app_bundle"]
 
   belongs_to :user
-  belongs_to :app_integration
+  belongs_to :consumer_app
 
   IOS = "iOS".freeze
   ANDROID = "Android".freeze
 
-  validates :token, uniqueness: { scope: %i[user_id platform app_integration_id] }
+  validates :token, uniqueness: { scope: %i[user_id platform consumer_app_id] }
   validates :platform, inclusion: { in: [IOS, ANDROID] }
 
   def create_notification(title, body, payload)
@@ -25,8 +25,8 @@ class Device < ApplicationRecord
   def ios_notification(title, body, payload)
     n = Rpush::Apns2::Notification.new
     n.device_token = token
-    n.app = AppIntegrations::FetchRpushApp.call(
-      app_bundle: app_integration.app_bundle,
+    n.app = ConsumerApps::FetchRpushApp.call(
+      app_bundle: consumer_app.app_bundle,
       platform: platform,
     )
     n.data = {
@@ -45,7 +45,7 @@ class Device < ApplicationRecord
 
   def android_notification(title, body, payload)
     n = Rpush::Gcm::Notification.new
-    n.app = AppIntegration.rpush_app(app_bundle: app_bundle, platform: platform)
+    n.app = ConsumerApp.rpush_app(app_bundle: app_bundle, platform: platform)
     n.registration_ids = [token]
     n.priority = "high"
     n.content_available = true

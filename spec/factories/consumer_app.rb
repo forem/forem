@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :app_integration do
+  factory :consumer_app do
     auth_key { Faker::Alphanumeric.alpha(number: 10) }
     active { true }
     platform { Device::IOS }
