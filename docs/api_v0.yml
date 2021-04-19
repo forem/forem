@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.9.5"
+  version: "0.9.6"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -526,6 +526,7 @@ components:
         - published_timestamp
         - body_markdown
         - user
+        - reading_time
       properties:
         type_of:
           type: string
@@ -581,6 +582,10 @@ components:
           type: string
         user:
           $ref: "#/components/schemas/SharedUser"
+        reading_time:
+          description: Reading time, in minutes
+          type: integer
+          format: int32
         organization:
           $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
@@ -1250,6 +1255,7 @@ components:
           published_at: '2019-10-24T13:52:17Z'
           last_comment_at: '2019-10-25T08:12:43Z'
           published_timestamp: '2019-10-24T13:52:17Z'
+          reading_time: 15
           user:
             name: Ben Halpern
             username: ben
@@ -1294,6 +1300,7 @@ components:
         published_at: "2019-08-01T15:47:54Z"
         last_comment_at: "2019-08-06T16:48:10Z"
         published_timestamp: "2019-08-01T15:47:54Z"
+        reading_time: 15
         body_html: |+
           <p>Today's episode of Byte Sized is about Leonhard Euler and the creation of <a href="https://en.wikipedia.org/wiki/Graph_theory">Graph Theory</a>.</p>
 
