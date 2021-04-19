@@ -1,6 +1,5 @@
 require "rails_helper"
 
-# @ridhwana: rename to sidebar_spec once we can delete the old spec
 RSpec.describe "admin sidebar", type: :request do
   let(:super_admin) { create(:user, :super_admin) }
 
