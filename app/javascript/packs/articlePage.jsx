@@ -71,8 +71,16 @@ embedGists();
 
 // allows for getting the gist embed after new comment submit
 const commentForm = document.getElementById("new_comment");
+const previewBtn = document.getElementsByClassName('preview-toggle')[0];
+
 if (typeof commentForm !== "undefined") {
   commentForm.addEventListener("submit", (_event) => {
+    embedGists();
+  });
+}
+
+if (typeof previewBtn !== "undefined") {
+  previewBtn.addEventListener("click", (_event) => {
     embedGists();
   });
 }
