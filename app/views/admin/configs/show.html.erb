@@ -633,9 +633,35 @@
                   </div>
                 <% end %>
               <% end %>
+              <%= render "form_submission", f: f %>
+            </fieldset>
+          </div>
+          </div>
+        <% end %>
+
+        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { testid: "emailDigestSectionForm" } }) do |f| %>
+          <div class="card mt-3">
+            <%= render partial: "admin/shared/card_header",
+                       locals: {
+                         header: "Email digest frequency",
+                         state: "collapse",
+                         target: "emailDigestBodyContainer",
+                         expanded: false
+                       } %>
+          <div id="emailDigestBodyContainer" class="card-body collapse hide" aria-labelledby="emailDigestBodyContainer">
+            <fieldset class="grid gap-4">
+              <div class="crayons-field">
+                <%= admin_config_label :periodic_email_digest %>
+                <%= admin_config_description Constants::SiteConfig::DETAILS[:periodic_email_digest][:description] %>
+                <%= f.number_field :periodic_email_digest,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.periodic_email_digest,
+                                   placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest][:placeholder] %>
+              </div>
 
               <%= render "form_submission", f: f %>
             </fieldset>
+          </div>
           </div>
         <% end %>
 
