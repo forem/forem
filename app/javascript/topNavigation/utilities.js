@@ -80,7 +80,6 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
     memberTopMenu.addEventListener('keyup', (e) => {
       if (e.key === 'Escape' && classList.contains('showing')) {
         closeHeaderMenu(memberTopMenu, menuNavButton);
-        menuNavButton.focus();
       }
     });
   }
