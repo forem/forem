@@ -40,4 +40,9 @@ export function embedGistsInComments() {
     ?.addEventListener('click', (_event) => {
       embedGists();
     });
+  document
+    .querySelector('.view-discussion')
+    ?.addEventListener('click', (_event) => {
+      embedGists();
+    });
 }
