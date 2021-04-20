@@ -11,8 +11,6 @@ class SiteConfig < RailsSettings::Base
   HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/.freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
-  VALID_URL = %r{\A(http|https)://([/|.\w\s-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
-  URL_MESSAGE = "must be a valid URL".freeze
 
   # Forem Team
   # [forem-fix] Remove channel name from SiteConfig
@@ -36,18 +34,19 @@ class SiteConfig < RailsSettings::Base
   }
   field :authentication_providers, type: :array, default: %w[]
 
+  # NOTE: @citizen428 The whole block of campaign settings will be removed once
+  # we fully migrated to Settings::Campaign across the fleet.
   # Campaign
   field :campaign_call_to_action, type: :string, default: "Share your project"
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
   field :campaign_sidebar_image, type: :string, default: nil, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
+    url: true
   }
   field :campaign_url, type: :string, default: nil
   field :campaign_articles_require_approval, type: :boolean, default: 0
   field :campaign_articles_expiry_time, type: :integer, default: 4
-
   # Community Content
   # NOTE: @citizen428 All these settings will be removed once we full migrated
   # to Settings::Community across the fleet.
@@ -90,18 +89,16 @@ class SiteConfig < RailsSettings::Base
   field :main_social_image,
         type: :string,
         default: proc { URL.local_image("social-media-cover.png") },
-        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
+        validates: { url: true }
 
   field :favicon_url, type: :string, default: proc { URL.local_image("favicon.ico") }
   field :logo_png,
         type: :string,
         default: proc { URL.local_image("icon.png") },
-        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
+        validates: { url: true }
 
   field :logo_svg, type: :string
-  field :secondary_logo_url, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
+  field :secondary_logo_url, type: :string, validates: { url: true }
 
   field :enable_video_upload, type: :boolean, default: false
 
@@ -110,11 +107,9 @@ class SiteConfig < RailsSettings::Base
   field :mascot_image_url,
         type: :string,
         default: proc { URL.local_image("mascot.png") },
-        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
+        validates: { url: true }
   field :mascot_image_description, type: :string, default: "The community mascot"
-  field :mascot_footer_image_url, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
+  field :mascot_footer_image_url, type: :string, validates: { url: true }
   field :mascot_footer_image_width, type: :integer, default: 52
   field :mascot_footer_image_height, type: :integer, default: 120
 
@@ -143,14 +138,14 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Onboarding
-  field :onboarding_background_image, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
+  field :onboarding_background_image, type: :string, validates: { url: true }
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
   field :prefer_manual_suggested_users, type: :boolean, default: false
 
   # Rate limits and spam prevention
+  # NOTE: @citizen428 These will be removed once we migrated to the new settings
+  # model across the fleet.
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_comment_antispam_creation, type: :integer, default: 1

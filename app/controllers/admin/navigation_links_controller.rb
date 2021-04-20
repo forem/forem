@@ -17,7 +17,7 @@ module Admin
       else
         flash[:error] = "Error: #{navigation_link.errors_as_sentence}"
       end
-      redirect_to admin_navigation_links_url
+      redirect_to admin_navigation_links_path
     end
 
     def update
@@ -27,7 +27,7 @@ module Admin
       else
         flash[:error] = "Error: #{navigation_link.errors_as_sentence}"
       end
-      redirect_to admin_navigation_links_url
+      redirect_to admin_navigation_links_path
     end
 
     def destroy
@@ -37,7 +37,7 @@ module Admin
       else
         flash[:error] = "Error: #{navigation_link.errors_as_sentence}"
       end
-      redirect_to admin_navigation_links_url
+      redirect_to admin_navigation_links_path
     end
 
     private

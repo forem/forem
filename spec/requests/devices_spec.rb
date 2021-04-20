@@ -17,6 +17,7 @@ RSpec.describe "Devices", type: :request do
           app_bundle: "hello"
         }
         expect(user.devices.count).to eq(1)
+        expect(response).to have_http_status(:created)
       end
     end
 

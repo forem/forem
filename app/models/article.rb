@@ -54,7 +54,9 @@ class Article < ApplicationRecord
            inverse_of: :commentable,
            class_name: "Comment"
 
-  validates :body_markdown, length: { minimum: 0, allow_nil: false }, uniqueness: { scope: %i[user_id title] }
+  validates :body_markdown, bytesize: { maximum: 800.kilobytes, too_long: "is too long." }
+  validates :body_markdown, length: { minimum: 0, allow_nil: false }
+  validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validates :boost_states, presence: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :canonical_url, uniqueness: { allow_nil: true }
