@@ -1057,7 +1057,7 @@ ActiveRecord::Schema.define(version: 2021_04_15_063052) do
     t.string "var", null: false
     t.index ["var"], name: "index_settings_authentications_on_var", unique: true
   end
-  
+
   create_table "settings_campaigns", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
