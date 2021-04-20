@@ -1,4 +1,4 @@
-module ConsumerApp
+module ConsumerApps
   class FetchRpushApp
     def self.call(app_bundle:, platform:)
       new(app_bundle: app_bundle, platform: platform).call
