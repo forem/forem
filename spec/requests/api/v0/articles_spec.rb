@@ -30,7 +30,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         type_of id title description cover_image readable_publish_date social_image
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
-        published_timestamp user organization flare_tag
+        published_timestamp user organization flare_tag reading_time_minutes
       ]
 
       expect(response.parsed_body.first.keys).to match_array index_keys
@@ -334,7 +334,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         type_of id title description cover_image readable_publish_date social_image
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
-        published_timestamp body_html body_markdown user organization flare_tag
+        published_timestamp body_html body_markdown user organization flare_tag reading_time_minutes
       ]
 
       expect(response.parsed_body.keys).to match_array show_keys
