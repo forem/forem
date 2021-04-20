@@ -84,12 +84,15 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
     });
   }
 
-  memberTopMenu
-    .querySelector('.crayons-header__menu__dropdown')
-    .addEventListener('click', (_event) => {
-      // Close the menu if the user clicked or touched on mobile a link in the menu.
-      closeHeaderMenu(memberTopMenu, menuNavButton);
-    });
+  document.addEventListener('click', (event) => {
+    if (event.target === menuNavButton) {
+      // The menu navigation button manages it's own click event.
+      return;
+    }
+
+    // Close the menu if the user clicked or touched on mobile a link in the menu.
+    closeHeaderMenu(memberTopMenu, menuNavButton);
+  });
 
   document
     .getElementById('last-nav-link')
