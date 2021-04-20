@@ -13,8 +13,6 @@ function handleDismissRuntimeBanner(event) {
 function launchCustomSchemeDeepLink(targetURL) {
   window.location.href = targetURL;
 }
-// Making it visible for testing (in order to stub it)
-window.launchCustomSchemeDeepLink = launchCustomSchemeDeepLink;
 
 function initializeRuntimeBanner() {
   // This will provide the dismiss functionality for the Runtime Banner
