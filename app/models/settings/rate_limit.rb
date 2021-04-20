@@ -24,7 +24,6 @@ module Settings
     field :user_subscription_creation, type: :integer, default: 3
     field :user_update, type: :integer, default: 15
 
-    # To get default values
     def self.get_default(field)
       get_field(field)[:default]
     end
