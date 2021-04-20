@@ -1,6 +1,7 @@
 function closeHeaderMenu(memberMenu, menuNavButton) {
   menuNavButton.setAttribute('aria-expanded', 'false');
   memberMenu.classList.remove('desktop', 'showing');
+  menuNavButton.focus();
 }
 
 function openHeaderMenu(memberMenu, menuNavButton) {
