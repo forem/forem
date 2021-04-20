@@ -23,7 +23,8 @@ RSpec.describe RateLimitChecker, type: :service do
     it "raises an error if no unique component is present for a cache key" do
       action = described_class::ACTION_LIMITERS.keys.first
       limiter = described_class.new(build(:user))
-      expect { limiter.limit_by_action(action) }.to raise_error("Invalid Cache Key: no unique component present")
+      expect { limiter.limit_by_action(action) }
+        .to raise_error("Invalid Cache Key: no unique component present")
     end
 
     # We check the excepted limits against the database, rather than our cache.
@@ -34,7 +35,7 @@ RSpec.describe RateLimitChecker, type: :service do
       it "returns true if #{action} limit has been reached" do
         allow(Rails.cache).to receive(:read).with(
           cache_key(action), raw: true
-        ).and_return(SiteConfig.public_send("rate_limit_#{action}") + 1)
+        ).and_return(Settings::RateLimit.public_send(action) + 1)
 
         expect(rate_limit_checker.limit_by_action(action)).to be(true)
       end
@@ -42,7 +43,7 @@ RSpec.describe RateLimitChecker, type: :service do
       it "returns false if #{action} limit has NOT been reached" do
         allow(Rails.cache).to receive(:read).with(
           cache_key(action), raw: true
-        ).and_return(SiteConfig.public_send("rate_limit_#{action}"))
+        ).and_return(Settings::RateLimit.public_send(action))
 
         expect(rate_limit_checker.limit_by_action(action)).to be(false)
       end
@@ -50,7 +51,7 @@ RSpec.describe RateLimitChecker, type: :service do
 
     context "when creating comments" do
       before do
-        allow(SiteConfig).to receive(:rate_limit_comment_creation).and_return(1)
+        allow(Settings::RateLimit).to receive(:comment_creation).and_return(1)
       end
 
       it "returns true if too many comments at once" do
@@ -64,13 +65,13 @@ RSpec.describe RateLimitChecker, type: :service do
     end
 
     it "returns true if too many published articles at once and potentially spammy" do
-      allow(SiteConfig).to receive(:rate_limit_published_article_antispam_creation).and_return(1)
+      allow(Settings::RateLimit).to receive(:published_article_antispam_creation).and_return(1)
       create_list(:article, 2, user_id: user.id, published: true)
       expect(rate_limit_checker.limit_by_action("published_article_antispam_creation")).to be(true)
     end
 
     it "returns true if too many published articles at once" do
-      allow(SiteConfig).to receive(:rate_limit_published_article_creation).and_return(1)
+      allow(Settings::RateLimit).to receive(:published_article_creation).and_return(1)
       create_list(:article, 2, user_id: user.id, published: true)
       expect(rate_limit_checker.limit_by_action("published_article_creation")).to be(true)
     end
@@ -78,7 +79,7 @@ RSpec.describe RateLimitChecker, type: :service do
     it "returns true if a user has followed more than <daily_limit> accounts today" do
       allow(rate_limit_checker)
         .to receive(:user_today_follow_count)
-        .and_return(SiteConfig.rate_limit_follow_count_daily + 1)
+        .and_return(Settings::RateLimit.follow_count_daily + 1)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to be(true)
     end
@@ -86,7 +87,7 @@ RSpec.describe RateLimitChecker, type: :service do
     it "returns false if a user's following_users_count is less than <daily_limit>" do
       allow(user)
         .to receive(:following_users_count)
-        .and_return(SiteConfig.rate_limit_follow_count_daily - 1)
+        .and_return(Settings::RateLimit.follow_count_daily - 1)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to be(false)
     end
@@ -94,7 +95,7 @@ RSpec.describe RateLimitChecker, type: :service do
     it "returns false if a user has followed less than <daily_limit> accounts today" do
       allow(rate_limit_checker)
         .to receive(:user_today_follow_count)
-        .and_return(SiteConfig.rate_limit_follow_count_daily)
+        .and_return(Settings::RateLimit.follow_count_daily)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to be(false)
     end
@@ -110,7 +111,7 @@ RSpec.describe RateLimitChecker, type: :service do
     it "logs a rate limit hit to datadog" do
       allow(Rails.cache)
         .to receive(:read).with("#{user.id}_organization_creation", raw: true)
-        .and_return(SiteConfig.rate_limit_organization_creation + 1)
+        .and_return(Settings::RateLimit.organization_creation + 1)
       allow(ForemStatsClient).to receive(:increment)
       described_class.new(user).limit_by_action("organization_creation")
 
@@ -147,7 +148,7 @@ RSpec.describe RateLimitChecker, type: :service do
 
   describe "#limit_by_email_recipient_address" do
     before do
-      allow(SiteConfig).to receive(:rate_limit_email_recipient).and_return(1)
+      allow(Settings::RateLimit).to receive(:email_recipient).and_return(1)
     end
 
     it "returns true if too many emails are sent to the same recipient" do

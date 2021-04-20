@@ -634,122 +634,152 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Rate Limits and spam" do
-        it "updates rate_limit_follow_count_daily" do
-          default_value = SiteConfig.get_default(:rate_limit_follow_count_daily)
+        it "updates follow_count_daily" do
+          default_value = Settings::RateLimit.get_default(:follow_count_daily)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_follow_count_daily: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_follow_count_daily).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { follow_count_daily: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :follow_count_daily).from(default_value).to(3)
         end
 
-        it "updates rate_limit_comment_creation" do
-          default_value = SiteConfig.get_default(:rate_limit_comment_creation)
+        it "updates comment_creation" do
+          default_value = Settings::RateLimit.get_default(:comment_creation)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_comment_creation: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_comment_creation).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { comment_creation: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :comment_creation).from(default_value).to(3)
         end
 
-        it "updates rate_limit_published_article_creation" do
-          default_value = SiteConfig.get_default(:rate_limit_published_article_creation)
+        it "updates published_article_creation" do
+          default_value = Settings::RateLimit.get_default(:published_article_creation)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_published_article_creation: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_published_article_creation).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { published_article_creation: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :published_article_creation).from(default_value).to(3)
         end
 
-        it "updates rate_limit_published_article_antispam_creation" do
-          default_value = SiteConfig.get_default(:rate_limit_published_article_antispam_creation)
+        it "updates published_article_antispam_creation" do
+          default_value = Settings::RateLimit.get_default(:published_article_antispam_creation)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_published_article_antispam_creation: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_published_article_antispam_creation).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { published_article_antispam_creation: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :published_article_antispam_creation).from(default_value).to(3)
         end
 
-        it "updates rate_limit_organization_creation" do
-          default_value = SiteConfig.get_default(:rate_limit_organization_creation)
+        it "updates organization_creation" do
+          default_value = Settings::RateLimit.get_default(:organization_creation)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_organization_creation: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_organization_creation).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { organization_creation: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :organization_creation).from(default_value).to(3)
         end
 
-        it "updates rate_limit_image_upload" do
-          default_value = SiteConfig.get_default(:rate_limit_image_upload)
+        it "updates image_upload" do
+          default_value = Settings::RateLimit.get_default(:image_upload)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_image_upload: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_image_upload).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { image_upload: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :image_upload).from(default_value).to(3)
         end
 
-        it "updates rate_limit_email_recipient" do
-          default_value = SiteConfig.get_default(:rate_limit_email_recipient)
+        it "updates email_recipient" do
+          default_value = Settings::RateLimit.get_default(:email_recipient)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_email_recipient: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_email_recipient).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { email_recipient: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :email_recipient).from(default_value).to(3)
         end
 
-        it "updates rate_limit_user_subscription_creation" do
-          default_value = SiteConfig.get_default(:rate_limit_user_subscription_creation)
+        it "updates user_subscription_creation" do
+          default_value = Settings::RateLimit.get_default(:user_subscription_creation)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_user_subscription_creation: 1 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_user_subscription_creation).from(default_value).to(1)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { user_subscription_creation: 1 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :user_subscription_creation).from(default_value).to(1)
         end
 
-        it "updates rate_limit_article_update" do
-          default_value = SiteConfig.get_default(:rate_limit_article_update)
+        it "updates article_update" do
+          default_value = Settings::RateLimit.get_default(:article_update)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_article_update: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_article_update).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { article_update: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :article_update).from(default_value).to(3)
         end
 
-        it "updates rate_limit_user_update" do
+        it "updates user_update" do
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_user_update: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_user_update).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { user_update: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :user_update).to(3)
         end
 
-        it "updates rate_limit_feedback_message_creation" do
-          default_value = SiteConfig.get_default(:rate_limit_feedback_message_creation)
+        it "updates feedback_message_creation" do
+          default_value = Settings::RateLimit.get_default(:feedback_message_creation)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_feedback_message_creation: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_feedback_message_creation).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { feedback_message_creation: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :feedback_message_creation).from(default_value).to(3)
         end
 
-        it "updates rate_limit_listing_creation" do
-          default_value = SiteConfig.get_default(:rate_limit_listing_creation)
+        it "updates listing_creation" do
+          default_value = Settings::RateLimit.get_default(:listing_creation)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_listing_creation: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_listing_creation).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { listing_creation: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :listing_creation).from(default_value).to(3)
         end
 
-        it "updates rate_limit_reaction_creation" do
-          default_value = SiteConfig.get_default(:rate_limit_reaction_creation)
+        it "updates reaction_creation" do
+          default_value = Settings::RateLimit.get_default(:reaction_creation)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_reaction_creation: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_reaction_creation).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { reaction_creation: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :reaction_creation).from(default_value).to(3)
         end
 
-        it "updates rate_limit_send_email_confirmation" do
-          default_value = SiteConfig.get_default(:rate_limit_send_email_confirmation)
+        it "updates send_email_confirmation" do
+          default_value = Settings::RateLimit.get_default(:send_email_confirmation)
           expect do
-            post "/admin/config", params: { site_config: { rate_limit_send_email_confirmation: 3 },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_send_email_confirmation).from(default_value).to(3)
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { send_email_confirmation: 3 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :send_email_confirmation).from(default_value).to(3)
         end
 
         it "updates spam_trigger_terms" do
           spam_trigger_terms = "hey, pokemon go hack"
-          post "/admin/config", params: { site_config: { spam_trigger_terms: spam_trigger_terms },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.spam_trigger_terms).to eq(["hey", "pokemon go hack"])
+          post admin_settings_rate_limits_path, params: {
+            settings_rate_limit: { spam_trigger_terms: spam_trigger_terms },
+            confirmation: confirmation_message
+          }
+          expect(Settings::RateLimit.spam_trigger_terms).to eq(["hey", "pokemon go hack"])
         end
 
         it "updates recaptcha_site_key and recaptcha_secret_key" do

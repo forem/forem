@@ -142,6 +142,8 @@ class SiteConfig < RailsSettings::Base
   field :prefer_manual_suggested_users, type: :boolean, default: false
 
   # Rate limits and spam prevention
+  # NOTE: @citizen428 These will be removed once we migrated to the new settings
+  # model across the fleet.
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_comment_antispam_creation, type: :integer, default: 1
