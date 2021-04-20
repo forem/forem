@@ -23,17 +23,21 @@ export function embedGists() {
   }, 500);
 }
 
-// allows for getting the gist embed after new comment submit/preview/dismiss
-document.getElementById('new_comment')?.addEventListener('submit', (_event) => {
-  embedGists();
-});
-document
-  .querySelector('.preview-toggle')
-  ?.addEventListener('click', (_event) => {
-    embedGists();
-  });
-document
-  .querySelector('.dismiss-comment')
-  ?.addEventListener('click', (_event) => {
-    embedGists();
-  });
+export function embedGistsInComments() {
+  // allows for getting the gist embed after new comment submit/preview/dismiss
+  document
+    .getElementById('new_comment')
+    ?.addEventListener('submit', (_event) => {
+      embedGists();
+    });
+  document
+    .querySelector('.preview-toggle')
+    ?.addEventListener('click', (_event) => {
+      embedGists();
+    });
+  document
+    .querySelector('.dismiss-comment')
+    ?.addEventListener('click', (_event) => {
+      embedGists();
+    });
+}
