@@ -214,7 +214,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "does not update the community_emoji if invalid" do
-          allow(Settings::Community).to receive(:community_emoji).and_call_original
+          Settings::Community.community_emoji = "🥐"
           not_an_emoji = "i love croissants"
           expect do
             post admin_settings_communities_path, params: {
@@ -236,10 +236,10 @@ RSpec.describe "/admin/config", type: :request do
         it "updates the community_member_label" do
           name = "developer"
           post admin_settings_communities_path, params: {
-            settings_community: { community_member_label: name },
+            settings_community: { member_label: name },
             confirmation: confirmation_message
           }
-          expect(Settings::Community.community_member_label).to eq(name)
+          expect(Settings::Community.member_label).to eq(name)
         end
 
         it "updates the copyright_start_year" do
@@ -261,7 +261,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates the staff_user_id" do
-          post admin_settings_community_path, params: {
+          post admin_settings_communities_path, params: {
             settings_community: { staff_user_id: 22 },
             confirmation: confirmation_message
           }

@@ -38,7 +38,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#community_name" do
     it "equals to the community name" do
-      allow(SiteConfig).to receive(:community_name).and_return("SLOAN")
+      allow(Settings::Community).to receive(:community_name).and_return("SLOAN")
       expect(helper.community_name).to eq("SLOAN")
     end
   end
