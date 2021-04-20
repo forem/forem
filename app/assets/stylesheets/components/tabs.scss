@@ -70,8 +70,8 @@
     }
 
     &--current {
-      -webkit-text-stroke: 0.03em currentColor;
       color: var(--tab-color-current);
+      text-shadow: var(--ts-bold);
 
       &::after {
         display: block;
