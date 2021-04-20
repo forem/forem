@@ -635,6 +635,7 @@ class User < ApplicationRecord
     "#{employer_name}#{mostly_work_with}#{available_for}"
   end
 
+  # TODO: this can be removed once we migrate away from ES
   def search_score
     counts_score = (articles_count + comments_count + reactions_count + badge_achievements_count) * 10
     score = (counts_score + tag_keywords_for_search.size) * reputation_modifier

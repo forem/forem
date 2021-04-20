@@ -127,9 +127,11 @@ class SearchController < ApplicationController
                 elsif params[:class_name] == "User"
                   if FeatureFlag.enabled?(:search_2_users)
                     Search::Postgres::User.search_documents(
-                      term: user_params[:search_fields],
-                      page: user_params[:page],
-                      per_page: user_params[:per_page],
+                      term: params[:search_fields],
+                      page: params[:page],
+                      per_page: params[:per_page],
+                      sort_by: params[:sort_by] == "published_at" ? :created_at : nil,
+                      sort_direction: params[:sort_direction],
                     )
                   else
                     user_search
