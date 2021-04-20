@@ -1,3 +1,3 @@
-import { embedGistsInComments } from './gist';
+import { embedGistsInComments } from '../utilities/gist';
 
 embedGistsInComments();

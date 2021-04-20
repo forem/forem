@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
-import { embedGists } from '../packs/gist';
+import { embedGists } from '../utilities/gist';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
@@ -16,7 +16,6 @@ import { Button, Modal } from '@crayons';
   editor.
 */
 export class ArticleForm extends Component {
-
   static handleRunkitPreview() {
     activateRunkitTags();
   }
