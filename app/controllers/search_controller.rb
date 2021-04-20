@@ -125,8 +125,15 @@ class SearchController < ApplicationController
                   # all articles, podcast episodes, and users
                   feed_content_search.concat(user_search)
                 elsif params[:class_name] == "User"
-                  # No need to check for articles or podcast episodes if we know we only want users
-                  user_search
+                  if FeatureFlag.enabled?(:search_2_users)
+                    Search::Postgres::User.search_documents(
+                      term: user_params[:search_fields],
+                      page: user_params[:page],
+                      per_page: user_params[:per_page],
+                    )
+                  else
+                    user_search
+                  end
                 else
                   # if params[:class_name] == PodcastEpisode, Article, or Comment then skip user lookup
                   feed_content_search

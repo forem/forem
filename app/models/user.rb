@@ -10,6 +10,13 @@ class User < ApplicationRecord
                   against: :username,
                   using: { tsearch: { prefix: true } }
 
+  # NOTE: [@rhymes] this is adapted from config/elasticsearch/mappings/users.json
+  # Since we're moving job related fields like `available_for`, `employer_name`,
+  # and `mostly_work_with` from User to Profile, I chose not to search against them.
+  pg_search_scope :search_users,
+                  against: %i[name username],
+                  using: { tsearch: { prefix: true } }
+
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
     available_for
