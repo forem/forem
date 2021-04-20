@@ -120,20 +120,31 @@ class SearchController < ApplicationController
   end
 
   def feed_content
-    feed_docs = if params[:class_name].blank?
-                  # If we are in the main feed and not filtering by type return
-                  # all articles, podcast episodes, and users
-                  feed_content_search.concat(user_search)
-                elsif params[:class_name] == "User"
-                  # No need to check for articles or podcast episodes if we know we only want users
-                  user_search
-                else
-                  # if params[:class_name] == PodcastEpisode, Article, or Comment then skip user lookup
-                  feed_content_search
-                end
+    class_name = feed_params[:class_name].to_s.inquiry
+
+    result =
+      if class_name.blank?
+        # If we are in the main feed and not filtering by type return
+        # all articles, podcast episodes, and users
+        feed_content_search.concat(user_search)
+      elsif class_name.Comment? && FeatureFlag.enabled?(:search_2_comments)
+        Search::Postgres::Comment.search_documents(
+          page: feed_params[:page],
+          per_page: feed_params[:per_page],
+          sort_by: feed_params[:sort_by],
+          sort_direction: feed_params[:sort_direction],
+          term: feed_params[:search_fields],
+        )
+      elsif class_name.User?
+        # No need to check for articles or podcast episodes if we know we only want users
+        user_search
+      else
+        # if params[:class_name] == PodcastEpisode, Article, or Comment then skip user lookup
+        feed_content_search
+      end
 
     render json: {
-      result: feed_docs,
+      result: result,
       display_jobs_banner: SiteConfig.display_jobs_banner,
       jobs_url: SiteConfig.jobs_url
     }

@@ -6,12 +6,12 @@ require Rails.root.join(
 describe DataUpdateScripts::UpdateUserUpdateRateLimitDefault do
   it "updates rate limit if 5 or less" do
     described_class.new.run
-    expect(SiteConfig.rate_limit_user_update).to eq(15)
+    expect(Settings::RateLimit.user_update).to eq(15)
   end
 
   it "does NOT update the rate limit if greater than 5" do
-    allow(SiteConfig).to receive(:rate_limit_user_update).and_return(10)
+    allow(Settings::RateLimit).to receive(:user_update).and_return(10)
     described_class.new.run
-    expect(SiteConfig.rate_limit_user_update).to eq(10)
+    expect(Settings::RateLimit.user_update).to eq(10)
   end
 end

@@ -172,10 +172,6 @@ module Constants
         description: "A place for an alternate logo, if you have one. Used throughout member onboarding and in some sign in forms.",
         placeholder: IMAGE_PLACEHOLDER
       },
-      spam_trigger_terms: {
-        description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
-        placeholder: "used cars near you, pokemon go hack"
-      },
       shop_url: {
         description: "Used as the shop url of the community",
         placeholder: "https://shop.url"
@@ -228,10 +224,6 @@ module Constants
       twitter_hashtag: {
         description: "Used as the twitter hashtag of the community",
         placeholder: "#DEVCommunity"
-      },
-      user_considered_new_days: {
-        description: "The number of days a user is considered new. The default is 3 days, but you can disable this entirely by inputting 0.",
-        placeholder: ::SiteConfig.user_considered_new_days
       },
       video_encoder_key: {
         description: "Secret key used to allow AWS video encoding through the VideoStatesController",
