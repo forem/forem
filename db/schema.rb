@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_11_221134) do
+ActiveRecord::Schema.define(version: 2021_04_07_172628) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -77,18 +77,6 @@ ActiveRecord::Schema.define(version: 2021_04_11_221134) do
     t.bigint "user_id"
     t.index ["secret"], name: "index_api_secrets_on_secret", unique: true
     t.index ["user_id"], name: "index_api_secrets_on_user_id"
-  end
-
-  create_table "app_integrations", force: :cascade do |t|
-    t.boolean "active", default: true, null: false
-    t.string "app_bundle", null: false
-    t.string "auth_key"
-    t.datetime "created_at", precision: 6, null: false
-    t.string "last_error"
-    t.string "platform", null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["app_bundle"], name: "index_app_integrations_on_app_bundle"
-    t.index ["platform"], name: "index_app_integrations_on_platform"
   end
 
   create_table "articles", force: :cascade do |t|
@@ -445,15 +433,13 @@ ActiveRecord::Schema.define(version: 2021_04_11_221134) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.string "app_bundle"
-    t.bigint "app_integration_id"
+    t.string "app_bundle", null: false
     t.datetime "created_at", precision: 6, null: false
     t.string "platform", null: false
     t.string "token", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["app_integration_id"], name: "index_devices_on_app_integration_id"
-    t.index ["user_id", "token", "platform", "app_integration_id"], name: "index_devices_on_user_id_and_token_and_platform_and_app", unique: true
+    t.index ["user_id", "token", "platform", "app_bundle"], name: "index_devices_on_user_id_and_token_and_platform_and_app_bundle", unique: true
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -1306,7 +1292,7 @@ ActiveRecord::Schema.define(version: 2021_04_11_221134) do
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
-    t.datetime "last_moderation_notification", default: "2017-01-01 06:00:00"
+    t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
     t.datetime "last_reacted_at"
@@ -1382,14 +1368,13 @@ ActiveRecord::Schema.define(version: 2021_04_11_221134) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
-    t.check_constraint "username IS NOT NULL", name: "users_username_not_null"
   end
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.string "email", null: false
+    t.string "email"
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.string "username"
   end
 
@@ -1493,7 +1478,6 @@ ActiveRecord::Schema.define(version: 2021_04_11_221134) do
   add_foreign_key "credits", "organizations", on_delete: :restrict
   add_foreign_key "credits", "users", on_delete: :cascade
   add_foreign_key "custom_profile_fields", "profiles", on_delete: :cascade
-  add_foreign_key "devices", "app_integrations"
   add_foreign_key "devices", "users"
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade

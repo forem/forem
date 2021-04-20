@@ -2,58 +2,24 @@
 @import '_mixins';
 
 .runtime-banner {
-  color: #fff;
+  display: flex;
+  margin: 0 auto;
+  left: var(--su-4);
+  right: var(--su-4);
   position: fixed;
-  bottom: calc(60px + env(safe-area-inset-bottom));
-  left: 20px;
-  right: 20px;
-  --runtime-display: flex;
+  bottom: calc(var(--su-9) + env(safe-area-inset-bottom));
   flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 8px 8px;
+  align-items: center;
+  padding: var(--su-1);
+  max-width: calc(100% - var(--su-4) * 2);
   z-index: var(--z-popover);
   border-radius: var(--radius);
-  @include themeable(
-    background,
-    theme-container-accent-background,
-    $dark-medium-gray
-  );
+  background: var(--snackbar-bg);
+  color: var(--snackbar-color);
+  font-size: var(--fs-s);
 
-  a,
-  a:hover,
-  a:focus,
-  a:active {
-    text-decoration: none;
+  :any-link {
     color: inherit;
-    display: inline-flex;
-  }
-
-  &__icon {
-    width: 40px;
-    height: 40px;
-
-    svg {
-      width: 40px;
-      height: 40px;
-    }
-  }
-
-  &__link {
-    text-align: center;
-    margin: 0 10px;
-    flex-grow: 1;
-  }
-
-  &__dismiss {
-    display: inline-flex;
-    width: 40px;
-    height: 40px;
-
-    svg {
-      width: 40px;
-      height: 40px;
-    }
   }
 }
 
