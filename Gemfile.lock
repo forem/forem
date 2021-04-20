@@ -220,7 +220,7 @@ GEM
     diff-lcs (1.4.4)
     distribution (0.8.0)
     docile (1.3.5)
-    dogstatsd-ruby (4.8.3)
+    dogstatsd-ruby (5.0.1)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     doorkeeper (5.5.1)
@@ -881,7 +881,7 @@ DEPENDENCIES
   derailed_benchmarks (~> 2.0)
   devise!
   devise_invitable (~> 2.0.5)
-  dogstatsd-ruby (~> 4.8)
+  dogstatsd-ruby (~> 5.0)
   doorkeeper (~> 5.5)
   dotenv-rails (~> 2.7.6)
   elasticsearch (~> 7.12)
