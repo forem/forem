@@ -3,27 +3,18 @@ class DeepLinksController < ApplicationController
 
   # Apple Application Site Association
   def aasa
-    forem_app = "R9SWHSQNV8.com.forem.app"
-    dev_app = "R9SWHSQNV8.to.dev.ios"
+    supported_apps = ["R9SWHSQNV8.com.forem.app"]
+    supported_apps << "R9SWHSQNV8.to.dev.ios" if SiteConfig.dev_to?
     render json: {
       applinks: {
-        apps: [forem_app, dev_app],
-        details: [
-          {
-            appID: forem_app,
-            paths: ["/*"]
-          },
-          {
-            appID: dev_app,
-            paths: ["/*"]
-          },
-        ]
+        apps: supported_apps,
+        details: supported_apps.map { |app_id| { appID: app_id, paths: ["/*"] } }
       },
       activitycontinuation: {
-        apps: [forem_app, dev_app]
+        apps: supported_apps
       },
       webcredentials: {
-        apps: [forem_app, dev_app]
+        apps: supported_apps
       }
     }
   end
