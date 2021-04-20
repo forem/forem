@@ -87,6 +87,12 @@
   --fw-medium: 500;
   --fw-bold: 700;
   --fw-heavy: 800;
+  
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  // Text shadows (Font weight without layout shift)
+
+  --ts-bold: -0.009em -0.009em currentColor, 0.009em -0.009em currentColor, -0.009em 0.009em currentColor, 0.009em 0.009em currentColor;
 
   ////////////////////////////////////////////////////////////////////////////////////
 
