@@ -44,7 +44,7 @@ module Search
       # of regular users, and the `rolify`'s gem approach is not particularly efficient,
       # we simplified the subquery and added a precondition to skip that query entirely,
       # when a community has no suspended users.
-      # NOTE: An alternative approach that could be explored for further optimization is to
+      # NOTE: An alternative approach that could be explored is to
       # preload the user ids of all suspended users and use those with `.where.not(id: ...)`
       def self.filter_suspended_users(relation)
         suspended = UserRole.joins(:role).where(roles: { name: :suspended })

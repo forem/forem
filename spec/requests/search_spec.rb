@@ -166,61 +166,88 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/feed_content" do
-    let(:mock_documents) { [{ "title" => "article1" }] }
+    context "when using Elasticsearch" do
+      let(:mock_documents) { [{ "title" => "article1" }] }
 
-    it "returns json" do
-      allow(Search::FeedContent).to receive(:search_documents).and_return(
-        mock_documents,
-      )
+      it "returns json" do
+        allow(Search::FeedContent).to receive(:search_documents).and_return(
+          mock_documents,
+        )
 
-      get "/search/feed_content"
-      expect(response.parsed_body["result"]).to eq(mock_documents)
+        get "/search/feed_content"
+        expect(response.parsed_body["result"]).to eq(mock_documents)
+      end
+
+      it "queries only the user index if class_name=User" do
+        allow(Search::FeedContent).to receive(:search_documents)
+        allow(Search::User).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+
+        get "/search/feed_content?class_name=User"
+        expect(Search::User).to have_received(:search_documents)
+        expect(Search::FeedContent).not_to have_received(:search_documents)
+      end
+
+      it "queries for Articles, Podcast Episodes and Users if no class_name filter is present" do
+        allow(Search::FeedContent).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+        allow(Search::User).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+
+        get "/search/feed_content"
+        expect(Search::User).to have_received(:search_documents)
+        expect(Search::FeedContent).to have_received(:search_documents)
+      end
+
+      it "queries for only Articles and Podcast Episodes if class_name!=User" do
+        allow(Search::FeedContent).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+        allow(Search::User).to receive(:search_documents)
+
+        get "/search/feed_content?class_name=Article"
+        expect(Search::User).not_to have_received(:search_documents)
+        expect(Search::FeedContent).to have_received(:search_documents)
+      end
+
+      it "queries for approved" do
+        allow(Search::FeedContent).to receive(:search_documents).and_return(
+          mock_documents,
+        )
+
+        get "/search/feed_content?class_name=Article&approved=true"
+        expect(Search::FeedContent).to have_received(:search_documents).with(
+          params: { "approved" => "true", "class_name" => "Article" },
+        )
+      end
     end
 
-    it "queries only the user index if class_name=User" do
-      allow(Search::FeedContent).to receive(:search_documents)
-      allow(Search::User).to receive(:search_documents).and_return(
-        mock_documents,
-      )
+    context "when using PostgreSQL for users" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_users).and_return(true)
+      end
 
-      get "/search/feed_content?class_name=User"
-      expect(Search::User).to have_received(:search_documents)
-      expect(Search::FeedContent).not_to have_received(:search_documents)
-    end
+      it "returns the correct keys", :aggregate_failures do
+        create(:user)
 
-    it "queries for Articles, Podcast Episodes and Users if no class_name filter is present" do
-      allow(Search::FeedContent).to receive(:search_documents).and_return(
-        mock_documents,
-      )
-      allow(Search::User).to receive(:search_documents).and_return(
-        mock_documents,
-      )
+        get search_feed_content_path(class_name: "User")
 
-      get "/search/feed_content"
-      expect(Search::User).to have_received(:search_documents)
-      expect(Search::FeedContent).to have_received(:search_documents)
-    end
+        expect(response.parsed_body["result"]).to be_present
+      end
 
-    it "queries for only Articles and Podcast Episodes if class_name!=User" do
-      allow(Search::FeedContent).to receive(:search_documents).and_return(
-        mock_documents,
-      )
-      allow(Search::User).to receive(:search_documents)
+      it "supports the search params" do
+        user = create(:user)
 
-      get "/search/feed_content?class_name=Article"
-      expect(Search::User).not_to have_received(:search_documents)
-      expect(Search::FeedContent).to have_received(:search_documents)
-    end
+        get search_feed_content_path(
+          class_name: "User", page: 0, per_page: 1, search_fields: user.name,
+          sort_by: :created_at, sort_direction: :desc
+        )
 
-    it "queries for approved" do
-      allow(Search::FeedContent).to receive(:search_documents).and_return(
-        mock_documents,
-      )
-
-      get "/search/feed_content?class_name=Article&approved=true"
-      expect(Search::FeedContent).to have_received(:search_documents).with(
-        params: { "approved" => "true", "class_name" => "Article" },
-      )
+        expect(response.parsed_body["result"].first["id"]).to eq(user.id)
+      end
     end
   end
 
