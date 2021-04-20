@@ -5,7 +5,8 @@
 BEGIN TRANSACTION;
 WITH settings_data AS (
   SELECT
-    users.id AS user_id,
+    data ->> 'brand_color1' AS brand_color1,
+    data ->> 'brand_color2' AS brand_color2,
     CASE WHEN config_font='default' THEN 0
          WHEN config_font='comic_sans' THEN 1
          WHEN config_font='monospace' THEN 2
@@ -28,34 +29,33 @@ WITH settings_data AS (
          ELSE 0
     END
     config_theme,
+    display_announcements,
+    COALESCE((data ->> 'display_email_on_profile')::boolean, false) as display_email_on_profile,
+    display_sponsors,
     CASE WHEN editor_version='v2' THEN 0
           WHEN editor_version='v1' THEN 1
           ELSE 0
     END
     editor_version,
+    experience_level,
+    feed_mark_canonical,
+    feed_referential_link,
+    feed_url,
+    inbox_guidelines,
     CASE WHEN inbox_type='private' THEN 0
           WHEN inbox_type='open' THEN 1
           ELSE 0
     END
     inbox_type,
-    users.created_at,
-    display_announcements,
-    display_sponsors,
-    feed_mark_canonical,
-    feed_referential_link,
-    feed_url,
-    experience_level,
-    inbox_guidelines,
     permit_adjacent_sponsors,
-    users.updated_at,
-    data ->> 'brand_color1' AS brand_color1,
-    data ->> 'brand_color2' AS brand_color2,
-    COALESCE((data ->> 'display_email_on_profile')::boolean, false) as display_email_on_profile
+    users.created_at,
+    users.id AS user_id,
+    users.updated_at
   FROM users
   JOIN profiles
     ON profiles.user_id = users.id
 )
-INSERT INTO users_settings (user_id, config_font, config_navbar, config_theme, editor_version, inbox_type, created_at, display_announcements, display_sponsors, feed_mark_canonical, feed_referential_link, feed_url, experience_level, inbox_guidelines, permit_adjacent_sponsors, updated_at, brand_color1, brand_color2, display_email_on_profile)
+INSERT INTO users_settings (brand_color1, brand_color2, config_font, config_navbar, config_theme, display_announcements, display_email_on_profile, display_sponsors, editor_version, experience_level, feed_mark_canonical, feed_referential_link, feed_url, inbox_type, permit_adjacent_sponsors, created_at, user_id, updated_at)
   SELECT * FROM settings_data
   ON CONFLICT (user_id) DO UPDATE
     SET brand_color1 = EXCLUDED.brand_color1,
