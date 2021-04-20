@@ -57,6 +57,7 @@ Rails.application.routes.draw do
       namespace :settings do
         resources :authentications, only: [:create]
         resources :campaigns, only: [:create]
+        resources :rate_limits, only: [:create]
       end
       namespace :users do
         resources :gdpr_delete_requests, only: %i[index destroy]
