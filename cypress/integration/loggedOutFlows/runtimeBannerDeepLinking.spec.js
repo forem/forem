@@ -15,14 +15,14 @@ describe('Runtime Banner Deep Linking', () => {
 
   it('should include the correct deep_link param in the banner link', () => {
     // When visiting the root path the banner should deep link into it
-    cy.get('.runtime-banner__link')
+    cy.get('.runtime-banner > a')
       .should('have.attr', 'href')
       .and('contains', `deep_link%3D%2F`);
     // NOTE: %3D%2F -> '=/' (URL Encoded)
 
     // When visiting `/tags` the banner should deep link into `/tags`
     cy.visit('/tags', runtimeStub).then(() => {
-      cy.get('.runtime-banner__link')
+      cy.get('.runtime-banner > a')
         .should('have.attr', 'href')
         .and('contains', `deep_link%3D%2Ftags`);
       // NOTE: %3D%2Ftags -> '=/tags' (URL Encoded)
