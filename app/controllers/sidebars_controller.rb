@@ -11,7 +11,7 @@ class SidebarsController < ApplicationController
 
   def get_latest_campaign_articles
     campaign_articles_scope = Article.tagged_with(Campaign.current.featured_tags, any: true)
-      .where("published_at > ? AND score > ?", SiteConfig.campaign_articles_expiry_time.weeks.ago, 0)
+      .where("published_at > ? AND score > ?", Settings::Campaign.articles_expiry_time.weeks.ago, 0)
       .order(hotness_score: :desc)
 
     requires_approval = Campaign.current.articles_require_approval?

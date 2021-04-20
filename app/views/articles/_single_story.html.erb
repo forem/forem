@@ -5,7 +5,8 @@
   <% end %>
   <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
     <a href="<%= story.path %>" title="<%= story.title %>" aria-label="article"
-      style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);" class="crayons-story__cover__image">
+      style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);"
+      class="crayons-story__cover crayons-story__cover__image">
       <span class="hidden"><%= story.title %></span>
     </a>
   <% end %>

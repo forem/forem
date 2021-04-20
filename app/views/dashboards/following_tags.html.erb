@@ -18,7 +18,7 @@
         <% if @followed_tags.any? %>
           <%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
 
-          <div class="crayons-notice p-4 px-6 mb-4 mx-2 m:mx-0"  aria-live="polite">
+          <div class="crayons-notice p-4 px-6 mb-4 mx-2 m:mx-0" aria-live="polite">
               Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
               <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
           </div>

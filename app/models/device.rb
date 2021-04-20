@@ -30,11 +30,11 @@ class Device < ApplicationRecord
     n.data = {
       aps: {
         alert: {
-          title: ApplicationConfig["COMMUNITY_NAME"],
+          title: SiteConfig.community_name,
           subtitle: title,
           body: body
         },
-        'thread-id': ApplicationConfig["COMMUNITY_NAME"]
+        'thread-id': SiteConfig.community_name
       },
       data: payload
     }
@@ -61,7 +61,7 @@ class Device < ApplicationRecord
     app = Rpush::Apns2::App.new
     app.name = app_bundle
     sanitized_pem = ApplicationConfig["RPUSH_IOS_PEM"].to_s.gsub("\\n", "\n")
-    app.certificate = Base64.decode64(sanitized_pem)
+    app.certificate = sanitized_pem
     app.environment = Rails.env.production? ? "production" : "development"
     app.password = ""
     app.bundle_id = app_bundle

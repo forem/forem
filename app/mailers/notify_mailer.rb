@@ -112,6 +112,14 @@ class NotifyMailer < ApplicationMailer
     mail(to: params[:email], subject: subject)
   end
 
+  def organization_deleted_email
+    @name = params[:name]
+    @org_name = params[:org_name]
+
+    subject = "#{SiteConfig.community_name} - Organization Deletion Confirmation"
+    mail(to: params[:email], subject: subject)
+  end
+
   def account_deletion_requested_email
     user = params[:user]
     @name = user.name

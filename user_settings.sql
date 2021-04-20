@@ -46,6 +46,7 @@ WITH settings_data AS (
     feed_url,
     experience_level,
     inbox_guidelines,
+    permit_adjacent_sponsors,
     users.updated_at,
     data ->> 'brand_color1' AS brand_color1,
     data ->> 'brand_color2' AS brand_color2,
@@ -54,41 +55,25 @@ WITH settings_data AS (
   JOIN profiles
     ON profiles.user_id = users.id
 )
-INSERT INTO users_settings (user_id, config_font, config_navbar, config_theme, editor_version, inbox_type, created_at, display_announcements, display_sponsors, feed_mark_canonical, feed_referential_link, feed_url, experience_level, inbox_guidelines, updated_at, brand_color1, brand_color2, display_email_on_profile)
+INSERT INTO users_settings (user_id, config_font, config_navbar, config_theme, editor_version, inbox_type, created_at, display_announcements, display_sponsors, feed_mark_canonical, feed_referential_link, feed_url, experience_level, inbox_guidelines, permit_adjacent_sponsors, updated_at, brand_color1, brand_color2, display_email_on_profile)
   SELECT * FROM settings_data
   ON CONFLICT (user_id) DO UPDATE
-    SET config_font = EXCLUDED.config_font,
-        config_navbar = EXCLUDED.config_navbar,
-        config_theme = EXCLUDED.config_theme,
-        editor_version = EXCLUDED.editor_version,
-        inbox_type = EXCLUDED.inbox_type,
-        display_announcements = EXCLUDED.display_announcements,
-        display_sponsors = EXCLUDED.display_sponsors,
-        feed_mark_canonical = EXCLUDED.feed_mark_canonical,
-        feed_referential_link = EXCLUDED.feed_referential_link,
-        feed_url = EXCLUDED.feed_url,
-        experience_level = EXCLUDED.experience_level,
-        inbox_guidelines = EXCLUDED.inbox_guidelines,
-        updated_at = EXCLUDED.updated_at,
-        brand_color1 = EXCLUDED.brand_color1,
+    SET brand_color1 = EXCLUDED.brand_color1,
         brand_color2 = EXCLUDED.brand_color2,
-        display_email_on_profile = EXCLUDED.display_email_on_profile;
-COMMIT;
-
--- WHERE [NOT] EXISTS (SELECT user_id FROM users_settings)
-ON CONFLICT (user_id) DO UPDATE
-    SET config_font = EXCLUDED.config_font,
+        config_font = EXCLUDED.config_font,
         config_navbar = EXCLUDED.config_navbar,
         config_theme = EXCLUDED.config_theme,
-        editor_version = EXCLUDED.editor_version,
-        inbox_type = EXCLUDED.inbox_type,
         display_announcements = EXCLUDED.display_announcements,
+        display_email_on_profile = EXCLUDED.display_email_on_profile,
         display_sponsors = EXCLUDED.display_sponsors,
+        editor_version = EXCLUDED.editor_version,
+        experience_level = EXCLUDED.experience_level,
         feed_mark_canonical = EXCLUDED.feed_mark_canonical,
         feed_referential_link = EXCLUDED.feed_referential_link,
         feed_url = EXCLUDED.feed_url,
-        experience_level = EXCLUDED.experience_level,
         inbox_guidelines = EXCLUDED.inbox_guidelines,
-        updated_at = EXCLUDED.updated_at,
-        brand_color1 = EXCLUDED.brand_color1,
-        brand_color2 = EXCLUDED.brand_color2;
+        inbox_type = EXCLUDED.inbox_type,
+        permit_adjacent_sponsors = EXCLUDED.permit_adjacent_sponsors,
+        updated_at = EXCLUDED.updated_at;
+        ;
+COMMIT;
