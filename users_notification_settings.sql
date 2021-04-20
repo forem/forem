@@ -3,74 +3,43 @@
 -- It will not be committed to the codebase, it will be moved into a data update script and this file will be deleted :)
 
 BEGIN TRANSACTION;
-WITH settings_data AS (
+WITH notification_settings_data AS (
   SELECT
     users.id AS user_id,
-    CASE WHEN config_font='default' THEN 0
-         WHEN config_font='comic_sans' THEN 1
-         WHEN config_font='monospace' THEN 2
-         WHEN config_font='open_dyslexic' THEN 3
-         WHEN config_font='sans_serif' THEN 4
-         WHEN config_font='serif' THEN 5
-         ELSE 0
-    END
-    config_font,
-    CASE WHEN config_navbar='default_navbar' THEN 0
-         WHEN config_navbar='static_navbar' THEN 1
-         ELSE 0
-    END
-    config_navbar,
-    CASE WHEN config_theme='default_theme' THEN 0
-         WHEN config_theme='minimal_light_theme' THEN 1
-         WHEN config_theme='night_theme' THEN 2
-         WHEN config_theme='pink_theme' THEN 3
-         WHEN config_theme='ten_x_hacker_theme' THEN 4
-         ELSE 0
-    END
-    config_theme,
-    CASE WHEN editor_version='v2' THEN 0
-          WHEN editor_version='v1' THEN 1
-          ELSE 0
-    END
-    editor_version,
-    CASE WHEN inbox_type='private' THEN 0
-          WHEN inbox_type='open' THEN 1
-          ELSE 0
-    END
-    inbox_type,
+    email_badge_notifications,
+    email_comment_notifications,
+    email_community_mod_newsletter,
+    email_connect_messages,
+    COALESCE(email_digest_periodic, false),
+    email_follower_notifications,
+    email_mention_notifications,
+    email_newsletter,
+    email_tag_mod_newsletter,
+    email_unread_notifications,
+    mobile_comment_notifications,
+    mod_roundrobin_notifications,
+    reaction_notifications,
+    COALESCE(welcome_notifications, true),
     users.created_at,
-    display_announcements,
-    display_sponsors,
-    feed_mark_canonical,
-    feed_referential_link,
-    feed_url,
-    experience_level,
-    inbox_guidelines,
-    users.updated_at,
-    data ->> 'brand_color1' AS brand_color1,
-    data ->> 'brand_color2' AS brand_color2,
-    COALESCE((data ->> 'display_email_on_profile')::boolean, false) as display_email_on_profile
+    users.updated_at
   FROM users
-  JOIN profiles
-    ON profiles.user_id = users.id
 )
-INSERT INTO users_settings (user_id, config_font, config_navbar, config_theme, editor_version, inbox_type, created_at, display_announcements, display_sponsors, feed_mark_canonical, feed_referential_link, feed_url, experience_level, inbox_guidelines, updated_at, brand_color1, brand_color2, display_email_on_profile)
-  SELECT * FROM settings_data
+INSERT INTO users_notification_settings (user_id, email_badge_notifications, email_comment_notifications, email_community_mod_newsletter, email_connect_messages, email_digest_periodic, email_follower_notifications, email_mention_notifications, email_newsletter, email_tag_mod_newsletter, email_unread_notifications, mobile_comment_notifications, mod_roundrobin_notifications, reaction_notifications, welcome_notifications, created_at, updated_at)
+  SELECT * FROM notification_settings_data
   ON CONFLICT (user_id) DO UPDATE
-    SET config_font = EXCLUDED.config_font,
-        config_navbar = EXCLUDED.config_navbar,
-        config_theme = EXCLUDED.config_theme,
-        editor_version = EXCLUDED.editor_version,
-        inbox_type = EXCLUDED.inbox_type,
-        display_announcements = EXCLUDED.display_announcements,
-        display_sponsors = EXCLUDED.display_sponsors,
-        feed_mark_canonical = EXCLUDED.feed_mark_canonical,
-        feed_referential_link = EXCLUDED.feed_referential_link,
-        feed_url = EXCLUDED.feed_url,
-        experience_level = EXCLUDED.experience_level,
-        inbox_guidelines = EXCLUDED.inbox_guidelines,
-        updated_at = EXCLUDED.updated_at,
-        brand_color1 = EXCLUDED.brand_color1,
-        brand_color2 = EXCLUDED.brand_color2,
-        display_email_on_profile = EXCLUDED.display_email_on_profile;
+    SET email_badge_notifications = EXCLUDED.email_badge_notifications,
+        email_comment_notifications = EXCLUDED.email_comment_notifications,
+        email_community_mod_newsletter = EXCLUDED.email_community_mod_newsletter,
+        email_connect_messages = EXCLUDED.email_connect_messages,
+        email_digest_periodic = EXCLUDED.email_digest_periodic,
+        email_follower_notifications = EXCLUDED.email_follower_notifications,
+        email_mention_notifications = EXCLUDED.email_mention_notifications,
+        email_newsletter = EXCLUDED.email_newsletter,
+        email_tag_mod_newsletter = EXCLUDED.email_tag_mod_newsletter,
+        email_unread_notifications = EXCLUDED.email_unread_notifications,
+        mobile_comment_notifications = EXCLUDED.mobile_comment_notifications,
+        mod_roundrobin_notifications = EXCLUDED.mod_roundrobin_notifications,
+        reaction_notifications = EXCLUDED.reaction_notifications,
+        welcome_notifications = EXCLUDED.welcome_notifications,
+        updated_at = EXCLUDED.updated_at;
 COMMIT;
