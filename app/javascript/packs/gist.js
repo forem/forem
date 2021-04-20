@@ -8,14 +8,14 @@ export function embedGists() {
       import('postscribe').then(({ default: postscribe }) => {
         for (const gistTag of gistTags) {
           postscribe(gistTag, gistTag.firstElementChild.outerHTML, {
-            beforeWrite: function (context) {
+            beforeWrite: (function (context) {
               return function (text) {
                 if (context.childElementCount > 3) {
-                  return "";
+                  return '';
                 }
                 return text;
-              }
-            }(gistTag)
+              };
+            })(gistTag),
           });
         }
       });
@@ -23,20 +23,17 @@ export function embedGists() {
   }, 500);
 }
 
-export function embedGistsInComments() {
-  // allows for getting the gist embed after new comment submit
-  const commentForm = document.getElementById("new_comment");
-  const previewBtn = document.getElementsByClassName('preview-toggle')[0];
-
-  if (commentForm && typeof commentForm !== "undefined") {
-    commentForm.addEventListener("submit", (_event) => {
-      embedGists();
-    });
-  }
-
-  if (previewBtn && typeof previewBtn !== "undefined") {
-    previewBtn.addEventListener("click", (_event) => {
-      embedGists();
-    });
-  }
-}
+// allows for getting the gist embed after new comment submit/preview/dismiss
+document.getElementById('new_comment')?.addEventListener('submit', (_event) => {
+  embedGists();
+});
+document
+  .querySelector('.preview-toggle')
+  ?.addEventListener('click', (_event) => {
+    embedGists();
+  });
+document
+  .querySelector('.dismiss-comment')
+  ?.addEventListener('click', (_event) => {
+    embedGists();
+  });
