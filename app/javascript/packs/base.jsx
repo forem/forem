@@ -2,7 +2,7 @@ import {
   initializeMobileMenu,
   setCurrentPageIconLink,
   getInstantClick,
-  initializeTouchDevice,
+  initializeMemberMenu,
 } from '../topNavigation/utilities';
 
 // Namespace for functions which need to be accessed in plain JS initializers
@@ -105,7 +105,9 @@ function initializeNav() {
 const memberMenu = document.getElementById('crayons-header__menu');
 const menuNavButton = document.getElementById('member-menu-button');
 
-initializeTouchDevice(memberMenu, menuNavButton);
+if (memberMenu) {
+  initializeMemberMenu(memberMenu, menuNavButton);
+}
 
 getInstantClick().then((spa) => {
   spa.on('change', initializeNav);

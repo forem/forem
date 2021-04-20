@@ -11,7 +11,7 @@ import {
   getInstantClick,
   initializeMobileMenu,
   setCurrentPageIconLink,
-  initializeTouchDevice,
+  initializeMemberMenu,
 } from '../utilities';
 
 // TODO: ★★★ These tests should be promoted to E2E tests once we have that in place. ★★★
@@ -142,10 +142,10 @@ describe('top navigation utilitities', () => {
     });
   });
 
-  describe('initializeTouchDevice', () => {
+  describe('initializeMemberMenu', () => {
     const initialMenuHTML = `
       <div class="crayons-header__menu" id="crayons-header__menu" data-testid="menu-dropdown">
-        <button type="button" class="crayons-header__menu__trigger" id="member-menu-button" aria-label="Navigation menu">
+        <button type="button" class="crayons-header__menu__trigger" id="member-menu-button" aria-expanded="false" aria-label="Navigation menu">
           <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" src=""></span>
         </button>
         <div class="crayons-dropdown left-2 right-2 s:right-4 s:left-auto p-0 crayons-header__menu__dropdown inline-block">
@@ -168,7 +168,7 @@ describe('top navigation utilitities', () => {
       const menuNavButton = getByLabelText(document.body, 'Navigation menu');
       const memberMenu = getByTestId(document.body, 'menu-dropdown');
 
-      initializeTouchDevice(memberMenu, menuNavButton);
+      initializeMemberMenu(memberMenu, menuNavButton);
 
       await waitFor(() =>
         expect(menuNavButton.getAttribute('aria-expanded')).toEqual('false'),
@@ -193,7 +193,7 @@ describe('top navigation utilitities', () => {
       const menuNavButton = getByLabelText(document.body, 'Navigation menu');
       const memberMenu = getByTestId(document.body, 'menu-dropdown');
 
-      initializeTouchDevice(memberMenu, menuNavButton);
+      initializeMemberMenu(memberMenu, menuNavButton);
 
       await waitFor(() =>
         expect(menuNavButton.getAttribute('aria-expanded')).toEqual('false'),
@@ -222,9 +222,8 @@ describe('top navigation utilitities', () => {
 
       const menuNavButton = getByLabelText(document.body, 'Navigation menu');
       const memberMenu = getByTestId(document.body, 'menu-dropdown');
-      const outerWrapper = getByTestId(document.body, 'container');
 
-      initializeTouchDevice(memberMenu, menuNavButton);
+      initializeMemberMenu(memberMenu, menuNavButton);
 
       await waitFor(() =>
         expect(menuNavButton.getAttribute('aria-expanded')).toEqual('false'),
@@ -235,7 +234,8 @@ describe('top navigation utilitities', () => {
       expect(menuNavButton.getAttribute('aria-expanded')).toEqual('true');
       expect(memberMenu).toHaveClass('showing');
 
-      fireEvent.click(outerWrapper);
+      // Click on a link in the menu to close load a page and close the menu.
+      memberMenu.querySelector('a').click();
 
       await waitFor(() =>
         expect(menuNavButton.getAttribute('aria-expanded')).toEqual('false'),
