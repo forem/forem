@@ -214,7 +214,7 @@ GEM
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     device_detector (1.0.5)
-    devise_invitable (2.0.3)
+    devise_invitable (2.0.5)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.4.4)
@@ -880,7 +880,7 @@ DEPENDENCIES
   ddtrace (~> 0.47.0)
   derailed_benchmarks (~> 2.0)
   devise!
-  devise_invitable (~> 2.0.3)
+  devise_invitable (~> 2.0.5)
   dogstatsd-ruby (~> 4.8)
   doorkeeper (~> 5.5)
   dotenv-rails (~> 2.7.6)
