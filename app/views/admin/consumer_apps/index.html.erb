@@ -1,7 +1,7 @@
 <div class="crayons-card p-3 mb-5 mt-2">
-  <%= link_to "New App Integration", new_admin_consumer_app_path, class: "crayons-btn float-right" %>
+  <%= link_to "New Consumer App", new_admin_consumer_app_path, class: "crayons-btn float-right" %>
 
-  <h1 class="crayons-title mb-6">Push Notifications</h1>
+  <h1 class="crayons-title mb-6">Consumer Apps</h1>
 
   <p>
     The following are apps that will be able to receive Push Notifications from <%= SiteConfig.community_name %>.
@@ -15,7 +15,7 @@
       <th scope="col">Platform</th>
       <th scope="col">Devices</th>
       <th scope="col">Authentication Key</th>
-      <th scope="col">Active</th>
+      <th scope="col">Operational</th>
       <th scope="col">Actions</th>
     </tr>
   </thead>
@@ -30,7 +30,7 @@
           <% else %>
             <td>Not Available</td>
           <% end %>
-          <% if app.active? %>
+          <% if app.operational? %>
             <td><span class="crayons-icon" role="img" aria-label="Active">✅</span></td>
           <% else %>
             <td><span class="crayons-icon" role="img" aria-label="Active">❌</span></td>
