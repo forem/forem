@@ -1,3 +1,6 @@
+branches:
+  only:
+    - master
 language: ruby
 cache:
   directories:
@@ -69,8 +72,28 @@ notifications:
 
 jobs:
   include:
+    - stage: Test
+      name: "Node 0"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=0
+    - stage: Test
+      name: "Node 1"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=1
+    - stage: Test
+      name: "Node 2"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=2
+    - stage: Test
+      name: "Front-end tests, Storybook, bundle audit, console check, e2e"
+      script:
+        - yarn test --colors
+        - bundle exec rails db:create db:schema:load assets:precompile
+        - bundle exec bundle-audit check --update
+        - bin/test-console-check
+        - yarn build-storybook
+        - bin/e2e-ci
+
     - stage: Deploy
-      name: Deploy BenHalpern
+      name: Deploy DEV
+      if: type != pull_request
       install: skip
       script: skip
       after_script: skip
@@ -78,4 +101,17 @@ jobs:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
-          rhymes/search-2-homepage: benhalpern-community
+          master: practicaldev
+      after_deploy:
+        - bash scripts/after_deploy.sh
+    - stage: Deploy
+      name: Deploy BenHalpern
+      if: type != pull_request
+      install: skip
+      script: skip
+      after_script: skip
+      deploy:
+        provider: heroku
+        api_key: '$HEROKU_AUTH_TOKEN'
+        app:
+          master: benhalpern-community
