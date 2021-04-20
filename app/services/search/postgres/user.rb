@@ -24,7 +24,9 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-        relation = ::User.without_role(:suspended)
+        relation = ::User
+
+        relation = filter_suspended_users(relation)
 
         relation = relation.search_users(term) if term.present?
 
@@ -36,6 +38,22 @@ module Search
 
         serialize(relation)
       end
+
+      # `User.without_role` generates a subquery + 2 inner joins.
+      # Given that the number of suspended users will, hopefully, be a tiny percentage
+      # of regular users, and the `rolify`'s gem approach is not particularly efficient,
+      # we simplified the subquery and added a precondition to skip that query entirely,
+      # when a community has no suspended users.
+      # NOTE: An alternative approach that could be explored for further optimization is to
+      # preload the user ids of all suspended users and use those with `.where.not(id: ...)`
+      def self.filter_suspended_users(relation)
+        suspended = UserRole.joins(:role).where(roles: { name: :suspended })
+
+        return relation unless suspended.exists?
+
+        relation.where.not(id: suspended.select(:user_id))
+      end
+      private_class_method :filter_suspended_users
 
       def self.sort(relation, sort_by, sort_direction)
         return relation.reorder(sort_by => sort_direction) if sort_by&.to_sym == :created_at
