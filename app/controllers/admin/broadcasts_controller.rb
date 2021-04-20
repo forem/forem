@@ -30,7 +30,7 @@ module Admin
         redirect_to admin_broadcast_path(@broadcast)
       else
         flash[:danger] = @broadcast.errors.full_messages.to_sentence
-        render new_admin_broadcast_path
+        render :new
       end
     end
 

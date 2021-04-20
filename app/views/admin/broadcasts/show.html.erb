@@ -1,7 +1,7 @@
 <header class="flex">
   <h2 class="crayons-title mb-6"><%= @broadcast.title %></h2>
   <div class="ml-auto">
-    <%= link_to "Destroy", url_for(action: :destroy, id: @broadcast.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+    <%= link_to "Destroy", admin_broadcast_path(@broadcast), class: "btn btn-danger", method: :delete, data: { confirm: "Are you sure?" } %>
     <%= link_to "Edit", edit_admin_broadcast_path, class: "btn btn-primary" %>
   </div>
 </header>

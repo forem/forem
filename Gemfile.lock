@@ -97,8 +97,8 @@ GEM
       geocoder (>= 1.4.5)
       safely_block (>= 0.2.1)
     amazing_print (1.3.0)
-    ancestry (3.2.1)
-      activerecord (>= 4.2.0)
+    ancestry (4.0.0)
+      activerecord (>= 5.2.4.5)
     anyway_config (2.1.0)
       ruby-next-core (>= 0.11.0)
     ast (2.4.2)
@@ -184,7 +184,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.8)
-    connection_pool (2.2.3)
+    connection_pool (2.2.5)
     counter_culture (2.8.0)
       activerecord (>= 4.2)
       activesupport (>= 4.2)
@@ -416,7 +416,7 @@ GEM
     kaminari-core (1.2.1)
     katex (0.6.1)
       execjs (~> 2.7)
-    knapsack_pro (2.11.0)
+    knapsack_pro (2.14.0)
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
@@ -483,7 +483,7 @@ GEM
     octokit (4.20.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
-    oj (3.11.3)
+    oj (3.11.5)
     omniauth (2.0.4)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
@@ -735,7 +735,7 @@ GEM
     sidekiq-cron (1.2.0)
       fugit (~> 1.1)
       sidekiq (>= 4.2.1)
-    sidekiq-unique-jobs (7.0.7)
+    sidekiq-unique-jobs (7.0.8)
       brpoplpush-redis_script (> 0.1.1, <= 2.0.0)
       concurrent-ruby (~> 1.0, >= 1.0.5)
       sidekiq (>= 5.0, < 7.0)
@@ -852,6 +852,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-19
+  x86_64-darwin-20
   x86_64-linux
 
 DEPENDENCIES
@@ -862,7 +863,7 @@ DEPENDENCIES
   ahoy_email (~> 2.0.2)
   ahoy_matey (~> 3.2)
   amazing_print (~> 1.3)
-  ancestry (~> 3.2)
+  ancestry (~> 4.0)
   better_errors (~> 2.9)
   binding_of_caller (~> 0.8)
   blazer (~> 2.4.2)
@@ -916,7 +917,7 @@ DEPENDENCIES
   jsonapi-serializer (~> 2.2)
   kaminari (~> 1.2)
   katex (~> 0.6.1)
-  knapsack_pro (~> 2.11.0)
+  knapsack_pro (~> 2.14.0)
   launchy (~> 2.5)
   liquid (~> 5.0)
   listen (~> 3.5)
@@ -975,7 +976,7 @@ DEPENDENCIES
   shoulda-matchers (~> 4.5.1)
   sidekiq (~> 6.2.1)
   sidekiq-cron (~> 1.1)
-  sidekiq-unique-jobs (~> 7.0.7)
+  sidekiq-unique-jobs (~> 7.0.8)
   simplecov (~> 0.21.2)
   sitemap_generator (~> 6.1)
   slack-notifier (~> 2.3)

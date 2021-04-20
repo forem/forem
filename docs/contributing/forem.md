@@ -186,7 +186,7 @@ All community pull requests are reviewed by our core team.
 After you submit your pull request, one of the members of the core team will
 review your code.
 
-Please avoid force pushing unless you need to rebase with the master branch.
+Please avoid force pushing unless you need to rebase with the main branch.
 
 If feedback is provided, any changes should be contained in new commits. Please
 don't force push or worry about squashing your commits.

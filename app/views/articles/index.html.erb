@@ -39,7 +39,7 @@
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
       <header class="flex justify-between items-center p-2 px-3 m:p-0 m:px-0 m:pb-2">
-        <h1 class="crayons-subtitle-2" aria-label="<%= community_name %> posts">Posts</h1>
+        <h1 class="crayons-subtitle-2">Posts</h1>
 
         <nav class="crayons-tabs hidden s:flex">
           <a href="<%= list_path %>/" class="crayons-tabs__item <%= "crayons-tabs__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>">Feed</a>
