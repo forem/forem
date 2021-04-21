@@ -1,4 +1,4 @@
-class AddBodyMarkdownTsvectorIndexToUsers < ActiveRecord::Migration[6.1]
+class AddBodyMarkdownTsvectorIndexToComments < ActiveRecord::Migration[6.1]
   disable_ddl_transaction!
 
   INDEX = "to_tsvector('simple'::regconfig, COALESCE((body_markdown)::text, ''::text))"
