@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ConsumerApps::FetchOrCreateBy, type: :service do
+RSpec.describe ConsumerApps::FindOrCreateByQuery, type: :query do
   context "when fetching the Forem app" do
     it "recreates the record if it doesn't exist" do
       expect(ConsumerApp.count).to eq(0)

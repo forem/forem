@@ -25,7 +25,7 @@ class Device < ApplicationRecord
   def ios_notification(title, body, payload)
     n = Rpush::Apns2::Notification.new
     n.device_token = token
-    n.app = ConsumerApps::FetchRpushApp.call(
+    n.app = ConsumerApps::RpushAppQuery.call(
       app_bundle: consumer_app.app_bundle,
       platform: platform,
     )

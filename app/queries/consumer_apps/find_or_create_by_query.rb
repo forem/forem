@@ -1,5 +1,5 @@
 module ConsumerApps
-  class FetchOrCreateBy
+  class FindOrCreateByQuery
     def self.call(app_bundle:, platform:)
       new(app_bundle: app_bundle, platform: platform).call
     end

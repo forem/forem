@@ -20,7 +20,7 @@ RSpec.describe ConsumerApp, type: :model do
 
     context "with forem apps" do
       it "returns true/false based on the ENV variable for the forem apps" do
-        forem_consumer_app = ConsumerApps::FetchOrCreateBy.call(
+        forem_consumer_app = ConsumerApps::FindOrCreateByQuery.call(
           app_bundle: ConsumerApp::FOREM_BUNDLE,
           platform: ConsumerApp::FOREM_APP_PLATFORMS.sample,
         )
@@ -35,7 +35,7 @@ RSpec.describe ConsumerApp, type: :model do
 
   describe "after an update" do
     it "recreates the Redis-backed Rpush app" do
-      rpush_app = ConsumerApps::FetchRpushApp.call(
+      rpush_app = ConsumerApps::RpushAppQuery.call(
         app_bundle: consumer_app.app_bundle,
         platform: consumer_app.platform,
       )
@@ -49,7 +49,7 @@ RSpec.describe ConsumerApp, type: :model do
       expect(consumer_app.save).to be true
 
       # After update fetch again
-      rpush_app = ConsumerApps::FetchRpushApp.call(
+      rpush_app = ConsumerApps::RpushAppQuery.call(
         app_bundle: consumer_app.app_bundle,
         platform: consumer_app.platform,
       )

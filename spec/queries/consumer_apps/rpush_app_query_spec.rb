@@ -1,8 +1,8 @@
 require "rails_helper"
 
-RSpec.describe ConsumerApps::FetchRpushApp, type: :service do
+RSpec.describe ConsumerApps::RpushAppQuery, type: :query do
   let(:consumer_app) do
-    ConsumerApps::FetchOrCreateBy.call(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: Device::IOS)
+    ConsumerApps::FindOrCreateByQuery.call(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: Device::IOS)
   end
 
   describe "Redis-backed rpush app" do

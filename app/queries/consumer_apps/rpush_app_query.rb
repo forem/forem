@@ -1,5 +1,5 @@
 module ConsumerApps
-  class FetchRpushApp
+  class RpushAppQuery
     def self.call(app_bundle:, platform:)
       new(app_bundle: app_bundle, platform: platform).call
     end
@@ -7,7 +7,7 @@ module ConsumerApps
     def initialize(app_bundle:, platform:)
       @app_bundle = app_bundle
       @platform = platform
-      @consumer_app = ConsumerApps::FetchOrCreateBy.call(
+      @consumer_app = ConsumerApps::FindOrCreateByQuery.call(
         app_bundle: @app_bundle,
         platform: @platform,
       )

@@ -1,5 +1,5 @@
 module ConsumerApps
-  class FetchAll
+  class AllQuery
     def self.call
       forem_bundle = ConsumerApp::FOREM_BUNDLE
       existing_platforms = ConsumerApp.where(app_bundle: forem_bundle).pluck(:platform)
@@ -8,7 +8,7 @@ module ConsumerApps
         ConsumerApp.create(app_bundle: forem_bundle, platform: platform, active: true)
       end
 
-      ConsumerApp.all
+      ConsumerApp.all(super: true)
     end
   end
 end
