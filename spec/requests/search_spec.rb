@@ -30,7 +30,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       end
     end
 
-    context "when using PostgreSQL" do
+    context "when using PostgreSQL for" do
       before do
         allow(FeatureFlag).to receive(:enabled?).with(:search_2_tags).and_return(true)
       end
@@ -225,7 +225,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       end
     end
 
-    context "when using PostgreSQL" do
+    context "when using PostgreSQL for the homepage" do
       before do
         allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage).and_return(true)
       end
@@ -267,6 +267,30 @@ RSpec.describe "Search", type: :request, proper_status: true do
         datetime = article.published_at + 1.minute
         get search_feed_content_path(class_name: "Article", published_at: { gte: datetime.iso8601 })
         expect(response.parsed_body["result"]).to be_empty
+      end
+    end
+
+    context "when using PostgreSQL for comments" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_comments).and_return(true)
+      end
+
+      it "returns the correct keys for comments" do
+        create(:comment, body_markdown: "Ruby on Rails rocks!")
+        get search_feed_content_path(search_fields: "rails", class_name: "Comment")
+        expect(response.parsed_body["result"]).to be_present
+      end
+
+      it "supports the search params for comments" do
+        comment = create(:comment, body_markdown: "Ruby on Rails rocks!")
+        get search_feed_content_path(
+          search_fields: "rails",
+          class_name: "Comment",
+          page: 0,
+          per_page: 1,
+        )
+
+        expect(response.parsed_body["result"].first).to include("body_text" => comment.body_markdown)
       end
     end
   end

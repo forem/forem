@@ -123,14 +123,14 @@ class SearchController < ApplicationController
   # we should eventually move it to a JSON result
   # in ArticlesController#Homepage or HomepageController#show
   def feed_content
-    class_name = params[:class_name].to_s.inquiry
+    class_name = feed_params[:class_name].to_s.inquiry
 
     result =
       if class_name.blank?
         # If we are in the main feed and not filtering by type return
         # all articles, podcast episodes, and users
         feed_content_search.concat(user_search)
-      elsif class_name.Article? && params[:search_fields].blank?
+      elsif class_name.Article? && feed_params[:search_fields].blank?
         # homepage
         if FeatureFlag.enabled?(:search_2_homepage)
           # NOTE: published_at is sent from the frontend in the following ES-friendly format:
@@ -150,6 +150,14 @@ class SearchController < ApplicationController
         else
           feed_content_search
         end
+      elsif class_name.Comment? && FeatureFlag.enabled?(:search_2_comments)
+        Search::Postgres::Comment.search_documents(
+          page: feed_params[:page],
+          per_page: feed_params[:per_page],
+          sort_by: feed_params[:sort_by],
+          sort_direction: feed_params[:sort_direction],
+          term: feed_params[:search_fields],
+        )
       elsif class_name.User?
         # No need to check for articles or podcast episodes if we know we only want users
         user_search
