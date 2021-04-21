@@ -405,8 +405,6 @@ ActiveRecord::Schema.define(version: 2021_04_14_033457) do
     t.string "platform", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["app_bundle", "platform"], name: "index_consumer_apps_on_app_bundle_and_platform", unique: true
-    t.index ["app_bundle"], name: "index_consumer_apps_on_app_bundle"
-    t.index ["platform"], name: "index_consumer_apps_on_platform"
   end
 
   create_table "credits", force: :cascade do |t|
