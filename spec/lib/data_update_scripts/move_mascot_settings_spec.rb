@@ -20,7 +20,7 @@ describe DataUpdateScripts::MoveMascotSettings do
   end
 
   it "moves the non-renamed setting" do
-    allow(SiteConfig).to receive(:mascot_user_id).and_return(42)
+    allow(Settings::Mascot).to receive(:mascot_user_id).and_return(42)
     expect do
       described_class.new.run
     end.to change(Settings::Mascot, :mascot_user_id).to(42)

@@ -44,7 +44,7 @@ RSpec.describe Reaction, type: :model do
     end
 
     it "does not allow vomit reaction for users without trusted role" do
-      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id + 1)
+      allow(Settings::Mascot).to receive(:mascot_user_id).and_return(user.id + 1)
       reaction.category = "vomit"
       expect(reaction).not_to be_valid
     end
