@@ -6,8 +6,8 @@ class User < ApplicationRecord
   include Storext.model
 
   include PgSearch::Model
-  pg_search_scope :search_by_username,
-                  against: :username,
+  pg_search_scope :search_by_name_and_username,
+                  against: %i[name username],
                   using: { tsearch: { prefix: true } }
 
   # @citizen428 Preparing to drop profile columns from the users table
