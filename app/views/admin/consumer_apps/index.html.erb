@@ -1,0 +1,49 @@
+<div class="crayons-card p-3 mb-5 mt-2">
+  <%= link_to "New Consumer App", new_admin_consumer_app_path, class: "crayons-btn float-right" %>
+
+  <h1 class="crayons-title mb-6">Consumer Apps</h1>
+
+  <p>
+    The following are apps that will be able to receive Push Notifications from <%= SiteConfig.community_name %>.
+  </p>
+</div>
+
+<table class="crayons-table" width="100%">
+  <thead>
+    <tr>
+      <th scope="col">App Bundle</th>
+      <th scope="col">Platform</th>
+      <th scope="col">Devices</th>
+      <th scope="col">Authentication Key</th>
+      <th scope="col">Operational</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody class="crayons-card">
+    <% @apps.each do |app| %>
+        <tr>
+          <td><%= app.app_bundle %></td>
+          <td><%= app.platform %></td>
+          <td><%= app.devices.count %></td>
+          <% if app.auth_credentials.present? %>
+            <td><span class="crayons-icon" role="img" aria-label="Authentication Key is available">✅</span></td>
+          <% else %>
+            <td><span class="crayons-icon" role="img" aria-label="Authentication Key is not available">❌</span></td>
+          <% end %>
+          <% if app.operational? %>
+            <td><span class="crayons-icon" role="img" aria-label="App is Operational">✅</span></td>
+          <% else %>
+            <td><span class="crayons-icon" role="img" aria-label="App is not Operational">❌</span></td>
+          <% end %>
+          <td>
+            <% if app.forem_app? %>
+              <span class="fs-xs">Forem apps are supported by default and can't be modified.</span>
+            <% else %>
+              <%= link_to "Edit", edit_admin_consumer_app_path(app), class: "crayons-btn crayons-btn--outlined" %>
+              <%= link_to "Destroy", admin_consumer_app_path(app), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %>
+            <% end %>
+          </td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>
