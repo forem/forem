@@ -3,6 +3,8 @@ class TagArticlesController < ApplicationController
 
   SIGNED_OUT_RECORD_COUNT = 60
 
+  rescue_from ArgumentError, with: :bad_request
+
   def index
     @page = (params[:page] || 1).to_i
     @article_index = true
