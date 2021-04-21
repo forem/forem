@@ -1,3 +1,4 @@
+# Helpers for controllers interacting with Listing
 module ListingsToolkit
   extend ActiveSupport::Concern
 
@@ -37,12 +38,13 @@ module ListingsToolkit
 
   def create
     @listing = Listing.new(listing_params)
+    organization_id = @listing.organization_id
 
     # this will 401 for now if they don't belong in the org
-    authorize @listing, :authorized_organization_poster? if @listing.organization_id.present?
+    authorize @listing, :authorized_organization_poster? if organization_id.present?
 
     @listing.user_id = current_user.id
-    org = Organization.find_by(id: @listing.organization_id)
+    org = Organization.find_by(id: organization_id)
 
     if listing_params[:action] == "draft"
       create_draft
@@ -180,15 +182,12 @@ module ListingsToolkit
   end
 
   def first_publish(cost)
-    available_author_credits = @listing.author.credits.unspent
-    available_user_credits = []
-    if @listing.author.is_a?(Organization)
-      available_user_credits = current_user.credits.unspent
-    end
+    author = @listing.author
+    available_user_credits = author.is_a?(Organization) ? current_user.credits.unspent.size : 0
 
-    if available_author_credits.size >= cost
-      create_listing(@listing.author, cost)
-    elsif available_user_credits.size >= cost
+    if author.credits.unspent.size >= cost
+      create_listing(author, cost)
+    elsif available_user_credits >= cost
       create_listing(current_user, cost)
     else
       process_no_credit_left
@@ -200,10 +199,12 @@ module ListingsToolkit
   end
 
   def at_least_one_param_present?
-    MANDATORY_FIELDS_FOR_UPDATE.any? { |i| listing_params.include? i }
+    MANDATORY_FIELDS_FOR_UPDATE.any? { |field| listing_params.include?(field) }
   end
 
   def bumped_in_last_24_hrs?
-    @listing.bumped_at && @listing.bumped_at > 24.hours.ago
+    return unless (last_bumped_at = @listing.bumped_at)
+
+    last_bumped_at > 24.hours.ago
   end
 end

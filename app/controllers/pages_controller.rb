@@ -97,22 +97,11 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    daily_thread = Article.admin_published_with("welcome").first
-    if daily_thread
-      redirect_to URI.parse(daily_thread.path).path
-    else
-      # fail safe if we haven't made the first welcome thread
-      redirect_to "/notifications"
-    end
+    redirect_daily_thread_request(Article.admin_published_with("welcome").first)
   end
 
   def challenge
-    daily_thread = Article.admin_published_with("challenge").first
-    if daily_thread
-      redirect_to URI.parse(daily_thread.path).path
-    else
-      redirect_to "/notifications"
-    end
+    redirect_daily_thread_request(Article.admin_published_with("challenge").first)
   end
 
   def checkin
@@ -123,10 +112,16 @@ class PagesController < ApplicationController
         .order("articles.published_at" => :desc)
         .first
 
+    redirect_daily_thread_request(daily_thread)
+  end
+
+  private
+
+  def redirect_daily_thread_request(daily_thread)
     if daily_thread
-      redirect_to URI.parse(daily_thread.path).path
+      redirect_to(URI.parse(daily_thread.path).path)
     else
-      redirect_to "/notifications"
+      redirect_to(notifications_path)
     end
   end
 end
