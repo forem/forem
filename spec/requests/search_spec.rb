@@ -140,7 +140,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
         allow(Search::User).to receive(:search_usernames).and_return(
           result,
         )
-        get "/search/usernames"
+        get search_usernames_path
         expect(response.parsed_body).to eq("result" => result)
       end
     end
@@ -155,8 +155,16 @@ RSpec.describe "Search", type: :request, proper_status: true do
         expect(response.parsed_body["result"]).to be_empty
       end
 
-      it "finds a username by a partial name" do
+      it "finds a username by a partial username" do
         user = create(:user, username: "Sloan")
+
+        get search_usernames_path(username: "slo")
+
+        expect(response.parsed_body["result"].first).to include("username" => user.username)
+      end
+
+      it "finds a username by a partial name" do
+        user = create(:user, name: "Sloan")
 
         get search_usernames_path(username: "slo")
 
