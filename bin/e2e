@@ -23,7 +23,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   printf "\n\nSetting up the E2E database before running E2E tests...\n\n"
   RAILS_ENV=test E2E=true bin/e2e-setup
 else
-   printf "\n\nSkipping setting up the E2E database before running E2E tests...\n\n"
+   printf "\n\nSkipping database setup...\n\n"
 fi
 
 printf "Starting up the E2E test runner...\n\n"
