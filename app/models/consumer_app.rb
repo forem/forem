@@ -18,7 +18,7 @@ class ConsumerApp < ApplicationRecord
   end
 
   def creator_app?
-    app_bundle != FOREM_BUNDLE
+    !forem_app?
   end
 
   # When an error is raised during an attempt to deliver PNs we should catch
@@ -53,7 +53,7 @@ class ConsumerApp < ApplicationRecord
       Rpush::Gcm::App.where(name: app_bundle_was).first&.destroy
     end
 
-    # This avoids `destroy` method unexpectedly return true/false in callback
+    # This prevents the `destroy` method to return true or false in a callback
     true
   end
   # rubocop:enable Rails/FindBy
