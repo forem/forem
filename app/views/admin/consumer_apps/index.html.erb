@@ -28,12 +28,12 @@
           <% if app.auth_credentials.present? %>
             <td><span class="crayons-icon" role="img" aria-label="Authentication Key is available">✅</span></td>
           <% else %>
-            <td><span class="crayons-icon" role="img" aria-label="Authentication Key is available">❌</span></td>
+            <td><span class="crayons-icon" role="img" aria-label="Authentication Key is not available">❌</span></td>
           <% end %>
           <% if app.operational? %>
             <td><span class="crayons-icon" role="img" aria-label="App is Operational">✅</span></td>
           <% else %>
-            <td><span class="crayons-icon" role="img" aria-label="App is Operational">❌</span></td>
+            <td><span class="crayons-icon" role="img" aria-label="App is not Operational">❌</span></td>
           <% end %>
           <td>
             <% if app.forem_app? %>
