@@ -26,7 +26,7 @@ module Search
         statuses = statuses.presence || DEFAULT_STATUSES
         tags = tags.presence || []
 
-        # NOTE: [@rhymes] we should eventually update the frontend
+        # TODO: [@rhymes] we should eventually update the frontend
         # to start from page 1
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
