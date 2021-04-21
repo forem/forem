@@ -8,7 +8,7 @@ module ConsumerApps
         ConsumerApp.create(app_bundle: forem_bundle, platform: platform, active: true)
       end
 
-      ConsumerApp.all(super: true)
+      ConsumerApp.all.limit(50)
     end
   end
 end

@@ -42,18 +42,19 @@ class ConsumerApp < ApplicationRecord
 
   private
 
-  # [@forem/backend] Rpush models are Redis-backed so certain ActiveRecord
-  # queries aren't available. For more information:
+  # [@forem/backend] `.where().first` is necessary because we use Redis data storage
   # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
+  # rubocop:disable Rails/FindBy
   def clear_rpush_app
     case platform_was
     when Device::IOS
-      Rpush::Apns2::App.where(name: app_bundle_was).to_a.sample&.destroy
+      Rpush::Apns2::App.where(name: app_bundle_was).first&.destroy
     when Device::ANDROID
-      Rpush::Gcm::App.where(name: app_bundle_was).to_a.sample&.destroy
+      Rpush::Gcm::App.where(name: app_bundle_was).first&.destroy
     end
 
     # This avoids `destroy` method unexpectedly return true/false in callback
     true
   end
+  # rubocop:enable Rails/FindBy
 end
