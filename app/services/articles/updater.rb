@@ -16,7 +16,8 @@ module Articles
     def call
       user.rate_limiter.check_limit!(:article_update)
 
-      was_published = article.published
+      # Grab the state of the article's "publish" status before making any further updates to it.
+      was_previously_published = article.published
 
       # updated edited time only if already published and not edited by an admin
       update_edited_at = article.user == user && article.published
@@ -28,7 +29,7 @@ module Articles
         user.rate_limiter.track_limit_by_action(:article_update)
 
         # send notification only the first time an article is published
-        send_notification = was_published && article.saved_change_to_published_at.present?
+        send_notification = article.published && article.saved_change_to_published_at.present?
         if send_notification
           # Send notifications to any mentioned users, followed by any users who follow the article's author.
           Notification.send_to_mentioned_users_and_followers(article, "Published")
@@ -49,8 +50,9 @@ module Articles
                                     notifiable_type: "Comment")
           end
         end
-        # don't send only if article keeps being unpublished
-        dispatch_event(article) if article.published || was_published
+
+        # Do not notify if the article was previously already in a published state or is continually unpublished.
+        dispatch_event(article) if article.published || was_previously_published
       end
       Result.new(success: success, article: article.decorate)
     end
