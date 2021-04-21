@@ -18,14 +18,6 @@ module Constants
           description: "Used to mark the year this forem was started.",
           placeholder: Time.zone.today.year.to_s
         },
-        experience_low: {
-          description: "The label for the bottom of the experience level range of a post",
-          placeholder: "Total Newbies"
-        },
-        experience_high: {
-          description: "The label for the top of the experience level range of a post",
-          placeholder: "Senior Devs"
-        },
         member_label: {
           description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
           placeholder: "user"

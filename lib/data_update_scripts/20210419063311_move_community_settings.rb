@@ -3,8 +3,6 @@ module DataUpdateScripts
     community_description
     community_emoji
     community_name
-    experience_high
-    experience_low
     staff_user_id
     tagline
   ].freeze

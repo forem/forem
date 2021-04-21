@@ -267,24 +267,6 @@ RSpec.describe "/admin/config", type: :request do
           }
           expect(Settings::Community.staff_user_id).to eq(22)
         end
-
-        it "updates the experience_low" do
-          experience_low = "Noobs"
-          post admin_settings_communities_path, params: {
-            settings_community: { experience_low: experience_low },
-            confirmation: confirmation_message
-          }
-          expect(Settings::Community.experience_low).to eq(experience_low)
-        end
-
-        it "updates the experience_high" do
-          experience_high = "Advanced Peeps"
-          post admin_settings_communities_path, params: {
-            settings_community: { experience_high: experience_high },
-            confirmation: confirmation_message
-          }
-          expect(Settings::Community.experience_high).to eq(experience_high)
-        end
       end
 
       describe "Emails" do

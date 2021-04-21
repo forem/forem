@@ -13,8 +13,6 @@ module Settings
     field :community_emoji, type: :string, default: "🌱", validates: { emoji_only: true }
     field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
     field :member_label, type: :string, default: "user"
-    field :experience_high, type: :string, default: "Experienced Users"
-    field :experience_low, type: :string, default: "Total Newbies"
     field :staff_user_id, type: :integer, default: 1
     field :tagline, type: :string
   end

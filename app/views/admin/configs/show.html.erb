@@ -466,7 +466,7 @@
           <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
             <fieldset class="grid gap-4">
               <div class="crayons-field">
-                <%= admin_config_label :community_name %>
+                <%= admin_config_label :community_name, model: Settings::Community %>
                 <%= admin_config_description Constants::Settings::Community::DETAILS[:community_name][:description] %>
                 <%= f.text_field :community_name,
                                  class: "crayons-textfield",
@@ -475,7 +475,7 @@
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :community_emoji %>
+                <%= admin_config_label :community_emoji, model: Settings::Community %>
                 <%= admin_config_description Constants::Settings::Community::DETAILS[:community_emoji][:description] %>
                 <%= f.text_field :community_emoji,
                                  class: "crayons-textfield",
@@ -484,7 +484,7 @@
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :tagline %>
+                <%= admin_config_label :tagline, model: Settings::Community %>
                 <%= admin_config_description Constants::Settings::Community::DETAILS[:tagline][:description] %>
                 <%= f.text_field :tagline,
                                  class: "crayons-textfield",
@@ -493,7 +493,7 @@
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :community_description %>
+                <%= admin_config_label :community_description, model: Settings::Community %>
                 <%= admin_config_description Constants::Settings::Community::DETAILS[:community_description][:description] %>
                 <%= f.text_field :community_description,
                                  class: "crayons-textfield",
@@ -502,7 +502,7 @@
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :member_label %>
+                <%= admin_config_label :member_label, model: Settings::Community %>
                 <%= admin_config_description Constants::Settings::Community::DETAILS[:member_label][:description] %>
                 <%= f.text_field :member_label,
                                  class: "crayons-textfield",
@@ -511,7 +511,7 @@
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :copyright_start_year %>
+                <%= admin_config_label :copyright_start_year, model: Settings::Community %>
                 <%= admin_config_description Constants::Settings::Community::DETAILS[:copyright_start_year][:description] %>
                 <%= f.text_field :copyright_start_year,
                                  class: "crayons-textfield",
@@ -520,30 +520,12 @@
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :staff_user_id %>
+                <%= admin_config_label :staff_user_id, model: Settings::Community %>
                 <%= admin_config_description Constants::Settings::Community::DETAILS[:staff_user_id][:description] %>
                 <%= f.text_field :staff_user_id,
                                  class: "crayons-textfield",
                                  value: Settings::Community.staff_user_id,
                                  placeholder: Constants::Settings::Community::DETAILS[:staff_user_id][:placeholder] %>
-              </div>
-
-              <div class="crayons-field">
-                <%= admin_config_label :experience_low %>
-                <%= admin_config_description Constants::Settings::Community::DETAILS[:experience_low][:description] %>
-                <%= f.text_field :experience_low,
-                                 class: "crayons-texfield",
-                                 value: SiteConfig.experience_low,
-                                 placeholder: Constants::Settings::Community::DETAILS[:experience_low][:placeholder] %>
-              </div>
-
-              <div class="crayons-field">
-                <%= admin_config_label :experience_high %>
-                <%= admin_config_description Constants::Settings::Community::DETAILS[:experience_high][:description] %>
-                <%= f.text_field :experience_high,
-                                 class: "crayons-texfield",
-                                 value: Settings::Community.experience_high,
-                                 placeholder: Constants::Settings::Community::DETAILS[:experience_high][:placeholder] %>
               </div>
               <%= render "form_submission", f: f %>
             </fieldset>
