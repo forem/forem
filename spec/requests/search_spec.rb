@@ -30,7 +30,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       end
     end
 
-    context "when using PostgreSQL" do
+    context "when using PostgreSQL for" do
       before do
         allow(FeatureFlag).to receive(:enabled?).with(:search_2_tags).and_return(true)
       end
@@ -174,7 +174,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
           mock_documents,
         )
 
-        get "/search/feed_content"
+        get search_feed_content_path
         expect(response.parsed_body["result"]).to eq(mock_documents)
       end
 
@@ -184,7 +184,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
           mock_documents,
         )
 
-        get "/search/feed_content?class_name=User"
+        get search_feed_content_path(class_name: "User")
         expect(Search::User).to have_received(:search_documents)
         expect(Search::FeedContent).not_to have_received(:search_documents)
       end
@@ -197,7 +197,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
           mock_documents,
         )
 
-        get "/search/feed_content"
+        get search_feed_content_path
         expect(Search::User).to have_received(:search_documents)
         expect(Search::FeedContent).to have_received(:search_documents)
       end
@@ -208,7 +208,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
         )
         allow(Search::User).to receive(:search_documents)
 
-        get "/search/feed_content?class_name=Article"
+        get search_feed_content_path(class_name: "Article")
         expect(Search::User).not_to have_received(:search_documents)
         expect(Search::FeedContent).to have_received(:search_documents)
       end
@@ -218,14 +218,59 @@ RSpec.describe "Search", type: :request, proper_status: true do
           mock_documents,
         )
 
-        get "/search/feed_content?class_name=Article&approved=true"
+        get search_feed_content_path(class_name: "Article", approved: "true")
         expect(Search::FeedContent).to have_received(:search_documents).with(
           params: { "approved" => "true", "class_name" => "Article" },
         )
       end
     end
 
-    context "when using PostgreSQL" do
+    context "when using PostgreSQL for the homepage" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage).and_return(true)
+      end
+
+      it "does not call Homepage::FetchArticles when class_name is Article with a search term", :aggregate_failures do
+        allow(Homepage::FetchArticles).to receive(:call)
+
+        get search_feed_content_path
+        expect(Homepage::FetchArticles).not_to have_received(:call)
+
+        get search_feed_content_path(class_name: "Article", search_fields: "keyword")
+        expect(Homepage::FetchArticles).not_to have_received(:call)
+      end
+
+      it "calls Homepage::FetchArticles when class_name is Article" do
+        allow(Homepage::FetchArticles).to receive(:call)
+
+        get search_feed_content_path(class_name: "Article")
+
+        expect(Homepage::FetchArticles).to have_received(:call)
+      end
+
+      it "returns the correct keys", :aggregate_failures do
+        create(:article)
+
+        get search_feed_content_path(class_name: "Article")
+
+        expect(response.parsed_body["result"]).to be_present
+        expect(response.parsed_body["display_jobs_banner"]).to eq(SiteConfig.display_jobs_banner)
+        expect(response.parsed_body["jobs_url"]).to eq(SiteConfig.jobs_url)
+      end
+
+      it "parses published_at correctly", :aggregate_failures do
+        article = create(:article)
+
+        get search_feed_content_path(class_name: "Article", published_at: { gte: article.published_at.iso8601 })
+        expect(response.parsed_body["result"].first["id"]).to eq(article.id)
+
+        datetime = article.published_at + 1.minute
+        get search_feed_content_path(class_name: "Article", published_at: { gte: datetime.iso8601 })
+        expect(response.parsed_body["result"]).to be_empty
+      end
+    end
+
+    context "when using PostgreSQL for comments" do
       before do
         allow(FeatureFlag).to receive(:enabled?).with(:search_2_comments).and_return(true)
       end

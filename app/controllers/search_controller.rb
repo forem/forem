@@ -119,6 +119,9 @@ class SearchController < ApplicationController
     render json: { result: [] }
   end
 
+  # TODO: [@rhymes] the homepage feed uses `feed_content_search` as an index,
+  # we should eventually move it to a JSON result
+  # in ArticlesController#Homepage or HomepageController#show
   def feed_content
     class_name = feed_params[:class_name].to_s.inquiry
 
@@ -127,6 +130,26 @@ class SearchController < ApplicationController
         # If we are in the main feed and not filtering by type return
         # all articles, podcast episodes, and users
         feed_content_search.concat(user_search)
+      elsif class_name.Article? && feed_params[:search_fields].blank?
+        # homepage
+        if FeatureFlag.enabled?(:search_2_homepage)
+          # NOTE: published_at is sent from the frontend in the following ES-friendly format:
+          # => {"published_at"=>{"gte"=>"2021-04-06T14:53:23Z"}}
+          published_at_gte = params.dig(:published_at, :gte)
+          published_at_gte = Time.zone.parse(published_at_gte) if published_at_gte
+          published_at = published_at_gte ? published_at_gte.. : nil
+
+          Homepage::FetchArticles.call(
+            approved: params[:approved],
+            published_at: published_at,
+            sort_by: params[:sort_by],
+            sort_direction: params[:sort_direction],
+            page: params[:page],
+            per_page: params[:per_page],
+          )
+        else
+          feed_content_search
+        end
       elsif class_name.Comment? && FeatureFlag.enabled?(:search_2_comments)
         Search::Postgres::Comment.search_documents(
           page: feed_params[:page],
@@ -138,8 +161,7 @@ class SearchController < ApplicationController
       elsif class_name.User?
         # No need to check for articles or podcast episodes if we know we only want users
         user_search
-      else
-        # if params[:class_name] == PodcastEpisode, Article, or Comment then skip user lookup
+      else # search page
         feed_content_search
       end
 
