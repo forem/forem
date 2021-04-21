@@ -6,14 +6,7 @@ class User < ApplicationRecord
   include Storext.model
 
   include PgSearch::Model
-  pg_search_scope :search_by_username,
-                  against: :username,
-                  using: { tsearch: { prefix: true } }
-
-  # NOTE: [@rhymes] this is adapted from config/elasticsearch/mappings/users.json
-  # Since we're moving job related fields like `available_for`, `employer_name`,
-  # and `mostly_work_with` from User to Profile, I chose not to search against them.
-  pg_search_scope :search_users,
+  pg_search_scope :search_by_name_and_username,
                   against: %i[name username],
                   using: { tsearch: { prefix: true } }
 
@@ -278,10 +271,10 @@ class User < ApplicationRecord
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
-  after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
+  after_commit :bust_cache
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
