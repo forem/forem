@@ -14,6 +14,15 @@ module EdgeCache
 
       cache_bust = EdgeCache::Bust.new
 
+      paths_for(article) do |path|
+        cache_bust.call(path)
+      end
+
+      bust_home_pages(cache_bust, article)
+      bust_tag_pages(cache_bust, article)
+    end
+
+    def self.paths_for(article)
       paths = [
         article.path,
         "/#{article.user.username}",
@@ -26,21 +35,19 @@ module EdgeCache
         "/api/articles/#{article.id}",
       ]
 
-      paths += "/#{article.organization.slug}" if article.organization.present?
-
       paths.each do |path|
-        cache_bust.call(path)
+        yield path
       end
 
-      bust_home_pages(cache_bust, article)
-      bust_tag_pages(cache_bust, article)
+      yield "/#{article.organization.slug}" if article.organization.present?
 
       return unless article.collection_id
 
       article.collection.articles.find_each do |collection_article|
-        cache_bust.call(collection_article.path)
+        yield collection_article.path
       end
     end
+
 
     def self.bust_home_pages(cache_bust, article)
       if article.featured_number.to_i > Time.current.to_i
