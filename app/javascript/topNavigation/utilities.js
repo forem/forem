@@ -85,7 +85,7 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
   }
 
   document.addEventListener('click', (event) => {
-    if (event.target === menuNavButton) {
+    if (event.target.closest('button') === menuNavButton) {
       // The menu navigation button manages it's own click event.
       return;
     }
