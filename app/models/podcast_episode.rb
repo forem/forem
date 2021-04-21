@@ -3,7 +3,9 @@ class PodcastEpisode < ApplicationRecord
     duration_in_seconds
   ]
 
+  include PgSearch::Model
   include Searchable
+
   SEARCH_SERIALIZER = Search::PodcastEpisodeSerializer
   SEARCH_CLASS = Search::FeedContent
 
@@ -38,6 +40,14 @@ class PodcastEpisode < ApplicationRecord
 
   after_commit :index_to_elasticsearch, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
+
+  # [@atsmith813] this is adapted from the `search_field` property in
+  # `config/elasticsearch/mappings/feed_content.json` and
+  # `app/serializers/search/podcast_episode_serializer.rb` with a couple of
+  # extras
+  pg_search_scope :search_podcast_episodes,
+                  against: %i[body subtitle title],
+                  using: { tsearch: { prefix: true } }
 
   scope :reachable, -> { where(reachable: true) }
   scope :published, -> { joins(:podcast).where(podcasts: { published: true }) }
