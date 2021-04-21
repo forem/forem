@@ -29,17 +29,17 @@ WITH settings_data AS (
          ELSE 0
     END
     config_theme,
-    display_announcements,
+    COALESCE(display_announcements, true),
     COALESCE((data ->> 'display_email_on_profile')::boolean, false) as display_email_on_profile,
-    display_sponsors,
+    COALESCE(display_sponsors, true),
     CASE WHEN editor_version='v2' THEN 0
           WHEN editor_version='v1' THEN 1
           ELSE 0
     END
     editor_version,
     experience_level,
-    feed_mark_canonical,
-    feed_referential_link,
+    COALESCE(feed_mark_canonical, false),
+    COALESCE(feed_referential_link, true),
     feed_url,
     inbox_guidelines,
     CASE WHEN inbox_type='private' THEN 0
@@ -48,14 +48,12 @@ WITH settings_data AS (
     END
     inbox_type,
     permit_adjacent_sponsors,
-    users.created_at,
-    users.id AS user_id,
-    users.updated_at
+    users.id AS user_id
   FROM users
   JOIN profiles
     ON profiles.user_id = users.id
 )
-INSERT INTO users_settings (brand_color1, brand_color2, config_font, config_navbar, config_theme, display_announcements, display_email_on_profile, display_sponsors, editor_version, experience_level, feed_mark_canonical, feed_referential_link, feed_url, inbox_type, permit_adjacent_sponsors, created_at, user_id, updated_at)
+INSERT INTO users_settings (brand_color1, brand_color2, config_font, config_navbar, config_theme, display_announcements, display_email_on_profile, display_sponsors, editor_version, experience_level, feed_mark_canonical, feed_referential_link, feed_url, inbox_type, permit_adjacent_sponsors, user_id)
   SELECT * FROM settings_data
   ON CONFLICT (user_id) DO UPDATE
     SET brand_color1 = EXCLUDED.brand_color1,
@@ -73,7 +71,6 @@ INSERT INTO users_settings (brand_color1, brand_color2, config_font, config_navb
         feed_url = EXCLUDED.feed_url,
         inbox_guidelines = EXCLUDED.inbox_guidelines,
         inbox_type = EXCLUDED.inbox_type,
-        permit_adjacent_sponsors = EXCLUDED.permit_adjacent_sponsors,
-        updated_at = EXCLUDED.updated_at;
+        permit_adjacent_sponsors = EXCLUDED.permit_adjacent_sponsors;
         ;
 COMMIT;

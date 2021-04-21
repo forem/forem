@@ -6,25 +6,23 @@ BEGIN TRANSACTION;
 WITH notification_settings_data AS (
   SELECT
     users.id AS user_id,
-    email_badge_notifications,
-    email_comment_notifications,
-    email_community_mod_newsletter,
-    email_connect_messages,
+    COALESCE(email_badge_notifications, true),
+    COALESCE(email_comment_notifications, true),
+    COALESCE(email_community_mod_newsletter, false),
+    COALESCE(email_connect_messages, true),
     COALESCE(email_digest_periodic, false),
-    email_follower_notifications,
-    email_mention_notifications,
-    email_newsletter,
-    email_tag_mod_newsletter,
-    email_unread_notifications,
-    mobile_comment_notifications,
-    mod_roundrobin_notifications,
-    reaction_notifications,
-    COALESCE(welcome_notifications, true),
-    users.created_at,
-    users.updated_at
+    COALESCE(email_follower_notifications, true),
+    COALESCE(email_mention_notifications, true),
+    COALESCE(email_newsletter, false),
+    COALESCE(email_tag_mod_newsletter, false),
+    COALESCE(email_unread_notifications, true),
+    COALESCE(mobile_comment_notifications, true),
+    COALESCE(mod_roundrobin_notifications, true),
+    COALESCE(reaction_notifications, true),
+    COALESCE(welcome_notifications, true)
   FROM users
 )
-INSERT INTO users_notification_settings (user_id, email_badge_notifications, email_comment_notifications, email_community_mod_newsletter, email_connect_messages, email_digest_periodic, email_follower_notifications, email_mention_notifications, email_newsletter, email_tag_mod_newsletter, email_unread_notifications, mobile_comment_notifications, mod_roundrobin_notifications, reaction_notifications, welcome_notifications, created_at, updated_at)
+INSERT INTO users_notification_settings (user_id, email_badge_notifications, email_comment_notifications, email_community_mod_newsletter, email_connect_messages, email_digest_periodic, email_follower_notifications, email_mention_notifications, email_newsletter, email_tag_mod_newsletter, email_unread_notifications, mobile_comment_notifications, mod_roundrobin_notifications, reaction_notifications, welcome_notifications)
   SELECT * FROM notification_settings_data
   ON CONFLICT (user_id) DO UPDATE
     SET email_badge_notifications = EXCLUDED.email_badge_notifications,
@@ -40,6 +38,5 @@ INSERT INTO users_notification_settings (user_id, email_badge_notifications, ema
         mobile_comment_notifications = EXCLUDED.mobile_comment_notifications,
         mod_roundrobin_notifications = EXCLUDED.mod_roundrobin_notifications,
         reaction_notifications = EXCLUDED.reaction_notifications,
-        welcome_notifications = EXCLUDED.welcome_notifications,
-        updated_at = EXCLUDED.updated_at;
+        welcome_notifications = EXCLUDED.welcome_notifications;
 COMMIT;
