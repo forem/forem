@@ -418,7 +418,7 @@ RSpec.describe "StoriesIndex", type: :request do
       let(:tag) { create(:tag) }
 
       it "renders tag index properly with many posts", :aggregate_failures do
-        stub_const("StoriesController::SIGNED_OUT_RECORD_COUNT", 10)
+        stub_const("TagArticlesController::SIGNED_OUT_RECORD_COUNT", 10)
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}"
 
