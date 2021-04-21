@@ -1,4 +1,19 @@
 describe('Comment on articles', () => {
+  // In these tests we have purposefully avoided the use of aliasing (https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Aliases)
+  // Making use of aliases is generally best practice, but due to the implementation of the autocomplete component (switching between two different textareas) it can cause flakiness in these particular tests
+
+  const getCommentCombobox = () =>
+    cy.findByRole('combobox', {
+      name: /^Add a comment to the discussion$/i,
+    });
+
+  const getCommentDropdown = () => cy.findByRole('listbox');
+
+  const getCommentPlainTextBox = () =>
+    cy.findByRole('textbox', {
+      name: /^Add a comment to the discussion$/i,
+    });
+
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
@@ -72,23 +87,21 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-
-      // Get a handle to the newly substituted textbox
       cy.findByRole('textbox', {
         name: /^Add a comment to the discussion$/i,
-      }).as('plainCommentBox');
+      }).click();
 
-      cy.get('@plainCommentBox').type('Some text @s');
+      // Get a handle to the newly substituted textbox
+      getCommentPlainTextBox();
+      getCommentPlainTextBox().type('Some text @s');
+
       // Verify the combobox has appeared
-      cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
-        'autocompleteCommentBox',
-      );
-      cy.get('@autocompleteCommentBox').should('have.focus');
-      cy.get('@autocompleteCommentBox').type('earch_user{downarrow}{enter}');
+      getCommentCombobox();
+      getCommentCombobox().should('have.focus');
+      getCommentCombobox().type('earch_user{downarrow}{enter}');
 
-      cy.get('@plainCommentBox').should('have.focus');
-      cy.get('@plainCommentBox').should(
+      getCommentPlainTextBox().should('have.focus');
+      getCommentPlainTextBox().should(
         'have.value',
         'Some text @search_user_1 ',
       );
@@ -100,28 +113,26 @@ describe('Comment on articles', () => {
         { fixture: 'search/emptyUsernamesSearch.json' },
       );
 
-      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-
-      // Get a handle to the newly substituted textbox
       cy.findByRole('textbox', {
         name: /^Add a comment to the discussion$/i,
-      }).as('plainCommentBox');
+      }).click();
 
-      cy.get('@plainCommentBox').type('Some text @u');
+      // Get a handle to the newly substituted textbox
+      getCommentPlainTextBox();
+      getCommentPlainTextBox().type('Some text @u');
+
       // Verify the combobox has appeared
-      cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
-        'autocompleteCommentBox',
-      );
-      cy.get('@autocompleteCommentBox').should('have.focus');
+      getCommentCombobox();
+      getCommentCombobox().should('have.focus');
 
-      cy.get('@autocompleteCommentBox').type('ser');
+      getCommentCombobox().type('ser');
 
       cy.findByText('No results found').should('exist');
-      cy.get('@autocompleteCommentBox').type(' ');
+      getCommentCombobox().type(' ');
 
       cy.findByText('No results found').should('not.exist');
-      cy.get('@plainCommentBox').should('have.focus');
-      cy.get('@plainCommentBox').should('have.value', 'Some text @user ');
+      getCommentPlainTextBox().should('have.focus');
+      getCommentPlainTextBox().should('have.value', 'Some text @user ');
     });
 
     it('should stop showing mention autocomplete suggestions on text delete', () => {
@@ -130,26 +141,22 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-
-      // Get a handle to the newly substituted textbox
       cy.findByRole('textbox', {
         name: /^Add a comment to the discussion$/i,
-      }).as('plainCommentBox');
+      }).click();
 
-      cy.get('@plainCommentBox').type('Some text @s');
+      // Get a handle to the newly substituted textbox
+      getCommentPlainTextBox();
+      getCommentPlainTextBox().type('Some text @s');
+
       // Verify the combobox has appeared
-      cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
-        'autocompleteCommentBox',
-      );
+      getCommentCombobox();
 
-      cy.get('@autocompleteCommentBox').should('have.focus');
-      cy.get('@autocompleteCommentBox').type('e');
+      getCommentCombobox().should('have.focus');
+      getCommentCombobox().type('e');
       cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
 
-      cy.get('@autocompleteCommentBox').type(
-        '{backspace}{backspace}{backspace}',
-      );
+      getCommentCombobox().type('{backspace}{backspace}{backspace}');
       cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
     });
 
@@ -159,23 +166,22 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-
-      // Get a handle to the newly substituted textbox
       cy.findByRole('textbox', {
         name: /^Add a comment to the discussion$/i,
-      }).type('Some text @se');
+      }).click();
+
+      // Get a handle to the newly substituted textbox
+      getCommentPlainTextBox();
+      getCommentPlainTextBox().type('Some text @se');
 
       // Verify the combobox has appeared
-      cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
-        'autocompleteCommentBox',
-      );
+      getCommentCombobox();
 
-      cy.get('@autocompleteCommentBox').should('have.focus');
-      cy.get('@autocompleteCommentBox').type('{backspace}{backspace}');
+      getCommentCombobox().should('have.focus');
+      getCommentCombobox().type('{backspace}{backspace}');
       cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
 
-      cy.get('@autocompleteCommentBox').type('se');
+      getCommentCombobox().type('se');
       cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
     });
 
@@ -185,22 +191,21 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-
-      // Get a handle to the newly substituted textbox
       cy.findByRole('textbox', {
         name: /^Add a comment to the discussion$/i,
-      }).type('Some text @s');
+      }).click();
+
+      // Get a handle to the newly substituted textbox
+      getCommentPlainTextBox();
+      getCommentPlainTextBox().type('Some text @s');
 
       // Verify the combobox has appeared
-      cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
-        'autocompleteCommentBox',
-      );
+      getCommentCombobox();
 
-      cy.get('@autocompleteCommentBox').type('earch');
+      getCommentCombobox().type('earch');
       cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
 
-      cy.get('@autocompleteCommentBox').type('{Esc}');
+      getCommentCombobox().type('{Esc}');
       cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
     });
 
@@ -210,29 +215,26 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-
-      // Get a handle to the newly substituted textbox
       cy.findByRole('textbox', {
         name: /^Add a comment to the discussion$/i,
-      }).as('plainTextArea');
+      }).click();
 
-      cy.get('@plainTextArea').type('Some text @s');
+      // Get a handle to the newly substituted textbox
+      getCommentPlainTextBox();
+      getCommentPlainTextBox().type('Some text @s');
 
       // Verify the combobox has appeared
-      cy.findByRole('combobox', { name: /Add a comment to the discussion/ }).as(
-        'autocompleteCommentBox',
-      );
+      getCommentCombobox();
 
-      cy.get('@autocompleteCommentBox').type('earch');
+      getCommentCombobox().type('earch');
       cy.findByRole('option', { name: /@search_user_1/ }).should('be.visible');
 
       // Click away from the dropdown
-      cy.get('@autocompleteCommentBox').click({ position: 'right' });
+      getCommentCombobox().click({ position: 'right' });
       cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
 
       // Check the combobox has exited and we are returned to the plainTextArea
-      cy.get('@plainTextArea').should('have.focus');
+      getCommentPlainTextBox().should('have.focus');
     });
 
     it('should exit combobox when blurred and refocused', () => {
@@ -241,24 +243,21 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-
-      // Get a handle to the newly substituted textbox
       cy.findByRole('textbox', {
         name: /^Add a comment to the discussion$/i,
-      }).as('plainTextArea');
+      }).click();
 
-      cy.get('@plainTextArea').type('Some text @s');
+      // Get a handle to the newly substituted textbox
+      getCommentPlainTextBox();
+      getCommentPlainTextBox().type('Some text @s');
 
       // Verify the combobox has appeared
-      cy.findByRole('combobox', {
-        name: /Add a comment to the discussion/,
-      }).as('combobox');
+      getCommentCombobox();
 
       // Blur the currently active textarea, and check that the blur results in the plainTextArea being restored
-      cy.get('@combobox').blur();
-      cy.get('@combobox').should('not.be.visible');
-      cy.get('@plainTextArea').should('be.visible');
+      getCommentCombobox().blur();
+      getCommentCombobox().should('not.exist');
+      getCommentPlainTextBox().should('exist');
     });
 
     it.skip('should reply to a comment with user mention autocomplete', () => {
@@ -270,7 +269,7 @@ describe('Comment on articles', () => {
       // Get a handle to the newly substituted textbox
       cy.findByRole('main')
         .as('main')
-        .findByRole('textbox', /^Add a comment to the discussion$/i)
+        .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
         .click();
 
       // The mention autocomplete is two textareas
@@ -321,11 +320,12 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByLabelText(/^Add a comment to the discussion$/i).click();
-      // Get a handle to the newly substituted textbox
       cy.findByRole('textbox', {
         name: /^Add a comment to the discussion$/i,
-      }).type('first comment');
+      }).click();
+      // Get a handle to the newly substituted textbox
+      getCommentPlainTextBox();
+      getCommentPlainTextBox().type('first comment');
 
       cy.findByRole('button', { name: /Submit/ }).click();
       cy.findByRole('link', { name: /Reply/ });
@@ -404,15 +404,3 @@ describe('Comment on articles', () => {
     });
   });
 });
-
-const getCommentCombobox = () =>
-  cy.findByRole('combobox', {
-    name: /^Add a comment to the discussion$/i,
-  });
-
-const getCommentDropdown = () => cy.findByRole('listbox');
-
-const getCommentPlainTextBox = () =>
-  cy.findByRole('textbox', {
-    name: /^Add a comment to the discussion$/i,
-  });
