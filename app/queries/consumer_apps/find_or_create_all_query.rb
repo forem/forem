@@ -1,5 +1,5 @@
 module ConsumerApps
-  class AllQuery
+  class FindOrCreateAllQuery
     def self.call
       forem_bundle = ConsumerApp::FOREM_BUNDLE
       existing_platforms = ConsumerApp.where(app_bundle: forem_bundle).pluck(:platform)

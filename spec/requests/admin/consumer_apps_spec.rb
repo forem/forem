@@ -2,11 +2,10 @@ require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
 RSpec.describe "/admin/consumer_apps", type: :request do
-  let!(:consumer_app) { create(:consumer_app) }
   let(:get_resource) { get "/admin/consumer_apps" }
   let(:params) do
     {
-      app_bundle: consumer_app.app_bundle,
+      app_bundle: Faker::Internet.domain_name(subdomain: true),
       platform: Device::IOS,
       auth_key: "sample_data"
     }
@@ -94,6 +93,13 @@ RSpec.describe "/admin/consumer_apps", type: :request do
     describe "POST /admin/consumer_apps" do
       it "creates a new ConsumerApp" do
         expect do
+          post_resource
+        end.to change { ConsumerApp.all.count }.by(1)
+      end
+
+      it "fails when trying to create duplicate apps (app_bundle + platform)" do
+        expect do
+          post_resource
           post_resource
         end.to change { ConsumerApp.all.count }.by(1)
       end

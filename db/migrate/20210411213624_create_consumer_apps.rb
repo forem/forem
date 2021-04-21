@@ -8,5 +8,7 @@ class CreateConsumerApps < ActiveRecord::Migration[6.1]
       t.string :last_error
       t.timestamps
     end
+
+    add_index :consumer_apps, [:app_bundle, :platform], unique: true
   end
 end

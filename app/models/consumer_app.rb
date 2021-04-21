@@ -7,6 +7,7 @@ class ConsumerApp < ApplicationRecord
 
   validates :app_bundle, presence: true
   validates :platform, presence: true
+  validates :app_bundle, uniqueness: { scope: :platform }
 
   has_many :devices, dependent: :destroy
 
@@ -14,7 +15,7 @@ class ConsumerApp < ApplicationRecord
   after_update :clear_rpush_app
 
   def forem_app?
-    app_bundle == FOREM_BUNDLE
+    app_bundle == FOREM_BUNDLE && FOREM_APP_PLATFORMS.include?(platform)
   end
 
   def creator_app?
@@ -33,7 +34,7 @@ class ConsumerApp < ApplicationRecord
   # custom PN targets will get their credentials from the auth_key stored in
   # the DB (configured by the Forem creator).
   def auth_credentials
-    if forem_app? && FOREM_APP_PLATFORMS.include?(platform)
+    if forem_app?
       ApplicationConfig["RPUSH_IOS_PEM"]
     else
       auth_key

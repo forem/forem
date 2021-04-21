@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ConsumerApps::AllQuery, type: :query do
+RSpec.describe ConsumerApps::FindOrCreateAllQuery, type: :query do
   let!(:consumer_app) { create(:consumer_app) }
 
   it "fetches all ConsumerApp including the Forem apps" do

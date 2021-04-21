@@ -3,7 +3,7 @@ module Admin
     layout "admin"
 
     def index
-      @apps = ConsumerApps::AllQuery.call
+      @apps = ConsumerApps::FindOrCreateAllQuery.call
     end
 
     def new
