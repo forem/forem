@@ -35,8 +35,14 @@
 </div>
 
 <script type="text/javascript">
+  // The timeoutDelay is the amount of time (ms) the spinner will be visible for
+  // users. It is just "about 3 seconds", which gives users enough time to
+  // deep link into the mobile apps. It's chosen arbitrarily and can be edited
+  // in the future if other values want to be used. When the time is up the
+  // fallback options are revealed ("take me back", "try again" & "install").
+  const timeoutDelay = 3333;
   setTimeout(function() {
     document.getElementById('mobile-deep-link-spinner').remove();
     document.querySelectorAll('.mobile-deep-link-banner')[0].classList.remove('invisible');
-  }, 3333);
+  }, timeoutDelay);
 </script>
