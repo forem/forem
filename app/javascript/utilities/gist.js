@@ -36,7 +36,7 @@ export function embedGistsInComments() {
       embedGists();
     });
   document
-    .querySelector('.dismiss-comment')
+    .querySelector('.dismiss-edit-comment')
     ?.addEventListener('click', (_event) => {
       embedGists();
     });
