@@ -11,7 +11,7 @@ module Search
       ].freeze
 
       def self.search_documents(term)
-        results = ::User.search_by_username(term).limit(MAX_RESULTS).select(*ATTRIBUTES)
+        results = ::User.search_by_name_and_username(term).limit(MAX_RESULTS).select(*ATTRIBUTES)
 
         serialize(results)
       end

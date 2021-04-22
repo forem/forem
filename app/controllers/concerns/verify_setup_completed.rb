@@ -1,3 +1,4 @@
+# Included in the ApplicationController to assist with creator onboarding
 module VerifySetupCompleted
   extend ActiveSupport::Concern
 
@@ -29,7 +30,7 @@ module VerifySetupCompleted
 
   def missing_configs_text
     display_missing = missing_configs.size > 3 ? missing_configs.first(3) + ["others"] : missing_configs
-    display_missing.map { |c| c.to_s.tr("_", " ") }.to_sentence
+    display_missing.map { |config| config.to_s.tr("_", " ") }.to_sentence
   end
 
   def verify_setup_completed
