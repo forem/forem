@@ -78,8 +78,8 @@ function initializeRuntimeBanner() {
     // Android support will not be available yet. Links to `/r/mobile` won't be
     // visible in Android browsers. However, as a fallback (safety) measure to
     // avoid having Android users land in this page we redirect them back to the
-    // content requested by the navigation to this page. This to avoid users
-    // land in an unsupported (not working for them) page.
-    window.location.href = targetPath;
+    // home page. This to avoids users landing in an unsupported (not working
+    // for them) page.
+    window.location.href = '/';
   }
 }
