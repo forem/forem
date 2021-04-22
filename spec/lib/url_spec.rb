@@ -96,6 +96,16 @@ RSpec.describe URL, type: :lib do
     end
   end
 
+  describe ".deep_link" do
+    it "returns the correct URL for the root path" do
+      expect(described_class.deep_link("/")).to eq("https://udl.visualcosita.com/?r=/")
+    end
+
+    it "returns the correct URL for an explicit path" do
+      expect(described_class.deep_link("/sloan")).to eq("https://udl.visualcosita.com/?r=/sloan")
+    end
+  end
+
   describe ".local_image" do
     let(:image_name) { "social-media-cover" }
     let(:image_extension) { ".png" }
