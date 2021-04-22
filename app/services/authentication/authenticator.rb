@@ -147,9 +147,10 @@ module Authentication
     end
 
     def account_less_than_a_week_old?(user, logged_in_identity)
-      provider_created_at = user.identities.find_by(provider: provider.name)&.created_at
-      user_identity_age = provider_created_at
-      user_identity_age ||= extract_created_at_from_payload(logged_in_identity)
+      identity = user.identities.find_by(provider: provider.name)
+      provider_created_at = identity&.auth_data_dump&.dig("extra", "raw_info", "created_at")
+      user_identity_age = provider_created_at ||
+        extract_created_at_from_payload(logged_in_identity)
 
       # last one is a fallback in case both are nil
       range = 1.week.ago.beginning_of_day..Time.current
