@@ -48,7 +48,6 @@ module EdgeCache
       end
     end
 
-
     def self.bust_home_pages(cache_bust, article)
       if article.featured_number.to_i > Time.current.to_i
         cache_bust.call("/")
