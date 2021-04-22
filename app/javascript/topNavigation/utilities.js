@@ -1,14 +1,13 @@
 function closeHeaderMenu(memberMenu, menuNavButton) {
   menuNavButton.setAttribute('aria-expanded', 'false');
   memberMenu.classList.remove('desktop', 'showing');
-  menuNavButton.focus();
 }
+
+const firstItem = document.getElementById('first-nav-link');
 
 function openHeaderMenu(memberMenu, menuNavButton) {
   menuNavButton.setAttribute('aria-expanded', 'true');
   memberMenu.classList.add('showing');
-
-  const firstItem = document.getElementById('first-nav-link');
 
   if (!firstItem) {
     return;
@@ -57,6 +56,7 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
   menuNavButton.addEventListener('click', (_event) => {
     if (memberTopMenu.classList.contains('showing')) {
       closeHeaderMenu(memberTopMenu, menuNavButton);
+      menuNavButton.focus();
     } else {
       openHeaderMenu(memberTopMenu, menuNavButton);
     }
@@ -80,12 +80,25 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
     memberTopMenu.addEventListener('keyup', (e) => {
       if (e.key === 'Escape' && classList.contains('showing')) {
         closeHeaderMenu(memberTopMenu, menuNavButton);
+        menuNavButton.focus();
       }
     });
   }
 
+  memberTopMenu
+    .querySelector('.crayons-header__menu__dropdown')
+    .addEventListener('click', (event) => {
+      // There is a click event listener on the body and we do not want
+      // this click to be caught by it
+      event.stopPropagation();
+
+      // Close the menu if the user clicked or touched on mobile a link in the menu.
+      closeHeaderMenu(memberTopMenu, menuNavButton);
+      menuNavButton.focus();
+    });
+
   document.addEventListener('click', (event) => {
-    if (event.target.closest('button') === menuNavButton) {
+    if (event.target.closest('#member-menu-button') === menuNavButton) {
       // The menu navigation button manages it's own click event.
       return;
     }
@@ -94,12 +107,20 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
     closeHeaderMenu(memberTopMenu, menuNavButton);
   });
 
+  const secondToLastNavLink = document.getElementById('second-last-nav-link');
+
   document
     .getElementById('last-nav-link')
     .addEventListener('blur', (_event) => {
       // When we tab out of the last link in the member menu, close
       // the menu.
-      closeHeaderMenu(memberTopMenu, menuNavButton);
+      setTimeout(() => {
+        if (document.activeElement === secondToLastNavLink) {
+          return;
+        }
+
+        closeHeaderMenu(memberTopMenu, menuNavButton);
+      }, 10);
     });
 }
 
