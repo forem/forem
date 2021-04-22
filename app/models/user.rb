@@ -266,8 +266,6 @@ class User < ApplicationRecord
   # used in expression indexes as it's a mutable function and depends on server settings
   # => https://stackoverflow.com/a/11007216/4186181
   #
-  # An alternative solution: create a tsvector column and user a trigger as we do for articles.
-  #
   # rubocop:disable Layout/LineLength
   scope :search_by_name_and_username, lambda { |term|
     where(
