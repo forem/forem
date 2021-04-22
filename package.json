@@ -21,7 +21,6 @@
     "prestorybook": "yarn run storybook-prerequisites",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/assets,app/javascript/storybook-static",
     "lint:frontend": "eslint app/assets/javascripts/**/*.js app/javascript/**/*.jsx app/javascript/**/*.js cypress/**/*.js",
-    "pretest": "yarn run lint:frontend",
     "test": "jest app/javascript/ bin/ --coverage",
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
