@@ -43,7 +43,7 @@ describe('View listing', () => {
     cy.get('@listingTitle').should('have.focus');
   });
 
-  it('redirects when a user contacts via connect', () => {
+  it('redirects when a logged out user contacts via connect', () => {
     cy.intercept(
       '/search/listings?category=&listing_search=&page=0&per_page=75&tag_boolean_mode=all',
       { fixture: 'search/listings.json' },
@@ -58,6 +58,7 @@ describe('View listing', () => {
       .findByRole('button', { name: /Send/ })
       .as('sendButton');
     cy.get('@sendButton').focus().click();
-    cy.url().should('not.include', '/listings');
+    cy.url().should('include', '/connect/@admin_mcadmin');
+    cy.findByTestId('login-form').should('exist');
   });
 });
