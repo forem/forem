@@ -1,3 +1,4 @@
+# Included in ApplicationController for edge caching
 module CachingHeaders
   extend ActiveSupport::Concern
 

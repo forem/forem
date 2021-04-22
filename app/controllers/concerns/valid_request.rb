@@ -1,3 +1,4 @@
+# Monkey patches to solve historical request issues
 module ValidRequest
   extend ActiveSupport::Concern
 
@@ -9,13 +10,15 @@ module ValidRequest
     # We are at least secure for now.
     return if Rails.env.test?
 
-    if request.referer.present?
-      request.referer.start_with?(URL.url)
+    if (referer = request.referer).present?
+      referer.start_with?(URL.url)
     else
-      null_origin = request.origin == "null"
-      raise ::ActionController::InvalidAuthenticityToken, ::ApplicationController::NULL_ORIGIN_MESSAGE if null_origin
+      origin = request.origin
+      if origin == "null"
+        raise ::ActionController::InvalidAuthenticityToken, ::ApplicationController::NULL_ORIGIN_MESSAGE
+      end
 
-      request.origin.nil? || request.origin.gsub("https", "http") == request.base_url.gsub("https", "http")
+      origin.nil? || origin.gsub("https", "http") == request.base_url.gsub("https", "http")
     end
   end
 

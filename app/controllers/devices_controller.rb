@@ -42,7 +42,7 @@ class DevicesController < ApplicationController
       user: current_user,
       token: params[:token],
       platform: params[:platform],
-      app_bundle: params[:app_bundle]
+      consumer_app: ConsumerApp.find_by(app_bundle: params[:app_bundle])
     }
   end
 
@@ -57,7 +57,7 @@ class DevicesController < ApplicationController
       user_id: params[:id],
       token: params[:token],
       platform: params[:platform],
-      app_bundle: params[:app_bundle]
+      consumer_app: ConsumerApp.find_by(app_bundle: params[:app_bundle])
     }
   end
 end
