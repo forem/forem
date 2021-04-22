@@ -107,7 +107,7 @@
     <% if FeatureFlag.enabled?(:runtime_banner) || ENV['E2E'] == 'true' %>
       <div class="Browser-iOS">
         <div class="runtime-banner">
-          <a href="<%= URL.deep_link(request.path) %>" class="flex items-center flex-1">
+          <a href="<%= URL.deep_link(request.path) %>" target="_blank" class="flex items-center flex-1">
             <%= inline_svg_tag("logo-forem-app.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: "Forem App icon") %>
             <span class="ml-2">Open with the Forem app...</span>
           </a>
