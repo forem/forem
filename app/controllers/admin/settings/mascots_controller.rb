@@ -8,7 +8,7 @@ module Admin
           Audit::Logger.log(:internal, current_user, params.dup)
           redirect_to admin_config_path, notice: "Site configuration was successfully updated."
         else
-          redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
+          redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}"
         end
       end
 

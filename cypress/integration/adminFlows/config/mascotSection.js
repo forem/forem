@@ -33,7 +33,7 @@ describe('Mascot Section', () => {
         cy.url().should('contains', '/admin/config');
 
         cy.findByText(
-          '😭 Validation failed: Sidebar image is not a valid URL',
+          '😭 Validation failed: Image url is not a valid URL',
         ).should('be.visible');
       });
     });
@@ -47,7 +47,7 @@ describe('Mascot Section', () => {
         cy.get('@mascotSectionForm')
           .get('#settings_mascot_image_url')
           .clear()
-          .type('example.com/image.png');
+          .type('https://example.com/image.png');
 
         cy.get('@mascotSectionForm')
           .findByPlaceholderText('Confirmation text')
@@ -69,7 +69,7 @@ describe('Mascot Section', () => {
         cy.get('#new_settings_mascot').as('mascotSectionForm');
         cy.get('#settings_mascot_image_url').should(
           'have.value',
-          'example.com/image.png',
+          'https://example.com/image.png',
         );
       });
     });
