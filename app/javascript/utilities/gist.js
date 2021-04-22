@@ -24,7 +24,7 @@ export function embedGists() {
 }
 
 export function embedGistsInComments() {
-  // allows for getting the gist embed after new comment submit/preview/dismiss
+  // allows for getting the gist embed after new comment submit/preview/dismiss/reply
   document
     .getElementById('new_comment')
     ?.addEventListener('submit', (_event) => {
@@ -45,4 +45,27 @@ export function embedGistsInComments() {
     ?.addEventListener('click', (_event) => {
       embedGists();
     });
+  document
+    .querySelector('.toggle-reply-form')
+    ?.addEventListener('click', (e) => {
+      if (e.target && e.target.matches('form.comment-form')) {
+        alert(e);
+      }
+    });
+
+  // handle future submit of comment forms
+  document.querySelector('body').addEventListener(
+    'submit',
+    (evt) => {
+      let targetElement = evt.target;
+      while (targetElement != null) {
+        if (targetElement.matches('.comment-form')) {
+          embedGists();
+          return;
+        }
+        targetElement = targetElement.parentElement;
+      }
+    },
+    true,
+  );
 }
