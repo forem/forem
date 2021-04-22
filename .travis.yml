@@ -1,6 +1,6 @@
 branches:
   only:
-    - master
+    - main
 language: ruby
 cache:
   directories:
@@ -62,7 +62,7 @@ script:
   - bin/knapsack_pro_rspec
 notifications:
   slack:
-    if: branch = master
+    if: branch = main
     on_pull_requests: false
     on_success: change
     on_failure: always
@@ -101,7 +101,7 @@ jobs:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
-          master: practicaldev
+          main: practicaldev
       after_deploy:
         - bash scripts/after_deploy.sh
     - stage: Deploy
@@ -114,4 +114,4 @@ jobs:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
-          master: benhalpern-community
+          main: benhalpern-community

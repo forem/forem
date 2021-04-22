@@ -16,6 +16,7 @@ RSpec.describe EdgeCache::BustUser, type: :service do
       "/live/#{username}",
       "/live/#{username}?i=i",
       "/feed/#{username}",
+      "/api/users/#{user.id}",
     ]
   end
 
