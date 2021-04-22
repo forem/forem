@@ -39,7 +39,7 @@ function initializeRuntimeBanner() {
 
   // If the "Install now"/"Try again" buttons exist in the DOM it means we are
   // trying to deep link into the mobile app after being redirected by the
-  // Runtime Banner itself (found in the path `/r/mobile`)
+  // Runtime Banner itself (the browser is currently in `/r/mobile`)
   const installNowButton = document.getElementById('link-to-mobile-install');
   const retryButton = document.getElementById('link-to-mobile-install-retry');
   if (!installNowButton || !retryButton) {
