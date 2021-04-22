@@ -3,6 +3,8 @@ class DeepLinksController < ApplicationController
 
   # Apple Application Site Association
   def aasa
+    # TODO: [@fdoxyz] Replace these hardcoded identifiers with configurations
+    # creators can use to customize their Forems - `/admin/consumer_apps`
     supported_apps = ["R9SWHSQNV8.com.forem.app"]
     supported_apps << "R9SWHSQNV8.to.dev.ios" if SiteConfig.dev_to?
     render json: {
