@@ -20,7 +20,7 @@
             <%= script.file_name %>
             <% if script.status == "failed" %>
               <button class="ml-2" id="data_update_script_<%= script.id %>_button"
- data-action="click->data-update-script#forceRun" data-value="<%= script.id %>" type="button" className="crayons-btn crayons-btn--secondary">
+ data-action="click->data-update-script#forceRun" data-value="<%= script.id %>" data-path="<%= force_run_admin_data_update_script_path(script.id) %>" type="button" className="crayons-btn crayons-btn--secondary">
                 Re-run
               </button>
             <% end %>

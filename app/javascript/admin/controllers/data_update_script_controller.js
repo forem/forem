@@ -4,6 +4,7 @@ export default class DataUpdateScriptController extends Controller {
   forceRun(event) {
     event.preventDefault();
     const id = event.target.dataset.value;
+    const path = event.target.dataset.path;
     const statusColumn = document.getElementById(
       `data_update_script_${id}_status`,
     );
@@ -12,7 +13,7 @@ export default class DataUpdateScriptController extends Controller {
     );
 
     this.displayLoadingIndicators(statusColumn, runAtColumn);
-    this.forceRunScript(id, statusColumn, runAtColumn);
+    this.forceRunScript(id, path, statusColumn, runAtColumn);
   }
 
   displayLoadingIndicators(statusColumn, runAtColumn) {
@@ -20,8 +21,8 @@ export default class DataUpdateScriptController extends Controller {
     statusColumn.innerHTML = '';
   }
 
-  forceRunScript(id, statusColumn, runAtColumn) {
-    fetch(`/admin/data_update_scripts/${id}/force_run`, {
+  forceRunScript(id, path, statusColumn, runAtColumn) {
+    fetch(path, {
       method: 'POST',
       headers: {
         'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
