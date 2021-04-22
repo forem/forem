@@ -255,12 +255,12 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_view_param
-    redirect_to "/admin/users/#{@user.id}" if params[:view] == "moderate"
-    redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
+    redirect_to admin_user_path(@user.id) if params[:view] == "moderate"
+    redirect_to edit_admin_user_path(@user.id) if params[:view] == "admin"
   end
 
   def redirect_if_show_view_param
-    redirect_to "/admin/articles/#{@article.id}" if params[:view] == "moderate"
+    redirect_to admin_article_path(@article.id) if params[:view] == "moderate"
   end
 
   def handle_article_show
