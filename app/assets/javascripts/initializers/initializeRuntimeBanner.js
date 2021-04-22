@@ -1,7 +1,7 @@
 /* global Runtime */
 
 function handleDismissRuntimeBanner(event) {
-  const runtimeBanner = document.querySelectorAll('.runtime-banner')[0];
+  const runtimeBanner = document.querySelector('.runtime-banner');
   if (runtimeBanner) {
     runtimeBanner.remove();
   }
@@ -16,9 +16,7 @@ function launchCustomSchemeDeepLink(targetURL) {
 
 function initializeRuntimeBanner() {
   // This will provide the dismiss functionality for the Runtime Banner
-  const bannerDismiss = document.querySelectorAll(
-    '.runtime-banner__dismiss',
-  )[0];
+  const bannerDismiss = document.querySelector('.runtime-banner__dismiss');
   if (bannerDismiss) {
     bannerDismiss.addEventListener('click', handleDismissRuntimeBanner);
   }
