@@ -17,6 +17,12 @@ RSpec.describe Search::Postgres::Username, type: :service do
       )
     end
 
+    it "does not find a user given the wrong search term" do
+      create(:user, username: "joao", name: "joao")
+
+      expect(described_class.search_documents("foobar")).to be_empty
+    end
+
     it "finds a user by their username" do
       user = create(:user)
 
