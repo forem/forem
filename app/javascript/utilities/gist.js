@@ -45,13 +45,6 @@ export function embedGistsInComments() {
     ?.addEventListener('click', (_event) => {
       embedGists();
     });
-  document
-    .querySelector('.toggle-reply-form')
-    ?.addEventListener('click', (e) => {
-      if (e.target && e.target.matches('form.comment-form')) {
-        alert(e);
-      }
-    });
 
   // handle future submit of comment forms
   document.querySelector('body').addEventListener(
