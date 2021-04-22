@@ -54,6 +54,7 @@ Rails.application.routes.draw do
       resources :organization_memberships, only: %i[update destroy create]
       resources :permissions, only: %i[index]
       resources :reactions, only: [:update]
+      resources :consumer_apps, only: %i[index new create edit update destroy]
       namespace :settings do
         resources :authentications, only: [:create]
         resources :campaigns, only: [:create]

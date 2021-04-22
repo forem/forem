@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_15_063052) do
+ActiveRecord::Schema.define(version: 2021_04_20_135208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -396,6 +396,17 @@ ActiveRecord::Schema.define(version: 2021_04_15_063052) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
+  create_table "consumer_apps", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "app_bundle", null: false
+    t.string "auth_key"
+    t.datetime "created_at", precision: 6, null: false
+    t.string "last_error"
+    t.string "platform", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["app_bundle", "platform"], name: "index_consumer_apps_on_app_bundle_and_platform", unique: true
+  end
+
   create_table "credits", force: :cascade do |t|
     t.float "cost", default: 0.0
     t.datetime "created_at", null: false
@@ -433,13 +444,15 @@ ActiveRecord::Schema.define(version: 2021_04_15_063052) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.string "app_bundle", null: false
+    t.string "app_bundle"
+    t.bigint "consumer_app_id"
     t.datetime "created_at", precision: 6, null: false
     t.string "platform", null: false
     t.string "token", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id", "token", "platform", "app_bundle"], name: "index_devices_on_user_id_and_token_and_platform_and_app_bundle", unique: true
+    t.index ["consumer_app_id"], name: "index_devices_on_consumer_app_id"
+    t.index ["user_id", "token", "platform", "consumer_app_id"], name: "index_devices_on_user_id_and_token_and_platform_and_app", unique: true
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -1366,6 +1379,7 @@ ActiveRecord::Schema.define(version: 2021_04_15_063052) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
+    t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
     t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_users_on_username_as_tsvector", using: :gin
     t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
@@ -1495,6 +1509,7 @@ ActiveRecord::Schema.define(version: 2021_04_15_063052) do
   add_foreign_key "credits", "organizations", on_delete: :restrict
   add_foreign_key "credits", "users", on_delete: :cascade
   add_foreign_key "custom_profile_fields", "profiles", on_delete: :cascade
+  add_foreign_key "devices", "consumer_apps"
   add_foreign_key "devices", "users"
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
