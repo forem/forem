@@ -262,8 +262,6 @@ RSpec.describe "Search", type: :request, proper_status: true do
         get search_feed_content_path(class_name: "Article")
 
         expect(response.parsed_body["result"]).to be_present
-        expect(response.parsed_body["display_jobs_banner"]).to eq(SiteConfig.display_jobs_banner)
-        expect(response.parsed_body["jobs_url"]).to eq(SiteConfig.jobs_url)
       end
 
       it "parses published_at correctly", :aggregate_failures do

@@ -76,10 +76,6 @@ class SiteConfig < RailsSettings::Base
   # Email digest frequency
   field :periodic_email_digest, type: :integer, default: 2
 
-  # Jobs
-  field :jobs_url, type: :string
-  field :display_jobs_banner, type: :boolean, default: false
-
   # Google Analytics Tracking ID, e.g. UA-71991000-1
   field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
 
