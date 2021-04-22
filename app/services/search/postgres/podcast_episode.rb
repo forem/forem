@@ -36,7 +36,7 @@ module Search
         relation = ::PodcastEpisode.includes(:podcast).where(podcast: { published: true })
         relation = relation.search_podcast_episodes(term) if term.present?
         relation = relation.select(*ATTRIBUTES)
-        relation = relation.reorder(sort_by => search_direction) if sort_by && sort_direction
+        relation = relation.reorder(sort_by => sort_direction) if sort_by && sort_direction
 
         results = relation.page(page).per(per_page)
 
