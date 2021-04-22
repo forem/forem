@@ -54,9 +54,7 @@ describe('Runtime Banner Deep Linking', () => {
     cy.visit(`/r/mobile?deep_link=${deepLinkPath}`)
       .then(() => {
         // The loading spinner appears with the following text
-        cy.get('p')
-          .contains('Attempting to open the mobile app...')
-          .should('be.visible');
+        cy.get('p').contains('Opening the mobile app...').should('be.visible');
       })
       .then(() => {
         // After 3 seconds the following options appear visible
@@ -68,9 +66,7 @@ describe('Runtime Banner Deep Linking', () => {
         cy.get('a').contains('Install the app').should('be.visible');
 
         // Also the loading text should not exist anymore
-        cy.get('p')
-          .contains('Attempting to open the mobile app...')
-          .should('not.exist');
+        cy.get('p').contains('Opening the mobile app...').should('not.exist');
       });
   });
 });
