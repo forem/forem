@@ -11,7 +11,7 @@
     </a>
     <div class="float-right">
       ✉️ Emails Sent: <%= feedback_message_emails.size %> |
-      <a href="/admin/reports/<%= feedback_message.id %>">Link to Report #<%= feedback_message.id %></a>
+      <%= link_to "Link to Report #{feedback_message.id}", admin_report_path(feedback_message.id) %>
     </div>
   </div>
   <div id="collapse<%= feedback_message.id %>" class="collapse show" aria-labelledby="header<%= feedback_message.id %>" data-parent="#accordion-<%= feedback_message.id %>">

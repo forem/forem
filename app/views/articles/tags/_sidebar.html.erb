@@ -69,7 +69,7 @@
                id="tag-admin-button"
                data-tag="<%= @tag_model.name %>"
                class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
-               href="/admin/tags/<%= @tag_model.id %>/edit"
+               href="<%= edit_admin_tag_path(@tag_model.id) %>"
                style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>"
                data-no-instant>
               Admin
