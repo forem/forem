@@ -131,9 +131,9 @@ module Broadcasts
       end
 
       def find_auth_broadcast
-        missing_identities = Authentication::Providers.enabled.map do |provider|
+        missing_identities = Authentication::Providers.enabled.filter_map do |provider|
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
-        end.compact
+        end
 
         Broadcast.active.find_by!(title: "Welcome Notification: #{missing_identities.first}")
       end
