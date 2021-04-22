@@ -59,7 +59,7 @@ describe('Runtime Banner Deep Linking', () => {
       .then(() => {
         // After 3 seconds the following options appear visible
         cy.get('p')
-          .contains('Whoops! Are you stuck here unable to open the mobile app?')
+          .contains('Whoops! Did you get stuck trying to open the mobile app?')
           .should('be.visible');
         cy.get('a').contains('Take me back').should('be.visible');
         cy.get('a').contains('Try again').should('be.visible');
