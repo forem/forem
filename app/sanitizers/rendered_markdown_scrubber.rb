@@ -29,17 +29,18 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
       end
 
       scrub_css_attribute(node)
-    elsif valid_alt_attr?(node)
-      raise ArgumentError, "Invalid markdown detected!"
     else
+      scrub_valid_attributes(node)
       super
     end
   end
 
   private
 
-  def valid_alt_attr?(node)
-    node.attributes["alt"]&.value&.scan(/\{%|%\}/)&.any?
+  def scrub_valid_attributes(node)
+    node.attributes.each_value do |attribute|
+      attribute.value = attribute.value.gsub(/\{%|%\}/, "")
+    end
   end
 
   def inside_codeblock?(node)
