@@ -18,16 +18,17 @@
   <meta name="twitter:image:src" content="<%= @page.social_image_url || SiteConfig.main_social_image %>">
 <% end %>
 
-<% if @page.template == "contained" %>
+<main id="main-content">
+  <% if @page.template == "contained" %>
+    <div class="crayons-layout crayons-layout--limited-l">
+      <div class="crayons-card text-styles text-padding">
+        <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= @page.title %></h1>
 
-  <div class="crayons-layout crayons-layout--limited-l">
-    <div class="crayons-card text-styles text-padding">
-      <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= @page.title %></h1>
-
-      <%= @page.processed_html.html_safe %>
+        <%= @page.processed_html.html_safe %>
+      </div>
     </div>
-  </div>
-<% else %>
-  <%= @page.processed_html.html_safe %>
-<% end %>
+  <% else %>
+    <%= @page.processed_html.html_safe %>
+  <% end %>
+</main>
 <div id="IS_CENTERED_PAGE"></div>
