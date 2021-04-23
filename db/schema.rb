@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_23_162805) do
+ActiveRecord::Schema.define(version: 2021_04_23_162847) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -393,6 +393,8 @@ ActiveRecord::Schema.define(version: 2021_04_23_162805) do
     t.index ["ancestry"], name: "index_comments_on_ancestry_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
+    t.index ["deleted"], name: "index_comments_on_deleted", where: "(deleted = false)"
+    t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
     t.index ["score"], name: "index_comments_on_score"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
