@@ -33,7 +33,7 @@ RSpec.describe CodepenTag, type: :liquid_tag do
 
       expect(liquid.render).to include("<iframe")
         .and include(
-          'src="https://codepen.io/quezo/pen/e10ca45c611b2cf3c98a1011dpdc1471?height=600&default-tab=result&embed-version=2"',
+          'src="https://codepen.io/quezo/embed/e10ca45c611b2cf3c98a1011dpdc1471?height=600&default-tab=result&embed-version=2"',
         )
     end
 
