@@ -1,4 +1,5 @@
 class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
+  LIQUID_TAG_SYNTAX_REGEX = /\{%|%\}/.freeze
   def initialize
     super
 
@@ -39,7 +40,7 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
 
   def scrub_valid_attributes(node)
     node.attributes.each_value do |attribute|
-      attribute.value = attribute.value.gsub(/\{%|%\}/, "")
+      attribute.value = attribute.value.gsub(LIQUID_TAG_SYNTAX_REGEX, "")
     end
   end
 
