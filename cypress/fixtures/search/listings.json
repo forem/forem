@@ -13,6 +13,24 @@
       "user_id": 1,
       "processed_html": "listing content",
       "slug": "listing-title"
+    },
+    {
+      "id": 2,
+      "title": "Another listing",
+      "body_markdown": "Some other listing content",
+      "category": "jobs",
+      "contact_via_connect": true,
+      "expires_at": "2051-05-14T00:00:00.000Z",
+      "bumped_at": "2021-01-14T00:00:00.000Z",
+      "originally_published_at": "2020-04-14T11:41:16.790Z",
+      "published": true,
+      "user_id": 1,
+      "author": {
+        "name": "Some User",
+        "username": "admin_mcadmin"
+      },
+      "processed_html": "other listing content",
+      "slug": "another-listing"
     }
   ]
 }
