@@ -4,8 +4,8 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
 
     self.tags = %w[
       a abbr add b blockquote br button center code col colgroup dd del dl dt em figcaption
-      h1 h2 h3 h4 h5 h6 hr i img kbd li mark ol p pre q rp rt ruby small source span strong sub sup table
-      tbody td tfoot th thead time tr u ul video
+      h1 h2 h3 h4 h5 h6 hr img kbd li mark ol p pre q rp rt ruby small source span strong sub sup table
+      tbody td tfoot th thead time tr ul video
     ]
 
     self.attributes = %w[
