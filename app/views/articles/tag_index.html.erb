@@ -43,7 +43,7 @@
       data-requires-approval="<%= @tag_model.requires_approval %>"
       data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
     <%= render "articles/tags/sidebar" %>
-    <div class="articles-list" id="articles-list">
+    <main class="articles-list" id="main-content">
       <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden" id="on-page-nav-butt-left" aria-label="nav-button-left">
           <div class="crayons-icon nav-icon ">
@@ -96,7 +96,7 @@
       <div class="loading-articles" id="loading-articles">
         loading...
       </div>
-    </div>
+    </main>
     <%= render "articles/tags/sidebar_additional" %>
   </div>
 
