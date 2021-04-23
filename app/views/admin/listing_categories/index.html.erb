@@ -1,5 +1,5 @@
 <nav class="flex mb-4" aria-label="Listing Category navigation">
-  <%= form_tag("/admin/listings/categories", method: "get") do %>
+  <%= form_tag(admin_listing_categories_path, method: "get") do %>
     <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "top-bar--search-input crayons-textfield", placeholder: "Search by name") %>
   <% end %>
   <div class="ml-auto">

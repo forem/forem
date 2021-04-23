@@ -4,38 +4,6 @@ module Constants
     SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
     DETAILS = {
-      campaign_articles_require_approval: {
-        description: "",
-        placeholder: "Campaign stories show up on sidebar with approval?"
-      },
-      campaign_call_to_action: {
-        description: "This text populates the call to action button on the campaign sidebar",
-        placeholder: "Share your project"
-      },
-      campaign_featured_tags: {
-        description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
-        placeholder: "List of campaign tags: comma separated, letters only e.g. tagone,tagtwo"
-      },
-      campaign_hero_html_variant_name: {
-        description: "Hero HtmlVariant name",
-        placeholder: ""
-      },
-      campaign_sidebar_enabled: {
-        description: "",
-        placeholder: "Campaign sidebar enabled or not"
-      },
-      campaign_sidebar_image: {
-        description: IMAGE_PLACEHOLDER,
-        placeholder: "Used at the top of the campaign sidebar"
-      },
-      campaign_url: {
-        description: "https://url.com/lander",
-        placeholder: "URL campaign sidebar image will link to"
-      },
-      campaign_articles_expiry_time: {
-        description: "Sets the expiry time for articles (in weeks) to be displayed in campaign sidebar",
-        placeholder: ""
-      },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s
@@ -204,10 +172,6 @@ module Constants
         description: "A place for an alternate logo, if you have one. Used throughout member onboarding and in some sign in forms.",
         placeholder: IMAGE_PLACEHOLDER
       },
-      spam_trigger_terms: {
-        description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
-        placeholder: "used cars near you, pokemon go hack"
-      },
       shop_url: {
         description: "Used as the shop url of the community",
         placeholder: "https://shop.url"
@@ -260,10 +224,6 @@ module Constants
       twitter_hashtag: {
         description: "Used as the twitter hashtag of the community",
         placeholder: "#DEVCommunity"
-      },
-      user_considered_new_days: {
-        description: "The number of days a user is considered new. The default is 3 days, but you can disable this entirely by inputting 0.",
-        placeholder: ::SiteConfig.user_considered_new_days
       },
       video_encoder_key: {
         description: "Secret key used to allow AWS video encoding through the VideoStatesController",

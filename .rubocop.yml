@@ -690,14 +690,18 @@ Performance/IoReadlines:
   Reference: 'https://docs.gitlab.com/ee/development/performance.html#reading-from-files-and-other-data-sources'
   Enabled: true
 
-Performance/RedundantEqualityComparisonBlock:
-  Description: >-
-                  Checks for uses `Enumerable#all?`, `Enumerable#any?`, `Enumerable#one?`,
-                  or `Enumerable#none?` are compared with `===` or similar methods in block.
+Performance/MapCompact:
+  Description: 'Use `filter_map` instead of `collection.map(&:do_something).compact`.'
   Enabled: true
 
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
+  Enabled: true
+
+Performance/RedundantEqualityComparisonBlock:
+  Description: >-
+                  Checks for uses `Enumerable#all?`, `Enumerable#any?`, `Enumerable#one?`,
+                  or `Enumerable#none?` are compared with `===` or similar methods in block.
   Enabled: true
 
 Performance/RedundantSortBlock:
@@ -714,6 +718,10 @@ Performance/RedundantStringChars:
 
 Performance/ReverseFirst:
   Description: 'Use `last(n).reverse` instead of `reverse.first(n)`.'
+  Enabled: true
+
+Performance/SelectMap:
+  Description: 'Use `filter_map` instead of `ary.select(&:foo).map(&:bar)`.'
   Enabled: true
 
 Performance/SortReverse:

@@ -67,12 +67,12 @@ module Search
     def parse_and_order_articles(articles)
       # Combines reaction and article data to create hashes that contain the fields
       # the reading list view needs. Ensures articles are returned in order of reaction ID
-      reading_list_article_ids.map do |article_id, reaction_id|
+      reading_list_article_ids.filter_map do |article_id, reaction_id|
         found_article_doc = articles[article_id]
         next unless found_article_doc
 
         { "id" => reaction_id, "user_id" => user.id, "reactable" => articles[article_id] }
-      end.compact
+      end
     end
   end
 end

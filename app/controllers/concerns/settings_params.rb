@@ -1,3 +1,4 @@
+# Helper method for controllers interacting with SiteConfig
 module SettingsParams
   SPECIAL_PARAMS_TO_ADD = %w[
     credit_prices_in_cents
