@@ -23,13 +23,6 @@ module Search
       ].freeze
       private_constant :USER_ATTRIBUTES
 
-      ARTICLE_COMMENTABLE_QUERY = <<-SQL.freeze
-        LEFT JOIN articles
-          ON comments.commentable_id = articles.id
-          AND comments.commentable_type = 'Article'
-      SQL
-      private_constant :ARTICLE_COMMENTABLE_QUERY
-
       DEFAULT_PER_PAGE = 60
       private_constant :DEFAULT_PER_PAGE
 
@@ -41,19 +34,6 @@ module Search
 
       MAX_PER_PAGE = 120 # to avoid querying too many items, we set a maximum amount for a page
       private_constant :MAX_PER_PAGE
-
-      # We filter comments for those that are:
-      # 1. On Articles
-      # 2. Not deleted
-      # 3. Not hidden by commentable user (i.e. an Article author didn't hide the comment)
-      # 4. Are attached to published articles
-      QUERY_FILTER = <<-SQL.freeze
-        comments.commentable_type = 'Article' AND
-        comments.deleted = false AND
-        comments.hidden_by_commentable_user = false AND
-        articles.published = true
-      SQL
-      private_constant :QUERY_FILTER
 
       def self.search_documents(
         page: 0,
@@ -74,7 +54,14 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-        relation = ::Comment.joins(ARTICLE_COMMENTABLE_QUERY).where(QUERY_FILTER)
+        relation = ::Comment
+          .where(
+            deleted: false,
+            hidden_by_commentable_user: false,
+            commentable_type: "Article",
+          )
+          .joins("join articles on articles.id = comments.commentable_id")
+          .where("articles.published": true)
 
         relation = relation.search_comments(term).with_pg_search_highlight if term.present?
 
@@ -92,7 +79,7 @@ module Search
         # (see https://github.com/forem/forem/pull/4744#discussion_r345698674
         # and https://github.com/rails/rails/issues/15185#issuecomment-351868335
         # for additional context)
-        user_ids = results.pluck(:user_id)
+        user_ids = results.pluck("comments.user_id")
         users = find_users(user_ids)
 
         serialize(results, users)
