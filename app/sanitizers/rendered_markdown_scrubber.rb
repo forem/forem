@@ -40,7 +40,7 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
 
   def scrub_valid_attributes(node)
     node.attributes.each_value do |attribute|
-      attribute.value = attribute.value.gsub(LIQUID_TAG_SYNTAX_REGEX, "")
+      attribute.value = attribute.value.remove(LIQUID_TAG_SYNTAX_REGEX)
     end
   end
 
