@@ -2,9 +2,9 @@ require "rails_helper"
 
 RSpec.describe CodepenTag, type: :liquid_tag do
   describe "#link" do
-    let(:codepen_private_link) { "https://codepen.io/quezo/pen/e10ca45c611b2cf3c98a1011dpdc1471" }
+    let(:codepen_private_link) { "https://codepen.io/quezo/pen/e10ca45c611b9cf3c98a1011dedc1471" }
     let(:codepen_link) { "https://codepen.io/twhite96/pen/XKqrJX" }
-    let(:codepen_team_private_link) { "https://codepen.io/team/codepen/pen/fb02c34281cb08966ec44b4e1ae22bi7" }
+    let(:codepen_team_private_link) { "https://codepen.io/team/codepen/pen/fb02c34281cb08966ec44b4e1ae22bc3" }
     let(:codepen_team_link) { "https://codepen.io/team/keyframers/pen/ZMRMEw" }
     let(:codepen_link_with_default_tab) { "https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result" }
 
@@ -33,7 +33,7 @@ RSpec.describe CodepenTag, type: :liquid_tag do
 
       expect(liquid.render).to include("<iframe")
         .and include(
-          'src="https://codepen.io/quezo/embed/e10ca45c611b2cf3c98a1011dpdc1471?height=600&default-tab=result&embed-version=2"',
+          'src="https://codepen.io/quezo/embed/e10ca45c611b9cf3c98a1011dedc1471?height=600&default-tab=result&embed-version=2"',
         )
     end
 
