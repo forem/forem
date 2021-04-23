@@ -43,8 +43,8 @@
                   </p>
 
                   <%= fields(follow) do |f| %>
-                    <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form") %>
-                    <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form") %>
+                    <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form", id: "follow_id_#{follow.followable}") %>
+                    <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form", "aria-label": "#{follow.followable} tag weight", id: "explicit_points_#{follow.followable}") %>
                   <% end %>
                 </div>
               <% end %>
