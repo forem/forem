@@ -1,96 +1,98 @@
 <% title "Settings" %>
 
-<% if flash[:settings_notice] %>
-  <div class="crayons-banner" aria-live="polite">
-    <%= flash[:settings_notice] %>
-  </div>
-<% end %>
-
-<% if flash[:error].present? %>
-  <div class="crayons-banner crayons-banner--error" role="alert">
-    <%= flash[:error] %>
-  </div>
-<% end %>
-
-<% if params[:state] == "previous-registration" %>
-  <div class="crayons-banner crayons-banner--error" role="alert">
-    There is an existing account authorized with that social account. Contact
-    <%= email_link %> if this is a mistake.
-  </div>
-<% end %>
-
-<header class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4">
-  <% if @tab == "organization" && @organizations.present? %>
-    <h1 class="crayons-title">Settings for
-      <select class="crayons-select lh-tight w-25 align-text-top w-max" onchange="window.location.href=this.value">
-        <% options = @organizations.pluck(:slug, :id).each do |arr| %>
-          <% arr[0] = "@#{arr[0]}" %>
-          <% arr[1] = "/settings/organization/#{arr[1]}" %>
-        <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
-        <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
-        <%# For example: %>
-        <%# <option value="/settings/organization/1>@devteam</option> %>
-        <%# <option value="/settings/organization/new" selected>New Organization</option> %>
-      </select>
-    </h1>
-  <% else %>
-    <h1 class="crayons-title">
-      Settings for <a href="<%= user_url(@user) || "#" %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
-    </h1>
-  <% end %>
-</header>
-
-<main class="crayons-layout crayons-layout--2-cols crayons-layout--limited-l pt-0">
-  <div class="crayons-layout__left-sidebar">
-    <nav class="hidden m:block">
-      <% Constants::Settings::TAB_LIST.each do |possible_tab| %>
-        <a class="crayons-link crayons-link--block <% if @tab == possible_tab.downcase.tr(' ', '-') %>crayons-link--current<% end %>" href="/settings/<%= possible_tab.downcase.tr(" ", "-") %>">
-          <%= inline_svg_tag("twemoji/#{possible_tab.downcase.tr(' ', '-')}", aria: true, class: "crayons-icon crayons-icon--default", title: possible_tab) %>
-          <%= possible_tab %>
-        </a>
-      <% end %>
-    </nav>
-    <div class="m:hidden p-2 pt-0">
-      <select id="mobile-page-selector" class="crayons-select">
-        <% Constants::Settings::TAB_LIST.each do |possible_tab| %>
-          <option value="/settings/<%= possible_tab.downcase.tr(" ", "-") %>" <% if @tab == possible_tab.downcase.tr(' ', '-') %> selected <% end %>>
-            <%= possible_tab %>
-          </option>
-        <% end %>
-      </select>
+<main id="main-content">
+  <% if flash[:settings_notice] %>
+    <div class="crayons-banner" aria-live="polite">
+      <%= flash[:settings_notice] %>
     </div>
+  <% end %>
+
+  <% if flash[:error].present? %>
+    <div class="crayons-banner crayons-banner--error" role="alert">
+      <%= flash[:error] %>
+    </div>
+  <% end %>
+
+  <% if params[:state] == "previous-registration" %>
+    <div class="crayons-banner crayons-banner--error" role="alert">
+      There is an existing account authorized with that social account. Contact
+      <%= email_link %> if this is a mistake.
+    </div>
+  <% end %>
+
+  <div class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4">
+    <% if @tab == "organization" && @organizations.present? %>
+      <h1 class="crayons-title">Settings for
+        <select class="crayons-select lh-tight w-25 align-text-top w-max" onchange="window.location.href=this.value">
+          <% options = @organizations.pluck(:slug, :id).each do |arr| %>
+            <% arr[0] = "@#{arr[0]}" %>
+            <% arr[1] = "/settings/organization/#{arr[1]}" %>
+          <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
+          <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
+          <%# For example: %>
+          <%# <option value="/settings/organization/1>@devteam</option> %>
+          <%# <option value="/settings/organization/new" selected>New Organization</option> %>
+        </select>
+      </h1>
+    <% else %>
+      <h1 class="crayons-title">
+        Settings for <a href="<%= user_url(@user) || "#" %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
+      </h1>
+    <% end %>
   </div>
 
-  <div class="crayons-layout__content">
-    <% if current_user.email.blank? %>
-      <div class="crayons-notice crayons-notice--warning mb-6" aria-live="polite">
-        <h3 class="mb-2">Confirm your email to complete your profile.</h3>
-        <p>
-          While you're at it, go ahead and fill everything out.
-          <% if @user.twitter_username.blank? %>
-            Connect your twitter account as well to complete your identity.
-          <% elsif @user.github_username.blank? %>
-            Connect your github account as well to complete your identity.
+  <div class="crayons-layout crayons-layout--2-cols crayons-layout--limited-l pt-0">
+    <div class="crayons-layout__left-sidebar">
+      <nav class="hidden m:block">
+        <% Constants::Settings::TAB_LIST.each do |possible_tab| %>
+          <a class="crayons-link crayons-link--block <% if @tab == possible_tab.downcase.tr(' ', '-') %>crayons-link--current<% end %>" href="/settings/<%= possible_tab.downcase.tr(" ", "-") %>">
+            <%= inline_svg_tag("twemoji/#{possible_tab.downcase.tr(' ', '-')}", aria: true, class: "crayons-icon crayons-icon--default", title: possible_tab) %>
+            <%= possible_tab %>
+          </a>
+        <% end %>
+      </nav>
+      <div class="m:hidden p-2 pt-0">
+        <select id="mobile-page-selector" class="crayons-select">
+          <% Constants::Settings::TAB_LIST.each do |possible_tab| %>
+            <option value="/settings/<%= possible_tab.downcase.tr(" ", "-") %>" <% if @tab == possible_tab.downcase.tr(' ', '-') %> selected <% end %>>
+              <%= possible_tab %>
+            </option>
           <% end %>
-        </p>
+        </select>
       </div>
-    <% end %>
+    </div>
 
-    <% if @user.unconfirmed_email.present? %>
-      <div class="crayons-notice crayons-notice--warning mb-6" role="alert">
-        <h3 class="mb-2">Email verification.</h3>
-        <p>You have requested a change to <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a>. Check your inbox for the verification link to finalize the change.</p>
-      </div>
-    <% end %>
+    <div class="crayons-layout__content">
+      <% if current_user.email.blank? %>
+        <div class="crayons-notice crayons-notice--warning mb-6" aria-live="polite">
+          <h3 class="mb-2">Confirm your email to complete your profile.</h3>
+          <p>
+            While you're at it, go ahead and fill everything out.
+            <% if @user.twitter_username.blank? %>
+              Connect your twitter account as well to complete your identity.
+            <% elsif @user.github_username.blank? %>
+              Connect your github account as well to complete your identity.
+            <% end %>
+          </p>
+        </div>
+      <% end %>
 
-    <% if @user.errors.any? %>
-      <%= render partial: "users/errors", locals: { errors: @user.errors, title_suffix: "prohibited your profile from being saved" } %>
-    <% end %>
+      <% if @user.unconfirmed_email.present? %>
+        <div class="crayons-notice crayons-notice--warning mb-6" role="alert">
+          <h3 class="mb-2">Email verification.</h3>
+          <p>You have requested a change to <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a>. Check your inbox for the verification link to finalize the change.</p>
+        </div>
+      <% end %>
 
-    <% if @organization&.errors&.any? %>
-      <%= render partial: "users/errors", locals: { errors: @organization.errors, title_suffix: "prohibited your organization profile from being saved" } %>
-    <% end %>
+      <% if @user.errors.any? %>
+        <%= render partial: "users/errors", locals: { errors: @user.errors, title_suffix: "prohibited your profile from being saved" } %>
+      <% end %>
 
-    <%= render "users/#{@tab.tr('-', '_')}", tab: @tab %>
+      <% if @organization&.errors&.any? %>
+        <%= render partial: "users/errors", locals: { errors: @organization.errors, title_suffix: "prohibited your organization profile from being saved" } %>
+      <% end %>
+
+      <%= render "users/#{@tab.tr('-', '_')}", tab: @tab %>
+    </div>
   </div>
 </main>
