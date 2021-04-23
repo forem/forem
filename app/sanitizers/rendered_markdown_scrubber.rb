@@ -10,7 +10,7 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
 
     self.attributes = %w[
       alt colspan data-conversation data-lang data-no-instant data-url href id loop
-      name ref rel rowspan span src start title type value width controls
+      name ref rel rowspan span src start title type value controls
     ]
   end
 
