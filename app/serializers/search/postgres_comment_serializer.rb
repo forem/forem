@@ -41,7 +41,13 @@ module Search
     # NOTE: not using the `NestedUserSerializer` to avoid hitting Redis to
     # fetch the cached value
     attribute :user do |comment|
-      comment.user.slice(:name, :profile_image_90, :username).symbolize_keys
+      user = comment.user
+
+      if user
+        user.slice(:name, :profile_image_90, :username).symbolize_keys
+      else
+        {}
+      end
     end
   end
 end
