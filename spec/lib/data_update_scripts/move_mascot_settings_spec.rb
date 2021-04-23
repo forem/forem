@@ -19,8 +19,8 @@ describe DataUpdateScripts::MoveMascotSettings do
       .and change(Settings::Mascot, :footer_image_url)
   end
 
-  it "moves the non-renamed setting" do
-    allow(Settings::Mascot).to receive(:mascot_user_id).and_return(42)
+  it "moves the non-renamed./spec/lib/data_update_scripts/move_mascot_settings_spec.rb setting" do
+    allow(SiteConfig).to receive(:mascot_user_id).and_return(42)
     expect do
       described_class.new.run
     end.to change(Settings::Mascot, :mascot_user_id).to(42)
