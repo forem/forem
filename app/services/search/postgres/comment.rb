@@ -92,7 +92,7 @@ module Search
         # (see https://github.com/forem/forem/pull/4744#discussion_r345698674
         # and https://github.com/rails/rails/issues/15185#issuecomment-351868335
         # for additional context)
-        user_ids = results.pluck(:user_id)
+        user_ids = results.pluck("comments.user_id")
         users = find_users(user_ids)
 
         serialize(results, users)
