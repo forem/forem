@@ -266,19 +266,25 @@ class User < ApplicationRecord
   # used in expression indexes as it's a mutable function and depends on server settings
   # => https://stackoverflow.com/a/11007216/4186181
   #
-  # rubocop:disable Layout/LineLength
   scope :search_by_name_and_username, lambda { |term|
     where(
-      %{to_tsvector('simple', coalesce(name::text, '')) @@ to_tsquery('simple', ''' ' || unaccent('simple', ?) || ' ''' || ':*')},
-      term,
+      sanitize_sql_array(
+        [
+          "to_tsvector('simple', coalesce(name::text, '')) @@ to_tsquery('simple', ? || ':*')",
+          connection.quote(term),
+        ],
+      ),
     ).or(
       where(
-        %{to_tsvector('simple', coalesce(username::text, '')) @@ to_tsquery('simple', ''' ' || unaccent('simple', ?) || ' ''' || ':*')},
-        term,
+        sanitize_sql_array(
+          [
+            "to_tsvector('simple', coalesce(username::text, '')) @@ to_tsquery('simple', ? || ':*')",
+            connection.quote(term),
+          ],
+        ),
       ),
     )
   }
-  # rubocop:enable Layout/LineLength
   scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
