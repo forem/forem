@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_20_135208) do
+ActiveRecord::Schema.define(version: 2021_04_23_162847) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -388,12 +388,26 @@ ActiveRecord::Schema.define(version: 2021_04_20_135208) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
+    t.index "to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text))", name: "index_comments_on_body_markdown_as_tsvector", using: :gin
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["ancestry"], name: "index_comments_on_ancestry_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
+    t.index ["deleted"], name: "index_comments_on_deleted", where: "(deleted = false)"
+    t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
     t.index ["score"], name: "index_comments_on_score"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "consumer_apps", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "app_bundle", null: false
+    t.string "auth_key"
+    t.datetime "created_at", precision: 6, null: false
+    t.string "last_error"
+    t.string "platform", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["app_bundle", "platform"], name: "index_consumer_apps_on_app_bundle_and_platform", unique: true
   end
 
   create_table "credits", force: :cascade do |t|
@@ -433,13 +447,15 @@ ActiveRecord::Schema.define(version: 2021_04_20_135208) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.string "app_bundle", null: false
+    t.string "app_bundle"
+    t.bigint "consumer_app_id"
     t.datetime "created_at", precision: 6, null: false
     t.string "platform", null: false
     t.string "token", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id", "token", "platform", "app_bundle"], name: "index_devices_on_user_id_and_token_and_platform_and_app_bundle", unique: true
+    t.index ["consumer_app_id"], name: "index_devices_on_consumer_app_id"
+    t.index ["user_id", "token", "platform", "consumer_app_id"], name: "index_devices_on_user_id_and_token_and_platform_and_app", unique: true
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -1488,6 +1504,7 @@ ActiveRecord::Schema.define(version: 2021_04_20_135208) do
   add_foreign_key "credits", "organizations", on_delete: :restrict
   add_foreign_key "credits", "users", on_delete: :cascade
   add_foreign_key "custom_profile_fields", "profiles", on_delete: :cascade
+  add_foreign_key "devices", "consumer_apps"
   add_foreign_key "devices", "users"
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade

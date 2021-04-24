@@ -44,14 +44,15 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
 
     it "updates two tag point values" do
       last_divs = page.all('div[id^="follows"]').last(2)
-      within(last_divs[0]) { fill_in "follow_explicit_points", with: 5.0 }
-      within(last_divs[1]) { fill_in "follow_explicit_points", with: 10.0 }
+
+      within(last_divs[0]) { fill_in with: 5.0, class: "crayons-textfield" }
+      within(last_divs[1]) { fill_in with: 10.0, class: "crayons-textfield" }
 
       click_button "commit"
 
       first_divs = page.all('div[id^="follows"]').first(2)
-      within(first_divs[0]) { expect(page).to have_field("follow_explicit_points", with: 10.0) }
-      within(first_divs[1]) { expect(page).to have_field("follow_explicit_points", with: 5.0) }
+      within(first_divs[0]) { expect(page).to have_field(with: 10.0, class: "crayons-textfield") }
+      within(first_divs[1]) { expect(page).to have_field(with: 5.0, class: "crayons-textfield") }
     end
   end
 

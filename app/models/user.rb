@@ -5,11 +5,6 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
-  include PgSearch::Model
-  pg_search_scope :search_by_name_and_username,
-                  against: %i[name username],
-                  using: { tsearch: { prefix: true } }
-
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
     available_for
@@ -257,6 +252,33 @@ class User < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
+  # Unfortunately pg_search's default SQL query is not performant enough in this
+  # particular case (~ 500ms). There are multiple reasons:
+  # => creates a complex query like `SELECT FROM users INNER JOIN users` to compute ranking.
+  #    See https://github.com/Casecommons/pg_search/issues/292#issuecomment-202604151
+  # => it concatenates the content of `name` and the content of `username` to match
+  #    against the search term. By doing that, it can't use `tsvector` indexes correctly
+  #
+  # For these reasons we need to build a query manually using an `OR` condition,
+  # thus allowing the database to use the indexes properly. With this the SQL time is ~ 8-10ms.
+  #
+  # NOTE: we can't use unaccent() on the `tsvector` document because `unaccent()` can't be
+  # used in expression indexes as it's a mutable function and depends on server settings
+  # => https://stackoverflow.com/a/11007216/4186181
+  #
+  # rubocop:disable Layout/LineLength
+  scope :search_by_name_and_username, lambda { |term|
+    where(
+      %{to_tsvector('simple', coalesce(name::text, '')) @@ to_tsquery('simple', ''' ' || unaccent('simple', ?) || ' ''' || ':*')},
+      term,
+    ).or(
+      where(
+        %{to_tsvector('simple', coalesce(username::text, '')) @@ to_tsquery('simple', ''' ' || unaccent('simple', ?) || ' ''' || ':*')},
+        term,
+      ),
+    )
+  }
+  # rubocop:enable Layout/LineLength
   scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change

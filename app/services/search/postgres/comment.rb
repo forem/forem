@@ -15,21 +15,6 @@ module Search
       ].freeze
       private_constant :ATTRIBUTES
 
-      USER_ATTRIBUTES = %i[
-        id
-        name
-        profile_image
-        username
-      ].freeze
-      private_constant :USER_ATTRIBUTES
-
-      ARTICLE_COMMENTABLE_QUERY = <<-SQL.freeze
-        LEFT JOIN articles
-          ON comments.commentable_id = articles.id
-          AND comments.commentable_type = 'Article'
-      SQL
-      private_constant :ARTICLE_COMMENTABLE_QUERY
-
       DEFAULT_PER_PAGE = 60
       private_constant :DEFAULT_PER_PAGE
 
@@ -41,19 +26,6 @@ module Search
 
       MAX_PER_PAGE = 120 # to avoid querying too many items, we set a maximum amount for a page
       private_constant :MAX_PER_PAGE
-
-      # We filter comments for those that are:
-      # 1. On Articles
-      # 2. Not deleted
-      # 3. Not hidden by commentable user (i.e. an Article author didn't hide the comment)
-      # 4. Are attached to published articles
-      QUERY_FILTER = <<-SQL.freeze
-        comments.commentable_type = 'Article' AND
-        comments.deleted = false AND
-        comments.hidden_by_commentable_user = false AND
-        articles.published = true
-      SQL
-      private_constant :QUERY_FILTER
 
       def self.search_documents(
         page: 0,
@@ -74,7 +46,15 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-        relation = ::Comment.joins(ARTICLE_COMMENTABLE_QUERY).where(QUERY_FILTER)
+        relation = ::Comment
+          .includes(:user)
+          .where(
+            deleted: false,
+            hidden_by_commentable_user: false,
+            commentable_type: "Article",
+          )
+          .joins("join articles on articles.id = comments.commentable_id")
+          .where("articles.published": true)
 
         relation = relation.search_comments(term).with_pg_search_highlight if term.present?
 
@@ -82,33 +62,12 @@ module Search
 
         results = relation.page(page).per(per_page)
 
-        # NOTE: [@rhymes/atsmith813] an earlier version used `.includes(:user)`
-        # to preload users, unfortunately it's not possible in Rails to specify
-        # which fields of the included relation's table to select ahead of time.
-        # The `users` table is massive (115 columns on March 2021) and thus we
-        # shouldn't load it all in memory just to select a few fields.
-        # For these reasons I decided to avoid preloading altogether and issue
-        # an additional SQL query to load User objects
-        # (see https://github.com/forem/forem/pull/4744#discussion_r345698674
-        # and https://github.com/rails/rails/issues/15185#issuecomment-351868335
-        # for additional context)
-        user_ids = results.pluck(:user_id)
-        users = find_users(user_ids)
-
-        serialize(results, users)
+        serialize(results)
       end
 
-      def self.find_users(user_ids)
-        ::User
-          .where(id: user_ids)
-          .select(*USER_ATTRIBUTES)
-          .index_by(&:id)
-      end
-      private_class_method :find_users
-
-      def self.serialize(results, users)
+      def self.serialize(results)
         Search::PostgresCommentSerializer
-          .new(results, params: { users: users }, is_collection: true)
+          .new(results, is_collection: true)
           .serializable_hash[:data]
           .pluck(:attributes)
       end

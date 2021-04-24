@@ -21,6 +21,9 @@ Rails.application.routes.draw do
     delete "/sign_out", to: "devise/sessions#destroy"
   end
 
+  get "/r/mobile", to: "deep_links#mobile"
+  get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do
@@ -54,6 +57,7 @@ Rails.application.routes.draw do
       resources :organization_memberships, only: %i[update destroy create]
       resources :permissions, only: %i[index]
       resources :reactions, only: [:update]
+      resources :consumer_apps, only: %i[index new create edit update destroy]
       namespace :settings do
         resources :authentications, only: [:create]
         resources :campaigns, only: [:create]

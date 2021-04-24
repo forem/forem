@@ -1,9 +1,11 @@
 <% title "Stats for Your Article" %>
 
-<div id="user-dashboard">
-  <h1 class="fs-4xl fw-medium align-center my-5">Stats for "<%= link_to @article.title, @article.current_state_path, id: "article", data: { "article-id" => @article.id, "organization-id" => @organization_id } %>"</h1>
+<main id="main-content">
+  <div id="user-dashboard">
+    <h1 class="fs-4xl fw-medium align-center my-5">Stats for "<%= link_to @article.title, @article.current_state_path, id: "article", data: { "article-id" => @article.id, "organization-id" => @organization_id } %>"</h1>
 
-  <%= render "shared/stats" %>
-</div>
+    <%= render "shared/stats" %>
+  </div>
+</main>
 
 <%= javascript_packs_with_chunks_tag "analyticsArticle", defer: true %>
