@@ -159,8 +159,17 @@ class SearchController < ApplicationController
           term: feed_params[:search_fields],
         )
       elsif class_name.User?
-        # No need to check for articles or podcast episodes if we know we only want users
-        user_search
+        if FeatureFlag.enabled?(:search_2_users)
+          Search::Postgres::User.search_documents(
+            term: feed_params[:search_fields],
+            page: feed_params[:page],
+            per_page: feed_params[:per_page],
+            sort_by: feed_params[:sort_by] == "published_at" ? :created_at : nil,
+            sort_direction: feed_params[:sort_direction],
+          )
+        else
+          user_search
+        end
       else # search page
         feed_content_search
       end
