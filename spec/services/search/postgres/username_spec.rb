@@ -47,6 +47,14 @@ RSpec.describe Search::Postgres::Username, type: :service do
       expect(described_class.search_documents(user.name.first(3))).to be_present
     end
 
+    it "finds a user if their name contains quotes", :aggregate_failures do
+      user = create(:user, name: "McNamara O'Hara")
+      expect(described_class.search_documents(user.name)).to be_present
+
+      user = create(:user, name: 'McNamara O"Hara')
+      expect(described_class.search_documents(user.name)).to be_present
+    end
+
     it "finds multiple users whose names have common parts", :aggregate_failures do
       alex = create(:user, username: "alex")
       alexsmith = create(:user, name: "alexsmith")

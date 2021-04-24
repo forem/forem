@@ -301,6 +301,31 @@ RSpec.describe "Search", type: :request, proper_status: true do
         expect(response.parsed_body["result"].first).to include("body_text" => comment.body_markdown)
       end
     end
+
+    context "when using PostgreSQL for users" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_users).and_return(true)
+      end
+
+      it "returns the correct keys", :aggregate_failures do
+        create(:user)
+
+        get search_feed_content_path(class_name: "User")
+
+        expect(response.parsed_body["result"]).to be_present
+      end
+
+      it "supports the search params" do
+        user = create(:user)
+
+        get search_feed_content_path(
+          class_name: "User", page: 0, per_page: 1, search_fields: user.name,
+          sort_by: :created_at, sort_direction: :desc
+        )
+
+        expect(response.parsed_body["result"].first["id"]).to eq(user.id)
+      end
+    end
   end
 
   describe "GET /search/reactions" do
