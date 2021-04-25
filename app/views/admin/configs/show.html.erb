@@ -669,39 +669,6 @@
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
-                         header: "Jobs",
-                         state: "collapse",
-                         target: "jobsBodyContainer",
-                         expanded: false
-                       } %>
-          <div id="jobsBodyContainer" class="card-body collapse hide" aria-labelledby="jobsBodyContainer">
-            <fieldset class="grid gap-4">
-              <div class="crayons-field">
-                <%= admin_config_label :jobs_url, "Jobs URL" %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:jobs_url][:description] %>
-                <%= f.text_field :jobs_url,
-                                 class: "crayons-textfield",
-                                 value: SiteConfig.jobs_url,
-                                 placeholder: Constants::SiteConfig::DETAILS[:jobs_url][:placeholder] %>
-              </div>
-              <div class="crayons-field crayons-field--checkbox">
-                <%= f.check_box :display_jobs_banner, checked: SiteConfig.display_jobs_banner, class: "crayons-checkbox" %>
-                <div class="mt-0">
-                  <%= admin_config_label :display_jobs_banner %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:display_jobs_banner][:description] %>
-                </div>
-              </div>
-
-              <%= render "form_submission", f: f %>
-            </fieldset>
-          </div>
-          </div>
-        <% end %>
-
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
-          <div class="card mt-3">
-            <%= render partial: "admin/shared/card_header",
-                       locals: {
                          header: "Google Analytics",
                          state: "collapse",
                          target: "gaBodyContainer",

@@ -174,11 +174,7 @@ class SearchController < ApplicationController
         feed_content_search
       end
 
-    render json: {
-      result: result,
-      display_jobs_banner: SiteConfig.display_jobs_banner,
-      jobs_url: SiteConfig.jobs_url
-    }
+    render json: { result: result }
   end
 
   def reactions

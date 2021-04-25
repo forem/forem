@@ -167,10 +167,6 @@
     })
       .then(response => response.json())
     .then((content) => {
-        if (searchHash["search_fields"] && content.jobs_url) {
-          addOptionalBanner(searchHash["search_fields"], content.display_jobs_banner, content.jobs_url);
-        }
-
         var resultDivs = []
         content.result.forEach(function (story, i) {
           resultDivs.push(buildArticleHTML(story));

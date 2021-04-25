@@ -45,11 +45,6 @@ module Constants
       default_font: {
         description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
       },
-      display_jobs_banner: {
-        description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
-        "or 'jobs' in the search box",
-        placeholder: ""
-      },
       email_addresses: {
         description: "Email address",
         placeholder: ""
@@ -90,10 +85,6 @@ module Constants
       home_feed_minimum_score: {
         description: "Minimum score needed for a post to show up on the unauthenticated home page.",
         placeholder: "0"
-      },
-      jobs_url: {
-        description: "URL of the website where open positions are posted",
-        placeholder: "Jobs URL"
       },
       logo_png: {
         description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",

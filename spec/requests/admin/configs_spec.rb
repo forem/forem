@@ -311,20 +311,6 @@ RSpec.describe "/admin/config", type: :request do
         end
       end
 
-      describe "Jobs" do
-        it "updates jobs_url" do
-          post "/admin/config", params: { site_config: { jobs_url: "www.jobs.com" },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.jobs_url).to eq("www.jobs.com")
-        end
-
-        it "updates display_jobs_banner" do
-          post "/admin/config", params: { site_config: { display_jobs_banner: true },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.display_jobs_banner).to eq(true)
-        end
-      end
-
       describe "Google Analytics Reporting API v4" do
         it "updates ga_tracking_id" do
           post "/admin/config", params: { site_config: { ga_tracking_id: "abc" }, confirmation: confirmation_message }
