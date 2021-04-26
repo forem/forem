@@ -51,7 +51,7 @@
         <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 10.0.to_d %>">10</button>
       </span>
       <p>Who is this post most relevant for?</p>
-      <p><span class="scale-pod">👈 <%= SiteConfig.experience_low %></span><span class="scale-pod"><%= SiteConfig.experience_high %> 👉</span></p>
+      <p><span class="scale-pod">👈 Beginner</span><span class="scale-pod">Expert 👉</span></p>
     <% end %>
   </div>
 </div>

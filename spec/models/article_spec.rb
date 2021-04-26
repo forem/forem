@@ -62,7 +62,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "includes staff-user-published articles" do
-        allow(SiteConfig).to receive(:staff_user_id).and_return(3)
+        allow(Settings::Community).to receive(:staff_user_id).and_return(3)
         user = create(:user, id: 3)
         create(:article, user: user, tags: "challenge")
         expect(described_class.admin_published_with("challenge").count).to eq(1)

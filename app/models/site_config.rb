@@ -48,6 +48,8 @@ class SiteConfig < RailsSettings::Base
   field :campaign_articles_require_approval, type: :boolean, default: 0
   field :campaign_articles_expiry_time, type: :integer, default: 4
   # Community Content
+  # NOTE: @citizen428 All these settings will be removed once we full migrated
+  # to Settings::Community across the fleet.
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
   field :community_emoji, type: :string, default: "🌱", validates: { emoji_only: true }
   # collective_noun and collective_noun_disabled have been added back temporarily for

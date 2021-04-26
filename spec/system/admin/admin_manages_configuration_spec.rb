@@ -8,7 +8,7 @@ RSpec.describe "Admin manages configuration", type: :system do
     visit admin_config_path
   end
 
-  VerifySetupCompleted::MANDATORY_CONFIGS.each do |option|
+  VerifySetupCompleted::MANDATORY_CONFIGS.each do |option, _setting_model|
     it "marks #{option} as required" do
       selector = "label[for='site_config_#{option}']"
       expect(first(selector).text).to include("Required")
@@ -22,13 +22,13 @@ RSpec.describe "Admin manages configuration", type: :system do
     end
 
     it "does show the banner on other pages" do
-      allow(SiteConfig).to receive(:tagline).and_return(nil)
+      allow(Settings::Community).to receive(:tagline).and_return(nil)
       visit root_path
       expect(page).to have_content("Setup not completed yet")
     end
 
     it "includes information about missing fields on the config pages" do
-      allow(SiteConfig).to receive(:tagline).and_return(nil)
+      allow(Settings::Community).to receive(:tagline).and_return(nil)
       allow(SiteConfig).to receive(:suggested_users).and_return(nil)
       allow(SiteConfig).to receive(:suggested_tags).and_return(nil)
       visit root_path

@@ -5,7 +5,7 @@ RSpec.describe Badges::AwardYearlyClub, type: :service do
     before do
       stub_const("#{described_class}::YEARS", described_class::YEARS.slice(1, 2, 3))
       allow(ApplicationConfig).to receive(:[])
-      allow(SiteConfig).to receive(:community_copyright_start_year).and_return(3.years.ago.year)
+      allow(Settings::Community).to receive(:copyright_start_year).and_return(3.years.ago.year)
       create(:badge, title: "one-year-club")
       create(:badge, title: "two-year-club")
       create(:badge, title: "three-year-club")

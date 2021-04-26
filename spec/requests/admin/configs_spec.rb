@@ -194,74 +194,78 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Community Content" do
         it "updates the community_description" do
-          allow(SiteConfig).to receive(:community_description).and_call_original
+          allow(Settings::Community).to receive(:community_description).and_call_original
           description = "Hey hey #{rand(100)}"
-          post "/admin/config", params: { site_config: { community_description: description },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.community_description).to eq(description)
+          post admin_settings_communities_path, params: {
+            settings_community: { community_description: description },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Community.community_description).to eq(description)
         end
 
         it "updates the community_emoji if valid" do
-          allow(SiteConfig).to receive(:community_emoji).and_call_original
+          allow(Settings::Community).to receive(:community_emoji).and_call_original
           emoji = "🥐"
-          post "/admin/config", params: { site_config: { community_emoji: emoji },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.community_emoji).to eq(emoji)
+          post admin_settings_communities_path, params: {
+            settings_community: { community_emoji: emoji },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Community.community_emoji).to eq(emoji)
         end
 
         it "does not update the community_emoji if invalid" do
-          allow(SiteConfig).to receive(:community_emoji).and_call_original
+          Settings::Community.community_emoji = "🥐"
           not_an_emoji = "i love croissants"
           expect do
-            post "/admin/config", params: { site_config: { community_emoji: not_an_emoji },
-                                            confirmation: confirmation_message }
-          end.not_to change(SiteConfig, :community_emoji)
+            post admin_settings_communities_path, params: {
+              settings_community: { community_emoji: not_an_emoji },
+              confirmation: confirmation_message
+            }
+          end.not_to change(Settings::Community, :community_emoji)
         end
 
         it "updates the community_name" do
           name_magoo = "Hey hey #{rand(100)}"
-          post "/admin/config", params: { site_config: { community_name: name_magoo },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.community_name).to eq(name_magoo)
+          post admin_settings_communities_path, params: {
+            settings_community: { community_name: name_magoo },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Community.community_name).to eq(name_magoo)
         end
 
         it "updates the community_member_label" do
           name = "developer"
-          post "/admin/config", params: { site_config: { community_member_label: name },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.community_member_label).to eq(name)
+          post admin_settings_communities_path, params: {
+            settings_community: { member_label: name },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Community.member_label).to eq(name)
         end
 
-        it "updates the community_copyright_start_year" do
+        it "updates the copyright_start_year" do
           year = "2018"
-          post "/admin/config", params: { site_config: { community_copyright_start_year: year },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.community_copyright_start_year).to eq(2018)
+          post admin_settings_communities_path, params: {
+            settings_community: { copyright_start_year: year },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Community.copyright_start_year).to eq(2018)
         end
 
         it "updates the tagline" do
           description = "Hey hey #{rand(100)}"
-          post "/admin/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
-          expect(SiteConfig.tagline).to eq(description)
+          post admin_settings_communities_path, params: {
+            settings_community: { tagline: description },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Community.tagline).to eq(description)
         end
 
         it "updates the staff_user_id" do
-          post "/admin/config", params: { site_config: { staff_user_id: 22 }, confirmation: confirmation_message }
-          expect(SiteConfig.staff_user_id).to eq(22)
-        end
-
-        it "updates the experience_low" do
-          experience_low = "Noobs"
-          post "/admin/config", params: { site_config: { experience_low: experience_low },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.experience_low).to eq(experience_low)
-        end
-
-        it "updates the experience_high" do
-          experience_high = "Advanced Peeps"
-          post "/admin/config", params: { site_config: { experience_high: experience_high },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.experience_high).to eq(experience_high)
+          post admin_settings_communities_path, params: {
+            settings_community: { staff_user_id: 22 },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Community.staff_user_id).to eq(22)
         end
       end
 

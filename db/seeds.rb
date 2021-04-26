@@ -333,7 +333,7 @@ seeder.create_if_none(Broadcast) do
     tags: welcome
     ---
 
-    Hey there! Welcome to #{SiteConfig.community_name}!
+    Hey there! Welcome to #{Settings::Community.community_name}!
 
     Leave a comment below to introduce yourself to the community!✌️
   HEREDOC

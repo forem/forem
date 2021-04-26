@@ -4,8 +4,8 @@
   <div class="dashboard-container analytics-container crayons-layout" id="user-dashboard">
     <div class="crayons-card p-3 mt-5">
       <h1 class="fs-4xl fw-medium">Analytics Dashboard for <%= @user_or_org.name %></h1>
-      <p>Welcome to the Analytics Dashboard, the home of in-depth user metrics so that authors can make data-driven decisions about the  <%= SiteConfig.community_member_label %> ecosystem.</p>
-      <p>This dashboard highlights deep insights especially relevant to  <%= SiteConfig.community_member_label %> relations, authors, and serious bloggers.</p>
+      <p>Welcome to the Analytics Dashboard, the home of in-depth user metrics so that authors can make data-driven decisions about the  <%= Settings::Community.member_label %> ecosystem.</p>
+      <p>This dashboard highlights deep insights especially relevant to  <%= Settings::Community.member_label %> relations, authors, and serious bloggers.</p>
     </div>
 
     <%= render "shared/stats" %>
