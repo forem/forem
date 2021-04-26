@@ -6,7 +6,7 @@
            href="/admin/<%= group[:children][0][:controller] %>"
            aria-page="<%= "page" if deduced_controller(request) == group[:children][0][:controller] %>"
            data-action="click->sidebar#expandDropdown">
-          <%= inline_svg_tag(group[:svg], aria: true, class: "dropdown-icon crayons-icon") %>
+          <%= inline_svg_tag(group[:svg], aria_hidden: true, class: "dropdown-icon crayons-icon") %>
           <%= display_name(group_name) %>
         </a>
       <% end %>
@@ -19,7 +19,7 @@
         aria-expanded="<%= (deduced_scope(request) == group_name.to_s).to_s %>"
         aria-controls="<%= group_name %>"
         data-action="click->sidebar#expandDropdown">
-        <%= inline_svg_tag(group[:svg], aria: true, class: "dropdown-icon crayons-icon") %>
+        <%= inline_svg_tag(group[:svg], aria_hidden: true, class: "dropdown-icon crayons-icon") %>
         <%= display_name(group_name) %>
       </button>
       <ul id="<%= group_name %>"
