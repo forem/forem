@@ -1,11 +1,11 @@
 import { Controller } from 'stimulus';
 
 export default class DataUpdateScriptController extends Controller {
+  static values = { url: String };
+
   forceRun(event) {
     event.preventDefault();
     const id = event.target.dataset.value;
-    const forceRunPath = event.target.dataset.forceRunPath;
-    const indexPath = event.target.dataset.indexPath;
     const statusColumn = document.getElementById(
       `data_update_script_${id}_status`,
     );
@@ -14,7 +14,7 @@ export default class DataUpdateScriptController extends Controller {
     );
 
     this.displayLoadingIndicators(statusColumn, runAtColumn);
-    this.forceRunScript(id, forceRunPath, indexPath, statusColumn, runAtColumn);
+    this.forceRunScript(id, statusColumn, runAtColumn);
   }
 
   displayLoadingIndicators(statusColumn, runAtColumn) {
@@ -22,8 +22,8 @@ export default class DataUpdateScriptController extends Controller {
     statusColumn.innerHTML = '';
   }
 
-  forceRunScript(id, forceRunPath, indexPath, statusColumn, runAtColumn) {
-    fetch(forceRunPath, {
+  forceRunScript(id, statusColumn, runAtColumn) {
+    fetch(`${this.urlValue}/${id}/force_run`, {
       method: 'POST',
       headers: {
         'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
@@ -32,7 +32,7 @@ export default class DataUpdateScriptController extends Controller {
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {
-        this.pollForScriptResponse(id, indexPath, statusColumn, runAtColumn);
+        this.pollForScriptResponse(id, statusColumn, runAtColumn);
       } else {
         const fileNameElement = document.getElementById(
           `data_update_script_${id}_filename`,
@@ -47,49 +47,48 @@ export default class DataUpdateScriptController extends Controller {
     });
   }
 
-  pollForScriptResponse(id, indexPath, statusColumn, runAtColumn) {
+  pollForScriptResponse(id, statusColumn, runAtColumn) {
     let counter = 0;
     const pollForStatus = setInterval(() => {
       counter++;
-      this.checkForUpdatedDataScript(
-        id,
-        indexPath,
-        runAtColumn,
-        statusColumn,
-      ).then((updatedDataScript) => {
-        if (updatedDataScript) {
-          if (updatedDataScript.status) {
-            // when we've stopped polling because we've received a status
-            // and not because we've received an error.
-            runAtColumn.innerHTML = updatedDataScript.run_at;
-            statusColumn.innerHTML = `${updatedDataScript.status}`;
-            if (updatedDataScript.error) {
-              // we need to show the html as text instead of a parsed version,
-              // hence we manipulate the DOM through this longer process.
-              const errorElem = document.createElement('div');
-              errorElem.setAttribute('class', 'fs-xs');
-              errorElem.setAttribute('id', `data_update_script_${id}_error`);
-              statusColumn.appendChild(errorElem);
+      this.checkForUpdatedDataScript(id, runAtColumn, statusColumn).then(
+        (updatedDataScript) => {
+          if (updatedDataScript) {
+            if (updatedDataScript.status) {
+              // when we've stopped polling because we've received a status
+              // and not because we've received an error.
+              runAtColumn.innerHTML = updatedDataScript.run_at;
+              statusColumn.innerHTML = `${updatedDataScript.status}`;
+              if (updatedDataScript.error) {
+                // we need to show the html as text instead of a parsed version,
+                // hence we manipulate the DOM through this longer process.
+                const errorElem = document.createElement('div');
+                errorElem.setAttribute('class', 'fs-xs');
+                errorElem.setAttribute('id', `data_update_script_${id}_error`);
+                statusColumn.appendChild(errorElem);
 
-              const completedErrorElem = document.getElementById(
-                `data_update_script_${id}_error`,
-              );
-              completedErrorElem.innerText = updatedDataScript.error;
-            }
-            if (updatedDataScript.status === 'succeeded') {
-              document
-                .getElementById(`data_update_script_${id}_row`)
-                .classList.remove('alert-danger');
-              if (document.getElementById(`data_update_script_${id}_button`)) {
+                const completedErrorElem = document.getElementById(
+                  `data_update_script_${id}_error`,
+                );
+                completedErrorElem.innerText = updatedDataScript.error;
+              }
+              if (updatedDataScript.status === 'succeeded') {
                 document
-                  .getElementById(`data_update_script_${id}_button`)
-                  .remove();
+                  .getElementById(`data_update_script_${id}_row`)
+                  .classList.remove('alert-danger');
+                if (
+                  document.getElementById(`data_update_script_${id}_button`)
+                ) {
+                  document
+                    .getElementById(`data_update_script_${id}_button`)
+                    .remove();
+                }
               }
             }
+            clearInterval(pollForStatus);
           }
-          clearInterval(pollForStatus);
-        }
-      });
+        },
+      );
       if (counter > 20) {
         clearInterval(pollForStatus);
         const fileNameElement = document.getElementById(
@@ -106,8 +105,8 @@ export default class DataUpdateScriptController extends Controller {
     }, 1000);
   }
 
-  checkForUpdatedDataScript(id, indexPath, runAtColumn, statusColumn) {
-    return fetch(indexPath, {
+  checkForUpdatedDataScript(id, runAtColumn, statusColumn) {
+    return fetch(`${this.urlValue}/${id}`, {
       method: 'GET',
       headers: {
         'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
