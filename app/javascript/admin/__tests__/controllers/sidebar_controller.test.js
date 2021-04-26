@@ -9,7 +9,7 @@ describe('SidebarController', () => {
 
   beforeEach(() => {
     document.body.innerHTML = `
-    <div class="admin__left-sidebar crayons-layout__left-sidebar" data-controller="sidebar" data-action="load@window->sidebar#disableCurrentNavItem">
+    <div class="admin__left-sidebar crayons-layout__left-sidebar" data-controller="sidebar">
       <nav class="hidden m:block">
         <ul>
           <li>
@@ -81,15 +81,6 @@ describe('SidebarController', () => {
 
     const application = Application.start();
     application.register('sidebar', SidebarController);
-  });
-
-  describe('#disableCurrentNavItem', () => {
-    it('sets the disabled attribute on the open menu button', () => {
-      window.dispatchEvent(new Event('load'));
-      const button = document.getElementById('apps_button');
-
-      expect(button.getAttribute('disabled')).toEqual('true');
-    });
   });
 
   describe('#expandDropdown', () => {

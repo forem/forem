@@ -4,16 +4,12 @@ import { Controller } from 'stimulus';
 export default class SidebarController extends Controller {
   static targets = ['submenu'];
 
-  disableCurrentNavItem() {
-    const activeMenuId = this.submenuTargets.filter((item) =>
-      item.classList.contains('show'),
-    )[0].id;
-    const activeButton = document.getElementById(`${activeMenuId}_button`);
-    activeButton.setAttribute('disabled', true);
-  }
-
   expandDropdown(event) {
-    this.redirectToFirstChildNavItem(event);
+    if (
+      event.target.getAttribute('data-target-href') !== window.location.pathname
+    ) {
+      this.redirectToFirstChildNavItem(event);
+    }
     this.closeOtherMenus();
   }
 
