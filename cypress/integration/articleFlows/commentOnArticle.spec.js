@@ -14,6 +14,14 @@ describe('Comment on articles', () => {
       name: /^Add a comment to the discussion$/i,
     });
 
+  const getReplyPlainCommentBox = () =>
+    cy.findByRole('textbox', {
+      name: /^Reply to a comment\.\.\.$/,
+    });
+
+  const getReplyCombobox = () =>
+    cy.findByRole('combobox', { name: /^Reply to a comment\.\.\.$/ });
+
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
@@ -39,17 +47,19 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).click();
+      cy.findByRole('main').within(() => {
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).click();
 
-      // Get a handle to the newly substituted textbox
-      getCommentPlainTextBox();
-      getCommentPlainTextBox().type('Some text @s');
+        // Get a handle to the newly substituted textbox
+        getCommentPlainTextBox();
+        getCommentPlainTextBox().type('Some text @s');
 
-      // Verify the combobox has appeared
-      getCommentCombobox();
-      getCommentCombobox().should('have.focus');
+        // Verify the combobox has appeared
+        getCommentCombobox();
+        getCommentCombobox().should('have.focus');
+      });
 
       cy.findByText('Type to search for a user').should('exist');
       getCommentCombobox().type('earch');
@@ -74,11 +84,13 @@ describe('Comment on articles', () => {
 
       getCommentDropdown().should('not.exist');
 
-      getCommentPlainTextBox().should('have.focus');
-      getCommentPlainTextBox().should(
-        'have.value',
-        'Some text @search_user_3 ',
-      );
+      cy.findByRole('main').within(() => {
+        getCommentPlainTextBox().should('have.focus');
+        getCommentPlainTextBox().should(
+          'have.value',
+          'Some text @search_user_3 ',
+        );
+      });
     });
 
     it('should select a mention autocomplete suggestion by keyboard', () => {
@@ -87,24 +99,26 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).click();
+      cy.findByRole('main').within(() => {
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).click();
 
-      // Get a handle to the newly substituted textbox
-      getCommentPlainTextBox();
-      getCommentPlainTextBox().type('Some text @s');
+        // Get a handle to the newly substituted textbox
+        getCommentPlainTextBox();
+        getCommentPlainTextBox().type('Some text @s');
 
-      // Verify the combobox has appeared
-      getCommentCombobox();
-      getCommentCombobox().should('have.focus');
-      getCommentCombobox().type('earch_user{downarrow}{enter}');
+        // Verify the combobox has appeared
+        getCommentCombobox();
+        getCommentCombobox().should('have.focus');
+        getCommentCombobox().type('earch_user{downarrow}{enter}');
 
-      getCommentPlainTextBox().should('have.focus');
-      getCommentPlainTextBox().should(
-        'have.value',
-        'Some text @search_user_1 ',
-      );
+        getCommentPlainTextBox().should('have.focus');
+        getCommentPlainTextBox().should(
+          'have.value',
+          'Some text @search_user_1 ',
+        );
+      });
     });
 
     it('should accept entered comment text without user mention if no autocomplete suggestions', () => {
@@ -113,19 +127,21 @@ describe('Comment on articles', () => {
         { fixture: 'search/emptyUsernamesSearch.json' },
       );
 
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).click();
+      cy.findByRole('main').within(() => {
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).click();
 
-      // Get a handle to the newly substituted textbox
-      getCommentPlainTextBox();
-      getCommentPlainTextBox().type('Some text @u');
+        // Get a handle to the newly substituted textbox
+        getCommentPlainTextBox();
+        getCommentPlainTextBox().type('Some text @u');
 
-      // Verify the combobox has appeared
-      getCommentCombobox();
-      getCommentCombobox().should('have.focus');
+        // Verify the combobox has appeared
+        getCommentCombobox();
+        getCommentCombobox().should('have.focus');
 
-      getCommentCombobox().type('ser');
+        getCommentCombobox().type('ser');
+      });
 
       cy.findByText('No results found').should('exist');
       getCommentCombobox().type(' ');
@@ -141,19 +157,23 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).click();
+      cy.findByRole('main').within(() => {
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).click();
 
-      // Get a handle to the newly substituted textbox
-      getCommentPlainTextBox();
-      getCommentPlainTextBox().type('Some text @s');
+        // Get a handle to the newly substituted textbox
+        getCommentPlainTextBox();
+        getCommentPlainTextBox().type('Some text @s');
 
-      // Verify the combobox has appeared
-      getCommentCombobox();
+        // Verify the combobox has appeared
+        getCommentCombobox();
 
-      getCommentCombobox().should('have.focus');
-      getCommentCombobox().type('e');
+        getCommentCombobox().should('have.focus');
+        getCommentCombobox().type('e');
+      });
+
+      getCommentDropdown();
       cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
 
       getCommentCombobox().type('{backspace}{backspace}{backspace}');
@@ -166,19 +186,22 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).click();
+      cy.findByRole('main').within(() => {
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).click();
 
-      // Get a handle to the newly substituted textbox
-      getCommentPlainTextBox();
-      getCommentPlainTextBox().type('Some text @se');
+        // Get a handle to the newly substituted textbox
+        getCommentPlainTextBox();
+        getCommentPlainTextBox().type('Some text @se');
 
-      // Verify the combobox has appeared
-      getCommentCombobox();
+        // Verify the combobox has appeared
+        getCommentCombobox();
 
-      getCommentCombobox().should('have.focus');
-      getCommentCombobox().type('{backspace}{backspace}');
+        getCommentCombobox().should('have.focus');
+        getCommentCombobox().type('{backspace}{backspace}');
+      });
+
       cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
 
       getCommentCombobox().type('se');
@@ -191,18 +214,22 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).click();
+      cy.findByRole('main').within(() => {
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).click();
 
-      // Get a handle to the newly substituted textbox
-      getCommentPlainTextBox();
-      getCommentPlainTextBox().type('Some text @s');
+        // Get a handle to the newly substituted textbox
+        getCommentPlainTextBox();
+        getCommentPlainTextBox().type('Some text @s');
 
-      // Verify the combobox has appeared
-      getCommentCombobox();
+        // Verify the combobox has appeared
+        getCommentCombobox();
 
-      getCommentCombobox().type('earch');
+        getCommentCombobox().type('earch');
+      });
+
+      getCommentDropdown();
       cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
 
       getCommentCombobox().type('{Esc}');
@@ -215,18 +242,22 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).click();
+      cy.findByRole('main').within(() => {
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).click();
 
-      // Get a handle to the newly substituted textbox
-      getCommentPlainTextBox();
-      getCommentPlainTextBox().type('Some text @s');
+        // Get a handle to the newly substituted textbox
+        getCommentPlainTextBox();
+        getCommentPlainTextBox().type('Some text @s');
 
-      // Verify the combobox has appeared
-      getCommentCombobox();
+        // Verify the combobox has appeared
+        getCommentCombobox();
 
-      getCommentCombobox().type('earch');
+        getCommentCombobox().type('earch');
+      });
+
+      getCommentDropdown();
       cy.findByRole('option', { name: /@search_user_1/ }).should('be.visible');
 
       // Click away from the dropdown
@@ -243,72 +274,55 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).click();
+      cy.findByRole('main').within(() => {
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).click();
 
-      // Get a handle to the newly substituted textbox
-      getCommentPlainTextBox();
-      getCommentPlainTextBox().type('Some text @s');
+        // Get a handle to the newly substituted textbox
+        getCommentPlainTextBox();
+        getCommentPlainTextBox().type('Some text @s');
 
-      // Verify the combobox has appeared
-      getCommentCombobox();
+        // Verify the combobox has appeared
+        getCommentCombobox();
 
-      // Blur the currently active textarea, and check that the blur results in the plainTextArea being restored
-      getCommentCombobox().blur();
-      getCommentCombobox().should('not.exist');
-      getCommentPlainTextBox().should('exist');
+        // Blur the currently active textarea, and check that the blur results in the plainTextArea being restored
+        getCommentCombobox().blur();
+        getCommentCombobox().should('not.exist');
+        getCommentPlainTextBox().should('exist');
+      });
     });
 
-    it.skip('should reply to a comment with user mention autocomplete', () => {
+    it('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames' },
         { fixture: 'search/usernames.json' },
       );
 
-      // Get a handle to the newly substituted textbox
-      cy.findByRole('main')
-        .as('main')
-        .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-        .click();
+      cy.findByRole('main').within(() => {
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).click();
 
-      // The mention autocomplete is two textareas
-      // and initially it's replacing the server-side rendered one,
-      // so we need to get it again to be certain we have the correct reference.
-      cy.get('@main')
-        .findByRole('textbox', /^Add a comment to the discussion$/i)
-        .type('first comment');
+        // Create a comment to test replying to
+        getCommentPlainTextBox().type('first comment');
+        cy.findByRole('button', { name: /^Submit$/i }).click();
 
-      cy.get('@main')
-        .findByRole('button', { name: /^Submit$/i })
-        .click();
+        cy.findByRole('link', { name: /^Reply$/i }).click();
+        getReplyPlainCommentBox().click();
+        getReplyPlainCommentBox().type('Some text @s');
 
-      cy.get('@main')
-        .findByRole('link', { name: /^Reply$/i })
-        .click();
+        // Verify the combobox has appeared
+        getReplyCombobox();
+        getReplyCombobox().type('earch');
+      });
 
-      cy.get('@main')
-        .findByRole('textbox', {
-          name: /^Reply to a comment\.\.\.$/,
-        })
-        .click();
-
-      cy.get('@main')
-        .findByRole('textbox', {
-          name: /^Reply to a comment\.\.\.$/,
-        })
-        .as('replyCommentBox')
-        .type('Some text @s');
-
-      // Verify the combobox has appeared
-      cy.get('@main')
-        .findByRole('combobox', { name: /^Reply to a comment\.\.\.$/ })
-        .as('autocompleteCommentBox');
-
-      cy.get('@main').get('@autocompleteCommentBox').type('earch');
+      // Pick an item from the dropdown
+      getCommentDropdown();
+      cy.findByRole('option', { name: /@search_user_1/ }).focus();
       cy.findByRole('option', { name: /@search_user_1/ }).click();
 
-      cy.get('@replyCommentBox').should(
+      getReplyPlainCommentBox().should(
         'have.value',
         'Some text @search_user_1 ',
       );
@@ -320,15 +334,17 @@ describe('Comment on articles', () => {
         { fixture: 'search/usernames.json' },
       );
 
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).click();
-      // Get a handle to the newly substituted textbox
-      getCommentPlainTextBox();
-      getCommentPlainTextBox().type('first comment');
+      cy.findByRole('main').within(() => {
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).click();
+        // Get a handle to the newly substituted textbox
+        getCommentPlainTextBox();
+        getCommentPlainTextBox().type('first comment');
 
-      cy.findByRole('button', { name: /Submit/ }).click();
-      cy.findByRole('link', { name: /Reply/ });
+        cy.findByRole('button', { name: /Submit/ }).click();
+        cy.findByRole('link', { name: /Reply/ });
+      });
 
       cy.findByTestId('comments-container').within(() => {
         cy.findByRole('button', { name: 'Toggle dropdown menu' }).click();
@@ -342,29 +358,27 @@ describe('Comment on articles', () => {
   });
 
   it('should add a comment', () => {
-    cy.findByRole('main')
-      .as('main')
-      .findByRole('heading', { name: 'Discussion (0)' });
-    cy.get('@main')
-      .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-      .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
-      .type('this is a comment');
+    cy.findByRole('main').within(() => {
+      cy.findByRole('heading', { name: 'Discussion (0)' });
 
-    cy.get('@main')
-      .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-      .should('have.value', 'this is a comment');
+      cy.findByRole('textbox', { name: /^Add a comment to the discussion$/i })
+        .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
+        .type('this is a comment');
 
-    cy.get('@main')
-      .findByRole('button', { name: /^Submit$/i })
-      .click();
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).should('have.value', 'this is a comment');
 
-    // Comment was saved so the new comment textbox should be empty.
-    cy.get('@main')
-      .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-      .should('have.value', '');
+      cy.findByRole('button', { name: /^Submit$/i }).click();
 
-    cy.get('@main').findByText(/^this is a comment$/i);
-    cy.get('@main').findByRole('heading', { name: 'Discussion (1)' });
+      // Comment was saved so the new comment textbox should be empty.
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).should('have.value', '');
+
+      cy.findByText(/^this is a comment$/i);
+      cy.findByRole('heading', { name: 'Discussion (1)' });
+    });
   });
 
   it('should add a comment from a response template', () => {
@@ -372,35 +386,30 @@ describe('Comment on articles', () => {
       title: 'Test Canned Response',
       content: 'This is a test canned response',
     }).then((_response) => {
-      cy.findByRole('main')
-        .as('main')
-        .findByRole('heading', { name: 'Discussion (0)' });
-      cy.get('@main')
-        .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-        .focus(); // Focus activates the Submit button and mini toolbar below a comment textbox
+      cy.findByRole('main').within(() => {
+        cy.findByRole('heading', { name: 'Discussion (0)' });
 
-      cy.get('@main')
-        .findByRole('button', { name: /^Use a response template$/i })
-        .click();
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).focus(); // Focus activates the Submit button and mini toolbar below a comment textbox
 
-      cy.get('@main')
-        .findByRole('button', { name: /^Insert$/i })
-        .click();
+        cy.findByRole('button', { name: /^Use a response template$/i }).click();
 
-      cy.get('@main')
-        .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-        .should('have.value', 'This is a test canned response');
+        cy.findByRole('button', { name: /^Insert$/i }).click();
 
-      cy.get('@main')
-        .findByRole('button', { name: /^Submit$/i })
-        .click();
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).should('have.value', 'This is a test canned response');
 
-      // Comment was saved so the new comment textbox should be empty.
-      cy.get('@main')
-        .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-        .should('have.value', '');
+        cy.findByRole('button', { name: /^Submit$/i }).click();
 
-      cy.get('@main').findByRole('heading', { name: 'Discussion (1)' });
+        // Comment was saved so the new comment textbox should be empty.
+        cy.findByRole('textbox', {
+          name: /^Add a comment to the discussion$/i,
+        }).should('have.value', '');
+
+        cy.findByRole('heading', { name: 'Discussion (1)' });
+      });
     });
   });
 });
