@@ -2,10 +2,10 @@ module Search
   module Postgres
     class PodcastEpisode
       ATTRIBUTES = [
-        "podcast.id",
-        "podcast.image",
-        "podcast.published",
-        "podcast.slug",
+        "podcasts.id",
+        "podcasts.image",
+        "podcasts.published",
+        "podcasts.slug",
         "podcast_episodes.body",
         "podcast_episodes.comments_count",
         "podcast_episodes.id",
@@ -33,7 +33,7 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-        relation = ::PodcastEpisode.includes(:podcast).where(podcast: { published: true })
+        relation = ::PodcastEpisode.includes(:podcast).available
         relation = relation.search_podcast_episodes(term) if term.present?
         relation = relation.select(*ATTRIBUTES)
         relation = relation.reorder(sort_by => sort_direction) if sort_by && sort_direction

@@ -33,6 +33,35 @@ RSpec.describe Search::Postgres::PodcastEpisode, type: :service do
         expect(ids).not_to include(unpublished_podcast_episode.search_id)
         expect(ids).to include(published_podcast_episode.search_id)
       end
+
+      it "does not include PodcastEpisodes that are not reachable", :aggregate_failures do
+        body_text = "DHH talks about how Ruby on Rails rocks!"
+        podcast = create(:podcast, published: true)
+
+        reachable_podcast_episode = create(
+          :podcast_episode,
+          body: body_text,
+          processed_html: body_text,
+          podcast_id: podcast.id,
+          reachable: true,
+        )
+
+        unreachable_podcast_episode = create(
+          :podcast_episode,
+          body: body_text,
+          processed_html: body_text,
+          podcast_id: podcast.id,
+          reachable: false,
+        )
+
+        result = described_class.search_documents(term: "rails")
+        # rubocop:disable Rails/PluckId
+        ids = result.pluck(:id)
+        # rubocop:enable Rails/PluckId
+
+        expect(ids).not_to include(unreachable_podcast_episode.search_id)
+        expect(ids).to include(reachable_podcast_episode.search_id)
+      end
     end
 
     context "when describing the result format" do

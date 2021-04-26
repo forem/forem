@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_26_152816) do
+ActiveRecord::Schema.define(version: 2021_04_26_165234) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -934,6 +934,7 @@ ActiveRecord::Schema.define(version: 2021_04_26_152816) do
     t.index ["creator_id"], name: "index_podcasts_on_creator_id"
     t.index ["feed_url"], name: "index_podcasts_on_feed_url", unique: true
     t.index ["published"], name: "index_podcasts_on_published", where: "(published = true)"
+    t.index ["reachable"], name: "index_podcasts_on_reachable", where: "(reachable = true)"
     t.index ["slug"], name: "index_podcasts_on_slug", unique: true
   end
 
