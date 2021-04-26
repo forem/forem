@@ -424,56 +424,66 @@ RSpec.describe "/admin/config", type: :request do
       describe "Mascot" do
         it "updates the mascot_user_id" do
           expected_mascot_user_id = 2
-          post "/admin/config", params: { site_config: { mascot_user_id: expected_mascot_user_id },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.mascot_user_id).to eq(expected_mascot_user_id)
+          post admin_settings_mascots_path, params: {
+            settings_mascot: { mascot_user_id: expected_mascot_user_id },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Mascot.mascot_user_id).to eq(expected_mascot_user_id)
         end
 
-        it "updates mascot_image_url" do
-          expected_default_image_url = SiteConfig.get_default(:mascot_image_url)
+        it "updates image_url" do
+          expected_default_image_url = Settings::Mascot.get_default(:image_url)
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
-            post "/admin/config", params: { site_config: { mascot_image_url: expected_image_url },
-                                            confirmation: confirmation_message }
-          end.to change(SiteConfig, :mascot_image_url).from(expected_default_image_url).to(expected_image_url)
+            post admin_settings_mascots_path, params: {
+              settings_mascot: { image_url: expected_image_url },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::Mascot, :image_url).from(expected_default_image_url).to(expected_image_url)
         end
 
-        it "updates mascot_footer_image_url" do
+        it "updates footer_image_url" do
           expected_image_url = "https://dummyimage.com/300x300.png"
-          post "/admin/config", params: { site_config: { mascot_footer_image_url: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.mascot_footer_image_url).to eq(expected_image_url)
+          post admin_settings_mascots_path, params: {
+            settings_mascot: { footer_image_url: expected_image_url },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Mascot.footer_image_url).to eq(expected_image_url)
         end
 
-        it "updates the mascot_footer_image_width" do
-          expected_default_mascot_footer_image_width = SiteConfig.get_default(:mascot_footer_image_width)
-          expected_mascot_footer_image_width = 1002
+        it "updates the footer_image_width" do
+          expected_default_footer_image_width = Settings::Mascot.get_default(:footer_image_width)
+          expected_footer_image_width = 1002
 
-          expect(SiteConfig.mascot_footer_image_width).to eq(expected_default_mascot_footer_image_width)
+          expect(Settings::Mascot.footer_image_width).to eq(expected_default_footer_image_width)
 
-          post "/admin/config", params: { site_config:
-                                          { mascot_footer_image_width: expected_mascot_footer_image_width },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.mascot_footer_image_width).to eq(expected_mascot_footer_image_width)
+          post admin_settings_mascots_path, params: {
+            settings_mascot: { footer_image_width: expected_footer_image_width },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Mascot.footer_image_width).to eq(expected_footer_image_width)
         end
 
-        it "updates the mascot_footer_image_height" do
-          expected_default_mascot_footer_image_height = SiteConfig.get_default(:mascot_footer_image_height)
-          expected_mascot_footer_image_height = 3002
+        it "updates the footer_image_height" do
+          expected_default_footer_image_height = Settings::Mascot.get_default(:footer_image_height)
+          expected_footer_image_height = 3002
 
-          expect(SiteConfig.mascot_footer_image_height).to eq(expected_default_mascot_footer_image_height)
+          expect(Settings::Mascot.footer_image_height).to eq(expected_default_footer_image_height)
 
-          post "/admin/config", params: { site_config:
-                                          { mascot_footer_image_height: expected_mascot_footer_image_height },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.mascot_footer_image_height).to eq(expected_mascot_footer_image_height)
+          post admin_settings_mascots_path, params: {
+            settings_mascot: { footer_image_height: expected_footer_image_height },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Mascot.footer_image_height).to eq(expected_footer_image_height)
         end
 
-        it "updates mascot_image_description" do
+        it "updates image_description" do
           description = "Hey hey #{rand(100)}"
-          post "/admin/config", params: { site_config: { mascot_image_description: description },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_description).to eq(description)
+          post admin_settings_mascots_path, params: {
+            settings_mascot: { image_description: description },
+            confirmation: confirmation_message
+          }
+          expect(Settings::Mascot.image_description).to eq(description)
         end
       end
 

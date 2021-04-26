@@ -768,7 +768,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::Mascot.new, url: admin_settings_mascots_path, html: { data: { testid: "mascotSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -780,64 +780,64 @@
           <div id="mascotBodyContainer" class="card-body collapse hide" aria-labelledby="mascotBodyContainer">
             <fieldset class="grid gap-4">
               <div class="crayons-field">
-                <%= admin_config_label :mascot_user_id, "Mascot user ID" %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_user_id][:description] %>
+                <%= admin_config_label :mascot_user_id, "Mascot user ID", model: Settings::Mascot %>
+                <%= admin_config_description Constants::Settings::Mascot::DETAILS[:mascot_user_id][:description] %>
                 <%= f.text_field :mascot_user_id,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.mascot_user_id,
+                                 value: Settings::Mascot.mascot_user_id,
                                  min: 1,
-                                 placeholder: Constants::SiteConfig::DETAILS[:mascot_user_id][:placeholder] %>
+                                 placeholder: Constants::Settings::Mascot::DETAILS[:mascot_user_id][:placeholder] %>
             </div>
 
             <div class="crayons-field">
-              <%= admin_config_label :mascot_image_url, "Mascot Image URL" %>
-              <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_image_url][:description] %>
-              <%= f.text_field :mascot_image_url,
+              <%= admin_config_label :image_url, "Mascot Image URL", model: Settings::Mascot %>
+              <%= admin_config_description Constants::Settings::Mascot::DETAILS[:image_url][:description] %>
+              <%= f.text_field :image_url,
                                class: "crayons-textfield",
-                               value: SiteConfig.mascot_image_url,
-                               placeholder: Constants::SiteConfig::DETAILS[:mascot_image_url][:placeholder] %>
+                               value: Settings::Mascot.image_url,
+                               placeholder: Constants::Settings::Mascot::DETAILS[:image_url][:placeholder] %>
 
               <div class="col-12">
-                <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
+                <img alt="<%= Settings::Mascot.image_description %>" class="img-fluid" src="<%= Settings::Mascot.image_url %>" />
               </div>
 
             </div>
 
             <div class="crayons-field">
-              <%= admin_config_label :mascot_footer_image_url %>
-              <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:description] %>
-              <%= f.text_field :mascot_footer_image_url,
+              <%= admin_config_label :footer_image_url, model: Settings::Mascot %>
+              <%= admin_config_description Constants::Settings::Mascot::DETAILS[:footer_image_url][:description] %>
+              <%= f.text_field :footer_image_url,
                                class: "crayons-textfield",
-                               value: SiteConfig.mascot_footer_image_url,
-                               placeholder: Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:placeholder] %>
+                               value: Settings::Mascot.footer_image_url,
+                               placeholder: Constants::Settings::Mascot::DETAILS[:footer_image_url][:placeholder] %>
 
               <div class="col-12">
-                <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_footer_image_url %>" />
+                <img alt="<%= Settings::Mascot.image_description %>" class="img-fluid" src="<%= Settings::Mascot.footer_image_url %>" />
               </div>
             </div>
 
             <div class="crayons-field">
-              <%= admin_config_label :mascot_footer_image_width %>
-              <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_footer_image_width][:description] %>
-              <%= f.text_field :mascot_footer_image_width,
+              <%= admin_config_label :footer_image_width, model: Settings::Mascot %>
+              <%= admin_config_description Constants::Settings::Mascot::DETAILS[:footer_image_width][:description] %>
+              <%= f.text_field :footer_image_width,
                                class: "form-control",
-                               value: SiteConfig.mascot_footer_image_width %>
+                               value: Settings::Mascot.footer_image_width %>
           </div>
 
           <div class="crayons-field">
-            <%= admin_config_label :mascot_footer_image_height %>
-            <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_footer_image_height][:description] %>
-            <%= f.text_field :mascot_footer_image_height,
+            <%= admin_config_label :footer_image_height, model: Settings::Mascot %>
+            <%= admin_config_description Constants::Settings::Mascot::DETAILS[:footer_image_height][:description] %>
+            <%= f.text_field :footer_image_height,
                              class: "form-control",
-                             value: SiteConfig.mascot_footer_image_height %>
+                             value: Settings::Mascot.footer_image_height %>
         </div>
 
         <div class="crayons-field">
-          <%= admin_config_label :mascot_image_description %>
-          <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_image_description][:description] %>
-          <%= f.text_field :mascot_image_description,
+          <%= admin_config_label :image_description, model: Settings::Mascot %>
+          <%= admin_config_description Constants::Settings::Mascot::DETAILS[:image_description][:description] %>
+          <%= f.text_field :image_description,
                            class: "form-control",
-                           value: SiteConfig.mascot_image_description %>
+                           value: Settings::Mascot.image_description %>
       </div>
 
       <%= render "form_submission", f: f %>
