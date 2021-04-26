@@ -37,7 +37,7 @@ module Admin
       @user = User.find(params[:id])
       Credits::Manage.call(@user, user_params)
       add_note if user_params[:new_note]
-      redirect_to "/admin/users/#{params[:id]}"
+      redirect_to admin_user_path(params[:id])
     end
 
     def destroy
@@ -66,7 +66,7 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to "/admin/users/#{@user.id}/edit"
+      redirect_to edit_admin_user_path(@user.id)
     end
 
     def export_data
@@ -87,7 +87,7 @@ module Admin
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
       flash[:success] = "This user is being banished in the background. The job will complete soon."
-      redirect_to "/admin/users/#{params[:id]}/edit"
+      redirect_to edit_admin_user_path(params[:id])
     end
 
     def full_delete
@@ -103,7 +103,7 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to "/admin/users"
+      redirect_to admin_users_path
     end
 
     def merge
@@ -114,7 +114,7 @@ module Admin
         flash[:danger] = e.message
       end
 
-      redirect_to "/admin/users/#{@user.id}/edit"
+      redirect_to edit_admin_user_path(@user.id)
     end
 
     def remove_identity
@@ -135,7 +135,7 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to "/admin/users/#{@user.id}/edit"
+      redirect_to edit_admin_user_path(@user.id)
     end
 
     def send_email

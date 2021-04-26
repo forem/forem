@@ -34,7 +34,7 @@
       <%= render "layouts/logo" %>
 
       <h1 class="pl-4 fs-l">
-        <a href="/admin">Admin</a>
+        <a href="<%= admin_path %>">Admin</a>
         <span class="color-base-60">&raquo;</span> <span class="fw-bold"><%= controller_name.titleize %></span>
       </h1>
 
@@ -56,7 +56,7 @@
         <% if FeatureFlag.enabled?(:admin_restructure) %>
           <ul>
             <li>
-              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/" aria-page="<%= "page" if controller.controller_name == "overview" %>">
+              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>" aria-page="<%= "page" if controller.controller_name == "overview" %>">
                 <%= inline_svg_tag("stack-line.svg", aria: true, class: "dropdown-icon crayons-icon") %>
                 Overview
               </a>
@@ -64,7 +64,7 @@
             <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
           </ul>
         <% else %>
-          <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="/admin/">
+          <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>">
             Overview
           </a>
           <%= render "admin/shared/navbar", menu_items: admin_menu_items %>
