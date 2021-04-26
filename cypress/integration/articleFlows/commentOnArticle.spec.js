@@ -347,20 +347,16 @@ describe('Comment on articles', () => {
       .findByRole('heading', { name: 'Discussion (0)' });
     cy.get('@main')
       .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-      .click(); // Causes a focus which loads the Submit button and mini toolbar below a comment textbox
-
-    // The mention autocomplete is two textareas
-    // and initially it's replacing the server-side rendered one,
-    // so we need to get it again to be certain we have the correct reference.
-    cy.get('@main')
-      .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
+      .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
       .type('this is a comment');
 
     cy.get('@main')
       .findByRole('textbox', { name: /^Add a comment to the discussion$/i })
       .should('have.value', 'this is a comment');
 
-    cy.findByRole('button', { name: /^Submit$/i }).click();
+    cy.get('@main')
+      .findByRole('button', { name: /^Submit$/i })
+      .click();
 
     // Comment was saved so the new comment textbox should be empty.
     cy.get('@main')
