@@ -24,10 +24,7 @@
                       id="data_update_script_<%= script.id %>_button"
                       data-action="click->data-update-script#forceRun"
                       data-value="<%= script.id %>"
-                      data-force-run-path="<%= force_run_admin_data_update_script_path(script.id) %>"
-                      data-index-path="<%= admin_data_update_script_path(script.id) %>">
-                Re-run
-              </button>
+                Re-run>
             <% end %>
           </td>
           <td><%= script.created_at %></td>
