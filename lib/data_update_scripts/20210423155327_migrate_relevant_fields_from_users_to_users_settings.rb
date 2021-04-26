@@ -1,7 +1,6 @@
 module DataUpdateScripts
   class MigrateRelevantFieldsFromUsersToUsersSettings
     def run
-      # Note from Arit: Not sure if "BEGIN TRANSACTION" AND "COMMIT" should be in here
       ActiveRecord::Base.connection.execute(
         <<~SQL.squish,
           BEGIN TRANSACTION;
@@ -50,12 +49,14 @@ module DataUpdateScripts
               END
               inbox_type,
               permit_adjacent_sponsors,
-              users.id AS user_id
+              users.id AS user_id,
+              NOW(),
+              NOW()
             FROM users
             JOIN profiles
               ON profiles.user_id = users.id
           )
-          INSERT INTO users_settings (brand_color1, brand_color2, config_font, config_navbar, config_theme, display_announcements, display_email_on_profile, display_sponsors, editor_version, experience_level, feed_mark_canonical, feed_referential_link, feed_url, inbox_type, permit_adjacent_sponsors, user_id)
+          INSERT INTO users_settings (brand_color1, brand_color2, config_font, config_navbar, config_theme, display_announcements, display_email_on_profile, display_sponsors, editor_version, experience_level, feed_mark_canonical, feed_referential_link, feed_url, inbox_guidelines, inbox_type, permit_adjacent_sponsors, user_id, created_at, updated_at)
             SELECT * FROM settings_data
             ON CONFLICT (user_id) DO UPDATE
               SET brand_color1 = EXCLUDED.brand_color1,
@@ -73,8 +74,8 @@ module DataUpdateScripts
                   feed_url = EXCLUDED.feed_url,
                   inbox_guidelines = EXCLUDED.inbox_guidelines,
                   inbox_type = EXCLUDED.inbox_type,
-                  permit_adjacent_sponsors = EXCLUDED.permit_adjacent_sponsors;
-                  ;
+                  permit_adjacent_sponsors = EXCLUDED.permit_adjacent_sponsors,
+                  updated_at = NOW();
           COMMIT;
         SQL
       )

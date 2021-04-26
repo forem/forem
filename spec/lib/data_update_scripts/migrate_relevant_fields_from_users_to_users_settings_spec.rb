@@ -6,14 +6,18 @@ require Rails.root.join(
 # rubocop:disable RSpec/RepeatedExample
 describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
   before do
-    UsersSetting.destroy_all
+    Users::Setting.destroy_all
   end
 
   context "when migrating data" do
+    before do
+      create(:user)
+    end
+
     it "sets the expected number of records" do
       expect do
         described_class.new.run
-      end.to change(UsersSetting, :count).from(0).to(12)
+      end.to change(Users::Setting, :count).from(0).to(1)
     end
 
     it "sets the correct User records" do
