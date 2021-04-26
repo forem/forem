@@ -5,7 +5,7 @@ RSpec.describe "Invitations", type: :request do
 
   describe "Accept invitation" do
     it "renders normal response even if site config is private" do
-      allow(SiteConfig).to receive(:public).and_return(false)
+      allow(Settings::UserExperience).to receive(:public).and_return(false)
       get "/users/invitation/accept?invitation_token=blahblahblahblah"
       # This is a fake token, so the only thing we're testing for here is
       # that we *do not* land on the "registrations" page which shouldn't

@@ -48,7 +48,7 @@
     <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
       <body
         data-user-status="<%= user_logged_in_status %>"
-        class="<%= SiteConfig.default_font.tr("_", "-") %>-article-body default-header"
+        class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
         data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
         data-app-domain="<%= ChatChannel.urlsafe_encoded_app_domain %>"
         data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
@@ -60,10 +60,10 @@
         <div id="body-styles">
           <style>
             :root {
-              --accent-brand: <%= SiteConfig.primary_brand_color_hex %>;
-              --accent-brand-darker: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).brightness(0.85) %>;
-              --accent-brand-lighter: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).brightness(1.1) %>;
-              --accent-brand-a10: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).opacity(0.1) %>;
+              --accent-brand: <%= Settings::UserExperience.primary_brand_color_hex %>;
+              --accent-brand-darker: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.85) %>;
+              --accent-brand-lighter: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.1) %>;
+              --accent-brand-a10: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).opacity(0.1) %>;
             }
           </style>
         </div>

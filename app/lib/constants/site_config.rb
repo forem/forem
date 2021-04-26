@@ -22,9 +22,6 @@ module Constants
           placeholder: ""
         }
       },
-      default_font: {
-        description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
-      },
       email_addresses: {
         description: "Email address",
         placeholder: ""
@@ -33,19 +30,6 @@ module Constants
         description: "Used as the site favicon",
         placeholder: IMAGE_PLACEHOLDER
       },
-      feed_strategy: {
-        description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental
-        (which should only be used for 10k+ member communities)",
-        placeholder: "basic"
-      },
-      feed_style: {
-        description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
-        placeholder: "basic, rich, or compact"
-      },
-      primary_brand_color_hex: {
-        description: "Determines background/border of buttons etc. Must be dark enough to contrast with white text.",
-        placeholder: "#0a0a0a"
-      },
       ga_tracking_id: {
         description: "Google Analytics Tracking ID, e.g. UA-71991000-1",
         placeholder: ""
@@ -53,10 +37,6 @@ module Constants
       health_check_token: {
         description: "Used to authenticate with your health check endpoints.",
         placeholder: "a secure token"
-      },
-      home_feed_minimum_score: {
-        description: "Minimum score needed for a post to show up on the unauthenticated home page.",
-        placeholder: "0"
       },
       logo_png: {
         description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",
@@ -147,10 +127,6 @@ module Constants
       prefer_manual_suggested_users: {
         description: "Always show suggested users as suggested people to follow even when " \
         "auto-suggestion is available"
-      },
-      tag_feed_minimum_score: {
-        description: "Minimum score needed for a post to show up on default tag page.",
-        placeholder: "0"
       },
       twitter_hashtag: {
         description: "Used as the twitter hashtag of the community",

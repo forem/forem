@@ -18,7 +18,8 @@ module CachingHeaders
     stale_while_revalidate: nil,
     stale_if_error: 26_400
   )
-    return unless SiteConfig.public # Only public forems should be edge-cached based on current functionality.
+    # Only public forems should be edge-cached based on current functionality.
+    return unless Settings::UserExperience.public
 
     request.session_options[:skip] = true # no cookies
 
