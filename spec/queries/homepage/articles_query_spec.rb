@@ -50,9 +50,24 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
       it "filters by publication date", :aggregate_failures do
         article = create(:article)
 
+        expect(described_class.call(published_at: nil).size).to eq(1)
         expect(described_class.call(published_at: article.published_at).size).to eq(1)
         expect(described_class.call(published_at: 1.month.ago..).size).to eq(1)
         expect(described_class.call(published_at: 1.month.from_now)).to be_empty
+      end
+    end
+
+    describe "user_id" do
+      it "returns no articles if the user id does not exist" do
+        expect(described_class.call(user_id: 9999)).to be_empty
+      end
+
+      it "filters articles belonging to the given user id", :aggregate_failures do
+        article_user1 = create(:article)
+        article_user2 = create(:article, user: create(:user))
+
+        expect(described_class.call(user_id: article_user1.user_id).ids).to include(article_user1.user_id)
+        expect(described_class.call(user_id: article_user1.user_id).ids).not_to include(article_user2.user_id)
       end
     end
 
