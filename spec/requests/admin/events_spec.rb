@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/events", type: :request do
+RSpec.describe Rails.application.routes.url_helpers.admin_events_path, type: :request do
   let(:event) { create(:event, title: "Hey") }
   let(:admin) { create(:user, :super_admin) }
   let(:params) do
@@ -22,24 +22,24 @@ RSpec.describe "/admin/events", type: :request do
 
     it "marks an event as not live now" do
       event.update(live_now: true)
-      patch "/admin/events/#{event.id}", params: { event: { live_now: "0" } }
+      patch admin_event_path(event.id), params: { event: { live_now: "0" } }
       expect(event.reload.live_now).to eq false
     end
 
     it "marks an event as live now" do
-      patch "/admin/events/#{event.id}", params: { event: { live_now: "1" } }
+      patch admin_event_path(event.id), params: { event: { live_now: "1" } }
       expect(event.reload.live_now).to eq true
     end
 
     it "successfully updates the event title" do
       expect do
-        patch "/admin/events/#{event.id}", params: params
+        patch admin_event_path(event.id), params: params
       end.to change { event.reload.title }.to("Hello, world!")
     end
   end
 
   describe "POST /admin/events" do
-    let(:post_resource) { post "/admin/events", params: params }
+    let(:post_resource) { post admin_events_path, params: params }
 
     before { sign_in admin }
 

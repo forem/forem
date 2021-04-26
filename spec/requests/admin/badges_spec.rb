@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/badges", type: :request do
+RSpec.describe Rails.application.routes.url_helpers.admin_badges_path, type: :request do
   let(:admin) { create(:user, :super_admin) }
   let!(:badge) { create(:badge, title: "Not 'Hello, world!'") }
   let(:params) do
@@ -17,11 +17,11 @@ RSpec.describe "/admin/badges", type: :request do
   end
 
   it_behaves_like "an InternalPolicy dependant request", Badge do
-    let(:request) { get "/admin/badges" }
+    let(:request) { get admin_badges_path }
   end
 
-  describe "POST /admin/badges" do
-    let(:post_resource) { post "/admin/badges", params: params }
+  describe "POST #{Rails.application.routes.url_helpers.admin_badges_path}" do
+    let(:post_resource) { post admin_badges_path, params: params }
 
     before { sign_in admin }
 
@@ -32,18 +32,18 @@ RSpec.describe "/admin/badges", type: :request do
     end
   end
 
-  describe "PUT /admin/badges" do
+  describe "PUT #{Rails.application.routes.url_helpers.admin_badges_path}" do
     before { sign_in admin }
 
     it "successfully updates the badge" do
       expect do
-        patch "/admin/badges/#{badge.id}", params: params
+        patch "#{admin_badges_path}/#{badge.id}", params: params
       end.to change { badge.reload.title }.to("Hello, world!")
     end
 
     it "successfully updates badge's credits_awarded" do
       expect do
-        patch "/admin/badges/#{badge.id}", params: params
+        patch "#{admin_badges_path}/#{badge.id}", params: params
       end.to change { badge.reload.credits_awarded }.to(10)
     end
   end
