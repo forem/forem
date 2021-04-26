@@ -9248,12 +9248,12 @@ focus-lock@^0.8.1:
   dependencies:
     tslib "^1.9.3"
 
-focus-trap@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-6.3.0.tgz#31c08f0b6099705f71f6e0a16d88fbcc4c012586"
-  integrity sha512-BBzvFfkPg5PqrVVCdQ1YOIVNKGvqG9YNVkiAUQFuDM66N8J9uADhs6mlYKrd30ofDJIzEniBnBKM7GO45iCzKQ==
+focus-trap@^6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-6.4.0.tgz#e9951484fddf933d9b9b0e95b499f9420f6a54d6"
+  integrity sha512-RpH291GjfNhy1ek+Iwe00oCaqJN0sBaB+S/v7BpCIldf39IslPI7657nOZ6HwgoEHpjCmUJoAY+Mfgrm0rohvQ==
   dependencies:
-    tabbable "^5.1.5"
+    tabbable "^5.2.0"
 
 focus-visible@^5.2.0:
   version "5.2.0"
@@ -18500,10 +18500,10 @@ tabbable@^4.0.0:
   resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-4.0.0.tgz#5bff1d1135df1482cf0f0206434f15eadbeb9261"
   integrity sha512-H1XoH1URcBOa/rZZWxLxHCtOdVUEev+9vo5YdYhC9tCY4wnybX+VQrCYuy9ubkg69fCBxCONJOSLGfw0DWMffQ==
 
-tabbable@^5.1.5:
-  version "5.1.6"
-  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.1.6.tgz#dd495abe81d5e41e003fbfa70952e20d5e1e1e89"
-  integrity sha512-KSlGaSX9PbL7FHDTn2dB+zv61prkY8BeGioTsKfeN7dKhw5uz1S4U2iFaWMK4GR8oU+5OFBkFuxbMsaUxVVlrQ==
+tabbable@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.2.0.tgz#4fba60991d8bb89d06e5d9455c92b453acf88fb2"
+  integrity sha512-0uyt8wbP0P3T4rrsfYg/5Rg3cIJ8Shl1RJ54QMqYxm1TLdWqJD1u6+RQjr2Lor3wmfT7JRHkirIwy99ydBsyPg==
 
 table@^6.0.4:
   version "6.0.7"
