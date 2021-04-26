@@ -9,6 +9,22 @@ RSpec.describe Homepage::FetchTagFlares, type: :service do
       expect(result).to be_empty
     end
 
+    it "returns an empty hash if given articles with nil cached_tag_list" do
+      article = create(:article, with_tags: false)
+      article.update_columns(cached_tag_list: nil)
+
+      result = described_class.call(Article.where(id: article.id))
+      expect(result).to be_empty
+    end
+
+    it "returns an empty hash if given articles with empty cached_tag_list" do
+      article = create(:article, with_tags: false)
+      article.update_columns(cached_tag_list: "")
+
+      result = described_class.call(Article.where(id: article.id))
+      expect(result).to be_empty
+    end
+
     it "returns the correct data structure for a flare tag", :aggregate_failures do
       bg_color_hex = "#ff0033"
       text_color_hex = "#00ff33"

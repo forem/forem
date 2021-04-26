@@ -25,11 +25,6 @@ module Constants
       default_font: {
         description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
       },
-      display_jobs_banner: {
-        description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
-        "or 'jobs' in the search box",
-        placeholder: ""
-      },
       email_addresses: {
         description: "Email address",
         placeholder: ""
@@ -63,10 +58,6 @@ module Constants
         description: "Minimum score needed for a post to show up on the unauthenticated home page.",
         placeholder: "0"
       },
-      jobs_url: {
-        description: "URL of the website where open positions are posted",
-        placeholder: "Jobs URL"
-      },
       logo_png: {
         description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",
         placeholder: IMAGE_PLACEHOLDER
@@ -98,30 +89,6 @@ module Constants
       mailchimp_community_moderators_id: {
         description: "Community Moderators Newsletter ID",
         placeholder: ""
-      },
-      mascot_footer_image_url: {
-        description: "Special cute mascot image used in the footer.",
-        placeholder: IMAGE_PLACEHOLDER
-      },
-      mascot_footer_image_width: {
-        description: "The footer mascot width will resized to this value, defaults to 52",
-        placeholder: ""
-      },
-      mascot_footer_image_height: {
-        description: "The footer mascot height will be resized to this value, defaults to 120",
-        placeholder: ""
-      },
-      mascot_image_description: {
-        description: "Used as the alt text for the mascot image",
-        placeholder: ""
-      },
-      mascot_image_url: {
-        description: "Used as the mascot image.",
-        placeholder: IMAGE_PLACEHOLDER
-      },
-      mascot_user_id: {
-        description: "User ID of the Mascot account",
-        placeholder: "1"
       },
       meta_keywords: {
         description: "",

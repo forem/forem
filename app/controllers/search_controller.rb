@@ -73,7 +73,7 @@ class SearchController < ApplicationController
   def chat_channels
     user_ids =
       if chat_channel_params[:user_id].present?
-        [current_user.id, SiteConfig.mascot_user_id, chat_channel_params[:user_id]].reject(&:blank?)
+        [current_user.id, Settings::Mascot.mascot_user_id, chat_channel_params[:user_id]].reject(&:blank?)
       else
         [current_user.id]
       end
@@ -122,6 +122,7 @@ class SearchController < ApplicationController
   # TODO: [@rhymes] the homepage feed uses `feed_content_search` as an index,
   # we should eventually move it to a JSON result
   # in ArticlesController#Homepage or HomepageController#show
+  # rubocop:disable Metric/PerceivedComplexity
   def feed_content
     class_name = feed_params[:class_name].to_s.inquiry
 
@@ -159,18 +160,24 @@ class SearchController < ApplicationController
           term: feed_params[:search_fields],
         )
       elsif class_name.User?
-        # No need to check for articles or podcast episodes if we know we only want users
-        user_search
+        if FeatureFlag.enabled?(:search_2_users)
+          Search::Postgres::User.search_documents(
+            term: feed_params[:search_fields],
+            page: feed_params[:page],
+            per_page: feed_params[:per_page],
+            sort_by: feed_params[:sort_by] == "published_at" ? :created_at : nil,
+            sort_direction: feed_params[:sort_direction],
+          )
+        else
+          user_search
+        end
       else # search page
         feed_content_search
       end
 
-    render json: {
-      result: result,
-      display_jobs_banner: SiteConfig.display_jobs_banner,
-      jobs_url: SiteConfig.jobs_url
-    }
+    render json: { result: result }
   end
+  # rubocop:enable Metric/PerceivedComplexity
 
   def reactions
     if FeatureFlag.enabled?(:search_2_reading_list)

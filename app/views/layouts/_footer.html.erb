@@ -25,12 +25,12 @@
       <div><a href="https://www.forem.com" target="_blank" rel="noopener" class="inline-block mt-4"><%= inline_svg_tag("logo-forem.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Forem logo") %></a></div>
     </div>
   </div>
-  <% if SiteConfig.mascot_footer_image_url.present? %>
-    <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_footer_image_url, width: 100),
+  <% if Settings::Mascot.footer_image_url.present? %>
+    <%= image_tag(Images::Optimizer.call(Settings::Mascot.footer_image_url, width: 100),
                   class: "crayons-footer__mascot",
-                  alt: SiteConfig.mascot_image_description,
-                  width: SiteConfig.mascot_footer_image_width,
-                  height: SiteConfig.mascot_footer_image_height,
+                  alt: Settings::Mascot.image_description,
+                  width: Settings::Mascot.footer_image_width,
+                  height: Settings::Mascot.footer_image_height,
                   loading: "lazy") %>
   <% end %>
 </footer>
