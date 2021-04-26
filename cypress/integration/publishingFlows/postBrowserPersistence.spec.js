@@ -1,4 +1,8 @@
 describe('Post Editor', () => {
+  function getPostContent() {
+    return cy.get('@articleForm').findByLabelText(/^Post Content$/i);
+  }
+
   describe('v1 Editor', () => {
     beforeEach(() => {
       cy.testSetup();
@@ -26,7 +30,7 @@ describe('Post Editor', () => {
             `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`,
           );
 
-        cy.get('@postContent').should(
+        getPostContent().should(
           'have.value',
           `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`,
         );
@@ -34,7 +38,7 @@ describe('Post Editor', () => {
         cy.findByRole('button', { name: /^Revert new changes$/i }).click();
 
         // The post editor should reset to it's initial values
-        cy.get('@postContent').should(
+        getPostContent().should(
           'have.value',
           `---\ntitle: \npublished: false\ndescription: \ntags: \n//cover_image: https://direct_url_to_image.jpg\n---\n\n`,
         );
@@ -64,12 +68,12 @@ describe('Post Editor', () => {
             .clear()
             // Update the title, tags, and content for an post.
             .type(updatedContent);
-          cy.get('@postContent').should('have.value', updatedContent);
+          getPostContent().should('have.value', updatedContent);
 
           cy.findByRole('button', { name: /^Revert new changes$/i }).click();
 
           // The post editor should reset to it's saved version from the server that was initially loaded into the editor.
-          cy.get('@postContent').should('have.value', initialContent);
+          getPostContent().should('have.value', initialContent);
         });
       });
     });
@@ -110,7 +114,7 @@ describe('Post Editor', () => {
           'This is some title that should be reverted',
         );
         cy.get('@postTags').should('have.value', 'tag1, tag2, tag3');
-        cy.get('@postContent').should(
+        getPostContent().should(
           'have.value',
           'This is some text that should be reverted',
         );
@@ -120,7 +124,7 @@ describe('Post Editor', () => {
         // The post editor should reset to it's initial values
         cy.get('@postTitle').should('have.value', '');
         cy.get('@postTags').should('have.value', '');
-        cy.get('@postContent').should('have.value', '');
+        getPostContent().should('have.value', '');
       });
 
       it('should revert to the previously saved version of the post if the post was previously edited', () => {
@@ -144,15 +148,15 @@ describe('Post Editor', () => {
             .should('have.value', 'Test Post') // checking for original value first
             .clear()
             .type('This is some title that should be reverted');
+
           cy.get('@articleForm')
             .findByLabelText(/^Post Tags$/i)
             .as('postTags')
             .should('have.value', 'beginner, ruby, go') // checking for original value first
             .clear()
             .type('tag1, tag2, tag3');
-          cy.get('@articleForm')
-            .findByLabelText(/^Post Content$/i)
-            .as('postContent')
+
+          getPostContent()
             .should('have.value', `This is a Test Post's contents.`) // checking for original value first
             .clear()
             .type('This is some text that should be reverted');
@@ -161,8 +165,10 @@ describe('Post Editor', () => {
             'have.value',
             'This is some title that should be reverted',
           );
+
           cy.get('@postTags').should('have.value', 'tag1, tag2, tag3');
-          cy.get('@postContent').should(
+
+          getPostContent().should(
             'have.value',
             'This is some text that should be reverted',
           );
@@ -172,7 +178,7 @@ describe('Post Editor', () => {
           // The post editor should reset to it's saved version from the server that was initially loaded into the editor.
           cy.get('@postTitle').should('have.value', 'Test Post');
           cy.get('@postTags').should('have.value', 'beginner, ruby, go');
-          cy.get('@postContent').should(
+          getPostContent().should(
             'have.value',
             `This is a Test Post's contents.`,
           );
