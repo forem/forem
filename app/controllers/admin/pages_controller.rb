@@ -10,8 +10,8 @@ module Admin
     end
 
     def new
-      if params[:slug]
-        prepopulate_new_form params[:slug]
+      if (slug = params[:slug])
+        prepopulate_new_form(slug)
       else
         @page = Page.new
       end
@@ -70,7 +70,7 @@ module Admin
       @page = case slug
               when "code-of-conduct"
                 Page.new(
-                  slug: params[:slug],
+                  slug: slug,
                   body_html: html,
                   title: "Code of Conduct",
                   description: "A page that describes how to behave on this platform",
@@ -78,7 +78,7 @@ module Admin
                 )
               when "privacy"
                 Page.new(
-                  slug: params[:slug],
+                  slug: slug,
                   body_html: html,
                   title: "Privacy Policy",
                   description: "A page that describes the privacy policy",
@@ -86,7 +86,7 @@ module Admin
                 )
               when "terms"
                 Page.new(
-                  slug: params[:slug],
+                  slug: slug,
                   body_html: html,
                   title: "Terms of Use",
                   description: "A page that describes the terms of use for the application",

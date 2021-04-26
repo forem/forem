@@ -117,7 +117,7 @@ module Search
 
       def process_hashes(indexing_hashes)
         indexing_hashes.in_groups_of(1000, false).flat_map do |hashes|
-          indexing_chunks(hashes).select(&:any?).map { |chunk| Search::Client.bulk(body: chunk) }
+          indexing_chunks(hashes).filter_map { |chunk| Search::Client.bulk(body: chunk) }
         end
       end
 

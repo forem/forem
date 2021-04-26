@@ -2,7 +2,8 @@ require "rails_helper"
 require Rails.root.join(
   "lib/data_update_scripts/20210423155327_migrate_relevant_fields_from_users_to_users_settings.rb",
 )
-
+# rubocop:disable Lint/EmptyBlock
+# rubocop:disable RSpec/RepeatedExample
 describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
   before do
     UsersSetting.destroy_all
@@ -47,3 +48,5 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
     end
   end
 end
+# rubocop:enable Lint/EmptyBlock
+# rubocop:enable RSpec/RepeatedExample

@@ -42,4 +42,23 @@ describe('View listing', () => {
     cy.get('@listingsModal').findByRole('button', { name: /Close/ }).click();
     cy.get('@listingTitle').should('have.focus');
   });
+
+  it('redirects when a logged out user contacts via connect', () => {
+    cy.intercept(
+      '/search/listings?category=&listing_search=&page=0&per_page=75&tag_boolean_mode=all',
+      { fixture: 'search/listings.json' },
+    );
+
+    cy.visit('/listings');
+    cy.findByRole('link', { name: 'Another listing' }).as('listingTitle');
+    cy.get('@listingTitle').click();
+    cy.findByTestId('listings-modal').as('listingsModal');
+    cy.findByTestId('listing-new-message').type('Hello there!');
+    cy.get('@listingsModal')
+      .findByRole('button', { name: /Send/ })
+      .as('sendButton');
+    cy.get('@sendButton').focus().click();
+    cy.url().should('include', '/connect/@admin_mcadmin');
+    cy.findByTestId('login-form').should('exist');
+  });
 });
