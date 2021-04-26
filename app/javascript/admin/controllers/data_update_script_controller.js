@@ -1,6 +1,8 @@
 import { Controller } from 'stimulus';
 
 export default class DataUpdateScriptController extends Controller {
+  static values = { url: String };
+
   forceRun(event) {
     event.preventDefault();
     const id = event.target.dataset.value;
@@ -21,7 +23,7 @@ export default class DataUpdateScriptController extends Controller {
   }
 
   forceRunScript(id, statusColumn, runAtColumn) {
-    fetch(`/admin/data_update_scripts/${id}/force_run`, {
+    fetch(`${this.urlValue}/${id}/force_run`, {
       method: 'POST',
       headers: {
         'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
@@ -104,7 +106,7 @@ export default class DataUpdateScriptController extends Controller {
   }
 
   checkForUpdatedDataScript(id, runAtColumn, statusColumn) {
-    return fetch(`/admin/data_update_scripts/${id}`, {
+    return fetch(`${this.urlValue}/${id}`, {
       method: 'GET',
       headers: {
         'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
