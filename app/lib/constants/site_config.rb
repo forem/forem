@@ -118,30 +118,6 @@ module Constants
         description: "Community Moderators Newsletter ID",
         placeholder: ""
       },
-      mascot_footer_image_url: {
-        description: "Special cute mascot image used in the footer.",
-        placeholder: IMAGE_PLACEHOLDER
-      },
-      mascot_footer_image_width: {
-        description: "The footer mascot width will resized to this value, defaults to 52",
-        placeholder: ""
-      },
-      mascot_footer_image_height: {
-        description: "The footer mascot height will be resized to this value, defaults to 120",
-        placeholder: ""
-      },
-      mascot_image_description: {
-        description: "Used as the alt text for the mascot image",
-        placeholder: ""
-      },
-      mascot_image_url: {
-        description: "Used as the mascot image.",
-        placeholder: IMAGE_PLACEHOLDER
-      },
-      mascot_user_id: {
-        description: "User ID of the Mascot account",
-        placeholder: "1"
-      },
       meta_keywords: {
         description: "",
         placeholder: "List of valid keywords: comma separated, letters only e.g. engineering, development"

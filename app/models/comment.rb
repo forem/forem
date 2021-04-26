@@ -287,7 +287,7 @@ class Comment < ApplicationRecord
         user.registered_at > 5.days.ago
 
     Reaction.create(
-      user_id: SiteConfig.mascot_user_id,
+      user_id: Settings::Mascot.mascot_user_id,
       reactable_id: id,
       reactable_type: "Comment",
       category: "vomit",
@@ -297,7 +297,7 @@ class Comment < ApplicationRecord
 
     user.add_role(:suspended)
     Note.create(
-      author_id: SiteConfig.mascot_user_id,
+      author_id: Settings::Mascot.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
       reason: "automatic_suspend",

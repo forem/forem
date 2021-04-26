@@ -55,9 +55,9 @@
       <% else %>
         <div class="p-6 m:p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center flex-1">
           <div>
-            <% if SiteConfig.mascot_image_url.present? %>
-              <% image_url = Images::Optimizer.call(SiteConfig.mascot_image_url, width: 300, crop: "imagga_scale") %>
-              <%= image_tag(image_url, class: "sloan mb-7", alt: SiteConfig.mascot_image_description.to_s) %>
+            <% if Settings::Mascot.image_url.present? %>
+              <% image_url = Images::Optimizer.call(Settings::Mascot.image_url, width: 300, crop: "imagga_scale") %>
+              <%= image_tag(image_url, class: "sloan mb-7", alt: Settings::Mascot.image_description.to_s) %>
             <% end %>
             <p class="mb-6">This is where you can manage your posts, but you haven't written anything yet.</p>
             <p><a href="/new" class="crayons-btn crayons-btn--l">Write your first post now</a></p>
