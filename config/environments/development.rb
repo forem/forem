@@ -14,9 +14,8 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
-    DEFAULT_EXPIRATION = 1.hour.to_i.freeze
-    config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"], expires_in: DEFAULT_EXPIRATION }
-
+  DEFAULT_EXPIRATION = 1.hour.to_i.freeze
+  config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"], expires_in: DEFAULT_EXPIRATION }
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
