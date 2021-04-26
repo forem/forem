@@ -4,26 +4,6 @@ module Constants
     SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
     DETAILS = {
-      community_copyright_start_year: {
-        description: "Used to mark the year this forem was started.",
-        placeholder: Time.zone.today.year.to_s
-      },
-      community_description: {
-        description: "Used in meta description tags etc.",
-        placeholder: "A fabulous community of kind and welcoming people."
-      },
-      community_emoji: {
-        description: "Used in the title tags across the site alongside the community name",
-        placeholder: ""
-      },
-      community_member_label: {
-        description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
-        placeholder: "user"
-      },
-      community_name: {
-        description: "Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.",
-        placeholder: "New Forem"
-      },
       credit_prices_in_cents: {
         small: {
           description: "Price for small credit purchase (<10 credits).",
@@ -48,14 +28,6 @@ module Constants
       email_addresses: {
         description: "Email address",
         placeholder: ""
-      },
-      experience_low: {
-        description: "The label for the bottom of the experience level range of a post",
-        placeholder: "Total Newbies"
-      },
-      experience_high: {
-        description: "The label for the top of the experience level range of a post",
-        placeholder: "Senior Devs"
       },
       favicon_url: {
         description: "Used as the site favicon",
@@ -151,10 +123,6 @@ module Constants
         description: "Determines the heading text of the main sponsors sidebar above the list of sponsors.",
         placeholder: "Community Sponsors"
       },
-      staff_user_id: {
-        description: "Account ID which acts as automated 'staff'— used principally for welcome thread.",
-        placeholder: ""
-      },
       stripe_api_key: {
         description: "Secret Stripe key for receiving payments. " \
         "See: https://stripe.com/docs/keys",
@@ -183,10 +151,6 @@ module Constants
       tag_feed_minimum_score: {
         description: "Minimum score needed for a post to show up on default tag page.",
         placeholder: "0"
-      },
-      tagline: {
-        description: "Used in signup modal.",
-        placeholder: "We're a place where coders share, stay up-to-date and grow their careers."
       },
       twitter_hashtag: {
         description: "Used as the twitter hashtag of the community",

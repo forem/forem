@@ -31,7 +31,7 @@ RSpec.describe "Onboardings", type: :request do
       sign_in user
       get onboarding_url
 
-      expect(response.body).to include(SiteConfig.community_description)
+      expect(response.body).to include(Settings::Community.community_description)
       expect(response.body).to include(safe_logo_url(SiteConfig.secondary_logo_url))
       expect(response.body).to include(SiteConfig.onboarding_background_image)
     end

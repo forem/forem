@@ -168,11 +168,11 @@ module ApplicationHelper
   end
 
   def community_name
-    @community_name ||= SiteConfig.community_name
+    @community_name ||= Settings::Community.community_name
   end
 
   def community_emoji
-    @community_emoji ||= SiteConfig.community_emoji
+    @community_emoji ||= Settings::Community.community_emoji
   end
 
   def release_adjusted_cache_key(path)
@@ -183,7 +183,7 @@ module ApplicationHelper
   end
 
   def copyright_notice
-    start_year = SiteConfig.community_copyright_start_year.to_s
+    start_year = Settings::Community.copyright_start_year.to_s
     current_year = Time.current.year.to_s
     return start_year if current_year == start_year
     return current_year if start_year.strip.length < 4 # 978 is not a valid year!
@@ -206,7 +206,7 @@ module ApplicationHelper
   end
 
   def community_members_label
-    SiteConfig.community_member_label.pluralize
+    Settings::Community.member_label.pluralize
   end
 
   def meta_keywords_default

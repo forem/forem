@@ -36,41 +36,42 @@
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <fieldset class="grid gap-4">
 
-          <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
+          <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key, settings_model| %>
             <%# we need to list the config as separate fields if the data structure is a Hash %>
-            <% if SiteConfig.public_send(config_key).is_a?(Hash) %>
+            <% placeholder_module = Constants.const_get(settings_model.name) %>
+            <% if settings_model.public_send(config_key).is_a?(Hash) %>
               <%= admin_config_label config_key.to_s %>
               <div class="form-group">
                 <%= f.fields_for config_key do |a_field| %>
-                  <% SiteConfig.public_send(config_key).each do |key, value| %>
+                  <% settings_model.public_send(config_key).each do |key, value| %>
                     <div class="crayons-field">
                       <%= admin_config_label key.to_s %>
                       <%= admin_config_description "#{key} #{config_key.to_s.tr! '_', ' '}" %>
                       <%= a_field.text_field key,
                                              class: "crayons-textfield",
-                                             value: SiteConfig.public_send(config_key)[key],
-                                             placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+                                             value: settings_model.public_send(config_key)[key],
+                                             placeholder: placeholer_module::DETAILS[config_key][:placeholder] %>
                     </div>
                   <% end %>
                 <% end %>
               </div>
-            <% elsif SiteConfig.public_send(config_key).is_a?(Array) %>
+            <% elsif settings_model.public_send(config_key).is_a?(Array) %>
               <div class="crayons-field">
                 <%= admin_config_label config_key %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[config_key][:description] %>
+                <%= admin_config_description placeholder_module::DETAILS[config_key][:description] %>
                 <%= f.text_field config_key,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.public_send(config_key).join(","),
-                                 placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+                                 value: settings_model.public_send(config_key).join(","),
+                                 placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
               </div>
             <% else %>
               <div class="crayons-field">
                 <%= admin_config_label config_key %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[config_key][:description] %>
+                <%= admin_config_description placeholder_module::DETAILS[config_key][:description] %>
                 <%= f.text_field config_key,
                                  class: "form-control",
-                                 value: SiteConfig.public_send(config_key),
-                                 placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+                                 value: settings_model.public_send(config_key),
+                                 placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
               </div>
             <% end %>
           <% end %>
@@ -453,7 +454,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::Community.new, url: admin_settings_communities_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -465,84 +466,66 @@
           <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
             <fieldset class="grid gap-4">
               <div class="crayons-field">
-                <%= admin_config_label :community_name %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:community_name][:description] %>
+                <%= admin_config_label :community_name, model: Settings::Community %>
+                <%= admin_config_description Constants::Settings::Community::DETAILS[:community_name][:description] %>
                 <%= f.text_field :community_name,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.community_name,
-                                 placeholder: Constants::SiteConfig::DETAILS[:community_name][:placeholder] %>
+                                 value: Settings::Community.community_name,
+                                 placeholder: Constants::Settings::Community::DETAILS[:community_name][:placeholder] %>
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :community_emoji %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:community_emoji][:description] %>
+                <%= admin_config_label :community_emoji, model: Settings::Community %>
+                <%= admin_config_description Constants::Settings::Community::DETAILS[:community_emoji][:description] %>
                 <%= f.text_field :community_emoji,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.community_emoji,
-                                 placeholder: Constants::SiteConfig::DETAILS[:community_emoji][:placeholder] %>
+                                 value: Settings::Community.community_emoji,
+                                 placeholder: Constants::Settings::Community::DETAILS[:community_emoji][:placeholder] %>
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :tagline %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:tagline][:description] %>
+                <%= admin_config_label :tagline, model: Settings::Community %>
+                <%= admin_config_description Constants::Settings::Community::DETAILS[:tagline][:description] %>
                 <%= f.text_field :tagline,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.tagline,
-                                 placeholder: Constants::SiteConfig::DETAILS[:tagline][:placeholder] %>
+                                 value: Settings::Community.tagline,
+                                 placeholder: Constants::Settings::Community::DETAILS[:tagline][:placeholder] %>
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :community_description %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:community_description][:description] %>
+                <%= admin_config_label :community_description, model: Settings::Community %>
+                <%= admin_config_description Constants::Settings::Community::DETAILS[:community_description][:description] %>
                 <%= f.text_field :community_description,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.community_description,
-                                 placeholder: Constants::SiteConfig::DETAILS[:community_description][:placeholder] %>
+                                 value: Settings::Community.community_description,
+                                 placeholder: Constants::Settings::Community::DETAILS[:community_description][:placeholder] %>
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :community_member_label %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:community_member_label][:description] %>
-                <%= f.text_field :community_member_label,
+                <%= admin_config_label :member_label, model: Settings::Community %>
+                <%= admin_config_description Constants::Settings::Community::DETAILS[:member_label][:description] %>
+                <%= f.text_field :member_label,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.community_member_label,
-                                 placeholder: Constants::SiteConfig::DETAILS[:community_member_label][:placeholder] %>
+                                 value: Settings::Community.member_label,
+                                 placeholder: Constants::Settings::Community::DETAILS[:member_label][:placeholder] %>
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :community_copyright_start_year %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:community_copyright_start_year][:description] %>
-                <%= f.text_field :community_copyright_start_year,
+                <%= admin_config_label :copyright_start_year, model: Settings::Community %>
+                <%= admin_config_description Constants::Settings::Community::DETAILS[:copyright_start_year][:description] %>
+                <%= f.text_field :copyright_start_year,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.community_copyright_start_year,
-                                 placeholder: Constants::SiteConfig::DETAILS[:community_copyright_start_year][:placeholder] %>
+                                 value: Settings::Community.copyright_start_year,
+                                 placeholder: Constants::Settings::Community::DETAILS[:copyright_start_year][:placeholder] %>
               </div>
 
               <div class="crayons-field">
-                <%= admin_config_label :staff_user_id %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:staff_user_id][:description] %>
+                <%= admin_config_label :staff_user_id, model: Settings::Community %>
+                <%= admin_config_description Constants::Settings::Community::DETAILS[:staff_user_id][:description] %>
                 <%= f.text_field :staff_user_id,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.staff_user_id,
-                                 placeholder: Constants::SiteConfig::DETAILS[:staff_user_id][:placeholder] %>
-              </div>
-
-              <div class="crayons-field">
-                <%= admin_config_label :experience_low %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:experience_low][:description] %>
-                <%= f.text_field :experience_low,
-                                 class: "crayons-texfield",
-                                 value: SiteConfig.experience_low,
-                                 placeholder: Constants::SiteConfig::DETAILS[:experience_low][:placeholder] %>
-              </div>
-
-              <div class="crayons-field">
-                <%= admin_config_label :experience_high %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:experience_high][:description] %>
-                <%= f.text_field :experience_high,
-                                 class: "crayons-texfield",
-                                 value: SiteConfig.experience_high,
-                                 placeholder: Constants::SiteConfig::DETAILS[:experience_high][:placeholder] %>
+                                 value: Settings::Community.staff_user_id,
+                                 placeholder: Constants::Settings::Community::DETAILS[:staff_user_id][:placeholder] %>
               </div>
               <%= render "form_submission", f: f %>
             </fieldset>

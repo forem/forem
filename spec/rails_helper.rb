@@ -184,7 +184,7 @@ RSpec.configure do |config|
               "User-Agent" => "Ruby"
             }).to_return(status: 200, body: "", headers: {})
 
-    allow(SiteConfig).to receive(:community_description).and_return("Some description")
+    allow(Settings::Community).to receive(:community_description).and_return("Some description")
     allow(SiteConfig).to receive(:public).and_return(true)
     allow(SiteConfig).to receive(:waiting_on_first_user).and_return(false)
 

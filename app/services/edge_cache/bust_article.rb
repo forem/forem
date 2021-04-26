@@ -22,7 +22,7 @@ module EdgeCache
       bust_tag_pages(cache_bust, article)
     end
 
-    def self.paths_for(article)
+    def self.paths_for(article, &block)
       paths = [
         article.path,
         "/#{article.user.username}",
@@ -35,9 +35,7 @@ module EdgeCache
         "/api/articles/#{article.id}",
       ]
 
-      paths.each do |path|
-        yield path
-      end
+      paths.each(&block)
 
       yield "/#{article.organization.slug}" if article.organization.present?
 

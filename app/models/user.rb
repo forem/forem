@@ -308,7 +308,7 @@ class User < ApplicationRecord
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   def self.dev_account
-    find_by(id: SiteConfig.staff_user_id)
+    find_by(id: Settings::Community.staff_user_id)
   end
 
   def self.mascot_account
