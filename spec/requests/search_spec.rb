@@ -235,7 +235,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
     context "when using PostgreSQL for the homepage" do
       before do
-        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage).and_return(true)
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage, anything).and_return(true)
       end
 
       it "does not call Homepage::FetchArticles when class_name is Article with a search term", :aggregate_failures do

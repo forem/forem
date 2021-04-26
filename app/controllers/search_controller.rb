@@ -125,12 +125,18 @@ class SearchController < ApplicationController
   def feed_content
     class_name = feed_params[:class_name].to_s.inquiry
 
+    enable_search_2_homepage = (
+      class_name.Article? &&
+      feed_params[:search_fields].blank? &&
+      FeatureFlag.enabled?(:search_2_homepage, current_user)
+    )
+
     result =
       if class_name.blank?
         # If we are in the main feed and not filtering by type return
         # all articles, podcast episodes, and users
         feed_content_search.concat(user_search)
-      elsif class_name.Article? && feed_params[:search_fields].blank? && FeatureFlag.enabled?(:search_2_homepage)
+      elsif enable_search_2_homepage
         # NOTE: published_at is sent from the frontend in the following ES-friendly format:
         # => {"published_at"=>{"gte"=>"2021-04-06T14:53:23Z"}}
         published_at_gte = feed_params.dig(:published_at, :gte)
