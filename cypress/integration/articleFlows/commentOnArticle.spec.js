@@ -9,6 +9,7 @@ describe('Comment on articles', () => {
 
   const getCommentDropdown = () => cy.findByRole('listbox');
 
+  // Check for the wrapper's test ID first, to make sure we don't grab a reference to a textarea that is being replaced
   const getCommentPlainTextBox = () =>
     cy.findByRole('textbox', {
       name: /^Add a comment to the discussion$/i,
@@ -51,6 +52,9 @@ describe('Comment on articles', () => {
         cy.findByRole('textbox', {
           name: /^Add a comment to the discussion$/i,
         }).click();
+
+        // Make sure the comment box has been substituted with the autocomplete one
+        cy.findByTestId('autocomplete-wrapper');
 
         // Get a handle to the newly substituted textbox
         getCommentPlainTextBox();
@@ -104,6 +108,9 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).click();
 
+        // Make sure the comment box has been substituted with the autocomplete one
+        cy.findByTestId('autocomplete-wrapper');
+
         // Get a handle to the newly substituted textbox
         getCommentPlainTextBox();
         getCommentPlainTextBox().type('Some text @s');
@@ -131,6 +138,9 @@ describe('Comment on articles', () => {
         cy.findByRole('textbox', {
           name: /^Add a comment to the discussion$/i,
         }).click();
+
+        // Make sure the comment box has been substituted with the autocomplete one
+        cy.findByTestId('autocomplete-wrapper');
 
         // Get a handle to the newly substituted textbox
         getCommentPlainTextBox();
@@ -162,6 +172,9 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).click();
 
+        // Make sure the comment box has been substituted with the autocomplete one
+        cy.findByTestId('autocomplete-wrapper');
+
         // Get a handle to the newly substituted textbox
         getCommentPlainTextBox();
         getCommentPlainTextBox().type('Some text @s');
@@ -191,6 +204,9 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).click();
 
+        // Make sure the comment box has been substituted with the autocomplete one
+        cy.findByTestId('autocomplete-wrapper');
+
         // Get a handle to the newly substituted textbox
         getCommentPlainTextBox();
         getCommentPlainTextBox().type('Some text @se');
@@ -219,6 +235,9 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).click();
 
+        // Make sure the comment box has been substituted with the autocomplete one
+        cy.findByTestId('autocomplete-wrapper');
+
         // Get a handle to the newly substituted textbox
         getCommentPlainTextBox();
         getCommentPlainTextBox().type('Some text @s');
@@ -246,6 +265,9 @@ describe('Comment on articles', () => {
         cy.findByRole('textbox', {
           name: /^Add a comment to the discussion$/i,
         }).click();
+
+        // Make sure the comment box has been substituted with the autocomplete one
+        cy.findByTestId('autocomplete-wrapper');
 
         // Get a handle to the newly substituted textbox
         getCommentPlainTextBox();
@@ -279,6 +301,9 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).click();
 
+        // Make sure the comment box has been substituted with the autocomplete one
+        cy.findByTestId('autocomplete-wrapper');
+
         // Get a handle to the newly substituted textbox
         getCommentPlainTextBox();
         getCommentPlainTextBox().type('Some text @s');
@@ -304,11 +329,18 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).click();
 
+        // Make sure the comment box has been substituted with the autocomplete one
+        cy.findByTestId('autocomplete-wrapper');
+
         // Create a comment to test replying to
         getCommentPlainTextBox().type('first comment');
         cy.findByRole('button', { name: /^Submit$/i }).click();
 
         cy.findByRole('link', { name: /^Reply$/i }).click();
+
+        // Make sure we wait until the reply comment box has been substituted with the autocomplete one
+        cy.findAllByTestId('autocomplete-wrapper').should('have.length', 2);
+
         getReplyPlainCommentBox().click();
         getReplyPlainCommentBox().type('Some text @s');
 
@@ -338,6 +370,10 @@ describe('Comment on articles', () => {
         cy.findByRole('textbox', {
           name: /^Add a comment to the discussion$/i,
         }).click();
+
+        // Make sure the comment box has been substituted with the autocomplete one
+        cy.findByTestId('autocomplete-wrapper');
+
         // Get a handle to the newly substituted textbox
         getCommentPlainTextBox();
         getCommentPlainTextBox().type('first comment');
