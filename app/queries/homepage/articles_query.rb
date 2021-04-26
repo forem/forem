@@ -28,6 +28,8 @@ module Homepage
       approved: nil,
       published_at: nil,
       user_id: nil,
+      organization_id: nil,
+      tags: [],
       sort_by: nil,
       sort_direction: nil,
       page: 0,
@@ -38,6 +40,8 @@ module Homepage
       @approved = approved
       @published_at = published_at
       @user_id = user_id
+      @organization_id = organization_id
+      @tags = tags.presence || []
 
       @sort_by = sort_by
       @sort_direction = sort_direction
@@ -52,12 +56,22 @@ module Homepage
 
     private
 
-    attr_reader :relation, :approved, :published_at, :user_id, :sort_by, :sort_direction, :page, :per_page
+    attr_reader :relation, :approved, :published_at, :user_id, :organization_id, :tags, :sort_by, :sort_direction,
+                :page, :per_page
 
     def filter
       @relation = @relation.where(approved: approved) unless approved.nil?
       @relation = @relation.where(published_at: published_at) if published_at.present?
       @relation = @relation.where(user_id: user_id) if user_id.present?
+      @relation = @relation.where(organization_id: organization_id) if organization_id.present?
+
+      # as tags are in `OR` mode we can't use ActiveRecord's `.or()` because it
+      # would put all the previous filters in `OR` mode with tags, but what we need
+      # is to only consider tags as a `OR` sub-condition
+      if tags.present?
+        conditions = tags.map { |tag| relation.sanitize_sql_array(["cached_tag_list LIKE ?", "%#{tag}%"]) }
+        @relation = @relation.where(conditions.join(" OR "))
+      end
 
       relation
     end

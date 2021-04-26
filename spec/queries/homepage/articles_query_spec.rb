@@ -66,8 +66,65 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         article_user1 = create(:article)
         article_user2 = create(:article, user: create(:user))
 
-        expect(described_class.call(user_id: article_user1.user_id).ids).to include(article_user1.user_id)
-        expect(described_class.call(user_id: article_user1.user_id).ids).not_to include(article_user2.user_id)
+        expect(described_class.call(user_id: article_user1.user_id).ids).to include(article_user1.id)
+        expect(described_class.call(user_id: article_user1.user_id).ids).not_to include(article_user2.id)
+      end
+    end
+
+    describe "organization_id" do
+      it "returns no articles if the organization id does not exist" do
+        expect(described_class.call(organization_id: 9999)).to be_empty
+      end
+
+      it "filters articles belonging to the given organization id", :aggregate_failures do
+        org1 = create(:organization)
+        org2 = create(:organization)
+        article_org1 = create(:article, organization: org1)
+        article_org2 = create(:article, organization: org2)
+        article_no_org = create(:article)
+
+        expect(described_class.call(organization_id: org1.id).ids).to include(article_org1.id)
+        expect(described_class.call(organization_id: org1.id).ids).not_to include(article_org2.id)
+        expect(described_class.call(organization_id: org1.id).ids).not_to include(article_no_org.id)
+      end
+    end
+
+    describe "tags" do
+      let(:article1) { create(:article, with_tags: false) }
+      let(:article2) { create(:article, with_tags: false) }
+
+      it "returns no articles if none of the tags match" do
+        article1.tag_list.add(:beginners)
+        article1.save
+        article2.tag_list.add(:beginners)
+        article2.save
+
+        expect(described_class.call(tags: [:ruby])).to be_empty
+      end
+
+      it "filters articles matching the tag" do
+        article1.tag_list.add(:beginners)
+        article1.save
+
+        expect(described_class.call(tags: [:beginners]).ids).to eq([article1.id])
+      end
+
+      it "filters any article matching any of the tags in the params", :aggregate_failures do
+        article1.tag_list.add(:beginners)
+        article1.save
+        article2.tag_list.add(:ruby)
+        article2.save
+
+        expect(described_class.call(tags: %i[beginners python]).ids).to eq([article1.id])
+      end
+
+      it "filters all articles match any of the tags in the params" do
+        article1.tag_list.add(:beginners)
+        article1.save
+        article2.tag_list.add(:ruby)
+        article2.save
+
+        expect(described_class.call(tags: %i[beginners ruby]).ids).to match_array([article1.id, article2.id])
       end
     end
 
