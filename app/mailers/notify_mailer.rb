@@ -46,7 +46,7 @@ class NotifyMailer < ApplicationMailer
 
     @unread_notifications_count = @user.notifications.unread.count
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_unread_notifications)
-    subject = "🔥 You have #{@unread_notifications_count} unread notifications on #{SiteConfig.community_name}"
+    subject = "🔥 You have #{@unread_notifications_count} unread notifications on #{Settings::Community.community_name}"
     mail(to: @user.email, subject: subject)
   end
 
@@ -66,7 +66,7 @@ class NotifyMailer < ApplicationMailer
   end
 
   def feedback_response_email
-    mail(to: params[:email_to], subject: "Thanks for your report on #{SiteConfig.community_name}")
+    mail(to: params[:email_to], subject: "Thanks for your report on #{Settings::Community.community_name}")
   end
 
   def feedback_message_resolution_email
@@ -108,7 +108,7 @@ class NotifyMailer < ApplicationMailer
   def account_deleted_email
     @name = params[:name]
 
-    subject = "#{SiteConfig.community_name} - Account Deletion Confirmation"
+    subject = "#{Settings::Community.community_name} - Account Deletion Confirmation"
     mail(to: params[:email], subject: subject)
   end
 
@@ -125,7 +125,7 @@ class NotifyMailer < ApplicationMailer
     @name = user.name
     @token = params[:token]
 
-    subject = "#{SiteConfig.community_name} - Account Deletion Requested"
+    subject = "#{Settings::Community.community_name} - Account Deletion Requested"
     mail(to: user.email, subject: subject)
   end
 
@@ -149,13 +149,13 @@ class NotifyMailer < ApplicationMailer
   def trusted_role_email
     @user = params[:user]
 
-    subject = "Congrats! You're now a \"trusted\" user on #{SiteConfig.community_name}!"
+    subject = "Congrats! You're now a \"trusted\" user on #{Settings::Community.community_name}!"
     mail(to: @user.email, subject: subject)
   end
 
   def subjects
     {
-      new_follower_email: "just followed you on #{SiteConfig.community_name}".freeze
+      new_follower_email: "just followed you on #{Settings::Community.community_name}".freeze
     }.freeze
   end
 end

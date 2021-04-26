@@ -94,7 +94,7 @@ gem "redis-rack", "2.0.6" # Redis Store for Rack applications
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
-gem "rolify", "~> 5.3" # Very simple Roles library
+gem "rolify", "~> 6.0" # Very simple Roles library
 gem "rouge", "~> 3.26" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3

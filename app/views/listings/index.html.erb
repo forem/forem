@@ -2,7 +2,7 @@
   <% title "Listings" %>
 
   <link rel="canonical" href="<%= app_url(request.path) %>" />
-  <meta name="description" content="<%= SiteConfig.community_description %>">
+  <meta name="description" content="<%= Settings::Community.community_description %>">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="website" />
@@ -17,10 +17,10 @@
     <meta name="twitter:image:src" content="<%= listing_social_image_url @displayed_listing %>">
   <% else %>
     <meta property="og:title" content="Listings" />
-    <meta property="og:description" content="<%= SiteConfig.community_description %>" />
+    <meta property="og:description" content="<%= Settings::Community.community_description %>" />
     <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
     <meta name="twitter:title" content="Listings">
-    <meta name="twitter:description" content="<%= SiteConfig.community_description %>">
+    <meta name="twitter:description" content="<%= Settings::Community.community_description %>">
     <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <% end %>
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">

@@ -3,8 +3,8 @@ module Search
   class PostgresCommentSerializer < ApplicationSerializer
     attribute :id, &:search_id
 
-    attributes :path do |comment, params|
-      user = params[:users][comment.user_id]
+    attributes :path do |comment|
+      user = comment.user
 
       if user
         "/#{user.username}/comment/#{comment.id_code_generated}"
@@ -19,7 +19,7 @@ module Search
 
     attribute :class_name, -> { "Comment" }
 
-    attribute :highlight do |comment, _params|
+    attribute :highlight do |comment|
       {
         body_text: [comment.pg_search_highlight]
       }
@@ -40,9 +40,14 @@ module Search
 
     # NOTE: not using the `NestedUserSerializer` to avoid hitting Redis to
     # fetch the cached value
-    attribute :user do |comment, params|
-      user = params[:users][comment.user_id]
-      user.slice(:name, :profile_image_90, :username).symbolize_keys
+    attribute :user do |comment|
+      user = comment.user
+
+      if user
+        user.slice(:name, :profile_image_90, :username).symbolize_keys
+      else
+        {}
+      end
     end
   end
 end

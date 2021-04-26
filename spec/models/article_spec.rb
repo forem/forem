@@ -55,14 +55,14 @@ RSpec.describe Article, type: :model do
 
     describe "::admin_published_with" do
       it "includes mascot-published articles" do
-        allow(SiteConfig).to receive(:mascot_user_id).and_return(3)
+        allow(Settings::Mascot).to receive(:mascot_user_id).and_return(3)
         user = create(:user, id: 3)
         create(:article, user: user, tags: "challenge")
         expect(described_class.admin_published_with("challenge").count).to eq(1)
       end
 
       it "includes staff-user-published articles" do
-        allow(SiteConfig).to receive(:staff_user_id).and_return(3)
+        allow(Settings::Community).to receive(:staff_user_id).and_return(3)
         user = create(:user, id: 3)
         create(:article, user: user, tags: "challenge")
         expect(described_class.admin_published_with("challenge").count).to eq(1)
@@ -908,7 +908,7 @@ RSpec.describe Article, type: :model do
 
     describe "spam" do
       before do
-        allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+        allow(Settings::Mascot).to receive(:mascot_user_id).and_return(user.id)
         allow(SiteConfig).to receive(:spam_trigger_terms).and_return(
           ["yahoomagoo gogo", "testtestetest", "magoo.+magee"],
         )

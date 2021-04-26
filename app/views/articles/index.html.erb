@@ -6,19 +6,19 @@
      ) %>
 
   <link rel="canonical" href="<%= app_url(request.path) %>" />
-  <meta name="description" content="<%= SiteConfig.community_description %>">
+  <meta name="description" content="<%= Settings::Community.community_description %>">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= app_url(request.path) %>" />
   <meta property="og:title" content="<%= title_with_timeframe(page_title: community_name, timeframe: params[:timeframe]) %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
-  <meta property="og:description" content="<%= SiteConfig.community_description %>" />
+  <meta property="og:description" content="<%= Settings::Community.community_description %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<%= title_with_timeframe(page_title: community_name, timeframe: params[:timeframe]) %>">
-  <meta name="twitter:description" content="<%= SiteConfig.community_description %>">
+  <meta name="twitter:description" content="<%= Settings::Community.community_description %>">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
   <%= auto_discovery_link_tag(:rss, app_url("feed"), title: "#{community_name} RSS Feed") %>

@@ -19,6 +19,8 @@ module Homepage
 
       flare_tag_names = ::Constants::Tags::FLARE_TAG_NAMES.to_set
       articles.pluck(:id, :cached_tag_list).map do |article_id, cached_tag_list|
+        next if cached_tag_list.blank?
+
         tags = cached_tag_list.split(", ")
         flare_tag = flare_tag_names.intersection(tags).first
         next if flare_tag.blank?

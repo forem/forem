@@ -4,13 +4,13 @@ module VerifySetupCompleted
 
   module_function
 
-  MANDATORY_CONFIGS = %i[
-    community_name
-    community_description
+  MANDATORY_CONFIGS = {
+    community_name: Settings::Community,
+    community_description: Settings::Community,
 
-    suggested_tags
-    suggested_users
-  ].freeze
+    suggested_tags: SiteConfig,
+    suggested_users: SiteConfig
+  }.freeze
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
@@ -23,7 +23,9 @@ module VerifySetupCompleted
   end
 
   def missing_configs
-    @missing_configs ||= MANDATORY_CONFIGS.reject { |config| SiteConfig.public_send(config).present? }
+    @missing_configs ||= MANDATORY_CONFIGS.reject do |config, settings_model|
+      settings_model.public_send(config).present?
+    end.keys
   end
 
   private

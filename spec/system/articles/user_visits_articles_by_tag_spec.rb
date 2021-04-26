@@ -37,7 +37,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       end
 
       it "shows the correct articles" do
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(article3.title)
           expect(page).not_to have_text(article2.title)
