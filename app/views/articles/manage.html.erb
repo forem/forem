@@ -1,4 +1,5 @@
 <% title "Manage #{@article.title}" %>
+<main id="main-content">
   <div class="dashboard-manage-header">
     <div class="dashboard-manage-header-inner-container">
       <div class="dashboard-manage-nav">
@@ -27,31 +28,32 @@
     </div>
   </div>
 
-<div class="dashboard-container crayons-layout">
-  <%= render "dashboards/dashboard_article", article: @article, organization: @article.organization, org_admin: @user.org_admin?(@article.organization), manage_view: true %>
-  <div class="single-article single-article-manage-form-wrapper">
-    <%= form_for(RatingVote.new) do |f| %>
-      <h2>Experience Level of Post</h2>
-      <%= f.hidden_field :article_id, value: @article.id %>
-      <%= f.hidden_field :group, value: "experience_level" %>
-      <span class="button-section button-section-newbie">
-        <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 1.0.to_d %>">1</button>
-        <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 2.0.to_d %>">2</button>
-        <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 3.0.to_d %>">3</button>
-      </span>
-      <span class="button-section button-section-intermediate">
-        <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 4.0.to_d %>">4</button>
-        <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 5.0.to_d %>">5</button>
-        <button value="6" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 6.0.to_d %>">6</button>
-        <button value="7" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 7.0.to_d %>">7</button>
-      </span>
-      <span class="button-section button-section-senior">
-        <button value="8" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 8.0.to_d %>">8</button>
-        <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 9.0.to_d %>">9</button>
-        <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 10.0.to_d %>">10</button>
-      </span>
-      <p>Who is this post most relevant for?</p>
-      <p><span class="scale-pod">👈 Beginner</span><span class="scale-pod">Expert 👉</span></p>
-    <% end %>
+  <div class="dashboard-container crayons-layout">
+    <%= render "dashboards/dashboard_article", article: @article, organization: @article.organization, org_admin: @user.org_admin?(@article.organization), manage_view: true %>
+    <div class="single-article single-article-manage-form-wrapper">
+      <%= form_for(RatingVote.new) do |f| %>
+        <h2>Experience Level of Post</h2>
+        <%= f.hidden_field :article_id, value: @article.id %>
+        <%= f.hidden_field :group, value: "experience_level" %>
+        <span class="button-section button-section-newbie">
+          <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 1.0.to_d %>">1</button>
+          <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 2.0.to_d %>">2</button>
+          <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 3.0.to_d %>">3</button>
+        </span>
+        <span class="button-section button-section-intermediate">
+          <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 4.0.to_d %>">4</button>
+          <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 5.0.to_d %>">5</button>
+          <button value="6" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 6.0.to_d %>">6</button>
+          <button value="7" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 7.0.to_d %>">7</button>
+        </span>
+        <span class="button-section button-section-senior">
+          <button value="8" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 8.0.to_d %>">8</button>
+          <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 9.0.to_d %>">9</button>
+          <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 10.0.to_d %>">10</button>
+        </span>
+        <p>Who is this post most relevant for?</p>
+        <p><span class="scale-pod">👈 Beginner</span><span class="scale-pod">Expert 👉</span></p>
+      <% end %>
+    </div>
   </div>
-</div>
+</main>
