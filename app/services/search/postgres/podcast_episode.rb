@@ -14,6 +14,7 @@ module Search
         "podcast_episodes.published_at",
         "podcast_episodes.quote",
         "podcast_episodes.reactions_count",
+        "podcast_episodes.slug",
         "podcast_episodes.subtitle",
         "podcast_episodes.summary",
         "podcast_episodes.title",
