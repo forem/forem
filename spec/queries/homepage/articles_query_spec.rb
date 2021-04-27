@@ -177,8 +177,8 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         article1.update_columns(comments_count: 1)
         article2.update_columns(comments_count: 2)
 
-        result = described_class.call(sort_by: :comments_count, sort_direction: :desc).ids
-        expect(result).not_to eq([article2.id, article1.id])
+        expect(Article).not_to receive(:order) # rubocop:disable RSpec/MessageSpies
+        described_class.call(sort_by: :comments_count, sort_direction: :desc).ids
       end
     end
   end
