@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_events_path, type: :request do
+RSpec.describe "admin/apps/events", type: :request do
   let(:event) { create(:event, title: "Hey") }
   let(:admin) { create(:user, :super_admin) }
   let(:params) do
@@ -15,7 +15,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_events_path, type: :re
     }
   end
 
-  describe "PUT admin/events" do
+  describe "PUT aadmin/apps/events" do
     before do
       sign_in(admin)
     end
@@ -38,7 +38,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_events_path, type: :re
     end
   end
 
-  describe "POST /admin/events" do
+  describe "POST admin/apps/events" do
     let(:post_resource) { post admin_events_path, params: params }
 
     before { sign_in admin }

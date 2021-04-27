@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_display_ads_path.to_s, type: :request do
+RSpec.describe "/admin/customization/display_ads", type: :request do
   let(:get_resource) { get admin_display_ads_path }
   let(:org) { create(:organization) }
   let(:params) do
@@ -19,13 +19,13 @@ RSpec.describe Rails.application.routes.url_helpers.admin_display_ads_path.to_s,
 
     before { sign_in user }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_display_ads_path}" do
+    describe "GET /admin/customization/display_ads" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_display_ads_path}" do
+    describe "POST /admin/customization/display_ads" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
@@ -37,14 +37,14 @@ RSpec.describe Rails.application.routes.url_helpers.admin_display_ads_path.to_s,
 
     before { sign_in super_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_display_ads_path}" do
+    describe "GET /admin/customization/display_ads" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_display_ads_path}" do
+    describe "POST /admin/customization/display_ads" do
       it "creates a new display_ad" do
         expect do
           post_resource
@@ -58,7 +58,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_display_ads_path.to_s,
       end
     end
 
-    describe "PUT #{Rails.application.routes.url_helpers.admin_display_ads_path}" do
+    describe "PUT /admin/customization/display_ads" do
       let!(:display_ad) { create(:display_ad, approved: false) }
 
       it "updates DisplayAd's approved value" do
@@ -87,14 +87,14 @@ RSpec.describe Rails.application.routes.url_helpers.admin_display_ads_path.to_s,
 
     before { sign_in single_resource_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_display_ads_path}" do
+    describe "GET /admin/customization/display_ads" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_display_ads_path}" do
+    describe "POST /admin/customization/display_ads" do
       it "creates a new display_ad" do
         expect do
           post_resource
@@ -102,7 +102,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_display_ads_path.to_s,
       end
     end
 
-    describe "PUT #{Rails.application.routes.url_helpers.admin_display_ads_path}" do
+    describe "PUT /admin/customization/display_ads" do
       let!(:display_ad) { create(:display_ad, approved: false) }
 
       it "updates DisplayAd's approved value" do
@@ -131,13 +131,13 @@ RSpec.describe Rails.application.routes.url_helpers.admin_display_ads_path.to_s,
 
     before { sign_in single_resource_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_display_ads_path}" do
+    describe "GET /admin/customization/display_ads" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_display_ads_path}" do
+    describe "POST /admin/customization/display_ads" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end

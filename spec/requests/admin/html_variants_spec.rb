@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_html_variants_path.to_s, type: :request do
+RSpec.describe "admin/customization/html_variants", type: :request do
   let(:get_resource) { get admin_html_variants_path }
   let(:params) do
     { name: "Banner", html: "<h1>Hello HTML Variants!</h1>", group: "campaign",
@@ -18,13 +18,13 @@ RSpec.describe Rails.application.routes.url_helpers.admin_html_variants_path.to_
 
     before { sign_in user }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_html_variants_path}" do
+    describe "GET admin/customization/html_variants" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_html_variants_path}" do
+    describe "POST admin/customization/html_variants" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
@@ -36,14 +36,14 @@ RSpec.describe Rails.application.routes.url_helpers.admin_html_variants_path.to_
 
     before { sign_in super_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_html_variants_path}" do
+    describe "GET admin/customization/html_variants" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_html_variants_path}" do
+    describe "POST admin/customization/html_variants" do
       it "creates a new html_variant" do
         expect do
           post_resource
@@ -51,24 +51,24 @@ RSpec.describe Rails.application.routes.url_helpers.admin_html_variants_path.to_
       end
     end
 
-    describe "PUT #{Rails.application.routes.url_helpers.admin_html_variants_path}" do
+    describe "PUT admin/customization/html_variants" do
       let!(:html_variant) { create(:html_variant, approved: false) }
 
       it "updates HtmlVariant's approved value" do
         Timecop.freeze(Time.current) do
           expect do
-            put "#{Rails.application.routes.url_helpers.admin_html_variants_path}/#{html_variant.id}", params: params
+            put "admin/customization/html_variants/#{html_variant.id}", params: params
           end.to change { html_variant.reload.approved }.from(false).to(true)
         end
       end
     end
 
-    describe "DELETE #{Rails.application.routes.url_helpers.admin_html_variants_path}/:id" do
+    describe "DELETE admin/customization/html_variants/:id" do
       let!(:html_variant) { create(:html_variant) }
 
       it "deletes the Display Ad" do
         expect do
-          delete "#{Rails.application.routes.url_helpers.admin_html_variants_path}/#{html_variant.id}"
+          delete "admin/customization/html_variants/#{html_variant.id}"
         end.to change { HtmlVariant.all.count }.by(-1)
         expect(response.body).to redirect_to Rails.application.routes.url_helpers.admin_html_variants_path.to_s
       end
@@ -80,14 +80,14 @@ RSpec.describe Rails.application.routes.url_helpers.admin_html_variants_path.to_
 
     before { sign_in single_resource_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_html_variants_path}" do
+    describe "GET admin/customization/html_variants" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_html_variants_path}" do
+    describe "POST admin/customization/html_variants" do
       it "creates a new html_variant" do
         expect do
           post_resource
@@ -95,7 +95,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_html_variants_path.to_
       end
     end
 
-    describe "PUT #{Rails.application.routes.url_helpers.admin_html_variants_path}" do
+    describe "PUT admin/customization/html_variants" do
       let!(:html_variant) { create(:html_variant, approved: false) }
 
       it "updates HtmlVariant's approved value" do
@@ -107,7 +107,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_html_variants_path.to_
       end
     end
 
-    describe "DELETE #{Rails.application.routes.url_helpers.admin_html_variants_path}/:id" do
+    describe "DELETE admin/customization/html_variants/:id" do
       let!(:html_variant) { create(:html_variant) }
 
       it "deletes the Display Ad" do
@@ -124,13 +124,13 @@ RSpec.describe Rails.application.routes.url_helpers.admin_html_variants_path.to_
 
     before { sign_in single_resource_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_html_variants_path}" do
+    describe "GET admin/customization/html_variants" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_html_variants_path}" do
+    describe "POST admin/customization/html_variants" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end

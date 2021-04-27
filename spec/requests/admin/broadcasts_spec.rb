@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_broadcasts_path, type: :request do
+RSpec.describe "admin/advanced/broadcasts", type: :request do
   let(:get_resource) { get admin_broadcasts_path }
   let(:params) { { title: "Hello!", processed_html: "<p>Hello!</p>", type_of: "Welcome", active: true } }
   let(:post_resource) { post admin_broadcasts_path, params: params }
@@ -15,13 +15,13 @@ RSpec.describe Rails.application.routes.url_helpers.admin_broadcasts_path, type:
 
     before { sign_in user }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_broadcasts_path}" do
+    describe "GET admin/advanced/broadcasts" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_broadcasts_path}" do
+    describe "POST admin/advanced/broadcasts" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
@@ -33,14 +33,14 @@ RSpec.describe Rails.application.routes.url_helpers.admin_broadcasts_path, type:
 
     before { sign_in super_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_broadcasts_path}" do
+    describe "GET admin/advanced/broadcasts" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_broadcasts_path}" do
+    describe "POST admin/advanced/broadcasts" do
       it "creates a new broadcast" do
         expect do
           post_resource
@@ -48,7 +48,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_broadcasts_path, type:
       end
     end
 
-    describe "PUT #{Rails.application.routes.url_helpers.admin_broadcasts_path}" do
+    describe "PUT admin/advanced/broadcasts" do
       let!(:broadcast) { create(:welcome_broadcast, active: false) }
 
       it "updates the Broadcast's active_status_updated_at timestamp" do
@@ -62,7 +62,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_broadcasts_path, type:
       end
     end
 
-    describe "DELETE #{Rails.application.routes.url_helpers.admin_broadcasts_path}/:id" do
+    describe "DELETE admin/advanced/broadcasts/:id" do
       let!(:broadcast) { create(:welcome_broadcast) }
 
       it "deletes the broadcast" do
@@ -79,14 +79,14 @@ RSpec.describe Rails.application.routes.url_helpers.admin_broadcasts_path, type:
 
     before { sign_in single_resource_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_broadcasts_path}" do
+    describe "GET admin/advanced/broadcasts" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_broadcasts_path}" do
+    describe "POST admin/advanced/broadcasts" do
       it "creates a new broadcast" do
         expect do
           post_resource
@@ -94,7 +94,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_broadcasts_path, type:
       end
     end
 
-    describe "DELETE #{Rails.application.routes.url_helpers.admin_broadcasts_path}/:id" do
+    describe "DELETE admin/advanced/broadcasts/:id" do
       let!(:broadcast) { create(:welcome_broadcast) }
 
       it "deletes the broadcast" do
@@ -111,13 +111,13 @@ RSpec.describe Rails.application.routes.url_helpers.admin_broadcasts_path, type:
 
     before { sign_in single_resource_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_broadcasts_path}" do
+    describe "GET admin/advanced/broadcasts" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_broadcasts_path}" do
+    describe "POST admin/advanced/broadcasts" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end

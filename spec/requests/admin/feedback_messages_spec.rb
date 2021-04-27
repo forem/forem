@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_reports_path.to_s, type: :request do
+RSpec.describe "admin/moderation/feedback_messages", type: :request do
   let(:feedback_message)  { create(:feedback_message, :abuse_report) }
   let(:user)              { create(:user) }
   let(:trusted_user)      { create(:user, :trusted) }
   let(:admin)             { create(:user, :super_admin) }
 
-  describe "GET #{Rails.application.routes.url_helpers.admin_reports_path}" do
+  describe "GET admin/moderation/feedback_messages" do
     let(:single_resource_admin) { create(:user, :single_resource_admin, resource: FeedbackMessage) }
 
     context "when the user is a single resource admin" do
@@ -28,7 +28,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_reports_path.to_s, typ
     end
   end
 
-  describe "POST #{Rails.application.routes.url_helpers.admin_reports_path}/save_status" do
+  describe "POST admin/moderation/feedback_messages/save_status" do
     context "when a valid request is made" do
       let(:save_status_params) do
         {
@@ -93,7 +93,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_reports_path.to_s, typ
     end
   end
 
-  describe "POST #{Rails.application.routes.url_helpers.admin_reports_path}/create_note" do
+  describe "POST admin/moderation/feedback_messages/create_note" do
     context "when a valid request is made" do
       let(:note_params) do
         {

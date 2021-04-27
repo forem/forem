@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_data_update_scripts_path, type: :request do
+RSpec.describe "/admin/advanced/data_update_scripts" type: :request do
   let(:get_resource) { get admin_data_update_scripts_path }
 
   context "when the user is not an tech admin" do
@@ -12,7 +12,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_data_update_scripts_pa
       allow(Flipper).to receive(:enabled?).with(:data_update_scripts).and_return(true)
     end
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_data_update_scripts_path}" do
+    describe "GET /admin/advanced/data_update_scripts" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(StandardError)
       end
@@ -28,7 +28,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_data_update_scripts_pa
       allow(Flipper).to receive(:enabled?).with(:data_update_scripts).and_return(true)
     end
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_data_update_scripts_path}" do
+    describe "GET /admin/advanced/data_update_scripts" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)

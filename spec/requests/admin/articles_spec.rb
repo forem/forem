@@ -1,12 +1,12 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_articles_path, type: :request do
+RSpec.describe "/admin/content_manager/articles", type: :request do
   it_behaves_like "an InternalPolicy dependant request", Article do
     let(:request) { get admin_articles_path }
   end
 
-  context "when updating an Article via #{Rails.application.routes.url_helpers.admin_articles_path}" do
+  context "when updating an Article via /admin/content_manager/articles" do
     let(:super_admin) { create(:user, :super_admin) }
     let(:article) { create(:article) }
     let(:second_user) { create(:user) }

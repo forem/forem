@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_badges_path, type: :request do
+RSpec.describe "admin/content_manager/badge_achievements", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let!(:badge) { create(:badge, title: "Not 'Hello, world!'") }
   let(:params) do
@@ -20,7 +20,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_badges_path, type: :re
     let(:request) { get admin_badges_path }
   end
 
-  describe "POST #{Rails.application.routes.url_helpers.admin_badges_path}" do
+  describe "POST admin/content_manager/badge_achievements" do
     let(:post_resource) { post admin_badges_path, params: params }
 
     before { sign_in admin }
@@ -32,7 +32,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_badges_path, type: :re
     end
   end
 
-  describe "PUT #{Rails.application.routes.url_helpers.admin_badges_path}" do
+  describe "PUT admin/content_manager/badge_achievements do
     before { sign_in admin }
 
     it "successfully updates the badge" do

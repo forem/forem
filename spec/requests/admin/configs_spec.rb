@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_config_path.to_s, type: :request do
+RSpec.describe "/admin/customization/config", type: :request do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :admin) }
   let(:super_admin) { create(:user, :super_admin) }
@@ -8,7 +8,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_config_path.to_s, type
     "My username is @#{super_admin.username} and this action is 100% safe and appropriate."
   end
 
-  describe "POST #{Rails.application.routes.url_helpers.admin_config_path} as a user" do
+  describe "POST /admin/customization/config as a user" do
     before do
       sign_in(user)
     end
@@ -19,7 +19,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_config_path.to_s, type
   end
 
   # rubocop:disable RSpec/NestedGroups
-  describe "POST #{Rails.application.routes.url_helpers.admin_config_path}" do
+  describe "POST /admin/customization/config" do
     context "when admin has typical admin permissions but not super admin" do
       before do
         sign_in(admin)

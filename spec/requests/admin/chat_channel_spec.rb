@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_chat_channels_path, type: :request do
+RSpec.describe "admin/apps/chat_channels", type: :request do
   let(:user) { create(:user) }
   let(:chat_channel) { create(:chat_channel) }
 
-  describe "POST #{Rails.application.routes.url_helpers.admin_chat_channels_path}" do
+  describe "POST admin/apps/chat_channels" do
     around { |example| perform_enqueued_jobs(&example) }
 
     it "creates chat_channel for with users as moderator" do
@@ -20,7 +20,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_chat_channels_path, ty
     end
   end
 
-  describe "PATCH #{Rails.application.routes.url_helpers.admin_chat_channels_path}" do
+  describe "PATCH admin/apps/chat_channels" do
     it "adds the user as a member to the chat channel" do
       user.add_role(:super_admin)
       second_user = create(:user)
@@ -33,7 +33,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_chat_channels_path, ty
     end
   end
 
-  describe "DELETE #{Rails.application.routes.url_helpers.admin_chat_channels_path}/:id/remove_user" do
+  describe "DELETE admin/apps/chat_channels/:id/remove_user" do
     it "removes the user from the chat channel" do
       user.add_role(:super_admin)
       sign_in user
@@ -46,7 +46,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_chat_channels_path, ty
     end
   end
 
-  describe "DELETE #{Rails.application.routes.url_helpers.admin_chat_channels_path}/:id" do
+  describe "DELETE admin/apps/chat_channels/:id" do
     it "deletes the chat channel when it has no users" do
       user.add_role(:super_admin)
       sign_in user

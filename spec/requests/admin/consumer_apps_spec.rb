@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe Rails.application.routes.url_helpers.admin_consumer_apps_path.to_s, type: :request do
+RSpec.describe "/admin/consumer_apps", type: :request do
   let(:get_resource) { get admin_consumer_apps_path }
   let(:params) do
     {
@@ -21,13 +21,13 @@ RSpec.describe Rails.application.routes.url_helpers.admin_consumer_apps_path.to_
 
     before { sign_in user }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_consumer_apps_path}" do
+    describe "GET /admin/consumer_apps' do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_consumer_apps_path}" do
+    describe "POST /admin/consumer_apps' do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
@@ -39,14 +39,14 @@ RSpec.describe Rails.application.routes.url_helpers.admin_consumer_apps_path.to_
 
     before { sign_in super_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_consumer_apps_path}" do
+    describe "GET /admin/consumer_apps' do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_consumer_apps_path}" do
+    describe "POST /admin/consumer_apps' do
       it "creates a new consumer_app" do
         expect do
           post_resource
@@ -54,7 +54,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_consumer_apps_path.to_
       end
     end
 
-    describe "PUT #{Rails.application.routes.url_helpers.admin_consumer_apps_path}" do
+    describe "PUT /admin/consumer_apps' do
       let!(:consumer_app) { create(:consumer_app, app_bundle: "com.bundle.test") }
 
       it "updates the ConsumerApp" do
@@ -83,14 +83,14 @@ RSpec.describe Rails.application.routes.url_helpers.admin_consumer_apps_path.to_
 
     before { sign_in single_resource_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_consumer_apps_path}" do
+    describe "GET /admin/consumer_apps' do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_consumer_apps_path}" do
+    describe "POST /admin/consumer_apps' do
       it "creates a new ConsumerApp" do
         expect do
           post_resource
@@ -105,7 +105,7 @@ RSpec.describe Rails.application.routes.url_helpers.admin_consumer_apps_path.to_
       end
     end
 
-    describe "PUT #{Rails.application.routes.url_helpers.admin_consumer_apps_path}" do
+    describe "PUT /admin/consumer_apps' do
       let!(:consumer_app) { create(:consumer_app, app_bundle: "com.bundle.test") }
 
       it "updates the ConsumerApp" do
@@ -134,13 +134,13 @@ RSpec.describe Rails.application.routes.url_helpers.admin_consumer_apps_path.to_
 
     before { sign_in single_resource_admin }
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_consumer_apps_path}" do
+    describe "GET /admin/consumer_apps' do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST #{Rails.application.routes.url_helpers.admin_consumer_apps_path}" do
+    describe "POST /admin/consumer_apps' do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
