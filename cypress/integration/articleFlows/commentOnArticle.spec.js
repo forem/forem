@@ -44,7 +44,7 @@ describe('Comment on articles', () => {
   describe('Comments using mention autocomplete', () => {
     it('should comment on an article with user mention autocomplete suggesting max 6 users', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=search' },
+        { method: 'GET', url: '/search/usernames?username=se' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -66,7 +66,7 @@ describe('Comment on articles', () => {
       });
 
       cy.findByText('Type to search for a user').should('exist');
-      getCommentCombobox().type('earch');
+      getCommentCombobox().type('e');
       getCommentDropdown().should('exist');
 
       const expectedUsernameMatches = [
@@ -99,7 +99,7 @@ describe('Comment on articles', () => {
 
     it('should select a mention autocomplete suggestion by keyboard', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=search_user' },
+        { method: 'GET', url: '/search/usernames?username=se' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -118,7 +118,7 @@ describe('Comment on articles', () => {
         // Verify the combobox has appeared
         getCommentCombobox();
         getCommentCombobox().should('have.focus');
-        getCommentCombobox().type('earch_user');
+        getCommentCombobox().type('e');
       });
 
       cy.findByRole('option', { name: /@search_user_1/ });
@@ -136,7 +136,7 @@ describe('Comment on articles', () => {
 
     it('should accept entered comment text without user mention if no autocomplete suggestions', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=user' },
+        { method: 'GET', url: '/search/usernames?username=us' },
         { fixture: 'search/emptyUsernamesSearch.json' },
       );
 
@@ -156,7 +156,7 @@ describe('Comment on articles', () => {
         getCommentCombobox();
         getCommentCombobox().should('have.focus');
 
-        getCommentCombobox().type('ser');
+        getCommentCombobox().type('s');
       });
 
       cy.findByText('No results found').should('exist');
@@ -164,7 +164,7 @@ describe('Comment on articles', () => {
 
       cy.findByText('No results found').should('not.exist');
       getCommentPlainTextBox().should('have.focus');
-      getCommentPlainTextBox().should('have.value', 'Some text @user ');
+      getCommentPlainTextBox().should('have.value', 'Some text @us ');
     });
 
     it('should stop showing mention autocomplete suggestions on text delete', () => {
@@ -232,7 +232,7 @@ describe('Comment on articles', () => {
 
     it('should close the autocomplete suggestions on Escape press', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=search' },
+        { method: 'GET', url: '/search/usernames?username=se' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -251,7 +251,7 @@ describe('Comment on articles', () => {
         // Verify the combobox has appeared
         getCommentCombobox();
 
-        getCommentCombobox().type('earch');
+        getCommentCombobox().type('e');
       });
 
       getCommentDropdown();
@@ -263,7 +263,7 @@ describe('Comment on articles', () => {
 
     it('should close the autocomplete suggestions and exit combobox on click outside', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=search' },
+        { method: 'GET', url: '/search/usernames?username=se' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -282,7 +282,7 @@ describe('Comment on articles', () => {
         // Verify the combobox has appeared
         getCommentCombobox();
 
-        getCommentCombobox().type('earch');
+        getCommentCombobox().type('e');
       });
 
       getCommentDropdown();
@@ -326,7 +326,7 @@ describe('Comment on articles', () => {
 
     it('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=search' },
+        { method: 'GET', url: '/search/usernames?username=se' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -352,7 +352,7 @@ describe('Comment on articles', () => {
 
         // Verify the combobox has appeared
         getReplyCombobox();
-        getReplyCombobox().type('earch');
+        getReplyCombobox().type('e');
       });
 
       // Pick an item from the dropdown
