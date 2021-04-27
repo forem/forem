@@ -9,21 +9,27 @@ module Stories
     def index
       @page = (params[:page] || 1).to_i
       @article_index = true
-      handle_tag_index
-    end
-
-    private
-
-    def handle_tag_index
       @tag = params[:tag].downcase
-      @page = (params[:page] || 1).to_i
       @tag_model = Tag.find_by(name: @tag) || not_found
       @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
+
       if @tag_model.alias_for.present?
         redirect_permanently_to("/t/#{@tag_model.alias_for}")
         return
       end
 
+      set_number_of_articles
+      set_stories
+
+      set_surrogate_key_header "articles-#{@tag}"
+      set_cache_control_headers(600,
+                                stale_while_revalidate: 30,
+                                stale_if_error: 86_400)
+    end
+
+    private
+
+    def set_number_of_articles
       @num_published_articles = if @tag_model.requires_approval?
                                   @tag_model.articles.published.where(approved: true).count
                                 elsif SiteConfig.feed_strategy == "basic"
@@ -33,7 +39,11 @@ module Stories
                                     tagged_count
                                   end
                                 end
+
       @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
+    end
+
+    def set_stories
       @stories = Articles::Feeds::LargeForemExperimental
         .new(number_of_articles: @number_of_articles, tag: @tag, page: @page)
         .published_articles_by_tag
@@ -42,11 +52,6 @@ module Stories
 
       @stories = stories_by_timeframe
       @stories = @stories.decorate
-
-      set_surrogate_key_header "articles-#{@tag}"
-      set_cache_control_headers(600,
-                                stale_while_revalidate: 30,
-                                stale_if_error: 86_400)
     end
 
     def tagged_count
