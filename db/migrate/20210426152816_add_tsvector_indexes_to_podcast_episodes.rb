@@ -46,4 +46,4 @@ class AddTsvectorIndexesToPodcastEpisodes < ActiveRecord::Migration[6.1]
                    algorithm: :concurrently
     end
   end
-  end
+end
