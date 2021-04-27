@@ -91,13 +91,10 @@ module Search
         # https://www.cybertec-postgresql.com/en/postgresql-more-performance-for-like-and-ilike-statements/
         # and a similar discussion https://github.com/forem/forem/pull/12584#discussion_r570756176
         #
-        # An alternative solution, as we don't need the `Tag` model itself, is to use
-        # `articles.cached_tag_list` and the `LIKE` operator on it, this could be further
-        # improved, if needed, by adding a GIN index on `cached_tag_list`
-        # It seems not to be needed as this approach is roughly 1850 times faster than the previous
-        # see https://explain.depesz.com/s/ajoP / https://explain.dalibo.com/plan/PZb
+        # The preferred solution, as we don't need the `Tag` model itself, is to use
+        # `articles.cached_tag_list` and the `~` regexp operator with it
         tags.each do |tag|
-          relation = relation.where("articles.cached_tag_list LIKE ?", "%#{tag}%")
+          relation = relation.where("articles.cached_tag_list ~ ?", "#{tag}\\M")
         end
 
         # here we issue a COUNT(*) after all the conditions are applied,
