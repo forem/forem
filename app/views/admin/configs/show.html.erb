@@ -1208,7 +1208,7 @@
       <div class="crayons-field">
         <%= admin_config_label :default_font, model: Settings::UserExperience %>
         <%= admin_config_description Constants::Settings::UserExperience::DETAILS[:default_font][:description] %>
-        <%= select_tag "site_config[default_font]",
+        <%= select_tag "settings_user_experience[default_font]",
                        options_for_select(
                          [%w[sans-serif sans_serif], %w[serif serif], %w[open-dyslexic open_dyslexic]],
                          Settings::UserExperience.default_font,
