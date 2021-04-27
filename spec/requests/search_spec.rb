@@ -234,7 +234,10 @@ RSpec.describe "Search", type: :request, proper_status: true do
     end
 
     context "when using PostgreSQL for the homepage" do
+      let(:homepage_params) { { class_name: "Article", sort_by: "published_at", sort_direction: "desc" } }
+
       before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_articles, anything).and_return(true)
         allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage, anything).and_return(true)
       end
 
@@ -251,7 +254,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       it "calls Homepage::FetchArticles when class_name is Article" do
         allow(Homepage::FetchArticles).to receive(:call)
 
-        get search_feed_content_path(class_name: "Article")
+        get search_feed_content_path(homepage_params)
 
         expect(Homepage::FetchArticles).to have_received(:call)
       end
@@ -259,7 +262,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       it "returns the correct keys", :aggregate_failures do
         create(:article)
 
-        get search_feed_content_path(class_name: "Article")
+        get search_feed_content_path(homepage_params)
 
         expect(response.parsed_body["result"]).to be_present
       end
@@ -267,18 +270,18 @@ RSpec.describe "Search", type: :request, proper_status: true do
       it "parses published_at correctly", :aggregate_failures do
         article = create(:article)
 
-        get search_feed_content_path(class_name: "Article", published_at: { gte: article.published_at.iso8601 })
+        get search_feed_content_path(homepage_params.merge(published_at: { gte: article.published_at.iso8601 }))
         expect(response.parsed_body["result"].first["id"]).to eq(article.id)
 
         datetime = article.published_at + 1.minute
-        get search_feed_content_path(class_name: "Article", published_at: { gte: datetime.iso8601 })
+        get search_feed_content_path(homepage_params.merge(published_at: { gte: datetime.iso8601 }))
         expect(response.parsed_body["result"]).to be_empty
       end
 
       it "supports the user_id parameter" do
         allow(Homepage::FetchArticles).to receive(:call)
 
-        get search_feed_content_path(class_name: "Article", user_id: 1)
+        get search_feed_content_path(homepage_params.merge(user_id: 1))
 
         expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(user_id: "1"))
       end
@@ -286,7 +289,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       it "supports the organization_id parameter" do
         allow(Homepage::FetchArticles).to receive(:call)
 
-        get search_feed_content_path(class_name: "Article", organization_id: 1)
+        get search_feed_content_path(homepage_params.merge(organization_id: 1))
 
         expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(organization_id: "1"))
       end
@@ -294,9 +297,56 @@ RSpec.describe "Search", type: :request, proper_status: true do
       it "supports the tag_names parameter" do
         allow(Homepage::FetchArticles).to receive(:call)
 
-        get search_feed_content_path(class_name: "Article", tag_names: %i[ruby])
+        get search_feed_content_path(homepage_params.merge(tag_names: %i[ruby]))
 
         expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(tags: %w[ruby]))
+      end
+    end
+
+    context "when using PostgreSQL for articles" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_articles, anything).and_return(true)
+      end
+
+      it "calls Search::Postgres::Article without a class_name" do
+        allow(Search::Postgres::Article).to receive(:search_documents)
+
+        get search_feed_content_path
+
+        expect(Search::Postgres::Article).to have_received(:search_documents)
+      end
+
+      it "calls Search::Postgres::Article without a class_name with :search_2_homepage active" do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage, anything).and_return(true)
+        allow(Search::Postgres::Article).to receive(:search_documents)
+
+        get search_feed_content_path
+
+        expect(Search::Postgres::Article).to have_received(:search_documents)
+      end
+
+      it "calls Search::Postgres::Article with class_name=Article with :search_2_homepage active" do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage, anything).and_return(true)
+        allow(Search::Postgres::Article).to receive(:search_documents)
+
+        get search_feed_content_path(class_name: "Article")
+
+        expect(Search::Postgres::Article).to have_received(:search_documents)
+      end
+
+      it "supports the search params", :aggregate_failures do
+        allow(Search::Postgres::Article).to receive(:search_documents).and_call_original
+
+        article = create(:article)
+
+        get search_feed_content_path(
+          class_name: "Article", page: 0, per_page: 1, search_fields: article.title,
+          sort_by: :published_at, sort_direction: :desc
+        )
+
+        expect(response.parsed_body["result"].first["id"]).to eq(article.id)
+
+        expect(Search::Postgres::Article).to have_received(:search_documents)
       end
     end
 
