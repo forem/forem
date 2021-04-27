@@ -64,11 +64,11 @@ function showRateLimitModal(action_text, next_action_text) {
  */
 const getModalHtml = (text, confirm_text) => `
   <div id="${modalId}" hidden>
-    <div class="w-75">
+    <div class="flex flex-col">
       <p class="color-base-70">
         ${text}
       </p>
-      <button class="crayons-btn mt-4" type="button" onClick="window.Forem.closeModal()">
+      <button class="crayons-btn mt-4 ml-auto" type="button" onClick="window.Forem.closeModal()">
         ${confirm_text}
       </button>
     </div>
