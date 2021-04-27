@@ -12,8 +12,8 @@ RSpec.describe Homepage::FetchArticles, type: :service do
       result = described_class.call.first
 
       keys = %i[
-        class_name cloudinary_video_url comments_count id path public_reactions_count
-        published_at_int readable_publish_date reading_time tag_flare tag_list title
+        class_name cloudinary_video_url comments_count flare_tag id path public_reactions_count
+        published_at_int readable_publish_date reading_time tag_list title
         user user_id video_duration_string
       ]
       expect(result.keys.sort).to eq(keys)
@@ -28,7 +28,7 @@ RSpec.describe Homepage::FetchArticles, type: :service do
       expect(result[:published_at_int]).to eq(article.published_at.to_i)
       expect(result[:readable_publish_date]).to eq(article.readable_publish_date)
       expect(result[:reading_time]).to eq(article.reading_time)
-      expect(result[:tag_flare]).to eq(Homepage::FetchTagFlares.call([article])[article.id])
+      expect(result[:flare_tag]).to eq(Homepage::FetchTagFlares.call([article])[article.id])
       expect(result[:tag_list]).to eq(article.tag_list)
       expect(result[:title]).to eq(article.title)
 
