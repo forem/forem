@@ -398,6 +398,30 @@ RSpec.describe "Search", type: :request, proper_status: true do
         expect(response.parsed_body["result"].first["id"]).to eq(user.id)
       end
     end
+
+    context "when using PostgreSQL for podcasts" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_podcast_episodes).and_return(true)
+      end
+
+      it "returns the correct keys for podcasts" do
+        create(:podcast_episode, body: "DHH talks about how Ruby on Rails rocks!")
+        get search_feed_content_path(search_fields: "rails", class_name: "PodcastEpisode")
+        expect(response.parsed_body["result"]).to be_present
+      end
+
+      it "supports the search params for podcasts" do
+        podcast_episode = create(:podcast_episode, body: "DHH talks about how Ruby on Rails rocks!")
+        get search_feed_content_path(
+          search_fields: "rails",
+          class_name: "PodcastEpisode",
+          page: 0,
+          per_page: 1,
+        )
+
+        expect(response.parsed_body["result"].first).to include("body_text" => podcast_episode.body_text)
+      end
+    end
   end
 
   describe "GET /search/reactions" do

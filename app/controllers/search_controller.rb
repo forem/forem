@@ -174,6 +174,14 @@ class SearchController < ApplicationController
           sort_direction: feed_params[:sort_direction],
           term: feed_params[:search_fields],
         )
+      elsif class_name.PodcastEpisode? && FeatureFlag.enabled?(:search_2_podcast_episodes)
+        Search::Postgres::PodcastEpisode.search_documents(
+          page: feed_params[:page],
+          per_page: feed_params[:per_page],
+          sort_by: feed_params[:sort_by],
+          sort_direction: feed_params[:sort_direction],
+          term: feed_params[:search_fields],
+        )
       elsif class_name.User?
         if FeatureFlag.enabled?(:search_2_users)
           Search::Postgres::User.search_documents(
