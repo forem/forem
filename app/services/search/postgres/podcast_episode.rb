@@ -6,6 +6,7 @@ module Search
         "podcasts.image",
         "podcasts.published",
         "podcasts.slug",
+        "podcasts.title",
         "podcast_episodes.body",
         "podcast_episodes.comments_count",
         "podcast_episodes.id",

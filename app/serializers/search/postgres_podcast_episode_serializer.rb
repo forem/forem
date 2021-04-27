@@ -14,6 +14,16 @@ module Search
       Images::Profile.call(podcast_episode.podcast.profile_image_url, length: 90)
     end
 
+    attribute :podcast do |podcast_episode|
+      podcast = podcast_episode.podcast
+
+      {
+        slug: podcast.slug,
+        image_url: podcast.image_url,
+        title: podcast.title
+      }
+    end
+
     attribute :public_reactions_count, -> { 0 }
     attribute :published, -> { true }
     attribute :search_score, -> { 0 }

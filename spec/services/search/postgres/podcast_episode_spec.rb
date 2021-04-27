@@ -71,10 +71,16 @@ RSpec.describe Search::Postgres::PodcastEpisode, type: :service do
         expected_keys = %i[
           id body_text comments_count path published_at quote reactions_count
           subtitle summary title website_url class_name highlight hotness_score
-          main_image public_reactions_count published search_score slug user
+          main_image podcast public_reactions_count published search_score slug
+          user
         ]
 
         expect(result.first.keys).to match_array(expected_keys)
+      end
+
+      it "returns the correct attributes for the podcast" do
+        expected_keys = %i[slug image_url title]
+        expect(result.first[:podcast].keys).to match_array(expected_keys)
       end
 
       it "orders the results by published_at in descending order" do
