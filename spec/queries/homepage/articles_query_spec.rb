@@ -126,6 +126,13 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
 
         expect(described_class.call(tags: %i[beginners ruby]).ids).to match_array([article1.id, article2.id])
       end
+
+      it "does not return results for partial matches" do
+        article1.tag_list.add(:javascript)
+        article1.save
+
+        expect(described_class.call(tags: %i[java]).ids).to be_empty
+      end
     end
 
     describe "pagination" do
