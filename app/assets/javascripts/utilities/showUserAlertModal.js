@@ -1,5 +1,3 @@
-/* global showModal */
-
 /**
  * HTML ID for modal DOM node
  *
