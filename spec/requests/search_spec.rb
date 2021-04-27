@@ -235,7 +235,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
     context "when using PostgreSQL for the homepage" do
       before do
-        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage).and_return(true)
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage, anything).and_return(true)
       end
 
       it "does not call Homepage::FetchArticles when class_name is Article with a search term", :aggregate_failures do
@@ -273,6 +273,30 @@ RSpec.describe "Search", type: :request, proper_status: true do
         datetime = article.published_at + 1.minute
         get search_feed_content_path(class_name: "Article", published_at: { gte: datetime.iso8601 })
         expect(response.parsed_body["result"]).to be_empty
+      end
+
+      it "supports the user_id parameter" do
+        allow(Homepage::FetchArticles).to receive(:call)
+
+        get search_feed_content_path(class_name: "Article", user_id: 1)
+
+        expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(user_id: "1"))
+      end
+
+      it "supports the organization_id parameter" do
+        allow(Homepage::FetchArticles).to receive(:call)
+
+        get search_feed_content_path(class_name: "Article", organization_id: 1)
+
+        expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(organization_id: "1"))
+      end
+
+      it "supports the tag_names parameter" do
+        allow(Homepage::FetchArticles).to receive(:call)
+
+        get search_feed_content_path(class_name: "Article", tag_names: %i[ruby])
+
+        expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(tags: %w[ruby]))
       end
     end
 
