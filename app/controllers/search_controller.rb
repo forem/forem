@@ -122,21 +122,27 @@ class SearchController < ApplicationController
   # TODO: [@rhymes] the homepage feed uses `feed_content_search` as an index,
   # we should eventually move it to a JSON result
   # in ArticlesController#Homepage or HomepageController#show
-  # rubocop:disable Metric/PerceivedComplexity
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def feed_content
     class_name = feed_params[:class_name].to_s.inquiry
 
     enable_search_2_homepage = (
       class_name.Article? &&
       feed_params[:search_fields].blank? &&
+      feed_params[:sort_by].present? &&
       FeatureFlag.enabled?(:search_2_homepage, current_user)
     )
 
     result =
       if class_name.blank?
-        # If we are in the main feed and not filtering by type return
-        # all articles, podcast episodes, and users
-        feed_content_search.concat(user_search)
+        if FeatureFlag.enabled?(:search_2_articles, current_user)
+          search_postgres_article
+        else
+          # If we are in the main feed and not filtering by type return
+          # all articles, podcast episodes, and users
+          feed_content_search.concat(user_search)
+        end
       elsif enable_search_2_homepage
         # NOTE: published_at is sent from the frontend in the following ES-friendly format:
         # => {"published_at"=>{"gte"=>"2021-04-06T14:53:23Z"}}
@@ -180,13 +186,16 @@ class SearchController < ApplicationController
         else
           user_search
         end
-      else # search page
+      elsif class_name.Article? && FeatureFlag.enabled?(:search_2_articles, current_user)
+        search_postgres_article
+      else
         feed_content_search
       end
 
     render json: { result: result }
   end
-  # rubocop:enable Metric/PerceivedComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   def reactions
     if FeatureFlag.enabled?(:search_2_reading_list)
@@ -212,6 +221,17 @@ class SearchController < ApplicationController
   end
 
   private
+
+  def search_postgres_article
+    Search::Postgres::Article.search_documents(
+      term: feed_params[:search_fields],
+      user_id: feed_params[:user_id],
+      sort_by: feed_params[:sort_by],
+      sort_direction: feed_params[:sort_direction],
+      page: feed_params[:page],
+      per_page: feed_params[:per_page],
+    )
+  end
 
   def feed_content_search
     Search::FeedContent.search_documents(params: feed_params.to_h)

@@ -72,9 +72,11 @@ module Search
           .select(*REACTION_ATTRIBUTES)
           .to_sql
 
-        relation = Article.joins("INNER JOIN (#{reaction_query_sql}) reactions ON reactions.reactable_id = articles.id")
+        relation = ::Article.joins(
+          "INNER JOIN (#{reaction_query_sql}) reactions ON reactions.reactable_id = articles.id",
+        )
 
-        relation = relation.search_reading_list(term) if term.present?
+        relation = relation.search_articles(term) if term.present?
 
         # NOTE: [@rhymes] A previous version was implemented with:
         # `.tagged_with(tags, any: false).reselect(*ATTRIBUTES)`
