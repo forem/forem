@@ -156,7 +156,11 @@ class Article < ApplicationRecord
   serialize :cached_user
   serialize :cached_organization
 
-  pg_search_scope :search_reading_list,
+  # TODO: [@rhymes] Rename the article column and the trigger name.
+  # What was initially meant just for the reading list (filtered using the `reactions` table),
+  # is also used for the article search page.
+  # The name of the `tsvector` column and its related trigger should be adapted.
+  pg_search_scope :search_articles,
                   against: :reading_list_document,
                   using: {
                     tsearch: {
