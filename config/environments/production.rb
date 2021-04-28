@@ -135,7 +135,7 @@ Rails.application.configure do
     authentication: ENV["SMTP_AUTHENTICATION"],
     user_name: ENV["SMTP_USER_NAME"],
     password: ENV["SMTP_PASSWORD"],
-    domain: ENV["SMTP_DOMAIN"] || ENV["APP_DOMAIN"],
+    domain: ENV["SMTP_DOMAIN"].presence || ENV["APP_DOMAIN"],
     enable_starttls_auto: true
   }
 
