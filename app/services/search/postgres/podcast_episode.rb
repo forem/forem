@@ -34,15 +34,25 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-        relation = ::PodcastEpisode.includes(:podcast).available
+        relation = ::PodcastEpisode
+          .reachable
+          .where(podcast_id: Podcast.published)
+          .includes(:podcast)
+          .references(:podcasts)
         relation = relation.search_podcast_episodes(term) if term.present?
         relation = relation.select(*ATTRIBUTES)
-        relation = relation.reorder(sort_by => sort_direction) if sort_by && sort_direction
-
+        relation = sort(relation, sort_by, sort_direction)
         results = relation.page(page).per(per_page)
 
         serialize(results)
       end
+
+      def self.sort(relation, sort_by, sort_direction)
+        return relation.reorder(sort_by => sort_direction) if sort_by && sort_direction
+
+        relation.reorder(nil)
+      end
+      private_class_method :sort
 
       def self.serialize(results)
         Search::PostgresPodcastEpisodeSerializer
