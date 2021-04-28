@@ -234,8 +234,11 @@ RSpec.describe "Search", type: :request, proper_status: true do
     end
 
     context "when using PostgreSQL for the homepage" do
+      let(:homepage_params) { { class_name: "Article", sort_by: "published_at", sort_direction: "desc" } }
+
       before do
-        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage).and_return(true)
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_articles, anything).and_return(true)
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage, anything).and_return(true)
       end
 
       it "does not call Homepage::FetchArticles when class_name is Article with a search term", :aggregate_failures do
@@ -251,7 +254,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       it "calls Homepage::FetchArticles when class_name is Article" do
         allow(Homepage::FetchArticles).to receive(:call)
 
-        get search_feed_content_path(class_name: "Article")
+        get search_feed_content_path(homepage_params)
 
         expect(Homepage::FetchArticles).to have_received(:call)
       end
@@ -259,7 +262,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       it "returns the correct keys", :aggregate_failures do
         create(:article)
 
-        get search_feed_content_path(class_name: "Article")
+        get search_feed_content_path(homepage_params)
 
         expect(response.parsed_body["result"]).to be_present
       end
@@ -267,12 +270,83 @@ RSpec.describe "Search", type: :request, proper_status: true do
       it "parses published_at correctly", :aggregate_failures do
         article = create(:article)
 
-        get search_feed_content_path(class_name: "Article", published_at: { gte: article.published_at.iso8601 })
+        get search_feed_content_path(homepage_params.merge(published_at: { gte: article.published_at.iso8601 }))
         expect(response.parsed_body["result"].first["id"]).to eq(article.id)
 
         datetime = article.published_at + 1.minute
-        get search_feed_content_path(class_name: "Article", published_at: { gte: datetime.iso8601 })
+        get search_feed_content_path(homepage_params.merge(published_at: { gte: datetime.iso8601 }))
         expect(response.parsed_body["result"]).to be_empty
+      end
+
+      it "supports the user_id parameter" do
+        allow(Homepage::FetchArticles).to receive(:call)
+
+        get search_feed_content_path(homepage_params.merge(user_id: 1))
+
+        expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(user_id: "1"))
+      end
+
+      it "supports the organization_id parameter" do
+        allow(Homepage::FetchArticles).to receive(:call)
+
+        get search_feed_content_path(homepage_params.merge(organization_id: 1))
+
+        expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(organization_id: "1"))
+      end
+
+      it "supports the tag_names parameter" do
+        allow(Homepage::FetchArticles).to receive(:call)
+
+        get search_feed_content_path(homepage_params.merge(tag_names: %i[ruby]))
+
+        expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(tags: %w[ruby]))
+      end
+    end
+
+    context "when using PostgreSQL for articles" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_articles, anything).and_return(true)
+      end
+
+      it "calls Search::Postgres::Article without a class_name" do
+        allow(Search::Postgres::Article).to receive(:search_documents)
+
+        get search_feed_content_path
+
+        expect(Search::Postgres::Article).to have_received(:search_documents)
+      end
+
+      it "calls Search::Postgres::Article without a class_name with :search_2_homepage active" do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage, anything).and_return(true)
+        allow(Search::Postgres::Article).to receive(:search_documents)
+
+        get search_feed_content_path
+
+        expect(Search::Postgres::Article).to have_received(:search_documents)
+      end
+
+      it "calls Search::Postgres::Article with class_name=Article with :search_2_homepage active" do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_homepage, anything).and_return(true)
+        allow(Search::Postgres::Article).to receive(:search_documents)
+
+        get search_feed_content_path(class_name: "Article")
+
+        expect(Search::Postgres::Article).to have_received(:search_documents)
+      end
+
+      it "supports the search params", :aggregate_failures do
+        allow(Search::Postgres::Article).to receive(:search_documents).and_call_original
+
+        article = create(:article)
+
+        get search_feed_content_path(
+          class_name: "Article", page: 0, per_page: 1, search_fields: article.title,
+          sort_by: :published_at, sort_direction: :desc
+        )
+
+        expect(response.parsed_body["result"].first["id"]).to eq(article.id)
+
+        expect(Search::Postgres::Article).to have_received(:search_documents)
       end
     end
 
@@ -322,6 +396,30 @@ RSpec.describe "Search", type: :request, proper_status: true do
         )
 
         expect(response.parsed_body["result"].first["id"]).to eq(user.id)
+      end
+    end
+
+    context "when using PostgreSQL for podcasts" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:search_2_podcast_episodes).and_return(true)
+      end
+
+      it "returns the correct keys for podcasts" do
+        create(:podcast_episode, body: "DHH talks about how Ruby on Rails rocks!")
+        get search_feed_content_path(search_fields: "rails", class_name: "PodcastEpisode")
+        expect(response.parsed_body["result"]).to be_present
+      end
+
+      it "supports the search params for podcasts" do
+        podcast_episode = create(:podcast_episode, body: "DHH talks about how Ruby on Rails rocks!")
+        get search_feed_content_path(
+          search_fields: "rails",
+          class_name: "PodcastEpisode",
+          page: 0,
+          per_page: 1,
+        )
+
+        expect(response.parsed_body["result"].first).to include("body_text" => podcast_episode.body_text)
       end
     end
   end
