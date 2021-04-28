@@ -685,6 +685,10 @@ RSpec.describe User, type: :model do
   end
 
   describe "theming properties" do
+    before do
+      allow(Settings::UserExperience).to receive(:default_font).and_return("sans-serif")
+    end
+
     it "creates proper body class with defaults" do
       classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
