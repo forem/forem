@@ -8,7 +8,7 @@ export default {
 };
 
 export const Default = () => (
-  <nav className="crayons-tabs">
+  <nav className="crayons-tabs" aria-label="View feed options">
     <ul className="crayons-tabs__list">
       <li>
         <a
@@ -35,4 +35,25 @@ export const Default = () => (
 
 Default.story = {
   name: 'default',
+};
+
+export const Buttons = () => (
+  <nav className="crayons-tabs" aria-label="View post options">
+    <ul className="crayons-tabs__list">
+      <li>
+        <button
+          className="crayons-tabs__item crayons-tabs__item--current"
+          aria-current="page"
+        >
+          Edit
+        </button>
+      </li>
+      <li>
+        <button className="crayons-tabs__item">Preview</button>
+      </li>
+    </ul>
+  </nav>
+);
+Buttons.story = {
+  name: 'buttons',
 };
