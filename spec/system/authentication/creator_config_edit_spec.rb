@@ -13,7 +13,7 @@ RSpec.describe "Creator config edit", type: :system, js: true do
     end
 
     it "presents all available OAuth providers" do
-      visit admin_configs_path
+      visit admin_config_path
 
       within("div[data-target='#authenticationBodyContainer']") do
         click_on("Show info", match: :first)
