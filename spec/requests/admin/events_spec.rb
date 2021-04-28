@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "admin/apps/events", type: :request do
+RSpec.describe "/admin/apps/events", type: :request do
   let(:event) { create(:event, title: "Hey") }
   let(:admin) { create(:user, :super_admin) }
   let(:params) do

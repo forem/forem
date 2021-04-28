@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "admin/moderation/feedback_messages", type: :request do
+RSpec.describe "/admin/moderation/feedback_messages", type: :request do
   let(:feedback_message)  { create(:feedback_message, :abuse_report) }
   let(:user)              { create(:user) }
   let(:trusted_user)      { create(:user, :trusted) }

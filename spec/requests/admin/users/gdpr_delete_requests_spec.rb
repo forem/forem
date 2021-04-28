@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "admin/users/gdpr_delete_requests", type: :request do
+RSpec.describe "/admin/users/gdpr_delete_requests", type: :request do
   let(:admin) { create(:user, :super_admin) }
 
   before do
