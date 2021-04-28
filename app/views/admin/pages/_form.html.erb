@@ -39,7 +39,12 @@
     <div class="form-group">
       <%= form.label :is_top_level_path %>
       <%= form.check_box :is_top_level_path %>
-      <p>(Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code>) Be careful! ⚠️</p>
+      <p>Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code> Be careful! ⚠️</p>
+    </div>
+    <div class="form-group">
+      <%= form.label :landing_page, "Use as 'Locked Screen'" %>
+      <%= form.check_box :landing_page %>
+      <p>Determines if this page will be used as a landing page for annonymous viewers. Be careful! ⚠️</p>
     </div>
     <div class="form-group">
       <p>
