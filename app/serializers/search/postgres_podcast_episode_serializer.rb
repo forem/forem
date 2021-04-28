@@ -1,6 +1,10 @@
 module Search
   # TODO[@atsmith813]: Rename this to PodcastEpisodeSerializer once Elasticsearch is removed
   class PostgresPodcastEpisodeSerializer < ApplicationSerializer
+    def self.podcast_image_url(podcast_episode)
+      Images::Profile.call(podcast_episode.podcast.profile_image_url, length: 90)
+    end
+
     attribute :id, &:search_id
 
     attributes :body_text, :comments_count, :path, :published_at, :quote,
@@ -11,16 +15,14 @@ module Search
     attribute :hotness_score, -> { 0 }
 
     attribute :main_image do |podcast_episode|
-      Images::Profile.call(podcast_episode.podcast.profile_image_url, length: 90)
+      podcast_image_url(podcast_episode)
     end
 
     attribute :podcast do |podcast_episode|
-      podcast = podcast_episode.podcast
-
       {
-        slug: podcast.slug,
-        image_url: podcast.image_url,
-        title: podcast.title
+        slug: podcast_episode.podcast_slug,
+        image_url: podcast_image_url(podcast_episode),
+        title: podcast_episode.title
       }
     end
 
