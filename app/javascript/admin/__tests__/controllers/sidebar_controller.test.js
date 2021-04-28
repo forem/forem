@@ -13,7 +13,7 @@ describe('SidebarController', () => {
       <nav class="hidden m:block">
         <ul>
           <li>
-              <a class="crayons-link crayons-link--block " href="/admin/permissions" aria-page="" data-action="click->sidebar#expandDropdown">
+              <a class="crayons-link crayons-link--block " href="/admin/permissions" data-action="click->sidebar#expandDropdown">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="dropdown-icon crayons-icon" role="img"><path d="M4 22a8 8 0 1 1 16 0h-2a6 6 0 1 0-12 0H4zm8-9c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"></path></svg>
                 Admin Team
               </a>
@@ -25,22 +25,22 @@ describe('SidebarController', () => {
             </button>
             <ul id="advanced" data-sidebar-target="submenu" class="collapse hide">
               <li>
-                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/broadcasts" aria-page="">
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/broadcasts">
                   Broadcasts
                 </a>
               </li>
               <li>
-                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/response_templates" aria-page="">
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/response_templates">
                   Response Templates
                 </a>
               </li>
               <li>
-                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/sponsorships" aria-page="">
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/sponsorships">
                   Sponsorships
                 </a>
               </li>
               <li>
-                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/tools" aria-page="">
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/tools">
                   Developer Tools
                 </a>
               </li>
@@ -54,22 +54,22 @@ describe('SidebarController', () => {
             </button>
             <ul id="apps" data-sidebar-target="submenu" class="expand show">
               <li>
-                <a class="crayons-link crayons-link--block ml-7 fw-bold" href="/admin/apps/chat_channels" aria-page="page">
+                <a class="crayons-link crayons-link--block ml-7 fw-bold" href="/admin/apps/chat_channels">
                   Chat Channels
                 </a>
               </li>
               <li>
-                <a class="crayons-link crayons-link--block ml-7 " href="/admin/apps/events" aria-page="">
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/apps/events">
                   Events
                 </a>
               </li>
               <li>
-                <a class="crayons-link crayons-link--block ml-7 " href="/admin/apps/listings" aria-page="">
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/apps/listings">
                   Listings
                 </a>
               </li>
               <li>
-                <a class="crayons-link crayons-link--block ml-7 " href="/admin/apps/welcome" aria-page="">
+                <a class="crayons-link crayons-link--block ml-7 " href="/admin/apps/welcome">
                   Welcome
                 </a>
               </li>
