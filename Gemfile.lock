@@ -134,7 +134,7 @@ GEM
       safely_block (>= 0.1.1)
     bootsnap (1.7.4)
       msgpack (~> 1.0)
-    brakeman (5.0.0)
+    brakeman (5.0.1)
     browser (5.3.1)
     brpoplpush-redis_script (0.1.2)
       concurrent-ruby (~> 1.0, >= 1.0.5)
