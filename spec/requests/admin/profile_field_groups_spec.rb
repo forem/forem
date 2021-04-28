@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/customiation/profile_field_groups", type: :request do
+RSpec.describe "/admin/customization/profile_field_groups", type: :request do
   let(:admin) { create(:user, :super_admin) }
 
   before do
@@ -8,7 +8,7 @@ RSpec.describe "/admin/customiation/profile_field_groups", type: :request do
     allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
   end
 
-  describe "POST /admin/customiation/profile_field_groups" do
+  describe "POST /admin/customization/profile_field_groups" do
     let(:new_profile_field_group) do
       {
         name: "Group 1",
@@ -32,7 +32,7 @@ RSpec.describe "/admin/customiation/profile_field_groups", type: :request do
     end
   end
 
-  describe "PUT /admin/customiation/profile_field_groups/:id" do
+  describe "PUT /admin/customization/profile_field_groups/:id" do
     let(:profile_field_group) { create(:profile_field_group) }
 
     it "redirects successfully" do

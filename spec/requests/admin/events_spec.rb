@@ -15,7 +15,7 @@ RSpec.describe "/admin/apps/events", type: :request do
     }
   end
 
-  describe "PUT aadmin/apps/events" do
+  describe "PUT admin/apps/events" do
     before do
       sign_in(admin)
     end
