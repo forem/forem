@@ -1,11 +1,21 @@
 <nav class="flex mb-4" aria-label="Sponsorships navigation">
   <div class="crayons-tabs">
-    <%= link_to "Leaderboard", admin_html_variants_path, class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state].blank?}" %>
-    <%= link_to "Mine", admin_html_variants_path(state: "mine"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == 'mine'}" %>
-    <%= link_to "Admin", admin_html_variants_path(state: "admin"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == 'admin'}" %>
-    <% HtmlVariant::GROUP_NAMES.each do |group_name| %>
-      <%= link_to group_name.humanize.capitalize, admin_html_variants_path(state: group_name), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == group_name}" %>
-    <% end %>
+    <ul class="crayons-tabs__list">
+      <li>
+        <%= link_to "Leaderboard", admin_html_variants_path, class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state].blank?}", aria_current: ("page" if params[:state].blank?).to_s %>
+      </li>
+      <li>
+        <%= link_to "Mine", admin_html_variants_path(state: "mine"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == 'mine'}", aria_current: ("page" if params[:state] == "mine").to_s %>
+      </li>
+      <li>
+        <%= link_to "Admin", admin_html_variants_path(state: "admin"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == 'admin'}", aria_current: ("page" if params[:state] == "admin").to_s %>
+      </li>
+      <% HtmlVariant::GROUP_NAMES.each do |group_name| %>
+        <li>
+          <%= link_to group_name.humanize.capitalize, admin_html_variants_path(state: group_name), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == group_name}", aria_current: ("page" if params[:state] == group_name).to_s %>
+        </li>
+      <% end %>
+    </ul>
   </div>
   <div class="ml-auto">
     <div class="justify-content-end">
