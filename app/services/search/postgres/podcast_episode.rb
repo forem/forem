@@ -1,24 +1,20 @@
 module Search
   module Postgres
     class PodcastEpisode
-      ATTRIBUTES = [
-        "podcasts.id",
-        "podcasts.image",
-        "podcasts.published",
-        "podcasts.slug",
-        "podcast_episodes.body",
-        "podcast_episodes.comments_count",
-        "podcast_episodes.id",
-        "podcast_episodes.podcast_id",
-        "podcast_episodes.processed_html",
-        "podcast_episodes.published_at",
-        "podcast_episodes.quote",
-        "podcast_episodes.reactions_count",
-        "podcast_episodes.slug",
-        "podcast_episodes.subtitle",
-        "podcast_episodes.summary",
-        "podcast_episodes.title",
-        "podcast_episodes.website_url",
+      ATTRIBUTES = %w[
+        body
+        comments_count
+        id
+        podcast_id
+        processed_html
+        published_at
+        quote
+        reactions_count
+        slug
+        subtitle
+        summary
+        title
+        website_url
       ].freeze
       private_constant :ATTRIBUTES
 
