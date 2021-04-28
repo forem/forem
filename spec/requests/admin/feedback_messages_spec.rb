@@ -6,7 +6,7 @@ RSpec.describe "/admin/moderation/feedback_messages", type: :request do
   let(:trusted_user)      { create(:user, :trusted) }
   let(:admin)             { create(:user, :super_admin) }
 
-  describe "GET admin/moderation/feedback_messages" do
+  describe "GET /admin/moderation/feedback_messages" do
     let(:single_resource_admin) { create(:user, :single_resource_admin, resource: FeedbackMessage) }
 
     context "when the user is a single resource admin" do

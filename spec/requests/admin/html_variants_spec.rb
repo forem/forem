@@ -18,7 +18,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
 
     before { sign_in user }
 
-    describe "GET admin/customization/html_variants" do
+    describe "GET /admin/customization/html_variants" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
@@ -36,7 +36,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
 
     before { sign_in super_admin }
 
-    describe "GET admin/customization/html_variants" do
+    describe "GET /admin/customization/html_variants" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
@@ -63,7 +63,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
       end
     end
 
-    describe "DELETE admin/customization/html_variants/:id" do
+    describe "DELETE /admin/customization/html_variants/:id" do
       let!(:html_variant) { create(:html_variant) }
 
       it "deletes the Display Ad" do
@@ -80,7 +80,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
 
     before { sign_in single_resource_admin }
 
-    describe "GET admin/customization/html_variants" do
+    describe "GET /admin/customization/html_variants" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
@@ -107,7 +107,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
       end
     end
 
-    describe "DELETE admin/customization/html_variants/:id" do
+    describe "DELETE /admin/customization/html_variants/:id" do
       let!(:html_variant) { create(:html_variant) }
 
       it "deletes the Display Ad" do
@@ -124,7 +124,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
 
     before { sign_in single_resource_admin }
 
-    describe "GET admin/customization/html_variants" do
+    describe "GET /admin/customization/html_variants" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end

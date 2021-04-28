@@ -15,7 +15,7 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
 
     before { sign_in user }
 
-    describe "GET admin/advanced/broadcasts" do
+    describe "GET /admin/advanced/broadcasts" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
@@ -33,7 +33,7 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
 
     before { sign_in super_admin }
 
-    describe "GET admin/advanced/broadcasts" do
+    describe "GET /admin/advanced/broadcasts" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
@@ -62,12 +62,12 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
       end
     end
 
-    describe "DELETE admin/advanced/broadcasts/:id" do
+    describe "DELETE /admin/advanced/broadcasts/:id" do
       let!(:broadcast) { create(:welcome_broadcast) }
 
       it "deletes the broadcast" do
         expect do
-          delete admin_broadcast_path(broadcast.id).to_s
+          delete admin_broadcast_path(broadcast.id)
         end.to change { Broadcast.all.count }.by(-1)
         expect(response.body).to redirect_to admin_broadcasts_path
       end
@@ -79,7 +79,7 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
 
     before { sign_in single_resource_admin }
 
-    describe "GET admin/advanced/broadcasts" do
+    describe "GET /admin/advanced/broadcasts" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
@@ -94,12 +94,12 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
       end
     end
 
-    describe "DELETE admin/advanced/broadcasts/:id" do
+    describe "DELETE /admin/advanced/broadcasts/:id" do
       let!(:broadcast) { create(:welcome_broadcast) }
 
       it "deletes the broadcast" do
         expect do
-          delete admin_broadcast_path(broadcast.id).to_s
+          delete admin_broadcast_path(broadcast.id)
         end.to change { Broadcast.all.count }.by(-1)
         expect(response.body).to redirect_to admin_broadcasts_path
       end
@@ -111,7 +111,7 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
 
     before { sign_in single_resource_admin }
 
-    describe "GET admin/advanced/broadcasts" do
+    describe "GET /admin/advanced/broadcasts" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end

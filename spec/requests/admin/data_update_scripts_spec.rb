@@ -51,7 +51,7 @@ RSpec.describe "/admin/advanced/data_update_scripts", type: :request do
       end
     end
 
-    describe "GET admin/advanced/data_update_scripts/:id" do
+    describe "GET /admin/advanced/data_update_scripts/:id" do
       let(:script) do
         create(
           :data_update_script,

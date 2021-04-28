@@ -33,7 +33,7 @@ RSpec.describe "/admin/apps/chat_channels", type: :request do
     end
   end
 
-  describe "DELETE admin/apps/chat_channels/:id/remove_user" do
+  describe "DELETE /admin/apps/chat_channels/:id/remove_user" do
     it "removes the user from the chat channel" do
       user.add_role(:super_admin)
       sign_in user
@@ -46,7 +46,7 @@ RSpec.describe "/admin/apps/chat_channels", type: :request do
     end
   end
 
-  describe "DELETE admin/apps/chat_channels/:id" do
+  describe "DELETE /admin/apps/chat_channels/:id" do
     it "deletes the chat channel when it has no users" do
       user.add_role(:super_admin)
       sign_in user
