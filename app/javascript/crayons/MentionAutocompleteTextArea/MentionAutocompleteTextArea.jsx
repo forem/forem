@@ -100,7 +100,8 @@ export const MentionAutocompleteTextArea = forwardRef(
     { replaceElement, fetchSuggestions, autoResize = false, ...inputProps },
     forwardedRef,
   ) => {
-    const [textContent, setTextContent] = useState('');
+    const { defaultValue = '' } = inputProps;
+    const [textContent, setTextContent] = useState(defaultValue);
     const [searchTerm, setSearchTerm] = useState('');
     const [cachedSearches, setCachedSearches] = useState({});
     const [dropdownPositionPoints, setDropdownPositionPoints] = useState({
@@ -170,8 +171,6 @@ export const MentionAutocompleteTextArea = forwardRef(
         }
       });
     }, [searchTerm, fetchSuggestions, cachedSearches, ariaHelperText]);
-
-    const { defaultValue = '' } = inputProps;
 
     useEffect(() => {
       setTextContent(defaultValue);
@@ -395,6 +394,7 @@ export const MentionAutocompleteTextArea = forwardRef(
                 <ComboboxList>
                   {users.map((user) => (
                     <ComboboxOption
+                      key={user.username}
                       value={user.username}
                       className="crayons-autocomplete__option flex items-center"
                     >
