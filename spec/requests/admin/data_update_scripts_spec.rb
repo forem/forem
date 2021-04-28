@@ -1,7 +1,7 @@
 require "rails_helper"
 
-RSpec.describe "/admin/data_update_scripts", type: :request do
-  let(:get_resource) { get "/admin/data_update_scripts" }
+RSpec.describe "/admin/advanced/data_update_scripts", type: :request do
+  let(:get_resource) { get admin_data_update_scripts_path }
 
   context "when the user is not an tech admin" do
     let(:user) { create(:user) }
@@ -12,7 +12,7 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
       allow(Flipper).to receive(:enabled?).with(:data_update_scripts).and_return(true)
     end
 
-    describe "GET /admin/data_update_scripts" do
+    describe "GET /admin/advanced/data_update_scripts" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(StandardError)
       end
@@ -28,7 +28,7 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
       allow(Flipper).to receive(:enabled?).with(:data_update_scripts).and_return(true)
     end
 
-    describe "GET /admin/data_update_scripts" do
+    describe "GET /admin/advanced/data_update_scripts" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
@@ -51,7 +51,7 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
       end
     end
 
-    describe "GET /admin/data_update_scripts/:id" do
+    describe "GET /admin/advanced/data_update_scripts/:id" do
       let(:script) do
         create(
           :data_update_script,
@@ -78,7 +78,7 @@ RSpec.describe "/admin/data_update_scripts", type: :request do
       it "calls the the sidekiq worker" do
         allow(DataUpdateWorker).to receive(:perform_async)
 
-        post "/admin/data_update_scripts/#{script_id}/force_run"
+        post force_run_admin_data_update_script_path(script_id)
         sidekiq_perform_enqueued_jobs
 
         expect(DataUpdateWorker).to have_received(:perform_async).with(script_id)

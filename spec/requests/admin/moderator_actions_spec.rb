@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/moderator_reactions", type: :request do
+RSpec.describe "/admin/moderation/moderator_reactions", type: :request do
   context "when the user is not an admin" do
     let(:user) { create(:user) }
 

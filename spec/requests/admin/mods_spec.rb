@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "/admin/mods", type: :request do
+RSpec.describe "/admin/moderation/mods", type: :request do
   let!(:admin) { create(:user, :admin) }
   let!(:regular_user) { create(:user) }
   let!(:moderator) { create(:user, :trusted) }
 
-  describe "GET /admin/mods" do
+  describe "GET /admin/moderation/mods" do
     before do
       sign_in admin
     end
@@ -15,7 +15,7 @@ RSpec.describe "/admin/mods", type: :request do
 
       before do
         sign_in single_resource_admin
-        get "/admin/mods"
+        get admin_mods_path
       end
 
       it "allows the request" do
@@ -30,46 +30,46 @@ RSpec.describe "/admin/mods", type: :request do
 
       it "blocks the request" do
         expect do
-          get "/admin/mods"
+          get admin_mods_path
         end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
     context "when the are no matching mods" do
       it "displays an warning" do
-        get "/admin/mods?search=no-results&state=tag_moderator"
+        get "#{admin_mods_path}?search=no-results&state=tag_moderator"
         expect(response.body).to include("There are no mods matching your search criteria")
       end
     end
 
     it "displays mod user" do
-      get "/admin/mods"
+      get admin_mods_path
       expect(response.body).to include(moderator.username)
     end
 
     it "does not display non-mod" do
-      get "/admin/mods"
+      get admin_mods_path
       expect(response.body).not_to include(regular_user.username)
     end
 
     it "lists regular users as potential mods" do
-      get "/admin/mods?state=potential"
+      get "#{admin_mods_path}?state=potential"
       expect(response.body).to include(regular_user.username)
     end
 
     it "does not list mods as potential mods" do
-      get "/admin/mods?state=potential"
+      get "#{admin_mods_path}?state=potential"
       expect(response.body).not_to include(moderator.username)
     end
   end
 
-  describe "PUT /admin/mods" do
+  describe "PUT /admin/moderation/mods" do
     before do
       sign_in admin
     end
 
     it "displays mod user" do
-      put "/admin/mods/#{regular_user.id}"
+      put admin_mod_path(regular_user.id)
       expect(regular_user.reload.has_role?(:trusted)).to eq true
     end
   end

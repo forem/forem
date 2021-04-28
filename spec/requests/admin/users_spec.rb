@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "admin/users", type: :request do
+RSpec.describe "/admin/users", type: :request do
   let!(:user) do
     omniauth_mock_github_payload
     create(:user, :with_identity, identities: ["github"])
@@ -13,34 +13,34 @@ RSpec.describe "admin/users", type: :request do
 
   describe "GET /admin/users" do
     it "renders to appropriate page" do
-      get "/admin/users"
+      get admin_users_path
       expect(response.body).to include(user.username)
     end
   end
 
   describe "GET /admin/users/:id" do
     it "renders to appropriate page" do
-      get "/admin/users/#{user.id}"
+      get admin_user_path(user.id)
       expect(response.body).to include(user.username)
     end
 
     context "when a user is unregistered" do
       it "renders a message stating that the user isn't registered" do
         user.update_columns(registered: false)
-        get "/admin/users/#{user.id}"
+        get admin_user_path(user.id)
         expect(response.body).to include("@#{user.username} has not accepted their invitation yet.")
       end
 
       it "only displays limited information about the user" do
         user.update_columns(registered: false)
-        get "/admin/users/#{user.id}"
+        get admin_user_path(user.id)
         expect(response.body).not_to include("Activity")
       end
     end
 
     context "when a user is registered" do
       it "renders the Admin User profile as expected" do
-        get "/admin/users/#{user.id}"
+        get admin_user_path(user.id)
         expect(response.body).to include("Activity")
       end
     end
@@ -59,53 +59,53 @@ RSpec.describe "admin/users", type: :request do
   describe "GET /admin/users/:id/edit" do
     it "redirects from /username/moderate" do
       get "/#{user.username}/moderate"
-      expect(response).to redirect_to("/admin/users/#{user.id}")
+      expect(response).to redirect_to(admin_user_path(user.id))
     end
 
     it "shows banish button for new users" do
-      get "/admin/users/#{user.id}/edit"
+      get edit_admin_user_path(user.id)
       expect(response.body).to include("Banish User for Spam!")
     end
 
     it "does not show banish button for non-admins" do
       sign_out(admin)
-      expect { get "/admin/users/#{user.id}/edit" }.to raise_error(Pundit::NotAuthorizedError)
+      expect { get edit_admin_user_path(user.id) }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "displays the 'Current Roles' section" do
-      get "/admin/users/#{user.id}/edit"
+      get edit_admin_user_path(user.id)
       expect(response.body).to include("Current Roles")
     end
 
     it "displays the 'Recent Reactions' section" do
-      get "/admin/users/#{user.id}/edit"
+      get edit_admin_user_path(user.id)
       expect(response.body).to include("Recent Reactions")
     end
 
     it "displays a message when there are no related vomit reactions for a user" do
-      get "/admin/users/#{user.id}/edit"
+      get edit_admin_user_path(user.id)
       expect(response.body).to include("Nothing negative to see here! 👀")
     end
 
     it "displays a list of recent related vomit reactions for a user if any exist" do
       vomit = build(:reaction, category: "vomit", user_id: user.id, reactable_type: "Article", status: "valid")
-      get "/admin/users/#{user.id}/edit"
+      get edit_admin_user_path(user.id)
       expect(response.body).to include(vomit.reactable_type)
     end
 
     it "displays the 'Recent Reports' section" do
-      get "/admin/users/#{user.id}/edit"
+      get edit_admin_user_path(user.id)
       expect(response.body).to include("Recent Reports")
     end
 
     it "displays a message when there are no related reports for a user" do
-      get "/admin/users/#{user.id}/edit"
+      get edit_admin_user_path(user.id)
       expect(response.body).to include("Nothing to report here! 👀")
     end
 
     it "displays a list of recent reports for a user if any exist" do
       report = build(:feedback_message, category: "spam", affected_id: user.id, feedback_type: "spam", status: "Open")
-      get "/admin/users/#{user.id}/edit"
+      get edit_admin_user_path(user.id)
       expect(response.body).to include(report.feedback_type)
     end
   end
@@ -113,15 +113,15 @@ RSpec.describe "admin/users", type: :request do
   describe "POST /admin/users/:id/banish" do
     it "bans user for spam" do
       allow(Moderator::BanishUserWorker).to receive(:perform_async)
-      post "/admin/users/#{user.id}/banish"
+      post banish_admin_user_path(user.id)
       expect(Moderator::BanishUserWorker).to have_received(:perform_async).with(admin.id, user.id)
       expect(request.flash[:success]).to include("This user is being banished in the background")
     end
   end
 
-  describe "POST admin/users/:id/verify_email_ownership" do
+  describe "POST /admin/users/:id/verify_email_ownership" do
     it "allows a user to verify email ownership" do
-      post "/admin/users/#{user.id}/verify_email_ownership", params: { user_id: user.id }
+      post verify_email_ownership_admin_user_path(user.id), params: { user_id: user.id }
 
       path = verify_email_authorizations_path(
         confirmation_token: user.email_authorizations.first.confirmation_token,
@@ -202,7 +202,7 @@ RSpec.describe "admin/users", type: :request do
     end
   end
 
-  describe "POST admin/users/:id/export_data" do
+  describe "POST /admin/users/:id/export_data" do
     it "redirects properly to the user edit page" do
       sign_in admin
       post export_data_admin_user_path(user), params: { send_to_admin: "true" }
