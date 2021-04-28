@@ -6,7 +6,6 @@
   --tab-vertical-padding: var(--su-2);
   --tab-horizontal-padding: var(--su-2);
   --font-size: var(--fs-base);
-  display: flex;
 
   @media (min-width: $breakpoint-s) {
     --tab-vertical-padding: var(--su-2);
@@ -17,6 +16,11 @@
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
     white-space: nowrap;
+  }
+
+  &__list {
+    list-style: none;
+    display: flex;
   }
 
   &__item {
