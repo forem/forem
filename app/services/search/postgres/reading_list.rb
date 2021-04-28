@@ -78,24 +78,7 @@ module Search
 
         relation = relation.search_articles(term) if term.present?
 
-        # NOTE: [@rhymes] A previous version was implemented with:
-        # `.tagged_with(tags, any: false).reselect(*ATTRIBUTES)`
-        #
-        # =>`.tagged_with()` merges `articles.*` to the SQL, thus we needed to
-        #    use `reselect()`, see https://github.com/forem/forem/pull/12420
-        # => `.tagged_with()` with multiple tags constructs a monster query,
-        #    see https://explain.depesz.com/s/CqQV / https://explain.dalibo.com/plan/1Lm
-        # This is because the `acts-as-taggable-on` query creates a separate INNER JOIN
-        # per each tag that is added to the list, each new clause uses the `LIKE` operator on `tags.name`.
-        # That could have been improved by by adding a GIN index on `tags.name`, see
-        # https://www.cybertec-postgresql.com/en/postgresql-more-performance-for-like-and-ilike-statements/
-        # and a similar discussion https://github.com/forem/forem/pull/12584#discussion_r570756176
-        #
-        # The preferred solution, as we don't need the `Tag` model itself, is to use
-        # `articles.cached_tag_list` and the `~` regexp operator with it
-        tags.each do |tag|
-          relation = relation.where("articles.cached_tag_list ~ ?", "\\m#{tag}\\M")
-        end
+        relation = relation.cached_tagged_with(tags) if tags.any?
 
         # here we issue a COUNT(*) after all the conditions are applied,
         # because we need to fetch the total number of articles, pre pagination
