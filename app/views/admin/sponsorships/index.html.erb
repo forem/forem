@@ -1,19 +1,9 @@
-<nav class="flex mb-4" aria-label="Sponsorships">
+<nav class="flex mb-4" aria-label="Sponsorships navigation">
   <div class="crayons-tabs">
-    <ul class="crayons-tabs__list">
-      <li>
-        <%= link_to "All", admin_sponsorships_path, class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:status].blank?}", aria_current: ("page" if params[:status].blank?).to_s %>
-      </li>
-      <li>
-        <%= link_to "None", admin_sponsorships_path(status: "none"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:status] == 'none'}", aria_current: ("page" if params[:status] == "none").to_s %>
-      </li>
-      <li>
-        <%= link_to "Pending", admin_sponsorships_path(status: "pending"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:status] == 'pending'}", aria_current: ("page" if params[:status] == "pending").to_s %>
-      </li>
-      <li>
-        <%= link_to "Live", admin_sponsorships_path(status: "live"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:status] == 'live'}", aria_current: ("page" if params[:status] == "live").to_s %>
-      </li>
-    </ul>
+    <%= link_to "All", admin_sponsorships_path, class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:status].blank?}" %>
+    <%= link_to "None", admin_sponsorships_path(status: "none"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:status] == 'none'}" %>
+    <%= link_to "Pending", admin_sponsorships_path(status: "pending"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:status] == 'pending'}" %>
+    <%= link_to "Live", admin_sponsorships_path(status: "live"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:status] == 'live'}" %>
   </div>
   <div class="ml-auto">
     <div class="justify-content-end">
