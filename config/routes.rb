@@ -63,6 +63,7 @@ Rails.application.routes.draw do
         resources :campaigns, only: [:create]
         resources :communities, only: [:create]
         resources :mascots, only: [:create]
+        resources :mandatories, only: [:create]
         resources :rate_limits, only: [:create]
       end
       namespace :users do
