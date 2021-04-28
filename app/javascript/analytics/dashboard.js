@@ -7,9 +7,11 @@ function resetActive(activeButton) {
   for (let i = 0; i < buttons.length; i += 1) {
     const button = buttons[i];
     button.classList.remove('crayons-tabs__item--current');
+    button.setAttribute('aria-current', '');
   }
 
   activeButton.classList.add('crayons-tabs__item--current');
+  activeButton.setAttribute('aria-current', 'page');
 }
 
 function sumAnalytics(data, key) {
