@@ -167,13 +167,19 @@ RSpec.describe Search::Postgres::ReadingList, type: :service do
         expect(extract_from_results(result, :path)).not_to include(article_2.path)
       end
 
-      it "does not match on partial tags" do
+      it "does not match on partial tags", :aggregate_failures do
         article_1.tag_list.add(:javascript)
         article_1.save!
 
         create(:reaction, reactable: article_1, user: user, category: :readinglist)
 
         result = described_class.search_documents(user, tags: [:java])
+        expect(extract_from_results(result, :path)).to be_empty
+
+        result = described_class.search_documents(user, tags: [:asc])
+        expect(extract_from_results(result, :path)).to be_empty
+
+        result = described_class.search_documents(user, tags: [:script])
         expect(extract_from_results(result, :path)).to be_empty
       end
     end

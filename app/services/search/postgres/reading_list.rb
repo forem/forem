@@ -94,7 +94,7 @@ module Search
         # The preferred solution, as we don't need the `Tag` model itself, is to use
         # `articles.cached_tag_list` and the `~` regexp operator with it
         tags.each do |tag|
-          relation = relation.where("articles.cached_tag_list ~ ?", "#{tag}\\M")
+          relation = relation.where("articles.cached_tag_list ~ ?", "\\m#{tag}\\M")
         end
 
         # here we issue a COUNT(*) after all the conditions are applied,
