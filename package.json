@@ -152,7 +152,7 @@
     "@github/clipboard-copy-element": "^1.1.2",
     "@honeybadger-io/webpack": "^1.2.0",
     "@rails/webpacker": "5.3.0",
-    "@reach/combobox": "^0.15.0",
+    "@reach/combobox": "^0.15.1",
     "ahoy.js": "^0.3.8",
     "autoprefixer": "^10.2.5",
     "babel-preset-preact": "^2.0.0",
