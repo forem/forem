@@ -64,7 +64,7 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
       it "updates DisplayAd's approved value" do
         Timecop.freeze(Time.current) do
           expect do
-            put "/admin/display_ads/#{display_ad.id}", params: params
+            put admin_display_ad_path(display_ad.id), params: params
           end.to change { display_ad.reload.approved }.from(false).to(true)
         end
       end
