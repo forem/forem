@@ -31,20 +31,20 @@ RSpec.describe "/admin/content_manager/articles", type: :request do
 
     it "allows an Admin to mark an article as approved" do
       expect do
-        patch "#{admin_articles_path}/#{article.id}", params: { article: { approved: true } }
+        patch admin_article_path(article.id), params: { article: { approved: true } }
       end.to change { article.reload.approved }.to(true)
     end
 
     it "allows an Admin to mark an article as featured" do
       expect do
-        patch "#{admin_articles_path}/#{article.id}", params: { article: { featured: true } }
+        patch admin_article_path(article.id), params: { article: { featured: true } }
       end.to change { article.reload.featured }.to(true)
     end
 
     it "allows an Admin to update the published at datetime for an article" do
       updated_published_at = article.published_at - 5.hours
       expect do
-        patch "#{admin_articles_path}/#{article.id}", params: { article: {
+        patch admin_article_path(article.id), params: { article: {
           "published_at(1i)": updated_published_at.year,
           "published_at(2i)": updated_published_at.month,
           "published_at(3i)": updated_published_at.day,
