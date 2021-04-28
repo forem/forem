@@ -33,7 +33,7 @@
         class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3"
         aria-labelledby="getStartedHeader">
 
-        <%= form_with(url: admin_settings_mandatories_path, local: true) do |f| %>
+        <%= form_with(url: admin_settings_mandatories_path, local: true, data: { testid: "getStartedSectionForm" }) do |f| %>
           <fieldset class="grid gap-4">
 
           <% Settings::Mandatory::MAPPINGS.each do |config_key, settings_model| %>
