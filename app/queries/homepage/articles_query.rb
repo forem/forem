@@ -69,10 +69,11 @@ module Homepage
       # would put all the previous filters in `OR` mode with tags, but what we need
       # is to only consider tags as a `OR` sub-condition
       if tags.present?
-        # `~` is the regexp operator and the `\M` modifier signifies the "end of word"
+        # `~` is the regexp operator, the `\m` modifier signifies the "beginning of word",
+        # and the `\M` modifier signifies the "end of word".
         # see https://www.postgresql.org/docs/11/functions-matching.html#FUNCTIONS-POSIX-REGEXP
         # for additional info
-        conditions = tags.map { |tag| relation.sanitize_sql_array(["cached_tag_list ~ ?", "#{tag}\\M"]) }
+        conditions = tags.map { |tag| relation.sanitize_sql_array(["cached_tag_list ~ ?", "\\m#{tag}\\M"]) }
         @relation = @relation.where(conditions.join(" OR "))
       end
 
