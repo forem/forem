@@ -22,6 +22,11 @@
   &__list {
     list-style: none;
     display: flex;
+    width: 100%;
+
+    li {
+      width: 100%;
+    }
   }
 
   &__item {
