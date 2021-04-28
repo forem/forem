@@ -43,7 +43,7 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders registration page if site config is private" do
-      allow(SiteConfig).to receive(:public).and_return(false)
+      allow(Settings::UserExperience).to receive(:public).and_return(false)
 
       get root_path
       expect(response.body).to include("Continue with")
@@ -105,7 +105,7 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "does not set cache-related headers if private" do
-      allow(SiteConfig).to receive(:public).and_return(false)
+      allow(Settings::UserExperience).to receive(:public).and_return(false)
       get "/"
       expect(response.status).to eq(200)
 
@@ -148,7 +148,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "shows only one cover if basic feed style" do
       create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
 
-      allow(SiteConfig).to receive(:feed_style).and_return("basic")
+      allow(Settings::UserExperience).to receive(:feed_style).and_return("basic")
       get "/"
       expect(response.body.scan(/(?=class="crayons-story__cover crayons-story__cover__image)/).count).to be 1
     end
@@ -156,7 +156,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "shows multiple cover images if rich feed style" do
       create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
 
-      allow(SiteConfig).to receive(:feed_style).and_return("rich")
+      allow(Settings::UserExperience).to receive(:feed_style).and_return("rich")
       get "/"
       expect(response.body.scan(/(?=class="crayons-story__cover crayons-story__cover__image)/).count).to be > 1
     end
@@ -199,7 +199,7 @@ RSpec.describe "StoriesIndex", type: :request do
     context "with campaign_sidebar" do
       before do
         allow(Settings::Campaign).to receive(:featured_tags).and_return("mytag,yourtag")
-        allow(SiteConfig).to receive(:home_feed_minimum_score).and_return(7)
+        allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(7)
 
         a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,mytag\n---\n\nHello"
         create(:article, approved: true, body_markdown: a_body, score: 1)
@@ -402,7 +402,7 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "renders properly even if site config is private" do
-        allow(SiteConfig).to receive(:public).and_return(false)
+        allow(Settings::UserExperience).to receive(:public).and_return(false)
         get "/t/#{tag.name}"
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
       end

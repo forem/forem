@@ -64,6 +64,7 @@ Rails.application.routes.draw do
         resources :communities, only: [:create]
         resources :mascots, only: [:create]
         resources :rate_limits, only: [:create]
+        resources :user_experiences, only: [:create]
       end
       namespace :users do
         resources :gdpr_delete_requests, only: %i[index destroy]

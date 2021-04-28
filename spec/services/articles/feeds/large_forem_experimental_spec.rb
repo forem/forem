@@ -59,7 +59,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
 
     before do
       article.update(published_at: 1.week.ago)
-      allow(SiteConfig).to receive(:home_feed_minimum_score).and_return(0)
+      allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(0)
     end
 
     it "returns a featured article and correctly scored other articles", :aggregate_failures do
