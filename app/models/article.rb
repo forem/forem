@@ -205,6 +205,8 @@ class Article < ApplicationRecord
       # compatible regexes (PCRE), but that matches at either end of a word.
       # They're more comparable to how vim's `\<` and `\>` work.
       where("cached_tag_list ~ ?", "[[:<:]]#{tag}[[:>:]]")
+    when Symbol
+      where("cached_tag_list ~ ?", "[[:<:]]#{tag}[[:>:]]")
     when Array
       tag.reduce(self) { |acc, elem| acc.cached_tagged_with(elem) }
     when Tag
@@ -218,14 +220,16 @@ class Article < ApplicationRecord
     case tags
     when String
       cached_tagged_with(tags)
+    when Symbol
+      cached_tagged_with(tags)
     when Array
       tags
         .map { |tag| cached_tagged_with(tag) }
         .reduce { |acc, elem| acc.or(elem) }
     when Tag
-      cached_tagged_with(tag.name)
+      cached_tagged_with(tags.name)
     else
-      raise TypeError, "Cannot search tags for: #{tag.inspect}"
+      raise TypeError, "Cannot search tags for: #{tags.inspect}"
     end
   }
 
