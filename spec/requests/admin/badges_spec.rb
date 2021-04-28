@@ -32,18 +32,18 @@ RSpec.describe "admin/content_manager/badge_achievements", type: :request do
     end
   end
 
-  describe "PUT admin/content_manager/badge_achievements do
+  describe "PUT admin/content_manager/badge_achievements" do
     before { sign_in admin }
 
     it "successfully updates the badge" do
       expect do
-        patch "#{admin_badges_path}/#{badge.id}", params: params
+        patch admin_badge_path(badge.id), params: params
       end.to change { badge.reload.title }.to("Hello, world!")
     end
 
     it "successfully updates badge's credits_awarded" do
       expect do
-        patch "#{admin_badges_path}/#{badge.id}", params: params
+        patch admin_badge_path(badge.id), params: params
       end.to change { badge.reload.credits_awarded }.to(10)
     end
   end

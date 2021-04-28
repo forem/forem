@@ -57,7 +57,7 @@ RSpec.describe "admin/customization/html_variants", type: :request do
       it "updates HtmlVariant's approved value" do
         Timecop.freeze(Time.current) do
           expect do
-            put "admin/customization/html_variants/#{html_variant.id}", params: params
+            put admin_html_variant_path(html_variant.id), params: params
           end.to change { html_variant.reload.approved }.from(false).to(true)
         end
       end
@@ -68,9 +68,9 @@ RSpec.describe "admin/customization/html_variants", type: :request do
 
       it "deletes the Display Ad" do
         expect do
-          delete "admin/customization/html_variants/#{html_variant.id}"
+          delete admin_html_variant_path(html_variant.id)
         end.to change { HtmlVariant.all.count }.by(-1)
-        expect(response.body).to redirect_to Rails.application.routes.url_helpers.admin_html_variants_path.to_s
+        expect(response.body).to redirect_to admin_html_variants_path
       end
     end
   end
