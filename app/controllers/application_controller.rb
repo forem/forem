@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
     return if self.class.module_parent.to_s == "Admin"
-    return if user_signed_in? || SiteConfig.public
+    return if user_signed_in? || Settings::UserExperience.public
 
     if api_action?
       authenticate!
@@ -139,7 +139,7 @@ class ApplicationController < ActionController::Base
   def feed_style_preference
     # TODO: Future functionality will let current_user override this value with UX preferences
     # if current_user exists and has a different preference.
-    SiteConfig.feed_style
+    Settings::UserExperience.feed_style
   end
   helper_method :feed_style_preference
 

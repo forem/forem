@@ -43,7 +43,7 @@ const FeedLoading = () => (
 const PodcastEpisodes = ({ episodes }) => (
   <TodaysPodcasts>
     {episodes.map((episode) => (
-      <PodcastEpisode episode={episode} />
+      <PodcastEpisode episode={episode} key={episode.podcast.id} />
     ))}
   </TodaysPodcasts>
 );
@@ -106,6 +106,7 @@ export const renderFeed = (timeFrame) => {
             {(subStories || []).map((story) => (
               <Article
                 {...commonProps}
+                key={story.id}
                 article={story}
                 feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(story.id)}

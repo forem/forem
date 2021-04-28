@@ -178,6 +178,8 @@ class SiteConfig < RailsSettings::Base
   # Tags
   field :sidebar_tags, type: :array, default: %w[]
 
+  # NOTE: @citizen428 - These will be removed once we migrated to Settings::UserExperience
+  # across the whole fleet.
   # User Experience
   # These are the default UX settings, which can be overridded by individual user preferences.
   # basic (current default), rich (cover image on all posts), compact (more minimal)

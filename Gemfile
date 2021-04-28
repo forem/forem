@@ -56,7 +56,7 @@ gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable
 gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.11" # HTML, XML, SAX, and Reader parser
-gem "octokit", "~> 4.20" # Simple wrapper for the GitHub API
+gem "octokit", "~> 4.21" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.11" # JSON parser and object serializer
 gem "omniauth", "~> 2.0" # A generalized Rack framework for multiple-provider authentication
 gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
@@ -100,7 +100,7 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.2.1" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.0.8" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.0.9" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system

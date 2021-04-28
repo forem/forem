@@ -22,7 +22,7 @@ module Stories
     end
 
     def signed_in_base_feed
-      if SiteConfig.feed_strategy == "basic"
+      if Settings::UserExperience.feed_strategy == "basic"
         Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag]).feed
       else
         optimized_signed_in_feed
@@ -30,7 +30,7 @@ module Stories
     end
 
     def signed_out_base_feed
-      if SiteConfig.feed_strategy == "basic"
+      if Settings::UserExperience.feed_strategy == "basic"
         Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag]).feed
       else
         Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])

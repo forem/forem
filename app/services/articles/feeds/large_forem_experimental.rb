@@ -124,7 +124,7 @@ module Articles
         else
           hot_stories = Article.published.limited_column_select
             .page(@page).per(@number_of_articles)
-            .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
+            .where("score >= ? OR featured = ?", Settings::UserExperience.home_feed_minimum_score, true)
             .order(hotness_score: :desc)
           featured_story = hot_stories.where.not(main_image: nil).first
         end
