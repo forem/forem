@@ -131,7 +131,7 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: protocol + ENV["APP_DOMAIN"].to_s }
   ActionMailer::Base.smtp_settings = {
     address: ENV["SMTP_ADDRESS"],
-    port: ENV["SMTP_ADDRESS"],
+    port: ENV["SMTP_PORT"],
     authentication: ENV["SMTP_AUTHENTICATION"],
     user_name: ENV["SMTP_USER_NAME"],
     password: ENV["SMTP_PASSWORD"],
