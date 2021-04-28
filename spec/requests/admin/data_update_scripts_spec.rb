@@ -51,7 +51,7 @@ RSpec.describe "/admin/advanced/data_update_scripts", type: :request do
       end
     end
 
-    describe "GET #{Rails.application.routes.url_helpers.admin_data_update_scripts_path}/:id" do
+    describe "GET admin/advanced/data_update_scripts/:id" do
       let(:script) do
         create(
           :data_update_script,

@@ -66,7 +66,7 @@ RSpec.describe "/admin/consumer_apps", type: :request do
       end
     end
 
-    describe "DELETE #{Rails.application.routes.url_helpers.admin_consumer_apps_path}/:id" do
+    describe "DELETE /admin/consumer_apps/:id" do
       let!(:consumer_app) { create(:consumer_app) }
 
       it "deletes the ConsumerApp" do
@@ -117,7 +117,7 @@ RSpec.describe "/admin/consumer_apps", type: :request do
       end
     end
 
-    describe "DELETE #{Rails.application.routes.url_helpers.admin_consumer_apps_path}/:id" do
+    describe "DELETE /admin/consumer_apps/:id" do
       let!(:consumer_app) { create(:consumer_app) }
 
       it "deletes the ConsumerApp" do

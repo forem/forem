@@ -19,7 +19,7 @@ RSpec.describe "/admin/content_manager/badge_achievements", type: :request do
     let(:request) { get admin_badges_path }
   end
 
-  describe "POST #{Rails.application.routes.url_helpers.admin_badge_achievements_award_badges_path}" do
+  describe "POST /admin/content_manager/badge_achievements/award_badges" do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
     let(:usernames_string) { "#{user.username}, #{user2.username}" }
@@ -93,7 +93,7 @@ RSpec.describe "/admin/content_manager/badge_achievements", type: :request do
     end
   end
 
-  describe "DELETE #{Rails.application.routes.url_helpers.admin_badge_achievements_path}:id" do
+  describe "DELETE /admin/content_manager/badge_achievements/:id" do
     let!(:badge_achievement) { create(:badge_achievement) }
 
     before do
