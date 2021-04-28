@@ -24,7 +24,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
       end
     end
 
-    describe "POST admin/customization/html_variants" do
+    describe "POST /admin/customization/html_variants" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
@@ -43,7 +43,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
       end
     end
 
-    describe "POST admin/customization/html_variants" do
+    describe "POST /admin/customization/html_variants" do
       it "creates a new html_variant" do
         expect do
           post_resource
@@ -51,7 +51,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
       end
     end
 
-    describe "PUT admin/customization/html_variants" do
+    describe "PUT /admin/customization/html_variants" do
       let!(:html_variant) { create(:html_variant, approved: false) }
 
       it "updates HtmlVariant's approved value" do
@@ -87,7 +87,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
       end
     end
 
-    describe "POST admin/customization/html_variants" do
+    describe "POST /admin/customization/html_variants" do
       it "creates a new html_variant" do
         expect do
           post_resource
@@ -95,7 +95,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
       end
     end
 
-    describe "PUT admin/customization/html_variants" do
+    describe "PUT /admin/customization/html_variants" do
       let!(:html_variant) { create(:html_variant, approved: false) }
 
       it "updates HtmlVariant's approved value" do
@@ -130,7 +130,7 @@ RSpec.describe "/admin/customization/html_variants", type: :request do
       end
     end
 
-    describe "POST admin/customization/html_variants" do
+    describe "POST /admin/customization/html_variants" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end

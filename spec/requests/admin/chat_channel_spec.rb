@@ -4,7 +4,7 @@ RSpec.describe "/admin/apps/chat_channels", type: :request do
   let(:user) { create(:user) }
   let(:chat_channel) { create(:chat_channel) }
 
-  describe "POST admin/apps/chat_channels" do
+  describe "POST /admin/apps/chat_channels" do
     around { |example| perform_enqueued_jobs(&example) }
 
     it "creates chat_channel for with users as moderator" do

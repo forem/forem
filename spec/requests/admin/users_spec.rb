@@ -119,7 +119,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST admin/users/:id/verify_email_ownership" do
+  describe "POST /admin/users/:id/verify_email_ownership" do
     it "allows a user to verify email ownership" do
       post verify_email_ownership_admin_user_path(user.id), params: { user_id: user.id }
 
@@ -202,7 +202,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST admin/users/:id/export_data" do
+  describe "POST /admin/users/:id/export_data" do
     it "redirects properly to the user edit page" do
       sign_in admin
       post export_data_admin_user_path(user), params: { send_to_admin: "true" }

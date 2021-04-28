@@ -21,7 +21,7 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
       end
     end
 
-    describe "POST admin/advanced/broadcasts" do
+    describe "POST /admin/advanced/broadcasts" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
@@ -40,7 +40,7 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
       end
     end
 
-    describe "POST admin/advanced/broadcasts" do
+    describe "POST /admin/advanced/broadcasts" do
       it "creates a new broadcast" do
         expect do
           post_resource
@@ -48,7 +48,7 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
       end
     end
 
-    describe "PUT admin/advanced/broadcasts" do
+    describe "PUT /admin/advanced/broadcasts" do
       let!(:broadcast) { create(:welcome_broadcast, active: false) }
 
       it "updates the Broadcast's active_status_updated_at timestamp" do
@@ -86,7 +86,7 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
       end
     end
 
-    describe "POST admin/advanced/broadcasts" do
+    describe "POST /admin/advanced/broadcasts" do
       it "creates a new broadcast" do
         expect do
           post_resource
@@ -117,7 +117,7 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
       end
     end
 
-    describe "POST admin/advanced/broadcasts" do
+    describe "POST /admin/advanced/broadcasts" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end

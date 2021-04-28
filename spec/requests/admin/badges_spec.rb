@@ -20,7 +20,7 @@ RSpec.describe "/admin/content_manager/badge_achievements", type: :request do
     let(:request) { get admin_badges_path }
   end
 
-  describe "POST admin/content_manager/badge_achievements" do
+  describe "POST /admin/content_manager/badge_achievements" do
     let(:post_resource) { post admin_badges_path, params: params }
 
     before { sign_in admin }
@@ -32,7 +32,7 @@ RSpec.describe "/admin/content_manager/badge_achievements", type: :request do
     end
   end
 
-  describe "PUT admin/content_manager/badge_achievements" do
+  describe "PUT /admin/content_manager/badge_achievements" do
     before { sign_in admin }
 
     it "successfully updates the badge" do

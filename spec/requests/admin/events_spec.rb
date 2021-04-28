@@ -38,7 +38,7 @@ RSpec.describe "/admin/apps/events", type: :request do
     end
   end
 
-  describe "POST admin/apps/events" do
+  describe "POST /admin/apps/events" do
     let(:post_resource) { post admin_events_path, params: params }
 
     before { sign_in admin }

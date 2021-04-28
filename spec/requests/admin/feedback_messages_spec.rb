@@ -28,7 +28,7 @@ RSpec.describe "/admin/moderation/feedback_messages", type: :request do
     end
   end
 
-  describe "POST admin/moderation/feedback_messages/save_status" do
+  describe "POST /admin/moderation/feedback_messages/save_status" do
     context "when a valid request is made" do
       let(:save_status_params) do
         {
@@ -93,7 +93,7 @@ RSpec.describe "/admin/moderation/feedback_messages", type: :request do
     end
   end
 
-  describe "POST admin/moderation/feedback_messages/create_note" do
+  describe "POST /admin/moderation/feedback_messages/create_note" do
     context "when a valid request is made" do
       let(:note_params) do
         {
