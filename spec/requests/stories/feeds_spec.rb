@@ -31,7 +31,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     end
 
     it "returns feed when feed_strategy is basic" do
-      allow(SiteConfig).to receive(:feed_strategy).and_return("basic")
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
       get "/stories/feed"
       expect(response_article).to include(
         "id" => article.id,
@@ -45,7 +45,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     end
 
     it "returns feed when feed_strategy is optimized" do
-      allow(SiteConfig).to receive(:feed_strategy).and_return("optimized")
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("optimized")
       get "/stories/feed"
       expect(response_article).to include(
         "id" => article.id,
@@ -128,7 +128,7 @@ RSpec.describe "Stories::Feeds", type: :request do
       end
 
       it "returns feed when feed_strategy is basic" do
-        allow(SiteConfig).to receive(:feed_strategy).and_return("basic")
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
         get "/stories/feed"
         expect(response_article).to include(
           "id" => article.id,
@@ -142,7 +142,7 @@ RSpec.describe "Stories::Feeds", type: :request do
       end
 
       it "returns feed when feed_strategy is optimized" do
-        allow(SiteConfig).to receive(:feed_strategy).and_return("optimized")
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("optimized")
         get "/stories/feed"
         expect(response_article).to include(
           "id" => article.id,

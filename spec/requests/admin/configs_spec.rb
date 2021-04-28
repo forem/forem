@@ -851,66 +851,82 @@ RSpec.describe "/admin/config", type: :request do
       describe "User Experience" do
         it "updates the feed_style" do
           feed_style = "basic"
-          post "/admin/config", params: { site_config: { feed_style: feed_style },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.feed_style).to eq(feed_style)
+          post admin_settings_user_experiences_path, params: {
+            settings_user_experience: { feed_style: feed_style },
+            confirmation: confirmation_message
+          }
+          expect(Settings::UserExperience.feed_style).to eq(feed_style)
         end
 
         it "updates the feed_strategy" do
           feed_strategy = "optimized"
-          post "/admin/config", params: { site_config: { feed_strategy: feed_strategy },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.feed_strategy).to eq(feed_strategy)
+          post admin_settings_user_experiences_path, params: {
+            settings_user_experience: { feed_strategy: feed_strategy },
+            confirmation: confirmation_message
+          }
+          expect(Settings::UserExperience.feed_strategy).to eq(feed_strategy)
         end
 
         it "updates the tag_feed_minimum_score" do
           tag_feed_minimum_score = 3
-          post "/admin/config", params: { site_config: { tag_feed_minimum_score: tag_feed_minimum_score },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.tag_feed_minimum_score).to eq(tag_feed_minimum_score)
+          post admin_settings_user_experiences_path, params: {
+            settings_user_experience: { tag_feed_minimum_score: tag_feed_minimum_score },
+            confirmation: confirmation_message
+          }
+          expect(Settings::UserExperience.tag_feed_minimum_score).to eq(tag_feed_minimum_score)
         end
 
         it "updates the home_feed_minimum_score" do
           home_feed_minimum_score = 5
-          post "/admin/config", params: { site_config: { home_feed_minimum_score: home_feed_minimum_score },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.home_feed_minimum_score).to eq(home_feed_minimum_score)
+          post admin_settings_user_experiences_path, params: {
+            settings_user_experience: { home_feed_minimum_score: home_feed_minimum_score },
+            confirmation: confirmation_message
+          }
+          expect(Settings::UserExperience.home_feed_minimum_score).to eq(home_feed_minimum_score)
         end
 
         it "updates the brand color if proper hex" do
           hex = "#0a0a0a" # dark enough
-          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.primary_brand_color_hex).to eq(hex)
+          post admin_settings_user_experiences_path, params: {
+            settings_user_experience: { primary_brand_color_hex: hex },
+            on: confirmation_message
+          }
+          expect(Settings::UserExperience.primary_brand_color_hex).to eq(hex)
         end
 
         it "does not update brand color if hex not contrasting enough" do
           hex = "#bd746f" # not dark enough
           post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.primary_brand_color_hex).not_to eq(hex)
+          expect(Settings::UserExperience.primary_brand_color_hex).not_to eq(hex)
         end
 
         it "does not update brand color if hex not a hex with proper format" do
           hex = "0a0a0a" # dark enough, but not proper format
-          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.primary_brand_color_hex).not_to eq(hex)
+          post admin_settings_user_experiences_path, params: {
+            settings_user_experience: { primary_brand_color_hex: hex },
+            confirmation: confirmation_message
+          }
+          expect(Settings::UserExperience.primary_brand_color_hex).not_to eq(hex)
         end
 
         it "updates public to true" do
           is_public = true
-          post "/admin/config", params: { site_config: { public: is_public },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.public).to eq(is_public)
+          post admin_settings_user_experiences_path, params: {
+            settings_user_experience: { public: is_public },
+            confirmation: confirmation_message
+          }
+          expect(Settings::UserExperience.public).to eq(is_public)
         end
 
         it "updates public to false" do
-          allow(SiteConfig).to receive(:public).and_return(false)
+          allow(Settings::UserExperience).to receive(:public).and_return(false)
           is_public = false
-          post "/admin/config", params: { site_config: { public: is_public },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.public).to eq(is_public)
+          post admin_settings_user_experiences_path, params: {
+            settings_user_experience: { public: is_public },
+            confirmation: confirmation_message
+          }
+          expect(Settings::UserExperience.public).to eq(is_public)
         end
       end
 
