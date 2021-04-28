@@ -347,6 +347,7 @@ export const MentionAutocompleteTextArea = forwardRef(
         <Combobox
           ref={containerRef}
           id="combobox-container"
+          data-testid="autocomplete-wrapper"
           onSelect={handleSelect}
           className={`crayons-autocomplete${autoResize ? ' h-100' : ''}`}
         >

@@ -1,4 +1,4 @@
-<%= form_tag("/admin/podcasts", method: "get", class: "mb-6") do %>
+<%= form_tag(admin_podcasts_path, method: "get", class: "mb-6") do %>
   <div class="form-group">
     <%= text_field_tag(:search, params[:search], aria: { label: "Search" }) %>
     <%= submit_tag("Search") %>

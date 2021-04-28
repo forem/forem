@@ -107,7 +107,7 @@ module Admin
       <<~HEREDOC
         *New note from #{params['author_name']}:*
         *Report status: #{params['feedback_message_status']}*
-        Report page: https://#{SiteConfig.app_domain}/admin/reports/#{params['noteable_id']}
+        Report page: admin_report_url(params['noteable_id'])
         --------
         Message: #{params['content']}
       HEREDOC

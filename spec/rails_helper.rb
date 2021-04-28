@@ -185,7 +185,7 @@ RSpec.configure do |config|
             }).to_return(status: 200, body: "", headers: {})
 
     allow(Settings::Community).to receive(:community_description).and_return("Some description")
-    allow(SiteConfig).to receive(:public).and_return(true)
+    allow(Settings::UserExperience).to receive(:public).and_return(true)
     allow(SiteConfig).to receive(:waiting_on_first_user).and_return(false)
 
     # Default to have field a field test available.

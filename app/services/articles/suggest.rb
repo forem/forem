@@ -46,7 +46,9 @@ module Articles
     end
 
     def suggestions_by_tag(max: MAX_DEFAULT)
-      Article.published.tagged_with(cached_tag_list_array, any: true)
+      Article
+        .published
+        .cached_tagged_with_any(cached_tag_list_array)
         .where.not(user_id: article.user_id)
         .where(tag_suggestion_query)
         .order(hotness_score: :desc)

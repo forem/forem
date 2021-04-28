@@ -9,33 +9,56 @@
     visibility: visible;
   }
 
+  .container .body pre {
+    margin-bottom: 1em;
+  }
 </style>
-<div class="container article" id="editor-help-guide">
-  <div class="title help-guide-title">
-    <h1>Editor Guide 🤓</h1>
-  </div>
-  <div class="body">
+
+<main class="container article" id="editor-help-guide">
+  <article id="main-content" class="body">
+    <h1 style="font-size: 57px; font-weight: 700; line-height: 73px;">Editor Guide 🤓</h1>
+
     <% if version == "1" %>
       <%= render "pages/v1_editor_guide_preamble" %>
     <% else %>
-      <p><em><b>We have two editor versions</b>. If you prefer Jekyll-style "frontmatter", switch to "basic markdown" in <a href="/settings/customization">/settings/customization</a>.</em></p>
-      <h2 style="font-size:2.8em" id="#things-to-know" class="permalink-heading"><strong>Things to Know</strong><a href="#things-to-know"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Things to know") %></a></h2>
+      <p>
+        <em>
+          <strong>Our editor has two versions</strong>.
+          If you prefer Jekyll-style "frontmatter", switch to "basic markdown" in
+          <a href="<%= user_settings_path(:customization) %>">Settings → Customization</a>.
+        </em>
+      </p>
+
+      <h2 style="font-size:2.8em" id="#things-to-know" class="permalink-heading">
+        <strong>Things to Know</strong>
+        <a href="#things-to-know" aria-label="permalink for Things to know">
+          <%= inline_svg_tag("small-link.svg", aria_hidden: true) %>
+        </a>
+      </h2>
       <ul>
-        <li>Use <a href="#markdown"><strong>markdown</strong></a> to write and format <a href="/"><%= community_name %></a> posts.</li>
+        <li>Use <a href="#markdown"><strong>markdown</strong></a> to write and format <a href="<%= root_path %>"><%= community_name %></a> posts.</li>
         <li>Most of the time, you can write inline HTML directly into your posts.</li>
         <li>You can use <strong><a href="#liquidtags">Liquid tags</a></strong> to make add rich content such as tweets and videos.</li>
         <li>Links to unpublished posts are shareable for feedback/review.</li>
         <li>The best size for your <b>cover image</b> is 1000 X 420.</li>
       </ul>
     <% end %>
-    <h2 style="font-size:2.8em" id="markdown" class="permalink-heading"><strong>✍ Markdown Basics</strong><a href="#markdown"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Markdown") %></a></h2>
+
+    <h2 style="font-size:2.8em" id="markdown" class="permalink-heading">
+      <strong>✍ Markdown Basics</strong>
+      <a href="#markdown" aria-label="permalink for Markdown">
+        <%= inline_svg_tag("small-link.svg", aria_hidden: true) %>
+      </a>
+    </h2>
     <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out
       <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">this cheat sheet.</a>
     </p>
-    <h3 id="markdown-bold-and-italic" class="permalink-heading"><strong>Bold & Italic</strong><a href="#markdown-bold-and-italic"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Bold & Italic") %></a></h3>
-    <p><em>Italics</em>: <code>*asterisks* or _underscores_</code></p>
-    <p><strong>Bold</strong>: <code>**double asterisks** or __double underscores__</code></p>
-    <h3 id="markdown-links" class="permalink-heading"><strong>Links</strong><a href="#markdown-links"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Links") %></a></h3>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "markdown-bold-and-italic", title: "Bold & Italic" } %>
+    <p><em>Italics</em>: <code>*asterisks*</code> or <code>_underscores_</code></p>
+    <p><strong>Bold</strong>: <code>**double asterisks**</code> or <code>__double underscores__</code></p>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "markdown-links", title: "Links" } %>
     <p><a href="<%= app_url %>">I'm an inline link</a>: <code>[I'm an inline link](put-link-here)</code></p>
     <p><a name="anchored">Anchored links</a> (For things like a Table of Contents)</p>
     <pre>
@@ -45,367 +68,389 @@
 
       ### Chapter 1 <%= "<a name=\"chapter-1\"></a>" %>
     </pre>
-    <h3 id="markdown-inline-images" class="permalink-heading"><strong>Inline Images</strong><a href="#markdown-inline-images"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Inline Images") %></a></h3>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "markdown-inline-images", title: "Inline Images" } %>
     <p>
       When adding GIFs to posts and comments, please note that there is a limit of 200 megapixels per frame/page.
       <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_220,q_auto,w_220/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" />
     </p>
     <pre>![Alt text of image](put-link-to-image-here)</pre>
-    <figcaption> You can even add a caption using the HTML <code>figcaption</code> tag!</figcaption>
-    <h3 id="markdown-headers" class="permalink-heading"><strong>Headers</strong><a href="#markdown-headers"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Headers") %></a></h3>
+    <figure>
+        <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_50,q_auto,w_50/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" />
+        <figcaption>You can even add a caption using the HTML <code>figcaption</code> tag!</figcaption>
+    </figure>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "markdown-headers", title: "Headers" } %>
     <p>Add a header to your post with this syntax:</p>
     <pre># One '#' for a h1 header<br>## Two '#'s for a h2 header<br>...<br>###### Six '#'s for a h6 header</pre>
-    <h1>One '#' for a h1 header</h1>
-    <h2>Two '#'s for a h2 header</h2>
-    <h6>Six '#'s for a h6 header</h6>
-    <h3 id="author-notes" class="permalink-heading"><strong>Author Notes/Comments</strong><a href="#author-notes"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Author Notes/Comments") %></a></h3>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "author-notes", title: "Author Notes/Comments" } %>
     <p>Add some hidden notes/comments to your article with this syntax:</p>
     <pre>&lt;!-- This won't show up in the content! --&gt;</pre>
-    <h2 style="font-size:2.8em" id="liquidtags" class="permalink-heading"><strong>🌊 Liquid Tags</strong><a href="#liquidtags"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Liquid Tags") %></a></h2>
-    <p>We support native
-      <a href="https://shopify.github.io/liquid" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:
+
+    <h2 style="font-size:2.8em" id="liquidtags" class="permalink-heading">
+      <strong>🌊 Liquid Tags</strong>
+      <a href="#liquidtags" aria-label="permalink for Liquid Tags"><%= inline_svg_tag("small-link.svg", aria_hidden: true) %></a>
+    </h2>
+    <p>
+      We support native
+      <a href="https://shopify.github.io/liquid" target="_blank" rel="noopener">Liquid tags</a> in our editor,
+      but have created our own custom tags listed below:
     </p>
-    <h3 id="article-post-embed" class="permalink-heading"><strong><%= community_name %> Article/Post Embed</strong><a href="#article-post-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Article/Post Embed") %></a></h3>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "article-post-embed", title: "#{community_name} Article/Post Embed" } %>
     <p>All you need is the full link of the article:</p>
-    <code>{% link <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</code>
+    <pre>{% link <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</pre>
     <p>You can also use the slug like this:</p>
-    <code>{% link kazz/boost-your-productivity-using-markdown-1be %}</code>
+    <pre>{% link kazz/boost-your-productivity-using-markdown-1be %}</pre>
     <p>You can also use the alias post instead of link like this:</p>
-    <code>{% post <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</code>
+    <pre>{% post <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</pre>
     <p>or this:</p>
-    <code>{% post kazz/boost-your-productivity-using-markdown-1be %}</code>
-    <h3 id="user-embed" class="permalink-heading"><strong><%= community_name %> User Embed</strong><a href="#user-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for User Embed") %></a></h3>
+    <pre>{% post kazz/boost-your-productivity-using-markdown-1be %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "user-embed", title: "#{community_name} User Embed" } %>
     <p>All you need is the <%= community_name %> username:</p>
-    <code>{% user jess %}</code>
-    <h3 id="tag-embed" class="permalink-heading"><strong><%= community_name %> Tag Embed</strong><a href="#tag-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Tag Embed") %></a></h3>
+    <pre>{% user jess %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "tag-embed", title: "#{community_name} Tag Embed" } %>
     <p>All you need is the tag name:</p>
-    <code>{% tag git %}</code>
-    <h3 id="comment-embed" class="permalink-heading"><strong><%= community_name %> Comment Embed</strong><a href="#comment-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Comment Embed") %></a></h3>
+    <pre>{% tag git %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "comment-embed", title: "#{community_name} Comment Embed" } %>
     <p>All you need is the
       <code>ID</code> at the end of a comment URL. To get the comment link, click either the timestamp or the menu button in the top right corner on a comment and then click "Permalink". Here's an example:
     </p>
-    <code>{% comment 2d1a %}</code>
-    <h3 id="podcast-episode-embed" class="permalink-heading"><strong><%= community_name %> Podcast Episode Embed</strong><a href="#podcast-episode-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Podcast Episode Embed") %></a></h3>
+    <pre>{% comment 2d1a %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "podcast-episode-embed", title: "#{community_name} Podcast Episode Embed" } %>
     <p>All you need is the full link of the podcast episode:</p>
-    <code>{% podcast <%= app_url("/basecspodcast/s2e2--queues-irl") %> %}</code>
-    <h3 id="listing-embed" class="permalink-heading"><strong><%= community_name %> Listing Embed</strong><a href="#listing-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Listing Embed") %></a></h3>
+    <pre>{% podcast <%= app_url("/basecspodcast/s2e2--queues-irl") %> %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "listing-embed", title: "#{community_name} Listing Embed" } %>
     <p>All you need is the full link of the listing:</p>
-    <code>{% listing <%= app_url("/listings/collabs/dev-is-open-source-823") %> %}</code>
+    <pre>{% listing <%= app_url("/listings/collabs/dev-is-open-source-823") %> %}</pre>
     <p>You can also use the category and slug like this:</p>
-    <code>{% listing collabs/dev-is-open-source-823 %}</code>
+    <pre>{% listing collabs/dev-is-open-source-823 %}</pre>
     <p>Note: Expired listings will raise an error. Make sure the listing is published or recently bumped.</p>
-    <h3 id="details-embed" class="permalink-heading"><strong>Details Embed</strong><a href="#details-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Details Embed") %></a></h3>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "details-embed", title: "Details Embed" } %>
     <p>You can embed a details HTML element by using details, spoiler, or
     collapsible. The <em>summary</em> will be what the dropdown title displays.
     The <em>content</em> will be the text hidden behind the dropdown. This is
     great for when you want to hide text (i.e. answers to questions) behind a
     user action/intent (i.e. a click).</p>
-    <p><code>{% details summary %} content {% enddetails %}</code></p>
-    <p><code>{% spoiler summary %} content {% endspoiler %}</code></p>
-    <p><code>{% collapsible summary %} content {% endcollapsible %}</code></p>
-    <h3 id="twitter-embed" class="permalink-heading"><strong>Twitter Embed</strong><a href="#twitter-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Twitter Embed") %></a></h3>
+    <pre>
+      {% details summary %} content {% enddetails %}
+      {% spoiler summary %} content {% endspoiler %}
+      {% collapsible summary %} content {% endcollapsible %}
+    </pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "twitter-embed", title: "Twitter Embed" } %>
     <p>Using the Twitter Liquid tag will allow the tweet to pre-render from the server, providing your reader with a better experience. All you need is the tweet
       <code>id</code> from the url.</p>
-    <code>{% twitter 834439977220112384 %}</code>
-    <h3 id="twitter-timeline" class="permalink-heading"><strong>Twitter Timeline</strong><a href="#twitter-timeline"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Twitter Timeline") %></a></h3>
+    <pre>{% twitter 834439977220112384 %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "twitter-timeline", title: "Twitter Timeline" } %>
     <p>Using the Twitter Timeline Liquid tag will allow the Twitter Timeline to pre-render from the server. All you need is the Twitter Timeline
       <code>link</code>.</p>
-    <code>{% twitter_timeline https://twitter.com/username/timelines/834439977220112384 %}</code>
-    <h3 id="glitch-embed" class="permalink-heading"><strong>Glitch embed</strong><a href="#glitch-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Glitch embed") %></a></h3>
+    <pre>{% twitter_timeline https://twitter.com/username/timelines/834439977220112384 %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "glitch-embed", title: "Glitch Embed" } %>
     <p>All you need is the Glitch project slug</p>
-    <code>{% glitch earthy-course %}</code>
+    <pre>{% glitch earthy-course %}</pre>
     <p>There are several
       <a href="https://glitch.com/help/how-can-i-customize-a-glitch-app-embed">optional attributes</a> you can use in your tag, just add them after the id, separated by spaces.
     </p>
     <dl>
-      <dt><code>app</code></dt>
+      <dt><strong>app</strong></dt>
       <dd>
-        Shows the app preview without the code.<br>
-        <code>{% glitch earthy-course app %}</code>
+        <p>Shows the app preview without the code.</p>
+        <pre>{% glitch earthy-course app %}</pre>
       </dd>
-      <dt><code>code</code></dt>
+      <dt><strong>code</strong></dt>
       <dd>
-        Shows the code without the app preview.<br>
-        <code>{% glitch earthy-course code %}</code>
+        <p>Shows the code without the app preview.</p>
+        <pre>{% glitch earthy-course code %}</pre>
       </dd>
-      <dt><code>preview-first</code></dt>
+      <dt><strong>preview-first</strong></dt>
       <dd>
-        Swap panes: Show the app preview on the left and the code on the right.<br>
-        <code>{% glitch earthy-course preview-first %}</code>
+        <p>Swap panes: Show the app preview on the left and the code on the right.</p>
+        <pre>{% glitch earthy-course preview-first %}</pre>
       </dd>
-      <dt><code>no-attribution</code></dt>
+      <dt><strong>no-attribution</strong></dt>
       <dd>
-        Hides the avatar of the creator(s).<br>
-        <code>{% glitch earthy-course no-attribution %}</code>
+        <p>Hides the avatar of the creator(s).</p>
+        <pre>{% glitch earthy-course no-attribution %}</pre>
       </dd>
-      <dt><code>no-files</code></dt>
+      <dt><strong>no-files</strong></dt>
       <dd>
-        Hides the file browser.<br>
-        <code>{% glitch earthy-course no-files %}</code>
+        <p>Hides the file browser.</p>
+        <pre>{% glitch earthy-course no-files %}</pre>
       </dd>
-      <dt><code>file</code></dt>
+      <dt><strong>file</strong></dt>
       <dd>
-        Lets you choose which file to display in the code panel. Defaults to index.html.<br>
-        <code>{% glitch earthy-course file=script.js %}</code>
+        <p>Lets you choose which file to display in the code panel. Defaults to index.html.</p>
+        <pre>{% glitch earthy-course file=script.js %}</pre>
       </dd>
     </dl>
-    <h3 id="github-repo-embed" class="permalink-heading"><strong>GitHub Repo Embed</strong><a href="#github-repo-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for GitHub Repo Embed") %></a></h3>
-    <p>All you need is the GitHub username and repo:</p>
-    <code>{% github forem/forem %}</code>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "github-repo-embed", title: "GitHub Repository Embed" } %>
+    <p>All you need is the GitHub username and the repository name:</p>
+    <pre>{% github forem/forem %}</pre>
     <dl>
-      <dt><code>no-readme</code></dt>
+      <dt><strong>no-readme</strong></dt>
       <dd>
-        You can add a no-readme option to your GitHub tag to hide the readme file from the preview.<br>
-        <code>{% github forem/forem no-readme %}</code>
+        <p>You can add a no-readme option to your GitHub tag to hide the readme file from the preview.</p>
+        <pre>{% github forem/forem no-readme %}</pre>
       </dd>
     </dl>
-    <h3 id="github-issue-pr-comment-embed" class="permalink-heading"><strong>GitHub Issue, Pull request or Comment Embed</strong><a href="#github-issue-pr-comment-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for GitHub Issue, Pull request or Comment Embed") %></a></h3>
-    <p>All you need is the GitHub issue, PR or comment URL:</p>
-    <code>{% github https://github.com/forem/forem/issues/9 %}</code>
-    <h3 id="github-gist-embed" class="permalink-heading"><strong>GitHub Gist Embed</strong><a href="#github-gist-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for GitHub Gist Embed") %></a></h3>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "github-issue-pr-comment-embed", title: "GitHub Issue, Pull Request or Comment Embed" } %>
+    <p>All you need is the GitHub issue, pull request or comment URL:</p>
+    <pre>{% github https://github.com/forem/forem/issues/9 %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "github-gist-embed", title: "GitHub Gist Embed" } %>
     <p>All you need is the gist link:</p>
-    <code>
-      {% gist https://gist.github.com/CristinaSolana/1885435 %}
-    </code>
+    <pre>{% gist https://gist.github.com/CristinaSolana/1885435 %}</pre>
     <dl>
-      <dt><code>Single File Embed</code></dt>
+      <dt><strong>Single File Embed</strong></dt>
       <dd>
-        <p>You can choose to embed a single gist file. <br>
-        <code>{% gist https://gist.github.com/CristinaSolana/1885435 file=gistfile1.md %}</code></p>
+        <p>You can choose to embed a single gist file.</p>
+        <pre>{% gist https://gist.github.com/CristinaSolana/1885435 file=gistfile1.md %}</pre>
       </dd>
-      <dt><code>Specific Version Embed</code></dt>
+      <dt><strong>Specific Version Embed</strong></dt>
       <dd>
         <p>You can choose to embed a specific version of a gist file. All you need
-        the link and the commit hash for that specific version. <br>
-        The format is <code>{% gist [gist-link]/[commit-hash] %}</code> <br>
-        e.g. <br>
-        <code>{% gist https://gist.github.com/suntong/3a31faf8129d3d7a380122d5a6d48ff6/f77d01e82defbf736ebf4879a812cf9c916a9252 %}</code></p>
+        the link and the commit hash for that specific version.
+        The format is <code>{% gist [gist-link]/[commit-hash] %}</code></p>
+        <pre>{% gist https://gist.github.com/suntong/3a31faf8129d3d7a380122d5a6d48ff6/f77d01e82defbf736ebf4879a812cf9c916a9252 %}</pre>
       </dd>
-      <dt><code>Specific Version File Embed</code></dt>
+      <dt><strong>Specific Version File Embed</strong></dt>
       <dd>
         <p>You can choose to embed a specific version of a gist file. All you need
-        the link, the filename and the commit hash for that specific version . <br>
-        The format is <code>{% gist [gist-link]/[commit-hash] file=[filename] %}</code> <br>
-        e.g. <br>
-        <code>
-          {% gist https://gist.github.com/suntong/3a31faf8129d3d7a380122d5a6d48ff6/f77d01e82defbf736ebf4879a812cf9c916a9252 file=Images.tmpl %}
-        </code></p>
+        the link, the filename and the commit hash for that specific version.
+        The format is <code>{% gist [gist-link]/[commit-hash] file=[filename] %}</code></p>
+        <pre>{% gist https://gist.github.com/suntong/3a31faf8129d3d7a380122d5a6d48ff6/f77d01e82defbf736ebf4879a812cf9c916a9252 file=Images.tmpl %}</pre>
       </dd>
     </dl>
-    <h3 id="gitpitch-embed" class="permalink-heading"><strong>GitPitch Embed</strong><a href="#gitpitch-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for GitPitch Embed") %></a></h3>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "gitpitch-embed", title: "GitPitch Embed" } %>
     <p>All you need is the GitPitch link:</p>
-    <code>
-      {% gitpitch https://gitpitch.com/gitpitch/in-60-seconds %}
-    </code>
-    <h3 id="video-embed" class="permalink-heading"><strong>Video Embed</strong><a href="#video-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Video Embed") %></a></h3>
-    <p>All you need is the <code>id</code> from the URL.
-      <ul>
-        <li><strong>YouTube:</strong> <code>{% youtube dQw4w9WgXcQ %}</code></li>
-        <li><strong>Vimeo:</strong> <code>{% vimeo 193110695 %}</code></li>
-        <li><strong>Twitch:</strong> <code>{% twitch ClumsyPrettiestOilLitFam %}</code></li>
-      </ul>
-      <h3 id="medium-embed" class="permalink-heading"><strong>Medium Embed</strong><a href="#medium-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Medium Embed") %></a></h3>
-      <p>Just enter the full URL of the Medium article you are trying to embed.</p>
-      <code>{% medium https://medium.com/s/story/boba-science-how-can-i-drink-a-bubble-tea-to-ensure-that-i-dont-finish-the-tea-before-the-bobas-7fc5fd0e442d %}</code>
-      <h3 id="slideshare-embed" class="permalink-heading"><strong>SlideShare Embed</strong><a href="#slideshare-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for SlideShare Embed") %></a></h3>
-      <p>All you need is the SlideShare <code>key</code>:</p>
-      <code>{% slideshare rdOzN9kr1yK5eE %}</code>
-      <h3 id="codepen-embed" class="permalink-heading"><strong>CodePen Embed</strong><a href="#codepen-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for CodePen Embed") %></a></h3>
-      <p>All you need is the full CodePen <code>link</code>, ending in the pen ID code, as follows:</p>
-      <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX %}</code>
-      <dl>
-        <dt><code>default-tab</code></dt>
-        <dd>
-          Add default-tab parameter to your CodePen embed tag. Default to <i>result</i><br>
-          <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result %}</code>
-        </dd>
-      </dl>
-      <h3 id="kotlin-playground" class="permalink-heading"><strong>Kotlin Playground</strong><a href="#kotlin-playground"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Kotlin Playground") %></a></h3>
-      <p>To create a runnable kotlin snippet, create a Kotlin Snippet at <a href="https://play.kotlinlang.org">https://play.kotlinlang.org</a></p>
-      <p>Go to <code>Share</code> dialog and copy the full <code>link</code> from the <code>Medium</code> tab. Use it as follows:</p>
-      <code>{% kotlin https://pl.kotl.in/owreUFFUG?theme=darcula&from=3&to=6&readOnly=true %}</code>
-      <h3 id="runkit-embed" class="permalink-heading"><strong>RunKit Embed</strong><a href="#runkit-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for RunKit Embed") %></a></h3>
-      <p>Put executable code within a runkit liquid block, as follows:</p>
-      <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}<br></pre>
+    <pre>{% gitpitch https://gitpitch.com/gitpitch/in-60-seconds %}</pre>
 
-      <h3 id="katex-embed" class="permalink-heading"><strong>KaTeX Embed</strong><a href="#katex-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for KaTeX Embed") %></a></h3>
-      <p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
-      <pre>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
-      <p>To render KaTeX inline add the "inline" option:</p>
-      <pre>{% katex inline %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+    <%= render partial: "editor_guide_h3", locals: { id: "video-embed", title: "Video Embed" } %>
+    <p>All you need is the <code>id</code> from the URL.</p>
+    <ul>
+      <li><strong>YouTube:</strong> <code>{% youtube dQw4w9WgXcQ %}</code></li>
+      <li><strong>Vimeo:</strong> <code>{% vimeo 193110695 %}</code></li>
+      <li><strong>Twitch:</strong> <code>{% twitch ClumsyPrettiestOilLitFam %}</code></li>
+    </ul>
 
-      <h3 id="stackblitz-embed" class="permalink-heading"><strong>Stackblitz Embed</strong><a href="#stackblitz-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Stackblitz Embed") %></a></h3>
-      <p>All you need is the ID of the Stackblitz:</p>
-      <code>{% stackblitz ball-demo %}</code>
-      <dl>
-        <dt><code>Default view</code></dt>
-        <dd>
-          You can change the default view, the options are <i>both</i>, <i>preview</i>, <i>editor</i>. Defaults to
-          <i>both</i><br>
-          <code>{% stackblitz ball-demo view=preview %}</code>
-        </dd>
-        <dt><code>Default file</code></dt>
-        <dd>
-          You can change the default file you want your embed to point to<br>
-          <code>{% stackblitz ball-demo file=style.css %}</code>
-        </dd>
-        <h3><strong>CodeSandbox Embed</strong></h3>
-        <p>All you need is the ID of the Sandbox:</p>
-        <code>{% codesandbox ppxnl191zx %}</code>
-        <p>Of CodeSandbox's many
-          <a href="https://codesandbox.io/docs/embedding#embed-options">optional attributes</a>, the following are supported by using them in your tag, just add them after the id, separated by spaces.
-        </p>
-        <dl>
-          <dt><code>initialpath</code></dt>
-          <dd>
-            Which url to initially load in address bar.<br>
-            <code>{% codesandbox ppxnl191zx initialpath=/initial/load/path %}</code>
-          </dd>
-          <dt><code>module</code></dt>
-          <dd>
-            Which module to open by default.<br>
-            <code>{% codesandbox ppxnl191zx module=/path/to/module %}</code>
-          </dd>
-          <dt><code>runonclick</code></dt>
-          <dd>
-            Delays when code is ran if <code>1</code> <br>
-            <code>{% codesandbox ppxnl191zx runonclick=1 %}</code>
-          </dd>
-        </dl>
-        <h3 id="jsfiddle-embed" class="permalink-heading"><strong>JSFiddle Embed</strong><a href="#jsfiddle-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for JSFiddle Embed") %></a></h3>
-        <p>All you need is the full JSFiddle <code>link</code>, ending in the fiddle ID code, as follows:</p>
-        <code>{% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}</code>
-        <dl>
-          <dt><code>Custom tabs</code></dt>
-          <dd>
-            You can add a custom tab order to you JSFiddle embed tag. Defaults to <i>js,html,css,result</i><br>
-            <code>{% jsfiddle https://jsfiddle.net/webdevem/Q8KVC result,html,css %}</code>
-          </dd>
-        </dl>
+    <%= render partial: "editor_guide_h3", locals: { id: "medium-embed", title: "Medium Embed" } %>
+    <p>Just enter the full URL of the Medium article you are trying to embed.</p>
+    <pre>{% medium https://medium.com/s/story/boba-science-how-can-i-drink-a-bubble-tea-to-ensure-that-i-dont-finish-the-tea-before-the-bobas-7fc5fd0e442d %}</pre>
 
-        <h3 id="jsitor-liquid-tag" class="permalink-heading"><strong>JSitor Liquid Tag</strong><a href="#jsitor-liquid-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for JSitor Liquid Tag") %></a></h3>
-        <p>
-          To use JSitor liquid tag you can use the JSitor full <code>link</code>, with or without the parameters
-        </p>
-        <code>{% jsitor https://jsitor.com/embed/B7FQ5tHbY %}</code>
-        <br/>
-        <code>{% jsitor https://jsitor.com/embed/B7FQ5tHbY?html&js&css&result&light %}</code>
-        <p>
-          Other options to use JSitor liquid tag is just by its ID, you can add it with or without the parameters
-        </p>
-        <code>{% jsitor B7FQ5tHbY %}</code>
-        <br/>
-        <code>{% jsitor B7FQ5tHbY?html&js&css&result&light %}</code>
+    <%= render partial: "editor_guide_h3", locals: { id: "slideshare-embed", title: "SlideSare Embed" } %>
+    <p>All you need is the SlideShare <code>key</code>:</p>
+    <pre>{% slideshare rdOzN9kr1yK5eE %}</pre>
 
-        <h3 id="repl-it-embed" class="permalink-heading"><strong>repl.it Embed</strong><a href="#repl-it-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for repl.it Embed") %></a></h3>
-        <p>All you need is the URL after the domain name:</p>
-        <code>{% replit @WigWog/PositiveFineOpensource %}</code>
+    <%= render partial: "editor_guide_h3", locals: { id: "codepen-embed", title: "CodePen Embed" } %>
+    <p>All you need is the full CodePen <code>link</code>, ending in the pen ID code, as follows:</p>
+    <pre>{% codepen https://codepen.io/twhite96/pen/XKqrJX %}</pre>
+    <dl>
+      <dt><strong>default-tab</strong></dt>
+      <dd>
+        <p>Add default-tab parameter to your CodePen embed tag. Defaults to <i>result</i>.</p>
+        <pre>{% codepen https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result %}</pre>
+      </dd>
+    </dl>
 
-        <h3 id="stackery-embed" class="permalink-heading"><strong>Stackery Embed</strong><a href="#stackery-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Stackery Embed") %></a></h3>
-        <p>Visualize your AWS Serverless Application Model templates with <a href="https://www.stackery.io/">Stackery's</a> visualizer embed</p>
-        <p>All you need is the repository owner, repository name, and branch that you would like visualized</p>
-        <code>{% stackery deeheber lambda-layer-example master %}</code>
-        <br/>
-        <p>The repository must be a public GitHub repository and have a valid AWS SAM template in the project root titled template.yaml</p>
+    <%= render partial: "editor_guide_h3", locals: { id: "kotlin-playground", title: "Kotlin Playground" } %>
+    <p>To create a runnable kotlin snippet, create a Kotlin Snippet at <a href="https://play.kotlinlang.org">https://play.kotlinlang.org</a></p>
+    <p>Go to <code>Share</code> dialog and copy the full <code>link</code> from the <code>Medium</code> tab. Use it as follows:</p>
+    <pre>{% kotlin https://pl.kotl.in/owreUFFUG?theme=darcula&from=3&to=6&readOnly=true %}</pre>
 
-        <h3 id="next-tech-embed"><strong>Next Tech Embed</strong><a href="#next-tech-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Next Tech Embed") %></a></h3>
-        <p>All you need is the share URL for your sandbox. You can get the share URL by clicking
-        the "Share" button in the top right when the sandbox is open.</p>
-        <p><img src="https://thepracticaldev.s3.amazonaws.com/i/r449xp8cay3383i139qv.png" alt="Share Replit sandbox" /></p>
-        <code>{% nexttech https://nt.dev/s/6ba1fffbd09e %}</code>
-        <h3 id="instagram-embed" class="permalink-heading"><strong>Instagram Embed</strong><a href="#instagram-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Instagram Embed") %></a></h3>
-        <p>All you need is the Instagram post <code>id</code> from the URL:</p>
-        <code>{% instagram BXgGcAUjM39 %}</code>
-        <h3 id="speakerdeck-tag" class="permalink-heading"><strong>Speakerdeck Tag</strong><a href="#speakerdeck-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Speakerdeck Tag") %></a></h3>
-        <p>All you need is the data-id code from the embed link:</p>
-        <pre><span style="color: gray;"># Given this embed link:</span><br>&lt;script async class="speakerdeck-embed"<br>    data-id="<span style='color: orange;'>7e9f8c0fa0c949bd8025457181913fd0</span>"<br>    data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"&gt;&lt;/script&gt;</pre>
-        <pre>{% speakerdeck <span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span> %}</pre>
-        <h3 id="soundcloud-embed" class="permalink-heading"><strong>Soundcloud Embed</strong><a href="#soundcloud-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Soundcloud Embed") %></a></h3>
-        <p>Just enter the full URL of the Soundcloud track you are trying to embed.</p>
-        <code>{% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}</code>
-        <h3 id="spotify-embed" class="permalink-heading"><strong>Spotify Embed</strong><a href="#spotify-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Spotify Embed") %></a></h3>
-        <p>
-          Enter the Spotify URI of the Spotify track / playlist /
-          album / artist / podcast episode you are trying to embed.
-        </p>
-        <pre>{% spotify <span style="color: #1DB954;">spotify:episode:5V4XZWqZQJvbddd31n56mf</span> %}</pre>
-        <h3 id="blogcast-tag" class="permalink-heading"><strong>Blogcast Tag</strong><a href="#blogcast-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Blogcast Tag") %></a></h3>
-        <p>All you need is the article id code from the embed code:</p>
-        <pre>{% blogcast <span style="color: orange;">1234</span> %}</pre>
-        <h3 id="parler-tag" class="permalink-heading"><strong>Parler Tag</strong><a href="#parler-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Parler Tag") %></a></h3>
-        <p>Enter the full url of the Parler.io audio file you want to embed. </p>
-        <pre>{% parler https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3 %}</pre>
-        <h3 id="stack-exchange-overflow-tag" class="permalink-heading"><strong>Stack Exchange / Stack Overflow Tag</strong><a href="#stack-exchange-overflow-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Stack Exchange / Stack Overflow Tag") %></a></h3>
-        <p>
-          You'll need the question or answer's ID code, and the site. When using <code>{% stackoverflow %}</code> as the tag, the site will default to Stack Overflow.
-          For example:
-          <br>
-          <a href="https://stackoverflow.com/questions/24789130/colors-in-irb-rails-console">https://stackoverflow.com/questions/24789130/colors-in-irb-rails-console</a>
-          <ul>
-              <li>The question ID is: <code style="color: aquamarine; background-color: black;">24789130</code></li>
-          </ul>
-          <pre>{% stackoverflow <span style="color: aquamarine;">24789130</span> %}</pre>
-        </p>
-        <p>
-          For other Stack Exchange network sites, you'll need to provide the site's name and use <code>{% stackexchange %}</code> as the tag. For example:
-          <br>
-          <a href="https://diy.stackexchange.com/questions/169988/base-for-refrigerator-wine-shelf">https://diy.stackexchange.com/questions/169988/base-for-refrigerator-wine-shelf</a>
-          <ul>
-            <li>The question ID is: <code style="color: aquamarine; background-color: black;">169988</code></li>
-          <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
-          </ul>
-          <pre>{% stackexchange <span style="color: aquamarine;">169988</span> <span style="color: orange;">diy</span> %}</pre>
-        </p>
-        <p>
-        For answers, you can get the answer's ID code by from the answer's "Share" link. For example:
-        <br>
-        <a href="https://diy.stackexchange.com/a/170185">https://diy.stackexchange.com/a/170185</a>
-        <ul>
-          <li>The answer ID is: <code style="color: aquamarine; background-color: black;">170185</code></li>
-          <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
-        </ul>
-        <pre>{% stackexchange <span style="color: aquamarine;">170185</span> <span style="color: orange;">diy</span> %}</pre>
-        </p>
-        <h3 id="wikipedia-embed" class="permalink-heading"><strong>Wikipedia Embed</strong><a href="#wikipedia-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Wikipedia Embed") %></a></h3>
-        <p>Enter the full URL of the Wikipedia article you want to embed, with or without the anchor.</p>
-        <p>
-          <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia %}</code>
-          <br/>
-          <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia#Diversity %}</code>
-        </p>
-        <h3 id="asciinema-embed" class="permalink-heading"><strong>Asciinema Embed</strong><a href="#asciinema-embed"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Asciinema Embed") %></a></h3>
-        <p>All you need is an Asciinema id or URL:</p>
-        <code>{% asciinema 239367 %}</code>
-        <code>{% asciinema https://asciinema.org/a/239367 %}</code>
+    <%= render partial: "editor_guide_h3", locals: { id: "runkit-embed", title: "RunKit Embed" } %>
+    <p>Put executable code within a <code>runkit</code> liquid block, as follows:</p>
+    <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}<br></pre>
 
-        <h3 id="reddit-tag" class="permalink-heading"><strong>Reddit Tag</strong><a href="#reddit-tag"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Reddit Tag") %></a></h3>
-        <p>Enter the full URL of the post you want to embed</p>
-        <pre>
-{% reddit https://www.reddit.com/r/aww/comments/ag3s4b/ive_waited_28_years_to_finally_havr_my_first_pet %}
-        </pre>
+    <%= render partial: "editor_guide_h3", locals: { id: "katex-embed", title: "KaTeX Embed" } %>
+    <p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
+    <pre>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+    <p>To render KaTeX inline add the "inline" option:</p>
+    <pre>{% katex inline %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
 
-        <h3 id="parsing-liquid-tags-as-code-example" class="permalink-heading"><strong>Parsing Liquid Tags as a Code Example</strong><a href="#parsing-liquid-tags-as-code-example"><%= inline_svg_tag("small-link.svg", aria: true,
-                                                                                                                                                                                                                         title: "permalink for Parsing Liquid Tags as a Code Example") %></a></h3>
-        <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>
-        <p><code>`{% mytag %}{{ site.SOMETHING }}{% endmytag %}`</code></p>
-        <p>One specific edge case is with using the <code>raw</code> tag. To properly escape it, use this format:
-        </p>
-        <p><code>`{% raw %}{{site.SOMETHING }} {% ``endraw`` %}`</code></p>
-        <h3 id="common-gotchas" class="permalink-heading"><strong>Common Gotchas</strong><a href="#common-gotchas"><%= inline_svg_tag("small-link.svg", aria: true, title: "permalink for Common Gotchas") %></a></h3>
-        <p>
-          Lists are written just like any other Markdown editor.
-          If you're adding an image in between numbered list, though, be sure to tab the image,
-          otherwise it'll restart the number of the list.
-          Here's an example of what to do:
-          <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--HjVUshkb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/8l29vxiir8k5d097o9o8.png"
-           alt="example image of writing lists with images in Markdown">
-        </p>
-        <h4>
-          <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">Here's the Markdown cheatsheet again for reference.</a>
-        </h4>
-        Happy posting! 📝
-        <br>
-        <br>
-        <div class="blank-space"></div>
-      </div>
-    </div>
+    <%= render partial: "editor_guide_h3", locals: { id: "stackblitz-embed", title: "Stackblitz Embed" } %>
+    <p>All you need is the ID of the Stackblitz:</p>
+    <pre>{% stackblitz ball-demo %}</pre>
+    <dl>
+      <dt><strong>Default view</strong></dt>
+      <dd>
+        <p>You can change the default view, the options are <i>both</i>, <i>preview</i>, <i>editor</i>. Defaults to
+        <i>both</i></p>
+        <pre>{% stackblitz ball-demo view=preview %}</pre>
+      </dd>
+      <dt><strong>Default file</strong></dt>
+      <dd>
+        <p>You can change the default file you want your embed to point to</p>
+        <pre>{% stackblitz ball-demo file=style.css %}</pre>
+      </dd>
+    </dl>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "codesandbox-embed", title: "CodeSandbox Embed" } %>
+    <p>All you need is the <code>ID</code> of the sandbox:</p>
+    <pre>{% codesandbox ppxnl191zx %}</pre>
+    <p>Of CodeSandbox's many
+      <a href="https://codesandbox.io/docs/embedding#embed-options">optional attributes</a>,
+      the following are supported by using them in your tag, just add them after the id, separated by spaces:
+    </p>
+    <dl>
+      <dt><strong>initialpath</strong></dt>
+      <dd>
+        <p>Which url to initially load in address bar.</p>
+        <pre>{% codesandbox ppxnl191zx initialpath=/initial/load/path %}</pre>
+      </dd>
+      <dt><strong>module</strong></dt>
+      <dd>
+        <p>Which module to open by default.</p>
+        <pre>{% codesandbox ppxnl191zx module=/path/to/module %}</pre>
+      </dd>
+      <dt><strong>runonclick</strong></dt>
+      <dd>
+        <p>Delays when code is ran if <code>1</code></p>
+        <pre>{% codesandbox ppxnl191zx runonclick=1 %}</pre>
+      </dd>
+    </dl>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "jsfiddle-embed", title: "JSFiddle Embed" } %>
+    <p>All you need is the full JSFiddle <code>link</code>, ending in the fiddle ID code, as follows:</p>
+    <pre>{% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}</pre>
+    <dl>
+      <dt><strong>Custom tabs</strong></dt>
+      <dd>
+        <p>You can add a custom tab order to you JSFiddle embed tag. Defaults to <i>js,html,css,result</i>.</p>
+        <pre>{% jsfiddle https://jsfiddle.net/webdevem/Q8KVC result,html,css %}</pre>
+      </dd>
+    </dl>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "jsitor-liquid-tag", title: "JSitor Liquid Tag" } %>
+    <p>
+      To use JSitor liquid tag you can use the JSitor full <code>link</code>, with or without the parameters
+    </p>
+    <pre>{% jsitor https://jsitor.com/embed/B7FQ5tHbY %}<br>{% jsitor https://jsitor.com/embed/B7FQ5tHbY?html&js&css&result&light %}</pre>
+    <p>
+      Other options to use JSitor liquid tag is just by its <code>ID</code>, you can add it with or without the parameters:
+    </p>
+    <pre>{% jsitor B7FQ5tHbY %}<br>{% jsitor B7FQ5tHbY?html&js&css&result&light %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "repl-it-embed", title: "repl.it Embed" } %>
+    <p>All you need is the URL after the domain name:</p>
+    <pre>{% replit @WigWog/PositiveFineOpensource %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "stackery-embed", title: "Stackery Embed" } %>
+    <p>Visualize your AWS Serverless Application Model templates with <a href="https://www.stackery.io/" target="_blank" rel="noopener">Stackery's</a> visualizer embed</p>
+    <p>All you need is the repository owner, repository name, and branch that you would like visualized</p>
+    <pre>{% stackery deeheber lambda-layer-example master %}</pre>
+    <p>The repository must be a public GitHub repository and have a valid AWS SAM template in the project root titled template.yaml</p>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "next-tech-embed", title: "Next Tech Embed" } %>
+    <p>All you need is the share URL for your sandbox. You can get the share URL by clicking
+    the "Share" button in the top right when the sandbox is open.</p>
+    <p><img src="https://thepracticaldev.s3.amazonaws.com/i/r449xp8cay3383i139qv.png" alt="Share Replit sandbox" /></p>
+    <pre>{% nexttech https://nt.dev/s/6ba1fffbd09e %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "instagram-embed", title: "Instagram Embed" } %>
+    <p>All you need is the Instagram post <code>id</code> from the URL:</p>
+    <pre>{% instagram BXgGcAUjM39 %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "speakerdeck-tag", title: "Speakerdeck Tag" } %>
+    <p>All you need is the data-id code from the embed link:</p>
+    <pre>&lt;script async class="speakerdeck-embed"<br>    data-id="<span style='color: orange;'>7e9f8c0fa0c949bd8025457181913fd0</span>"<br>    data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"&gt;&lt;/script&gt;</pre>
+    <pre>{% speakerdeck <span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span> %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "soundcloud-embed", title: "SoundCloud Embed" } %>
+    <p>Just enter the full URL of the SoundCloud track you are trying to embed.</p>
+    <pre>{% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "spotify-embed", title: "Spotify Embed" } %>
+    <p>
+      Enter the Spotify URI of the Spotify track / playlist /
+      album / artist / podcast episode you are trying to embed.
+    </p>
+    <pre>{% spotify <span style="color: #1DB954;">spotify:episode:5V4XZWqZQJvbddd31n56mf</span> %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "blogcast-tag", title: "Blogcast Tag" } %>
+    <p>All you need is the article id code from the embed code:</p>
+    <pre>{% blogcast <span style="color: orange;">1234</span> %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "parler-tag", title: "Parler Tag" } %>
+    <p>Enter the full url of the Parler.io audio file you want to embed. </p>
+    <pre>{% parler https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3 %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "stack-exchange-overflow-tag", title: "Stack Exchange / Stack Overflow Tag" } %>
+    <p>
+      You'll need the question or answer's ID code, and the site. When using <code>{% stackoverflow %}</code> as the tag, the site will default to Stack Overflow.
+      For example: <a href="https://stackoverflow.com/questions/24789130/colors-in-irb-rails-console">https://stackoverflow.com/questions/24789130/colors-in-irb-rails-console</a>
+    </p>
+    <ul>
+      <li>The question ID is: <code style="color: aquamarine; background-color: black;">24789130</code></li>
+    </ul>
+    <pre>{% stackoverflow <span style="color: aquamarine;">24789130</span> %}</pre>
+    <p>
+      For other Stack Exchange network sites, you'll need to provide the site's name and use <code>{% stackexchange %}</code> as the tag. For example:
+      <a href="https://diy.stackexchange.com/questions/169988/base-for-refrigerator-wine-shelf">https://diy.stackexchange.com/questions/169988/base-for-refrigerator-wine-shelf</a>
+    </p>
+    <ul>
+      <li>The question ID is: <code style="color: aquamarine; background-color: black;">169988</code></li>
+      <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
+    </ul>
+    <pre>{% stackexchange <span style="color: aquamarine;">169988</span> <span style="color: orange;">diy</span> %}</pre>
+    <p>
+      For answers, you can get the answer's ID code by from the answer's "Share" link. For example:
+      <a href="https://diy.stackexchange.com/a/170185">https://diy.stackexchange.com/a/170185</a>
+    </p>
+    <ul>
+      <li>The answer ID is: <code style="color: aquamarine; background-color: black;">170185</code></li>
+      <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
+    </ul>
+    <pre>{% stackexchange <span style="color: aquamarine;">170185</span> <span style="color: orange;">diy</span> %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "wikipedia-embed", title: "Wikipedia Embed" } %>
+    <p>Enter the full URL of the Wikipedia article you want to embed, with or without the anchor.</p>
+    <pre>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia %}<br>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia#Diversity %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "asciinema-embed", title: "Asciinema Embed" } %>
+    <p>All you need is an Asciinema id or URL:</p>
+    <pre>{% asciinema 239367 %}<br>{% asciinema https://asciinema.org/a/239367 %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "reddit-tag", title: "Reddit Tag" } %>
+    <p>Enter the full URL of the post you want to embed</p>
+    <pre>{% reddit https://www.reddit.com/r/aww/comments/ag3s4b/ive_waited_28_years_to_finally_havr_my_first_pet %}</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "parsing-liquid-tags-as-code-example", title: "Parsing Liquid Tags as a Code Example" } %>
+    <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>
+    <pre>`{% mytag %}{{ site.SOMETHING }}{% endmytag %}`</pre>
+    <p>One specific edge case is with using the <code>raw</code> tag. To properly escape it, use this format:
+    </p>
+    <pre>`{% raw %}{{site.SOMETHING }} {% ``endraw`` %}`</pre>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "common-gotchas", title: "Common Gotchas" } %>
+    <p>
+      Lists are written just like any other Markdown editor.
+      If you're adding an image in between numbered list, though, be sure to tab the image,
+      otherwise it'll restart the number of the list.
+      Here's an example of what to do:
+      <img
+        src="https://res.cloudinary.com/practicaldev/image/fetch/s--HjVUshkb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/8l29vxiir8k5d097o9o8.png"
+        alt="example image of writing lists with images in Markdown">
+    </p>
+
+    <p>
+      <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">
+        <strong>Here's the Markdown cheatsheet again for reference.</strong>
+      </a>
+    </p>
+
+    <p>Happy posting! 📝</p>
+  </article>
+</main>
