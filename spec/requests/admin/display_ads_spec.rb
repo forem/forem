@@ -1,14 +1,14 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/display_ads", type: :request do
-  let(:get_resource) { get "/admin/display_ads" }
+RSpec.describe "/admin/customization/display_ads", type: :request do
+  let(:get_resource) { get admin_display_ads_path }
   let(:org) { create(:organization) }
   let(:params) do
     { organization_id: org.id, body_markdown: "[Click here!](https://example.com)", placement_area: "sidebar_left",
       approved: true, published: true }
   end
-  let(:post_resource) { post "/admin/display_ads", params: params }
+  let(:post_resource) { post admin_display_ads_path, params: params }
 
   it_behaves_like "an InternalPolicy dependant request", DisplayAd do
     let(:request) { get_resource }
@@ -19,13 +19,13 @@ RSpec.describe "/admin/display_ads", type: :request do
 
     before { sign_in user }
 
-    describe "GET /admin/display_ads" do
+    describe "GET /admin/customization/display_ads" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST /admin/display_ads" do
+    describe "POST /admin/customization/display_ads" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
@@ -37,14 +37,14 @@ RSpec.describe "/admin/display_ads", type: :request do
 
     before { sign_in super_admin }
 
-    describe "GET /admin/display_ads" do
+    describe "GET /admin/customization/display_ads" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST /admin/display_ads" do
+    describe "POST /admin/customization/display_ads" do
       it "creates a new display_ad" do
         expect do
           post_resource
@@ -58,13 +58,13 @@ RSpec.describe "/admin/display_ads", type: :request do
       end
     end
 
-    describe "PUT /admin/display_ads" do
+    describe "PUT /admin/customization/display_ads" do
       let!(:display_ad) { create(:display_ad, approved: false) }
 
       it "updates DisplayAd's approved value" do
         Timecop.freeze(Time.current) do
           expect do
-            put "/admin/display_ads/#{display_ad.id}", params: params
+            put admin_display_ad_path(display_ad.id), params: params
           end.to change { display_ad.reload.approved }.from(false).to(true)
         end
       end
@@ -75,9 +75,9 @@ RSpec.describe "/admin/display_ads", type: :request do
 
       it "deletes the Display Ad" do
         expect do
-          delete "/admin/display_ads/#{display_ad.id}"
+          delete admin_display_ad_path(display_ad.id)
         end.to change { DisplayAd.all.count }.by(-1)
-        expect(response.body).to redirect_to "/admin/display_ads"
+        expect(response.body).to redirect_to admin_display_ads_path
       end
     end
   end
@@ -87,14 +87,14 @@ RSpec.describe "/admin/display_ads", type: :request do
 
     before { sign_in single_resource_admin }
 
-    describe "GET /admin/display_ads" do
+    describe "GET /admin/customization/display_ads" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST /admin/display_ads" do
+    describe "POST /admin/customization/display_ads" do
       it "creates a new display_ad" do
         expect do
           post_resource
@@ -102,13 +102,13 @@ RSpec.describe "/admin/display_ads", type: :request do
       end
     end
 
-    describe "PUT /admin/display_ads" do
+    describe "PUT /admin/customization/display_ads" do
       let!(:display_ad) { create(:display_ad, approved: false) }
 
       it "updates DisplayAd's approved value" do
         Timecop.freeze(Time.current) do
           expect do
-            put "/admin/display_ads/#{display_ad.id}", params: params
+            put admin_display_ad_path(display_ad.id), params: params
           end.to change { display_ad.reload.approved }.from(false).to(true)
         end
       end
@@ -119,9 +119,9 @@ RSpec.describe "/admin/display_ads", type: :request do
 
       it "deletes the Display Ad" do
         expect do
-          delete "/admin/display_ads/#{display_ad.id}"
+          delete admin_display_ad_path(display_ad.id)
         end.to change { DisplayAd.all.count }.by(-1)
-        expect(response.body).to redirect_to "/admin/display_ads"
+        expect(response.body).to redirect_to admin_display_ads_path
       end
     end
   end
@@ -131,13 +131,13 @@ RSpec.describe "/admin/display_ads", type: :request do
 
     before { sign_in single_resource_admin }
 
-    describe "GET /admin/display_ads" do
+    describe "GET /admin/customization/display_ads" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST /admin/display_ads" do
+    describe "POST /admin/customization/display_ads" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
