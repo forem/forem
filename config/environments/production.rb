@@ -134,7 +134,7 @@ Rails.application.configure do
     port: ENV["SMTP_PORT"].presence || 587,
     authentication: ENV["SMTP_AUTHENTICATION"].presence || :plain,
     user_name: ENV["SMTP_USER_NAME"].presence || "apikey",
-    password: ENV["SMTP_PASSWORD"],
+    password: ENV["SMTP_PASSWORD"].presence || ENV["SENDGRID_API_KEY"],
     domain: ENV["SMTP_DOMAIN"].presence || ENV["APP_DOMAIN"]
   }
 
