@@ -1,6 +1,6 @@
 module Admin
   module Settings
-    class MandatoriesController < Admin::ApplicationController
+    class MandatorySettingsController < Admin::ApplicationController
       def create
         errors = upsert_config(settings_params)
 
@@ -30,6 +30,12 @@ module Admin
       end
 
       private
+
+      # NOTE: we need to override this since the controller name doesn't reflect
+      # the model name
+      def authorization_resource
+        ::Settings::Mandatory
+      end
 
       def settings_params
         params.permit(::Settings::Mandatory.keys)
