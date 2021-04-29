@@ -6,9 +6,10 @@ module Search
     end
 
     attribute :id, &:search_id
+    attribute :body_text, &:body
 
-    attributes :body_text, :comments_count, :path, :published_at, :quote,
-               :reactions_count, :subtitle, :summary, :title, :website_url
+    attributes :comments_count, :path, :published_at, :quote, :reactions_count,
+               :subtitle, :summary, :title, :website_url
 
     attribute :class_name, -> { "PodcastEpisode" }
     attribute :highlight, -> { { body_text: [] } } # We don't display highlights in the UI for Podcasts

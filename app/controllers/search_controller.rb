@@ -51,6 +51,7 @@ class SearchController < ApplicationController
     :search_fields,
     :sort_by,
     :sort_direction,
+    :tag,
     :user_id,
     {
       tag_names: [],
@@ -59,15 +60,9 @@ class SearchController < ApplicationController
   ].freeze
 
   def tags
-    result = if FeatureFlag.enabled?(:search_2_tags)
-               Search::Postgres::Tag.search_documents(params[:name])
-             else
-               Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
-             end
+    result = Search::Postgres::Tag.search_documents(params[:name])
 
     render json: { result: result }
-  rescue Search::Errors::Transport::BadRequest
-    render json: { result: [] }
   end
 
   def chat_channels
@@ -88,17 +83,12 @@ class SearchController < ApplicationController
   end
 
   def listings
-    result =
-      if FeatureFlag.enabled?(:search_2_listings)
-        Search::Postgres::Listing.search_documents(
-          category: listing_params[:category],
-          page: listing_params[:page],
-          per_page: listing_params[:per_page],
-          term: listing_params[:listing_search],
-        )
-      else
-        Search::Listing.search_documents(params: listing_params.to_h)
-      end
+    result = Search::Postgres::Listing.search_documents(
+      category: listing_params[:category],
+      page: listing_params[:page],
+      per_page: listing_params[:per_page],
+      term: listing_params[:listing_search],
+    )
 
     render json: { result: result }
   end
@@ -108,15 +98,9 @@ class SearchController < ApplicationController
   end
 
   def usernames
-    result = if FeatureFlag.enabled?(:search_2_usernames)
-               Search::Postgres::Username.search_documents(params[:username])
-             else
-               Search::User.search_usernames(params[:username])
-             end
+    result = Search::Postgres::Username.search_documents(params[:username])
 
     render json: { result: result }
-  rescue Search::Errors::Transport::BadRequest
-    render json: { result: [] }
   end
 
   # TODO: [@rhymes] the homepage feed uses `feed_content_search` as an index,

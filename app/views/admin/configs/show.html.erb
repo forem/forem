@@ -33,10 +33,10 @@
         class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3"
         aria-labelledby="getStartedHeader">
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_with(url: admin_settings_mandatory_settings_path, local: true, data: { testid: "getStartedSectionForm" }) do |f| %>
           <fieldset class="grid gap-4">
 
-          <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key, settings_model| %>
+          <% Settings::Mandatory::MAPPINGS.each do |config_key, settings_model| %>
             <%# we need to list the config as separate fields if the data structure is a Hash %>
             <% placeholder_module = Constants.const_get(settings_model.name) %>
             <% if settings_model.public_send(config_key).is_a?(Hash) %>
@@ -50,7 +50,7 @@
                       <%= a_field.text_field key,
                                              class: "crayons-textfield",
                                              value: settings_model.public_send(config_key)[key],
-                                             placeholder: placeholer_module::DETAILS[config_key][:placeholder] %>
+                                             placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
                     </div>
                   <% end %>
                 <% end %>

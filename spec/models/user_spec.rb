@@ -588,11 +588,6 @@ RSpec.describe User, type: :model do
       end
     end
 
-    it "persists extracts relevant identity data from new twitter user" do
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.twitter_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
-    end
-
     it "assigns multiple identities to the same user", :aggregate_failures, vcr: { cassette_name: "fastly_sloan" } do
       providers = Authentication::Providers.available
 
