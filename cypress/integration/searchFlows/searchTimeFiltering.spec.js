@@ -3,8 +3,6 @@ describe('Search time period filters', () => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
 
-    // cy.intercept('/search?q=example', {});
-
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
         cy.visit('/search?q=example');
