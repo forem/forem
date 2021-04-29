@@ -51,6 +51,7 @@ class SearchController < ApplicationController
     :search_fields,
     :sort_by,
     :sort_direction,
+    :tag,
     :user_id,
     {
       tag_names: [],

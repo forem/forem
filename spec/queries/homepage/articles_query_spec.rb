@@ -154,7 +154,7 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
     end
 
     describe "sorting" do
-      it "sorts by the hotness_score", :aggregate_failures do
+      it "sorts by hotness_score", :aggregate_failures do
         article1, article2 = create_list(:article, 2)
 
         article1.update_columns(hotness_score: 1)
@@ -167,7 +167,7 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         expect(result).to eq([article1.id, article2.id])
       end
 
-      it "sorts by the public_reactions_count" do
+      it "sorts by public_reactions_count", :aggregate_failures do
         article1, article2 = create_list(:article, 2)
 
         article1.update_columns(public_reactions_count: 1)
@@ -180,14 +180,30 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         expect(result).to eq([article1.id, article2.id])
       end
 
+      it "sorts by published_at", :aggregate_failures do
+        article1, article2 = create_list(:article, 2)
+
+        article1.update_columns(published_at: 2.weeks.ago)
+        article2.update_columns(published_at: 1.week.ago)
+
+        result = described_class.call(sort_by: :published_at, sort_direction: :desc).ids
+        expect(result).to eq([article2.id, article1.id])
+
+        result = described_class.call(sort_by: :published_at, sort_direction: :asc).ids
+        expect(result).to eq([article1.id, article2.id])
+      end
+
       it "does not sort by unknown parameters" do
+        allow(Article).to receive(:order)
+
         article1, article2 = create_list(:article, 2)
 
         article1.update_columns(comments_count: 1)
         article2.update_columns(comments_count: 2)
 
-        expect(Article).not_to receive(:order) # rubocop:disable RSpec/MessageSpies
-        described_class.call(sort_by: :comments_count, sort_direction: :desc).ids
+        described_class.call(sort_by: :comments_count, sort_direction: :desc)
+
+        expect(Article).not_to have_received(:order)
       end
     end
   end
