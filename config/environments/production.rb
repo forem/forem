@@ -136,7 +136,6 @@ Rails.application.configure do
     user_name: ENV["SMTP_USER_NAME"],
     password: ENV["SMTP_PASSWORD"],
     domain: ENV["SMTP_DOMAIN"].presence || ENV["APP_DOMAIN"],
-    enable_starttls_auto: true
   }
 
   if ENV["HEROKU_APP_URL"].present? && ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]

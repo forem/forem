@@ -95,7 +95,6 @@ Rails.application.configure do
     user_name: ENV["SMTP_USER_NAME"],
     password: ENV["SMTP_PASSWORD"],
     domain: ENV["SMTP_DOMAIN"].presence || config.app_domain,
-    enable_starttls_auto: true
   }
 
   config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
