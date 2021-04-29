@@ -23,8 +23,8 @@ module DataUpdateScripts
     def run
       return if Settings::Authentication.any?
 
-      SiteConfig.transaction do
-        config_relation = SiteConfig.where(var: AUTHENTICATION_SETTINGS)
+      Settings::General.transaction do
+        config_relation = Settings::General.where(var: AUTHENTICATION_SETTINGS)
         config_values = config_relation.pluck(*ATTRIBUTES).map do |values|
           ATTRIBUTES.zip(values).to_h
         end
@@ -32,10 +32,10 @@ module DataUpdateScripts
 
         # This field has a validation we don't want to skip
         Settings::Authentication.allowed_registration_email_domains =
-          SiteConfig.allowed_registration_email_domains
+          Settings::General.allowed_registration_email_domains
 
         # This field got renamed so we migrate it explicitly
-        Settings::Authentication.providers = SiteConfig.authentication_providers
+        Settings::Authentication.providers = Settings::General.authentication_providers
       end
     end
   end

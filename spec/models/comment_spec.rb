@@ -432,7 +432,7 @@ RSpec.describe Comment, type: :model do
   describe "spam" do
     before do
       allow(Settings::Mascot).to receive(:mascot_user_id).and_return(user.id)
-      allow(SiteConfig).to receive(:spam_trigger_terms).and_return(["yahoomagoo gogo", "anothertestterm"])
+      allow(Settings::General).to receive(:spam_trigger_terms).and_return(["yahoomagoo gogo", "anothertestterm"])
     end
 
     it "creates vomit reaction if possible spam" do

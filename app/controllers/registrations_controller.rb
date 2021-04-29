@@ -14,8 +14,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     not_authorized unless Settings::Authentication.allow_email_password_registration ||
-      SiteConfig.waiting_on_first_user
-    not_authorized if SiteConfig.waiting_on_first_user && ENV["FOREM_OWNER_SECRET"].present? &&
+      Settings::General.waiting_on_first_user
+    not_authorized if Settings::General.waiting_on_first_user && ENV["FOREM_OWNER_SECRET"].present? &&
       ENV["FOREM_OWNER_SECRET"] != params[:user][:forem_owner_secret]
 
     resolve_profile_field_issues
@@ -43,11 +43,11 @@ class RegistrationsController < Devise::RegistrationsController
   private
 
   def update_first_user_permissions(resource)
-    return unless SiteConfig.waiting_on_first_user
+    return unless Settings::General.waiting_on_first_user
 
     resource.add_role(:super_admin)
     resource.add_role(:trusted)
-    SiteConfig.waiting_on_first_user = false
+    Settings::General.waiting_on_first_user = false
     Users::CreateMascotAccount.call
   end
 
@@ -69,7 +69,7 @@ class RegistrationsController < Devise::RegistrationsController
     # Run this data update script when in a state of "first user" in the event
     # that we are in a state where this was not already run.
     # This is likely only temporarily needed.
-    return unless SiteConfig.waiting_on_first_user
+    return unless Settings::General.waiting_on_first_user
 
     csv = Rails.root.join("lib/data/dev_profile_fields.csv")
     ProfileFields::ImportFromCsv.call(csv)

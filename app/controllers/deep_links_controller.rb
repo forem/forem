@@ -6,7 +6,7 @@ class DeepLinksController < ApplicationController
     # TODO: [@fdoxyz] Replace these hardcoded identifiers with configurations
     # creators can use to customize their Forems - `/admin/consumer_apps`
     supported_apps = ["R9SWHSQNV8.com.forem.app"]
-    supported_apps << "R9SWHSQNV8.to.dev.ios" if SiteConfig.dev_to?
+    supported_apps << "R9SWHSQNV8.to.dev.ios" if Settings::General.dev_to?
     render json: {
       applinks: {
         apps: supported_apps,

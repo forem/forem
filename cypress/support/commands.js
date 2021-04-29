@@ -83,7 +83,7 @@ const DEFAULT_AUTH_CONFIG = {
 };
 
 /**
- * Sets default values of SiteConfig atrributes relevant to Authentication Section.
+ * Sets default values of Settings::General atrributes relevant to Authentication Section.
  *
  * @param username {string} The username used in the test
  * @param siteConfig
@@ -102,7 +102,7 @@ const DEFAULT_AUTH_CONFIG = {
  * @param siteConfig.twitterKey {string}
  * @param siteConfig.twitterSecret {string}
  *
- * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for setting SiteConfig values for the Authentication Section.
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for setting Settings::General values for the Authentication Section.
  */
 Cypress.Commands.add(
   'updateAdminAuthConfig',

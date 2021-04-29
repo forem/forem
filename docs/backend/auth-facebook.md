@@ -45,7 +45,7 @@ application.
 
 7. From the basic settings screen dashboard copy the **App ID** and **App
    Secret** values to your `.env` file accordingly (name of Facebook key -> name
-   of our `SiteConfig` variable).
+   of our `Settings::General` variable).
 
    ```text
    APP ID -> FACEBOOK_APP_ID

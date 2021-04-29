@@ -4,9 +4,9 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::MoveRateLimitSettings do
-  it "migrates settings from SiteConfig to Settings::RateLimit" do
-    allow(SiteConfig).to receive(:rate_limit_follow_count_daily).and_return(23)
-    allow(SiteConfig).to receive(:user_considered_new_days).and_return(42)
+  it "migrates settings from Settings::General to Settings::RateLimit" do
+    allow(Settings::General).to receive(:rate_limit_follow_count_daily).and_return(23)
+    allow(Settings::General).to receive(:user_considered_new_days).and_return(42)
 
     expect do
       described_class.new.run

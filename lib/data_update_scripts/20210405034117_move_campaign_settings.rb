@@ -18,7 +18,7 @@ module DataUpdateScripts
       CAMPAIGN_SETTINGS.each do |setting|
         Settings::Campaign.public_send(
           "#{setting}=",
-          SiteConfig.public_send("campaign_#{setting}"),
+          Settings::General.public_send("campaign_#{setting}"),
         )
       end
     end

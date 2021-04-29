@@ -909,7 +909,7 @@ RSpec.describe Article, type: :model do
     describe "spam" do
       before do
         allow(Settings::Mascot).to receive(:mascot_user_id).and_return(user.id)
-        allow(SiteConfig).to receive(:spam_trigger_terms).and_return(
+        allow(Settings::General).to receive(:spam_trigger_terms).and_return(
           ["yahoomagoo gogo", "testtestetest", "magoo.+magee"],
         )
       end

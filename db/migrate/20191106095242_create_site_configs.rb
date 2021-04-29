@@ -1,4 +1,4 @@
-class CreateSiteConfigs < ActiveRecord::Migration[5.2]
+class CreateSettings::Generals < ActiveRecord::Migration[5.2]
   def self.up
     create_table :site_configs do |t|
       t.string  :var,        null: false

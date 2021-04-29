@@ -6,8 +6,9 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
 
   describe "GET /api/admin/config" do
     before do
-      allow(SiteConfig).to receive(:community_name).and_return("ANYTHING")
-      allow(SiteConfig).to receive(:all).and_return([SiteConfig.new(var: "community_name", value: "ANYTHING")])
+      allow(Settings::General).to receive(:community_name).and_return("ANYTHING")
+      allow(Settings::General).to receive(:all).and_return([Settings::General.new(var: "community_name",
+                                                                                  value: "ANYTHING")])
     end
 
     context "when user is super admin" do
@@ -19,14 +20,14 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         get api_admin_config_path, headers: headers
 
-        expect(response.parsed_body["community_name"]).to eq SiteConfig.community_name
+        expect(response.parsed_body["community_name"]).to eq Settings::General.community_name
       end
 
       it "renders json when signed in" do
         sign_in user
         get api_admin_config_path
 
-        expect(response.parsed_body["community_name"]).to eq SiteConfig.community_name
+        expect(response.parsed_body["community_name"]).to eq Settings::General.community_name
       end
     end
 
@@ -56,10 +57,10 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
         user.add_role(:super_admin)
       end
 
-      it "Modifies SiteConfig data" do
+      it "Modifies Settings::General data" do
         put api_admin_config_path, params: { site_config: { community_name: "new" } }.to_json, headers: headers
 
-        expect(SiteConfig.community_name).to eq "new"
+        expect(Settings::General.community_name).to eq "new"
       end
 
       it "enables proper domains to allow list" do
@@ -82,20 +83,20 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
       it "removes space suggested_tags" do
         put api_admin_config_path, params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" } }.to_json,
                                    headers: headers
-        expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+        expect(Settings::General.suggested_tags).to eq(%w[hey haha hoho bobofofo])
       end
 
       it "downcases suggested_tags" do
         put api_admin_config_path, params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" } }.to_json,
                                    headers: headers
-        expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+        expect(Settings::General.suggested_tags).to eq(%w[hey haha hoho bobofofo])
       end
 
       it "Renders siteconfig result" do
         put api_admin_config_path, params: { site_config: { community_name: "new" } }.to_json,
                                    headers: headers
 
-        expect(response.parsed_body["community_name"]).to eq SiteConfig.community_name
+        expect(response.parsed_body["community_name"]).to eq Settings::General.community_name
       end
     end
   end

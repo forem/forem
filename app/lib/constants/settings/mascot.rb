@@ -4,7 +4,7 @@ module Constants
       DETAILS = {
         footer_image_url: {
           description: "Special cute mascot image used in the footer.",
-          placeholder: ::Constants::SiteConfig::IMAGE_PLACEHOLDER
+          placeholder: ::Constants::Settings::General::IMAGE_PLACEHOLDER
         },
         footer_image_width: {
           description: "The footer mascot width will resized to this value, defaults to 52",
@@ -20,7 +20,7 @@ module Constants
         },
         image_url: {
           description: "Used as the mascot image.",
-          placeholder: ::Constants::SiteConfig::IMAGE_PLACEHOLDER
+          placeholder: ::Constants::Settings::General::IMAGE_PLACEHOLDER
         },
         mascot_user_id: {
           description: "User ID of the Mascot account",

@@ -486,7 +486,7 @@ RSpec.describe User, type: :model do
       end
 
       it "does not enqueue if Mailchimp is not enabled" do
-        allow(SiteConfig).to receive(:mailchimp_api_key).and_return(nil)
+        allow(Settings::General).to receive(:mailchimp_api_key).and_return(nil)
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(email: "something@real.com")
         end

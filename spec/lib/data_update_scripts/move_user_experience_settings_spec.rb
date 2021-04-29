@@ -5,8 +5,8 @@ require Rails.root.join(
 
 describe DataUpdateScripts::MoveUserExperienceSettings do
   it "moves existing settings" do
-    allow(SiteConfig).to receive(:default_font).and_return("Comic Sans")
-    allow(SiteConfig).to receive(:primary_brand_color_hex).and_return("#000")
+    allow(Settings::General).to receive(:default_font).and_return("Comic Sans")
+    allow(Settings::General).to receive(:primary_brand_color_hex).and_return("#000")
 
     expect do
       described_class.new.run

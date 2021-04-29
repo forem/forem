@@ -16,7 +16,7 @@ class Comment < ApplicationRecord
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
 
-  # TODO: Vaidehi Joshi - Extract this into a constant or SiteConfig variable
+  # TODO: Vaidehi Joshi - Extract this into a constant or Settings::General variable
   # after https://github.com/forem/rfcs/pull/22 has been completed?
   MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
   # The date that we began limiting the number of user mentions in a comment.
@@ -276,14 +276,14 @@ class Comment < ApplicationRecord
 
   def synchronous_spam_score_check
     return unless
-      SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
+      Settings::General.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
 
     self.score = -1 # ensure notification is not sent if possibly spammy
   end
 
   def create_conditional_autovomits
     return unless
-      SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) } &&
+      Settings::General.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) } &&
         user.registered_at > 5.days.ago
 
     Reaction.create(

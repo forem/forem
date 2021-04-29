@@ -116,7 +116,7 @@ RSpec.describe "Registrations", type: :request do
       before do
         allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
         allow(FeatureFlag).to receive(:enabled?).with(:runtime_banner).and_return(false)
-        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
+        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
       end
 
       it "renders the creator onboarding form" do
@@ -130,7 +130,7 @@ RSpec.describe "Registrations", type: :request do
   describe "GET /users/signup" do
     context "when site is in waiting_on_first_user state" do
       before do
-        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
+        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
         ENV["FOREM_OWNER_SECRET"] = "test"
       end
 
@@ -309,7 +309,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site is in waiting_on_first_user state" do
       before do
-        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
+        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
         ENV["FOREM_OWNER_SECRET"] = nil
       end
 
@@ -389,7 +389,7 @@ RSpec.describe "Registrations", type: :request do
     context "with the creator_onboarding feature flag" do
       before do
         allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
-        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
+        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
       end
 
       it "creates user with valid params passed" do

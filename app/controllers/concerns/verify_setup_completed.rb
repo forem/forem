@@ -8,8 +8,8 @@ module VerifySetupCompleted
     community_name: Settings::Community,
     community_description: Settings::Community,
 
-    suggested_tags: SiteConfig,
-    suggested_users: SiteConfig
+    suggested_tags: Settings::General,
+    suggested_users: Settings::General
   }.freeze
 
   included do
@@ -39,7 +39,7 @@ module VerifySetupCompleted
     # This is the only flash in our application layout, don't override it if
     # there's already another message.
     return if flash[:global_notice].present?
-    return if config_path? || setup_completed? || SiteConfig.waiting_on_first_user
+    return if config_path? || setup_completed? || Settings::General.waiting_on_first_user
 
     link = helpers.tag.a("the configuration page", href: admin_config_path, data: { "no-instant" => true })
 

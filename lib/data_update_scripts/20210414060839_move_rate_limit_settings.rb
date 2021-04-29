@@ -24,13 +24,13 @@ module DataUpdateScripts
       RENAMED_RATE_LIMIT_SETTINGS.each do |setting|
         Settings::RateLimit.public_send(
           "#{setting}=",
-          SiteConfig.public_send("rate_limit_#{setting}"),
+          Settings::General.public_send("rate_limit_#{setting}"),
         )
       end
 
-      Settings::RateLimit.spam_trigger_terms = SiteConfig.spam_trigger_terms
+      Settings::RateLimit.spam_trigger_terms = Settings::General.spam_trigger_terms
       Settings::RateLimit.user_considered_new_days =
-        SiteConfig.user_considered_new_days
+        Settings::General.user_considered_new_days
     end
   end
 end

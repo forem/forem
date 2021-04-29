@@ -18,12 +18,12 @@
   <% else %>
     <meta property="og:title" content="Listings" />
     <meta property="og:description" content="<%= Settings::Community.community_description %>" />
-    <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
+    <meta property="og:image" content="<%= Settings::General.main_social_image %>">
     <meta name="twitter:title" content="Listings">
     <meta name="twitter:description" content="<%= Settings::Community.community_description %>">
-    <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
+    <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
   <% end %>
-  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 

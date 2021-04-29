@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SiteConfig, type: :model do
+RSpec.describe Settings::General, type: :model do
   describe "validations" do
     describe "validating URLs" do
       let(:url_fields) do

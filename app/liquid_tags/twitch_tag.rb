@@ -3,7 +3,7 @@ class TwitchTag < LiquidTagBase
 
   def initialize(_tag_name, slug, _parse_context)
     super
-    @url = parsed_url(SiteConfig.app_domain)
+    @url = parsed_url(Settings::General.app_domain)
     @slug = parsed_slug(slug)
     @width = 710
     @height = 399

@@ -34,7 +34,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       end
 
       def shows_title
-        expect(page).to have_title("#{user.name} - #{SiteConfig.community_name}")
+        expect(page).to have_title("#{user.name} - #{Settings::General.community_name}")
       end
 
       def shows_articles

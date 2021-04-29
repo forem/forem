@@ -37,10 +37,10 @@ RSpec.describe "all routes", type: :routing do
 
     it "redirects /shop to the default shop_url" do
       # TODO: the hardcoded shop url needs to be removed from the routes in favor of a dynamic one.
-      allow(SiteConfig).to receive(:shop_url).and_return("https://shop.dev.to")
+      allow(Settings::General).to receive(:shop_url).and_return("https://shop.dev.to")
       get shop_path
 
-      expect(response).to redirect_to(SiteConfig.shop_url)
+      expect(response).to redirect_to(Settings::General.shop_url)
     end
 
     it "redirects /settings/integrations to /settings/extensions" do

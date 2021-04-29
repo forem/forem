@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <%= csrf_meta_tags %>
-  <%= favicon_link_tag Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>
+  <%= favicon_link_tag Images::Optimizer.call(Settings::General.favicon_url, width: 32) %>
   <title><%= controller_name.titleize %></title>
 
   <!-- StimulusJS -->
@@ -28,7 +28,7 @@
   data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
   data-deployed-at="<%= ForemInstance.deployed_at %>"
   data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
-  data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
+  data-ga-tracking="<%= Settings::General.ga_tracking_id %>">
   <header class="crayons-header">
     <div class="crayons-header__container">
       <%= render "layouts/logo" %>

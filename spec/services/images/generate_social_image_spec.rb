@@ -34,7 +34,7 @@ RSpec.describe Images::GenerateSocialImage, type: :labor do
   end
 
   it "creates optimized images" do
-    allow(SiteConfig).to receive(:app_domain).and_return("example.com")
+    allow(Settings::General).to receive(:app_domain).and_return("example.com")
     allow(Images::Optimizer).to receive(:call)
 
     described_class.call(user)
