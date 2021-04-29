@@ -28,7 +28,10 @@ function fetchNext(el, endpoint, insertCallback) {
         nextPage += 1;
         insertCallback(entries);
         if (entries.length === 0) {
-          document.getElementById('loading-articles').style.display = 'none';
+          const loadingElement = document.getElementById('loading-articles');
+          if (loadingElement) {
+            loadingElement.style.display = 'none';
+          }
           done = true;
         }
       });
@@ -341,7 +344,10 @@ function paginate(tag, params, requiresApproval) {
       window.dispatchEvent(checkBlockedContentEvent);
       initializeReadingListIcons();
       if (content.result.length === 0) {
-        document.getElementById('loading-articles').style.display = 'none';
+        const loadingElement = document.getElementById('loading-articles');
+        if (loadingElement) {
+          loadingElement.style.display = 'none';
+        }
         done = true;
       }
     });
@@ -404,15 +410,18 @@ function fetchNextPageIfNearBottom() {
 }
 
 function checkIfNearBottomOfPage() {
+  const loadingElement = document.getElementById('loading-articles');
   if (
     (document.getElementsByClassName('crayons-story').length < 2 &&
       document.getElementsByClassName('single-article').length < 2) ||
     window.location.search.indexOf('q=') > -1
   ) {
-    document.getElementById('loading-articles').style.display = 'none';
+    if (loadingElement) {
+      loadingElement.style.display = 'none';
+    }
     done = true;
-  } else {
-    document.getElementById('loading-articles').style.display = 'block';
+  } else if (loadingElement) {
+    loadingElement.style.display = 'block';
   }
   fetchNextPageIfNearBottom();
   setInterval(function handleInterval() {

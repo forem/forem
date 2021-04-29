@@ -23,9 +23,7 @@ module VerifySetupCompleted
   end
 
   def missing_configs
-    @missing_configs ||= MANDATORY_CONFIGS.reject do |config, settings_model|
-      settings_model.public_send(config).present?
-    end.keys
+    @missing_configs ||= Settings::Mandatory.missing
   end
 
   private

@@ -7,7 +7,7 @@ RSpec.describe "NavigationLinks", type: :request do
     sign_in admin
   end
 
-  describe "GET /admin/navigation_link" do
+  describe "GET /admin/customization/navigation_link" do
     let(:navigation_link) { create(:navigation_link) }
 
     it "returns a successful response" do
@@ -16,7 +16,7 @@ RSpec.describe "NavigationLinks", type: :request do
     end
   end
 
-  describe "POST /admin/navigation_link" do
+  describe "POST /admin/customization/navigation_link" do
     let(:new_navigation_link) do
       {
         name: "Test 2",
@@ -51,17 +51,17 @@ RSpec.describe "NavigationLinks", type: :request do
     end
   end
 
-  describe "PUT /admin/navigation_links/:id" do
+  describe "PUT /admin/customization/navigation_links/:id" do
     let(:navigation_link) { create(:navigation_link) }
 
     it "redirects successfully" do
-      put "#{admin_navigation_links_path}/#{navigation_link.id}",
+      put admin_navigation_link_path(navigation_link.id),
           params: { navigation_link: { name: "Example" } }
       expect(response).to redirect_to admin_navigation_links_path
     end
 
     it "updates the profile field values" do
-      put "#{admin_navigation_links_path}/#{navigation_link.id}",
+      put admin_navigation_link_path(navigation_link.id),
           params: { navigation_link: { name: "Example" } }
 
       changed_navigation_link_record = NavigationLink.find(navigation_link.id)
@@ -69,17 +69,17 @@ RSpec.describe "NavigationLinks", type: :request do
     end
   end
 
-  describe "DELETE /admin/navigation_links/:id" do
+  describe "DELETE /admin/customization/navigation_links/:id" do
     let!(:navigation_link) { create(:navigation_link) }
 
     it "redirects successfully" do
-      delete "#{admin_navigation_links_path}/#{navigation_link.id}"
+      delete admin_navigation_link_path(navigation_link.id)
       expect(response).to redirect_to admin_navigation_links_path
     end
 
     it "removes a navigation_link" do
       expect do
-        delete "#{admin_navigation_links_path}/#{navigation_link.id}"
+        delete admin_navigation_link_path(navigation_link.id)
       end.to change(NavigationLink, :count).by(-1)
     end
   end

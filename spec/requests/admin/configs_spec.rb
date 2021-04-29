@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/config", type: :request do
+RSpec.describe "/admin/customization/config", type: :request do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :admin) }
   let(:super_admin) { create(:user, :super_admin) }
@@ -8,18 +8,18 @@ RSpec.describe "/admin/config", type: :request do
     "My username is @#{super_admin.username} and this action is 100% safe and appropriate."
   end
 
-  describe "POST admin/config as a user" do
+  describe "POST /admin/customization/config as a user" do
     before do
       sign_in(user)
     end
 
     it "bars the regular user to access" do
-      expect { post "/admin/config", params: {} }.to raise_error(Pundit::NotAuthorizedError)
+      expect { post admin_config_path, params: {} }.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 
   # rubocop:disable RSpec/NestedGroups
-  describe "POST admin/config" do
+  describe "POST /admin/customization/config" do
     context "when admin has typical admin permissions but not super admin" do
       before do
         sign_in(admin)
@@ -28,16 +28,16 @@ RSpec.describe "/admin/config", type: :request do
       it "does not allow user to update config if they have proper confirmation" do
         expected_image_url = "https://dummyimage.com/300x300.png"
         expect do
-          post "/admin/config", params: { site_config: { favicon_url: expected_image_url },
-                                          confirmation: confirmation_message }
+          post admin_config_path, params: { site_config: { favicon_url: expected_image_url },
+                                            confirmation: confirmation_message }
         end.to raise_error Pundit::NotAuthorizedError
       end
 
       it "does not allow user to update config if they do not have proper confirmation" do
         expected_image_url = "https://dummyimage.com/300x300.png"
         expect do
-          post "/admin/config", params: { site_config: { favicon_url: expected_image_url },
-                                          confirmation: "Not proper" }
+          post admin_config_path, params: { site_config: { favicon_url: expected_image_url },
+                                            confirmation: "Not proper" }
         end.to raise_error Pundit::NotAuthorizedError
       end
     end
@@ -49,7 +49,7 @@ RSpec.describe "/admin/config", type: :request do
 
       it "updates site config admin action taken" do
         expect do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             site_config: { health_check_token: "token" },
             confirmation: confirmation_message
           }
@@ -308,8 +308,8 @@ RSpec.describe "/admin/config", type: :request do
 
         it "rejects update without proper confirmation" do
           expect do
-            post "/admin/config", params: { site_config: { periodic_email_digest: 6 },
-                                            confirmation: "Incorrect yo!" }
+            post admin_config_path, params: { site_config: { periodic_email_digest: 6 },
+                                              confirmation: "Incorrect yo!" }
           end.to raise_error ActionController::BadRequest
           expect(Settings::General.periodic_email_digest).not_to eq(6)
         end
@@ -335,6 +335,7 @@ RSpec.describe "/admin/config", type: :request do
 
         it "updates main_social_image with a valid image" do
           expected_image = "https://dummyimage.com/300x300"
+
           post "/admin/config", params: { site_config: { main_social_image: expected_image },
                                           confirmation: confirmation_message }
           expect(Settings::General.main_social_image).to eq(expected_image)
@@ -343,6 +344,7 @@ RSpec.describe "/admin/config", type: :request do
         it "only updates the main_social_image if given a valid image URL" do
           invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300"
           expect do
+
             post "/admin/config", params: { site_config: { main_social_image: invalid_image_url },
                                             confirmation: confirmation_message }
           end.not_to change(Settings::General, :main_social_image)
@@ -359,6 +361,7 @@ RSpec.describe "/admin/config", type: :request do
           expected_default_image_url = Settings::General.get_default(:logo_png)
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
+
             post "/admin/config", params: { site_config: { logo_png: expected_image_url },
                                             confirmation: confirmation_message }
           end.to change(Settings::General, :logo_png).from(expected_default_image_url).to(expected_image_url)
@@ -366,6 +369,7 @@ RSpec.describe "/admin/config", type: :request do
 
         it "updates logo_png with a valid image" do
           expected_image = "https://dummyimage.com/300x300"
+
           post "/admin/config", params: { site_config: { logo_png: expected_image },
                                           confirmation: confirmation_message }
           expect(Settings::General.logo_png).to eq(expected_image)
@@ -374,6 +378,7 @@ RSpec.describe "/admin/config", type: :request do
         it "only updates the logo_png if given a valid image URL" do
           invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300.png"
           expect do
+
             post "/admin/config", params: { site_config: { logo_png: invalid_image_url },
                                             confirmation: confirmation_message }
           end.not_to change(Settings::General, :logo_png)
@@ -388,6 +393,7 @@ RSpec.describe "/admin/config", type: :request do
 
         it "updates secondary_logo_url" do
           expected_image_url = "https://dummyimage.com/300x300.png"
+
           post "/admin/config", params: { site_config: { secondary_logo_url: expected_image_url },
                                           confirmation: confirmation_message }
           expect(Settings::General.secondary_logo_url).to eq(expected_image_url)
@@ -411,16 +417,16 @@ RSpec.describe "/admin/config", type: :request do
         it "rejects update without proper confirmation" do
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
-            post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
-                                            confirmation: "Incorrect yo!" }
+            post admin_config_path, params: { site_config: { logo_svg: expected_image_url },
+                                              confirmation: "Incorrect yo!" }
           end.to raise_error ActionController::BadRequest
         end
 
         it "rejects update without any confirmation" do
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
-            post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
-                                            confirmation: "" }
+            post admin_config_path, params: { site_config: { logo_svg: expected_image_url },
+                                              confirmation: "" }
           end.to raise_error ActionController::ParameterMissing
         end
       end
@@ -504,6 +510,7 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Monetization" do
         it "updates payment pointer" do
+
           post "/admin/config", params: { site_config: { payment_pointer: "$pay.yo" },
                                           confirmation: confirmation_message }
           expect(Settings::General.payment_pointer).to eq("$pay.yo")
@@ -523,7 +530,7 @@ RSpec.describe "/admin/config", type: :request do
 
             expect do
               params = { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" }
-              post "/admin/config", params: params
+              post admin_config_path, params: params
             end.to raise_error ActionController::BadRequest
 
             expect(Settings::General.shop_url).not_to eq(expected_shop_url)
@@ -603,7 +610,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "removes space suggested_users" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             site_config: { suggested_users: "piglet, tigger,eeyore, Christopher Robin, kanga,roo" },
             confirmation: confirmation_message
           }
@@ -611,7 +618,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "downcases suggested_users" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             site_config: { suggested_users: "piglet, tigger,EEYORE, Christopher Robin, KANGA,RoO" },
             confirmation: confirmation_message
           }
@@ -808,7 +815,7 @@ RSpec.describe "/admin/config", type: :request do
           params = { site_config: { twitter_hashtag: twitter_hashtag }, confirmation: "Incorrect confirmation" }
 
           it "does not update the twitter hashtag without the correct confirmation text" do
-            expect { post "/admin/config", params: params }.to raise_error ActionController::BadRequest
+            expect { post admin_config_path, params: params }.to raise_error ActionController::BadRequest
           end
 
           it "updates the twitter hashtag" do
@@ -842,8 +849,8 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "creates tags if they do not exist" do
-          post "/admin/config", params: { site_config: { sidebar_tags: "bobofogololo, spla, bla" },
-                                          confirmation: confirmation_message }
+          post admin_config_path, params: { site_config: { sidebar_tags: "bobofogololo, spla, bla" },
+                                            confirmation: confirmation_message }
           expect(Tag.find_by(name: "bobofogololo")).to be_valid
         end
       end
@@ -896,7 +903,7 @@ RSpec.describe "/admin/config", type: :request do
 
         it "does not update brand color if hex not contrasting enough" do
           hex = "#bd746f" # not dark enough
-          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
+          post admin_config_path, params: { site_config: { primary_brand_color_hex: hex },
                                           confirmation: confirmation_message }
           expect(Settings::UserExperience.primary_brand_color_hex).not_to eq(hex)
         end

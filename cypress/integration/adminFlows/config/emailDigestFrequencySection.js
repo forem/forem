@@ -8,8 +8,8 @@ describe('Email digest frequency Section', () => {
     });
   });
 
-  describe('email digency frequency settings', () => {
-    it('cam change the frequency', () => {
+  describe('email digest frequency settings', () => {
+    it('can change the frequency', () => {
       cy.get('@user').then(({ username }) => {
         cy.visit('/admin/config');
         cy.findByTestId('emailDigestSectionForm').as('emailDigestSectionForm');

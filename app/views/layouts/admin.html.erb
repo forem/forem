@@ -56,7 +56,7 @@
         <% if FeatureFlag.enabled?(:admin_restructure) %>
           <ul>
             <li>
-              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>" aria-page="<%= "page" if controller.controller_name == "overview" %>">
+              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>" aria-current"<%= "page" if controller.controller_name == "overview" %>">
                 <%= inline_svg_tag("stack-line.svg", aria: true, class: "dropdown-icon crayons-icon") %>
                 Overview
               </a>

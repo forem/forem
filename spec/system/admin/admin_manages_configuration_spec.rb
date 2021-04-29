@@ -8,7 +8,7 @@ RSpec.describe "Admin manages configuration", type: :system do
     visit admin_config_path
   end
 
-  VerifySetupCompleted::MANDATORY_CONFIGS.each do |option, _setting_model|
+  Settings::Mandatory::MAPPINGS.each do |option, _setting_model|
     it "marks #{option} as required" do
       selector = "label[for='site_config_#{option}']"
       expect(first(selector).text).to include("Required")

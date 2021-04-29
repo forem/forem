@@ -80,7 +80,15 @@ RSpec.describe Search::Postgres::PodcastEpisode, type: :service do
 
       it "returns the correct attributes for the podcast" do
         expected_keys = %i[slug image_url title]
-        expect(result.first[:podcast].keys).to match_array(expected_keys)
+        podcast = result.first[:podcast]
+        expect(podcast.keys).to match_array(expected_keys)
+
+        expect(podcast[:slug]).to eq(podcast_episode.podcast_slug)
+
+        image_url = Images::Profile.call(podcast_episode.podcast.profile_image_url, length: 90)
+        expect(podcast[:image_url]).to eq(image_url)
+
+        expect(podcast[:title]).to eq(podcast_episode.title)
       end
 
       it "orders the results by published_at in descending order" do
