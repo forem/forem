@@ -7,10 +7,10 @@ module SettingsParams
   ].freeze
 
   def settings_params
-    has_emails = params.dig(:site_config, :email_addresses).present?
-    params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if has_emails
+    has_emails = params.dig(:settings_general, :email_addresses).present?
+    params[:settings_general][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if has_emails
 
-    params.require(:site_config)&.permit(
+    params.require(:settings_general)&.permit(
       settings_keys.map(&:to_sym),
       social_media_handles: Settings::General.social_media_handles.keys,
       email_addresses: Settings::General.email_addresses.keys,
