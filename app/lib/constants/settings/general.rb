@@ -48,7 +48,8 @@ module Constants
           placeholder: SVG_PLACEHOLDER
         },
         main_social_image: {
-          description: "Used as the main image in social networks and OpenGraph. Recommended aspect ratio of 16:9 (600x337px,1200x675px)",
+          description: "Used as the main image in social networks and OpenGraph. Recommended aspect ratio " \
+            "of 16:9 (600x337px,1200x675px)",
           placeholder: IMAGE_PLACEHOLDER
         },
         mailchimp_api_key: {
@@ -89,7 +90,8 @@ module Constants
           placeholder: 2
         },
         secondary_logo_url: {
-          description: "A place for an alternate logo, if you have one. Used throughout member onboarding and in some sign in forms.",
+          description: "A place for an alternate logo, if you have one. Used throughout member onboarding " \
+            "and in some sign in forms.",
           placeholder: IMAGE_PLACEHOLDER
         },
         shop_url: {
@@ -123,7 +125,8 @@ module Constants
           description: "Determines which users are suggested to follow to new users during onboarding (comma " \
           "separated, letters only). Please note that these users will be shown as a fallback if no " \
           "recently-active commenters or producers can be suggested",
-          placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
+          placeholder: "List of valid usernames: comma separated, letters only e.g. " \
+            "ben,jess,peter,maestromac,andy,liana"
         },
         prefer_manual_suggested_users: {
           description: "Always show suggested users as suggested people to follow even when " \

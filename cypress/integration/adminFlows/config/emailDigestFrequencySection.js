@@ -29,15 +29,11 @@ describe('Email digest frequency Section', () => {
             `My username is @${username} and this action is 100% safe and appropriate.`,
           );
 
-        cy.get('@emailDigestSectionForm')
-          .findByText('Update Site Configuration')
-          .click();
+        cy.get('@emailDigestSectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/config');
 
-        cy.findByText('Site configuration was successfully updated.').should(
-          'be.visible',
-        );
+        cy.findByText('Successfully updated settings.').should('be.visible');
 
         cy.get('#site_config_periodic_email_digest').should('have.value', '42');
       });

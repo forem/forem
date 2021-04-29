@@ -70,7 +70,7 @@ export default class ConfigController extends Controller {
 
   closeAdminModal() {
     // per forem/internalEngineering#336, need to short-circuit the
-    // "Update Site Configuration" button submit action; chose not to
+    // "Update Settings" button submit action; chose not to
     // define Target on actual "Update" button (since it's a partial).
     // The Target is defined on the Authentication form, and that section's
     // "Update" button is queried.
@@ -196,7 +196,7 @@ export default class ConfigController extends Controller {
   }
 
   authProviderModalBody(provider) {
-    return `<p>If you disable ${provider} as a login option, people cannot authenticate with ${provider}.</p><p><strong>You must update Site Config to save this action!</strong></p>`;
+    return `<p>If you disable ${provider} as a login option, people cannot authenticate with ${provider}.</p><p><strong>You must update Settings to save this action!</strong></p>`;
   }
 
   activateAuthProviderModal(event) {

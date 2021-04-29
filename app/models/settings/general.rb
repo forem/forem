@@ -1,4 +1,4 @@
-# Site configuration based on RailsSettings models,
+# Settings based on RailsSettings models,
 # see <https://github.com/huacnlee/rails-settings-cached> for further info
 module Settings
   class General < RailsSettings::Base
