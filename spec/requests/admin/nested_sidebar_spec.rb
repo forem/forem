@@ -10,8 +10,6 @@ RSpec.describe "admin sidebar", type: :request do
 
   describe "sidebar menu options" do
     it "shows parent level and nested child items" do
-      allow(FeatureFlag).to receive(:enabled?).with(:admin_restructure).and_return(true)
-
       get admin_articles_path
 
       expect(response.body).to include("Advanced")
@@ -21,8 +19,6 @@ RSpec.describe "admin sidebar", type: :request do
 
   describe "tabbed menu options" do
     it "shows nested grandchildren items where applicable" do
-      allow(FeatureFlag).to receive(:enabled?).with(:admin_restructure).and_return(true)
-
       get admin_badges_path
 
       expect(response.body).to include("Library")
@@ -31,10 +27,6 @@ RSpec.describe "admin sidebar", type: :request do
   end
 
   describe "profile admin feature flag" do
-    before do
-      allow(FeatureFlag).to receive(:enabled?).with(:admin_restructure).and_return(true)
-    end
-
     it "does not show the option in the sidebar when the feature flag is disabled" do
       allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(false)
 
@@ -53,10 +45,6 @@ RSpec.describe "admin sidebar", type: :request do
   end
 
   describe "data update script admin feature flag" do
-    before do
-      allow(FeatureFlag).to receive(:enabled?).with(:admin_restructure).and_return(true)
-    end
-
     it "does not show the option in the tabbed header when the feature flag is disabled" do
       allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(false)
 
