@@ -87,6 +87,7 @@ window.Forem = {
           render(null, currentModalContainer);
         }}
         size={size}
+        focusTrapSelector={`#${WINDOW_MODAL_ID}`}
       >
         <div
           // eslint-disable-next-line react/no-danger
