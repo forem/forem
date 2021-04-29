@@ -35,7 +35,7 @@ Examples:
 - `Settings::Authentication.twitter_secret`
 
 These settings can be accessed via the
-[`Settings::General`](https://github.com/forem/forem/blob/master/app/models/site_config.rb)
+[`Settings::General`](https://github.com/forem/forem/blob/master/app/models/settins/general.rb)
 object and various models in the `Settings::` namespace and viewed / modified
 via `/admin/config` (see [the Admin guide](/admin)).
 
