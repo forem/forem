@@ -88,40 +88,6 @@ module Notifications
 
         user_ids_for("only_author_comments")
       end
-
-      def send_push_notifications(channels)
-        return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
-
-        Pusher::PushNotifications.publish_to_interests(
-          interests: channels,
-          payload: push_notification_payload,
-        )
-      end
-
-      def push_notification_payload
-        title = "@#{comment.user.username}"
-        subtitle = "re: #{comment.parent_or_root_article.title.strip}"
-        data_payload = { url: URL.url("/notifications/comments") }
-        {
-          apns: {
-            aps: {
-              alert: {
-                title: title,
-                subtitle: subtitle,
-                body: CGI.unescapeHTML(comment.title.strip)
-              }
-            },
-            data: data_payload
-          },
-          fcm: {
-            notification: {
-              title: title,
-              body: subtitle
-            },
-            data: data_payload
-          }
-        }
-      end
     end
   end
 end
