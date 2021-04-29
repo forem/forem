@@ -3,7 +3,7 @@ module Authentication
     # Authentication provider
     class Provider
       delegate :email, to: :info, prefix: :user
-      delegate :user_created_at_field, :user_username_field, to: :class
+      delegate :user_username_field, to: :class
 
       def initialize(auth_payload)
         @auth_payload = cleanup_payload(auth_payload.dup)
@@ -35,10 +35,6 @@ module Authentication
 
       def self.provider_name
         name.demodulize.downcase.to_sym
-      end
-
-      def self.user_created_at_field
-        "#{provider_name}_created_at".to_sym
       end
 
       def self.user_username_field
