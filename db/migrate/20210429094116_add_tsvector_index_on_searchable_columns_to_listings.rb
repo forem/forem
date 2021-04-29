@@ -1,4 +1,4 @@
-class AddTsvectorIndexOnSearchableColumnnsToListings < ActiveRecord::Migration[6.1]
+class AddTsvectorIndexOnSearchableColumnsToListings < ActiveRecord::Migration[6.1]
   disable_ddl_transaction!
 
   def up
