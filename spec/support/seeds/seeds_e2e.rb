@@ -198,3 +198,14 @@ seeder.create_if_none(Listing) do
 end
 
 ##############################################################################
+
+seeder.create_if_none(Tag) do
+  Tag.create!(
+    name: "tag1",
+    bg_color_hex: Faker::Color.hex_color,
+    text_color_hex: Faker::Color.hex_color,
+    supported: true,
+  )
+end
+
+##############################################################################
