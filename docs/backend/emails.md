@@ -4,10 +4,10 @@ title: Emails
 
 # Setting up email
 
-If you would like to enable transactional email using services like Sendgrid or
-Mailgun, you can configure it by using the following environment variables
+If you would like to enable transactional email using services like SendGrid or
+Mailgun, you can configure it by using the following environment variables:
 
-```
+```shell
 SMTP_ADDRESS=         # ie. "smtp.sendgrid.net"
 SMTP_PORT=            # ie. 587
 SMTP_DOMAIN=
@@ -16,7 +16,7 @@ SMTP_PASSWORD=
 SMTP_AUTHENTICATION=  # defaults to :plain
 ```
 
-We follow standard ActionMailer configuration. For more info, please check out
+We follow the standard `ActionMailer` configuration. For more info, please check out
 Rails'
 [official documentation](https://guides.rubyonrails.org/action_mailer_basics.html#action-mailer-configuration).
 
