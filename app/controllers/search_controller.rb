@@ -59,15 +59,9 @@ class SearchController < ApplicationController
   ].freeze
 
   def tags
-    result = if FeatureFlag.enabled?(:search_2_tags)
-               Search::Postgres::Tag.search_documents(params[:name])
-             else
-               Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
-             end
+    result = Search::Postgres::Tag.search_documents(params[:name])
 
     render json: { result: result }
-  rescue Search::Errors::Transport::BadRequest
-    render json: { result: [] }
   end
 
   def chat_channels
