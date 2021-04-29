@@ -8,48 +8,17 @@ RSpec.describe "Search", type: :request, proper_status: true do
       sign_in authorized_user
     end
 
-    context "when using Elasticsearch" do
-      let(:mock_documents) do
-        [{ "name" => "tag1" }, { "name" => "tag2" }, { "name" => "tag3" }]
-      end
-
-      it "returns json" do
-        allow(Search::Tag).to receive(:search_documents).and_return(mock_documents)
-
-        get search_tags_path
-
-        expect(response.parsed_body).to eq("result" => mock_documents)
-      end
-
-      it "returns an empty array when a Bad Request error is raised" do
-        allow(Search::Client).to receive(:search).and_raise(Search::Errors::Transport::BadRequest)
-
-        get search_tags_path
-
-        expect(response.parsed_body).to eq("result" => [])
-      end
+    it "returns nothing if there is no name parameter" do
+      get search_tags_path
+      expect(response.parsed_body["result"]).to be_empty
     end
 
-    context "when using PostgreSQL for" do
-      before do
-        allow(FeatureFlag).to receive(:enabled?).with(:search_2_tags).and_return(true)
-      end
+    it "finds a tag by a partial name" do
+      tag = create(:tag, name: "elixir")
 
-      # NOTE: [@rhymes] ES returns all tags if no parameter is given **but** this endpoint is only used by
-      # the `Tags` Preact component so there's no need for us to return all tags. After all it's a search endpoint,
-      # not an index page
-      it "returns nothing if there is no name parameter" do
-        get search_tags_path
-        expect(response.parsed_body["result"]).to be_empty
-      end
+      get search_tags_path(name: "eli")
 
-      it "finds a tag by a partial name" do
-        tag = create(:tag, name: "elixir")
-
-        get search_tags_path(name: "eli")
-
-        expect(response.parsed_body["result"].first).to include("name" => tag.name)
-      end
+      expect(response.parsed_body["result"].first).to include("name" => tag.name)
     end
   end
 
