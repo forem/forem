@@ -76,49 +76,25 @@ RSpec.describe "Search", type: :request, proper_status: true do
       sign_in authorized_user
     end
 
-    context "when using Elasticsearch" do
-      let(:result) do
-        {
-          "username" => "molly",
-          "name" => "Molly",
-          "profile_image_90" => "something"
-        }
-      end
-
-      it "returns json" do
-        allow(Search::User).to receive(:search_usernames).and_return(
-          result,
-        )
-        get search_usernames_path
-        expect(response.parsed_body).to eq("result" => result)
-      end
+    it "returns nothing if there is no username parameter" do
+      get search_usernames_path
+      expect(response.parsed_body["result"]).to be_empty
     end
 
-    context "when using PostgreSQL" do
-      before do
-        allow(FeatureFlag).to receive(:enabled?).with(:search_2_usernames).and_return(true)
-      end
+    it "finds a username by a partial username" do
+      user = create(:user, username: "Sloan")
 
-      it "returns nothing if there is no username parameter" do
-        get search_usernames_path
-        expect(response.parsed_body["result"]).to be_empty
-      end
+      get search_usernames_path(username: "slo")
 
-      it "finds a username by a partial username" do
-        user = create(:user, username: "Sloan")
+      expect(response.parsed_body["result"].first).to include("username" => user.username)
+    end
 
-        get search_usernames_path(username: "slo")
+    it "finds a username by a partial name" do
+      user = create(:user, name: "Sloan")
 
-        expect(response.parsed_body["result"].first).to include("username" => user.username)
-      end
+      get search_usernames_path(username: "slo")
 
-      it "finds a username by a partial name" do
-        user = create(:user, name: "Sloan")
-
-        get search_usernames_path(username: "slo")
-
-        expect(response.parsed_body["result"].first).to include("username" => user.username)
-      end
+      expect(response.parsed_body["result"].first).to include("username" => user.username)
     end
   end
 

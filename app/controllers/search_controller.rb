@@ -97,15 +97,9 @@ class SearchController < ApplicationController
   end
 
   def usernames
-    result = if FeatureFlag.enabled?(:search_2_usernames)
-               Search::Postgres::Username.search_documents(params[:username])
-             else
-               Search::User.search_usernames(params[:username])
-             end
+    result = Search::Postgres::Username.search_documents(params[:username])
 
     render json: { result: result }
-  rescue Search::Errors::Transport::BadRequest
-    render json: { result: [] }
   end
 
   # TODO: [@rhymes] the homepage feed uses `feed_content_search` as an index,
