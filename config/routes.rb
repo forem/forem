@@ -40,58 +40,7 @@ Rails.application.routes.draw do
       mount FieldTest::Engine, at: "abtests"
     end
 
-    namespace :admin do
-      get "/", to: "overview#index"
-
-      # NOTE: [@ridhwana] These are the admin routes that have stayed the same even with the
-      # restructure. They'll move into routes/admin.rb once we remove the old code.
-      authenticate :user, ->(user) { user.tech_admin? } do
-        mount Blazer::Engine, at: "blazer"
-
-        flipper_ui = Flipper::UI.app(Flipper,
-                                     { rack_protection: { except: %i[authenticity_token form_token json_csrf
-                                                                     remote_token http_origin session_hijacking] } })
-        mount flipper_ui, at: "feature_flags"
-      end
-      resources :invitations, only: %i[index new create destroy]
-      resources :organization_memberships, only: %i[update destroy create]
-      resources :permissions, only: %i[index]
-      resources :reactions, only: [:update]
-      resources :consumer_apps, only: %i[index new create edit update destroy]
-      namespace :settings do
-        resources :authentications, only: [:create]
-        resources :campaigns, only: [:create]
-        resources :communities, only: [:create]
-        resources :mandatory_settings, only: [:create]
-        resources :mascots, only: [:create]
-        resources :rate_limits, only: [:create]
-        resources :user_experiences, only: [:create]
-      end
-      namespace :users do
-        resources :gdpr_delete_requests, only: %i[index destroy]
-      end
-      resources :users, only: %i[index show edit update destroy] do
-        resources :email_messages, only: :show
-        member do
-          post "banish"
-          post "export_data"
-          post "full_delete"
-          patch "user_status"
-          post "merge"
-          delete "remove_identity"
-          post "send_email"
-          post "verify_email_ownership"
-          patch "unlock_access"
-        end
-      end
-
-      # These redirects serve as a safeguard to prevent 404s for any Admins
-      # who have the old badge_achievement URLs bookmarked.
-      get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
-      get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
-
-      draw :admin
-    end
+    draw :admin
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
