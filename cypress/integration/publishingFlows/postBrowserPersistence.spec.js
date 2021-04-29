@@ -17,31 +17,25 @@ describe('Post Editor', () => {
 
     describe(`revert changes`, () => {
       it('should revert to the initial v1 editor template if it is a new post', () => {
+        const initialContent = `---\ntitle: \npublished: false\ndescription: \ntags: \n//cover_image: https://direct_url_to_image.jpg\n---\n\n`;
+        const updatedContent = `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`;
+
         cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
         // Fill out the title, tags, and content for an post.
-        getPostContent().click();
+        getPostContent().clear();
 
         // Clearing out the whole content area as this seemed simpler than finding where to add the fields in the v1 editor
+        getPostContent().click();
         getPostContent()
-          .clear()
           // The v1 editor has all the post info in one textarea
-          .type(
-            `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`,
-          )
-          .should(
-            'have.value',
-            `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`,
-          );
+          .type(updatedContent, { force: true })
+          .should('have.value', updatedContent);
 
         cy.findByRole('button', { name: /^Revert new changes$/i }).click();
 
         // The post editor should reset to it's initial values
-        getPostContent().click();
-        getPostContent().should(
-          'have.value',
-          `---\ntitle: \npublished: false\ndescription: \ntags: \n//cover_image: https://direct_url_to_image.jpg\n---\n\n`,
-        );
+        getPostContent().should('have.value', initialContent);
       });
 
       it('should revert to the previously saved version of the post if the post was previously edited', () => {
@@ -54,27 +48,37 @@ describe('Post Editor', () => {
           published: true,
           editorVersion: 'v1',
         }).then((response) => {
+          const { baseUrl } = Cypress.config();
+          cy.intercept(
+            baseUrl.replace(/\/$/, '') +
+              `${response.body.current_state_path.replace(
+                /\?.+$/,
+                '',
+              )}/edit?i=i`,
+          ).as('editPage');
+
           cy.visit(response.body.current_state_path);
 
-          cy.findByRole('link', { name: /^Edit$/i }).click();
+          cy.findByRole('link', { name: /^Edit$/i })
+            .should('be.visible')
+            .click();
+          cy.wait('@editPage');
 
           cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-          getPostContent().click();
           getPostContent()
             .should('have.value', initialContent)
 
             // Clearing out the whole content area as this seemed simpler than finding where to add the fields in the v1 editor
-            .clear()
-            // Update the title, tags, and content for an post.
-            .type(updatedContent);
+            .clear();
+          // Update the title, tags, and content for an post.
           getPostContent().click();
+          getPostContent().type(updatedContent, { force: true });
           getPostContent().should('have.value', updatedContent);
 
           cy.findByRole('button', { name: /^Revert new changes$/i }).click();
 
           // The post editor should reset to it's saved version from the server that was initially loaded into the editor.
-          getPostContent().click();
           getPostContent().should('have.value', initialContent);
         });
       });
@@ -109,7 +113,7 @@ describe('Post Editor', () => {
         cy.get('@articleForm')
           .findByLabelText(/^Post Content$/i)
           .as('postContent')
-          .type('This is some text that should be reverted');
+          .type('This is some text that should be reverted', { force: true });
 
         cy.get('@postTitle').should(
           'have.value',
@@ -137,9 +141,18 @@ describe('Post Editor', () => {
           content: `This is a Test Post's contents.`,
           published: true,
         }).then((response) => {
+          const { baseUrl } = Cypress.config();
+          cy.intercept(
+            baseUrl.replace(/\/$/, '') +
+              `${response.body.current_state_path}/edit?i=i`,
+          ).as('editPage');
+
           cy.visit(response.body.current_state_path);
 
-          cy.findByRole('link', { name: /^Edit$/i }).click();
+          cy.findByRole('link', { name: /^Edit$/i })
+            .should('be.visible')
+            .click();
+          cy.wait('@editPage');
 
           cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
@@ -149,7 +162,9 @@ describe('Post Editor', () => {
             .as('postTitle')
             .should('have.value', 'Test Post') // checking for original value first
             .clear()
-            .type('This is some title that should be reverted');
+            .type('This is some title that should be reverted', {
+              force: true,
+            });
 
           cy.get('@articleForm')
             .findByLabelText(/^Post Tags$/i)
@@ -158,11 +173,12 @@ describe('Post Editor', () => {
             .clear()
             .type('tag1, tag2, tag3');
 
-          getPostContent().click();
           getPostContent()
             .should('have.value', `This is a Test Post's contents.`) // checking for original value first
-            .clear()
-            .type('This is some text that should be reverted');
+            .clear();
+          getPostContent()
+            .click()
+            .type('This is some text that should be reverted', { force: true });
 
           cy.get('@postTitle').should(
             'have.value',
@@ -171,10 +187,10 @@ describe('Post Editor', () => {
 
           cy.get('@postTags').should('have.value', 'tag1, tag2, tag3');
 
-          getPostContent().click();
           getPostContent().should(
             'have.value',
             'This is some text that should be reverted',
+            { force: true },
           );
 
           cy.findByRole('button', { name: /^Revert new changes$/i }).click();
@@ -182,7 +198,6 @@ describe('Post Editor', () => {
           // The post editor should reset to it's saved version from the server that was initially loaded into the editor.
           cy.get('@postTitle').should('have.value', 'Test Post');
           cy.get('@postTags').should('have.value', 'beginner, ruby, go');
-          getPostContent().click();
           getPostContent().should(
             'have.value',
             `This is a Test Post's contents.`,
