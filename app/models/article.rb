@@ -199,7 +199,7 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_with, lambda { |tag|
     case tag
-    when String
+    when String, Symbol
       # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
       # word" and "end of word", respectively. They're similar to `\b` in Perl-
       # compatible regexes (PCRE), but that matches at either end of a word.
@@ -216,16 +216,16 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_with_any, lambda { |tags|
     case tags
-    when String
+    when String, Symbol
       cached_tagged_with(tags)
     when Array
       tags
         .map { |tag| cached_tagged_with(tag) }
         .reduce { |acc, elem| acc.or(elem) }
     when Tag
-      cached_tagged_with(tag.name)
+      cached_tagged_with(tags.name)
     else
-      raise TypeError, "Cannot search tags for: #{tag.inspect}"
+      raise TypeError, "Cannot search tags for: #{tags.inspect}"
     end
   }
 
