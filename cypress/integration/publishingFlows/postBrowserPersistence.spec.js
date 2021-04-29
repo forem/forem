@@ -56,7 +56,7 @@ describe('Post Editor', () => {
         }).then((response) => {
           cy.visit(response.body.current_state_path);
 
-          cy.findByText(/^Edit$/i).click();
+          cy.findByRole('link', { name: /^Edit$/i }).click();
 
           cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
@@ -139,7 +139,7 @@ describe('Post Editor', () => {
         }).then((response) => {
           cy.visit(response.body.current_state_path);
 
-          cy.findByText(/^Edit$/i).click();
+          cy.findByRole('link', { name: /^Edit$/i }).click();
 
           cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
