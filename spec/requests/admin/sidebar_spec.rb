@@ -14,7 +14,7 @@ RSpec.describe "admin sidebar", type: :request do
 
       get admin_articles_path
 
-      expect(response.body).to include("Config: Profile Setup")
+      expect(response.body).to include("Profile Fields")
     end
 
     it "does not show the option in the sidebar when the feature flag is disabled" do
@@ -22,7 +22,7 @@ RSpec.describe "admin sidebar", type: :request do
 
       get admin_articles_path
 
-      expect(response.body).not_to include("Config: Profile Setup")
+      expect(response.body).not_to include("Profile Fields")
     end
   end
 

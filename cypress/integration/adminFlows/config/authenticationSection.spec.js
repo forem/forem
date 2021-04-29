@@ -20,7 +20,7 @@ describe('Authentication Section', () => {
           facebookKey: 'somekey',
           facebookSecret: 'somesecret',
         }).then(() => {
-          cy.visit('/admin/config');
+          cy.visit('/admin/customization/config');
           cy.findByTestId('authSectionForm').as('authSectionForm');
 
           cy.get('@authSectionForm').findByText('Authentication').click();
@@ -38,7 +38,7 @@ describe('Authentication Section', () => {
             .findByText('Update Site Configuration')
             .click();
 
-          cy.url().should('contains', '/admin/config');
+          cy.url().should('contains', '/admin/customization/config');
 
           // Page reloaded so need to get a new reference to the form.
           cy.findByTestId('authSectionForm').as('authSectionForm');
@@ -75,7 +75,7 @@ describe('Authentication Section', () => {
     it('should display warning modal if provider keys are missing', () => {
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then(() => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.findByTestId('authSectionForm').as('authSectionForm');
 
         cy.get('@authSectionForm').findByText('Authentication').click();
@@ -101,7 +101,7 @@ describe('Authentication Section', () => {
       cy.fixture('users/adminUser.json').as('user');
 
       cy.get('@user').then(() => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.findByTestId('authSectionForm').as('authSectionForm');
 
         cy.get('@authSectionForm').findByText('Authentication').click();
@@ -119,7 +119,7 @@ describe('Authentication Section', () => {
           .findByText('Update Site Configuration')
           .click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Site configuration was successfully updated.').should(
           'be.visible',
