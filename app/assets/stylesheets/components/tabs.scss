@@ -25,7 +25,7 @@
     width: 100%;
 
     li {
-      width: auto;
+      width: 100%;
     }
   }
 
@@ -117,6 +117,12 @@
 
   &--wrapped {
     flex-wrap: wrap;
+
+    .crayons-tabs__list {
+      li {
+        width: auto;
+      }
+    }
 
     .crayons-tabs__item {
       margin: var(--su-1);
