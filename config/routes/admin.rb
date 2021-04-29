@@ -2,8 +2,6 @@
 namespace :admin do
   get "/", to: "overview#index"
 
-  # NOTE: [@ridhwana] These are the admin routes that have stayed the same even with the
-  # restructure. They'll move into routes/admin.rb once we remove the old code.
   authenticate :user, ->(user) { user.tech_admin? } do
     mount Blazer::Engine, at: "blazer"
 
