@@ -94,7 +94,7 @@ Rails.application.configure do
     authentication: ENV["SMTP_AUTHENTICATION"].presence || :plain,
     user_name: ENV["SMTP_USER_NAME"],
     password: ENV["SMTP_PASSWORD"],
-    domain: ENV["SMTP_DOMAIN"].presence || config.app_domain,
+    domain: ENV["SMTP_DOMAIN"].presence || config.app_domain
   }
 
   config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")

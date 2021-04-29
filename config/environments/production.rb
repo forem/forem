@@ -130,12 +130,12 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: protocol + ENV["APP_DOMAIN"].to_s }
   ActionMailer::Base.smtp_settings = {
-    address: ENV["SMTP_ADDRESS"],
-    port: ENV["SMTP_PORT"],
+    address: ENV["SMTP_ADDRESS"].presence || "smtp.sendgrid.net",
+    port: ENV["SMTP_PORT"].presence || 587,
     authentication: ENV["SMTP_AUTHENTICATION"].presence || :plain,
-    user_name: ENV["SMTP_USER_NAME"],
+    user_name: ENV["SMTP_USER_NAME"].presence || "apikey",
     password: ENV["SMTP_PASSWORD"],
-    domain: ENV["SMTP_DOMAIN"].presence || ENV["APP_DOMAIN"],
+    domain: ENV["SMTP_DOMAIN"].presence || ENV["APP_DOMAIN"]
   }
 
   if ENV["HEROKU_APP_URL"].present? && ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
