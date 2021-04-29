@@ -1,24 +1,20 @@
 module Search
   module Postgres
     class PodcastEpisode
-      ATTRIBUTES = [
-        "podcasts.id",
-        "podcasts.image",
-        "podcasts.published",
-        "podcasts.slug",
-        "podcast_episodes.body",
-        "podcast_episodes.comments_count",
-        "podcast_episodes.id",
-        "podcast_episodes.podcast_id",
-        "podcast_episodes.processed_html",
-        "podcast_episodes.published_at",
-        "podcast_episodes.quote",
-        "podcast_episodes.reactions_count",
-        "podcast_episodes.slug",
-        "podcast_episodes.subtitle",
-        "podcast_episodes.summary",
-        "podcast_episodes.title",
-        "podcast_episodes.website_url",
+      ATTRIBUTES = %w[
+        body
+        comments_count
+        id
+        podcast_id
+        processed_html
+        published_at
+        quote
+        reactions_count
+        slug
+        subtitle
+        summary
+        title
+        website_url
       ].freeze
       private_constant :ATTRIBUTES
 
@@ -34,15 +30,25 @@ module Search
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-        relation = ::PodcastEpisode.includes(:podcast).available
+        relation = ::PodcastEpisode
+          .reachable
+          .where(podcast_id: Podcast.published)
+          .includes(:podcast)
+          .references(:podcasts)
         relation = relation.search_podcast_episodes(term) if term.present?
         relation = relation.select(*ATTRIBUTES)
-        relation = relation.reorder(sort_by => sort_direction) if sort_by && sort_direction
-
+        relation = sort(relation, sort_by, sort_direction)
         results = relation.page(page).per(per_page)
 
         serialize(results)
       end
+
+      def self.sort(relation, sort_by, sort_direction)
+        return relation.reorder(sort_by => sort_direction) if sort_by && sort_direction
+
+        relation.reorder(nil)
+      end
+      private_class_method :sort
 
       def self.serialize(results)
         Search::PostgresPodcastEpisodeSerializer
