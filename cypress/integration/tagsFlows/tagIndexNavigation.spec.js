@@ -1,6 +1,4 @@
 describe('Tag index page navigation', () => {
-  //todo: create a tag in the seeds
-  // todo: then copy the home feed tests
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
