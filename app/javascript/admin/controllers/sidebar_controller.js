@@ -12,13 +12,8 @@ export default class SidebarController extends Controller {
     activeButton.setAttribute('disabled', true);
   }
 
-  expandDropdown(event) {
-    this.redirectToFirstChildNavItem(event);
+  expandDropdown() {
     this.closeOtherMenus();
-  }
-
-  redirectToFirstChildNavItem(event) {
-    window.location.href = event.target.getAttribute('data-target-href');
   }
 
   closeOtherMenus() {

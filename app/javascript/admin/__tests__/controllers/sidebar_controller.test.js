@@ -104,13 +104,6 @@ describe('SidebarController', () => {
       window.location = location;
     });
 
-    it('redirects to the first child navigation item', () => {
-      const button = document.getElementById('advanced_button');
-      button.click();
-
-      expect(window.location.href).toEqual('/admin/advanced/broadcasts');
-    });
-
     it('closes other menu items', () => {
       const button = document.getElementById('advanced_button');
       button.click();
