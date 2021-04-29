@@ -39,43 +39,23 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/listings" do
-    context "when using Elasticsearch" do
-      let(:mock_documents) do
-        [{ "title" => "listing1" }]
-      end
-
-      it "returns json" do
-        allow(Search::Listing).to receive(:search_documents).and_return(
-          mock_documents,
-        )
-        get "/search/listings"
-        expect(response.parsed_body).to eq("result" => mock_documents)
-      end
+    it "returns the correct keys" do
+      create(:listing)
+      get search_listings_path
+      expect(response.parsed_body["result"]).to be_present
     end
 
-    context "when using PostgreSQL" do
-      before do
-        allow(FeatureFlag).to receive(:enabled?).with(:search_2_listings).and_return(true)
-      end
+    it "supports the search params" do
+      listing = create(:listing)
 
-      it "returns the correct keys" do
-        create(:listing)
-        get search_listings_path
-        expect(response.parsed_body["result"]).to be_present
-      end
+      get search_listings_path(
+        category: listing.category,
+        page: 0,
+        per_page: 1,
+        term: listing.title.downcase,
+      )
 
-      it "supports the search params" do
-        listing = create(:listing)
-
-        get search_listings_path(
-          category: listing.category,
-          page: 0,
-          per_page: 1,
-          term: listing.title.downcase,
-        )
-
-        expect(response.parsed_body["result"].first).to include("title" => listing.title)
-      end
+      expect(response.parsed_body["result"].first).to include("title" => listing.title)
     end
   end
 
@@ -96,49 +76,25 @@ RSpec.describe "Search", type: :request, proper_status: true do
       sign_in authorized_user
     end
 
-    context "when using Elasticsearch" do
-      let(:result) do
-        {
-          "username" => "molly",
-          "name" => "Molly",
-          "profile_image_90" => "something"
-        }
-      end
-
-      it "returns json" do
-        allow(Search::User).to receive(:search_usernames).and_return(
-          result,
-        )
-        get search_usernames_path
-        expect(response.parsed_body).to eq("result" => result)
-      end
+    it "returns nothing if there is no username parameter" do
+      get search_usernames_path
+      expect(response.parsed_body["result"]).to be_empty
     end
 
-    context "when using PostgreSQL" do
-      before do
-        allow(FeatureFlag).to receive(:enabled?).with(:search_2_usernames).and_return(true)
-      end
+    it "finds a username by a partial username" do
+      user = create(:user, username: "Sloan")
 
-      it "returns nothing if there is no username parameter" do
-        get search_usernames_path
-        expect(response.parsed_body["result"]).to be_empty
-      end
+      get search_usernames_path(username: "slo")
 
-      it "finds a username by a partial username" do
-        user = create(:user, username: "Sloan")
+      expect(response.parsed_body["result"].first).to include("username" => user.username)
+    end
 
-        get search_usernames_path(username: "slo")
+    it "finds a username by a partial name" do
+      user = create(:user, name: "Sloan")
 
-        expect(response.parsed_body["result"].first).to include("username" => user.username)
-      end
+      get search_usernames_path(username: "slo")
 
-      it "finds a username by a partial name" do
-        user = create(:user, name: "Sloan")
-
-        get search_usernames_path(username: "slo")
-
-        expect(response.parsed_body["result"].first).to include("username" => user.username)
-      end
+      expect(response.parsed_body["result"].first).to include("username" => user.username)
     end
   end
 
