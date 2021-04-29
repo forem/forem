@@ -19,7 +19,7 @@ describe('Email digest frequency Section', () => {
           .click();
 
         cy.get('@emailDigestSectionForm')
-          .get('#site_config_periodic_email_digest')
+          .get('#settings_general_periodic_email_digest')
           .clear()
           .type('42');
 
@@ -35,7 +35,10 @@ describe('Email digest frequency Section', () => {
 
         cy.findByText('Successfully updated settings.').should('be.visible');
 
-        cy.get('#site_config_periodic_email_digest').should('have.value', '42');
+        cy.get('#settings_general_periodic_email_digest').should(
+          'have.value',
+          '42',
+        );
       });
     });
   });

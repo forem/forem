@@ -26,9 +26,7 @@ describe('Get Started Section', () => {
             `My username is @${username} and this action is 100% safe and appropriate.`,
           );
 
-        cy.get('@getStartedSectionForm')
-          .findByText('Update Site Configuration')
-          .click();
+        cy.get('@getStartedSectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/config');
 
@@ -59,9 +57,7 @@ describe('Get Started Section', () => {
             `My username is @${username} and this action is 100% safe and appropriate.`,
           );
 
-        cy.get('@getStartedSectionForm')
-          .findByText('Update Site Configuration')
-          .click();
+        cy.get('@getStartedSectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/config');
 
