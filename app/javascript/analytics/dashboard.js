@@ -1,5 +1,7 @@
 import { callHistoricalAPI, callReferrersAPI } from './client';
 
+const activeCharts = {};
+
 function resetActive(activeButton) {
   const buttons = document.querySelectorAll(
     '.crayons-tabs--analytics .crayons-tabs__item',
@@ -40,7 +42,7 @@ function writeCards(data, timeRangeLabel) {
   followerCard.innerHTML = cardHTML(follows, `Followers ${timeRangeLabel}`);
 }
 
-function drawChart({ canvas, title, labels, datasets }) {
+function drawChart({ id, title, labels, datasets }) {
   const options = {
     plugins: {
       legend: {
@@ -82,8 +84,14 @@ function drawChart({ canvas, title, labels, datasets }) {
         LineElement,
         Legend,
       );
+      const currentChart = activeCharts[id];
+      if (currentChart) {
+        currentChart.destroy();
+      }
+
+      const canvas = document.getElementById(id);
       // eslint-disable-next-line no-new
-      new Chart(canvas, {
+      activeCharts[id] = new Chart(canvas, {
         type: 'line',
         data: {
           labels,
@@ -107,7 +115,7 @@ function drawCharts(data, timeRangeLabel) {
   const readers = parsedData.map((date) => date.page_views.total);
 
   drawChart({
-    canvas: document.getElementById('reactions-chart'),
+    id: 'reactions-chart',
     title: `Reactions ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -147,7 +155,7 @@ function drawCharts(data, timeRangeLabel) {
   });
 
   drawChart({
-    canvas: document.getElementById('comments-chart'),
+    id: 'comments-chart',
     title: `Comments ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -163,7 +171,7 @@ function drawCharts(data, timeRangeLabel) {
   });
 
   drawChart({
-    canvas: document.getElementById('followers-chart'),
+    id: 'followers-chart',
     title: `New Followers ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -179,7 +187,7 @@ function drawCharts(data, timeRangeLabel) {
   });
 
   drawChart({
-    canvas: document.getElementById('readers-chart'),
+    id: 'readers-chart',
     title: `Reads ${timeRangeLabel}`,
     labels,
     datasets: [
