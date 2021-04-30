@@ -27,8 +27,10 @@ describe('Analytics navigation', () => {
       cy.findByRole('button', { name: 'Month' }).as('month');
       cy.get('@month').should('have.attr', 'aria-current', '');
       cy.get('@month').click();
-      cy.get('@month').should('have.attr', 'aria-current', 'page');
     });
+    cy.findByRole('navigation', { name: 'Analytics period' })
+      .findByRole('button', { name: 'Month' })
+      .should('have.attr', 'aria-current', 'page');
   });
 
   it('should switch tab to Infinity view', () => {
@@ -36,7 +38,9 @@ describe('Analytics navigation', () => {
       cy.findByRole('button', { name: 'Infinity' }).as('infinity');
       cy.get('@infinity').should('have.attr', 'aria-current', '');
       cy.get('@infinity').click();
-      cy.get('@infinity').should('have.attr', 'aria-current', 'page');
     });
+    cy.findByRole('navigation', { name: 'Analytics period' })
+      .findByRole('button', { name: 'Infinity' })
+      .should('have.attr', 'aria-current', 'page');
   });
 });
