@@ -10,8 +10,6 @@ ports:
     onOpen: ignore
   - port: 6379
     onOpen: ignore
-  - port: 9300
-    onOpen: ignore
 
 tasks:
   - name: Forem Server
