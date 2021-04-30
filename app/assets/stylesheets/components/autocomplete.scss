@@ -8,12 +8,13 @@
   }
 
   &__popover {
-    min-width: 250px;
-    max-width: 250px;
     padding: var(--su-1);
     z-index: var(--z-elevate);
 
     &[data-reach-popover] {
+      // Reach UI adds a width directly to this element as an inline style. !important is needed to make sure the size is constrained.
+      width: 250px !important;
+
       @include generate-box(
         $level: 1,
         $bg: var(--card-bg),
