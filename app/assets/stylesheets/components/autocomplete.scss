@@ -8,7 +8,8 @@
   }
 
   &__popover {
-    max-width: 300px;
+    min-width: 250px;
+    max-width: 250px;
     padding: var(--su-1);
     z-index: var(--z-elevate);
 
