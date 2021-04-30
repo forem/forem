@@ -6,18 +6,6 @@ GIT
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
 
-GIT
-  remote: https://github.com/heartcombo/devise.git
-  revision: 0cd72a56f984a7ff089246f87a8b259120545edd
-  ref: 0cd72a5
-  specs:
-    devise (4.7.3)
-      bcrypt (~> 3.0)
-      orm_adapter (~> 0.1)
-      railties (>= 4.1.0)
-      responders
-      warden (~> 1.2.3)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -214,6 +202,12 @@ GEM
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     device_detector (1.0.5)
+    devise (4.8.0)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 4.1.0)
+      responders
+      warden (~> 1.2.3)
     devise_invitable (2.0.5)
       actionmailer (>= 5.0)
       devise (>= 4.6)
@@ -881,7 +875,7 @@ DEPENDENCIES
   cypress-rails (~> 0.5.0)
   ddtrace (~> 0.47.0)
   derailed_benchmarks (~> 2.0)
-  devise!
+  devise
   devise_invitable (~> 2.0.5)
   dogstatsd-ruby (~> 4.8)
   doorkeeper (~> 5.5)
