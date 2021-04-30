@@ -10,6 +10,7 @@ RSpec.describe "User searches users", type: :system do
     sign_in current_user
     current_user.follow(followed_user)
     follow_back_user.follow(current_user)
+    not_followed_user
   end
 
   it "shows the correct follow buttons", js: true do
