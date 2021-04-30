@@ -103,9 +103,6 @@ class SearchController < ApplicationController
     render json: { result: result }
   end
 
-  # TODO: [@rhymes] the homepage feed uses `feed_content_search` as an index,
-  # we should eventually move it to a JSON result
-  # in ArticlesController#Homepage or HomepageController#show
   def feed_content
     class_name = feed_params[:class_name].to_s.inquiry
 
@@ -198,10 +195,6 @@ class SearchController < ApplicationController
       page: feed_params[:page],
       per_page: feed_params[:per_page],
     )
-  end
-
-  def feed_content_search
-    Search::FeedContent.search_documents(params: feed_params.to_h)
   end
 
   def user_search
