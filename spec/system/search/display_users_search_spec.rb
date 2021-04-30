@@ -7,6 +7,10 @@ RSpec.describe "Display users search spec", type: :system, js: true do
   let(:not_found_user) { create(:user, username: "batman", name: "Batman") }
 
   it "returns correct results for name search" do
+    current_user
+    found_user
+    found_two_user
+    not_found_user
     visit "/search?q=jane&filters=class_name:User"
 
     expect(page).to have_content(found_user.name)
@@ -16,6 +20,8 @@ RSpec.describe "Display users search spec", type: :system, js: true do
   end
 
   it "returns all expected user fields" do
+    current_user
+    found_user
     sign_in current_user
     visit "/search?q=jane&filters=class_name:User"
 
