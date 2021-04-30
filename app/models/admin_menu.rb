@@ -54,6 +54,7 @@ class AdminMenu
 
     scope :apps, "palette-line", [
       item(name: "chat channels"),
+      item(name: "consumer apps", controller: "consumer_apps"),
       item(name: "events"),
       item(name: "listings"),
       item(name: "welcome"),

@@ -13,6 +13,7 @@ resources :chat_channels, only: %i[index create update destroy] do
 end
 resources :comments, only: [:index]
 resource :config
+resources :consumer_apps, only: %i[index new create edit update destroy]
 resources :display_ads, only: %i[index edit update new create destroy]
 resources :events, only: %i[index create update new edit]
 resources :feedback_messages, only: %i[index show]

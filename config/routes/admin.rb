@@ -79,6 +79,7 @@ scope :apps do
       delete :remove_user
     end
   end
+  resources :consumer_apps, only: %i[index new create edit update destroy]
   resources :events, only: %i[index create update new edit]
   resources :listings, only: %i[index edit update destroy]
   resources :listing_categories, only: %i[index edit update new create
