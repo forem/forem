@@ -94,15 +94,15 @@
     </div>
   </div>
 
-  <div id="siteConfig">
+  <div id="settings">
     <div class="card w-100">
       <div
-        id="siteConfigHeader"
+        id="settingsHeader"
         class="card-header"
         data-toggle="collapse"
-        data-target="#siteConfigBodyContainer"
+        data-target="#settingsBodyContainer"
         aria-expanded="true"
-        aria-controls="siteConfigBodyContainer">
+        aria-controls="settingsBodyContainer">
 
         <h2 class="d-inline">All Settings</h2>
 
@@ -114,7 +114,7 @@
         </button>
       </div>
 
-      <div id="siteConfigBodyContainer" class="show expand p-3" aria-labelledby="siteConfigHeader">
+      <div id="settingsBodyContainer" class="show expand p-3" aria-labelledby="settingsHeader">
         <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",

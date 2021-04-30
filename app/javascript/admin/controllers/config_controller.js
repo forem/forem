@@ -63,7 +63,7 @@ export default class ConfigController extends Controller {
         (letter) => `_${letter.toLowerCase()}`,
       );
       document.querySelector(
-        `button[data-id=site_config_${snakeCaseName}]`,
+        `button[data-id=settings_${snakeCaseName}]`,
       ).disabled = newValue;
     }
   }
