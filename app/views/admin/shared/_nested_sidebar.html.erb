@@ -15,7 +15,6 @@
         id="<%= group_name %>_button"
         data-toggle="collapse"
         data-target="#<%= group_name %>"
-        data-target-href="/admin/<%= group_name %>/<%= group[:children][0][:controller] %>"
         aria-expanded="<%= (deduced_scope(request) == group_name.to_s).to_s %>"
         aria-controls="<%= group_name %>"
         data-action="click->sidebar#expandDropdown">
@@ -24,7 +23,8 @@
       </button>
       <ul id="<%= group_name %>"
           data-sidebar-target="submenu"
-          class="<%= deduced_scope(request) == group_name.to_s ? "expand show" : "collapse hide" %>">
+          class="js-menu-activator <%= deduced_scope(request) == group_name.to_s ? "collapse show" : "collapse" %>"
+          data-target-href="/admin/<%= group_name %>/<%= group[:children][0][:controller] %>">
         <% group[:children].each do |item| %>
           <% if item[:visible] %>
             <li>
@@ -40,3 +40,15 @@
     <% end %>
   </li>
 <% end %>
+
+<script>
+  $('.js-menu-activator').on('show.bs.collapse', function (event) {
+    const destinationPath = event.target.getAttribute('data-target-href');
+    const subMenu = document.querySelector(`a[href='${destinationPath}']`);
+
+    if (destinationPath && subMenu) {
+      window.location.href = destinationPath;
+      subMenu.classList.add('fw-bold');
+    }
+  })
+</script>
