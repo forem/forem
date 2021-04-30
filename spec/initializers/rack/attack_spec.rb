@@ -11,7 +11,6 @@ describe Rack::Attack, type: :request, throttle: true do
   describe "search_throttle" do
     it "throttles /search endpoints based on IP" do
       Timecop.freeze do
-        allow(Search::User).to receive(:search_documents).and_return({})
         valid_responses = Array.new(5).map do
           get "/search/users", headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
         end

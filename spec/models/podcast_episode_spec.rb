@@ -20,11 +20,6 @@ RSpec.describe PodcastEpisode, type: :model do
       it { is_expected.to validate_presence_of(:title) }
     end
 
-    # Couldn't use shoulda matchers for these tests because:
-    # Shoulda uses `save(validate: false)` which skips validations, but runs callbacks
-    # So an invalid record is saved and the elasticsearch callback fails because there's no associated podcast
-    # https://git.io/fjg2g
-
     it "validates guid uniqueness" do
       ep2 = build(:podcast_episode, guid: podcast_episode.guid)
 
@@ -37,23 +32,6 @@ RSpec.describe PodcastEpisode, type: :model do
 
       expect(ep2).not_to be_valid
       expect(ep2.errors[:media_url]).to be_present
-    end
-  end
-
-  describe "#after_commit" do
-    it "on update enqueues job to index podcast_episode to elasticsearch" do
-      podcast_episode.save
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, podcast_episode.id]) do
-        podcast_episode.save
-      end
-    end
-
-    it "on destroy enqueues job to delete podcast_episode from elasticsearch" do
-      podcast_episode.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
-                                   args: [described_class::SEARCH_CLASS.to_s, podcast_episode.search_id]) do
-        podcast_episode.destroy
-      end
     end
   end
 
