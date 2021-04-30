@@ -23,7 +23,7 @@ describe('DataUpdateScriptController', () => {
             <td id="data_update_script_1">1</td>
             <td class="data_update_script__filename" data-filename="Some filename" id="data_update_script_1_filename">
               Some filename
-              <button id="data_update_script_1_button" data-action="click->data-update-script#forceRun" data-value="1" data-force-run-path="/admin/advanced/data_update_scripts/1/force_run"  type="button">
+              <button id="data_update_script_1_button" data-action="click->data-update-script#forceRun" data-value="1" data-force-run-path="/admin/advanced/data_update_scripts/1/force_run" type="button">
                 Re-run
               </button>
             </td>

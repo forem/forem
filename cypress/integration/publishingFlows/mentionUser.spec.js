@@ -13,7 +13,7 @@ describe('Article Editor (Mention User)', () => {
 
     it('should suggest up to 6 users for autocompletion', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames' },
+        { method: 'GET', url: '/search/usernames?username=se' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -24,7 +24,7 @@ describe('Article Editor (Mention User)', () => {
       cy.get('@autocompleteForm').should('have.focus');
       cy.findByText('Type to search for a user').should('exist');
 
-      cy.get('@autocompleteForm').type('earch');
+      cy.get('@autocompleteForm').type('e');
 
       const expectedUsernames = [
         '@search_user_1',
@@ -61,7 +61,7 @@ describe('Article Editor (Mention User)', () => {
 
     it('should suggest up to 6 users for autocompletion', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames' },
+        { method: 'GET', url: '/search/usernames?username=se' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -72,7 +72,7 @@ describe('Article Editor (Mention User)', () => {
       cy.get('@autocompleteForm').should('have.focus');
       cy.findByText('Type to search for a user').should('exist');
 
-      cy.get('@autocompleteForm').type('earch');
+      cy.get('@autocompleteForm').type('e');
 
       const expectedUsernames = [
         '@search_user_1',

@@ -37,39 +37,5 @@ RSpec.describe BlackBox, type: :black_box do
       story = instance_double("Comment", user: nil)
       expect(described_class.calculate_spaminess(story)).to eq(100)
     end
-
-    it "returns 25 if there is a recent github_created_at" do
-      user = create(:user)
-      user.update_column(:github_created_at, 1.day.ago)
-      user.update_column(:registered_at, 1.hour.ago)
-      article = create(:article, score: 99, published_at: Time.current, user: user)
-      expect(described_class.calculate_spaminess(article)).to eq(25)
-    end
-
-    it "returns 0 if there is non-recent github_created_at " do
-      user = create(:user)
-      user.update_column(:github_created_at, 10.days.ago)
-      user.update_column(:registered_at, 1.hour.ago)
-      article = create(:article, score: 99, published_at: Time.current)
-      expect(described_class.calculate_spaminess(article)).to eq(0)
-    end
-
-    it "returns 0 if user is trusted even if new social" do
-      user = create(:user)
-      user.update_column(:github_created_at, 1.day.ago)
-      user.update_column(:registered_at, 1.hour.ago)
-      user.add_role(:trusted)
-      article = create(:article, score: 99, published_at: Time.current)
-      expect(described_class.calculate_spaminess(article)).to eq(0)
-    end
-
-    it "returns 0 if badge_achievements_count is high" do
-      user = create(:user)
-      user.update_column(:github_created_at, 1.day.ago)
-      user.update_column(:registered_at, 1.hour.ago)
-      user.update_column(:badge_achievements_count, 2)
-      article = create(:article, score: 99, published_at: Time.current)
-      expect(described_class.calculate_spaminess(article)).to eq(0)
-    end
   end
 end

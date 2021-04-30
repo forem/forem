@@ -277,7 +277,7 @@ module ApplicationHelper
   def admin_config_label(method, content = nil, model: SiteConfig)
     content ||= tag.span(method.to_s.humanize)
 
-    if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+    if method.to_sym.in?(Settings::Mandatory.keys)
       required = tag.span("Required", class: "crayons-indicator crayons-indicator--critical")
       content = safe_join([content, required])
     end

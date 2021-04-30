@@ -13,14 +13,14 @@ const initializeModerationsTools = async () => {
 
   // article show page
   if (
-    user.trusted &&
-    user.id !== articleAuthorId &&
+    user?.trusted &&
+    user?.id !== articleAuthorId &&
     !top.document.location.pathname.endsWith('/mod')
   ) {
     initializeActionsPanel(user, path);
     initializeFlagUserModal(articleAuthorId);
     // dev.to/mod
-  } else if (user.trusted && top.document.location.pathname.endsWith('/mod')) {
+  } else if (user?.trusted && top.document.location.pathname.endsWith('/mod')) {
     initializeActionsPanel(user, path);
     initializeFlagUserModal(articleAuthorId);
   }
