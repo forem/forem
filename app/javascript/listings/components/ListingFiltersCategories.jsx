@@ -5,7 +5,7 @@ import { CategoryLinksMobile } from './CategoryLinksMobile';
 
 export const ListingFiltersCategories = ({ categories, category, onClick }) => (
   <div className="listing-filters px-2 m:px-0" id="listing-filters">
-    <nav className="hidden m:block">
+    <nav className="hidden m:block" aria-label="Listings by category">
       <a
         id="listings-link"
         href="/listings"
