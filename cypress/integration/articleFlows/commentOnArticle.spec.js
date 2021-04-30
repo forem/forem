@@ -398,20 +398,14 @@ describe('Comment on articles', () => {
     cy.findByRole('main').within(() => {
       cy.findByRole('heading', { name: 'Discussion (0)' });
 
-      cy.findByRole('textbox', { name: /^Add a comment to the discussion$/i })
-        .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
-        .type('this is a comment');
-
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).should('have.value', 'this is a comment');
+      getCommentPlainTextBox().click();
+      getCommentPlainTextBox().type('this is a comment', { force: true });
+      getCommentPlainTextBox().should('have.value', 'this is a comment');
 
       cy.findByRole('button', { name: /^Submit$/i }).click();
 
       // Comment was saved so the new comment textbox should be empty.
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      }).should('have.value', '');
+      getCommentPlainTextBox().should('have.value', '');
 
       cy.findByText(/^this is a comment$/i);
       cy.findByRole('heading', { name: 'Discussion (1)' });
