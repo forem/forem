@@ -35,7 +35,7 @@
       </a>
       <% if @current_user_tags.any? %>
         <% @current_user_tags.each do |tag| %>
-          <a data-text="<%= tag %>" href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
+          <a data-text="#<%= tag %>" href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
             #<%= tag %>
             <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
           </a>
