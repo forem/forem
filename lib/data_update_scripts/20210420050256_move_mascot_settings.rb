@@ -10,7 +10,9 @@ module DataUpdateScripts
 
     def run
       SETTINGS.each do |setting|
-        Settings::Mascot.public_send("#{setting}=", SiteConfig.public_send("mascot_#{setting}"))
+        if (value = SiteConfig.public_send("mascot_#{setting}"))
+          Settings::Mascot.public_send("#{setting}=", value)
+        end
       end
       Settings::Mascot.mascot_user_id = SiteConfig.mascot_user_id
     end
