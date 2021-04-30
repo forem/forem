@@ -103,31 +103,19 @@ class SearchController < ApplicationController
     render json: { result: result }
   end
 
-  # TODO: [@rhymes] the homepage feed uses `feed_content_search` as an index,
-  # we should eventually move it to a JSON result
-  # in ArticlesController#Homepage or HomepageController#show
-  # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/PerceivedComplexity
   def feed_content
     class_name = feed_params[:class_name].to_s.inquiry
 
-    enable_search_2_homepage = (
+    is_homepage_search = (
       class_name.Article? &&
       feed_params[:search_fields].blank? &&
-      feed_params[:sort_by].present? &&
-      FeatureFlag.enabled?(:search_2_homepage, current_user)
+      feed_params[:sort_by].present?
     )
 
     result =
       if class_name.blank?
-        if FeatureFlag.enabled?(:search_2_articles, current_user)
-          search_postgres_article
-        else
-          # If we are in the main feed and not filtering by type return
-          # all articles, podcast episodes, and users
-          feed_content_search.concat(user_search)
-        end
-      elsif enable_search_2_homepage
+        search_postgres_article
+      elsif is_homepage_search
         # NOTE: published_at is sent from the frontend in the following ES-friendly format:
         # => {"published_at"=>{"gte"=>"2021-04-06T14:53:23Z"}}
         published_at_gte = feed_params.dig(:published_at, :gte)
@@ -150,7 +138,7 @@ class SearchController < ApplicationController
           page: params[:page],
           per_page: params[:per_page],
         )
-      elsif class_name.Comment? && FeatureFlag.enabled?(:search_2_comments)
+      elsif class_name.Comment?
         Search::Postgres::Comment.search_documents(
           page: feed_params[:page],
           per_page: feed_params[:per_page],
@@ -158,7 +146,7 @@ class SearchController < ApplicationController
           sort_direction: feed_params[:sort_direction],
           term: feed_params[:search_fields],
         )
-      elsif class_name.PodcastEpisode? && FeatureFlag.enabled?(:search_2_podcast_episodes)
+      elsif class_name.PodcastEpisode?
         Search::Postgres::PodcastEpisode.search_documents(
           page: feed_params[:page],
           per_page: feed_params[:per_page],
@@ -167,49 +155,33 @@ class SearchController < ApplicationController
           term: feed_params[:search_fields],
         )
       elsif class_name.User?
-        if FeatureFlag.enabled?(:search_2_users)
-          Search::Postgres::User.search_documents(
-            term: feed_params[:search_fields],
-            page: feed_params[:page],
-            per_page: feed_params[:per_page],
-            sort_by: feed_params[:sort_by] == "published_at" ? :created_at : nil,
-            sort_direction: feed_params[:sort_direction],
-          )
-        else
-          user_search
-        end
-      elsif class_name.Article? && FeatureFlag.enabled?(:search_2_articles, current_user)
+        Search::Postgres::User.search_documents(
+          term: feed_params[:search_fields],
+          page: feed_params[:page],
+          per_page: feed_params[:per_page],
+          sort_by: feed_params[:sort_by] == "published_at" ? :created_at : nil,
+          sort_direction: feed_params[:sort_direction],
+        )
+      elsif class_name.Article?
         search_postgres_article
-      else
-        feed_content_search
       end
 
     render json: { result: result }
   end
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/CyclomaticComplexity
 
   def reactions
-    if FeatureFlag.enabled?(:search_2_reading_list)
-      # [@rhymes] we're recyling the existing params as we want to change the frontend as
-      # little as possible, we might simplify in the future
-      result = Search::Postgres::ReadingList.search_documents(
-        current_user,
-        page: reaction_params[:page],
-        per_page: reaction_params[:per_page],
-        statuses: reaction_params[:status],
-        tags: reaction_params[:tag_names],
-        term: reaction_params[:search_fields],
-      )
+    # [@rhymes] we're recyling the existing params as we want to change the frontend as
+    # little as possible, we might simplify in the future
+    result = Search::Postgres::ReadingList.search_documents(
+      current_user,
+      page: reaction_params[:page],
+      per_page: reaction_params[:per_page],
+      statuses: reaction_params[:status],
+      tags: reaction_params[:tag_names],
+      term: reaction_params[:search_fields],
+    )
 
-      render json: { result: result[:items], total: result[:total] }
-    else
-      result = Search::ReadingList.search_documents(
-        params: reaction_params.to_h, user: current_user,
-      )
-
-      render json: { result: result["reactions"], total: result["total"] }
-    end
+    render json: { result: result[:items], total: result[:total] }
   end
 
   private
@@ -223,10 +195,6 @@ class SearchController < ApplicationController
       page: feed_params[:page],
       per_page: feed_params[:per_page],
     )
-  end
-
-  def feed_content_search
-    Search::FeedContent.search_documents(params: feed_params.to_h)
   end
 
   def user_search
