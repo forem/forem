@@ -87,10 +87,6 @@ module Constants
         description: "Determines how often periodic email digests are sent",
         placeholder: 2
       },
-      secondary_logo_url: {
-        description: "A place for an alternate logo, if you have one. Used throughout member onboarding and in some sign in forms.",
-        placeholder: IMAGE_PLACEHOLDER
-      },
       shop_url: {
         description: "Used as the shop url of the community",
         placeholder: "https://shop.url"
