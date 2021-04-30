@@ -30,7 +30,11 @@ class RegistrationsController < Devise::RegistrationsController
       yield resource if block_given?
       if resource.persisted?
         update_first_user_permissions(resource)
-        redirect_to "/confirm-email?email=#{CGI.escape(resource.email)}"
+        if SiteConfig.smtp_enabled?
+          redirect_to "/confirm-email?email=#{CGI.escape(resource.email)}"
+        else
+          redirect_to root_path
+        end
       else
         render action: "by_email"
       end

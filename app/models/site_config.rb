@@ -229,4 +229,8 @@ class SiteConfig < RailsSettings::Base
   def self.get_default(field)
     get_field(field)[:default]
   end
+
+  def self.smtp_enabled?
+    ENV["SMTP_PASSWORD"].present? || ENV["SENDGRID_API_KEY"].present?
+  end
 end
