@@ -5,6 +5,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
   return (
     <div className="crayons-article-form__tabs crayons-tabs ml-auto">
       <button
+        data-text="Edit"
         className={`crayons-tabs__item ${
           !previewShowing && 'crayons-tabs__item--current'
         }`}
@@ -14,6 +15,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
         Edit
       </button>
       <button
+        data-text="Preview"
         className={`crayons-tabs__item ${
           previewShowing && 'crayons-tabs__item--current'
         }`}

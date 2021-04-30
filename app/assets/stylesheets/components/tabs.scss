@@ -21,7 +21,8 @@
 
   &__item {
     padding: var(--tab-vertical-padding) var(--tab-horizontal-padding);
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
     text-align: center;
     font-size: var(--font-size);
     line-height: var(--su-6);
@@ -38,6 +39,24 @@
     @media (min-width: $breakpoint-s) {
       width: auto;
       margin: 0 var(--su-1);
+    }
+
+    /* 
+      Add a, hidden, bold version of the text to get width.
+      This prevents the minor layout shift on tab change.
+    */
+    &::before {
+      content: attr(data-text);
+      height: 0;
+      visibility: hidden;
+      overflow: hidden;
+      user-select: none;
+      pointer-events: none;
+      font-weight: var(--fw-medium);
+
+      @media speech {
+        display: none;
+      }
     }
 
     &::after {
@@ -70,8 +89,8 @@
     }
 
     &--current {
+      font-weight: var(--fw-medium);
       color: var(--tab-color-current);
-      text-shadow: var(--ts-bold);
 
       &::after {
         display: block;

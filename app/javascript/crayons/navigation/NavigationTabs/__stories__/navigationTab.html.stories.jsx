@@ -9,13 +9,17 @@ export default {
 
 export const Default = () => (
   <div className="crayons-tabs">
-    <a href="/" className="crayons-tabs__item crayons-tabs__item--current">
+    <a
+      data-text="Feed"
+      href="/"
+      className="crayons-tabs__item crayons-tabs__item--current"
+    >
       Feed
     </a>
-    <a href="/" className="crayons-tabs__item">
+    <a data-text="Popular" href="/" className="crayons-tabs__item">
       Popular
     </a>
-    <a href="/" className="crayons-tabs__item">
+    <a data-text="Latest" href="/" className="crayons-tabs__item">
       Latest
     </a>
   </div>
