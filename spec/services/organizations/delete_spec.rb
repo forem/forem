@@ -10,14 +10,14 @@ RSpec.describe Organizations::Delete, type: :service do
   end
 
   it "deletes notifications" do
-    create_list(:notification, 5, organization_id: org.id)
+    create_list(:notification, 5, organization_id: org_id)
     expect(Notification.where(organization_id: org_id).count).to eq(5)
     described_class.call(org)
     expect(Notification.where(organization_id: org_id).count).to eq(0)
   end
 
   context "with articles" do
-    let!(:article) { create(:article, organization_id: org.id) }
+    let!(:article) { create(:article, organization_id: org_id) }
 
     it "syncs articles" do
       expect(article.cached_organization.name).to eq(org.name)
@@ -37,7 +37,7 @@ RSpec.describe Organizations::Delete, type: :service do
 
     it "updates related article data" do
       drain_all_sidekiq_jobs
-      expect(article.elasticsearch_doc.dig("_source", "organization", "id")).to eq(org.id)
+      expect(article.elasticsearch_doc.dig("_source", "organization", "id")).to eq(org_id)
       described_class.call(org)
       sidekiq_perform_enqueued_jobs
       expect(article.elasticsearch_doc.dig("_source", "organization")).to be_nil
