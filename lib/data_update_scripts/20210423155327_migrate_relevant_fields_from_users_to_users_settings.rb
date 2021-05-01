@@ -48,7 +48,7 @@ module DataUpdateScripts
                     ELSE 0
               END
               inbox_type,
-              permit_adjacent_sponsors,
+              COALESCE(permit_adjacent_sponsors, true),
               users.id AS user_id,
               NOW(),
               NOW()
