@@ -5,8 +5,10 @@ module Organizations
     end
 
     def call
+      self.article_ids = org.article_ids
       delete_notifications
       org.destroy
+      articles_sync
     end
 
     def self.call(...)
@@ -16,6 +18,7 @@ module Organizations
     private
 
     attr_reader :org
+    attr_accessor :article_ids
 
     def delete_notifications
       sql = <<-SQL.squish
@@ -26,10 +29,13 @@ module Organizations
           WHERE organization_id = ?
         )
       SQL
-
       notification_sql = Notification.sanitize_sql([sql, org.id])
-
       BulkSqlDelete.delete_in_batches(notification_sql)
+    end
+
+    def articles_sync
+      # Syncs article cached organization and updates Elasticsearch docs
+      Article.where(id: article_ids).find_each(&:save)
     end
   end
 end

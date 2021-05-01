@@ -20,10 +20,6 @@ class Organization < ApplicationRecord
   before_save :update_articles
   before_save :remove_at_from_usernames
   before_save :generate_secret
-  # You have to put before_destroy callback BEFORE the dependent: :nullify
-  # to ensure they execute before the records are updated
-  # https://guides.rubyonrails.org/active_record_callbacks.html#destroying-an-object
-  before_destroy :cache_article_ids
 
   after_save :bust_cache
 
@@ -81,12 +77,6 @@ class Organization < ApplicationRecord
   alias_attribute :old_username, :old_slug
   alias_attribute :old_old_username, :old_old_slug
   alias_attribute :website_url, :url
-
-  attr_accessor :cached_article_ids
-
-  def cache_article_ids
-    self.cached_article_ids = articles.ids
-  end
 
   def check_for_slug_change
     return unless slug_changed?

@@ -15,4 +15,32 @@ RSpec.describe Organizations::Delete, type: :service do
     described_class.call(org)
     expect(Notification.where(organization_id: org_id).count).to eq(0)
   end
+
+  context "with articles" do
+    let!(:article) { create(:article, organization_id: org.id) }
+
+    it "syncs articles" do
+      expect(article.cached_organization.name).to eq(org.name)
+      described_class.call(org)
+      article.reload
+      expect(article.cached_organization).to be_nil
+    end
+
+    it "removes the organization name from the .reading_list_document after destroy" do
+      org.update(name: "ACME")
+      expect(article.reload.reading_list_document).to include("acme")
+
+      described_class.call(org)
+
+      expect(article.reload.reading_list_document).not_to include("acme")
+    end
+
+    it "updates related article data" do
+      drain_all_sidekiq_jobs
+      expect(article.elasticsearch_doc.dig("_source", "organization", "id")).to eq(org.id)
+      described_class.call(org)
+      sidekiq_perform_enqueued_jobs
+      expect(article.elasticsearch_doc.dig("_source", "organization")).to be_nil
+    end
+  end
 end

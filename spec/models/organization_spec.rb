@@ -289,15 +289,6 @@ RSpec.describe Organization, type: :model do
 
           expect(article.reload.reading_list_document).to eq(old_reading_list_document)
         end
-
-        it "removes the organization name from the .reading_list_document after destroy" do
-          article = Article.find_by(organization_id: organization.id)
-
-          organization.update(name: "ACME")
-          organization.destroy
-
-          expect(article.reload.reading_list_document).not_to include("acme")
-        end
       end
       # rubocop:enable RSpec/NestedGroups
     end
