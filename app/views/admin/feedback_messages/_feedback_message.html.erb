@@ -11,7 +11,7 @@
     </a>
     <div class="float-right">
       ✉️ Emails Sent: <%= feedback_message_emails.size %> |
-      <a href="/admin/reports/<%= feedback_message.id %>">Link to Report #<%= feedback_message.id %></a>
+      <%= link_to "Link to Report #{feedback_message.id}", admin_report_path(feedback_message.id) %>
     </div>
   </div>
   <div id="collapse<%= feedback_message.id %>" class="collapse show" aria-labelledby="header<%= feedback_message.id %>" data-parent="#accordion-<%= feedback_message.id %>">
@@ -145,7 +145,7 @@
               <%= text_area_tag :affected_email_body, affected_email_details[:body], class: "form-control my-1", style: "height: 300px;", id: "affected__body__#{feedback_message.id}" %>
             </div>
           </div>
-          <button class="btn btn-primary" type="button" id="send__email__btn__<%= feedback_message.id %>">Send Email ✉️</button>
+          <button class="btn btn-primary" type="button" id="send__email__btn__<%= feedback_message.id %>" data-path="<%= send_email_admin_reports_path %>">Send Email ✉️</button>
         </div>
       </div>
       <div class="email__alert alert w-100 mt-2 d-none" id="email__alert__<%= feedback_message.id %>">
@@ -154,7 +154,7 @@
         <div class="col-12">
           <h3>Status:</h3>
           <%= f.select :status, %w[Open Invalid Resolved], {}, id: "status__#{feedback_message.id}" %>
-          <button class="btn btn-primary d-block mt-3" type="button" id="save__status__<%= feedback_message.id %>">Save Status</button>
+          <button class="btn btn-primary d-block mt-3" type="button" id="save__status__<%= feedback_message.id %>" data-path="<%= save_status_admin_reports_path %>">Save Status</button>
         </div>
       </div>
       <div class="row my-3">
@@ -187,7 +187,7 @@
               class="notefield"
               id="note__content__<%= feedback_message.id %>"
               required>
-            <button class="btn btn-primary" type="button" id="note__submit__<%= feedback_message.id %>">Submit Note 📝</button>
+            <button class="btn btn-primary" type="button" id="note__submit__<%= feedback_message.id %>" data-path="<%= create_note_admin_reports_path %>">Submit Note 📝</button>
           </div>
         </div>
       </div>
@@ -210,7 +210,7 @@
    formData.append('id', id);
    formData.append('status', statusSelectTag.options[statusSelectTag.selectedIndex].value);
 
-   fetch('/admin/reports/save_status', {
+   fetch(statusBtn.dataset.path, {
      method: 'POST',
      headers: {
        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
@@ -277,7 +277,7 @@
    formData.append('email_subject', subjectLine);
    formData.append('email_type', userType);
 
-   fetch('/admin/reports/send_email', {
+   fetch(sendEmailBtn.dataset.path, {
      method: 'POST',
      headers: {
        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
@@ -338,6 +338,8 @@
  }
 
  function submitNote(id) {
+   var submitNoteBtn = document.getElementById('note__submit__<%= feedback_message.id %>');
+
    var formData = new FormData();
    formData.append('content', document.getElementById('note__content__' + id).value)
    formData.append('reason', document.getElementById('note__reason__' + id).value)
@@ -345,7 +347,7 @@
    formData.append('noteable_type', document.getElementById('note__noteable-type__' + id).value)
    formData.append('author_id', document.getElementById('note__author-id__' + id).value)
 
-   fetch('/admin/reports/create_note', {
+   fetch(submitNoteBtn.dataset.path, {
      method: 'POST',
      headers: {
        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,

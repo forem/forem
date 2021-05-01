@@ -1,15 +1,40 @@
-.runtime-banner {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: calc(65px + env(safe-area-inset-bottom));
-  z-index: var(--z-sticky);
+@import 'variables';
+@import '_mixins';
 
-  &__inner {
-    background-color: #0b0c0c;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+.runtime-banner {
+  display: flex;
+  margin: 0 auto;
+  left: var(--su-4);
+  right: var(--su-4);
+  position: fixed;
+  bottom: calc(var(--su-9) + env(safe-area-inset-bottom));
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: var(--su-1);
+  max-width: calc(100% - var(--su-4) * 2);
+  z-index: var(--z-popover);
+  border-radius: var(--radius);
+  background: var(--snackbar-bg);
+  color: var(--snackbar-color);
+  font-size: var(--fs-s);
+
+  :any-link {
+    color: inherit;
+  }
+}
+
+.mobile-deep-link-banner {
+  margin: 30px;
+  text-align: center;
+
+  .crayons-card {
+    max-width: 500px;
+    margin: 30px auto;
+  }
+}
+
+#mobile-deep-link-spinner {
+  svg {
+    margin: 30px auto;
   }
 }

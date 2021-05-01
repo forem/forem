@@ -25,6 +25,7 @@ export const Channels = ({
       return (
         <ChannelButton
           channel={channel}
+          key={channel.chat_channel_id}
           discoverableChannel
           triggerActiveContent={triggerActiveContent}
           isActiveChannel={
@@ -46,6 +47,7 @@ export const Channels = ({
     return (
       <ChannelButton
         channel={channel}
+        key={channel.chat_channel_id}
         newMessagesIndicator={newMessagesIndicator}
         otherClassname={otherClassname}
         handleSwitchChannel={handleSwitchChannel}

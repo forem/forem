@@ -588,11 +588,6 @@ RSpec.describe User, type: :model do
       end
     end
 
-    it "persists extracts relevant identity data from new twitter user" do
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.twitter_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
-    end
-
     it "assigns multiple identities to the same user", :aggregate_failures, vcr: { cassette_name: "fastly_sloan" } do
       providers = Authentication::Providers.available
 
@@ -685,6 +680,10 @@ RSpec.describe User, type: :model do
   end
 
   describe "theming properties" do
+    before do
+      allow(Settings::UserExperience).to receive(:default_font).and_return("sans-serif")
+    end
+
     it "creates proper body class with defaults" do
       classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
@@ -827,7 +826,7 @@ RSpec.describe User, type: :model do
     end
 
     it "returns the user if the account exists" do
-      allow(SiteConfig).to receive(:staff_user_id).and_return(user.id)
+      allow(Settings::Community).to receive(:staff_user_id).and_return(user.id)
 
       expect(described_class.dev_account).to eq(user)
     end
@@ -839,7 +838,7 @@ RSpec.describe User, type: :model do
     end
 
     it "returns the user if the account exists" do
-      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+      allow(Settings::Mascot).to receive(:mascot_user_id).and_return(user.id)
 
       expect(described_class.mascot_account).to eq(user)
     end

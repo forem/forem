@@ -48,6 +48,8 @@ class SiteConfig < RailsSettings::Base
   field :campaign_articles_require_approval, type: :boolean, default: 0
   field :campaign_articles_expiry_time, type: :integer, default: 4
   # Community Content
+  # NOTE: @citizen428 All these settings will be removed once we full migrated
+  # to Settings::Community across the fleet.
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
   field :community_emoji, type: :string, default: "🌱", validates: { emoji_only: true }
   # collective_noun and collective_noun_disabled have been added back temporarily for
@@ -75,10 +77,6 @@ class SiteConfig < RailsSettings::Base
 
   # Email digest frequency
   field :periodic_email_digest, type: :integer, default: 2
-
-  # Jobs
-  field :jobs_url, type: :string
-  field :display_jobs_banner, type: :boolean, default: false
 
   # Google Analytics Tracking ID, e.g. UA-71991000-1
   field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
@@ -180,6 +178,8 @@ class SiteConfig < RailsSettings::Base
   # Tags
   field :sidebar_tags, type: :array, default: %w[]
 
+  # NOTE: @citizen428 - These will be removed once we migrated to Settings::UserExperience
+  # across the whole fleet.
   # User Experience
   # These are the default UX settings, which can be overridded by individual user preferences.
   # basic (current default), rich (cover image on all posts), compact (more minimal)

@@ -19,7 +19,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     omniauth_mock_providers_payload
     allow(Notification).to receive(:send_welcome_notification).and_call_original
     allow(User).to receive(:mascot_account).and_return(mascot_account)
-    allow(SiteConfig).to receive(:staff_user_id).and_return(mascot_account.id)
+    allow(Settings::Community).to receive(:staff_user_id).and_return(mascot_account.id)
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 

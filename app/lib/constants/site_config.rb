@@ -4,26 +4,6 @@ module Constants
     SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
     DETAILS = {
-      community_copyright_start_year: {
-        description: "Used to mark the year this forem was started.",
-        placeholder: Time.zone.today.year.to_s
-      },
-      community_description: {
-        description: "Used in meta description tags etc.",
-        placeholder: "A fabulous community of kind and welcoming people."
-      },
-      community_emoji: {
-        description: "Used in the title tags across the site alongside the community name",
-        placeholder: ""
-      },
-      community_member_label: {
-        description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
-        placeholder: "user"
-      },
-      community_name: {
-        description: "Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.",
-        placeholder: "New Forem"
-      },
       credit_prices_in_cents: {
         small: {
           description: "Price for small credit purchase (<10 credits).",
@@ -42,42 +22,13 @@ module Constants
           placeholder: ""
         }
       },
-      default_font: {
-        description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
-      },
-      display_jobs_banner: {
-        description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
-        "or 'jobs' in the search box",
-        placeholder: ""
-      },
       email_addresses: {
         description: "Email address",
         placeholder: ""
       },
-      experience_low: {
-        description: "The label for the bottom of the experience level range of a post",
-        placeholder: "Total Newbies"
-      },
-      experience_high: {
-        description: "The label for the top of the experience level range of a post",
-        placeholder: "Senior Devs"
-      },
       favicon_url: {
         description: "Used as the site favicon",
         placeholder: IMAGE_PLACEHOLDER
-      },
-      feed_strategy: {
-        description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental
-        (which should only be used for 10k+ member communities)",
-        placeholder: "basic"
-      },
-      feed_style: {
-        description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
-        placeholder: "basic, rich, or compact"
-      },
-      primary_brand_color_hex: {
-        description: "Determines background/border of buttons etc. Must be dark enough to contrast with white text.",
-        placeholder: "#0a0a0a"
       },
       ga_tracking_id: {
         description: "Google Analytics Tracking ID, e.g. UA-71991000-1",
@@ -86,14 +37,6 @@ module Constants
       health_check_token: {
         description: "Used to authenticate with your health check endpoints.",
         placeholder: "a secure token"
-      },
-      home_feed_minimum_score: {
-        description: "Minimum score needed for a post to show up on the unauthenticated home page.",
-        placeholder: "0"
-      },
-      jobs_url: {
-        description: "URL of the website where open positions are posted",
-        placeholder: "Jobs URL"
       },
       logo_png: {
         description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",
@@ -126,30 +69,6 @@ module Constants
       mailchimp_community_moderators_id: {
         description: "Community Moderators Newsletter ID",
         placeholder: ""
-      },
-      mascot_footer_image_url: {
-        description: "Special cute mascot image used in the footer.",
-        placeholder: IMAGE_PLACEHOLDER
-      },
-      mascot_footer_image_width: {
-        description: "The footer mascot width will resized to this value, defaults to 52",
-        placeholder: ""
-      },
-      mascot_footer_image_height: {
-        description: "The footer mascot height will be resized to this value, defaults to 120",
-        placeholder: ""
-      },
-      mascot_image_description: {
-        description: "Used as the alt text for the mascot image",
-        placeholder: ""
-      },
-      mascot_image_url: {
-        description: "Used as the mascot image.",
-        placeholder: IMAGE_PLACEHOLDER
-      },
-      mascot_user_id: {
-        description: "User ID of the Mascot account",
-        placeholder: "1"
       },
       meta_keywords: {
         description: "",
@@ -184,10 +103,6 @@ module Constants
         description: "Determines the heading text of the main sponsors sidebar above the list of sponsors.",
         placeholder: "Community Sponsors"
       },
-      staff_user_id: {
-        description: "Account ID which acts as automated 'staff'— used principally for welcome thread.",
-        placeholder: ""
-      },
       stripe_api_key: {
         description: "Secret Stripe key for receiving payments. " \
         "See: https://stripe.com/docs/keys",
@@ -212,14 +127,6 @@ module Constants
       prefer_manual_suggested_users: {
         description: "Always show suggested users as suggested people to follow even when " \
         "auto-suggestion is available"
-      },
-      tag_feed_minimum_score: {
-        description: "Minimum score needed for a post to show up on default tag page.",
-        placeholder: "0"
-      },
-      tagline: {
-        description: "Used in signup modal.",
-        placeholder: "We're a place where coders share, stay up-to-date and grow their careers."
       },
       twitter_hashtag: {
         description: "Used as the twitter hashtag of the community",

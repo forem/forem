@@ -9,7 +9,7 @@ seeder = Seeder.new
 ##############################################################################
 # Default development site config if different from production scenario
 
-SiteConfig.public = true
+Settings::UserExperience.public = true
 SiteConfig.waiting_on_first_user = false
 
 ##############################################################################

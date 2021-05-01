@@ -36,7 +36,14 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS
+  PROVIDER_COLUMNS = %w[
+    apple_created_at
+    facebook_created_at
+    github_created_at
+    twitter_created_at
+  ].freeze
+
+  self.ignored_columns = PROFILE_COLUMNS + PROVIDER_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -266,19 +273,25 @@ class User < ApplicationRecord
   # used in expression indexes as it's a mutable function and depends on server settings
   # => https://stackoverflow.com/a/11007216/4186181
   #
-  # rubocop:disable Layout/LineLength
   scope :search_by_name_and_username, lambda { |term|
     where(
-      %{to_tsvector('simple', coalesce(name::text, '')) @@ to_tsquery('simple', ''' ' || unaccent('simple', ?) || ' ''' || ':*')},
-      term,
+      sanitize_sql_array(
+        [
+          "to_tsvector('simple', coalesce(name::text, '')) @@ to_tsquery('simple', ? || ':*')",
+          connection.quote(term),
+        ],
+      ),
     ).or(
       where(
-        %{to_tsvector('simple', coalesce(username::text, '')) @@ to_tsquery('simple', ''' ' || unaccent('simple', ?) || ' ''' || ':*')},
-        term,
+        sanitize_sql_array(
+          [
+            "to_tsvector('simple', coalesce(username::text, '')) @@ to_tsquery('simple', ? || ':*')",
+            connection.quote(term),
+          ],
+        ),
       ),
     )
   }
-  # rubocop:enable Layout/LineLength
   scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
@@ -302,11 +315,11 @@ class User < ApplicationRecord
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   def self.dev_account
-    find_by(id: SiteConfig.staff_user_id)
+    find_by(id: Settings::Community.staff_user_id)
   end
 
   def self.mascot_account
-    find_by(id: SiteConfig.mascot_user_id)
+    find_by(id: Settings::Mascot.mascot_user_id)
   end
 
   def tag_line
@@ -650,6 +663,7 @@ class User < ApplicationRecord
     "#{employer_name}#{mostly_work_with}#{available_for}"
   end
 
+  # TODO: this can be removed once we migrate away from ES
   def search_score
     counts_score = (articles_count + comments_count + reactions_count + badge_achievements_count) * 10
     score = (counts_score + tag_keywords_for_search.size) * reputation_modifier

@@ -11,15 +11,13 @@ module Authentication
           name: @info.name,
           email: @info.email || "",
           remote_profile_image_url: Users::SafeRemoteProfileImageUrl.call(image_url),
-          facebook_username: user_nickname,
-          facebook_created_at: Time.zone.now
+          facebook_username: user_nickname
         }
       end
 
       def existing_user_data
         {
-          facebook_username: @info.name,
-          facebook_created_at: Time.zone.now
+          facebook_username: @info.name
         }
       end
 

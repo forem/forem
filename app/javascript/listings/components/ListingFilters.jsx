@@ -16,7 +16,7 @@ export const ListingFilters = ({
   query,
 }) => {
   return (
-    <aside className="crayons-layout__sidebar-left">
+    <div className="crayons-layout__sidebar-left">
       <ListingFiltersTags
         message={message}
         onKeyUp={onKeyUp}
@@ -31,7 +31,7 @@ export const ListingFilters = ({
         category={category}
         onClick={onSelectCategory}
       />
-    </aside>
+    </div>
   );
 };
 

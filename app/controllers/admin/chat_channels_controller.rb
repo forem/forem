@@ -14,19 +14,19 @@ module Admin
         contrived_name: chat_channel_params[:channel_name],
         membership_role: "mod",
       )
-      redirect_back(fallback_location: "/admin/chat_channels")
+      redirect_back(fallback_location: admin_chat_channels_path)
     end
 
     def update
       @chat_channel = ChatChannel.find(params[:id])
       @chat_channel.invite_users(users: users_by_param)
-      redirect_back(fallback_location: "/admin/chat_channels")
+      redirect_back(fallback_location: admin_chat_channels_path)
     end
 
     def remove_user
       @chat_channel = ChatChannel.find(params[:id])
       @chat_channel.remove_user(user_by_param)
-      redirect_back(fallback_location: "/admin/chat_channels")
+      redirect_back(fallback_location: admin_chat_channels_path)
     end
 
     def destroy
@@ -37,7 +37,7 @@ module Admin
       else
         flash[:alert] = "Channel NOT deleted, because it still has users."
       end
-      redirect_back(fallback_location: "/admin/chat_channels")
+      redirect_back(fallback_location: admin_chat_channels_path)
     end
 
     private

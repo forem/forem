@@ -38,9 +38,13 @@ module Mentions
     def extract_usernames_from_mentions_in_text
       # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
       doc = Nokogiri::HTML(notifiable.processed_html)
-      doc.css(".mentioned-user").map do |link|
-        link.text.delete("@").downcase
+
+      # Remove any mentions that are embedded within a comment liquid tag
+      non_liquid_tag_mentions = doc.css(".mentioned-user").reject do |tag|
+        tag.ancestors(".liquid-comment").any?
       end
+
+      non_liquid_tag_mentions.map { |link| link.text.delete("@").downcase }
     end
 
     def reject_notifiable_author(users)

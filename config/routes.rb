@@ -21,6 +21,9 @@ Rails.application.routes.draw do
     delete "/sign_out", to: "devise/sessions#destroy"
   end
 
+  get "/r/mobile", to: "deep_links#mobile"
+  get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do
@@ -58,7 +61,11 @@ Rails.application.routes.draw do
       namespace :settings do
         resources :authentications, only: [:create]
         resources :campaigns, only: [:create]
+        resources :communities, only: [:create]
+        resources :mandatory_settings, only: [:create]
+        resources :mascots, only: [:create]
         resources :rate_limits, only: [:create]
+        resources :user_experiences, only: [:create]
       end
       namespace :users do
         resources :gdpr_delete_requests, only: %i[index destroy]
@@ -236,7 +243,6 @@ Rails.application.routes.draw do
     resources :poll_votes, only: %i[show create]
     resources :poll_skips, only: [:create]
     resources :profile_pins, only: %i[create update]
-    resources :partnerships, only: %i[index create show], param: :option
     resources :display_ad_events, only: [:create]
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]

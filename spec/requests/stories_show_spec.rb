@@ -46,7 +46,7 @@ RSpec.describe "StoriesShow", type: :request do
 
     ## Title tag
     it "renders signed-in title tag for signed-in user" do
-      allow(SiteConfig).to receive(:community_emoji).and_return("🌱")
+      allow(Settings::Community).to receive(:community_emoji).and_return("🌱")
 
       sign_in user
       get article.path
@@ -71,7 +71,7 @@ RSpec.describe "StoriesShow", type: :request do
     end
 
     it "does not render title tag with search_optimized_title_preamble if set and not signed in" do
-      allow(SiteConfig).to receive(:community_emoji).and_return("🌱")
+      allow(Settings::Community).to receive(:community_emoji).and_return("🌱")
 
       sign_in user
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
