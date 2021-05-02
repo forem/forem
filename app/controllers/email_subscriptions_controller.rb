@@ -15,7 +15,7 @@ class EmailSubscriptionsController < ApplicationController
 
   def preferred_email_name
     {
-      email_digest_periodic: "#{Settings::Community.community_name} digest emails",
+      email_digest: "#{Settings::Community.community_name} digest emails",
       email_comment_notifications: "comment notifications",
       email_follower_notifications: "follower notifications",
       email_mention_notifications: "mention notifications",
