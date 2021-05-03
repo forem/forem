@@ -11,7 +11,7 @@ describe('Mascot Section', () => {
   describe('mascot image setting', () => {
     it('rejects an invalid image URL', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
 
         cy.get('@mascotSectionForm').findByText('Mascot').click();
@@ -30,7 +30,7 @@ describe('Mascot Section', () => {
           .findByText('Update Site Configuration')
           .click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText(
           '😭 Validation failed: Image url is not a valid URL',
@@ -40,7 +40,7 @@ describe('Mascot Section', () => {
 
     it('accepts a valid image URL', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
 
         cy.get('@mascotSectionForm').findByText('Mascot').click();
@@ -59,7 +59,7 @@ describe('Mascot Section', () => {
           .findByText('Update Site Configuration')
           .click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Site configuration was successfully updated.').should(
           'be.visible',
