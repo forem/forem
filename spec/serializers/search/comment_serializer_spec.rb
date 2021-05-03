@@ -11,10 +11,4 @@ RSpec.describe Search::CommentSerializer do
     expect(data_hash[:user]).to eq(user_data)
     expect(data_hash.keys).to include(:id, :body_text, :hotness_score, :title)
   end
-
-  it "creates valid json for Elasticsearch", elasticsearch: "FeedContent" do
-    data_hash = described_class.new(comment).serializable_hash.dig(:data, :attributes)
-    result = Comment::SEARCH_CLASS.index(comment.id, data_hash)
-    expect(result["result"]).to eq("created")
-  end
 end

@@ -15,7 +15,7 @@ RSpec.describe "User comments", type: :system do
       end
     end
 
-    it "shows user's comments", js: true, stub_elasticsearch: true do
+    it "shows user's comments", js: true do
       within("#substories div.profile-comment-card") do
         expect(page).to have_content("All 2 comments")
         expect(page).to have_link(nil, href: comment.path)
@@ -25,7 +25,7 @@ RSpec.describe "User comments", type: :system do
   end
 
   context "when user has too many comments" do
-    it "show user's last comments ", js: true, stub_elasticsearch: true do
+    it "show user's last comments ", js: true do
       stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
       visit "/user3000/comments"
       within("#substories div.profile-comment-card") do

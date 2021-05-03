@@ -10,16 +10,11 @@ ports:
     onOpen: ignore
   - port: 6379
     onOpen: ignore
-  - port: 9200
-    onOpen: ignore
-  - port: 9300
-    onOpen: ignore
 
 tasks:
   - name: Forem Server
     before: |
       redis-server &
-      /home/gitpod/elasticsearch-7.5.2/bin/elasticsearch &
     init: >
       cp .env_sample .env &&
       gem install solargraph &&
