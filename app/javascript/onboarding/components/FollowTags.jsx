@@ -149,7 +149,7 @@ export class FollowTags extends Component {
                       <button
                         type="button"
                         onClick={() => this.handleClick(tag)}
-                        className={`onboarding-tags__button ${
+                        className={`onboarding-tags__button crayons-btn--icon-left ${
                           selected && 'onboarding-tags__button--selected'
                         }`}
                         aria-pressed={selected}
@@ -163,6 +163,14 @@ export class FollowTags extends Component {
                             : tag.text_color_hex,
                         }}
                       >
+                        <svg
+                          width="24"
+                          height="24"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="crayons-icon"
+                        >
+                          <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
+                        </svg>
                         {selected ? 'Following' : 'Follow'}
                       </button>
                     </div>
