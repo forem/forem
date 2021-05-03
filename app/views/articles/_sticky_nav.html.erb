@@ -4,7 +4,7 @@
     <div class="-mt-4">
       <a href="<%= @actor.path %>" class="flex">
         <span class="<% if @actor.class.name == "User" %>crayons-avatar crayons-avatar--xl<% elsif @actor.class.name == "Organization" %>crayons-logo crayons-logo--xl<% end %>  mr-2 shrink-0">
-          <img src="<%= Images::Profile.call(@actor.profile_image_url, length: 90) %>" class="<% if @actor.class.name == "User" %>crayons-avatar__image<% elsif @actor.class.name == "Organization" %>crayons-logo__image<% end %>" alt="<%= @actor.name %> profile image">
+          <img src="<%= Images::Profile.call(@actor.profile_image_url, length: 90) %>" class="<% if @actor.class.name == "User" %>crayons-avatar__image<% elsif @actor.class.name == "Organization" %>crayons-logo__image<% end %>" alt="<%= @actor.name %> profile image" loading="lazy" />
         </span>
         <span class="crayons-link crayons-subtitle-2 mt-5"><%= @actor.name %></span>
       </a>
