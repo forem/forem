@@ -17,7 +17,6 @@ namespace :assets do
   desc "Remove asset and vendor caches"
   task clean_caches: :environment do
     FileUtils.rm_rf "tmp/cache"
-    FileUtils.rm_rf "vendor/cache"
   end
 end
 
