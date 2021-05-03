@@ -56,4 +56,8 @@ module ArticlesHelper
   def utc_iso_timestamp(timestamp)
     timestamp&.utc&.iso8601
   end
+
+  def active_threads(...)
+    Articles::ActiveThreadsQuery.call(...)
+  end
 end

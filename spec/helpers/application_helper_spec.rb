@@ -38,7 +38,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#community_name" do
     it "equals to the community name" do
-      allow(SiteConfig).to receive(:community_name).and_return("SLOAN")
+      allow(Settings::Community).to receive(:community_name).and_return("SLOAN")
       expect(helper.community_name).to eq("SLOAN")
     end
   end
@@ -94,21 +94,21 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context "when the start year and current year is the same" do
       it "returns the current year only" do
-        allow(SiteConfig).to receive(:community_copyright_start_year).and_return(current_year)
+        allow(Settings::Community).to receive(:copyright_start_year).and_return(current_year)
         expect(helper.copyright_notice).to eq(current_year)
       end
     end
 
     context "when the start year and current year is different" do
       it "returns the start and current year" do
-        allow(SiteConfig).to receive(:community_copyright_start_year).and_return("2014")
+        allow(Settings::Community).to receive(:copyright_start_year).and_return("2014")
         expect(helper.copyright_notice).to eq("2014 - #{current_year}")
       end
     end
 
     context "when the start year is blank" do
       it "returns the current year" do
-        allow(SiteConfig).to receive(:community_copyright_start_year).and_return(" ")
+        allow(Settings::Community).to receive(:copyright_start_year).and_return(" ")
         expect(helper.copyright_notice).to eq(current_year)
       end
     end
@@ -136,20 +136,6 @@ RSpec.describe ApplicationHelper, type: :helper do
     it "works when called with an URI object" do
       uri = URI::Generic.build(path: "resource_admin", fragment: "test")
       expect(app_url(uri)).to eq("https://dev.to/resource_admin#test")
-    end
-  end
-
-  describe "#sanitized_referer" do
-    it "returns a safe referrer unmodified" do
-      expect(sanitized_referer("/some/path")).to eq("/some/path")
-    end
-
-    it "returns nil if the referer is the service worker" do
-      expect(sanitized_referer("/serviceworker.js")).to be nil
-    end
-
-    it "returns nil if the referer is empty" do
-      expect(sanitized_referer("")).to be nil
     end
   end
 
@@ -217,7 +203,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#community_members_label" do
     before do
-      allow(SiteConfig).to receive(:community_member_label).and_return("hobbyist")
+      allow(Settings::Community).to receive(:member_label).and_return("hobbyist")
     end
 
     it "returns the pluralized community_member_label" do

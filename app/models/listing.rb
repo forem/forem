@@ -3,10 +3,7 @@ class Listing < ApplicationRecord
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listings"
 
-  include Searchable
-
-  SEARCH_SERIALIZER = Search::ListingSerializer
-  SEARCH_CLASS = Search::Listing
+  include PgSearch::Model
 
   attr_accessor :action
 
@@ -18,8 +15,6 @@ class Listing < ApplicationRecord
   before_validation :modify_inputs
   before_save :evaluate_markdown
   before_create :create_slug
-  after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :remove_from_elasticsearch, on: [:destroy]
   acts_as_taggable_on :tags
   has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
 
@@ -31,6 +26,10 @@ class Listing < ApplicationRecord
   validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
+
+  pg_search_scope :search_listings,
+                  against: %i[body_markdown cached_tag_list location slug title],
+                  using: { tsearch: { prefix: true } }
 
   scope :published, -> { where(published: true) }
 

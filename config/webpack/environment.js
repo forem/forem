@@ -26,6 +26,8 @@ environment.splitChunks((config) => {
           __dirname,
           '../../app/javascript/shared/components',
         ),
+        react: 'preact/compat',
+        'react-dom': 'preact/compat',
       },
     },
   };
@@ -47,7 +49,7 @@ if (process.env.HONEYBADGER_API_KEY && process.env.ASSETS_URL) {
       revision:
         process.env.RELEASE_FOOTPRINT ||
         process.env.HEROKU_SLUG_COMMIT ||
-        'master',
+        'main',
     }),
   );
 }

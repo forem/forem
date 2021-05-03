@@ -8,7 +8,6 @@ RSpec.describe Tag, type: :model do
       subject { tag }
 
       it { is_expected.to belong_to(:badge).optional }
-      it { is_expected.to have_many(:buffer_updates).dependent(:nullify) }
       it { is_expected.to have_one(:sponsorship).inverse_of(:sponsorable).dependent(:destroy) }
 
       it { is_expected.to validate_length_of(:name).is_at_most(30) }
@@ -129,37 +128,6 @@ RSpec.describe Tag, type: :model do
     expect(tag.mod_chat_channel).to eq(channel)
   end
 
-  describe "#after_commit" do
-    it "on update enqueues job to index tag to elasticsearch" do
-      tag.save
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, tag.id]) do
-        tag.save
-      end
-    end
-
-    it "on destroy enqueues job to delete tag from elasticsearch" do
-      tag.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
-                                   args: [described_class::SEARCH_CLASS.to_s, tag.id]) do
-        tag.destroy
-      end
-    end
-
-    it "syncs related elasticsearch documents" do
-      article = create(:article)
-      podcast_episode = create(:podcast_episode)
-      tag = described_class.find(article.tags.first.id)
-      podcast_episode.tags << tag
-      new_keywords = "keyword1, keyword2, keyword3"
-      sidekiq_perform_enqueued_jobs
-
-      tag.update(keywords_for_search: new_keywords)
-      sidekiq_perform_enqueued_jobs
-      expect(collect_keywords(article)).to include(new_keywords)
-      expect(collect_keywords(podcast_episode)).to include(new_keywords)
-    end
-  end
-
   describe "::aliased_name" do
     it "returns the preferred alias tag" do
       preferred_tag = create(:tag, name: "rails")
@@ -187,9 +155,5 @@ RSpec.describe Tag, type: :model do
     it "returns self if there's no preferred tag" do
       expect(described_class.find_preferred_alias_for("something")).to eq("something")
     end
-  end
-
-  def collect_keywords(record)
-    record.elasticsearch_doc.dig("_source", "tags").flat_map { |t| t["keywords_for_search"] }
   end
 end

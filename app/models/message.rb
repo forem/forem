@@ -31,7 +31,6 @@ class Message < ApplicationRecord
 
   def update_chat_channel_last_message_at
     chat_channel.touch(:last_message_at)
-    ChatChannels::IndexesMembershipsWorker.perform_async(chat_channel.id)
   end
 
   def update_all_has_unopened_messages_statuses
@@ -86,11 +85,11 @@ class Message < ApplicationRecord
     username = mention.delete("@").downcase
     if User.find_by(username: username) && chat_channel.group?
       <<~HTML
-        <a class='comment-mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank" rel="noopener">@#{username}</a>
+        <a class='mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank" rel="noopener">@#{username}</a>
       HTML
     elsif username == "all" && chat_channel.channel_type == "invite_only"
       <<~HTML
-        <a class='comment-mentioned-user comment-mentioned-all' data-content="chat_channel_setting" href="#">@#{username}</a>
+        <a class='mentioned-user mentioned-all' data-content="chat_channel_setting" href="#">@#{username}</a>
       HTML
     else
       mention
@@ -158,14 +157,6 @@ class Message < ApplicationRecord
   # rubocop:disable Rails/OutputSafety
   def handle_slash_command(html)
     response = case html.to_s.strip
-               when "<p>/call</p>"
-                 "<a href='/video_chats/#{chat_channel_id}'
-                    class='chatchannels__richlink chatchannels__richlink--base'
-                    target='_blank' rel='noopener' data-content='sidecar-video'>
-                    <h1 data-content='sidecar-video'>
-                      Let's video chat 😄
-                    </h1>
-                    </a>".html_safe
                when "<p>/play codenames</p>" # proof of concept
                  "<a href='https://www.horsepaste.com/connect-channel-#{rand(1_000_000_000)}'
                     class='chatchannels__richlink chatchannels__richlink--base'

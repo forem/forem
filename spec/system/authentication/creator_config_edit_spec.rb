@@ -6,14 +6,14 @@ RSpec.describe "Creator config edit", type: :system, js: true do
   # Apple auth is in Beta so we need to enable the Feature Flag to test it
   before { Flipper.enable(:apple_auth) }
 
-  context "when a creator browses /admin/config" do
+  context "when a creator browses /admin/customization/config" do
     before do
       sign_in admin
-      allow(SiteConfig).to receive(:invite_only_mode).and_return(false)
+      allow(Settings::Authentication).to receive(:invite_only_mode).and_return(false)
     end
 
     it "presents all available OAuth providers" do
-      visit "/admin/config"
+      visit admin_config_path
 
       within("div[data-target='#authenticationBodyContainer']") do
         click_on("Show info", match: :first)

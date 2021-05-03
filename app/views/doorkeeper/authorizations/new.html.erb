@@ -42,11 +42,11 @@
   }
 </style>
 
-<header class="page-header" role="banner">
+<header class="page-header">
   <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/9bsnlmppunw39rnnshk6.png") %>" />
 </header>
 
-<main role="main">
+<main>
   <p class="h3">
     <%= raw t(".prompt", client_name: tag.strong(class: "text-info") { @pre_auth.client.name }) %>
   </p>

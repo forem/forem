@@ -5,8 +5,7 @@ class RegistrationsController < Devise::RegistrationsController
     if user_signed_in?
       redirect_to root_path(signin: "true")
     else
-      referer_path = URI(request.referer || "").path
-      if URI(request.referer || "").host == URI(request.base_url).host && referer_path != "/serviceworker.js"
+      if URI(request.referer || "").host == URI(request.base_url).host
         store_location_for(:user, request.referer)
       end
       super
@@ -14,7 +13,8 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    not_authorized unless SiteConfig.allow_email_password_registration || SiteConfig.waiting_on_first_user
+    not_authorized unless Settings::Authentication.allow_email_password_registration ||
+      SiteConfig.waiting_on_first_user
     not_authorized if SiteConfig.waiting_on_first_user && ENV["FOREM_OWNER_SECRET"].present? &&
       ENV["FOREM_OWNER_SECRET"] != params[:user][:forem_owner_secret]
 
@@ -52,13 +52,13 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def recaptcha_verified?
-    recaptcha_params = { secret_key: SiteConfig.recaptcha_secret_key }
+    recaptcha_params = { secret_key: Settings::Authentication.recaptcha_secret_key }
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
   end
 
   def check_allowed_email(resource)
     domain = resource.email.split("@").last
-    allow_list = SiteConfig.allowed_registration_email_domains
+    allow_list = Settings::Authentication.allowed_registration_email_domains
     return if allow_list.empty? || allow_list.include?(domain)
 
     resource.email = nil

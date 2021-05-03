@@ -1,6 +1,5 @@
 import { Controller } from 'stimulus';
 
-// eslint-disable-next-line no-restricted-syntax
 export default class ReactionController extends Controller {
   static targets = ['invalid', 'confirmed'];
   static values = {

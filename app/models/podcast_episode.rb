@@ -3,9 +3,7 @@ class PodcastEpisode < ApplicationRecord
     duration_in_seconds
   ]
 
-  include Searchable
-  SEARCH_SERIALIZER = Search::PodcastEpisodeSerializer
-  SEARCH_CLASS = Search::FeedContent
+  include PgSearch::Model
 
   acts_as_taggable
 
@@ -36,8 +34,9 @@ class PodcastEpisode < ApplicationRecord
   after_destroy :purge, :purge_all
   after_save :bust_cache
 
-  after_commit :index_to_elasticsearch, on: %i[update]
-  after_commit :remove_from_elasticsearch, on: [:destroy]
+  pg_search_scope :search_podcast_episodes,
+                  against: %i[body subtitle title],
+                  using: { tsearch: { prefix: true } }
 
   scope :reachable, -> { where(reachable: true) }
   scope :published, -> { joins(:podcast).where(podcasts: { published: true }) }

@@ -432,7 +432,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
         get notifications_path(filter: :org, org_id: other_org.id)
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.map(&:organization_id).compact.size).to eq(0)
+        expect(notifications.filter_map(&:organization_id).size).to eq(0)
       end
 
       it "does render notifications belonging to other orgs if admin" do
@@ -590,10 +590,10 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
     end
 
-    context "when a user has a new badge notification" do
+    context "when a user has a new badge notification w/o credits" do
       before do
         sign_in user
-        badge = create(:badge)
+        badge = create(:badge, credits_awarded: 0)
         badge_achievement = create(:badge_achievement, user: user, badge: badge)
         sidekiq_perform_enqueued_jobs do
           Notification.send_new_badge_achievement_notification(badge_achievement)
@@ -622,6 +622,26 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       def renders_visit_profile_button
         expect(response.body).to include "Visit your profile"
+      end
+
+      it "has no information about credits" do
+        expect(response.body).not_to include "new credits"
+      end
+    end
+
+    context "when a user has a new badge notification with credits" do
+      before do
+        sign_in user
+        badge = create(:badge, credits_awarded: 11)
+        badge_achievement = create(:badge_achievement, user: user, badge: badge)
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_new_badge_achievement_notification(badge_achievement)
+        end
+        get "/notifications"
+      end
+
+      it "renders information about credits" do
+        expect(response.body).to include "11 new credits"
       end
     end
 

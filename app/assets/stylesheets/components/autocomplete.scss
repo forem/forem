@@ -1,11 +1,20 @@
 @import '../config/import';
+@import '@reach/combobox/styles';
 
 .crayons-autocomplete {
+  // Override of the default hidden class to make sure it takes priority over any display style attached to the 'replaceElement' textarea
+  .hidden {
+    display: none !important;
+  }
+
   &__popover {
-    min-width: 300px;
     padding: var(--su-1);
+    z-index: var(--z-elevate);
 
     &[data-reach-popover] {
+      // Reach UI adds a width directly to this element as an inline style. !important is needed to make sure the size is constrained.
+      width: 250px !important;
+
       @include generate-box(
         $level: 1,
         $bg: var(--card-bg),

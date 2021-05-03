@@ -47,7 +47,13 @@ RSpec.describe "Using the editor", type: :system do
       article_body = find("div.crayons-article__body")["innerHTML"]
       article_body.gsub!(%r{"https://res\.cloudinary\.com/.{1,}"}, "cloudinary_link")
 
-      Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
+      # TODO: Convert this to an E2E test?
+      # rubocop:disable Style/StringLiterals
+      expect(article_body).to include('<a name="multiword-heading-with-weird-punctuampation"')
+        .and include('<a name="emoji-heading"')
+        .and include('<blockquote>')
+        .and include('Format: <a href=cloudinary_link></a>')
+      # rubocop:enable Style/StringLiterals
     end
   end
 
@@ -58,7 +64,13 @@ RSpec.describe "Using the editor", type: :system do
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
       article_body.gsub!(%r{"https://res\.cloudinary\.com/.{1,}"}, "cloudinary_link")
 
-      Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
+      # TODO: Convert this to an E2E test?
+      # rubocop:disable Style/StringLiterals
+      expect(article_body).to include('<a name="multiword-heading-with-weird-punctuampation"')
+        .and include('<a name="emoji-heading"')
+        .and include('<blockquote>')
+        .and include('Format: <a href=cloudinary_link></a>')
+      # rubocop:enable Style/StringLiterals
     end
 
     it "user write and publish an article" do
@@ -81,7 +93,7 @@ RSpec.describe "Using the editor", type: :system do
     end
   end
 
-  describe "using v2 editor", js: true, stub_elasticsearch: true do
+  describe "using v2 editor", js: true do
     before { user.update(editor_version: "v2") }
 
     it "fill out form with rich content and click publish" do

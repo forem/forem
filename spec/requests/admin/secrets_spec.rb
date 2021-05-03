@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/secrets", type: :request do
+RSpec.describe "/admin/advanced/secrets", type: :request do
   before do
     allow(AppSecrets).to receive(:vault_enabled?).and_return(true)
     allow(AppSecrets).to receive(:[]=)
@@ -22,7 +22,7 @@ RSpec.describe "/admin/secrets", type: :request do
 
     before { sign_in admin }
 
-    describe "GET /admin/secrets" do
+    describe "GET /admin/advanced/secrets" do
       it "renders with status 200" do
         get admin_secrets_path
         expect(response.status).to eq 200
@@ -35,7 +35,7 @@ RSpec.describe "/admin/secrets", type: :request do
       end
     end
 
-    describe "PUT /admin/secrets" do
+    describe "PUT /admin/advanced/secrets" do
       let(:valid_secret) { AppSecrets::SETTABLE_SECRETS.first }
       let(:valid_params) { { valid_secret => "SECRET_VALUE" } }
 

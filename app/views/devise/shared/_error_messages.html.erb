@@ -1,5 +1,5 @@
 <% if resource.errors.any? %>
-  <div id="error_explanation" class="crayons-notice crayons-notice--danger registration__error-notice">
+  <div id="error_explanation" class="crayons-notice crayons-notice--danger registration__error-notice" role="alert">
     <h2>
       <%= I18n.t("errors.messages.not_saved",
                  count: resource.errors.count,

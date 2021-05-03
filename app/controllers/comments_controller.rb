@@ -56,7 +56,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    rate_limit!(:comment_creation)
+    rate_limit!(rate_limit_to_use)
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
@@ -79,7 +79,7 @@ class CommentsController < ApplicationController
         return
       end
 
-      render partial: "comments/comment.json"
+      render partial: "comments/comment", formats: :json
 
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,
@@ -110,7 +110,7 @@ class CommentsController < ApplicationController
     response_template = ResponseTemplate.find(params[:response_template][:id])
     authorize response_template, :moderator_create?
 
-    moderator = User.find(SiteConfig.mascot_user_id)
+    moderator = User.find(Settings::Mascot.mascot_user_id)
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = moderator.id
     @comment.body_markdown = response_template.content
@@ -282,5 +282,13 @@ class CommentsController < ApplicationController
   def redirect_to_comment_path
     flash[:error] = "Something went wrong; Comment NOT deleted."
     redirect_to "#{@comment.path}/mod"
+  end
+
+  def rate_limit_to_use
+    if current_user.decorate.considered_new?
+      :comment_antispam_creation
+    else
+      :comment_creation
+    end
   end
 end

@@ -1,0 +1,96 @@
+// The classes in this file are all related to a Runtime Filter feature detailed
+// in RFC 27. A short summary of how they work can be summarized by:
+//
+// They all are invisible by default. Only after the `initializeRuntime()` code
+// adds the context to the data-runtime attribute to the body element is when
+// elements with these classes become visible.
+//
+// More thorough context can be found in: https://github.com/forem/rfcs/pull/27
+
+// Elements with all of these classes are not visible by default
+.ForemWebView,
+.ForemWebView-iOS,
+.ForemWebView-Android,
+.PWA,
+.PWA-iOS,
+.PWA-Android,
+.PWA-Windows,
+.PWA-Linux,
+.PWA-macOS,
+.Browser,
+.Browser-iOS,
+.Browser-Android,
+.Browser-macOS,
+.Browser-Windows,
+.Browser-Linux {
+  display: none;
+}
+
+// Elements with class 'ForemWebView' should be visible on any attribute that
+// matches that Medium regardless of OS
+body[data-runtime='ForemWebView-iOS'] .ForemWebView,
+body[data-runtime='ForemWebView-Android'] .ForemWebView {
+  display: var(--runtime-display, block);
+}
+
+// Elements that need to match both 'ForemWebView' Medium and OS
+body[data-runtime='ForemWebView-iOS'] .ForemWebView-iOS {
+  display: var(--runtime-display, block);
+}
+body[data-runtime='ForemWebView-Android'] .ForemWebView-Android {
+  display: var(--runtime-display, block);
+}
+
+// Elements with class 'Browser' should be visible on any attribute that
+// matches that Medium regardless of OS
+body[data-runtime='Browser-Android'] .Browser,
+body[data-runtime='Browser-iOS'] .Browser,
+body[data-runtime='Browser-Linux'] .Browser,
+body[data-runtime='Browser-Windows'] .Browser,
+body[data-runtime='Browser-macOS'] .Browser {
+  display: var(--runtime-display, block);
+}
+
+// Elements that need to match both 'Browser' Medium and OS
+body[data-runtime='Browser-Android'] .Browser-Android {
+  display: var(--runtime-display, block);
+}
+body[data-runtime='Browser-iOS'] .Browser-iOS {
+  display: var(--runtime-display, block);
+}
+body[data-runtime='Browser-Linux'] .Browser-Linux {
+  display: var(--runtime-display, block);
+}
+body[data-runtime='Browser-Windows'] .Browser-Windows {
+  display: var(--runtime-display, block);
+}
+body[data-runtime='Browser-macOS'] .Browser-macOS {
+  display: var(--runtime-display, block);
+}
+
+// Elements with class 'PWA' should be visible on any attribute that
+// matches that Medium regardless of OS
+body[data-runtime='PWA-Android'] .PWA,
+body[data-runtime='PWA-iOS'] .PWA,
+body[data-runtime='PWA-Linux'] .PWA,
+body[data-runtime='PWA-Windows'] .PWA,
+body[data-runtime='PWA-macOS'] .PWA {
+  display: var(--runtime-display, block);
+}
+
+// Elements that need to match both 'PWA' Medium and OS
+body[data-runtime='PWA-Android'] .PWA-Android {
+  display: var(--runtime-display, block);
+}
+body[data-runtime='PWA-iOS'] .PWA-iOS {
+  display: var(--runtime-display, block);
+}
+body[data-runtime='PWA-Linux'] .PWA-Linux {
+  display: var(--runtime-display, block);
+}
+body[data-runtime='PWA-Windows'] .PWA-Windows {
+  display: var(--runtime-display, block);
+}
+body[data-runtime='PWA-macOS'] .PWA-macOS {
+  display: var(--runtime-display, block);
+}

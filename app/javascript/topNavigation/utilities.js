@@ -1,107 +1,127 @@
 function closeHeaderMenu(memberMenu, menuNavButton) {
-  if (menuNavButton) {
-    menuNavButton.setAttribute('aria-expanded', 'false');
-  }
-
-  if (memberMenu) {
-    setTimeout(() => {
-      memberMenu.classList.remove('showing');
-    }, 5);
-  }
+  menuNavButton.setAttribute('aria-expanded', 'false');
+  memberMenu.classList.remove('desktop', 'showing');
 }
 
-function blurHeaderMenu(memberMenu, menuNavButton, potentiallyActiveElement) {
-  setTimeout(() => {
-    if (document.activeElement !== potentiallyActiveElement) {
-      closeHeaderMenu(memberMenu, menuNavButton);
-    }
-  }, 10);
-}
+const firstItem = document.getElementById('first-nav-link');
 
-function toggleHeaderMenu(memberMenu, navigationButton) {
-  if (!memberMenu || !navigationButton) {
+function openHeaderMenu(memberMenu, menuNavButton) {
+  menuNavButton.setAttribute('aria-expanded', 'true');
+  memberMenu.classList.add('showing');
+
+  if (!firstItem) {
     return;
   }
 
-  let crayonsHeaderMenuClassList = memberMenu.classList;
-  if (crayonsHeaderMenuClassList.contains('showing')) {
-    crayonsHeaderMenuClassList.remove('showing');
-    navigationButton.setAttribute('aria-expanded', 'false');
-  } else {
-    crayonsHeaderMenuClassList.add('showing');
-    navigationButton.setAttribute('aria-expanded', 'true');
-
-    let firstNavLink = document.getElementById('first-nav-link');
-    if (firstNavLink) {
-      setTimeout(() => {
-        // focus first item on open
-        firstNavLink.focus();
-      }, 100);
+  // Focus on the first item in the menu
+  (function focusFirstItem() {
+    if (document.activeElement === firstItem) {
+      // The first element has focus
+      return;
     }
-  }
+
+    firstItem.focus();
+    // requestAnimationFrame is faster and more reliable than setTimeout
+    // https://swizec.com/blog/how-to-wait-for-dom-elements-to-show-up-in-modern-browsers
+    window.requestAnimationFrame(focusFirstItem);
+  })();
 }
 
+/**
+ * Determines whether or not a device is a touch device.
+ *
+ * @returns true if a touch device, otherwise false.
+ */
 export function isTouchDevice() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|DEV-Native-ios/i.test(
     navigator.userAgent,
   );
 }
 
-export function initializeTouchDevice(memberTopMenu, menuNavButton) {
+/**
+ * Initializes the member navigation menu events.
+ *
+ * @param {HTMLElement} memberTopMenu The member menu in the top navigation.
+ * @param {HTMLElement} menuNavButton The button to activate the member navigation menu.
+ */
+export function initializeMemberMenu(memberTopMenu, menuNavButton) {
+  // Typically using CSS for hovering for the menu is the way to go. But... since we use InstantClick for
+  // loading pages, the top header navigation never changes in terms of the DOM references.
+  // Because of this, we're using mouse events to mouseover/mouseout on the member's avatar
+  // to attach styles to get it to show the menu so that this works on desktop and mobile.
   if (navigator.userAgent === 'DEV-Native-ios') {
     document.body.classList.add('dev-ios-native-body');
   }
 
-  if (memberTopMenu) {
-    let crayonsHeaderMenuClassList = memberTopMenu.classList;
-
-    setTimeout(() => {
+  menuNavButton.addEventListener('click', (_event) => {
+    if (memberTopMenu.classList.contains('showing')) {
       closeHeaderMenu(memberTopMenu, menuNavButton);
+      menuNavButton.focus();
+    } else {
+      openHeaderMenu(memberTopMenu, menuNavButton);
+    }
+  });
 
-      if (isTouchDevice()) {
-        // Use a named function instead of anonymous so duplicate event handlers are discarded
-        menuNavButton.addEventListener('click', (_event) => {
-          toggleHeaderMenu(memberTopMenu, menuNavButton);
-        });
-        window.InstantClick.on('change', () => {
-          memberTopMenu.classList.remove('showing');
-        });
-      } else {
-        crayonsHeaderMenuClassList.add('desktop');
-        menuNavButton.addEventListener('click', (_event) => {
-          toggleHeaderMenu(memberTopMenu, menuNavButton);
-        });
-        memberTopMenu.addEventListener('keyup', (e) => {
-          if (
-            e.key === 'Escape' &&
-            crayonsHeaderMenuClassList.contains('showing')
-          ) {
-            crayonsHeaderMenuClassList.remove('showing');
-            menuNavButton.focus();
-          }
-        });
-        document
-          .getElementById('last-nav-link')
-          .addEventListener('blur', (_event) => {
-            blurHeaderMenu(
-              memberTopMenu,
-              menuNavButton,
-              document.getElementById('second-last-nav-link'),
-            );
-          });
-        document.addEventListener('click', (_event) => {
-          // if clicking outside of the menu, close it
-          if (!memberTopMenu.contains(document.activeElement)) {
-            blurHeaderMenu(
-              memberTopMenu,
-              menuNavButton,
-              document.getElementById('first-nav-link'),
-            );
-          }
-        });
+  const { classList } = memberTopMenu;
+
+  if (isTouchDevice()) {
+    memberTopMenu.addEventListener('focus', (_event) => {
+      menuNavButton.setAttribute('aria-expanded', 'true');
+    });
+  } else {
+    memberTopMenu.addEventListener('mouseover', (_event) => {
+      classList.add('desktop');
+      openHeaderMenu(memberTopMenu, menuNavButton);
+    });
+    memberTopMenu.addEventListener('mouseout', (_event) => {
+      closeHeaderMenu(memberTopMenu, menuNavButton);
+    });
+
+    memberTopMenu.addEventListener('keyup', (e) => {
+      if (e.key === 'Escape' && classList.contains('showing')) {
+        closeHeaderMenu(memberTopMenu, menuNavButton);
+        menuNavButton.focus();
       }
-    }, 10);
+    });
   }
+
+  memberTopMenu
+    .querySelector('.crayons-header__menu__dropdown')
+    .addEventListener('click', (event) => {
+      // There is a click event listener on the body and we do not want
+      // this click to be caught by it
+      event.stopPropagation();
+
+      // Close the menu if the user clicked or touched on mobile a link in the menu.
+      closeHeaderMenu(memberTopMenu, menuNavButton);
+      menuNavButton.focus();
+    });
+
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('#member-menu-button') === menuNavButton) {
+      // The menu navigation button manages it's own click event.
+      return;
+    }
+
+    // Close the menu if the user clicked or touched on mobile a link in the menu.
+    closeHeaderMenu(memberTopMenu, menuNavButton);
+  });
+
+  const secondToLastNavLink = document.getElementById('second-last-nav-link');
+
+  document
+    .getElementById('last-nav-link')
+    .addEventListener('blur', (_event) => {
+      // When we tab out of the last link in the member menu, close
+      // the menu.
+      setTimeout(() => {
+        if (document.activeElement === secondToLastNavLink) {
+          return;
+        }
+
+        closeHeaderMenu(memberTopMenu, menuNavButton);
+      }, 10);
+    });
 }
 
 function toggleBurgerMenu() {
@@ -148,11 +168,11 @@ export async function getInstantClick(waitTime = 2000) {
  */
 export function initializeMobileMenu(menuTriggers, moreMenus) {
   menuTriggers.forEach((trigger) => {
-    trigger.addEventListener('click', toggleBurgerMenu);
+    trigger.onclick = toggleBurgerMenu;
   });
 
   moreMenus.forEach((trigger) => {
-    trigger.addEventListener('click', showMoreMenu);
+    trigger.onclick = showMoreMenu;
   });
 }
 

@@ -18,13 +18,13 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
 
   it "supports an anonymous report" do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-      described_class.call(default_params)
+      described_class.call(**default_params)
     end
   end
 
   it "contains user's details", :aggregate_failures do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-      described_class.call(default_params.merge(user: user))
+      described_class.call(**default_params.merge(user: user))
     end
 
     message = get_argument_from_last_job("message")
@@ -36,7 +36,7 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
 
   it "contains report information", :aggregate_failures do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-      described_class.call(default_params.merge(user: user))
+      described_class.call(**default_params.merge(user: user))
     end
 
     message = get_argument_from_last_job("message")
@@ -53,7 +53,7 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
 
   it "messages the proper channel with the proper username" do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-      described_class.call(default_params)
+      described_class.call(**default_params)
     end
 
     channel = get_argument_from_last_job("channel")
@@ -65,7 +65,7 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
 
   it "uses the cry emoji for abuse reports" do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-      described_class.call(default_params.merge(type: "abuse-reports"))
+      described_class.call(**default_params.merge(type: "abuse-reports"))
     end
 
     icon_emoji = get_argument_from_last_job("icon_emoji")
@@ -74,7 +74,7 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
 
   it "uses the robot face emoji for other reports" do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-      described_class.call(default_params.merge(type: "other"))
+      described_class.call(**default_params.merge(type: "other"))
     end
 
     icon_emoji = get_argument_from_last_job("icon_emoji")

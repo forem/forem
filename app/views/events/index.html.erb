@@ -27,7 +27,7 @@
     <%= render partial: "event", collection: @events, as: :event %>
 
     <% if @events.none? %>
-      <div class="crayons-notice">
+      <div class="crayons-notice" aria-live="polite">
         There are no upcoming events currently scheduled
       </div>
     <% end %>

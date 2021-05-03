@@ -1,0 +1,7 @@
+<h2 class="crayons-title mb-6">Edit Consumer App</h2>
+<div class="crayons-card p-6">
+  <%= form_for([:admin, @app], method: :patch) do %>
+    <%= render "form" %>
+    <%= submit_tag "Update Consumer App", class: "crayons-btn" %>
+  <% end %>
+</div>

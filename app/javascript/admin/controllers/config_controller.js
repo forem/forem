@@ -17,7 +17,6 @@ const emailAuthModalBody = `
   <p>However, people who have already created an account using their email address can continue to login.</p>
   <p><strong>You must confirm and update site config to save below this action.</strong></p>`;
 
-// eslint-disable-next-line no-restricted-syntax
 export default class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',
@@ -294,8 +293,12 @@ export default class ConfigController extends Controller {
       .forEach((provider) => {
         const { providerName } = provider.dataset;
         if (
-          !document.getElementById(`site_config_${providerName}_key`).value ||
-          !document.getElementById(`site_config_${providerName}_secret`).value
+          !document.getElementById(
+            `settings_authentication_${providerName}_key`,
+          ).value ||
+          !document.getElementById(
+            `settings_authentication_${providerName}_secret`,
+          ).value
         ) {
           providersWithMissingKeys.push(providerName);
         }

@@ -4,6 +4,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, name: "discuss") }
   let(:article) { create(:article, featured: true, tags: "discuss") }
+  let(:new_article) { create(:article) }
 
   before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
@@ -29,7 +30,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         type_of id title description cover_image readable_publish_date social_image
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
-        published_timestamp user organization flare_tag
+        published_timestamp user organization flare_tag reading_time_minutes
       ]
 
       expect(response.parsed_body.first.keys).to match_array index_keys
@@ -269,6 +270,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.parsed_body.size).to eq(1)
       end
 
+      it "returns articles sorted by publish date" do
+        article.update_columns(published_at: 500.years.ago)
+        new_article.update_columns(published_at: 1.minute.ago)
+
+        get latest_api_articles_path
+        first_article_published_at = response.parsed_body.first["published_at"]
+        last_article_published_at = response.parsed_body.last["published_at"]
+        expect(first_article_published_at.to_date).to be > last_article_published_at.to_date
+      end
+
       it "returns nothing if the state is unknown" do
         get api_articles_path(state: "foobar")
 
@@ -323,7 +334,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         type_of id title description cover_image readable_publish_date social_image
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
-        published_timestamp body_html body_markdown user organization flare_tag
+        published_timestamp body_html body_markdown user organization flare_tag reading_time_minutes
       ]
 
       expect(response.parsed_body.keys).to match_array show_keys
@@ -365,7 +376,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     it "fails with an unpublished article" do
-      article.update_columns(published: false)
+      article.update_columns(published: false, published_at: nil)
       get api_article_path(article.id)
       expect(response).to have_http_status(:not_found)
     end
@@ -424,7 +435,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     it "fails with an unpublished article" do
-      article.update_columns(published: false)
+      article.update_columns(published: false, published_at: nil)
       get slug_api_articles_path(username: article.username, slug: article.slug)
       expect(response).to have_http_status(:not_found)
     end
@@ -551,8 +562,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:unauthorized)
       end
 
-      it "fails with a banned user" do
-        user.add_role(:banned)
+      it "fails with a suspended user" do
+        user.add_role(:suspended)
         post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
@@ -867,7 +878,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   describe "PUT /api/articles/:id" do
     let!(:api_secret)   { create(:api_secret) }
     let!(:user)         { api_secret.user }
-    let(:article)       { create(:article, user: user, published: false) }
+    let(:article)       { create(:article, user: user, published: false, published_at: nil) }
     let(:path)          { api_article_path(article.id) }
     let!(:organization) { create(:organization) }
 

@@ -50,7 +50,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def config_font_name
-    config_font.gsub("default", SiteConfig.default_font)
+    config_font.gsub("default", Settings::UserExperience.default_font)
   end
 
   def config_body_class
@@ -100,10 +100,17 @@ class UserDecorator < ApplicationDecorator
 
   # returns true if the user has been suspended and has no content
   def fully_banished?
-    articles_count.zero? && comments_count.zero? && banned
+    articles_count.zero? && comments_count.zero? && suspended?
   end
 
   def stackbit_integration?
     access_tokens.any?
+  end
+
+  def considered_new?
+    min_days = Settings::RateLimit.user_considered_new_days
+    return false unless min_days.positive?
+
+    created_at.after?(min_days.days.ago)
   end
 end

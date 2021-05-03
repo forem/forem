@@ -308,6 +308,9 @@
   }
 
   @media screen and (min-width: 1000px) {
+    h2 {
+      font-size: 2rem;
+    }
     margin-left: initial;
     padding: 18px;
     max-width: 480px;
@@ -1111,7 +1114,7 @@
   color: gray;
   width: max-content;
 }
-.comment-mentioned-all {
+.mentioned-all {
   color: rgb(213, 138, 0);
 }
 

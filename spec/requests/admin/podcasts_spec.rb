@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/podcasts", type: :request do
+RSpec.describe "/admin/content_manager/podcasts", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let(:podcast) { create(:podcast, published: false) }
   let(:user) { create(:user) }
@@ -10,7 +10,7 @@ RSpec.describe "/admin/podcasts", type: :request do
     sign_in admin
   end
 
-  describe "GET /admin/podcasts" do
+  describe "GET /admin/content_manager/podcasts" do
     let!(:no_eps_podcast) { create(:podcast, title: Faker::Book.title) }
 
     before do
@@ -54,9 +54,9 @@ RSpec.describe "/admin/podcasts", type: :request do
         soundcloud_url: "https://soundcloud.example.com",
         website_url: "https://example.com",
         twitter_username: "@ThePracticalDev",
-        pattern_image: fixture_file_upload("files/800x600.png", "image/png"),
+        pattern_image: fixture_file_upload("800x600.png", "image/png"),
         main_color_hex: "ffffff",
-        image: fixture_file_upload("files/podcast.png", "image/png"),
+        image: fixture_file_upload("podcast.png", "image/png"),
         slug: "postcast-test-url",
         reachable: true,
         published: true
@@ -96,7 +96,7 @@ RSpec.describe "/admin/podcasts", type: :request do
     end
   end
 
-  describe "POST /admin/podcasts/:id/fetch_podcasts" do
+  describe "POST /admin/content_manager/podcasts/:id/fetch_podcasts" do
     it "redirects back to index with a notice" do
       post fetch_admin_podcast_path(podcast.id)
       expect(response).to redirect_to(admin_podcasts_path)

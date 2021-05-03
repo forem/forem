@@ -76,7 +76,7 @@ module ApplicationHelper
   def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
     image_options[:width] ||= optimizer_options[:width]
     image_options[:height] ||= optimizer_options[:height]
-    updated_image_url = Images::Optimizer.call(image_url, optimizer_options)
+    updated_image_url = Images::Optimizer.call(image_url, **optimizer_options)
 
     image_tag(updated_image_url, image_options)
   end
@@ -96,7 +96,7 @@ module ApplicationHelper
   end
 
   def invite_only_mode?
-    SiteConfig.invite_only_mode?
+    Settings::Authentication.invite_only_mode?
   end
 
   def any_enabled_auth_providers?
@@ -163,16 +163,12 @@ module ApplicationHelper
     end
   end
 
-  def safe_logo_url(logo)
-    logo.presence || SiteConfig.logo_png
-  end
-
   def community_name
-    @community_name ||= SiteConfig.community_name
+    @community_name ||= Settings::Community.community_name
   end
 
   def community_emoji
-    @community_emoji ||= SiteConfig.community_emoji
+    @community_emoji ||= Settings::Community.community_emoji
   end
 
   def release_adjusted_cache_key(path)
@@ -183,7 +179,7 @@ module ApplicationHelper
   end
 
   def copyright_notice
-    start_year = SiteConfig.community_copyright_start_year.to_s
+    start_year = Settings::Community.copyright_start_year.to_s
     current_year = Time.current.year.to_s
     return start_year if current_year == start_year
     return current_year if start_year.strip.length < 4 # 978 is not a valid year!
@@ -206,7 +202,7 @@ module ApplicationHelper
   end
 
   def community_members_label
-    SiteConfig.community_member_label.pluralize
+    Settings::Community.member_label.pluralize
   end
 
   def meta_keywords_default
@@ -261,10 +257,6 @@ module ApplicationHelper
     URL.organization(organization)
   end
 
-  def sanitized_referer(referer)
-    URL.sanitized_referer(referer)
-  end
-
   def sanitize_and_decode(str)
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
@@ -278,15 +270,16 @@ module ApplicationHelper
     estimated_user_count > LARGE_USERBASE_THRESHOLD
   end
 
-  def admin_config_label(method, content = nil)
+  def admin_config_label(method, content = nil, model: SiteConfig)
     content ||= tag.span(method.to_s.humanize)
 
-    if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+    if method.to_sym.in?(Settings::Mandatory.keys)
       required = tag.span("Required", class: "crayons-indicator crayons-indicator--critical")
       content = safe_join([content, required])
     end
 
-    tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
+    label_prefix = model.name.split("::").map(&:underscore).join("_")
+    tag.label(content, class: "site-config__label crayons-field__label", for: "#{label_prefix}_#{method}")
   end
 
   def admin_config_description(content)
@@ -294,6 +287,8 @@ module ApplicationHelper
   end
 
   def role_display_name(role)
+    # TODO: [@jacobherrington] After all Forems have successfully deployed and the banned role
+    # has been deleted, removed this ternary.
     role.name == "banned" ? "Suspended" : role.name.titlecase
   end
 end

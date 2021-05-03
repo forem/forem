@@ -88,10 +88,12 @@ RSpec.describe GithubIssue, type: :model, vcr: true do
     end
   end
 
-  xit "saves HTML in .processed_html" do
+  it "saves HTML in .processed_html" do
     VCR.use_cassette("github_client_issue") do
       issue = described_class.find_or_fetch(url_issue)
-      Approvals.verify(issue.processed_html, name: "github_client_issue", format: :html)
+
+      expect(issue.processed_html).to include("<p><strong>Describe the bug</strong></p>")
+      expect(issue.processed_html).to include("<p><strong>To Reproduce</strong></p>")
     end
   end
 

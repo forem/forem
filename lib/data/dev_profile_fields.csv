@@ -2,17 +2,6 @@ Display email on profile,check_box,,,Basic,settings_only,false
 Website URL,text_field,https://yoursite.com,,Basic,settings_only,true
 Summary,text_area,A short bio...,,Basic,settings_only,true
 Location,text_field,"Halifax, Nova Scotia",,Basic,header,true
-Facebook URL,text_field,https://facebook.com/...,,Links,settings_only,false
-Youtube URL,text_field,https://www.youtube.com/channel/...,,Links,settings_only,false
-StackOverflow URL,text_field,https://stackoverflow.com/users/...,,Links,settings_only,false
-LinkedIn URL,text_field,https://www.linkedin.com/in/...,,Links,settings_only,false
-Behance URL,text_field,https://www.behance.net/...,,Links,settings_only,false
-Dribbble URL,text_field,https://dribbble.com/...,,Links,settings_only,false
-Medium URL,text_field,https://medium.com/@...,,Links,settings_only,false
-GitLab URL,text_field,https://gitlab.com/...,,Links,settings_only,false
-Instagram URL,text_field,https://www.instagram.com/...,,Links,settings_only,false
-Mastodon URL,text_field,https://...,,Links,settings_only,false
-Twitch URL,text_field,https://www.twitch.tv/...,,Links,settings_only,false
 Education,text_field,,,Work,header,false
 Employer name,text_field,Acme Inc.,,Work,header,false
 Employer URL,text_field,https://dev.com,,Work,header,false

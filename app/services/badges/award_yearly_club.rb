@@ -11,7 +11,7 @@ module Badges
     }.freeze
 
     MESSAGE_TEMPLATE =
-      "Happy #{SiteConfig.community_name} birthday! " \
+      "Happy #{Settings::Community.community_name} birthday! " \
       "Can you believe it's been %<years>d %<noun>s already?!".freeze
 
     def self.call
@@ -19,7 +19,7 @@ module Badges
     end
 
     def call
-      total_years = Time.current.year - SiteConfig.community_copyright_start_year.to_i
+      total_years = Time.current.year - Settings::Community.copyright_start_year.to_i
       (1..total_years).each do |i|
         ::Badges::Award.call(
           User.registered.where(created_at: i.year.ago - 2.days...i.year.ago),

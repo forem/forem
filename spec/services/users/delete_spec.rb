@@ -6,7 +6,7 @@ RSpec.describe Users::Delete, type: :service do
 
   before do
     omniauth_mock_github_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
     allow(cache_bust).to receive(:call)
   end
@@ -19,6 +19,14 @@ RSpec.describe Users::Delete, type: :service do
   it "busts user profile page" do
     described_class.new(user).call
     expect(cache_bust).to have_received(:call).with("/#{user.username}")
+  end
+
+  it "deletes user's sponsorships" do
+    create(:sponsorship, user: user)
+
+    expect do
+      described_class.call(user)
+    end.to change(Sponsorship, :count).by(-1)
   end
 
   it "deletes user's follows" do
@@ -52,25 +60,6 @@ RSpec.describe Users::Delete, type: :service do
     expect(audit_log.reload.user_id).to be(nil)
   end
 
-  it "removes user from Elasticsearch" do
-    sidekiq_perform_enqueued_jobs { user }
-    expect(user.elasticsearch_doc).not_to be_nil
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user)
-    end
-    expect { user.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-  end
-
-  it "removes articles from Elasticsearch" do
-    article = create(:article, user: user)
-    sidekiq_perform_enqueued_jobs
-    expect(article.elasticsearch_doc).not_to be_nil
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user)
-    end
-    expect { article.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-  end
-
   it "deletes field tests memberships" do
     create(:field_test_membership, participant_id: user.id)
 
@@ -87,8 +76,6 @@ RSpec.describe Users::Delete, type: :service do
         affected_feedback_messages
         audit_logs
         banished_users
-        buffer_updates_approved
-        buffer_updates_composed
         created_podcasts
         offender_feedback_messages
         page_views
@@ -145,7 +132,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should exist" do
         kept_associations.each do |kept_association|
-          expect { kept_association.reload }.not_to raise_error, kept_association
+          expect { kept_association.reload }.not_to raise_error
         end
       end
     end
@@ -157,7 +144,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should not exist" do
         user_associations.each do |user_association|
-          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound), user_association
+          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
     end
@@ -179,9 +166,9 @@ RSpec.describe Users::Delete, type: :service do
     end
   end
 
-  context "when the user was banned" do
+  context "when the user was suspended" do
     it "stores a hash of the username so the user can't sign up again" do
-      user = create(:user, :banned)
+      user = create(:user, :suspended)
       expect do
         described_class.call(user)
       end.to change(Users::SuspendedUsername, :count).by(1)

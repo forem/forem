@@ -2,10 +2,10 @@
 title: Testing/QA Guide
 items:
   - acceptance-tests.md
-  - approvals-tests.md
   - integration-tests.md
   - unit-functional-tests.md
   - frontend-tests.md
+  - manual-tests.md
   - accessibility-tests.md
   - e2e-tests.md
   - regression-tests.md
@@ -69,8 +69,3 @@ retry the individual job that failed rather than the entire suite in order to
 save some time. When you retry the individual job, make sure to also retry the
 Deploy job. Even though you may not be deploying that job must complete for the
 entire build to pass.
-
-Please note that you will need to have Elasticsearch installed and running for
-certain tests in our test suite. You can find instructions on how to install and
-run Elasticsearch specific to your environment in the
-[Installation Guide](/installation).

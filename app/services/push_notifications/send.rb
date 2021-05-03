@@ -1,11 +1,11 @@
 module PushNotifications
   class Send
-    def self.call(user:, title:, body:, payload:)
-      new(user: user, title: title, body: body, payload: payload).call
+    def self.call(user_ids:, title:, body:, payload:)
+      new(user_ids: user_ids, title: title, body: body, payload: payload).call
     end
 
-    def initialize(user:, title:, body:, payload:)
-      @user = user
+    def initialize(user_ids:, title:, body:, payload:)
+      @user_ids = user_ids
       @title = title
       @body = body
       @payload = payload
@@ -14,7 +14,7 @@ module PushNotifications
     def call
       return unless FeatureFlag.enabled?(:mobile_notifications)
 
-      @user.devices.find_each do |device|
+      Device.where(user_id: @user_ids).find_each do |device|
         device.create_notification(@title, @body, @payload)
       end
 

@@ -68,13 +68,6 @@ RSpec.describe Message, type: :model do
         expect(message.message_html).to include("sidecar-user")
       end
 
-      it "creates rich call link" do
-        message.message_markdown = "/call"
-        message.validate!
-
-        expect(message.message_html).to include("sidecar-video")
-      end
-
       it "creates rich embeddable link" do
         message.message_markdown = "https://docs.google.com/ https://www.figma.com/file/"
         message.validate!
@@ -165,15 +158,6 @@ RSpec.describe Message, type: :model do
   end
 
   describe "#after_create" do
-    it "enqueues ChatChannels::IndexesMembershipsWorker" do
-      chat_channel.add_users([user])
-      allow(ChatChannels::IndexesMembershipsWorker).to receive(:perform_async)
-
-      create(:message, chat_channel: chat_channel, user: user)
-
-      expect(ChatChannels::IndexesMembershipsWorker).to have_received(:perform_async)
-    end
-
     context "when chat_action is left_channel" do
       it "does not update unopened message statuses" do
         chat_channel.add_users([user, user2])

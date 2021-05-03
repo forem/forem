@@ -33,15 +33,32 @@ RSpec.describe "CommentsCreate", type: :request do
     expect(NotificationSubscription.last.notifiable).to eq(Comment.last)
   end
 
-  it "returns 429 Too Many Requests when a user reaches their rate limit" do
-    allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
-    allow(rate_limit_checker).to receive(:limit_by_action)
-      .with(:comment_creation)
-      .and_return(true)
+  context "when users hit their rate limits" do
+    before do
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+    end
 
-    post comments_path, params: comment_params
+    it "returns 429 Too Many Requests when a user reaches their rate limit" do
+      # avoid hitting new user rate limit check
+      allow(user).to receive(:created_at).and_return(1.week.ago)
+      allow(rate_limit_checker).to receive(:limit_by_action)
+        .with(:comment_creation)
+        .and_return(true)
 
-    expect(response).to have_http_status(:too_many_requests)
+      post comments_path, params: comment_params
+
+      expect(response).to have_http_status(:too_many_requests)
+    end
+
+    it "returns 429 Too Many Requests when a new user reaches their rate limit" do
+      allow(rate_limit_checker).to receive(:limit_by_action)
+        .with(:comment_antispam_creation)
+        .and_return(true)
+
+      post comments_path, params: comment_params
+
+      expect(response).to have_http_status(:too_many_requests)
+    end
   end
 
   context "when user is posting on an author that blocks user" do
@@ -144,7 +161,7 @@ RSpec.describe "CommentsCreate", type: :request do
     end
 
     def reply_and_mention_comment_author_as_moderator(comment)
-      allow(SiteConfig).to receive(:mascot_user_id)
+      allow(Settings::Mascot).to receive(:mascot_user_id)
         .and_return(moderator_replier.id)
 
       sign_in moderator_replier

@@ -28,7 +28,10 @@ function fetchNext(el, endpoint, insertCallback) {
         nextPage += 1;
         insertCallback(entries);
         if (entries.length === 0) {
-          document.getElementById('loading-articles').style.display = 'none';
+          const loadingElement = document.getElementById('loading-articles');
+          if (loadingElement) {
+            loadingElement.style.display = 'none';
+          }
           done = true;
         }
       });
@@ -103,32 +106,17 @@ function buildTagsHTML(tag) {
       '<span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>';
   }
 
-  return (
-    '<div class="crayons-card p-4 m:p-6 flex flex-col single-article" id="follows-' +
-    tag.id +
-    '" style="border: 1px solid ' +
-    tag.color +
-    '; box-shadow: 3px 3px 0' +
-    tag.color +
-    '">' +
-    '<h3 class="s:mb-1 p-0 fw-medium">' +
-    '<a href="/t/' +
-    tag.name +
-    '" class="crayons-tag crayons-tag--l">' +
-    '<span class="crayons-tag__prefix">#</span>' +
-    tag.name +
-    '</a>' +
-    antifollow +
-    '</h3>' +
-    '<p class="grid-cell__summary truncate-at-3"></p>' +
-    '<input name="follows[][id]" id="follow_id" type="hidden" form="follows_update_form" value="' +
-    tag.id +
-    '">' +
-    '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="' +
-    tag.points +
-    '" name="follows[][explicit_points]" id="follow_points">' +
-    '</div>'
-  );
+  return `<div class="crayons-card p-4 m:p-6 flex flex-col single-article" id="follows-${tag.id}" style="border: 1px solid ${tag.color}; box-shadow: 3px 3px 0 ${tag.color}">
+    <h3 class="s:mb-1 p-0 fw-medium">
+      <a href="/t/${tag.name}" class="crayons-tag crayons-tag--l">
+        <span class="crayons-tag__prefix">#</span>${tag.name}
+      </a>
+      ${antifollow}
+    </h3>
+    <p class="grid-cell__summary truncate-at-3"></p>
+    <input name="follows[][id]" id="follow_id_${tag.name}" type="hidden" form="follows_update_form" value="${tag.id}">
+    <input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="${tag.points}" name="follows[][explicit_points]" id="follow_points_${tag.name}" aria-label="${tag.name} tag weight">
+  </div>`;
 }
 
 function fetchNextFollowingPage(el) {
@@ -356,7 +344,10 @@ function paginate(tag, params, requiresApproval) {
       window.dispatchEvent(checkBlockedContentEvent);
       initializeReadingListIcons();
       if (content.result.length === 0) {
-        document.getElementById('loading-articles').style.display = 'none';
+        const loadingElement = document.getElementById('loading-articles');
+        if (loadingElement) {
+          loadingElement.style.display = 'none';
+        }
         done = true;
       }
     });
@@ -380,7 +371,7 @@ function fetchNextPageIfNearBottom() {
       fetchNextPodcastPage(indexContainer);
     };
   } else if (indexWhich === 'videos') {
-    scrollableElem = document.getElementById('video-collection');
+    scrollableElem = document.getElementById('main-content');
     fetchCallback = function fetch() {
       fetchNextVideoPage(indexContainer);
     };
@@ -419,15 +410,18 @@ function fetchNextPageIfNearBottom() {
 }
 
 function checkIfNearBottomOfPage() {
+  const loadingElement = document.getElementById('loading-articles');
   if (
     (document.getElementsByClassName('crayons-story').length < 2 &&
       document.getElementsByClassName('single-article').length < 2) ||
     window.location.search.indexOf('q=') > -1
   ) {
-    document.getElementById('loading-articles').style.display = 'none';
+    if (loadingElement) {
+      loadingElement.style.display = 'none';
+    }
     done = true;
-  } else {
-    document.getElementById('loading-articles').style.display = 'block';
+  } else if (loadingElement) {
+    loadingElement.style.display = 'block';
   }
   fetchNextPageIfNearBottom();
   setInterval(function handleInterval() {

@@ -2,8 +2,8 @@ module Users
   class RemoveRole
     Response = Struct.new(:success, :error_message, keyword_init: true)
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     def initialize(user:, role:, resource_type:, admin:)
@@ -16,7 +16,7 @@ module Users
 
     def call
       return response if super_admin_role?(role)
-      return response if user_is_current_user?(user)
+      return response if user_current_user?(user)
 
       if resource_type && user.remove_role(role, resource_type)
         response.success = true
@@ -40,7 +40,7 @@ module Users
       true
     end
 
-    def user_is_current_user?(user)
+    def user_current_user?(user)
       return false if user.id != admin.id
 
       response.error_message = "Admins cannot remove roles from themselves."

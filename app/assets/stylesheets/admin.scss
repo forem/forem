@@ -189,11 +189,29 @@ label {
   min-width: 120px;
 }
 
-// Navbar links have text-decorations that are being
-// rendered from boostrap. We want to remove these to be
-// consistent with links in the crayons design system.
 .admin__left-sidebar {
-  .crayons-link {
+  button {
+    border: 0;
+    width: 100%;
+
+    // In safari the links show up with a grey background
+    &:not(.crayons-link--current) {
+      background: transparent;
+    }
+  }
+
+  .crayons-link--current {
+    cursor: default;
+  }
+}
+
+.admin__tabbed-navbar,
+.admin__left-sidebar {
+  // Navbar links have text-decorations that are being
+  // rendered from boostrap. We want to remove these to be
+  // consistent with links in the crayons design system.
+  .crayons-link,
+  .crayons-tabs__item {
     text-decoration: none;
 
     &:hover {
@@ -213,15 +231,14 @@ label {
     }
   }
 
-  button {
-    border: 0;
-    width: 100%;
-    background: transparent;
-  }
-
   ul {
     list-style: none;
     padding: 0;
   }
-
+  // override the Bootstrap collapse animation
+  .collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+  }
 }

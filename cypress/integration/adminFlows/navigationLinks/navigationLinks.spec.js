@@ -5,7 +5,7 @@ describe('Navigation links', () => {
 
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
-        cy.visit('/admin/navigation_links');
+        cy.visit('/admin/customization/navigation_links');
       });
     });
   });
@@ -27,7 +27,7 @@ describe('Navigation links', () => {
   });
 
   it('should open the edit navigation link modal', () => {
-    cy.findByText('Edit Link').as('editLinkButton');
+    cy.findAllByText('Edit Link').first().as('editLinkButton');
 
     cy.get('@editLinkButton').click();
     cy.findByTestId('modal-container').as('editLinkModal');

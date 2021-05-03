@@ -41,14 +41,8 @@ class ApplicationController < ActionController::Base
                           health_checks].freeze
   private_constant :PUBLIC_CONTROLLERS
 
-  # TODO: Remove the "shell" endpoints, because they are for service worker
-  # functionality we no longer need.  We are keeping these around mid-March
-  # 2021 because previously-installed service workers may still expect them.
   CONTENT_CHANGE_PATHS = [
     "/tags/onboarding", # Needs to change when suggested_tags is edited.
-    "/shell_top", # Cached at edge, sent to service worker.
-    "/shell_bottom", # Cached at edge, sent to service worker.
-    "/async_info/shell_version", # Checks if current users should be busted.
     "/onboarding", # Page is cached at edge.
     "/", # Page is cached at edge.
   ].freeze
@@ -57,7 +51,7 @@ class ApplicationController < ActionController::Base
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
     return if self.class.module_parent.to_s == "Admin"
-    return if user_signed_in? || SiteConfig.public
+    return if user_signed_in? || Settings::UserExperience.public
 
     if api_action?
       authenticate!
@@ -134,7 +128,7 @@ class ApplicationController < ActionController::Base
   end
 
   def raise_suspended
-    raise "SUSPENDED" if current_user&.banned
+    raise SuspendedError if current_user&.suspended?
   end
 
   def internal_navigation?
@@ -145,7 +139,7 @@ class ApplicationController < ActionController::Base
   def feed_style_preference
     # TODO: Future functionality will let current_user override this value with UX preferences
     # if current_user exists and has a different preference.
-    SiteConfig.feed_style
+    Settings::UserExperience.feed_style
   end
   helper_method :feed_style_preference
 

@@ -1,91 +1,21 @@
 // Service worker file. Renders as serviceworker.js
+// This is now a self-destructing service worker. See https://github.com/NekR/self-destroying-sw
 
-<% unless Rails.env.test? || ENV["SKIP_SERVICEWORKERS"] == "true" %>
-  const VERSION = "1.0" // Increment to invalidate old assets.
-  const OFFLINE_URL = "offline.html";
-  const OFFLINE_NAME = OFFLINE_URL + VERSION
-
-  self.addEventListener("install", (event) => {
-    event.waitUntil(
-      (async () => {
-
-        // Setting {cache: 'reload'} in the new request will ensure that the
-        // response isn't fulfilled from the HTTP cache; i.e., it will be from
-        // the network.
-        const offlineCache = await caches.open(OFFLINE_NAME);
-        await offlineCache.add(new Request(OFFLINE_URL, { cache: "reload" }));
-      })()
-    );
-    // Force the waiting service worker to become the active service worker.
+<% unless Rails.env.test? %>
+  self.addEventListener('install', function(e) {
     self.skipWaiting();
   });
 
-  self.addEventListener("activate", (event) => {
-    event.waitUntil(
-      (async () => {
-        // Enable navigation preload if it's supported.
-        // See https://developers.google.com/web/updates/2017/02/navigation-preload
-        if ("navigationPreload" in self.registration) {
-          await self.registration.navigationPreload.enable();
-        }
-      })()
-    );
-
-    // Tell the active service worker to take control of the page immediately.
-    self.clients.claim();
-  });
-
-  function includesUnsupportedPath(url) {
-    return [
-      '/%F0%9F%92%B8',         // 💸 (hiring)
-      '/admin',                // Don't run on admin dashboard.
-      '/new',                  // Don't run on editor.
-      '/enter',                // Don't run on sign in page.
-      '/oauth/',               // Skip oauth apps
-      '/onboarding',           // Don't run on onboarding.
-      '/shop',                 // Don't run on Shop
-      '/sidekiq',              // Skip for Sidekiq dashboard
-      '/users/auth',           // Don't run on authentication.
-      '/users/sign_in',        // Don't run on sign in page.
-      '/welcome',              // Don't run on welcome reroutes.
-    ].some(path => url.includes(path))
-  }
-
-  self.addEventListener("fetch", (event) => {
-    // We only want to call event.respondWith() if this is a navigation request
-    // for an HTML page with a few exceptions.
-    if (event.request.mode === "navigate" && !includesUnsupportedPath(event.request.url)) {
-      event.respondWith(
-        (async () => {
-          try {
-            // First, try to use the navigation preload response if it's supported.
-            const preloadResponse = await event.preloadResponse;
-            if (preloadResponse) {
-              return preloadResponse;
-            }
-
-            // Always try the network first.
-            const networkResponse = await fetch(event.request);
-            return networkResponse;
-          } catch (error) {
-            // catch is only triggered if an exception is thrown, which is likely
-            // due to a network error.
-            // If fetch() returns a valid HTTP response with a response code in
-            // the 4xx or 5xx range, the catch() will NOT be called.
-            console.log("Fetch failed; returning offline page instead.", error);
-
-            const cache = await caches.open(OFFLINE_NAME);
-            const cachedResponse = await cache.match(OFFLINE_URL);
-            return cachedResponse;
-          }
-        })()
-      );
-    }
-
-    // If our if() condition is false, then this fetch handler won't intercept the
-    // request. If there are any other fetch handlers registered, they will get a
-    // chance to call event.respondWith(). If no fetch handlers call
-    // event.respondWith(), the request will be handled by the browser as if there
-    // were no service worker involvement.
+  self.addEventListener('activate', function(e) {
+    self.registration.unregister()
+      .then(function() {
+        return self.clients.matchAll();
+      })
+      .then(function(clients) {
+        clients.forEach(client => {
+          // Check if client.navigate is supported before running it.
+          client.navigate && client.navigate(client.url);
+        })
+      });
   });
 <% end %>

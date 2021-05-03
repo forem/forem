@@ -14,6 +14,9 @@ class Organization < ApplicationRecord
   before_validation :downcase_slug
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
+
+  # TODO: [@rhymes] revisit this callback, `update_articles_cached_organization` and `article_sync`
+  # when we remove Elasticsearch
   before_save :update_articles
   before_save :remove_at_from_usernames
   before_save :generate_secret
@@ -21,6 +24,13 @@ class Organization < ApplicationRecord
   # to ensure they execute before the records are updated
   # https://guides.rubyonrails.org/active_record_callbacks.html#destroying-an-object
   before_destroy :cache_article_ids
+
+  after_save :bust_cache
+
+  # This callback will eventually invoke Article.update_cached_user to update the organization.name
+  # only when it has been changed, thus invoking the trigger on Article.reading_list_document
+  after_update_commit :update_articles_cached_organization
+  after_destroy_commit :bust_cache, :article_sync
 
   has_many :articles, dependent: :nullify
   has_many :collections, dependent: :nullify
@@ -62,11 +72,6 @@ class Organization < ApplicationRecord
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
 
   validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
-
-  after_save :bust_cache
-
-  after_commit :sync_related_elasticsearch_docs, on: :update
-  after_commit :bust_cache, :article_sync, on: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -115,12 +120,14 @@ class Organization < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
-  def banned
+  def suspended?
+    # Hacky, yuck!
+    # TODO: [@jacobherrington] Remove this method
     false
   end
 
   def destroyable?
-    organization_memberships.count == 1 && articles.count.zero?
+    organization_memberships.count == 1 && articles.count.zero? && credits.count.zero?
   end
 
   private
@@ -144,6 +151,12 @@ class Organization < ApplicationRecord
     articles.update(cached_organization: Articles::CachedEntity.from_object(self))
   end
 
+  def update_articles_cached_organization
+    return unless saved_change_to_attribute?(:name)
+
+    articles.update(cached_organization: Articles::CachedEntity.from_object(self))
+  end
+
   def bust_cache
     Organizations::BustCacheWorker.perform_async(id, slug)
   end
@@ -157,10 +170,6 @@ class Organization < ApplicationRecord
     )
 
     errors.add(:slug, "is taken.") if slug_taken
-  end
-
-  def sync_related_elasticsearch_docs
-    DataSync::Elasticsearch::Organization.new(self).call
   end
 
   def article_sync

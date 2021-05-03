@@ -4,7 +4,7 @@
   <div class="crayons-card__body">
     <ul>
       <% @user.roles.each do |role| %>
-        <% if role.name == "banned" || role.name == "super_admin" || @user.id == current_user.id %>
+        <% if role.name == "banned" || role.name == "suspended" || role.name == "super_admin" || @user.id == current_user.id %>
           <li><%= role_display_name(role) %> <em><%= role.resource_name.to_s %></em></li>
         <% else %>
           <li>

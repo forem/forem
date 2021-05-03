@@ -110,7 +110,9 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
 
     channels = ["user-notifications-#{user2.id}", "user-notifications-#{user.id}"]
     payload = described_class.new(comment_sent).__send__(:push_notification_payload)
-    expect(Pusher::PushNotifications).to have_received(:publish_to_interests).with(interests: channels,
-                                                                                   payload: payload)
+    expect(Pusher::PushNotifications).to have_received(:publish_to_interests) do |block|
+      expect(block[:interests]).to match_array(channels)
+      expect(block[:payload]).to eq(payload)
+    end
   end
 end

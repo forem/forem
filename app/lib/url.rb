@@ -1,7 +1,5 @@
 # Utilities methods to safely build app wide URLs
 module URL
-  SERVICE_WORKER = "/serviceworker.js".freeze
-
   def self.protocol
     ApplicationConfig["APP_PROTOCOL"]
   end
@@ -69,22 +67,17 @@ module URL
     ActionController::Base.helpers.image_url(image_name, host: host)
   end
 
-  def self.organization(organization)
-    url(organization.slug)
+  # Creates a deep link URL (for mobile) to a page in the current Forem and it
+  # relies on a UDL server to bounce back mobile users to the local `/r/mobile`
+  # fallback page. More details here: https://github.com/forem/udl-server
+  #
+  # @param path [String] the target path to deep link
+  def self.deep_link(path)
+    target_path = CGI.escape(url("/r/mobile?deep_link=#{path}"))
+    "https://forem-udl-server.herokuapp.com/?r=#{target_path}"
   end
 
-  # Ensures we don't consider serviceworker.js as referer
-  #
-  # @param referer [String] the unsanitized referer
-  # @example A safe referer
-  #  sanitized_referer("/some/path") #=> "/some/path"
-  # @example serviceworker.js as referer
-  #  sanitized_referer("serviceworker.js") #=> nil
-  # @example An empty string
-  #  sanitized_referer("") #=> nil
-  def self.sanitized_referer(referer)
-    return if referer.blank? || URI(referer).path == SERVICE_WORKER
-
-    referer
+  def self.organization(organization)
+    url(organization.slug)
   end
 end

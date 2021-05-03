@@ -5,7 +5,6 @@
 //= require utilities/getImageForLink
 //= require honeybadger-js/dist/honeybadger.js
 //= require ahoy.js/dist/ahoy.js
-//= require serviceworker-companion
 
 var instantClick
   , InstantClick = instantClick = function(document, location, $userAgent) {
@@ -118,7 +117,7 @@ var instantClick
     if (memberMenuButton) {
       memberMenuButton.classList.remove('showing')
     }
-    document.getElementsByTagName("BODY")[0].replaceChild(body, pageContentDiv)
+    document.body.replaceChild(body, pageContentDiv)
 
     var prog = document.getElementById("navigation-progress");
     prog.classList.remove("showing");

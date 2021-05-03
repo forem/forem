@@ -39,6 +39,15 @@ RSpec.describe Mentions::CreateAll, type: :service do
     expect(Mention.all.size).to eq(1)
   end
 
+  it "ignores mentions when embedded within a comment liquid tag" do
+    markdown = "Check out this comment: {% comment #{comment2.id_code_generated} %}"
+    comment_with_liquid_tag = create(:comment, user_id: user2.id, commentable: article, body_markdown: markdown)
+
+    comment_with_liquid_tag.save
+    described_class.call(comment_with_liquid_tag)
+    expect(Mention.all.size).to eq(0)
+  end
+
   it "creates multiple mentions for multiple users" do
     user2 = create(:user)
     comment.body_markdown = "Hello @#{user.username} @#{user2.username}, you are cool."
@@ -59,18 +68,18 @@ RSpec.describe Mentions::CreateAll, type: :service do
     expect(Mention.all.size).to eq(1)
   end
 
-  it "creates mention on creation of comment (in addition to update)" do
+  it "creates a mention on creation of comment" do
     described_class.call(comment2)
     expect(Mention.all.size).to eq(1)
   end
 
-  it "can only be created with valid mentionable" do
+  it "does not create a mention without valid mentionable" do
     comment2.update_column(:body_markdown, "")
     described_class.call(comment2)
     expect(Mention.all.size).to eq(0)
   end
 
-  it "cant mention self" do
+  it "does not create a mention when the user mentions themselves" do
     comment.body_markdown = "Me, Myself and I @#{user2.username}"
     comment.save
     described_class.call(comment)

@@ -56,13 +56,13 @@ RSpec.describe "UserProfiles", type: :request do
       expect { get "/#{user.username}" }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "renders noindex meta if banned" do
-      user.add_role(:banned)
+    it "renders noindex meta if suspended" do
+      user.add_role(:suspended)
       get "/#{user.username}"
       expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
     end
 
-    it "does not render noindex meta if not banned" do
+    it "does not render noindex meta if not suspended" do
       get "/#{user.username}"
       expect(response.body).not_to include("<meta name=\"robots\" content=\"noindex\">")
     end
@@ -112,17 +112,6 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).not_to include "<p>Location</p>"
       expect(response.body).to include user.location
       expect(response.body).to include "M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1112.728 0zM12 13a2 2 0 100-4 2 2 0"
-    end
-
-    it "does not render special display social link elements naively" do
-      user.instagram_url = "https://instagram.com/whoa"
-      user.save
-      get "/#{user.username}"
-      # Does not include the word, but does include the SVG
-      expect(response.body).not_to include "<p>Instagram"
-      expect(response.body).to include "Instagram logo</title>"
-      expect(response.body).to include user.instagram_url
-      expect(response.body).to include "M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254"
     end
 
     context "when organization" do
@@ -202,14 +191,14 @@ RSpec.describe "UserProfiles", type: :request do
       end
 
       it "renders emoji in description of featured repository" do
-        GithubRepo.upsert(github_user, params)
+        GithubRepo.upsert(github_user, **params)
 
         get "/#{github_user.username}"
         expect(response.body).to include("A book bot 🤖")
       end
 
       it "does not show a non featured repository" do
-        GithubRepo.upsert(github_user, params.merge(featured: false))
+        GithubRepo.upsert(github_user, **params.merge(featured: false))
 
         get "/#{github_user.username}"
         expect(response.body).not_to include("A book bot 🤖")
@@ -226,13 +215,13 @@ RSpec.describe "UserProfiles", type: :request do
     it "redirects to admin" do
       user = create(:user)
       get "/#{user.username}/admin"
-      expect(response.body).to redirect_to "/admin/users/#{user.id}/edit"
+      expect(response.body).to redirect_to edit_admin_user_path(user.id)
     end
 
     it "redirects to moderate" do
       user = create(:user)
       get "/#{user.username}/moderate"
-      expect(response.body).to redirect_to "/admin/users/#{user.id}"
+      expect(response.body).to redirect_to admin_user_path(user.id)
     end
   end
 end

@@ -1,44 +1,62 @@
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 
 import {
-  defaultState,
   loadNextPage,
   onSearchBoxType,
   performInitialSearch,
   search,
-  toggleTag,
+  selectTag,
   clearSelectedTags,
 } from '../searchableItemList/searchableItemList';
 import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
-import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
-import { ItemListTags } from './components/ItemListTags';
+import { TagList } from './components/TagList';
+import { MediaQuery } from '@components/MediaQuery';
+import { BREAKPOINTS } from '@components/useMediaQuery';
 import { debounceAction } from '@utilities/debounceAction';
 import { Button } from '@crayons';
 import { request } from '@utilities/http';
 
+const NO_RESULTS_WITH_FILTER_MESSAGE = 'Nothing with this filter 🤔';
 const STATUS_VIEW_VALID = 'valid,confirmed';
 const STATUS_VIEW_ARCHIVED = 'archived';
 const READING_LIST_ARCHIVE_PATH = '/readinglist/archive';
 const READING_LIST_PATH = '/readinglist';
 
-const FilterText = ({ selectedTags, query, value }) => {
-  return (
-    <h2 className="fw-bold fs-l">
-      {selectedTags.length === 0 && query.length === 0
-        ? value
-        : 'Nothing with this filter 🤔'}
-    </h2>
-  );
-};
+function ItemList({ items, archiveButtonLabel, toggleArchiveStatus }) {
+  return items.map((item) => {
+    return (
+      <ItemListItem item={item} key={item.id}>
+        <ItemListItemArchiveButton
+          text={archiveButtonLabel}
+          onClick={(e) => toggleArchiveStatus(e, item)}
+        />
+      </ItemListItem>
+    );
+  });
+}
 
 export class ReadingList extends Component {
   constructor(props) {
     super(props);
 
     const { statusView } = this.props;
-    this.state = defaultState({ archiving: false, statusView });
+
+    this.state = {
+      archiving: false,
+      query: '',
+      index: null,
+      page: 0,
+      hitsPerPage: 80,
+      items: [],
+      itemsLoaded: false,
+      itemsTotal: 0,
+      availableTags: [],
+      selectedTag: '',
+      showLoadMoreButton: false,
+      statusView,
+    };
 
     // bind and initialize all shared functions
     this.onSearchBoxType = debounceAction(onSearchBoxType.bind(this), {
@@ -47,7 +65,7 @@ export class ReadingList extends Component {
     this.loadNextPage = loadNextPage.bind(this);
     this.performInitialSearch = performInitialSearch.bind(this);
     this.search = search.bind(this);
-    this.toggleTag = toggleTag.bind(this);
+    this.selectTag = selectTag.bind(this);
     this.clearSelectedTags = clearSelectedTags.bind(this);
   }
 
@@ -62,7 +80,7 @@ export class ReadingList extends Component {
   toggleStatusView = (event) => {
     event.preventDefault();
 
-    const { query, selectedTags } = this.state;
+    const { query, selectedTag } = this.state;
 
     const isStatusViewValid = this.statusViewValid();
     const newStatusView = isStatusViewValid
@@ -73,11 +91,11 @@ export class ReadingList extends Component {
       : READING_LIST_PATH;
 
     // empty items so that changing the view will start from scratch
-    this.setState({ statusView: newStatusView, items: [] });
+    this.setState({ statusView: newStatusView, items: [], selectedTag });
 
     this.search(query, {
       page: 0,
-      tags: selectedTags,
+      tags: selectedTag ? [selectedTag] : [],
       statusView: newStatusView,
     });
 
@@ -113,16 +131,17 @@ export class ReadingList extends Component {
   }
 
   renderEmptyItems() {
-    const { itemsLoaded, selectedTags, query } = this.state;
+    const { itemsLoaded, selectedTag = '', query } = this.state;
+    const showMessage = selectedTag.length === 0 && query.length === 0;
 
     if (itemsLoaded && this.statusViewValid()) {
       return (
-        <div className="align-center p-9 py-10 color-base-80">
-          <FilterText
-            selectedTags={selectedTags}
-            query={query}
-            value="Your reading list is empty"
-          />
+        <section className="align-center p-9 py-10 color-base-80">
+          <h2 className="fw-bold fs-l">
+            {showMessage
+              ? 'Your reading list is empty'
+              : NO_RESULTS_WITH_FILTER_MESSAGE}
+          </h2>
           <p class="color-base-60 pt-2">
             Click the{' '}
             <span class="fw-bold">
@@ -140,43 +159,32 @@ export class ReadingList extends Component {
             </span>
             when viewing a post to add it to your reading list.
           </p>
-        </div>
+        </section>
       );
     }
 
     return (
-      <div className="align-center p-9 py-10 color-base-80">
-        <FilterText
-          selectedTags={selectedTags}
-          query={query}
-          value="Your Archive is empty..."
-        />
-      </div>
+      <h2 className="align-center p-9 py-10 color-base-80 fw-bold fs-l">
+        {showMessage
+          ? 'Your Archive is empty...'
+          : NO_RESULTS_WITH_FILTER_MESSAGE}
+      </h2>
     );
   }
 
   render() {
     const {
       items = [],
+      itemsTotal,
       availableTags,
-      selectedTags,
+      selectedTag = '',
       showLoadMoreButton,
       archiving,
+      loading = false,
     } = this.state;
 
     const isStatusViewValid = this.statusViewValid();
-
     const archiveButtonLabel = isStatusViewValid ? 'Archive' : 'Unarchive';
-    const itemsToRender = items.map((item) => {
-      return (
-        <ItemListItem item={item}>
-          <ItemListItemArchiveButton
-            text={archiveButtonLabel}
-            onClick={(e) => this.toggleArchiveStatus(e, item)}
-          />
-        </ItemListItem>
-      );
-    });
 
     const snackBar = archiving ? (
       <div className="snackbar">
@@ -186,17 +194,17 @@ export class ReadingList extends Component {
       ''
     );
     return (
-      <section>
-        <header className="crayons-layout flex justify-between items-center pb-0">
+      <main id="main-content">
+        <header className="crayons-layout l:grid-cols-2 pb-0">
           <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
-            {` (${items.length})`}
+            {` (${itemsTotal})`}
           </h1>
-
-          <div class="flex items-center">
+          <fieldset className="grid gap-2 m:flex m:justify-end m:items-center l:mb-0 mb-2 px-2 m:px-0">
+            <legend className="hidden">Filter</legend>
             <Button
               onClick={(e) => this.toggleStatusView(e)}
-              className="mr-2 whitespace-nowrap"
+              className="whitespace-nowrap l:mr-2"
               variant="outlined"
               url={READING_LIST_ARCHIVE_PATH}
               tagName="a"
@@ -205,35 +213,72 @@ export class ReadingList extends Component {
               {isStatusViewValid ? 'View archive' : 'View reading list'}
             </Button>
             <input
-              aria-label="Search..."
+              aria-label="Filter reading list by text"
               onKeyUp={this.onSearchBoxType}
-              placeholder="Search..."
+              placeholder="Enter some text to filter on..."
               className="crayons-textfield"
             />
-          </div>
-        </header>
-
-        <div className="crayons-layout crayons-layout--2-cols">
-          <ItemListTags
-            availableTags={availableTags}
-            selectedTags={selectedTags}
-            onClick={this.toggleTag}
-          />
-
-          <main className="crayons-layout__content" id="main-content">
-            <div className="crayons-card mb-4">
-              {items.length > 0 ? itemsToRender : this.renderEmptyItems()}
-            </div>
-
-            <ItemListLoadMoreButton
-              show={showLoadMoreButton}
-              onClick={this.loadNextPage}
+            <MediaQuery
+              query={`(max-width: ${BREAKPOINTS.Medium - 1}px)`}
+              render={(matches) => {
+                return (
+                  matches && (
+                    <TagList
+                      availableTags={availableTags}
+                      selectedTag={selectedTag}
+                      onSelectTag={this.selectTag}
+                      isMobile={true}
+                    />
+                  )
+                );
+              }}
             />
-          </main>
-
-          {snackBar}
-        </div>
-      </section>
+          </fieldset>
+        </header>
+        <MediaQuery
+          query={`(min-width: ${BREAKPOINTS.Medium}px)`}
+          render={(matches) => {
+            return (
+              <div className="crayons-layout crayons-layout--2-cols">
+                {matches && (
+                  <div className="crayons-layout__sidebar-left">
+                    <TagList
+                      availableTags={availableTags}
+                      selectedTag={selectedTag}
+                      onSelectTag={this.selectTag}
+                    />
+                  </div>
+                )}
+                <section className="crayons-layout__content crayons-card mb-4">
+                  {items.length > 0 ? (
+                    <Fragment>
+                      <ItemList
+                        items={items}
+                        archiveButtonLabel={archiveButtonLabel}
+                        toggleArchiveStatus={this.toggleArchiveStatus}
+                      />
+                      {showLoadMoreButton && (
+                        <div className="flex justify-center my-2">
+                          <Button
+                            onClick={this.loadNextPage}
+                            variant="secondary"
+                            className="w-max"
+                          >
+                            Load more
+                          </Button>
+                        </div>
+                      )}
+                    </Fragment>
+                  ) : loading ? null : (
+                    this.renderEmptyItems()
+                  )}
+                </section>
+              </div>
+            );
+          }}
+        />
+        {snackBar}
+      </main>
     );
   }
 }
@@ -245,10 +290,4 @@ ReadingList.defaultProps = {
 ReadingList.propTypes = {
   availableTags: PropTypes.arrayOf(PropTypes.string).isRequired,
   statusView: PropTypes.oneOf([STATUS_VIEW_VALID, STATUS_VIEW_ARCHIVED]),
-};
-
-FilterText.propTypes = {
-  selectedTags: PropTypes.arrayOf(PropTypes.string).isRequired,
-  value: PropTypes.string.isRequired,
-  query: PropTypes.arrayOf(PropTypes.string).isRequired,
 };

@@ -14,9 +14,9 @@ RSpec.describe "rendering locals in a partial", type: :view do
              is_childless: true,
              subtree_html: ""
 
-      expect(rendered).to match(/low-quality-comment-marker/)
+      expect(rendered).to match(/crayons-notice crayons-notice--warning low-quality-comment-marker/)
         .and match(%r{Comment marked as low quality/non-constructive by the community.})
-      expect(rendered).to have_link "View code of conduct", href: "/code-of-conduct"
+      expect(rendered).to have_link "View Code of Conduct", href: "/code-of-conduct"
     end
   end
 end

@@ -27,10 +27,14 @@ class ArticlesController < ApplicationController
                 elsif params[:tag]
                   handle_tag_feed
                 elsif request.path == latest_feed_path
-                  @articles.where("score > ?", Articles::Feeds::LargeForemExperimental::MINIMUM_SCORE_LATEST_FEED)
+                  @articles
+                    .where("score > ?", Articles::Feeds::LargeForemExperimental::MINIMUM_SCORE_LATEST_FEED)
                     .includes(:user)
                 else
-                  @articles.where(featured: true).includes(:user)
+                  @articles
+                    .where(featured: true)
+                    .or(@articles.where(score: Settings::UserExperience.home_feed_minimum_score..))
+                    .includes(:user)
                 end
 
     not_found unless @articles&.any?
@@ -75,7 +79,6 @@ class ArticlesController < ApplicationController
     @article = @article.decorate
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
-    @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
     @organizations = @user&.organizations
     # TODO: fix this for multi orgs
     @org_members = @organization.users.pluck(:name, :id) if @organization
@@ -91,7 +94,7 @@ class ArticlesController < ApplicationController
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
-      @article.errors[:base] << ErrorMessages::Clean.call(e.message)
+      @article.errors.add(:base, ErrorMessages::Clean.call(e.message))
     end
 
     respond_to do |format|
@@ -173,7 +176,6 @@ class ArticlesController < ApplicationController
   end
 
   def stats
-    authorize current_user, :pro_user?
     authorize @article
     @organization_id = @article.organization_id
   end

@@ -3,12 +3,8 @@ class Article < ApplicationRecord
   include ActionView::Helpers
   include Storext.model
   include Reactable
-  include Searchable
   include UserSubscriptionSourceable
-
-  SEARCH_SERIALIZER = Search::ArticleSerializer
-  SEARCH_CLASS = Search::FeedContent
-  DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
+  include PgSearch::Model
 
   acts_as_taggable_on :tags
   resourcify
@@ -29,7 +25,12 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
-  has_many :buffer_updates, dependent: :destroy
+  # TODO: Vaidehi Joshi - Extract this into a constant or SiteConfig variable
+  # after https://github.com/forem/rfcs/pull/22 has been completed?
+  MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
+  # The date that we began limiting the number of user mentions in an article.
+  MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
+
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
@@ -48,7 +49,9 @@ class Article < ApplicationRecord
            inverse_of: :commentable,
            class_name: "Comment"
 
-  validates :body_markdown, length: { minimum: 0, allow_nil: false }, uniqueness: { scope: %i[user_id title] }
+  validates :body_markdown, bytesize: { maximum: 800.kilobytes, too_long: "is too long." }
+  validates :body_markdown, length: { minimum: 0, allow_nil: false }
+  validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validates :boost_states, presence: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :canonical_url, uniqueness: { allow_nil: true }
@@ -80,6 +83,7 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validate :validate_tag
   validate :validate_video
+  validate :user_mentions_in_markdown
   validate :validate_co_authors, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
@@ -103,21 +107,78 @@ class Article < ApplicationRecord
                                                  }
 
   after_commit :async_score_calc, :touch_collection, on: %i[create update]
-  after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :sync_related_elasticsearch_docs, on: %i[update]
-  after_commit :remove_from_elasticsearch, on: [:destroy]
+
+  # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
+  #
+  # Its body is inserted in a PostgreSQL trigger function and that joins the columns values
+  # needed to search documents in the context of a "reading list".
+  #
+  # Please refer to https://github.com/jenseng/hair_trigger#usage in case you want to change or update the trigger.
+  #
+  # Additional information on how triggers work can be found in
+  # => https://www.postgresql.org/docs/11/trigger-definition.html
+  # => https://www.cybertec-postgresql.com/en/postgresql-how-to-write-a-trigger/
+  #
+  # Adapted from https://dba.stackexchange.com/a/289361/226575
+  trigger
+    .name(:update_reading_list_document).before(:insert, :update).for_each(:row)
+    .declare("l_org_vector tsvector; l_user_vector tsvector") do
+    <<~SQL
+      NEW.reading_list_document :=
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))) ||
+        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))) ||
+        to_tsvector('simple'::regconfig,
+          unaccent(
+            coalesce(
+              array_to_string(
+                -- cached_organization is serialized to the DB as a YAML string, we extract only the name attribute
+                regexp_match(NEW.cached_organization, 'name: (.*)$', 'n'),
+                ' '
+              ),
+              ''
+            )
+          )
+        );
+    SQL
+  end
 
   serialize :cached_user
   serialize :cached_organization
 
-  scope :published, -> { where(published: true) }
+  # TODO: [@rhymes] Rename the article column and the trigger name.
+  # What was initially meant just for the reading list (filtered using the `reactions` table),
+  # is also used for the article search page.
+  # The name of the `tsvector` column and its related trigger should be adapted.
+  pg_search_scope :search_articles,
+                  against: :reading_list_document,
+                  using: {
+                    tsearch: {
+                      prefix: true,
+                      tsvector_column: :reading_list_document
+                    }
+                  },
+                  ignoring: :accents
+
+  # [@jgaskins] We use an index on `published`, but since it's a boolean value
+  #   the Postgres query planner often skips it due to lack of diversity of the
+  #   data in the column. However, since `published_at` is a *very* diverse
+  #   column and can scope down the result set significantly, the query planner
+  #   can make heavy use of it.
+  scope :published, lambda {
+    where(published: true)
+      .where("published_at <= ?", Time.current)
+  }
   scope :unpublished, -> { where(published: false) }
 
   scope :admin_published_with, lambda { |tag_name|
     published
       .where(user_id: User.with_role(:super_admin)
                           .union(User.with_role(:admin))
-                          .union(id: [SiteConfig.staff_user_id, SiteConfig.mascot_user_id].compact)
+                          .union(id: [Settings::Community.staff_user_id,
+                                      Settings::Mascot.mascot_user_id].compact)
                           .select(:id)).order(published_at: :desc).tagged_with(tag_name)
   }
 
@@ -128,7 +189,37 @@ class Article < ApplicationRecord
       .tagged_with(tag_name)
   }
 
-  scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
+  scope :cached_tagged_with, lambda { |tag|
+    case tag
+    when String, Symbol
+      # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
+      # word" and "end of word", respectively. They're similar to `\b` in Perl-
+      # compatible regexes (PCRE), but that matches at either end of a word.
+      # They're more comparable to how vim's `\<` and `\>` work.
+      where("cached_tag_list ~ ?", "[[:<:]]#{tag}[[:>:]]")
+    when Array
+      tag.reduce(self) { |acc, elem| acc.cached_tagged_with(elem) }
+    when Tag
+      cached_tagged_with(tag.name)
+    else
+      raise TypeError, "Cannot search tags for: #{tag.inspect}"
+    end
+  }
+
+  scope :cached_tagged_with_any, lambda { |tags|
+    case tags
+    when String, Symbol
+      cached_tagged_with(tags)
+    when Array
+      tags
+        .map { |tag| cached_tagged_with(tag) }
+        .reduce { |acc, elem| acc.or(elem) }
+    when Tag
+      cached_tagged_with(tags.name)
+    else
+      raise TypeError, "Cannot search tags for: #{tags.inspect}"
+    end
+  }
 
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
@@ -156,8 +247,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
-           :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-           :email_digest_eligible, :processed_html, :co_author_ids)
+           :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
   }
 
   scope :boosted_via_additional_articles, lambda {
@@ -208,21 +298,6 @@ class Article < ApplicationRecord
     boosted_additional_articles Boolean, default: false
     boosted_dev_digest_email Boolean, default: false
     boosted_additional_tags String, default: ""
-  end
-
-  def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)
-    stories = published.limit(number)
-    stories = if time_ago == "latest"
-                stories.order(published_at: :desc).where("score > ?", -5)
-              elsif time_ago
-                stories.order(comments_count: :desc)
-                  .where("published_at > ? AND score > ?", time_ago, -5)
-              else
-                stories.order(last_comment_at: :desc)
-                  .where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5)
-              end
-    stories = tags.size == 1 ? stories.cached_tagged_with(tags.first) : stories.tagged_with(tags)
-    stories.pluck(:path, :title, :comments_count, :created_at)
   end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
@@ -278,7 +353,6 @@ class Article < ApplicationRecord
 
   def touch_by_reaction
     async_score_calc
-    index_to_elasticsearch
   end
 
   def comments_blob
@@ -368,6 +442,10 @@ class Article < ApplicationRecord
 
   def video_duration_in_minutes
     duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
+
+    # add default hours and minutes for the substitutions below
+    duration = duration.reverse_merge(seconds: 0, minutes: 0, hours: 0)
+
     minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", duration)
     return minutes_and_seconds if duration[:hours] < 1
 
@@ -375,8 +453,8 @@ class Article < ApplicationRecord
   end
 
   def update_score
-    new_score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
-    update_columns(score: new_score,
+    self.score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    update_columns(score: score,
                    comment_score: comments.sum(:score),
                    hotness_score: BlackBox.article_hotness_score(self),
                    spaminess_rating: BlackBox.calculate_spaminess(self))
@@ -390,6 +468,19 @@ class Article < ApplicationRecord
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.search(".highlight__panel").each(&:remove)
     doc.to_html
+  end
+
+  def followers
+    # This will return an array, but the items will NOT be ActiveRecord objects.
+    # The followers may also occasionally be nil because orphaned follows can possibly exist in the database.
+    followers = user.followers_scoped.where(subscription_status: "all_articles").map(&:follower)
+
+    if organization_id
+      org_followers = organization.followers_scoped.where(subscription_status: "all_articles")
+      followers += org_followers.map(&:follower)
+    end
+
+    followers.uniq.compact
   end
 
   private
@@ -436,7 +527,7 @@ class Article < ApplicationRecord
 
     self.description = processed_description if description.blank?
   rescue StandardError => e
-    errors[:base] << ErrorMessages::Clean.call(e.message)
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 
   def set_tag_list(tags)
@@ -593,6 +684,16 @@ class Article < ApplicationRecord
     errors.add(:canonical_url, "must not have spaces")
   end
 
+  def user_mentions_in_markdown
+    return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
+
+    # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
+    mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
+    return if mentions_count <= MAX_USER_MENTIONS
+
+    errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a post!")
+  end
+
   def create_slug
     if slug.blank? && title.present? && !published
       self.slug = title_to_slug + "-temp-slug-#{rand(10_000_000)}"
@@ -687,7 +788,7 @@ class Article < ApplicationRecord
     return unless SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
 
     Reaction.create(
-      user_id: SiteConfig.mascot_user_id,
+      user_id: Settings::Mascot.mascot_user_id,
       reactable_id: id,
       reactable_type: "Article",
       category: "vomit",
@@ -695,9 +796,9 @@ class Article < ApplicationRecord
 
     return unless Reaction.article_vomits.where(reactable_id: user.articles.pluck(:id)).size > 2
 
-    user.add_role(:banned)
+    user.add_role(:suspended)
     Note.create(
-      author_id: SiteConfig.mascot_user_id,
+      author_id: Settings::Mascot.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
       reason: "automatic_suspend",

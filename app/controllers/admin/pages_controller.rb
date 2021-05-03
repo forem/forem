@@ -10,8 +10,8 @@ module Admin
     end
 
     def new
-      if params[:slug]
-        prepopulate_new_form params[:slug]
+      if (slug = params[:slug])
+        prepopulate_new_form(slug)
       else
         @page = Page.new
       end
@@ -26,6 +26,7 @@ module Admin
       @page.assign_attributes(page_params)
       if @page.valid?
         @page.update!(page_params)
+        flash[:success] = "Page has been successfully updated."
         redirect_to admin_pages_path
       else
         flash.now[:error] = @page.errors_as_sentence
@@ -37,6 +38,7 @@ module Admin
       @page = Page.new(page_params)
       if @page.valid?
         @page.save!
+        flash[:success] = "Page has been successfully created."
         redirect_to admin_pages_path
       else
         flash.now[:error] = @page.errors_as_sentence
@@ -47,7 +49,8 @@ module Admin
     def destroy
       @page = Page.find(params[:id])
       @page.destroy
-      redirect_to "/admin/pages"
+      flash[:success] = "Page has been successfully deleted."
+      redirect_to admin_pages_path
     end
 
     private
@@ -67,7 +70,7 @@ module Admin
       @page = case slug
               when "code-of-conduct"
                 Page.new(
-                  slug: params[:slug],
+                  slug: slug,
                   body_html: html,
                   title: "Code of Conduct",
                   description: "A page that describes how to behave on this platform",
@@ -75,7 +78,7 @@ module Admin
                 )
               when "privacy"
                 Page.new(
-                  slug: params[:slug],
+                  slug: slug,
                   body_html: html,
                   title: "Privacy Policy",
                   description: "A page that describes the privacy policy",
@@ -83,7 +86,7 @@ module Admin
                 )
               when "terms"
                 Page.new(
-                  slug: params[:slug],
+                  slug: slug,
                   body_html: html,
                   title: "Terms of Use",
                   description: "A page that describes the terms of use for the application",
