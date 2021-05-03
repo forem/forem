@@ -16,12 +16,6 @@ RSpec.describe Search::ArticleSerializer do
     expect(data_hash.keys).to include(:id, :body_text, :hotness_score)
   end
 
-  it "creates valid json for Elasticsearch", elasticsearch: "FeedContent" do
-    data_hash = described_class.new(article).serializable_hash.dig(:data, :attributes)
-    result = Article::SEARCH_CLASS.index(article.id, data_hash)
-    expect(result["result"]).to eq("created")
-  end
-
   it "correctly serializes video duration in minutes when video_duration_in_seconds is nil" do
     data_hash = described_class.new(article).serializable_hash.dig(:data, :attributes)
     expect(data_hash[:video_duration_in_minutes]).to eq(0)

@@ -137,30 +137,6 @@ RSpec.describe Article, type: :model do
       end
     end
 
-    describe "#after_commit" do
-      it "on update enqueues job to index article to elasticsearch" do
-        article.save
-        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, article.id]) do
-          article.save
-        end
-      end
-
-      it "on destroy enqueues job to delete article from elasticsearch" do
-        article = create(:article)
-
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
-                                     args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
-          article.destroy
-        end
-      end
-
-      it "on update syncs elasticsearch data" do
-        allow(article).to receive(:sync_related_elasticsearch_docs)
-        article.save
-        expect(article).to have_received(:sync_related_elasticsearch_docs)
-      end
-    end
-
     context "when published" do
       before do
         # rubocop:disable RSpec/NamedSubject
@@ -1200,14 +1176,6 @@ RSpec.describe Article, type: :model do
     context "when article does not have any comments" do
       it "retrns empty set if there aren't any top comments" do
         expect(article.top_comments).to be_empty
-      end
-    end
-  end
-
-  describe "#touch_by_reaction" do
-    it "reindexes elasticsearch doc" do
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, article.id]) do
-        article.touch_by_reaction
       end
     end
   end
