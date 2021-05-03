@@ -21,25 +21,29 @@ const renderModal = (onClose, title, selector) => {
 };
 
 export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
-  const [state, setState] = useState({
+  const [helpSectionVisibility, setHelpSectionVisibility] = useState({
     liquidShowing: false,
     markdownShowing: false,
     frontmatterShowing: false,
   });
 
   const openModal = (helpSection) => {
-    setState({
+    setHelpSectionVisibility({
       [helpSection]: true,
     });
   };
 
   const closeModal = (helpSection) => {
-    setState({
+    setHelpSectionVisibility({
       [helpSection]: false,
     });
   };
 
-  const { liquidShowing, markdownShowing, frontmatterShowing } = state;
+  const {
+    liquidShowing,
+    markdownShowing,
+    frontmatterShowing,
+  } = helpSectionVisibility;
 
   return (
     <div className="crayons-article-form__aside">
