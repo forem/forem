@@ -48,6 +48,7 @@
   </div>
 
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
+    <% next if group.name == "Links" # TODO: [@jacobherrington] Remove this when we drop social links %>
     <div class="crayons-card crayons-card--content-rows">
       <h2><%= group.name %></h2>
       <% if group.description.present? %>

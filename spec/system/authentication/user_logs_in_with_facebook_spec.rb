@@ -220,6 +220,15 @@ RSpec.describe "Authenticating with Facebook" do
 
         expect(page).to have_current_path("/?signin=true")
       end
+
+      it "renders the facebook icon on the profile" do
+        sign_in user
+        visit user_facebook_omniauth_authorize_path
+
+        visit user_profile_path(user.username)
+
+        expect(page).to have_css("svg.crayons-icon.shrink-0", text: "facebook website")
+      end
     end
   end
 
