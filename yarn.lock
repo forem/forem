@@ -6098,10 +6098,10 @@ charenc@0.0.2:
   resolved "https://registry.yarnpkg.com/charenc/-/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
   integrity sha1-wKHS86cJLgN3S/qD8UwPxXkKhmc=
 
-chart.js@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.2.0.tgz#3d0a4b62b6bee428f8547db6aa68c792b130c260"
-  integrity sha512-Ml3R47TvOPW6gQ6T8mg/uPvyOASPpPVVF6xb7ZyHkek1c6kJIT5ScT559afXoDf6uwtpDR2BpCommkA5KT8ODg==
+chart.js@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.2.1.tgz#1a17d6a88cef324ef711949e227eb51d6c4c26d3"
+  integrity sha512-XsNDf3854RGZkLCt+5vWAXGAtUdKP2nhfikLGZqud6G4CvRE2ts64TIxTTfspOin2kEZvPgomE29E6oU02dYjQ==
 
 check-more-types@^2.24.0:
   version "2.24.0"
@@ -10213,10 +10213,10 @@ husky@^4.3.8:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-ibm-openapi-validator@0.43.0:
-  version "0.43.0"
-  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.43.0.tgz#fc1c63482400974649b11e9d43eb92e9a79fc0fb"
-  integrity sha512-NHe6T4UjEEEnBBdeUDDz4bMby9UkfJUjvdn1EpwN+e1UtTbndcYGjLOflsYfR0NQosaMET32GAsAW26iz6C4eg==
+ibm-openapi-validator@0.44.0:
+  version "0.44.0"
+  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.44.0.tgz#6506903ff6a4509d89e5f31d4d5169f033bd6ee5"
+  integrity sha512-kn8PVanGvLLuJqmRuV5uodZfYXI78OcVbdAEYuMehAEk9Q48dNjeQwDARXH6IhK+EqVU4QJDg9S1rGa3Jyz5ng==
   dependencies:
     "@stoplight/spectral" "^5.8.1"
     chalk "^4.1.0"
