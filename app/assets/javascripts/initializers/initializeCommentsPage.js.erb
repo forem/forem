@@ -268,8 +268,9 @@ function handleCommentSubmit(event) {
             });
 
             var preview = document.getElementById("preview-div");
-            preview.classList.add("preview-toggle");
+            var togglePreview = document.querySelector('.preview-toggle');
             preview.innerHTML = "";
+            togglePreview.innerHTML = "Preview";
             var container = document.getElementById("comment-trees-container");
             container.insertBefore(newNode, container.firstChild);
           }
