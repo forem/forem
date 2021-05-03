@@ -4,6 +4,8 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
+  let(:users_setting) { Users::Setting.last }
+
   before do
     Users::Setting.destroy_all
     Profile.destroy_all
@@ -24,7 +26,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
 
       described_class.new.run
 
-      expect(Users::Setting.last.config_font).to eq("sans_serif")
+      expect(users_setting.config_font).to eq("sans_serif")
     end
 
     it "sets the correct Profile records" do
@@ -37,7 +39,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
 
       described_class.new.run
 
-      expect(Users::Setting.last.display_email_on_profile).to eq(profile.display_email_on_profile)
+      expect(users_setting.display_email_on_profile).to eq(profile.display_email_on_profile)
     end
 
     it "sets the correct types" do
@@ -45,7 +47,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
 
       described_class.new.run
 
-      expect(Users::Setting.last.permit_adjacent_sponsors).to be_in([true, false])
+      expect(users_setting.permit_adjacent_sponsors).to be_in([true, false])
     end
 
     it "casts data (display_email_on_profile) to the correct types (boolean)" do
@@ -58,7 +60,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
 
       described_class.new.run
 
-      expect(Users::Setting.last.display_email_on_profile).to be_in([true, false])
+      expect(users_setting.display_email_on_profile).to be_in([true, false])
     end
 
     it "sets a fallback value for values that are null" do
@@ -66,7 +68,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
 
       described_class.new.run
 
-      expect(Users::Setting.last.display_announcements).to eq(true)
+      expect(users_setting.display_announcements).to be(true)
     end
   end
 
@@ -76,17 +78,17 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
 
       described_class.new.run
 
-      expect(Users::Setting.first.monospace?).to be(true)
+      expect(users_setting.monospace?).to be(true)
     end
 
-    # Not sure how to test this; when I pass in an invalid font, the spec errors with
-    # "Validation failed: Config font fake_font is not a valid font selection"
     it "assigns the fallback value when there value passed does not have an enum defined" do
-      create(:user)
+      user = create(:user)
+      user.update_columns(config_font: "fake_font")
+      user.reload
 
       described_class.new.run
 
-      expect(Users::Setting.first.default?).to be(true)
+      expect(users_setting.default?).to be(true)
     end
   end
 
@@ -95,27 +97,27 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
 
     described_class.new.run
 
-    expect(Users::Setting.first.created_at).to be > user.created_at
-    expect(Users::Setting.first.updated_at).to be > user.updated_at
+    expect(users_setting.created_at).to be > user.created_at
+    expect(users_setting.updated_at).to be > user.updated_at
   end
 
   context "when the user id exists in both the users_settings users tables" do
-    it "replaces the user_settings values with values from the user table" do
+    it "replaces the users_setting values with values from the user table" do
       user = create(:user, display_announcements: true)
       user_id = user.id
 
       described_class.new.run
 
-      expect(Users::Setting.first.user_id).to eq(user_id)
-      expect(Users::Setting.first.display_announcements).to be(true)
+      expect(users_setting.user_id).to eq(user_id)
+      expect(users_setting.display_announcements).to be(true)
 
-      user.update_column(:display_announcements, false)
+      user.update_columns(display_announcements: false)
       user.reload
 
       described_class.new.run
 
-      expect(Users::Setting.first.user_id).to eq(user_id)
-      expect(Users::Setting.first.display_announcements).to be(false)
+      expect(users_setting.user_id).to eq(user_id)
+      expect(users_setting.display_announcements).to be(false)
     end
   end
 end
