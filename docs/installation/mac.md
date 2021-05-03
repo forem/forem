@@ -8,18 +8,25 @@ title: macOS
 
 ### Ruby
 
-1. **Note:** MacOS ships with a version of Ruby, needed for various operating systems. 
-   To avoid causing an issue with your operating system you should use a version manager for Ruby.
+1. **Note:** MacOS ships with a version of Ruby, needed for various operating
+   systems. To avoid causing an issue with your operating system you should use
+   a version manager for Ruby.
 
-   If you don't already have a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). This will allow you to have different versions running on a per project basis. The MacOS system version of Ruby will stay intact while giving you the ability to use the version needed for this Forem project.
-Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
+   If you don't already have a Ruby version manager, we highly recommend
+   [rbenv](https://github.com/rbenv/rbenv). This will allow you to have
+   different versions running on a per project basis. The MacOS system version
+   of Ruby will stay intact while giving you the ability to use the version
+   needed for this Forem project. Please follow their
+   [installation guide](https://github.com/rbenv/rbenv#installation).
+
 2. With the Ruby version manager, install the Ruby version listed on our badge.
    (i.e. with rbenv: `rbenv install $(cat .ruby-version)`)
-   
-   **Note:** The repository must be forked and cloned before running the `rbenv install $(cat .ruby-version)` command.
-    
+
+   **Note:** The repository must be forked and cloned before running the
+   `rbenv install $(cat .ruby-version)` command.
 
 ### Yarn
+
 Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 ### PostgreSQL
@@ -63,146 +70,6 @@ You can test if it's up and running by issuing the following command:
 redis-cli ping
 ```
 
-### Elasticsearch
-
-Forem requires Elasticsearch 7.x to run. We recommend version 7.5.2.
-
-You have the option of installing Elasticsearch with Homebrew or through an
-archive. We **recommend** installing from archive on Mac.
-
-### Installing Elasticsearch from the archive
-
-We recommend that you **do not** install Elasticsearch in the app directory.
-Instead, we recommend installing it in your home directory (for example,
-`cd $HOME`). (This also ensures that we don't accidentally commit Elasticsearch
-code to the project's repository!)
-
-The following directions were
-[taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-macos),
-so check those out if you run into any issues or want further information. Make
-sure to download **the OSS version** of Elasticsearch, `elasticsearch-oss`.
-
-Please note that you will need `wget` in order to proceed with this installation
-(`brew install wget`).
-
-```shell
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz.sha512
-shasum -a 512 -c elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz.sha512
-tar -xzf elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
-```
-
-To start elasticsearch, make sure you are in the correct directory:
-
-```shell
-cd elasticsearch-7.5.2
-```
-
-You can then start it by running:
-
-```shell
-./bin/elasticsearch
-```
-
-To start elasticsearch as a daemonized process:
-
-```shell
-./bin/elasticsearch -d
-```
-
-### Installing Elasticsearch with Homebrew
-
-To install Elasticsearch with Homebrew we will use the following commands to:
-
-- tap the Elastic Homebrew repository
-- install the latest OSS distribution
-- pin the latest OSS distribution.
-
-```shell
-brew tap elastic/tap
-brew install elastic/tap/elasticsearch-oss
-brew pin elasticsearch-oss
-```
-
-After installation you can manually test if the Elasticsearch server starts by
-issuing the command `elasticsearch` in the shell. You can then start the server
-as a service with `brew services start elasticsearch-oss`.
-
-You can find further info on your local Elasticsearch installation by typing
-`brew info elastic/tap/elasticsearch-oss`.
-
-#### Troubleshooting startup issues
-
-Two possible startup issues you might encounter:
-
-- `java.nio.file.FileSystemLoopException`:
-
-```text
-Exception in thread "main" org.elasticsearch.bootstrap.BootstrapException: java.nio.file.FileSystemLoopException: /usr/local/etc/elasticsearch/elasticsearch
-Likely root cause: java.nio.file.FileSystemLoopException: /usr/local/etc/elasticsearch/elasticsearch
-```
-
-This happens because the installation of Elasticsearch might have a recursive
-link in the configuration directory causing the infinite loop:
-
-```shell
-> ll /usr/local/etc/elasticsearch
-elasticsearch -> /usr/local/etc/elasticsearch
-```
-
-By manually removing the link with
-`rm -i /usr/local/etc/elasticsearch/elasticsearch` the issue should be fixed.
-
-- `java.lang.IllegalStateException`:
-
-```text
-java.lang.IllegalStateException: Could not load plugin descriptor for plugin directory [plugins]
-Likely root cause: java.nio.file.NoSuchFileException: /usr/local/Cellar/elasticsearch-oss/7.6.0/libexec/plugins/plugins/plugin-descriptor.properties
-```
-
-This happens for a similar reason as the previous error, the installation might
-create a recursive link in the plugins directory.
-
-```shell
-> ll /usr/local/var/elasticsearch/plugins
-plugins -> /usr/local/var/elasticsearch/plugins
-```
-
-By manually removing the link with
-`rm -i /usr/local/var/elasticsearch/plugins/plugins` the issue should be fixed.
-
-### Testing if Elasticsearch is running
-
-Once installed and started you can test if it's up and running correctly by
-issuing the following command:
-
-```shell
-curl http://localhost:9200
-```
-
-You should receive in response a JSON document containing some information about
-your local Elasticsearch installation, for example:
-
-```json
-{
-  "name": "hostname",
-  "cluster_name": "elasticsearch_...",
-  "cluster_uuid": "...",
-  "version": {
-    "number": "7.5.2",
-    "build_flavor": "oss",
-    "build_type": "tar",
-    "build_hash": "8bec50e1e0ad29dad5653712cf3bb580cd1afcdf",
-    "build_date": "2020-01-15T12:11:52.313576Z",
-    "build_snapshot": false,
-    "lucene_version": "8.3.0",
-    "minimum_wire_compatibility_version": "6.8.0",
-    "minimum_index_compatibility_version": "6.0.0-beta1"
-  },
-  "tagline": "You Know, for Search"
-}
-```
-
 ## Installing Forem
 
 1. Fork Forem's repository, e.g. <https://github.com/forem/forem/fork>
@@ -240,8 +107,7 @@ your local Elasticsearch installation, for example:
 
 ### Possible error messages
 
-**Error:** 
-`rbenv install hangs at ruby-build: using readline from homebrew`
+**Error:** `rbenv install hangs at ruby-build: using readline from homebrew`
 
 **_Solution:_**
 [Stackoverflow answer](https://stackoverflow.com/questions/63599818/rbenv-install-hangs-at-ruby-build-using-readline-from-homebrew)

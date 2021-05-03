@@ -85,7 +85,7 @@ export class ListingDashboard extends Component {
           customSort,
         );
         return displayedListings.map((listing) => (
-          <ListingRow listing={listing} />
+          <ListingRow listing={listing} key={listing.id} />
         ));
       }
       displayedListings = filterListings(
@@ -105,13 +105,14 @@ export class ListingDashboard extends Component {
       (event.key === 'Enter' || event.key === ' ') && this.setState(state);
 
     const filters = ['All', 'Active', 'Draft', 'Expired'];
-    const filterButtons = filters.map((f) => (
+    const filterButtons = filters.map((f, index) => (
       <span
         onClick={(event) => {
           this.setState({ filter: event.target.textContent });
         }}
         className={`rounded-btn ${filter === f ? 'active' : ''}`}
         role="button"
+        key={index}
         onKeyPress={(event) =>
           setStateOnKeyPress(event, { filter: event.target.textContent })
         }
@@ -146,6 +147,7 @@ export class ListingDashboard extends Component {
         onClick={() => this.setState({ selectedListings: org.id })}
         className={`rounded-btn ${selectedListings === org.id ? 'active' : ''}`}
         role="button"
+        key={org.id}
         tabIndex="0"
         onKeyPress={(event) =>
           setStateOnKeyPress(event, { selectedListings: org.id })

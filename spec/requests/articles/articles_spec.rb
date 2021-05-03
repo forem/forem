@@ -65,7 +65,9 @@ RSpec.describe "Articles", type: :request do
 
     context "when :username param is not given" do
       let!(:featured_article) { create(:article, featured: true) }
-      let!(:not_featured_article) { create(:article, featured: false, score: SiteConfig.home_feed_minimum_score - 1) }
+      let!(:not_featured_article) do
+        create(:article, featured: false, score: Settings::UserExperience.home_feed_minimum_score - 1)
+      end
 
       before { get feed_path }
 
@@ -157,25 +159,25 @@ RSpec.describe "Articles", type: :request do
 
     context "with scored articles" do
       before do
-        allow(SiteConfig).to receive(:home_feed_minimum_score).and_return(10)
+        allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(10)
       end
 
-      it "does not contain non featured articles with a score below SiteConfig.home_feed_minimum_score" do
-        create(:article, featured: false, score: SiteConfig.home_feed_minimum_score - 1)
+      it "does not contain non featured articles with a score below Settings::UserExperience.home_feed_minimum_score" do
+        create(:article, featured: false, score: Settings::UserExperience.home_feed_minimum_score - 1)
 
         expect { get feed_path }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "contains non featured articles with a score equal to SiteConfig.home_feed_minimum_score" do
-        create(:article, featured: false, score: SiteConfig.home_feed_minimum_score)
+      it "contains non featured articles with a score equal to Settings::UserExperience.home_feed_minimum_score" do
+        create(:article, featured: false, score: Settings::UserExperience.home_feed_minimum_score)
 
         get feed_path
 
         expect(response).to have_http_status(:ok)
       end
 
-      it "contains non featured articles with a score above SiteConfig.home_feed_minimum_score" do
-        create(:article, featured: false, score: SiteConfig.home_feed_minimum_score + 1)
+      it "contains non featured articles with a score above Settings::UserExperience.home_feed_minimum_score" do
+        create(:article, featured: false, score: Settings::UserExperience.home_feed_minimum_score + 1)
 
         get feed_path
 

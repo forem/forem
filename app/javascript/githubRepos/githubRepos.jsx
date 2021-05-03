@@ -40,6 +40,7 @@ export class GithubRepos extends Component {
 
     const allRepos = repos.map((repo) => (
       <SingleRepo
+        key={repo.github_id_code}
         githubIdCode={repo.github_id_code}
         name={repo.name}
         fork={repo.fork}

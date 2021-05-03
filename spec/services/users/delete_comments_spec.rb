@@ -19,14 +19,6 @@ RSpec.describe Users::DeleteComments, type: :service do
     expect(Comment.where(user_id: user.id).any?).to be false
   end
 
-  it "removes comments from Elasticsearch" do
-    comment
-    sidekiq_perform_enqueued_jobs
-    expect(comment.elasticsearch_doc).not_to be_nil
-    sidekiq_perform_enqueued_jobs { described_class.call(user) }
-    expect { comment.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-  end
-
   it "busts cache" do
     described_class.call(user)
     expect(EdgeCache::BustComment).to have_received(:call).with(article).at_least(:once)

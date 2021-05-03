@@ -17,7 +17,7 @@ module Homepage
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100
-    SORT_PARAMS = %i[hotness_score public_reactions_count].freeze
+    SORT_PARAMS = %i[hotness_score public_reactions_count published_at].freeze
 
     def self.call(...)
       new(...).call
@@ -64,14 +64,7 @@ module Homepage
       @relation = @relation.where(published_at: published_at) if published_at.present?
       @relation = @relation.where(user_id: user_id) if user_id.present?
       @relation = @relation.where(organization_id: organization_id) if organization_id.present?
-
-      # as tags are in `OR` mode we can't use ActiveRecord's `.or()` because it
-      # would put all the previous filters in `OR` mode with tags, but what we need
-      # is to only consider tags as a `OR` sub-condition
-      if tags.present?
-        conditions = tags.map { |tag| relation.sanitize_sql_array(["cached_tag_list LIKE ?", "%#{tag}%"]) }
-        @relation = @relation.where(conditions.join(" OR "))
-      end
+      @relation = @relation.cached_tagged_with_any(tags) if tags.any?
 
       relation
     end

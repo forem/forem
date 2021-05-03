@@ -25,7 +25,7 @@ RSpec.describe "Admin creates new event", type: :system do
     click_button("Create Event")
   end
 
-  it "loads /admin/events" do
+  it "loads /admin/apps/events" do
     expect(page).to have_content("New Event")
   end
 

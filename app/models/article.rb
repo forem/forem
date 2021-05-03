@@ -3,13 +3,8 @@ class Article < ApplicationRecord
   include ActionView::Helpers
   include Storext.model
   include Reactable
-  include Searchable
   include UserSubscriptionSourceable
   include PgSearch::Model
-
-  SEARCH_SERIALIZER = Search::ArticleSerializer
-  SEARCH_CLASS = Search::FeedContent
-  DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
 
   acts_as_taggable_on :tags
   resourcify
@@ -112,9 +107,6 @@ class Article < ApplicationRecord
                                                  }
 
   after_commit :async_score_calc, :touch_collection, on: %i[create update]
-  after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :sync_related_elasticsearch_docs, on: %i[update]
-  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -156,7 +148,11 @@ class Article < ApplicationRecord
   serialize :cached_user
   serialize :cached_organization
 
-  pg_search_scope :search_reading_list,
+  # TODO: [@rhymes] Rename the article column and the trigger name.
+  # What was initially meant just for the reading list (filtered using the `reactions` table),
+  # is also used for the article search page.
+  # The name of the `tsvector` column and its related trigger should be adapted.
+  pg_search_scope :search_articles,
                   against: :reading_list_document,
                   using: {
                     tsearch: {
@@ -195,7 +191,7 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_with, lambda { |tag|
     case tag
-    when String
+    when String, Symbol
       # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
       # word" and "end of word", respectively. They're similar to `\b` in Perl-
       # compatible regexes (PCRE), but that matches at either end of a word.
@@ -212,16 +208,16 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_with_any, lambda { |tags|
     case tags
-    when String
+    when String, Symbol
       cached_tagged_with(tags)
     when Array
       tags
         .map { |tag| cached_tagged_with(tag) }
         .reduce { |acc, elem| acc.or(elem) }
     when Tag
-      cached_tagged_with(tag.name)
+      cached_tagged_with(tags.name)
     else
-      raise TypeError, "Cannot search tags for: #{tag.inspect}"
+      raise TypeError, "Cannot search tags for: #{tags.inspect}"
     end
   }
 
@@ -357,7 +353,6 @@ class Article < ApplicationRecord
 
   def touch_by_reaction
     async_score_calc
-    index_to_elasticsearch
   end
 
   def comments_blob
