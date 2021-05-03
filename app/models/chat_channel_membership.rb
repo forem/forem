@@ -1,10 +1,6 @@
 class ChatChannelMembership < ApplicationRecord
   attr_accessor :invitation_usernames
 
-  include Searchable
-  SEARCH_SERIALIZER = Search::ChatChannelMembershipSerializer
-  SEARCH_CLASS = Search::ChatChannelMembership
-
   ROLES = %w[member mod].freeze
   STATUSES = %w[active inactive pending rejected left_channel removed_from_channel joining_request].freeze
 
@@ -17,9 +13,6 @@ class ChatChannelMembership < ApplicationRecord
   validates :user_id, presence: true
 
   validate  :permission
-
-  after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   delegate :channel_type, to: :chat_channel
 

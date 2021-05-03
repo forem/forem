@@ -93,10 +93,6 @@ class SearchController < ApplicationController
     render json: { result: result }
   end
 
-  def users
-    render json: { result: user_search }
-  end
-
   def usernames
     result = Search::Postgres::Username.search_documents(params[:username])
 
@@ -195,10 +191,6 @@ class SearchController < ApplicationController
       page: feed_params[:page],
       per_page: feed_params[:per_page],
     )
-  end
-
-  def user_search
-    Search::User.search_documents(params: user_params.to_h)
   end
 
   def chat_channel_params
