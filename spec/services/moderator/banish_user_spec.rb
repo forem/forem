@@ -27,7 +27,7 @@ RSpec.describe Moderator::BanishUser, type: :service do
     create(:comment, user: user, commentable: article)
     sidekiq_perform_enqueued_jobs
 
-    sidekiq_perform_enqueued_jobs(except: Search::IndexWorker) do
+    sidekiq_perform_enqueued_jobs do
       described_class.call(user: user, admin: admin)
     end
     expect(user.comments.count).to eq 0

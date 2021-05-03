@@ -298,29 +298,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#after_commit" do
-    it "on update enqueues job to index user to elasticsearch" do
-      user.save
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, user.id]) do
-        user.save
-      end
-    end
-
-    it "on update syncs elasticsearch data" do
-      allow(user).to receive(:sync_related_elasticsearch_docs)
-      user.save
-      expect(user).to have_received(:sync_related_elasticsearch_docs)
-    end
-
-    it "on destroy enqueues job to delete user from elasticsearch" do
-      user.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
-                                   args: [described_class::SEARCH_CLASS.to_s, user.id]) do
-        user.destroy
-      end
-    end
-  end
-
   context "when callbacks are triggered before validation" do
     let(:user) { build(:user) }
 

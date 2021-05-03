@@ -118,23 +118,6 @@ RSpec.describe Comment, type: :model do
     end
     # rubocop:enable RSpec/NamedSubject
 
-    describe "#after_commit" do
-      it "on update enqueues job to index comment to elasticsearch" do
-        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, comment.id]) do
-          comment.save
-        end
-      end
-
-      it "on destroy enqueues job to delete comment from elasticsearch" do
-        comment = create(:comment)
-
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
-                                     args: [described_class::SEARCH_CLASS.to_s, comment.search_id]) do
-          comment.destroy
-        end
-      end
-    end
-
     describe "#search_id" do
       it "returns comment_ID" do
         expect(comment.search_id).to eq("comment_#{comment.id}")

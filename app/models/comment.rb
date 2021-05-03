@@ -4,10 +4,6 @@ class Comment < ApplicationRecord
 
   include PgSearch::Model
   include Reactable
-  include Searchable
-
-  SEARCH_SERIALIZER = Search::CommentSerializer
-  SEARCH_CLASS = Search::FeedContent
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
 
@@ -63,18 +59,9 @@ class Comment < ApplicationRecord
   after_create_commit :send_to_moderator
 
   after_commit :calculate_score, on: %i[create update]
-  after_commit :index_to_elasticsearch, on: %i[create update]
 
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
-  after_commit :remove_from_elasticsearch, on: [:destroy]
-
-  # [@atsmith813] this is adapted from the `search_field` property in
-  # `config/elasticsearch/mappings/feed_content.json` and
-  # `app/serializers/search/comment_serializer.rb`
-  #
-  # highlighter settings are taken from
-  # Search::QueryBuildersFeedContent#add_highlight_fields
   pg_search_scope :search_comments,
                   against: %i[body_markdown],
                   using: {
