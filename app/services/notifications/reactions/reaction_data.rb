@@ -12,7 +12,7 @@ module Notifications
       validates :reactable_type, inclusion: { in: %w[Article Comment] }
       validates :reactable_user_id, numericality: { only_integer: true }
 
-      def initialize(*args, **kwargs)
+      def initialize(attributes)
         super
         raise DataError unless valid?
       end

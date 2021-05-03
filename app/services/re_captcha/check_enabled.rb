@@ -21,8 +21,8 @@ module ReCaptcha
       return true if @user.nil?
       # recaptcha will not be enabled for tag moderator/trusted/admin users
       return false if @user.tag_moderator? || @user.trusted || @user.any_admin?
-      # recaptcha will be enabled if the user has been banned
-      return true if @user.banned
+      # recaptcha will be enabled if the user has been suspended
+      return true if @user.suspended?
 
       # recaptcha will be enabled if the user has a vomit or is too recent
       @user.vomitted_on? || @user.created_at.after?(1.month.ago)
@@ -31,7 +31,8 @@ module ReCaptcha
     private
 
     def keys_configured?
-      SiteConfig.recaptcha_site_key.present? && SiteConfig.recaptcha_secret_key.present?
+      Settings::Authentication.recaptcha_site_key.present? &&
+        Settings::Authentication.recaptcha_secret_key.present?
     end
   end
 end

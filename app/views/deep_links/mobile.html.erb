@@ -1,0 +1,48 @@
+<div id="mobile-deep-link-spinner" class="flex flex-col" aria-live="polite">
+  <svg class="crayons-icon crayons-spinner" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.364 5.636L16.95 7.05A7 7 0 1019 12h2a9 9 0 11-2.636-6.364z" fill="currentColor" class="grow-1"></path></svg>
+  <p class="align-center">Opening the mobile app...</p>
+</div>
+
+<div class="mobile-deep-link-banner invisible" role="alert">
+  <div class="crayons-notice crayons-notice--warning">
+    <p>
+      Whoops! Did you get stuck trying to open the mobile app?
+    </p>
+    <p class="mt-5">
+      Make sure it's installed and try again. If the problem persists contact <a href="mailto:<%= SiteConfig.email_addresses[:contact] %>"><%= SiteConfig.email_addresses[:contact] %></a>
+    </p>
+  </div>
+
+  <div class="crayons-card">
+    <div class="flex w-100">
+      <a href="javascript:history.back()" class="crayons-btn crayons-btn--l crayons-btn--secondary grow-1 whitespace-nowrap mt-5 mx-5">
+        Take me back
+      </a>
+    </div>
+
+    <div class="flex w-100">
+      <a id="link-to-mobile-install-retry" href="/" class="crayons-btn crayons-btn--l crayons-btn--secondary grow-1 whitespace-nowrap my-5 mx-5">
+        Try again
+      </a>
+    </div>
+
+    <div class="flex w-100">
+      <a id="link-to-mobile-install" href="/" class="crayons-btn crayons-btn--l grow-1 whitespace-nowrap mb-5 mx-5">
+        Install the app
+      </a>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  // The timeoutDelay is the amount of time (ms) the spinner will be visible for
+  // users. It is just "about 3 seconds", which gives users enough time to
+  // deep link into the mobile apps. It's chosen arbitrarily and can be edited
+  // in the future if other values want to be used. When the time is up the
+  // fallback options are revealed ("take me back", "try again" & "install").
+  const timeoutDelay = 3333;
+  setTimeout(function() {
+    document.getElementById('mobile-deep-link-spinner').remove();
+    document.querySelectorAll('.mobile-deep-link-banner')[0].classList.remove('invisible');
+  }, timeoutDelay);
+</script>

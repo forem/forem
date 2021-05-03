@@ -36,6 +36,7 @@ export class Onboarding extends Component {
         prev={this.prevSlide}
         slidesCount={this.slidesCount}
         currentSlideIndex={index}
+        key={index}
         communityConfig={props.communityConfig}
         previousLocation={previousLocation}
       />

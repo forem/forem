@@ -20,7 +20,7 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
   end
 
   it "relies on SiteConfig.app_domain to generate correct callbacks_url" do
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     visit sign_up_path
     Authentication::Providers.available.each do |provider_name|
       provider_auth_button = find("button.crayons-btn--brand-#{provider_name}")

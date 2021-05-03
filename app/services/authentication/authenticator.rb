@@ -20,8 +20,8 @@ module Authentication
       @cta_variant = cta_variant
     end
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     def call
@@ -97,8 +97,8 @@ module Authentication
 
     def find_or_create_user!
       username = provider.user_nickname
-      banned_user = Users::SuspendedUsername.previously_banned?(username)
-      raise ::Authentication::Errors::PreviouslyBanned if banned_user
+      suspended_user = Users::SuspendedUsername.previously_suspended?(username)
+      raise ::Authentication::Errors::PreviouslySuspended if suspended_user
 
       existing_user = User.where(
         provider.user_username_field => username,
@@ -146,10 +146,8 @@ module Authentication
       user.profile_updated_at = Time.current if user.public_send(field_name)
     end
 
-    def account_less_than_a_week_old?(user, logged_in_identity)
-      provider_created_at = user.public_send(provider.user_created_at_field)
-      user_identity_age = provider_created_at
-      user_identity_age ||= extract_created_at_from_payload(logged_in_identity)
+    def account_less_than_a_week_old?(_user, logged_in_identity)
+      user_identity_age = extract_created_at_from_payload(logged_in_identity)
 
       # last one is a fallback in case both are nil
       range = 1.week.ago.beginning_of_day..Time.current

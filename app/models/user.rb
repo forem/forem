@@ -5,11 +5,6 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
-  include PgSearch::Model
-  pg_search_scope :search_by_username,
-                  against: :username,
-                  using: { tsearch: { prefix: true } }
-
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
     available_for
@@ -41,7 +36,14 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS
+  PROVIDER_COLUMNS = %w[
+    apple_created_at
+    facebook_created_at
+    github_created_at
+    twitter_created_at
+  ].freeze
+
+  self.ignored_columns = PROFILE_COLUMNS + PROVIDER_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -94,7 +96,7 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
-  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
+  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password
 
@@ -108,6 +110,8 @@ class User < ApplicationRecord
   acts_as_follower
 
   has_one :profile, dependent: :destroy
+  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :destroy
+  has_one :setting, class_name: "Users::Setting", dependent: :destroy
 
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id,
                            inverse_of: :resource_owner, dependent: :delete_all
@@ -255,6 +259,39 @@ class User < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
+  # Unfortunately pg_search's default SQL query is not performant enough in this
+  # particular case (~ 500ms). There are multiple reasons:
+  # => creates a complex query like `SELECT FROM users INNER JOIN users` to compute ranking.
+  #    See https://github.com/Casecommons/pg_search/issues/292#issuecomment-202604151
+  # => it concatenates the content of `name` and the content of `username` to match
+  #    against the search term. By doing that, it can't use `tsvector` indexes correctly
+  #
+  # For these reasons we need to build a query manually using an `OR` condition,
+  # thus allowing the database to use the indexes properly. With this the SQL time is ~ 8-10ms.
+  #
+  # NOTE: we can't use unaccent() on the `tsvector` document because `unaccent()` can't be
+  # used in expression indexes as it's a mutable function and depends on server settings
+  # => https://stackoverflow.com/a/11007216/4186181
+  #
+  scope :search_by_name_and_username, lambda { |term|
+    where(
+      sanitize_sql_array(
+        [
+          "to_tsvector('simple', coalesce(name::text, '')) @@ to_tsquery('simple', ? || ':*')",
+          connection.quote(term),
+        ],
+      ),
+    ).or(
+      where(
+        sanitize_sql_array(
+          [
+            "to_tsvector('simple', coalesce(username::text, '')) @@ to_tsquery('simple', ? || ':*')",
+            connection.quote(term),
+          ],
+        ),
+      ),
+    )
+  }
   scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
@@ -269,20 +306,20 @@ class User < ApplicationRecord
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
-  after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
+  after_commit :bust_cache
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   def self.dev_account
-    find_by(id: SiteConfig.staff_user_id)
+    find_by(id: Settings::Community.staff_user_id)
   end
 
   def self.mascot_account
-    find_by(id: SiteConfig.mascot_user_id)
+    find_by(id: Settings::Mascot.mascot_user_id)
   end
 
   def tag_line
@@ -313,7 +350,7 @@ class User < ApplicationRecord
 
   def followed_articles
     Article
-      .tagged_with(cached_followed_tag_names, any: true).unscope(:select)
+      .cached_tagged_with_any(cached_followed_tag_names).unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
   end
 
@@ -366,13 +403,14 @@ class User < ApplicationRecord
     end
   end
 
-  # methods for Administrate field
-  def banned
-    has_role? :banned
+  def suspended?
+    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
+    # and data scripts have successfully removed the banned role, we can remove `has_role?(:banned)`
+    has_role?(:suspended) || has_role?(:banned)
   end
 
   def warned
-    has_role? :warned
+    has_role?(:warned)
   end
 
   def admin?
@@ -387,12 +425,6 @@ class User < ApplicationRecord
     has_role?(:tech_admin) || has_role?(:super_admin)
   end
 
-  def pro?
-    Rails.cache.fetch("user-#{id}/has_pro_role", expires_in: 200.hours) do
-      has_role?(:pro)
-    end
-  end
-
   def vomitted_on?
     Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
   end
@@ -401,7 +433,7 @@ class User < ApplicationRecord
     return @trusted if defined? @trusted
 
     @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
-      has_role? :trusted
+      has_role?(:trusted)
     end
   end
 
@@ -412,8 +444,11 @@ class User < ApplicationRecord
     end
   end
 
-  def comment_banned
-    has_role? :comment_banned
+  def comment_suspended?
+    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
+    # and data scripts have successfully removed the comment_banned role,
+    # we can remove `has_role?(:comment_banned)`
+    has_role?(:comment_suspended) || has_role?(:comment_banned)
   end
 
   def workshop_eligible?
@@ -628,6 +663,7 @@ class User < ApplicationRecord
     "#{employer_name}#{mostly_work_with}#{available_for}"
   end
 
+  # TODO: this can be removed once we migrate away from ES
   def search_score
     counts_score = (articles_count + comments_count + reactions_count + badge_achievements_count) * 10
     score = (counts_score + tag_keywords_for_search.size) * reputation_modifier

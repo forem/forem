@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/tags", type: :request do
+RSpec.describe "/admin/content_manager/tags", type: :request do
   let(:super_admin) { create(:user, :super_admin) }
   let(:tag)         { create(:tag) }
   let(:badge)       { create(:badge) }
@@ -17,28 +17,28 @@ RSpec.describe "/admin/tags", type: :request do
       social_preview_template: "article"
     }
   end
-  let(:post_resource) { post "/admin/tags", params: { tag: params } }
-  let(:put_resource) { put "/admin/tags/#{tag.id}", params: { tag: params } }
+  let(:post_resource) { post admin_tags_path, params: { tag: params } }
+  let(:put_resource) { put admin_tag_path(tag.id), params: { tag: params } }
 
   before do
     sign_in super_admin
   end
 
-  describe "GET /admin/tags" do
+  describe "GET /admin/content_manager/tags" do
     it "responds with 200 OK" do
       get admin_tags_path
       expect(response.status).to eq 200
     end
   end
 
-  describe "GET /admin/tags/:id" do
+  describe "GET /admin/content_manager/tags/:id" do
     it "responds with 200 OK" do
       get edit_admin_tag_path(tag.id)
       expect(response.status).to eq 200
     end
   end
 
-  describe "POST /admin/tags" do
+  describe "POST /admin/content_manager/tags" do
     it "creates a new tag" do
       expect do
         post_resource
@@ -47,7 +47,7 @@ RSpec.describe "/admin/tags", type: :request do
     end
   end
 
-  describe "PUT /admin/tags" do
+  describe "PUT /admin/content_manager/tags" do
     it "updates Tag" do
       put_resource
       tag.reload

@@ -10,7 +10,7 @@ RSpec.describe Slack::Announcer, type: :service do
       username: "",
       icon_emoji: ":o:"
     }
-    expect(described_class.call(params)).to be_nil
+    expect(described_class.call(**params)).to be_nil
     expect(SlackClient).not_to have_received(:ping)
   end
 
@@ -25,7 +25,7 @@ RSpec.describe Slack::Announcer, type: :service do
       icon_emoji: ":o:"
     }
 
-    described_class.call(params)
+    described_class.call(**params)
 
     expect(SlackClient).to have_received(:ping)
       .with(message, params.reject { |k| k == :message })

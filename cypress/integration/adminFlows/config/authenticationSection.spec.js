@@ -58,16 +58,17 @@ describe('Authentication Section', () => {
           cy.findByLabelText('Facebook enabled').should('not.be.visible');
           cy.findByLabelText('GitHub enabled').should('not.be.visible');
           cy.findByLabelText('Twitter enabled').should('not.be.visible');
+
+          cy.visit('/signout_confirm');
+
+          cy.findByRole('button', { name: 'Yes, sign out' }).click();
+          cy.findByRole('link', { name: 'Create account' }).click();
+
+          cy.findByLabelText('Sign up with Email').should('not.exist');
+          cy.findByLabelText('Sign up with Facebook').should('not.exist');
+          cy.contains('invite only').should('be.visible');
         });
       });
-      cy.visit('/signout_confirm');
-
-      cy.findByText('Yes, sign out').click();
-      cy.findByText('Create account').click();
-
-      cy.findByLabelText('Sign up with Email').should('not.exist');
-      cy.findByLabelText('Sign up with Facebook').should('not.exist');
-      cy.contains('invite only').should('be.visible');
     });
   });
 
@@ -91,7 +92,6 @@ describe('Authentication Section', () => {
           .findByText('Update Site Configuration')
           .click();
 
-        cy.findByText('Setup not complete').should('be.visible');
         cy.get('.crayons-modal__box__body > ul > li')
           .contains('facebook')
           .should('be.visible');
@@ -107,8 +107,8 @@ describe('Authentication Section', () => {
 
         cy.get('@authSectionForm').findByText('Authentication').click();
         cy.get('#facebook-auth-btn').click();
-        cy.get('#site_config_facebook_key').type('randomkey');
-        cy.get('#site_config_facebook_secret').type('randomsecret');
+        cy.get('#settings_authentication_facebook_key').type('randomkey');
+        cy.get('#settings_authentication_facebook_secret').type('randomsecret');
         cy.get('@user').then(({ username }) => {
           cy.get('@authSectionForm')
             .findByPlaceholderText('Confirmation text')

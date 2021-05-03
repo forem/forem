@@ -9,8 +9,8 @@ module Notifications
 
       delegate :user_data, :comment_data, to: Notifications
 
-      def self.call(*args)
-        new(*args).call
+      def self.call(...)
+        new(...).call
       end
 
       def call
@@ -49,7 +49,10 @@ module Notifications
             user_ids: targets,
             title: "@#{comment.user.username}",
             body: "Re: #{comment.parent_or_root_article.title.strip}",
-            payload: { url: URL.url(url_path) },
+            payload: {
+              url: URL.url(url_path),
+              type: "new comment"
+            },
           )
         end
 

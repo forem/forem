@@ -17,10 +17,7 @@ module Admin
         .where("score > ? AND score < ?", -10, 8)
         .limit(120)
 
-      @possible_spam_users = User.registered.where(
-        "github_created_at > ? OR twitter_created_at > ? OR length(name) > ?",
-        50.hours.ago, 50.hours.ago, 30
-      )
+      @possible_spam_users = User.registered.where("length(name) > ?", 30)
         .where("created_at > ?", 48.hours.ago)
         .order(created_at: :desc)
         .select(:username, :name, :id)
@@ -107,7 +104,7 @@ module Admin
       <<~HEREDOC
         *New note from #{params['author_name']}:*
         *Report status: #{params['feedback_message_status']}*
-        Report page: https://#{SiteConfig.app_domain}/admin/reports/#{params['noteable_id']}
+        Report page: admin_report_url(params['noteable_id'])
         --------
         Message: #{params['content']}
       HEREDOC

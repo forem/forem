@@ -1,10 +1,10 @@
 class ApiSecretPolicy < ApplicationPolicy
   def create?
-    !user_is_banned?
+    !user_suspended?
   end
 
   def destroy?
-    user_is_owner?
+    user_owner?
   end
 
   def permitted_attributes
@@ -13,7 +13,7 @@ class ApiSecretPolicy < ApplicationPolicy
 
   private
 
-  def user_is_owner?
+  def user_owner?
     user.id == record.user_id
   end
 end

@@ -24,7 +24,7 @@ RSpec.describe PushNotifications::Send, type: :service do
     before { allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(false) }
 
     it "does nothing if the feature flag is disabled" do
-      expect { described_class.call(params) }
+      expect { described_class.call(**params) }
         .not_to change { Rpush::Client::Redis::Notification.all.count }
     end
   end
@@ -37,7 +37,7 @@ RSpec.describe PushNotifications::Send, type: :service do
 
     it "does nothing", :aggregate_failures do
       expect(user.devices.count).to eq(0)
-      expect { described_class.call(params) }
+      expect { described_class.call(**params) }
         .not_to change { Rpush::Client::Redis::Notification.all.count }
     end
   end
@@ -51,7 +51,7 @@ RSpec.describe PushNotifications::Send, type: :service do
     end
 
     it "creates a notification and enqueues it" do
-      expect { described_class.call(params) }
+      expect { described_class.call(**params) }
         .to change { Rpush::Client::Redis::Notification.all.count }.by(1)
         .and change(PushNotifications::DeliverWorker.jobs, :size).by(1)
     end
@@ -59,7 +59,7 @@ RSpec.describe PushNotifications::Send, type: :service do
     it "creates a single notification for each of the user's devices when they have multiple" do
       create(:device, user: user)
 
-      expect { described_class.call(params) }
+      expect { described_class.call(**params) }
         .to change { Rpush::Client::Redis::Notification.all.count }.by(2)
         .and change(PushNotifications::DeliverWorker.jobs, :size).by(1)
     end
@@ -75,7 +75,7 @@ RSpec.describe PushNotifications::Send, type: :service do
     end
 
     it "creates a notification and enqueues it" do
-      expect { described_class.call(many_targets_params) }
+      expect { described_class.call(**many_targets_params) }
         .to change { Rpush::Client::Redis::Notification.all.count }.by(2)
         .and change { PushNotifications::DeliverWorker.jobs.size }.by(1)
     end
@@ -83,7 +83,7 @@ RSpec.describe PushNotifications::Send, type: :service do
     it "creates a single notification for each of the user's devices when they have multiple" do
       create(:device, user: user)
 
-      expect { described_class.call(many_targets_params) }
+      expect { described_class.call(**many_targets_params) }
         .to change { Rpush::Client::Redis::Notification.all.count }.by(3)
         .and change { PushNotifications::DeliverWorker.jobs.size }.by(1)
     end

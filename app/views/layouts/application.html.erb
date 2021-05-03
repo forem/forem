@@ -48,7 +48,7 @@
     <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
       <body
         data-user-status="<%= user_logged_in_status %>"
-        class="<%= SiteConfig.default_font.tr("_", "-") %>-article-body default-header"
+        class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
         data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
         data-app-domain="<%= ChatChannel.urlsafe_encoded_app_domain %>"
         data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
@@ -60,10 +60,10 @@
         <div id="body-styles">
           <style>
             :root {
-              --accent-brand: <%= SiteConfig.primary_brand_color_hex %>;
-              --accent-brand-darker: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).brightness(0.85) %>;
-              --accent-brand-lighter: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).brightness(1.1) %>;
-              --accent-brand-a10: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).opacity(0.1) %>;
+              --accent-brand: <%= Settings::UserExperience.primary_brand_color_hex %>;
+              --accent-brand-darker: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.85) %>;
+              --accent-brand-lighter: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.1) %>;
+              --accent-brand-a10: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).opacity(0.1) %>;
             }
           </style>
         </div>
@@ -104,15 +104,21 @@
       </div>
     <% end %>
     <%= yield %>
+    <% if FeatureFlag.enabled?(:runtime_banner) || ENV['E2E'] == 'true' %>
+      <div class="Browser-iOS">
+        <div class="runtime-banner">
+          <a href="<%= URL.deep_link(request.path) %>" target="_blank" class="flex items-center flex-1">
+            <%= inline_svg_tag("logo-forem-app.svg", aria_hidden: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32) %>
+            <span class="ml-2">Open with the Forem app...</span>
+          </a>
+          <button type="button" class="runtime-banner__dismiss crayons-btn crayons-btn--ghost crayons-btn--icon crayons-btn--inverted crayons-btn--s pl-2">
+            <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Dismiss banner: Open with the Forem app") %>
+          </button>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>
-<% if FeatureFlag.enabled?(:runtime_banner) %>
-  <div class="Browser-iOS Browser-Android runtime-banner">
-    <div class="runtime-banner__inner">
-      <span>Open with the Forem app</span>
-    </div>
-  </div>
-<% end %>
 <% unless internal_navigation? %>
   <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{SiteConfig.admin_action_taken_at&.rfc3339}", expires_in: 24.hours) do %>
     <%= render "layouts/footer" %>

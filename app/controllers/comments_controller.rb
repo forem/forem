@@ -79,7 +79,7 @@ class CommentsController < ApplicationController
         return
       end
 
-      render partial: "comments/comment.json"
+      render partial: "comments/comment", formats: :json
 
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,
@@ -110,7 +110,7 @@ class CommentsController < ApplicationController
     response_template = ResponseTemplate.find(params[:response_template][:id])
     authorize response_template, :moderator_create?
 
-    moderator = User.find(SiteConfig.mascot_user_id)
+    moderator = User.find(Settings::Mascot.mascot_user_id)
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = moderator.id
     @comment.body_markdown = response_template.content

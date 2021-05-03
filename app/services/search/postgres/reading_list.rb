@@ -12,6 +12,7 @@ module Search
         "reactions.id AS reaction_id",
         "reactions.user_id AS reaction_user_id",
       ].freeze
+      REACTION_ATTRIBUTES = %i[id reactable_id user_id].freeze
       USER_ATTRIBUTES = %i[id name profile_image username].freeze
 
       DEFAULT_STATUSES = %w[confirmed valid].freeze
@@ -25,13 +26,13 @@ module Search
         statuses = statuses.presence || DEFAULT_STATUSES
         tags = tags.presence || []
 
-        # NOTE: [@rhymes] we should eventually update the frontend
+        # TODO: [@rhymes] we should eventually update the frontend
         # to start from page 1
         page = page.to_i + 1
         per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
         result = find_articles(
-          user_id: user.id,
+          user: user,
           term: term,
           statuses: statuses,
           tags: tags,
@@ -58,42 +59,32 @@ module Search
         }
       end
 
-      def self.find_articles(user_id:, term:, statuses:, tags:, page:, per_page:)
-        relation = ::Article
-          .joins(:reactions)
-          .where("reactions.category": :readinglist)
-          .where("reactions.user_id": user_id)
-          .where("reactions.status": statuses)
+      def self.find_articles(user:, term:, statuses:, tags:, page:, per_page:)
+        # [@jgaskins, @rhymes] as `reactions` is potentially a big table, adding pagination
+        # to an INNER JOIN (eg. `joins(:reactions)`) exponentially decreases the performance,
+        # incrementing query time as the database has to scan all the rows just to discard
+        # them right after if they lie outside the bounds of the `OFFSET`.
+        # Even though it should have had a similar performance, we realized that a subquery
+        # enabled PostgreSQL query planner to drastically decrease the planned time (ca. 145x)
+        reaction_query_sql = user.reactions.readinglist
+          .where(status: statuses, reactable_type: "Article")
+          .order(created_at: :desc)
+          .select(*REACTION_ATTRIBUTES)
+          .to_sql
 
-        relation = relation.search_reading_list(term) if term.present?
+        relation = ::Article.joins(
+          "INNER JOIN (#{reaction_query_sql}) reactions ON reactions.reactable_id = articles.id",
+        )
 
-        # NOTE: [@rhymes] A previous version was implemented with:
-        # `.tagged_with(tags, any: false).reselect(*ATTRIBUTES)`
-        #
-        # =>`.tagged_with()` merges `articles.*` to the SQL, thus we needed to
-        #    use `reselect()`, see https://github.com/forem/forem/pull/12420
-        # => `.tagged_with()` with multiple tags constructs a monster query,
-        #    see https://explain.depesz.com/s/CqQV / https://explain.dalibo.com/plan/1Lm
-        # This is because the `acts-as-taggable-on` query creates a separate INNER JOIN
-        # per each tag that is added to the list, each new clause uses the `LIKE` operator on `tags.name`.
-        # That could have been improved by by adding a GIN index on `tags.name`, see
-        # https://www.cybertec-postgresql.com/en/postgresql-more-performance-for-like-and-ilike-statements/
-        # and a similar discussion https://github.com/forem/forem/pull/12584#discussion_r570756176
-        #
-        # An alternative solution, as we don't need the `Tag` model itself, is to use
-        # `articles.cached_tag_list` and the `LIKE` operator on it, this could be further
-        # improved, if needed, by adding a GIN index on `cached_tag_list`
-        # It seems not to be needed as this approach is roughly 1850 times faster than the previous
-        # see https://explain.depesz.com/s/ajoP / https://explain.dalibo.com/plan/PZb
-        tags.each do |tag|
-          relation = relation.where("articles.cached_tag_list LIKE ?", "%#{tag}%")
-        end
+        relation = relation.search_articles(term) if term.present?
+
+        relation = relation.cached_tagged_with(tags) if tags.any?
 
         # here we issue a COUNT(*) after all the conditions are applied,
         # because we need to fetch the total number of articles, pre pagination
         total = relation.count
 
-        relation = relation.select(*ATTRIBUTES).order("reactions.created_at": :desc)
+        relation = relation.select(*ATTRIBUTES)
         relation = relation.page(page).per(per_page)
 
         {

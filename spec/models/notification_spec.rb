@@ -344,13 +344,13 @@ RSpec.describe Notification, type: :model do
         end.to change(user.notifications, :count).by(0)
       end
 
-      it "does not send a notification to the author of an article" do
+      it "does send a notification to the author of an article" do
         article.update(receive_notifications: false)
         reaction = create(:reaction, reactable: article, user: user2)
 
         expect do
           described_class.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-        end.to change(user.notifications, :count).by(0)
+        end.to change(user.notifications, :count).by(1)
       end
     end
 

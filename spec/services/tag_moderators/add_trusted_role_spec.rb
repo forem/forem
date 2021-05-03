@@ -7,8 +7,8 @@ RSpec.describe TagModerators::AddTrustedRole, type: :service do
     expect { described_class.call(user) }.to change { user.reload.roles.size }.by(1)
   end
 
-  it "does not add the fole for banned users" do
-    user = create(:user, :banned)
+  it "does not add the fole for suspended users" do
+    user = create(:user, :suspended)
     expect { described_class.call(user) }.not_to change { user.reload.roles.size }
   end
 

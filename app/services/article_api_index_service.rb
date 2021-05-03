@@ -9,6 +9,7 @@ class ArticleApiIndexService
     @tags_exclude = params[:tags_exclude]
     @username = params[:username]
     @state = params[:state]
+    @sort = params[:sort]
     @top = params[:top]
     @collection_id = params[:collection_id]
     @per_page = params[:per_page]
@@ -27,6 +28,8 @@ class ArticleApiIndexService
       top_articles
     elsif collection_id.present?
       collection_articles(collection_id)
+    elsif sort.present?
+      sorted_articles(sort)
     else
       base_articles
     end
@@ -34,7 +37,7 @@ class ArticleApiIndexService
 
   private
 
-  attr_reader :tag, :tags, :tags_exclude, :username, :page, :state, :top, :collection_id, :per_page
+  attr_reader :tag, :tags, :tags_exclude, :username, :page, :state, :sort, :top, :collection_id, :per_page
 
   def username_articles
     num = if @state == "all"
@@ -105,6 +108,8 @@ class ArticleApiIndexService
                    "public_reactions_count > ? AND public_reactions_count < ? AND featured_number > ?",
                    19, 33, 3.days.ago.to_i
                  )
+               when "recent"
+                 articles.order(published_at: :desc)
                else
                  Article.none
                end
@@ -119,6 +124,19 @@ class ArticleApiIndexService
       .order(:published_at)
       .page(page)
       .per(per_page || DEFAULT_PER_PAGE)
+  end
+
+  def sorted_articles(sort)
+    # This could be expanded to allow additional sorting options
+    if sort == "desc"
+      Article.published
+        .includes(:user, :organization)
+        .order(published_at: :desc)
+        .page(page)
+        .per(per_page || DEFAULT_PER_PAGE)
+    else
+      Article.none
+    end
   end
 
   def base_articles

@@ -50,7 +50,7 @@ module EdgeCache
       response = http.get(uri.request_uri)
 
       return true if response.is_a?(Net::HTTPSuccess)
-    rescue StandardError
+    rescue StandardError => e
       # If we can't connect to OpenResty, alert ourselves that it is
       # unavailable and return false.
       Rails.logger.error("Could not connect to OpenResty via #{ApplicationConfig['OPENRESTY_URL']}!")

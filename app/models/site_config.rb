@@ -11,8 +11,6 @@ class SiteConfig < RailsSettings::Base
   HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/.freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
-  VALID_URL = %r{\A(http|https)://([/|.\w\s-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
-  URL_MESSAGE = "must be a valid URL".freeze
 
   # Forem Team
   # [forem-fix] Remove channel name from SiteConfig
@@ -29,40 +27,29 @@ class SiteConfig < RailsSettings::Base
   field :health_check_token, type: :string
   field :video_encoder_key, type: :string
 
-  # Authentication
-  field :allow_email_password_registration, type: :boolean, default: false
-  field :allow_email_password_login, type: :boolean, default: true
+  # NOTE: @citizen428 These two values will be removed once we fully migrated
+  # to Settings::Authentication. Until then we need them for the data update script.
   field :allowed_registration_email_domains, type: :array, default: %w[], validates: {
     valid_domain_csv: true
   }
-  field :display_email_domain_allow_list_publicly, type: :boolean, default: false
-  field :require_captcha_for_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: %w[]
-  field :invite_only_mode, type: :boolean, default: false
-  field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
-  field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
-  field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
-  field :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
-  field :facebook_key, type: :string
-  field :facebook_secret, type: :string
-  field :apple_client_id, type: :string
-  field :apple_key_id, type: :string
-  field :apple_pem, type: :string
-  field :apple_team_id, type: :string
 
+  # NOTE: @citizen428 The whole block of campaign settings will be removed once
+  # we fully migrated to Settings::Campaign across the fleet.
   # Campaign
   field :campaign_call_to_action, type: :string, default: "Share your project"
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
   field :campaign_sidebar_image, type: :string, default: nil, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
+    url: true
   }
   field :campaign_url, type: :string, default: nil
   field :campaign_articles_require_approval, type: :boolean, default: 0
   field :campaign_articles_expiry_time, type: :integer, default: 4
-
   # Community Content
+  # NOTE: @citizen428 All these settings will be removed once we full migrated
+  # to Settings::Community across the fleet.
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
   field :community_emoji, type: :string, default: "🌱", validates: { emoji_only: true }
   # collective_noun and collective_noun_disabled have been added back temporarily for
@@ -89,36 +76,25 @@ class SiteConfig < RailsSettings::Base
   }
 
   # Email digest frequency
-  field :periodic_email_digest_max, type: :integer, default: 2
-  field :periodic_email_digest_min, type: :integer, default: 0
-
-  # Jobs
-  field :jobs_url, type: :string
-  field :display_jobs_banner, type: :boolean, default: false
+  field :periodic_email_digest, type: :integer, default: 2
 
   # Google Analytics Tracking ID, e.g. UA-71991000-1
   field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
-
-  # Google ReCATPCHA keys
-  field :recaptcha_site_key, type: :string, default: ApplicationConfig["RECAPTCHA_SITE"]
-  field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
   # Images
   field :main_social_image,
         type: :string,
         default: proc { URL.local_image("social-media-cover.png") },
-        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
+        validates: { url: true }
 
   field :favicon_url, type: :string, default: proc { URL.local_image("favicon.ico") }
   field :logo_png,
         type: :string,
         default: proc { URL.local_image("icon.png") },
-        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
+        validates: { url: true }
 
   field :logo_svg, type: :string
-  field :secondary_logo_url, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
+  field :secondary_logo_url, type: :string, validates: { url: true }
 
   field :enable_video_upload, type: :boolean, default: false
 
@@ -127,11 +103,9 @@ class SiteConfig < RailsSettings::Base
   field :mascot_image_url,
         type: :string,
         default: proc { URL.local_image("mascot.png") },
-        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
+        validates: { url: true }
   field :mascot_image_description, type: :string, default: "The community mascot"
-  field :mascot_footer_image_url, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
+  field :mascot_footer_image_url, type: :string, validates: { url: true }
   field :mascot_footer_image_width, type: :integer, default: 52
   field :mascot_footer_image_height, type: :integer, default: 120
 
@@ -160,14 +134,14 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Onboarding
-  field :onboarding_background_image, type: :string, validates: {
-    format: { with: VALID_URL, message: URL_MESSAGE }
-  }
+  field :onboarding_background_image, type: :string, validates: { url: true }
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
   field :prefer_manual_suggested_users, type: :boolean, default: false
 
   # Rate limits and spam prevention
+  # NOTE: @citizen428 These will be removed once we migrated to the new settings
+  # model across the fleet.
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_comment_antispam_creation, type: :integer, default: 1
@@ -204,6 +178,8 @@ class SiteConfig < RailsSettings::Base
   # Tags
   field :sidebar_tags, type: :array, default: %w[]
 
+  # NOTE: @citizen428 - These will be removed once we migrated to Settings::UserExperience
+  # across the whole fleet.
   # User Experience
   # These are the default UX settings, which can be overridded by individual user preferences.
   # basic (current default), rich (cover image on all posts), compact (more minimal)
@@ -248,17 +224,6 @@ class SiteConfig < RailsSettings::Base
   def self.dev_to?
     app_domain == "dev.to"
   end
-
-  # Apple uses different keys than the usual `PROVIDER_NAME_key` or
-  # `PROVIDER_NAME_secret` so these will help the generalized authentication
-  # code to work, i.e. https://github.com/forem/forem/blob/master/app/helpers/authentication_helper.rb#L26-L29
-  def self.apple_key
-    return unless apple_client_id.present? && apple_key_id.present? &&
-      apple_pem.present? && apple_team_id.present?
-
-    "present"
-  end
-  singleton_class.__send__(:alias_method, :apple_secret, :apple_key)
 
   # To get default values
   def self.get_default(field)

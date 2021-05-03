@@ -11,7 +11,7 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
         article = create(:article, tags: "discuss", score: described_class::MINIMUM_SCORE + 1)
         create(:article, published_at: 2.days.ago, tags: "discuss", score: described_class::MINIMUM_SCORE + 1)
 
-        result = described_class.call(options: { tags: "discuss", time_ago: "latest", count: 10 })
+        result = described_class.call(tags: "discuss", time_ago: "latest", count: 10)
         expect(result.length).to eq(2)
         expect(result.first.first).to eq(article.path)
       end
@@ -19,7 +19,7 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
       it "returns any article if no higher-quality article is found", :aggregate_failures do
         article = create(:article, tags: "discuss", score: described_class::MINIMUM_SCORE - 10)
 
-        result = described_class.call(options: { tags: "discuss", time_ago: "latest", count: 10 })
+        result = described_class.call(tags: "discuss", time_ago: "latest", count: 10)
         expect(result.length).to eq(1)
         expect(result.first.first).to eq(article.path)
       end
@@ -34,7 +34,7 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
         create(:article, published_at: time - 2.days,  comments_count: 30, tags: "discuss",
                          score: described_class::MINIMUM_SCORE)
 
-        result = described_class.call(options: { tags: "discuss", time_ago: time, count: 10 })
+        result = described_class.call(tags: "discuss", time_ago: time, count: 10)
         expect(result.length).to eq(2)
         expect(result.first.first).to eq(article.path)
       end
@@ -45,7 +45,7 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
                                    score: described_class::MINIMUM_SCORE)
         create(:article, comments_count: 10, tags: "discuss", score: described_class::MINIMUM_SCORE - 10)
 
-        result = described_class.call(options: { tags: "discuss", time_ago: time, count: 10 })
+        result = described_class.call(tags: "discuss", time_ago: time, count: 10)
         expect(result.length).to eq(2)
         expect(result.first.first).to eq(article.path)
       end
@@ -57,7 +57,7 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
                                    score: described_class::MINIMUM_SCORE)
         create(:article, last_comment_at: nil, tags: "discuss", score: described_class::MINIMUM_SCORE)
 
-        result = described_class.call(options: { tags: "discuss", time_ago: nil, count: 10 })
+        result = described_class.call(tags: "discuss", time_ago: nil, count: 10)
         expect(result.length).to eq(2)
         expect(result.first.first).to eq(article.path)
       end
@@ -67,7 +67,7 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
                                    score: described_class::MINIMUM_SCORE - 10)
         create(:article, last_comment_at: 2.days.ago, tags: "discuss", score: described_class::MINIMUM_SCORE - 10)
 
-        result = described_class.call(options: { tags: "discuss", time_ago: nil, count: 10 })
+        result = described_class.call(tags: "discuss", time_ago: nil, count: 10)
         expect(result.length).to eq(2)
         expect(result.first.first).to eq(article.path)
       end

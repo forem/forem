@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "/admin/tags/:id/moderator", type: :request do
+RSpec.describe "/admin/content_manager/tags/:id/moderator", type: :request do
   let(:super_admin) { create(:user, :super_admin) }
   let(:user)        { create(:user) }
   let(:tag)         { create(:tag) }
 
-  describe "POST /admin/tags/:id/moderator" do
+  describe "POST /admin/content_manager/tags/:id/moderator" do
     before { sign_in super_admin }
 
     it "adds the given user as trusted and as a tag moderator" do
@@ -15,7 +15,7 @@ RSpec.describe "/admin/tags/:id/moderator", type: :request do
     end
   end
 
-  describe "DELETE /admin/tags/:id/moderator" do
+  describe "DELETE /admin/content_manager/tags/:id/moderator" do
     before do
       sign_in super_admin
       user.add_role(:trusted)

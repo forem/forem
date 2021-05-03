@@ -84,7 +84,7 @@
 
 <% if current_user.has_role?(:super_admin) || current_user.has_role?(:admin) %>
   <center>
-    <h1><a href="/admin/tags/<%= @tag.id %>/edit" data-no-instant><%= @tag.name %>'s admin page</a></h1>
+    <h1><a href="<%= edit_admin_tag_path(@tag.id) %>" data-no-instant><%= @tag.name %>'s admin page</a></h1>
     <br />
     <br />
     <br />

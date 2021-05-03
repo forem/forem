@@ -59,12 +59,12 @@ RSpec.describe GithubRepo, type: :model do
 
     it "creates a new repo" do
       expect do
-        described_class.upsert(user, params)
+        described_class.upsert(user, **params)
       end.to change(described_class, :count).by(1)
     end
 
     it "creates a repo for the given user" do
-      repo = described_class.upsert(user, params)
+      repo = described_class.upsert(user, **params)
 
       expect(repo.user_id).to eq(user.id)
     end

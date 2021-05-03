@@ -63,7 +63,7 @@ class StoriesController < ApplicationController
 
   def get_latest_campaign_articles
     campaign_articles_scope = Article.tagged_with(Campaign.current.featured_tags, any: true)
-      .where("published_at > ? AND score > ?", SiteConfig.campaign_articles_expiry_time.weeks.ago, 0)
+      .where("published_at > ? AND score > ?", Settings::Campaign.articles_expiry_time.weeks.ago, 0)
       .order(hotness_score: :desc)
 
     requires_approval = Campaign.current.articles_require_approval?
@@ -135,7 +135,7 @@ class StoriesController < ApplicationController
 
     @num_published_articles = if @tag_model.requires_approval?
                                 @tag_model.articles.published.where(approved: true).count
-                              elsif SiteConfig.feed_strategy == "basic"
+                              elsif Settings::UserExperience.feed_strategy == "basic"
                                 tagged_count
                               else
                                 Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
@@ -236,6 +236,7 @@ class StoriesController < ApplicationController
     # 2nd with 1 badge (!) <-- and that would look off.
     @badges_limit = 6
     @profile = @user.profile.decorate
+    @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld
@@ -254,12 +255,12 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_view_param
-    redirect_to "/admin/users/#{@user.id}" if params[:view] == "moderate"
-    redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
+    redirect_to admin_user_path(@user.id) if params[:view] == "moderate"
+    redirect_to edit_admin_user_path(@user.id) if params[:view] == "admin"
   end
 
   def redirect_if_show_view_param
-    redirect_to "/admin/articles/#{@article.id}" if params[:view] == "moderate"
+    redirect_to admin_article_path(@article.id) if params[:view] == "moderate"
   end
 
   def handle_article_show
@@ -352,7 +353,7 @@ class StoriesController < ApplicationController
     elsif params[:timeframe] == "latest"
       @stories.where("score > ?", -20).order(published_at: :desc)
     else
-      @stories.order(hotness_score: :desc).where("score >= ?", SiteConfig.home_feed_minimum_score)
+      @stories.order(hotness_score: :desc).where("score >= ?", Settings::UserExperience.home_feed_minimum_score)
     end
   end
 
@@ -484,6 +485,6 @@ class StoriesController < ApplicationController
   end
 
   def tagged_count
-    @tag_model.articles.published.where("score >= ?", SiteConfig.tag_feed_minimum_score).count
+    @tag_model.articles.published.where("score >= ?", Settings::UserExperience.tag_feed_minimum_score).count
   end
 end

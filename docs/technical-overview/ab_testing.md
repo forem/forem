@@ -19,7 +19,7 @@ the ecosystem after time has passed.
 ## Creating a new A/B test
 
 Follow the guidelines of the field test gem and add the test info to
-[config/field_test.yml](https://github.com/forem/forem/blob/master/config/field_test.yml).
+[config/field_test.yml](https://github.com/forem/forem/blob/main/config/field_test.yml).
 
 Then where you want to trigger the variant, you'll add some code like this:
 

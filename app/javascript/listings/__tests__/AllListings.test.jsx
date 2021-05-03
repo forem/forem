@@ -103,18 +103,13 @@ describe('<AllListings />', () => {
   });
 
   it('should render the given listings', async () => {
-    const { getByTestId, getByText } = renderAllListings();
-
-    // Ensure each listing is present
-    const titleOptions = {
-      selector: 'h2 > a',
-    };
+    const { getByTestId, getByText, getByRole } = renderAllListings();
 
     // 1st listings
     getByTestId('single-listing-20');
 
     // listing title
-    const listing1Title = getByText('Mentor wanted', titleOptions);
+    const listing1Title = getByRole('link', { name: 'Mentor wanted' });
 
     expect(listing1Title.getAttribute('href')).toEqual(
       '/listings/misc/illo-iure-quos-htyashsayas-5hk7',
@@ -149,7 +144,9 @@ describe('<AllListings />', () => {
     getByTestId('single-listing-21');
 
     // listing title
-    const listing2Title = getByText('This is an awesome listing', titleOptions);
+    const listing2Title = getByRole('link', {
+      name: 'This is an awesome listing',
+    });
 
     expect(listing2Title.getAttribute('href')).toEqual(
       '/listings/misc/illo-iure-quos-ereerr-5hk7',
@@ -186,10 +183,9 @@ describe('<AllListings />', () => {
     getByTestId('single-listing-22');
 
     // listing title
-    const listing3Title = getByText(
-      'Illo iure quos perspiciatis',
-      titleOptions,
-    );
+    const listing3Title = getByRole('link', {
+      name: 'Illo iure quos perspiciatis',
+    });
 
     expect(listing3Title.getAttribute('href')).toEqual(
       '/listings/misc/illo-iure-fss-ssasas-5hk7',

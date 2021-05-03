@@ -8,5 +8,5 @@ if ! git config remote.upstream.url > /dev/null; then
   git remote add upstream $URL
 fi
 git fetch upstream
-git checkout master
-git merge upstream/master
+git checkout main
+git merge upstream/main

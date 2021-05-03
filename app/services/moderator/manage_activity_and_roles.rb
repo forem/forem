@@ -26,7 +26,6 @@ module Moderator
 
     def remove_privileges
       @user.remove_role(:workshop_pass)
-      @user.remove_role(:pro)
       remove_mod_roles
       remove_tag_moderator_role
     end
@@ -58,17 +57,16 @@ module Moderator
     def handle_user_status(role, note)
       case role
       when "Suspend" || "Spammer"
-        user.add_role(:banned)
+        user.add_role(:suspended)
         remove_privileges
       when "Warn"
         warned
       when "Comment Suspend"
-        comment_banned
+        comment_suspended
       when "Regular Member"
         regular_member
       when "Trusted"
         remove_negative_roles
-        user.remove_role(:pro)
         TagModerators::AddTrustedRole.call(user)
       when "Admin"
         check_super_admin
@@ -90,10 +88,6 @@ module Moderator
         check_super_admin
         remove_negative_roles
         user.add_role(:single_resource_admin, role.split("Resource Admin: ").last.safe_constantize)
-      when "Pro"
-        remove_negative_roles
-        TagModerators::AddTrustedRole.call(user)
-        user.add_role(:pro)
       end
       create_note(role, note)
     end
@@ -102,28 +96,27 @@ module Moderator
       raise "You need super admin status to take this action" unless @admin.has_role?(:super_admin)
     end
 
-    def comment_banned
-      user.add_role(:comment_banned)
-      user.remove_role(:banned)
+    def comment_suspended
+      user.add_role(:comment_suspended)
+      user.remove_role(:suspended)
       remove_privileges
     end
 
     def regular_member
       remove_negative_roles
-      user.remove_role(:pro)
       remove_mod_roles
     end
 
     def warned
       user.add_role(:warned)
-      user.remove_role(:banned)
+      user.remove_role(:suspended)
       remove_privileges
     end
 
     def remove_negative_roles
-      user.remove_role(:banned) if user.banned
+      user.remove_role(:suspended) if user.suspended?
       user.remove_role(:warned) if user.warned
-      user.remove_role(:comment_banned) if user.comment_banned
+      user.remove_role(:comment_suspended) if user.comment_suspended?
     end
 
     def update_trusted_cache

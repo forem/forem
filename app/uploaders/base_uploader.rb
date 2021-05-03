@@ -2,7 +2,7 @@ class BaseUploader < CarrierWave::Uploader::Base
   include CarrierWave::BombShelter # limits size to 4096x4096
   include CarrierWave::MiniMagick # adds processing operations
 
-  FRAME_MAX = 1000
+  FRAME_MAX = 500
   FRAME_STRIP_MAX = 150
 
   process :validate_frame_count

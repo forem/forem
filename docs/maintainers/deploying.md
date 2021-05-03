@@ -26,8 +26,8 @@ complete and will need a few additional minutes before the change goes live.
 ## Travis Stages
 
 The following stages can be explored in our
-[.travis.yml](https://github.com/forem/forem/blob/master/.travis.yml) and
-[Procfile](https://github.com/forem/forem/blob/master/Procfile). Our Travis CI
+[.travis.yml](https://github.com/forem/forem/blob/main/.travis.yml) and
+[Procfile](https://github.com/forem/forem/blob/main/Procfile). Our Travis CI
 process consists of 2 stages.
 
 1. Running our test suite in 3 parallel jobs.
@@ -53,8 +53,8 @@ If all of the jobs pass then we move on to Stage 2 of the Travis CI process.
 ### Stage 2: Deploying
 
 If the build was kicked off from a pull request being created or updated this
-stage will do nothing. If the branch has been merged into master, then this
-stage will kick off a deploy. The deploy will run in its own job deploying our
+stage will do nothing. If the branch has been merged into main, then this stage
+will kick off a deploy. The deploy will run in its own job deploying our
 application to Heroku.
 
 Prior to deploying the code, Heroku will run database migrations, Elasticsearch

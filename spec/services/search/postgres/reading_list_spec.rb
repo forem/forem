@@ -166,6 +166,22 @@ RSpec.describe Search::Postgres::ReadingList, type: :service do
         expect(extract_from_results(result, :path)).to include(article_1.path)
         expect(extract_from_results(result, :path)).not_to include(article_2.path)
       end
+
+      it "does not match on partial tags", :aggregate_failures do
+        article_1.tag_list.add(:javascript)
+        article_1.save!
+
+        create(:reaction, reactable: article_1, user: user, category: :readinglist)
+
+        result = described_class.search_documents(user, tags: [:java])
+        expect(extract_from_results(result, :path)).to be_empty
+
+        result = described_class.search_documents(user, tags: [:asc])
+        expect(extract_from_results(result, :path)).to be_empty
+
+        result = described_class.search_documents(user, tags: [:script])
+        expect(extract_from_results(result, :path)).to be_empty
+      end
     end
 
     context "when filtering by statuses and tags" do
@@ -231,24 +247,18 @@ RSpec.describe Search::Postgres::ReadingList, type: :service do
       end
 
       it "matches against the article's user's name", :aggregate_failures do
-        article_user = article.user
-        article_user.update_columns(name: "Friday Sunday")
-
-        result = described_class.search_documents(user, term: "Frida")
+        result = described_class.search_documents(user, term: article.user_name.first(3))
         expect(extract_from_results(result, :path)).to include(article.path)
 
-        result = described_class.search_documents(user, term: "Sat")
+        result = described_class.search_documents(user, term: "notaname")
         expect(extract_from_results(result, :path)).to be_empty
       end
 
       it "matches against the article's user's username", :aggregate_failures do
-        article_user = article.user
-        article_user.update_columns(username: "fridaysunday")
-
-        result = described_class.search_documents(user, term: "Frida")
+        result = described_class.search_documents(user, term: article.user_username.first(3))
         expect(extract_from_results(result, :path)).to include(article.path)
 
-        result = described_class.search_documents(user, term: "Sat")
+        result = described_class.search_documents(user, term: "notausername")
         expect(extract_from_results(result, :path)).to be_empty
       end
     end

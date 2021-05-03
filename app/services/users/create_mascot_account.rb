@@ -4,7 +4,7 @@ module Users
       email: "mascot@forem.com",
       username: "mascot",
       name: "Mascot",
-      profile_image: SiteConfig.mascot_image_url,
+      profile_image: Settings::Mascot.image_url,
       confirmed_at: Time.current,
       registered_at: Time.current,
       password: SecureRandom.hex
@@ -15,10 +15,10 @@ module Users
     end
 
     def call
-      raise "Mascot already set" if SiteConfig.mascot_user_id
+      raise "Mascot already set" if Settings::Mascot.mascot_user_id
 
       mascot = User.create!(mascot_params)
-      SiteConfig.mascot_user_id = mascot.id
+      Settings::Mascot.mascot_user_id = mascot.id
     end
 
     def mascot_params

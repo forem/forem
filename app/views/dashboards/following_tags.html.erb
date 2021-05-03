@@ -18,7 +18,7 @@
         <% if @followed_tags.any? %>
           <%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
 
-          <div class="crayons-notice p-4 px-6 mb-4 mx-2 m:mx-0">
+          <div class="crayons-notice p-4 px-6 mb-4 mx-2 m:mx-0" aria-live="polite">
               Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
               <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
           </div>
@@ -43,8 +43,8 @@
                   </p>
 
                   <%= fields(follow) do |f| %>
-                    <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form") %>
-                    <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form") %>
+                    <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form", id: "follow_id_#{follow.followable}") %>
+                    <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form", "aria-label": "#{follow.followable} tag weight", id: "explicit_points_#{follow.followable}") %>
                   <% end %>
                 </div>
               <% end %>
