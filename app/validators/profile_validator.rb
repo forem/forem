@@ -40,7 +40,7 @@ class ProfileValidator < ActiveModel::Validator
     return if record.summary.blank?
 
     # Grandfather in people who had a too long summary before
-    previous_summary = record.data_was[SUMMARY_ATTRIBUTE]
+    previous_summary = record.data_was[SUMMARY_ATTRIBUTE] || record.summary_was
     return if previous_summary && previous_summary.size > MAX_SUMMARY_LENGTH
 
     record.summary.size > MAX_SUMMARY_LENGTH

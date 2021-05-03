@@ -26,6 +26,7 @@ module Profiles
       @profile = user.profile
       @updated_profile_attributes = updated_attributes[:profile] || {}
       @updated_user_attributes = updated_attributes[:user].to_h || {}
+      @updated_static_profile_attributes = @updated_profile_attributes.extract!(*Profile::STATIC_FIELDS)
       @errors = []
       @success = false
     end
@@ -61,6 +62,7 @@ module Profiles
 
       Profile.transaction do
         update_profile
+        @profile.update(**@updated_static_profile_attributes)
         @user.update!(@updated_user_attributes)
       end
       true
