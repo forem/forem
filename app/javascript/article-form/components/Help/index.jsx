@@ -27,15 +27,15 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
     frontmatterShowing: false,
   });
 
-  const openModal = (varShowing) => {
+  const openModal = (helpSection) => {
     setState({
-      [varShowing]: true,
+      [helpSection]: true,
     });
   };
 
-  const closeModal = (varShowing) => {
+  const closeModal = (helpSection) => {
     setState({
-      [varShowing]: false,
+      [helpSection]: false,
     });
   };
 
