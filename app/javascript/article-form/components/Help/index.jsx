@@ -8,9 +8,7 @@ import { EditorFormattingHelp } from './EditorFormattingHelp';
 import { Modal } from '@crayons';
 
 const renderModal = (onClose, title, selector) => {
-  const helpHtml =
-    document.getElementById(selector) &&
-    document.getElementById(selector).innerHTML;
+  const helpHtml = document.getElementById(selector)?.innerHTML;
 
   return (
     <Modal onClose={onClose} title={title}>
