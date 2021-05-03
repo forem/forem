@@ -369,6 +369,10 @@
       flex-direction: column;
       padding: 0 var(--su-4);
       transition-duration: 1s;
+
+      &.hidden {
+        display: none;
+      }
     }
     .adjust-tags-options {
       .add-tag-container {
