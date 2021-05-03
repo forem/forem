@@ -9,19 +9,19 @@ describe('Sign up with email', () => {
     cy.get('a').contains('Sign up with Email').click();
 
     cy.get('input[type="file"]').attachFile('images/admin-image.png');
-    cy.getInputByLabel('Name').type('Sloan');
-    cy.getInputByLabel('Username').type('s');
-    cy.getInputByLabel('Email').type('sloan@example.com');
-    cy.getInputByLabel('Password').type('password');
-    cy.getInputByLabel('Password confirmation').type('password');
+    cy.findByLabelText('Name').type('Sloan');
+    cy.findByLabelText('Username').type('s');
+    cy.findByLabelText('Email').type('sloan@example.com');
+    cy.findByLabelText('Password').type('password');
+    cy.findByLabelText('Password confirmation').type('password');
     cy.get('input').contains('Sign up').click();
 
     // The validation failed but the user's data is not lost
     cy.get('li')
       .contains('Username is too short (minimum is 2 characters)')
       .should('be.visible');
-    cy.getInputByLabel('Name').should('have.value', 'Sloan');
-    cy.getInputByLabel('Username').should('have.value', 's');
-    cy.getInputByLabel('Email').should('have.value', 'sloan@example.com');
+    cy.findByLabelText('Name').should('have.value', 'Sloan');
+    cy.findByLabelText('Username').should('have.value', 's');
+    cy.findByLabelText('Email').should('have.value', 'sloan@example.com');
   });
 });

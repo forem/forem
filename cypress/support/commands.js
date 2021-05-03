@@ -216,19 +216,3 @@ Cypress.Commands.add('createResponseTemplate', ({ title, content }) => {
     `utf8=%E2%9C%93&response_template%5Btitle%5D=${encodedTitle}&response_template%5Bcontent%5D=${encodedContent}`,
   );
 });
-
-/**
- * Helper to get a form element by its label
- *
- * @param {string} label The form element's label.
- *
- * @returns {Cypress.Chainable<Element>} The form input element.
- */
-Cypress.Commands.add('getInputByLabel', (label) => {
-  return cy
-    .contains('label', label)
-    .invoke('attr', 'for')
-    .then((id) => {
-      cy.get('#' + id);
-    });
-});
