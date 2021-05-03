@@ -75,6 +75,23 @@ RSpec.describe "Registrations", type: :request do
 
         expect(response.body).to include("View more sign in options")
       end
+
+      it "creates a user with a random profile image if none was uploaded" do
+        name = "test"
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
+        post "/users", params: {
+          user: {
+            name: name,
+            username: "username",
+            email: "yo@whatup.com",
+            password: "password",
+            password_confirmation: "password"
+          }
+        }
+
+        expect(User.find_by(name: name).persisted?).to eq true
+      end
     end
 
     context "when email registration not allowed" do
