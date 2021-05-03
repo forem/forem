@@ -177,6 +177,15 @@ RSpec.describe "Authenticating with GitHub" do
 
         expect(page).to have_current_path("/?signin=true")
       end
+
+      it "renders the github icon on the profile" do
+        sign_in user
+        visit user_github_omniauth_authorize_path
+
+        visit user_profile_path(user.username)
+
+        expect(page).to have_css("svg.crayons-icon.shrink-0", text: "github website")
+      end
     end
 
     context "when already signed in" do
