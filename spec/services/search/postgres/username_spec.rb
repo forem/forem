@@ -17,6 +17,12 @@ RSpec.describe Search::Postgres::Username, type: :service do
       )
     end
 
+    it "does not find a user given the wrong search term" do
+      create(:user, username: "joao", name: "joao")
+
+      expect(described_class.search_documents("foobar")).to be_empty
+    end
+
     it "finds a user by their username" do
       user = create(:user)
 
@@ -29,9 +35,29 @@ RSpec.describe Search::Postgres::Username, type: :service do
       expect(described_class.search_documents(user.username.first(1))).to be_present
     end
 
+    it "finds a user by their name" do
+      user = create(:user)
+
+      expect(described_class.search_documents(user.name)).to be_present
+    end
+
+    it "finds a user by a partial name" do
+      user = create(:user)
+
+      expect(described_class.search_documents(user.name.first(3))).to be_present
+    end
+
+    it "finds a user if their name contains quotes", :aggregate_failures do
+      user = create(:user, name: "McNamara O'Hara")
+      expect(described_class.search_documents(user.name)).to be_present
+
+      user = create(:user, name: 'McNamara O"Hara')
+      expect(described_class.search_documents(user.name)).to be_present
+    end
+
     it "finds multiple users whose names have common parts", :aggregate_failures do
       alex = create(:user, username: "alex")
-      alexsmith = create(:user, username: "alexsmith")
+      alexsmith = create(:user, name: "alexsmith")
       rhymes = create(:user, username: "rhymes")
 
       result = described_class.search_documents("ale")

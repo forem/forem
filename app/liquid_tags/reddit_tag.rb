@@ -34,7 +34,7 @@ class RedditTag < LiquidTagBase
 
     # Requests to Reddit require a custom `User-Agent` header to prevent 429 errors
     json = HTTParty.get("#{@url}.json",
-                        headers: { "User-Agent" => "#{SiteConfig.community_name} (#{URL.url})" })
+                        headers: { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" })
 
     # The JSON response is an array with two items.
     # The first one is the post itself, the second one are the comments

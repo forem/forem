@@ -1,15 +1,8 @@
+# Included in the ApplicationController to assist with creator onboarding
 module VerifySetupCompleted
   extend ActiveSupport::Concern
 
   module_function
-
-  MANDATORY_CONFIGS = %i[
-    community_name
-    community_description
-
-    suggested_tags
-    suggested_users
-  ].freeze
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
@@ -22,14 +15,14 @@ module VerifySetupCompleted
   end
 
   def missing_configs
-    @missing_configs ||= MANDATORY_CONFIGS.reject { |config| SiteConfig.public_send(config).present? }
+    @missing_configs ||= Settings::Mandatory.missing
   end
 
   private
 
   def missing_configs_text
     display_missing = missing_configs.size > 3 ? missing_configs.first(3) + ["others"] : missing_configs
-    display_missing.map { |c| c.to_s.tr("_", " ") }.to_sentence
+    display_missing.map { |config| config.to_s.tr("_", " ") }.to_sentence
   end
 
   def verify_setup_completed

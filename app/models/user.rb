@@ -5,11 +5,6 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
-  include PgSearch::Model
-  pg_search_scope :search_by_username,
-                  against: :username,
-                  using: { tsearch: { prefix: true } }
-
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
     available_for
@@ -41,7 +36,14 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS
+  PROVIDER_COLUMNS = %w[
+    apple_created_at
+    facebook_created_at
+    github_created_at
+    twitter_created_at
+  ].freeze
+
+  self.ignored_columns = PROFILE_COLUMNS + PROVIDER_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -257,6 +259,39 @@ class User < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
+  # Unfortunately pg_search's default SQL query is not performant enough in this
+  # particular case (~ 500ms). There are multiple reasons:
+  # => creates a complex query like `SELECT FROM users INNER JOIN users` to compute ranking.
+  #    See https://github.com/Casecommons/pg_search/issues/292#issuecomment-202604151
+  # => it concatenates the content of `name` and the content of `username` to match
+  #    against the search term. By doing that, it can't use `tsvector` indexes correctly
+  #
+  # For these reasons we need to build a query manually using an `OR` condition,
+  # thus allowing the database to use the indexes properly. With this the SQL time is ~ 8-10ms.
+  #
+  # NOTE: we can't use unaccent() on the `tsvector` document because `unaccent()` can't be
+  # used in expression indexes as it's a mutable function and depends on server settings
+  # => https://stackoverflow.com/a/11007216/4186181
+  #
+  scope :search_by_name_and_username, lambda { |term|
+    where(
+      sanitize_sql_array(
+        [
+          "to_tsvector('simple', coalesce(name::text, '')) @@ to_tsquery('simple', ? || ':*')",
+          connection.quote(term),
+        ],
+      ),
+    ).or(
+      where(
+        sanitize_sql_array(
+          [
+            "to_tsvector('simple', coalesce(username::text, '')) @@ to_tsquery('simple', ? || ':*')",
+            connection.quote(term),
+          ],
+        ),
+      ),
+    )
+  }
   scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
@@ -271,20 +306,20 @@ class User < ApplicationRecord
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
-  after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
+  after_commit :bust_cache
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   def self.dev_account
-    find_by(id: SiteConfig.staff_user_id)
+    find_by(id: Settings::Community.staff_user_id)
   end
 
   def self.mascot_account
-    find_by(id: SiteConfig.mascot_user_id)
+    find_by(id: Settings::Mascot.mascot_user_id)
   end
 
   def tag_line
@@ -628,6 +663,7 @@ class User < ApplicationRecord
     "#{employer_name}#{mostly_work_with}#{available_for}"
   end
 
+  # TODO: this can be removed once we migrate away from ES
   def search_score
     counts_score = (articles_count + comments_count + reactions_count + badge_achievements_count) * 10
     score = (counts_score + tag_keywords_for_search.size) * reputation_modifier

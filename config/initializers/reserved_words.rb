@@ -170,6 +170,8 @@ class ReservedWords
     questions
     rails
     reactions
+    react
+    reactjs
     readinglist
     repo
     report-abuse

@@ -11,7 +11,11 @@ const orgOptions = (organizations, organizationId, emptyLabel) => {
         </option>
       );
     }
-    return <option value={organization.id}>{organization.name}</option>;
+    return (
+      <option key={organization.id} value={organization.id}>
+        {organization.name}
+      </option>
+    );
   });
   const nullOrgOption =
     organizationId === null ? (

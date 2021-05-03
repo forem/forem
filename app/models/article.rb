@@ -156,7 +156,11 @@ class Article < ApplicationRecord
   serialize :cached_user
   serialize :cached_organization
 
-  pg_search_scope :search_reading_list,
+  # TODO: [@rhymes] Rename the article column and the trigger name.
+  # What was initially meant just for the reading list (filtered using the `reactions` table),
+  # is also used for the article search page.
+  # The name of the `tsvector` column and its related trigger should be adapted.
+  pg_search_scope :search_articles,
                   against: :reading_list_document,
                   using: {
                     tsearch: {
@@ -181,7 +185,8 @@ class Article < ApplicationRecord
     published
       .where(user_id: User.with_role(:super_admin)
                           .union(User.with_role(:admin))
-                          .union(id: [SiteConfig.staff_user_id, SiteConfig.mascot_user_id].compact)
+                          .union(id: [Settings::Community.staff_user_id,
+                                      Settings::Mascot.mascot_user_id].compact)
                           .select(:id)).order(published_at: :desc).tagged_with(tag_name)
   }
 
@@ -194,7 +199,7 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_with, lambda { |tag|
     case tag
-    when String
+    when String, Symbol
       # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
       # word" and "end of word", respectively. They're similar to `\b` in Perl-
       # compatible regexes (PCRE), but that matches at either end of a word.
@@ -211,16 +216,16 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_with_any, lambda { |tags|
     case tags
-    when String
+    when String, Symbol
       cached_tagged_with(tags)
     when Array
       tags
         .map { |tag| cached_tagged_with(tag) }
         .reduce { |acc, elem| acc.or(elem) }
     when Tag
-      cached_tagged_with(tag.name)
+      cached_tagged_with(tags.name)
     else
-      raise TypeError, "Cannot search tags for: #{tag.inspect}"
+      raise TypeError, "Cannot search tags for: #{tags.inspect}"
     end
   }
 
@@ -792,7 +797,7 @@ class Article < ApplicationRecord
     return unless SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
 
     Reaction.create(
-      user_id: SiteConfig.mascot_user_id,
+      user_id: Settings::Mascot.mascot_user_id,
       reactable_id: id,
       reactable_type: "Article",
       category: "vomit",
@@ -802,7 +807,7 @@ class Article < ApplicationRecord
 
     user.add_role(:suspended)
     Note.create(
-      author_id: SiteConfig.mascot_user_id,
+      author_id: Settings::Mascot.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
       reason: "automatic_suspend",

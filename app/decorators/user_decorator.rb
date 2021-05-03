@@ -50,7 +50,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def config_font_name
-    config_font.gsub("default", SiteConfig.default_font)
+    config_font.gsub("default", Settings::UserExperience.default_font)
   end
 
   def config_body_class
@@ -108,7 +108,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def considered_new?
-    min_days = SiteConfig.user_considered_new_days
+    min_days = Settings::RateLimit.user_considered_new_days
     return false unless min_days.positive?
 
     created_at.after?(min_days.days.ago)

@@ -22,6 +22,11 @@ updates:
     schedule:
       interval: "weekly"
     labels: []
+    ignore:
+      - dependency_name: "husky"
+        # Leaving this at the last v4 because the way Husky works has changed dramatically
+        # We can revisit this at a later time if we really need what future upgrades offer.
+        version_requirement: "4.x"
 
   # Set update schedule for GitHub Actions
   # https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/keeping-your-actions-up-to-date-with-dependabot

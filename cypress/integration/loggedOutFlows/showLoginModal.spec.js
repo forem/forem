@@ -24,8 +24,12 @@ describe('Show log in modal', () => {
     cy.findAllByText('Test article').last().click();
 
     cy.findByRole('button', { name: 'Like' }).as('heartReaction');
-    cy.findByRole('button', { name: 'React with unicorn' }).as('unicornReaction');
-    cy.findByRole('button', { name: 'Add to reading list' }).as('bookmarkReaction');
+    cy.findByRole('button', { name: 'React with unicorn' }).as(
+      'unicornReaction',
+    );
+    cy.findByRole('button', { name: 'Add to reading list' }).as(
+      'bookmarkReaction',
+    );
 
     ['@heartReaction', '@unicornReaction', '@bookmarkReaction'].forEach(
       (reaction) => {
@@ -46,7 +50,9 @@ describe('Show log in modal', () => {
 
   it('should show login modal for comment subscription', () => {
     cy.findAllByText('Test article').last().click();
-    cy.findByRole('button', { name: /Subscribe/ }).as('subscribe').click();
+    cy.findByRole('button', { name: /Subscribe/ })
+      .as('subscribe')
+      .click();
 
     cy.findByTestId('modal-container').as('modal');
     cy.get('@modal').findByText('Log in to continue').should('exist');

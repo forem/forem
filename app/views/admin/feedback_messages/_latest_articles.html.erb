@@ -17,8 +17,8 @@
               <a href="<%= article.path %>/mod" class="btn btn-secondary btn-sm">Mod</a>
               <a href="<%= article.path %>/moderate" class="btn btn-secondary btn-sm">admin</a>
               <a href="<%= article.user.path %>" class="btn btn-secondary btn-sm">Profile</a>
-              <a href="/admin/users/<%= article.user_id %>" class="btn btn-secondary btn-sm">admin User</a>
-              <a href="/admin/users/<%= article.user_id %>/edit" class="btn btn-danger btn-sm">Destructive Actions</a>
+              <%= link_to "admin User", admin_user_path(article.user_id), class: "btn btn-secondary btn-sm" %>
+              <%= link_to "Destructive Actions", edit_admin_user_path(article.user_id), class: "btn btn-danger btn-sm" %>
             </div>
           </div>
         <% end %>

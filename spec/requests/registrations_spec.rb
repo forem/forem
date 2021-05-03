@@ -26,7 +26,7 @@ RSpec.describe "Registrations", type: :request do
       end
     end
 
-    context "when email login is enabled in /admin/config" do
+    context "when email login is enabled in /admin/customization/config" do
       before do
         allow(Settings::Authentication).to receive(:allow_email_password_login).and_return(true)
       end
@@ -38,7 +38,7 @@ RSpec.describe "Registrations", type: :request do
       end
     end
 
-    context "when email login is disabled in /admin/config" do
+    context "when email login is disabled in /admin/customization/config" do
       before do
         allow(Settings::Authentication).to receive(:allow_email_password_login).and_return(false)
       end
@@ -345,14 +345,14 @@ RSpec.describe "Registrations", type: :request do
       end
 
       it "creates mascot user" do
-        expect(SiteConfig.mascot_user_id).to be_nil
+        expect(Settings::Mascot.mascot_user_id).to be_nil
         post "/users", params:
           { user: { name: "test #{rand(10)}",
                     username: "haha_#{rand(10)}",
                     email: "yoooo#{rand(100)}@yo.co",
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(SiteConfig.mascot_user_id).to eq User.last.id
+        expect(Settings::Mascot.mascot_user_id).to eq User.last.id
 
         mascot_account = User.mascot_account
         expect(mascot_account.username).to eq Users::CreateMascotAccount::MASCOT_PARAMS[:username]

@@ -17,8 +17,8 @@ export const getCursorXY = (input, selectionPoint) => {
   const bodyRect = document.body.getBoundingClientRect();
   const elementRect = input.getBoundingClientRect();
 
-  const inputY = elementRect.top - bodyRect.top;
-  const inputX = elementRect.left - bodyRect.left;
+  const inputY = elementRect.top - bodyRect.top - input.scrollTop;
+  const inputX = elementRect.left - bodyRect.left - input.scrollLeft;
 
   // create a dummy element with the computed style of the input
   const div = document.createElement('div');

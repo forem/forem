@@ -7,7 +7,7 @@
 
 <% if user_signed_in? %>
   <%= javascript_packs_with_chunks_tag "Chat", defer: true %>
-  <div class="chat-page-wrapper">
+  <main class="chat-page-wrapper" id="main-content">
     <div
       id="chat"
       class="live-chat"
@@ -28,7 +28,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
 <% else %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>

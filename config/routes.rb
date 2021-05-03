@@ -21,6 +21,9 @@ Rails.application.routes.draw do
     delete "/sign_out", to: "devise/sessions#destroy"
   end
 
+  get "/r/mobile", to: "deep_links#mobile"
+  get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do
@@ -37,61 +40,7 @@ Rails.application.routes.draw do
       mount FieldTest::Engine, at: "abtests"
     end
 
-    namespace :admin do
-      get "/", to: "overview#index"
-
-      # NOTE: [@ridhwana] These are the admin routes that have stayed the same even with the
-      # restructure. They'll move into routes/admin.rb once we remove the old code.
-      authenticate :user, ->(user) { user.tech_admin? } do
-        mount Blazer::Engine, at: "blazer"
-
-        flipper_ui = Flipper::UI.app(Flipper,
-                                     { rack_protection: { except: %i[authenticity_token form_token json_csrf
-                                                                     remote_token http_origin session_hijacking] } })
-        mount flipper_ui, at: "feature_flags"
-      end
-      resources :invitations, only: %i[index new create destroy]
-      resources :organization_memberships, only: %i[update destroy create]
-      resources :permissions, only: %i[index]
-      resources :reactions, only: [:update]
-      namespace :settings do
-        resources :authentications, only: [:create]
-        resources :campaigns, only: [:create]
-      end
-      namespace :users do
-        resources :gdpr_delete_requests, only: %i[index destroy]
-      end
-      resources :users, only: %i[index show edit update destroy] do
-        resources :email_messages, only: :show
-        member do
-          post "banish"
-          post "export_data"
-          post "full_delete"
-          patch "user_status"
-          post "merge"
-          delete "remove_identity"
-          post "send_email"
-          post "verify_email_ownership"
-          patch "unlock_access"
-        end
-      end
-
-      # These redirects serve as a safeguard to prevent 404s for any Admins
-      # who have the old badge_achievement URLs bookmarked.
-      get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
-      get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
-
-      # NOTE: [@ridhwana] All these conditional statements are temporary conditions.
-      # We check that the database table exists to avoid the DB setup failing
-      # because the code relies on the presence of a table.
-      if Database.table_available?("flipper_features")
-        # NOTE: [@ridhwana] admin_routes will require the rails app to be reloaded when the feature flag is toggled
-        # You can find more details on why we had to implement it this way in this PR
-        # https://github.com/forem/forem/pull/13114
-        admin_routes = FeatureFlag.enabled?(:admin_restructure) ? :admin : :current_admin
-        draw admin_routes
-      end
-    end
+    draw :admin
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
@@ -234,7 +183,6 @@ Rails.application.routes.draw do
     resources :poll_votes, only: %i[show create]
     resources :poll_skips, only: [:create]
     resources :profile_pins, only: %i[create update]
-    resources :partnerships, only: %i[index create show], param: :option
     resources :display_ad_events, only: [:create]
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]

@@ -55,14 +55,14 @@ RSpec.describe Article, type: :model do
 
     describe "::admin_published_with" do
       it "includes mascot-published articles" do
-        allow(SiteConfig).to receive(:mascot_user_id).and_return(3)
+        allow(Settings::Mascot).to receive(:mascot_user_id).and_return(3)
         user = create(:user, id: 3)
         create(:article, user: user, tags: "challenge")
         expect(described_class.admin_published_with("challenge").count).to eq(1)
       end
 
       it "includes staff-user-published articles" do
-        allow(SiteConfig).to receive(:staff_user_id).and_return(3)
+        allow(Settings::Community).to receive(:staff_user_id).and_return(3)
         user = create(:user, id: 3)
         create(:article, user: user, tags: "challenge")
         expect(described_class.admin_published_with("challenge").count).to eq(1)
@@ -789,6 +789,30 @@ RSpec.describe Article, type: :model do
       expect(articles.to_a).to eq described_class.tagged_with("includeme").to_a
     end
 
+    it "can search for a single tag when given a symbol" do
+      included = create(:article, tags: "includeme")
+      excluded = create(:article, tags: "lol, nope")
+
+      articles = described_class.cached_tagged_with(:includeme)
+
+      expect(articles).to include(included)
+      expect(articles).not_to include(excluded)
+      expect(articles.to_a).to eq(described_class.tagged_with("includeme").to_a)
+    end
+
+    it "can search for a single tag when given a Tag object" do
+      included = create(:article, tags: "includeme")
+      excluded = create(:article, tags: "lol, nope")
+
+      tag = Tag.find_by(name: :includeme)
+
+      articles = described_class.cached_tagged_with(tag)
+
+      expect(articles).to include included
+      expect(articles).not_to include excluded
+      expect(articles.to_a).to eq described_class.tagged_with("includeme").to_a
+    end
+
     it "can search among multiple tags" do
       included = [
         create(:article, tags: "omg, wtf"),
@@ -815,6 +839,33 @@ RSpec.describe Article, type: :model do
       expect(articles).not_to include excluded_no_match
       expect(articles.to_a).to eq described_class.tagged_with(%w[includeme please]).to_a
     end
+
+    it "can search for multiple tags passed as an array of symbols" do
+      included = create(:article, tags: "includeme, please, lol")
+      excluded_partial_match = create(:article, tags: "excluded, please")
+      excluded_no_match = create(:article, tags: "excluded, omg")
+
+      articles = described_class.cached_tagged_with(%i[includeme please])
+
+      expect(articles).to include(included)
+      expect(articles).not_to include(excluded_partial_match)
+      expect(articles).not_to include(excluded_no_match)
+      expect(articles.to_a).to eq(described_class.tagged_with(%i[includeme please]).to_a)
+    end
+
+    it "can search for multiple tags passed as an array of Tag objects" do
+      included = create(:article, tags: "includeme, please, lol")
+      excluded_partial_match = create(:article, tags: "excluded, please")
+      excluded_no_match = create(:article, tags: "excluded, omg")
+
+      tags = Tag.where(name: %i[includeme please]).to_a
+      articles = described_class.cached_tagged_with(tags)
+
+      expect(articles).to include(included)
+      expect(articles).not_to include(excluded_partial_match)
+      expect(articles).not_to include(excluded_no_match)
+      expect(articles.to_a).to eq(described_class.tagged_with(%i[includeme please]).to_a)
+    end
   end
 
   describe ".cached_tagged_with_any" do
@@ -827,6 +878,29 @@ RSpec.describe Article, type: :model do
       expect(articles).to include included
       expect(articles).not_to include excluded
       expect(articles.to_a).to eq described_class.tagged_with("includeme", any: true).to_a
+    end
+
+    it "can search for a single tag when given a symbol" do
+      included = create(:article, tags: "includeme")
+      excluded = create(:article, tags: "lol, nope")
+
+      articles = described_class.cached_tagged_with_any(:includeme)
+
+      expect(articles).to include(included)
+      expect(articles).not_to include(excluded)
+      expect(articles.to_a).to eq(described_class.tagged_with("includeme", any: true).to_a)
+    end
+
+    it "can search for a single tag when given a Tag object" do
+      included = create(:article, tags: "includeme")
+      excluded = create(:article, tags: "lol, nope")
+
+      tag = Tag.find_by(name: :includeme)
+      articles = described_class.cached_tagged_with_any(tag)
+
+      expect(articles).to include(included)
+      expect(articles).not_to include(excluded)
+      expect(articles.to_a).to eq(described_class.tagged_with("includeme", any: true).to_a)
     end
 
     it "can search among multiple tags" do
@@ -855,6 +929,37 @@ RSpec.describe Article, type: :model do
       expect(articles).to include included
       expect(articles).to include included_partial_match
       expect(articles).not_to include excluded_no_match
+
+      expect(articles.to_a).to include(*expected)
+    end
+
+    it "can search for multiple tags when given an array of symbols" do
+      included = create(:article, tags: "includeme, please, lol")
+      included_partial_match = create(:article, tags: "includeme, omg")
+      excluded_no_match = create(:article, tags: "excluded, omg")
+
+      articles = described_class.cached_tagged_with_any(%i[includeme please])
+      expected = described_class.tagged_with(%i[includeme please], any: true).to_a
+
+      expect(articles).to include(included)
+      expect(articles).to include(included_partial_match)
+      expect(articles).not_to include(excluded_no_match)
+
+      expect(articles.to_a).to include(*expected)
+    end
+
+    it "can search for multiple tags when given an array of Tag objects" do
+      included = create(:article, tags: "includeme, please, lol")
+      included_partial_match = create(:article, tags: "includeme, omg")
+      excluded_no_match = create(:article, tags: "excluded, omg")
+
+      tags = Tag.where(name: %i[includeme please]).to_a
+      articles = described_class.cached_tagged_with_any(tags)
+      expected = described_class.tagged_with(%i[includeme please], any: true).to_a
+
+      expect(articles).to include(included)
+      expect(articles).to include(included_partial_match)
+      expect(articles).not_to include(excluded_no_match)
 
       expect(articles.to_a).to include(*expected)
     end
@@ -908,7 +1013,7 @@ RSpec.describe Article, type: :model do
 
     describe "spam" do
       before do
-        allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+        allow(Settings::Mascot).to receive(:mascot_user_id).and_return(user.id)
         allow(SiteConfig).to receive(:spam_trigger_terms).and_return(
           ["yahoomagoo gogo", "testtestetest", "magoo.+magee"],
         )

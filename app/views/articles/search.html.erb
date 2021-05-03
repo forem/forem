@@ -2,47 +2,50 @@
   <%= render "articles/search/meta" %>
 <% end %>
 <div id="query-wrapper"></div>
-<header class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4">
-  <div class="block m:hidden" id="mobile-search-container">
-    <form accept-charset="UTF-8" method="get" action="/search">
-      <input class="crayons-textfield" type="text" name="q" placeholder="Search..." autocomplete="on" />
-    </form>
+
+<main id="main-content">
+  <div class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4">
+    <div class="block m:hidden" id="mobile-search-container">
+      <form accept-charset="UTF-8" method="get" action="/search">
+        <input class="crayons-textfield" type="text" name="q" placeholder="Search..." autocomplete="on" />
+      </form>
+    </div>
+
+    <div class="block s:flex items-center space-between">
+      <h1 class="crayons-title">Search results</h1>
+
+      <nav id="sorting-option-tabs" class="crayons-tabs crayons-tabs--wrapped ml-auto">
+        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>">Most Relevant</a>
+        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
+        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
+      </nav>
+    </div>
   </div>
 
-  <div class="block s:flex items-center space-between">
-    <h1 class="crayons-title">Search results</h1>
+  <div class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols pt-0" id="index-container"
+      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
+      data-tag=""
+      data-feed="<%= params[:timeframe] || "base-feed" %>"
+      data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
 
-    <nav id="sorting-option-tabs" class="crayons-tabs crayons-tabs--wrapped ml-auto">
-      <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>">Most Relevant</a>
-      <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
-      <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
-    </nav>
-  </div>
-</header>
+    <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+      <div class="sidebar-bg" id="sidebar-bg-left"></div>
+      <%= render "articles/search/nav_menu" %>
+    </div>
 
-<div class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols pt-0" id="index-container"
-     data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
-     data-tag=""
-     data-feed="<%= params[:timeframe] || "base-feed" %>"
-     data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
-
-  <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
-    <div class="sidebar-bg" id="sidebar-bg-left"></div>
-    <%= render "articles/search/nav_menu" %>
-  </div>
-
-  <div class="articles-list crayons-layout__content" id="articles-list">
-    <div id="banner-section"></div>
-    <div class="substories" id="substories">
-      <div class="p-9 align-center crayons-card">
-        <br />
+    <div class="articles-list crayons-layout__content" id="articles-list">
+      <div id="banner-section"></div>
+      <div class="substories" id="substories">
+        <div class="p-9 align-center crayons-card">
+          <br />
+        </div>
+      </div>
+      <div class="loading-articles" id="loading-articles">
+        loading...
       </div>
     </div>
-    <div class="loading-articles" id="loading-articles">
-      loading...
-    </div>
   </div>
-</div>
+</main>
 <%= render "articles/search" %>
 
 <%= render "stories/stories_list_script" %>
