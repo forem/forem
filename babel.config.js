@@ -56,6 +56,12 @@ module.exports = function (api) {
           pragma: 'h',
         },
       ],
+      [
+        '@babel/plugin-proposal-private-private-property-in-object',
+        {
+          loose: true,
+        },
+      ],
     ].filter(Boolean),
   };
 };
