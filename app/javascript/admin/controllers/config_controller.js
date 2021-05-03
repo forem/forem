@@ -159,7 +159,7 @@ export default class ConfigController extends Controller {
 
   enableOrEditAuthProvider(event) {
     event.preventDefault();
-    const { providerName } = event.target.dataset;
+    const providerName = event.target.dataset.providerName;
     const enabledIndicator = document.getElementById(
       `${providerName}-enabled-indicator`,
     );
@@ -178,7 +178,7 @@ export default class ConfigController extends Controller {
 
   disableAuthProvider(event) {
     event.preventDefault();
-    const { providerName } = event.target.dataset;
+    const providerName = event.target.dataset.providerName;
     const enabledIndicator = document.getElementById(
       `${providerName}-enabled-indicator`,
     );
@@ -201,8 +201,8 @@ export default class ConfigController extends Controller {
 
   activateAuthProviderModal(event) {
     event.preventDefault();
-    const { providerName } = event.target.dataset;
-    const { providerOfficialName } = event.target.dataset;
+    const providerName = event.target.dataset.providerName;
+    const providerOfficialName = event.target.dataset.providerOfficialName;
     this.configModalAnchorTarget.innerHTML = adminModal({
       title: this.authProviderModalTitle(providerOfficialName),
       body: this.authProviderModalBody(providerOfficialName),
@@ -219,7 +219,7 @@ export default class ConfigController extends Controller {
 
   disableAuthProviderFromModal(event) {
     event.preventDefault();
-    const { providerName } = event.target.dataset;
+    const providerName = event.target.dataset.providerName;
     const authEnableButton = document.getElementById(
       `${providerName}-auth-btn`,
     );
@@ -255,7 +255,7 @@ export default class ConfigController extends Controller {
 
   hideAuthProviderSettings(event) {
     event.preventDefault();
-    const { providerName } = event.target.dataset;
+    const providerName = event.target.dataset.providerName;
     document
       .getElementById(`${providerName}-auth-settings`)
       .classList.add('hidden');
