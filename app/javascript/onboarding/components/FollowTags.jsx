@@ -149,8 +149,8 @@ export class FollowTags extends Component {
                       <button
                         type="button"
                         onClick={() => this.handleClick(tag)}
-                        className={`onboarding-tags__button crayons-btn--icon-left ${
-                          selected && 'onboarding-tags__button--selected'
+                        className={`onboarding-tags__button  ${
+                          selected && 'onboarding-tags__button--selected crayons-btn--icon-left'
                         }`}
                         aria-pressed={selected}
                         aria-label={`Follow ${tag.name}`}
