@@ -49,7 +49,8 @@ module OmniauthHelpers
       info: {
         email: "markz@thefacebook.com",
         name: "fname lname",
-        image: "https://dummyimage.com/400x400.jpg"
+        image: "https://dummyimage.com/400x400.jpg",
+        urls: { "Facebook" => "https://example.com" }
       },
       credentials: {
         token: SecureRandom.hex,
@@ -169,6 +170,7 @@ module OmniauthHelpers
   def omniauth_mock_github_payload
     info = OMNIAUTH_BASIC_INFO[:info].merge(
       image: "https://dummyimage.com/400x400.jpg",
+      urls: { "GitHub" => "https://example.com" },
     )
 
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(
@@ -182,6 +184,7 @@ module OmniauthHelpers
   def omniauth_mock_twitter_payload
     info = OMNIAUTH_BASIC_INFO[:info].merge(
       image: "https://dummyimage.com/400x400_normal.jpg",
+      urls: { "Twitter" => "https://example.com" },
     )
 
     extra = OMNIAUTH_BASIC_INFO[:extra].merge(
