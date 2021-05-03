@@ -7,7 +7,8 @@ title: Stack
 For the Forem tech stack we use:
 
 - [_Puma_](https://github.com/puma/puma) as the web server
-- [_PostgreSQL_](https://www.postgresql.org/) as the primary database
+- [_PostgreSQL_](https://www.postgresql.org/) as the primary database and for
+  Full Text Search
 - [_Redis_](https://redis.io/) to store cached data
 - [_Fastly_](https://www.fastly.com/) for
   [edge caching](https://dev.to/ben/making-devto-insanely-fast)
@@ -18,7 +19,6 @@ For the Forem tech stack we use:
 - [_Sidekiq_](https://github.com/mperham/sidekiq) and
   [_Active Job_](https://guides.rubyonrails.org/active_job_basics.html) for
   background workers
-- [_Elasticsearch_](https://www.elastic.co/elasticsearch/) for in app searching
 - [Ransack](https://github.com/activerecord-hackery/ransack) for internal search
 - [_Redcarpet_](https://github.com/vmg/redcarpet) and
   [_Rouge_](https://github.com/jneen/rouge) to parse Markdown

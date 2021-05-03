@@ -5,8 +5,7 @@ RSpec.describe SiteConfig, type: :model do
     describe "validating URLs" do
       let(:url_fields) do
         %w[
-          main_social_image logo_png secondary_logo_url
-          mascot_image_url mascot_footer_image_url onboarding_background_image
+          main_social_image logo_png mascot_image_url mascot_footer_image_url onboarding_background_image
         ]
       end
 

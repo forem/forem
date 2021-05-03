@@ -1,8 +1,8 @@
 class User < ApplicationRecord
   resourcify
+  rolify
 
   include CloudinaryHelper
-  include Searchable
   include Storext.model
 
   # @citizen428 Preparing to drop profile columns from the users table
@@ -99,12 +99,6 @@ class User < ApplicationRecord
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password
-
-  rolify after_add: :index_roles, after_remove: :index_roles
-
-  SEARCH_SERIALIZER = Search::UserSerializer
-  SEARCH_CLASS = Search::User
-  DATA_SYNC_CLASS = DataSync::Elasticsearch::User
 
   acts_as_followable
   acts_as_follower
@@ -310,9 +304,6 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
   after_commit :bust_cache
-  after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :sync_related_elasticsearch_docs, on: %i[create update]
-  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   def self.dev_account
     find_by(id: Settings::Community.staff_user_id)
@@ -674,14 +665,6 @@ class User < ApplicationRecord
     follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
     follows.destroy_all
-  end
-
-  def index_roles(_role)
-    return unless persisted?
-
-    index_to_elasticsearch_inline
-  rescue StandardError => e
-    Honeybadger.notify(e, context: { user_id: id })
   end
 
   def can_send_confirmation_email

@@ -10,7 +10,6 @@ items:
   - authorization.md
   - configuration.md
   - data-update-scripts.md
-  - elasticsearch.md
   - emails.md
   - fastly.md
   - internationalization.md

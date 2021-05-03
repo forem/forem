@@ -9,7 +9,6 @@ module ForemStatsDrivers
         c.tracer enabled: ENV["DD_API_KEY"].present?
         c.tracer partial_flush: true
         c.tracer priority_sampling: true
-        c.use :elasticsearch
         c.use :sidekiq
         c.use :redis, service_name: "redis", describes: { url: ENV["REDIS_URL"] }
         c.use :redis, service_name: "redis-sessions", describes: { url: ENV["REDIS_SESSIONS_URL"] }

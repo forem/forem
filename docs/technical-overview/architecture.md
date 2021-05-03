@@ -72,10 +72,10 @@ Rails][fastly_rails] docs, but we bust specific URLs via `EdgeCache::Bust#call`.
 
 The home feed is based on a combination of recent collective posts that are
 cached and delivered the same to everyone in the HTML, and additional articles
-fetched from an Elasticsearch index after page load. To determine which posts a
-user sees, they are ranked based on the user's followed tags, followed users,
-and relative weights for each tag. Additional fetched articles also follow this
-general pattern.
+fetched from a PostgreSQL Full Text Search index after page load. To determine
+which posts a user sees, they are ranked based on the user's followed tags,
+followed users, and relative weights for each tag. Additional fetched articles
+also follow this general pattern.
 
 Currently, the top post on the home feed, which must have a cover image, is
 shared among all users.

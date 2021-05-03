@@ -17,11 +17,14 @@ describe('User Logout', () => {
 
     // Sign out confirmation page is rendered
     cy.url().should('contains', '/signout_confirm');
-    cy.findByText('Yes, sign out').click();
+    cy.findByRole('button', { name: 'Yes, sign out' }).click();
 
     // User should be redirected to the homepage
     const { baseUrl } = Cypress.config();
     cy.url().should('equal', `${baseUrl}`);
+
+    // Make sure the state has updated to logged out
+    cy.findAllByRole('link', { name: 'Log in' });
 
     // User data should not exist on the document or in localStorage
     cy.document().should((doc) => {

@@ -116,7 +116,6 @@ A more complete overview of our stack is available in
 - [ImageMagick](https://imagemagick.org/): please refer to ImageMagick's
   [installation instructions](https://imagemagick.org/script/download.php).
 - [Redis](https://redis.io/) 4 or higher.
-- [Elasticsearch](https://www.elastic.co) 7 or higher.
 
 #### Containers
 
