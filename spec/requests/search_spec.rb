@@ -59,18 +59,6 @@ RSpec.describe "Search", type: :request, proper_status: true do
     end
   end
 
-  describe "GET /search/users" do
-    let(:mock_documents) { [{ "username" => "firstlast" }] }
-
-    it "returns json" do
-      allow(Search::User).to receive(:search_documents).and_return(
-        mock_documents,
-      )
-      get "/search/users"
-      expect(response.parsed_body).to eq("result" => mock_documents)
-    end
-  end
-
   describe "GET /search/usernames" do
     before do
       sign_in authorized_user

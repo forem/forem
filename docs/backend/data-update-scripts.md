@@ -8,9 +8,7 @@ Data Update Scripts were introduced in
 [this PR](https://github.com/forem/forem/pull/6025) and allow us to run any data
 updates we might need. For example, if we added a column to the database and
 then wanted to backfill that column with data, rather than going and manually
-doing it in a console, we would use a DataUpdateScript. Another example might be
-adding a new attribute to Elasticsearch. We could then use a DataUpdateScript to
-reindex all of our models.
+doing it in a console, we would use a DataUpdateScript.
 
 ## How it works
 

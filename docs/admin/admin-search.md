@@ -16,9 +16,9 @@ The view responsible for managing user reports can be found at
 action of the [`admin/feedback_messages_controller`][feedback_messages].
 
 For Forem, Ransack is being used exclusively in admin, for search problems in
-other parts of the app we use [Elasticsearch][elasticsearch].
+other parts of the app we use [PostgreSQL Full Text Search][postgres_fts].
 
 [feedback_messages]:
   https://github.com/forem/forem/blob/4e41e4a2ac893fa2a6c36990cfe475858ffb086a/app/controllers/admin/feedback_messages_controller.rb#L4
 [ransack]: https://github.com/activerecord-hackery/ransack
-[elasticsearch]: /backend/elasticsearch
+[postgres_fts]: https://www.postgresql.org/docs/11/textsearch.html
