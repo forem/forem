@@ -6,7 +6,7 @@ describe('Sign up with email', () => {
 
   // Regression test for #11099
   it('should preserve the form data on unsuccesful submissions', () => {
-    cy.get('a').contains('Sign up with Email').click();
+    cy.findByRole('link', {name: 'Sign up with Email'}).click();
 
     cy.get('input[type="file"]').attachFile('images/admin-image.png');
     cy.findByLabelText('Name').type('Sloan');
@@ -14,7 +14,7 @@ describe('Sign up with email', () => {
     cy.findByLabelText('Email').type('sloan@example.com');
     cy.findByLabelText('Password').type('password');
     cy.findByLabelText('Password confirmation').type('password');
-    cy.get('input').contains('Sign up').click();
+    cy.findByRole('button', {name: 'Sign up'})).click();
 
     // The validation failed but the user's data is not lost
     cy.get('li')
