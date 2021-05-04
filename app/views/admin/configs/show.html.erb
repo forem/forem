@@ -769,49 +769,11 @@
                                placeholder: Constants::Settings::Mascot::DETAILS[:image_url][:placeholder] %>
 
               <div class="col-12">
-                <img alt="<%= Settings::Mascot.image_description %>" class="img-fluid" src="<%= Settings::Mascot.image_url %>" />
+                <img alt="Mascot image" class="img-fluid" src="<%= Settings::Mascot.image_url %>" />
               </div>
 
             </div>
-
-            <div class="crayons-field">
-              <%= admin_config_label :footer_image_url, model: Settings::Mascot %>
-              <%= admin_config_description Constants::Settings::Mascot::DETAILS[:footer_image_url][:description] %>
-              <%= f.text_field :footer_image_url,
-                               class: "crayons-textfield",
-                               value: Settings::Mascot.footer_image_url,
-                               placeholder: Constants::Settings::Mascot::DETAILS[:footer_image_url][:placeholder] %>
-
-              <div class="col-12">
-                <img alt="<%= Settings::Mascot.image_description %>" class="img-fluid" src="<%= Settings::Mascot.footer_image_url %>" />
-              </div>
-            </div>
-
-            <div class="crayons-field">
-              <%= admin_config_label :footer_image_width, model: Settings::Mascot %>
-              <%= admin_config_description Constants::Settings::Mascot::DETAILS[:footer_image_width][:description] %>
-              <%= f.text_field :footer_image_width,
-                               class: "form-control",
-                               value: Settings::Mascot.footer_image_width %>
-          </div>
-
-          <div class="crayons-field">
-            <%= admin_config_label :footer_image_height, model: Settings::Mascot %>
-            <%= admin_config_description Constants::Settings::Mascot::DETAILS[:footer_image_height][:description] %>
-            <%= f.text_field :footer_image_height,
-                             class: "form-control",
-                             value: Settings::Mascot.footer_image_height %>
-        </div>
-
-        <div class="crayons-field">
-          <%= admin_config_label :image_description, model: Settings::Mascot %>
-          <%= admin_config_description Constants::Settings::Mascot::DETAILS[:image_description][:description] %>
-          <%= f.text_field :image_description,
-                           class: "form-control",
-                           value: Settings::Mascot.image_description %>
-      </div>
-
-      <%= render "form_submission", f: f %>
+            <%= render "form_submission", f: f %>
             </fieldset>
           </div>
           </div>

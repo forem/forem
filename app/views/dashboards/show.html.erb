@@ -57,7 +57,7 @@
           <div>
             <% if Settings::Mascot.image_url.present? %>
               <% image_url = Images::Optimizer.call(Settings::Mascot.image_url, width: 300, crop: "imagga_scale") %>
-              <%= image_tag(image_url, class: "sloan mb-7", alt: Settings::Mascot.image_description.to_s) %>
+              <%= image_tag(image_url, class: "sloan mb-7", alt: "Mascot image") %>
             <% end %>
             <p class="mb-6">This is where you can manage your posts, but you haven't written anything yet.</p>
             <p><a href="/new" class="crayons-btn crayons-btn--l">Write your first post now</a></p>
