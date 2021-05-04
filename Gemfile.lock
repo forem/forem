@@ -753,7 +753,7 @@ GEM
       sprockets (>= 3.0.0)
     ssrf_filter (1.0.7)
     staccato (0.5.3)
-    stackprof (0.2.16)
+    stackprof (0.2.17)
     store_attribute (0.8.1)
       activerecord (>= 5.0)
     storext (3.3.0)
