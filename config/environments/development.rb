@@ -14,8 +14,7 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
-  DEFAULT_EXPIRATION = 1.hour.to_i.freeze
-  config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"], expires_in: DEFAULT_EXPIRATION }
+  config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"], expires_in: 1.hour.to_i }
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
@@ -90,13 +89,12 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: config.app_domain }
   config.action_mailer.smtp_settings = {
-    address: "smtp.gmail.com",
-    port: "587",
-    enable_starttls_auto: true,
-    user_name: '<%= ENV["DEVELOPMENT_EMAIL_USERNAME"] %>',
-    password: '<%= ENV["DEVELOPMENT_EMAIL_PASSWORD"] %>',
-    authentication: :plain,
-    domain: config.app_domain
+    address: ENV["SMTP_ADDRESS"],
+    port: ENV["SMTP_PORT"],
+    authentication: ENV["SMTP_AUTHENTICATION"].presence || :plain,
+    user_name: ENV["SMTP_USER_NAME"],
+    password: ENV["SMTP_PASSWORD"],
+    domain: ENV["SMTP_DOMAIN"].presence || config.app_domain
   }
 
   config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")

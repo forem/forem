@@ -3,13 +3,13 @@
     <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
     <%= form_with url: provider.sign_in_path(state: "navbar_basic"), class: "flex w-100", local: true do |f| %>
       <%= f.button type: :submit, class: "crayons-btn crayons-btn--l crayons-btn--brand-#{provider.provider_name} crayons-btn--icon-left grow-1 whitespace-nowrap" do %>
-        <%= inline_svg_tag("#{provider.provider_name}.svg", aria: true, class: "crayons-icon", title: provider.provider_name) %>
+        <%= inline_svg_tag("#{provider.provider_name}.svg", aria_hidden: true, class: "crayons-icon", title: provider.provider_name) %>
         <%= params[:state] == "new-user" ? "Sign up" : "Continue" %> with <%= provider.official_name %>
       <% end %>
     <% end %>
   <% end %>
   <% if params[:state] == "new-user" && Settings::Authentication.allow_email_password_registration && !Settings::Authentication.invite_only_mode %>
-    <%= link_to "#{inline_svg_tag('email.svg', aria: true, class: 'crayons-icon', title: 'email')}Sign up with Email".html_safe,
+    <%= link_to "#{inline_svg_tag('email.svg', aria_hidden: true, class: 'crayons-icon', title: 'email')}Sign up with Email".html_safe,
                 request.params.merge(state: "email_signup").except("i"),
                 class: "crayons-btn crayons-btn--l crayons-btn--brand-email crayons-btn--icon-left whitespace-nowrap",
                 data: { no_instant: "" } %>

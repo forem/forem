@@ -4,7 +4,7 @@
       <%= flash[:notice] %>
     </div>
   <% end %>
-  <%= form_for(User.new, as: :user, data: { testid: "registration-form" }, url: registration_path(:user)) do |f| %>
+  <%= form_for(@user, as: :user, data: { testid: "registration-form" }, url: registration_path(:user)) do |f| %>
     <% if defined?(resource) && resource&.errors&.any? %>
       <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
         <div class="crayons-card__header">

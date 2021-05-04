@@ -386,28 +386,6 @@ RSpec.describe "/admin/customization/config", type: :request do
           expect(SiteConfig.logo_svg).to eq(expected_image_url)
         end
 
-        it "updates secondary_logo_url" do
-          expected_image_url = "https://dummyimage.com/300x300.png"
-          post admin_config_path, params: { site_config: { secondary_logo_url: expected_image_url },
-                                            confirmation: confirmation_message }
-          expect(SiteConfig.secondary_logo_url).to eq(expected_image_url)
-        end
-
-        it "updates secondary_logo_url with a valid image" do
-          expected_image = "https://dummyimage.com/300x300"
-          post admin_config_path, params: { site_config: { secondary_logo_url: expected_image },
-                                            confirmation: confirmation_message }
-          expect(SiteConfig.secondary_logo_url).to eq(expected_image)
-        end
-
-        it "only updates the secondary_logo_url if given a valid image URL" do
-          invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300.png"
-          expect do
-            post admin_config_path, params: { site_config: { secondary_logo_url: invalid_image_url },
-                                              confirmation: confirmation_message }
-          end.not_to change(SiteConfig, :secondary_logo_url)
-        end
-
         it "rejects update without proper confirmation" do
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
@@ -897,7 +875,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         it "does not update brand color if hex not contrasting enough" do
           hex = "#bd746f" # not dark enough
           post admin_config_path, params: { site_config: { primary_brand_color_hex: hex },
-                                          confirmation: confirmation_message }
+                                            confirmation: confirmation_message }
           expect(Settings::UserExperience.primary_brand_color_hex).not_to eq(hex)
         end
 

@@ -11,7 +11,7 @@ describe('Community Content Section', () => {
   describe('community emoji setting', () => {
     it('rejects invalid input (no emoji)', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.get('#new_settings_community').as('communitySectionForm');
 
         cy.get('@communitySectionForm').findByText('Community Content').click();
@@ -30,7 +30,7 @@ describe('Community Content Section', () => {
           .findByText('Update Site Configuration')
           .click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText(
           '😭 Validation failed: Community emoji contains non-emoji characters or invalid emoji',
@@ -40,7 +40,7 @@ describe('Community Content Section', () => {
 
     it('accepts a valid emoji', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.get('#new_settings_community').as('communitySectionForm');
 
         cy.get('@communitySectionForm').findByText('Community Content').click();
@@ -59,7 +59,7 @@ describe('Community Content Section', () => {
           .findByText('Update Site Configuration')
           .click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Site configuration was successfully updated.').should(
           'be.visible',
