@@ -60,7 +60,7 @@ class SearchController < ApplicationController
   ].freeze
 
   def tags
-    result = Search::Postgres::Tag.search_documents(params[:name])
+    result = Search::Tag.search_documents(params[:name])
 
     render json: { result: result }
   end
@@ -73,7 +73,7 @@ class SearchController < ApplicationController
         [current_user.id]
       end
 
-    result = Search::Postgres::ChatChannelMembership.search_documents(
+    result = Search::ChatChannelMembership.search_documents(
       user_ids: user_ids,
       page: chat_channel_params[:page],
       per_page: chat_channel_params[:per_page],
@@ -83,7 +83,7 @@ class SearchController < ApplicationController
   end
 
   def listings
-    result = Search::Postgres::Listing.search_documents(
+    result = Search::Listing.search_documents(
       category: listing_params[:category],
       page: listing_params[:page],
       per_page: listing_params[:per_page],
@@ -94,7 +94,7 @@ class SearchController < ApplicationController
   end
 
   def usernames
-    result = Search::Postgres::Username.search_documents(params[:username])
+    result = Search::Username.search_documents(params[:username])
 
     render json: { result: result }
   end
@@ -135,7 +135,7 @@ class SearchController < ApplicationController
           per_page: params[:per_page],
         )
       elsif class_name.Comment?
-        Search::Postgres::Comment.search_documents(
+        Search::Comment.search_documents(
           page: feed_params[:page],
           per_page: feed_params[:per_page],
           sort_by: feed_params[:sort_by],
@@ -143,7 +143,7 @@ class SearchController < ApplicationController
           term: feed_params[:search_fields],
         )
       elsif class_name.PodcastEpisode?
-        Search::Postgres::PodcastEpisode.search_documents(
+        Search::PodcastEpisode.search_documents(
           page: feed_params[:page],
           per_page: feed_params[:per_page],
           sort_by: feed_params[:sort_by],
@@ -151,7 +151,7 @@ class SearchController < ApplicationController
           term: feed_params[:search_fields],
         )
       elsif class_name.User?
-        Search::Postgres::User.search_documents(
+        Search::User.search_documents(
           term: feed_params[:search_fields],
           page: feed_params[:page],
           per_page: feed_params[:per_page],
@@ -168,7 +168,7 @@ class SearchController < ApplicationController
   def reactions
     # [@rhymes] we're recyling the existing params as we want to change the frontend as
     # little as possible, we might simplify in the future
-    result = Search::Postgres::ReadingList.search_documents(
+    result = Search::ReadingList.search_documents(
       current_user,
       page: reaction_params[:page],
       per_page: reaction_params[:per_page],
@@ -183,7 +183,7 @@ class SearchController < ApplicationController
   private
 
   def search_postgres_article
-    Search::Postgres::Article.search_documents(
+    Search::Article.search_documents(
       term: feed_params[:search_fields],
       user_id: feed_params[:user_id],
       sort_by: feed_params[:sort_by],

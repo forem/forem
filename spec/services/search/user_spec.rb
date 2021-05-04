@@ -2,7 +2,7 @@ require "rails_helper"
 
 # rubocop:disable Rails/PluckId
 # This spec uses `pluck` on an array of hashes, but Rubocop can't tell the difference.
-RSpec.describe Search::Postgres::User, type: :service do
+RSpec.describe Search::User, type: :service do
   describe "::search_documents" do
     it "returns an empty result if there are no users" do
       expect(described_class.search_documents).to be_empty
