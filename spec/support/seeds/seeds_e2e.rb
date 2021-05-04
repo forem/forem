@@ -11,6 +11,7 @@ seeder = Seeder.new
 
 Settings::UserExperience.public = true
 SiteConfig.waiting_on_first_user = false
+Settings::Authentication.allow_email_password_registration = true
 
 ##############################################################################
 
