@@ -15,9 +15,9 @@ module Search
 
         relation = relation.search_articles(term) if term.present?
 
-        tag_flares = Homepage::FetchTagFlares.call(relation)
-
         relation = sort(relation, sort_by, sort_direction)
+
+        tag_flares = Homepage::FetchTagFlares.call(relation)
 
         # including user and organization as the last step as they are not needed
         # by the query that fetches tag flares, they are only needed by the serializer

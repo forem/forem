@@ -5,30 +5,26 @@ export default class SidebarController extends Controller {
   static targets = ['submenu'];
 
   disableCurrentNavItem() {
-    const activeMenuId = this.submenuTargets.filter((item) =>
-      item.classList.contains('show'),
-    )[0].id;
-    const activeButton = document.getElementById(`${activeMenuId}_button`);
-    activeButton.setAttribute('disabled', true);
+    if (this.submenuTargets.length > 0) {
+      const activeMenuId = this.submenuTargets.filter((item) =>
+        item.classList.contains('show'),
+      )[0]?.id;
+
+      if (activeMenuId) {
+        const activeButton = document.getElementById(`${activeMenuId}_button`);
+        activeButton.setAttribute('disabled', true);
+      }
+    }
   }
 
-  expandDropdown(event) {
-    this.redirectToFirstChildNavItem(event);
+  expandDropdown() {
     this.closeOtherMenus();
   }
 
-  redirectToFirstChildNavItem(event) {
-    window.location.href = event.target.getAttribute('data-target-href');
-  }
-
   closeOtherMenus() {
-    const expandedList = ['expand', 'show'];
-    const collapsedList = ['collapse', 'hide'];
-
     this.submenuTargets.map((item) => {
       if (item.classList.contains('show')) {
-        item.classList.remove(...expandedList);
-        item.classList.add(...collapsedList);
+        item.classList.remove('show');
       }
     });
   }

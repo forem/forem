@@ -23,7 +23,7 @@ describe('SidebarController', () => {
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="dropdown-icon crayons-icon" role="img"><path d="M13 9h8L11 24v-9H4l9-15v9zm-2 2V7.22L7.532 13H13v4.394L17.263 11H11z"></path></svg>
               Advanced
             </button>
-            <ul id="advanced" data-sidebar-target="submenu" class="collapse hide">
+            <ul id="advanced" data-sidebar-target="submenu" class="collapse">
               <li>
                 <a class="crayons-link crayons-link--block ml-7 " href="/admin/advanced/broadcasts">
                   Broadcasts
@@ -104,18 +104,11 @@ describe('SidebarController', () => {
       window.location = location;
     });
 
-    it('redirects to the first child navigation item', () => {
-      const button = document.getElementById('advanced_button');
-      button.click();
-
-      expect(window.location.href).toEqual('/admin/advanced/broadcasts');
-    });
-
     it('closes other menu items', () => {
       const button = document.getElementById('advanced_button');
       button.click();
 
-      expect(document.getElementById('apps').classList).toContain('hide');
+      expect(document.getElementById('apps').classList).not.toContain('show');
     });
   });
 });

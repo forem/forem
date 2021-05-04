@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Search::Postgres::Listing, type: :service do
-  let(:listing) { create(:listing) }
+  let(:listing) { create(:listing, title: "Matches Nothing", body_markdown: "Matches Nothing, and Nothing Matches.") }
 
   describe "::search_documents" do
     it "does not include a listing that is unpublished", :aggregate_failures do

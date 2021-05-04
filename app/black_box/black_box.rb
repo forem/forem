@@ -37,14 +37,7 @@ class BlackBox
     end
 
     def calculate_spaminess(story)
-      user = story.user
-      return 100 unless user
-      return 0 if user.trusted
-      return 0 if user.badge_achievements_count.positive?
-
-      base_spaminess = 0
-      base_spaminess += 25 if social_auth_registration_recent?(user) && user.registered_at > 25.days.ago
-      base_spaminess
+      story.user ? 0 : 100
     end
 
     private
@@ -61,12 +54,6 @@ class BlackBox
         ([article.score, 650].min * 2) +
         ([article.comment_score, 650].min * 2) -
         (article.spaminess_rating * 5)
-    end
-
-    def social_auth_registration_recent?(user)
-      # was the social auth account created very recently?
-      social_auth_date_plus_two_days = ((user.github_created_at || user.twitter_created_at || 3.days.ago) + 2.days)
-      user.registered_at < social_auth_date_plus_two_days
     end
   end
 end

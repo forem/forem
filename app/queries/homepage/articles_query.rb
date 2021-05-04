@@ -17,7 +17,7 @@ module Homepage
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100
-    SORT_PARAMS = %i[hotness_score public_reactions_count].freeze
+    SORT_PARAMS = %i[hotness_score public_reactions_count published_at].freeze
 
     def self.call(...)
       new(...).call

@@ -2,13 +2,13 @@ module DataUpdateScripts
   class ResyncElasticsearchDocuments
     def run
       # Previous bug: Not getting removed properly
-      sync_docs(Article.ids, "Article")
-      sync_docs(Comment.ids, "Comment")
-      sync_docs(User.ids, "User")
+      # sync_docs(Article.ids, "Article")
+      # sync_docs(Comment.ids, "Comment")
+      # sync_docs(User.ids, "User")
 
       # Previous bug: Not getting indexed on creation properly
-      index_docs(PodcastEpisode.ids, "PodcastEpisode")
-      index_docs(Tag.ids, "Tag")
+      # index_docs(PodcastEpisode.ids, "PodcastEpisode")
+      # index_docs(Tag.ids, "Tag")
     end
 
     private

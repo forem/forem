@@ -733,18 +733,6 @@
                 <% end %>
               </div>
 
-              <div class="crayons-field">
-                <%= admin_config_label :secondary_logo_url %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:secondary_logo_url][:description] %>
-                <%= f.text_field :secondary_logo_url,
-                                 class: "crayons-textfield",
-                                 value: SiteConfig.secondary_logo_url,
-                                 placeholder: Constants::SiteConfig::DETAILS[:secondary_logo_url][:placeholder] %>
-                <% if SiteConfig.secondary_logo_url.present? %>
-                  <img alt="secondary logo image" class="img-fluid" src="<%= Images::Optimizer.call(SiteConfig.secondary_logo_url, width: 256) %>" width="128px" height="128px" />
-                <% end %>
-              </div>
-
               <%= render "form_submission", f: f %>
             </fieldset>
           </div>
