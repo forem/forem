@@ -36,6 +36,21 @@ FactoryBot.define do
       end
     end
 
+    trait :with_broken_identity do
+      # Mimics a situation that can occur in production
+      transient { identities { Authentication::Providers.available } }
+
+      after(:create) do |user, options|
+        options.identities.each do |provider|
+          auth = OmniAuth.config.mock_auth.fetch(provider.to_sym)
+          create(
+            :identity,
+            user: user, provider: provider, uid: auth.uid, auth_data_dump: nil,
+          )
+        end
+      end
+    end
+
     trait :super_admin do
       after(:build) { |user| user.add_role(:super_admin) }
     end
