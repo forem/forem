@@ -739,7 +739,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_configs_path, html: { data: { testid: "mascotSectionForm" } }) do |f| %>
+        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { testid: "mascotSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
