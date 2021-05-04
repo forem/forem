@@ -145,6 +145,7 @@ group :development, :test do
   gem "cypress-rails", "~> 0.5.0" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.17" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "fakeredis", "~> 0.8.0" # Fake (In-memory) driver for redis-rb. Useful for testing environment and machines without Redis.
   gem "knapsack_pro", "~> 2.15.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
