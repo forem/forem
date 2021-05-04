@@ -19,6 +19,7 @@ items:
   - notification.md
   - scheduled-jobs.md
   - metrics.md
+  - push-notifications.md
   - tracking.md
   - service-objects.md
 ---
