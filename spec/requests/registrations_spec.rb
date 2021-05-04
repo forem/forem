@@ -80,7 +80,7 @@ RSpec.describe "Registrations", type: :request do
         name = "test"
         # rubocop:disable RSpec/AnyInstance
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
-        post "/users", params: {
+        post users_path, params: {
           user: {
             name: name,
             username: "username",
