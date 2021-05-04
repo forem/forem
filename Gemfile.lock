@@ -454,6 +454,8 @@ GEM
       http-2 (~> 0.11)
     netrc (0.11.0)
     nio4r (2.5.7)
+    nokogiri (1.11.3-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.11.3-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.11.3-x86_64-linux)
@@ -751,7 +753,7 @@ GEM
       sprockets (>= 3.0.0)
     ssrf_filter (1.0.7)
     staccato (0.5.3)
-    stackprof (0.2.16)
+    stackprof (0.2.17)
     store_attribute (0.8.1)
       activerecord (>= 5.0)
     storext (3.3.0)
@@ -839,6 +841,7 @@ GEM
     zonebie (0.6.1)
 
 PLATFORMS
+  arm64-darwin-20
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-linux
