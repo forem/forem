@@ -36,13 +36,12 @@ module Notifications
 
         # Send PNs using Rpush - respecting users' notificaton delivery settings
         targets = User.where(id: user_ids, mobile_comment_notifications: true).ids
-        url_path = Rails.application.routes.url_helpers.notifications_path(:comments)
         PushNotifications::Send.call(
           user_ids: targets,
           title: "@#{comment.user.username}",
           body: "Re: #{comment.parent_or_root_article.title.strip}",
           payload: {
-            url: URL.url(url_path),
+            url: URL.url(comment.path),
             type: "new comment"
           },
         )
