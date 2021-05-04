@@ -54,7 +54,7 @@
         <% end %>
 
         <% if tag.badge_id && tag.badge %>
-          <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 64px; height: 64px; transform: rotate(<%= -25 + (tag.id.digits.first * 5) %>deg);" class="right-1 bottom-1 absolute" alt="" />
+          <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 64px; height: 64px; transform: rotate(<%= -25 + (tag.id.digits.first * 5) %>deg);" class="right-1 bottom-1 absolute" alt="" loading="lazy" />
         <% end %>
       </div>
     <% end %>

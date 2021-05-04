@@ -8,7 +8,7 @@
   <div class="crayons-card crayons-card--content-rows">
     <div class="flex items-center">
       <a href="<%= user_url(current_user) || "#" %>" aria-label="Go to your profile page" class="mr-2">
-        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= community_name %> badge" height="32" width="32" class="dev-badge crayons-icon" />
+        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= community_name %> badge" height="32" width="32" class="dev-badge crayons-icon" loading="lazy" />
       </a>
       <p>Add the <%= community_name %> badge to your personal site. <a href="/p/badges">Click here for the code</a>.</p>
     </div>
@@ -40,7 +40,9 @@
 
       <div class="flex items-center">
         <% if @user.profile_image_url.present? %>
-          <span class="crayons-avatar crayons-avatar--xl mr-2"><img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" /></span>
+          <span class="crayons-avatar crayons-avatar--xl mr-2">
+            <img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" loading="lazy" />
+          </span>
         <% end %>
         <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
