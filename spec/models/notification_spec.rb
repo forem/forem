@@ -167,6 +167,10 @@ RSpec.describe Notification, type: :model do
     let(:comment) { create(:comment, user: user2, commentable: article) }
     let(:child_comment) { create(:comment, user: user3, commentable: article, parent: comment) }
 
+    before do
+      allow(Pusher::PushNotifications).to receive(:publish_to_interests)
+    end
+
     context "when all commenters are subscribed" do
       it "sends a notification to the author of the article" do
         expect do
