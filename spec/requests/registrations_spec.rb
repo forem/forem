@@ -90,7 +90,7 @@ RSpec.describe "Registrations", type: :request do
           }
         }
 
-        expect(User.find_by(name: name).persisted?).to eq true
+        expect(User.find_by(name: name).persisted?).to be true
       end
     end
 
