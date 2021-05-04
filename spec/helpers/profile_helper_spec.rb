@@ -28,6 +28,16 @@ describe ProfileHelper do
       end
     end
 
+    context "when a user has a broken social authentication provider linked" do
+      let(:user) do
+        create(:user, :with_broken_identity, identities: ["github"])
+      end
+
+      it "ignores that auth provider" do
+        expect(actual).to eq({})
+      end
+    end
+
     context "when a user has multiple social authentication providers linked" do
       let(:user) do
         omniauth_mock_github_payload
