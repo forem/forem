@@ -45,7 +45,7 @@ RSpec.describe "admin sidebar", type: :request do
   end
 
   describe "data update script admin feature flag" do
-    xit "does not show the option in the tabbed header when the feature flag is disabled" do
+    it "does not show the option in the tabbed header when the feature flag is disabled" do
       allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(false)
 
       get admin_tools_path
