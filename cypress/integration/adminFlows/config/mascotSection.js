@@ -33,7 +33,7 @@ describe('Mascot Section', () => {
         cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText(
-          '😭 Validation failed: Image url is not a valid URL',
+          '😭 Validation failed: Mascot image url is not a valid URL',
         ).should('be.visible');
       });
     });
