@@ -7,7 +7,7 @@
   left: var(--su-4);
   right: var(--su-4);
   position: fixed;
-  bottom: calc(var(--su-9) + env(safe-area-inset-bottom));
+  bottom: calc(var(--su-2) + env(safe-area-inset-bottom));
   flex-flow: row nowrap;
   align-items: center;
   padding: var(--su-1);
