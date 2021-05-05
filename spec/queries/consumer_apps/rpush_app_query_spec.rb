@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ConsumerApps::RpushAppQuery, type: :query do
   let(:consumer_app) do
-    ConsumerApps::FindOrCreateByQuery.call(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: Device::IOS)
+    ConsumerApps::FindOrCreateByQuery.call(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: :ios)
   end
 
   describe "Rpush app" do
