@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::Postgres::Username, type: :service do
+RSpec.describe Search::Username, type: :service do
   it "defines necessary constants" do
     expect(described_class::ATTRIBUTES).not_to be_nil
     expect(described_class::MAX_RESULTS).not_to be_nil

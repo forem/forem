@@ -20,23 +20,7 @@ RSpec.describe PushNotifications::Send, type: :service do
     }
   end
 
-  context "with feature flag set to false/off" do
-    before do
-      allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(false)
-    end
-
-    it "does nothing if the feature flag is disabled", :aggregate_failures do
-      described_class.call(**params)
-
-      sidekiq_assert_no_enqueued_jobs(only: PushNotifications::DeliverWorker)
-    end
-  end
-
   context "with no devices for user" do
-    before do
-      allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
-    end
-
     it "does nothing", :aggregate_failures do
       described_class.call(**params)
 
@@ -46,7 +30,6 @@ RSpec.describe PushNotifications::Send, type: :service do
 
   context "with devices for one user" do
     before do
-      allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("dGVzdGluZw==")
       allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("Forem")
     end
@@ -79,7 +62,6 @@ RSpec.describe PushNotifications::Send, type: :service do
     let(:consumer_app) { create(:consumer_app) }
 
     before do
-      allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("dGVzdGluZw==")
       allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("Forem")
 

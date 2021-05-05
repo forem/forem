@@ -12,8 +12,6 @@ module PushNotifications
     end
 
     def call
-      return unless FeatureFlag.enabled?(:mobile_notifications)
-
       relation = Device.where(user_id: @user_ids)
 
       relation.find_each do |device|

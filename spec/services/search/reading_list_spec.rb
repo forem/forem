@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::Postgres::ReadingList, type: :service do
+RSpec.describe Search::ReadingList, type: :service do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
   let(:article_not_in_reading_list) { create(:article) }

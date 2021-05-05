@@ -30,7 +30,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
     it "returns json" do
       sign_in authorized_user
-      allow(Search::Postgres::ChatChannelMembership).to receive(:search_documents).and_return(
+      allow(Search::ChatChannelMembership).to receive(:search_documents).and_return(
         mock_documents,
       )
       get "/search/chat_channels"
@@ -143,24 +143,24 @@ RSpec.describe "Search", type: :request, proper_status: true do
     end
 
     context "when searching for articles" do
-      it "calls Search::Postgres::Article without a class_name" do
-        allow(Search::Postgres::Article).to receive(:search_documents)
+      it "calls Search::Article without a class_name" do
+        allow(Search::Article).to receive(:search_documents)
 
         get search_feed_content_path
 
-        expect(Search::Postgres::Article).to have_received(:search_documents)
+        expect(Search::Article).to have_received(:search_documents)
       end
 
-      it "calls Search::Postgres::Article with class_name=Article" do
-        allow(Search::Postgres::Article).to receive(:search_documents)
+      it "calls Search::Article with class_name=Article" do
+        allow(Search::Article).to receive(:search_documents)
 
         get search_feed_content_path(class_name: "Article")
 
-        expect(Search::Postgres::Article).to have_received(:search_documents)
+        expect(Search::Article).to have_received(:search_documents)
       end
 
       it "supports the search params", :aggregate_failures do
-        allow(Search::Postgres::Article).to receive(:search_documents).and_call_original
+        allow(Search::Article).to receive(:search_documents).and_call_original
 
         article = create(:article)
 
@@ -171,7 +171,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
         expect(response.parsed_body["result"].first["id"]).to eq(article.id)
 
-        expect(Search::Postgres::Article).to have_received(:search_documents)
+        expect(Search::Article).to have_received(:search_documents)
       end
     end
 

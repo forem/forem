@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::Postgres::Tag, type: :service do
+RSpec.describe Search::Tag, type: :service do
   describe "::search_documents" do
     it "does not find non supported tags" do
       tag = create(:tag, supported: false)

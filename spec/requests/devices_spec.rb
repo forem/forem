@@ -5,7 +5,6 @@ RSpec.describe "Devices", type: :request do
   let(:consumer_app) { create(:consumer_app) }
 
   before do
-    allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
     sign_in user
   end
 
