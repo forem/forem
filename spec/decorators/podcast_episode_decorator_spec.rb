@@ -55,13 +55,13 @@ RSpec.describe PodcastEpisodeDecorator, type: :decorator do
     it "returns the correct date for a same year publication" do
       published_at = Time.current
       pe = build(:podcast_episode, published_at: published_at)
-      expect(pe.decorate.readable_publish_date).to eq(published_at.strftime("%b %e"))
+      expect(pe.decorate.readable_publish_date).to eq(published_at.strftime("%b %-e"))
     end
 
     it "returns the correct date for a publication within a different year" do
       published_at = 2.years.ago
       pe = build(:podcast_episode, published_at: published_at)
-      expect(pe.decorate.readable_publish_date).to eq(published_at.strftime("%b %e '%y"))
+      expect(pe.decorate.readable_publish_date).to eq(published_at.strftime("%b %-e '%y"))
     end
   end
 

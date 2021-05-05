@@ -134,9 +134,9 @@ class Comment < ApplicationRecord
 
   def readable_publish_date
     if created_at.year == Time.current.year
-      created_at.strftime("%b %e")
+      created_at.strftime("%b %-e")
     else
-      created_at.strftime("%b %e '%y")
+      created_at.strftime("%b %-e '%y")
     end
   end
 
