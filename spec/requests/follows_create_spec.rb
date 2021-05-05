@@ -14,19 +14,16 @@ RSpec.describe "Follows #create", type: :request do
 
   before do
     sign_in user
+    Settings::RateLimit.clear_cache
   end
 
   context "when rate limit has been hit" do
     before do
       rate_limit_checker = RateLimitChecker.new(user)
 
-      allow(Settings::RateLimit)
-        .to receive(:follow_count_daily)
-        .and_return(23)
-
       allow(rate_limit_checker)
         .to receive(:user_today_follow_count)
-        .and_return(24)
+        .and_return(Settings::RateLimit.follow_count_daily + 1)
 
       allow(RateLimitChecker)
         .to receive(:new)
