@@ -1,6 +1,5 @@
 module Search
-  # to be renamed when ES is gone
-  class PostgresUserSerializer < ApplicationSerializer
+  class SimpleUserSerializer < ApplicationSerializer
     attribute :class_name, -> { "User" }
     attributes :id, :path
     attribute :title, &:name

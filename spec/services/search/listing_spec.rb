@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::Postgres::Listing, type: :service do
+RSpec.describe Search::Listing, type: :service do
   let(:listing) { create(:listing, title: "Matches Nothing", body_markdown: "Matches Nothing, and Nothing Matches.") }
 
   describe "::search_documents" do
