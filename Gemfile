@@ -73,7 +73,7 @@ gem "pusher", "~> 2.0" # Ruby library for Pusher Channels HTTP API
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 6.1" # Ruby on Rails
+gem "rails", "~> 6.1.3.2" # Ruby on Rails
 # Pinned since we have a monkey-patch against this version
 gem "rails-settings-cached", "= 2.5.2" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "ransack", "~> 2.4" # Searching and sorting
