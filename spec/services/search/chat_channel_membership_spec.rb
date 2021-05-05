@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::Postgres::ChatChannelMembership, type: :service do
+RSpec.describe Search::ChatChannelMembership, type: :service do
   let(:user) { create(:user) }
 
   describe "::search_documents" do

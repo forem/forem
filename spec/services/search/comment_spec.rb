@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::Postgres::Comment, type: :service do
+RSpec.describe Search::Comment, type: :service do
   let(:comment) { create(:comment) }
 
   describe "::search_documents" do
