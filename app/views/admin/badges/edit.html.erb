@@ -6,34 +6,33 @@
   </div>
 </header>
 
-<div class="crayons-card p-6">
+<div class="crayons-card crayons-card--content-rows">
   <%= form_for [:admin, @badge], method: :patch do |form| %>
-    <div class="form-group">
-      <%= form.label :title %>
-      <%= form.text_field :title, class: "form-control" %>
+    <div class="crayons-field mb-3">
+      <%= form.label :title, "Title:", class: "crayons-field__label" %>
+      <p class="crayons-field__description">
+        Badge's link is auto-generated based on the title:
+        <%= link_to @badge.path, @badge.path %>
+      </p>
+      <%= form.text_field :title, class: "crayons-textfield" %>
     </div>
 
-    <div class="form-group">
-      <%= form.label :slug, "Slug:" %>
-      <%= form.text_field :slug, class: "form-control" %>
+    <div class="crayons-field mb-3">
+      <%= form.label :description, "Description:", class: "crayons-field__label" %>
+      <%= form.text_field :description, class: "crayons-textfield" %>
     </div>
 
-    <div class="form-group">
-      <%= form.label :description, "Description:" %>
-      <%= form.text_field :description, class: "form-control" %>
-    </div>
-
-    <div class="form-group">
-      <%= form.label :badge_image, "Badge Image:" %>
+    <div class="crayons-field mb-3">
+      <%= form.label :badge_image, "Badge Image:", class: "crayons-field__label" %>
       <% if @badge.badge_image %>
         <img class="mx-auto mt-3" width="60" height="60" src="<%= @badge.badge_image %>" alt="badge image">
       <% end %>
-      <%= form.file_field :badge_image, class: "form-control" %>
+      <%= form.file_field :badge_image %>
     </div>
 
-    <div class="form-group">
-      <%= form.label :credits_awarded, "Credits awarded:" %>
-      <%= form.text_field :credits_awarded, class: "form-control" %>
+    <div class="crayons-field mb-3">
+      <%= form.label :credits_awarded, "Credits awarded:", class: "crayons-field__label" %>
+      <%= form.text_field :credits_awarded, class: "crayons-textfield" %>
     </div>
     <%= submit_tag "Update Badge", class: "btn btn-primary" %>
   <% end %>
