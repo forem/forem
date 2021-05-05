@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ConsumerApp, type: :model do
-  let(:consumer_app_android) { create(:consumer_app, platform: Device::ANDROID) }
-  let(:consumer_app_ios) { create(:consumer_app, platform: Device::IOS) }
+  let(:consumer_app_android) { create(:consumer_app, platform: :android) }
+  let(:consumer_app_ios) { create(:consumer_app, platform: :ios) }
 
   describe "validations" do
     subject { consumer_app_android }
