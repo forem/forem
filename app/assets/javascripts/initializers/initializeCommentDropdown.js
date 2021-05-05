@@ -157,6 +157,7 @@ function initializeCommentDropdown() {
 
   const commentsContainer = document.getElementById('comment-trees-container');
 
+  // We only want to add an event listener for the click once
   if (commentsContainer && !commentsContainer.dataset.initialized) {
     commentsContainer.dataset.initialized = true;
     commentsContainer.addEventListener(
