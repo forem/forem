@@ -366,7 +366,7 @@ describe('Comment on articles', () => {
       );
     });
 
-    it('should pre-populate a comment field when editing', () => {
+    it.skip('should pre-populate a comment field when editing', () => {
       cy.findByRole('main').within(() => {
         cy.findByRole('textbox', {
           name: /^Add a comment to the discussion$/i,
