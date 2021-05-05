@@ -137,10 +137,11 @@ RSpec.describe "Registrations", type: :request do
         allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
         allow(FeatureFlag).to receive(:enabled?).with(:runtime_banner).and_return(false)
         allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
+        allow(Settings::UserExperience).to receive(:public).and_return(false)
       end
 
       it "renders the creator onboarding form" do
-        get new_user_registration_path
+        get root_path
         expect(response.body).to include("Let's create an admin account for your community.")
         expect(response.body).to include("Create admin account")
       end
