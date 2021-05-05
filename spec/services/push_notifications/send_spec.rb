@@ -20,18 +20,8 @@ RSpec.describe PushNotifications::Send, type: :service do
     }
   end
 
-  context "with feature flag set to false/off" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(false) }
-
-    it "does nothing if the feature flag is disabled" do
-      expect { described_class.call(**params) }
-        .not_to change { Rpush::Client::Redis::Notification.all.count }
-    end
-  end
-
   context "with no devices for user" do
     before do
-      allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
       user.devices.delete
     end
 
@@ -44,7 +34,6 @@ RSpec.describe PushNotifications::Send, type: :service do
 
   context "with devices for one user" do
     before do
-      allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("dGVzdGluZw==")
       allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("Forem")
       create(:device, user: user)
@@ -67,7 +56,6 @@ RSpec.describe PushNotifications::Send, type: :service do
 
   context "with devices for multiple users" do
     before do
-      allow(FeatureFlag).to receive(:enabled?).with(:mobile_notifications).and_return(true)
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("dGVzdGluZw==")
       allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("Forem")
       create(:device, user: user)

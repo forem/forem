@@ -134,10 +134,8 @@ Rails.application.routes.draw do
     end
     resources :comment_mutes, only: %i[update]
     resources :users, only: %i[index], defaults: { format: :json } do # internal API
-      constraints(-> { FeatureFlag.enabled?(:mobile_notifications) }) do
-        collection do
-          resources :devices, only: %i[create destroy]
-        end
+      collection do
+        resources :devices, only: %i[create destroy]
       end
     end
     resources :users, only: %i[update]
