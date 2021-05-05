@@ -761,9 +761,9 @@
             </div>
 
             <div class="crayons-field">
-              <%= admin_config_label :image_url, "Mascot Image URL" %>
+              <%= admin_config_label :mascot_image_url, "Mascot Image URL" %>
               <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_image_url][:description] %>
-              <%= f.text_field :image_url,
+              <%= f.text_field :mascot_image_url,
                                class: "crayons-textfield",
                                value: SiteConfig.mascot_image_url,
                                placeholder: Constants::SiteConfig::DETAILS[:mascot_image_url][:placeholder] %>

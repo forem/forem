@@ -418,7 +418,7 @@ RSpec.describe "/admin/customization/config", type: :request do
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post admin_config_path, params: {
-              site_config: { image_url: expected_image_url },
+              site_config: { mascot_image_url: expected_image_url },
               confirmation: confirmation_message
             }
           end.to change(SiteConfig, :mascot_image_url).from(expected_default_image_url).to(expected_image_url)
