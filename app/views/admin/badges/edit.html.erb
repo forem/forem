@@ -11,7 +11,8 @@
     <div class="crayons-field mb-3">
       <%= form.label :title, "Title:", class: "crayons-field__label" %>
       <p class="crayons-field__description">
-        Badge's link is auto-generated based on the title.
+        Badge's link is auto-generated based on the title:
+        <%= link_to @badge.path, @badge.path %>
       </p>
       <%= form.text_field :title, class: "crayons-textfield" %>
     </div>
