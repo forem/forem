@@ -5,8 +5,10 @@ RSpec.describe ConsumerApps::RpushAppQuery, type: :query do
     ConsumerApps::FindOrCreateByQuery.call(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: Device::IOS)
   end
 
-  describe "Redis-backed rpush app" do
+  describe "Rpush app" do
     it "is recreated after updating a ConsumerApp" do
+      mock_rpush(consumer_app)
+
       # Fetch rpush app associated to the target
       rpush_app = described_class.call(
         app_bundle: consumer_app.app_bundle,

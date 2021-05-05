@@ -73,6 +73,7 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthHelpers
+  config.include RpushHelpers
   config.include SidekiqTestHelpers
 
   config.after(:each, type: :system) do

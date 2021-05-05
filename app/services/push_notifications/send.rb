@@ -14,7 +14,9 @@ module PushNotifications
     def call
       return unless FeatureFlag.enabled?(:mobile_notifications)
 
-      Device.where(user_id: @user_ids).find_each do |device|
+      relation = Device.where(user_id: @user_ids)
+
+      relation.find_each do |device|
         device.create_notification(@title, @body, @payload)
       end
 
@@ -23,7 +25,7 @@ module PushNotifications
       # has a constraint that will execute the job only once (30 seconds from now). So if we need to send 1 PN
       # every 5 seconds we only execute this once every 30s (no duplicate/unnecessary processing).
       # If no PNs are scheduled to be sent for a 6h span then 0 jobs are executed.
-      PushNotifications::DeliverWorker.perform_in(30.seconds)
+      PushNotifications::DeliverWorker.perform_in(30.seconds) if relation.any?
     end
   end
 end

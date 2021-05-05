@@ -1,8 +1,19 @@
 require "rails_helper"
 
 RSpec.describe ConsumerApp, type: :model do
-  let!(:consumer_app_android) { create(:consumer_app, platform: Device::ANDROID) }
-  let!(:consumer_app_ios) { create(:consumer_app, platform: Device::IOS) }
+  let(:consumer_app_android) { create(:consumer_app, platform: Device::ANDROID) }
+  let(:consumer_app_ios) { create(:consumer_app, platform: Device::IOS) }
+
+  describe "validations" do
+    subject { consumer_app_android }
+
+    describe "builtin validations" do
+      it { is_expected.to have_many(:devices).dependent(:destroy) }
+
+      it { is_expected.to validate_presence_of(:app_bundle) }
+      it { is_expected.to validate_uniqueness_of(:app_bundle).scoped_to(:platform) }
+    end
+  end
 
   describe "operational?" do
     context "with non-Forem apps" do
@@ -40,6 +51,8 @@ RSpec.describe ConsumerApp, type: :model do
 
   describe "after an update" do
     it "recreates the Rpush app for Android", :aggregate_failures do
+      mock_rpush(consumer_app_android)
+
       rpush_app = ConsumerApps::RpushAppQuery.call(
         app_bundle: consumer_app_android.app_bundle,
         platform: consumer_app_android.platform,
@@ -64,6 +77,8 @@ RSpec.describe ConsumerApp, type: :model do
     end
 
     it "recreates the Rpush app for iOS", :aggregate_failures do
+      mock_rpush(consumer_app_ios)
+
       rpush_app = ConsumerApps::RpushAppQuery.call(
         app_bundle: consumer_app_ios.app_bundle,
         platform: consumer_app_ios.platform,
