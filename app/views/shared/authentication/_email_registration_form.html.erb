@@ -48,31 +48,46 @@
     <% end %>
     <div class="crayons-field mt-3">
       <%= f.label :profile_image, class: "crayons-field__label" %>
-      <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100", required: true %>
+      <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :name, class: "crayons-field__label" %>
+      <%= f.label :name, class: "crayons-field__label", aria: { label: "Name" } do %>
+        Name
+        <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
+      <% end %>
       <%= f.text_field :name, class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :username, class: "crayons-field__label" %>
+      <%= f.label :username, class: "crayons-field__label", aria: { label: "Username" } do %>
+        Username
+        <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
+      <% end %>
       <%= f.text_field :username, class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :email, class: "crayons-field__label" %>
+      <%= f.label :email, class: "crayons-field__label", aria: { label: "Email" } do %>
+        Email
+        <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
+      <% end %>
       <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :password, class: "crayons-field__label" %>
+      <%= f.label :password, class: "crayons-field__label", aria: { label: "Password" } do %>
+        Password
+        <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
+      <% end %>
       <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :password_confirmation, class: "crayons-field__label" %>
+      <%= f.label :password_confirmation, class: "crayons-field__label", aria: { label: "Password Confirmation" } do %>
+        Password Confirmation
+        <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
+      <% end %>
       <%= f.password_field :password_confirmation, autocomplete: "current-password", class: "crayons-textfield", required: true %>
     </div>
 

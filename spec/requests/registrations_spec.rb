@@ -62,7 +62,11 @@ RSpec.describe "Registrations", type: :request do
 
   describe "Create Account" do
     context "when email registration allowed" do
-      before { allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true) }
+      before do
+        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
+      end
 
       it "shows the sign in page with email option" do
         get sign_up_path, params: { state: "new-user" }
@@ -74,6 +78,21 @@ RSpec.describe "Registrations", type: :request do
         get sign_up_path, params: { state: "new-user" }
 
         expect(response.body).to include("View more sign in options")
+      end
+
+      it "creates a user with a random profile image if none was uploaded" do
+        name = "test"
+        post users_path, params: {
+          user: {
+            name: name,
+            username: "username",
+            email: "yo@whatup.com",
+            password: "password",
+            password_confirmation: "password"
+          }
+        }
+
+        expect(User.find_by(name: name).persisted?).to be true
       end
     end
 
@@ -90,6 +109,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email registration allowed and captcha required" do
       before do
+        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
         allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
         allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
@@ -153,7 +173,6 @@ RSpec.describe "Registrations", type: :request do
 
   describe "POST /users" do
     def mock_recaptcha_verification
-      # rubocop:disable RSpec/AnyInstance
       allow_any_instance_of(RegistrationsController).to(
         receive(:recaptcha_verified?).and_return(true),
       )
@@ -173,8 +192,9 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site is configured to accept email registration" do
       before do
-        allow(Settings::Authentication)
-          .to receive(:allow_email_password_registration).and_return(true)
+        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
       end
 
       it "does not raise disallowed if community is set to allow email" do
@@ -230,6 +250,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email registration allowed and email allow list empty" do
       before do
+        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
         allow(Settings::Authentication).to receive(:allowed_registration_email_domains).and_return([])
       end
@@ -247,6 +268,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email registration allowed and email allow list present" do
       before do
+        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
         allow(Settings::Authentication).to receive(:allowed_registration_email_domains).and_return(["dev.to",
                                                                                                     "forem.com"])
@@ -275,6 +297,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site configured to accept email registration AND require captcha" do
       before do
+        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
         allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
         allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
@@ -309,6 +332,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site is in waiting_on_first_user state" do
       before do
+        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
         allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
         ENV["FOREM_OWNER_SECRET"] = nil
       end
@@ -388,7 +412,9 @@ RSpec.describe "Registrations", type: :request do
 
     context "with the creator_onboarding feature flag" do
       before do
+        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
         allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
+        allow(FeatureFlag).to receive(:enabled?).with(:runtime_banner).and_return(false)
         allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
       end
 
@@ -417,3 +443,4 @@ RSpec.describe "Registrations", type: :request do
     end
   end
 end
+# rubocop:enable RSpec/AnyInstance
