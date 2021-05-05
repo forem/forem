@@ -17,12 +17,8 @@ module RpushHelpers
     allow(rpush_app).to receive(:destroy)
 
     rpush_notification = rpush_notification_class.new
-    # expect(rpush_notification).to receive(:app).and_return(rpush_app)
     allow(rpush_notification).to receive(:save!)
     allow(rpush_notification_class).to receive(:new).and_return(rpush_notification)
-
-    # allow_any_instance_of(rpush_notification_class).to receive(:app).and_return(rpush_app)
-    # allow_any_instance_of(rpush_notification_class).to receive(:save!)
 
     relation = double
     allow(relation).to receive(:first).and_return(rpush_app)
