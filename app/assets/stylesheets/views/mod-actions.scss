@@ -365,13 +365,12 @@
       }
     }
     .dropdown-options {
-      display: flex;
       flex-direction: column;
       padding: 0 var(--su-4);
       transition-duration: 1s;
 
-      &.hidden {
-        display: none;
+      &:not(.hidden) {
+        display: flex;
       }
     }
     .adjust-tags-options {
