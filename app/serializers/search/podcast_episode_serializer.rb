@@ -1,27 +1,35 @@
 module Search
   class PodcastEpisodeSerializer < ApplicationSerializer
+    def self.podcast_image_url(podcast_episode)
+      Images::Profile.call(podcast_episode.podcast.profile_image_url, length: 90)
+    end
+
     attribute :id, &:search_id
+    attribute :body_text, &:body
 
-    attributes :body_text, :class_name, :comments_count, :hotness_score, :path,
-               :public_reactions_count, :published, :published_at, :quote,
-               :reactions_count, :search_score, :subtitle, :summary, :title,
-               :website_url
+    attributes :comments_count, :path, :published_at, :quote, :reactions_count,
+               :subtitle, :summary, :title, :website_url
 
-    attribute :main_image do |pde|
-      Images::Profile.call(pde.podcast.profile_image_url, length: 90)
+    attribute :class_name, -> { "PodcastEpisode" }
+    attribute :highlight, -> { { body_text: [] } } # We don't display highlights in the UI for Podcasts
+    attribute :hotness_score, -> { 0 }
+
+    attribute :main_image do |podcast_episode|
+      podcast_image_url(podcast_episode)
     end
+
+    attribute :podcast do |podcast_episode|
+      {
+        slug: podcast_episode.podcast_slug,
+        image_url: podcast_image_url(podcast_episode),
+        title: podcast_episode.title
+      }
+    end
+
+    attribute :public_reactions_count, -> { 0 }
+    attribute :published, -> { true }
+    attribute :search_score, -> { 0 }
     attribute :slug, &:podcast_slug
-
-    attribute :tags do |pde|
-      pde.tags.map do |tag|
-        { name: tag.name, keywords_for_search: tag.keywords_for_search }
-      end
-    end
-
-    attribute :user do |pde|
-      NestedUserSerializer.new(pde.podcast.creator).serializable_hash.dig(
-        :data, :attributes
-      )
-    end
+    attribute :user, -> { {} } # User data is not used in the UX for Podcasts
   end
 end
