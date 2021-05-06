@@ -16,6 +16,9 @@ namespace :data_updates do
 
   desc "Get data update status"
   task status: :environment do
+    # Disable ActiveRecord logging for this task.
+    # See: https://github.com/forem/forem/pull/13653#discussion_r626278422
+    ActiveRecord::Base.logger = nil
     # rubocop:disable Style/FormatStringToken
     puts format(" %-9s  %-14s  %-40s", "Status", "ID", "Description")
     puts "-" * 80
