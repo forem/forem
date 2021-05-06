@@ -32,6 +32,3 @@ $outline-color: darken($light-medium-gray, 2%);
 $shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.18);
 $bold-shadow: 0px 1px 1px rgba($black, 0.1), 0px 1px 2px rgba($black, 0.1),
   0px 0px 1px rgba($black, 0.8);
-
-// Explicitly set opacity-0 to 0.00001 to ensure accessibility on ChromeVox. See https://github.com/forem/forem/issues/12939
-$opacity-0: 0.00001;
