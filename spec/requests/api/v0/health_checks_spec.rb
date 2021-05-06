@@ -22,21 +22,6 @@ RSpec.describe "HealthCheck", type: :request do
     end
   end
 
-  describe "GET /api/health_checks/search" do
-    it "returns json success if ping succeeds" do
-      get search_api_health_checks_path, headers: headers
-      expect(response.status).to eq(200)
-      expect(response.parsed_body["message"]).to eq("Search ping succeeded!")
-    end
-
-    it "returns json failure if ping fails" do
-      allow(Search::Client).to receive(:ping).and_return(false)
-      get search_api_health_checks_path, headers: headers
-      expect(response.status).to eq(500)
-      expect(response.parsed_body["message"]).to eq("Search ping failed!")
-    end
-  end
-
   describe "GET /api/health_checks/database" do
     it "returns json success if connection check succeeds" do
       get database_api_health_checks_path, headers: headers

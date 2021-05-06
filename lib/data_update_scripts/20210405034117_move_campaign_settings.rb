@@ -16,10 +16,9 @@ module DataUpdateScripts
 
       # All these fields got renamed so we migrate them explicitly
       CAMPAIGN_SETTINGS.each do |setting|
-        Settings::Campaign.public_send(
-          "#{setting}=",
-          Settings::General.public_send("campaign_#{setting}"),
-        )
+        if (value = SiteConfig.public_send("campaign_#{setting}"))
+          Settings::Campaign.public_send("#{setting}=", value)
+        end
       end
     end
   end

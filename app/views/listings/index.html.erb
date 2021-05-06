@@ -27,21 +27,26 @@
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 
-<header class="crayons-layout flex items-center justify-between p-2 l:p-4 l:pb-0">
-  <h1 class="crayons-title">Listings</h1>
+<main id="main-content">
 
-  <div class="flex items-center">
-    <a href="<%= new_listing_path %>" class="crayons-btn crayons-btn--secondary">Create</a>
-    <a href="<%= listings_dashboard_path %>" class="crayons-btn crayons-btn--secondary ml-2">Manage</a>
+  <div class="crayons-layout flex items-center justify-between p-2 l:p-4 l:pb-0">
+    <h1 class="crayons-title">Listings</h1>
+
+    <nav class="flex items-center" aria-label="Listings">
+      <ul class="list-none flex">
+        <li> <a href="<%= new_listing_path %>" class="crayons-btn crayons-btn--secondary">Create</a></li>
+        <li> <a href="<%= listings_dashboard_path %>" class="crayons-btn crayons-btn--secondary ml-2">Manage</a></li>
+      </ul>
+    </nav>
   </div>
-</header>
 
-<div class="listings-container" id="listings-index-container"
-  data-category="<%= params[:category] %>" data-listings="<%= @listings_json %>"
-  data-allcategories="<%= categories_for_display.to_json %>"
-  <% if @displayed_listing %>
-  data-displayedlisting="<%= @displayed_listing_json %> "
-  <% end %>>
-</div>
+  <div class="listings-container" id="listings-index-container"
+    data-category="<%= params[:category] %>" data-listings="<%= @listings_json %>"
+    data-allcategories="<%= categories_for_display.to_json %>"
+    <% if @displayed_listing %>
+    data-displayedlisting="<%= @displayed_listing_json %> "
+    <% end %>>
+  </div>
 
+</main>
 <%= javascript_packs_with_chunks_tag "listings", defer: true %>

@@ -94,7 +94,6 @@ module Settings
           validates: { url: true }
 
     field :logo_svg, type: :string
-    field :secondary_logo_url, type: :string, validates: { url: true }
 
     field :enable_video_upload, type: :boolean, default: false
 

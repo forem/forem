@@ -130,53 +130,57 @@ export class FollowTags extends Component {
               {this.renderFollowCount()}
             </header>
             <div data-testid="onboarding-tags" className="onboarding-tags">
-              {allTags.map((tag) => (
-                <div
-                  className={`onboarding-tags__item ${
-                    selectedTags.includes(tag) &&
-                    'onboarding-tags__item--selected'
-                  }`}
-                  style={{
-                    boxShadow: selectedTags.includes(tag)
-                      ? `inset 0 0 0 100px ${tag.bg_color_hex}`
-                      : `inset 0 0 0 2px ${tag.bg_color_hex}`,
-                    color: selectedTags.includes(tag) ? tag.text_color_hex : '',
-                  }}
-                >
-                  <div className="onboarding-tags__item__inner">
-                    #{tag.name}
-                    <button
-                      type="button"
-                      onClick={() => this.handleClick(tag)}
-                      className={`onboarding-tags__button ${
-                        selectedTags.includes(tag) &&
-                        'onboarding-tags__button--selected'
-                      }`}
-                      style={{
-                        backgroundColor: selectedTags.includes(tag)
-                          ? tag.text_color_hex
-                          : tag.bg_color_hex,
-                        color: selectedTags.includes(tag)
-                          ? tag.bg_color_hex
-                          : tag.text_color_hex,
-                      }}
-                    >
-                      {selectedTags.includes(tag) ? (
-                        <span>
-                          <span className="onboarding-tags__button-default">
-                            ✓ Following
-                          </span>
-                          <span className="onboarding-tags__button-alt">
-                            Unfollow
-                          </span>
-                        </span>
-                      ) : (
-                        'Follow'
-                      )}
-                    </button>
+              {allTags.map((tag) => {
+                const selected = selectedTags.includes(tag);
+                return (
+                  <div
+                    className={`onboarding-tags__item ${
+                      selected && 'onboarding-tags__item--selected'
+                    }`}
+                    style={{
+                      boxShadow: selected
+                        ? `inset 0 0 0 100px ${tag.bg_color_hex}`
+                        : `inset 0 0 0 2px ${tag.bg_color_hex}`,
+                      color: selected ? tag.text_color_hex : '',
+                    }}
+                    key={tag.id}
+                  >
+                    <div className="onboarding-tags__item__inner">
+                      #{tag.name}
+                      <button
+                        type="button"
+                        onClick={() => this.handleClick(tag)}
+                        className={`onboarding-tags__button  ${
+                          selected &&
+                          'onboarding-tags__button--selected crayons-btn--icon-left'
+                        }`}
+                        aria-pressed={selected}
+                        aria-label={`Follow ${tag.name}`}
+                        style={{
+                          backgroundColor: selected
+                            ? tag.text_color_hex
+                            : tag.bg_color_hex,
+                          color: selected
+                            ? tag.bg_color_hex
+                            : tag.text_color_hex,
+                        }}
+                      >
+                        {selected && (
+                          <svg
+                            width="24"
+                            height="24"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="crayons-icon"
+                          >
+                            <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
+                          </svg>
+                        )}
+                        {selected ? 'Following' : 'Follow'}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

@@ -10,7 +10,6 @@ module Authentication
 
         {
           email: info.email.to_s,
-          github_created_at: raw_info.created_at,
           github_username: info.nickname,
           name: name,
           remote_profile_image_url: Users::SafeRemoteProfileImageUrl.call(info.image.to_s)
@@ -19,7 +18,6 @@ module Authentication
 
       def existing_user_data
         {
-          github_created_at: raw_info.created_at,
           github_username: info.nickname
         }
       end

@@ -11,7 +11,7 @@ describe('Campaign Section', () => {
   describe('sidebar image setting', () => {
     it('rejects an invalid image URL', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.get('#new_settings_campaign').as('campaignSectionForm');
 
         cy.get('@campaignSectionForm').findByText('Campaign').click();
@@ -27,7 +27,7 @@ describe('Campaign Section', () => {
 
         cy.get('@campaignSectionForm').findByText('Update Settings').click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText(
           '😭 Validation failed: Sidebar image is not a valid URL',
@@ -37,7 +37,7 @@ describe('Campaign Section', () => {
 
     it('accepts a valid image URL', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.get('#new_settings_campaign').as('campaignSectionForm');
 
         cy.get('@campaignSectionForm').findByText('Campaign').click();
@@ -53,7 +53,7 @@ describe('Campaign Section', () => {
 
         cy.get('@campaignSectionForm').findByText('Update Settings').click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Successfully updated settings.').should('be.visible');
 

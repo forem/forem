@@ -53,26 +53,15 @@
   <div class="crayons-layout crayons-layout--2-cols">
     <div class="admin__left-sidebar crayons-layout__left-sidebar" data-controller="sidebar" data-action="load@window->sidebar#disableCurrentNavItem">
       <nav class="hidden m:block">
-        <% if FeatureFlag.enabled?(:admin_restructure) %>
           <ul>
             <li>
-              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>" aria-current"<%= "page" if controller.controller_name == "overview" %>">
+              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>" aria-current "<%= "page" if controller.controller_name == "overview" %>">
                 <%= inline_svg_tag("stack-line.svg", aria: true, class: "dropdown-icon crayons-icon") %>
                 Overview
               </a>
             </li>
             <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
           </ul>
-        <% else %>
-          <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>">
-            Overview
-          </a>
-          <%= render "admin/shared/navbar", menu_items: admin_menu_items %>
-          <% if FeatureFlag.enabled?(:data_update_scripts) %>
-            <p class="crayons-field__description mt-4 mb-3">Tech Resources</p>
-            <%= render "admin/shared/navbar", menu_items: AdminHelper::TECH_MENU_ITEMS %>
-          <% end %>
-        <% end %>
       </nav>
     </div>
     <main class="crayons-layout__content min-w-0">
@@ -85,11 +74,8 @@
         </div>
       <% end %>
 
-      <% if FeatureFlag.enabled?(:admin_restructure) %>
-      <!-- hack to ensure that when you go to the old admin view nothing breaks -->
-        <% if request.path.split("/")[-3] == "admin" %>
-          <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu.nested_menu_items_from_request(request) %>
-        <% end %>
+      <% if request.path.split("/")[-3] == "admin" %>
+        <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu.nested_menu_items_from_request(request) %>
       <% end %>
 
       <%= yield %>

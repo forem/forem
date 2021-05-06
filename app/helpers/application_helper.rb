@@ -163,10 +163,6 @@ module ApplicationHelper
     end
   end
 
-  def safe_logo_url(logo)
-    logo.presence || Settings::General.logo_png
-  end
-
   def community_name
     @community_name ||= Settings::Community.community_name
   end

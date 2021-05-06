@@ -13,10 +13,11 @@ export const AllListings = ({
   loadNextPage,
 }) => {
   return (
-    <main class="crayons-layout__content" id="main-content">
+    <div class="crayons-layout__content">
       <div className="listings-columns" id="listings-results">
         {listings.map((listing) => (
           <SingleListing
+            key={`listing-${listing.id}`}
             onAddTag={onAddTag}
             onChangeCategory={onChangeCategory}
             listing={listing}
@@ -28,7 +29,7 @@ export const AllListings = ({
       </div>
 
       {showNextPageButton && <NextPageButton onClick={loadNextPage} />}
-    </main>
+    </div>
   );
 };
 

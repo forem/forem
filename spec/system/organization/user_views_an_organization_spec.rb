@@ -12,7 +12,7 @@ RSpec.describe "Organization index", type: :system do
     context "when 2 articles" do
       before { visit "/#{organization.slug}" }
 
-      it "shows the header", js: true, stub_elasticsearch: true do
+      it "shows the header", js: true do
         within("h1") { expect(page).to have_content(organization.name) }
         within("div.profile-header__actions") do
           expect(page).to have_button("Follow")
@@ -36,7 +36,7 @@ RSpec.describe "Organization index", type: :system do
     end
 
     context "when more articles" do
-      it "visits ok", js: true, stub_elasticsearch: true do
+      it "visits ok", js: true do
         create_list(:article, 3, organization: organization)
         visit "/#{organization.slug}"
       end
@@ -51,7 +51,7 @@ RSpec.describe "Organization index", type: :system do
       user.follows.create(followable: organization)
     end
 
-    it "shows the correct button", js: true, stub_elasticsearch: true do
+    it "shows the correct button", js: true do
       visit "/#{organization.slug}"
 
       within(".profile-header__actions") do

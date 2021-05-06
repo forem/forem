@@ -3,13 +3,8 @@
 <div class="crayons-card p-6">
   <%= form_for [:admin, @badge], method: :post do |form| %>
     <div class="form-group">
-      <%= form.label :title %>
+      <%= form.label :title, "Title:" %>
       <%= form.text_field :title, class: "form-control" %>
-    </div>
-
-    <div class="form-group">
-      <%= form.label :slug, "Slug:" %>
-      <%= form.text_field :slug, class: "form-control" %>
     </div>
 
     <div class="form-group">

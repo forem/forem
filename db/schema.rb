@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_26_165234) do
+ActiveRecord::Schema.define(version: 2021_04_30_094954) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -158,6 +158,7 @@ ActiveRecord::Schema.define(version: 2021_04_26_165234) do
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
+    t.index ["comments_count"], name: "index_articles_on_comments_count"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
@@ -343,6 +344,7 @@ ActiveRecord::Schema.define(version: 2021_04_26_165234) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index "(((((to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((cached_tag_list)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((location)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((slug)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))))", name: "index_classified_listings_on_search_fields_as_tsvector", using: :gin
     t.index ["classified_listing_category_id"], name: "index_classified_listings_on_classified_listing_category_id"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["published"], name: "index_classified_listings_on_published"
@@ -892,9 +894,7 @@ ActiveRecord::Schema.define(version: 2021_04_26_165234) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "website_url"
-    t.index "to_tsvector('simple'::regconfig, COALESCE((subtitle)::text, ''::text))", name: "index_podcast_episodes_on_subtitle_as_tsvector", using: :gin
-    t.index "to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))", name: "index_podcast_episodes_on_title_as_tsvector", using: :gin
-    t.index "to_tsvector('simple'::regconfig, COALESCE(body, ''::text))", name: "index_podcast_episodes_on_body_as_tsvector", using: :gin
+    t.index "(((to_tsvector('simple'::regconfig, COALESCE(body, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((subtitle)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))))", name: "index_podcast_episodes_on_search_fields_as_tsvector", using: :gin
     t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
     t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
     t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"

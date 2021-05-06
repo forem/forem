@@ -11,7 +11,7 @@ describe('User experience Section', () => {
   describe('default font', () => {
     it('can change the default font', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.get('#new_settings_user_experience').as('userExperienceSectionForm');
 
         cy.get('@userExperienceSectionForm')
@@ -32,7 +32,7 @@ describe('User experience Section', () => {
           .findByText('Update Settings')
           .click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Successfully updated settings.').should('be.visible');
 

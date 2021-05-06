@@ -11,7 +11,7 @@ describe('Email digest frequency Section', () => {
   describe('email digest frequency settings', () => {
     it('can change the frequency', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.findByTestId('emailDigestSectionForm').as('emailDigestSectionForm');
 
         cy.get('@emailDigestSectionForm')
@@ -31,7 +31,7 @@ describe('Email digest frequency Section', () => {
 
         cy.get('@emailDigestSectionForm').findByText('Update Settings').click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Successfully updated settings.').should('be.visible');
 

@@ -419,35 +419,6 @@ RSpec.describe "/admin/customization/config", type: :request do
           expect(Settings::General.logo_svg).to eq(expected_image_url)
         end
 
-        it "updates secondary_logo_url" do
-          expected_image_url = "https://dummyimage.com/300x300.png"
-
-          post "/admin/config", params: {
-            settings_general: { secondary_logo_url: expected_image_url },
-            confirmation: confirmation_message
-          }
-          expect(Settings::General.secondary_logo_url).to eq(expected_image_url)
-        end
-
-        it "updates secondary_logo_url with a valid image" do
-          expected_image = "https://dummyimage.com/300x300"
-          post "/admin/config", params: {
-            settings_general: { secondary_logo_url: expected_image },
-            confirmation: confirmation_message
-          }
-          expect(Settings::General.secondary_logo_url).to eq(expected_image)
-        end
-
-        it "only updates the secondary_logo_url if given a valid image URL" do
-          invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300.png"
-          expect do
-            post "/admin/config", params: {
-              settings_general: { secondary_logo_url: invalid_image_url },
-              confirmation: confirmation_message
-            }
-          end.not_to change(Settings::General, :secondary_logo_url)
-        end
-
         it "rejects update without proper confirmation" do
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
@@ -986,7 +957,7 @@ RSpec.describe "/admin/customization/config", type: :request do
           hex = "#0a0a0a" # dark enough
           post admin_settings_user_experiences_path, params: {
             settings_user_experience: { primary_brand_color_hex: hex },
-            on: confirmation_message
+            confirmation: confirmation_message
           }
           expect(Settings::UserExperience.primary_brand_color_hex).to eq(hex)
         end
@@ -994,7 +965,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         it "does not update brand color if hex not contrasting enough" do
           hex = "#bd746f" # not dark enough
           post admin_config_path, params: {
-            settings_general: { primary_brand_color_hex: hex },
+            settings_user_experience: { primary_brand_color_hex: hex },
             confirmation: confirmation_message
           }
           expect(Settings::UserExperience.primary_brand_color_hex).not_to eq(hex)

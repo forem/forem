@@ -31,7 +31,6 @@ class Message < ApplicationRecord
 
   def update_chat_channel_last_message_at
     chat_channel.touch(:last_message_at)
-    ChatChannels::IndexesMembershipsWorker.perform_async(chat_channel.id)
   end
 
   def update_all_has_unopened_messages_statuses

@@ -11,7 +11,7 @@ describe('Get Started Section', () => {
   describe('Community name setting', () => {
     it('updates the community name', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
 
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');
 
@@ -28,7 +28,7 @@ describe('Get Started Section', () => {
 
         cy.get('@getStartedSectionForm').findByText('Update Settings').click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Site configuration was successfully updated.').should(
           'be.visible',
@@ -42,7 +42,7 @@ describe('Get Started Section', () => {
 
     it('updates the suggested tags', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
 
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');
 
@@ -59,7 +59,7 @@ describe('Get Started Section', () => {
 
         cy.get('@getStartedSectionForm').findByText('Update Settings').click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Site configuration was successfully updated.').should(
           'be.visible',

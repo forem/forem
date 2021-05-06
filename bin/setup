@@ -30,9 +30,6 @@ FileUtils.chdir APP_ROOT do
     FileUtils.cp "config/database.yml.sample", "config/database.yml"
   end
 
-  puts "\n== Preparing Test Elasticsearch =="
-  system! 'RAILS_ENV="test" bin/rails search:setup'
-
   puts "\n== Initializing the application =="
   system! "bin/rails app_initializer:setup forem:setup"
 

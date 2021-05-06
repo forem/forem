@@ -1,5 +1,3 @@
-require_relative "../lib/acts_as_taggable_on/tag"
-
 class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points, :tag_moderator_id, :remove_moderator_id
 
@@ -8,8 +6,6 @@ class Tag < ActsAsTaggableOn::Tag
 
   # This model doesn't inherit from ApplicationRecord so this has to be included
   include Purgeable
-  include Searchable
-
   include PgSearch::Model
 
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
@@ -39,19 +35,12 @@ class Tag < ActsAsTaggableOn::Tag
   before_save :mark_as_updated
 
   after_commit :bust_cache
-  after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :sync_related_elasticsearch_docs, on: [:update]
-  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   pg_search_scope :search_by_name,
                   against: :name,
                   using: { tsearch: { prefix: true } }
 
   scope :eager_load_serialized_data, -> {}
-
-  SEARCH_SERIALIZER = Search::TagSerializer
-  SEARCH_CLASS = Search::Tag
-  DATA_SYNC_CLASS = DataSync::Elasticsearch::Tag
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates

@@ -48,7 +48,6 @@ allowed_sites = [
   "selenium-release.storage.googleapis.com",
   "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
   "api.knapsackpro.com",
-  "elasticsearch",
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
@@ -74,7 +73,6 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthHelpers
   config.include SidekiqTestHelpers
-  config.include ElasticsearchHelpers
 
   config.after(:each, type: :system) do
     Warden::Manager._on_request.clear
@@ -88,8 +86,6 @@ RSpec.configure do |config|
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
     ENV["TZ"] = Time.zone.tzinfo.name
-
-    Search::Cluster.recreate_indexes
 
     # NOTE: @citizen428 needed while we delegate from User to Profile to keep
     # spec changes limited for the time being.
@@ -109,28 +105,8 @@ RSpec.configure do |config|
     # rubocop:enable RSpec/AnyInstance
   end
 
-  config.before(:each, stub_elasticsearch: true) do |_example|
-    stubbed_search_response = { "hits" => { "hits" => [] } }
-    allow(Search::Client).to receive(:search).and_return(stubbed_search_response)
-    allow(Search::Client).to receive(:index).and_return({ "_source" => {} })
-  end
-
   config.around(:each, :flaky) do |ex|
     ex.run_with_retry retry: 3
-  end
-
-  config.around(:each, elasticsearch_reset: true) do |example|
-    Search::Cluster.recreate_indexes
-    example.run
-    Search::Cluster.recreate_indexes
-  end
-
-  config.around(:each, :elasticsearch) do |ex|
-    klasses = Array.wrap(ex.metadata[:elasticsearch]).map do |search_class|
-      Search.const_get(search_class)
-    end
-    klasses.each { |klass| clear_elasticsearch_data(klass) }
-    ex.run
   end
 
   config.around(:each, throttle: true) do |example|

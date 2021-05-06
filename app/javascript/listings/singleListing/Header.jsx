@@ -18,7 +18,7 @@ export const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
   const listingDate = bumped_at ? bumped_at : originally_published_at;
 
   return (
-    <header className="mb-3">
+    <div className="mb-3">
       <h2 className="fs-2xl fw-bold lh-tight mb-1 pr-8">
         <a
           href={`/listings/${category}/${slug}`}
@@ -34,7 +34,7 @@ export const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
       <TagLinks tags={listing.tags || listing.tag_list} onClick={onAddTag} />
 
       <DropdownMenu listing={listing} isOwner={currentUserId === userId} />
-    </header>
+    </div>
   );
 };
 

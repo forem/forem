@@ -751,6 +751,10 @@ Rails/DefaultScope:
   StyleGuide: 'https://rails.rubystyle.guide#avoid-default-scope'
   Enabled: true
 
+Rails/EnvironmentVariableAccess:
+  Description: 'Do not access `ENV` directly after initialization.'
+  Enabled: false
+
 Rails/FilePath:
   EnforcedStyle: slashes
 
@@ -805,6 +809,18 @@ Rails/RenderPlainText:
   StyleGuide: 'https://rails.rubystyle.guide/#plain-text-rendering'
   Enabled: true
 
+# TODO: enable this once all loader related deprecations on console/server startup are dealt with
+Rails/RequireDependency:
+  Description: 'Do not use `require_dependency` when running in Zeitwerk mode. `require_dependency` is for autoloading in classic mode.'
+  Reference: 'https://guides.rubyonrails.org/autoloading_and_reloading_constants.html'
+  Enabled: false
+
+Rails/ReversibleMigrationMethodDefinition:
+  Description: 'Checks whether the migration implements either a `change` method or both an `up` and a `down` method.'
+  Enabled: true
+  Include:
+    - db/migrate/*.rb
+
 Rails/ShortI18n:
   Description: 'Use the short form of the I18n methods: `t` instead of `translate` and `l` instead of `localize`.'
   StyleGuide: 'https://rails.rubystyle.guide/#short-i18n'
@@ -819,6 +835,11 @@ Rails/SkipsModelValidations:
 
 Rails/SquishedSQLHeredocs:
   Enabled: false
+
+Rails/TimeZoneAssignment:
+  Description: 'Prefer the usage of `Time.use_zone` instead of manually updating `Time.zone` value.'
+  Reference: 'https://thoughtbot.com/blog/its-about-time-zones'
+  Enabled: true
 
 Rails/WhereExists:
   Description: 'Prefer `exists?(...)` over `where(...).exists?`.'

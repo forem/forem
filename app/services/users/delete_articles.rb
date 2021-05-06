@@ -12,10 +12,8 @@ module Users
           comment.reactions.delete_all
           EdgeCache::BustComment.call(comment.commentable)
           EdgeCache::BustUser.call(comment.user)
-          comment.remove_from_elasticsearch
           comment.delete
         end
-        article.remove_from_elasticsearch
         article.delete
         article.purge
       end
