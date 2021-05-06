@@ -12,8 +12,8 @@ documentation, but if you're looking for an example of how it's being used on
 Forem, we've implemented it to help searching and sorting user reports.
 
 The view responsible for managing user reports can be found at
-`localhost:3000/admin/reports` and Ransack can be seen in use on the index
-action of the [`admin/feedback_messages_controller`][feedback_messages].
+`/admin/moderation/reports` and Ransack can be seen in use on the
+index action of the [`admin/feedback_messages_controller`][feedback_messages].
 
 For Forem, Ransack is being used exclusively in admin, for search problems in
 other parts of the app we use [PostgreSQL Full Text Search][postgres_fts].

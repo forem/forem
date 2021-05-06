@@ -9,7 +9,7 @@ title: Configuring Forem
 As a Forem admin, one of the first steps of managing your site will be to tailor
 your content, branding and other important details based on your community
 goals. This is made simple by the configuration page which can be found at
-https://<span></span>your.forem.url/admin/config.
+https://<span></span>your.forem.url/admin/customization/config.
 
 _We advise that you first complete the minimum set up before sending out your
 Forem link to your community._
@@ -25,7 +25,7 @@ This banner indicates that the Forem configuration process hasn't been completed
 yet.
 
 When you click on the link on banner, it will take you to the configuration page
-(i.e. https://<span></span>your.forem.url/admin/config).
+(i.e. https://<span></span>your.forem.url/admin/customization/config).
 
 On this page you will see that the Get Started section is expanded. It contains
 all the mandatory fields that need to be filled out in order for the site to be

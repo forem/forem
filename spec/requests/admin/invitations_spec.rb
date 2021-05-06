@@ -51,7 +51,7 @@ RSpec.describe "/admin/invitations", type: :request do
       expect do
         delete admin_invitation_path(invitation.id)
       end.to change { User.all.count }.by(-1)
-      expect(response.body).to redirect_to "/admin/invitations"
+      expect(response.body).to redirect_to admin_invitations_path
     end
   end
 end
