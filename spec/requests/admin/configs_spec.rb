@@ -63,7 +63,7 @@ RSpec.describe "/admin/customization/config", type: :request do
       describe "API tokens" do
         it "updates the health_check_token" do
           token = rand(20).to_s
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { health_check_token: token },
             confirmation: confirmation_message
           }
@@ -71,7 +71,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "sets video_encoder_key" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { video_encoder_key: "123abc" },
             confirmation: confirmation_message
           }
@@ -309,7 +309,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
       describe "Email digest frequency" do
         it "updates periodic_email_digest" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { periodic_email_digest: 1 },
             confirmation: confirmation_message
           }
@@ -329,7 +329,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
       describe "Google Analytics Reporting API v4" do
         it "updates ga_tracking_id" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { ga_tracking_id: "abc" },
             confirmation: confirmation_message
           }
@@ -343,7 +343,7 @@ RSpec.describe "/admin/customization/config", type: :request do
           expect(Settings::General.main_social_image).to eq(expected_default_image_url)
 
           expected_image_url = "https://dummyimage.com/300x300.png"
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { main_social_image: expected_image_url },
             confirmation: confirmation_message
           }
@@ -353,7 +353,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         it "updates main_social_image with a valid image" do
           expected_image = "https://dummyimage.com/300x300"
 
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { main_social_image: expected_image },
             confirmation: confirmation_message
           }
@@ -363,7 +363,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         it "only updates the main_social_image if given a valid image URL" do
           invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300"
           expect do
-            post "/admin/config", params: {
+            post admin_config_path, params: {
               settings_general: { main_social_image: invalid_image_url },
               confirmation: confirmation_message
             }
@@ -372,7 +372,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
         it "updates favicon_url" do
           expected_image_url = "https://dummyimage.com/300x300.png"
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { favicon_url: expected_image_url },
             confirmation: confirmation_message
           }
@@ -383,7 +383,7 @@ RSpec.describe "/admin/customization/config", type: :request do
           expected_default_image_url = Settings::General.get_default(:logo_png)
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
-            post "/admin/config", params: {
+            post admin_config_path, params: {
               settings_general: { logo_png: expected_image_url },
               confirmation: confirmation_message
             }
@@ -393,7 +393,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         it "updates logo_png with a valid image" do
           expected_image = "https://dummyimage.com/300x300"
 
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { logo_png: expected_image },
             confirmation: confirmation_message
           }
@@ -403,7 +403,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         it "only updates the logo_png if given a valid image URL" do
           invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300.png"
           expect do
-            post "/admin/config", params: {
+            post admin_config_path, params: {
               settings_general: { logo_png: invalid_image_url },
               confirmation: confirmation_message
             }
@@ -412,7 +412,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
         it "updates logo_svg" do
           expected_image_url = "https://dummyimage.com/300x300.png"
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { logo_svg: expected_image_url },
             confirmation: confirmation_message
           }
@@ -509,7 +509,7 @@ RSpec.describe "/admin/customization/config", type: :request do
       describe "Meta Keywords" do
         it "updates meta keywords" do
           expected_keywords = { "default" => "software, people", "article" => "user, experience", "tag" => "bye" }
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { meta_keywords: expected_keywords },
             confirmation: confirmation_message
           }
@@ -521,7 +521,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
       describe "Monetization" do
         it "updates payment pointer" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { payment_pointer: "$pay.yo" },
             confirmation: confirmation_message
           }
@@ -529,7 +529,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "updates stripe configs" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: {
               stripe_api_key: "sk_live_yo",
               stripe_publishable_key: "pk_live_haha"
@@ -557,7 +557,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
           it "sets shop_url to nil" do
             previous_shop_url = "some-shop-url"
-            post "/admin/config", params: {
+            post admin_config_path, params: {
               settings_general: { shop_url: "" },
               confirmation: confirmation_message
             }
@@ -569,7 +569,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
           it "updates shop url" do
             expected_shop_url = "https://qshop.dev.to"
-            post "/admin/config", params: {
+            post admin_config_path, params: {
               settings_general: { shop_url: expected_shop_url },
               confirmation: confirmation_message
             }
@@ -583,7 +583,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
       describe "Newsletter" do
         it "updates mailchimp_api_key" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { mailchimp_api_key: "abc" },
             confirmation: confirmation_message
           }
@@ -591,7 +591,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "updates mailchimp_newsletter_id" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { mailchimp_newsletter_id: "abc" },
             confirmation: confirmation_message
           }
@@ -599,7 +599,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "updates mailchimp_sustaining_members_id" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { mailchimp_sustaining_members_id: "abc" },
             confirmation: confirmation_message
           }
@@ -607,7 +607,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "updates mailchimp_tag_moderators_id" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { mailchimp_tag_moderators_id: "abc" },
             confirmation: confirmation_message
           }
@@ -615,7 +615,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "updates mailchimp_community_moderators_id" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { mailchimp_community_moderators_id: "abc" },
             confirmation: confirmation_message
           }
@@ -626,7 +626,7 @@ RSpec.describe "/admin/customization/config", type: :request do
       describe "Onboarding" do
         it "updates onboarding_background_image" do
           expected_image_url = "https://dummyimage.com/300x300.png"
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general:
             { onboarding_background_image: expected_image_url },
             confirmation: confirmation_message
@@ -635,7 +635,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "removes space suggested_tags" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { suggested_tags: "hey, haha,hoho, bobo fofo" },
             confirmation: confirmation_message
           }
@@ -643,7 +643,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "downcases suggested_tags" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" },
             confirmation: confirmation_message
           }
@@ -672,7 +672,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
         it "updates prefer_manual_suggested_users to true" do
           prefer_manual = true
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { prefer_manual_suggested_users: prefer_manual },
             confirmation: confirmation_message
           }
@@ -681,7 +681,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
         it "updates prefer_manual_suggested_users to false" do
           prefer_manual = false
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { prefer_manual_suggested_users: prefer_manual },
             confirmation: confirmation_message
           }
@@ -853,7 +853,7 @@ RSpec.describe "/admin/customization/config", type: :request do
       describe "Social Media" do
         it "updates social_media_handles" do
           expected_handle = { "facebook" => "tpd", "github" => "", "instagram" => "", "twitch" => "", "twitter" => "" }
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { social_media_handles: expected_handle },
             confirmation: confirmation_message
           }
@@ -873,7 +873,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
           it "updates the twitter hashtag" do
             params["confirmation"] = confirmation_message
-            post "/admin/config", params: params
+            post admin_config_path, params: params
             expect(Settings::General.twitter_hashtag.to_s).to eq twitter_hashtag
           end
         end
@@ -882,7 +882,7 @@ RSpec.describe "/admin/customization/config", type: :request do
       describe "Sponsors" do
         it "updates the sponsor_headline" do
           headline = "basic"
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { sponsor_headline: headline },
             confirmation: confirmation_message
           }
@@ -892,7 +892,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
       describe "Tags" do
         it "removes space sidebar_tags" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { sidebar_tags: "hey, haha,hoho, bobo fofo" },
             confirmation: confirmation_message
           }
@@ -900,7 +900,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "downcases sidebar_tags" do
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             settings_general: { sidebar_tags: "hey, haha,hoHo, Bobo Fofo" },
             confirmation: confirmation_message
           }
@@ -1008,7 +1008,7 @@ RSpec.describe "/admin/customization/config", type: :request do
           Settings::General.credit_prices_in_cents.each_key do |size|
             new_prices = original_prices.merge(size => 123)
             expect do
-              post "/admin/config", params: {
+              post admin_config_path, params: {
                 settings_general: { credit_prices_in_cents: new_prices },
                 confirmation: confirmation_message
               }
