@@ -36,7 +36,7 @@
         <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer" class="dropdown-link-row">
           <div class="flex items-center">
             <input type="text" id="article-copy-link-input" value="<%= article_url(@article) %>" class="crayons-textfield" readonly />
-            <%= inline_svg_tag("copy.svg", aria: true, id: "article-copy-icon", class: "crayons-icon mx-2 shrink-0", title: "Notifications") %>
+            <%= inline_svg_tag("copy.svg", aria: true, id: "article-copy-icon", class: "crayons-icon mx-2 shrink-0", title: "Copy this link to the clipboard") %>
           </div>
           <div id="article-copy-link-announcer" class="crayons-notice crayons-notice--success my-2 p-1" aria-live="polite" hidden>Copied to Clipboard</div>
         </clipboard-copy>
