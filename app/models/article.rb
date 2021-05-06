@@ -3,13 +3,8 @@ class Article < ApplicationRecord
   include ActionView::Helpers
   include Storext.model
   include Reactable
-  include Searchable
   include UserSubscriptionSourceable
   include PgSearch::Model
-
-  SEARCH_SERIALIZER = Search::ArticleSerializer
-  SEARCH_CLASS = Search::FeedContent
-  DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
 
   acts_as_taggable_on :tags
   resourcify
@@ -112,9 +107,6 @@ class Article < ApplicationRecord
                                                  }
 
   after_commit :async_score_calc, :touch_collection, on: %i[create update]
-  after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :sync_related_elasticsearch_docs, on: %i[update]
-  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -361,7 +353,6 @@ class Article < ApplicationRecord
 
   def touch_by_reaction
     async_score_calc
-    index_to_elasticsearch
   end
 
   def comments_blob
