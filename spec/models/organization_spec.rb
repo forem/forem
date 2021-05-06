@@ -71,14 +71,6 @@ RSpec.describe Organization, type: :model do
     end
   end
 
-  context "when callbacks are triggered after commit" do
-    it "on destroy updates related article data" do
-      article = create(:article, organization: organization)
-      organization.destroy
-      expect(article.reload.cached_organization).to be_nil
-    end
-  end
-
   describe "#name" do
     it "rejects names with over 50 characters" do
       organization.name = "x" * 51

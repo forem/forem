@@ -34,13 +34,5 @@ RSpec.describe Organizations::Delete, type: :service do
 
       expect(article.reload.reading_list_document).not_to include("acme")
     end
-
-    it "updates related article data" do
-      drain_all_sidekiq_jobs
-      expect(article.elasticsearch_doc.dig("_source", "organization", "id")).to eq(org_id)
-      described_class.call(org)
-      sidekiq_perform_enqueued_jobs
-      expect(article.elasticsearch_doc.dig("_source", "organization")).to be_nil
-    end
   end
 end
