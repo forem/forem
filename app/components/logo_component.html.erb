@@ -1,0 +1,9 @@
+<a href="<%= root_path %>" class="site-logo" aria-label="<%= @community_name %> Home">
+  <% if @svg.present? %>
+    <%= @svg %>
+  <% else %>
+    <span class="truncate-at-2">
+      <%= @community_name %>
+    </span>
+  <% end %>
+</a>

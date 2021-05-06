@@ -31,7 +31,7 @@
   data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
   <header class="crayons-header">
     <div class="crayons-header__container">
-      <%= render "layouts/logo" %>
+      <%= render(LogoComponent.new(community_name: Settings::Community.community_name, svg: SiteConfig.logo_svg)) %>
 
       <h1 class="pl-4 fs-l">
         <a href="<%= admin_path %>">Admin</a>
