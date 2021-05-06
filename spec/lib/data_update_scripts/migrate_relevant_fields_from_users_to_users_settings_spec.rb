@@ -102,7 +102,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
   end
 
   context "when the user id exists in both the users_settings users tables" do
-    it "replaces the users_setting values with values from the user table" do
+    it "replaces the users_settings values with values from the user table" do
       user = create(:user, display_announcements: true)
       user_id = user.id
 
@@ -112,9 +112,9 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
       expect(users_setting.display_announcements).to be(true)
 
       user.update_columns(display_announcements: false)
-      user.reload
 
       described_class.new.run
+      users_setting.reload
 
       expect(users_setting.user_id).to eq(user_id)
       expect(users_setting.display_announcements).to be(false)
