@@ -45,7 +45,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersNotificationSet
     end
   end
 
-  it "the updated_at and created_at timestamps are more current than the original values" do
+  it "assigns updated_at and created_at timestamps that are more current than the original values" do
     user = create(:user, created_at: 1.minute.ago, updated_at: 1.minute.ago)
 
     described_class.new.run
@@ -55,7 +55,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersNotificationSet
   end
 
   context "when the user id exists in both the users_notification_settings and users tables" do
-    it "replaces the users_notification_settings values with values from the user table" do
+    it "replaces the users_notification_settings values with values from the users table" do
       user = create(:user, email_newsletter: true)
       user_id = user.id
 

@@ -81,7 +81,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
       expect(users_setting.monospace?).to be(true)
     end
 
-    it "assigns the fallback value when there value passed does not have an enum defined" do
+    it "assigns the fallback value when the value passed does not have an enum defined" do
       user = create(:user)
       user.update_columns(config_font: "fake_font")
       user.reload
@@ -92,7 +92,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
     end
   end
 
-  it "the updated_at and created_at timestamps are more current than the original values" do
+  it "assigns updated_at and created_at timestamps that are more current than the original values" do
     user = create(:user, created_at: 1.minute.ago, updated_at: 1.minute.ago)
 
     described_class.new.run
@@ -101,8 +101,8 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
     expect(users_setting.updated_at).to be > user.updated_at
   end
 
-  context "when the user id exists in both the users_settings users tables" do
-    it "replaces the users_settings values with values from the user table" do
+  context "when the user id exists in both the users_settings and users tables" do
+    it "replaces the users_settings values with values from the users table" do
       user = create(:user, display_announcements: true)
       user_id = user.id
 
