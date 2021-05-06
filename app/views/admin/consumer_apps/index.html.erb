@@ -26,7 +26,7 @@
     <% @apps.each do |app| %>
         <tr>
           <td><%= app.app_bundle %></td>
-          <td><%= app.platform %></td>
+          <td><%= Device.platforms[app.platform] %></td>
           <td><%= app.devices.count %></td>
           <% if app.auth_credentials.present? %>
             <td><span class="crayons-icon" role="img" aria-label="Authentication Key is available">✅</span></td>
