@@ -6,7 +6,7 @@ RSpec.describe Users::Delete, type: :service do
 
   before do
     omniauth_mock_github_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
     allow(cache_bust).to receive(:call)
   end
@@ -58,25 +58,6 @@ RSpec.describe Users::Delete, type: :service do
     end.to change(AuditLog, :count).by(0)
 
     expect(audit_log.reload.user_id).to be(nil)
-  end
-
-  it "removes user from Elasticsearch" do
-    sidekiq_perform_enqueued_jobs { user }
-    expect(user.elasticsearch_doc).not_to be_nil
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user)
-    end
-    expect { user.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-  end
-
-  it "removes articles from Elasticsearch" do
-    article = create(:article, user: user)
-    sidekiq_perform_enqueued_jobs
-    expect(article.elasticsearch_doc).not_to be_nil
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user)
-    end
-    expect { article.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
   end
 
   it "deletes field tests memberships" do

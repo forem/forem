@@ -690,14 +690,18 @@ Performance/IoReadlines:
   Reference: 'https://docs.gitlab.com/ee/development/performance.html#reading-from-files-and-other-data-sources'
   Enabled: true
 
-Performance/RedundantEqualityComparisonBlock:
-  Description: >-
-                  Checks for uses `Enumerable#all?`, `Enumerable#any?`, `Enumerable#one?`,
-                  or `Enumerable#none?` are compared with `===` or similar methods in block.
+Performance/MapCompact:
+  Description: 'Use `filter_map` instead of `collection.map(&:do_something).compact`.'
   Enabled: true
 
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
+  Enabled: true
+
+Performance/RedundantEqualityComparisonBlock:
+  Description: >-
+                  Checks for uses `Enumerable#all?`, `Enumerable#any?`, `Enumerable#one?`,
+                  or `Enumerable#none?` are compared with `===` or similar methods in block.
   Enabled: true
 
 Performance/RedundantSortBlock:
@@ -714,6 +718,10 @@ Performance/RedundantStringChars:
 
 Performance/ReverseFirst:
   Description: 'Use `last(n).reverse` instead of `reverse.first(n)`.'
+  Enabled: true
+
+Performance/SelectMap:
+  Description: 'Use `filter_map` instead of `ary.select(&:foo).map(&:bar)`.'
   Enabled: true
 
 Performance/SortReverse:
@@ -742,6 +750,10 @@ Rails/DefaultScope:
   Description: 'Avoid use of `default_scope`.'
   StyleGuide: 'https://rails.rubystyle.guide#avoid-default-scope'
   Enabled: true
+
+Rails/EnvironmentVariableAccess:
+  Description: 'Do not access `ENV` directly after initialization.'
+  Enabled: false
 
 Rails/FilePath:
   EnforcedStyle: slashes
@@ -797,6 +809,18 @@ Rails/RenderPlainText:
   StyleGuide: 'https://rails.rubystyle.guide/#plain-text-rendering'
   Enabled: true
 
+# TODO: enable this once all loader related deprecations on console/server startup are dealt with
+Rails/RequireDependency:
+  Description: 'Do not use `require_dependency` when running in Zeitwerk mode. `require_dependency` is for autoloading in classic mode.'
+  Reference: 'https://guides.rubyonrails.org/autoloading_and_reloading_constants.html'
+  Enabled: false
+
+Rails/ReversibleMigrationMethodDefinition:
+  Description: 'Checks whether the migration implements either a `change` method or both an `up` and a `down` method.'
+  Enabled: true
+  Include:
+    - db/migrate/*.rb
+
 Rails/ShortI18n:
   Description: 'Use the short form of the I18n methods: `t` instead of `translate` and `l` instead of `localize`.'
   StyleGuide: 'https://rails.rubystyle.guide/#short-i18n'
@@ -811,6 +835,11 @@ Rails/SkipsModelValidations:
 
 Rails/SquishedSQLHeredocs:
   Enabled: false
+
+Rails/TimeZoneAssignment:
+  Description: 'Prefer the usage of `Time.use_zone` instead of manually updating `Time.zone` value.'
+  Reference: 'https://thoughtbot.com/blog/its-about-time-zones'
+  Enabled: true
 
 Rails/WhereExists:
   Description: 'Prefer `exists?(...)` over `where(...).exists?`.'

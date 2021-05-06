@@ -43,7 +43,7 @@
       <% elsif tip_rand == 2 %>
         And there's so much more <%= community_name %> goodness to discover.
       <% elsif tip_rand == 3 %>
-        You're a better <%= SiteConfig.community_member_label %> today than you were yesterday.
+        You're a better <%= Settings::Community.member_label %> today than you were yesterday.
       <% elsif tip_rand == 4 %>
         <% if @user.articles_count > 0 %>
           Can't wait to see <b>your</b> next <%= community_name %> post!

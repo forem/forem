@@ -9,26 +9,17 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-export const ItemListItemArchiveButton = ({ text, onClick }) => {
-  const onKeyUp = (e) => {
-    if (e.key === 'Enter') {
-      onClick(e);
-    }
-  };
-
-  return (
-    <Button
-      onClick={onClick}
-      onKeyUp={onKeyUp}
-      aria-label="Archive item"
-      role="button"
-      variant="ghost"
-      size="s"
-    >
-      {text}
-    </Button>
-  );
-};
+export const ItemListItemArchiveButton = ({ text, onClick }) => (
+  <Button
+    onClick={onClick}
+    aria-label="Archive item"
+    role="button"
+    variant="ghost"
+    size="s"
+  >
+    {text}
+  </Button>
+);
 
 ItemListItemArchiveButton.propTypes = {
   text: PropTypes.string.isRequired,

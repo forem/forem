@@ -1,5 +1,7 @@
 @import 'variables';
 @import 'mixins';
+@import 'config/import';
+
 .dashboard-container {
   .manage-header {
     background: $bold-blue;
@@ -257,25 +259,24 @@
   }
 }
 
-.charts-container {
-  max-width: 500px;
-  height: 250px;
-  margin: 0 auto;
-}
-
 .analytics-container {
   width: 1400px;
   margin: 0 auto;
 }
 
+.crayons-tabs--analytics {
+  justify-content: center;
+}
+
+$column-flex: 1;
+
 .summary-stats {
+  text-align: center;
   display: flex;
-  flex-wrap: wrap;
-  width: 100%;
   justify-content: space-between;
 
-  .card {
-    flex: 1 0 150px;
+  &__col {
+    flex: $column-flex;
   }
 }
 
@@ -284,18 +285,24 @@
 }
 
 .graphs {
-  .row {
-    display: flex;
-    flex-wrap: wrap;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
 
-    .card {
-      flex: 1 0;
-    }
+  &__col {
+    flex: $column-flex;
   }
+}
 
-  h2 {
-    margin: 5px;
-    text-align: center;
+@media screen and (max-width: $breakpoint-s) {
+  .summary-stats,
+  .graphs {
+    display: block;
+    &__col {
+      display: block;
+      width: 90%;
+      margin: 10px auto;
+    }
   }
 }
 

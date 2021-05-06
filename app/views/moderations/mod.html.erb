@@ -72,10 +72,10 @@
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
     <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
       <a href="/resource_admin/articles/<%= @moderatable.id %>" data-no-instant>ResourceAdmin:Article</a> |
-      <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Admin:Article</a></h3>
+      <a href="<%= admin_article_path(@moderatable.id) %>" data-no-instant>Admin:Article</a></h3>
   <% elsif current_user.has_role?(:super_admin) && @moderatable.class.name == "Comment" %>
     <h3> <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Admin:Comment</a> |
-      <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>Admin:User</a></h3>
+      <a href="<%= admin_user_path(@moderatable.user_id) %>" data-no-instant>Admin:User</a></h3>
   <% end %>
   <p>
     <b style="font-size:1em">All negative reactions are private.</b>

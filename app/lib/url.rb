@@ -67,6 +67,16 @@ module URL
     ActionController::Base.helpers.image_url(image_name, host: host)
   end
 
+  # Creates a deep link URL (for mobile) to a page in the current Forem and it
+  # relies on a UDL server to bounce back mobile users to the local `/r/mobile`
+  # fallback page. More details here: https://github.com/forem/udl-server
+  #
+  # @param path [String] the target path to deep link
+  def self.deep_link(path)
+    target_path = CGI.escape(url("/r/mobile?deep_link=#{path}"))
+    "https://forem-udl-server.herokuapp.com/?r=#{target_path}"
+  end
+
   def self.organization(organization)
     url(organization.slug)
   end

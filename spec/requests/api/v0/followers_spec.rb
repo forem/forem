@@ -43,6 +43,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         expect(response_follower["path"]).to eq(follower.path)
         expect(response_follower["username"]).to eq(follower.username)
         expect(response_follower["profile_image"]).to eq(Images::Profile.call(follower.profile_image_url, length: 60))
+        expect(response_follower["created_at"]).to be_an_instance_of(String)
       end
 
       it "supports pagination" do
@@ -58,12 +59,21 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         expect(response.parsed_body.length).to eq(0)
       end
 
-      it "order results for reverse following date" do
+      it "orders results by descending following date by default" do
         follower2.follow(user)
 
-        follows = user.followings.order(id: :desc).last(2).map(&:id)
-
         get api_followers_users_path, headers: headers
+
+        follows = user.followings.order(id: :desc).last(2).map(&:id)
+        result = response.parsed_body.map { |f| f["id"] }
+        expect(result).to eq(follows)
+      end
+
+      it "orders results by ascending following date if the 'sort' param is specified" do
+        follower2.follow(user)
+
+        follows = user.followings.order(id: :asc).last(2).map(&:id)
+        get api_followers_users_path, headers: headers, params: { sort: "created_at" }
         result = response.parsed_body.map { |f| f["id"] }
         expect(result).to eq(follows)
       end

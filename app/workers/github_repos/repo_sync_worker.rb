@@ -37,6 +37,12 @@ module GithubRepos
              Github::Errors::AccountSuspended,
              Github::Errors::RepositoryUnavailable
         repo.destroy
+      rescue Github::Errors::ClientError => e
+        if e.message.include? "Repository access blocked"
+          repo.destroy
+        else
+          raise e
+        end
       end
     end
   end

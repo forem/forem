@@ -13,7 +13,7 @@ def expect_no_broadcast_data(page)
   expect(page).not_to have_text("Hello, World!")
 end
 
-RSpec.describe "User visits a homepage", stub_elasticsearch: true, type: :system do
+RSpec.describe "User visits a homepage", type: :system do
   context "when user hasn't logged in" do
     context "with an active announcement" do
       before do

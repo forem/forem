@@ -5,7 +5,7 @@ RSpec.describe "Authenticating with GitHub" do
 
   before do
     omniauth_mock_github_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   context "when a user is new" do
@@ -177,6 +177,15 @@ RSpec.describe "Authenticating with GitHub" do
 
         expect(page).to have_current_path("/?signin=true")
       end
+
+      it "renders the github icon on the profile" do
+        sign_in user
+        visit user_github_omniauth_authorize_path
+
+        visit user_profile_path(user.username)
+
+        expect(page).to have_css("svg.crayons-icon.shrink-0", text: "github website")
+      end
     end
 
     context "when already signed in" do
@@ -191,7 +200,7 @@ RSpec.describe "Authenticating with GitHub" do
 
   context "when community is in invite only mode" do
     before do
-      allow(SiteConfig).to receive(:invite_only_mode).and_return(true)
+      allow(Settings::Authentication).to receive(:invite_only_mode).and_return(true)
     end
 
     it "doesn't present the authentication option" do

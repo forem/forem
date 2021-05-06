@@ -1,3 +1,5 @@
+# Used to warn the developer if sidekiq is not running
+# Only included in ApplicationController when in development environment
 module DevelopmentDependencyChecks
   extend ActiveSupport::Concern
 

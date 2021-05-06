@@ -57,7 +57,7 @@
           <% if current_user.any_admin? %>
             <td>
               <% if channel.users.count.zero? %>
-                <%= button_to "Delete Channel", { action: "destroy", id: channel.id }, method: :delete, data: { confirm: "Are you sure?" }, class: "crayons-btn crayons-btn--danger" %>
+                <%= link_to "Delete Channel", admin_chat_channel_path(channel), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %>
               <% else %>
                 Cannot delete a channel with users
               <% end %>

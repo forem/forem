@@ -9,7 +9,6 @@ module Users
         comment.reactions.delete_all
         EdgeCache::BustComment.call(comment.commentable)
         comment.remove_notifications
-        comment.remove_from_elasticsearch
         comment.delete
       end
       EdgeCache::BustUser.call(user)

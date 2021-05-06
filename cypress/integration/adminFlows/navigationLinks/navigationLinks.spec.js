@@ -5,7 +5,7 @@ describe('Navigation links', () => {
 
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
-        cy.visit('/admin/navigation_links');
+        cy.visit('/admin/customization/navigation_links');
       });
     });
   });

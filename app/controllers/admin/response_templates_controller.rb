@@ -26,7 +26,7 @@ module Admin
       else
         flash[:danger] = @response_template.errors_as_sentence
         @response_templates = ResponseTemplate.page(params[:page]).per(50)
-        render new_admin_response_template_path
+        render :new
       end
     end
 

@@ -1,80 +1,72 @@
 module Search
-  class User < Base
-    INDEX_NAME = "users_#{Rails.env}".freeze
-    INDEX_ALIAS = "users_#{Rails.env}_alias".freeze
-    MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/users.json"), symbolize_names: true).freeze
-    DEFAULT_PAGE = 0
-    DEFAULT_PER_PAGE = 20
+  class User
+    ATTRIBUTES = %i[
+      id
+      name
+      profile_image
+      username
+    ].freeze
 
-    class << self
-      def search_usernames(username)
-        results = search(body: username_query(username))
-        results.dig("hits", "hits").map do |doc|
-          source = doc["_source"]
-          {
-            "username" => source["username"],
-            "name" => source["name"],
-            "profile_image_90" => source["profile_image_90"]
-          }
-        end
-      end
+    DEFAULT_PER_PAGE = 60
+    MAX_PER_PAGE = 100
 
-      private
+    # User.search_score used to take employer related fields into account, but they have since been moved to profile
+    # and removed from fields that are searched against.
+    HOTNESS_SCORE_ORDER = Arel.sql(%{
+      (((articles_count + comments_count + reactions_count + badge_achievements_count) * 10) * reputation_modifier)
+      DESC
+    }.squish).freeze
 
-      def username_query(username)
-        {
-          query: {
-            query_string: {
-              query: "username:#{username}*",
-              analyze_wildcard: true,
-              allow_leading_wildcard: false
-            }
-          },
-          size: Search::Postgres::Username::MAX_RESULTS # Limit the number of results we return to the frontend
-        }
-      end
+    def self.search_documents(term: nil, sort_by: :nil, sort_direction: :desc, page: 0, per_page: DEFAULT_PER_PAGE)
+      # NOTE: we should eventually update the frontend
+      # to start from page 1
+      page = page.to_i + 1
+      per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-      def prepare_doc(hit)
-        source = hit["_source"]
-        {
-          "user" => {
-            "username" => source["username"],
-            "name" => source["username"],
-            "profile_image_90" => source["profile_image_90"]
-          },
-          "title" => source["name"],
-          "path" => source["path"],
-          "id" => source["id"],
-          "class_name" => "User",
-          "public_reactions_count" => source["public_reactions_count"],
-          "comments_count" => source["comments_count"],
-          "badge_achievements_count" => source["badge_achievements_count"],
-          "last_comment_at" => source["last_comment_at"],
-          "user_id" => source["id"]
-        }
-      end
+      relation = ::User
 
-      def index_settings
-        if Rails.env.production?
-          {
-            number_of_shards: 10,
-            number_of_replicas: 1
-          }
-        else
-          {
-            number_of_shards: 1,
-            number_of_replicas: 0
-          }
-        end
-      end
+      relation = filter_suspended_users(relation)
 
-      def dynamic_index_settings
-        if Rails.env.production?
-          { refresh_interval: "10s" }
-        else
-          { refresh_interval: "1s" }
-        end
-      end
+      relation = relation.search_by_name_and_username(term) if term.present?
+
+      relation = relation.select(*ATTRIBUTES)
+
+      relation = sort(relation, sort_by, sort_direction)
+
+      relation = relation.page(page).per(per_page)
+
+      serialize(relation)
     end
+
+    # `User.without_role` generates a subquery + 2 inner joins.
+    # Given that the number of suspended users will, hopefully, be a tiny percentage
+    # of regular users, and the `rolify`'s gem approach is not particularly efficient,
+    # we simplified the subquery and added a precondition to skip that query entirely,
+    # when a community has no suspended users.
+    # NOTE: An alternative approach that could be explored is to
+    # preload the user ids of all suspended users and use those with `.where.not(id: ...)`
+    def self.filter_suspended_users(relation)
+      suspended = UserRole.joins(:role).where(roles: { name: :suspended })
+
+      return relation unless suspended.exists?
+
+      relation.where.not(id: suspended.select(:user_id))
+    end
+    private_class_method :filter_suspended_users
+
+    def self.sort(relation, sort_by, sort_direction)
+      return relation.reorder(sort_by => sort_direction) if sort_by&.to_sym == :created_at
+
+      relation.reorder(HOTNESS_SCORE_ORDER)
+    end
+    private_class_method :sort
+
+    def self.serialize(users)
+      Search::SimpleUserSerializer
+        .new(users, is_collection: true)
+        .serializable_hash[:data]
+        .pluck(:attributes)
+    end
+    private_class_method :serialize
   end
 end

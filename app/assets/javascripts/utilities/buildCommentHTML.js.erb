@@ -2,13 +2,13 @@ function buildCommentHTML(comment) {
   var iconSmallOverflowHorizontal = `<svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon pointer-events-none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.25 12a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm5.25 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm3.75 1.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" /></svg>`;
   var iconCollaspe = `<svg width="24" height="24" class="crayons-icon expanded" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 10.6771L8 6.93529L8.99982 6L12 8.80653L15.0002 6L16 6.93529L12 10.6771ZM12 15.1935L8.99982 18L8 17.0647L12 13.3229L16 17.0647L15.0002 17.9993L12 15.1935Z" /></svg>`;
   var iconExpand = `<svg width="24" height="24" class="crayons-icon collapsed" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18L8 14.2287L8.99982 13.286L12 16.1147L15.0002 13.286L16 14.2287L12 18ZM12 7.88533L8.99982 10.714L8 9.77133L12 6L16 9.77133L15.0002 10.7133L12 7.88533Z" /></svg>`;
-  
+
   var depthClass = "";
   var customClass = "";
 
   var detailsStartHTML = "";
   var detailsEndHTML = "";
-  
+
   var commentHeader = "";
   var commentFooter = "";
   var commentAvatar = "";
@@ -19,7 +19,7 @@ function buildCommentHTML(comment) {
   } else {
     depthClass += "child "
   }
-  
+
   if ( comment.depth > 3 ) {
     depthClass += "comment--too-deep ";
   }
@@ -50,9 +50,9 @@ function buildCommentHTML(comment) {
     <a href="/${ comment.user.username }" class="crayons-link crayons-link--secondary flex items-center fw-medium">
       <span class="js-comment-username">${ comment.user.name }</span>
     </a>
-    
+
     <span class="color-base-30 px-2" role="presentation">&bull;</span>
-    
+
     <a href="${ comment.url }" class="comment-date crayons-link crayons-link--secondary fs-s">
       <time datetime="${ comment.published_timestamp }">
         ${ comment.readable_publish_date }
@@ -67,7 +67,7 @@ function buildCommentHTML(comment) {
         <li><a href="${ comment.url }" class="crayons-link crayons-link--block permalink-copybtn" aria-label="Copy link to ${ comment.user.name }'s comment" data-no-instant>Copy link</a></li>
         <li><a href="${ comment.url }/settings" class="crayons-link crayons-link--block" aria-label="Go to ${ comment.user.name }'s comment settings">Settings</a></li>
         <li><a href="/report-abuse?url=${ comment.url }" class="crayons-link crayons-link--block" aria-label="Report ${ comment.user.name }'s comment as abusive or violating our code of conduct and/or terms and conditions">Report abuse</a></li>
-        <li class="${ comment.newly_created ? '' : 'hidden' }"><a href="${ comment.url }/edit" class="crayons-link crayons-link--block" rel="nofollow" aria-label="Delete this comment">Edit</a></li>
+        <li class="${ comment.newly_created ? '' : 'hidden' }"><a href="${ comment.url }/edit" class="crayons-link crayons-link--block" rel="nofollow" aria-label="Edit this comment">Edit</a></li>
         <li class="${ comment.newly_created ? '' : 'hidden' }"><a data-no-instant="" href="${ comment.url }/delete_confirm" class="crayons-link crayons-link--block" rel="nofollow" aria-label="Delete this comment">Delete</a></li>
       </ul>
     </div>
@@ -118,7 +118,7 @@ function react(comment) {
   var num = 1;
   var iconSmallHeart = `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon reaction-icon not-reacted"><path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"/></svg>`;
   var iconSmallHeartFilled = `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon reaction-icon--like reaction-icon reacted"><path d="M5.116 12.595a4.875 4.875 0 015.56-7.68h-.002L7.493 8.098l1.06 1.061 3.181-3.182a4.875 4.875 0 016.895 6.894L12 19.5l-6.894-6.894.01-.01z"/></svg>`;
-  
+
   if (!comment.newly_created && comment.heart_ids.indexOf(userData().id) > -1) {
     reactedClass = "reacted"
   }

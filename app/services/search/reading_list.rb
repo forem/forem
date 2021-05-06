@@ -1,78 +1,112 @@
 module Search
-  # This class does not inherit from Search::Base like our other search classes bc it
-  # is using the FeedContent index to search for ReadingList reaction articles rather than its
-  # own separate index. The primary function of this class is to help combine and parse reaction
-  # data with article Elasticsearch data to populate the Reading List view.
   class ReadingList
-    DEFAULT_PAGE = 0
+    ATTRIBUTES = [
+      "articles.cached_tag_list",
+      "articles.crossposted_at",
+      "articles.path",
+      "articles.published_at",
+      "articles.reading_time",
+      "articles.title",
+      "articles.user_id",
+      "reactions.id AS reaction_id",
+      "reactions.user_id AS reaction_user_id",
+    ].freeze
+    REACTION_ATTRIBUTES = %i[id reactable_id user_id].freeze
+    USER_ATTRIBUTES = %i[id name profile_image username].freeze
+
+    DEFAULT_STATUSES = %w[confirmed valid].freeze
+
     DEFAULT_PER_PAGE = 60
-    DEFAULT_STATUS = %w[valid confirmed].freeze
+    MAX_PER_PAGE = 100 # to avoid querying too many items, we set a maximum amount for a page
 
-    # Using a class method here to follow the pattern of the other Search classes
-    def self.search_documents(params:, user:)
-      new(params: params, user: user).reading_list_reactions
-    end
+    def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE)
+      return {} unless user
 
-    def initialize(params:, user:)
-      self.status = params.delete(:status) || DEFAULT_STATUS
-      self.view_page = params.delete(:page) || DEFAULT_PAGE
-      self.view_per_page = params.delete(:per_page) || DEFAULT_PER_PAGE
-      self.user = user
-      self.search_params = params
-    end
+      statuses = statuses.presence || DEFAULT_STATUSES
+      tags = tags.presence || []
 
-    def reading_list_reactions
-      ordered_articles = parse_and_order_articles(article_docs)
-      { "reactions" => paginate_articles(ordered_articles), "total" => total }
-    end
+      # TODO: [@rhymes] we should eventually update the frontend
+      # to start from page 1
+      page = page.to_i + 1
+      per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
 
-    private
-
-    attr_accessor :search_params, :user, :status, :view_page, :view_per_page, :total
-
-    def paginate_articles(ordered_articles)
-      start = view_per_page * view_page
-      ordered_articles[start, view_per_page] || []
-    end
-
-    def article_docs
-      return @article_docs if @article_docs
-
-      # Gather articles from Elasticsearch based on search criteria containing
-      # tags, text search, status, and the list of IDs of all articles in a user's
-      # reading list
-      docs = FeedContent.search_documents(
-        params: search_params.merge(
-          id: search_ids,
-          class_name: "Article",
-          page: 0,
-          per_page: reading_list_article_ids.count,
-        ),
+      result = find_articles(
+        user: user,
+        term: term,
+        statuses: statuses,
+        tags: tags,
+        page: page,
+        per_page: per_page,
       )
-      self.total = docs.count
-      @article_docs = docs.index_by { |doc| doc["id"] }
+
+      # NOTE: [@rhymes] an earlier version used `Article.includes(:user)`
+      # to preload users, unfortunately it's not possible in Rails to specify
+      # which fields of the included relation's table to select ahead of time.
+      # The `users` table is massive (115 columns on March 2021) and thus we
+      # shouldn't load it all in memory just to select a few fields.
+      # For these reasons I decided to avoid preloading altogether and issue
+      # an additional SQL query to load User objects
+      # (see https://github.com/forem/forem/pull/4744#discussion_r345698674
+      # and https://github.com/rails/rails/issues/15185#issuecomment-351868335
+      # for additional context)
+      user_ids = result[:items].pluck(:user_id)
+      users = find_users(user_ids)
+
+      {
+        items: serialize(result[:items], users),
+        total: result[:total]
+      }
     end
 
-    def reading_list_article_ids
-      # Collect all reading list IDs and article IDs for a user
-      @reading_list_article_ids ||= user.reactions.readinglist.where(status: status).order(id: :desc).pluck(
-        :reactable_id, :id
-      ).to_h
-    end
+    def self.find_articles(user:, term:, statuses:, tags:, page:, per_page:)
+      # [@jgaskins, @rhymes] as `reactions` is potentially a big table, adding pagination
+      # to an INNER JOIN (eg. `joins(:reactions)`) exponentially decreases the performance,
+      # incrementing query time as the database has to scan all the rows just to discard
+      # them right after if they lie outside the bounds of the `OFFSET`.
+      # Even though it should have had a similar performance, we realized that a subquery
+      # enabled PostgreSQL query planner to drastically decrease the planned time (ca. 145x)
+      reaction_query_sql = user.reactions.readinglist
+        .where(status: statuses, reactable_type: "Article")
+        .order(created_at: :desc)
+        .select(*REACTION_ATTRIBUTES)
+        .to_sql
 
-    def search_ids
-      reading_list_article_ids.keys.map { |id| "article_#{id}" }
-    end
+      relation = ::Article.joins(
+        "INNER JOIN (#{reaction_query_sql}) reactions ON reactions.reactable_id = articles.id",
+      )
 
-    def parse_and_order_articles(articles)
-      # Combines reaction and article data to create hashes that contain the fields
-      # the reading list view needs. Ensures articles are returned in order of reaction ID
-      reading_list_article_ids.map do |article_id, reaction_id|
-        found_article_doc = articles[article_id]
-        next unless found_article_doc
+      relation = relation.search_articles(term) if term.present?
 
-        { "id" => reaction_id, "user_id" => user.id, "reactable" => articles[article_id] }
-      end.compact
+      relation = relation.cached_tagged_with(tags) if tags.any?
+
+      # here we issue a COUNT(*) after all the conditions are applied,
+      # because we need to fetch the total number of articles, pre pagination
+      total = relation.count
+
+      relation = relation.select(*ATTRIBUTES)
+      relation = relation.page(page).per(per_page)
+
+      {
+        items: relation,
+        total: total
+      }
     end
+    private_class_method :find_articles
+
+    def self.find_users(user_ids)
+      ::User
+        .where(id: user_ids)
+        .select(*USER_ATTRIBUTES)
+        .index_by(&:id)
+    end
+    private_class_method :find_users
+
+    def self.serialize(articles, users)
+      Search::ReadingListArticleSerializer
+        .new(articles, params: { users: users }, is_collection: true)
+        .serializable_hash[:data]
+        .pluck(:attributes)
+    end
+    private_class_method :serialize
   end
 end

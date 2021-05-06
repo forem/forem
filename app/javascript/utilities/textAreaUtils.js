@@ -17,8 +17,8 @@ export const getCursorXY = (input, selectionPoint) => {
   const bodyRect = document.body.getBoundingClientRect();
   const elementRect = input.getBoundingClientRect();
 
-  const inputY = elementRect.top - bodyRect.top;
-  const inputX = elementRect.left - bodyRect.left;
+  const inputY = elementRect.top - bodyRect.top - input.scrollTop;
+  const inputX = elementRect.left - bodyRect.left - input.scrollLeft;
 
   // create a dummy element with the computed style of the input
   const div = document.createElement('div');
@@ -117,7 +117,7 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
 
 /**
  * This hook can be used to keep the height of a textarea in step with the current content height, avoiding a scrolling textarea.
- * An optional array of additional elements can be set. If provided, all additional elements will receive the same height.
+ * An optional array of additional elements can be set. If provided, all elements will be set to the greatest content height.
  * Optionally, it can be specified to also constrain the max-height to the content height. Otherwise the max-height will continue to be managed only by the textarea's CSS
  *
  * @example
@@ -139,7 +139,13 @@ export const useTextAreaAutoResize = () => {
     }
 
     const resizeTextArea = () => {
-      const { height } = calculateTextAreaHeight(textArea);
+      const allElements = [textArea, ...additionalElements];
+
+      const allContentHeights = allElements.map(
+        (element) => calculateTextAreaHeight(element).height,
+      );
+
+      const height = Math.max(...allContentHeights);
       const newHeight = `${height}px`;
 
       [textArea, ...additionalElements].forEach((element) => {
