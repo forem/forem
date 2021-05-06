@@ -271,7 +271,6 @@ module Html
     end
 
     def user_link_if_exists(mention)
-      # FIXME: should this just be .mentioned-user instead of .comment-mentioned-user ??
       username = mention.delete("@").downcase
       if User.find_by(username: username)
         <<~HTML

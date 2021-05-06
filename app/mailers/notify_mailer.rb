@@ -36,7 +36,7 @@ class NotifyMailer < ApplicationMailer
     @mentioner = User.find(@mention.mentionable.user_id)
     @mentionable = @mention.mentionable
 
-    # FIXME: document why we do this!
+    # Articles are colloquially referred to as "posts", so we need to do some conditional renaming here.
     @mentionable_type = if @mention.mentionable_type == "Article"
                           "post"
                         else

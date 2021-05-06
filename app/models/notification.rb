@@ -47,11 +47,13 @@ class Notification < ApplicationRecord
     def send_to_mentioned_users_and_followers(notifiable, _action = nil)
       return unless notifiable.is_a?(Article) && notifiable.published?
 
-      # FIXME: investigate putting all of this in a worker?
-
-      # Checks to see if there are any @-mentions in the post, and creates the mention and notification inline
-      # Then, kicks of a worker to send any notifications about the post being published, if necessary.
+      # Checks to see if there are any @-mentions in the post, and creates the associated Mention model inline.
+      # We need to create associated mentions _before_ creating any notifications, as we don't
+      # want users to receive a second notification for the post being published if they have already
+      # received an initial notification about being @-mentioned in the post.
       Mentions::CreateAll.call(notifiable)
+
+      # Kicks off a worker to send any notifications about the post being published, if necessary.
       Notification.send_to_followers(notifiable, "Published")
     end
 
