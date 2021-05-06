@@ -56,7 +56,8 @@ Account.
 # Configuring the Rails Application
 
 Now with both the Service ID and Key you'll need to enable Apple Authentication
-and pass in the credentials in the admin dashboard `/admin/config`.
+and pass in the credentials in the admin dashboard
+`/admin/customization/config`.
 
 ![Admin Authentication Configuration Dashboard](https://user-images.githubusercontent.com/6045239/92613383-25a83780-f278-11ea-94a7-b710da544c9d.png)
 
