@@ -22,6 +22,12 @@ AllCops:
 
 #################### Bundler ###########################
 
+Bundler/GemVersion:
+  Description: 'Requires or forbids specifying gem versions.'
+  Enabled: true
+  EnforcedStyle: 'required'
+  AllowedGems: ['acts_as_follower']
+
 Bundler/OrderedGems:
   Description: >-
                  Gems within groups in the Gemfile should be alphabetically sorted.
