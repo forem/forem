@@ -8,9 +8,7 @@ Data Update Scripts were introduced in
 [this PR](https://github.com/forem/forem/pull/6025) and allow us to run any data
 updates we might need. For example, if we added a column to the database and
 then wanted to backfill that column with data, rather than going and manually
-doing it in a console, we would use a DataUpdateScript. Another example might be
-adding a new attribute to Elasticsearch. We could then use a DataUpdateScript to
-reindex all of our models.
+doing it in a console, we would use a DataUpdateScript.
 
 ## How it works
 
@@ -62,9 +60,9 @@ rails generate data_update BackfillColumnForArticles --no-spec
 
 Once your script is in place then you can either run `rails data_updates:run`
 manually or you can let our setup script handle it. In our local
-[bin/setup](https://github.com/forem/forem/blob/master/bin/setup) script you
-will see we have added an additional task to update data. This kicks off the
-rake task `data_updates:run` for you.
+[bin/setup](https://github.com/forem/forem/blob/main/bin/setup) script you will
+see we have added an additional task to update data. This kicks off the rake
+task `data_updates:run` for you.
 
 The rake task itself will check the `lib/data_update_scripts` folder to see if
 there are any new scripts that need to be run. It does this by reading all of
@@ -77,5 +75,27 @@ script.
 
 DataUpdateScripts are also run automatically when a production deploy goes out.
 However, to ensure the new code they need to use has been deployed we use a
-[`DataUpdateWorker`](https://github.com/forem/forem/blob/master/app/workers/data_update_worker.rb)
+[`DataUpdateWorker`](https://github.com/forem/forem/blob/main/app/workers/data_update_worker.rb)
 via Sidekiq and set it to run 10 minutes after the deploy script has completed.
+
+## Best practices
+
+### Working with large collections of rows
+
+From time to time, scripts need to operate on a large amount of rows; in those
+cases we encourage:
+
+- adding explicit logging to the script
+- reversing the order, to start processing the most recent records first
+
+For example:
+
+```ruby
+def run
+  Article.find_each(order: :desc).with_index do |article, index|
+    Rails.logging.info("...") if index % 1000 == 0 # this will log every 1000 articles
+
+    article.save
+  end
+end
+```

@@ -69,7 +69,7 @@ lost over time.
 For more information on effective technical writing, check out
 [writethedocs.org][writethedocs].
 
-[docs]: https://github.com/forem/forem/tree/master/docs/
+[docs]: https://github.com/forem/forem/tree/main/docs/
 [gitdocs]: https://www.npmjs.com/package/gitdocs/
 [markdown]: https://en.wikipedia.org/wiki/Markdown
 [frontmatter]: https://jekyllrb.com/docs/front-matter/

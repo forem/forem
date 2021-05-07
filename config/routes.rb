@@ -21,6 +21,9 @@ Rails.application.routes.draw do
     delete "/sign_out", to: "devise/sessions#destroy"
   end
 
+  get "/r/mobile", to: "deep_links#mobile"
+  get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do
@@ -37,214 +40,7 @@ Rails.application.routes.draw do
       mount FieldTest::Engine, at: "abtests"
     end
 
-    namespace :admin do
-      get "/", to: "overview#index"
-
-      authenticate :user, ->(user) { user.tech_admin? } do
-        mount Blazer::Engine, at: "blazer"
-
-        flipper_ui = Flipper::UI.app(Flipper,
-                                     { rack_protection: { except: %i[authenticity_token form_token json_csrf
-                                                                     remote_token http_origin session_hijacking] } })
-        mount flipper_ui, at: "feature_flags"
-      end
-      resources :feedback_messages, only: %i[index show]
-      resources :invitations, only: %i[index new create destroy]
-      resources :organization_memberships, only: %i[update destroy create]
-      resources :permissions, only: %i[index]
-      resources :reactions, only: [:update]
-      namespace :users do
-        resources :gdpr_delete_requests, only: %i[index destroy]
-      end
-      resources :users, only: %i[index show edit update destroy] do
-        resources :email_messages, only: :show
-        member do
-          post "banish"
-          post "export_data"
-          post "full_delete"
-          patch "user_status"
-          post "merge"
-          delete "remove_identity"
-          post "send_email"
-          post "verify_email_ownership"
-          patch "unlock_access"
-        end
-      end
-
-      # These redirects serve as a safeguard to prevent 404s for any Admins
-      # who have the old badge_achievement URLs bookmarked.
-      get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
-      get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
-
-      # NOTE: @ridhwana These routes below will be deleted once we remove the
-      # admin_restructure feature flag, hence they've been regrouped in this manner.
-      resources :articles, only: %i[index show update]
-      resources :badges, only: %i[index edit update new create]
-      resources :badge_achievements, only: %i[index destroy]
-      get "/badge_achievements/award_badges", to: "badge_achievements#award"
-      post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
-      resources :broadcasts
-      resources :chat_channels, only: %i[index create update destroy] do
-        member do
-          delete :remove_user
-        end
-      end
-      resources :comments, only: [:index]
-      resource :config
-      resources :display_ads, only: %i[index edit update new create destroy]
-      resources :events, only: %i[index create update new edit]
-      resources :html_variants, only: %i[index edit update new create show destroy]
-      resources :listings, only: %i[index edit update destroy]
-      resources :listing_categories, only: %i[index edit update new create
-                                              destroy], path: "listings/categories"
-      resources :navigation_links, only: %i[index update create destroy]
-      resources :organizations, only: %i[index show] do
-        member do
-          patch "update_org_credits"
-        end
-      end
-      resources :pages, only: %i[index new create edit update destroy]
-      resources :podcasts, only: %i[index edit update destroy] do
-        member do
-          post :fetch
-          post :add_owner
-        end
-      end
-      resources :mods, only: %i[index update]
-      resources :moderator_actions, only: %i[index]
-      resources :navigation_links, only: %i[index update create destroy]
-      resources :privileged_reactions, only: %i[index]
-      resources :reports, only: %i[index show], controller: "feedback_messages" do
-        collection do
-          post "send_email"
-          post "create_note"
-          post "save_status"
-        end
-      end
-      resources :response_templates, only: %i[index new edit create update destroy]
-      resources :secrets, only: %i[index]
-      put "secrets", to: "secrets#update"
-      resources :sponsorships, only: %i[index edit update new create destroy]
-
-      resources :tags, only: %i[index new create update edit] do
-        resource :moderator, only: %i[create destroy], module: "tags"
-      end
-      resources :tools, only: %i[index create] do
-        collection do
-          post "bust_cache"
-        end
-      end
-      resources :webhook_endpoints, only: :index
-      resources :welcome, only: %i[index create]
-
-      # We do not expose the Data Update Scripts to all Forems by default.
-      constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
-        resources :data_update_scripts, only: %i[index show] do
-          member do
-            post :force_run
-          end
-        end
-      end
-
-      # NOTE: @citizen428 The next two resources have a temporary constraint
-      # while profile generalization is still WIP
-      constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
-        resources :profile_field_groups, only: %i[update create destroy]
-        resources :profile_fields, only: %i[index update create destroy]
-      end
-
-      # @ridhwana end of routes that will be deleted once we remove the admin_restructure feature flag
-
-      # @ridhwana Feature Flag that implements the updated routes for the admin restructure is a work in progress.
-      constraints(->(_request) { FeatureFlag.enabled?(:admin_restructure) }) do
-        scope path: :content_manager, as: "content_manager" do
-          resources :articles, only: %i[index show update]
-          resources :badges, only: %i[index edit update new create]
-          resources :badge_achievements, only: %i[index destroy]
-          get "/badge_achievements/award_badges", to: "badge_achievements#award"
-          post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
-          resources :comments, only: [:index]
-          resources :organizations, only: %i[index show] do
-            member do
-              patch "update_org_credits"
-            end
-          end
-          resources :podcasts, only: %i[index edit update destroy] do
-            member do
-              post :fetch
-              post :add_owner
-            end
-          end
-          resources :tags, only: %i[index new create update edit] do
-            resource :moderator, only: %i[create destroy], module: "tags"
-          end
-        end
-
-        scope path: :customization, as: "customization" do
-          resource :config
-          resources :display_ads, only: %i[index edit update new create destroy]
-          resources :html_variants, only: %i[index edit update new create show destroy]
-          resources :navigation_links, only: %i[index update create destroy]
-          resources :pages, only: %i[index new create edit update destroy]
-
-          # NOTE: @citizen428 The next two resources have a temporary constraint
-          # while profile generalization is still WIP
-          constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
-            resources :profile_field_groups, only: %i[update create destroy]
-            resources :profile_fields, only: %i[index update create destroy]
-          end
-        end
-
-        scope path: :moderation, as: "moderation" do
-          resources :reports, only: %i[index show], controller: "feedback_messages" do
-            collection do
-              post "send_email"
-              post "create_note"
-              post "save_status"
-            end
-          end
-          resources :mods, only: %i[index update]
-          resources :moderator_actions, only: %i[index]
-          resources :privileged_reactions, only: %i[index]
-        end
-
-        scope path: :advanced, as: "advanced" do
-          resources :broadcasts
-          resources :response_templates, only: %i[index new edit create update destroy]
-          resources :secrets, only: %i[index]
-          put "secrets", to: "secrets#update"
-          resources :sponsorships, only: %i[index edit update new create destroy]
-          resources :tools, only: %i[index create] do
-            collection do
-              post "bust_cache"
-            end
-          end
-          resources :webhook_endpoints, only: :index
-
-          # We do not expose the Data Update Scripts to all Forems by default.
-          constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
-            resources :data_update_scripts, only: %i[index show] do
-              member do
-                post :force_run
-              end
-            end
-          end
-        end
-
-        scope path: :apps do
-          resources :chat_channels, only: %i[index create update destroy] do
-            member do
-              delete :remove_user
-            end
-          end
-          resources :events, only: %i[index create update new edit]
-          resources :listings, only: %i[index edit update destroy]
-          resources :listing_categories, only: %i[index edit update new create
-                                                  destroy], path: "listings/categories"
-          resources :welcome, only: %i[index create]
-        end
-      end
-    end
+    draw :admin
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
@@ -293,7 +89,6 @@ Rails.application.routes.draw do
         resources :health_checks, only: [] do
           collection do
             get :app
-            get :search
             get :database
             get :cache
           end
@@ -339,10 +134,8 @@ Rails.application.routes.draw do
     end
     resources :comment_mutes, only: %i[update]
     resources :users, only: %i[index], defaults: { format: :json } do # internal API
-      constraints(-> { FeatureFlag.enabled?(:mobile_notifications) }) do
-        collection do
-          resources :devices, only: %i[create destroy]
-        end
+      collection do
+        resources :devices, only: %i[create destroy]
       end
     end
     resources :users, only: %i[update]
@@ -387,7 +180,6 @@ Rails.application.routes.draw do
     resources :poll_votes, only: %i[show create]
     resources :poll_skips, only: [:create]
     resources :profile_pins, only: %i[create update]
-    resources :partnerships, only: %i[index create show], param: :option
     resources :display_ad_events, only: [:create]
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
@@ -417,7 +209,6 @@ Rails.application.routes.draw do
     get "/search/tags", to: "search#tags"
     get "/search/chat_channels", to: "search#chat_channels"
     get "/search/listings", to: "search#listings"
-    get "/search/users", to: "search#users"
     get "/search/usernames", to: "search#usernames"
     get "/search/feed_content", to: "search#feed_content"
     get "/search/reactions", to: "search#reactions"

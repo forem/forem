@@ -108,12 +108,6 @@ The script executes the following steps:
 
 ### Docker on Mac
 
-- Should you experience problems with the Elasticsearch container, try to
-  increase the memory and/or swap allocation for Docker. On macOS this can be
-  done via the GUI:
-
-  ![docker gui](https://user-images.githubusercontent.com/47985/74210448-b63b7c80-4c83-11ea-959b-02249b2a6952.png)
-
 - In case `rails server` starts with the following message:
 
   ```shell

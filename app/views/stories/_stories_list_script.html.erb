@@ -10,7 +10,7 @@
       el.classList.remove("active");
     });
 
-    document.getElementById('articles-list').addEventListener('click', function (event) {
+    document.getElementById('main-content').addEventListener('click', function (event) {
       var clickedEl = event.target;
       if (hasClass(clickedEl, "bm-initial") || hasClass(clickedEl, "bm-success")) {
         //do nothing

@@ -14,8 +14,7 @@ set -Eex
 # abort release if deploy status equals "blocked"
 [[ $DEPLOY_STATUS = "blocked" ]] && echo "Deploy blocked" && exit 1
 
-# runs migration for Postgres, setups/updates Elasticsearch
-# and boots the app to check there are no errors
+# runs migration for Postgres and boots the app to check there are no errors
 STATEMENT_TIMEOUT=4500000 bundle exec rails app_initializer:setup
 bundle exec rake fastly:update_configs
 bundle exec rails runner "puts 'app load success'"

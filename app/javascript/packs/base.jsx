@@ -2,18 +2,28 @@ import {
   initializeMobileMenu,
   setCurrentPageIconLink,
   getInstantClick,
-  initializeTouchDevice,
+  initializeMemberMenu,
 } from '../topNavigation/utilities';
+
+// Unique ID applied to modals created using window.Forem.showModal
+const WINDOW_MODAL_ID = 'window-modal';
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
+  preactImport: undefined,
+  getPreactImport() {
+    if (!this.preactImport) {
+      this.preactImport = import('preact');
+    }
+    return this.preactImport;
+  },
   mentionAutoCompleteImports: undefined,
   getMentionAutoCompleteImports() {
     if (!this.mentionAutoCompleteImports) {
       this.mentionAutoCompleteImports = [
         import('@crayons/MentionAutocompleteTextArea'),
         import('@utilities/search'),
-        import('preact'),
+        this.getPreactImport(),
       ];
     }
 
@@ -44,40 +54,58 @@ window.Forem = {
       originalTextArea,
     );
   },
-};
+  modalImports: undefined,
+  getModalImports() {
+    if (!this.modalImports) {
+      this.modalImports = [import('@crayons/Modal'), this.getPreactImport()];
+    }
+    return Promise.all(this.modalImports);
+  },
+  showModal: async ({
+    title,
+    contentSelector,
+    overlay = false,
+    size = 's',
+  }) => {
+    const [{ Modal }, { render, h }] = await window.Forem.getModalImports();
 
-window.showModal = async ({
-  title,
-  contentSelector,
-  overlay = false,
-  size = 's',
-}) => {
-  const [{ Modal }, { render, h }] = await Promise.all([
-    import('@crayons/Modal'),
-    import('preact'),
-  ]);
+    // Guard against two modals being opened at once
+    let currentModalContainer = document.getElementById(WINDOW_MODAL_ID);
+    if (currentModalContainer) {
+      render(null, currentModalContainer);
+    } else {
+      currentModalContainer = document.createElement('div');
+      currentModalContainer.setAttribute('id', WINDOW_MODAL_ID);
+      document.body.appendChild(currentModalContainer);
+    }
 
-  const modalRoot = document.createElement('div');
-  document.body.appendChild(modalRoot);
-
-  render(
-    <Modal
-      overlay={overlay}
-      title={title}
-      onClose={() => {
-        render(null, modalRoot);
-      }}
-      size={size}
-    >
-      <div
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html: document.querySelector(contentSelector).innerHTML,
+    render(
+      <Modal
+        overlay={overlay}
+        title={title}
+        onClose={() => {
+          render(null, currentModalContainer);
         }}
-      />
-    </Modal>,
-    modalRoot,
-  );
+        size={size}
+        focusTrapSelector={`#${WINDOW_MODAL_ID}`}
+      >
+        <div
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: document.querySelector(contentSelector).innerHTML,
+          }}
+        />
+      </Modal>,
+      currentModalContainer,
+    );
+  },
+  closeModal: async () => {
+    const currentModalContainer = document.getElementById(WINDOW_MODAL_ID);
+    if (currentModalContainer) {
+      const { render } = await window.Forem.getPreactImport();
+      render(null, currentModalContainer);
+    }
+  },
 };
 
 function getPageEntries() {
@@ -96,13 +124,17 @@ function initializeNav() {
       '.js-hamburger-trigger, .hamburger a:not(.js-nav-more-trigger)',
     ),
   ];
-  const memberMenu = document.getElementById('crayons-header__menu');
-  const menuNavButton = document.getElementById('member-menu-button');
   const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
 
   setCurrentPageIconLink(currentPage, getPageEntries());
   initializeMobileMenu(menuTriggers, moreMenus);
-  initializeTouchDevice(memberMenu, menuNavButton);
+}
+
+const memberMenu = document.getElementById('crayons-header__menu');
+const menuNavButton = document.getElementById('member-menu-button');
+
+if (memberMenu) {
+  initializeMemberMenu(memberMenu, menuNavButton);
 }
 
 getInstantClick().then((spa) => {

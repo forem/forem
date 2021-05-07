@@ -24,3 +24,4 @@ json.edited_at       utc_iso_timestamp(article.edited_at)
 json.crossposted_at  utc_iso_timestamp(article.crossposted_at)
 json.published_at    utc_iso_timestamp(article.published_at)
 json.last_comment_at utc_iso_timestamp(article.last_comment_at)
+json.reading_time_minutes article.reading_time

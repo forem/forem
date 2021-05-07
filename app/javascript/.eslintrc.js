@@ -55,6 +55,7 @@ module.exports = {
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
     'jsx-a11y/no-onchange': 'off',
     'prefer-const': ['error'],
+    'prefer-destructuring': ['warn', { object: true, array: false }],
   },
   overrides: [
     {

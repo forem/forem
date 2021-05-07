@@ -17,7 +17,7 @@
       <div class="pt-4"><%= render partial: "layouts/social_media" %></div>
     </nav>
     <hr class="crayons-footer__divider">
-    <p class="fs-s crayons-footer__description"><a href="/" aria-label="<%= community_name %> Home" class="crayons-link"><%= community_name %></a> – <%= SiteConfig.community_description %></p>
+    <p class="fs-s crayons-footer__description"><a href="/" aria-label="<%= community_name %> Home" class="crayons-link"><%= community_name %></a> – <%= Settings::Community.community_description %></p>
     <div class="m:-mb-4 crayons-footer__description">
       <%# The following copy is necessary for compatibility with the Forem AGPL licence which requires instances to link back to the source. %>
       <p class="fs-s">Built on <a href="https://www.forem.com" class="crayons-link" target="_blank" rel="noopener">Forem</a> — the <a href="https://dev.to/t/opensource" target="_blank" rel="noopener" class="crayons-link">open source</a> software that powers <a href="https://dev.to" target="_blank" rel="noopener" class="crayons-link">DEV</a> and other inclusive communities.</p>
@@ -25,12 +25,12 @@
       <div><a href="https://www.forem.com" target="_blank" rel="noopener" class="inline-block mt-4"><%= inline_svg_tag("logo-forem.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Forem logo") %></a></div>
     </div>
   </div>
-  <% if SiteConfig.mascot_footer_image_url.present? %>
-    <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_footer_image_url, width: 100),
+  <% if Settings::Mascot.footer_image_url.present? %>
+    <%= image_tag(Images::Optimizer.call(Settings::Mascot.footer_image_url, width: 100),
                   class: "crayons-footer__mascot",
-                  alt: SiteConfig.mascot_image_description,
-                  width: SiteConfig.mascot_footer_image_width,
-                  height: SiteConfig.mascot_footer_image_height,
+                  alt: Settings::Mascot.image_description,
+                  width: Settings::Mascot.footer_image_width,
+                  height: Settings::Mascot.footer_image_height,
                   loading: "lazy") %>
   <% end %>
 </footer>

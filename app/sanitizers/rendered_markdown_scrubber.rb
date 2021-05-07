@@ -1,16 +1,17 @@
 class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
+  LIQUID_TAG_SYNTAX_REGEX = /\{%|%\}/.freeze
   def initialize
     super
 
     self.tags = %w[
-      a abbr add aside b blockquote br button center cite code col colgroup dd del dl dt em em figcaption
-      h1 h2 h3 h4 h5 h6 hr i img kbd li mark ol p pre q rp rt ruby small source span strong sub sup table
+      a abbr add b blockquote br button center cite code col colgroup dd del dl dt em figcaption
+      h1 h2 h3 h4 h5 h6 hr img kbd li mark ol p pre q rp rt ruby small source span strong sub sup table
       tbody td tfoot th thead time tr u ul video
     ]
 
     self.attributes = %w[
-      alt colspan data-conversation data-lang data-no-instant data-url em height href id loop
-      name ref rel rowspan size span src start strong title type value width controls
+      alt colspan data-conversation data-lang data-no-instant data-url href id loop
+      name ref rel rowspan span src start title type value controls
     ]
   end
 
@@ -30,11 +31,18 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
 
       scrub_css_attribute(node)
     else
+      scrub_valid_attributes(node)
       super
     end
   end
 
   private
+
+  def scrub_valid_attributes(node)
+    node.attributes.each_value do |attribute|
+      attribute.value = attribute.value.remove(LIQUID_TAG_SYNTAX_REGEX)
+    end
+  end
 
   def inside_codeblock?(node)
     node.attributes["class"]&.value&.include?("highlight") ||

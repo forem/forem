@@ -61,6 +61,15 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
 else
 
   echo "Oof! Sorry! This OS is unsupported! :("
+  echo "If you're on Windows OS and have Docker or Podman for Windows installed:"
+  echo "Docker: https://docs.docker.com/docker-for-windows/install/"
+  echo "Podman: https://podman.io/getting-started/installation"
+  echo
+  echo "Execute the following:"
+  echo "docker-compose build"
+  echo "docker-compose up"
+
+  exit 1
 
 fi
 

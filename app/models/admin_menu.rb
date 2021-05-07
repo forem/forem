@@ -54,6 +54,7 @@ class AdminMenu
 
     scope :apps, "palette-line", [
       item(name: "chat channels"),
+      item(name: "consumer apps", controller: "consumer_apps"),
       item(name: "events"),
       item(name: "listings"),
       item(name: "welcome"),
@@ -90,7 +91,7 @@ class AdminMenu
     # We default to creating a ITEMS constant with visibility set to false
     # and then simply amend the visibility of the feature flag when it's
     # turned on, instead of creating the payload dynamically each time.
-    menu_items = ITEMS.dup
+    menu_items = ITEMS.deep_dup
 
     if FeatureFlag.enabled?(:profile_admin)
       profile_hash = menu_items.dig(:customization, :children).detect { |item| item[:controller] == "profile_fields" }

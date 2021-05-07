@@ -235,4 +235,10 @@ label {
     list-style: none;
     padding: 0;
   }
+  // override the Bootstrap collapse animation
+  .collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+  }
 }

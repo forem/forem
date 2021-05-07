@@ -125,6 +125,11 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(test).to be(content)
   end
 
+  it "permits abbr tags" do
+    result = generate_and_parse_markdown("<abbr title=\"ol korrect\">OK</abbr>")
+    expect(result).to include("<abbr title=\"ol korrect\">OK</abbr>")
+  end
+
   context "when rendering links markdown" do
     # the following specs are testing HTMLRouge
     it "renders properly if protocol http is included" do
@@ -190,7 +195,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       DOC
       result = generate_and_parse_markdown(mention)
 
-      expected_result = "<p><code>@#{user.username}</code> one two, <a class=\"comment-mentioned-user\" " \
+      expected_result = "<p><code>@#{user.username}</code> one two, <a class=\"mentioned-user\" " \
         "href=\"#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}\">" \
         "@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n"
       expect(result).to eq(expected_result)
@@ -206,7 +211,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "works with markdown heavy contents" do
       mention = "test **[link?](https://dev.to/ben/)** thread, @#{user.username} talks :"
       result = generate_and_parse_markdown(mention)
-      expect(result).to include "<a class=\"comment-mentioned-user\""
+      expect(result).to include "<a class=\"mentioned-user\""
     end
   end
 
@@ -361,11 +366,6 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       result = generate_and_parse_markdown("- [A](#a)\n  - [B](#b)\n- [C](#c)")
       expect(result).not_to include("<br>")
     end
-
-    it "permits abbr and aside tags" do
-      result = generate_and_parse_markdown("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
-      expect(result).to include("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
-    end
   end
 
   context "when word as snake case" do
@@ -396,6 +396,28 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "adds correct syntax highlighting to codeblocks when the hint is lowercase" do
       code_block = "```ada\nwith Ada.Directories;\n````"
       expect(generate_and_parse_markdown(code_block)).to include("highlight ada")
+    end
+  end
+
+  context "when using a valid attribute" do
+    let(:example_text) { "{% liquid example %}" }
+
+    it "prevents the attribute from having Liquid tags inside" do
+      text = '<img src="x" alt="{% 404/404#">%}'
+      expect(generate_and_parse_markdown(text)).to exclude("{%")
+    end
+
+    it "does not scrub attributes in inline code" do
+      inline_code = "`#{example_text}`"
+      expect(generate_and_parse_markdown(inline_code)).to include(example_text)
+      double_fenced_code = "``#{example_text}``"
+      expect(generate_and_parse_markdown(double_fenced_code)).to include(example_text)
+    end
+
+    it "does not scrub attributes in codeblocks" do
+      codeblock = "```\n#{example_text}\n```"
+      expect(generate_and_parse_markdown(codeblock)).to include("{%")
+      expect(generate_and_parse_markdown(codeblock)).to include("%}")
     end
   end
 end

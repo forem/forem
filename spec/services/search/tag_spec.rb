@@ -1,55 +1,64 @@
 require "rails_helper"
 
 RSpec.describe Search::Tag, type: :service do
-  describe "::search_documents", elasticsearch: "Tag" do
-    let(:tag_doc_1) { { "name" => "tag1" } }
-    let(:tag_doc_2) { { "name" => "tag2" } }
-    let(:mock_search_response) do
-      {
-        "hits" => {
-          "hits" => [
-            { "_source" => tag_doc_1 },
-            { "_source" => tag_doc_2 },
-          ]
-        }
-      }
+  describe "::search_documents" do
+    it "does not find non supported tags" do
+      tag = create(:tag, supported: false)
+
+      expect(described_class.search_documents(tag.name)).to be_empty
     end
 
-    it "searches with name:tag" do
-      tag = create(:tag, :search_indexed, name: "tag1")
+    it "returns data in the expected format" do
+      tag = create(:tag, supported: true)
 
-      described_class.refresh_index
-      tag_docs = described_class.search_documents("name:#{tag.name}")
-      expect(tag_docs.count).to eq(1)
-      expect(tag_docs).to match([
-                                  a_hash_including("name" => tag.name),
-                                ])
+      result = described_class.search_documents(tag.name)
+
+      expect(result.first.keys).to match_array(
+        %i[id name hotness_score rules_html supported short_summary],
+      )
     end
 
-    it "analyzes wildcards" do
-      tag1 = create(:tag, :search_indexed, name: "tag1")
-      tag2 = create(:tag, :search_indexed, name: "tag2")
-      tag3 = create(:tag, :search_indexed, name: "3tag")
+    it "finds a tag by its name" do
+      tag = create(:tag, supported: true)
 
-      described_class.refresh_index
-
-      tag_docs = described_class.search_documents("name:tag*")
-      expect(tag_docs).to match([
-                                  a_hash_including("name" => tag1.name),
-                                  a_hash_including("name" => tag2.name),
-                                ])
-      expect(tag_docs).not_to match(a_hash_including("name" => tag3.name))
+      expect(described_class.search_documents(tag.name)).to be_present
     end
 
-    it "parses tag document hits from search response" do
-      allow(Search::Client).to receive(:search) { mock_search_response }
-      tag_docs = described_class.search_documents("query")
-      expect(tag_docs.count).to eq(2)
-      expect(tag_docs).to include(tag_doc_1, tag_doc_2)
+    it "finds a tag by a partial name" do
+      tag = create(:tag, supported: true)
+
+      expect(described_class.search_documents(tag.name.first(1))).to be_present
     end
 
-    it "does not allow leading wildcards" do
-      expect { described_class.search_documents("name:*tag") }.to raise_error(Search::Errors::Transport::BadRequest)
+    it "finds multiple tags whose names have common parts", :aggregate_failures do
+      java = create(:tag, name: "java")
+      javascript = create(:tag, name: "javascript")
+      ruby = create(:tag, name: "ruby")
+
+      result = described_class.search_documents("jav")
+      tags = result.pluck(:name)
+
+      expect(tags).to include(java.name)
+      expect(tags).to include(javascript.name)
+      expect(tags).not_to include(ruby.name)
+    end
+
+    it "order tags by decreasing hotness score" do
+      tag1 = create(:tag, name: "javascript1")
+      tag2 = create(:tag, name: "javascript2")
+
+      # see Tag#calculate_hotness_score
+      create(:article, score: 50, tags: [], tag_list: tag1.name)
+      create(:article, score: 100, tags: [], tag_list: tag2.name)
+
+      # to re-calculate the score
+      tag1.save!
+      tag2.save!
+
+      result = described_class.search_documents("jav")
+      tags = result.pluck(:name)
+
+      expect(tags).to eq([tag2.name, tag1.name])
     end
   end
 end

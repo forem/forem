@@ -1,7 +1,11 @@
 import { callHistoricalAPI, callReferrersAPI } from './client';
 
+const activeCharts = {};
+
 function resetActive(activeButton) {
-  const buttons = document.querySelectorAll('.crayons-tabs--analytics .crayons-tabs__item');
+  const buttons = document.querySelectorAll(
+    '.crayons-tabs--analytics .crayons-tabs__item',
+  );
   for (let i = 0; i < buttons.length; i += 1) {
     const button = buttons[i];
     button.classList.remove('crayons-tabs__item--current');
@@ -38,7 +42,7 @@ function writeCards(data, timeRangeLabel) {
   followerCard.innerHTML = cardHTML(follows, `Followers ${timeRangeLabel}`);
 }
 
-function drawChart({ canvas, title, labels, datasets }) {
+function drawChart({ id, title, labels, datasets }) {
   const options = {
     plugins: {
       legend: {
@@ -80,8 +84,14 @@ function drawChart({ canvas, title, labels, datasets }) {
         LineElement,
         Legend,
       );
+      const currentChart = activeCharts[id];
+      if (currentChart) {
+        currentChart.destroy();
+      }
+
+      const canvas = document.getElementById(id);
       // eslint-disable-next-line no-new
-      new Chart(canvas, {
+      activeCharts[id] = new Chart(canvas, {
         type: 'line',
         data: {
           labels,
@@ -105,7 +115,7 @@ function drawCharts(data, timeRangeLabel) {
   const readers = parsedData.map((date) => date.page_views.total);
 
   drawChart({
-    canvas: document.getElementById('reactions-chart'),
+    id: 'reactions-chart',
     title: `Reactions ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -145,7 +155,7 @@ function drawCharts(data, timeRangeLabel) {
   });
 
   drawChart({
-    canvas: document.getElementById('comments-chart'),
+    id: 'comments-chart',
     title: `Comments ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -161,7 +171,7 @@ function drawCharts(data, timeRangeLabel) {
   });
 
   drawChart({
-    canvas: document.getElementById('followers-chart'),
+    id: 'followers-chart',
     title: `New Followers ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -177,7 +187,7 @@ function drawCharts(data, timeRangeLabel) {
   });
 
   drawChart({
-    canvas: document.getElementById('readers-chart'),
+    id: 'readers-chart',
     title: `Reads ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -200,8 +210,8 @@ function renderReferrers(data) {
     .map((referrer) => {
       return `
       <tr>
-        <td>${referrer.domain}</td>
-        <td>${referrer.count}</td>
+        <td class="align-left">${referrer.domain}</td>
+        <td class="align-right">${referrer.count}</td>
       </tr>
     `;
     });
@@ -213,8 +223,8 @@ function renderReferrers(data) {
   if (emptyDomainReferrer) {
     tableBody.push(`
       <tr>
-        <td>All other external referrers</td>
-        <td>${emptyDomainReferrer.count}</td>
+        <td class="align-left">All other external referrers</td>
+        <td class="align-right">${emptyDomainReferrer.count}</td>
       </tr>
     `);
   }

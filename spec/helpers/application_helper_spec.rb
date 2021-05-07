@@ -38,7 +38,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#community_name" do
     it "equals to the community name" do
-      allow(SiteConfig).to receive(:community_name).and_return("SLOAN")
+      allow(Settings::Community).to receive(:community_name).and_return("SLOAN")
       expect(helper.community_name).to eq("SLOAN")
     end
   end
@@ -94,21 +94,21 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context "when the start year and current year is the same" do
       it "returns the current year only" do
-        allow(SiteConfig).to receive(:community_copyright_start_year).and_return(current_year)
+        allow(Settings::Community).to receive(:copyright_start_year).and_return(current_year)
         expect(helper.copyright_notice).to eq(current_year)
       end
     end
 
     context "when the start year and current year is different" do
       it "returns the start and current year" do
-        allow(SiteConfig).to receive(:community_copyright_start_year).and_return("2014")
+        allow(Settings::Community).to receive(:copyright_start_year).and_return("2014")
         expect(helper.copyright_notice).to eq("2014 - #{current_year}")
       end
     end
 
     context "when the start year is blank" do
       it "returns the current year" do
-        allow(SiteConfig).to receive(:community_copyright_start_year).and_return(" ")
+        allow(Settings::Community).to receive(:copyright_start_year).and_return(" ")
         expect(helper.copyright_notice).to eq(current_year)
       end
     end
@@ -203,7 +203,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#community_members_label" do
     before do
-      allow(SiteConfig).to receive(:community_member_label).and_return("hobbyist")
+      allow(Settings::Community).to receive(:member_label).and_return("hobbyist")
     end
 
     it "returns the pluralized community_member_label" do

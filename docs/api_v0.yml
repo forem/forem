@@ -1,7 +1,7 @@
 # This document follows the OpenAPI spec <https://spec.openapis.org/oas/v3.0.3>
-# It contains two Redoc vendor extensions, x-code-samples and x-logo
+# It contains two Redoc vendor extensions, x-codeSamples and x-logo
 # x-logo: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-logo
-# x-code-samples: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+# x-codeSamples: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-codesamples
 
 openapi: "3.0.3"
 info:
@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.9.5"
+  version: "0.9.6"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -186,6 +186,7 @@ components:
         - last_comment_at
         - published_timestamp
         - user
+        - reading_time_minutes
       properties:
         type_of:
           type: string
@@ -254,6 +255,10 @@ components:
           format: date-time
         user:
           $ref: "#/components/schemas/SharedUser"
+        reading_time_minutes:
+          description: Reading time, in minutes
+          type: integer
+          format: int32
         organization:
           $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
@@ -287,6 +292,7 @@ components:
         - body_html
         - body_markdown
         - user
+        - reading_time_minutes
       properties:
         type_of:
           type: string
@@ -359,6 +365,10 @@ components:
           type: string
         user:
           $ref: "#/components/schemas/SharedUser"
+        reading_time_minutes:
+          description: Reading time, in minutes
+          type: integer
+          format: int32
         organization:
           $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
@@ -516,6 +526,7 @@ components:
         - published_timestamp
         - body_markdown
         - user
+        - reading_time_minutes
       properties:
         type_of:
           type: string
@@ -571,6 +582,10 @@ components:
           type: string
         user:
           $ref: "#/components/schemas/SharedUser"
+        reading_time_minutes:
+          description: Reading time, in minutes
+          type: integer
+          format: int32
         organization:
           $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
@@ -687,6 +702,7 @@ components:
       type: object
       required:
         - type_of
+        - created_at
         - id
         - name
         - path
@@ -695,6 +711,10 @@ components:
       properties:
         type_of:
           type: string
+        created_at:
+          description: Date the user became a follower
+          type: string
+          format: date-time
         id:
           description: Follow id
           type: integer
@@ -1235,6 +1255,7 @@ components:
           published_at: '2019-10-24T13:52:17Z'
           last_comment_at: '2019-10-25T08:12:43Z'
           published_timestamp: '2019-10-24T13:52:17Z'
+          reading_time_minutes: 15
           user:
             name: Ben Halpern
             username: ben
@@ -1279,6 +1300,7 @@ components:
         published_at: "2019-08-01T15:47:54Z"
         last_comment_at: "2019-08-06T16:48:10Z"
         published_timestamp: "2019-08-01T15:47:54Z"
+        reading_time_minutes: 15
         body_html: |+
           <p>Today's episode of Byte Sized is about Leonhard Euler and the creation of <a href="https://en.wikipedia.org/wiki/Graph_theory">Graph Theory</a>.</p>
 
@@ -1552,12 +1574,14 @@ components:
       value:
         - type_of: user_follower
           id: 12
+          created_at: "2021-04-02T04:21:46Z"
           name: Mrs. Neda Morissette
           path: "/nedamrsmorissette"
           username: nedamrsmorissette
           profile_image: https://res.cloudinary.com/...
         - type_of: user_follower
           id: 11
+          created_at: "2021-04-02T04:21:46Z"
           name: Yoko Hintz
           path: "/yokohintz"
           username: yokohintz
@@ -1567,6 +1591,7 @@ components:
       value:
         - type_of: listing
           id: 1157
+          created_at: "2021-04-07 08:29:42 UTC"
           title: TestBash Detroit
           slug: testbash-detroit-50gb
           body_markdown: "Do you want to learn about automation? Maybe you're interested in
@@ -1843,7 +1868,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2022,7 +2047,7 @@ paths:
               examples:
                 articles-success:
                   $ref: "#/components/examples/ArticlesIndex"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all articles)
           source: |
@@ -2047,7 +2072,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Articles API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/articles_spec.rb)
+        - [Rails tests for Articles API](https://github.com/forem/forem/blob/main/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -2134,7 +2159,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2166,7 +2191,7 @@ paths:
         - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
-          description: A list of articles sorted by descending publish date 
+          description: A list of articles sorted by descending publish date
           content:
             application/json:
               schema:
@@ -2215,7 +2240,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2236,7 +2261,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Articles API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/articles_spec.rb)
+        - [Rails tests for Articles API](https://github.com/forem/forem/blob/main/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -2322,7 +2347,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2374,7 +2399,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2423,7 +2448,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2472,7 +2497,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2521,7 +2546,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2572,7 +2597,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2632,7 +2657,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all comments of an article)
           source: |
@@ -2687,7 +2712,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (a comment and its descendants)
           source: |
@@ -2709,6 +2734,17 @@ paths:
       parameters:
         - $ref: '#/components/parameters/pageParam'
         - $ref: '#/components/parameters/perPageParam80to1000'
+        - in: query
+          name: sort
+          schema:
+            type: string
+            default: 'created_at'
+            pattern: '^-?\w+(,-?\w+)*$'
+          required: false
+          description: |
+            Specifies the sort order for the `created_at` param of the follow
+            relationship. To sort by newest followers first (descending order)
+            specify `?sort=-created_at`.
       responses:
         "200":
           description: A list of followers
@@ -2733,7 +2769,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2773,7 +2809,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2812,7 +2848,7 @@ paths:
               examples:
                 listings-success:
                   $ref: "#/components/examples/Listings"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all listings)
           source: |
@@ -2834,7 +2870,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Listings API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/listings_spec.rb)
+        - [Rails tests for Listings API](https://github.com/forem/forem/blob/main/spec/requests/api/v0/listings_spec.rb)
       tags:
         - listings
       requestBody:
@@ -2897,7 +2933,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -2959,7 +2995,7 @@ paths:
               examples:
                 listings-success:
                   $ref: "#/components/examples/Listings"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (call for papers listings)
           source: |
@@ -3009,7 +3045,7 @@ paths:
       security:
         - {} # this indicates that authentication is optional
         - api_key: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3096,7 +3132,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (bump)
           source: |
@@ -3150,7 +3186,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3192,7 +3228,7 @@ paths:
               examples:
                 user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3240,7 +3276,7 @@ paths:
               examples:
                 user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3292,7 +3328,7 @@ paths:
               examples:
                 user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3340,7 +3376,7 @@ paths:
               examples:
                 user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3394,7 +3430,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all podcast episodes)
           source: |
@@ -3432,7 +3468,7 @@ paths:
               examples:
                 articles-success:
                   $ref: "#/components/examples/Tags"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all tags)
           source: |
@@ -3486,7 +3522,7 @@ paths:
               examples:
                 user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (by id)
           source: |
@@ -3527,7 +3563,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3569,7 +3605,7 @@ paths:
               examples:
                 profile-image-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3605,7 +3641,7 @@ paths:
               examples:
                 articles-success:
                   $ref: "#/components/examples/ArticleVideo"
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl (all video articles)
           source: |
@@ -3657,7 +3693,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3722,7 +3758,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3781,7 +3817,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
@@ -3818,7 +3854,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples:
+      x-codeSamples:
         - lang: Shell
           label: curl
           source: |
