@@ -238,7 +238,7 @@ RSpec.describe Comment, type: :model do
 
   describe "#readable_publish_date" do
     it "does not show year in readable time if not current year" do
-      expect(comment.readable_publish_date).to eq(comment.created_at.strftime("%b %e"))
+      expect(comment.readable_publish_date).to eq(comment.created_at.strftime("%b %-e"))
     end
 
     it "shows year in readable time if not current year" do
