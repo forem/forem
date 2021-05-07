@@ -33,8 +33,8 @@ module Organizations
     end
 
     def articles_sync
-      # Syncs article cached organization and updates Elasticsearch docs
-      Article.where(id: article_ids).find_each(&:save)
+      # Syncs article cached organization
+      Article.where(id: article_ids).update_all(cached_organization: nil)
     end
   end
 end
