@@ -267,10 +267,11 @@ function handleCommentSubmit(event) {
               input.value = newComment.comment_template || "";
             });
 
-            var preview = document.getElementById("preview-div");
-            preview.classList.add("preview-toggle");
+            const preview = document.getElementById("preview-div");
+            const togglePreview = document.querySelector('.preview-toggle');
             preview.innerHTML = "";
-            var container = document.getElementById("comment-trees-container");
+            togglePreview.innerHTML = "Preview";
+            const container = document.getElementById("comment-trees-container");
             container.insertBefore(newNode, container.firstChild);
           }
           else if (document.getElementById("notifications-container")) {
