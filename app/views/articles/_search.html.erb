@@ -35,7 +35,7 @@
   }
 
   function initializeSortingTabs(query) {
-    var sortingTabs = document.getElementById("sorting-option-tabs").getElementsByClassName('crayons-tabs__item');
+    var sortingTabs = document.querySelectorAll('#sorting-option-tabs .crayons-tabs__item');
 
     for (var i=0; i < sortingTabs.length; i++) {
       var tab = sortingTabs[i];

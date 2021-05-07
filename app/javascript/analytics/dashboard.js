@@ -9,7 +9,7 @@ function resetActive(activeButton) {
   for (let i = 0; i < buttons.length; i += 1) {
     const button = buttons[i];
     button.classList.remove('crayons-tabs__item--current');
-    button.setAttribute('aria-current', '');
+    button.removeAttribute('aria-current');
   }
 
   activeButton.classList.add('crayons-tabs__item--current');
