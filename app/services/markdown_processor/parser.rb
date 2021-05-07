@@ -32,8 +32,7 @@ module MarkdownProcessor
         # a String substitute, hence we force the conversion before passing it to Liquid::Template.
         # See <https://github.com/Shopify/liquid/issues/1390>
         parsed_liquid = Liquid::Template.parse(sanitized_content.to_str, liquid_tag_options)
-
-        html = markdown.render(parsed_liquid.render)
+        html = parsed_liquid.render
       rescue Liquid::SyntaxError => e
         html = e.message
       end
@@ -114,7 +113,7 @@ module MarkdownProcessor
 
     def escape_liquid_tags_in_codeblock(content)
       # Escape codeblocks, code spans, and inline code
-      content.gsub(/[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+      content.gsub(/[[:space:]]*`{3}?.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
         codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
         codeblock.gsub!("{% raw %}", "{----% raw %----}")
         if codeblock.match?(/[[:space:]]*`{3}/)
