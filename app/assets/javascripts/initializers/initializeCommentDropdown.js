@@ -86,7 +86,7 @@ function initializeCommentDropdown() {
     }
   }
 
-  function initializeDropDownClick(dropdown) {
+  function initializeDropDownClick(dropdownOrDropdownContainer) {
     return (event) => {
       const { target } = event;
       const button = (function getButton(potentialButton) {
@@ -94,7 +94,7 @@ function initializeCommentDropdown() {
           !potentialButton.classList.contains('dropbtn') ||
           !potentialButton
         ) {
-          if (potentialButton === commentsContainer) {
+          if (potentialButton === dropdownOrDropdownContainer) {
             break;
           }
 
