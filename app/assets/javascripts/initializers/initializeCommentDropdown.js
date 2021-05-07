@@ -85,7 +85,7 @@ function initializeCommentDropdown() {
     }
   }
 
-  function initializeCommentEvents(commentsContainer) {
+  function initializeDropDownClick(commentsContainer) {
     return (event) => {
       const { target } = event;
       const button = (function getButton(potentialButton) {
@@ -156,14 +156,16 @@ function initializeCommentDropdown() {
   }
 
   const commentsContainer = document.getElementById('comment-trees-container');
+  const articleShowMoreButton = document.getElementById(
+    'article-show-more-button',
+  );
 
   // We only want to add an event listener for the click once
-  if (commentsContainer && !commentsContainer.dataset.initialized) {
-    commentsContainer.dataset.initialized = true;
-    commentsContainer.addEventListener(
-      'click',
-      initializeCommentEvents(commentsContainer),
-    );
+  for (const element of [commentsContainer, articleShowMoreButton]) {
+    if (element && !element.dataset.initialized) {
+      element.dataset.initialized = true;
+      element.addEventListener('click', initializeDropDownClick(element));
+    }
   }
 
   setTimeout(function addListeners() {
