@@ -291,4 +291,34 @@ module ApplicationHelper
     # has been deleted, removed this ternary.
     role.name == "banned" ? "Suspended" : role.name.titlecase
   end
+
+  # Adapted from the following methods:
+  # - cache: https://github.com/rails/rails/blob/d18ada70b398c39cb614c826be91559c2597011c/actionview/lib/action_view/helpers/cache_helper.rb#L166-L175
+  # - write_fragment_for: https://github.com/rails/rails/blob/d18ada70b398c39cb614c826be91559c2597011c/actionview/lib/action_view/helpers/cache_helper.rb#L252-L261
+  def cache_multi(names, cache: Rails.cache, **options, &block)
+    if controller.respond_to?(:perform_caching) && controller.perform_caching
+      name_options = options.slice(:skip_digest)
+      names = names.map { |name| cache_fragment_name(name, **name_options) }
+      content = cache.fetch_multi(*names, options) do |_prefix, key|
+        pos = output_buffer.length
+        yield key
+        output_safe = output_buffer.html_safe?
+        fragment = output_buffer.slice!(pos..-1)
+        if output_safe
+          self.output_buffer = output_buffer.class.new(output_buffer)
+        end
+        fragment
+      end
+
+      content.each_value do |value|
+        # rubocop:disable Rails/OutputSafety
+        safe_concat value
+        # rubocop:enable Rails/OutputSafety
+      end
+    else
+      names.each(&block)
+    end
+
+    nil
+  end
 end

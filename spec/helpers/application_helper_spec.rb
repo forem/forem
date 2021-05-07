@@ -255,4 +255,28 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(optimized_helper).to eq(cloudinary_image_tag)
     end
   end
+
+  describe "#cache_multi" do
+    it "reads many keys in a single call" do
+      cache = instance_double("ActiveSupport::Cache::Store")
+      helper.controller.perform_caching = true # ensure we invoke caching here
+
+      allow(cache)
+        .to receive(:fetch_multi)
+        # Must account for the options hash for things like :expires_in
+        .with(:foo, :bar, :baz, {})
+        # Yields "template_name/template_sha", key
+        .and_yield(an_instance_of(String), :foo)
+        .and_yield(an_instance_of(String), :bar)
+        .and_yield(an_instance_of(String), :baz)
+        # cache_multi expects cache.fetch_multi to return a hash
+        .and_return({ foo: "foo", bar: "bar", baz: "baz" })
+
+      helper.cache_multi(%i[foo bar baz], cache: cache) do |key|
+        # Rubocop doesn't like that this block is empty
+      end
+
+      expect(cache).to have_received(:fetch_multi)
+    end
+  end
 end
