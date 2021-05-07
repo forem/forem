@@ -3,7 +3,7 @@ module DateHelper
     datetime = Time.zone.parse(datetime) if datetime.is_a?(String)
 
     tag.time(
-      datetime.strftime("%b %e#{', %Y' if show_year}"),
+      datetime.strftime("%b %-e#{', %Y' if show_year}"),
       datetime: datetime.utc.iso8601,
       class: "date#{'-no-year' unless show_year}",
     )
