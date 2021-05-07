@@ -4,7 +4,7 @@
       <% if article.archived %>
         <span class="crayons-indicator crayons-indicator--critical mr-2 fw-normal">Archived</span>
       <% end %>
-      <a href="<%= article.current_state_path %>" class="inline-flex items-center">
+      <a href="<%= article.path %>" class="inline-flex items-center">
         <% if article.organization_id %>
           <span class="crayons-logo crayons-logo--s mr-2 shrink-0"><img class="crayons-logo__image align-top" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24"></span>
         <% end %>
@@ -28,7 +28,7 @@
 
   <div class="fs-s color-base-60">
     <% if !article.published? %>
-      <a href="<%= article.path %>/edit" class="crayons-indicator crayons-indicator--accent">Draft</a>
+      <a href="<%= article.current_state_path %>/edit" class="crayons-indicator crayons-indicator--accent">Draft</a>
     <% else %>
       <div class="flex flex-nowrap whitespace-nowrap" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="flex items-center p-1" title="Reactions">
@@ -72,7 +72,7 @@
 
   <div class="dashboard-story__actions">
     <% if manage_view %>
-      <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
+      <a href="<%= article.current_state_path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
 
       <% if article.profile_pins.any? %>
         <%= form_for(article.profile_pins.first) do |f| %>
@@ -85,11 +85,11 @@
         <% end %>
       <% end %>
     <% elsif article.published %>
-      <a href="<%= article.path %>/manage" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Manage post: <%= article.title %>">Manage</a>
+      <a href="<%= article.current_state_path %>/manage" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Manage post: <%= article.title %>">Manage</a>
     <% elsif @user == article.user %>
-      <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
+      <a href="<%= article.current_state_path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
     <% end %>
-    <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Edit post: <%= article.title %>">Edit</a>
+    <a href="<%= article.current_state_path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Edit post: <%= article.title %>">Edit</a>
 
     <div class="js-ellipsis-menu relative inline-block">
       <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon js-ellipsis-menu-trigger">
