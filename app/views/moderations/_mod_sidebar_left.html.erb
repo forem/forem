@@ -26,20 +26,27 @@
     </div>
 
     <div id="mod-center-inbox" class="mod-center--nav--default crayons-tabs crayons-tabs--scrollable flex m:hidden">
-      <a
-        href="<%= "#{URL.url}/mod" %>"
-        class="crayons-tabs__item <%= "crayons-tabs__item--current" if @tag.blank? %>"
-        data-tag-name="All topics">
-        All topics
-      </a>
-      <% if @current_user_tags.any? %>
-        <% @current_user_tags.each do |tag| %>
-          <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
-            #<%= tag %>
-            <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
+      <ul class="crayons-tabs__list">
+        <li>
+          <a
+            href="<%= mod_path %>"
+            class="crayons-tabs__item <%= "crayons-tabs__item--current" if @tag.blank? %>"
+            aria-current="<%= "page" if @tag.blank? %>"
+            data-tag-name="All topics">
+            All topics
           </a>
+        </li>
+        <% if @current_user_tags.any? %>
+          <% @current_user_tags.each do |tag| %>
+            <li>
+              <a href="<%= "#{mod_path}/#{tag}" %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>" aria-current="<%= "page" if tag == @tag&.name %>">
+                #<%= tag %>
+                <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
+              </a>
+            </li>
+          <% end %>
         <% end %>
-      <% end %>
+      </ul>
     </div>
   </nav>
 

@@ -15,9 +15,14 @@ describe('Post Editor', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
       cy.get('@articleForm')
-        .findByText(/^Preview$/i)
-        .click();
+        .findByRole('button', { name: /^Preview$/i })
+        .as('previewButton');
+
+      cy.get('@previewButton').should('not.have.attr', 'aria-current');
+
+      cy.get('@previewButton').click();
       cy.findByTestId('error-message').should('not.exist');
+      cy.get('@previewButton').should('have.attr', 'aria-current', 'page');
     });
 
     it(`should show error if the post content can't be previewed`, () => {
@@ -29,10 +34,33 @@ describe('Post Editor', () => {
         .type('{%tag %}', { parseSpecialCharSequences: false });
 
       cy.get('@articleForm')
-        .findByText(/^Preview$/i)
-        .click();
+        .findByRole('button', { name: /^Preview$/i })
+        .as('previewButton');
 
+      cy.get('@previewButton').should('not.have.attr', 'aria-current');
+
+      cy.get('@previewButton').click();
+
+      cy.get('@previewButton').should('not.have.attr', 'aria-current');
       cy.findByTestId('error-message').should('be.visible');
+    });
+
+    it('should show the Edit tab by default', () => {
+      cy.findByRole('form', { name: /^Edit post$/i })
+        .findByRole('navigation', {
+          name: 'View post modes',
+        })
+        .within(() => {
+          cy.findByRole('button', { name: /^Edit$/i }).should(
+            'have.attr',
+            'aria-current',
+            'page',
+          );
+          cy.findByRole('button', { name: /^Preview$/i }).should(
+            'not.have.attr',
+            'aria-current',
+          );
+        });
     });
   });
 
@@ -52,8 +80,13 @@ describe('Post Editor', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
       cy.get('@articleForm')
-        .findByText(/^Preview$/i)
-        .click();
+        .findByRole('button', { name: /^Preview$/i })
+        .as('previewButton');
+      cy.get('@previewButton').should('not.have.attr', 'aria-current');
+
+      cy.get('@previewButton').click();
+      cy.get('@previewButton').should('have.attr', 'aria-current', 'page');
+
       cy.findByTestId('error-message').should('not.exist');
     });
 
@@ -66,10 +99,33 @@ describe('Post Editor', () => {
         .type('{%tag %}', { parseSpecialCharSequences: false });
 
       cy.get('@articleForm')
-        .findByText(/^Preview$/i)
-        .click();
+        .findByRole('button', { name: /^Preview$/i })
+        .as('previewButton');
 
+      cy.get('@previewButton').should('not.have.attr', 'aria-current');
+
+      cy.get('@previewButton').click();
+
+      cy.get('@previewButton').should('not.have.attr', 'aria-current');
       cy.findByTestId('error-message').should('be.visible');
+    });
+
+    it('should show the Edit tab by default', () => {
+      cy.findByRole('form', { name: /^Edit post$/i })
+        .findByRole('navigation', {
+          name: 'View post modes',
+        })
+        .within(() => {
+          cy.findByRole('button', { name: /^Edit$/i }).should(
+            'have.attr',
+            'aria-current',
+            'page',
+          );
+          cy.findByRole('button', { name: /^Preview$/i }).should(
+            'not.have.attr',
+            'aria-current',
+          );
+        });
     });
   });
 });
