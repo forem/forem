@@ -1,178 +1,134 @@
 require "rails_helper"
 
 RSpec.describe Search::Listing, type: :service do
-  describe "::search_documents", elasticsearch: "Listing" do
-    let(:listing) { create(:listing) }
+  let(:listing) { create(:listing, title: "Matches Nothing", body_markdown: "Matches Nothing, and Nothing Matches.") }
 
-    it "parses listing document hits from search response" do
-      mock_search_response = { "hits" => { "hits" => {} } }
-      allow(described_class).to receive(:search) { mock_search_response }
-      described_class.search_documents(params: {})
-      expect(described_class).to have_received(:search).with(body: a_kind_of(Hash))
+  describe "::search_documents" do
+    it "does not include a listing that is unpublished", :aggregate_failures do
+      published_listing = create(:listing, title: "Published Listing", published: true)
+      unpublished_listing = create(:listing, title: "Unpublished Listing", published: false)
+      result = described_class.search_documents(term: "Listing")
+      titles = result.pluck(:title)
+
+      expect(titles).not_to include(unpublished_listing.title)
+      expect(titles).to include(published_listing.title)
     end
 
-    context "with a query" do
-      # listing_search is a copy_to field including:
-      # body_markdown, location, slug, tags, and title
-      it "searches by listing_search" do
-        listing1 = create(:listing, body_markdown: "# body_markdown with test")
-        listing2 = create(:listing, location: "a test location")
-        listing3 = create(:listing, title: "this test title is testing slug")
-        listing4 = create(:listing, tag_list: ["test"])
-        listing5 = create(:listing, title: "a test title")
-        listings = [listing1, listing2, listing3, listing4, listing5]
-        index_documents(listings)
+    context "when describing the result format" do
+      let(:result) { described_class.search_documents(term: listing.title) }
 
-        listing_docs = described_class.search_documents(params: { size: 5, listing_search: "test" })
-        expect(listing_docs.count).to eq(5)
-        expect(listing_docs.map { |t| t["id"] }).to match_array(listings.map(&:id))
-      end
-    end
+      it "returns the correct attributes for the result" do
+        expected_keys = %i[
+          id body_markdown bumped_at category contact_via_connect expires_at
+          originally_published_at location processed_html published slug title
+          user_id tags author
+        ]
 
-    context "with a term filter" do
-      it "searches by category" do
-        new_category = create(:listing_category, :cfp)
-        listing.update(listing_category_id: new_category.id)
-        index_documents(listing)
-        params = { size: 5, category: new_category.slug }
-
-        listing_docs = described_class.search_documents(params: params)
-        expect(listing_docs.count).to eq(1)
-        expect(listing_docs.first["id"]).to eq(listing.id)
+        expect(result.first.keys).to match_array(expected_keys)
       end
 
-      it "searches by contact_via_connect" do
-        listing.update(contact_via_connect: true)
-        index_documents(listing)
-        params = { size: 5, contact_via_connect: true }
-
-        listing_docs = described_class.search_documents(params: params)
-        expect(listing_docs.count).to eq(1)
-        expect(listing_docs.first["id"]).to eq(listing.id)
+      it "returns the correct attributes for the author" do
+        expected_keys = %i[username name profile_image_90]
+        expect(result.first[:author].keys).to match_array(expected_keys)
       end
 
-      it "searches by location" do
-        listing.update(location: "a location")
-        index_documents(listing)
-        params = { size: 5, location: "location" }
-
-        listing_docs = described_class.search_documents(params: params)
-        expect(listing_docs.count).to eq(1)
-        expect(listing_docs.first["id"]).to eq(listing.id)
-      end
-
-      it "searches by slug" do
-        slug_listing = create(:listing, title: "A slug is created from this title in a callback")
-        index_documents(slug_listing)
-        params = { size: 5, slug: "slug" }
-
-        listing_docs = described_class.search_documents(params: params)
-        expect(listing_docs.count).to eq(1)
-        expect(listing_docs.first["id"]).to eq(slug_listing.id)
-      end
-
-      it "searches by tags" do
-        listing.update(tag_list: %w[beginners career])
-        index_documents(listing)
-        params = { size: 5, tags: "career" }
-
-        listing_docs = described_class.search_documents(params: params)
-        expect(listing_docs.count).to eq(1)
-        expect(listing_docs.first["id"]).to eq(listing.id)
-      end
-
-      it "searches by title" do
-        listing.update(title: "An Amazing Title")
-        index_documents(listing)
-        params = { size: 5, title: "amazing" }
-
-        listing_docs = described_class.search_documents(params: params)
-        expect(listing_docs.count).to eq(1)
-        expect(listing_docs.first["id"]).to eq(listing.id)
-      end
-
-      it "searches by user_id" do
-        index_documents(listing)
-        params = { size: 5, user_id: listing.user_id }
-
-        listing_docs = described_class.search_documents(params: params)
-        expect(listing_docs.count).to eq(1)
-        expect(listing_docs.first["id"]).to eq(listing.id)
-      end
-
-      it "searches by bumped_at" do
-        listing.update(bumped_at: 1.day.from_now)
-        index_documents(listing)
-        params = { size: 5, bumped_at: { gt: Time.current } }
-
-        listing_docs = described_class.search_documents(params: params)
-        expect(listing_docs.count).to eq(1)
-        expect(listing_docs.first["id"]).to eq(listing.id)
-      end
-
-      it "searches by expires_at" do
-        listing.update(expires_at: 1.day.ago)
-        index_documents(listing)
-        params = { size: 5, expires_at: { lt: Time.current } }
-
-        listing_docs = described_class.search_documents(params: params)
-        expect(listing_docs.count).to eq(1)
-        expect(listing_docs.first["id"]).to eq(listing.id)
+      it "returns tag as an Array" do
+        expect(result.first[:tags]).to be_an_instance_of(Array)
       end
     end
 
-    it "sorts documents for a given field" do
-      listing = create(:listing)
-      cfp = create(:listing_category, :cfp)
-      listing2 = create(:listing, listing_category_id: cfp.id)
-      index_documents([listing, listing2])
-      params = { size: 5, sort_by: "category", sort_direction: "asc" }
+    context "when searching for a term" do
+      it "matches against the listing's body_markdown", :aggregate_failures do
+        listing.update_columns(body_markdown: "A Sweet New Opportunity")
+        result = described_class.search_documents(term: "new")
 
-      listing_docs = described_class.search_documents(params: params)
-      expect(listing_docs.count).to eq(2)
-      expect(listing_docs.first["id"]).to eq(listing2.id)
-      expect(listing_docs.last["id"]).to eq(listing.id)
+        expect(result.first[:body_markdown]).to eq listing.body_markdown
+
+        result = described_class.search_documents(term: "old")
+        expect(result).to be_empty
+      end
+
+      it "matches against the listing's cached_tag_list", :aggregate_failures do
+        listing.update_columns(cached_tag_list: "javascript, beginners, ruby")
+        result = described_class.search_documents(term: "beginner")
+
+        expect(result.first[:tags].join(", ")).to eq listing.cached_tag_list
+
+        result = described_class.search_documents(term: "newbie")
+        expect(result).to be_empty
+      end
+
+      it "matches against the listing's location", :aggregate_failures do
+        listing.update_columns(location: "Tampa")
+        result = described_class.search_documents(term: "tampa")
+
+        expect(result.first[:location]).to eq listing.location
+
+        result = described_class.search_documents(term: "milan")
+        expect(result).to be_empty
+      end
+
+      it "matches against the listing's slug", :aggregate_failures do
+        listing.update_columns(slug: "some-cool-slug")
+        result = described_class.search_documents(term: "cool")
+
+        expect(result.first[:slug]).to eq listing.slug
+
+        result = described_class.search_documents(term: "lame")
+        expect(result).to be_empty
+      end
+
+      it "matches against the listing's title", :aggregate_failures do
+        listing.update_columns(title: "Awesome New Listing")
+        result = described_class.search_documents(term: "new")
+
+        expect(result.first[:title]).to eq listing.title
+
+        result = described_class.search_documents(term: "old")
+        expect(result).to be_empty
+      end
     end
 
-    it "sorts documents by bumped_at by default" do
-      listing.update(bumped_at: 1.year.ago)
-      listing2 = create(:listing, bumped_at: Time.current)
-      index_documents([listing, listing2])
-      params = { size: 5 }
+    context "when searching for a term and filtering by category" do
+      it "selects results with the requested category" do
+        job_listings_category = create(:listing_category, name: "Job Listings", slug: "jobs")
 
-      listing_docs = described_class.search_documents(params: params)
-      expect(listing_docs.count).to eq(2)
-      expect(listing_docs.first["id"]).to eq(listing2.id)
-      expect(listing_docs.last["id"]).to eq(listing.id)
+        job_listing = create(:listing,
+                             title: "Looking for a Ruby on Rails Developer!",
+                             listing_category: job_listings_category)
+
+        education_category = create(:listing_category, name: "Education/Courses", slug: "education")
+
+        listing.update_columns(
+          title: "New Ruby on Rails for Beginners Course!",
+          classified_listing_category_id: education_category.id,
+        )
+
+        result = described_class.search_documents(term: "Ruby on Rails", category: job_listing.category)
+        # rubocop:disable Rails/PluckId
+        ids = result.pluck(:id)
+        # rubocop:enable Rails/PluckId
+
+        expect(ids).to include(job_listing.id)
+        expect(ids).not_to include(listing.id)
+      end
     end
 
-    it "paginates the results" do
-      listing.update(bumped_at: 1.year.ago)
-      listing2 = create(:listing, bumped_at: Time.current)
-      index_documents([listing, listing2])
-      first_page_params = { page: 0, per_page: 1, sort_by: "bumped_at", order: "dsc" }
+    context "when paginating" do
+      before { create_list(:listing, 2) }
 
-      listing_docs = described_class.search_documents(params: first_page_params)
-      expect(listing_docs.first["id"]).to eq(listing2.id)
+      it "returns no results when out of pagination bounds" do
+        result = described_class.search_documents(page: 99)
+        expect(result).to be_empty
+      end
 
-      second_page_params = { page: 1, per_page: 1, sort_by: "bumped_at", order: "dsc" }
+      it "returns paginated results", :aggregate_failures do
+        result = described_class.search_documents(page: 0, per_page: 1)
+        expect(result.length).to eq(1)
 
-      listing_docs = described_class.search_documents(params: second_page_params)
-      expect(listing_docs.first["id"]).to eq(listing.id)
-    end
-
-    it "returns an empty Array if no results are found" do
-      jobs_category = create(:listing_category, :jobs)
-      listing.update(listing_category: jobs_category)
-
-      cfp_category = create(:listing_category, :cfp)
-      listing2 = create(:listing,
-                        listing_category: cfp_category)
-      index_documents([listing, listing2])
-      params = { page: 3, per_page: 1 }
-
-      listing_docs = described_class.search_documents(params: params)
-      expect(listing_docs).to eq([])
+        result = described_class.search_documents(page: 1, per_page: 1)
+        expect(result.length).to eq(1)
+      end
     end
   end
 end

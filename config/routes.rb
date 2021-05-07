@@ -89,7 +89,6 @@ Rails.application.routes.draw do
         resources :health_checks, only: [] do
           collection do
             get :app
-            get :search
             get :database
             get :cache
           end
@@ -135,10 +134,8 @@ Rails.application.routes.draw do
     end
     resources :comment_mutes, only: %i[update]
     resources :users, only: %i[index], defaults: { format: :json } do # internal API
-      constraints(-> { FeatureFlag.enabled?(:mobile_notifications) }) do
-        collection do
-          resources :devices, only: %i[create destroy]
-        end
+      collection do
+        resources :devices, only: %i[create destroy]
       end
     end
     resources :users, only: %i[update]
@@ -212,7 +209,6 @@ Rails.application.routes.draw do
     get "/search/tags", to: "search#tags"
     get "/search/chat_channels", to: "search#chat_channels"
     get "/search/listings", to: "search#listings"
-    get "/search/users", to: "search#users"
     get "/search/usernames", to: "search#usernames"
     get "/search/feed_content", to: "search#feed_content"
     get "/search/reactions", to: "search#reactions"

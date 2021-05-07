@@ -23,20 +23,6 @@ RSpec.describe Moderator::MergeUser, type: :service do
       expect(User.find_by(id: keep_user.id)).not_to be_nil
     end
 
-    it "updates documents in Elasticsearch" do
-      related_records
-      drain_all_sidekiq_jobs
-      expect(article.elasticsearch_doc.dig("_source", "user", "id")).to eq(delete_user_id)
-      expect(comment.elasticsearch_doc.dig("_source", "user", "id")).to eq(delete_user_id)
-
-      sidekiq_perform_enqueued_jobs do
-        described_class.call(admin: admin, keep_user: keep_user, delete_user_id: delete_user.id)
-      end
-      drain_all_sidekiq_jobs
-      expect(article.reload.elasticsearch_doc.dig("_source", "user", "id")).to eq(keep_user.id)
-      expect(comment.reload.elasticsearch_doc.dig("_source", "user", "id")).to eq(keep_user.id)
-    end
-
     it "updates badge_achievements_count" do
       create_list(:badge_achievement, 2, user: delete_user)
 

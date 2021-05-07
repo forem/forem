@@ -2,7 +2,7 @@
 
 <div class="blank-space"></div>
 <div class="container article">
-  <h1 style="text-align: center;font-size:calc(1.66vw + <%= 34 - (@badge.title.size / 1.1).to_i %>px);max-width:96%;margin: 30px auto;padding-top:8px;">🏅 <%= @badge.title %> Badge 🏅</h1>
+  <h1 style="text-align: center;font-size: min(2.7em, 7vw);max-width: 96%;margin: 30px auto;padding: 20px;">🏅 <%= @badge.title %> Badge 🏅</h1>
   <div class="body" style="text-align: center">
     <p>
       <img src="<%= optimized_image_url(@badge.badge_image_url, width: 375) %>" style="height: 250px" alt="<%= @badge.title %> badge">

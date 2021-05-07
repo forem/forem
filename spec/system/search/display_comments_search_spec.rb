@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Display articles search spec", type: :system, js: true, elasticsearch: "FeedContent" do
+RSpec.describe "Display articles search spec", type: :system, js: true do
   it "returns correct results for a search" do
     query = "<marquee='alert(document.cookie)'>XSS"
     create(:comment, body_markdown: query)

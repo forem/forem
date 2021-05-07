@@ -34,27 +34,17 @@ module Notifications
           )
         end
 
+        # Send PNs using Rpush - respecting users' notificaton delivery settings
         targets = User.where(id: user_ids, mobile_comment_notifications: true).ids
-
-        # Pusher Beams uses named Pub/Sub channels instead of raw user_ids
-        target_channels = targets.map { |id| "user-notifications-#{id}" }
-        # Sends the push notification to Pusher Beams channels.
-        # Batch is in place to respect Pusher 100 channel limit.
-        target_channels.each_slice(100) { |batch| send_push_notifications(batch) }
-
-        if FeatureFlag.enabled?(:mobile_notifications)
-          # Send PNs using Rpush
-          url_path = Rails.application.routes.url_helpers.notifications_path(:comments)
-          PushNotifications::Send.call(
-            user_ids: targets,
-            title: "@#{comment.user.username}",
-            body: "Re: #{comment.parent_or_root_article.title.strip}",
-            payload: {
-              url: URL.url(url_path),
-              type: "new comment"
-            },
-          )
-        end
+        PushNotifications::Send.call(
+          user_ids: targets,
+          title: "@#{comment.user.username}",
+          body: "Re: #{comment.parent_or_root_article.title.strip}",
+          payload: {
+            url: URL.url(comment.path),
+            type: "new comment"
+          },
+        )
 
         return unless comment.commentable.organization_id
 
@@ -96,40 +86,6 @@ module Notifications
         return [] if comment.user_id != comment.commentable.user_id
 
         user_ids_for("only_author_comments")
-      end
-
-      def send_push_notifications(channels)
-        return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
-
-        Pusher::PushNotifications.publish_to_interests(
-          interests: channels,
-          payload: push_notification_payload,
-        )
-      end
-
-      def push_notification_payload
-        title = "@#{comment.user.username}"
-        subtitle = "re: #{comment.parent_or_root_article.title.strip}"
-        data_payload = { url: URL.url("/notifications/comments") }
-        {
-          apns: {
-            aps: {
-              alert: {
-                title: title,
-                subtitle: subtitle,
-                body: CGI.unescapeHTML(comment.title.strip)
-              }
-            },
-            data: data_payload
-          },
-          fcm: {
-            notification: {
-              title: title,
-              body: subtitle
-            },
-            data: data_payload
-          }
-        }
       end
     end
   end

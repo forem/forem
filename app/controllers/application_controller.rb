@@ -56,6 +56,7 @@ class ApplicationController < ActionController::Base
     if api_action?
       authenticate!
     else
+      @user ||= User.new
       render template: "devise/registrations/new"
     end
   end

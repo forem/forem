@@ -19,11 +19,6 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       end.to change(PodcastEpisode, :count).by(1)
     end
 
-    it "indexes the episode" do
-      sidekiq_perform_enqueued_jobs { described_class.call(podcast.id, item) }
-      expect { podcast.podcast_episodes.each(&:elasticsearch_doc) }.not_to raise_error
-    end
-
     it "creates an episode with correct data" do
       episode = described_class.call(podcast.id, item)
       expect(episode.title).to eq("Individual Contributor Career Growth w/ Matt Klein (part 1)")
