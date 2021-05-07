@@ -2,10 +2,10 @@ module Organizations
   class Delete
     def initialize(org)
       @org = org
+      @article_ids = org.article_ids
     end
 
     def call
-      self.article_ids = org.article_ids
       delete_notifications
       org.destroy
       articles_sync
@@ -17,8 +17,7 @@ module Organizations
 
     private
 
-    attr_reader :org
-    attr_accessor :article_ids
+    attr_reader :org, :article_ids
 
     def delete_notifications
       sql = <<-SQL.squish
