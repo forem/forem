@@ -1,0 +1,64 @@
+<%# this is temporary, for the POC %>
+<style>
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+</style>
+
+<div class="admin__left-sidebar crayons-layout__left-sidebar" data-controller="sidebar" data-action="load@window->sidebar#disableCurrentNavItem">
+  <nav class="hidden m:block">
+    <a
+      class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>"
+      href="<%= admin_path %>"
+      aria-current "<%= "page" if controller.controller_name == "overview" %>">
+      <%= inline_svg_tag("stack-line.svg", aria_hidden: true, class: "dropdown-icon crayons-icon") %>
+      Overview
+    </a>
+
+    <% items.each do |group_name, group| %>
+      <% if group[:children].length == 1 %>
+        <% if group[:children][0][:visible] %>
+          <a class="crayons-link crayons-link--block <%= "crayons-link--current" if deduced_scope(request) == group[:children][0][:controller] %>"
+             href="/admin/<%= group[:children][0][:controller] %>"
+             aria-current="<%= "page" if deduced_controller(request) == group[:children][0][:controller] %>"
+             data-action="click->sidebar#expandDropdown">
+            <%= inline_svg_tag(group[:svg], aria_hidden: true, class: "dropdown-icon crayons-icon") %>
+            <%= display_name(group_name) %>
+          </a>
+        <% end %>
+      <% else %>
+        <% current_menu = (deduced_scope(request) == group_name.to_s) %>
+
+        <details
+          class="crayons-link crayons-link--block cursor-pointer <%= "crayons-link--current" if current_menu %>"
+          aria-expanded="<%= current_menu %>"
+          aria-controls="<%= group_name %>">
+          <summary>
+            <%= inline_svg_tag(group[:svg], aria_hidden: true, class: "dropdown-icon crayons-icon") %>
+            <%= display_name(group_name) %>
+          </summary>
+
+          <details-menu role="menu">
+            <% group[:children].each do |item| %>
+              <% if item[:visible] %>
+                <a
+                  type="button"
+                  role="menuitem"
+                  href="/admin/<%= group_name %>/<%= item[:controller] %>"
+                  class="crayons-link crayons-link--block ml-7 <%= "fw-bold active" if deduced_controller(request) == item[:controller].to_s %>"
+                  aria-current="<%= "page" if deduced_controller(request) == item[:controller].to_s %>"
+                  data-sidebar-target="menuItem">
+                  <%= item[:name].to_s.titleize %>
+                </a>
+              <% end %>
+            <% end %>
+          </details-menu>
+        </details>
+      <% end %>
+    <% end %>
+
+  </nav>
+</div>

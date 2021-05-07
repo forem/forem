@@ -1,3 +1,4 @@
+import '@github/details-menu-element';
 import { Application } from 'stimulus';
 import { definitionsFromContext } from 'stimulus/webpack-helpers';
 

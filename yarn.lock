@@ -1383,6 +1383,11 @@
   resolved "https://registry.yarnpkg.com/@github/clipboard-copy-element/-/clipboard-copy-element-1.1.2.tgz#7a6e8042749471504d4e7cfcc47097a781db2bdb"
   integrity sha512-L6CMrcA5we0udafvoSuRCE/Ci/3xrLWKYRGup2IlhxF771bQYsQ2EB1of182pI8ZWM4oxgwzu37+igMeoZjN/A==
 
+"@github/details-menu-element@1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@github/details-menu-element/-/details-menu-element-1.0.9.tgz#3b40ff5e928131d3049a0a23b2d6df66eaad2cff"
+  integrity sha512-wa6hgqbUH/3BJIrhGZNZN3o7a4Pxw87Ba4QypZs350ww9H0l4qCc4tcJdlIVRzwxsxb4rVo0kXDMRqDPJsSgNg==
+
 "@honeybadger-io/webpack@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@honeybadger-io/webpack/-/webpack-1.2.0.tgz#d058f5bb87e8f69ca9c8721d4aa5cb226e8604e7"
