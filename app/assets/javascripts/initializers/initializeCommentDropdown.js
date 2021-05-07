@@ -50,6 +50,7 @@ function initializeCommentDropdown() {
     var isCopyIconChild = copyIcon && copyIcon.contains(event.target);
     return !(
       event.target.matches('.dropdown-icon') ||
+      event.target.parentElement.classList.contains('dropdown-icon') ||
       event.target.matches('.dropbtn') ||
       event.target.matches('clipboard-copy') ||
       isCopyIconChild ||

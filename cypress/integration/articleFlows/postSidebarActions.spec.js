@@ -18,7 +18,6 @@ describe('Post sidebar actions', () => {
   });
 
   it('should open the share menu for the post', () => {
-    // TODO: Get this working
     cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).click();
 
     cy.findByTitle(/^Copy article link to the clipboard$/i);
@@ -27,7 +26,10 @@ describe('Post sidebar actions', () => {
     cy.findByRole('link', { name: /^Share to Reddit$/i });
     cy.findByRole('link', { name: /^Share to Hacker News$/i });
     cy.findByRole('link', { name: /^Share to Facebook$/i });
-    cy.findByRole('link', { name: /^Share Post$/i });
-    cy.findByRole('link', { name: /^Report Abuse$/i });
+    // There is a report abuse link a the bottom of the post too
+    cy.findAllByRole('link', { name: /^Report Abuse$/i }).should(
+      'have.length',
+      2,
+    );
   });
 });
