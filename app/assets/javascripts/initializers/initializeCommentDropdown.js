@@ -86,7 +86,7 @@ function initializeCommentDropdown() {
     }
   }
 
-  function initializeDropDownClick(commentsContainer) {
+  function initializeDropDownClick(dropdown) {
     return (event) => {
       const { target } = event;
       const button = (function getButton(potentialButton) {
