@@ -1,4 +1,4 @@
-<nav class="hidden m:block pt-4">
+<nav class="hidden m:block pt-4" aria-label="Notifications">
   <div>
     <% if @organizations.present? %>
       <h3 class="crayons-subtitle-3 mb-4 pl-2"><%= @user.name %></h3>
@@ -28,7 +28,7 @@
   <% end %>
 </nav>
 
-<nav class="block m:hidden px-4">
+<nav class="block m:hidden px-4" aria-label="Notifications">
   <% if @organizations.present? %>
     <select id="notifications-filter__select" class="crayons-select mb-2">
       <option value="/notifications"><%= @user.name %></option>
@@ -39,15 +39,23 @@
   <% end %>
 
   <div class="crayons-tabs <%= "hidden" if params[:org_id].present? %>">
-    <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].blank? %>" href="/notifications">
-      All
-    </a>
-    <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">
-      Comments
-    </a>
-    <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
-      Posts
-    </a>
+    <ul class="crayons-tabs__list">
+      <li>
+        <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].blank? %>" href="/notifications" aria-current="<%= "page" if params[:filter].blank? %>">
+          All
+        </a>
+      </li>
+      <li>
+        <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments" aria-current="<%= "page" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>">
+          Comments
+        </a>
+      </li>
+      <li>
+        <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts" aria-current="<%= "page" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>">
+          Posts
+        </a>
+      </li>
+    </ul>
   </div>
   <% if @organizations.present? %>
     <% @organizations.each do |org| %>

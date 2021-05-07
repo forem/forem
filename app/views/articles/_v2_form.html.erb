@@ -57,9 +57,16 @@
         <% end %>
       </div>
 
-      <div class="crayons-article-form__tabs crayons-tabs ml-auto">
-        <button class="crayons-tabs__item crayons-tabs__item--current" type="button">Edit</button><button class="crayons-tabs__item " type="button">Preview</button>
-      </div>
+      <nav class="crayons-article-form__tabs crayons-tabs ml-auto" aria-label="View post modes">
+        <ul class="crayons-tabs__list">
+          <li>
+            <button class="crayons-tabs__item crayons-tabs__item--current" type="button" aria-current="page">Edit</button>
+          </li>
+          <li>
+            <button class="crayons-tabs__item " type="button">Preview</button>
+          </li>
+        </ul>
+      </nav>
 
       <div class="crayons-article-form__close">
         <a href="/" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon" title="Close the editor">
