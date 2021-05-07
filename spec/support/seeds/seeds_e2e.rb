@@ -44,6 +44,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
 
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
+  user.add_role(:trusted)
 end
 
 ##############################################################################
@@ -196,6 +197,21 @@ seeder.create_if_none(Listing) do
     bumped_at: Time.current,
     tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
   )
+end
+
+##############################################################################
+
+moderator = User.where(email: "admin@forem.local").first
+
+seeder.create_if_none(Tag) do
+  tag = Tag.create!(
+    name: "tag1",
+    bg_color_hex: Faker::Color.hex_color,
+    text_color_hex: Faker::Color.hex_color,
+    supported: true,
+  )
+
+  moderator.add_role(:tag_moderator, tag)
 end
 
 ##############################################################################
