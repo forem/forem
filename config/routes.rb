@@ -390,14 +390,12 @@ Rails.application.routes.draw do
     get "/feed/:username", to: "articles#feed", as: "user_feed", defaults: { format: "rss" }
     get "/rss", to: "articles#feed", defaults: { format: "rss" }
 
-    namespace :stories do
-      get "/tag/:tag", to: "tagged_articles#index"
-      get "/t/:tag", to: "tagged_articles#index", as: :tag
-      get "/t/:tag/top/:timeframe", to: "tagged_articles#index"
-      get "/t/:tag/page/:page", to: "tagged_articles#index"
-      get "/t/:tag/:timeframe", to: "tagged_articles#index",
-                                constraints: { timeframe: /latest/ }
-    end
+    get "/tag/:tag", to: "stories/tagged_articles#index"
+    get "/t/:tag", to: "stories/tagged_articles#index", as: :tag
+    get "/t/:tag/top/:timeframe", to: "stories/tagged_articles#index"
+    get "/t/:tag/page/:page", to: "stories/tagged_articles#index"
+    get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
+                              constraints: { timeframe: /latest/ }
 
     get "/t/:tag/edit", to: "tags#edit"
     get "/t/:tag/admin", to: "tags#admin"
