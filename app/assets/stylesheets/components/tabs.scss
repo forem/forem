@@ -19,6 +19,16 @@
     white-space: nowrap;
   }
 
+  &__list {
+    list-style: none;
+    display: flex;
+    width: 100%;
+
+    li {
+      width: 100%;
+    }
+  }
+
   &__item {
     padding: var(--tab-vertical-padding) var(--tab-horizontal-padding);
     display: inline-block;
@@ -107,6 +117,12 @@
 
   &--wrapped {
     flex-wrap: wrap;
+
+    .crayons-tabs__list {
+      li {
+        width: auto;
+      }
+    }
 
     .crayons-tabs__item {
       margin: var(--su-1);

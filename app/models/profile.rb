@@ -17,23 +17,6 @@ class Profile < ApplicationRecord
     location
   ].freeze
 
-  SPECIAL_SOCIAL_LINK_ATTRIBUTES = %w[
-    twitter_url
-    github_url
-    facebook_url
-    linkedin_url
-    youtube_url
-    instagram_url
-    behance_url
-    medium_url
-    stackoverflow_url
-    gitlab_url
-    twitch_url
-    mastodon_url
-    website_url
-    dribbble_url
-  ].freeze
-
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
   MAPPED_ATTRIBUTES = {
@@ -41,10 +24,7 @@ class Profile < ApplicationRecord
     brand_color2: :text_color_hex,
     display_email_on_profile: :email_public,
     education: :education,
-    git_lab_url: :gitlab_url,
-    linked_in_url: :linkedin_url,
-    skills_languages: :mostly_work_with,
-    stack_overflow_url: :stackoverflow_url
+    skills_languages: :mostly_work_with
   }.with_indifferent_access.freeze
 
   # Generates typed accessors for all currently defined profile fields.
@@ -67,11 +47,7 @@ class Profile < ApplicationRecord
   end
 
   def self.special_attributes
-    SPECIAL_DISPLAY_ATTRIBUTES + SPECIAL_SOCIAL_LINK_ATTRIBUTES
-  end
-
-  def self.special_social_link_attributes
-    SPECIAL_SOCIAL_LINK_ATTRIBUTES.freeze
+    SPECIAL_DISPLAY_ATTRIBUTES
   end
 
   def custom_profile_attributes

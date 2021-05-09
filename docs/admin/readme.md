@@ -22,7 +22,7 @@ Rolify by assigning the role `single_resource_admin` to a user.
 `single_resource_admin` users are given access to a Ruby class. In the codebase,
 there are admin models, not backed by database tables, that exist for this
 purpose. For example, if you needed to give a user access to only
-`/admin/welcome`, you'd run the following command in the Rails console:
+`/admin/apps/welcome`, you'd run the following command in the Rails console:
 
 ```ruby
 user = User.find(some_user_id)

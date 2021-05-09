@@ -30,7 +30,6 @@ class Organization < ApplicationRecord
   # This callback will eventually invoke Article.update_cached_user to update the organization.name
   # only when it has been changed, thus invoking the trigger on Article.reading_list_document
   after_update_commit :update_articles_cached_organization
-  after_update_commit :sync_related_elasticsearch_docs
   after_destroy_commit :bust_cache, :article_sync
 
   has_many :articles, dependent: :nullify
@@ -171,10 +170,6 @@ class Organization < ApplicationRecord
     )
 
     errors.add(:slug, "is taken.") if slug_taken
-  end
-
-  def sync_related_elasticsearch_docs
-    DataSync::Elasticsearch::Organization.new(self).call
   end
 
   def article_sync

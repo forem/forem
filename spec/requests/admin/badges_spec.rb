@@ -39,6 +39,7 @@ RSpec.describe "/admin/content_manager/badge_achievements", type: :request do
       expect do
         patch admin_badge_path(badge.id), params: params
       end.to change { badge.reload.title }.to("Hello, world!")
+      expect(badge.slug).to eq(CGI.escape(badge.title).parameterize)
     end
 
     it "successfully updates badge's credits_awarded" do

@@ -68,7 +68,7 @@ Rpush.reflect do |on|
     if notification.error_description == "BadDeviceToken"
       # When adding new platforms we'll need to check to only clear out devices
       # scoped to that specific platform. i.e. notification.class.to_s =~ /Apns.+::Notification/
-      Device.where(token: notification.device_token, platform: "iOS").destroy_all
+      Device.ios.where(token: notification.device_token).destroy_all
     end
 
     HoneyBadger.notify(error_message:

@@ -267,10 +267,11 @@ function handleCommentSubmit(event) {
               input.value = newComment.comment_template || "";
             });
 
-            var preview = document.getElementById("preview-div");
-            preview.classList.add("preview-toggle");
+            const preview = document.getElementById("preview-div");
+            const togglePreview = document.querySelector('.preview-toggle');
             preview.innerHTML = "";
-            var container = document.getElementById("comment-trees-container");
+            togglePreview.innerHTML = "Preview";
+            const container = document.getElementById("comment-trees-container");
             container.insertBefore(newNode, container.firstChild);
           }
           else if (document.getElementById("notifications-container")) {
@@ -556,9 +557,16 @@ function listenForDetailsToggle() {
   }
 }
 
+/**
+ * Increment comment, stored in `.js-comments-count`, count by one.
+ */
 function updateCommentsCount() {
-  var commentsCountDiv = document.getElementsByClassName("js-comments-count")[0];
-  var commentsCountData = parseInt(commentsCountDiv.dataset.commentsCount) + 1;
+  const commentsCountDiv = document.querySelector(".js-comments-count");
+
+  // if there's nowhere to put the count return early.
+  if(!commentsCountDiv) return;
+
+  const commentsCountData = parseInt(commentsCountDiv.dataset.commentsCount, 10) + 1;
   commentsCountDiv.dataset.commentsCount = commentsCountData;
   commentsCountDiv.innerHTML = `(${commentsCountData})`
 }

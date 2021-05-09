@@ -18,7 +18,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'prefer-const': ['error'],
-    'no-only-tests/no-only-tests': 'error',
+    'no-only-tests/no-only-tests': ['error', { fix: true }],
   },
   overrides: [
     {

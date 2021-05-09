@@ -1,45 +1,15 @@
 module Search
-  class Tag < Base
-    INDEX_NAME = "tags_#{Rails.env}".freeze
-    INDEX_ALIAS = "tags_#{Rails.env}_alias".freeze
-    MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/tags.json"), symbolize_names: true).freeze
+  class Tag
+    ATTRIBUTES = %i[id name hotness_score rules_html supported short_summary].freeze
 
-    class << self
-      def search_documents(query_string)
-        results = search(body: query(query_string))
-        results.dig("hits", "hits").map { |tag_doc| tag_doc["_source"] }
-      end
-
-      private
-
-      def query(query_string)
-        {
-          query: {
-            query_string: {
-              query: query_string,
-              analyze_wildcard: true,
-              allow_leading_wildcard: false
-            }
-          },
-          sort: {
-            hotness_score: "desc"
-          }
-        }
-      end
-
-      def index_settings
-        if Rails.env.production?
-          {
-            number_of_shards: 1,
-            number_of_replicas: 1
-          }
-        else
-          {
-            number_of_shards: 1,
-            number_of_replicas: 0
-          }
-        end
-      end
+    def self.search_documents(term)
+      results = ::Tag.search_by_name(term).where(supported: true).reorder(hotness_score: :desc).select(*ATTRIBUTES)
+      serialize(results)
     end
+
+    def self.serialize(results)
+      Search::TagSerializer.new(results, is_collection: true).serializable_hash[:data].pluck(:attributes)
+    end
+    private_class_method :serialize
   end
 end
