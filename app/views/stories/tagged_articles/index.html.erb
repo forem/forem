@@ -1,5 +1,5 @@
 <%= content_for :page_meta do %>
-  <%= render "articles/tags/meta" %>
+  <%= render "stories/tagged_articles/meta" %>
 <% end %>
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
 <% flag = true %>
@@ -42,7 +42,7 @@
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-requires-approval="<%= @tag_model.requires_approval %>"
       data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
-    <%= render "articles/tags/sidebar" %>
+    <%= render "stories/tagged_articles/sidebar" %>
     <main class="articles-list" id="main-content">
       <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden" id="on-page-nav-butt-left" aria-label="nav-button-left">
@@ -99,17 +99,17 @@
       </header>
 
       <div class="substories" id="substories">
-        <%# articles/tags/main_feed will iterate on stories with .each_with_index,
+        <%# stories/tagged_articles/main_feed will iterate on stories with .each_with_index,
             thus by using .present? here we preload the items %>
         <% if @stories.present? %>
-          <%= render "articles/tags/main_feed" %>
+          <%= render "stories/tagged_articles/main_feed" %>
         <% end %>
       </div>
       <div class="loading-articles" id="loading-articles">
         loading...
       </div>
     </main>
-    <%= render "articles/tags/sidebar_additional" %>
+    <%= render "stories/tagged_articles/sidebar_additional" %>
   </div>
 
   <%= render "stories/stories_list_script" %>
