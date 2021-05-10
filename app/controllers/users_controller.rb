@@ -20,7 +20,7 @@ class UsersController < ApplicationController
       when "follow_suggestions"
         determine_follow_suggestions(current_user)
       when "sidebar_suggestions"
-        Suggester::Users::Sidebar.new(current_user, params[:tag]).suggest.sample(3)
+        Users::SuggestForSidebar.call(current_user, params[:tag]).suggest.sample(3)
       else
         User.none
       end
