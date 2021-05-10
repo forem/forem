@@ -19,6 +19,18 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       expect(num_articles).to eq(21)
     end
 
+    it "subscribes the article author to comments", vcr: { cassette_name: "feeds_import" } do
+      described_class.call
+      article = Article.where(published_from_feed: true).first
+
+      comment_subscription = article.notification_subscriptions.where(user_id: article.user_id, config: "all_comments")
+      expect(comment_subscription).to be_present
+
+      comment_subscription_count = NotificationSubscription.where(notifiable_type: "Article",
+                                                                  config: "all_comments").count
+      expect(comment_subscription_count).to eq(21)
+    end
+
     it "does not recreate articles if they already exist", vcr: { cassette_name: "feeds_import_twice" } do
       described_class.call
 
@@ -48,6 +60,15 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
     end
 
     context "when handling errors", vcr: { cassette_name: "feeds_import" } do
+      it "reports an notification subscription creation error" do
+        allow(NotificationSubscription).to receive(:create!).and_raise(StandardError)
+        allow(Rails.logger).to receive(:error)
+
+        described_class.call
+
+        expect(Rails.logger).to have_received(:error).at_least(:once)
+      end
+
       it "reports an article creation error" do
         allow(Article).to receive(:create!).and_raise(StandardError)
         allow(Rails.logger).to receive(:error)
