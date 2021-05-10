@@ -27,11 +27,11 @@ module Notifications
         notifications_attributes = []
 
         # If a user was mentioned in the article, they will have already received a mention.
-        # We exclude them from the article_followers array if they already have a mention
-        # for this article in order to avoid sending a user multiple notifications for one article.
-        article_followers = notifiable.followers.reject do |f|
+        # We explicitly need to exclude them from the article_followers array if they already
+        # have a mention in order to avoid sending a user multiple notifications for one article.
+        article_followers = notifiable.followers.reject do |follower|
           users_with_mentions_on_article = notifiable.mentions&.pluck(:user_id)
-          users_with_mentions_on_article.include?(f.id)
+          users_with_mentions_on_article.include?(follower.id)
         end
 
         article_followers.sort_by(&:updated_at).last(10_000).reverse_each do |follower|
