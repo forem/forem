@@ -1452,7 +1452,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.boolean "welcome_notifications", default: true, null: false
-    t.index ["user_id"], name: "index_users_notification_settings_on_user_id"
+    t.index ["user_id"], name: "index_users_notification_settings_on_user_id", unique: true
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
@@ -1481,7 +1481,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_users_settings_on_user_id"
+    t.index ["user_id"], name: "index_users_settings_on_user_id", unique: true
   end
 
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|

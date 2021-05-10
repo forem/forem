@@ -96,6 +96,45 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
+  # Relevant Fields for migration from Users table to Users_Settings and Users_Notification_Settings tables
+  RELEVANT_USERS_TABLE_FIELDS_FOR_MIGRATION = %w[
+    config_font
+    config_navbar
+    config_theme
+    display_announcements
+    display_sponsors
+    editor_version
+    email_badge_notifications
+    email_comment_notifications
+    email_community_mod_newsletter
+    email_connect_messages
+    email_digest_periodic
+    email_follower_notifications
+    email_mention_notifications
+    email_newsletter
+    email_tag_mod_newsletter
+    email_unread_notifications
+    experience_level
+    feed_mark_canonical
+    feed_referential_link
+    feed_url
+    inbox_guidelines
+    inbox_type
+    mobile_comment_notifications
+    mod_roundrobin_notifications
+    permit_adjacent_sponsors
+    reaction_notifications
+    id
+    welcome_notifications
+  ].freeze
+
+  # Relevant Fields for migration from Profiles table to Users_Settings and Users_Notification_Settings tables
+  RELEVANT_PROFILES_TABLE_FIELDS_FOR_MIGRATION = %w[
+    brand_color1
+    brand_color2
+    display_email_on_profile
+  ].freeze
+
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password
@@ -302,8 +341,9 @@ class User < ApplicationRecord
   after_save { |user| user.profile&.save if user.profile&.changed? }
   after_save :subscribe_to_mailchimp_newsletter
 
-  after_create_commit :send_welcome_notification
-  after_commit :bust_cache
+  # NOTE: @msarit I'm invoking sync_users_settings_table after both User create and User update
+  after_create_commit :send_welcome_notification, :sync_users_settings_table
+  after_commit :bust_cache, :sync_users_settings_table
 
   def self.dev_account
     find_by(id: Settings::Community.staff_user_id)
@@ -574,6 +614,27 @@ class User < ApplicationRecord
   end
 
   private
+
+  # In this method, I first check that a Users::Setting record exists for the user
+  # If it does, then I update the Users::Setting fields by looping through the constant
+  # However, while updating the 'config_font' field for Users::Setting, I am getting
+  # the error: "ArgumentError: 'default' is not a valid config_navbar"
+  # Upon checking the codebase and the data-update scripts PR, I see that we defined
+  # an enum for 'default_navbar' and 'static_navbar'. However, in the User table,
+  # config_font is defined as 'default' and 'static'.
+  # So I wonder if I made gross mistakes in the DUS PR 😔
+  def sync_users_settings_table
+    users_setting = Users::Setting.find_by(user_id: id)
+    if users_setting
+      RELEVANT_USERS_TABLE_FIELDS_FOR_MIGRATION.each do |field|
+        users_setting.update(field => __send__(field))
+      end
+    else
+      # create a Users::Setting record for the user and then update the record's
+      # fields with the user's information
+      Users::Setting.create
+    end
+  end
 
   def send_welcome_notification
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
