@@ -1,5 +1,4 @@
 {
   "screenshotsFolder": "tmp/cypress_screenshots",
-  "trashAssetsBeforeRuns": false,
-  "video": true
+  "trashAssetsBeforeRuns": false
 }
