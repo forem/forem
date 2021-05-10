@@ -61,9 +61,9 @@ describe('Authentication Section', () => {
 
           cy.visit('/signout_confirm');
 
-          // cy.intercept('/').as('homepage');
+          cy.intercept('/users/sign_out').as('signout');
           cy.findByRole('button', { name: 'Yes, sign out' }).click();
-          // cy.wait('@homepage');
+          cy.wait('@signout');
           cy.findByRole('link', { name: 'Create account' }).click();
 
           cy.findByLabelText('Sign up with Email').should('not.exist');
