@@ -71,9 +71,9 @@ module Mentions
       mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id,
                                mentionable_type: @notifiable.class.name)
 
-      # If notifiable is an Article, we need to create the mention and associated notification immediately so
-      # that we have it in the database before kicking off any workers that send other Article-related notifications.
-      # However, if notifiable is a Comment, we can create the mention notification inline.
+      # If notifiable is an Article, we need to create the notification for the mention immediately so
+      # that the notification exists in the database before we attempt to create other Article-related notifications.
+      # However, if notifiable is a Comment, we can create the notification for the mention in the background.
       Notification.send_mention_notification_without_delay(mention) if notifiable.is_a?(Article)
       Notification.send_mention_notification(mention) if notifiable.is_a?(Comment)
 

@@ -33,8 +33,8 @@ module Articles
           # and then send notifications to any users who follow the article's author so as to avoid double mentions.
           Notification.send_to_mentioned_users_and_followers(article)
         elsif article.published
-          # If the article has already been published and is just being updated, then we only need to
-          # create mentions and send notifications to mentioned users inline.
+          # If the article has already been published and is only being updated, then we need to create
+          # mentions and send notifications to mentioned users inline via the Mentions::CreateAll service.
           Mentions::CreateAll.call(article)
         end
 
