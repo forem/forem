@@ -40,10 +40,6 @@ class Notification < ApplicationRecord
       Notifications::NewFollowerWorker.new.perform(follow_data, is_read)
     end
 
-    def send_to_followers(notifiable, action = nil)
-      Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.class.name, action)
-    end
-
     def send_to_mentioned_users_and_followers(notifiable, _action = nil)
       return unless notifiable.is_a?(Article) && notifiable.published?
 
@@ -55,6 +51,10 @@ class Notification < ApplicationRecord
 
       # Kicks off a worker to send any notifications about the post being published, if necessary.
       Notification.send_to_followers(notifiable, "Published")
+    end
+
+    def send_to_followers(notifiable, action = nil)
+      Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
     def send_new_comment_notifications_without_delay(comment)

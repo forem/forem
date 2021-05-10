@@ -21,7 +21,7 @@ module Articles
                                         config: "all_comments")
 
         # Send notifications to any mentioned users, followed by any users who follow the article's author.
-        Notification.send_to_mentioned_users_and_followers(article, "Published") if article.published?
+        Notification.send_to_mentioned_users_and_followers(article) if article.published?
         dispatch_event(article)
       end
 

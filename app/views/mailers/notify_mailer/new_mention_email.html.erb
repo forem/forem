@@ -9,7 +9,7 @@
 </head>
 
 <h2 style="font-size:25px;">
-  <a href="<%= user_url(@mentioner) %>"><%= @mentioner.name %></a> just mentioned you in their <%= @mentionable_type %>!
+  <a href="<%= user_url(@mentioner) %>"><%= @mentioner.name %></a> just mentioned you in their <%= @mentionable_type %>
 </h2>
 
 <% if @mentionable.is_a?(Comment) %>
