@@ -582,7 +582,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    recaptcha (5.7.0)
+    recaptcha (5.8.0)
       json
     redcarpet (3.5.1)
     redis (4.2.5)
@@ -940,7 +940,7 @@ DEPENDENCIES
   rails (~> 6.1.3.2)
   rails-settings-cached (= 2.5.2)
   ransack (~> 2.4)
-  recaptcha (~> 5.7)
+  recaptcha (~> 5.8)
   redcarpet (~> 3.5)
   redis (~> 4.2.5)
   redis-actionpack (= 5.1.0)
