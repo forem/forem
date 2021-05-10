@@ -884,7 +884,7 @@ DEPENDENCIES
   fastly (~> 3.0)
   feedjira (~> 3.1)
   field_test (~> 0.4)
-  flipper (= 0.21.0)
+  flipper (~> 0.21.0)
   flipper-active_record (~> 0.21.0)
   flipper-ui (~> 0.21.0)
   fog-aws (~> 3.10)
