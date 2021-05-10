@@ -117,7 +117,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-webpack": "^0.13.0",
     "eslint-plugin-babel": "^5.3.1",
-    "eslint-plugin-cypress": "^2.11.2",
+    "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.3.1",
