@@ -53,15 +53,27 @@
         <% if user_signed_in? %>
           <div class="flex-1 flex items-center justify-between">
             <h2 class="crayons-subtitle-2">Posts</h2>
-            <nav class="crayons-tabs hidden s:flex">
-              <a href="<%= list_path %>/" class="crayons-tabs__item <%= "crayons-tabs__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>">Feed</a>
-
-              <a href="<%= list_path %>/top/week" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("week") %>">Week</a>
-              <a href="<%= list_path %>/top/month" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("month") %>">Month</a>
-              <a href="<%= list_path %>/top/year" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("year") %>">Year</a>
-              <a href="<%= list_path %>/top/infinity" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("infinity") %>">Infinity</a>
-
-              <a href="<%= list_path %>/latest" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("latest") %>">Latest</a>
+            <nav class="crayons-tabs hidden s:flex" aria-label="View tagged posts by">
+              <ul class="crayons-tabs__list">
+                <li>
+                  <a href="<%= list_path %>/" class="crayons-tabs__item <%= "crayons-tabs__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>" aria-current="<%= "page" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>">Feed</a>
+                </li>
+                <li>
+                  <a href="<%= list_path %>/top/week" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("week") %>" aria-current="<%= "page" if timeframe_check("week") %>">Week</a>
+                </li>
+                <li>
+                  <a href="<%= list_path %>/top/month" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("month") %>" aria-current="<%= "page" if timeframe_check("month") %>">Month</a>
+                </li>
+                <li>
+                  <a href="<%= list_path %>/top/year" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("year") %>" aria-current="<%= "page" if timeframe_check("year") %>">Year</a>
+                </li>
+                <li>
+                  <a href="<%= list_path %>/top/infinity" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("infinity") %>" aria-current="<%= "page" if timeframe_check("infinity") %>">Infinity</a>
+                </li>
+                <li>
+                  <a href="<%= list_path %>/latest" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("latest") %>" aria-current="<%= "page" if timeframe_check("latest") %>">Latest</a>
+                </li>
+              </ul>
             </nav>
 
             <select class="crayons-select s:hidden ml-2 s:ml-auto w-auto" id="feed-filter-select" aria-label="feed-filter-select">
