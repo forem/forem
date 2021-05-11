@@ -20,7 +20,7 @@ class UsersController < ApplicationController
       when "follow_suggestions"
         determine_follow_suggestions(current_user)
       when "sidebar_suggestions"
-        Suggester::Users::Sidebar.new(current_user, params[:tag]).suggest.sample(3)
+        Users::SuggestForSidebar.call(current_user, params[:tag]).sample(3)
       else
         User.none
       end
@@ -306,10 +306,10 @@ class UsersController < ApplicationController
   def determine_follow_suggestions(current_user)
     return default_suggested_users if SiteConfig.prefer_manual_suggested_users? && default_suggested_users
 
-    recent_suggestions = Suggester::Users::Recent.new(
+    recent_suggestions = Users::SuggestRecent.call(
       current_user,
       attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
-    ).suggest
+    )
 
     recent_suggestions.presence || default_suggested_users
   end
