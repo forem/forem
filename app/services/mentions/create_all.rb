@@ -1,4 +1,7 @@
 module Mentions
+  # This class creates mentions + associated notifications for Articles and Comments.
+  # This class will check to see if there are any @-mentions in the post, and will
+  # create the associated mentions inline if necessary.
   class CreateAll
     def initialize(notifiable)
       @notifiable = notifiable
@@ -9,7 +12,6 @@ module Mentions
     end
 
     def call
-      # Creates mentions + associated notifications for Articles and Comments.
       mentioned_users = users_mentioned_in_text_excluding_author
 
       delete_mentions_removed_from_notifiable_text(mentioned_users)
@@ -77,8 +79,12 @@ module Mentions
       # If notifiable is an Article, we need to create the notification for the mention immediately so
       # that the notification exists in the database before we attempt to create other Article-related notifications.
       # However, if notifiable is a Comment, we can create the notification for the mention in the background.
-      Notification.send_mention_notification_without_delay(mention) if notifiable.is_a?(Article)
-      Notification.send_mention_notification(mention) if notifiable.is_a?(Comment)
+      case notifiable
+      when Article
+        Notification.send_mention_notification_without_delay(mention)
+      when Comment
+        Notification.send_mention_notification(mention)
+      end
 
       mention
     end

@@ -100,8 +100,7 @@ RSpec.describe Mentions::CreateAll, type: :service do
   let(:mention_markdown)   { "Hello @#{user.username}, you are cool." }
 
   def set_markdown_and_save(notifiable, markdown)
-    notifiable.body_markdown = markdown
-    notifiable.save
+    notifiable.update(body_markdown: markdown)
   end
 
   it_behaves_like "valid notifiable and no mentions" do
