@@ -29,6 +29,10 @@ module.exports = function (api) {
           exclude: ['transform-regenerator'],
           bugfixes: true,
           forceAllTransforms: true,
+          assumptions: {
+            privateFieldsAsProperties: true,
+            setPublicClassFields: true,
+          },
         },
         'preact',
       ],
@@ -55,10 +59,6 @@ module.exports = function (api) {
         {
           pragma: 'h',
         },
-      ],
-      [
-        '@babel/plugin-proposal-private-private-property-in-object',
-        { loose: true },
       ],
     ].filter(Boolean),
   };
