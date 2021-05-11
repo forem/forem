@@ -341,9 +341,10 @@ class User < ApplicationRecord
   after_save { |user| user.profile&.save if user.profile&.changed? }
   after_save :subscribe_to_mailchimp_newsletter
 
-  # NOTE: @msarit I'm invoking sync_users_settings_table after both User create and User update
-  after_create_commit :send_welcome_notification, :sync_users_settings_table
-  after_commit :bust_cache, :sync_users_settings_table
+  after_create_commit :send_welcome_notification
+
+  after_commit :bust_cache
+  after_commit :sync_users_settings_table
 
   def self.dev_account
     find_by(id: Settings::Community.staff_user_id)
@@ -615,24 +616,38 @@ class User < ApplicationRecord
 
   private
 
-  # In this method, I first check that a Users::Setting record exists for the user
-  # If it does, then I update the Users::Setting fields by looping through the constant
-  # However, while updating the 'config_font' field for Users::Setting, I am getting
-  # the error: "ArgumentError: 'default' is not a valid config_navbar"
-  # Upon checking the codebase and the data-update scripts PR, I see that we defined
-  # an enum for 'default_navbar' and 'static_navbar'. However, in the User table,
-  # config_font is defined as 'default' and 'static'.
-  # So I wonder if I made gross mistakes in the DUS PR 😔
   def sync_users_settings_table
     users_setting = Users::Setting.find_by(user_id: id)
     if users_setting
       RELEVANT_USERS_TABLE_FIELDS_FOR_MIGRATION.each do |field|
-        users_setting.update(field => __send__(field))
+        case field
+        when "config_navbar"
+          config_navbar_enums = {
+            default: 0,
+            static: 1
+          }
+
+          users_setting.update(field => config_navbar_enums[__send__(field).to_sym])
+        when "config_theme"
+          config_theme_enums = {
+            default: 0,
+            minimal_light_theme: 1,
+            night_theme: 2,
+            pink_theme: 3,
+            ten_x_hacker_theme: 4
+          }
+
+          users_setting.update(field => config_theme_enums[__send__(field).to_sym])
+          # puts "\n\nUsersSetting value: #{users_setting.inspect}\n\n"
+        else
+          users_setting.update(field => __send__(field))
+        end
       end
     else
+      # puts "\n\nNo Users::Setting record found\n\n"
       # create a Users::Setting record for the user and then update the record's
       # fields with the user's information
-      Users::Setting.create
+      # Users::Setting.create
     end
   end
 
