@@ -20,7 +20,6 @@
       </header>
 
       <%= render "notifications/shared/article_preview", json_data: json_data, notification: notification, context: "default" %>
-    </div>
     <% elsif notification.json_data["comment"] %>
       <h2 class="fs-base fw-normal mb-4">
         <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold"><%= json_data["user"]["name"] %></a> mentioned you in a comment

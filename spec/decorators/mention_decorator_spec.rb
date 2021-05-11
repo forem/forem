@@ -25,11 +25,11 @@ RSpec.describe MentionDecorator, type: :decorator do
     it "returns true if mentioned user has blocked the mentioner" do
       create(:user_block, blocker: user, blocked: blocked_user, config: "default")
 
-      expect(mention.decorate.mentioned_by_blocked_user?).to eq(true)
+      expect(mention.decorate.mentioned_by_blocked_user?).to be(true)
     end
 
     it "returns false if mentioned user has not blocked the mentioner" do
-      expect(mention.decorate.mentioned_by_blocked_user?).to eq(false)
+      expect(mention.decorate.mentioned_by_blocked_user?).to be(false)
     end
   end
 end

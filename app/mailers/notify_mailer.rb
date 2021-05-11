@@ -35,7 +35,7 @@ class NotifyMailer < ApplicationMailer
 
     @mentioner = User.find(@mention.mentionable.user_id)
     @mentionable = @mention.mentionable
-    @mentionable_type = MentionDecorator.new(@mention).formatted_mentionable_type
+    @mentionable_type = @mention.decorate.formatted_mentionable_type
 
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_mention_notifications)
 
