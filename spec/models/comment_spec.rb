@@ -457,9 +457,18 @@ RSpec.describe Comment, type: :model do
   end
 
   context "when callbacks are triggered before save" do
-    it "generates character count before saving" do
-      comment.save
-      expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
+    context "when the post is present" do
+      it "generates character count before saving" do
+        comment.save
+        expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
+      end
+    end
+
+    context "when the post is not present" do
+      it "raise an error post is not available" do
+        comment = build(:comment, user: user, commentable: nil)
+        expect { comment.save }.to raise_error("The post has been deleted by the owner")
+      end
     end
   end
 
