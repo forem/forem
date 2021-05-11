@@ -32,7 +32,7 @@ class RegistrationsController < Devise::RegistrationsController
       if resource.persisted?
         update_first_user_permissions(resource)
         if SiteConfig.smtp_enabled?
-          redirect_to "/confirm-email?email=#{CGI.escape(resource.email)}"
+          redirect_to confirm_email_path(email: resource.email)
         else
           redirect_to root_path
         end
