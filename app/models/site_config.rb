@@ -230,6 +230,6 @@ class SiteConfig < RailsSettings::Base
   end
 
   def self.smtp_enabled?
-    ENV["SMTP_PASSWORD"].present? || ENV["SENDGRID_API_KEY"].present?
+    Rails.configuration.action_mailer.perform_deliveries
   end
 end
