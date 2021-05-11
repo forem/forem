@@ -9,7 +9,7 @@ RSpec.shared_examples "mentionable" do
     end.to change(Notification, :count).by(1)
   end
 
-  it "creates a correct mention notification" do
+  it "creates a correct mention notification", :aggregate_failures do
     notification = described_class.call(mention)
     mentionable_type = mentionable.class.to_s.downcase
     expect(notification.user_id).to eq(user.id)

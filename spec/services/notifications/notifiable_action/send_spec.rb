@@ -20,7 +20,7 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       end.to change(Notification, :count).by(2)
     end
 
-    it "creates a correct user notification" do
+    it "creates a correct user notification", :aggregate_failures do
       described_class.call(article, "Published")
       notifications = Notification.where(user_id: user2.id, notifiable_id: article.id, notifiable_type: "Article")
       expect(notifications.size).to eq(1)
@@ -31,7 +31,7 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       expect(notification.json_data["user"]["username"]).to eq(user.username)
     end
 
-    it "creates a correct organization notification" do
+    it "creates a correct organization notification", :aggregate_failures do
       described_class.call(article, "Published")
       notifications = Notification.where(user_id: user3.id, notifiable_id: article.id, notifiable_type: "Article")
       expect(notifications.size).to eq(1)

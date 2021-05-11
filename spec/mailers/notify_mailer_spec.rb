@@ -52,12 +52,12 @@ RSpec.describe NotifyMailer, type: :mailer do
       let(:comment_mention) { create(:mention, user: user2, mentionable: comment) }
       let(:email) { described_class.with(mention: comment_mention).new_mention_email }
 
-      it "renders proper subject and receiver" do
+      it "renders proper subject and receiver", :aggregate_failures do
         expect(email.subject).to eq("#{comment.user.name} just mentioned you in their comment")
         expect(email.to).to eq([user2.email])
       end
 
-      it "renders proper sender" do
+      it "renders proper sender", :aggregate_failures  do
         expect(email.from).to eq([SiteConfig.email_addresses[:default]])
         expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
         expect(email["from"].value).to eq(expected_from)
@@ -68,12 +68,12 @@ RSpec.describe NotifyMailer, type: :mailer do
       let(:article_mention) { create(:mention, user: user2, mentionable: article) }
       let(:email) { described_class.with(mention: article_mention).new_mention_email }
 
-      it "renders proper subject and receiver" do
+      it "renders proper subject and receiver", :aggregate_failures  do
         expect(email.subject).to eq("#{article.user.name} just mentioned you in their post")
         expect(email.to).to eq([user2.email])
       end
 
-      it "renders proper sender" do
+      it "renders proper sender", :aggregate_failures  do
         expect(email.from).to eq([SiteConfig.email_addresses[:default]])
         expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
         expect(email["from"].value).to eq(expected_from)

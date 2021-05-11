@@ -7,7 +7,7 @@ RSpec.shared_examples "valid notifiable and no mentions" do
     expect(Mention.all.size).to eq(0)
   end
 
-  it "creates a mention if notifiable is updated to include mention" do
+  it "creates a mention if notifiable is updated to include mention", :aggregate_failures do
     set_markdown_and_save(notifiable, markdown)
     described_class.call(notifiable)
     expect(Mention.all.size).to eq(0)
@@ -25,7 +25,7 @@ RSpec.shared_examples "valid notifiable and has mentions" do
     expect(Mention.all.size).to eq(1)
   end
 
-  it "deletes mention if deleted from notifiable" do
+  it "deletes mention if deleted from notifiable", :aggregate_failures do
     set_markdown_and_save(notifiable, mention_markdown)
     described_class.call(notifiable)
     expect(Mention.all.size).to eq(1)
@@ -49,7 +49,7 @@ RSpec.shared_examples "valid notifiable and has mentions" do
     expect(Mention.all.size).to eq(2)
   end
 
-  it "deletes one of multiple mentions if one of multiple is deleted" do
+  it "deletes one of multiple mentions if one of multiple is deleted", :aggregate_failures do
     user3 = create(:user)
 
     set_markdown_and_save(notifiable, "Hello @#{user.username} @#{user3.username}, you are cool.")

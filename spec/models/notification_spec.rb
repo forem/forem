@@ -401,7 +401,7 @@ RSpec.describe Notification, type: :model do
         user2.follow(user)
       end
 
-      it "sends a single notification to mentioned user" do
+      it "sends a single notification to mentioned user", :aggregate_failures do
         expect do
           sidekiq_perform_enqueued_jobs do
             described_class.send_to_mentioned_users_and_followers(article)
@@ -410,7 +410,7 @@ RSpec.describe Notification, type: :model do
         expect(user2.notifications.first.notifiable_type).to eq("Mention")
       end
 
-      it "sends a notification to the organization's followers (who were not mentioned)" do
+      it "sends a notification to the organization's followers (who were not mentioned)", :aggregate_failures do
         user3.follow(user)
 
         expect do
@@ -430,7 +430,7 @@ RSpec.describe Notification, type: :model do
         user2.follow(user)
       end
 
-      it "sends a single notification to mentioned user" do
+      it "sends a single notification to mentioned user", :aggregate_failures do
         expect do
           sidekiq_perform_enqueued_jobs do
             described_class.send_to_mentioned_users_and_followers(org_article)
@@ -439,7 +439,7 @@ RSpec.describe Notification, type: :model do
         expect(user2.notifications.first.notifiable_type).to eq("Mention")
       end
 
-      it "sends a notification to the organization's followers (who were not mentioned)" do
+      it "sends a notification to the organization's followers (who were not mentioned)", :aggregate_failures do
         user3.follow(organization)
 
         expect do
