@@ -178,7 +178,7 @@ class Article < ApplicationRecord
       .where(user_id: User.with_role(:super_admin)
                           .union(User.with_role(:admin))
                           .union(id: [Settings::Community.staff_user_id,
-                                      Settings::Mascot.mascot_user_id].compact)
+                                      SiteConfig.mascot_user_id].compact)
                           .select(:id)).order(published_at: :desc).tagged_with(tag_name)
   }
 
@@ -407,9 +407,9 @@ class Article < ApplicationRecord
   def readable_publish_date
     relevant_date = displayable_published_at
     if relevant_date && relevant_date.year == Time.current.year
-      relevant_date&.strftime("%b %e")
+      relevant_date&.strftime("%b %-e")
     else
-      relevant_date&.strftime("%b %e '%y")
+      relevant_date&.strftime("%b %-e '%y")
     end
   end
 
@@ -788,7 +788,7 @@ class Article < ApplicationRecord
     return unless SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
 
     Reaction.create(
-      user_id: Settings::Mascot.mascot_user_id,
+      user_id: SiteConfig.mascot_user_id,
       reactable_id: id,
       reactable_type: "Article",
       category: "vomit",
@@ -798,7 +798,7 @@ class Article < ApplicationRecord
 
     user.add_role(:suspended)
     Note.create(
-      author_id: Settings::Mascot.mascot_user_id,
+      author_id: SiteConfig.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
       reason: "automatic_suspend",

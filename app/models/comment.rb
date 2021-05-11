@@ -134,9 +134,9 @@ class Comment < ApplicationRecord
 
   def readable_publish_date
     if created_at.year == Time.current.year
-      created_at.strftime("%b %e")
+      created_at.strftime("%b %-e")
     else
-      created_at.strftime("%b %e '%y")
+      created_at.strftime("%b %-e '%y")
     end
   end
 
@@ -274,7 +274,7 @@ class Comment < ApplicationRecord
         user.registered_at > 5.days.ago
 
     Reaction.create(
-      user_id: Settings::Mascot.mascot_user_id,
+      user_id: SiteConfig.mascot_user_id,
       reactable_id: id,
       reactable_type: "Comment",
       category: "vomit",
@@ -284,7 +284,7 @@ class Comment < ApplicationRecord
 
     user.add_role(:suspended)
     Note.create(
-      author_id: Settings::Mascot.mascot_user_id,
+      author_id: SiteConfig.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
       reason: "automatic_suspend",

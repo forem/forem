@@ -14,10 +14,18 @@
     <div class="block s:flex items-center space-between">
       <h1 class="crayons-title">Search results</h1>
 
-      <nav id="sorting-option-tabs" class="crayons-tabs crayons-tabs--wrapped ml-auto">
-        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>">Most Relevant</a>
-        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
-        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
+      <nav id="sorting-option-tabs" class="crayons-tabs crayons-tabs--wrapped ml-auto" aria-label="Search result sort options">
+        <ul class="crayons-tabs__list">
+          <li>
+            <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>" aria-current="page">Most Relevant</a>
+          </li>
+          <li>
+            <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
+          </li>
+          <li>
+            <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
+          </li>
+        </ul>
       </nav>
     </div>
   </div>

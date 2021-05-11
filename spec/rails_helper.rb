@@ -10,6 +10,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
+require "fakeredis/rspec"
 require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
@@ -72,6 +73,7 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthHelpers
+  config.include RpushHelpers
   config.include SidekiqTestHelpers
 
   config.after(:each, type: :system) do
