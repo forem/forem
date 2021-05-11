@@ -5,7 +5,7 @@ class DevicesController < ApplicationController
   # See: https://github.com/forem/forem/pull/12419/files#r563906038
   skip_before_action :verify_authenticity_token, only: [:destroy]
 
-  rescue_from ActiveRecord::ActiveRecordError do |exc|
+  rescue_from ActiveRecord::ActiveRecordError, ArgumentError do |exc|
     render json: { error: exc.message, status: 422 }, status: :unprocessable_entity
   end
 

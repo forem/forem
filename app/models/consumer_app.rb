@@ -2,12 +2,12 @@ class ConsumerApp < ApplicationRecord
   resourcify
 
   FOREM_BUNDLE = "com.forem.app".freeze
-  SUPPORTED_PLATFORMS = [Device::ANDROID, Device::IOS].freeze
-  FOREM_APP_PLATFORMS = [Device::IOS].freeze
+  FOREM_APP_PLATFORMS = %w[ios].freeze
 
-  validates :app_bundle, presence: true
-  validates :platform, presence: true
-  validates :app_bundle, uniqueness: { scope: :platform }
+  enum platform: { android: Device::ANDROID, ios: Device::IOS }
+
+  validates :app_bundle, presence: true, uniqueness: { scope: :platform }
+  validates :platform, inclusion: { in: platforms.keys }
 
   has_many :devices, dependent: :destroy
 
@@ -47,7 +47,7 @@ class ConsumerApp < ApplicationRecord
   # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
   # rubocop:disable Rails/FindBy
   def clear_rpush_app
-    case platform_was
+    case ConsumerApp.platforms[platform_was]
     when Device::IOS
       Rpush::Apns2::App.where(name: app_bundle_was).first&.destroy
     when Device::ANDROID

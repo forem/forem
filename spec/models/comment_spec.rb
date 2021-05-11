@@ -238,7 +238,7 @@ RSpec.describe Comment, type: :model do
 
   describe "#readable_publish_date" do
     it "does not show year in readable time if not current year" do
-      expect(comment.readable_publish_date).to eq(comment.created_at.strftime("%b %e"))
+      expect(comment.readable_publish_date).to eq(comment.created_at.strftime("%b %-e"))
     end
 
     it "shows year in readable time if not current year" do
@@ -414,7 +414,7 @@ RSpec.describe Comment, type: :model do
 
   describe "spam" do
     before do
-      allow(Settings::Mascot).to receive(:mascot_user_id).and_return(user.id)
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
       allow(SiteConfig).to receive(:spam_trigger_terms).and_return(["yahoomagoo gogo", "anothertestterm"])
     end
 

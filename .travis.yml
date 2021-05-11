@@ -18,8 +18,6 @@ addons:
       - $(ls cypress/screenshots/*.* | tr "\n" ":")
       - $(ls cypress/videos/*.* | tr "\n" ":")
     debug: true
-services:
-  - redis
 env:
   global:
     - RAILS_ENV=test
