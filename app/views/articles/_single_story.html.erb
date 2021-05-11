@@ -59,7 +59,7 @@
       <div class="crayons-story__tags">
         <% flare_tag = FlareTag.new(story, @tag).tag %>
         <% if flare_tag %>
-          <a href="<%= URL.tag flare_tag.name %>" class="crayons-tag" style="background:<%= flare_tag.bg_color_hex %>;color:<%= flare_tag.text_color_hex %>"><span class="crayons-tag__prefix">#</span><%= flare_tag.name %></a>
+          <a href="<%= URL.tag flare_tag %>" class="crayons-tag" style="background:<%= flare_tag.bg_color_hex %>;color:<%= flare_tag.text_color_hex %>"><span class="crayons-tag__prefix">#</span><%= flare_tag.name %></a>
         <% end %>
         <% tags_to_display = story.cached_tag_list_array
            if flare_tag
