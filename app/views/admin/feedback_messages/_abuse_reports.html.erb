@@ -31,7 +31,7 @@
               data-reaction-url-value="<%= admin_reaction_path(reaction.id) %>">
               <span>
                 🤢 <a href="<%= reaction.user.path %>" target="_blank" rel="noopener">@<%= reaction.user.username %></a>
-                <% if reaction.user_id == Settings::Mascot.mascot_user_id %>
+                <% if reaction.user_id == SiteConfig.mascot_user_id %>
                   <strong>(auto-generated)</strong>
                 <% end %>
               </span>
