@@ -96,43 +96,47 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
-  # Relevant Fields for migration from Users table to Users_Settings and Users_Notification_Settings tables
-  RELEVANT_USERS_TABLE_FIELDS_FOR_MIGRATION = %w[
+  # Relevant Fields for migration from Users table to Users_Settings table
+  USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
     config_font
     config_navbar
     config_theme
     display_announcements
     display_sponsors
     editor_version
-    email_badge_notifications
-    email_comment_notifications
-    email_community_mod_newsletter
-    email_connect_messages
-    email_digest_periodic
-    email_follower_notifications
-    email_mention_notifications
-    email_newsletter
-    email_tag_mod_newsletter
-    email_unread_notifications
     experience_level
     feed_mark_canonical
     feed_referential_link
     feed_url
     inbox_guidelines
     inbox_type
-    mobile_comment_notifications
-    mod_roundrobin_notifications
     permit_adjacent_sponsors
-    reaction_notifications
-    id
-    welcome_notifications
   ].freeze
 
-  # Relevant Fields for migration from Profiles table to Users_Settings and Users_Notification_Settings tables
-  RELEVANT_PROFILES_TABLE_FIELDS_FOR_MIGRATION = %w[
+  # Relevant Fields for migration from Profiles table to Users_Settings table
+  PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
     brand_color1
     brand_color2
     display_email_on_profile
+  ].freeze
+
+  # Relevant Fields for migration from Users table to Users_Notification_Settings table
+  USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
+    email_badge_notifications
+    email_comment_notifications
+    email_community_mod_newsletter
+    email_connect_messages
+    email_digest_periodic
+    email_follower_notifications
+    email_membership_newsletter
+    email_mention_notifications
+    email_newsletter
+    email_tag_mod_newsletter
+    email_unread_notifications
+    mobile_comment_notifications
+    mod_roundrobin_notifications
+    reaction_notifications
+    welcome_notifications
   ].freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
@@ -343,8 +347,11 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
+  # NOTE: @msarit `sync_users_settings_table` blows up when trying to sync the
+  # User.profile fields, probably because the user's profile hasn't been created yet
+  # (race condition)
+  after_commit :sync_users_settings_table, :sync_users_notification_settings_table
   after_commit :bust_cache
-  after_commit :sync_users_settings_table
 
   def self.dev_account
     find_by(id: Settings::Community.staff_user_id)
@@ -616,38 +623,71 @@ class User < ApplicationRecord
 
   private
 
-  def sync_users_settings_table
-    users_setting = Users::Setting.find_by(user_id: id)
-    if users_setting
-      RELEVANT_USERS_TABLE_FIELDS_FOR_MIGRATION.each do |field|
-        case field
-        when "config_navbar"
-          config_navbar_enums = {
-            default: 0,
-            static: 1
-          }
-
-          users_setting.update(field => config_navbar_enums[__send__(field).to_sym])
-        when "config_theme"
-          config_theme_enums = {
-            default: 0,
-            minimal_light_theme: 1,
-            night_theme: 2,
-            pink_theme: 3,
-            ten_x_hacker_theme: 4
-          }
-
-          users_setting.update(field => config_theme_enums[__send__(field).to_sym])
-          # puts "\n\nUsersSetting value: #{users_setting.inspect}\n\n"
-        else
-          users_setting.update(field => __send__(field))
-        end
+  # rubocop:disable Metrics/BlockLength
+  def migrate_users_fields_to_users_settings(users_setting_record)
+    USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      case field
+      when "config_font"
+        config_font_enums = {
+          default: 0,
+          comic_sans: 1,
+          monospace: 2,
+          open_dyslexic: 3,
+          sans_serif: 4,
+          serif: 5
+        }
+        users_setting_record.update(field => config_font_enums[public_send(field).to_sym])
+      when "config_navbar"
+        config_navbar_enums = {
+          default: 0,
+          static: 1
+        }
+        users_setting_record.update(field => config_navbar_enums[public_send(field).to_sym])
+      when "config_theme"
+        config_theme_enums = {
+          default: 0,
+          minimal_light_theme: 1,
+          night_theme: 2,
+          pink_theme: 3,
+          ten_x_hacker_theme: 4
+        }
+        users_setting_record.update(field => config_theme_enums[public_send(field).to_sym])
+      when "editor_version"
+        config_editor_enums = {
+          v2: 0,
+          v1: 1
+        }
+        users_setting_record.update(field => config_editor_enums[public_send(field).to_sym])
+      when "inbox_type"
+        config_inbox_enums = {
+          private: 0,
+          open: 1
+        }
+        users_setting_record.update(field => config_inbox_enums[public_send(field).to_sym])
+      else
+        users_setting_record.update(field => public_send(field))
       end
-    else
-      # puts "\n\nNo Users::Setting record found\n\n"
-      # create a Users::Setting record for the user and then update the record's
-      # fields with the user's information
-      # Users::Setting.create
+    end
+
+    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      users_setting_record.update(field => profile.public_send(field)) if profile.public_send(field).present?
+    end
+  end
+  # rubocop:enable Metrics/BlockLength
+
+  def sync_users_settings_table
+    users_setting_record = Users::Setting.find_by(user_id: id)
+    users_setting_record ||= Users::Setting.create(user_id: id)
+
+    migrate_users_fields_to_users_settings(users_setting_record)
+  end
+
+  def sync_users_notification_settings_table
+    users_notification_setting_record = Users::NotificationSetting.find_by(user_id: id)
+    users_notification_setting_record ||= Users::NotificationSetting.create(user_id: id)
+
+    USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
+      users_notification_setting_record.update(field => public_send(field))
     end
   end
 
