@@ -132,7 +132,7 @@
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^0.6.3",
     "jsdom": "^16.5.3",
-    "lint-staged": "^10.5.4",
+    "lint-staged": "^11.0.0",
     "markdown-loader": "^6.0.0",
     "prettier": "^2.3.0",
     "redoc-cli": "0.11.4",
