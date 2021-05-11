@@ -35,13 +35,7 @@ class NotifyMailer < ApplicationMailer
 
     @mentioner = User.find(@mention.mentionable.user_id)
     @mentionable = @mention.mentionable
-
-    # Articles are colloquially referred to as "posts", so we need to do some conditional renaming here.
-    @mentionable_type = if @mention.mentionable_type == "Article"
-                          "post"
-                        else
-                          @mention.mentionable_type.downcase
-                        end
+    @mentionable_type = MentionDecorator.new(@mention).formatted_mentionable_type
 
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_mention_notifications)
 

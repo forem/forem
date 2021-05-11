@@ -82,13 +82,13 @@ class Notification < ApplicationRecord
     end
 
     def send_mention_notification(mention)
-      return if mention.mentionable_type == "User" && UserBlock.blocking?(mention.mentionable_id, mention.user_id)
+      return if MentionDecorator.new(mention).mentioned_by_blocked_user?
 
       Notifications::MentionWorker.perform_async(mention.id)
     end
 
     def send_mention_notification_without_delay(mention)
-      return if mention.mentionable_type == "User" && UserBlock.blocking?(mention.mentionable_id, mention.user_id)
+      return if MentionDecorator.new(mention).mentioned_by_blocked_user?
 
       Notifications::NewMention::Send.call(mention) if mention
     end
