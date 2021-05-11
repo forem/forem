@@ -8,7 +8,7 @@ RSpec.describe ConsumerApps::FindOrCreateByQuery, type: :query do
       expect do
         app = described_class.call(
           app_bundle: ConsumerApp::FOREM_BUNDLE,
-          platform: Device::IOS,
+          platform: :ios,
         )
         expect(app).to be_instance_of(ConsumerApp)
       end.to change(ConsumerApp, :count).by(1)
