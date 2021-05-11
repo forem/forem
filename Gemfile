@@ -33,9 +33,9 @@ gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Un
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
-gem "flipper", "~> 0.20.4" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.20.4" # Store Flipper flags in ActiveRecord
-gem "flipper-ui", "~> 0.20.4"
+gem "flipper", "~> 0.21.0" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.21.0" # Store Flipper flags in ActiveRecord
+gem "flipper-ui", "~> 0.21.0"
 gem "fog-aws", "~> 3.10" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
