@@ -62,7 +62,7 @@ begin
     puts "Pulled latest #{branch.inspect}"
   end
 
-  run "git merge --quiet #{source}"
+  run "git merge --quiet #{source} --no-ff --message 'Merge #{source} into #{channel}'"
   puts "Merged #{source} into #{channel}"
 
   begin
