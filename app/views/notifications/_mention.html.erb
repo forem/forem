@@ -5,9 +5,26 @@
   <% end %>
 
   <div class="notification__content">
-    <h2 class="fs-base fw-normal mb-4">
-      <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold"><%= json_data["user"]["name"] %></a> mentioned you in a comment
-    </h2>
-    <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
+    <% if notification.json_data["article"] %>
+      <header class="mb-4">
+        <h2 class="fs-base fw-normal">
+          <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold">
+            <%= json_data["user"]["name"] %>
+          </a>
+          mentioned you in a post
+          <% if json_data["organization"] %>
+            under <a href="<%= json_data["organization"]["path"] %>" class="crayons-link fw-bold"><%= json_data["organization"]["name"] %></a>
+          <% end %>
+        </h2>
+        <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small></p>
+      </header>
+
+      <%= render "notifications/shared/article_preview", json_data: json_data, notification: notification, context: "default" %>
+    <% elsif notification.json_data["comment"] %>
+      <h2 class="fs-base fw-normal mb-4">
+        <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold"><%= json_data["user"]["name"] %></a> mentioned you in a comment
+      </h2>
+      <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
+    <% end %>
   </div>
 </div>
