@@ -16,10 +16,12 @@ module Articles
       article = save_article
 
       if article.persisted?
+        # Subscribe author to notifications for all comments on their article.
         NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article",
                                         config: "all_comments")
-        Notification.send_to_followers(article, "Published") if article.published?
 
+        # Send notifications to any mentioned users, followed by any users who follow the article's author.
+        Notification.send_to_mentioned_users_and_followers(article) if article.published?
         dispatch_event(article)
       end
 

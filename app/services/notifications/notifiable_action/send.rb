@@ -25,7 +25,16 @@ module Notifications
         json_data[:organization] = organization_data(notifiable.organization) if notifiable.organization_id
 
         notifications_attributes = []
-        notifiable.followers.sort_by(&:updated_at).last(10_000).reverse_each do |follower|
+
+        # If a user was mentioned in the article, they will have already received a mention.
+        # We explicitly need to exclude them from the article_followers array if they already
+        # have a mention in order to avoid sending a user multiple notifications for one article.
+        user_ids_with_article_mentions = notifiable.mentions&.pluck(:user_id)
+        article_followers = notifiable.followers.reject do |follower|
+          user_ids_with_article_mentions.include?(follower.id)
+        end
+
+        article_followers.sort_by(&:updated_at).last(10_000).reverse_each do |follower|
           now = Time.current
           notifications_attributes.push(
             user_id: follower.id,
