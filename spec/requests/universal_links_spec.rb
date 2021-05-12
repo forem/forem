@@ -37,7 +37,7 @@ RSpec.describe "Universal Links (Apple)", type: :request do
     end
 
     context "when non-public Forem instance" do
-      it "responds with applinks support for Forem app" do
+      it "responds with applinks support for Forem app", :aggregate_failures do
         allow(Settings::UserExperience).to receive(:public).and_return(false)
         get aasa_route
         json_response = JSON.parse(response.body)
