@@ -185,9 +185,9 @@ GEM
     dante (0.2.0)
     ddtrace (0.47.0)
       msgpack
-    dead_end (1.1.6)
+    dead_end (1.1.7)
     debug_inspector (1.1.0)
-    derailed_benchmarks (2.0.1)
+    derailed_benchmarks (2.1.0)
       benchmark-ips (~> 2)
       dead_end
       get_process_mem (~> 0)
@@ -868,7 +868,7 @@ DEPENDENCIES
   counter_culture (~> 2.8)
   cypress-rails (~> 0.5.0)
   ddtrace (~> 0.47.0)
-  derailed_benchmarks (~> 2.0)
+  derailed_benchmarks (~> 2.1)
   devise (~> 4.8)
   devise_invitable (~> 2.0.5)
   dogstatsd-ruby (~> 4.8)
