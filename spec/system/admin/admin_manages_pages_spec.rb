@@ -9,7 +9,8 @@ RSpec.describe "Admin manages pages", type: :system do
            body_html: "<div>hello there</div>",
            title: "Test Page",
            description: "A test page",
-           is_top_level_path: true)
+           is_top_level_path: true,
+           landing_page: false)
     sign_in admin
     visit admin_pages_path
   end
