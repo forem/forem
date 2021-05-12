@@ -1,7 +1,8 @@
 class DeepLinksController < ApplicationController
   def mobile; end
 
-  # Apple Application Site Association
+  # Apple Application Site Association - based on Apple docs guidelines
+  # https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html
   def aasa
     # TODO: [@fdoxyz] Replace these hardcoded identifiers with configurations
     # creators can use to customize their Forems - `/admin/consumer_apps`
