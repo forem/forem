@@ -33,15 +33,14 @@ export const noDefaultAltTextRule = {
   function: (params, onError) => {
     params.tokens
       .filter((token) => token.type === 'inline')
-      .forEach((inlineToken) => {
-        inlineToken.children.forEach((contentChild) => {
+      .forEach(({ children }) => {
+        children.forEach((contentChild) => {
           if (
             contentChild.type === 'image' &&
             contentChild.line.toLowerCase().includes('![alt text]')
           ) {
-            getImageTextString(contentChild.line);
             onError({
-              lineNumber: inlineToken.lineNumber,
+              lineNumber: contentChild.lineNumber,
               detail: '/p/editor_guide#alt-text-for-images',
               context: `Consider replacing the 'alt text' in square brackets at ${getImageTextString(
                 contentChild.line,

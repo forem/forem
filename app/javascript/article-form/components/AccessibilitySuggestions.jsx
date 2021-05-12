@@ -57,7 +57,7 @@ export const AccessibilitySuggestions = ({ markdownLintErrors }) => {
       aria-live="polite"
     >
       <h2 className="fs-l mb-2 fw-bold">
-        Improve the accessibility of your post:
+        Improve the accessibility of your post
       </h2>
       <ul>
         {extractRelevantErrors(markdownLintErrors).map((lintError, index) => {
