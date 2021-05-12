@@ -48,8 +48,8 @@ module Articles
                                     notifiable_type: "Comment")
           end
           if article.mentions.exists?
-            Notification.remove_all(notifiable_ids: article.comments.ids,
-                                    notifiable_type: "Article")
+            Notification.remove_all(notifiable_ids: article.mentions.ids,
+                                    notifiable_type: "Mention")
           end
         end
 
