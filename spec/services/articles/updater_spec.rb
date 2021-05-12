@@ -95,6 +95,48 @@ RSpec.describe Articles::Updater, type: :service do
         expect(Mentions::CreateAll).not_to have_received(:call).with(article)
       end
     end
+
+    context "when an article is unpublished and contains comments" do
+      let!(:comment) { create(:comment, user_id: user.id, commentable: article) }
+      let(:notification) do
+        create(:notification, user: user, notifiable_id: comment.id, notifiable_type: "Comment")
+      end
+
+      before do
+        attributes[:published] = false
+        allow(Notification).to receive(:remove_all).and_call_original
+      end
+
+      it "removes any preexisting comment notifications but does not delete the comment" do
+        described_class.call(user, article, attributes)
+
+        expect(Notification).to have_received(:remove_all).with(
+          notifiable_ids: [comment.id], notifiable_type: "Comment",
+        )
+        expect(article.comments.length).to eq(1)
+      end
+    end
+
+    context "when an article is unpublished and contains mentions" do
+      let!(:mention) { create(:mention, mentionable: article, user: user) }
+      let(:notification) do
+        create(:notification, user: user, notifiable_id: mention.id, notifiable_type: "Mention")
+      end
+
+      before do
+        attributes[:published] = false
+        allow(Notification).to receive(:remove_all).and_call_original
+      end
+
+      it "removes any preexisting mention notifications but does not delete the mention" do
+        described_class.call(user, article, attributes)
+
+        expect(Notification).to have_received(:remove_all).with(
+          notifiable_ids: [mention.id], notifiable_type: "Mention",
+        )
+        expect(article.mentions.length).to eq(1)
+      end
+    end
   end
 
   describe "events dispatcher" do
