@@ -58,6 +58,13 @@ class SiteConfig < RailsSettings::Base
 
   field :enable_video_upload, type: :boolean, default: false
 
+  # Mascot
+  field :mascot_user_id, type: :integer, default: nil
+  field :mascot_image_url,
+        type: :string,
+        default: proc { URL.local_image("mascot.png") },
+        validates: { url: true }
+
   # Meta keywords
   field :meta_keywords, type: :hash, default: {
     default: nil,
