@@ -3,7 +3,7 @@ module RateLimitCheckerHelper
     "create within any 5 minute period?".freeze
 
   def self.new_user_message(thing)
-    timeframe = "day".pluralize(SiteConfig.user_considered_new_days)
+    timeframe = "day".pluralize(Settings::RateLimit.user_considered_new_days)
     format(NEW_USER_MESSAGE, thing: thing, timeframe: timeframe)
   end
 
