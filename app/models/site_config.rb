@@ -95,29 +95,6 @@ class SiteConfig < RailsSettings::Base
   field :suggested_users, type: :array, default: %w[]
   field :prefer_manual_suggested_users, type: :boolean, default: false
 
-  # Rate limits and spam prevention
-  # NOTE: @citizen428 These will be removed once we migrated to the new settings
-  # model across the fleet.
-  field :rate_limit_follow_count_daily, type: :integer, default: 500
-  field :rate_limit_comment_creation, type: :integer, default: 9
-  field :rate_limit_comment_antispam_creation, type: :integer, default: 1
-  field :rate_limit_listing_creation, type: :integer, default: 1
-  field :rate_limit_published_article_creation, type: :integer, default: 9
-  field :rate_limit_published_article_antispam_creation, type: :integer, default: 1
-  field :rate_limit_organization_creation, type: :integer, default: 1
-  field :rate_limit_reaction_creation, type: :integer, default: 10
-  field :rate_limit_image_upload, type: :integer, default: 9
-  field :rate_limit_email_recipient, type: :integer, default: 5
-  field :rate_limit_article_update, type: :integer, default: 30
-  field :rate_limit_send_email_confirmation, type: :integer, default: 2
-  field :rate_limit_feedback_message_creation, type: :integer, default: 5
-  field :rate_limit_user_update, type: :integer, default: 15
-  field :rate_limit_user_subscription_creation, type: :integer, default: 3
-
-  field :spam_trigger_terms, type: :array, default: []
-
-  field :user_considered_new_days, type: :integer, default: 3
-
   # Social Media
   field :social_media_handles, type: :hash, default: {
     twitter: nil,
@@ -133,28 +110,6 @@ class SiteConfig < RailsSettings::Base
 
   # Tags
   field :sidebar_tags, type: :array, default: %w[]
-
-  # NOTE: @citizen428 - These will be removed once we migrated to Settings::UserExperience
-  # across the whole fleet.
-  # User Experience
-  # These are the default UX settings, which can be overridded by individual user preferences.
-  # basic (current default), rich (cover image on all posts), compact (more minimal)
-  field :feed_style, type: :string, default: "basic"
-  # a non-public forem will redirect all unauthenticated pages to the registration page.
-  # a public forem could have more fine-grained authentication (listings ar private etc.) in future
-  field :public, type: :boolean, default: 0
-  # The default font for all users that have not chosen a custom font yet
-  field :default_font, type: :string, default: "sans_serif"
-  field :primary_brand_color_hex, type: :string, default: "#3b49df", validates: {
-    format: {
-      with: HEX_COLOR_REGEX,
-      message: "must be be a 3 or 6 character hex (starting with #)"
-    },
-    color_contrast: true
-  }
-  field :feed_strategy, type: :string, default: "basic"
-  field :tag_feed_minimum_score, type: :integer, default: 0
-  field :home_feed_minimum_score, type: :integer, default: 0
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
