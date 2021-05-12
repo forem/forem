@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
+// Limit the number of suggestions shown so that the UI isn't overwhelmed
 const MAX_SUGGESTIONS = 3;
 
 const extractRelevantErrors = (lintErrors) => {
@@ -18,14 +19,12 @@ const extractRelevantErrors = (lintErrors) => {
     }
   });
 
-  //   Truncate the errors, favouring image errors (as these accessibility suggestions are more impactful)
+  // Truncate the errors, favouring image errors (as these accessibility suggestions are more impactful)
   if (imageErrors.length > MAX_SUGGESTIONS) {
     imageErrors.length = MAX_SUGGESTIONS;
   }
 
-  const totalImageErrors = imageErrors.length;
-  const remainingErrors = MAX_SUGGESTIONS - totalImageErrors;
-
+  const remainingErrors = MAX_SUGGESTIONS - imageErrors.length;
   if (otherErrors.length > remainingErrors) {
     otherErrors.length = remainingErrors;
   }
@@ -69,11 +68,9 @@ export const AccessibilitySuggestions = ({ markdownLintErrors }) => {
                 {' '}
                 <a
                   href={lintError.errorDetail}
-                  aria-label={
-                    lintError.errorType === 'image'
-                      ? 'Learn more about accessible images'
-                      : 'Learn more about accessible headings'
-                  }
+                  aria-label={`Learn more about accessible ${
+                    lintError.errorType === 'image' ? 'images' : 'headings'
+                  }`}
                 >
                   Learn more
                 </a>
