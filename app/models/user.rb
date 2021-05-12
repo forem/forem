@@ -310,7 +310,7 @@ class User < ApplicationRecord
   end
 
   def self.mascot_account
-    find_by(id: Settings::Mascot.mascot_user_id)
+    find_by(id: SiteConfig.mascot_user_id)
   end
 
   def tag_line

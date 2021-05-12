@@ -1,7 +1,8 @@
 class DeepLinksController < ApplicationController
   def mobile; end
 
-  # Apple Application Site Association
+  # Apple Application Site Association - based on Apple docs guidelines
+  # https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html
   def aasa
     # TODO: [@fdoxyz] Replace these hardcoded identifiers with configurations
     # creators can use to customize their Forems - `/admin/consumer_apps`
@@ -9,7 +10,7 @@ class DeepLinksController < ApplicationController
     supported_apps << "R9SWHSQNV8.to.dev.ios" if SiteConfig.dev_to?
     render json: {
       applinks: {
-        apps: supported_apps,
+        apps: [],
         details: supported_apps.map { |app_id| { appID: app_id, paths: ["/*"] } }
       },
       activitycontinuation: {

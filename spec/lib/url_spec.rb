@@ -94,6 +94,13 @@ RSpec.describe URL, type: :lib do
     it "returns the correct URL for a tag" do
       expect(described_class.tag(tag, 2)).to eq("https://dev.to/t/#{tag.name}/page/2")
     end
+
+    it "returns the correct URL for a tag with a non-ASCII name" do
+      # Due to validations we can't trivially create a tag with a non-ASCII name
+      # so we just create something that quacks like one.
+      tag = instance_double("Tag", name: "histórico")
+      expect(described_class.tag(tag)).to eq("https://dev.to/t/hist%C3%B3rico")
+    end
   end
 
   describe ".deep_link" do

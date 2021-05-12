@@ -26,15 +26,15 @@ export function initializeHeight() {
 }
 
 function toggleDropdown(type) {
-  if (type === 'set-experience') {
-    document
-      .getElementsByClassName('set-experience-options')[0]
-      .classList.toggle('hidden');
-  } else if (type === 'adjust-tags') {
-    document
-      .getElementsByClassName('adjust-tags-options')[0]
-      .classList.toggle('hidden');
-  }
+  const controller = document.querySelector(
+    `[aria-controls="${type}-options"]`,
+  );
+  controller.setAttribute(
+    'aria-expanded',
+    controller.getAttribute('aria-expanded') === 'true' ? 'false' : 'true',
+  );
+
+  document.querySelector(`#${type}-options`).classList.toggle('hidden');
 }
 
 function applyReactedClass(category) {

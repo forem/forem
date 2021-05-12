@@ -35,7 +35,7 @@
   }
 
   function initializeSortingTabs(query) {
-    var sortingTabs = document.getElementById("sorting-option-tabs").children;
+    var sortingTabs = document.querySelectorAll('#sorting-option-tabs .crayons-tabs__item');
 
     for (var i=0; i < sortingTabs.length; i++) {
       var tab = sortingTabs[i];
@@ -58,10 +58,12 @@
         for (var j=0; j < sortingTabs.length; j++) {
           if (sortingTabs[j] !== e.target) {
             sortingTabs[j].classList.remove("crayons-tabs__item--current");
+            sortingTabs[j].setAttribute('aria-current', '');
           }
         }
 
         e.target.classList.add("crayons-tabs__item--current");
+        e.target.setAttribute('aria-current', 'page');
       });
     }
   }

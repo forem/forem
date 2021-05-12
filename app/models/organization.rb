@@ -15,22 +15,18 @@ class Organization < ApplicationRecord
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
 
-  # TODO: [@rhymes] revisit this callback, `update_articles_cached_organization` and `article_sync`
+  # TODO: [@rhymes] revisit this callback and `update_articles_cached_organization`
   # when we remove Elasticsearch
   before_save :update_articles
   before_save :remove_at_from_usernames
   before_save :generate_secret
-  # You have to put before_destroy callback BEFORE the dependent: :nullify
-  # to ensure they execute before the records are updated
-  # https://guides.rubyonrails.org/active_record_callbacks.html#destroying-an-object
-  before_destroy :cache_article_ids
 
   after_save :bust_cache
 
   # This callback will eventually invoke Article.update_cached_user to update the organization.name
   # only when it has been changed, thus invoking the trigger on Article.reading_list_document
   after_update_commit :update_articles_cached_organization
-  after_destroy_commit :bust_cache, :article_sync
+  after_destroy_commit :bust_cache
 
   has_many :articles, dependent: :nullify
   has_many :collections, dependent: :nullify
@@ -81,12 +77,6 @@ class Organization < ApplicationRecord
   alias_attribute :old_username, :old_slug
   alias_attribute :old_old_username, :old_old_slug
   alias_attribute :website_url, :url
-
-  attr_accessor :cached_article_ids
-
-  def cache_article_ids
-    self.cached_article_ids = articles.ids
-  end
 
   def check_for_slug_change
     return unless slug_changed?
@@ -170,10 +160,5 @@ class Organization < ApplicationRecord
     )
 
     errors.add(:slug, "is taken.") if slug_taken
-  end
-
-  def article_sync
-    # Syncs article cached organization and updates Elasticsearch docs
-    Article.where(id: cached_article_ids).find_each(&:save)
   end
 end

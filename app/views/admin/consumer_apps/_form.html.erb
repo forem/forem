@@ -5,7 +5,7 @@
 
 <div class="form-group">
   <%= label_tag :platform, "Platform:" %>
-  <%= select_tag :platform, options_for_select(ConsumerApp::SUPPORTED_PLATFORMS, selected: @app.platform, class: "crayons-select"), class: "crayons-select" %>
+  <%= select_tag :platform, options_for_select(ConsumerApp.platforms.invert, selected: @app.platform, class: "crayons-select"), class: "crayons-select" %>
 </div>
 
 <div class="form-group">

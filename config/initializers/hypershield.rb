@@ -17,7 +17,7 @@ if Rails.env.production? && ENV["ENV_AVAILABLE"] == "true"
           hide: [
             "ahoy_messages.content",
             "ahoy_messages.to",
-            "email",
+            "email_authorizations",
             "encrypted",
             "encrypted_password",
             "identities.auth_data_dump",
@@ -25,14 +25,18 @@ if Rails.env.production? && ENV["ENV_AVAILABLE"] == "true"
             "messages.message_markdown",
             "oauth_access_tokens.previous_refresh_token",
             "oauth_access_tokens.refresh_token",
+            "organizations.email",
             "password",
             "secret",
             "token",
+            "user_subscriptions.subscriber_email",
             "users.current_sign_in_ip",
+            "users.email",
             "users.last_sign_in_ip",
             "users.remember_token",
             "users.reset_password_token",
             "users.unconfirmed_email",
+            "users_gdpr_delete_requests.email",
           ]
         }
       }
