@@ -6,7 +6,7 @@ RSpec.describe Users::CreateMascotAccount, type: :service do
   end
 
   context "when a mascot user doesn't exist" do
-    before { allow(Settings::Mascot).to receive(:mascot_user_id).and_return(nil) }
+    before { allow(SiteConfig).to receive(:mascot_user_id).and_return(nil) }
 
     it "creates a mascot account" do
       expect do
@@ -21,7 +21,7 @@ RSpec.describe Users::CreateMascotAccount, type: :service do
 
   context "when a mascot user already exists" do
     before do
-      allow(Settings::Mascot).to receive(:mascot_user_id).and_return(2)
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(2)
       allow(User).to receive(:create)
     end
 

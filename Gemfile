@@ -67,7 +67,7 @@ gem "parallel", "~> 1.20" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with GitHub OAuth client
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_search", "~> 2.3.5" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
-gem "puma", "~> 5.2.2" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 5.3.1" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 2.0" # Ruby library for Pusher Channels HTTP API
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
@@ -123,7 +123,7 @@ group :development do
 
   gem "brakeman", "~> 5.0", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.8" # bundler-audit provides patch-level verification for Bundled apps
-  gem "derailed_benchmarks", "~> 2.0", require: false # A series of things you can use to benchmark a Rails or Ruby app
+  gem "derailed_benchmarks", "~> 2.1", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
@@ -158,7 +158,7 @@ end
 
 group :test do
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
-  gem "factory_bot_rails", "~> 6.1" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
+  gem "factory_bot_rails", "~> 6.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "fakeredis", "~> 0.8.0" # Fake (In-memory) driver for redis-rb. Useful for testing environment and machines without Redis.
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies

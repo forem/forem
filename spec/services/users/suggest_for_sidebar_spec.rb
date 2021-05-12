@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Suggester::Users::Sidebar, type: :service do
+RSpec.describe Users::SuggestForSidebar, type: :service do
   let(:user) { create(:user) }
 
   it "returns user suggestions" do

@@ -1,4 +1,5 @@
 module Profiles
+  # Deals with updates that affect fields on +Profile+ and/or +User+ in a transparent way.
   class Update
     using HashAnyKey
     include ImageUploads
@@ -6,6 +7,16 @@ module Profiles
     CORE_PROFILE_FIELDS = %i[summary brand_color1 brand_color2].freeze
     CORE_USER_FIELDS = %i[name username profile_image].freeze
 
+    # @param user [User] the user whose profile we are updating
+    # @param updated_attributes [Hash<Symbol, Hash<Symbol, Object>>] the profile
+    #   and/or user attributes to update. The corresponding has keys are +:user+ and
+    #   +:profile+ respectively.
+    # @example
+    #   Profiles::Update.call(
+    #     current_user,
+    #     profile: { website_url: "https://example.com" },
+    #   )
+    # @return [Profiles::Update] a class instance that can be used for success checks
     def self.call(user, updated_attributes = {})
       new(user, updated_attributes).call
     end
