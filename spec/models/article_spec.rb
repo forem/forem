@@ -1220,7 +1220,6 @@ RSpec.describe Article, type: :model do
 
   describe "#user_mentions_in_markdown" do
     before do
-      stub_const("Article::MAX_USER_MENTIONS", 7)
       stub_const("Article::MAX_USER_MENTION_LIVE_AT", 1.day.ago) # Set live_at date to a time in the past
     end
 
@@ -1228,20 +1227,20 @@ RSpec.describe Article, type: :model do
       # Explicitly set created_at date to a time before MAX_USER_MENTION_LIVE_AT
       article = create(:article, created_at: 3.days.ago)
 
-      article.body_markdown = "hi @#{user.username}! " * (Article::MAX_USER_MENTIONS + 1)
+      article.body_markdown = "hi @#{user.username}! " * (Settings::RateLimit.mention_creation + 1)
       expect(article).to be_valid
     end
 
     it "is valid with seven or fewer mentions if created after MAX_USER_MENTION_LIVE_AT date" do
-      article.body_markdown = "hi @#{user.username}! " * Article::MAX_USER_MENTIONS
+      article.body_markdown = "hi @#{user.username}! " * Settings::RateLimit.mention_creation
       expect(article).to be_valid
     end
 
     it "is invalid with more than seven mentions if created after MAX_USER_MENTION_LIVE_AT date" do
-      article.body_markdown = "hi @#{user.username}! " * (Article::MAX_USER_MENTIONS + 1)
+      article.body_markdown = "hi @#{user.username}! " * (Settings::RateLimit.mention_creation + 1)
       expect(article).not_to be_valid
       expect(article.errors[:base])
-        .to include("You cannot mention more than #{Article::MAX_USER_MENTIONS} users in a post!")
+        .to include("You cannot mention more than #{Settings::RateLimit.mention_creation} users in a post!")
     end
   end
 
