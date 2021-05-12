@@ -12,6 +12,7 @@ export const Default = () => (
     <ul className="crayons-tabs__list">
       <li>
         <a
+          data-text="Feed"
           href="/"
           className="crayons-tabs__item crayons-tabs__item--current"
           aria-current="page"
@@ -20,12 +21,12 @@ export const Default = () => (
         </a>
       </li>
       <li>
-        <a href="/" className="crayons-tabs__item">
+        <a data-text="Popular" href="/" className="crayons-tabs__item">
           Popular
         </a>
       </li>
       <li>
-        <a href="/" className="crayons-tabs__item">
+        <a data-text="Latest" href="/" className="crayons-tabs__item">
           Latest
         </a>
       </li>
