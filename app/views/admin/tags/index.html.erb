@@ -1,13 +1,13 @@
 <div class="flex items-center mb-6">
   <div class="crayons-tabs">
     <div class="nav-item">
-      <%= link_to "All", admin_tags_path("q[supported_not_null]": "true"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_not_null)}", "aria-label": "All Tags" %>
+      <%= link_to "All", admin_tags_path("q[supported_not_null]": "true"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_not_null)}", "aria-label": "All Tags", data: {text: "All"} %>
     </div>
     <div class="nav-item">
-      <%= link_to "Supported", admin_tags_path("q[supported_eq": "true"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_eq) == 'true'}", "aria-label": "Supported Tags" %>
+      <%= link_to "Supported", admin_tags_path("q[supported_eq": "true"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_eq) == 'true'}", "aria-label": "Supported Tags", data: {text: "Supported"} %>
     </div>
     <div class="nav-item">
-      <%= link_to "Unsupported", admin_tags_path("q[supported_eq": "false"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_eq) == 'false'}", "aria-label": "Unsupported Tags" %>
+      <%= link_to "Unsupported", admin_tags_path("q[supported_eq": "false"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_eq) == 'false'}", "aria-label": "Unsupported Tags", data: {text: "Unsupported"} %>
     </div>
   </div>
 
