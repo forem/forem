@@ -25,9 +25,6 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
-  # TODO: Vaidehi Joshi - Extract this into a constant or SiteConfig variable
-  # after https://github.com/forem/rfcs/pull/22 has been completed?
-  MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
 
@@ -690,9 +687,9 @@ class Article < ApplicationRecord
 
     # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
-    return if mentions_count <= MAX_USER_MENTIONS
+    return if mentions_count <= Settings::RateLimit.mention_creation
 
-    errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a post!")
+    errors.add(:base, "You cannot mention more than #{Settings::RateLimit.mention_creation} users in a post!")
   end
 
   def create_slug
