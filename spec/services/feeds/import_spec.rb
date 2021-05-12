@@ -20,10 +20,9 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
     end
 
     it "subscribes the article author to comments", vcr: { cassette_name: "feeds_import" } do
-      comment_subscriptions = NotificationSubscription.where(notifiable_type: "Article", config: "all_comments")
-      expect(comment_subscriptions).to be_empty
-      described_class.call
-      expect(comment_subscriptions).to be_present
+      expect { described_class.call }
+        .to change { NotificationSubscription.where(notifiable_type: "Article", config: "all_comments").count }
+        .from(0)
     end
 
     it "does not recreate articles if they already exist", vcr: { cassette_name: "feeds_import_twice" } do
