@@ -140,8 +140,6 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_comment_antispam_creation, type: :integer, default: 1
-  # Explicitly defaults to 7 to accommodate DEV Top 7 Posts
-  field :rate_limit_mention_creation, type: :integer, default: 7
   field :rate_limit_listing_creation, type: :integer, default: 1
   field :rate_limit_published_article_creation, type: :integer, default: 9
   field :rate_limit_published_article_antispam_creation, type: :integer, default: 1
