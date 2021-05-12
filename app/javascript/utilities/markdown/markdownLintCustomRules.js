@@ -1,4 +1,29 @@
 /**
+ * Helper function for the image markdown lint rules.
+ *
+ * It takes a full line of text which includes an image with empty or default alt text (i.e. format "![]()") and returns the image portion only.
+ * This allows us to point users towards the exact image markdown text that triggered the rule.
+ *
+ * @param {string} contentLine The full line of content as provided by markdownlint
+ * @returns {string} a substring containing only the image text - e.g. "![alt text]()"
+ */
+const getImageTextString = (contentLine) => {
+  let indexOfImageStart = contentLine.indexOf('!');
+  while (contentLine.charAt(indexOfImageStart + 1) !== '[') {
+    // It's possible for an image to be inserted on a line with text preceding it,
+    // this check helps ensure that the '!' is actually the image start
+    indexOfImageStart = contentLine.indexOf('!', indexOfImageStart + 1);
+    if (indexOfImageStart === -1) {
+      return;
+    }
+  }
+  // Find the next closing bracket from the image start
+  // We don't need to worry about brackets inside the alt text as this check is only run on images with default or no alt text
+  const indexOfImageEnd = contentLine.indexOf(')', indexOfImageStart);
+  return contentLine.substring(indexOfImageStart, indexOfImageEnd + 1);
+};
+
+/**
  * Custom markdown lint rule that detects if a user has uploaded an image, but not changed the default alt text
  */
 export const noDefaultAltTextRule = {
@@ -14,10 +39,13 @@ export const noDefaultAltTextRule = {
             contentChild.type === 'image' &&
             contentChild.line.toLowerCase().includes('![alt text]')
           ) {
+            getImageTextString(contentChild.line);
             onError({
               lineNumber: inlineToken.lineNumber,
-              detail: `Alt text not replaced with description`,
-              context: `Consider replacing the'alt text' in square brackets at ${contentChild.line} with a description of the image`,
+              detail: '/p/editor_guide#alt-text-for-images',
+              context: `Consider replacing the 'alt text' in square brackets at ${getImageTextString(
+                contentChild.line,
+              )} with a description of the image`,
             });
           }
         });
@@ -43,8 +71,10 @@ export const noEmptyAltTextRule = {
           ) {
             onError({
               lineNumber: inlineToken.lineNumber,
-              detail: 'Empty alt text',
-              context: `Consider adding an image description in the square brackets at ${contentChild.line}`,
+              detail: '/p/editor_guide#alt-text-for-images',
+              context: `Consider adding an image description in the square brackets at ${getImageTextString(
+                contentChild.line,
+              )}`,
             });
           }
         });
@@ -73,8 +103,8 @@ export const noLevelOneHeadingsRule = {
     levelOneHeadings.forEach((heading) => {
       onError({
         lineNumber: heading.lineNumber,
-        context: `Consider changing "${heading.line}" to a level two heading by using ##`,
-        detail: 'Level one heading used in post',
+        context: `Consider changing "${heading.line}" to a level two heading by using "##"`,
+        detail: '/p/editor_guide#accessible-headings',
       });
     });
   },
@@ -105,8 +135,9 @@ export const headingIncrement = {
             .join('');
 
           onError({
+            detail: '/p/editor_guide#accessible-headings',
             lineNumber: heading.lineNumber,
-            context: `Consider changing the heading "${heading.line}" to a level ${suggestedHeadingLevel} heading by using ${suggestedHeadingStart}`,
+            context: `Consider changing the heading "${heading.line}" to a level ${suggestedHeadingLevel} heading by using "${suggestedHeadingStart}"`,
           });
         }
       }

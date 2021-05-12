@@ -4,39 +4,33 @@ const MAX_SUGGESTIONS = 3;
 const MAX_IMAGE_SUGGESTIONS = 2;
 
 const extractRelevantErrors = (lintErrors) => {
-  // todo - don't make it an object
-  const errorsForDisplay = { imageErrors: [], otherErrors: [] };
+  const imageErrors = [];
+  const otherErrors = [];
 
   lintErrors.forEach((lintError) => {
     if (
       lintError.ruleNames.includes('no-default-alt-text') ||
       lintError.ruleNames.includes('no-empty-alt-text')
     ) {
-      errorsForDisplay.imageErrors.push(lintError);
+      imageErrors.push({ ...lintError, errorType: 'image' });
     } else {
-      errorsForDisplay.otherErrors.push(lintError);
+      otherErrors.push({ ...lintError, errorType: 'other' });
     }
   });
 
-  //   Truncate the errors
-  if (errorsForDisplay.imageErrors.length > MAX_IMAGE_SUGGESTIONS) {
-    errorsForDisplay.imageErrors = errorsForDisplay.imageErrors.slice(
-      0,
-      MAX_IMAGE_SUGGESTIONS,
-    );
+  //   Truncate the errors, favouring image errors (as these accessibility suggestions are more impactful)
+  if (imageErrors.length > MAX_IMAGE_SUGGESTIONS) {
+    imageErrors.length = MAX_IMAGE_SUGGESTIONS;
   }
 
-  const totalImageErrors = errorsForDisplay.imageErrors.length;
+  const totalImageErrors = imageErrors.length;
   const remainingErrors = MAX_SUGGESTIONS - totalImageErrors;
 
-  if (errorsForDisplay.otherErrors.length > remainingErrors) {
-    errorsForDisplay.otherErrors = errorsForDisplay.otherErrors.slice(
-      0,
-      remainingErrors,
-    );
+  if (otherErrors.length > remainingErrors) {
+    otherErrors.length = remainingErrors;
   }
 
-  return [...errorsForDisplay.imageErrors, ...errorsForDisplay.otherErrors];
+  return [...imageErrors, ...otherErrors];
 };
 
 export const AccessibilitySuggestions = ({ markdownLintErrors }) => {
@@ -45,12 +39,29 @@ export const AccessibilitySuggestions = ({ markdownLintErrors }) => {
       className="crayons-notice crayons-notice--info mb-6"
       aria-live="polite"
     >
-      <h3 className="fs-l mb-2 fw-bold">
+      <h2 className="fs-l mb-2 fw-bold">
         Improve the accessibility of your post:
-      </h3>
+      </h2>
       <ul>
         {extractRelevantErrors(markdownLintErrors).map((lintError, index) => {
-          return <li key={`linterror-${index}`}>{lintError.errorContext}</li>;
+          return (
+            <li key={`linterror-${index}`}>
+              {lintError.errorContext}
+              <span className="fs-s">
+                {' '}
+                <a
+                  href={lintError.errorDetail}
+                  aria-label={
+                    lintError.errorType === 'image'
+                      ? 'Learn more about accessible images'
+                      : 'Learn more about accessible headings'
+                  }
+                >
+                  Learn more
+                </a>
+              </span>
+            </li>
+          );
         })}
       </ul>
     </div>
