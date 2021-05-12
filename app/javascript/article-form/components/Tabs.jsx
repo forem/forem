@@ -1,6 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
+/* awesome comment */
+
 export const Tabs = ({ onPreview, previewShowing }) => {
   return (
     <nav
