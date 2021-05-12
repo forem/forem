@@ -4,7 +4,12 @@ import { useEffect } from 'preact/hooks';
 import { ErrorList } from './ErrorList';
 import { AccessibilitySuggestions } from './AccessibilitySuggestions';
 
-function titleArea(previewResponse, articleState, errors, markdownLintErrors) {
+function titleArea({
+  previewResponse,
+  articleState,
+  errors,
+  markdownLintErrors,
+}) {
   const tagArray = previewResponse.tags || articleState.tagList.split(', ');
   let tags = '';
   if (tagArray.length > 0 && tagArray[0].length > 0) {
@@ -87,7 +92,12 @@ export const Preview = ({
   return (
     <div className="crayons-article-form__content crayons-card">
       <article className="crayons-article">
-        {titleArea(previewResponse, articleState, errors, markdownLintErrors)}
+        {titleArea({
+          previewResponse,
+          articleState,
+          errors,
+          markdownLintErrors,
+        })}
         <div className="crayons-article__main">
           <div
             className="crayons-article__body text-styles"
@@ -113,6 +123,7 @@ function attachTwitterTimelineScript() {
 Preview.propTypes = {
   previewResponse: previewResponsePropTypes.isRequired,
   errors: PropTypes.string.isRequired,
+  markdownLintErrors: PropTypes.arrayOf(PropTypes.object),
   articleState: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,

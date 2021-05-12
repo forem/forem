@@ -220,7 +220,7 @@ export class ArticleForm extends Component {
     }
   };
 
-  showPreview = async (response) => {
+  showPreview = (response) => {
     this.fetchMarkdownLint();
     this.setState({
       ...this.setCommonProps({ previewShowing: true }),

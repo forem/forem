@@ -1,7 +1,7 @@
 import { h } from 'preact';
+import PropTypes from 'prop-types';
 
 const MAX_SUGGESTIONS = 3;
-const MAX_IMAGE_SUGGESTIONS = 2;
 
 const extractRelevantErrors = (lintErrors) => {
   const imageErrors = [];
@@ -19,8 +19,8 @@ const extractRelevantErrors = (lintErrors) => {
   });
 
   //   Truncate the errors, favouring image errors (as these accessibility suggestions are more impactful)
-  if (imageErrors.length > MAX_IMAGE_SUGGESTIONS) {
-    imageErrors.length = MAX_IMAGE_SUGGESTIONS;
+  if (imageErrors.length > MAX_SUGGESTIONS) {
+    imageErrors.length = MAX_SUGGESTIONS;
   }
 
   const totalImageErrors = imageErrors.length;
@@ -33,6 +33,24 @@ const extractRelevantErrors = (lintErrors) => {
   return [...imageErrors, ...otherErrors];
 };
 
+/**
+ * An information notice displayed to users in the Preview window when accessibility improvements could be made to their post.
+ * This component displays a maximum of 3 suggestions, favouring image-related suggestions (as these changes are more impactful).
+ *
+ * @param {Object} props
+ * @param {Object[]} props.markdownLintErrors The array of error objects returned from the markdownlint library
+ *
+ * @example
+ * <AccessibilitySuggestions
+ *   markdownLintErrors={[
+ *     {
+ *       errorContext: "Consider adding an image description in the square brackets of the image ![](http://example.png)",
+ *       errorDetail: "/p/editor_guide#alt-text-for-images"
+ *       ruleNames: ["no-empty-alt-text"]
+ *     }
+ *   ]}
+ * />
+ */
 export const AccessibilitySuggestions = ({ markdownLintErrors }) => {
   return (
     <div
@@ -66,4 +84,14 @@ export const AccessibilitySuggestions = ({ markdownLintErrors }) => {
       </ul>
     </div>
   );
+};
+
+AccessibilitySuggestions.propTypes = {
+  markdownLintErrors: PropTypes.arrayOf(
+    PropTypes.shape({
+      errorContext: PropTypes.string,
+      errorDetail: PropTypes.string,
+      ruleNames: PropTypes.arrayOf(PropTypes.string),
+    }),
+  ),
 };
