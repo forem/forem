@@ -27,45 +27,6 @@ class SiteConfig < RailsSettings::Base
   field :health_check_token, type: :string
   field :video_encoder_key, type: :string
 
-  # NOTE: @citizen428 These two values will be removed once we fully migrated
-  # to Settings::Authentication. Until then we need them for the data update script.
-  field :allowed_registration_email_domains, type: :array, default: %w[], validates: {
-    valid_domain_csv: true
-  }
-  field :authentication_providers, type: :array, default: %w[]
-
-  # NOTE: @citizen428 The whole block of campaign settings will be removed once
-  # we fully migrated to Settings::Campaign across the fleet.
-  # Campaign
-  field :campaign_call_to_action, type: :string, default: "Share your project"
-  field :campaign_hero_html_variant_name, type: :string, default: ""
-  field :campaign_featured_tags, type: :array, default: %w[]
-  field :campaign_sidebar_enabled, type: :boolean, default: 0
-  field :campaign_sidebar_image, type: :string, default: nil, validates: {
-    url: true
-  }
-  field :campaign_url, type: :string, default: nil
-  field :campaign_articles_require_approval, type: :boolean, default: 0
-  field :campaign_articles_expiry_time, type: :integer, default: 4
-  # Community Content
-  # NOTE: @citizen428 All these settings will be removed once we full migrated
-  # to Settings::Community across the fleet.
-  field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
-  field :community_emoji, type: :string, default: "🌱", validates: { emoji_only: true }
-  # collective_noun and collective_noun_disabled have been added back temporarily for
-  # a data_update script, but will be removed in a future PR!
-  field :collective_noun, type: :string, default: "Community"
-  field :collective_noun_disabled, type: :boolean, default: false
-  field :community_description, type: :string
-  field :community_member_label, type: :string, default: "user"
-  field :tagline, type: :string
-  field :community_copyright_start_year,
-        type: :integer,
-        default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] || Time.zone.today.year
-  field :staff_user_id, type: :integer, default: 1
-  field :experience_low, type: :string, default: "Total Newbies"
-  field :experience_high, type: :string, default: "Experienced Users"
-
   # Emails
   field :email_addresses, type: :hash, default: {
     default: ApplicationConfig["DEFAULT_EMAIL"],
@@ -96,13 +57,6 @@ class SiteConfig < RailsSettings::Base
   field :logo_svg, type: :string
 
   field :enable_video_upload, type: :boolean, default: false
-
-  # Mascot
-  field :mascot_user_id, type: :integer, default: nil
-  field :mascot_image_url,
-        type: :string,
-        default: proc { URL.local_image("mascot.png") },
-        validates: { url: true }
 
   # Meta keywords
   field :meta_keywords, type: :hash, default: {
