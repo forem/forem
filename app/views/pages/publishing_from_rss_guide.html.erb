@@ -17,16 +17,16 @@
     <p>Our feed reader converts some elements from the RSS or Atom feeds to tags for the editor's front matter:</p>
     <ul>
       <li>
-        <code>&lt;title&gt;</code> → <strong>title</strong>, the title of the post
+        <code>&lt;title&gt;</code>: <strong>title</strong>, the title of the post
       </li>
 
       <li>
-        <code>&lt;category&gt;</code> → <strong>tags</strong>, only the first four <code>&lt;category&gt;</code> elements
+        <code>&lt;category&gt;</code>: <strong>tags</strong>, only the first four <code>&lt;category&gt;</code> elements
         can be used in a post on <%= community_name %> per each item in the feed.
       </li>
 
       <li>
-        <code>&lt;link&gt;</code> → <strong>canonical_url</strong>, only used if the "Mark the RSS source as canonical URL by default"
+        <code>&lt;link&gt;</code>: <strong>canonical_url</strong>, only used if the "Mark the RSS source as canonical URL by default"
         option is enabled in the <%= link_to "RSS Settings", user_settings_path(:extensions) %>.
       </li>
     </ul>
