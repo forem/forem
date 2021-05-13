@@ -6,7 +6,6 @@ cache:
   bundler: true
   directories:
     - node_modules
-    - ~/.cache/Cypress
 rvm:
   - 2.7.2
 addons:
