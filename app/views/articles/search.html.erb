@@ -17,13 +17,13 @@
       <nav id="sorting-option-tabs" class="crayons-tabs crayons-tabs--wrapped ml-auto" aria-label="Search result sort options">
         <ul class="crayons-tabs__list">
           <li>
-            <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>" aria-current="page">Most Relevant</a>
+            <a data-text="Most Relevant" href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>" aria-current="page">Most Relevant</a>
           </li>
           <li>
-            <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
+            <a data-text="Newest" href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
           </li>
           <li>
-            <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
+            <a data-text="Oldest" href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
           </li>
         </ul>
       </nav>

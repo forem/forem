@@ -3,6 +3,7 @@ module Notifications
     class Send
       delegate :user_data, to: Notifications
       delegate :comment_data, to: Notifications
+      delegate :article_data, to: Notifications
 
       def initialize(mention)
         @mention = mention
@@ -28,7 +29,14 @@ module Notifications
 
       def json_data
         data = { user: user_data(mention.mentionable.user) }
-        data[:comment] = comment_data(mention.mentionable) if mention.mentionable_type == "Comment"
+
+        case mention.mentionable_type
+        when "Comment"
+          data[:comment] = comment_data(mention.mentionable)
+        when "Article"
+          data[:article] = article_data(mention.mentionable)
+        end
+
         data
       end
     end

@@ -588,6 +588,16 @@ RSpec.describe "/admin/customization/config", type: :request do
           end.to change(Settings::RateLimit, :comment_creation).from(default_value).to(3)
         end
 
+        it "updates mention_creation" do
+          default_value = Settings::RateLimit.get_default(:mention_creation)
+          expect do
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { mention_creation: 10 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :mention_creation).from(default_value).to(10)
+        end
+
         it "updates published_article_creation" do
           default_value = Settings::RateLimit.get_default(:published_article_creation)
           expect do
