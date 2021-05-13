@@ -29,16 +29,17 @@ class ApplicationController < ActionController::Base
     )
   end
 
-  PUBLIC_CONTROLLERS = %w[shell
-                          async_info
-                          ga_events
-                          service_worker
-                          omniauth_callbacks
-                          registrations
+  PUBLIC_CONTROLLERS = %w[async_info
                           confirmations
+                          deep_links
+                          ga_events
+                          health_checks
                           invitations
+                          omniauth_callbacks
                           passwords
-                          health_checks].freeze
+                          registrations
+                          service_worker
+                          shell].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   CONTENT_CHANGE_PATHS = [

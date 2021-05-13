@@ -68,6 +68,12 @@ module RateLimitCheckerHelper
       title: "Limit number of comments created by a new member",
       description: new_user_message("comments")
     },
+    mention_creation: {
+      min: 0,
+      placeholder: 7,
+      title: "Limit number of @-mentions in a post or comment",
+      description: "How many times can someone @-mention other users in a post or comment?"
+    },
     listing_creation: {
       min: 1,
       placeholder: 1,
