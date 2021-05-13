@@ -79,6 +79,7 @@ jobs:
         - bundle exec bundle-audit check --update
         - bin/test-console-check
         - yarn build-storybook
+        - yarn cypress install
         - bin/e2e-ci
 
     - stage: Deploy
