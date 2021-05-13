@@ -104,7 +104,7 @@
       </div>
     <% end %>
     <%= yield %>
-    <div class="Browser-iOS">
+    <div class="Browser-iOS-only">
       <div class="runtime-banner">
         <a href="<%= URL.deep_link(request.path) %>" target="_blank" class="flex items-center flex-1">
           <%= inline_svg_tag("logo-forem-app.svg", aria_hidden: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32) %>
