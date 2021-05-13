@@ -469,7 +469,7 @@ RSpec.describe "/admin/customization/config", type: :request do
             expect(SiteConfig.shop_url).to eq("")
             get "/privacy"
             expect(response.body).not_to include(previous_shop_url)
-            expect(response.body).not_to include("#{SiteConfig.community_name} Shop")
+            expect(response.body).not_to include("#{Settings::Community.community_name} Shop")
           end
 
           it "updates shop url" do
@@ -479,7 +479,7 @@ RSpec.describe "/admin/customization/config", type: :request do
             expect(SiteConfig.shop_url).to eq(expected_shop_url)
             get "/privacy"
             expect(response.body).to include(expected_shop_url)
-            expect(response.body).to include("#{SiteConfig.community_name} Shop")
+            expect(response.body).to include("#{Settings::Community.community_name} Shop")
           end
         end
       end
