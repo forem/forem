@@ -22,6 +22,12 @@ class PagesController < ApplicationController
     set_surrogate_key_header "about_listings_page"
   end
 
+  def badge
+    @html_variant = HtmlVariant.find_for_test([], "badge_landing_page")
+    render layout: false
+    set_surrogate_key_header "badge_page"
+  end
+
   def bounty
     @page = Page.find_by(slug: "security")
     render :show if @page
@@ -64,22 +70,16 @@ class PagesController < ApplicationController
     set_surrogate_key_header "privacy_page"
   end
 
-  def terms
-    @page = Page.find_by(slug: "terms")
-    render :show if @page
-    set_surrogate_key_header "terms_page"
-  end
-
   def tag_moderation
     @page = Page.find_by(slug: "tag-moderation")
     render :show if @page
     set_surrogate_key_header "tag_moderation_page"
   end
 
-  def badge
-    @html_variant = HtmlVariant.find_for_test([], "badge_landing_page")
-    render layout: false
-    set_surrogate_key_header "badge_page"
+  def terms
+    @page = Page.find_by(slug: "terms")
+    render :show if @page
+    set_surrogate_key_header "terms_page"
   end
 
   def report_abuse
