@@ -56,7 +56,7 @@ class User < ApplicationRecord
       attr_accessor :_skip_creating_profile
 
       # All new users should automatically have a profile
-      after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
+      after_create_commit :create_user_profile, unless: :_skip_creating_profile
 
       # Getters and setters for unmapped profile attributes
       (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
@@ -137,6 +137,14 @@ class User < ApplicationRecord
     mod_roundrobin_notifications
     reaction_notifications
     welcome_notifications
+  ].freeze
+
+  USER_SETTINGS_ENUM_FIELDS = %w[
+    config_font
+    config_navbar
+    config_theme
+    editor_version
+    inbox_type
   ].freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
@@ -347,10 +355,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
-  # NOTE: @msarit `sync_users_settings_table` blows up when trying to sync the
-  # User.profile fields, probably because the user's profile hasn't been created yet
-  # (race condition)
-  after_commit :sync_users_settings_table, :sync_users_notification_settings_table
+  after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 
   def self.dev_account
@@ -623,63 +628,30 @@ class User < ApplicationRecord
 
   private
 
-  # rubocop:disable Metrics/BlockLength
-  def migrate_users_fields_to_users_settings(users_setting_record)
+  def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
+    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      users_setting_record.update(field => profile.data[field]) if profile.data[field].present?
+    end
+  end
+
+  def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
     USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      case field
-      when "config_font"
-        config_font_enums = {
-          default: 0,
-          comic_sans: 1,
-          monospace: 2,
-          open_dyslexic: 3,
-          sans_serif: 4,
-          serif: 5
-        }
-        users_setting_record.update(field => config_font_enums[public_send(field).to_sym])
-      when "config_navbar"
-        config_navbar_enums = {
-          default: 0,
-          static: 1
-        }
-        users_setting_record.update(field => config_navbar_enums[public_send(field).to_sym])
-      when "config_theme"
-        config_theme_enums = {
-          default: 0,
-          minimal_light_theme: 1,
-          night_theme: 2,
-          pink_theme: 3,
-          ten_x_hacker_theme: 4
-        }
-        users_setting_record.update(field => config_theme_enums[public_send(field).to_sym])
-      when "editor_version"
-        config_editor_enums = {
-          v2: 0,
-          v1: 1
-        }
-        users_setting_record.update(field => config_editor_enums[public_send(field).to_sym])
-      when "inbox_type"
-        config_inbox_enums = {
-          private: 0,
-          open: 1
-        }
-        users_setting_record.update(field => config_inbox_enums[public_send(field).to_sym])
+      if USER_SETTINGS_ENUM_FIELDS.include?(field)
+        field_enums = Users::Setting.defined_enums[field]
+        users_setting_record.update(field => field_enums[public_send(field).to_sym])
       else
         users_setting_record.update(field => public_send(field))
       end
     end
 
-    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      users_setting_record.update(field => profile.public_send(field)) if profile.public_send(field).present?
-    end
+    sync_relevant_profile_fields_to_user_settings_table(users_setting_record) if profile
   end
-  # rubocop:enable Metrics/BlockLength
 
   def sync_users_settings_table
     users_setting_record = Users::Setting.find_by(user_id: id)
     users_setting_record ||= Users::Setting.create(user_id: id)
 
-    migrate_users_fields_to_users_settings(users_setting_record)
+    migrate_users_and_profile_fields_to_users_settings(users_setting_record)
   end
 
   def sync_users_notification_settings_table
@@ -689,6 +661,10 @@ class User < ApplicationRecord
     USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
       users_notification_setting_record.update(field => public_send(field))
     end
+  end
+
+  def create_user_profile
+    Profile.create(user: self)
   end
 
   def send_welcome_notification
