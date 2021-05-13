@@ -4,6 +4,10 @@ module Follows
       new(follower, followable_type, followable_id).call
     end
 
+    def self.delete(follower, followable_type, followable_id)
+      new(follower, followable_type, followable_id).delete
+    end
+
     def initialize(follower, followable_type, followable_id)
       @follower = follower
       @followable_type = followable_type
@@ -17,6 +21,13 @@ module Follows
       Rails.cache.fetch(cache_key, expires_in: 20.hours) do
         follower.following?(followable.find(followable_id))
       end
+    end
+
+    def delete
+      return false unless follower
+
+      cache_key = "user-#{follower.id}-#{follower.updated_at.rfc3339}/is_following_#{followable_type}_#{followable_id}"
+      Rails.cache.delete(cache_key)
     end
 
     private
