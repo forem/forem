@@ -1,5 +1,6 @@
 @import 'variables';
 @import '_mixins';
+@import 'config/import';
 
 .runtime-banner {
   display: flex;
