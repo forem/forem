@@ -145,6 +145,7 @@ module MarkdownProcessor
         .new(html)
         .remove_nested_linebreak_in_list
         .prefix_all_images
+        .detect_animated_images
         .wrap_all_images_in_links
         .add_control_class_to_codeblock
         .add_control_panel_to_codeblock
