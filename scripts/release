@@ -12,7 +12,7 @@ rescue => e
 end
 
 channel = ENV.fetch("FOREM_RELEASE_CHANNEL", "stable")
-date = ENV.fetch("FOREM_RELEASE_DATE", Date.today.to_s).gsub(/-/, "")
+date = ENV.fetch("FOREM_RELEASE_DATE", Date.today.to_s)..delete("-")
 hotfix = ENV.fetch("FOREM_RELEASE_HOTFIX", 0)
 remote = ENV.fetch("FOREM_RELEASE_REMOTE", "origin")
 source = ENV.fetch("FOREM_STAGING_FROM", "#{channel}-next")
