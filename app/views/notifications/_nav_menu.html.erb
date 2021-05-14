@@ -41,17 +41,17 @@
   <div class="crayons-tabs <%= "hidden" if params[:org_id].present? %>">
     <ul class="crayons-tabs__list">
       <li>
-        <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].blank? %>" href="/notifications" aria-current="<%= "page" if params[:filter].blank? %>">
+        <a data-text="All" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].blank? %>" href="/notifications" aria-current="<%= "page" if params[:filter].blank? %>">
           All
         </a>
       </li>
       <li>
-        <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments" aria-current="<%= "page" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>">
+        <a data-text="Comments" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments" aria-current="<%= "page" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>">
           Comments
         </a>
       </li>
       <li>
-        <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts" aria-current="<%= "page" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>">
+        <a data-text="Posts" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts" aria-current="<%= "page" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>">
           Posts
         </a>
       </li>
@@ -60,10 +60,10 @@
   <% if @organizations.present? %>
     <% @organizations.each do |org| %>
       <div class="crayons-tabs <%= "hidden" unless params[:org_id].to_i == org.id %>">
-        <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
+        <a data-text="All" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
           All
         </a>
-        <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
+        <a data-text="Comments" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
           Comments
         </a>
       </div>
