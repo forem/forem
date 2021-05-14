@@ -26,6 +26,9 @@ module Articles
       success = article.update(attrs)
 
       if success
+        has_body_markdown_changed = article.saved_change_to_attribute?(:body_markdown)
+        ::Articles::DetectAnimatedImagesWorker.perform_async(article.id) if has_body_markdown_changed
+
         user.rate_limiter.track_limit_by_action(:article_update)
 
         if article.published && article.saved_change_to_published_at.present?
