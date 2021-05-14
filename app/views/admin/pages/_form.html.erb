@@ -38,12 +38,12 @@
     </div>
     <div class="form-group">
       <%= form.label :is_top_level_path %>
-      <%= form.check_box :is_top_level_path %>
+      <%= form.check_box :is_top_level_path, class: "crayons-checkbox" %>
       <p>Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code> Be careful! ⚠️</p>
     </div>
     <div class="form-group">
       <%= form.label :landing_page, "Use as 'Locked Screen'" %>
-      <%= form.check_box :landing_page %>
+      <%= form.check_box :landing_page, class: "crayons-checkbox" %>
       <p>Determines if this page will be used as a landing page for annonymous viewers.</p>
     </div>
     <div class="form-group">
@@ -63,7 +63,7 @@
         <br>
       </p>
     </div>
-    <%= form.submit class: "btn btn-primary" %>
+    <%= form.submit class: "crayons-btn" %>
   <% end %>
 
   <% if @page.persisted? %>
