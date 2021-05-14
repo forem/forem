@@ -56,7 +56,7 @@ class User < ApplicationRecord
       attr_accessor :_skip_creating_profile
 
       # All new users should automatically have a profile
-      after_create_commit :create_user_profile, unless: :_skip_creating_profile
+      after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
 
       # Getters and setters for unmapped profile attributes
       (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
@@ -111,14 +111,14 @@ class User < ApplicationRecord
     inbox_guidelines
     inbox_type
     permit_adjacent_sponsors
-  ].freeze
+  ].to_set.freeze
 
   # Relevant Fields for migration from Profiles table to Users_Settings table
   PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
     brand_color1
     brand_color2
     display_email_on_profile
-  ].freeze
+  ].to_set.freeze
 
   # Relevant Fields for migration from Users table to Users_Notification_Settings table
   USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
@@ -137,7 +137,7 @@ class User < ApplicationRecord
     mod_roundrobin_notifications
     reaction_notifications
     welcome_notifications
-  ].freeze
+  ].to_set.freeze
 
   USER_SETTINGS_ENUM_FIELDS = %w[
     config_font
@@ -145,7 +145,7 @@ class User < ApplicationRecord
     config_theme
     editor_version
     inbox_type
-  ].freeze
+  ].to_set.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -630,7 +630,7 @@ class User < ApplicationRecord
 
   def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
     PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      users_setting_record.update(field => profile.data[field]) if profile.data[field].present?
+      users_setting_record.assign_attributes(field => profile.data[field]) if profile.data[field].present?
     end
   end
 
@@ -638,33 +638,35 @@ class User < ApplicationRecord
     USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
       if USER_SETTINGS_ENUM_FIELDS.include?(field)
         field_enums = Users::Setting.defined_enums[field]
-        users_setting_record.update(field => field_enums[public_send(field).to_sym])
+        users_setting_record.assign_attributes(field => field_enums[public_send(field).to_sym])
       else
-        users_setting_record.update(field => public_send(field))
+        users_setting_record.assign_attributes(field => public_send(field))
       end
     end
 
-    sync_relevant_profile_fields_to_user_settings_table(users_setting_record) if profile
+    unless profile
+      Profile.create(user: self)
+    end
+
+    sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
+
+    users_setting_record.save
   end
 
   def sync_users_settings_table
-    users_setting_record = Users::Setting.find_by(user_id: id)
-    users_setting_record ||= Users::Setting.create(user_id: id)
+    users_setting_record = Users::Setting.create_or_find_by(user_id: id)
 
     migrate_users_and_profile_fields_to_users_settings(users_setting_record)
   end
 
   def sync_users_notification_settings_table
-    users_notification_setting_record = Users::NotificationSetting.find_by(user_id: id)
-    users_notification_setting_record ||= Users::NotificationSetting.create(user_id: id)
+    users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)
 
     USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
-      users_notification_setting_record.update(field => public_send(field))
+      users_notification_setting_record.assign_attributes(field => public_send(field))
     end
-  end
 
-  def create_user_profile
-    Profile.create(user: self)
+    users_notification_setting_record.save
   end
 
   def send_welcome_notification
