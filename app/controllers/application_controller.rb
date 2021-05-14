@@ -54,8 +54,12 @@ class ApplicationController < ActionController::Base
     return if self.class.module_parent.to_s == "Admin"
     return if user_signed_in? || Settings::UserExperience.public
 
+    @page = Page.find_by(landing_page: true)
+
     if api_action?
       authenticate!
+    elsif @page
+      render template: "pages/show"
     else
       @user ||= User.new
       render template: "devise/registrations/new"
