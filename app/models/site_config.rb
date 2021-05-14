@@ -224,4 +224,8 @@ class SiteConfig < RailsSettings::Base
   def self.get_default(field)
     get_field(field)[:default]
   end
+
+  def self.smtp_enabled?
+    Rails.configuration.action_mailer.perform_deliveries
+  end
 end
