@@ -644,10 +644,6 @@ class User < ApplicationRecord
       end
     end
 
-    unless profile
-      Profile.create(user: self)
-    end
-
     sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
 
     users_setting_record.save
