@@ -10,11 +10,10 @@ module MarkdownProcessor
     WORDS_READ_PER_MINUTE = 275.0
     ALLOWED_ATTRIBUTES = %w[href src alt].freeze
 
-    def initialize(content, source: nil, user: nil, preview: false)
+    def initialize(content, source: nil, user: nil)
       @content = content
       @source = source
       @user = user
-      @preview = preview
     end
 
     def finalize(link_attributes: {})
@@ -142,15 +141,10 @@ module MarkdownProcessor
     def parse_html(html)
       return html if html.blank?
 
-      parser = Html::Parser.new(html)
-
-      parser = parser
+      Html::Parser
+        .new(html)
         .remove_nested_linebreak_in_list
         .prefix_all_images
-
-      parser = parser.detect_animated_images unless @preview
-
-      parser
         .wrap_all_images_in_links
         .add_control_class_to_codeblock
         .add_control_panel_to_codeblock

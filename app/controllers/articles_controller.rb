@@ -90,8 +90,7 @@ class ArticlesController < ApplicationController
     begin
       fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(params[:article_body])
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: Article.new, user: current_user,
-                                                                      preview: true)
+      parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: Article.new, user: current_user)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
