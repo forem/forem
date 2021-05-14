@@ -16,8 +16,6 @@ module Articles
       article = save_article
 
       if article.persisted?
-        ::Articles::DetectAnimatedImagesWorker.perform_async(article.id)
-
         # Subscribe author to notifications for all comments on their article.
         NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article",
                                         config: "all_comments")

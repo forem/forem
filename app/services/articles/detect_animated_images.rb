@@ -20,15 +20,19 @@ module Articles
       # we ignore images contained in liquid tags as they are not animated
       images = parsed_html.css("img") - parsed_html.css(IMAGES_IN_LIQUID_TAGS_SELECTORS)
 
+      found = false
       images.each do |img|
         src = img.attr("src")
         next unless src
 
         animated = FastImage.animated?(src)
-        img["data-animated"] = true if animated
+        if animated
+          img["data-animated"] = true
+          found = true
+        end
       end
 
-      article.save
+      article.update_columns(processed_html: parsed_html.to_html) if found
     end
   end
 end
