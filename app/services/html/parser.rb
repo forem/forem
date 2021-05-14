@@ -55,22 +55,6 @@ module Html
       self
     end
 
-    def detect_animated_images
-      doc = Nokogiri::HTML.fragment(@html)
-
-      doc.css("img").each do |img|
-        src = img.attr("src")
-        next unless src
-
-        animated = FastImage.animated?(src)
-        img["data-animated"] = true if animated
-      end
-
-      @html = doc.to_html
-
-      self
-    end
-
     def wrap_all_images_in_links
       doc = Nokogiri::HTML.fragment(@html)
 
