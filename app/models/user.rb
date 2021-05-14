@@ -630,7 +630,7 @@ class User < ApplicationRecord
 
   def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
     PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      users_setting_record.assign_attributes(field => profile.data[field]) if profile.data[field].present?
+      users_setting_record.assign_attributes(field => profile.public_send(field)) if profile.public_send(field).present?
     end
   end
 
