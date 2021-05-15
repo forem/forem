@@ -604,19 +604,6 @@
                 </div>
                 <input type="text" value="<%= ApplicationConfig["DEFAULT_EMAIL"] %>" class="form-control" readonly>
               </div>
-              <%= f.fields_for :email_addresses do |email_field| %>
-                <% Settings::General.email_addresses.except(:default).each do |type, address| %>
-                  <div class="crayons-field">
-                    <%= admin_config_label type %>
-                    <%= admin_config_description Constants::Settings::General::DETAILS[:email_addresses][:description] %>
-                    <%= email_field.text_field type,
-                                               class: "crayons-textfield",
-                                               value: Settings::General.email_addresses[type],
-                                               placeholder: Constants::Settings::General::DETAILS[:email_addresses][:placeholder] %>
-                  </div>
-                <% end %>
-              <% end %>
-              <%= render "form_submission", f: f %>
             </fieldset>
           </div>
           </div>

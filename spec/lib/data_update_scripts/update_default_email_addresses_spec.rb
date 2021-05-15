@@ -4,20 +4,8 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::UpdateDefaultEmailAddresses do
-  let(:contact_email) { "contact@dev.to" }
-
-  context "with no contact email set in the email_addresses hash" do
-    it "adds the contact email" do
-      described_class.new.run
-      expect(Settings::General.email_addresses).to include(contact: ApplicationConfig["DEFAULT_EMAIL"])
-    end
-  end
-
-  context "with a contact email set in the email_addresses hash" do
-    it "preserves the current contact email" do
-      Settings::General.email_addresses[:contact] = contact_email
-      described_class.new.run
-      expect(Settings::General.email_addresses).to include(contact: contact_email)
-    end
+  it "adds the default email" do
+    described_class.new.run
+    expect(Settings::General.email_addresses).to include(default: ApplicationConfig["DEFAULT_EMAIL"])
   end
 end
