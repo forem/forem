@@ -218,7 +218,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
-  describe "#cloudinary" do
+  describe "#cloudinary", cloudinary: true do
     it "returns cloudinary-manipulated link" do
       image = helper.optimized_image_url(Faker::Placeholdit.image)
       expect(image).to start_with("https://res.cloudinary.com")
@@ -240,7 +240,7 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe "#optimized_image_tag" do
-    it "works just like cl_image_tag" do
+    it "works just like cl_image_tag", cloudinary: true do
       image_url = "https://i.imgur.com/fKYKgo4.png"
       cloudinary_image_tag = cl_image_tag(image_url,
                                           type: "fetch", crop: "imagga_scale",

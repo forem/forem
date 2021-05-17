@@ -51,9 +51,8 @@ RSpec.describe Images::Optimizer, type: :service do
     end
   end
 
-  describe "#cloudinary" do
+  describe "#cloudinary", cloudinary: true do
     it "performs exactly like cl_image_path" do
-      allow(described_class).to receive(:imgproxy_enabled?).and_return(false)
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
                                      width: 50, height: 50,
@@ -66,7 +65,6 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "generates correct url by relying on DEFAULT_CL_OPTIONS" do
-      allow(described_class).to receive(:imgproxy_enabled?).and_return(false)
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
                                      quality: "auto",
