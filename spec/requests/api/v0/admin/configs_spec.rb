@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Admin::Configs", type: :request do
+RSpec.xdescribe "Api::V0::Admin::Configs", type: :request do
   let(:api_secret) { create(:api_secret) }
   let(:user) { api_secret.user }
 
