@@ -156,7 +156,7 @@
     "ahoy.js": "^0.3.8",
     "autoprefixer": "^10.2.5",
     "babel-preset-preact": "^2.0.0",
-    "canvas": "^2.7.0",
+    "canvas": "^2.8.0",
     "chart.js": "^3.2.1",
     "clipboard-polyfill": "^3.0.3",
     "core-js": "3",
