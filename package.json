@@ -140,7 +140,7 @@
     "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
     "svgo": "2.3.0",
-    "webpack-bundle-analyzer": "^4.4.1",
+    "webpack-bundle-analyzer": "^4.4.2",
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
