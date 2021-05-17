@@ -822,14 +822,6 @@
                        } %>
           <div id="monetizationBodyContainer" class="card-body collapse hide" aria-labelledby="monetizationBodyContainer">
             <fieldset class="grid gap-4">
-              <div class="crayons-field">
-                <%= admin_config_label :shop_url, "Shop URL" %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:shop_url][:description] %>
-                <%= f.text_field :shop_url,
-                                 class: "crayons-textfield",
-                                 value: SiteConfig.shop_url,
-                                 placeholder: Constants::SiteConfig::DETAILS[:shop_url][:placeholder] %>
-            </div>
 
             <div class="crayons-field">
               <%= admin_config_label :stripe_api_key, "Stripe API key" %>
