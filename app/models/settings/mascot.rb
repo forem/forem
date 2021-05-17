@@ -6,10 +6,6 @@ module Settings
     # the cache, or call Settings::Mascot.clear_cache
     cache_prefix { "v1" }
 
-    field :footer_image_height, type: :integer, default: 120
-    field :footer_image_url, type: :string, validates: { url: true }
-    field :footer_image_width, type: :integer, default: 52
-    field :image_description, type: :string, default: "The community mascot"
     field :image_url,
           type: :string,
           default: proc { URL.local_image("mascot.png") },

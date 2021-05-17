@@ -2,21 +2,23 @@ class Device < ApplicationRecord
   # @fdoxyz to remove app_bundle from Device soon
   self.ignored_columns = ["app_bundle"]
 
-  belongs_to :user
   belongs_to :consumer_app
+  belongs_to :user
 
   IOS = "iOS".freeze
   ANDROID = "Android".freeze
 
+  enum platform: { android: ANDROID, ios: IOS }
+
+  validates :platform, inclusion: { in: platforms.keys }
+  validates :token, presence: true
   validates :token, uniqueness: { scope: %i[user_id platform consumer_app_id] }
-  validates :platform, inclusion: { in: [IOS, ANDROID] }
 
   def create_notification(title, body, payload)
-    case platform
-    when IOS
-      ios_notification(title, body, payload)
-    when ANDROID
+    if android?
       android_notification(title, body, payload)
+    elsif ios?
+      ios_notification(title, body, payload)
     end
   end
 

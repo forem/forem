@@ -14,7 +14,7 @@ RSpec.describe "Universal Links (Apple)", type: :request do
 
         both_app_ids = [forem_app_id, dev_app_id]
         expect(response).to have_http_status(:ok)
-        expect(json_response.dig("applinks", "apps")).to match_array(both_app_ids)
+        expect(json_response.dig("applinks", "apps")).to be_empty
         json_response.dig("applinks", "details").each do |hash|
           expect(both_app_ids).to include(hash["appID"])
           expect(hash["paths"]).to match_array(["/*"])
@@ -28,7 +28,22 @@ RSpec.describe "Universal Links (Apple)", type: :request do
         json_response = JSON.parse(response.body)
         expect(response).to have_http_status(:ok)
 
-        expect(json_response.dig("applinks", "apps")).to match_array([forem_app_id])
+        expect(json_response.dig("applinks", "apps")).to be_empty
+        json_response.dig("applinks", "details").each do |hash|
+          expect(hash["appID"]).to eq(forem_app_id)
+          expect(hash["paths"]).to match_array(["/*"])
+        end
+      end
+    end
+
+    context "when non-public Forem instance" do
+      it "responds with applinks support for Forem app", :aggregate_failures do
+        allow(Settings::UserExperience).to receive(:public).and_return(false)
+        get aasa_route
+        json_response = JSON.parse(response.body)
+        expect(response).to have_http_status(:ok)
+
+        expect(json_response.dig("applinks", "apps")).to be_empty
         json_response.dig("applinks", "details").each do |hash|
           expect(hash["appID"]).to eq(forem_app_id)
           expect(hash["paths"]).to match_array(["/*"])

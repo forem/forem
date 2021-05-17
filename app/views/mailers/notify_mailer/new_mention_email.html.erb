@@ -1,26 +1,31 @@
 <head>
-    <style type="text/css">
-      img {
-        max-width:100%;
-        height:auto;
-        border:none
-      }
-    </style>
+  <style type="text/css">
+    img {
+      max-width:100%;
+      height:auto;
+      border:none
+    }
+  </style>
 </head>
 
 <h2 style="font-size:25px;">
-  <a href="<%= user_url(@mentioner) %>"><%= @mentioner.name %></a> just mentioned you in their <%= @mention.mentionable_type.downcase %>!
+  <a href="<%= user_url(@mentioner) %>"><%= @mentioner.name %></a> just mentioned you in their <%= @mentionable_type %>
 </h2>
-<table>
-  <tr>
-    <td style='color:#c3c3c3;font-size:14px;padding-bottom:8px'>
 
-    </td>
-  </tr>
-  <tr>
-    <td style='padding:20px;padding-bottom:30px;border-radius:3px;font-size:19px;background:#f4f4f4'>
-      <%= @mentionable.processed_html.html_safe %>
-      <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='<%= app_url(@mention.mentionable.path) %>'>View on <%= community_name %></a>
-    </td>
-  </tr>
-</table>
+<% if @mentionable.is_a?(Comment) %>
+  <table>
+    <tr>
+      <td style='color:#c3c3c3;font-size:14px;padding-bottom:8px'>
+
+      </td>
+    </tr>
+    <tr>
+      <td style='padding:20px;padding-bottom:30px;border-radius:3px;font-size:19px;background:#f4f4f4'>
+        <%= @mentionable.processed_html.html_safe %>
+        <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='<%= app_url(@mention.mentionable.path) %>'>View on <%= community_name %></a>
+      </td>
+    </tr>
+  </table>
+<% else %>
+  <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='<%= app_url(@mention.mentionable.path) %>'>Read their post on <%= community_name %></a>
+<% end %>

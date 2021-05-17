@@ -25,12 +25,10 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
-  # TODO: Vaidehi Joshi - Extract this into a constant or Settings::General variable
-  # after https://github.com/forem/rfcs/pull/22 has been completed?
-  MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
 
+  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
@@ -178,7 +176,7 @@ class Article < ApplicationRecord
       .where(user_id: User.with_role(:super_admin)
                           .union(User.with_role(:admin))
                           .union(id: [Settings::Community.staff_user_id,
-                                      Settings::Mascot.mascot_user_id].compact)
+                                      SiteConfig.mascot_user_id].compact)
                           .select(:id)).order(published_at: :desc).tagged_with(tag_name)
   }
 
@@ -407,9 +405,9 @@ class Article < ApplicationRecord
   def readable_publish_date
     relevant_date = displayable_published_at
     if relevant_date && relevant_date.year == Time.current.year
-      relevant_date&.strftime("%b %e")
+      relevant_date&.strftime("%b %-e")
     else
-      relevant_date&.strftime("%b %e '%y")
+      relevant_date&.strftime("%b %-e '%y")
     end
   end
 
@@ -689,9 +687,9 @@ class Article < ApplicationRecord
 
     # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
-    return if mentions_count <= MAX_USER_MENTIONS
+    return if mentions_count <= Settings::RateLimit.mention_creation
 
-    errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a post!")
+    errors.add(:base, "You cannot mention more than #{Settings::RateLimit.mention_creation} users in a post!")
   end
 
   def create_slug
@@ -788,7 +786,7 @@ class Article < ApplicationRecord
     return unless Settings::General.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
 
     Reaction.create(
-      user_id: Settings::Mascot.mascot_user_id,
+      user_id: SiteConfig.mascot_user_id,
       reactable_id: id,
       reactable_type: "Article",
       category: "vomit",
@@ -798,7 +796,7 @@ class Article < ApplicationRecord
 
     user.add_role(:suspended)
     Note.create(
-      author_id: Settings::Mascot.mascot_user_id,
+      author_id: SiteConfig.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
       reason: "automatic_suspend",
