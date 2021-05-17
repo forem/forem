@@ -84,18 +84,24 @@ RSpec.describe Images::Optimizer, type: :service do
   end
 
   describe "#cloudinary_enabled?" do
-    it "returns false if cloud_name and api_key are missing", :aggregate_failures do
-      allow(Cloudinary.config).to receive(:cloud_name).and_return(nil)
+    it "returns false if cloud_name, api_key or api_secret are missing", :aggregate_failures do
+      allow(Cloudinary.config).to receive(:cloud_name).and_return("")
       expect(described_class.cloudinary_enabled?).to be(false)
 
       allow(Cloudinary.config).to receive(:cloud_name).and_return("cloud name")
-      allow(Cloudinary.config).to receive(:api_key).and_return(nil)
+      allow(Cloudinary.config).to receive(:api_key).and_return("")
+      expect(described_class.cloudinary_enabled?).to be(false)
+
+      allow(Cloudinary.config).to receive(:cloud_name).and_return("cloud name")
+      allow(Cloudinary.config).to receive(:api_key).and_return("api key")
+      allow(Cloudinary.config).to receive(:api_secret).and_return("")
       expect(described_class.cloudinary_enabled?).to be(false)
     end
 
-    it "returns true if cloud_name and api_key are provided" do
+    it "returns true if cloud_name and api_key and api_secret are provided" do
       allow(Cloudinary.config).to receive(:cloud_name).and_return("cloud name")
       allow(Cloudinary.config).to receive(:api_key).and_return("api key")
+      allow(Cloudinary.config).to receive(:api_secret).and_return("api secret")
 
       expect(described_class.cloudinary_enabled?).to be(true)
     end

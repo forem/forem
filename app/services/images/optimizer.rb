@@ -62,7 +62,9 @@ module Images
     end
 
     def self.cloudinary_enabled?
-      Cloudinary.config.cloud_name.present? && Cloudinary.config.api_key.present?
+      config = Cloudinary.config
+
+      config.cloud_name.present? && config.api_key.present? && config.api_secret.present?
     end
 
     def self.get_imgproxy_endpoint
