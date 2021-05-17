@@ -24,12 +24,10 @@ module Articles
       images.each do |img|
         src = img.attr("src")
         next unless src
+        next unless FastImage.animated?(src)
 
-        animated = FastImage.animated?(src)
-        if animated
-          img["data-animated"] = true
-          found = true
-        end
+        img["data-animated"] = true
+        found = true
       end
 
       article.update_columns(processed_html: parsed_html.to_html) if found
