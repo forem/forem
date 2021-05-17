@@ -136,7 +136,7 @@
     "markdown-loader": "^6.0.0",
     "prettier": "^2.3.0",
     "redoc-cli": "0.11.4",
-    "sass": "1.32.12",
+    "sass": "1.32.13",
     "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
     "svgo": "2.3.0",
