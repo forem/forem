@@ -1,7 +1,7 @@
 module Follows
   class DeleteCached
-    def self.delete(follower, followable_type, followable_id)
-      new(follower, followable_type, followable_id).delete
+    def self.call(follower, followable_type, followable_id)
+      new(follower, followable_type, followable_id).call
     end
 
     def initialize(follower, followable_type, followable_id)
@@ -10,7 +10,7 @@ module Follows
       @followable_id = followable_id
     end
 
-    def delete
+    def call
       return false unless follower
 
       cache_key = "user-#{follower.id}-#{follower.updated_at.rfc3339}/is_following_#{followable_type}_#{followable_id}"
@@ -20,14 +20,5 @@ module Follows
     private
 
     attr_accessor :follower, :followable_type, :followable_id
-
-    def followable
-      case followable_type
-      when "Tag", "Organization", "Podcast"
-        followable_type.constantize
-      else
-        User
-      end
-    end
   end
 end

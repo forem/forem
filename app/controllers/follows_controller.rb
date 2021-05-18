@@ -113,7 +113,7 @@ class FollowsController < ApplicationController
     user_follow = current_user.stop_following(followable)
     Notification.send_new_follower_notification_without_delay(user_follow, is_read: true) if need_notification
 
-    Follows::DeleteCached.delete(current_user, followable_type, followable.id)
+    Follows::DeleteCached.call(current_user, followable_type, followable.id)
 
     "unfollowed"
   end
