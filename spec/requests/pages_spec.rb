@@ -89,11 +89,8 @@ RSpec.describe "Pages", type: :request do
 
   describe "GET /privacy" do
     it "has proper headline" do
-      allow(SiteConfig).to receive(:shop_url).and_return("some-shop-url")
       get "/privacy"
       expect(response.body).to include("Privacy Policy")
-      expect(response.body).to include(SiteConfig.shop_url)
-      expect(response.body).to include("#{SiteConfig.community_name} Shop")
     end
   end
 
