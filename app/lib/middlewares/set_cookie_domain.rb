@@ -1,4 +1,4 @@
-if Rails.env.production?
+module Middlewares
   # Since we must explicitly set the cookie domain in session_store before SiteConfig is available,
   # this ensures we properly set the cookie to SiteConfig.app_domain at runtime.
   class SetCookieDomain
@@ -12,6 +12,4 @@ if Rails.env.production?
       @app.call(env)
     end
   end
-
-  Rails.configuration.middleware.use SetCookieDomain
 end
