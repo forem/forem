@@ -55,7 +55,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /about-listings" do
     it "has proper headline" do
       get "/about-listings"
-      expect(response.body).to include("About #{SiteConfig.community_name} Listings")
+      expect(response.body).to include("About #{Settings::Community.community_name} Listings")
     end
   end
 
@@ -76,7 +76,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /page/post-a-job" do
     it "has proper headline" do
       get "/page/post-a-job"
-      expect(response.body).to include("Posting a Job on #{SiteConfig.community_name} Listings")
+      expect(response.body).to include("Posting a Job on #{Settings::Community.community_name} Listings")
     end
   end
 

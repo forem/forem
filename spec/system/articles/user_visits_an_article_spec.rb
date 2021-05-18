@@ -30,7 +30,7 @@ RSpec.describe "Views an article", type: :system do
     it "suggests articles by other users if the author has no other articles" do
       create(:article, user: create(:user))
       visit article.path
-      expect(page).to have_text("Trending on #{SiteConfig.community_name}")
+      expect(page).to have_text("Trending on #{Settings::Community.community_name}")
     end
 
     it "suggests more articles by the author if there are any" do
