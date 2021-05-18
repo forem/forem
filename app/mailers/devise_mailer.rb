@@ -3,7 +3,7 @@ class DeviseMailer < Devise::Mailer
 
   def use_site_config_values
     Devise.mailer_sender =
-      "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
+      "#{Settings::Community.community_name} <#{SiteConfig.email_addresses[:default]}>"
     ActionMailer::Base.default_url_options[:host] = SiteConfig.app_domain
   end
 end
