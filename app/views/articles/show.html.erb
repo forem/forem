@@ -100,7 +100,7 @@
       <% if !@article.published %>
         <div class="crayons-notice crayons-notice--danger mb-4" aria-live="polite">
           <strong>Unpublished Post.</strong> This URL is public but secret, so share at your own discretion.
-          <% if user_signed_in? %>
+          <% if user_signed_in? && current_user == @article.author %>
             <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none">Click to edit</a>
           <% end %>
         </div>
