@@ -7,7 +7,7 @@ class Page < ApplicationRecord
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
   validate :unique_slug_including_users_and_orgs, if: :slug_changed?
-  validate :single_landing_page
+  validate :single_landing_page, if: :will_save_change_to_landing_page?
 
   before_validation :set_default_template
   before_save :evaluate_markdown
@@ -65,7 +65,8 @@ class Page < ApplicationRecord
     return unless landing_page &&
       [nil, id].exclude?(landing_page.id)
 
-    errors.add(:base, "Only one page at a time can be used as a 'landing page.'")
+    errors.add(:base, "Only one page at a time can be used as a 'locked screen.'
+                      If you proceed, this page will no longer show as 'locked screen':")
   end
 
   def bust_cache
