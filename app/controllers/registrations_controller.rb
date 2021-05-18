@@ -12,6 +12,8 @@ class RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def create
     not_authorized unless Settings::Authentication.allow_email_password_registration ||
       SiteConfig.waiting_on_first_user
@@ -45,6 +47,8 @@ class RegistrationsController < Devise::RegistrationsController
       flash[:notice] = "You must complete the recaptcha ✅"
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   private
 
