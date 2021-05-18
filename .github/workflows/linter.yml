@@ -20,8 +20,8 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v3
         env:
-          # To only validate new and modified files change this to false
-          VALIDATE_ALL_CODEBASE: true
+          # Only validate new and modified files
+          VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # If no VALIDATE_* variables are set all default to true. As soon as
