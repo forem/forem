@@ -55,7 +55,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /about-listings" do
     it "has proper headline" do
       get "/about-listings"
-      expect(response.body).to include("About #{Settings::General.community_name} Listings")
+      expect(response.body).to include("About #{Settings::Community.community_name} Listings")
     end
   end
 
@@ -76,7 +76,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /page/post-a-job" do
     it "has proper headline" do
       get "/page/post-a-job"
-      expect(response.body).to include("Posting a Job on #{Settings::General.community_name} Listings")
+      expect(response.body).to include("Posting a Job on #{Settings::Community.community_name} Listings")
     end
   end
 
@@ -89,11 +89,8 @@ RSpec.describe "Pages", type: :request do
 
   describe "GET /privacy" do
     it "has proper headline" do
-      allow(Settings::General).to receive(:shop_url).and_return("some-shop-url")
       get "/privacy"
       expect(response.body).to include("Privacy Policy")
-      expect(response.body).to include(Settings::General.shop_url)
-      expect(response.body).to include("#{Settings::General.community_name} Shop")
     end
   end
 

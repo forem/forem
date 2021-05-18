@@ -119,7 +119,6 @@ module Settings
     field :payment_pointer, type: :string
     field :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
     field :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
-    field :shop_url, type: :string
 
     # Newsletter
     # <https://mailchimp.com/developer/>

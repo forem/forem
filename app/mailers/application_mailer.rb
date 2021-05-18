@@ -15,7 +15,11 @@ class ApplicationMailer < ActionMailer::Base
   )
 
   def email_from(topic = "")
-    community_name = topic.present? ? "#{Settings::General.community_name} #{topic}" : Settings::General.community_name
+    community_name = if topic.present?
+                       "#{Settings::Community.community_name} #{topic}"
+                     else
+                       Settings::Community.community_name
+                     end
 
     "#{community_name} <#{Settings::General.email_addresses[:default]}>"
   end

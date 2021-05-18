@@ -18,7 +18,7 @@ module Authentication
     class PreviouslySuspended < Error
       def message
         format(PREVIOUSLY_SUSPENDED_MESSAGE,
-               community_name: Settings::General.community_name,
+               community_name: Settings::Community.community_name,
                community_email: Settings::General.email_addresses[:contact])
       end
     end
