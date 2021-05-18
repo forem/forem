@@ -95,10 +95,6 @@ module Constants
         description: "Determines how often periodic email digests are sent",
         placeholder: 2
       },
-      shop_url: {
-        description: "Used as the shop url of the community",
-        placeholder: "https://shop.url"
-      },
       sidebar_tags: {
         description: "Determines which tags are shown on the homepage righthand sidebar",
         placeholder: "List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta"

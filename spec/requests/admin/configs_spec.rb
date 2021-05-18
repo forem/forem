@@ -450,38 +450,6 @@ RSpec.describe "/admin/customization/config", type: :request do
           expect(SiteConfig.stripe_api_key).to eq("sk_live_yo")
           expect(SiteConfig.stripe_publishable_key).to eq("pk_live_haha")
         end
-
-        describe "Shop" do
-          it "rejects update to shop_url without proper confirmation" do
-            expected_shop_url = "https://qshop.dev.to"
-
-            expect do
-              params = { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" }
-              post admin_config_path, params: params
-            end.to raise_error ActionController::BadRequest
-
-            expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
-          end
-
-          it "sets shop_url to nil" do
-            previous_shop_url = "some-shop-url"
-            post admin_config_path, params: { site_config: { shop_url: "" }, confirmation: confirmation_message }
-            expect(SiteConfig.shop_url).to eq("")
-            get "/privacy"
-            expect(response.body).not_to include(previous_shop_url)
-            expect(response.body).not_to include("#{SiteConfig.community_name} Shop")
-          end
-
-          it "updates shop url" do
-            expected_shop_url = "https://qshop.dev.to"
-            post admin_config_path, params: { site_config: { shop_url: expected_shop_url },
-                                              confirmation: confirmation_message }
-            expect(SiteConfig.shop_url).to eq(expected_shop_url)
-            get "/privacy"
-            expect(response.body).to include(expected_shop_url)
-            expect(response.body).to include("#{SiteConfig.community_name} Shop")
-          end
-        end
       end
 
       describe "Newsletter" do
