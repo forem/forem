@@ -43,7 +43,7 @@ RSpec.describe Message, type: :model do
 
     describe "#message_html" do
       it "creates rich link with proper link for article" do
-        link = "http://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
+        link = URL.article(article)
         message.message_markdown = "hello #{link}"
         message.validate!
 
