@@ -9,7 +9,9 @@ module Articles
       return unless article
 
       detected = Articles::DetectAnimatedImages.call(article)
-      EdgeCache::BustArticle.call(article) if detected
+      return unless detected
+
+      EdgeCache::BustArticle.call(article)
     end
   end
 end
