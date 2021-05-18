@@ -76,7 +76,6 @@ class SiteConfig < RailsSettings::Base
   field :payment_pointer, type: :string
   field :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
   field :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
-  field :shop_url, type: :string
 
   # Newsletter
   # <https://mailchimp.com/developer/>
@@ -139,5 +138,9 @@ class SiteConfig < RailsSettings::Base
   # To get default values
   def self.get_default(field)
     get_field(field)[:default]
+  end
+
+  def self.smtp_enabled?
+    Rails.configuration.action_mailer.perform_deliveries
   end
 end

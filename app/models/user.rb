@@ -694,4 +694,8 @@ class User < ApplicationRecord
   def strip_payment_pointer
     self.payment_pointer = payment_pointer.strip if payment_pointer
   end
+
+  def confirmation_required?
+    SiteConfig.smtp_enabled?
+  end
 end
