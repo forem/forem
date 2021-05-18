@@ -74,8 +74,8 @@ RSpec.describe NotifyMailer, type: :mailer do
       end
 
       it "renders proper sender", :aggregate_failures do
-        expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-        expected_from = "#{Settings::Community.community_name} <#{SiteConfig.email_addresses[:default]}>"
+        expect(email.from).to eq([Settings::General.email_addresses[:default]])
+        expected_from = "#{Settings::Community.community_name} <#{Settings::General.email_addresses[:default]}>"
         expect(email["from"].value).to eq(expected_from)
       end
     end

@@ -310,7 +310,7 @@ class User < ApplicationRecord
   end
 
   def self.mascot_account
-    find_by(id: SiteConfig.mascot_user_id)
+    find_by(id: Settings::General.mascot_user_id)
   end
 
   def tag_line
@@ -696,6 +696,6 @@ class User < ApplicationRecord
   end
 
   def confirmation_required?
-    SiteConfig.smtp_enabled?
+    Settings::General.smtp_enabled?
   end
 end

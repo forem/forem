@@ -447,18 +447,18 @@ RSpec.describe "/admin/customization/config", type: :request do
             site_config: { mascot_user_id: expected_mascot_user_id },
             confirmation: confirmation_message
           }
-          expect(SiteConfig.mascot_user_id).to eq(expected_mascot_user_id)
+          expect(Settings::General.mascot_user_id).to eq(expected_mascot_user_id)
         end
 
         it "updates image_url" do
-          expected_default_image_url = SiteConfig.get_default(:mascot_image_url)
+          expected_default_image_url = Settings::General.get_default(:mascot_image_url)
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post admin_config_path, params: {
               site_config: { mascot_image_url: expected_image_url },
               confirmation: confirmation_message
             }
-          end.to change(SiteConfig, :mascot_image_url).from(expected_default_image_url).to(expected_image_url)
+          end.to change(Settings::General, :mascot_image_url).from(expected_default_image_url).to(expected_image_url)
         end
       end
 
