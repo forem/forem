@@ -27,45 +27,6 @@ class SiteConfig < RailsSettings::Base
   field :health_check_token, type: :string
   field :video_encoder_key, type: :string
 
-  # NOTE: @citizen428 These two values will be removed once we fully migrated
-  # to Settings::Authentication. Until then we need them for the data update script.
-  field :allowed_registration_email_domains, type: :array, default: %w[], validates: {
-    valid_domain_csv: true
-  }
-  field :authentication_providers, type: :array, default: %w[]
-
-  # NOTE: @citizen428 The whole block of campaign settings will be removed once
-  # we fully migrated to Settings::Campaign across the fleet.
-  # Campaign
-  field :campaign_call_to_action, type: :string, default: "Share your project"
-  field :campaign_hero_html_variant_name, type: :string, default: ""
-  field :campaign_featured_tags, type: :array, default: %w[]
-  field :campaign_sidebar_enabled, type: :boolean, default: 0
-  field :campaign_sidebar_image, type: :string, default: nil, validates: {
-    url: true
-  }
-  field :campaign_url, type: :string, default: nil
-  field :campaign_articles_require_approval, type: :boolean, default: 0
-  field :campaign_articles_expiry_time, type: :integer, default: 4
-  # Community Content
-  # NOTE: @citizen428 All these settings will be removed once we full migrated
-  # to Settings::Community across the fleet.
-  field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
-  field :community_emoji, type: :string, default: "🌱", validates: { emoji_only: true }
-  # collective_noun and collective_noun_disabled have been added back temporarily for
-  # a data_update script, but will be removed in a future PR!
-  field :collective_noun, type: :string, default: "Community"
-  field :collective_noun_disabled, type: :boolean, default: false
-  field :community_description, type: :string
-  field :community_member_label, type: :string, default: "user"
-  field :tagline, type: :string
-  field :community_copyright_start_year,
-        type: :integer,
-        default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] || Time.zone.today.year
-  field :staff_user_id, type: :integer, default: 1
-  field :experience_low, type: :string, default: "Total Newbies"
-  field :experience_high, type: :string, default: "Experienced Users"
-
   # Emails
   field :email_addresses, type: :hash, default: {
     default: ApplicationConfig["DEFAULT_EMAIL"],
@@ -133,29 +94,6 @@ class SiteConfig < RailsSettings::Base
   field :suggested_users, type: :array, default: %w[]
   field :prefer_manual_suggested_users, type: :boolean, default: false
 
-  # Rate limits and spam prevention
-  # NOTE: @citizen428 These will be removed once we migrated to the new settings
-  # model across the fleet.
-  field :rate_limit_follow_count_daily, type: :integer, default: 500
-  field :rate_limit_comment_creation, type: :integer, default: 9
-  field :rate_limit_comment_antispam_creation, type: :integer, default: 1
-  field :rate_limit_listing_creation, type: :integer, default: 1
-  field :rate_limit_published_article_creation, type: :integer, default: 9
-  field :rate_limit_published_article_antispam_creation, type: :integer, default: 1
-  field :rate_limit_organization_creation, type: :integer, default: 1
-  field :rate_limit_reaction_creation, type: :integer, default: 10
-  field :rate_limit_image_upload, type: :integer, default: 9
-  field :rate_limit_email_recipient, type: :integer, default: 5
-  field :rate_limit_article_update, type: :integer, default: 30
-  field :rate_limit_send_email_confirmation, type: :integer, default: 2
-  field :rate_limit_feedback_message_creation, type: :integer, default: 5
-  field :rate_limit_user_update, type: :integer, default: 15
-  field :rate_limit_user_subscription_creation, type: :integer, default: 3
-
-  field :spam_trigger_terms, type: :array, default: []
-
-  field :user_considered_new_days, type: :integer, default: 3
-
   # Social Media
   field :social_media_handles, type: :hash, default: {
     twitter: nil,
@@ -171,28 +109,6 @@ class SiteConfig < RailsSettings::Base
 
   # Tags
   field :sidebar_tags, type: :array, default: %w[]
-
-  # NOTE: @citizen428 - These will be removed once we migrated to Settings::UserExperience
-  # across the whole fleet.
-  # User Experience
-  # These are the default UX settings, which can be overridded by individual user preferences.
-  # basic (current default), rich (cover image on all posts), compact (more minimal)
-  field :feed_style, type: :string, default: "basic"
-  # a non-public forem will redirect all unauthenticated pages to the registration page.
-  # a public forem could have more fine-grained authentication (listings ar private etc.) in future
-  field :public, type: :boolean, default: 0
-  # The default font for all users that have not chosen a custom font yet
-  field :default_font, type: :string, default: "sans_serif"
-  field :primary_brand_color_hex, type: :string, default: "#3b49df", validates: {
-    format: {
-      with: HEX_COLOR_REGEX,
-      message: "must be be a 3 or 6 character hex (starting with #)"
-    },
-    color_contrast: true
-  }
-  field :feed_strategy, type: :string, default: "basic"
-  field :tag_feed_minimum_score, type: :integer, default: 0
-  field :home_feed_minimum_score, type: :integer, default: 0
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
