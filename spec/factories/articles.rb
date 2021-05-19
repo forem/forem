@@ -61,4 +61,8 @@ FactoryBot.define do
   trait :with_user_subscription_tag_role_user do
     after(:build) { |article| article.user.add_role(:restricted_liquid_tag, LiquidTags::UserSubscriptionTag) }
   end
+
+  trait :with_discussion_lock do
+    after(:build) { |article| build(:discussion_lock, user_id: article.user_id, article_id: article.id) }
+  end
 end

@@ -40,6 +40,7 @@ class Comment < ApplicationRecord
   after_save :bust_cache
 
   validate :published_article, if: :commentable
+  validate :discussion_not_locked, if: :commentable
   validate :user_mentions_in_markdown
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
@@ -313,6 +314,12 @@ class Comment < ApplicationRecord
 
   def published_article
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
+  end
+
+  def discussion_not_locked
+    return unless commentable_type == "Article" && commentable.discussion_lock
+
+    errors.add(:commentable_id, "the discussion is locked on this Article")
   end
 
   def user_mentions_in_markdown
