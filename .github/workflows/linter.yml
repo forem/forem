@@ -36,6 +36,8 @@ jobs:
           VALIDATE_JAVASCRIPT_ES: true
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.js
           JAVASCRIPT_DEFAULT_STYLE: prettier
+          # Validate OpenAPI with Spectral
+          VALIDATE_OPENAPI: true
 
 
 
