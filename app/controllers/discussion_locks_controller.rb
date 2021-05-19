@@ -10,6 +10,7 @@ class DiscussionLocksController < ApplicationController
     authorize @discussion_lock
 
     if @discussion_lock.save
+      bust_article_cache_async(@discussion_lock.article_id)
       render json: { message: "success", success: true, data: @discussion_lock }, status: :ok
     else
       render json: { error: @discussion_lock.errors_as_sentence, success: false }, status: :unprocessable_entity
@@ -20,6 +21,7 @@ class DiscussionLocksController < ApplicationController
     authorize @discussion_lock
 
     if @discussion_lock.destroy
+      bust_article_cache_async(@discussion_lock.article_id)
       render json: { message: "success", success: true }, status: :ok
     else
       render json: { error: @discussion_lock.errors_as_sentence, success: false }, status: :unprocessable_entity
@@ -34,5 +36,9 @@ class DiscussionLocksController < ApplicationController
 
   def discussion_lock_params
     params.require(:discussion_lock).permit(DISCUSSION_LOCK_PARAMS).merge!(user_id: current_user.id)
+  end
+
+  def bust_article_cache_async(article_id)
+    Articles::BustCacheWorker.perform_async(article_id)
   end
 end
