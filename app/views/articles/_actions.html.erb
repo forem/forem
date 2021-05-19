@@ -40,7 +40,11 @@
           </div>
           <div id="article-copy-link-announcer" class="crayons-notice crayons-notice--success my-2 p-1" aria-live="polite" hidden>Copied to Clipboard</div>
         </clipboard-copy>
-        <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetext="<%= @article.title %>" template="web-share-button">
+        <div class="Mobile-only">
+          <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetext="<%= @article.title %>" template="web-share-button">
+          </web-share-wrapper>
+        </div>
+        <div class="Desktop-only">
           <a
             target="_blank"
             class="dropdown-link-row crayons-link crayons-link--block"
@@ -76,7 +80,7 @@
             href="https://www.facebook.com/sharer.php?u=<%= article_url(@article) %>">
             Share to Facebook
           </a>
-        </web-share-wrapper>
+        </div>
         <template id="web-share-button">
           <a href="#" class="dropdown-link-row crayons-link crayons-link--block">Share Post</a>
         </template>
