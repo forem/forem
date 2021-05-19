@@ -36,7 +36,7 @@ RSpec.describe "ArticlesShow", type: :request do
         "publisher" => {
           "@context" => "http://schema.org",
           "@type" => "Organization",
-          "name" => SiteConfig.community_name.to_s,
+          "name" => Settings::Community.community_name.to_s,
           "logo" => {
             "@context" => "http://schema.org",
             "@type" => "ImageObject",
