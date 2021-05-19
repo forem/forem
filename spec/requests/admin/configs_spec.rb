@@ -444,7 +444,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         it "updates the mascot_user_id" do
           expected_mascot_user_id = 2
           post admin_config_path, params: {
-            site_config: { mascot_user_id: expected_mascot_user_id },
+            settings_general: { mascot_user_id: expected_mascot_user_id },
             confirmation: confirmation_message
           }
           expect(Settings::General.mascot_user_id).to eq(expected_mascot_user_id)
@@ -455,7 +455,7 @@ RSpec.describe "/admin/customization/config", type: :request do
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post admin_config_path, params: {
-              site_config: { mascot_image_url: expected_image_url },
+              settings_general: { mascot_image_url: expected_image_url },
               confirmation: confirmation_message
             }
           end.to change(Settings::General, :mascot_image_url).from(expected_default_image_url).to(expected_image_url)
@@ -890,7 +890,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
         it "does not update brand color if hex not contrasting enough" do
           hex = "#bd746f" # not dark enough
-          post admin_config_path, params: {
+          post admin_settings_user_experiences_path, params: {
             settings_user_experience: { primary_brand_color_hex: hex },
             confirmation: confirmation_message
           }
