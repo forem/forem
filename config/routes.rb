@@ -45,6 +45,12 @@ Rails.application.routes.draw do
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
         get ":timeframe", to: "feeds#show", as: :timeframe
+
+        # TODO: move this to a separate controller?
+        collection do
+          post "pin/:article_id", to: "feeds#pin", as: :pin
+          delete "pin/:article_id", to: "feeds#unpin"
+        end
       end
     end
 

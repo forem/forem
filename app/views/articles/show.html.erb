@@ -114,7 +114,9 @@
         id="article-show-container"
         data-author-id="<%= @article.user_id %>"
         data-path="<%= @article.path %>"
-        data-published="<%= @article.published? %>">
+        data-published="<%= @article.published? %>"
+        data-pinned="<%= @article.pinned? %>"
+        data-pin-path="<%= pin_stories_feed_path(@article.id) %>">
         <header class="crayons-article__header" id="main-title">
           <% if @article.video.present? %>
             <%= render "articles/video_player", meta_tags: true, article: @article %>
