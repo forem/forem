@@ -70,13 +70,6 @@ export const EditorBody = ({
     }
   });
 
-  // In some platforms we've seen `navigator.clipboard` return `undefined`
-  // despite `window.isSecureContext` being true. A refresh fixes the problem.
-  // It's important to only do this when isSecureContext (not in dev/test env)
-  if (navigator.clipboard == null && window.isSecureContext) {
-    window.location.reload();
-  }
-
   return (
     <div
       data-testid="article-form__body"
