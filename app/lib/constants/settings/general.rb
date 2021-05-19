@@ -49,7 +49,7 @@ module Constants
         },
         main_social_image: {
           description: "Used as the main image in social networks and OpenGraph. Recommended aspect ratio " \
-            "of 16:9 (600x337px,1200x675px)",
+          "of 16:9 (600x337px,1200x675px)",
           placeholder: IMAGE_PLACEHOLDER
         },
         mailchimp_api_key: {
@@ -71,6 +71,14 @@ module Constants
         mailchimp_community_moderators_id: {
           description: "Community Moderators Newsletter ID",
           placeholder: ""
+        },
+        mascot_image_url: {
+          description: "Used as the mascot image.",
+          placeholder: ::Constants::SiteConfig::IMAGE_PLACEHOLDER
+        },
+        mascot_user_id: {
+          description: "User ID of the Mascot account",
+          placeholder: "1"
         },
         meta_keywords: {
           description: "",
@@ -109,15 +117,15 @@ module Constants
         },
         suggested_tags: {
           description: "Determines which tags are suggested to new users during onboarding (comma
-        separated, letters only)",
+          separated, letters only)",
           placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin"
         },
         suggested_users: {
           description: "Determines which users are suggested to follow to new users during onboarding (comma " \
-          "separated, letters only). Please note that these users will be shown as a fallback if no " \
-          "recently-active commenters or producers can be suggested",
+         "separated, letters only). Please note that these users will be shown as a fallback if no " \
+         "recently-active commenters or producers can be suggested",
           placeholder: "List of valid usernames: comma separated, letters only e.g. " \
-            "ben,jess,peter,maestromac,andy,liana"
+         "ben,jess,peter,maestromac,andy,liana"
         },
         prefer_manual_suggested_users: {
           description: "Always show suggested users as suggested people to follow even when " \
