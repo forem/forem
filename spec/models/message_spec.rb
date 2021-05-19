@@ -43,6 +43,18 @@ RSpec.describe Message, type: :model do
 
     describe "#message_html" do
       it "creates rich link with proper link for article" do
+        link = URL.article(article)
+        message.message_markdown = "hello #{link}"
+        message.validate!
+
+        expect(message.message_html).to include(
+          article.title,
+          "sidecar-article",
+          link,
+        )
+      end
+
+      it "creates rich link with proper link for article when Cloudinary is enabled", cloudinary: true do
         message.message_markdown = "hello http://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
         message.validate!
 
