@@ -6,7 +6,9 @@ class DiscussionLocksController < ApplicationController
 
   def create
     @discussion_lock = DiscussionLock.new(discussion_lock_params)
-    # TODO: - authorize discussion lock
+
+    authorize @discussion_lock
+
     if @discussion_lock.save
       render json: { message: "success", success: true, data: @discussion_lock }, status: :ok
     else
@@ -15,7 +17,8 @@ class DiscussionLocksController < ApplicationController
   end
 
   def destroy
-    # TODO: - authorize discussion lock
+    authorize @discussion_lock
+
     if @discussion_lock.destroy
       render json: { message: "success", success: true }, status: :ok
     else
