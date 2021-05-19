@@ -154,12 +154,19 @@ chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.lo
   )
 end
 
-chat_user_1.follow(chat_user_2)
-chat_user_2.follow(chat_user_1)
+##############################################################################
 
-ChatChannels::CreateWithUsers.call(users: [chat_user_1, chat_user_2],
-                                   channel_type: "open",
-                                   contrived_name: "test chat channel")
+seeder.create_if_doesnt_exist(ChatChannel, "channel_name", "test chat channel") do
+  channel = ChatChannel.create(
+    channel_type: "open",
+    channel_name: "test chat channel",
+    slug: "test-chat-channel",
+    last_message_at: 1.week.ago,
+    status: "active",
+  )
+
+  channel.invite_users(users: [chat_user_1, chat_user_2])
+end
 
 ##############################################################################
 

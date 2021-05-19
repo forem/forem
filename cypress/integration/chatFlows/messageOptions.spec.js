@@ -1,6 +1,8 @@
 describe('Chat message options', () => {
   beforeEach(() => {
     cy.testSetup();
+    cy.intercept({ method: 'POST', url: '/chat_channels/1/open' }, {});
+
     cy.fixture('users/chatUser1.json').as('user');
     cy.fixture('users/chatUser2.json').as('user2');
 
