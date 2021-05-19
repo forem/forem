@@ -74,7 +74,7 @@ module Constants
         },
         mascot_image_url: {
           description: "Used as the mascot image.",
-          placeholder: ::Constants::SiteConfig::IMAGE_PLACEHOLDER
+          placeholder: IMAGE_PLACEHOLDER
         },
         mascot_user_id: {
           description: "User ID of the Mascot account",
