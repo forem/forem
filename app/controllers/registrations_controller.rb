@@ -12,8 +12,7 @@ class RegistrationsController < Devise::RegistrationsController
     end
   end
 
-  # NOTE: @citizen428 - I ended up getting a Rubocop error when merging main
-  # back into one of my branches, so I just ended up ignoring it.
+  # rubocop:disable Metrics/CyclomaticComplexity
   # rubocop:disable Metrics/PerceivedComplexity
   def create
     not_authorized unless Settings::Authentication.allow_email_password_registration ||
@@ -48,6 +47,7 @@ class RegistrationsController < Devise::RegistrationsController
       flash[:notice] = "You must complete the recaptcha ✅"
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/PerceivedComplexity
 
   private
