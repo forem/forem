@@ -35,6 +35,7 @@ jobs:
           # Validatate JS with ESLint
           VALIDATE_JAVASCRIPT_ES: true
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.js
+          JAVASCRIPT_DEFAULT_STYLE: prettier
 
 
 
