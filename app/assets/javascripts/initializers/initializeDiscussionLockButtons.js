@@ -3,7 +3,7 @@ function initializeDiscussionLockButtons() {
   if (articleContainer) {
     const isDiscussionLocked = articleContainer.dataset.discussionLocked;
 
-    if (isDiscussionLocked == "true") {
+    if (isDiscussionLocked == 'true') {
       displayDiscussionLockReason();
       hideElementById('new_comment');
     } else {
@@ -16,11 +16,15 @@ function initializeDiscussionLockButtons() {
 }
 
 function displayDiscussionLockReason(reason) {
-  const discussionLockReason = document.getElementById('discussion-lock-reason');
+  const discussionLockReason = document.getElementById(
+    'discussion-lock-reason',
+  );
   if (discussionLockReason) {
     discussionLockReason.classList.remove('hidden');
 
-    const discussionLockReasonText = document.getElementById('discussion-lock-reason-text');
+    const discussionLockReasonText = document.getElementById(
+      'discussion-lock-reason-text',
+    );
     if (reason && discussionLockReasonText) {
       discussionLockReasonText.textContent = reason;
     }
@@ -28,12 +32,16 @@ function displayDiscussionLockReason(reason) {
 }
 
 function hideDiscussionLockReason() {
-  const discussionLockReason = document.getElementById('discussion-lock-reason');
+  const discussionLockReason = document.getElementById(
+    'discussion-lock-reason',
+  );
   if (discussionLockReason) {
     discussionLockReason.classList.add('hidden');
   }
 
-  const discussionLockReasonText = document.getElementById('discussion-lock-reason-text');
+  const discussionLockReasonText = document.getElementById(
+    'discussion-lock-reason-text',
+  );
   if (discussionLockReasonText) {
     discussionLockReasonText.textContent = '';
   }
@@ -42,11 +50,13 @@ function hideDiscussionLockReason() {
 function displayButtons() {
   var user = userData();
   var articleContainer = document.getElementById('article-show-container');
-  if (articleContainer) {
+  if (user && articleContainer) {
     var authorId = parseInt(articleContainer.dataset.authorId, 10);
 
     if (user.admin || authorId === user.id) {
-      var discussionLockButts = document.getElementsByClassName('discussion-lock-actions');
+      var discussionLockButts = document.getElementsByClassName(
+        'discussion-lock-actions',
+      );
 
       for (let i = 0; i < discussionLockButts.length; i += 1) {
         let butt = discussionLockButts[i];
@@ -59,44 +69,57 @@ function displayButtons() {
 function addConfirmationModalClickHandlers() {
   const discussionLockButton = document.getElementById('discussion-lock-btn');
   if (discussionLockButton) {
-    discussionLockButton.addEventListener('click', function(e) {
+    discussionLockButton.addEventListener('click', function (e) {
       showElementById('discussion-lock-confirmation-modal');
     });
   }
 
-  const discussionLockCancelBtn = document.getElementById('discussion-lock-cancel-btn');
+  const discussionLockCancelBtn = document.getElementById(
+    'discussion-lock-cancel-btn',
+  );
   if (discussionLockCancelBtn) {
-    discussionLockCancelBtn.addEventListener('click', function(e) {
+    discussionLockCancelBtn.addEventListener('click', function (e) {
       hideElementById('discussion-lock-confirmation-modal');
     });
   }
 
-  const closeDiscussionLockConfirmationModal = document.getElementById('close-discussion-lock-confirmation-modal');
+  const closeDiscussionLockConfirmationModal = document.getElementById(
+    'close-discussion-lock-confirmation-modal',
+  );
   if (closeDiscussionLockConfirmationModal) {
-    closeDiscussionLockConfirmationModal.addEventListener('click', function(e) {
-      hideElementById('discussion-lock-confirmation-modal');
-    });
+    closeDiscussionLockConfirmationModal.addEventListener(
+      'click',
+      function (e) {
+        hideElementById('discussion-lock-confirmation-modal');
+      },
+    );
   }
 
-  const discussionLockConfirmationBtn = document.getElementById('lock-discussion-btn')
+  const discussionLockConfirmationBtn = document.getElementById(
+    'lock-discussion-btn',
+  );
   if (discussionLockConfirmationBtn) {
-    discussionLockConfirmationBtn.addEventListener('click', function(e) {
+    discussionLockConfirmationBtn.addEventListener('click', function (e) {
       handleLockDiscussion();
     });
   }
-  
-  const reopenDiscussionBtn = document.getElementById('discussion-lock-reopen-btn')
+
+  const reopenDiscussionBtn = document.getElementById(
+    'discussion-lock-reopen-btn',
+  );
   if (reopenDiscussionBtn) {
-    reopenDiscussionBtn.addEventListener('click', function(e) {
+    reopenDiscussionBtn.addEventListener('click', function (e) {
       handleReopenDiscussion();
     });
   }
 }
 
 function submitDiscussionLock() {
-  const discussionLockConfirmationBtn = document.getElementById('lock-discussion-btn')
+  const discussionLockConfirmationBtn = document.getElementById(
+    'lock-discussion-btn',
+  );
   if (discussionLockConfirmationBtn) {
-    discussionLockConfirmationBtn.textContent = "Locking...";
+    discussionLockConfirmationBtn.textContent = 'Locking...';
     discussionLockConfirmationBtn.disabled = true;
   }
 
@@ -104,51 +127,56 @@ function submitDiscussionLock() {
     Accept: 'application/json',
     'X-CSRF-Token': window.csrfToken,
     'Content-Type': 'application/json',
-  }
+  };
 
   const articleBody = document.getElementById('article-body');
-  const articleId = (articleBody ? articleBody.dataset.articleId : null);
-  const reasonFieldValue = document.getElementById('discussion-lock-reason-field').value;
-  const discussionLockReason = reasonFieldValue === "" ? null : reasonFieldValue;
-  const body = JSON.stringify(
-    {
-      discussion_lock: {
-        article_id: articleId,
-        reason: discussionLockReason
-      }
-    }
-  )
+  const articleId = articleBody ? articleBody.dataset.articleId : null;
+  const reasonFieldValue = document.getElementById(
+    'discussion-lock-reason-field',
+  ).value;
+  const discussionLockReason =
+    reasonFieldValue === '' ? null : reasonFieldValue;
+  const body = JSON.stringify({
+    discussion_lock: {
+      article_id: articleId,
+      reason: discussionLockReason,
+    },
+  });
 
   return fetch('/discussion_locks', {
     method: 'POST',
     headers: discussionLockHeaders,
     credentials: 'same-origin',
     body: body,
-  }).then(function(response) {
+  }).then(function (response) {
     return response.json();
   });
 }
 
 function submitReopenDiscussion() {
-  const reopenDiscussionBtn = document.getElementById('discussion-lock-reopen-btn');
+  const reopenDiscussionBtn = document.getElementById(
+    'discussion-lock-reopen-btn',
+  );
   if (reopenDiscussionBtn) {
-    reopenDiscussionBtn.textContent = "Reopening...";
+    reopenDiscussionBtn.textContent = 'Reopening...';
     reopenDiscussionBtn.disabled = true;
   }
-  
+
   const discussionLockHeaders = {
     Accept: 'application/json',
     'X-CSRF-Token': window.csrfToken,
     'Content-Type': 'application/json',
-  }
+  };
 
-  const discussionLockId = reopenDiscussionBtn ? reopenDiscussionBtn.dataset.discussionLockId : null;
+  const discussionLockId = reopenDiscussionBtn
+    ? reopenDiscussionBtn.dataset.discussionLockId
+    : null;
 
   return fetch(`/discussion_locks/${discussionLockId}`, {
     method: 'DELETE',
     headers: discussionLockHeaders,
     credentials: 'same-origin',
-  }).then(function(response) {
+  }).then(function (response) {
     return response.json();
   });
 }
@@ -191,45 +219,55 @@ function showErrorMsg(elementId, msg) {
 }
 
 function reenableDiscussionLockConfirmationBtn() {
-  const discussionLockConfirmationBtn = document.getElementById('lock-discussion-btn');
+  const discussionLockConfirmationBtn = document.getElementById(
+    'lock-discussion-btn',
+  );
   if (discussionLockConfirmationBtn) {
-    discussionLockConfirmationBtn.textContent = "Lock discussion";
+    discussionLockConfirmationBtn.textContent = 'Lock discussion';
     discussionLockConfirmationBtn.disabled = false;
   }
 }
 
 function reenableReopenDiscussionBtn() {
-  const reopenDiscussionBtn = document.getElementById('discussion-lock-reopen-btn');
+  const reopenDiscussionBtn = document.getElementById(
+    'discussion-lock-reopen-btn',
+  );
   if (reopenDiscussionBtn) {
-    reopenDiscussionBtn.textContent = "Reopen";
+    reopenDiscussionBtn.textContent = 'Reopen';
     reopenDiscussionBtn.disabled = false;
   }
 }
 
 function updateReopenDiscussionData(data) {
-  const reopenDiscussionBtn = document.getElementById('discussion-lock-reopen-btn');
+  const reopenDiscussionBtn = document.getElementById(
+    'discussion-lock-reopen-btn',
+  );
   if (reopenDiscussionBtn) {
     reopenDiscussionBtn.setAttribute('data-discussion-lock-id', data.id);
   }
 }
 
 function clearReopenDiscussionData() {
-  const reopenDiscussionBtn = document.getElementById('discussion-lock-reopen-btn');
+  const reopenDiscussionBtn = document.getElementById(
+    'discussion-lock-reopen-btn',
+  );
   if (reopenDiscussionBtn) {
     reopenDiscussionBtn.setAttribute('data-discussion-lock-id', null);
   }
 }
 
 function clearDiscussionLockForm() {
-  const discussionLockReasonInput = document.getElementById('discussion-lock-reason-field');
-  
+  const discussionLockReasonInput = document.getElementById(
+    'discussion-lock-reason-field',
+  );
+
   if (discussionLockReasonInput) {
     discussionLockReasonInput.value = '';
   }
 }
 
 function handleLockDiscussion() {
-  submitDiscussionLock().then(function(response) {
+  submitDiscussionLock().then(function (response) {
     if (response.success) {
       hideErrorMsg('discussion-lock-error');
       hideElementById('discussion-lock-confirmation-modal');
@@ -237,7 +275,7 @@ function handleLockDiscussion() {
       // We "manually" update the DOM because we bust caches async, which can take time
       hideElementById('discussion-lock-btn');
       displayDiscussionLockReason(response.data.reason);
-      updateDiscussionLock("true");
+      updateDiscussionLock('true');
       updateReopenDiscussionData(response.data);
       hideElementById('new_comment');
       clearDiscussionLockForm();
@@ -251,14 +289,14 @@ function handleLockDiscussion() {
 }
 
 function handleReopenDiscussion() {
-  submitReopenDiscussion().then(function(response) {
+  submitReopenDiscussion().then(function (response) {
     if (response.success) {
       hideErrorMsg('reopen-discussion-error');
 
       // We "manually" update the DOM because we bust caches async, which can take time
       showElementById('discussion-lock-btn');
       hideDiscussionLockReason();
-      updateDiscussionLock("false");
+      updateDiscussionLock('false');
       clearReopenDiscussionData();
       showElementById('new_comment');
       reenableReopenDiscussionBtn();
