@@ -205,7 +205,7 @@ Rails.application.routes.draw do
 
     resources :liquid_tags, only: %i[index], defaults: { format: :json }
 
-    resources :discussion_locks, only: %i[create update destroy]
+    resources :discussion_locks, only: %i[create destroy]
 
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags", to: "search#tags"
