@@ -14,7 +14,7 @@
 
         <% if decorated_comment.low_quality %>
           <div class="crayons-notice crayons-notice--warning low-quality-comment-marker">
-            <%= image_tag(Images::Optimizer.call(Settings::Mascot.image_url, width: 50, height: 50, crop: "imagga_scale"), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
+            <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_image_url, width: 50, height: 50, crop: "imagga_scale"), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
             Comment marked as low quality/non-constructive by the community. <a href="/code-of-conduct">View Code of Conduct</a>
           </div>
         <% end %>

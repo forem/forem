@@ -70,6 +70,14 @@ module Constants
         description: "Community Moderators Newsletter ID",
         placeholder: ""
       },
+      mascot_image_url: {
+        description: "Used as the mascot image.",
+        placeholder: ::Constants::SiteConfig::IMAGE_PLACEHOLDER
+      },
+      mascot_user_id: {
+        description: "User ID of the Mascot account",
+        placeholder: "1"
+      },
       meta_keywords: {
         description: "",
         placeholder: "List of valid keywords: comma separated, letters only e.g. engineering, development"
@@ -86,10 +94,6 @@ module Constants
       periodic_email_digest: {
         description: "Determines how often periodic email digests are sent",
         placeholder: 2
-      },
-      shop_url: {
-        description: "Used as the shop url of the community",
-        placeholder: "https://shop.url"
       },
       sidebar_tags: {
         description: "Determines which tags are shown on the homepage righthand sidebar",

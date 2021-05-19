@@ -49,24 +49,92 @@ RSpec.describe Articles::Updater, type: :service do
   end
 
   describe "notifications" do
-    it "sends notifications when an article was published" do
-      attributes[:published] = true
-      sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
+    context "when an article is updated and published the first time" do
+      before { attributes[:published] = true }
+
+      it "enqueues a job to send a notification" do
+        sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
+          described_class.call(user, draft, attributes)
+        end
+      end
+
+      it "delegates to the Mentions::CreateAll service to create mentions" do
+        allow(Mentions::CreateAll).to receive(:call)
         described_class.call(user, draft, attributes)
+        expect(Mentions::CreateAll).to have_received(:call).with(draft)
       end
     end
 
-    it "doesn't send when an article was unpublished" do
-      attributes[:published] = false
-      sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
+    context "when an article is being updated and has already been published" do
+      it "doesn't enqueue a job to send a notification" do
+        attributes[:published] = true
+        sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
+          described_class.call(user, article, attributes)
+        end
+      end
+
+      it "delegates to the Mentions::CreateAll service to create mentions" do
+        allow(Mentions::CreateAll).to receive(:call)
         described_class.call(user, article, attributes)
+        expect(Mentions::CreateAll).to have_received(:call).with(article)
       end
     end
 
-    it "doesn't send when an article went from published to published" do
-      attributes[:published] = true
-      sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
+    context "when an article is unpublished" do
+      before { attributes[:published] = false }
+
+      it "doesn't send any notifications" do
+        sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
+          described_class.call(user, article, attributes)
+        end
+      end
+
+      it "doesn't delegate to the Mentions::CreateAll service to create mentions" do
+        allow(Mentions::CreateAll).to receive(:call)
         described_class.call(user, article, attributes)
+        expect(Mentions::CreateAll).not_to have_received(:call).with(article)
+      end
+    end
+
+    context "when an article is unpublished and contains comments" do
+      let!(:comment) { create(:comment, user_id: user.id, commentable: article) }
+      let(:notification) do
+        create(:notification, user: user, notifiable_id: comment.id, notifiable_type: "Comment")
+      end
+
+      before do
+        attributes[:published] = false
+        allow(Notification).to receive(:remove_all).and_call_original
+      end
+
+      it "removes any preexisting comment notifications but does not delete the comment" do
+        described_class.call(user, article, attributes)
+
+        expect(Notification).to have_received(:remove_all).with(
+          notifiable_ids: [comment.id], notifiable_type: "Comment",
+        )
+        expect(article.comments.length).to eq(1)
+      end
+    end
+
+    context "when an article is unpublished and contains mentions" do
+      let!(:mention) { create(:mention, mentionable: article, user: user) }
+      let(:notification) do
+        create(:notification, user: user, notifiable_id: mention.id, notifiable_type: "Mention")
+      end
+
+      before do
+        attributes[:published] = false
+        allow(Notification).to receive(:remove_all).and_call_original
+      end
+
+      it "removes any preexisting mention notifications but does not delete the mention" do
+        described_class.call(user, article, attributes)
+
+        expect(Notification).to have_received(:remove_all).with(
+          notifiable_ids: [mention.id], notifiable_type: "Mention",
+        )
+        expect(article.mentions.length).to eq(1)
       end
     end
   end

@@ -9,6 +9,7 @@
             <% if item[:visible] %>
               <li>
                 <a
+                  data-text="<%= item[:name].to_s.titleize %>"
                   href="/admin/<%= deduced_scope(request) %>/<%= item[:controller] %>"
                   class="crayons-tabs__item <%= "crayons-tabs__item--current" if deduced_controller(request)&.match?(item[:controller]) %>">
                   <%= item[:name].to_s.titleize %>

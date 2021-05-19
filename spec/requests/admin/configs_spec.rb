@@ -406,66 +406,22 @@ RSpec.describe "/admin/customization/config", type: :request do
       describe "Mascot" do
         it "updates the mascot_user_id" do
           expected_mascot_user_id = 2
-          post admin_settings_mascots_path, params: {
-            settings_mascot: { mascot_user_id: expected_mascot_user_id },
+          post admin_config_path, params: {
+            site_config: { mascot_user_id: expected_mascot_user_id },
             confirmation: confirmation_message
           }
-          expect(Settings::Mascot.mascot_user_id).to eq(expected_mascot_user_id)
+          expect(SiteConfig.mascot_user_id).to eq(expected_mascot_user_id)
         end
 
         it "updates image_url" do
-          expected_default_image_url = Settings::Mascot.get_default(:image_url)
+          expected_default_image_url = SiteConfig.get_default(:mascot_image_url)
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
-            post admin_settings_mascots_path, params: {
-              settings_mascot: { image_url: expected_image_url },
+            post admin_config_path, params: {
+              site_config: { mascot_image_url: expected_image_url },
               confirmation: confirmation_message
             }
-          end.to change(Settings::Mascot, :image_url).from(expected_default_image_url).to(expected_image_url)
-        end
-
-        it "updates footer_image_url" do
-          expected_image_url = "https://dummyimage.com/300x300.png"
-          post admin_settings_mascots_path, params: {
-            settings_mascot: { footer_image_url: expected_image_url },
-            confirmation: confirmation_message
-          }
-          expect(Settings::Mascot.footer_image_url).to eq(expected_image_url)
-        end
-
-        it "updates the footer_image_width" do
-          expected_default_footer_image_width = Settings::Mascot.get_default(:footer_image_width)
-          expected_footer_image_width = 1002
-
-          expect(Settings::Mascot.footer_image_width).to eq(expected_default_footer_image_width)
-
-          post admin_settings_mascots_path, params: {
-            settings_mascot: { footer_image_width: expected_footer_image_width },
-            confirmation: confirmation_message
-          }
-          expect(Settings::Mascot.footer_image_width).to eq(expected_footer_image_width)
-        end
-
-        it "updates the footer_image_height" do
-          expected_default_footer_image_height = Settings::Mascot.get_default(:footer_image_height)
-          expected_footer_image_height = 3002
-
-          expect(Settings::Mascot.footer_image_height).to eq(expected_default_footer_image_height)
-
-          post admin_settings_mascots_path, params: {
-            settings_mascot: { footer_image_height: expected_footer_image_height },
-            confirmation: confirmation_message
-          }
-          expect(Settings::Mascot.footer_image_height).to eq(expected_footer_image_height)
-        end
-
-        it "updates image_description" do
-          description = "Hey hey #{rand(100)}"
-          post admin_settings_mascots_path, params: {
-            settings_mascot: { image_description: description },
-            confirmation: confirmation_message
-          }
-          expect(Settings::Mascot.image_description).to eq(description)
+          end.to change(SiteConfig, :mascot_image_url).from(expected_default_image_url).to(expected_image_url)
         end
       end
 
@@ -493,38 +449,6 @@ RSpec.describe "/admin/customization/config", type: :request do
                                             confirmation: confirmation_message }
           expect(SiteConfig.stripe_api_key).to eq("sk_live_yo")
           expect(SiteConfig.stripe_publishable_key).to eq("pk_live_haha")
-        end
-
-        describe "Shop" do
-          it "rejects update to shop_url without proper confirmation" do
-            expected_shop_url = "https://qshop.dev.to"
-
-            expect do
-              params = { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" }
-              post admin_config_path, params: params
-            end.to raise_error ActionController::BadRequest
-
-            expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
-          end
-
-          it "sets shop_url to nil" do
-            previous_shop_url = "some-shop-url"
-            post admin_config_path, params: { site_config: { shop_url: "" }, confirmation: confirmation_message }
-            expect(SiteConfig.shop_url).to eq("")
-            get "/privacy"
-            expect(response.body).not_to include(previous_shop_url)
-            expect(response.body).not_to include("#{SiteConfig.community_name} Shop")
-          end
-
-          it "updates shop url" do
-            expected_shop_url = "https://qshop.dev.to"
-            post admin_config_path, params: { site_config: { shop_url: expected_shop_url },
-                                              confirmation: confirmation_message }
-            expect(SiteConfig.shop_url).to eq(expected_shop_url)
-            get "/privacy"
-            expect(response.body).to include(expected_shop_url)
-            expect(response.body).to include("#{SiteConfig.community_name} Shop")
-          end
         end
       end
 
@@ -630,6 +554,16 @@ RSpec.describe "/admin/customization/config", type: :request do
               confirmation: confirmation_message
             }
           end.to change(Settings::RateLimit, :comment_creation).from(default_value).to(3)
+        end
+
+        it "updates mention_creation" do
+          default_value = Settings::RateLimit.get_default(:mention_creation)
+          expect do
+            post admin_settings_rate_limits_path, params: {
+              settings_rate_limit: { mention_creation: 10 },
+              confirmation: confirmation_message
+            }
+          end.to change(Settings::RateLimit, :mention_creation).from(default_value).to(10)
         end
 
         it "updates published_article_creation" do

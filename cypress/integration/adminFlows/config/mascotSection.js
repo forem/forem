@@ -16,9 +16,9 @@ describe('Mascot Section', () => {
 
         cy.get('@mascotSectionForm').findByText('Mascot').click();
         cy.get('@mascotSectionForm')
-          .get('#settings_mascot_image_url')
+          .findByLabelText('Mascot Image URL')
           .clear()
-          .type('example.com/image.png');
+          .type('notanimage');
 
         cy.get('@mascotSectionForm')
           .findByPlaceholderText('Confirmation text')
@@ -33,7 +33,7 @@ describe('Mascot Section', () => {
         cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText(
-          '😭 Validation failed: Image url is not a valid URL',
+          '😭 Validation failed: Mascot image url is not a valid URL',
         ).should('be.visible');
       });
     });
@@ -45,7 +45,7 @@ describe('Mascot Section', () => {
 
         cy.get('@mascotSectionForm').findByText('Mascot').click();
         cy.get('@mascotSectionForm')
-          .get('#settings_mascot_image_url')
+          .findByLabelText('Mascot Image URL')
           .clear()
           .type('https://example.com/image.png');
 
@@ -66,8 +66,8 @@ describe('Mascot Section', () => {
         );
 
         // Page reloaded so need to get a new reference to the form.
-        cy.get('#new_settings_mascot').as('mascotSectionForm');
-        cy.get('#settings_mascot_image_url').should(
+        cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
+        cy.findByLabelText('Mascot Image URL').should(
           'have.value',
           'https://example.com/image.png',
         );
