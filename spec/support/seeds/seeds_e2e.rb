@@ -114,6 +114,55 @@ end
 
 ##############################################################################
 
+chat_user_1 = seeder.create_if_doesnt_exist(User, "email", "chat-user-1@forem.local") do
+  User.create!(
+    name: "Chat user 1",
+    email: "chat-user-1@forem.local",
+    username: "chat_user_1",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+end
+
+##############################################################################
+
+chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.local") do
+  User.create!(
+    name: "Chat user 2",
+    email: "chat-user-2@forem.local",
+    username: "chat_user_2",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+end
+
+chat_user_1.follow(chat_user_2)
+chat_user_2.follow(chat_user_1)
+
+ChatChannels::CreateWithUsers.call(users: [chat_user_1, chat_user_2],
+                                   channel_type: "open",
+                                   contrived_name: "test chat channel")
+
+##############################################################################
+
 seeder.create_if_none(NavigationLink) do
   protocol = ApplicationConfig["APP_PROTOCOL"].freeze
   domain = Rails.application&.initialized? ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
