@@ -128,9 +128,19 @@ module Settings
     # Push Notifications
     field :push_notifications_ios_pem, type: :string
 
+    # Feed
+    field :feed_pinned_article_id, type: :integer, validates: { article_id: true, allow_nil: true }
+
     # To get default values
     def self.get_default(field)
       get_field(field)[:default]
+    end
+
+    # Returns the article pinned on the feed, nil if there's none
+    def self.feed_pinned_article
+      return if feed_pinned_article_id.blank?
+
+      Article.published.find_by(id: feed_pinned_article_id)
     end
   end
 end
