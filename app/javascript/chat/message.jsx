@@ -107,19 +107,25 @@ export const Message = ({
         id={`message-options-dropdown-${id}`}
         className={`messagebody__dropdownmenu ${dropdownOpen ? '' : 'hidden'}`}
       >
-        <Button
-          id={`edit-button-${id}`}
-          variant="ghost"
-          onClick={(_) => onEditMessageTrigger(id)}
-        >
-          Edit
-        </Button>
-        <Button
-          variant="ghost-danger"
-          onClick={(_) => onDeleteMessageTrigger(id)}
-        >
-          Delete
-        </Button>
+        <ul class="list-none">
+          <li>
+            <Button
+              id={`edit-button-${id}`}
+              variant="ghost"
+              onClick={(_) => onEditMessageTrigger(id)}
+            >
+              Edit
+            </Button>
+          </li>
+          <li>
+            <Button
+              variant="ghost-danger"
+              onClick={(_) => onDeleteMessageTrigger(id)}
+            >
+              Delete
+            </Button>
+          </li>
+        </ul>
       </div>
     </div>
   );
