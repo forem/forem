@@ -21,7 +21,7 @@ jobs:
         uses: github/super-linter@v3
         env:
           # Only validate new and modified files
-          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ALL_CODEBASE: true
           # By default the action looks for rules files in .github/linters/ so
           # we change this to the repository root.
           LINTER_RULES_PATH: /
