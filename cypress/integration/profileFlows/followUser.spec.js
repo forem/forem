@@ -11,7 +11,7 @@ describe('Follow user from profile page', () => {
   });
 
   it('follows and unfollows a user', () => {
-    //   Wait for the button to be initialised
+    // Wait for the button to be initialised
     cy.get('[data-fetched="fetched"]');
 
     cy.findByRole('button', { name: 'Follow' }).click();
