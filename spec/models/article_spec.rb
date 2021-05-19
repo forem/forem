@@ -18,6 +18,8 @@ RSpec.describe Article, type: :model do
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:user) }
 
+    it { is_expected.to have_one(:discussion_lock).dependent(:destroy) }
+
     it { is_expected.to have_many(:comments).dependent(:nullify) }
     it { is_expected.to have_many(:mentions).dependent(:destroy) }
     it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }

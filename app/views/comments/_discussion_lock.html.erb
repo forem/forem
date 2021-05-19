@@ -1,0 +1,42 @@
+<div id="discussion-lock-action" class="hidden">
+  <button class="crayons-btn crayons-btn--ghost-danger ml-5 discussion-lock-actions hidden" id="discussion-lock-btn">Lock discussion</button>
+  <div id="discussion-lock-confirmation-modal" class="hidden">
+    <div class="crayons-modal crayons-modal--s">
+      <div class="crayons-modal__box">
+        <header class="crayons-modal__box__header">
+          <h2 class="fs-l fw-bold mt-0 mb-0">
+            Are you sure?
+          </h2>
+          <button type="button" class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost" id="close-discussion-lock-confirmation-modal">
+            <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
+            </svg>
+          </button>
+        </header>
+        <div class="crayons-modal__box__body">
+          <p id="confirmation-text" class="fs-base mb-4 mt-0">
+            Users will not be able to add new comments. This will <em class="fw-bold">not</em> remove existing comments.
+          </p>
+          <div class="mb-5">
+            <div class="crayons-field">
+              <%= label_tag :reason, "Reason for locking the discussion (optional) - this will be publicly displayed", class: "crayons-field__label" %>
+              <%= text_field_tag :reason,
+                                 nil,
+                                 placeholder: "The reason why you're locking this discussion.",
+                                 required: false,
+                                 class: "crayons-textfield",
+                                 id: "discussion-lock-reason-field",
+                                 'aria-label': "The reason why you're locking this discussion." %>
+            </div>
+            <div class="crayons-notice--danger fs-base w-100 hidden mb-5" aria-live="polite" id="discussion-lock-error"></div>
+          </div>
+          <div class="discussion-lock__confirmation-buttons mt-3">
+            <button class="crayons-btn crayons-btn--danger mr-1" id="lock-discussion-btn">Lock Discussion</button>
+            <button class="crayons-btn crayons-btn--secondary" id="discussion-lock-cancel-btn">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="crayons-modal__overlay"></div>
+    </div>
+  </div>
+</div>

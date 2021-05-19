@@ -1,0 +1,15 @@
+<div class="crayons-notice mb-6 hidden" id="discussion-lock-reason" aria-live="polite">
+  <div class="crayons-notice--danger fs-base w-100 hidden mb-5" aria-live="polite" id="reopen-discussion-error"></div>
+  The discussion has been closed. New comments can't be added.
+  <div>
+    <em id="discussion-lock-reason-text">
+      <%= @discussion_lock&.reason %>
+    </em>
+  </div>
+  <button
+    class="crayons-btn crayons-btn--s crayons-btn--secondary float-right discussion-lock-actions hidden"
+    id="discussion-lock-reopen-btn"
+    data-discussion-lock-id="<%= @discussion_lock&.id %>">
+  Reopen
+  </button>
+</div>

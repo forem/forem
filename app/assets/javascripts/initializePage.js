@@ -12,7 +12,7 @@
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
   initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
-  initializeColorPicker, Runtime
+  initializeColorPicker, initializeDiscussionLockButtons, Runtime
 */
 
 function callInitializers() {
@@ -43,6 +43,7 @@ function callInitializers() {
   initializeOnboardingTaskCard();
   initializeDateHelpers();
   initializeColorPicker();
+  initializeDiscussionLockButtons();
 }
 
 function initializePage() {

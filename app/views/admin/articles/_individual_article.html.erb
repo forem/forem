@@ -130,6 +130,15 @@
           <button class="btn btn-primary float-right">Submit</button>
       </div>
     </div>
+    <div class="row">
+      <% if article.discussion_lock %>
+        Locked by: <%= article.discussion_lock.user_id %>
+        Locked: <%= article.discussion_lock.created_at %>
+        Reason: <%= article.discussion_lock.reason %>
+      <% else %>
+        <button class="btn btn-danger">Lock discussion</button>
+      <% end %>
+    </div>
     <% end %>
 
     <% if article.boosted_dev_digest_email %>
