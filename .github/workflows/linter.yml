@@ -22,14 +22,19 @@ jobs:
         env:
           # Only validate new and modified files
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # If no VALIDATE_* variables are set all default to true. As soon as
-          # one is set, all others default to false.
-          VALIDATE_RUBY: true
-          # By default the action looks for rule files in .github/linters/ so
+          # By default the action looks for rules files in .github/linters/ so
           # we change this to the repository root.
           LINTER_RULES_PATH: /
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # NOTE: If no VALIDATE_* variables are set all default to true. As
+          # soon as one is set, all others default to false.
+          # Validate Ruby with RuboCop
+          VALIDATE_RUBY: true
           RUBY_CONFIG_FILE: .rubocop.yml
+          # Validatate JS with ESLint
+          VALIDATE_JAVASCRIPT_ES: true
+          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.js
+
 
 
