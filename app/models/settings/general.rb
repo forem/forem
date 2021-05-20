@@ -112,6 +112,8 @@ module Settings
     field :sponsor_headline, default: "Community Sponsors"
 
     # Tags
+    field :sidebar_tags, type: :array, default: %w[]
+
     # Broadcast
     field :welcome_notifications_live_at, type: :date
 
