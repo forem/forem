@@ -393,7 +393,7 @@ GEM
     json (2.5.1)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
-    jwt (2.2.2)
+    jwt (2.2.3)
     kaminari (1.2.1)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.2.1)
@@ -481,7 +481,7 @@ GEM
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
       rack-protection
-    omniauth-apple (1.0.1)
+    omniauth-apple (1.0.2)
       jwt
       omniauth-oauth2
     omniauth-facebook (8.0.0)
