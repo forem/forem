@@ -33,7 +33,7 @@ RSpec.describe NotifyMailer, type: :mailer do
     before { user2.follow(user) }
 
     it "renders proper subject" do
-      expect(email.subject).to eq("#{user2.name} just followed you on #{Settings::General.community_name}")
+      expect(email.subject).to eq("#{user2.name} just followed you on #{Settings::Community.community_name}")
     end
 
     it "renders proper sender" do
@@ -85,7 +85,7 @@ RSpec.describe NotifyMailer, type: :mailer do
     let(:email) { described_class.with(user: user).unread_notifications_email }
 
     it "renders proper subject" do
-      expect(email.subject).to eq("🔥 You have 0 unread notifications on #{Settings::General.community_name}")
+      expect(email.subject).to eq("🔥 You have 0 unread notifications on #{Settings::Community.community_name}")
     end
 
     it "renders proper sender" do
