@@ -783,7 +783,9 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    return unless SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
+    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
+                    Regexp.new(term.downcase).match?(title.downcase)
+                  end
 
     Reaction.create(
       user_id: SiteConfig.mascot_user_id,

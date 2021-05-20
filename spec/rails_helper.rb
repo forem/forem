@@ -13,9 +13,10 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "fakeredis/rspec"
 require "pundit/matchers"
 require "pundit/rspec"
-require "webmock/rspec"
 require "sidekiq/testing"
+require "test_prof/factory_prof/nate_heckler"
 require "validate_url/rspec_matcher"
+require "webmock/rspec"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are

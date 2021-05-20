@@ -12,7 +12,7 @@
   </div>
 <% end %>
 
-<%= form_for(@comment, authenticity_token: false, html: { class: "comment-form" }) do |f| %>
+<%= form_for(@comment, authenticity_token: false, html: { class: "comment-form print-hidden" }) do |f| %>
   <% if @article&.comment_template.present? && @comment.new_record? %>
     <div class="article-comment-form-preamble">
       This post comes with a comment template

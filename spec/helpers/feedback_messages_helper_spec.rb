@@ -4,7 +4,7 @@ RSpec.describe FeedbackMessagesHelper, type: :helper do
   describe "#offender_email_details" do
     it "has the proper subject and body" do
       expect(helper.offender_email_details).to include(
-        subject: "#{SiteConfig.community_name} Code of Conduct Violation",
+        subject: "#{Settings::Community.community_name} Code of Conduct Violation",
         body: a_string_starting_with("Hello"),
       )
     end
@@ -13,7 +13,7 @@ RSpec.describe FeedbackMessagesHelper, type: :helper do
   describe "#reporter_email_details" do
     it "has the proper subject and body" do
       expect(helper.reporter_email_details).to include(
-        subject: "#{SiteConfig.community_name} Report",
+        subject: "#{Settings::Community.community_name} Report",
         body: a_string_starting_with("Hi"),
       )
     end
@@ -22,7 +22,7 @@ RSpec.describe FeedbackMessagesHelper, type: :helper do
   describe "#affected_email_details" do
     it "has the proper subject and body" do
       expect(helper.affected_email_details).to include(
-        subject: "Courtesy Notice from #{SiteConfig.community_name}",
+        subject: "Courtesy Notice from #{Settings::Community.community_name}",
         body: a_string_starting_with("Hi"),
       )
     end

@@ -17,7 +17,7 @@ RSpec.describe "Admin manages configuration", type: :system do
 
   context "when mandatory options are missing" do
     it "does not show the banner on the config page" do
-      allow(SiteConfig).to receive(:tagline).and_return(nil)
+      allow(Settings::Community).to receive(:tagline).and_return(nil)
       expect(page).not_to have_content("Setup not completed yet")
     end
 

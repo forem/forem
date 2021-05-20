@@ -82,8 +82,8 @@ RSpec.describe "UserSettings", type: :request do
       it "displays content on Extensions tab properly" do
         get user_settings_path(:extensions)
 
-        feed_section = "Publishing to #{SiteConfig.community_name} from RSS"
-        stackbit_section = "Generate a personal blog from your #{SiteConfig.community_name} posts"
+        feed_section = "Publishing to #{Settings::Community.community_name} from RSS"
+        stackbit_section = "Generate a personal blog from your #{Settings::Community.community_name} posts"
         titles = ["Comment templates", "Connect settings", feed_section, "Web monetization", stackbit_section]
         expect(response.body).to include(*titles)
       end
