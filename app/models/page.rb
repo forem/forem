@@ -7,7 +7,6 @@ class Page < ApplicationRecord
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
   validate :unique_slug_including_users_and_orgs, if: :slug_changed?
-  validate :single_landing_page, if: :will_save_change_to_landing_page?
 
   before_validation :set_default_template
   before_save :evaluate_markdown
@@ -22,6 +21,11 @@ class Page < ApplicationRecord
 
   def feature_flag_name
     "page_#{slug}"
+  end
+
+  def has_a_landing_page?
+    landing_page = Page.find_by(landing_page: true)
+    landing_page && [nil, id].exclude?(landing_page.id) == true
   end
 
   private
@@ -55,18 +59,6 @@ class Page < ApplicationRecord
     return unless slug_exists
 
     errors.add(:slug, "is taken.")
-  end
-
-  def single_landing_page
-    # Only add errors if we are trying to modify a landing page
-    # while another landing page is already being used to ensure
-    # that only one can be active (set to "true") at a time.
-    landing_page = Page.find_by(landing_page: true)
-    return unless landing_page &&
-      [nil, id].exclude?(landing_page.id)
-
-    errors.add(:base, "Only one page at a time can be used as a 'locked screen.'
-                      If you proceed, this page will no longer show as 'locked screen':")
   end
 
   def bust_cache
