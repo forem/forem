@@ -28,6 +28,11 @@ class Page < ApplicationRecord
     landing_page && [nil, id].exclude?(landing_page.id) == true
   end
 
+  def landing_page_path
+    landing_page = Page.find_by(landing_page: true)
+    landing_page.path
+  end
+
   private
 
   def evaluate_markdown
