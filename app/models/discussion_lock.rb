@@ -1,7 +1,7 @@
 class DiscussionLock < ApplicationRecord
   belongs_to :article
-  belongs_to :user
+  belongs_to :locking_user, class_name: "User"
 
   validates :article_id, presence: true, uniqueness: true
-  validates :user_id, presence: true
+  validates :locking_user_id, presence: true
 end

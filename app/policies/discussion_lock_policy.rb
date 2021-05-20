@@ -18,6 +18,6 @@ class DiscussionLockPolicy < ApplicationPolicy
   end
 
   def user_author?
-    record.user_id == user.id
+    record.locking_user_id == user.id
   end
 end

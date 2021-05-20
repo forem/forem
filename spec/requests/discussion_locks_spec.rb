@@ -9,7 +9,7 @@ RSpec.describe "DiscussionLocks", type: :request do
     it "creates a DiscussionLock" do
       article = create(:article, user: user)
       reason = "Unproductice comments."
-      valid_attributes = { article_id: article.id, user_id: user.id, reason: reason }
+      valid_attributes = { article_id: article.id, locking_user_id: user.id, reason: reason }
       expect do
         post discussion_locks_path,
              headers: { "Content-Type" => "application/json" },
@@ -18,12 +18,12 @@ RSpec.describe "DiscussionLocks", type: :request do
 
       discussion_lock = DiscussionLock.last
       expect(discussion_lock.article_id).to eq article.id
-      expect(discussion_lock.user_id).to eq user.id
+      expect(discussion_lock.locking_user_id).to eq user.id
       expect(discussion_lock.reason).to eq reason
     end
 
     it "returns an error for an invalid Article" do
-      invalid_article_attributes = { article_id: "nonexistant-id", user_id: user.id }
+      invalid_article_attributes = { article_id: "nonexistant-id", locking_user_id: user.id }
       expect do
         post discussion_locks_path,
              headers: { "Content-Type" => "application/json" },
@@ -36,7 +36,7 @@ RSpec.describe "DiscussionLocks", type: :request do
 
     it "busts the cache for the article" do
       article = create(:article, user: user)
-      valid_attributes = { article_id: article.id, user_id: user.id }
+      valid_attributes = { article_id: article.id, locking_user_id: user.id }
 
       sidekiq_assert_enqueued_jobs(1, only: Articles::BustCacheWorker) do
         post discussion_locks_path,
@@ -49,7 +49,7 @@ RSpec.describe "DiscussionLocks", type: :request do
   describe "DELETE /discussion_locks/:id - DiscussionLocks#destroy" do
     it "destroys a DiscussionLock" do
       article = create(:article, user: user)
-      discussion_lock = create(:discussion_lock, article_id: article.id, user_id: user.id)
+      discussion_lock = create(:discussion_lock, article_id: article.id, locking_user_id: user.id)
       expect do
         delete discussion_lock_path(discussion_lock.id)
       end.to change(DiscussionLock, :count).by(-1)
@@ -57,7 +57,7 @@ RSpec.describe "DiscussionLocks", type: :request do
 
     it "busts the cache for the article" do
       article = create(:article, user: user)
-      discussion_lock = create(:discussion_lock, article_id: article.id, user_id: user.id)
+      discussion_lock = create(:discussion_lock, article_id: article.id, locking_user_id: user.id)
 
       sidekiq_assert_enqueued_jobs(1, only: Articles::BustCacheWorker) do
         delete discussion_lock_path(discussion_lock.id)

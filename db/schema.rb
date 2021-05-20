@@ -464,11 +464,11 @@ ActiveRecord::Schema.define(version: 2021_05_17_151144) do
   create_table "discussion_locks", force: :cascade do |t|
     t.bigint "article_id", null: false
     t.datetime "created_at", precision: 6, null: false
+    t.bigint "locking_user_id", null: false
     t.text "reason"
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id", null: false
     t.index ["article_id"], name: "index_discussion_locks_on_article_id", unique: true
-    t.index ["user_id"], name: "index_discussion_locks_on_user_id"
+    t.index ["locking_user_id"], name: "index_discussion_locks_on_locking_user_id"
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -1539,7 +1539,7 @@ ActiveRecord::Schema.define(version: 2021_05_17_151144) do
   add_foreign_key "devices", "consumer_apps"
   add_foreign_key "devices", "users"
   add_foreign_key "discussion_locks", "articles"
-  add_foreign_key "discussion_locks", "users"
+  add_foreign_key "discussion_locks", "users", column: "locking_user_id"
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade

@@ -1,5 +1,4 @@
 class DiscussionLocksController < ApplicationController
-  before_action :set_discussion_lock, only: %i[destroy]
   before_action :authenticate_user!
 
   DISCUSSION_LOCK_PARAMS = %i[article_id reason].freeze
@@ -18,24 +17,22 @@ class DiscussionLocksController < ApplicationController
   end
 
   def destroy
-    authorize @discussion_lock
+    discussion_lock = DiscussionLock.find(params[:id])
 
-    if @discussion_lock.destroy
-      bust_article_cache_async(@discussion_lock.article_id)
+    authorize discussion_lock
+
+    if discussion_lock.destroy
+      bust_article_cache_async(discussion_lock.article_id)
       render json: { message: "success", success: true }, status: :ok
     else
-      render json: { error: @discussion_lock.errors_as_sentence, success: false }, status: :unprocessable_entity
+      render json: { error: discussion_lock.errors_as_sentence, success: false }, status: :unprocessable_entity
     end
   end
 
   private
 
-  def set_discussion_lock
-    @discussion_lock = DiscussionLock.find(params[:id])
-  end
-
   def discussion_lock_params
-    params.require(:discussion_lock).permit(DISCUSSION_LOCK_PARAMS).merge!(user_id: current_user.id)
+    params.require(:discussion_lock).permit(DISCUSSION_LOCK_PARAMS).merge!(locking_user_id: current_user.id)
   end
 
   def bust_article_cache_async(article_id)
