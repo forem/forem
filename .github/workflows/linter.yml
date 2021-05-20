@@ -27,6 +27,7 @@ jobs:
           LINTER_RULES_PATH: /
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FILTER_REGEX_EXCLUDE: .*node_modules/.*
           # NOTE: If no VALIDATE_* variables are set all default to true. As
           # soon as one is set, all others default to false.
           # Validate Ruby with RuboCop
