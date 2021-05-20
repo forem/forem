@@ -128,6 +128,7 @@ export const MentionAutocompleteTextArea = forwardRef(
       onChange,
       onBlur,
       id: inputId,
+      disableGrammarly,
       ...autocompleteInputProps
     } = inputProps;
 
@@ -226,16 +227,14 @@ export const MentionAutocompleteTextArea = forwardRef(
 
     const handleTextInputChange = ({ target: { value } }) => {
       setTextContent(value);
-      const isComboboxVisible = !comboboxRef.current.classList.contains(
-        'hidden',
-      );
+      const isComboboxVisible =
+        !comboboxRef.current.classList.contains('hidden');
       const currentActiveInput = isComboboxVisible
         ? comboboxRef.current
         : plainTextAreaRef.current;
 
-      const { isUserMention, indexOfMentionStart } = getMentionWordData(
-        currentActiveInput,
-      );
+      const { isUserMention, indexOfMentionStart } =
+        getMentionWordData(currentActiveInput);
 
       const { selectionStart } = currentActiveInput;
 
@@ -349,6 +348,7 @@ export const MentionAutocompleteTextArea = forwardRef(
         >
           <ComboboxInput
             {...autocompleteInputProps}
+            data-gramm_editor={disableGrammarly && 'false'}
             aria-label="Mention user"
             ref={comboboxRef}
             value={textContent}
@@ -367,6 +367,7 @@ export const MentionAutocompleteTextArea = forwardRef(
 
           <textarea
             {...autocompleteInputProps}
+            data-gramm_editor={disableGrammarly && 'false'}
             id={inputId}
             data-mention-autocomplete-active="true"
             ref={mergeInputRefs([plainTextAreaRef, forwardedRef])}
@@ -391,6 +392,7 @@ export const MentionAutocompleteTextArea = forwardRef(
                 <ComboboxList>
                   {users.map((user) => (
                     <ComboboxOption
+                      key={`${user.username}_key`}
                       value={user.username}
                       className="crayons-autocomplete__option flex items-center"
                     >
@@ -414,6 +416,7 @@ export const MentionAutocompleteTextArea = forwardRef(
 );
 
 MentionAutocompleteTextArea.propTypes = {
+  disableGrammarly: PropTypes.bool.isRequired,
   replaceElement: PropTypes.node,
   fetchSuggestions: PropTypes.func.isRequired,
   autoResize: PropTypes.bool,

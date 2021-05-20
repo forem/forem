@@ -12,6 +12,7 @@ export const Meta = ({
   mainImage,
   onMainImageUrlChange,
   switchHelpContext,
+  disableGrammarly,
 }) => {
   return (
     <div className="crayons-article-form__top text-padding drop-area">
@@ -21,6 +22,7 @@ export const Meta = ({
       />
       <Title
         defaultValue={titleDefaultValue}
+        disableGrammarly={disableGrammarly}
         onChange={titleOnChange}
         switchHelpContext={switchHelpContext}
       />
@@ -34,6 +36,7 @@ export const Meta = ({
 };
 
 Meta.propTypes = {
+  disableGrammarly: PropTypes.bool.isRequired,
   titleDefaultValue: PropTypes.string.isRequired,
   titleOnChange: PropTypes.func.isRequired,
   tagsDefaultValue: PropTypes.string.isRequired,

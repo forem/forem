@@ -43,6 +43,7 @@ export const EditorBody = ({
   onChange,
   defaultValue,
   switchHelpContext,
+  disableGrammarly,
   version,
 }) => {
   const textAreaRef = useRef(null);
@@ -78,6 +79,7 @@ export const EditorBody = ({
       <Toolbar version={version} />
       <MentionAutocompleteTextArea
         ref={textAreaRef}
+        disableGrammarly={disableGrammarly}
         fetchSuggestions={(username) => fetchSearch('usernames', { username })}
         autoResize
         onChange={onChange}
@@ -94,6 +96,7 @@ export const EditorBody = ({
 };
 
 EditorBody.propTypes = {
+  disableGrammarly: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
   switchHelpContext: PropTypes.func.isRequired,

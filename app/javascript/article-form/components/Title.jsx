@@ -10,7 +10,12 @@ import PropTypes from 'prop-types';
 // functionality on .html.erb view because there's no point of it.
 import { useTextAreaAutoResize } from '@utilities/textAreaUtils';
 
-export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
+export const Title = ({
+  onChange,
+  defaultValue,
+  switchHelpContext,
+  disableGrammarly,
+}) => {
   const textAreaRef = useRef(null);
   const { setTextArea, setConstrainToContentHeight } = useTextAreaAutoResize();
 
@@ -28,6 +33,7 @@ export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
     >
       <textarea
         ref={textAreaRef}
+        data-gramm_editor={disableGrammarly && 'false'}
         className="crayons-textfield crayons-textfield--ghost fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight"
         type="text"
         id="article-form-title"
@@ -52,6 +58,7 @@ Title.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
   switchHelpContext: PropTypes.func.isRequired,
+  disableGrammarly: PropTypes.bool.isRequired,
 };
 
 Title.displayName = 'Title';
