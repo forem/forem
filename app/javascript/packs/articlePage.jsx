@@ -12,7 +12,6 @@ if (fullscreenActionElements) {
 
 // The Snackbar for the article page
 const snackZone = document.getElementById('snack-zone');
-
 if (snackZone) {
   render(<Snackbar lifespan="3" />, snackZone);
 }
@@ -41,6 +40,11 @@ const toggleArticlePin = async (button) => {
     // replace id and label
     button.id = isPinButton ? 'js-unpin-article' : 'js-pin-article';
     button.innerHTML = `${isPinButton ? 'Unpin' : 'Pin'} Post`;
+
+    const message = isPinButton
+      ? 'The post has been succesfully pinned'
+      : 'The post has been succesfully unpinned';
+    addSnackbarItem({ message });
   }
 };
 
