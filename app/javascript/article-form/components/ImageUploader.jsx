@@ -108,6 +108,7 @@ export const ImageUploader = () => {
           message: error,
           addCloseButton: true,
         });
+        Honeybadger.notify(error);
       });
   }
 
