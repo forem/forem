@@ -4,6 +4,7 @@ import { h } from 'preact';
 import { useReducer } from 'preact/hooks';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
+import { addSnackbarItem } from '../../Snackbar';
 import { ClipboardButton } from './ClipboardButton';
 import { Button, Spinner } from '@crayons';
 
@@ -96,11 +97,19 @@ export const ImageUploader = () => {
       'image-markdown-copy-link-input',
     );
 
-    Runtime.copyToClipboard(imageMarkdownInput.value).then(() => {
-      dispatch({
-        type: 'show_copied_image_message',
+    Runtime.copyToClipboard(imageMarkdownInput.value)
+      .then(() => {
+        dispatch({
+          type: 'show_copied_image_message',
+        });
+      })
+      .catch((error) => {
+        addSnackbarItem({
+          message: error,
+          addCloseButton: true,
+        });
+        Honeybadger.notify(error);
       });
-    });
   }
 
   function handleInsertionImageUpload(e) {
