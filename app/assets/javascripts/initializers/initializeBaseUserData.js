@@ -32,17 +32,22 @@ function addRelevantButtonsToArticle(user) {
       );
     }
 
-    if (published && user.admin) {
-      const isArticlePinned = JSON.parse(articleContainer.dataset.pinned);
-      if (isArticlePinned) {
-        actions.push(
-          `<button id="js-unpin-article" class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" data-action="${articleContainer.dataset.pinPath}">Unpin Post</button>`,
-        );
-      } else {
-        actions.push(
-          `<button id="js-pin-article" class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" data-action="${articleContainer.dataset.pinPath}">Pin Post</button>`,
-        );
-      }
+    const articleId = articleContainer.dataset.articleId;
+    const articlePinnedId = articleContainer.dataset.pinnedId;
+
+    // we hide the buttons for draft articles, for non admins and
+    // if there's already a pinned post different from the current one
+    if (published && user.admin && articleId === articlePinnedId) {
+      const isArticlePinned = articleContainer.hasAttribute('data-pinned');
+
+      actions.push(
+        `<button
+            id="js-${isArticlePinned ? 'unpin' : 'pin'}-article"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1"
+            data-action="${articleContainer.dataset.pinPath}">${
+          isArticlePinned ? 'Unpin' : 'Pin'
+        } Post</button>`,
+      );
     }
 
     document.getElementById('action-space').innerHTML = actions.join('');
