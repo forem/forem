@@ -128,24 +128,9 @@ module Settings
     # Push Notifications
     field :push_notifications_ios_pem, type: :string
 
-    # Returns true if we are operating on a local installation, false otherwise
-    def self.local?
-      app_domain.include?("localhost")
-    end
-
-    # Used where we need to keep old DEV features around but don't want to/cannot
-    # expose them to other communities.
-    def self.dev_to?
-      app_domain == "dev.to"
-    end
-
     # To get default values
     def self.get_default(field)
       get_field(field)[:default]
-    end
-
-    def self.smtp_enabled?
-      Rails.configuration.action_mailer.perform_deliveries
     end
   end
 end

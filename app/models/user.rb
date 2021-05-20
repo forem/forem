@@ -696,6 +696,6 @@ class User < ApplicationRecord
   end
 
   def confirmation_required?
-    Settings::General.smtp_enabled?
+    ForemInstance.smtp_enabled?
   end
 end

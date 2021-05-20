@@ -33,7 +33,7 @@ class RegistrationsController < Devise::RegistrationsController
       yield resource if block_given?
       if resource.persisted?
         update_first_user_permissions(resource)
-        if Settings::General.smtp_enabled?
+        if ForemInstance.smtp_enabled?
           redirect_to confirm_email_path(email: resource.email)
         else
           sign_in(resource)
