@@ -1,6 +1,7 @@
 module Articles
   class Suggest
     MAX_DEFAULT = 4
+    USE_OFFSET = true
 
     def self.call(article, max: MAX_DEFAULT)
       new(article, max: max).call
@@ -37,27 +38,32 @@ module Articles
 
     def other_suggestions(max: MAX_DEFAULT, ids_to_ignore: [])
       ids_to_ignore << article.id
-      Article.published
+      base_article_query
         .where.not(id: ids_to_ignore)
-        .where.not(user_id: article.user_id)
-        .order(hotness_score: :desc)
-        .offset(rand(0..offset))
         .first(max)
     end
 
     def suggestions_by_tag(max: MAX_DEFAULT)
-      Article
-        .published
+      base_article_query
         .cached_tagged_with_any(cached_tag_list_array)
-        .where.not(user_id: article.user_id)
         .where(tag_suggestion_query)
-        .order(hotness_score: :desc)
-        .offset(rand(0..offset))
         .first(max)
     end
 
+    def base_article_query
+      Article
+        .published
+        .where.not(user_id: article.user_id)
+        .order(hotness_score: :desc)
+        .offset(rand(0..offset))
+    end
+
     def offset
-      total_articles_count > 1000 ? 200 : (total_articles_count / 10)
+      if USE_OFFSET
+        total_articles_count > 1000 ? 200 : (total_articles_count / 10)
+      else
+        0
+      end
     end
 
     def tag_suggestion_query
