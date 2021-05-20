@@ -19,4 +19,6 @@ module Users
     validates :feed_url, length: { maximum: 500 }, allow_nil: true
     validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
   end
+
+  # TODO: @msarit Re-add feed_url validation after updates are pointed directly to users_settings table
 end
