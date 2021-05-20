@@ -41,9 +41,14 @@
       <%= form.check_box :is_top_level_path, class: "crayons-checkbox" %>
       <p>Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code> Be careful! ⚠️</p>
     </div>
-    <div class="form-group">
+    <% if @page.errors.count > 0 %>
+      <div id="error">
+        <% @page.errors %>
+      </div>
+    <% end %>
+    <div class="form-group" data-controller="modal" data-modal-root-selector-value="body" data-modal-content-selector-value="#error" data-modal-title-value="There's another locked screen..." data-modal-size-value="l">
       <%= form.label :landing_page, "Use as 'Locked Screen'" %>
-      <%= form.check_box :landing_page, class: "crayons-checkbox" %>
+      <%= form.check_box :landing_page, class: "crayons-checkbox", data: { action: "modal#toggleModal" } %>
       <p>Determines if this page will be used as a landing page for annonymous viewers.</p>
     </div>
     <div class="form-group">
