@@ -1,7 +1,10 @@
 describe('Chat message options', () => {
   beforeEach(() => {
     cy.testSetup();
-    cy.intercept({ method: 'POST', url: '/chat_channels/1/open' }, {});
+    cy.intercept(
+      { method: 'POST', url: '/chat_channels/1/open' },
+      { body: {} },
+    );
 
     cy.fixture('users/chatUser1.json').as('user');
     cy.fixture('users/chatUser2.json').as('user2');
@@ -22,7 +25,7 @@ describe('Chat message options', () => {
     cy.findByRole('textbox', { name: 'Compose a message' })
       .click()
       .focus()
-      .type('a');
+      .type('message');
     cy.findByRole('button', { name: 'Send' }).click();
 
     // The sent message doesn't show up without reload
