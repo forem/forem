@@ -8,12 +8,13 @@ function initializeProfileImage(user) {
 function addRelevantButtonsToArticle(user) {
   var articleContainer = document.getElementById('article-show-container');
   if (articleContainer) {
+    let actions = [];
     const published = JSON.parse(articleContainer.dataset.published);
 
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
-      let actions = [
+      actions.push(
         `<a class="crayons-btn crayons-btn--s crayons-btn--secondary" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
-      ];
+      );
 
       let clickToEditButton = document.getElementById('author-click-to-edit');
       if (clickToEditButton) {
@@ -29,22 +30,22 @@ function addRelevantButtonsToArticle(user) {
       actions.push(
         `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
       );
-
-      if (published && user.admin) {
-        const isArticlePinned = JSON.parse(articleContainer.dataset.pinned);
-        if (isArticlePinned) {
-          actions.push(
-            `<button id="js-unpin-article" class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" data-action="${articleContainer.dataset.pinPath}">Unpin Post</button>`,
-          );
-        } else {
-          actions.push(
-            `<button id="js-pin-article" class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" data-action="${articleContainer.dataset.pinPath}">Pin Post</button>`,
-          );
-        }
-      }
-
-      document.getElementById('action-space').innerHTML = actions.join('');
     }
+
+    if (published && user.admin) {
+      const isArticlePinned = JSON.parse(articleContainer.dataset.pinned);
+      if (isArticlePinned) {
+        actions.push(
+          `<button id="js-unpin-article" class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" data-action="${articleContainer.dataset.pinPath}">Unpin Post</button>`,
+        );
+      } else {
+        actions.push(
+          `<button id="js-pin-article" class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" data-action="${articleContainer.dataset.pinPath}">Pin Post</button>`,
+        );
+      }
+    }
+
+    document.getElementById('action-space').innerHTML = actions.join('');
   }
 }
 
