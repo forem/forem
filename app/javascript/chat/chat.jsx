@@ -664,10 +664,11 @@ export class Chat extends Component {
       });
     }
     if (messageIsEmpty) {
-      const messagesByCurrentUser = messages[activeChannelId].filter(
+      const messagesByCurrentUser = messages[activeChannelId]?.filter(
         (message) => message.user_id === currentUserId,
       );
       const lastMessage =
+        messagesByCurrentUser &&
         messagesByCurrentUser[messagesByCurrentUser.length - 1];
 
       if (lastMessage) {
