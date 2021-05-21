@@ -7,7 +7,7 @@ RSpec.describe "dashboards/show.html.erb", type: :view do
     stub_template "dashboards/_actions.html.erb" => "stubbed content"
 
     allow(Images::Optimizer).to receive(:imgproxy_enabled?).and_return(true)
-    allow(SiteConfig).to receive(:mascot_image_url).and_return("https://i.imgur.com/fKYKgo4.png")
+    allow(Settings::General).to receive(:mascot_image_url).and_return("https://i.imgur.com/fKYKgo4.png")
   end
 
   context "when using Imgproxy" do

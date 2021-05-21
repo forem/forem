@@ -16,7 +16,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     let(:super_admin)          { create(:user, :super_admin) }
 
     before do
-      allow(SiteConfig).to receive(:suggested_tags).and_return(%w[beginners javascript career])
+      allow(Settings::General).to receive(:suggested_tags).and_return(%w[beginners javascript career])
     end
 
     it "does not allow not logged-in users" do
@@ -120,11 +120,11 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     end
 
     before do
-      allow(SiteConfig).to receive(:suggested_tags).and_return(%w[beginners javascript career])
+      allow(Settings::General).to receive(:suggested_tags).and_return(%w[beginners javascript career])
     end
 
     it "returns tags" do
-      create(:tag, name: SiteConfig.suggested_tags.first)
+      create(:tag, name: Settings::General.suggested_tags.first)
 
       get onboarding_tags_path, headers: headers
 
@@ -132,7 +132,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     end
 
     it "returns tags with the correct json representation" do
-      tag = create(:tag, name: SiteConfig.suggested_tags.first)
+      tag = create(:tag, name: Settings::General.suggested_tags.first)
 
       get onboarding_tags_path, headers: headers
 
@@ -154,7 +154,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     end
 
     it "sets the correct edge caching surrogate key for all tags" do
-      tag = create(:tag, name: SiteConfig.suggested_tags.first)
+      tag = create(:tag, name: Settings::General.suggested_tags.first)
 
       get onboarding_tags_path, headers: headers
 
