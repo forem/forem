@@ -49,10 +49,6 @@ class UserDecorator < ApplicationDecorator
     end
   end
 
-  def config_font_name
-    config_font.gsub("default", Settings::UserExperience.default_font)
-  end
-
   def config_body_class
     body_class = [
       config_theme.tr("_", "-"),
