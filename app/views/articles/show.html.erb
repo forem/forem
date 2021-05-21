@@ -117,7 +117,7 @@
         data-path="<%= @article.path %>"
         data-published="<%= @article.published? %>"
         data-pin-path="<%= pin_stories_feed_path(@article.id) %>"
-        data-pinned-id="<%= SiteConfig.feed_pinned_article_id %>"
+        data-pinned-id="<%= Settings::General.feed_pinned_article_id %>"
         <%= @article.pinned? ? "data-pinned" : " " %>>
         <header class="crayons-article__header" id="main-title">
           <% if @article.video.present? %>

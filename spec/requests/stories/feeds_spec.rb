@@ -64,7 +64,7 @@ RSpec.describe "Stories::Feeds", type: :request do
 
     context "when rendering an article that is pinned" do
       it "returns pinned set to true in the response" do
-        allow(SiteConfig).to receive(:feed_pinned_article_id).and_return(article.id)
+        allow(Settings::General).to receive(:feed_pinned_article_id).and_return(article.id)
 
         get stories_feed_path
 
@@ -73,7 +73,7 @@ RSpec.describe "Stories::Feeds", type: :request do
       end
 
       it "returns pinned set to false in the response for non pinned articles" do
-        allow(SiteConfig).to receive(:feed_pinned_article_id).and_return(nil)
+        allow(Settings::General).to receive(:feed_pinned_article_id).and_return(nil)
 
         get stories_feed_path
 

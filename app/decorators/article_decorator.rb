@@ -110,6 +110,6 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def pinned?
-    SiteConfig.feed_pinned_article_id == id
+    Settings::General.feed_pinned_article_id == id
   end
 end

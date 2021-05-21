@@ -8,19 +8,19 @@ module Stories
     end
 
     def pin
-      SiteConfig.feed_pinned_article_id = params[:article_id]
+      Settings::General.feed_pinned_article_id = params[:article_id]
     rescue ActiveRecord::RecordInvalid => e
       render json: { error: e.message }, status: :unprocessable_entity
     end
 
     def unpin
-      SiteConfig.feed_pinned_article_id = nil
+      Settings::General.feed_pinned_article_id = nil
     end
 
     private
 
     def add_pinned_article
-      pinned_article = SiteConfig.feed_pinned_article
+      pinned_article = Settings::General.feed_pinned_article
       return if !pinned_article || @stories.detect { |story| story.id == pinned_article.id }
 
       @stories.prepend(pinned_article.decorate)
