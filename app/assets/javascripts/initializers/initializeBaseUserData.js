@@ -37,7 +37,11 @@ function addRelevantButtonsToArticle(user) {
 
     // we hide the buttons for draft articles, for non admins and
     // if there's already a pinned post different from the current one
-    if (published && user.admin && articleId === articlePinnedId) {
+    if (
+      published &&
+      user.admin &&
+      (articleId === articlePinnedId || !articlePinnedId)
+    ) {
       const isArticlePinned = articleContainer.hasAttribute('data-pinned');
 
       actions.push(
