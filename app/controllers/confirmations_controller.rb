@@ -6,7 +6,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     self.resource = resource_class.send_confirmation_instructions(resource_params)
     resource.errors.clear # Don't leak user information, like paranoid mode.
 
-    message = format(FLASH_MESSAGE, email: SiteConfig.email_addresses[:members])
+    message = format(FLASH_MESSAGE, email: Settings::General.email_addresses[:members])
     flash.now[:global_notice] = message
     render :new
   end

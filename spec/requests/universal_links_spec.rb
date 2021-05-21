@@ -8,7 +8,7 @@ RSpec.describe "Universal Links (Apple)", type: :request do
   describe "returns a valid Apple App Site Association file" do
     context "with DEV app backwards compatibility" do
       it "responds with applinks support for both" do
-        allow(SiteConfig).to receive(:dev_to?).and_return(true)
+        allow(ForemInstance).to receive(:dev_to?).and_return(true)
         get aasa_route
         json_response = JSON.parse(response.body)
 

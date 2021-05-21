@@ -154,7 +154,7 @@
       changeSubmitButton({ text: 'Submitting...', active: false })
     }
 
-    var stripe = Stripe('<%= SiteConfig.stripe_publishable_key %>');
+    var stripe = Stripe('<%= Settings::General.stripe_publishable_key %>');
     var elements = stripe.elements();
 
     <% if current_user.decorate.dark_theme? %>

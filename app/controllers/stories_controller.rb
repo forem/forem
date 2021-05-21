@@ -414,8 +414,8 @@ class StoriesController < ApplicationController
         logo: {
           "@context": "http://schema.org",
           "@type": "ImageObject",
-          url: ApplicationController.helpers.optimized_image_url(SiteConfig.logo_png, width: 192,
-                                                                                      fetch_format: "png"),
+          url: ApplicationController.helpers.optimized_image_url(Settings::General.logo_png, width: 192,
+                                                                                             fetch_format: "png"),
           width: "192",
           height: "192"
         }

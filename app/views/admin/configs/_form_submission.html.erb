@@ -5,7 +5,7 @@
       <p class="crayons-field__description">Type the sentence: <strong><%= @confirmation_text %></strong></p>
       <div class="flex">
         <%= text_field_tag :confirmation, nil, class: "crayons-textfield flex-1 mr-2", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
-        <%= f.submit "Update Site Configuration", class: "crayons-btn align-self-start" %>
+        <%= f.submit "Update Settings", class: "crayons-btn align-self-start" %>
       </div>
     </div>
   </div>

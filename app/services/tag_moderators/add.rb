@@ -58,8 +58,8 @@ module TagModerators
     end
 
     def tag_mod_newsletter_enabled?
-      SiteConfig.mailchimp_api_key.present? &&
-        SiteConfig.mailchimp_tag_moderators_id.present?
+      Settings::General.mailchimp_api_key.present? &&
+        Settings::General.mailchimp_tag_moderators_id.present?
     end
 
     def chat_channel_slug(tag)

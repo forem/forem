@@ -7,7 +7,7 @@ module Middlewares
     end
 
     def call(env)
-      env["rack.session.options"][:domain] = ".#{SiteConfig.app_domain}"
+      env["rack.session.options"][:domain] = ".#{Settings::General.app_domain}"
 
       @app.call(env)
     end

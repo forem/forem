@@ -83,7 +83,7 @@
                 <p class="crayons-field__description">Type the sentence: <strong><%= @confirmation_text %></strong></p>
                 <div class="flex">
                   <%= text_field_tag :confirmation, nil, class: "crayons-textfield flex-1 mr-2", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
-                  <%= f.submit "Update Site Configuration", class: "crayons-btn align-self-start" %>
+                  <%= f.submit "Update Settings", class: "crayons-btn align-self-start" %>
                 </div>
               </div>
             </div>
@@ -94,28 +94,28 @@
     </div>
   </div>
 
-  <div id="siteConfig">
+  <div id="settings">
     <div class="card w-100">
       <div
-        id="siteConfigHeader"
+        id="settingsHeader"
         class="card-header"
         data-toggle="collapse"
-        data-target="#siteConfigBodyContainer"
+        data-target="#settingsBodyContainer"
         aria-expanded="true"
-        aria-controls="siteConfigBodyContainer">
+        aria-controls="settingsBodyContainer">
 
-        <h2 class="d-inline">All Site Configuration</h2>
+        <h2 class="d-inline">All Settings</h2>
 
         <button
           class="crayons-btn crayons-btn--secondary float-right"
           type="button"
           data-action="click->config#toggleAccordionButtonLabel">
-          Hide Site Configuration
+          Hide Settings
         </button>
       </div>
 
-      <div id="siteConfigBodyContainer" class="show expand p-3" aria-labelledby="siteConfigHeader">
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+      <div id="settingsBodyContainer" class="show expand p-3" aria-labelledby="settingsHeader">
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -128,19 +128,19 @@
               <fieldset class="grid gap-4">
                 <div class="crayons-field">
                   <%= admin_config_label :health_check_token %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:health_check_token][:description] %>
+                  <%= admin_config_description Constants::Settings::General::DETAILS[:health_check_token][:description] %>
                   <%= f.text_field :health_check_token,
                                    class: "crayons-textfield",
-                                   value: SiteConfig.health_check_token,
-                                   placeholder: Constants::SiteConfig::DETAILS[:health_check_token][:placeholder] %>
+                                   value: Settings::General.health_check_token,
+                                   placeholder: Constants::Settings::General::DETAILS[:health_check_token][:placeholder] %>
                 </div>
                 <div class="crayons-field">
                   <%= admin_config_label :video_encoder_key %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:video_encoder_key][:description] %>
+                  <%= admin_config_description Constants::Settings::General::DETAILS[:video_encoder_key][:description] %>
                   <%= f.text_field :video_encoder_key,
                                    class: "crayons-textfield",
-                                   value: SiteConfig.video_encoder_key,
-                                   placeholder: Constants::SiteConfig::DETAILS[:video_encoder_key][:placeholder] %>
+                                   value: Settings::General.video_encoder_key,
+                                   placeholder: Constants::Settings::General::DETAILS[:video_encoder_key][:placeholder] %>
                 </div>
                 <%= render "form_submission", f: f %>
               </fieldset>
@@ -533,7 +533,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -548,33 +548,33 @@
               <%= f.fields_for :credit_prices_in_cents do |price_field| %>
                 <div class="crayons-field">
                   <%= admin_config_label "Credit price in cents (S)" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:small][:description] %>
+                  <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:small][:description] %>
                   <%= price_field.number_field :small,
                                                class: "crayons-textfield",
-                                               value: SiteConfig.credit_prices_in_cents[:small] %>
+                                               value: Settings::General.credit_prices_in_cents[:small] %>
                 </div>
 
                 <div class="crayons-field">
                   <%= admin_config_label "Credit price in cents (M)" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:medium][:description] %>
+                  <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:medium][:description] %>
                   <%= price_field.number_field :medium,
                                                class: "crayons-textfield",
-                                               value: SiteConfig.credit_prices_in_cents[:medium] %>
+                                               value: Settings::General.credit_prices_in_cents[:medium] %>
                 </div>
                 <div class="crayons-field">
                   <%= admin_config_label "Credit price in cents (L)" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:large][:description] %>
+                  <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:large][:description] %>
                   <%= price_field.number_field :large,
                                                class: "crayons-textfield",
-                                               value: SiteConfig.credit_prices_in_cents[:large] %>
+                                               value: Settings::General.credit_prices_in_cents[:large] %>
                 </div>
 
                 <div class="crayons-field">
                   <%= admin_config_label "Credit price in cents (XL)" %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:xlarge][:description] %>
+                  <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:xlarge][:description] %>
                   <%= price_field.number_field :xlarge,
                                                class: "crayons-textfield",
-                                               value: SiteConfig.credit_prices_in_cents[:xlarge] %>
+                                               value: Settings::General.credit_prices_in_cents[:xlarge] %>
                 </div>
               <% end %>
 
@@ -584,7 +584,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -596,7 +596,7 @@
           <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
             <fieldset class="grid gap-4">
               <div class="crayons-field">
-                <label for="site_config_email_addresses_default" class="crayons-field__label">
+                <label for="settings_general_email_addresses_default" class="crayons-field__label">
                   Default
                 </label>
                 <div class="crayons-field__description">
@@ -605,14 +605,14 @@
                 <input type="text" value="<%= ApplicationConfig["DEFAULT_EMAIL"] %>" class="form-control" readonly>
               </div>
               <%= f.fields_for :email_addresses do |email_field| %>
-                <% SiteConfig.email_addresses.except(:default).each do |type, address| %>
+                <% Settings::General.email_addresses.except(:default).each do |type, address| %>
                   <div class="crayons-field">
                     <%= admin_config_label type %>
-                    <%= admin_config_description Constants::SiteConfig::DETAILS[:email_addresses][:description] %>
+                    <%= admin_config_description Constants::Settings::General::DETAILS[:email_addresses][:description] %>
                     <%= email_field.text_field type,
                                                class: "crayons-textfield",
-                                               value: SiteConfig.email_addresses[type],
-                                               placeholder: Constants::SiteConfig::DETAILS[:email_addresses][:placeholder] %>
+                                               value: Settings::General.email_addresses[type],
+                                               placeholder: Constants::Settings::General::DETAILS[:email_addresses][:placeholder] %>
                   </div>
                 <% end %>
               <% end %>
@@ -622,7 +622,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { testid: "emailDigestSectionForm" } }) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path, html: { data: { testid: "emailDigestSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -635,11 +635,11 @@
             <fieldset class="grid gap-4">
               <div class="crayons-field">
                 <%= admin_config_label :periodic_email_digest %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:periodic_email_digest][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:periodic_email_digest][:description] %>
                 <%= f.number_field :periodic_email_digest,
                                    class: "crayons-textfield",
-                                   value: SiteConfig.periodic_email_digest,
-                                   placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest][:placeholder] %>
+                                   value: Settings::General.periodic_email_digest,
+                                   placeholder: Constants::Settings::General::DETAILS[:periodic_email_digest][:placeholder] %>
               </div>
 
               <%= render "form_submission", f: f %>
@@ -648,7 +648,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -661,10 +661,10 @@
             <fieldset class="grid gap-4">
               <div class="crayons-field">
                 <%= admin_config_label :ga_tracking_id, "View ID" %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:ga_tracking_id][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:ga_tracking_id][:description] %>
                 <%= f.text_field :ga_tracking_id,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.ga_tracking_id %>
+                                 value: Settings::General.ga_tracking_id %>
               </div>
 
               <%= render "form_submission", f: f %>
@@ -673,7 +673,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -686,49 +686,49 @@
             <fieldset class="grid gap-4">
               <div class="crayons-field">
                 <%= admin_config_label :main_social_image %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:main_social_image][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:main_social_image][:description] %>
                 <%= f.text_field :main_social_image,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.main_social_image,
-                                 placeholder: Constants::SiteConfig::DETAILS[:main_social_image][:placeholder] %>
-                <% if SiteConfig.main_social_image.present? %>
-                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" width="600px" height="337px" />
+                                 value: Settings::General.main_social_image,
+                                 placeholder: Constants::Settings::General::DETAILS[:main_social_image][:placeholder] %>
+                <% if Settings::General.main_social_image.present? %>
+                  <img alt="main social image" class="img-fluid" src="<%= Settings::General.main_social_image %>" width="600px" height="337px" />
                 <% end %>
               </div>
 
               <div class="crayons-field">
                 <%= admin_config_label :favicon_url, "Favicon URL" %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:favicon_url][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:favicon_url][:description] %>
                 <%= f.text_field :favicon_url,
                                  class: "form-control",
-                                 value: SiteConfig.favicon_url,
-                                 placeholder: Constants::SiteConfig::DETAILS[:favicon_url][:placeholder] %>
-                <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>" width="32px" height="32px" />
+                                 value: Settings::General.favicon_url,
+                                 placeholder: Constants::Settings::General::DETAILS[:favicon_url][:placeholder] %>
+                <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(Settings::General.favicon_url, width: 32) %>" width="32px" height="32px" />
               </div>
 
               <div class="crayons-field">
                 <%= admin_config_label :logo_png %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:logo_png][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:logo_png][:description] %>
                 <%= f.text_field :logo_png,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.logo_png,
-                                 placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
-                <% if SiteConfig.logo_png.present? %>
-                  <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 128) %>" width="128px" height="128px" />
+                                 value: Settings::General.logo_png,
+                                 placeholder: Constants::Settings::General::DETAILS[:logo_png][:placeholder] %>
+                <% if Settings::General.logo_png.present? %>
+                  <img src="<%= Images::Optimizer.call(Settings::General.logo_png, width: 128) %>" width="128px" height="128px" />
                 <% end %>
               </div>
 
               <div class="crayons-field">
                 <%= admin_config_label :logo_svg %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:logo_svg][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:logo_svg][:description] %>
                 <%= f.text_area :logo_svg,
                                 class: "crayons-textfield",
-                                value: SiteConfig.logo_svg,
+                                value: Settings::General.logo_svg,
                                 rows: 6,
-                                placeholder: Constants::SiteConfig::DETAILS[:logo_svg][:placeholder] %>
-                <% if SiteConfig.logo_svg.present? %>
+                                placeholder: Constants::Settings::General::DETAILS[:logo_svg][:placeholder] %>
+                <% if Settings::General.logo_svg.present? %>
                   <div class="site-logo">
-                    <%= SiteConfig.logo_svg.html_safe %>
+                    <%= Settings::General.logo_svg.html_safe %>
                   </div>
                 <% end %>
               </div>
@@ -739,7 +739,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { testid: "mascotSectionForm" } }) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path, html: { data: { testid: "mascotSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -752,24 +752,24 @@
             <fieldset class="grid gap-4">
               <div class="crayons-field">
                 <%= admin_config_label :mascot_user_id, "Mascot user ID" %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_user_id][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:mascot_user_id][:description] %>
                 <%= f.text_field :mascot_user_id,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.mascot_user_id,
+                                 value: Settings::General.mascot_user_id,
                                  min: 1,
-                                 placeholder: Constants::SiteConfig::DETAILS[:mascot_user_id][:placeholder] %>
+                                 placeholder: Constants::Settings::General::DETAILS[:mascot_user_id][:placeholder] %>
             </div>
 
             <div class="crayons-field">
               <%= admin_config_label :mascot_image_url, "Mascot Image URL" %>
-              <%= admin_config_description Constants::SiteConfig::DETAILS[:mascot_image_url][:description] %>
+              <%= admin_config_description Constants::Settings::General::DETAILS[:mascot_image_url][:description] %>
               <%= f.text_field :mascot_image_url,
                                class: "crayons-textfield",
-                               value: SiteConfig.mascot_image_url,
-                               placeholder: Constants::SiteConfig::DETAILS[:mascot_image_url][:placeholder] %>
+                               value: Settings::General.mascot_image_url,
+                               placeholder: Constants::Settings::General::DETAILS[:mascot_image_url][:placeholder] %>
 
               <div class="col-12">
-                <img alt="Mascot image" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
+                <img alt="Mascot image" class="img-fluid" src="<%= Settings::General.mascot_image_url %>" />
               </div>
 
             </div>
@@ -779,7 +779,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -791,7 +791,7 @@
           <div id="metaKeywordsBodyContainer" class="card-body collapse hide" aria-labelledby="metaKeywordsBodyContainer">
             <fieldset class="grid gap-4">
               <%= f.fields_for :meta_keywords do |meta_keywords_field| %>
-                <% SiteConfig.meta_keywords.each do |area, keywords| %>
+                <% Settings::General.meta_keywords.each do |area, keywords| %>
                   <div class="crayons-field">
                     <%= admin_config_label area.to_s %>
                     <p class="crayons-field__description">
@@ -799,8 +799,8 @@
                     </p>
                     <%= meta_keywords_field.text_field area,
                                                        class: "crayons-textfield",
-                                                       value: SiteConfig.meta_keywords[area],
-                                                       placeholder: Constants::SiteConfig::DETAILS[:meta_keywords][:placeholder] %>
+                                                       value: Settings::General.meta_keywords[area],
+                                                       placeholder: Constants::Settings::General::DETAILS[:meta_keywords][:placeholder] %>
                 </div>
               <% end %>
             <% end %>
@@ -811,7 +811,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -825,29 +825,29 @@
 
             <div class="crayons-field">
               <%= admin_config_label :stripe_api_key, "Stripe API key" %>
-              <%= admin_config_description Constants::SiteConfig::DETAILS[:stripe_api_key][:description] %>
+              <%= admin_config_description Constants::Settings::General::DETAILS[:stripe_api_key][:description] %>
               <%= f.text_field :stripe_api_key,
                                class: "crayons-textfield",
-                               value: SiteConfig.stripe_api_key,
-                               placeholder: Constants::SiteConfig::DETAILS[:stripe_api_key][:placeholder] %>
+                               value: Settings::General.stripe_api_key,
+                               placeholder: Constants::Settings::General::DETAILS[:stripe_api_key][:placeholder] %>
           </div>
 
           <div class="crayons-field">
             <%= admin_config_label :stripe_publishable_key %>
-            <%= admin_config_description Constants::SiteConfig::DETAILS[:stripe_publishable_key][:description] %>
+            <%= admin_config_description Constants::Settings::General::DETAILS[:stripe_publishable_key][:description] %>
             <%= f.text_field :stripe_publishable_key,
                              class: "crayons-textfield",
-                             value: SiteConfig.stripe_publishable_key,
-                             placeholder: Constants::SiteConfig::DETAILS[:stripe_publishable_key][:placeholder] %>
+                             value: Settings::General.stripe_publishable_key,
+                             placeholder: Constants::Settings::General::DETAILS[:stripe_publishable_key][:placeholder] %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :payment_pointer %>
-          <%= admin_config_description Constants::SiteConfig::DETAILS[:payment_pointer][:description] %>
+          <%= admin_config_description Constants::Settings::General::DETAILS[:payment_pointer][:description] %>
           <%= f.text_field :payment_pointer,
                            class: "crayons-textfield",
-                           value: SiteConfig.payment_pointer,
-                           placeholder: Constants::SiteConfig::DETAILS[:payment_pointer][:placeholder] %>
+                           value: Settings::General.payment_pointer,
+                           placeholder: Constants::Settings::General::DETAILS[:payment_pointer][:placeholder] %>
       </div>
 
       <%= render "form_submission", f: f %>
@@ -856,7 +856,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -869,42 +869,42 @@
             <fieldset class="grid gap-4">
               <div class="crayons-field">
                 <%= admin_config_label :mailchimp_api_key, "Mailchimp API Key" %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_api_key][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_api_key][:description] %>
                 <%= f.text_field :mailchimp_api_key,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.mailchimp_api_key %>
+                                 value: Settings::General.mailchimp_api_key %>
             </div>
 
             <div class="crayons-field">
               <%= admin_config_label :mailchimp_newsletter_id, "Main Newsletter" %>
-              <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_newsletter_id][:description] %>
+              <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_newsletter_id][:description] %>
               <%= f.text_field :mailchimp_newsletter_id,
                                class: "crayons-textfield",
-                               value: SiteConfig.mailchimp_newsletter_id %>
+                               value: Settings::General.mailchimp_newsletter_id %>
           </div>
 
           <div class="crayons-field">
             <%= admin_config_label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
-            <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_sustaining_members_id][:description] %>
+            <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_sustaining_members_id][:description] %>
             <%= f.text_field :mailchimp_sustaining_members_id,
                              class: "crayons-textfield",
-                             value: SiteConfig.mailchimp_sustaining_members_id %>
+                             value: Settings::General.mailchimp_sustaining_members_id %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
-          <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_tag_moderators_id][:description] %>
+          <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_tag_moderators_id][:description] %>
           <%= f.text_field :mailchimp_tag_moderators_id,
                            class: "crayons-textfield",
-                           value: SiteConfig.mailchimp_tag_moderators_id %>
+                           value: Settings::General.mailchimp_tag_moderators_id %>
       </div>
 
       <div class="crayons-field">
         <%= admin_config_label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
-        <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_community_moderators_id][:description] %>
+        <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_community_moderators_id][:description] %>
         <%= f.text_field :mailchimp_community_moderators_id,
                          class: "crayons-textfield",
-                         value: SiteConfig.mailchimp_community_moderators_id %>
+                         value: Settings::General.mailchimp_community_moderators_id %>
     </div>
 
     <%= render "form_submission", f: f %>
@@ -913,7 +913,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -926,33 +926,33 @@
             <fieldset class="grid gap-4">
               <div class="crayons-field">
                 <%= admin_config_label :onboarding_background_image %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:onboarding_background_image][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:onboarding_background_image][:description] %>
                 <%= f.text_field :onboarding_background_image,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.onboarding_background_image,
-                                 placeholder: Constants::SiteConfig::DETAILS[:onboarding_background_image][:placeholder] %>
+                                 value: Settings::General.onboarding_background_image,
+                                 placeholder: Constants::Settings::General::DETAILS[:onboarding_background_image][:placeholder] %>
                 <div class="row mt-2">
                   <div class="col-12">
-                    <img alt="onboarding background image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
+                    <img alt="onboarding background image" class="img-fluid" src="<%= Settings::General.onboarding_background_image %>" />
                   </div>
                 </div>
               </div>
 
               <div class="crayons-field">
                 <%= admin_config_label :suggested_users %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:suggested_users][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:suggested_users][:description] %>
                 <%= f.text_field :suggested_users,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.suggested_users.join(","),
-                                 placeholder: Constants::SiteConfig::DETAILS[:suggested_users][:placeholder] %>
+                                 value: Settings::General.suggested_users.join(","),
+                                 placeholder: Constants::Settings::General::DETAILS[:suggested_users][:placeholder] %>
             </div>
 
             <div class="crayons-field crayons-field--checkbox">
-              <%= f.check_box :prefer_manual_suggested_users, checked: SiteConfig.prefer_manual_suggested_users, class: "crayons-checkbox" %>
+              <%= f.check_box :prefer_manual_suggested_users, checked: Settings::General.prefer_manual_suggested_users, class: "crayons-checkbox" %>
               <div class="mt-0">
                 <%= admin_config_label :prefer_manual_suggested_users %>
                 <p class="crayons-field__description">
-                <%= Constants::SiteConfig::DETAILS[:prefer_manual_suggested_users][:description] %>
+                <%= Constants::Settings::General::DETAILS[:prefer_manual_suggested_users][:description] %>
                 </p>
               </div>
             </div>
@@ -1011,7 +1011,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -1024,14 +1024,14 @@
             <fieldset class="grid gap-4">
               <div class="crayons-field">
                 <%= admin_config_label :twitter_hashtag %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:twitter_hashtag][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:twitter_hashtag][:description] %>
                 <%= f.text_field :twitter_hashtag,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.twitter_hashtag.to_s,
-                                 placeholder: Constants::SiteConfig::DETAILS[:twitter_hashtag][:placeholder] %>
+                                 value: Settings::General.twitter_hashtag.to_s,
+                                 placeholder: Constants::Settings::General::DETAILS[:twitter_hashtag][:placeholder] %>
             </div>
             <%= f.fields_for :social_media_handles do |social_media_field| %>
-              <% SiteConfig.social_media_handles.each do |platform, username| %>
+              <% Settings::General.social_media_handles.each do |platform, username| %>
                 <div class="crayons-field">
                   <%= admin_config_label platform %>
                   <p class="crayons-field__description">
@@ -1039,7 +1039,7 @@
                   </p>
                   <%= social_media_field.text_field platform,
                                                     class: "crayons-textfield",
-                                                    value: SiteConfig.social_media_handles[platform],
+                                                    value: Settings::General.social_media_handles[platform],
                                                     placeholder: "" %>
               </div>
             <% end %>
@@ -1051,7 +1051,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -1064,11 +1064,11 @@
             <fieldset class="grid gap-4">
               <div class="crayons-field">
                 <%= admin_config_label :sponsor_headline %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:sponsor_headline][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:sponsor_headline][:description] %>
                 <%= f.text_field :sponsor_headline,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.sponsor_headline,
-                                 placeholder: Constants::SiteConfig::DETAILS[:sponsor_headline][:placeholder] %>
+                                 value: Settings::General.sponsor_headline,
+                                 placeholder: Constants::Settings::General::DETAILS[:sponsor_headline][:placeholder] %>
             </div>
 
             <%= render "form_submission", f: f %>
@@ -1077,7 +1077,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(Settings::General.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -1090,11 +1090,11 @@
             <fieldset class="grid gap-4">
               <div class="crayons-field">
                 <%= admin_config_label :sidebar_tags %>
-                <%= admin_config_description Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %>
+                <%= admin_config_description Constants::Settings::General::DETAILS[:sidebar_tags][:description] %>
                 <%= f.text_field :sidebar_tags,
                                  class: "crayons-textfield",
-                                 value: SiteConfig.sidebar_tags.join(","),
-                                 placeholder: Constants::SiteConfig::DETAILS[:sidebar_tags][:placeholder],
+                                 value: Settings::General.sidebar_tags.join(","),
+                                 placeholder: Constants::Settings::General::DETAILS[:sidebar_tags][:placeholder],
                                  pattern: "[a-z0-9,]+" %>
             </div>
 
