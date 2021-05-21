@@ -7,7 +7,7 @@ module Admin
     end
 
     def index
-      @pinned_article = SiteConfig.feed_pinned_article
+      @pinned_article = ::Settings::General.feed_pinned_article
 
       case params[:state]
       when /top-/
