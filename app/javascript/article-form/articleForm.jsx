@@ -109,7 +109,7 @@ export class ArticleForm extends Component {
     const { previewResponse } = this.state;
 
     if (previewResponse) {
-      embedGists();
+      embedGists(this.formElement);
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
     }
@@ -301,6 +301,9 @@ export class ArticleForm extends Component {
 
     return (
       <form
+        ref={(element) => {
+          this.formElement = element;
+        }}
         id="article-form"
         className="crayons-article-form"
         onSubmit={this.onSubmit}

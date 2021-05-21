@@ -1,64 +1,74 @@
-export function embedGists() {
-  const waitingOnPostscribe = setInterval(() => {
-    clearInterval(waitingOnPostscribe);
-    const gistTags = document.querySelectorAll('.ltag_gist-liquid-tag');
+let postscribeImport;
 
-    // Only load scripts for gists if needed
-    if (gistTags.length > 0) {
-      import('postscribe').then(({ default: postscribe }) => {
-        for (const gistTag of gistTags) {
-          postscribe(gistTag, gistTag.firstElementChild.outerHTML, {
-            beforeWrite: (function (context) {
-              return function (text) {
-                if (context.childElementCount > 3) {
-                  return '';
-                }
-                return text;
-              };
-            })(gistTag),
-          });
-        }
-      });
-    }
-  }, 500);
+async function getPostScribe() {
+  if (postscribeImport) {
+    // Grab the cached import so we're not always fetching it from the network.
+    return postscribeImport;
+  }
+
+  const { default: postscribe } = await import('postscribe');
+  postscribeImport = postscribe;
+
+  return postscribeImport;
 }
 
-export function embedGistsInComments() {
-  // allows for getting the gist embed after new comment submit/preview/dismiss/reply
-  document
-    .getElementById('new_comment')
-    ?.addEventListener('submit', (_event) => {
-      embedGists();
-    });
-  document
-    .querySelector('.preview-toggle')
-    ?.addEventListener('click', (_event) => {
-      embedGists();
-    });
-  document
-    .querySelector('.dismiss-edit-comment')
-    ?.addEventListener('click', (_event) => {
-      embedGists();
-    });
-  document
-    .querySelector('.view-discussion')
-    ?.addEventListener('click', (_event) => {
-      embedGists();
-    });
+function getGistTags(nodes) {
+  const gistNodes = [];
 
-  // handle future submit of comment forms
-  document.querySelector('body').addEventListener(
-    'submit',
-    (evt) => {
-      let targetElement = evt.target;
-      while (targetElement != null) {
-        if (targetElement.matches('.comment-form')) {
-          embedGists();
-          return;
-        }
-        targetElement = targetElement.parentElement;
+  for (const node of nodes) {
+    if (node.nodeType === 1) {
+      if (node.classList.contains('ltag_gist-liquid-tag')) {
+        gistNodes.push(node);
       }
-    },
-    true,
+
+      gistNodes.push(...node.querySelectorAll('.ltag_gist-liquid-tag'));
+    }
+  }
+
+  return gistNodes;
+}
+
+function loadEmbeddedGists(postscribe, gistTags) {
+  for (const gistTag of gistTags) {
+    postscribe(gistTag, gistTag.firstElementChild.outerHTML, {
+      beforeWrite(text) {
+        return gistTag.childElementCount > 3 ? '' : text;
+      },
+    });
+  }
+}
+
+function watchForGistTagInsertion(targetNode, postscribe) {
+  const config = { attributes: false, childList: true, subtree: true };
+
+  const callback = function (mutationsList) {
+    for (const { type, addedNodes } of mutationsList) {
+      if (type === 'childList' && addedNodes.length > 0) {
+        loadEmbeddedGists(postscribe, getGistTags(addedNodes));
+      }
+    }
+  };
+
+  const observer = new MutationObserver(callback);
+  observer.observe(targetNode, config);
+
+  InstantClick.on('change', () => {
+    observer.disconnect();
+  });
+
+  window.addEventListener('beforeunload', () => {
+    observer.disconnect();
+  });
+}
+
+export async function embedGists(targetNode) {
+  const postscribe = await getPostScribe();
+
+  // Load gist tags that were rendered server-side
+  loadEmbeddedGists(
+    postscribe,
+    document.querySelectorAll('.ltag_gist-liquid-tag'),
   );
+
+  watchForGistTagInsertion(targetNode, postscribe);
 }

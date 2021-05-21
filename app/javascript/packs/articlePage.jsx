@@ -1,7 +1,7 @@
 import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
-import { embedGists, embedGistsInComments } from '../utilities/gist';
+import { embedGists } from '../utilities/gist';
 
 const fullscreenActionElements = document.getElementsByClassName(
   'js-fullscreen-code-action',
@@ -67,5 +67,5 @@ const userDataIntervalID = setInterval(async () => {
   }
 });
 
-embedGists();
-embedGistsInComments();
+const targetNode = document.querySelector('#comments');
+targetNode && embedGists(targetNode);
