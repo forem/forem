@@ -4,8 +4,11 @@
   }
 </style>
 
+<% decorated_article = article.decorate %>
+
 <div class="card my-3"
      data-controller="article"
+     data-article-id-value="<%= article.id %>"
      data-article-bg-highlighted-class="bg-highlighted"
      data-article-border-highlighted-class="border-highlighted">
 
@@ -39,7 +42,7 @@
         <% end %>
       </span>
 
-      <% article.decorate.cached_tag_list_array.each do |tag| %>
+      <% decorated_article.cached_tag_list_array.each do |tag| %>
         <a class="badge badge-secondary" href='<%= tag_path(tag) %>'>#<%= tag %></a>
       <% end %>
     </div>
@@ -47,7 +50,8 @@
 
   <% featured = article.featured ? "bg-featured" : "" %>
   <% approved = article.approved ? "bg-approved" : featured %>
-  <% background_color = approved %>
+  <% pinned = decorated_article.pinned? ? "bg-pinned" : approved %>
+  <% background_color = pinned %>
 
   <div
     data-article-target="cardBody"
@@ -127,8 +131,15 @@
         <%= f.check_box :boosted_additional_articles, id: "boosted_additional_articles-#{article.id}" %>
         <label for="boosted_additional_articles-<%= article.id %>">Boosted</label>
       </div>
+      <div class="form-check col">
+        <%= check_box_tag :pinned, "1", decorated_article.pinned?,
+              name: "article[pinned]",
+              id: "pinned-#{article.id}",
+              data: { action: "change->article#togglePin" } %>
+        <label for="pinned-<%= article.id %>">Pinned</label>
+      </div>
       <div class="col">
-          <button class="btn btn-primary float-right">Submit</button>
+        <button class="btn btn-primary float-right">Submit</button>
       </div>
     </div>
     <% end %>

@@ -7,6 +7,8 @@ module Admin
     end
 
     def index
+      @pinned_article = SiteConfig.feed_pinned_article
+
       case params[:state]
       when /top-/
         months_ago = params[:state].split("-")[1].to_i.months.ago
@@ -27,11 +29,13 @@ module Admin
 
     def update
       article = Article.find(params[:id])
+
       if article.update(article_params)
         flash[:success] = "Article saved!"
       else
         flash[:danger] = article.errors_as_sentence
       end
+
       redirect_to admin_article_path(article.id)
     end
 
