@@ -41,7 +41,7 @@
           <div id="article-copy-link-announcer" class="crayons-notice crayons-notice--success my-2 p-1" aria-live="polite" hidden>Copied to Clipboard</div>
         </clipboard-copy>
         <div class="Mobile-only">
-          <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetext="<%= @article.title %>" template="web-share-button">
+          <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetitle="<%= @article.title %>" template="web-share-button">
           </web-share-wrapper>
         </div>
         <div class="Desktop-only">
