@@ -18,16 +18,16 @@ RSpec.describe "User visits articles by tag", type: :system do
         visit "/t/javascript"
       end
 
-      it "shows the header", js: true, stub_elasticsearch: true do
+      it "shows the header", js: true do
         within("h1") { expect(page).to have_text("javascript") }
       end
 
-      it "shows the follow button", js: true, stub_elasticsearch: true do
+      it "shows the follow button", js: true do
         within("header.tag-header") { expect(page).to have_button("Follow") }
       end
 
       # Regression test for https://github.com/forem/forem/pull/12724
-      it "does not display a comment count of 0", js: true, stub_elasticsearch: true do
+      it "does not display a comment count of 0", js: true do
         expect(page).to have_text("Add Comment")
         expect(page).not_to have_text("0 comments")
       end
@@ -37,7 +37,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       end
 
       it "shows the correct articles" do
-        within("#articles-list") do
+        within("#main-content") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(article3.title)
           expect(page).not_to have_text(article2.title)
@@ -62,7 +62,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       visit "/t/functional"
     end
 
-    it "shows the following button", js: true, stub_elasticsearch: true do
+    it "shows the following button", js: true do
       wait_for_javascript
 
       within("header.tag-header") { expect(page).to have_button("Following") }

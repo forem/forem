@@ -159,7 +159,6 @@ class ChatChannelsController < ApplicationController
     authorize chat_channel
     chat_channel.status = "blocked"
     chat_channel.save
-    chat_channel.chat_channel_memberships.map(&:index_to_elasticsearch)
     render json: { status: "success", message: "chat channel blocked" }, status: :ok
   end
 

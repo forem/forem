@@ -9,13 +9,11 @@ services:
     depends_on:
       - bundle
       - db
-      - elasticsearch
       - redis
       - yarn
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-      ELASTICSEARCH_URL: http://elasticsearch:9200
       REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
@@ -25,7 +23,7 @@ services:
       APP_DOMAIN: rails
     volumes:
       - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/forem/vendor/bundle/.bundle_finished", "-timeout", "2700s", "-wait-retry-interval", "10s"]
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/forem/vendor/bundle/.bundle_finished", "-timeout", "2700s", "-wait-retry-interval", "10s"]
     command: [ "bash", "-c", "./scripts/entrypoint.sh bootstrap && bundle exec rails server -b 0.0.0.0 -p 3000"]
 
   bundle:
@@ -38,7 +36,6 @@ services:
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-      ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
     command: ["./scripts/bundle.sh"]
@@ -53,7 +50,6 @@ services:
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-      ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
     command: yarn install --dev
@@ -72,7 +68,6 @@ services:
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-      ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
     entrypoint: ["dockerize", "-wait", "file:///opt/apps/forem/node_modules/.bin/webpack-dev-server", "-wait", "file:///opt/apps/forem/vendor/bundle/.bundle_finished", "-timeout", "2700s", "-wait-retry-interval", "10s"]
@@ -86,17 +81,15 @@ services:
       - rails
       - redis
       - db
-      - elasticsearch
     environment:
       RAILS_ENV: development
       REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-      ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://rails:3000", "-timeout", "2700s", "-wait-retry-interval", "20s"]
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "http://rails:3000", "-timeout", "2700s", "-wait-retry-interval", "20s"]
     command: ["bundle", "exec", "rake","db:seed"]
 
   sidekiq:
@@ -107,17 +100,15 @@ services:
       - rails
       - redis
       - db
-      - elasticsearch
     environment:
       RAILS_ENV: development
       REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-      ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://rails:3000", "-timeout", "2700s", "-wait-retry-interval", "20s"]
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "http://rails:3000", "-timeout", "2700s", "-wait-retry-interval", "20s"]
     command: ["bundle", "exec", "sidekiq","-c","2"]
 
   db:
@@ -138,28 +129,5 @@ services:
     ports:
       - "6379:6379"
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
-    container_name: forem_elasticsearch
-    environment:
-      - cluster.name=forem
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.type=single-node"
-      - xpack.security.enabled=false
-      - xpack.monitoring.enabled=false
-      - xpack.graph.enabled=false
-      - xpack.watcher.enabled=false
-    volumes:
-      - es_data:/usr/share/elasticsearch/data:delegated
-    ports:
-      - "9200:9200"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-
 volumes:
   db_data:
-  es_data:
-

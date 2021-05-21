@@ -29,7 +29,7 @@
       <% color = Color::CompareHex.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
       <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative" style="border-top-color: <%= color %>; ">
         <h3 class="crayons-tag crayons-tag--l mb-2">
-          <a href="/t/<%= tag.name %>" class="crayons-link">
+          <a href="<%= URL.tag tag %>" class="crayons-link">
             <span class="crayons-tag__prefix">#</span><%= tag.name %>
           </a>
         </h3>

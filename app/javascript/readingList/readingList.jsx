@@ -27,7 +27,7 @@ const READING_LIST_PATH = '/readinglist';
 function ItemList({ items, archiveButtonLabel, toggleArchiveStatus }) {
   return items.map((item) => {
     return (
-      <ItemListItem item={item}>
+      <ItemListItem item={item} key={item.id}>
         <ItemListItemArchiveButton
           text={archiveButtonLabel}
           onClick={(e) => toggleArchiveStatus(e, item)}

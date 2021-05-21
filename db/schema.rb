@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_22_171642) do
+ActiveRecord::Schema.define(version: 2021_05_11_073505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -158,8 +158,10 @@ ActiveRecord::Schema.define(version: 2021_04_22_171642) do
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
+    t.index ["comments_count"], name: "index_articles_on_comments_count"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
+    t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
@@ -343,6 +345,7 @@ ActiveRecord::Schema.define(version: 2021_04_22_171642) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index "(((((to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((cached_tag_list)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((location)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((slug)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))))", name: "index_classified_listings_on_search_fields_as_tsvector", using: :gin
     t.index ["classified_listing_category_id"], name: "index_classified_listings_on_classified_listing_category_id"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["published"], name: "index_classified_listings_on_published"
@@ -392,10 +395,9 @@ ActiveRecord::Schema.define(version: 2021_04_22_171642) do
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["ancestry"], name: "index_comments_on_ancestry_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
-    t.index ["commentable_type"], name: "index_comments_on_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
-    t.index ["deleted"], name: "index_comments_on_deleted"
-    t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user"
+    t.index ["deleted"], name: "index_comments_on_deleted", where: "(deleted = false)"
+    t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
     t.index ["score"], name: "index_comments_on_score"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -893,6 +895,7 @@ ActiveRecord::Schema.define(version: 2021_04_22_171642) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "website_url"
+    t.index "(((to_tsvector('simple'::regconfig, COALESCE(body, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((subtitle)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))))", name: "index_podcast_episodes_on_search_fields_as_tsvector", using: :gin
     t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
     t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
     t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"
@@ -931,6 +934,8 @@ ActiveRecord::Schema.define(version: 2021_04_22_171642) do
     t.string "website_url"
     t.index ["creator_id"], name: "index_podcasts_on_creator_id"
     t.index ["feed_url"], name: "index_podcasts_on_feed_url", unique: true
+    t.index ["published"], name: "index_podcasts_on_published", where: "(published = true)"
+    t.index ["reachable"], name: "index_podcasts_on_reachable", where: "(reachable = true)"
     t.index ["slug"], name: "index_podcasts_on_slug", unique: true
   end
 
@@ -1083,12 +1088,36 @@ ActiveRecord::Schema.define(version: 2021_04_22_171642) do
     t.index ["var"], name: "index_settings_campaigns_on_var", unique: true
   end
 
+  create_table "settings_communities", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_communities_on_var", unique: true
+  end
+
+  create_table "settings_mascots", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_mascots_on_var", unique: true
+  end
+
   create_table "settings_rate_limits", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "value"
     t.string "var", null: false
     t.index ["var"], name: "index_settings_rate_limits_on_var", unique: true
+  end
+
+  create_table "settings_user_experiences", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_user_experiences_on_var", unique: true
   end
 
   create_table "site_configs", force: :cascade do |t|

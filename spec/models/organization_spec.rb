@@ -71,27 +71,6 @@ RSpec.describe Organization, type: :model do
     end
   end
 
-  context "when callbacks are triggered after commit" do
-    it "on update syncs elasticsearch data" do
-      article = create(:article, organization: organization)
-      sidekiq_perform_enqueued_jobs
-      new_org_name = "#{organization.name}+NEW"
-      organization.update(name: new_org_name)
-      sidekiq_perform_enqueued_jobs
-      expect(article.elasticsearch_doc.dig("_source", "organization", "name")).to eq(new_org_name)
-    end
-
-    it "on destroy updates related article data" do
-      article = create(:article, organization: organization)
-      drain_all_sidekiq_jobs
-      expect(article.elasticsearch_doc.dig("_source", "organization", "id")).to eq(organization.id)
-      organization.destroy
-      sidekiq_perform_enqueued_jobs
-      expect(article.elasticsearch_doc.dig("_source", "organization")).to be_nil
-      expect(article.reload.cached_organization).to be_nil
-    end
-  end
-
   describe "#name" do
     it "rejects names with over 50 characters" do
       organization.name = "x" * 51
@@ -301,15 +280,6 @@ RSpec.describe Organization, type: :model do
           organization.update(company_size: "200")
 
           expect(article.reload.reading_list_document).to eq(old_reading_list_document)
-        end
-
-        it "removes the organization name from the .reading_list_document after destroy" do
-          article = Article.find_by(organization_id: organization.id)
-
-          organization.update(name: "ACME")
-          organization.destroy
-
-          expect(article.reload.reading_list_document).not_to include("acme")
         end
       end
       # rubocop:enable RSpec/NestedGroups

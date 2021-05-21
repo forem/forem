@@ -57,10 +57,10 @@ stage will do nothing. If the branch has been merged into main, then this stage
 will kick off a deploy. The deploy will run in its own job deploying our
 application to Heroku.
 
-Prior to deploying the code, Heroku will run database migrations, Elasticsearch
-updates, and do some final checks (more information on that below) to make sure
-everything is working as expected. If these all succeed, then the deploy
-completes and our team is notified.
+Prior to deploying the code, Heroku will run database migrations and do some
+final checks (more information on that below) to make sure everything is working
+as expected. If these all succeed, then the deploy completes and our team is
+notified.
 
 ## Deploying to Heroku
 
@@ -84,13 +84,8 @@ directory. During this release step we do a few checks.
    successfully before the code that uses it goes live.
 3. We run any data update scripts that need to be run. A data update script is
    one that allows us to update data in the background separate from a
-   migration. For example, if we add a new field to Elasticsearch and need to
-   reindex all of our documents we would use a data update script.
-4. We update Elasticsearch. Elasticsearch contains indexes which have mappings.
-   Mappings are similar to database schema. The same way we run a migration to
-   update our database we have to run a setup task to update any Elasticsearch
-   mappings.
-5. Following updating all of our datastores we use the Rails runner to output a
+   migration.
+4. Following updating all of our datastores we use the Rails runner to output a
    simple string. Executing a Rails runner command ensures that we can boot up
    the entire app successfully before it is deployed. We deploy asynchronously,
    so the website is running the new code a few minutes after deploy. A new

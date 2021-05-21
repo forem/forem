@@ -14,6 +14,7 @@ RSpec.describe "Follows #create", type: :request do
 
   before do
     sign_in user
+    Settings::RateLimit.clear_cache
   end
 
   context "when rate limit has been hit" do

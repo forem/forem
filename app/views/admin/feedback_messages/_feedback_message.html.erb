@@ -11,7 +11,7 @@
     </a>
     <div class="float-right">
       ✉️ Emails Sent: <%= feedback_message_emails.size %> |
-      <a href="/admin/reports/<%= feedback_message.id %>">Link to Report #<%= feedback_message.id %></a>
+      <%= link_to "Link to Report #{feedback_message.id}", admin_report_path(feedback_message.id) %>
     </div>
   </div>
   <div id="collapse<%= feedback_message.id %>" class="collapse show" aria-labelledby="header<%= feedback_message.id %>" data-parent="#accordion-<%= feedback_message.id %>">
@@ -210,7 +210,7 @@
    formData.append('id', id);
    formData.append('status', statusSelectTag.options[statusSelectTag.selectedIndex].value);
 
-   fetch('/admin/reports/save_status', {
+   fetch("<%= save_status_admin_reports_path %>", {
      method: 'POST',
      headers: {
        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
@@ -277,7 +277,7 @@
    formData.append('email_subject', subjectLine);
    formData.append('email_type', userType);
 
-   fetch('/admin/reports/send_email', {
+   fetch("<%= send_email_admin_reports_path %>", {
      method: 'POST',
      headers: {
        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
@@ -338,6 +338,8 @@
  }
 
  function submitNote(id) {
+   var submitNoteBtn = document.getElementById('note__submit__<%= feedback_message.id %>');
+
    var formData = new FormData();
    formData.append('content', document.getElementById('note__content__' + id).value)
    formData.append('reason', document.getElementById('note__reason__' + id).value)
@@ -345,7 +347,7 @@
    formData.append('noteable_type', document.getElementById('note__noteable-type__' + id).value)
    formData.append('author_id', document.getElementById('note__author-id__' + id).value)
 
-   fetch('/admin/reports/create_note', {
+   fetch("<%= create_note_admin_reports_path %>", {
      method: 'POST',
      headers: {
        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,

@@ -93,7 +93,7 @@ RSpec.describe "Using the editor", type: :system do
     end
   end
 
-  describe "using v2 editor", js: true, stub_elasticsearch: true do
+  describe "using v2 editor", js: true do
     before { user.update(editor_version: "v2") }
 
     it "fill out form with rich content and click publish" do

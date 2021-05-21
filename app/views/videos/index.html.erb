@@ -2,7 +2,7 @@
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(request.path) %>" />
-  <meta name="description" content="<%= SiteConfig.community_description %>">
+  <meta name="description" content="<%= Settings::Community.community_description %>">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="website" />

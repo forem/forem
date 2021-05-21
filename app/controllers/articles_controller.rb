@@ -32,7 +32,8 @@ class ArticlesController < ApplicationController
                     .includes(:user)
                 else
                   @articles
-                    .where(featured: true).or(@articles.where(score: SiteConfig.home_feed_minimum_score..))
+                    .where(featured: true)
+                    .or(@articles.where(score: Settings::UserExperience.home_feed_minimum_score..))
                     .includes(:user)
                 end
 

@@ -50,7 +50,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def config_font_name
-    config_font.gsub("default", SiteConfig.default_font)
+    config_font.gsub("default", Settings::UserExperience.default_font)
   end
 
   def config_body_class

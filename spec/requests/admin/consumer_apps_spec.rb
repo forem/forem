@@ -1,16 +1,16 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/consumer_apps", type: :request do
-  let(:get_resource) { get "/admin/consumer_apps" }
+RSpec.describe "Admin - Consumer Apps", type: :request do
+  let(:get_resource) { get admin_consumer_apps_path }
   let(:params) do
     {
       app_bundle: Faker::Internet.domain_name(subdomain: true),
-      platform: Device::IOS,
+      platform: "ios",
       auth_key: "sample_data"
     }
   end
-  let(:post_resource) { post "/admin/consumer_apps", params: params }
+  let(:post_resource) { post admin_consumer_apps_path, params: params }
 
   it_behaves_like "an InternalPolicy dependant request", ConsumerApp do
     let(:request) { get_resource }
@@ -55,11 +55,15 @@ RSpec.describe "/admin/consumer_apps", type: :request do
     end
 
     describe "PUT /admin/consumer_apps" do
-      let!(:consumer_app) { create(:consumer_app, app_bundle: "com.bundle.test") }
+      let(:consumer_app) { create(:consumer_app, app_bundle: "com.bundle.test") }
 
       it "updates the ConsumerApp" do
-        put "/admin/consumer_apps/#{consumer_app.id}", params: params
+        mock_rpush(consumer_app)
+
+        put admin_consumer_app_path(consumer_app.id), params: params
+
         consumer_app.reload
+
         expect(consumer_app.app_bundle).to eq(params[:app_bundle])
         expect(consumer_app.platform).to eq(params[:platform])
         expect(consumer_app.auth_key).to eq(params[:auth_key])
@@ -71,9 +75,9 @@ RSpec.describe "/admin/consumer_apps", type: :request do
 
       it "deletes the ConsumerApp" do
         expect do
-          delete "/admin/consumer_apps/#{consumer_app.id}"
+          delete admin_consumer_app_path(consumer_app.id)
         end.to change { ConsumerApp.all.count }.by(-1)
-        expect(response.body).to redirect_to "/admin/consumer_apps"
+        expect(response.body).to redirect_to admin_consumer_apps_path
       end
     end
   end
@@ -106,11 +110,15 @@ RSpec.describe "/admin/consumer_apps", type: :request do
     end
 
     describe "PUT /admin/consumer_apps" do
-      let!(:consumer_app) { create(:consumer_app, app_bundle: "com.bundle.test") }
+      let(:consumer_app) { create(:consumer_app, app_bundle: "com.bundle.test") }
 
       it "updates the ConsumerApp" do
-        put "/admin/consumer_apps/#{consumer_app.id}", params: params
+        mock_rpush(consumer_app)
+
+        put admin_consumer_app_path(consumer_app.id), params: params
+
         consumer_app.reload
+
         expect(consumer_app.app_bundle).to eq(params[:app_bundle])
         expect(consumer_app.platform).to eq(params[:platform])
         expect(consumer_app.auth_key).to eq(params[:auth_key])
@@ -122,9 +130,9 @@ RSpec.describe "/admin/consumer_apps", type: :request do
 
       it "deletes the ConsumerApp" do
         expect do
-          delete "/admin/consumer_apps/#{consumer_app.id}"
+          delete admin_consumer_app_path(consumer_app.id)
         end.to change { ConsumerApp.all.count }.by(-1)
-        expect(response.body).to redirect_to "/admin/consumer_apps"
+        expect(response.body).to redirect_to admin_consumer_apps_path
       end
     end
   end

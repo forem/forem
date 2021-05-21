@@ -298,29 +298,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#after_commit" do
-    it "on update enqueues job to index user to elasticsearch" do
-      user.save
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, user.id]) do
-        user.save
-      end
-    end
-
-    it "on update syncs elasticsearch data" do
-      allow(user).to receive(:sync_related_elasticsearch_docs)
-      user.save
-      expect(user).to have_received(:sync_related_elasticsearch_docs)
-    end
-
-    it "on destroy enqueues job to delete user from elasticsearch" do
-      user.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
-                                   args: [described_class::SEARCH_CLASS.to_s, user.id]) do
-        user.destroy
-      end
-    end
-  end
-
   context "when callbacks are triggered before validation" do
     let(:user) { build(:user) }
 
@@ -588,11 +565,6 @@ RSpec.describe User, type: :model do
       end
     end
 
-    it "persists extracts relevant identity data from new twitter user" do
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.twitter_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
-    end
-
     it "assigns multiple identities to the same user", :aggregate_failures, vcr: { cassette_name: "fastly_sloan" } do
       providers = Authentication::Providers.available
 
@@ -685,6 +657,10 @@ RSpec.describe User, type: :model do
   end
 
   describe "theming properties" do
+    before do
+      allow(Settings::UserExperience).to receive(:default_font).and_return("sans-serif")
+    end
+
     it "creates proper body class with defaults" do
       classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
@@ -827,7 +803,7 @@ RSpec.describe User, type: :model do
     end
 
     it "returns the user if the account exists" do
-      allow(SiteConfig).to receive(:staff_user_id).and_return(user.id)
+      allow(Settings::Community).to receive(:staff_user_id).and_return(user.id)
 
       expect(described_class.dev_account).to eq(user)
     end

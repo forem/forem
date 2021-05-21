@@ -10,7 +10,6 @@ items:
   - authorization.md
   - configuration.md
   - data-update-scripts.md
-  - elasticsearch.md
   - emails.md
   - fastly.md
   - internationalization.md
@@ -20,6 +19,7 @@ items:
   - notification.md
   - scheduled-jobs.md
   - metrics.md
+  - push-notifications.md
   - tracking.md
   - service-objects.md
 ---

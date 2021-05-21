@@ -11,7 +11,7 @@ describe('Campaign Section', () => {
   describe('rate limit settings', () => {
     it('can change for how many days a user is considered new', () => {
       cy.get('@user').then(({ username }) => {
-        cy.visit('/admin/config');
+        cy.visit('/admin/customization/config');
         cy.get('#new_settings_rate_limit').as('rateLimitSectionForm');
 
         cy.get('@rateLimitSectionForm')
@@ -33,7 +33,7 @@ describe('Campaign Section', () => {
           .findByText('Update Site Configuration')
           .click();
 
-        cy.url().should('contains', '/admin/config');
+        cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Site configuration was successfully updated.').should(
           'be.visible',

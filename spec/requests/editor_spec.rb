@@ -10,7 +10,7 @@ RSpec.describe "Editor", type: :request do
       end
     end
 
-    context "when email login is allowed in /admin/config" do
+    context "when email login is allowed in /admin/customization/config" do
       before do
         allow(Settings::Authentication).to receive(:allow_email_password_login).and_return(true)
       end

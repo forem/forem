@@ -265,7 +265,8 @@
 }
 
 .crayons-tabs--analytics {
-  justify-content: center;
+  width: min-content;
+  margin: var(--su-8) auto;
 }
 
 $column-flex: 1;
@@ -299,6 +300,10 @@ $column-flex: 1;
       width: 90%;
       margin: 10px auto;
     }
+  }
+
+  .crayons-tabs--analytics {
+    width: 100%;
   }
 }
 
