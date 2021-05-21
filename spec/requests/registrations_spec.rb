@@ -136,7 +136,7 @@ RSpec.describe "Registrations", type: :request do
       before do
         allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
         allow(FeatureFlag).to receive(:enabled?).with(:runtime_banner).and_return(false)
-        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
+        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
         allow(Settings::UserExperience).to receive(:public).and_return(false)
       end
 
@@ -151,7 +151,7 @@ RSpec.describe "Registrations", type: :request do
   describe "GET /users/signup" do
     context "when site is in waiting_on_first_user state" do
       before do
-        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
+        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
         ENV["FOREM_OWNER_SECRET"] = "test"
       end
 
@@ -296,7 +296,7 @@ RSpec.describe "Registrations", type: :request do
       end
     end
 
-    context "when site configured to accept email registration AND require captcha" do
+    context "when Forem instance configured to accept email registration AND require captcha" do
       before do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
         allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
@@ -334,7 +334,7 @@ RSpec.describe "Registrations", type: :request do
     context "when site is in waiting_on_first_user state" do
       before do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
-        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
+        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
         ENV["FOREM_OWNER_SECRET"] = nil
       end
 
@@ -370,14 +370,14 @@ RSpec.describe "Registrations", type: :request do
       end
 
       it "creates mascot user" do
-        expect(SiteConfig.mascot_user_id).to be_nil
+        expect(Settings::General.mascot_user_id).to be_nil
         post "/users", params:
           { user: { name: "test #{rand(10)}",
                     username: "haha_#{rand(10)}",
                     email: "yoooo#{rand(100)}@yo.co",
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(SiteConfig.mascot_user_id).to eq User.last.id
+        expect(Settings::General.mascot_user_id).to eq User.last.id
 
         mascot_account = User.mascot_account
         expect(mascot_account.username).to eq Users::CreateMascotAccount::MASCOT_PARAMS[:username]
@@ -416,7 +416,7 @@ RSpec.describe "Registrations", type: :request do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
         allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
         allow(FeatureFlag).to receive(:enabled?).with(:runtime_banner).and_return(false)
-        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
+        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
       end
 
       it "creates user with valid params passed" do

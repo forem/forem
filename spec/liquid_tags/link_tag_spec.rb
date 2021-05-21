@@ -99,7 +99,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
   end
 
   it "renders with a full link" do
-    liquid = generate_new_liquid(slug: "https://#{SiteConfig.app_domain}/#{user.username}/#{article.slug}")
+    liquid = generate_new_liquid(slug: "https://#{Settings::General.app_domain}/#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
@@ -122,13 +122,13 @@ RSpec.describe LinkTag, type: :liquid_tag do
   end
 
   it "renders with a full link with a trailing slash" do
-    liquid = generate_new_liquid(slug: "https://#{SiteConfig.app_domain}/#{user.username}/#{article.slug}/")
+    liquid = generate_new_liquid(slug: "https://#{Settings::General.app_domain}/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
   it "renders with missing article" do
     article.delete
-    liquid = generate_new_liquid(slug: "https://#{SiteConfig.app_domain}/#{user.username}/#{article.slug}/")
+    liquid = generate_new_liquid(slug: "https://#{Settings::General.app_domain}/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(missing_article_html)
   end
 

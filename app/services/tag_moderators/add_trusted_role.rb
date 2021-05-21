@@ -13,8 +13,8 @@ module TagModerators
     end
 
     def self.community_mod_newsletter_enabled?
-      SiteConfig.mailchimp_api_key.present? &&
-        SiteConfig.mailchimp_community_moderators_id.present?
+      Settings::General.mailchimp_api_key.present? &&
+        Settings::General.mailchimp_community_moderators_id.present?
     end
     private_class_method :community_mod_newsletter_enabled?
   end
