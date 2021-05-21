@@ -42,7 +42,7 @@ describe SocialImageHelper do
       expect(url).to eq article_social_preview_url(article, format: :png, host: "hello.com")
     end
 
-    it "returns the main image if set" do
+    it "returns the main image if set", cloudinary: true do
       article.main_image = Faker::CryptoCoin.url_logo
 
       url = helper.article_social_image_url(article)
@@ -66,7 +66,7 @@ describe SocialImageHelper do
       expect(url).to eq article_social_preview_url(article, format: :png, host: "hello.com")
     end
 
-    it "returns correct manipulation of cloudinary links" do
+    it "returns correct manipulation of cloudinary links", cloudinary: true do
       article.update_column(
         :main_image,
         "https://res.cloudinary.com/practicaldev/image/fetch/s--A-gun7rr--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://res.cloudinary.com/practicaldev/image/fetch/s--hcD8ZkbP--/c_imagga_scale%2Cf_auto%2Cfl_progressive%2Ch_420%2Cq_auto%2Cw_1000/https://dev-to-uploads.s3.amazonaws.com/i/th93d625o27nuz63oeen.png", # rubocop:disable Layout/LineLength
