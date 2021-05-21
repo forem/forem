@@ -1,7 +1,7 @@
 module DataUpdateScripts
   class AddNavigationLinks
     PROTOCOL = ApplicationConfig["APP_PROTOCOL"].freeze
-    DOMAIN = Rails.application&.initialized? ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
+    DOMAIN = Rails.application&.initialized? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
     BASE_URL = "#{PROTOCOL}#{DOMAIN}".freeze
 
     READING_ICON = File.read(Rails.root.join("app/assets/images/twemoji/drawer.svg")).freeze

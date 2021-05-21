@@ -39,10 +39,10 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     def renders_ga_tracking_data
-      expect(response.body).to include("data-ga-tracking=\"#{SiteConfig.ga_tracking_id}\"")
+      expect(response.body).to include("data-ga-tracking=\"#{Settings::General.ga_tracking_id}\"")
     end
 
-    it "renders registration page if site config is private" do
+    it "renders registration page if the Forem instance is private" do
       allow(Settings::UserExperience).to receive(:public).and_return(false)
 
       get root_path
@@ -132,13 +132,13 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "shows default meta keywords if set" do
-      allow(SiteConfig).to receive(:meta_keywords).and_return({ default: "cool developers, civil engineers" })
+      allow(Settings::General).to receive(:meta_keywords).and_return({ default: "cool developers, civil engineers" })
       get "/"
       expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
     end
 
     it "does not show default meta keywords if not set" do
-      allow(SiteConfig).to receive(:meta_keywords).and_return({ default: "" })
+      allow(Settings::General).to receive(:meta_keywords).and_return({ default: "" })
       get "/"
       expect(response.body).not_to include(
         "<meta name=\"keywords\" content=\"cool developers, civil engineers\">",
@@ -363,13 +363,13 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "shows meta keywords if set" do
-      allow(SiteConfig).to receive(:meta_keywords).and_return({ tag: "software engineering, ruby" })
+      allow(Settings::General).to receive(:meta_keywords).and_return({ tag: "software engineering, ruby" })
       get "/t/#{tag.name}"
       expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
     end
 
     it "does not show meta keywords if not set" do
-      allow(SiteConfig).to receive(:meta_keywords).and_return({ tag: "" })
+      allow(Settings::General).to receive(:meta_keywords).and_return({ tag: "" })
       get "/t/#{tag.name}"
       expect(response.body).not_to include(
         "<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">",
@@ -401,7 +401,7 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.cookies["remember_user_token"]).not_to be nil
       end
 
-      it "renders properly even if site config is private" do
+      it "renders properly even if the Forem instance is private" do
         allow(Settings::UserExperience).to receive(:public).and_return(false)
         get "/t/#{tag.name}"
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")

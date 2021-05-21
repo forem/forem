@@ -176,7 +176,7 @@ class Article < ApplicationRecord
       .where(user_id: User.with_role(:super_admin)
                           .union(User.with_role(:admin))
                           .union(id: [Settings::Community.staff_user_id,
-                                      SiteConfig.mascot_user_id].compact)
+                                      Settings::General.mascot_user_id].compact)
                           .select(:id)).order(published_at: :desc).tagged_with(tag_name)
   }
 
@@ -788,7 +788,7 @@ class Article < ApplicationRecord
                   end
 
     Reaction.create(
-      user_id: SiteConfig.mascot_user_id,
+      user_id: Settings::General.mascot_user_id,
       reactable_id: id,
       reactable_type: "Article",
       category: "vomit",
@@ -798,7 +798,7 @@ class Article < ApplicationRecord
 
     user.add_role(:suspended)
     Note.create(
-      author_id: SiteConfig.mascot_user_id,
+      author_id: Settings::General.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
       reason: "automatic_suspend",

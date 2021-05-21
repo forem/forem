@@ -1,4 +1,4 @@
-<% SiteConfig.social_media_handles.each do |social_media_type, handle| %>
+<% Settings::General.social_media_handles.each do |social_media_type, handle| %>
   <% next if handle.blank? %>
   <a
     href="<%= "https://#{social_media_type}.com/#{handle}" %>"
