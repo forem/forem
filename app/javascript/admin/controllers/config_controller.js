@@ -10,12 +10,11 @@ const emailAuthSettingsSection = document.getElementById(
   'email-auth-settings-section',
 );
 const emailAuthModalTitle = 'Disable Email address registration';
-// TODO: Remove the sentence "You must update site config to save this action!"
-// once we build more robust flow for Admin/Config
+// TODO: Remove the "You mut confirm..." warning once we build more robust flow for Admin/Config
 const emailAuthModalBody = `
   <p>If you disable Email address as a registration option, people cannot create an account with their email address.</p>
   <p>However, people who have already created an account using their email address can continue to login.</p>
-  <p><strong>You must confirm and update site config to save below this action.</strong></p>`;
+  <p><strong>You must confirm and update the settings below to complete this action.</strong></p>`;
 
 export default class ConfigController extends Controller {
   static targets = [
@@ -159,7 +158,7 @@ export default class ConfigController extends Controller {
 
   enableOrEditAuthProvider(event) {
     event.preventDefault();
-    const providerName = event.target.dataset.providerName;
+    const {providerName} = event.target.dataset;
     const enabledIndicator = document.getElementById(
       `${providerName}-enabled-indicator`,
     );
@@ -178,7 +177,7 @@ export default class ConfigController extends Controller {
 
   disableAuthProvider(event) {
     event.preventDefault();
-    const providerName = event.target.dataset.providerName;
+    const {providerName} = event.target.dataset;
     const enabledIndicator = document.getElementById(
       `${providerName}-enabled-indicator`,
     );
@@ -201,8 +200,8 @@ export default class ConfigController extends Controller {
 
   activateAuthProviderModal(event) {
     event.preventDefault();
-    const providerName = event.target.dataset.providerName;
-    const providerOfficialName = event.target.dataset.providerOfficialName;
+    const {providerName} = event.target.dataset;
+    const {providerOfficialName} = event.target.dataset;
     this.configModalAnchorTarget.innerHTML = adminModal({
       title: this.authProviderModalTitle(providerOfficialName),
       body: this.authProviderModalBody(providerOfficialName),
@@ -219,7 +218,7 @@ export default class ConfigController extends Controller {
 
   disableAuthProviderFromModal(event) {
     event.preventDefault();
-    const providerName = event.target.dataset.providerName;
+    const {providerName} = event.target.dataset;
     const authEnableButton = document.getElementById(
       `${providerName}-auth-btn`,
     );
@@ -255,7 +254,7 @@ export default class ConfigController extends Controller {
 
   hideAuthProviderSettings(event) {
     event.preventDefault();
-    const providerName = event.target.dataset.providerName;
+    const {providerName} = event.target.dataset;
     document
       .getElementById(`${providerName}-auth-settings`)
       .classList.add('hidden');
@@ -271,9 +270,8 @@ export default class ConfigController extends Controller {
       .forEach((provider) => {
         enabledProviderArray.push(provider.dataset.providerName);
       });
-    document.getElementById(
-      'auth_providers_to_enable',
-    ).value = enabledProviderArray;
+    document.getElementById('auth_providers_to_enable').value =
+      enabledProviderArray;
   }
 
   adjustAuthenticationOptions() {

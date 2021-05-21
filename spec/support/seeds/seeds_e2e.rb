@@ -7,7 +7,7 @@ require Rails.root.join("app/lib/seeder")
 seeder = Seeder.new
 
 ##############################################################################
-# Default development site config if different from production scenario
+# Default development settings are different from production scenario
 
 Settings::UserExperience.public = true
 Settings::General.waiting_on_first_user = false

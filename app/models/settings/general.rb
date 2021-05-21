@@ -4,7 +4,7 @@ module Settings
   class General < RailsSettings::Base
     self.table_name = "site_configs"
 
-    # the site configuration is cached, change this if you want to force update
+    # the configuration is cached, change this if you want to force update
     # the cache, or call Settings::General.clear_cache
     cache_prefix { "v1" }
 

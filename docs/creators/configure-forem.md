@@ -19,7 +19,7 @@ Forem link to your community._
 Once your Forem instance is set up for the first time, you will most likely see
 the following banner:
 
-![Banner showing outstanding site configuration](https://dev-to-uploads.s3.amazonaws.com/i/2nosvfr7l47ymipmyh4o.png)
+![Banner prompting for configuring mandatory settings](https://dev-to-uploads.s3.amazonaws.com/i/2nosvfr7l47ymipmyh4o.png)
 
 This banner indicates that the Forem configuration process hasn't been completed
 yet.

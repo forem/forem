@@ -13,7 +13,7 @@ SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 ##############################################################################
-# Default development site config if different from production scenario
+# Default development settings are different from production scenario
 
 Settings::UserExperience.public = true
 Settings::General.waiting_on_first_user = false

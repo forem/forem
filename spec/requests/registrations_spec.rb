@@ -296,7 +296,7 @@ RSpec.describe "Registrations", type: :request do
       end
     end
 
-    context "when site configured to accept email registration AND require captcha" do
+    context "when Forem instance configured to accept email registration AND require captcha" do
       before do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
         allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")

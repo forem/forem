@@ -30,9 +30,7 @@ describe('Get Started Section', () => {
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Site configuration was successfully updated.').should(
-          'be.visible',
-        );
+        cy.findByText('Successfully updated settings.').should('be.visible');
 
         // Page reloaded so need to get a new reference to the form.
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');
@@ -61,9 +59,7 @@ describe('Get Started Section', () => {
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Site configuration was successfully updated.').should(
-          'be.visible',
-        );
+        cy.findByText('Successfully updated settings.').should('be.visible');
 
         // Page reloaded so need to get a new reference to the form.
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');

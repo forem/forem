@@ -42,7 +42,7 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include("data-ga-tracking=\"#{Settings::General.ga_tracking_id}\"")
     end
 
-    it "renders registration page if site config is private" do
+    it "renders registration page if the Forem instance is private" do
       allow(Settings::UserExperience).to receive(:public).and_return(false)
 
       get root_path
@@ -401,7 +401,7 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.cookies["remember_user_token"]).not_to be nil
       end
 
-      it "renders properly even if site config is private" do
+      it "renders properly even if the Forem instance is private" do
         allow(Settings::UserExperience).to receive(:public).and_return(false)
         get "/t/#{tag.name}"
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
