@@ -33,6 +33,7 @@ class UsersController < ApplicationController
       return redirect_to sign_up_path
     end
     set_user
+    set_users_setting
     set_current_tab(params["tab"] || "profile")
     handle_settings_tab
   end
@@ -356,6 +357,12 @@ class UsersController < ApplicationController
     @user = current_user
     not_found unless @user
     authorize @user
+  end
+
+  def set_users_setting
+    return unless @user
+
+    @users_setting = @user.setting
   end
 
   def set_current_tab(current_tab = "profile")
