@@ -13,26 +13,6 @@ RSpec.describe Users::Setting, type: :model do
     it { is_expected.to define_enum_for(:config_navbar).with_values(default: 0, static: 1).with_suffix(:navbar) }
     it { is_expected.to define_enum_for(:config_theme).with_values(default: 0, minimal_light_theme: 1, night_theme: 2, pink_theme: 3, ten_x_hacker_theme: 4) }
 
-    describe "when validating feed_url", vcr: true do
-      it "is valid with no feed_url" do
-        setting.feed_url = nil
-
-        expect(setting).to be_valid
-      end
-
-      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
-        setting.feed_url = "http://example.com"
-
-        expect(setting).not_to be_valid
-      end
-
-      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
-        setting.feed_url = "https://medium.com/feed/@vaidehijoshi"
-
-        expect(setting).to be_valid
-      end
-    end
-
     describe "#config_theme" do
       it "accepts valid theme" do
         setting.config_theme = 2

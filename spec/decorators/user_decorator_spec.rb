@@ -231,7 +231,7 @@ RSpec.describe UserDecorator, type: :decorator do
 
   describe "#considered_new?" do
     before do
-      allow(SiteConfig).to receive(:user_considered_new_days).and_return(3)
+      allow(Settings::RateLimit).to receive(:user_considered_new_days).and_return(3)
     end
 
     it "returns true for new users" do

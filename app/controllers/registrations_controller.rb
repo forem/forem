@@ -12,6 +12,8 @@ class RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def create
     not_authorized unless Settings::Authentication.allow_email_password_registration ||
       SiteConfig.waiting_on_first_user
@@ -31,7 +33,12 @@ class RegistrationsController < Devise::RegistrationsController
       yield resource if block_given?
       if resource.persisted?
         update_first_user_permissions(resource)
-        redirect_to "/confirm-email?email=#{CGI.escape(resource.email)}"
+        if SiteConfig.smtp_enabled?
+          redirect_to confirm_email_path(email: resource.email)
+        else
+          sign_in(resource)
+          redirect_to root_path
+        end
       else
         render action: "by_email"
       end
@@ -40,6 +47,8 @@ class RegistrationsController < Devise::RegistrationsController
       flash[:notice] = "You must complete the recaptcha ✅"
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   private
 
