@@ -11,7 +11,7 @@ module DataUpdateScripts
     ].freeze
 
     def run
-      DataUpdateScript.delete_by(name: SCRIPTS_TO_REMOVE)
+      DataUpdateScript.delete_by(file_name: SCRIPTS_TO_REMOVE)
     end
   end
 end
