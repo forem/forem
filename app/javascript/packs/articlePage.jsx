@@ -25,7 +25,7 @@ const toggleArticlePin = async (button) => {
   const isPinButton = button.id === 'js-pin-article';
 
   const response = await fetch(button.dataset.action, {
-    method: isPinButton ? 'POST' : 'DELETE',
+    method: isPinButton ? 'PUT' : 'DELETE',
     headers: {
       Accept: 'application/json',
       'X-CSRF-Token': window.csrfToken,

@@ -4,17 +4,8 @@ module Stories
 
     def show
       @stories = assign_feed_stories
+
       add_pinned_article
-    end
-
-    def pin
-      Settings::General.feed_pinned_article_id = params[:article_id]
-    rescue ActiveRecord::RecordInvalid => e
-      render json: { error: e.message }, status: :unprocessable_entity
-    end
-
-    def unpin
-      Settings::General.feed_pinned_article_id = nil
     end
 
     private

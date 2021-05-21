@@ -46,11 +46,7 @@ Rails.application.routes.draw do
       resource :feed, only: [:show] do
         get ":timeframe", to: "feeds#show", as: :timeframe
 
-        # TODO: move this to a separate controller?
-        collection do
-          post "pin/:article_id", to: "feeds#pin", as: :pin
-          delete "pin/:article_id", to: "feeds#unpin"
-        end
+        resources :pins, only: %w[update destroy]
       end
     end
 
