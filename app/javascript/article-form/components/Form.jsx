@@ -18,16 +18,12 @@ export const Form = ({
   switchHelpContext,
   errors,
 }) => {
-  // 🚑 Detect if user is using chromium to disable grammarly
-  const isChrome = !!window.chrome;
-
   return (
     <div className="crayons-article-form__content crayons-card">
       {errors && <ErrorList errors={errors} />}
 
       {version === 'v2' && (
         <Meta
-          disableGrammarly={isChrome}
           titleDefaultValue={titleDefaultValue}
           titleOnChange={titleOnChange}
           tagsDefaultValue={tagsDefaultValue}
@@ -39,7 +35,6 @@ export const Form = ({
       )}
 
       <EditorBody
-        disableGrammarly={isChrome}
         defaultValue={bodyDefaultValue}
         onChange={bodyOnChange}
         hasFocus={bodyHasFocus}

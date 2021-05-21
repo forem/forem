@@ -8,6 +8,7 @@ import {
 } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useTextAreaAutoResize } from '@utilities/textAreaUtils';
+import { useDisableGrammarly } from '@utilities/useDisableGrammarly';
 
 export const Compose = ({
   handleKeyDown,
@@ -60,9 +61,10 @@ export const Compose = ({
     () => (startEditing ? "Let's connect" : 'Compose a message'),
     [startEditing],
   );
-  const saveButtonText = useMemo(() => (startEditing ? 'Save' : 'Send'), [
-    startEditing,
-  ]);
+  const saveButtonText = useMemo(
+    () => (startEditing ? 'Save' : 'Send'),
+    [startEditing],
+  );
 
   return (
     <div className="compose__outer__container">
@@ -73,6 +75,7 @@ export const Compose = ({
       >
         <textarea
           ref={textAreaRef}
+          {...useDisableGrammarly()}
           className={
             startEditing
               ? 'crayons-textfield composer-textarea__edit'
