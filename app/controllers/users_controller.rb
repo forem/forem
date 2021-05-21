@@ -50,9 +50,6 @@ class UsersController < ApplicationController
       import_articles_from_feed(@user)
 
       notice = "Your profile was successfully updated."
-      if config_changed?
-        notice = "Your config has been updated. Refresh to see all changes."
-      end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
         ExportContentWorker.perform_async(@user.id, @user.email)
@@ -367,10 +364,6 @@ class UsersController < ApplicationController
 
   def set_current_tab(current_tab = "profile")
     @tab = current_tab
-  end
-
-  def config_changed?
-    params[:user].include?(:config_theme)
   end
 
   def destroy_request_in_progress?
