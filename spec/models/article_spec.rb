@@ -19,6 +19,7 @@ RSpec.describe Article, type: :model do
     it { is_expected.to belong_to(:user) }
 
     it { is_expected.to have_many(:comments).dependent(:nullify) }
+    it { is_expected.to have_many(:mentions).dependent(:destroy) }
     it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
     it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
@@ -55,7 +56,7 @@ RSpec.describe Article, type: :model do
 
     describe "::admin_published_with" do
       it "includes mascot-published articles" do
-        allow(Settings::Mascot).to receive(:mascot_user_id).and_return(3)
+        allow(Settings::General).to receive(:mascot_user_id).and_return(3)
         user = create(:user, id: 3)
         create(:article, user: user, tags: "challenge")
         expect(described_class.admin_published_with("challenge").count).to eq(1)
@@ -600,7 +601,7 @@ RSpec.describe Article, type: :model do
     it "does not show year in readable time if not current year" do
       time_now = Time.current
       article.published_at = time_now
-      expect(article.readable_publish_date).to eq(time_now.strftime("%b %e"))
+      expect(article.readable_publish_date).to eq(time_now.strftime("%b %-e"))
     end
 
     it "shows year in readable time if not current year" do
@@ -989,8 +990,8 @@ RSpec.describe Article, type: :model do
 
     describe "spam" do
       before do
-        allow(Settings::Mascot).to receive(:mascot_user_id).and_return(user.id)
-        allow(SiteConfig).to receive(:spam_trigger_terms).and_return(
+        allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
+        allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(
           ["yahoomagoo gogo", "testtestetest", "magoo.+magee"],
         )
       end
@@ -1219,7 +1220,6 @@ RSpec.describe Article, type: :model do
 
   describe "#user_mentions_in_markdown" do
     before do
-      stub_const("Article::MAX_USER_MENTIONS", 7)
       stub_const("Article::MAX_USER_MENTION_LIVE_AT", 1.day.ago) # Set live_at date to a time in the past
     end
 
@@ -1227,20 +1227,20 @@ RSpec.describe Article, type: :model do
       # Explicitly set created_at date to a time before MAX_USER_MENTION_LIVE_AT
       article = create(:article, created_at: 3.days.ago)
 
-      article.body_markdown = "hi @#{user.username}! " * (Article::MAX_USER_MENTIONS + 1)
+      article.body_markdown = "hi @#{user.username}! " * (Settings::RateLimit.mention_creation + 1)
       expect(article).to be_valid
     end
 
     it "is valid with seven or fewer mentions if created after MAX_USER_MENTION_LIVE_AT date" do
-      article.body_markdown = "hi @#{user.username}! " * Article::MAX_USER_MENTIONS
+      article.body_markdown = "hi @#{user.username}! " * Settings::RateLimit.mention_creation
       expect(article).to be_valid
     end
 
     it "is invalid with more than seven mentions if created after MAX_USER_MENTION_LIVE_AT date" do
-      article.body_markdown = "hi @#{user.username}! " * (Article::MAX_USER_MENTIONS + 1)
+      article.body_markdown = "hi @#{user.username}! " * (Settings::RateLimit.mention_creation + 1)
       expect(article).not_to be_valid
       expect(article.errors[:base])
-        .to include("You cannot mention more than #{Article::MAX_USER_MENTIONS} users in a post!")
+        .to include("You cannot mention more than #{Settings::RateLimit.mention_creation} users in a post!")
     end
   end
 

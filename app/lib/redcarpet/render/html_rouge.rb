@@ -50,7 +50,7 @@ module Redcarpet
       end
 
       def app_domain
-        SiteConfig.app_domain
+        Settings::General.app_domain
       end
 
       def slugify(string)

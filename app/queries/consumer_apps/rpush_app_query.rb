@@ -7,6 +7,7 @@ module ConsumerApps
     def initialize(app_bundle:, platform:)
       @app_bundle = app_bundle
       @platform = platform
+
       @consumer_app = ConsumerApps::FindOrCreateByQuery.call(
         app_bundle: @app_bundle,
         platform: @platform,
@@ -14,25 +15,26 @@ module ConsumerApps
     end
 
     def call
-      case @consumer_app&.platform
-      when Device::IOS
-        ios_app = Rpush::Apns2::App.where(name: @app_bundle).first
-        ios_app || recreate_ios_app!
-      when Device::ANDROID
-        android_app = Rpush::Gcm::App.where(name: @app_bundle).first
+      if consumer_app.android?
+        android_app = Rpush::Gcm::App.where(name: app_bundle).first
         android_app || recreate_android_app!
+      elsif consumer_app.ios?
+        ios_app = Rpush::Apns2::App.where(name: app_bundle).first
+        ios_app || recreate_ios_app!
       end
     end
 
     private
 
+    attr_reader :app_bundle, :consumer_app
+
     def recreate_ios_app!
       app = Rpush::Apns2::App.new
-      app.name = @app_bundle
-      app.certificate = @consumer_app.auth_credentials.to_s.gsub("\\n", "\n")
+      app.name = app_bundle
+      app.certificate = consumer_app.auth_credentials.to_s.gsub("\\n", "\n")
       app.environment = Rails.env
       app.password = ""
-      app.bundle_id = @app_bundle
+      app.bundle_id = app_bundle
       app.connections = 1
       app.save!
       app
@@ -40,8 +42,8 @@ module ConsumerApps
 
     def recreate_android_app!
       app = Rpush::Gcm::App.new
-      app.name = @app_bundle
-      app.auth_key = @consumer_app.auth_credentials.to_s
+      app.name = app_bundle
+      app.auth_key = consumer_app.auth_credentials.to_s
       app.connections = 1
       app.save!
       app

@@ -134,10 +134,8 @@ Rails.application.routes.draw do
     end
     resources :comment_mutes, only: %i[update]
     resources :users, only: %i[index], defaults: { format: :json } do # internal API
-      constraints(-> { FeatureFlag.enabled?(:mobile_notifications) }) do
-        collection do
-          resources :devices, only: %i[create destroy]
-        end
+      collection do
+        resources :devices, only: %i[create destroy]
       end
     end
     resources :users, only: %i[update]
@@ -317,10 +315,6 @@ Rails.application.routes.draw do
     get "/faq", to: "pages#faq"
     get "/page/post-a-job", to: "pages#post_a_job"
     get "/tag-moderation", to: "pages#tag_moderation"
-
-    # NOTE: can't remove the hardcoded URL here as SiteConfig is not available here, we should eventually
-    # setup dynamic redirects, see <https://github.com/thepracticaldev/dev.to/issues/7267>
-    get "/shop", to: redirect("https://shop.dev.to")
 
     get "/mod", to: "moderations#index", as: :mod
     get "/mod/:tag", to: "moderations#index"

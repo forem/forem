@@ -10,11 +10,13 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
+require "fakeredis/rspec"
 require "pundit/matchers"
 require "pundit/rspec"
-require "webmock/rspec"
 require "sidekiq/testing"
+require "test_prof/factory_prof/nate_heckler"
 require "validate_url/rspec_matcher"
+require "webmock/rspec"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -72,6 +74,7 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthHelpers
+  config.include RpushHelpers
   config.include SidekiqTestHelpers
 
   config.after(:each, type: :system) do
@@ -116,7 +119,7 @@ RSpec.configure do |config|
   end
 
   config.after do
-    SiteConfig.clear_cache
+    Settings::General.clear_cache
   end
 
   # Only turn on VCR if :vcr is included metadata keys
@@ -162,7 +165,7 @@ RSpec.configure do |config|
 
     allow(Settings::Community).to receive(:community_description).and_return("Some description")
     allow(Settings::UserExperience).to receive(:public).and_return(true)
-    allow(SiteConfig).to receive(:waiting_on_first_user).and_return(false)
+    allow(Settings::General).to receive(:waiting_on_first_user).and_return(false)
 
     # Default to have field a field test available.
     config = { "experiments" =>

@@ -96,7 +96,7 @@ RSpec.describe PodcastEpisode, type: :model do
       end
     end
 
-    describe "Cloudinary configuration and processing" do
+    describe "Cloudinary configuration and processing", cloudinary: true do
       it "prefixes an image URL with a path" do
         image_url = "https://dummyimage.com/10x10"
         podcast_episode.body = "<img src=\"#{image_url}\">"

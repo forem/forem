@@ -11,7 +11,7 @@
   <meta property="og:description" content="<%= truncate(strip_tags(@episode.body), length: 140) %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
 
-  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
   <meta name="twitter:creator" content="@software_daily">
   <meta name="twitter:title" content="<%= @episode.title %>">
   <meta name="twitter:description" content="<%= truncate(strip_tags(@episode.body), length: 140) %>" />

@@ -12,7 +12,7 @@
   </div>
 <% end %>
 
-<%= form_for(@comment, authenticity_token: false, html: { class: "comment-form" }) do |f| %>
+<%= form_for(@comment, authenticity_token: false, html: { class: "comment-form print-hidden" }) do |f| %>
   <% if @article&.comment_template.present? && @comment.new_record? %>
     <div class="article-comment-form-preamble">
       This post comes with a comment template
@@ -29,7 +29,7 @@
   <% end %>
 
   <span class="crayons-avatar m:crayons-avatar--l mr-2 shrink-0">
-    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 256) %>" width="32" height="32" alt="pic" class="crayons-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" loading="lazy" />
+    <img src="<%= Images::Optimizer.call(Settings::General.logo_png, width: 256) %>" width="32" height="32" alt="pic" class="crayons-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" loading="lazy" />
   </span>
   <div class="comment-form__inner">
     <div class="comment-form__field">

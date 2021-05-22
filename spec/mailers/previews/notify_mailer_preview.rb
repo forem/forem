@@ -13,8 +13,13 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.with(user: User.last).unread_notifications_email
   end
 
-  def new_mention_email
+  def new_comment_mention_email
     mention = Mention.find_or_create_by(user: User.find(1), mentionable: Comment.find(1))
+    NotifyMailer.with(mention: mention).new_mention_email
+  end
+
+  def new_article_mention_email
+    mention = Mention.find_or_create_by(user: User.find(1), mentionable: Article.find(1))
     NotifyMailer.with(mention: mention).new_mention_email
   end
 
@@ -64,7 +69,7 @@ class NotifyMailerPreview < ActionMailer::Preview
     HEREDOC
     params = {
       email_to: @user.email,
-      email_subject: "Courtesy notice from #{SiteConfig.community_name}",
+      email_subject: "Courtesy notice from #{Settings::Community.community_name}",
       email_body: email_body,
       email_type: "Reporter",
       feedback_message_id: rand(100)

@@ -24,12 +24,12 @@ module IncomingWebhooks
     private
 
     def valid_secret?
-      params[:secret] == SiteConfig.mailchimp_incoming_webhook_secret
+      params[:secret] == Settings::General.mailchimp_incoming_webhook_secret
     end
 
     def email_type
       list_id = params.dig(:data, :list_id)
-      key = LIST_MAPPINGS.keys.detect { |k| SiteConfig.public_send(k) == list_id }
+      key = LIST_MAPPINGS.keys.detect { |k| Settings::General.public_send(k) == list_id }
       raise InvalidListID unless key
 
       LIST_MAPPINGS[key]

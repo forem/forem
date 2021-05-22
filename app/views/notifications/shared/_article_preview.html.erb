@@ -1,0 +1,34 @@
+<article class="notification__preview crayons-card">
+  <a href="<%= json_data["article"]["path"] %>" class="crayons-link block notification__preview__inner">
+    <h3 class="notification__preview__title"><%= h(json_data["article"]["title"]) %></h3>
+    <div class="-ml-1">
+      <% json_data["article"]["cached_tag_list_array"].each do |tag| %>
+        <span class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></span>
+      <% end %>
+    </div>
+  </a>
+
+  <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{json_data['article']['updated_at']}-#{json_data['article']['id']}" do %>
+    <footer class="comment-actions notification__actions">
+      <button
+        class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s reaction-like reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "like") ? "reacted" : "" %>"
+        data-reactable-id="<%= json_data["article"]["id"] %>"
+        data-category="like"
+        data-reactable-type="Article">
+        <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Favorite heart button") %>
+        <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: "Favorite heart button") %>
+        <span class="hidden m:inline-block">Like</span>
+      </button>
+
+      <button
+        class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-right crayons-btn--s reaction-readinglist reaction-button readinglist-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "readinglist") ? "reacted" : "" %>"
+        data-reactable-id="<%= json_data["article"]["id"] %>"
+        data-category="readinglist"
+        data-reactable-type="Article">
+        <span class="reaction-button-text hidden m:inline-block">Save</span>
+        <%= inline_svg_tag("small-save.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Save button") %>
+        <%= inline_svg_tag("small-save-filled.svg", aria: true, class: "crayons-icon reaction-icon--readinglist reaction-icon reacted", title: "Save button") %>
+      </button>
+    </footer>
+  <% end %>
+</article>

@@ -2,7 +2,7 @@
 
 <%= render "users/additional_authentication" %>
 
-<% if SiteConfig.dev_to? %>
+<% if ForemInstance.dev_to? %>
   <%# @forem/oss Temporary disabling of overly DEV-specialized link. %>
   <%# We should create a generalized version of the badge page, including a permanent proxied path for the badge image for hotlinking. %>
   <div class="crayons-card crayons-card--content-rows">

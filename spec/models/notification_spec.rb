@@ -392,6 +392,66 @@ RSpec.describe Notification, type: :model do
     end
   end
 
+  describe "send_to_mentioned_users_and_followers" do
+    let!(:mention_markdown) { "Hello there, @#{user2.username}!" }
+
+    context "when the notifiable is an article from a user" do
+      before do
+        article.update!(body_markdown: mention_markdown)
+        user2.follow(user)
+      end
+
+      it "sends a single notification to mentioned user", :aggregate_failures do
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_mentioned_users_and_followers(article)
+          end
+        end.to change(user2.notifications, :count).from(0).to(1)
+        expect(user2.notifications.first.notifiable_type).to eq("Mention")
+      end
+
+      it "sends a notification to the organization's followers (who were not mentioned)", :aggregate_failures do
+        user3.follow(user)
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_mentioned_users_and_followers(article)
+          end
+        end.to change(user3.notifications, :count).from(0).to(1)
+        expect(user3.notifications.first.notifiable_type).to eq("Article")
+      end
+    end
+
+    context "when the notifiable is an article from an organization" do
+      let(:org_article) { create(:article, organization: organization, user: user) }
+
+      before do
+        org_article.update!(body_markdown: mention_markdown)
+        user2.follow(user)
+      end
+
+      it "sends a single notification to mentioned user", :aggregate_failures do
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_mentioned_users_and_followers(org_article)
+          end
+        end.to change(user2.notifications, :count).from(0).to(1)
+        expect(user2.notifications.first.notifiable_type).to eq("Mention")
+      end
+
+      it "sends a notification to the organization's followers (who were not mentioned)", :aggregate_failures do
+        user3.follow(organization)
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_mentioned_users_and_followers(org_article)
+          end
+        end.to change(user3.notifications, :count).from(0).to(1)
+        expect(user3.notifications.first.notifiable_type).to eq("Article")
+      end
+    end
+  end
+
   describe "#send_to_followers" do
     context "when the notifiable is an article from a user" do
       it "sends a notification to the author's followers" do

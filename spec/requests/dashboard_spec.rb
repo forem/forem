@@ -84,14 +84,14 @@ RSpec.describe "Dashboards", type: :request do
 
       it "does not render a link to upload a video when enable_video_upload is false" do
         get dashboard_path
-        allow(SiteConfig).to receive(:enable_video_upload).and_return(false)
+        allow(Settings::General).to receive(:enable_video_upload).and_return(false)
 
         expect(response.body).not_to include("Upload a video")
       end
 
       it "does not render a link to upload a video for a recent user" do
         get dashboard_path
-        allow(SiteConfig).to receive(:enable_video_upload).and_return(true)
+        allow(Settings::General).to receive(:enable_video_upload).and_return(true)
 
         expect(response.body).not_to include("Upload a video")
       end
@@ -111,7 +111,7 @@ RSpec.describe "Dashboards", type: :request do
       it "renders a link to upload a video" do
         Timecop.freeze(Time.current) do
           user.update!(created_at: 3.weeks.ago)
-          allow(SiteConfig).to receive(:enable_video_upload).and_return(true)
+          allow(Settings::General).to receive(:enable_video_upload).and_return(true)
 
           sign_in user
           get dashboard_path
