@@ -5,7 +5,7 @@ require Rails.root.join(
 
 describe DataUpdateScripts::FillBadgesCreditsAwarded do
   it "updates badges on dev.to" do
-    allow(SiteConfig).to receive(:dev_to?).and_return(true)
+    allow(ForemInstance).to receive(:dev_to?).and_return(true)
     badge = create(:badge, credits_awarded: 0)
     expect do
       described_class.new.run
@@ -13,7 +13,7 @@ describe DataUpdateScripts::FillBadgesCreditsAwarded do
   end
 
   it "doesn't update badges on other forems" do
-    allow(SiteConfig).to receive(:dev_to?).and_return(false)
+    allow(ForemInstance).to receive(:dev_to?).and_return(false)
     badge = create(:badge, credits_awarded: 0)
     expect do
       described_class.new.run

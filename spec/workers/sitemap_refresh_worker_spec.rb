@@ -13,7 +13,7 @@ RSpec.describe SitemapRefreshWorker, type: :woker do
     end
 
     it "runs sitemap:refresh:no_ping Rake task locally" do
-      allow(SiteConfig).to receive(:local?).and_return(true)
+      allow(ForemInstance).to receive(:local?).and_return(true)
 
       worker.perform
 
@@ -21,7 +21,7 @@ RSpec.describe SitemapRefreshWorker, type: :woker do
     end
 
     it "runs sitemap:refresh Rake task on regular installations" do
-      allow(SiteConfig).to receive(:local?).and_return(false)
+      allow(ForemInstance).to receive(:local?).and_return(false)
 
       worker.perform
 

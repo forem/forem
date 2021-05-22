@@ -10,8 +10,9 @@ export const Tabs = ({ onPreview, previewShowing }) => {
       <ul className="crayons-tabs__list">
         <li>
           <button
+            data-text='Edit'
             className={`crayons-tabs__item ${
-              !previewShowing && 'crayons-tabs__item--current'
+              previewShowing ? '' : 'crayons-tabs__item--current'
             }`}
             onClick={previewShowing && onPreview}
             type="button"
@@ -22,8 +23,9 @@ export const Tabs = ({ onPreview, previewShowing }) => {
         </li>
         <li>
           <button
+            data-text='Preview'
             className={`crayons-tabs__item ${
-              previewShowing && 'crayons-tabs__item--current'
+              previewShowing ? 'crayons-tabs__item--current' : ''
             }`}
             onClick={!previewShowing && onPreview}
             type="button"

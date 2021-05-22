@@ -65,7 +65,7 @@ RSpec.describe Html::Parser, type: :service do
     end
 
     context "when an image is used" do
-      it "wraps the image with Cloudinary" do
+      it "wraps the image with Cloudinary", cloudinary: true do
         html = "<img src='https://image.com/image.jpg'>"
         parsed_html = described_class.new(html).prefix_all_images.html
         expect(parsed_html).to include("https://res.cloudinary.com")

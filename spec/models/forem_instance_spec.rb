@@ -48,4 +48,32 @@ RSpec.describe ForemInstance, type: :model do
       expect(described_class.latest_commit_id).to eq(ENV["HEROKU_SLUG_COMMIT"])
     end
   end
+
+  describe ".local?" do
+    it "returns true if the .app_domain points to localhost" do
+      allow(Settings::General).to receive(:app_domain).and_return("localhost:3000")
+
+      expect(described_class.local?).to be(true)
+    end
+
+    it "returns false if the .app_domain points to a regular domain" do
+      allow(Settings::General).to receive(:app_domain).and_return("forem.dev")
+
+      expect(described_class.local?).to be(false)
+    end
+  end
+
+  describe ".dev_to?" do
+    it "returns true if the .app_domain is dev.to" do
+      allow(Settings::General).to receive(:app_domain).and_return("dev.to")
+
+      expect(described_class.dev_to?).to be(true)
+    end
+
+    it "returns false if the .app_domain is not dev.to" do
+      allow(Settings::General).to receive(:app_domain).and_return("forem.dev")
+
+      expect(described_class.dev_to?).to be(false)
+    end
+  end
 end
