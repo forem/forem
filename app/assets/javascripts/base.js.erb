@@ -123,6 +123,7 @@ var instantClick
     prog.classList.remove("showing");
 
     if (newUrl) {
+      document.querySelector('.skip-content-link').focus()
       history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
 
       var hashIndex = newUrl.indexOf('#'),
