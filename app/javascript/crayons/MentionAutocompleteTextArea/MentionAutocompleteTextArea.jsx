@@ -392,7 +392,7 @@ export const MentionAutocompleteTextArea = forwardRef(
                 <ComboboxList>
                   {users.map((user) => (
                     <ComboboxOption
-                      key={`${user.username}`}
+                      key={user.username}
                       value={user.username}
                       className="crayons-autocomplete__option flex items-center"
                     >
