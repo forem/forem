@@ -1,4 +1,10 @@
-<main class="row" data-controller="article-pin">
+<main
+  class="row"
+  data-controller="article-pin modal"
+  data-modal-root-selector-value="#article-pin-modal-root"
+  data-modal-content-selector-value="#article-pin-modal"
+  data-modal-title-value="There's another article pinned..."
+  data-modal-size-value="m">
   <div class="col-12">
     <ul class="nav nav-tabs nav-fill">
       <li class="nav-item">
@@ -42,6 +48,19 @@
     <%= paginate @articles %>
   </div>
 
+  <div id="article-pin-modal" class="hidden">
+    Only <strong>one</strong> article at a time can be pinned. If you proceed,
+    this article will no longer be pinned:
+
+    <div class="pinned-article">
+      <a href="#" target="_blank" rel="noopener" data-article-pin-target="title">
+        What's the meaning of life?
+      </a>
+
+      <p>Pinned at <time data-article-pin-target="pinnedAt">January 21st, 2021, 4:45pm</time></p>
+    </div>
+  </div>
+  <div id="article-pin-modal-root"></div>
 </main>
 
 <%= render "image_upload_script" %>

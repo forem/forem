@@ -32,8 +32,7 @@ function addRelevantButtonsToArticle(user) {
       );
     }
 
-    const articleId = articleContainer.dataset.articleId;
-    const articlePinnedId = articleContainer.dataset.pinnedId;
+    const { articleId, articlePinnedId } = articleContainer.dataset;
 
     // we hide the buttons for draft articles, for non admins and
     // if there's already a pinned post different from the current one
@@ -43,12 +42,14 @@ function addRelevantButtonsToArticle(user) {
       (articleId === articlePinnedId || !articlePinnedId)
     ) {
       const isArticlePinned = articleContainer.hasAttribute('data-pinned');
+      const { pinPath } = articleContainer.dataset;
 
       actions.push(
         `<button
             id="js-${isArticlePinned ? 'unpin' : 'pin'}-article"
             class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1"
-            data-action="${articleContainer.dataset.pinPath}">${
+            data-action="${pinPath}"
+            data-article-id="${articleId}">${
           isArticlePinned ? 'Unpin' : 'Pin'
         } Post</button>`,
       );

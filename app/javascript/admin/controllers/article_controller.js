@@ -3,7 +3,7 @@ import { Controller } from 'stimulus';
 export default class ArticleController extends Controller {
   static classes = ['bgHighlighted', 'borderHighlighted'];
   static targets = ['featuredNumber', 'cardBody'];
-  static values = { id: Number };
+  static values = { id: Number, pinPath: String };
 
   increaseFeaturedNumber() {
     // Increases the article's chances of being seen
@@ -28,11 +28,15 @@ export default class ArticleController extends Controller {
   }
 
   togglePin(event) {
-    const customEvent = new CustomEvent(event.target.checked === true ? 'article:pin' : 'article:unpin', {
-      detail: {
-        articleId: this.idValue,
-      }
-    });
+    const customEvent = new CustomEvent(
+      event.target.checked === true ? 'article:pin' : 'article:unpin',
+      {
+        detail: {
+          articleId: this.idValue,
+          pinPath: this.pinPathValue,
+        },
+      },
+    );
 
     document.dispatchEvent(customEvent);
   }

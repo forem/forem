@@ -44,9 +44,9 @@ Rails.application.routes.draw do
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
-        get ":timeframe", to: "feeds#show", as: :timeframe
+        resource :pinned_article, only: %w[show update destroy]
 
-        resources :pins, only: %w[update destroy]
+        get ":timeframe", to: "feeds#show", as: :timeframe
       end
     end
 
