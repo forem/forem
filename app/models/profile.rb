@@ -39,6 +39,9 @@ class Profile < ApplicationRecord
 
     ProfileField.find_each do |field|
       # Don't generate accessors for static fields stored on the table.
+      # TODO: [@jacobherrington] Remove this when ProfileFields for the static
+      # fields are dropped from production and the associated data is removed.
+      # https://github.com/forem/forem/pull/13641#discussion_r637641185
       next if STATIC_FIELDS.any?(field.attribute_name)
 
       store_attribute :data, field.attribute_name.to_sym, field.type
@@ -56,6 +59,10 @@ class Profile < ApplicationRecord
 
   def self.special_attributes
     SPECIAL_DISPLAY_ATTRIBUTES
+  end
+
+  def self.static_fields
+    STATIC_FIELDS
   end
 
   def custom_profile_attributes
