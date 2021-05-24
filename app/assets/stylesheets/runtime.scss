@@ -17,19 +17,8 @@
 .Browser-macOS-only,
 .Browser-Windows-only,
 .Browser-Linux-only,
-.Mobile-only,
 .Desktop-only {
   display: none;
-}
-
-// Mobile-only helps specialize some actions based on mobile OS's
-body[data-runtime='ForemWebView-iOS'] .Mobile-only,
-body[data-runtime='ForemWebView-Android'] .Mobile-only,
-body[data-runtime='Browser-iOS'] .Mobile-only,
-body[data-runtime='Browser-Android'] .Mobile-only,
-body[data-runtime='PWA-iOS'] .Mobile-only,
-body[data-runtime='PWA-Android'] .Mobile-only {
-  display: var(--runtime-display, block);
 }
 
 // Desktop-only helps specialize some actions based on Desktop OS's
