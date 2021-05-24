@@ -44,14 +44,24 @@ RSpec.describe NotifyMailer, type: :mailer do
       let(:comment_mention) { create(:mention, user: user2, mentionable: comment) }
       let(:email) { described_class.with(mention: comment_mention).new_mention_email }
 
-    include_examples "#renders_proper_email_headers"
+      include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
-      expect(email.subject).to eq("#{comment.user.name} just mentioned you!")
+      it "renders proper subject and receiver", :aggregate_failures do
+        expect(email.subject).to eq("#{comment.user.name} just mentioned you in their comment")
+        expect(email.to).to eq([user2.email])
+      end
     end
 
-    it "renders proper receiver" do
-      expect(email.to).to eq([user2.email])
+    context "when mentioning in an article" do
+      let(:article_mention) { create(:mention, user: user2, mentionable: article) }
+      let(:email) { described_class.with(mention: article_mention).new_mention_email }
+
+      include_examples "#renders_proper_email_headers"
+
+      it "renders proper subject and receiver", :aggregate_failures do
+        expect(email.subject).to eq("#{article.user.name} just mentioned you in their post")
+        expect(email.to).to eq([user2.email])
+      end
     end
   end
 

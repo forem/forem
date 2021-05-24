@@ -7,7 +7,7 @@ describe DataUpdateScripts::RemoveUnusedSiteConfigEmails do
   let(:contact_email) { "contact@dev.to" }
 
   before do
-    SiteConfig.email_addresses = {
+    Settings::General.email_addresses = {
       default: ApplicationConfig["DEFAULT_EMAIL"],
       contact: "contact@dev.to",
       business: "business@dev.to",
@@ -18,6 +18,6 @@ describe DataUpdateScripts::RemoveUnusedSiteConfigEmails do
 
   it "removes the unused emails" do
     described_class.new.run
-    expect(SiteConfig.email_addresses.symbolize_keys).to include(default: ApplicationConfig["DEFAULT_EMAIL"])
+    expect(Settings::General.email_addresses.symbolize_keys).to eq(default: ApplicationConfig["DEFAULT_EMAIL"])
   end
 end

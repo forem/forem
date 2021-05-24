@@ -1,7 +1,7 @@
 module DataUpdateScripts
   class RemoveUnusedSiteConfigEmails
     def run
-      SiteConfig.email_addresses = {
+      Settings::General.email_addresses = {
         default: ApplicationConfig["DEFAULT_EMAIL"]
       }
     end
