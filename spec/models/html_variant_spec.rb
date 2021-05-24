@@ -49,7 +49,7 @@ RSpec.describe HtmlVariant, type: :model do
     expect(described_class.find_for_test(["hello"]).id).to eq(html_variant.id)
   end
 
-  it "prefixes an image with cloudinary" do
+  it "prefixes an image with cloudinary", cloudinary: true do
     html = "<div><img src='https://devimages.com/image.jpg' /></div>"
     html_variant.update(approved: false, html: html)
     cloudinary_string = "/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_420/https://devimages.com/image.jpg"

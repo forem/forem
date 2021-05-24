@@ -9,7 +9,7 @@ class GaEventsController < ApplicationController
     json = JSON.parse(request.raw_post)
     user_id = user_signed_in? ? current_user.id : nil
     client_id = "#{scrambled_ip[0..12]}_#{json['user_agent']}_#{user_id}"
-    tracker = Staccato.tracker(SiteConfig.ga_tracking_id, client_id)
+    tracker = Staccato.tracker(Settings::General.ga_tracking_id, client_id)
     tracker.pageview(
       path: json["path"],
       user_id: user_id,

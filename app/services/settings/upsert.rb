@@ -34,11 +34,11 @@ module Settings
     def upsert_configs
       @configs.each do |key, value|
         if value.is_a?(Array)
-          SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
+          Settings::General.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
         elsif value.respond_to?(:to_h)
-          SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
+          Settings::General.public_send("#{key}=", value.to_h) unless value.empty?
         else
-          SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
+          Settings::General.public_send("#{key}=", value.strip) unless value.nil?
         end
       rescue ActiveRecord::RecordInvalid => e
         @errors << e.message
@@ -62,7 +62,7 @@ module Settings
       # This is an acts-as-taggable-on as used on saving of an Article, etc.
       return unless (@configs.keys & %w[suggested_tags sidebar_tags]).any?
 
-      Tag.find_or_create_all_with_like_by_name(SiteConfig.suggested_tags + SiteConfig.sidebar_tags)
+      Tag.find_or_create_all_with_like_by_name(Settings::General.suggested_tags + Settings::General.sidebar_tags)
     end
   end
 end

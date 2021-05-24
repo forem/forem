@@ -12,10 +12,12 @@ class RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def create
     not_authorized unless Settings::Authentication.allow_email_password_registration ||
-      SiteConfig.waiting_on_first_user
-    not_authorized if SiteConfig.waiting_on_first_user && ENV["FOREM_OWNER_SECRET"].present? &&
+      Settings::General.waiting_on_first_user
+    not_authorized if Settings::General.waiting_on_first_user && ENV["FOREM_OWNER_SECRET"].present? &&
       ENV["FOREM_OWNER_SECRET"] != params[:user][:forem_owner_secret]
 
     resolve_profile_field_issues
@@ -31,7 +33,12 @@ class RegistrationsController < Devise::RegistrationsController
       yield resource if block_given?
       if resource.persisted?
         update_first_user_permissions(resource)
-        redirect_to "/confirm-email?email=#{CGI.escape(resource.email)}"
+        if ForemInstance.smtp_enabled?
+          redirect_to confirm_email_path(email: resource.email)
+        else
+          sign_in(resource)
+          redirect_to root_path
+        end
       else
         render action: "by_email"
       end
@@ -40,15 +47,17 @@ class RegistrationsController < Devise::RegistrationsController
       flash[:notice] = "You must complete the recaptcha ✅"
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   private
 
   def update_first_user_permissions(resource)
-    return unless SiteConfig.waiting_on_first_user
+    return unless Settings::General.waiting_on_first_user
 
     resource.add_role(:super_admin)
     resource.add_role(:trusted)
-    SiteConfig.waiting_on_first_user = false
+    Settings::General.waiting_on_first_user = false
     Users::CreateMascotAccount.call
   end
 
@@ -70,7 +79,7 @@ class RegistrationsController < Devise::RegistrationsController
     # Run this data update script when in a state of "first user" in the event
     # that we are in a state where this was not already run.
     # This is likely only temporarily needed.
-    return unless SiteConfig.waiting_on_first_user
+    return unless Settings::General.waiting_on_first_user
 
     csv = Rails.root.join("lib/data/dev_profile_fields.csv")
     ProfileFields::ImportFromCsv.call(csv)

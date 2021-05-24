@@ -310,7 +310,7 @@ class User < ApplicationRecord
   end
 
   def self.mascot_account
-    find_by(id: Settings::Mascot.mascot_user_id)
+    find_by(id: Settings::General.mascot_user_id)
   end
 
   def tag_line
@@ -498,7 +498,7 @@ class User < ApplicationRecord
 
   def subscribe_to_mailchimp_newsletter
     return unless registered && email.present?
-    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
     return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
@@ -526,7 +526,7 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
-    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
@@ -693,5 +693,9 @@ class User < ApplicationRecord
 
   def strip_payment_pointer
     self.payment_pointer = payment_pointer.strip if payment_pointer
+  end
+
+  def confirmation_required?
+    ForemInstance.smtp_enabled?
   end
 end

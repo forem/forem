@@ -646,6 +646,10 @@ Style/SwapValues:
   StyleGuide: '#values-swapping'
   Enabled: true
 
+Style/TopLevelMethodDefinition:
+  Description: 'This cop looks for top-level method definitions.'
+  Enabled: true
+
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
   StyleGuide: '#no-trailing-params-comma'

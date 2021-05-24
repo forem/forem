@@ -7,15 +7,15 @@
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url(@page.path) %>" />
   <meta property="og:title" content="<%= @page.title %> — <%= community_name %>" />
-  <meta property="og:image" content="<%= @page.social_image_url || SiteConfig.main_social_image %>" />
+  <meta property="og:image" content="<%= @page.social_image_url || Settings::General.main_social_image %>" />
   <meta property="og:description" content="<%= @page.description %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<%= @page.title %> — <%= community_name %>">
   <meta name="twitter:description" content="<%= @page.description %>">
-  <meta name="twitter:image:src" content="<%= @page.social_image_url || SiteConfig.main_social_image %>">
+  <meta name="twitter:image:src" content="<%= @page.social_image_url || Settings::General.main_social_image %>">
 <% end %>
 
 <main id="main-content">

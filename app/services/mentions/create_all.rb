@@ -1,4 +1,7 @@
 module Mentions
+  # This class creates mentions + associated notifications for Articles and Comments.
+  # This class will check to see if there are any @-mentions in the post, and will
+  # create the associated mentions inline if necessary.
   class CreateAll
     def initialize(notifiable)
       @notifiable = notifiable
@@ -9,7 +12,6 @@ module Mentions
     end
 
     def call
-      # Only works for comments right now.
       mentioned_users = users_mentioned_in_text_excluding_author
 
       delete_mentions_removed_from_notifiable_text(mentioned_users)
@@ -48,7 +50,7 @@ module Mentions
     end
 
     def reject_notifiable_author(users)
-      users.reject { |user| authored_by?(user, @notifiable) }
+      users.reject { |user| authored_by?(user, notifiable) }
     end
 
     def authored_by?(user, notifiable)
@@ -56,21 +58,34 @@ module Mentions
     end
 
     def delete_mentions_removed_from_notifiable_text(users)
-      mentions = @notifiable.mentions.where.not(user_id: users).destroy_all
+      mentions = notifiable.mentions.where.not(user_id: users).destroy_all
       Notification.remove_all(notifiable_ids: mentions.map(&:id), notifiable_type: "Mention") if mentions.present?
     end
 
     def user_has_comment_notifications?(user)
-      user.notifications.exists?(notifiable_id: @notifiable.id)
+      user.notifications.exists?(notifiable_id: notifiable.id, notifiable_type: "Comment")
     end
 
     def create_mention_for(user)
-      return if user_has_comment_notifications?(user)
+      # Do not create additional notifications for being mentioned in a comment.
+      if notifiable.is_a?(Comment) && user_has_comment_notifications?(user)
+        return
+      end
 
-      mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id,
-                               mentionable_type: @notifiable.class.name)
-      # mentionable_type = model that created the mention, user = user to be mentioned
-      Notification.send_mention_notification(mention)
+      # The mentionable_type is the model that created the mention, the user is the user to be mentioned.
+      mention = Mention.create(user_id: user.id, mentionable_id: notifiable.id,
+                               mentionable_type: notifiable.class.name)
+
+      # If notifiable is an Article, we need to create the notification for the mention immediately so
+      # that the notification exists in the database before we attempt to create other Article-related notifications.
+      # However, if notifiable is a Comment, we can create the notification for the mention in the background.
+      case notifiable
+      when Article
+        Notification.send_mention_notification_without_delay(mention)
+      when Comment
+        Notification.send_mention_notification(mention)
+      end
+
       mention
     end
 

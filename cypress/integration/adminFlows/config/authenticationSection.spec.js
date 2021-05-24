@@ -34,18 +34,14 @@ describe('Authentication Section', () => {
             .type(
               `My username is @${username} and this action is 100% safe and appropriate.`,
             );
-          cy.get('@authSectionForm')
-            .findByText('Update Site Configuration')
-            .click();
+          cy.get('@authSectionForm').findByText('Update Settings').click();
 
           cy.url().should('contains', '/admin/customization/config');
 
           // Page reloaded so need to get a new reference to the form.
           cy.findByTestId('authSectionForm').as('authSectionForm');
 
-          cy.findByText('Site configuration was successfully updated.').should(
-            'be.visible',
-          );
+          cy.findByText('Successfully updated settings.').should('be.visible');
 
           cy.get('@authSectionForm').findByText('Authentication').click();
 
@@ -88,9 +84,7 @@ describe('Authentication Section', () => {
               `My username is @${username} and this action is 100% safe and appropriate.`,
             );
         });
-        cy.get('@authSectionForm')
-          .findByText('Update Site Configuration')
-          .click();
+        cy.get('@authSectionForm').findByText('Update Settings').click();
 
         cy.get('.crayons-modal__box__body > ul > li')
           .contains('facebook')
@@ -116,15 +110,11 @@ describe('Authentication Section', () => {
               `My username is @${username} and this action is 100% safe and appropriate.`,
             );
         });
-        cy.get('@authSectionForm')
-          .findByText('Update Site Configuration')
-          .click();
+        cy.get('@authSectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Site configuration was successfully updated.').should(
-          'be.visible',
-        );
+        cy.findByText('Successfully updated settings.').should('be.visible');
 
         // Page reloaded so need to get a new reference to the form.
         cy.findByTestId('authSectionForm').as('authSectionForm');
