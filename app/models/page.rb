@@ -25,12 +25,11 @@ class Page < ApplicationRecord
   end
 
   def has_a_landing_page?
-    landing_page = Page.find_by(landing_page: true)
-    landing_page && [nil, id].exclude?(landing_page.id) == true
+    Page.find_by(landing_page: true)
   end
 
   def landing_page_path
-    landing_page = Page.find_by(landing_page: true)
+    landing_page = has_a_landing_page?
     landing_page.path
   end
 
@@ -68,9 +67,16 @@ class Page < ApplicationRecord
   end
 
   def single_landing_page
+    # Only add errors if we are trying to modify a landing page
+    # while another landing page is already being used to ensure
+    # that only one can be set to "true" at a time.
+
     landing_page = Page.find_by(landing_page: true)
     return unless landing_page &&
       [nil, id].exclude?(landing_page.id)
+
+    errors.add(:base, "Only one page at a time can be used as a 'locked screen.'
+      If you proceed, this page will no longer show as 'locked screen':")
   end
 
   def bust_cache
