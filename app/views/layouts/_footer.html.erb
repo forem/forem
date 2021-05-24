@@ -1,6 +1,6 @@
 <footer class="crayons-footer print-hidden">
   <div id="footer-container" class="crayons-layout crayons-layout--limited-m crayons-footer__container">
-    <nav class="m:-mt-4">
+    <nav class="m:-mt-4" aria-label="Site information">
       <a href="/" class="crayons-link inline-block p-2">Home</a>
       <% NavigationLink.ordered.each do |link| %>
         <% if !link.display_only_when_signed_in? || (link.display_only_when_signed_in? && user_signed_in?) %>

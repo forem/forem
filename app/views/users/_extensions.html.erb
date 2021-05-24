@@ -20,6 +20,7 @@
       <%= f.text_area :inbox_guidelines, maxlength: 200, class: "crayons-textfield", rows: 3, placeholder: "Please allow a few days for a response." %>
     </div>
 
+    <%= f.hidden_field :tab, value: @tab, id: nil %>
     <button type="submit" class="crayons-btn w-max">
       Save Connect Settings
     </button>
@@ -36,7 +37,6 @@
     </h2>
     <p class="color-base-70">
       Receive micropayments for time spent reading your posts directy. <a href="https://dev.to/hacksultan/web-monetization-like-i-m-5-1418">Learn more</a>
-      </p>
     </p>
   </header>
   <%= form_for(@user, html: { id: nil, class: "grid gap-4" }) do |f| %>
@@ -45,7 +45,7 @@
       <%= f.text_field :payment_pointer, class: "crayons-textfield", placeholder: "$pay.somethinglikethis.co/value" %>
     </div>
     <%= f.hidden_field :tab, value: @tab, id: nil %>
-    <div><button type="submit" class="crayons-btn">Save Web Monetization Settings</button></div>
+    <button type="submit" class="crayons-btn w-max">Save Web Monetization Settings</button>
   <% end %>
 </div>
 
