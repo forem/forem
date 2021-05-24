@@ -8,7 +8,7 @@ import {
 } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useTextAreaAutoResize } from '@utilities/textAreaUtils';
-import { useDisableGrammarly } from '@utilities/useDisableGrammarly';
+import { useDisableGrammarlyInChrome } from '@utilities/useDisableGrammarlyInChrome';
 
 export const Compose = ({
   handleKeyDown,
@@ -75,7 +75,7 @@ export const Compose = ({
       >
         <textarea
           ref={textAreaRef}
-          {...useDisableGrammarly()}
+          {...useDisableGrammarlyInChrome()}
           className={
             startEditing
               ? 'crayons-textfield composer-textarea__edit'

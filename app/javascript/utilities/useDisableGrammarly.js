@@ -7,7 +7,7 @@
  * @example
  * <textarea {...disabledGrammarlyProps} />
  */
-export function useDisableGrammarly() {
+export function useDisableGrammarlyInChrome() {
   // 🚑 Detect if user is using chromium to disable grammarly
   const isChrome =
     !!window.chrome &&

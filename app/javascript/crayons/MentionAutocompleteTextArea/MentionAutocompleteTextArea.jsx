@@ -16,7 +16,7 @@ import {
   useTextAreaAutoResize,
 } from '@utilities/textAreaUtils';
 import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
-import { useDisableGrammarly } from '@utilities/useDisableGrammarly';
+import { useDisableGrammarlyInChrome } from '@utilities/useDisableGrammarlyInChrome';
 
 const MIN_SEARCH_CHARACTERS = 2;
 const MAX_RESULTS_DISPLAYED = 6;
@@ -348,7 +348,7 @@ export const MentionAutocompleteTextArea = forwardRef(
         >
           <ComboboxInput
             {...autocompleteInputProps}
-            {...useDisableGrammarly()}
+            {...useDisableGrammarlyInChrome()}
             aria-label="Mention user"
             ref={comboboxRef}
             value={textContent}
@@ -367,7 +367,7 @@ export const MentionAutocompleteTextArea = forwardRef(
 
           <textarea
             {...autocompleteInputProps}
-            {...useDisableGrammarly()}
+            {...useDisableGrammarlyInChrome()}
             id={inputId}
             data-mention-autocomplete-active="true"
             ref={mergeInputRefs([plainTextAreaRef, forwardedRef])}
