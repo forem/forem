@@ -14,7 +14,7 @@
 <meta property="og:description" content="<%= @tag.capitalize %> content on <%= community_name %>" />
 <meta property="og:site_name" content="<%= community_name %>" />
 
-<meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+<meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
 <meta name="twitter:creator" content="@<%= @tag.capitalize %>">
 <meta name="twitter:title" content="<%= title_with_timeframe(page_title: @tag.capitalize, timeframe: params[:timeframe]) %>">
 <meta name="twitter:description" content="<%= @tag.capitalize %> content on <%= community_name %>">
@@ -24,7 +24,7 @@
   <meta property="og:image" content="<%= tag_social_preview_url(@tag_model, format: :png) %>">
   <meta name="twitter:image:src" content="<%= tag_social_preview_url(@tag_model, format: :png) %>">
 <% else %>
-  <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
-  <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
+  <meta property="og:image" content="<%= Settings::General.main_social_image %>">
+  <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>

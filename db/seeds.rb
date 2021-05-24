@@ -13,10 +13,10 @@ SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 ##############################################################################
-# Default development site config if different from production scenario
+# Default development settings are different from production scenario
 
 Settings::UserExperience.public = true
-SiteConfig.waiting_on_first_user = false
+Settings::General.waiting_on_first_user = false
 Settings::Authentication.providers = Authentication::Providers.available
 
 ##############################################################################
@@ -25,7 +25,7 @@ Settings::Authentication.providers = Authentication::Providers.available
 
 if ENV["MODE"] == "STARTER"
   Settings::UserExperience.public = false
-  SiteConfig.waiting_on_first_user = true
+  Settings::General.waiting_on_first_user = true
   puts "Seeding forem in starter mode to replicate new creator experience"
   exit # We don't need any models if we're launching things from startup.
 end

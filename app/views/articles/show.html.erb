@@ -66,7 +66,7 @@
     <meta property="og:title" content="<%= @article.title %>" />
     <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
     <meta property="og:site_name" content="<%= community_name %>" />
-    <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+    <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
     <meta name="twitter:title" content="<%= @article.title %>">
     <meta name="twitter:description" content="<%= @article.description || "An article from the community" %>">
@@ -236,7 +236,7 @@
 <% end %>
 
 <div class="mod-actions-menu print-hidden"></div>
-<div id="mod-actions-menu-btn-area print-hidden"></div>
+<div id="mod-actions-menu-btn-area" class="print-hidden"></div>
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
 
 <div class="fullscreen-code js-fullscreen-code"></div>

@@ -25,13 +25,13 @@ RSpec.describe "Onboardings", type: :request do
     end
 
     it "contains proper data attribute values if the onboarding config is present" do
-      allow(SiteConfig).to receive(:onboarding_background_image).and_return("onboarding_background_image.png")
+      allow(Settings::General).to receive(:onboarding_background_image).and_return("onboarding_background_image.png")
 
       sign_in user
       get onboarding_url
 
       expect(response.body).to include(Settings::Community.community_description)
-      expect(response.body).to include(SiteConfig.onboarding_background_image)
+      expect(response.body).to include(Settings::General.onboarding_background_image)
     end
   end
 end

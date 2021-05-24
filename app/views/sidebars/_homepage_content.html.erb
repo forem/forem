@@ -30,7 +30,7 @@
       </section>
     <% end %>
 
-    <% SiteConfig.sidebar_tags.each do |tag| %>
+    <% Settings::General.sidebar_tags.each do |tag| %>
       <section class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2"><a href="/t/<%= tag %>" class="crayons-link">#<%= tag %></a></h3>

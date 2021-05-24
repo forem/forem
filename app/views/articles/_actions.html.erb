@@ -45,7 +45,7 @@
             target="_blank"
             class="dropdown-link-row crayons-link crayons-link--block"
             rel="noopener"
-            href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name %> <%= u SiteConfig.twitter_hashtag %> <%= article_url(@article) %>'>
+            href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name %> <%= u Settings::General.twitter_hashtag %> <%= article_url(@article) %>'>
             Share to Twitter
           </a>
           <a

@@ -3,7 +3,7 @@ namespace :navigation_links do
   desc "Update DEV's navigation_links"
   task update: :environment do
     protocol = ApplicationConfig["APP_PROTOCOL"].freeze
-    domain = Rails.application&.initialized? ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
+    domain = Rails.application&.initialized? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
     base_url = "#{protocol}#{domain}".freeze
 
     reading_icon = File.read(Rails.root.join("app/assets/images/twemoji/drawer.svg")).freeze

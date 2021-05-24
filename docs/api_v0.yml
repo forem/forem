@@ -676,7 +676,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Comment"
-    SiteConfig:
+    Settings::General:
       type: object
       properties:
         site_config:
@@ -1895,7 +1895,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SiteConfig"
+              $ref: "#/components/schemas/Settings::General"
       responses:
         "201":
           description: Newly updated config

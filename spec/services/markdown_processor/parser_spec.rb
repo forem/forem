@@ -27,6 +27,19 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(generate_and_parse_markdown(code_block)).not_to include("----")
   end
 
+  it "escapes some triple backticks within a codeblock when using tildes" do
+    code_block = "​~~~\nhello\n// ```\nwhatever\n// ```\n~~~"
+    number_of_triple_backticks = generate_and_parse_markdown(code_block).scan("```").count
+    expect(number_of_triple_backticks).to eq(2)
+  end
+
+  # TODO: @zhao-andy this should fail if this issue is solved: https://github.com/forem/forem/issues/13823
+  it "escapes triple backticks within a codeblock when using tildes" do
+    code_block = "~~~\nhello\n```\nwhatever\n```\n~~~"
+    number_of_triple_backticks = generate_and_parse_markdown(code_block).scan("```").count
+    expect(number_of_triple_backticks).to eq(0)
+  end
+
   it "does not remove the non-'raw tag related' four dashes" do
     code_block = "```\n----\n```"
     expect(generate_and_parse_markdown(code_block)).to include("----")

@@ -29,14 +29,12 @@ describe('User experience Section', () => {
           );
 
         cy.get('@userExperienceSectionForm')
-          .findByText('Update Site Configuration')
+          .findByText('Update Settings')
           .click();
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Site configuration was successfully updated.').should(
-          'be.visible',
-        );
+        cy.findByText('Successfully updated settings.').should('be.visible');
 
         // Page reloaded so need to get a new reference to the form.
         cy.get('#new_settings_user_experience').as('userExperienceSectionForm');
