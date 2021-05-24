@@ -1,5 +1,6 @@
 /**
- * Disable grammarly if certain conditions are met
+ * Get the textarea attributes required to disable the Grammarly browser extension in Chrome browsers
+ * This is a temporary "fix" to get around this issue: https://github.com/forem/forem/issues/13814
  *
  * @returns {object|undefined} properties to disable grammarly
  *
