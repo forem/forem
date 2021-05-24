@@ -75,8 +75,7 @@ class Page < ApplicationRecord
     return unless landing_page &&
       [nil, id].exclude?(landing_page.id)
 
-    errors.add(:base, "Only one page at a time can be used as a 'locked screen.'
-      If you proceed, this page will no longer show as 'locked screen':")
+    errors.add(:base, "Only one page at a time can be used as a 'locked screen.'")
   end
 
   def bust_cache
