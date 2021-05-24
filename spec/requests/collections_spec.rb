@@ -19,7 +19,7 @@ RSpec.describe "Collections", type: :request do
   end
 
   describe "GET large user collection show" do
-    it "returns the proper article count and text for a large collection" do
+    it "returns the proper article count and text for a large collection", :aggregate_failures do
       amount = 6
       large_collection = create(:collection, :with_articles, amount: amount, user: user)
 
