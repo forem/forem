@@ -4,13 +4,14 @@
       "no_operation_id": "warning",
       "operation_id_case_convention": [
         "warning",
-        "lower_camel_case"
+        "lower_snake_case"
       ],
       "no_summary": "warning",
       "no_array_responses": "off",
       "parameter_order": "warning",
+      "undefined_tag": "warning",
       "unused_tag": "warning",
-      "operation_id_naming_convention": "off"
+      "operation_id_naming_convention": "warning"
     },
     "pagination": {
       "pagination_style": "warning"
@@ -49,18 +50,29 @@
     "schemas": {
       "invalid_type_format_pair": "off",
       "snake_case_only": "off",
-      "no_schema_description": "off",
-      "no_property_description": "off",
+      "no_schema_description": "warning",
+      "no_property_description": "warning",
       "description_mentions_json": "warning",
       "array_of_arrays": "warning",
+      "inconsistent_property_type": [
+        "warning",
+        [
+          "code",
+          "default",
+          "type",
+          "value"
+        ]
+      ],
       "property_case_convention": [
         "error",
         "lower_snake_case"
       ],
+      "property_case_collision": "error",
       "enum_case_convention": [
-        "error",
+        "warning",
         "lower_snake_case"
-      ]
+      ],
+      "undefined_required_properties": "warning"
     },
     "walker": {
       "no_empty_descriptions": "error",
@@ -79,22 +91,19 @@
   },
   "oas3": {
     "operations": {
-      "no_request_body_content": "error",
       "no_request_body_name": "warning"
     },
-    "parameters": {
-      "no_in_property": "error",
-      "invalid_in_property": "error",
-      "missing_schema_or_content": "error",
-      "has_schema_and_content": "error"
-    },
     "responses": {
-      "no_response_codes": "error",
       "no_success_response_codes": "warning",
-      "no_response_body": "warning"
+      "protocol_switching_and_success_code": "error",
+      "no_response_body": "warning",
+      "ibm_status_code_guidelines": "warning"
     },
     "schemas": {
       "json_or_param_binary_string": "warning"
     }
+  },
+  "spectral": {
+    "rules": {}
   }
 }
