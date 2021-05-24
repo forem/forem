@@ -38,7 +38,7 @@ class Profile < ApplicationRecord
     return unless Database.table_available?("profiles")
 
     ProfileField.find_each do |field|
-      # Don't generator accessors for static fields stored on the table.
+      # Don't generate accessors for static fields stored on the table.
       next if STATIC_FIELDS.any?(field.attribute_name)
 
       store_attribute :data, field.attribute_name.to_sym, field.type

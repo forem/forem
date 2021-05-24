@@ -81,7 +81,7 @@ RSpec.describe "User edits their profile", type: :system do
       end
     end
 
-    it "respects static profile fields" do
+    it "respects static profile fields", :aggregate_failures do
       fill_in "profile[summary]", with: "Star of hit 90s sitcom Horsin' Around"
       fill_in "profile[location]", with: "Hollywoo"
 
