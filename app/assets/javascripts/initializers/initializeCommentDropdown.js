@@ -1,4 +1,4 @@
-/* global Runtime */
+/* global Runtime Forem */
 
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
@@ -66,9 +66,8 @@ function initializeCommentDropdown() {
   }
 
   function removeCopyListener() {
-    const clipboardCopyElement = document.getElementsByTagName(
-      'clipboard-copy',
-    )[0];
+    const clipboardCopyElement =
+      document.getElementsByTagName('clipboard-copy')[0];
     if (clipboardCopyElement) {
       clipboardCopyElement.removeEventListener('click', copyArticleLink);
     }
@@ -83,6 +82,29 @@ function initializeCommentDropdown() {
       removeAllShowing();
       hideAnnouncer();
       removeClickListener();
+    }
+  }
+
+  function initializeCrayonsDropdowns() {
+    // TODO: this doesn't target the article share options dropdown
+    const dropdownTriggers = document.querySelectorAll(
+      'button[id^=comment-dropdown-trigger]',
+    );
+    for (const dropdownTrigger of dropdownTriggers) {
+      if (dropdownTrigger.dataset.initialized) {
+        //  Make sure we only initialize once
+        continue;
+      }
+
+      const dropdownContentElementId =
+        dropdownTrigger.getAttribute('aria-controls');
+
+      Forem.initializeDropdown({
+        triggerButtonElementId: dropdownTrigger.id,
+        dropdownContentElementId,
+      });
+
+      dropdownTrigger.dataset.initialized = 'true';
     }
   }
 
@@ -104,13 +126,17 @@ function initializeCommentDropdown() {
         return potentialButton;
       })(target);
 
-      const dropdownContent = button.parentElement.querySelector(
-        '.crayons-dropdown',
-      );
+      const dropdownContent =
+        button.parentElement.querySelector('.crayons-dropdown');
 
       if (!dropdownContent) {
         return;
       }
+
+      Forem.initializeDropdown({
+        triggerButtonElementId: button.id,
+        dropdownContentElementId: dropdownContent.id,
+      });
 
       // Android native apps have enhanced sharing capabilities for Articles
       const articleShowMoreClicked = button.id === 'article-show-more-button';
@@ -124,16 +150,15 @@ function initializeCommentDropdown() {
       );
 
       if (dropdownContent.classList.contains('block')) {
-        dropdownContent.classList.remove('block');
+        // dropdownContent.classList.remove('block');
         removeClickListener();
         removeCopyListener();
         hideAnnouncer();
       } else {
         removeAllShowing();
-        dropdownContent.classList.add('block');
-        const clipboardCopyElement = document.getElementsByTagName(
-          'clipboard-copy',
-        )[0];
+        // dropdownContent.classList.add('block');
+        const clipboardCopyElement =
+          document.getElementsByTagName('clipboard-copy')[0];
 
         document.addEventListener('click', outsideClickListener);
         if (clipboardCopyElement) {
@@ -165,9 +190,11 @@ function initializeCommentDropdown() {
   for (const element of [commentsContainer, articleShowMoreButton]) {
     if (element && !element.dataset.initialized) {
       element.dataset.initialized = true;
-      element.addEventListener('click', initializeDropDownClick(element));
+      // element.addEventListener('click', initializeDropDownClick(element));
     }
   }
+
+  initializeCrayonsDropdowns();
 
   setTimeout(function addListeners() {
     getAllByClassName('permalink-copybtn').forEach(copyPermalinkListener);

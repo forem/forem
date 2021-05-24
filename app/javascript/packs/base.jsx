@@ -39,11 +39,8 @@ window.Forem = {
       return;
     }
 
-    const [
-      { MentionAutocompleteTextArea },
-      { fetchSearch },
-      { render, h },
-    ] = await window.Forem.getMentionAutoCompleteImports();
+    const [{ MentionAutocompleteTextArea }, { fetchSearch }, { render, h }] =
+      await window.Forem.getMentionAutoCompleteImports();
 
     render(
       <MentionAutocompleteTextArea
@@ -105,6 +102,18 @@ window.Forem = {
       const { render } = await window.Forem.getPreactImport();
       render(null, currentModalContainer);
     }
+  },
+  initializeDropdownImport: undefined,
+  getInitializeDropdownImport() {
+    if (!this.initializeDropdownImport) {
+      this.initializeDropdownImport = import('@utilities/dropdownUtils');
+    }
+    return this.initializeDropdownImport;
+  },
+  initializeDropdown: async (props) => {
+    const { initializeDropdown } =
+      await window.Forem.getInitializeDropdownImport();
+    return initializeDropdown(props);
   },
 };
 

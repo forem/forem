@@ -24,7 +24,6 @@ function callInitializers() {
   initializeArticleReactions();
   initNotifications();
   initializeCommentDate();
-  initializeCommentDropdown();
   initializeSettings();
   initializeCommentPreview();
   initializeTimeFixer();
@@ -57,6 +56,7 @@ function initializePage() {
         initializeAllChatButtons();
         initializeAllTagEditButtons();
       }
+      initializeCommentDropdown();
       initializeBroadcast();
       initializeAllFollowButts();
       initializeUserFollowButts();
