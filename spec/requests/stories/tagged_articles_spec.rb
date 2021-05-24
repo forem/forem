@@ -123,7 +123,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
       end
 
       it "renders properly even if site config is private" do
-        allow(SiteConfig).to receive(:public).and_return(false)
+        allow(Settings::UserExperience).to receive(:public).and_return(false)
         get "/t/#{tag.name}"
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
       end
