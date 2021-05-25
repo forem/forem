@@ -11,7 +11,7 @@
       <% unless user_signed_in? %>
         <a href="<%= sign_up_path %>" class="crayons-link fw-bold inline-block p-2">Sign In/Up</a>
       <% else %>
-        <a href="/new" class="crayons-link fw-bold inline-block p-2">Write a post</a>
+        <a href="/new" class="crayons-link fw-bold inline-block p-2">Create Post</a>
       <% end %>
 
       <div class="pt-4"><%= render partial: "layouts/social_media" %></div>
