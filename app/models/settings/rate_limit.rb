@@ -8,6 +8,8 @@ module Settings
 
     field :article_update, type: :integer, default: 30
     field :comment_antispam_creation, type: :integer, default: 1
+    # Explicitly defaults to 7 to accommodate DEV Top 7 Posts
+    field :mention_creation, type: :integer, default: 7
     field :comment_creation, type: :integer, default: 9
     field :email_recipient, type: :integer, default: 5
     field :feedback_message_creation, type: :integer, default: 5

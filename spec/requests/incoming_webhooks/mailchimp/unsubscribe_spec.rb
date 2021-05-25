@@ -5,7 +5,7 @@ RSpec.describe "IncomingWebhooks::MailchimpUnsubscribesController", type: :reque
   let(:secret) { "secret" }
 
   before do
-    allow(SiteConfig).to receive(:mailchimp_incoming_webhook_secret).and_return(secret)
+    allow(Settings::General).to receive(:mailchimp_incoming_webhook_secret).and_return(secret)
   end
 
   describe "GET /webhooks/mailchimp/:secret/unsubscribe" do
@@ -26,7 +26,7 @@ RSpec.describe "IncomingWebhooks::MailchimpUnsubscribesController", type: :reque
     end
 
     it "unsubscribes the user if the secret is correct" do
-      allow(SiteConfig).to receive(:mailchimp_newsletter_id).and_return(list_id)
+      allow(Settings::General).to receive(:mailchimp_newsletter_id).and_return(list_id)
 
       expect do
         post "/incoming_webhooks/mailchimp/#{secret}/unsubscribe", params: params

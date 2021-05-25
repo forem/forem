@@ -30,6 +30,6 @@ class VideoStatesController < ApplicationController
   private
 
   def valid_key
-    params[:key] == SiteConfig.video_encoder_key
+    params[:key] == Settings::General.video_encoder_key
   end
 end

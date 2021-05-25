@@ -7,10 +7,10 @@ require Rails.root.join("app/lib/seeder")
 seeder = Seeder.new
 
 ##############################################################################
-# Default development site config if different from production scenario
+# Default development settings are different from production scenario
 
 Settings::UserExperience.public = true
-SiteConfig.waiting_on_first_user = false
+Settings::General.waiting_on_first_user = false
 Settings::Authentication.allow_email_password_registration = true
 
 ##############################################################################
@@ -116,7 +116,7 @@ end
 
 seeder.create_if_none(NavigationLink) do
   protocol = ApplicationConfig["APP_PROTOCOL"].freeze
-  domain = Rails.application&.initialized? ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
+  domain = Rails.application&.initialized? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
   base_url = "#{protocol}#{domain}".freeze
   reading_icon = File.read(Rails.root.join("app/assets/images/twemoji/drawer.svg")).freeze
 

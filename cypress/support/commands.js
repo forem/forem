@@ -83,26 +83,26 @@ const DEFAULT_AUTH_CONFIG = {
 };
 
 /**
- * Sets default values of SiteConfig atrributes relevant to Authentication Section.
+ * Sets default values of Settings::General atrributes relevant to Authentication Section.
  *
  * @param username {string} The username used in the test
- * @param siteConfig
- * @param siteConfig.inviteOnlyMode {boolean}
- * @param siteConfig.emailRegistration {boolean}
- * @param siteConfig.allowedEmailDomains {string}
- * @param siteConfig.publicEmailDomainList {boolean}
- * @param siteConfig.requireRecaptcha {boolean}
- * @param siteConfig.recaptchaSiteKey {string}
- * @param siteConfig.recaptchaSecretKey {string}
- * @param siteConfig.authProvidersToEnable {string} Comma-separated string of providers to be enabled
- * @param siteConfig.facebookKey {string}
- * @param siteConfig.facebookSecret {string}
- * @param siteConfig.githubKey {string}
- * @param siteConfig.githubSecret {string}
- * @param siteConfig.twitterKey {string}
- * @param siteConfig.twitterSecret {string}
+ * @param settingsGeneral
+ * @param settingsGeneral.inviteOnlyMode {boolean}
+ * @param settingsGeneral.emailRegistration {boolean}
+ * @param settingsGeneral.allowedEmailDomains {string}
+ * @param settingsGeneral.publicEmailDomainList {boolean}
+ * @param settingsGeneral.requireRecaptcha {boolean}
+ * @param settingsGeneral.recaptchaSiteKey {string}
+ * @param settingsGeneral.recaptchaSecretKey {string}
+ * @param settingsGeneral.authProvidersToEnable {string} Comma-separated string of providers to be enabled
+ * @param settingsGeneral.facebookKey {string}
+ * @param settingsGeneral.facebookSecret {string}
+ * @param settingsGeneral.githubKey {string}
+ * @param settingsGeneral.githubSecret {string}
+ * @param settingsGeneral.twitterKey {string}
+ * @param settingsGeneral.twitterSecret {string}
  *
- * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for setting SiteConfig values for the Authentication Section.
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for setting Settings::General values for the Authentication Section.
  */
 Cypress.Commands.add(
   'updateAdminAuthConfig',
@@ -136,7 +136,7 @@ Cypress.Commands.add(
         publicEmailDomainList,
       )}&settings_authentication%5Brequire_captcha_for_email_password_registration%5D=${toPayload(
         requireRecaptcha,
-      )}&settings_authentication%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&settings_authentication%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&settings_authentication%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&settings_authentication%5Bfacebook_key%5D=${facebookKey}&settings_authentication%5Bfacebook_secret%5D=${facebookSecret}&settings_authentication%5Bgithub_key%5D=${githubKey}&settings_authentication%5Bgithub_secret%5D=${githubSecret}&settings_authentication%5Btwitter_key%5D=${twitterKey}&settings_authentication%5Btwitter_secret%5D=${twitterSecret}&confirmation=My+username+is+%40${username}+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Site+Configuration`,
+      )}&settings_authentication%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&settings_authentication%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&settings_authentication%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&settings_authentication%5Bfacebook_key%5D=${facebookKey}&settings_authentication%5Bfacebook_secret%5D=${facebookSecret}&settings_authentication%5Bgithub_key%5D=${githubKey}&settings_authentication%5Bgithub_secret%5D=${githubSecret}&settings_authentication%5Btwitter_key%5D=${twitterKey}&settings_authentication%5Btwitter_secret%5D=${twitterSecret}&confirmation=My+username+is+%40${username}+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Settings`,
     );
   },
 );

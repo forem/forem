@@ -13,19 +13,22 @@ SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 ##############################################################################
-# Default development site config if different from production scenario
+# Default development settings are different from production scenario
 
 Settings::UserExperience.public = true
-SiteConfig.waiting_on_first_user = false
+Settings::General.waiting_on_first_user = false
 Settings::Authentication.providers = Authentication::Providers.available
 
 ##############################################################################
+
+# Disable Redis cache while seeding
+Rails.cache = ActiveSupport::Cache.lookup_store(:null_store)
 
 # Put forem into "starter mode"
 
 if ENV["MODE"] == "STARTER"
   Settings::UserExperience.public = false
-  SiteConfig.waiting_on_first_user = true
+  Settings::General.waiting_on_first_user = true
   puts "Seeding forem in starter mode to replicate new creator experience"
   exit # We don't need any models if we're launching things from startup.
 end
@@ -406,7 +409,7 @@ end
 ##############################################################################
 
 seeder.create_if_none(FeedbackMessage) do
-  mod = User.first
+  mod = User.with_role(:trusted).take
 
   FeedbackMessage.create!(
     reporter: User.last,
