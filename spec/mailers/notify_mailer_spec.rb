@@ -443,7 +443,6 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper reply_to" do
       expect(moderator_email["reply_to"].value).to eq(Settings::General.email_addresses[:default])
-      expect(moderator_email["reply_to"].value).to eq(Settings::General.email_addresses[:default])
     end
 
     it "renders proper receiver" do
