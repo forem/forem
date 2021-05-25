@@ -49,7 +49,7 @@
       </span>
 
       <div class="crayons-field__label">
-        <span class="hidden s:inline-block mr-2">Write a new post</span>
+        <span class="hidden s:inline-block mr-2">Create Post</span>
         <% if organizations && organizations.size > 0 %>
           <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto mt-0">
             <%= options_for_select({ "Personal" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>

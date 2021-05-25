@@ -7,7 +7,10 @@
       <p class="crayons-field__description">Used for backgrounds, borders etc.</p>
       <div class="flex items-center">
         <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "crayons-textfield mr-2", id: "bg-color-textfield" %>
-        <input id="bg-color-colorfield" type="color" class="crayons-color-selector">
+        <label class="hidden" for="bg-color-colorfield">
+          Brand color 1 color select
+        </label>
+        <input id="bg-color-colorfield" type="color" class="crayons-color-selector" aria-label="Brand color 1 color selector">
       </div>
     </div>
 
@@ -16,8 +19,11 @@
       <%= f.label :text_color_hex, "Brand color 2", class: "crayons-field__label" %>
       <p class="crayons-field__description">Used for texts (usually put on <em>Brand color 1</em>).</p>
       <div class="flex items-center">
-          <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "crayons-textfield mr-2", id: "text-color-textfield" %>
-          <input id="text-color-colorfield" type="color" class="crayons-color-selector">
+        <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "crayons-textfield mr-2", id: "text-color-textfield" %>
+        <label class="hidden" for="text-color-colorfield">
+          Brand color 2 color select
+        </label>
+        <input id="text-color-colorfield" type="color" class="crayons-color-selector" aria-label="Brand color 2 color selector">
       </div>
     </div>
   </div>

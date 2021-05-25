@@ -3,7 +3,7 @@ require Rails.root.join(
   "lib/data_update_scripts/20210503174302_migrate_relevant_fields_from_users_to_users_notification_settings.rb",
 )
 
-describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersNotificationSettings do
+describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersNotificationSettings, sidekiq: :inline do
   let(:users_notification_setting) { Users::NotificationSetting.last }
 
   before do
