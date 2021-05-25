@@ -306,14 +306,14 @@ seeder.create_if_none(Broadcast) do
       "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!",
     start_discussion: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; " \
-    "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+    "just click on 'Create Post' in the sidebar of the tag page to get started!",
     ask_question: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; " \
-      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+      "just click on 'Create Post' in the sidebar of the tag page to get started!",
     discuss_and_ask: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
       "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; " \
-      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+      "just click on 'Create Post' in the sidebar of the tag page to get started!",
     download_app: "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? " \
       "Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all " \
       "of your favorite DEV content on the go!"
