@@ -85,6 +85,19 @@ RSpec.configure do |config|
     Warden::Manager._on_request.clear
   end
 
+  config.around do |example|
+    case example.metadata[:sidekiq]
+    when :inline
+      Sidekiq::Testing.inline! { example.run }
+    when :fake
+      Sidekiq::Testing.fake! { example.run }
+    when :disable
+      Sidekiq::Testing.disable! { example.run }
+    else
+      example.run
+    end
+  end
+
   config.before(:suite) do
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs

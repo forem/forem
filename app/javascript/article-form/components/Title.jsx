@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // We use this hook for the title field to automatically grow the height of the textarea.
 // It helps keep the entire layout the way it is without having unnecessary scrolling and white spaces.
 // Keep in mind this is what happens only here - in the Preact component.
-// I'm mentioning this because the entire "Write a post" view is a preact component
+// I'm mentioning this because the entire "Create Post" view is a preact component
 // BUT it is also a classic .html.erb view which is being loaded BEFORE this component
 // to give a feeling of blazing fast page load. And we do NOT use this magic autoresizing
 // functionality on .html.erb view because there's no point of it.

@@ -83,7 +83,7 @@ FactoryBot.define do
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
         "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. " \
-        "Starting a discussion is easy to do; just click on 'Write a Post' " \
+        "Starting a discussion is easy to do; just click on 'Create Post' " \
         "in the sidebar of the tag page to get started!"
       end
     end
@@ -94,7 +94,7 @@ FactoryBot.define do
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
         "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. " \
-        "Asking a question is easy to do; just click on 'Write a Post' in the sidebar of the tag page to get started!"
+        "Asking a question is easy to do; just click on 'Create Post' in the sidebar of the tag page to get started!"
       end
     end
 
@@ -105,7 +105,7 @@ FactoryBot.define do
         "Sloan here! 👋 I noticed that you haven't " \
         "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
         "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. " \
-        "It's easy to do both of these; just click on 'Write a Post' in the sidebar of the tag page to get started!"
+        "It's easy to do both of these; just click on 'Create Post' in the sidebar of the tag page to get started!"
       end
     end
 
