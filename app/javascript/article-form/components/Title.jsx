@@ -28,6 +28,7 @@ export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
     >
       <textarea
         ref={textAreaRef}
+        data-gramm_editor="false"
         className="crayons-textfield crayons-textfield--ghost fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight"
         type="text"
         id="article-form-title"
