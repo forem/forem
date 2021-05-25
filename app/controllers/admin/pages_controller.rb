@@ -57,7 +57,7 @@ module Admin
 
     def page_params
       allowed_params = %i[title slug body_markdown body_html body_json description template is_top_level_path
-                          social_image landing_page]
+                          social_image landing_page overwrite]
       params.require(:page).permit(allowed_params)
     end
 

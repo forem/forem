@@ -73,7 +73,7 @@
       <div class="form-group">
         <%= form.label :landing_page, "Use as 'Locked Screen'" %>
         <%= form.check_box :landing_page, class: "crayons-checkbox" %>
-        <p>Determines if this page will be used as a landing page for annonymous viewers.</p>
+        <p>Determines if this page will be used as a landing page for anonymous viewers.</p>
       </div>
     <% end %>
     <div class="form-group">
@@ -93,6 +93,7 @@
         <br>
       </p>
     </div>
+    <%= form.hidden_field :overwrite, value: "true" %>
     <%= form.submit class: "crayons-btn" %>
   <% end %>
 
