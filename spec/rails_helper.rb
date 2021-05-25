@@ -93,6 +93,8 @@ RSpec.configure do |config|
       Sidekiq::Testing.fake! { example.run }
     when :disable
       Sidekiq::Testing.disable! { example.run }
+    else
+      example.run
     end
   end
 
