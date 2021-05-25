@@ -3,7 +3,7 @@ require Rails.root.join(
   "lib/data_update_scripts/20210423155327_migrate_relevant_fields_from_users_to_users_settings.rb",
 )
 
-describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
+describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings, sidekiq: :inline do
   let(:users_setting) { Users::Setting.last }
 
   before do
