@@ -35,6 +35,7 @@ class UsersController < ApplicationController
       return redirect_to sign_up_path
     end
     set_user
+    set_users_setting
     set_current_tab(params["tab"] || "profile")
     handle_settings_tab
   end
@@ -51,9 +52,6 @@ class UsersController < ApplicationController
       import_articles_from_feed(@user)
 
       notice = "Your profile was successfully updated."
-      if config_changed?
-        notice = "Your config has been updated. Refresh to see all changes."
-      end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
         ExportContentWorker.perform_async(@user.id, @user.email)
@@ -360,12 +358,14 @@ class UsersController < ApplicationController
     authorize @user
   end
 
-  def set_current_tab(current_tab = "profile")
-    @tab = current_tab
+  def set_users_setting
+    return unless @user
+
+    @users_setting = @user.setting
   end
 
-  def config_changed?
-    params[:user].include?(:config_theme)
+  def set_current_tab(current_tab = "profile")
+    @tab = current_tab
   end
 
   def destroy_request_in_progress?

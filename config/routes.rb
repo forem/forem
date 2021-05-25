@@ -138,6 +138,9 @@ Rails.application.routes.draw do
         resources :devices, only: %i[create destroy]
       end
     end
+    namespace :users do
+      resources :settings, only: %i[update]
+    end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]

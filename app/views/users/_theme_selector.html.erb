@@ -1,5 +1,5 @@
 <label class="rich-selector crayons-field crayons-field--radio p-4 theme-selector theme-selector--<%= theme.tr("_", "-") %>" title="<%= theme.titlecase %>">
-  <%= f.radio_button :config_theme, theme, checked: @user.config_theme == theme, class: "crayons-radio" %>
+  <%= f.radio_button :config_theme, theme, checked: @users_setting.config_theme == theme, class: "crayons-radio" %>
   <div class="crayons-field__label">
     <%= theme.titlecase %>
 

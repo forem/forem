@@ -73,18 +73,9 @@ class User < ApplicationRecord
     end
   end
 
-  EDITORS = %w[v1 v2].freeze
-  FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
-  INBOXES = %w[open private].freeze
-  NAVBARS = %w[default static].freeze
-  THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
   MESSAGES = {
-    invalid_config_font: "%<value>s is not a valid font selection",
-    invalid_config_navbar: "%<value>s is not a valid navbar value",
-    invalid_config_theme: "%<value>s is not a valid theme",
-    invalid_editor_version: "%<value>s must be either v1 or v2",
     reserved_username: "username is reserved"
   }.freeze
   # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
@@ -95,6 +86,57 @@ class User < ApplicationRecord
     (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
     \z
   }x.freeze
+
+  # Relevant Fields for migration from Users table to Users_Settings table
+  USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
+    config_font
+    config_navbar
+    config_theme
+    display_announcements
+    display_sponsors
+    editor_version
+    experience_level
+    feed_mark_canonical
+    feed_referential_link
+    feed_url
+    inbox_guidelines
+    inbox_type
+    permit_adjacent_sponsors
+  ].to_set.freeze
+
+  # Relevant Fields for migration from Profiles table to Users_Settings table
+  PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
+    brand_color1
+    brand_color2
+    display_email_on_profile
+  ].to_set.freeze
+
+  # Relevant Fields for migration from Users table to Users_Notification_Settings table
+  USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
+    email_badge_notifications
+    email_comment_notifications
+    email_community_mod_newsletter
+    email_connect_messages
+    email_digest_periodic
+    email_follower_notifications
+    email_membership_newsletter
+    email_mention_notifications
+    email_newsletter
+    email_tag_mod_newsletter
+    email_unread_notifications
+    mobile_comment_notifications
+    mod_roundrobin_notifications
+    reaction_notifications
+    welcome_notifications
+  ].to_set.freeze
+
+  USER_SETTINGS_ENUM_FIELDS = %w[
+    config_font
+    config_navbar
+    config_theme
+    editor_version
+    inbox_type
+  ].to_set.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -190,14 +232,7 @@ class User < ApplicationRecord
   validates :blocked_by_count, presence: true
   validates :blocking_others_count, presence: true
   validates :comments_count, presence: true
-  validates :config_font, inclusion: { in: FONTS + ["default".freeze], message: MESSAGES[:invalid_config_font] }
-  validates :config_font, presence: true
-  validates :config_navbar, inclusion: { in: NAVBARS, message: MESSAGES[:invalid_config_navbar] }
-  validates :config_navbar, presence: true
-  validates :config_theme, inclusion: { in: THEMES, message: MESSAGES[:invalid_config_theme] }
-  validates :config_theme, presence: true
   validates :credits_count, presence: true
-  validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :email_digest_periodic, inclusion: { in: [true, false] }
@@ -207,8 +242,6 @@ class User < ApplicationRecord
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
   validates :following_users_count, presence: true
-  validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
-  validates :inbox_type, inclusion: { in: INBOXES }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
   validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_blank: true
@@ -223,7 +256,6 @@ class User < ApplicationRecord
   validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
     "#{data[:value]} is taken."
   end }, if: :username_changed?
-  validates :welcome_notifications, inclusion: { in: [true, false] }
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -247,8 +279,12 @@ class User < ApplicationRecord
   validate :password_matches_confirmation, if: :encrypted_password_changed?
 
   alias_attribute :public_reactions_count, :reactions_count
+
+  # [@msarit] to remove this once we've moved the related code
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
   alias_attribute :subscribed_to_mod_roundrobin_notifications?, :mod_roundrobin_notifications
+
+  # [@msarit] to remove this once we've updated the method
   alias_attribute :subscribed_to_email_follower_notifications?, :email_follower_notifications
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
@@ -286,7 +322,7 @@ class User < ApplicationRecord
       ),
     )
   }
-  scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
+  # scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
   before_validation :downcase_email
@@ -303,6 +339,8 @@ class User < ApplicationRecord
   after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
+
+  after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 
   def self.dev_account
@@ -496,6 +534,8 @@ class User < ApplicationRecord
     username.starts_with?("spam_")
   end
 
+  # [@msarit]: update this method that contains email_newsletter from the
+  # users_notification_settings table
   def subscribe_to_mailchimp_newsletter
     return unless registered && email.present?
     return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
@@ -543,6 +583,9 @@ class User < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
+  # [@msarit] need to update this method that uses
+  # subscribed_to_email_follower_notifications from users_notification_settings
+  # table
   def receives_follower_email_notifications?
     email.present? && subscribed_to_email_follower_notifications?
   end
@@ -574,6 +617,45 @@ class User < ApplicationRecord
   end
 
   private
+
+  def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
+    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      # rubocop:disable Layout/LineLength
+      users_setting_record.assign_attributes(field => profile.public_send(field)) if profile&.public_send(field).present?
+      # rubocop:enable Layout/LineLength
+    end
+  end
+
+  def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
+    USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      if USER_SETTINGS_ENUM_FIELDS.include?(field)
+        field_enums = Users::Setting.defined_enums[field]
+        users_setting_record.assign_attributes(field => field_enums[public_send(field).to_sym])
+      else
+        users_setting_record.assign_attributes(field => public_send(field))
+      end
+    end
+
+    sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
+
+    users_setting_record.save
+  end
+
+  def sync_users_settings_table
+    users_setting_record = Users::Setting.create_or_find_by(user_id: id)
+
+    migrate_users_and_profile_fields_to_users_settings(users_setting_record)
+  end
+
+  def sync_users_notification_settings_table
+    users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)
+
+    USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
+      users_notification_setting_record.assign_attributes(field => public_send(field))
+    end
+
+    users_notification_setting_record.save
+  end
 
   def send_welcome_notification
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))

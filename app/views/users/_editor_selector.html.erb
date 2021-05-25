@@ -1,5 +1,5 @@
 <label class="rich-selector crayons-field crayons-field--radio editor-selector--<%= version %>">
-  <%= f.radio_button :editor_version, version, checked: @user.editor_version == version, class: "crayons-radio" %>
+  <%= f.radio_button :editor_version, version, checked: @users_setting.editor_version == version, class: "crayons-radio" %>
   <div class="crayons-field__label">
     <% if version == "v1" %>
       Basic markdown
