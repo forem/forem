@@ -21,6 +21,9 @@ Settings::Authentication.providers = Authentication::Providers.available
 
 ##############################################################################
 
+# Disable Redis cache while seeding
+Rails.cache = ActiveSupport::Cache.lookup_store(:null_store)
+
 # Put forem into "starter mode"
 
 if ENV["MODE"] == "STARTER"
@@ -406,7 +409,7 @@ end
 ##############################################################################
 
 seeder.create_if_none(FeedbackMessage) do
-  mod = User.first
+  mod = User.with_role(:trusted).take
 
   FeedbackMessage.create!(
     reporter: User.last,
