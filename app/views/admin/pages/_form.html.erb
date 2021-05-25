@@ -46,13 +46,12 @@
         <% @page.errors %>
       </div>
     <% end %>
-    <% if @page.has_a_landing_page? %>
       <span data-controller="modal" data-modal-root-selector-value="#add-landing-page-link-modal-root" data-modal-content-selector-value="#add-landing-page-link-modal"
             data-modal-title-value="There's another locked screen..." data-modal-size-value="default">
         <div class="form-group">
           <%= form.label :landing_page, "Use as 'Locked Screen'" %>
-          <%= form.check_box :landing_page, class: "crayons-checkbox", data: { action: "modal#toggleModal" } %>
-          <p>Determines if this page will be used as a landing page for annonymous viewers.</p>
+          <%= form.check_box :landing_page, class: "crayons-checkbox", data: { action: @page.has_a_landing_page? ? "modal#toggleModal" : "" } %>
+          <p>Determines if this page will be used as a landing page for anonymous viewers.</p>
         </div>
         <div id="add-landing-page-link-modal" class="hidden">
           <div class="form-group grid p-6 mb-6 gap-1">
@@ -69,13 +68,6 @@
         </div>
         <div id="add-landing-page-link-modal-root"></div>
       </span>
-    <% else %>
-      <div class="form-group">
-        <%= form.label :landing_page, "Use as 'Locked Screen'" %>
-        <%= form.check_box :landing_page, class: "crayons-checkbox" %>
-        <p>Determines if this page will be used as a landing page for anonymous viewers.</p>
-      </div>
-    <% end %>
     <div class="form-group">
       <p>
         <b><%= link_to "Feature Flag", "/admin/feature_flags" %></b>
