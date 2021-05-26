@@ -1,11 +1,10 @@
 module Stories
   class PinnedArticlesController < ApplicationController
     before_action :authenticate_user!
+    before_action :authorize_user!
     after_action :verify_authorized
 
     def show
-      authorize :pinned_article
-
       if Settings::General.feed_pinned_article_id.present?
         article = Settings::General.feed_pinned_article
         setting = Settings::General.find_by(var: :feed_pinned_article_id)
@@ -22,17 +21,19 @@ module Stories
     end
 
     def update
-      authorize :pinned_article
-
       Settings::General.feed_pinned_article_id = params[:id]
     rescue ActiveRecord::RecordInvalid => e
       render json: { error: e.message }, status: :unprocessable_entity
     end
 
     def destroy
-      authorize :pinned_article
-
       Settings::General.feed_pinned_article_id = nil
+    end
+
+    private
+
+    def authorize_user!
+      authorize(current_user, policy_class: PinnedArticlePolicy)
     end
   end
 end

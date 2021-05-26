@@ -1,6 +1,6 @@
 class PinnedArticlePolicy < ApplicationPolicy
   def show?
-    user.any_admin?
+    user&.any_admin?
   end
 
   def update?
@@ -8,6 +8,6 @@ class PinnedArticlePolicy < ApplicationPolicy
   end
 
   def destroy?
-    update?
+    show?
   end
 end
