@@ -60,7 +60,7 @@ function buildCommentHTML(comment) {
     </a>
 
     <div class="comment__dropdown">
-      <button class="dropbtn comment__dropdown-trigger crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon" aria-label="Toggle dropdown menu" aria-haspopup="true">
+      <button  id="comment-dropdown-trigger-${comment.id}" aria-controls="comment-dropdown-${comment.id}" aria-expanded="false" class="dropbtn comment__dropdown-trigger crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon" aria-label="Toggle dropdown menu" aria-haspopup="true">
         ${ iconSmallOverflowHorizontal }
       </button>
       <ul id="comment-dropdown-${comment.id}" class="crayons-dropdown p-1 right-1 s:right-0 s:left-auto fs-base dropdown">
