@@ -31,6 +31,8 @@ module Admin
       article = Article.find(params[:id])
 
       if article.update(article_params)
+        ::Settings::General.feed_pinned_article_id = article.id if params.dig(:article, :pinned)
+
         flash[:success] = "Article saved!"
       else
         flash[:danger] = article.errors_as_sentence

@@ -41,6 +41,14 @@ RSpec.describe "/admin/content_manager/articles", type: :request do
       end.to change { article.reload.featured }.to(true)
     end
 
+    it "allows an Admin to mark an article as pinned" do
+      decorated_article = article.decorate
+
+      expect do
+        patch admin_article_path(article.id), params: { article: { pinned: true } }
+      end.to change { decorated_article.pinned? }.to(true)
+    end
+
     it "allows an Admin to update the published at datetime for an article" do
       updated_published_at = article.published_at - 5.hours
       expect do
