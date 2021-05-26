@@ -32,14 +32,14 @@ function addRelevantButtonsToArticle(user) {
       );
     }
 
-    const { articleId, articlePinnedId } = articleContainer.dataset;
+    const { articleId, pinnedArticleId } = articleContainer.dataset;
 
     // we hide the buttons for draft articles, for non admins and
     // if there's already a pinned post different from the current one
     if (
       published &&
       user.admin &&
-      (articleId === articlePinnedId || !articlePinnedId)
+      (articleId === pinnedArticleId || !pinnedArticleId)
     ) {
       const isArticlePinned = articleContainer.hasAttribute('data-pinned');
       const { pinPath } = articleContainer.dataset;
