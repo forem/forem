@@ -32,6 +32,8 @@ export default class ArticleController extends Controller {
       return;
     }
 
+    event.preventDefault();
+
     this.pinArticle();
   }
 

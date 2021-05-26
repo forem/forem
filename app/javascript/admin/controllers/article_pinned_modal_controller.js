@@ -31,17 +31,21 @@ export default class ArticlePinnedModalController extends ModalController {
     this.toggleModal();
   }
 
-  closeModal(event) {
-    const target = event?.target;
+  changePinnedCheckboxChecked(checked) {
+    // find the caller checkbox and uncheck it
+    const pinnedCheckbox = this.pinnedCheckboxTargets.filter(
+      (cb) => cb.id === this.pinnedCheckboxIdValue,
+    )[0];
+    pinnedCheckbox.checked = checked;
+  }
 
-    if (target === undefined || target?.id === this.cancelButtonIdValue) {
-      // find the caller checkbox and uncheck it
-      const pinnedCheckbox = this.pinnedCheckboxTargets.filter(
-        (cb) => cb.id === this.pinnedCheckboxIdValue,
-      )[0];
-      pinnedCheckbox.checked = false;
-    }
+  unPinAndCloseModal() {
+    this.changePinnedCheckboxChecked(false);
+    this.closeModal();
+  }
 
-    super.closeModal();
+  pinAndCloseModal() {
+    this.changePinnedCheckboxChecked(true);
+    this.closeModal();
   }
 }
