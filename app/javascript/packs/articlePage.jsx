@@ -23,11 +23,11 @@ top.addSnackbarItem = addSnackbarItem;
 // these element are added by initializeBaseUserData.js:addRelevantButtonsToArticle
 const toggleArticlePin = async (button) => {
   const isPinButton = button.id === 'js-pin-article';
-  const { action, articleId } = button.dataset;
+  const { articleId, path } = button.dataset;
   const method = isPinButton ? 'PUT' : 'DELETE';
   const body = method === 'PUT' ? JSON.stringify({ id: articleId }) : null;
 
-  const response = await fetch(action, {
+  const response = await fetch(path, {
     method,
     body,
     headers: {

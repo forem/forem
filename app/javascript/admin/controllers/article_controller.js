@@ -2,7 +2,7 @@ import { Controller } from 'stimulus';
 
 export default class ArticleController extends Controller {
   static classes = ['bgHighlighted', 'borderHighlighted'];
-  static targets = ['featuredNumber', 'cardBody'];
+  static targets = ['featuredNumber', 'cardBody', 'pinnedCheckbox'];
   static values = { id: Number, pinPath: String };
 
   increaseFeaturedNumber() {
@@ -28,16 +28,37 @@ export default class ArticleController extends Controller {
   }
 
   togglePin(event) {
-    const customEvent = new CustomEvent(
-      event.target.checked === true ? 'article:pin' : 'article:unpin',
-      {
-        detail: {
-          articleId: this.idValue,
-          pinPath: this.pinPathValue,
-        },
-      },
-    );
+    if (event.target.checked === false) {
+      return;
+    }
 
-    document.dispatchEvent(customEvent);
+    this.pinArticle();
+  }
+
+  async pinArticle() {
+    const response = await fetch(this.pinPathValue, {
+      method: 'GET',
+      headers: {
+        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
+          .content,
+      },
+      credentials: 'same-origin',
+    });
+
+    if (response.ok) {
+      const pinnedArticle = await response.json();
+
+      // only show the modal if we're not re-pinning the current pin
+      if (pinnedArticle.id !== this.idValue) {
+        document.dispatchEvent(
+          new CustomEvent('article-pinned-modal:open', {
+            detail: {
+              article: pinnedArticle,
+              checkboxId: this.pinnedCheckboxTarget.getAttribute('id'),
+            },
+          }),
+        );
+      }
+    }
   }
 }

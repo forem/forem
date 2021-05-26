@@ -8,10 +8,11 @@ export default class ModalController extends Controller {
     size: String,
   };
 
-  connect() {
-    document.addEventListener('modal:open', (_event) => {
-      this.toggleModal();
-    });
+  async closeModal() {
+    const { render } = await import('preact');
+    const modalRoot = document.querySelector(this.rootSelectorValue);
+
+    render(null, modalRoot);
   }
 
   async toggleModal() {
@@ -25,10 +26,7 @@ export default class ModalController extends Controller {
     render(
       <Modal
         title={this.titleValue}
-        onClose={() => {
-          document.dispatchEvent(new CustomEvent('modal:closed'));
-          render(null, modalRoot);
-        }}
+        onClose={() => this.closeModal()}
         size={this.sizeValue}
       >
         <div

@@ -136,7 +136,11 @@
         <%= check_box_tag :pinned, "1", decorated_article.pinned?,
                           name: "article[pinned]",
                           id: "pinned-#{article.id}",
-                          data: { action: "change->article#togglePin" } %>
+                          data: {
+                            "article-target": "pinnedCheckbox",
+                            "article-pinned-modal-target": "pinnedCheckbox",
+                            action: "change->article#togglePin"
+                          } %>
         <label for="pinned-<%= article.id %>">Pinned</label>
       </div>
       <div class="col">

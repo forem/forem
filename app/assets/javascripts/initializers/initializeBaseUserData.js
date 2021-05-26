@@ -48,7 +48,7 @@ function addRelevantButtonsToArticle(user) {
         `<button
             id="js-${isArticlePinned ? 'unpin' : 'pin'}-article"
             class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1"
-            data-action="${pinPath}"
+            data-path="${pinPath}"
             data-article-id="${articleId}">${
           isArticlePinned ? 'Unpin' : 'Pin'
         } Post</button>`,
