@@ -83,7 +83,10 @@ export const Article = ({
           <div className="crayons-story__top">
             <Meta article={article} organization={article.organization} />
             {article.pinned && (
-              <div className="pinned color-accent-brand fw-bold">
+              <div
+                className="pinned color-accent-brand fw-bold"
+                data-testid="pinned-article"
+              >
                 {/* images/pin.svg */}
                 <svg
                   className="mr-2 align-text-bottom color-accent-brand"
