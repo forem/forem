@@ -1014,8 +1014,11 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
   create_table "profiles", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.jsonb "data", default: {}, null: false
+    t.string "location"
+    t.text "summary"
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
+    t.string "website_url"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
   end
 
