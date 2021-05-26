@@ -260,4 +260,33 @@ RSpec.describe ArticleDecorator, type: :decorator do
       end
     end
   end
+
+  describe "#pinned?" do
+    let(:article) { create(:article) }
+
+    it "returns false for an unsaved article" do
+      article = build(:article)
+
+      expect(article.decorate.pinned?).to be(false)
+    end
+
+    it "returns false if no article is pinned" do
+      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(nil)
+
+      expect(article.decorate.pinned?).to be(false)
+    end
+
+    it "returns false if another article is pinned" do
+      other_article_id = create(:article).id
+      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(other_article_id)
+
+      expect(article.decorate.pinned?).to be(false)
+    end
+
+    it "returns true if the article is pinned" do
+      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(article.id)
+
+      expect(article.decorate.pinned?).to be(true)
+    end
+  end
 end

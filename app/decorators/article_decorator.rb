@@ -110,6 +110,8 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def pinned?
+    return false unless id
+
     Settings::General.feed_pinned_article_id == id
   end
 end
