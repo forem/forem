@@ -43,6 +43,7 @@ Sidekiq.configure_server do |config|
   config.server_middleware do |chain|
     chain.add Sidekiq::HoneycombMiddleware
     chain.add SidekiqUniqueJobs::Middleware::Client
+    chain.add Sidekiq::DisableActiveRecordQueryCache
   end
 
   config.server_middleware do |chain|
