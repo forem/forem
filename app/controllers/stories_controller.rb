@@ -426,9 +426,9 @@ class StoriesController < ApplicationController
     # For further information on the sameAs property, please refer to this link:
     # https://schema.org/sameAs
     [
-      @user.twitter_username.presence ? "https://twitter.com/#{@user.twitter_username}" : nil,
-      @user.github_username.presence ? "https://github.com/#{@user.github_username}" : nil,
-      @user.profile.try(:website_url),
+      @user.twitter_username.present? ? "https://twitter.com/#{@user.twitter_username}" : nil,
+      @user.github_username.present? ? "https://github.com/#{@user.github_username}" : nil,
+      @user.website_url,
     ].reject(&:blank?)
   end
 

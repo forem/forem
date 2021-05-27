@@ -11,9 +11,13 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersNotificationSet
     User.destroy_all
   end
 
+  # NOTE: an after_commit in User model creates a users_notification_settings record for users
+  # So in these specs, we destroy these users_notification_settings records
+  # so that he migration script creates them instead
   context "when migrating data" do
     it "sets the expected number of records" do
       create_list(:user, 3)
+      Users::NotificationSetting.destroy_all
 
       expect do
         described_class.new.run
@@ -37,7 +41,10 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersNotificationSet
     end
 
     it "sets a fallback value for values that are null" do
-      create(:user, email_newsletter: nil)
+      user = create(:user)
+      user.notification_setting.destroy
+      user.update_columns(email_newsletter: nil)
+      user.reload
 
       described_class.new.run
 
@@ -58,6 +65,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersNotificationSet
     it "replaces the users_notification_settings values with values from the users table" do
       user = create(:user, email_newsletter: true)
       user_id = user.id
+      user.notification_setting.destroy
 
       described_class.new.run
 
@@ -65,6 +73,7 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersNotificationSet
       expect(users_notification_setting.email_newsletter).to be(true)
 
       user.update_columns(email_newsletter: false)
+      user.notification_setting.destroy
 
       described_class.new.run
       users_notification_setting.reload
