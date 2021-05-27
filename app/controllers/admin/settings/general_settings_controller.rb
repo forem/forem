@@ -4,7 +4,7 @@ module Admin
       include SettingsParams
 
       def create
-        result = ::Settings::Upsert.call(settings_params)
+        result = ::Settings::General::Upsert.call(settings_params)
         if result.success?
           Audit::Logger.log(:internal, current_user, params.dup)
           bust_content_change_caches

@@ -3,8 +3,8 @@ module Admin
     class AuthenticationsController < Admin::Settings::BaseController
       private
 
-      def upsert_config(configs)
-        ::Authentication::SettingsUpsert.call(configs).errors
+      def upsert_config(settings)
+        ::Settings::Authentication::Upsert.call(settings)
       end
 
       def settings_params

@@ -6,13 +6,13 @@ module Admin
       before_action :extra_authorization_and_confirmation, only: [:create]
 
       def create
-        errors = upsert_config(settings_params)
+        result = upsert_config(settings_params)
 
-        if errors.none?
+        if result.success?
           Audit::Logger.log(:internal, current_user, params.dup)
           redirect_to admin_config_path, notice: "Successfully updated settings."
         else
-          redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}"
+          redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
         end
       end
 
@@ -32,18 +32,8 @@ module Admin
         raise ActionController::BadRequest.new, MISMATCH_ERROR
       end
 
-      def upsert_config(configs)
-        errors = []
-        configs.each do |key, value|
-          next if value.blank?
-
-          authorization_resource.public_send("#{key}=", value)
-        rescue ActiveRecord::RecordInvalid => e
-          errors << e.message
-          next
-        end
-
-        errors
+      def upsert_config(settings)
+        ::Settings::Upsert.call(settings, authorization_resource)
       end
 
       def settings_params
