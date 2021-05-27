@@ -28,21 +28,23 @@ export default class ArticleController extends Controller {
   }
 
   togglePin(event) {
-    if (event.target.checked === false) {
+    const checkbox = event.target;
+
+    if (!checkbox.checked) {
       return;
     }
 
     event.preventDefault();
 
-    this.pinArticle();
+    this.pinArticle(checkbox);
   }
 
-  async pinArticle() {
+  async pinArticle(checkbox) {
     const response = await fetch(this.pinPathValue, {
       method: 'GET',
       headers: {
         'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
-          .content,
+          ?.content,
       },
       credentials: 'same-origin',
     });
@@ -61,6 +63,9 @@ export default class ArticleController extends Controller {
           }),
         );
       }
+    } else if (response.status === 404) {
+      // no pinned articles exist
+      checkbox.checked = true;
     }
   }
 }
