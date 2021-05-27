@@ -238,9 +238,14 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.reload.profile_updated_at).to be > 2.minutes.ago
     end
 
-    it "disables reaction notifications" do
-      put "/users/#{user.id}", params: { user: { tab: "notifications", reaction_notifications: 0 } }
-      expect(user.reload.reaction_notifications).to be(false)
+    it "disables reaction notifications (in both users and notification_settings tables)" do
+      expect(user.notification_setting.reaction_notifications).to be(true)
+
+      expect do
+        put "/users/#{user.id}", params: { user: { tab: "notifications", reaction_notifications: 0 } }
+      end.to change { user.reload.reaction_notifications }.from(true).to(false)
+
+      expect(user.notification_setting.reload.reaction_notifications).to be(false)
     end
 
     it "enables community-success notifications" do
@@ -248,10 +253,14 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.reload.subscribed_to_mod_roundrobin_notifications?).to be(true)
     end
 
-    it "updates the users announcement display preferences" do
+    it "updates the users announcement display preferences (in both users and user_settings tables)" do
+      expect(user.setting.display_announcements).to be(true)
+
       expect do
         put "/users/#{user.id}", params: { user: { tab: "misc", display_announcements: 0 } }
       end.to change { user.reload.display_announcements }.from(true).to(false)
+
+      expect(user.setting.reload.display_announcements).to be(false)
     end
 
     it "disables community-success notifications" do
