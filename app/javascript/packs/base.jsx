@@ -103,18 +103,6 @@ window.Forem = {
       render(null, currentModalContainer);
     }
   },
-  initializeDropdownImport: undefined,
-  getInitializeDropdownImport() {
-    if (!this.initializeDropdownImport) {
-      this.initializeDropdownImport = import('@utilities/dropdownUtils');
-    }
-    return this.initializeDropdownImport;
-  },
-  initializeDropdown: async (props) => {
-    const { initializeDropdown } =
-      await window.Forem.getInitializeDropdownImport();
-    return initializeDropdown(props);
-  },
 };
 
 function getPageEntries() {
