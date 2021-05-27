@@ -9,7 +9,14 @@ module Api
         skip_before_action :verify_authenticity_token, only: %i[update]
 
         def show
-          @site_configs = SiteConfig.all
+          @settings =
+            Settings::Authentication.all +
+            Settings::Campaign.all +
+            Settings::Community.all +
+            Settings::General.all +
+            Settings::Mascot.all +
+            Settings::RateLimit.all +
+            Settings::UserExperience.all
         end
 
         def update
@@ -20,7 +27,7 @@ module Api
           auth_settings_result = ::Authentication::SettingsUpsert.call(auth_settings_params)
 
           if settings_result.success? && auth_settings_result.success?
-            @site_configs = SiteConfig.all + Settings::Authentication.all
+            @settings = Settings::General.all + Settings::Authentication.all
             Audit::Logger.log(:internal, @user, params.dup)
             bust_content_change_caches
             render "show"

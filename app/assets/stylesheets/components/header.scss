@@ -134,14 +134,17 @@
   height: var(--header-height);
   transform: translate(-50%, -200%);
   transition: transform var(--transition-props);
+}
 
-  &:focus,
-  &:focus-within {
-    pointer-events: auto;
-    transform: translate(-50%, 0);
-    outline: none;
-    border: 2px solid var(--header-button-focus-color);
-  }
+.js-focus-visible .skip-content-link:focus:not(.focus-visible) {
+  visibility: hidden;
+}
+
+.js-focus-visible .skip-content-link:focus {
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+  outline: none;
+  border: 2px solid var(--header-button-focus-color);
 }
 
 .pwa-nav-buttons {

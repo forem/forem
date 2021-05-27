@@ -5,8 +5,8 @@ module URL
   end
 
   def self.domain
-    if Rails.application&.initialized? && SiteConfig.respond_to?(:app_domain)
-      SiteConfig.app_domain
+    if Rails.application&.initialized? && Settings::General.respond_to?(:app_domain)
+      Settings::General.app_domain
     else
       ApplicationConfig["APP_DOMAIN"]
     end

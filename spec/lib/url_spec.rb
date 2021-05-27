@@ -4,7 +4,7 @@ RSpec.describe URL, type: :lib do
   before do
     allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
     allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("test.forem.cloud")
-    allow(SiteConfig).to receive(:app_domain).and_return("dev.to")
+    allow(Settings::General).to receive(:app_domain).and_return("dev.to")
   end
 
   describe ".protocol" do
@@ -14,8 +14,8 @@ RSpec.describe URL, type: :lib do
   end
 
   describe ".domain" do
-    it "returns the value of SiteConfig" do
-      expect(described_class.domain).to eq(SiteConfig.app_domain)
+    it "returns the value of Settings::General" do
+      expect(described_class.domain).to eq(Settings::General.app_domain)
     end
   end
 
@@ -125,7 +125,7 @@ RSpec.describe URL, type: :lib do
     it "returns the correct URL for an image name with no host" do
       image_url_regex = %r{
         #{ApplicationConfig["APP_PROTOCOL"]} # https://
-        #{SiteConfig.app_domain}/            # dev.to
+        #{Settings::General.app_domain}/            # dev.to
         assets/                              # assets/ directory
         #{image_name}-                       # social-media-cover
         [a-f0-9]*                            # letters and numbers

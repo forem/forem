@@ -15,7 +15,7 @@ RSpec.describe Users::SuggestRecent, type: :service do
       article = articles.last
       article.update(score: 100)
       allow(user).to receive(:decorate).and_return(user)
-      allow(user).to receive(:cached_followed_tag_names).and_return(["css"])
+      allow(user).to receive(:cached_followed_tag_names).and_return(["html"])
 
       suggested_users = suggester.suggest
       expect(suggested_users.size).to eq(1)

@@ -14,7 +14,7 @@ RSpec.describe "Users", type: :request do
     let!(:suggested_user) { suggested_user_profile.user }
 
     before do
-      allow(SiteConfig).to receive(:suggested_users).and_return(suggested_users_list)
+      allow(Settings::General).to receive(:suggested_users).and_return(suggested_users_list)
     end
 
     context "when no state params are present" do
@@ -28,7 +28,7 @@ RSpec.describe "Users", type: :request do
     end
 
     context "when follow_suggestions params are present and no suggestions are found" do
-      it "returns the default suggested_users from SiteConfig if they are present" do
+      it "returns the default suggested_users from Settings::General if they are present" do
         sign_in user
 
         get users_path(state: "follow_suggestions")
@@ -74,8 +74,8 @@ RSpec.describe "Users", type: :request do
         expect(response_user["profile_image_url"]).to eq(other_user.profile_image_url)
       end
 
-      it "returns the default suggested_users from SiteConfig if prefer_manual_suggested_users is true" do
-        allow(SiteConfig).to receive(:prefer_manual_suggested_users).and_return(true)
+      it "returns the default suggested_users from Settings::General if prefer_manual_suggested_users is true" do
+        allow(Settings::General).to receive(:prefer_manual_suggested_users).and_return(true)
 
         sign_in user
 

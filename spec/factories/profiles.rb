@@ -12,10 +12,11 @@ FactoryBot.define do
         employer_name: "DEV",
         employer_url: "http://dev.to",
         employment_title: "Software Engineer",
-        skills_languages: "Ruby",
-        summary: "I do things with computers",
-        website_url: "http://example.com"
+        skills_languages: "Ruby"
       }
     end
+    website_url { "http://example.com" }
+    location { "Halifax, Nova Scotia" }
+    summary { "I do things with computers" }
   end
 end
