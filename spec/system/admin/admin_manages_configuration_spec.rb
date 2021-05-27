@@ -10,7 +10,7 @@ RSpec.describe "Admin manages configuration", type: :system do
 
   Settings::Mandatory::MAPPINGS.each do |option, _setting_model|
     it "marks #{option} as required" do
-      selector = "label[for='site_config_#{option}']"
+      selector = "label[for='settings_general_#{option}']"
       expect(first(selector).text).to include("Required")
     end
   end
@@ -29,8 +29,8 @@ RSpec.describe "Admin manages configuration", type: :system do
 
     it "includes information about missing fields on the config pages" do
       allow(Settings::Community).to receive(:tagline).and_return(nil)
-      allow(SiteConfig).to receive(:suggested_users).and_return(nil)
-      allow(SiteConfig).to receive(:suggested_tags).and_return(nil)
+      allow(Settings::General).to receive(:suggested_users).and_return(nil)
+      allow(Settings::General).to receive(:suggested_tags).and_return(nil)
       visit root_path
       expect(page.body).to include("Setup not completed yet, missing suggested tags and suggested users.")
     end

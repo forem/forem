@@ -21,7 +21,7 @@ class ApplicationMailer < ActionMailer::Base
                        Settings::Community.community_name
                      end
 
-    "#{community_name} <#{SiteConfig.email_addresses[:default]}>"
+    "#{community_name} <#{Settings::General.email_addresses[:default]}>"
   end
 
   def generate_unsubscribe_token(id, email_type)
@@ -33,6 +33,6 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def use_custom_host
-    ActionMailer::Base.default_url_options[:host] = SiteConfig.app_domain
+    ActionMailer::Base.default_url_options[:host] = Settings::General.app_domain
   end
 end

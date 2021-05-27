@@ -7,8 +7,8 @@ module Settings
       community_name: Settings::Community,
       community_description: Settings::Community,
 
-      suggested_tags: SiteConfig,
-      suggested_users: SiteConfig
+      suggested_tags: Settings::General,
+      suggested_users: Settings::General
     }.freeze
 
     MAPPINGS.each do |setting, settings_model|

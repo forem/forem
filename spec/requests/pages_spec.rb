@@ -119,7 +119,7 @@ RSpec.describe "Pages", type: :request do
     it "has proper headline" do
       get "/contact"
       expect(response.body).to include("Contact")
-      expect(response.body).to include("@#{SiteConfig.social_media_handles['twitter']}")
+      expect(response.body).to include("@#{Settings::General.social_media_handles['twitter']}")
     end
   end
 

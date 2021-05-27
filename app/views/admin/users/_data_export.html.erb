@@ -12,7 +12,7 @@
     </p>
     <p>
       Exporting the data to your admin account will send it to your contact
-      admin email (<%= SiteConfig.email_addresses[:contact] %>),
+      admin email (<%= Settings::General.email_addresses[:contact] %>),
       and exporting to the user will send it to their email (<%= @user.email %>).
     </p>
     <div style="display: flex;">

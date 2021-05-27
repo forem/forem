@@ -36,11 +36,15 @@ class ProfileValidator < ActiveModel::Validator
     # throws a NoMethodError
     return unless record.respond_to?(SUMMARY_ATTRIBUTE)
 
+    # TODO: [@jacobherrington] This will need to be addressed when the summary
+    # ProfileField is dropped from production.
     return unless ProfileField.exists?(attribute_name: SUMMARY_ATTRIBUTE)
     return if record.summary.blank?
 
     # Grandfather in people who had a too long summary before
-    previous_summary = record.data_was[SUMMARY_ATTRIBUTE]
+    # TODO: [@jacobherrington] `record.data_was` can be removed when we delete
+    # the old data and drop the fields from `Profile.static_fields`.
+    previous_summary = record.summary_was || record.data_was[SUMMARY_ATTRIBUTE]
     return if previous_summary && previous_summary.size > MAX_SUMMARY_LENGTH
 
     record.summary.size > MAX_SUMMARY_LENGTH

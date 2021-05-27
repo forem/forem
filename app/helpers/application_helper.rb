@@ -156,8 +156,8 @@ module ApplicationHelper
   end
 
   def logo_svg
-    if SiteConfig.logo_svg.present?
-      SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
+    if Settings::General.logo_svg.present?
+      Settings::General.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
     else
       inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end
@@ -175,7 +175,7 @@ module ApplicationHelper
     release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}-#{SiteConfig.admin_action_taken_at.rfc3339}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}"
   end
 
   def copyright_notice
@@ -195,9 +195,9 @@ module ApplicationHelper
   end
 
   def email_link(type = :contact, text: nil, additional_info: nil)
-    # The allowed types for type are the keys of `SiteConfig.email_addresses`
+    # The allowed types for type are the keys of `Settings::General.email_addresses`
     # :default, :contact, :business, :privacy, :members
-    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:contact]
+    email = Settings::General.email_addresses[type] || Settings::General.email_addresses[:contact]
     mail_to email, text || email, additional_info
   end
 
@@ -206,27 +206,27 @@ module ApplicationHelper
   end
 
   def meta_keywords_default
-    return if SiteConfig.meta_keywords[:default].blank?
+    return if Settings::General.meta_keywords[:default].blank?
 
-    tag.meta name: "keywords", content: SiteConfig.meta_keywords[:default]
+    tag.meta name: "keywords", content: Settings::General.meta_keywords[:default]
   end
 
   def meta_keywords_article(article_tags = nil)
-    return if SiteConfig.meta_keywords[:article].blank?
+    return if Settings::General.meta_keywords[:article].blank?
 
     content = if article_tags.present?
-                "#{article_tags}, #{SiteConfig.meta_keywords[:article]}"
+                "#{article_tags}, #{Settings::General.meta_keywords[:article]}"
               else
-                SiteConfig.meta_keywords[:article]
+                Settings::General.meta_keywords[:article]
               end
 
     tag.meta name: "keywords", content: content
   end
 
   def meta_keywords_tag(tag_name)
-    return if SiteConfig.meta_keywords[:tag].blank?
+    return if Settings::General.meta_keywords[:tag].blank?
 
-    tag.meta name: "keywords", content: "#{SiteConfig.meta_keywords[:tag]}, #{tag_name}"
+    tag.meta name: "keywords", content: "#{Settings::General.meta_keywords[:tag]}, #{tag_name}"
   end
 
   def app_url(uri = nil)
@@ -270,7 +270,7 @@ module ApplicationHelper
     estimated_user_count > LARGE_USERBASE_THRESHOLD
   end
 
-  def admin_config_label(method, content = nil, model: SiteConfig)
+  def admin_config_label(method, content = nil, model: Settings::General)
     content ||= tag.span(method.to_s.humanize)
 
     if method.to_sym.in?(Settings::Mandatory.keys)

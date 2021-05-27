@@ -67,7 +67,7 @@ gem "parallel", "~> 1.20" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with GitHub OAuth client
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_search", "~> 2.3.5" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
-gem "puma", "~> 5.3.1" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 5.3.2" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 2.0" # Ruby library for Pusher Channels HTTP API
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
@@ -80,7 +80,7 @@ gem "ransack", "~> 2.4" # Searching and sorting
 gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.2.5" # Redis ruby client
-gem "rpush", "~> 5.4" # Push Notification library for Rails
+gem "rpush", "~> 6.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 
 # NOTE: [@rhymes]: sign in doesn't work with the redis-rack 2.1.0+ or with redis-actionpack 5.2.0+
@@ -98,14 +98,14 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.2.1" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.0.10" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.0.11" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "store_attribute", "~> 0.8.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.32" # Ruby library for the Stripe API
+gem "stripe", "~> 5.33" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
@@ -113,7 +113,7 @@ gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier 
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
-gem "webpacker", "~> 5.3.0" # Use webpack to manage app-like JavaScript modules in Rails
+gem "webpacker", "~> 5.4.0" # Use webpack to manage app-like JavaScript modules in Rails
 
 group :development do
   gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
@@ -144,7 +144,7 @@ group :development, :test do
   gem "cypress-rails", "~> 0.5.0" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.18" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.16.0" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 2.17.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.15", require: false # Automatic Ruby code style checking tool

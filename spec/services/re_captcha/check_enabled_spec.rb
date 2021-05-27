@@ -12,7 +12,7 @@ RSpec.describe ReCaptcha::CheckEnabled, type: :request do
   end
 
   describe "ReCaptcha for user actions like Abuse Reports (FeedbackMessages)" do
-    context "when recaptcha SiteConfig keys are not configured" do
+    context "when recaptcha Settings::General keys are not configured" do
       it "marks ReCaptcha as not enabled regardless of the param passed in" do
         allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return(nil)
         allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return(nil)
@@ -22,7 +22,7 @@ RSpec.describe ReCaptcha::CheckEnabled, type: :request do
       end
     end
 
-    context "when recaptcha SiteConfig keys are configured" do
+    context "when recaptcha Settings::General keys are configured" do
       before do
         allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSecretKey")
         allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSiteKey")

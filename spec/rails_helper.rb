@@ -85,6 +85,19 @@ RSpec.configure do |config|
     Warden::Manager._on_request.clear
   end
 
+  config.around do |example|
+    case example.metadata[:sidekiq]
+    when :inline
+      Sidekiq::Testing.inline! { example.run }
+    when :fake
+      Sidekiq::Testing.fake! { example.run }
+    when :disable
+      Sidekiq::Testing.disable! { example.run }
+    else
+      example.run
+    end
+  end
+
   config.before(:suite) do
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
@@ -119,7 +132,7 @@ RSpec.configure do |config|
   end
 
   config.after do
-    SiteConfig.clear_cache
+    Settings::General.clear_cache
   end
 
   # Only turn on VCR if :vcr is included metadata keys
@@ -165,7 +178,7 @@ RSpec.configure do |config|
 
     allow(Settings::Community).to receive(:community_description).and_return("Some description")
     allow(Settings::UserExperience).to receive(:public).and_return(true)
-    allow(SiteConfig).to receive(:waiting_on_first_user).and_return(false)
+    allow(Settings::General).to receive(:waiting_on_first_user).and_return(false)
 
     # Default to have field a field test available.
     config = { "experiments" =>

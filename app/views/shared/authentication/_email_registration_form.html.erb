@@ -91,7 +91,7 @@
       <%= f.password_field :password_confirmation, autocomplete: "current-password", class: "crayons-textfield", required: true %>
     </div>
 
-    <% if ENV["FOREM_OWNER_SECRET"].present? && SiteConfig.waiting_on_first_user %>
+    <% if ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
       <% if params[:forem_owner_secret].present? %>
         <%= f.hidden_field :forem_owner_secret, value: params[:forem_owner_secret] %>
       <% else %>
