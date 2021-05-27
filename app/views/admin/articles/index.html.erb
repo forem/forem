@@ -55,7 +55,7 @@
     Only <strong>one</strong> article at a time can be pinned. If you proceed,
     this article will no longer be pinned:
 
-    <div class="pinned-article">
+    <div class="pinned-article bg-base-0 my-3 p-3 radius-default">
       <a
         href="#"
         target="_blank"
@@ -63,7 +63,7 @@
         data-article-pinned-modal-target="title">
       </a>
 
-      <p>Pinned at <time data-article-pinned-modal-target="pinnedAt"></time></p>
+      <p class="color-base-50 my-1 fs-s">Pinned on <time data-article-pinned-modal-target="pinnedAt"></time></p>
     </div>
 
     <button id="article-pin-modal-ok" class="crayons-btn" data-action="click->article-pinned-modal#pinAndCloseModal">Pin new article</button>
