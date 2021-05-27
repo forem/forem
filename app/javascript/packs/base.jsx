@@ -39,8 +39,11 @@ window.Forem = {
       return;
     }
 
-    const [{ MentionAutocompleteTextArea }, { fetchSearch }, { render, h }] =
-      await window.Forem.getMentionAutoCompleteImports();
+    const [
+      { MentionAutocompleteTextArea }, 
+      { fetchSearch }, 
+      { render, h },
+    ] = await window.Forem.getMentionAutoCompleteImports();
 
     render(
       <MentionAutocompleteTextArea
