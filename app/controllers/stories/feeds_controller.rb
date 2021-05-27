@@ -11,6 +11,8 @@ module Stories
     private
 
     def add_pinned_article
+      return if params[:timeframe].present?
+
       pinned_article = Settings::General.feed_pinned_article
       return if !pinned_article || @stories.detect { |story| story.id == pinned_article.id }
 

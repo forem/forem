@@ -94,7 +94,7 @@ export const renderFeed = (timeFrame) => {
         // 4. Rest of the stories for the feed
         return (
           <div>
-            {pinnedArticle && (
+            {timeFrame === '' && pinnedArticle && (
               <Article
                 {...commonProps}
                 article={pinnedArticle}
