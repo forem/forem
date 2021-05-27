@@ -24,9 +24,7 @@ if (snackZone) {
 top.addSnackbarItem = addSnackbarItem;
 
 function hideCopyLinkAnnouncerIfVisible() {
-  document
-    .getElementById('article-copy-link-announcer')
-    ?.setAttribute('hidden', true);
+  document.getElementById('article-copy-link-announcer').hidden = true;
 }
 
 // Initialize the share options
@@ -40,8 +38,8 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
     );
   } else {
     const { closeDropdown } = initializeDropdown({
-      triggerButtonElementId: 'article-show-more-button',
-      dropdownContentElementId: 'article-show-more-dropdown',
+      triggerElementId: 'article-show-more-button',
+      dropdownContentId: 'article-show-more-dropdown',
       onClose: hideCopyLinkAnnouncerIfVisible,
     });
 
@@ -62,9 +60,8 @@ function showAnnouncer() {
       : document.getElementById('article-copy-link-input');
   input.focus();
   input.setSelectionRange(0, input.value.length);
-  document
-    .getElementById('article-copy-link-announcer')
-    ?.setAttribute('hidden', false);
+
+  document.getElementById('article-copy-link-announcer').hidden = false;
 }
 
 function copyArticleLink() {

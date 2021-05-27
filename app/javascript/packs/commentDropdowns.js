@@ -23,16 +23,15 @@ const initializeArticlePageDropdowns = () => {
       continue;
     }
 
-    const dropdownContentElementId =
-      dropdownTrigger.getAttribute('aria-controls');
+    const dropdownContentId = dropdownTrigger.getAttribute('aria-controls');
 
     const { closeDropdown } = initializeDropdown({
-      triggerButtonElementId: dropdownTrigger.id,
-      dropdownContentElementId,
+      triggerElementId: dropdownTrigger.id,
+      dropdownContentId,
     });
 
     // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
-    const dropdownElement = document.getElementById(dropdownContentElementId);
+    const dropdownElement = document.getElementById(dropdownContentId);
     const reportAbuseWrapper = dropdownElement.querySelector(
       '.report-abuse-link-wrapper',
     );
