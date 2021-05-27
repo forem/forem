@@ -1,6 +1,12 @@
 module Admin
   module Settings
     class MandatorySettingsController < Admin::Settings::BaseController
+      Result = Struct.new(:errors) do
+        def success?
+          errors.none?
+        end
+      end
+
       private
 
       def upsert_config(configs)
@@ -16,8 +22,7 @@ module Admin
           errors << e.message
           next
         end
-
-        errors
+        Result.new(errors)
       end
 
       # NOTE: we need to override this since the controller name doesn't reflect
