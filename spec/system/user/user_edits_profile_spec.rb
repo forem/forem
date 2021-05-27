@@ -80,5 +80,17 @@ RSpec.describe "User edits their profile", type: :system do
         expect(page).to have_text("pistachio")
       end
     end
+
+    it "respects static profile fields", :aggregate_failures do
+      fill_in "profile[summary]", with: "Star of hit 90s sitcom Horsin' Around"
+      fill_in "profile[location]", with: "Hollywoo"
+
+      click_button "Save"
+
+      visit "/#{user.username}"
+
+      expect(page).to have_text("Horsin' Around")
+      expect(page).to have_text("Hollywoo")
+    end
   end
 end
