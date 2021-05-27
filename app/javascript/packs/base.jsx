@@ -40,8 +40,8 @@ window.Forem = {
     }
 
     const [
-      { MentionAutocompleteTextArea }, 
-      { fetchSearch }, 
+      { MentionAutocompleteTextArea },
+      { fetchSearch },
       { render, h },
     ] = await window.Forem.getMentionAutoCompleteImports();
 
