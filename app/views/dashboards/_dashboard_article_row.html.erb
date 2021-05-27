@@ -6,7 +6,9 @@
       <% end %>
       <a href="<%= article.current_state_path %>" class="inline-flex items-center">
         <% if article.organization_id %>
-          <span class="crayons-logo crayons-logo--s mr-2 shrink-0"><img class="crayons-logo__image align-top" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24"></span>
+          <span class="crayons-logo crayons-logo--s mr-2 shrink-0">
+            <img class="crayons-logo__image align-top" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24" loading="lazy" />
+          </span>
         <% end %>
         <%= sanitize_and_decode article.title %>
       </a>
