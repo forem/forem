@@ -692,7 +692,7 @@
                                  value: Settings::General.main_social_image,
                                  placeholder: Constants::Settings::General::DETAILS[:main_social_image][:placeholder] %>
                 <% if Settings::General.main_social_image.present? %>
-                  <img alt="main social image" class="img-fluid" src="<%= Settings::General.main_social_image %>" width="600px" height="337px" />
+                  <img alt="main social image" class="img-fluid" src="<%= Settings::General.main_social_image %>" width="600" height="337" loading="lazy" />
                 <% end %>
               </div>
 
@@ -703,7 +703,7 @@
                                  class: "form-control",
                                  value: Settings::General.favicon_url,
                                  placeholder: Constants::Settings::General::DETAILS[:favicon_url][:placeholder] %>
-                <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(Settings::General.favicon_url, width: 32) %>" width="32px" height="32px" />
+                <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(Settings::General.favicon_url, width: 32) %>" width="32" height="32" loading="lazy" />
               </div>
 
               <div class="crayons-field">
@@ -714,7 +714,7 @@
                                  value: Settings::General.logo_png,
                                  placeholder: Constants::Settings::General::DETAILS[:logo_png][:placeholder] %>
                 <% if Settings::General.logo_png.present? %>
-                  <img src="<%= Images::Optimizer.call(Settings::General.logo_png, width: 128) %>" width="128px" height="128px" />
+                  <img src="<%= Images::Optimizer.call(Settings::General.logo_png, width: 128) %>" width="128" height="128" loading="lazy" />
                 <% end %>
               </div>
 
@@ -769,7 +769,7 @@
                                placeholder: Constants::Settings::General::DETAILS[:mascot_image_url][:placeholder] %>
 
               <div class="col-12">
-                <img alt="Mascot image" class="img-fluid" src="<%= Settings::General.mascot_image_url %>" />
+                <img alt="Mascot image" class="img-fluid" src="<%= Settings::General.mascot_image_url %>" loading="lazy" />
               </div>
 
             </div>
@@ -933,7 +933,7 @@
                                  placeholder: Constants::Settings::General::DETAILS[:onboarding_background_image][:placeholder] %>
                 <div class="row mt-2">
                   <div class="col-12">
-                    <img alt="onboarding background image" class="img-fluid" src="<%= Settings::General.onboarding_background_image %>" />
+                    <img alt="onboarding background image" class="img-fluid" src="<%= Settings::General.onboarding_background_image %>" loading="lazy" />
                   </div>
                 </div>
               </div>
