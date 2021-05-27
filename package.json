@@ -37,8 +37,7 @@
       "eslint --fix -c app/assets/javascripts/.eslintrc.js"
     ],
     "docs/api_v0.yml": [
-      "spectral lint -F hint",
-      "lint-openapi -e"
+      "spectral lint -F hint"
     ],
     "*.{js,jsx}": [
       "prettier --write",
