@@ -21,6 +21,6 @@ class ProfilesController < ApplicationController
   private
 
   def update_params
-    params.permit(profile: Profile.attributes, user: ALLOWED_USER_PARAMS)
+    params.permit(profile: Profile.attributes + Profile.static_fields, user: ALLOWED_USER_PARAMS)
   end
 end

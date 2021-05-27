@@ -127,7 +127,7 @@ Rails.application.configure do
   protocol = ENV["APP_PROTOCOL"] || "http://"
 
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.perform_deliveries = true
+  config.action_mailer.perform_deliveries =  ENV["SMTP_PASWORD"].present? || ENV["SENDGRID_API_KEY"].present?
   config.action_mailer.default_url_options = { host: protocol + ENV["APP_DOMAIN"].to_s }
   ActionMailer::Base.smtp_settings = if ENV["SENDGRID_API_KEY"].present?
                                        {

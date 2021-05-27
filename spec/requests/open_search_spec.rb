@@ -6,7 +6,7 @@ RSpec.describe "OpenSearch", type: :request do
   describe "GET /open-search.xml" do
     it "has proper information" do
       get "/open-search.xml"
-      expect(response.body).to include("<ShortName>#{SiteConfig.community_name} Search</ShortName>")
+      expect(response.body).to include("<ShortName>#{Settings::Community.community_name} Search</ShortName>")
     end
   end
 end

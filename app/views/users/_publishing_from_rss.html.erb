@@ -20,7 +20,7 @@
     <p>Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.</p>
     <p>
       To find out more about how drafts are created from your feed, read this
-      <a href="/p/publishing_from_rss_guide">guide</a>.
+      <a href="<%= publishing_from_rss_guide_path %>">guide</a>.
     </p>
     <p>
       Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter. Contact
@@ -50,9 +50,8 @@
                   class: "crayons-field__label" %>
     </div>
 
-    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.hidden_field :tab, value: @tab, id: nil %>
     <% button_text = @user.feed_url.present? ? "Save Feed Settings" : "Submit Feed Settings" %>
-    <div><button class="crayons-btn" type="submit"><%= button_text %></button></div>
+    <button class="crayons-btn w-max" type="submit"><%= button_text %></button>
   <% end %>
-
 </div>

@@ -11,7 +11,7 @@ RSpec.describe TwitterClient::Client, type: :service, vcr: true do
       end
     end
 
-    it "works properly when SiteConfig is set" do
+    it "works properly when Settings::General is set" do
       VCR.use_cassette("twitter_client_status") do
         allow(Settings::Authentication).to receive(:twitter_key).and_return("test")
         tweet = described_class.status(tweet_id)

@@ -11,10 +11,6 @@ Rails.application.configure do
 
   config.cache_classes = true
 
-  # Include middleware to ensure timezone for browser requests for Capybara specs
-  # matches the random zonebie timezone set at the beginning of our spec run
-  config.middleware.use SetTimeZone
-
   # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
   config.action_view.cache_template_loading = true
 

@@ -7,7 +7,7 @@ module Admin
       if result.success?
         Audit::Logger.log(:internal, current_user, params.dup)
         bust_content_change_caches
-        redirect_to admin_config_path, notice: "Site configuration was successfully updated."
+        redirect_to admin_config_path, notice: "Successfully updated settings."
       else
         redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
       end
