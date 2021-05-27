@@ -65,6 +65,7 @@ namespace :admin do
   end
 
   scope :customization do
+    # We renamed the controller but don't want to change the route (yet)
     resource :config, controller: "settings"
     resources :display_ads, only: %i[index edit update new create destroy]
     resources :html_variants, only: %i[index edit update new create show destroy]

@@ -32,10 +32,15 @@ module Admin
         raise ActionController::BadRequest.new, MISMATCH_ERROR
       end
 
+      # Override this method if you need to call a custom class for upserting.
+      # Ideally such a class eventually calls out to Settings::Upsert and returns
+      # the result of that service.
       def upsert_config(settings)
         ::Settings::Upsert.call(settings, authorization_resource)
       end
 
+      # Override this if you need additional params or need to make other changes,
+      # e.g. a different require key.
       def settings_params
         params
           .require(:"settings_#{authorization_resource.name.demodulize.underscore}")

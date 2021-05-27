@@ -1,4 +1,7 @@
 module Settings
+  # This service ensures that settings upserts to the database happen in a
+  # standardized way. Instead of subclassing this service I recommend wrapping
+  # it, see e.g. Settings::General::Upsert.
   class Upsert
     attr_reader :errors, :settings_class
 
