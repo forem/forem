@@ -18,7 +18,7 @@ describe('Post sidebar actions', () => {
   });
 
   it('should open the share menu for the post', () => {
-    cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).click();
+    cy.findByRole('button', { name: /^Share post options$/i }).click();
 
     cy.findByTitle(/^Copy article link to the clipboard$/i);
     cy.findByRole('link', { name: /^Share to Twitter$/i });
