@@ -556,4 +556,24 @@ describe('Comment on articles', () => {
     }).should('not.exist');
     cy.get('@dropdownButton').should('have.focus');
   });
+
+  it('should show dropdown options on comment index page', () => {
+    cy.findByRole('textbox', { name: /^Add a comment to the discussion$/i })
+      .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
+      .type('this is a comment');
+    cy.findByRole('button', { name: /^Submit$/i }).click();
+
+    cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).click();
+    cy.findByRole('link', { name: /^Edit this comment$/i }).click();
+
+    // In the comment index page, click submit without making changes
+    cy.findByRole('button', { name: /^Submit$/i }).click();
+
+    // Check the dropdown has initialized
+    cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).click();
+    cy.findByRole('link', { name: /^Edit this comment$/i });
+    // Close the dropdown again
+    cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).click();
+    cy.findByRole('link', { name: /^Edit this comment$/i }).should('not.exist');
+  });
 });
