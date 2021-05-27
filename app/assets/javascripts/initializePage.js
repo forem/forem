@@ -3,7 +3,7 @@
   initializeAllChatButtons, initializeAllTagEditButtons, initializeUserFollowButts,
   initializeBaseTracking, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
-  initializeCommentDate, initializeCommentDropdown, initializeSettings,
+  initializeCommentDate, initializeSettings,
   initializeCommentPreview, initializeRuntimeBanner,
   initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
   initializeEllipsisMenu, initializeArchivedPostFilter, initializeCreditsPage,
@@ -56,7 +56,6 @@ function initializePage() {
         initializeAllChatButtons();
         initializeAllTagEditButtons();
       }
-      initializeCommentDropdown();
       initializeBroadcast();
       initializeAllFollowButts();
       initializeUserFollowButts();

@@ -3,6 +3,8 @@ import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
+/* global Runtime */
+
 const fullscreenActionElements = document.getElementsByClassName(
   'js-fullscreen-code-action',
 );
@@ -21,24 +23,59 @@ if (snackZone) {
 // eslint-disable-next-line no-restricted-globals
 top.addSnackbarItem = addSnackbarItem;
 
+function hideCopyLinkAnnouncerIfVisible() {
+  document
+    .getElementById('article-copy-link-announcer')
+    ?.setAttribute('hidden', true);
+}
+
 // Initialize the share options
 const shareDropdownButton = document.getElementById('article-show-more-button');
-const shareDropdownContent = document.getElementById(
-  'article-show-more-dropdown',
-);
-// TODO: There was other code in the initializer around android share, but Fernando's PR changes this
 
 if (shareDropdownButton.dataset.initialized !== 'true') {
-  const { closeDropdown } = initializeDropdown({
-    triggerButtonElementId: 'article-show-more-button',
-    dropdownContentElementId: 'article-show-more-dropdown',
-  });
-  // In addition to standard dropdown actions, we also want to close on link select (since they open in a new tab)
-  const allLinks = shareDropdownContent.querySelectorAll('[href');
-  allLinks.forEach((link) => link.addEventListener('click', closeDropdown));
+  if (Runtime.isNativeAndroid('shareText')) {
+    // Android native apps have enhanced sharing capabilities for Articles and don't use our standard dropdown
+    shareDropdownButton.addEventListener('click', () =>
+      AndroidBridge.shareText(location.href),
+    );
+  } else {
+    const { closeDropdown } = initializeDropdown({
+      triggerButtonElementId: 'article-show-more-button',
+      dropdownContentElementId: 'article-show-more-dropdown',
+      onClose: hideCopyLinkAnnouncerIfVisible,
+    });
 
+    // We want to close the dropdown on link select (since they open in a new tab)
+    document
+      .querySelectorAll('#article-show-more-dropdown [href]')
+      .forEach((link) => link.addEventListener('click', closeDropdown));
+  }
   shareDropdownButton.dataset.initialized = 'true';
 }
+
+// Initialize the copy to clipboard functionality
+function showAnnouncer() {
+  const { activeElement } = document;
+  const input =
+    activeElement.localName === 'clipboard-copy'
+      ? activeElement.querySelector('input')
+      : document.getElementById('article-copy-link-input');
+  input.focus();
+  input.setSelectionRange(0, input.value.length);
+  document
+    .getElementById('article-copy-link-announcer')
+    ?.setAttribute('hidden', false);
+}
+
+function copyArticleLink() {
+  const inputValue = document.getElementById('article-copy-link-input').value;
+  Runtime.copyToClipboard(inputValue).then(() => {
+    showAnnouncer();
+  });
+}
+document
+  .querySelector('clipboard-copy')
+  ?.addEventListener('click', copyArticleLink);
 
 const userDataIntervalID = setInterval(async () => {
   const { user = null, userStatus } = document.body.dataset;

@@ -1,5 +1,18 @@
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
+/* global Runtime addSnackbarItem */
+
+const handleCopyPermalink = (closeDropdown) => {
+  return (event) => {
+    event.preventDefault();
+    const permalink = event.target.href;
+    Runtime.copyToClipboard(permalink).then(() => {
+      addSnackbarItem({ message: 'Copied to clipboard' });
+    });
+    closeDropdown();
+  };
+};
+
 const initializeArticlePageDropdowns = () => {
   const dropdownTriggers = document.querySelectorAll(
     'button[id^=comment-dropdown-trigger]',
@@ -13,7 +26,7 @@ const initializeArticlePageDropdowns = () => {
     const dropdownContentElementId =
       dropdownTrigger.getAttribute('aria-controls');
 
-    initializeDropdown({
+    const { closeDropdown } = initializeDropdown({
       triggerButtonElementId: dropdownTrigger.id,
       dropdownContentElementId,
     });
@@ -26,6 +39,11 @@ const initializeArticlePageDropdowns = () => {
     if (reportAbuseWrapper) {
       reportAbuseWrapper.innerHTML = `<a href="${reportAbuseWrapper.dataset.path}" class="crayons-link crayons-link--block">Report abuse</a>`;
     }
+
+    // Initialize the "Copy link" functionality
+    dropdownElement
+      .querySelector('.permalink-copybtn')
+      ?.addEventListener('click', handleCopyPermalink(closeDropdown));
 
     dropdownTrigger.dataset.initialized = 'true';
   }
