@@ -1,6 +1,7 @@
+import { addSnackbarItem } from '../Snackbar';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
-/* global Runtime addSnackbarItem */
+/* global Runtime  */
 
 const handleCopyPermalink = (closeDropdown) => {
   return (event) => {
