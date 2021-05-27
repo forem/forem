@@ -242,7 +242,7 @@
     0% {
       transform: scale(2);
       box-shadow: 0 0 0 4px currentColor;
-      opacity: 0;
+      opacity: var(--opacity-0);
     }
 
     100% {
@@ -262,7 +262,7 @@
     100% {
       box-shadow: 0 0 1px 1px transparent;
       transform: scale(4);
-      opacity: 0;
+      opacity: var(--opacity-0);
     }
   }
 }
