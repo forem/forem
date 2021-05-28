@@ -57,10 +57,10 @@ class ChatChannelsController < ApplicationController
       flash[:error] = chat_channel.errors.full_messages.to_sentence
     else
       if chat_channel_params[:discoverable].to_i.zero?
-        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id,
+        ChatChannelMembership.create(user_id: Settings::General.mascot_user_id, chat_channel_id: chat_channel.id,
                                      role: "member", status: "active")
       else
-        ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
+        ChatChannelMembership.find_by(user_id: Settings::General.mascot_user_id)&.destroy
       end
       flash[:settings_notice] = "Channel settings updated."
     end
@@ -76,10 +76,10 @@ class ChatChannelsController < ApplicationController
                      message: "Channel settings updation failed. Try again later." }, success: :bad_request
     else
       if chat_channel_params[:discoverable]
-        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: @chat_channel.id,
+        ChatChannelMembership.create(user_id: Settings::General.mascot_user_id, chat_channel_id: @chat_channel.id,
                                      role: "member", status: "active")
       else
-        ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
+        ChatChannelMembership.find_by(user_id: Settings::General.mascot_user_id)&.destroy
       end
       render json: { success: true, message: "Channel settings updated.", data: {} }, success: :ok
     end

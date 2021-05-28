@@ -101,7 +101,7 @@ body.trusted-status-true .trusted-visible-block {
   text-align: center;
   left: 0;
   right: 0;
-  opacity: 0;
+  opacity: var(--opacity-0);
   animation: loading-fadein 1.5s;
   animation-delay: 0.6s;
   font-size: 1.2em;
@@ -110,7 +110,7 @@ body.trusted-status-true .trusted-visible-block {
 
 @keyframes loading-fadein {
   from {
-    opacity: 0;
+    opacity: var(--opacity-0);
   }
   to {
     opacity: 0.6;

@@ -18,7 +18,7 @@ module Articles
       end
       return legacy_article_social_image unless use_new_social_url?
 
-      article_social_preview_url(article, format: :png, host: SiteConfig.app_domain)
+      article_social_preview_url(article, format: :png, host: Settings::General.app_domain)
     end
 
     private

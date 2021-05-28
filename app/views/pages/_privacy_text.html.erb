@@ -75,9 +75,6 @@
 <p><strong>Payment processing</strong>
   <br>
   <%= community_name %> does not process payments directly — we rely on third-party services such as Stripe, Shopify, and Paypal to receive payments and store any payment information.
-  <% if SiteConfig.shop_url.present? %>
-    <a href="<%= SiteConfig.shop_url %>">The <%= community_name %> Shop</a> is run through Shopify, a third-party e-commerce platform with their own Privacy Policy.
-  <% end %>
 </p>
 <p><strong>Third-Party Embeds</strong>
   <br>

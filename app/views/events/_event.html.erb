@@ -56,7 +56,7 @@
 
 <div class="event">
   <div class="event-image">
-    <img src="<%= optimized_image_url(event.cover_image_url, width: 500) %>" alt="event image">
+    <img src="<%= optimized_image_url(event.cover_image_url, width: 500) %>" alt="event image" loading="lazy" />
   </div>
   <div class="event-details">
     <h3><a href="/events/<%= event.slug %>"><%= event.category %>: <%= event.title %></a></h3>
@@ -75,7 +75,7 @@
       <span class="timezone">America/New_York</span>
       <span class="title"><%= event.title %></span>
       <span class="organizer"><%= community_name %></span>
-      <span class="organizer_email"><%= SiteConfig.email_addresses[:members] %></span>
+      <span class="organizer_email"><%= Settings::General.email_addresses[:members] %></span>
       <span class="calname">dev-event</span>
       <span class="location"><%= event.location_url %></span>
       <span class="alarm_reminder">15</span>

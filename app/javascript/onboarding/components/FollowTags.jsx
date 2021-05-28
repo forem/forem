@@ -143,6 +143,7 @@ export class FollowTags extends Component {
                         : `inset 0 0 0 2px ${tag.bg_color_hex}`,
                       color: selected ? tag.text_color_hex : '',
                     }}
+                    key={tag.id}
                   >
                     <div className="onboarding-tags__item__inner">
                       #{tag.name}
@@ -150,7 +151,8 @@ export class FollowTags extends Component {
                         type="button"
                         onClick={() => this.handleClick(tag)}
                         className={`onboarding-tags__button  ${
-                          selected && 'onboarding-tags__button--selected crayons-btn--icon-left'
+                          selected &&
+                          'onboarding-tags__button--selected crayons-btn--icon-left'
                         }`}
                         aria-pressed={selected}
                         aria-label={`Follow ${tag.name}`}
@@ -163,14 +165,16 @@ export class FollowTags extends Component {
                             : tag.text_color_hex,
                         }}
                       >
-                        { selected && (<svg
-                          width="24"
-                          height="24"
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="crayons-icon"
-                        >
-                          <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
-                        </svg>)}
+                        {selected && (
+                          <svg
+                            width="24"
+                            height="24"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="crayons-icon"
+                          >
+                            <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
+                          </svg>
+                        )}
                         {selected ? 'Following' : 'Follow'}
                       </button>
                     </div>

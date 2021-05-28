@@ -76,7 +76,8 @@
     <% end %>
     <% if article.main_image.present? %>
     <div style="max-height:450px;overflow:hidden;">
-      <img src="<%= cloud_cover_url(article.main_image) %>" style="width:100%;max-width:380px;border-radius:8px;background:<%= article.main_image_background_hex_color %>;" alt="cover image" /><br />
+      <img src="<%= cloud_cover_url(article.main_image) %>" style="width:100%;max-width:380px;border-radius:8px;background:<%= article.main_image_background_hex_color %>;" alt="cover image" loading="lazy" />
+      <br />
     </div>
     <% end %>
     <%= form_with url: admin_article_path(article.id), model: article, local: true do |f| %>

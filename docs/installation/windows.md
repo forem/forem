@@ -78,7 +78,7 @@ One can verify `rbenv` installation using the `rbenv-doctor` script with the
 following commands:
 
 ```shell
-curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
+curl -fsSL https://raw.githubusercontent.com/rbenv/rbenv-installer/main/bin/rbenv-doctor | bash
 ```
 
 ### Installing nvm

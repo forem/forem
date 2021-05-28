@@ -25,12 +25,12 @@
         <div class="crayons-story__author-pic">
           <% if story.cached_organization && !@organization_article_index %>
           <a class="crayons-logo crayons-logo--l" href="/<%= story.cached_organization.slug %>">
-            <img alt="<%= story.cached_organization.name %> logo" src="<%= story.cached_organization.profile_image_90 %>" class="crayons-logo__image">
+            <img alt="<%= story.cached_organization.name %> logo" src="<%= story.cached_organization.profile_image_90 %>" class="crayons-logo__image" loading="lazy" />
           </a>
           <% end %>
 
           <a href="/<%= story.cached_user.username %>" class="crayons-avatar <% if story.cached_organization && !@organization_article_index %> crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted <% else %> crayons-avatar--l <% end %> ">
-            <img src="<%= Images::Profile.call(story.cached_user.profile_image_url, length: 90) %>" alt="<%= story.cached_user.username %> profile" class="crayons-avatar__image" />
+            <img src="<%= Images::Profile.call(story.cached_user.profile_image_url, length: 90) %>" alt="<%= story.cached_user.username %> profile" class="crayons-avatar__image" loading="lazy" />
           </a>
         </div>
         <div>
