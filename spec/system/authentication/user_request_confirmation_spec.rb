@@ -8,7 +8,7 @@ RSpec.describe "/confirm-email", type: :system do
 
     expect(page).to have_current_path(user_confirmation_path)
     expected_message = format(ConfirmationsController::FLASH_MESSAGE,
-                              email: Settings::General.email_addresses[:members])
+                              email: Settings::General.email_addresses[:default])
     expect(page).to have_content(expected_message)
   end
 end
