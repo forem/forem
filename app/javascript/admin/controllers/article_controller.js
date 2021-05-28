@@ -30,10 +30,15 @@ export default class ArticleController extends Controller {
   togglePin(event) {
     const checkbox = event.target;
 
+    // we're only interested in intercepting a checkbox going from
+    // unchecked to checked
     if (!checkbox.checked) {
       return;
     }
 
+    // by preventing the default, we avoid visually selecting the checkbox,
+    // it will be responsibility of `pinArticle()` to determine if and when
+    // the checkbox state has to change
     event.preventDefault();
 
     this.pinArticle(checkbox);
@@ -54,6 +59,13 @@ export default class ArticleController extends Controller {
 
       // only show the modal if we're not re-pinning the current pin
       if (pinnedArticle.id !== this.idValue) {
+        // By dispatching this custom event, we communicate with
+        // `ArticlePinnedModalController`, responsible to display the modal and
+        // determine the final state of the checkbox, depending how which action
+        // the user follows up with (ie. confirming the pin or dismissing)
+        // This technique is a good way to separate behavior and have Stimulus
+        // controllers talk with each other.
+        // See https://fullstackheroes.com/stimulusjs/create-custom-events/
         document.dispatchEvent(
           new CustomEvent('article-pinned-modal:open', {
             detail: {
@@ -64,7 +76,7 @@ export default class ArticleController extends Controller {
         );
       }
     } else if (response.status === 404) {
-      // no pinned articles exist
+      // if there is no pinned article, it means we can go ahead and pin this one
       checkbox.checked = true;
     }
   }
