@@ -241,7 +241,7 @@ seeder.create_if_none(Podcast) do
     {
       title: "CodingBlocks",
       description: "",
-      feed_url: "http://feeds.podtrac.com/c8yBGHRafqhz",
+      feed_url: "https://www.codingblocks.net/podcast-feed.xml",
       slug: "codingblocks",
       twitter_username: "CodingBlocks",
       website_url: "http://codingblocks.net",
