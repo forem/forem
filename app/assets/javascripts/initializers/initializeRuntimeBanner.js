@@ -56,7 +56,7 @@ function initializeRuntimeBanner() {
   // Constants - they will become dynamic (configurable by creators) in upcoming releases
   const FOREM_IOS_SCHEME = 'com.forem.app';
   const FOREM_APP_STORE_URL =
-    'https://apps.apple.com/us/app/dev-community/id1439094790';
+    'https://apps.apple.com/us/app/forem/id1536933197';
   const FOREM_GOOGLE_PLAY_URL =
     'https://play.google.com/store/apps/details?id=to.dev.dev_android';
 
