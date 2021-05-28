@@ -11,7 +11,7 @@
   bottom: calc(var(--su-2) + env(safe-area-inset-bottom));
   flex-flow: row nowrap;
   align-items: center;
-  padding: var(--su-3)
+  padding: var(--su-3);
   max-width: calc(min(100% - var(--su-4) * 2, 750px));
   z-index: var(--z-popover);
   border-radius: var(--radius);
