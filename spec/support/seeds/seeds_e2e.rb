@@ -214,4 +214,7 @@ seeder.create_if_none(Tag) do
   moderator.add_role(:tag_moderator, tag)
 end
 
+# Show the tag in the sidebar
+Settings::General.sidebar_tags = %i[tag1]
+
 ##############################################################################
