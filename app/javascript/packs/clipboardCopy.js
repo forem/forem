@@ -19,5 +19,4 @@ document.ready.then(() => {
   }
 });
 
-// import('@github/clipboard-copy-element');
-// Temporarily removed due to problems
+import('@github/clipboard-copy-element');
