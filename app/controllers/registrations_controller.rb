@@ -29,6 +29,11 @@ class RegistrationsController < Devise::RegistrationsController
       resource.editor_version = "v2"
       resource.remote_profile_image_url = Users::ProfileImageGenerator.call if resource.remote_profile_image_url.blank?
       check_allowed_email(resource) if resource.email.present?
+      if FeatureFlag.enabled?(:creator_onboarding)
+        resource.password_confirmation = resource.password
+        # Temporarily set a random value for the username based on name
+        resource.username = "#{resource.name.downcase.tr(' ', '_').gsub(/[^0-9a-z ]/i, '')}_#{rand(1000)}"
+      end
       resource.save if resource.email.present?
       yield resource if block_given?
       if resource.persisted?
