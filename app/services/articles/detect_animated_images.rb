@@ -25,7 +25,15 @@ module Articles
       images.each do |img|
         src = img.attr("src")
         next unless src
-        next unless FastImage.animated?(parsed_src(src))
+
+        image = if URI.parse(src).relative?
+                  retrieve_image_from_uploader_store(src)
+                else
+                  src
+                end
+
+        next if image.blank?
+        next unless FastImage.animated?(image)
 
         img["data-animated"] = true
         found = true
@@ -34,12 +42,15 @@ module Articles
       article.update_columns(processed_html: parsed_html.to_html) if found
     end
 
-    def self.parsed_src(src)
-      uri = URI.parse(src)
-      return src unless uri.relative?
+    def self.retrieve_image_from_uploader_store(src)
+      filename = File.basename(src)
+      uploader = ArticleImageUploader.new
+      uploader.retrieve_from_store!(filename)
 
-      "#{URL.url}#{src}"
+      return unless uploader.file.exists?
+
+      uploader&.file&.file
     end
-    private_class_method :parsed_src
+    private_class_method :retrieve_image_from_uploader_store
   end
 end
