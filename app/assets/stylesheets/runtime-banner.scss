@@ -11,7 +11,7 @@
   bottom: calc(var(--su-2) + env(safe-area-inset-bottom));
   flex-flow: row nowrap;
   align-items: center;
-  padding: 12px 10px;
+  padding: var(--su-3)
   max-width: calc(min(100% - var(--su-4) * 2, 750px));
   z-index: var(--z-popover);
   border-radius: var(--radius);
@@ -34,7 +34,7 @@
       font-size: 16px;
       line-height: 16px;
       color: #ffffff;
-      margin-bottom: 3px;
+      margin-bottom: var(--su-1);
     }
 
     div > span:last-child {
