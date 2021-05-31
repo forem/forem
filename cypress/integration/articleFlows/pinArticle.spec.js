@@ -23,10 +23,12 @@ describe('Pin an article', () => {
 
       // check the button has changed to "Unpin Post"
       cy.findByRole('button', { name: 'Unpin Post' });
+    });
 
-      // This is failing with a timeout error
-      // cy.visit('/');
-      // cy.findByTestId('pinned-article', { timeout: 10000 }).should('be.visible');
+    cy.visit('/');
+
+    cy.findByRole('main').within(() => {
+      cy.findByTestId('pinned-article').should('be.visible');
     });
   });
 
@@ -35,10 +37,12 @@ describe('Pin an article', () => {
       cy.findByRole('button', { name: 'Pin Post' }).click();
       cy.findByRole('button', { name: 'Unpin Post' }).click();
       cy.findByRole('button', { name: 'Pin Post' });
+    });
 
-      // This is failing with a timeout error
-      // cy.visit('/');
-      // cy.findByTestId('pinned-article', { timeout: 10000 }).should('not.be.visible');
+    cy.visit('/');
+
+    cy.findByRole('main').within(() => {
+      cy.get('[data-testid="pinned-article"]').should('not.exist');
     });
   });
 });
