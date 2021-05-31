@@ -61,7 +61,7 @@ export default class ArticleController extends Controller {
       if (pinnedArticle.id !== this.idValue) {
         // By dispatching this custom event, we communicate with
         // `ArticlePinnedModalController`, responsible to display the modal and
-        // determine the final state of the checkbox, depending how which action
+        // determine the final state of the checkbox, depending on which action
         // the user follows up with (ie. confirming the pin or dismissing)
         // This technique is a good way to separate behavior and have Stimulus
         // controllers talk with each other.
