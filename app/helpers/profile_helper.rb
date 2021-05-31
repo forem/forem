@@ -15,4 +15,9 @@ module ProfileHelper
 
     { github: urls["GitHub"], twitter: urls["Twitter"], facebook: urls["Facebook"] }.compact
   end
+
+  def profile_field_value(profile, field)
+    name = field.attribute_name
+    profile.respond_to?(name) ? profile.public_send(name) : profile.data[name]
+  end
 end
