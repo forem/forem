@@ -219,8 +219,6 @@ class Article < ApplicationRecord
     end
   }
 
-  scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
-
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
 
