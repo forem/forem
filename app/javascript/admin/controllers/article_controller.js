@@ -74,6 +74,8 @@ export default class ArticleController extends Controller {
             },
           }),
         );
+      } else {
+        checkbox.checked = true;
       }
     } else if (response.status === 404) {
       // if there is no pinned article, it means we can go ahead and pin this one
