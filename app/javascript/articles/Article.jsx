@@ -89,6 +89,7 @@ export const Article = ({
               >
                 {/* images/pin.svg */}
                 <svg
+                  aria-hidden="true"
                   className="mr-2 align-text-bottom color-accent-brand"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
