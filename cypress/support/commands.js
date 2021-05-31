@@ -225,7 +225,7 @@ Cypress.Commands.add('createResponseTemplate', ({ title, content }) => {
  *
  * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for creating a listing.
  */
-Cypress.Commands.add('createListing', ({ title, content = '' }) => {
+Cypress.Commands.add('createListing', ({ title, content }) => {
   return cy.request('POST', '/listings', {
     listing: {
       title,
