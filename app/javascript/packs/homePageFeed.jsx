@@ -89,7 +89,7 @@ export const renderFeed = (timeFrame) => {
         }
 
         // 1. Show the pinned article first
-        // 2. Show the featured story first
+        // 2. Show the featured story next
         // 3. Podcast episodes out today
         // 4. Rest of the stories for the feed
         return (
