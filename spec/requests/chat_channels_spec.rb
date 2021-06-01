@@ -51,7 +51,13 @@ RSpec.describe "ChatChannels", type: :request do
 
       it "have no active channel" do
         expect(response).not_to(redirect_to(connect_path(invite_channel.slug)))
-        expect(response.body).not_to include(invite_channel.slug)
+        # The slug will be rendered by the mobile runtime banner because the
+        # request is made directly to "/connect/#{invite_channel.slug}", that's
+        # why we can't simply check that the slug isn't included in
+        # `response.body`. We can check using a regex to make sure the channel
+        # doesn't exist within the chat (after chat DOM element appears but also
+        # before the runtime banner starts).
+        expect(response.body).not_to match(/<div id="chat".*#{invite_channel.slug}.*<div class="runtime-banner"/)
       end
     end
 

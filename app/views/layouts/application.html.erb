@@ -104,19 +104,20 @@
       </div>
     <% end %>
     <%= yield %>
-    <% if FeatureFlag.enabled?(:runtime_banner) || ENV['E2E'] == 'true' %>
-      <div class="Browser-iOS">
-        <div class="runtime-banner">
-          <a href="<%= URL.deep_link(request.path) %>" target="_blank" class="flex items-center flex-1">
-            <%= inline_svg_tag("logo-forem-app.svg", aria_hidden: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32) %>
-            <span class="ml-2">Open with the Forem app...</span>
-          </a>
-          <button type="button" class="runtime-banner__dismiss crayons-btn crayons-btn--ghost crayons-btn--icon crayons-btn--inverted crayons-btn--s pl-2">
-            <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Dismiss banner: Open with the Forem app") %>
-          </button>
-        </div>
+    <div class="Browser-iOS-only">
+      <div class="runtime-banner">
+        <a href="<%= URL.deep_link(request.path) %>" target="_blank" class="flex items-center flex-1">
+          <%= inline_svg_tag("logo-forem-app.svg", aria_hidden: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32) %>
+          <div class="flex flex-col pl-3">
+            <span class="">Forem</span>
+            <span class="">Open with the Forem app</span>
+          </div>
+        </a>
+        <button type="button" class="runtime-banner__dismiss crayons-btn crayons-btn--ghost crayons-btn--icon crayons-btn--inverted crayons-btn--s">
+          <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Dismiss banner: Open with the Forem app") %>
+        </button>
       </div>
-    <% end %>
+    </div>
   </div>
 </div>
 <% unless internal_navigation? %>

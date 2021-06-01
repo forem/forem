@@ -96,6 +96,57 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
+  # Relevant Fields for migration from Users table to Users_Settings table
+  USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
+    config_font
+    config_navbar
+    config_theme
+    display_announcements
+    display_sponsors
+    editor_version
+    experience_level
+    feed_mark_canonical
+    feed_referential_link
+    feed_url
+    inbox_guidelines
+    inbox_type
+    permit_adjacent_sponsors
+  ].to_set.freeze
+
+  # Relevant Fields for migration from Profiles table to Users_Settings table
+  PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
+    brand_color1
+    brand_color2
+    display_email_on_profile
+  ].to_set.freeze
+
+  # Relevant Fields for migration from Users table to Users_Notification_Settings table
+  USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
+    email_badge_notifications
+    email_comment_notifications
+    email_community_mod_newsletter
+    email_connect_messages
+    email_digest_periodic
+    email_follower_notifications
+    email_membership_newsletter
+    email_mention_notifications
+    email_newsletter
+    email_tag_mod_newsletter
+    email_unread_notifications
+    mobile_comment_notifications
+    mod_roundrobin_notifications
+    reaction_notifications
+    welcome_notifications
+  ].to_set.freeze
+
+  USER_SETTINGS_ENUM_FIELDS = %w[
+    config_font
+    config_navbar
+    config_theme
+    editor_version
+    inbox_type
+  ].to_set.freeze
+
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password
@@ -303,6 +354,8 @@ class User < ApplicationRecord
   after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
+
+  after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 
   def self.dev_account
@@ -574,6 +627,45 @@ class User < ApplicationRecord
   end
 
   private
+
+  def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
+    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      # rubocop:disable Layout/LineLength
+      users_setting_record.assign_attributes(field => profile.public_send(field)) if profile&.public_send(field).present?
+      # rubocop:enable Layout/LineLength
+    end
+  end
+
+  def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
+    USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      if USER_SETTINGS_ENUM_FIELDS.include?(field)
+        field_enums = Users::Setting.defined_enums[field]
+        users_setting_record.assign_attributes(field => field_enums[public_send(field).to_sym])
+      else
+        users_setting_record.assign_attributes(field => public_send(field))
+      end
+    end
+
+    sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
+
+    users_setting_record.save
+  end
+
+  def sync_users_settings_table
+    users_setting_record = Users::Setting.create_or_find_by(user_id: id)
+
+    migrate_users_and_profile_fields_to_users_settings(users_setting_record)
+  end
+
+  def sync_users_notification_settings_table
+    users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)
+
+    USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
+      users_notification_setting_record.assign_attributes(field => public_send(field))
+    end
+
+    users_notification_setting_record.save
+  end
 
   def send_welcome_notification
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))

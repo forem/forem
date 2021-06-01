@@ -11,7 +11,7 @@
 
   @keyframes #{$name} {
     from {
-      opacity: 0;
+      opacity: var(--opacity-0);
       top: calc(var(--su-4) * -1);
     }
     to {
@@ -306,7 +306,7 @@
 
     // ideally this one shouldn't be there, but I'm not sure how else we could handle that right now...
     .crayons-article-form__toolbar {
-      opacity: 0;
+      opacity: var(--opacity-0);
     }
   }
 }

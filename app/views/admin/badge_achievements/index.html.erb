@@ -34,7 +34,7 @@
       <td><%= badge_achievement.badge.title %></td>
       <h5>
         <td class="justify-content-center">
-          <img class="mx-auto mt-3" width="40" height="40" src="<%= badge_achievement.badge.badge_image %>" alt="badge image">
+          <img class="mx-auto mt-3" width="40" height="40" src="<%= badge_achievement.badge.badge_image %>" alt="badge image" loading="lazy" />
         </td>
         <td><%= link_to "Remove", admin_badge_achievement_path(badge_achievement), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %></td>
       </h5>
