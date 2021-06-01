@@ -52,7 +52,7 @@
           <span class="crayons-field__required crayons-tooltip"></span>
         <% end %>
         <%= inline_svg_tag("eye.svg", class: "absolute bottom-2 right-2 cursor-pointer", aria: true, title: "Email icon") %>
-        <%= f.password_field :password, class: "crayons-textfield", required: true %>
+        <%= f.password_field :password, placeholder: "•••••••••", class: "crayons-textfield", required: true %>
       </div>
 
       <% if ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
