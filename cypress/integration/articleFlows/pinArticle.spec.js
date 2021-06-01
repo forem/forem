@@ -27,9 +27,7 @@ describe('Pin an article', () => {
 
     cy.visit('/');
 
-    cy.findByRole('main').within(() => {
-      cy.findByTestId('pinned-article').should('be.visible');
-    });
+    cy.findByRole('main').findByTestId('pinned-article').should('be.visible');
   });
 
   it('should unpin a post', () => {
