@@ -71,6 +71,8 @@ export const AccessibilitySuggestions = ({ markdownLintErrors }) => {
                   aria-label={`Learn more about accessible ${
                     lintError.errorType === 'image' ? 'images' : 'headings'
                   }`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Learn more
                 </a>

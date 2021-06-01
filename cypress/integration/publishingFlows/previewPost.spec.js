@@ -166,8 +166,6 @@ describe('Post Editor', () => {
   });
 
   describe('Accessibility suggestions', () => {
-    const { baseUrl } = Cypress.config();
-
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/articleEditorV2User.json').as('user');
@@ -285,8 +283,7 @@ describe('Post Editor', () => {
 
       cy.findByRole('link', {
         name: 'Learn more about accessible headings',
-      }).click();
-      cy.url().should('equal', `${baseUrl}p/editor_guide#accessible-headings`);
+      }).should('have.attr', 'href', '/p/editor_guide#accessible-headings');
     });
 
     it('should show a suggestion when heading level increases by more than one', () => {
@@ -307,8 +304,7 @@ describe('Post Editor', () => {
 
       cy.findByRole('link', {
         name: 'Learn more about accessible headings',
-      }).click();
-      cy.url().should('equal', `${baseUrl}p/editor_guide#accessible-headings`);
+      }).should('have.attr', 'href', '/p/editor_guide#accessible-headings');
     });
 
     it('should show a suggestion for empty alt text on images', () => {
@@ -329,8 +325,7 @@ describe('Post Editor', () => {
 
       cy.findByRole('link', {
         name: 'Learn more about accessible images',
-      }).click();
-      cy.url().should('equal', `${baseUrl}p/editor_guide#alt-text-for-images`);
+      }).should('have.attr', 'href', '/p/editor_guide#alt-text-for-images');
     });
 
     it('should show a suggestion for default alt text on images', () => {
@@ -360,8 +355,7 @@ describe('Post Editor', () => {
         name: 'Learn more about accessible images',
       })
         .first()
-        .click();
-      cy.url().should('equal', `${baseUrl}p/editor_guide#alt-text-for-images`);
+        .should('have.attr', 'href', '/p/editor_guide#alt-text-for-images');
     });
 
     it('should show the correct suggestion for alt text when other text exists on the same line', () => {
