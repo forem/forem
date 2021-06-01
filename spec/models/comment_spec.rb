@@ -464,10 +464,19 @@ RSpec.describe Comment, type: :model do
       end
     end
 
-    context "when the post is not present" do
-      it "raise an error post is not available" do
-        comment = build(:comment, user: user, commentable: nil)
-        expect { comment.save }.to raise_error("The post has been deleted by the owner")
+    context "when the commentable is not present" do
+      it "raises a validation error with message 'item has been deleted'" do
+        comment = build(:comment, user: user, commentable: nil, commentable_type: nil)
+        comment.validate
+        expect(comment).not_to be_valid
+        expect(comment.errors_as_sentence).to match("item has been deleted")
+      end
+
+      it "raises a validation error with commentable_type, if commentable_type is present" do
+        comment = build(:comment, user: user, commentable: nil, commentable_type: "Article")
+        comment.validate
+        expect(comment).not_to be_valid
+        expect(comment.errors_as_sentence).to match("Article has been deleted")
       end
     end
   end

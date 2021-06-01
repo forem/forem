@@ -30,7 +30,7 @@ class Comment < ApplicationRecord
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
   before_save :synchronous_spam_score_check
-  before_create :check_if_commentable_present, :adjust_comment_parent_based_on_depth
+  before_create :adjust_comment_parent_based_on_depth
   after_create :after_create_checks
   after_create :notify_slack_channel_about_warned_users
   after_update :update_descendant_notifications, if: :deleted
@@ -52,6 +52,11 @@ class Comment < ApplicationRecord
   validates :public_reactions_count, presence: true
   validates :reactions_count, presence: true
   validates :user_id, presence: true
+  validates :commentable, on: :create, presence: {
+    message: lambda do |object, _data|
+      "#{object.commentable_type.nil? ? 'item' : object.commentable_type} has been deleted."
+    end
+  }
 
   after_create_commit :record_field_test_event
   after_create_commit :send_email_notification, if: :should_send_email_notification?
@@ -182,10 +187,6 @@ class Comment < ApplicationRecord
     self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
-  end
-
-  def check_if_commentable_present
-    raise "The post has been deleted by the owner" if commentable.blank?
   end
 
   def adjust_comment_parent_based_on_depth
