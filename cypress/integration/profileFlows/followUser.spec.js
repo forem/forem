@@ -19,10 +19,13 @@ describe('Follow user from profile page', () => {
 
     // Check that the update persists after reload
     cy.reload();
+    cy.get('[data-fetched="fetched"]');
     cy.findByRole('button', { name: 'Following' }).click();
     cy.findByRole('button', { name: 'Follow' });
 
     // Check that the update persists after reload
+    cy.reload();
+    cy.get('[data-fetched="fetched"]');
     cy.findByRole('button', { name: 'Follow' });
   });
 });
