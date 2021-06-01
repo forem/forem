@@ -52,7 +52,8 @@
           <span class="crayons-field__required crayons-tooltip"></span>
         <% end %>
         <span onclick="togglePasswordVisibility()">
-          <%= inline_svg_tag("eye.svg", class: "absolute bottom-2 right-2 cursor-pointer", aria: true, title: "Eye icon", onClick: "togglePasswordVisibility()") %>
+          <%= inline_svg_tag("eye.svg", class: "absolute bottom-2 right-2 cursor-pointer js-eye", aria: true, title: "Eye icon", onClick: "togglePasswordVisibility()") %>
+          <%= inline_svg_tag("eye-off.svg", class: "absolute bottom-2 right-2 cursor-pointer hidden js-eye-off", aria: true, title: "Eye Off icon", onClick: "togglePasswordVisibility()") %>
         </span>
         <%= f.password_field :password, placeholder: "•••••••••", class: "crayons-textfield js-password", required: true %>
       </div>
