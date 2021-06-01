@@ -271,20 +271,17 @@ RSpec.describe ArticleDecorator, type: :decorator do
     end
 
     it "returns false if no article is pinned" do
-      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(nil)
-
       expect(article.decorate.pinned?).to be(false)
     end
 
     it "returns false if another article is pinned" do
-      other_article_id = create(:article).id
-      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(other_article_id)
+      PinnedArticle.set(create(:article))
 
       expect(article.decorate.pinned?).to be(false)
     end
 
     it "returns true if the article is pinned" do
-      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(article.id)
+      PinnedArticle.set(article)
 
       expect(article.decorate.pinned?).to be(true)
     end

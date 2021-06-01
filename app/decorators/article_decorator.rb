@@ -112,6 +112,6 @@ class ArticleDecorator < ApplicationDecorator
   def pinned?
     return false unless persisted?
 
-    Settings::General.feed_pinned_article_id == id
+    id == PinnedArticle.id
   end
 end

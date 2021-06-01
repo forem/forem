@@ -7,7 +7,7 @@ module Admin
     end
 
     def index
-      @pinned_article = ::Settings::General.feed_pinned_article
+      @pinned_article = PinnedArticle.get
 
       case params[:state]
       when /top-/
@@ -31,7 +31,7 @@ module Admin
       article = Article.find(params[:id])
 
       if article.update(article_params)
-        ::Settings::General.feed_pinned_article_id = article.id if params.dig(:article, :pinned)
+        PinnedArticle.set(article) if params.dig(:article, :pinned)
 
         flash[:success] = "Article saved!"
       else

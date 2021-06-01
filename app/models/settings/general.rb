@@ -135,12 +135,5 @@ module Settings
     def self.get_default(field)
       get_field(field)[:default]
     end
-
-    # Returns the article pinned on the feed, nil if there's none
-    def self.feed_pinned_article
-      return if feed_pinned_article_id.blank?
-
-      Article.published.find_by(id: feed_pinned_article_id)
-    end
   end
 end

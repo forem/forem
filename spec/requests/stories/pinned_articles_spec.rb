@@ -27,16 +27,13 @@ RSpec.describe "Stories::PinnedArticlesController", type: :request do
       end
 
       it "responds with :not_found if there is no pinned article" do
-        allow(Settings::General).to receive(:feed_pinned_article_id).and_return(nil)
-
         get stories_feed_pinned_article_path, headers: headers
 
         expect(response).to have_http_status(:not_found)
       end
 
       it "responds with the expected JSON response" do
-        Settings::General.feed_pinned_article_id = article.id
-        setting = Settings::General.find_by(var: :feed_pinned_article_id)
+        PinnedArticle.set(article)
 
         get stories_feed_pinned_article_path, headers: headers
 
@@ -45,7 +42,7 @@ RSpec.describe "Stories::PinnedArticlesController", type: :request do
           "id" => article.id,
           "path" => article.path,
           "title" => article.title,
-          "pinned_at" => setting.updated_at.iso8601,
+          "pinned_at" => PinnedArticle.updated_at.iso8601,
         )
       end
     end
@@ -85,18 +82,23 @@ RSpec.describe "Stories::PinnedArticlesController", type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
+      it "responds with :unprocessable_entity if a draft article id is passed" do
+        article = create(:article, published: false)
+        put stories_feed_pinned_article_path, params: { id: article.id }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
       it "responds with :no_content if a valid article id is passed" do
         put stories_feed_pinned_article_path, params: { id: article.id }.to_json, headers: headers
 
         expect(response).to have_http_status(:no_content)
       end
 
-      it "updates Settings::General.feed_pinned_article_id", :aggregate_failures do
-        allow(Settings::General).to receive(:feed_pinned_article_id=)
-
+      it "updates the pinned article", :aggregate_failures do
         put stories_feed_pinned_article_path, params: { id: article.id }.to_json, headers: headers
 
-        expect(Settings::General).to have_received(:feed_pinned_article_id=).with(article.id)
+        expect(PinnedArticle.get).to eq(article)
       end
     end
   end
