@@ -15,9 +15,9 @@ describe('User Update Settings Profile', () => {
     const summary = 'This is my story...';
     const location = 'New York City';
 
-    cy.findByText(/^Website URL$/i).type(websiteURL);
-    cy.findByText(/^Summary$/i).type(summary);
-    cy.findByText(/^Location$/i).type(location);
+    cy.findByLabelText(/^Website URL$/i).type(websiteURL);
+    cy.findByLabelText(/^Summary$/i).type(summary);
+    cy.findByLabelText(/^Location$/i).type(location);
 
     cy.findByText(/^Save Profile Information$/i).click();
 
