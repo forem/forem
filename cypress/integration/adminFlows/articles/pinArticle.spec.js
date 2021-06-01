@@ -31,7 +31,8 @@ describe('Pin an article', () => {
 
     cy.findAllByRole('checkbox', { name: 'Pinned' }).first().check();
     cy.findAllByRole('button', { name: 'Submit' }).first().click();
-
+// Verify that the form has submitted and the page has changed to the confirmation page
+cy.url().should('contain', '/content_manager/articles/')
     cy.findAllByRole('checkbox', { name: 'Pinned' })
       .first().should('be.checked');
   });
