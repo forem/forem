@@ -60,6 +60,16 @@ RSpec.describe "/admin/content_manager/articles", type: :request do
         } }
       end.to change { article.reload.published_at }.to(DateTime.parse(updated_published_at.to_s))
     end
+
+    it "creates an audit log on update" do
+      Audit::Subscribe.listen(:moderator)
+
+      expect do
+        patch admin_article_path(article.id), params: { article: { approved: true } }
+      end.to change(AuditLog, :count).by(1)
+
+      Audit::Subscribe.forget(:moderator)
+    end
   end
 
   context "when unpinning an article" do
@@ -89,6 +99,16 @@ RSpec.describe "/admin/content_manager/articles", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("text/html")
       expect(response.body).to include('data-controller="article"')
+    end
+
+    it "creates an audit log" do
+      Audit::Subscribe.listen(:moderator)
+
+      expect do
+        delete unpin_admin_article_path(article.id)
+      end.to change(AuditLog, :count).by(1)
+
+      Audit::Subscribe.forget(:moderator)
     end
   end
 end

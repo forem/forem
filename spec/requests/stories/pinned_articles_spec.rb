@@ -100,6 +100,64 @@ RSpec.describe "Stories::PinnedArticlesController", type: :request do
 
         expect(PinnedArticle.get).to eq(article)
       end
+
+      it "creates an audit log" do
+        Audit::Subscribe.listen(:moderator)
+
+        expect do
+          put stories_feed_pinned_article_path, params: { id: article.id }.to_json, headers: headers
+        end.to change(AuditLog, :count).by(1)
+
+        Audit::Subscribe.forget(:moderator)
+      end
+    end
+  end
+
+  describe "#destroy" do
+    context "when unauthorized" do
+      it "rejects a requested by an unauthenticated user" do
+        delete stories_feed_pinned_article_path, headers: headers
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "rejects a requested by an unauthorized user" do
+        sign_in user
+
+        expect do
+          delete stories_feed_pinned_article_path, headers: headers
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+
+    context "when authorized" do
+      before do
+        sign_in(admin)
+      end
+
+      it "succeeds if there is no pinned article" do
+        delete stories_feed_pinned_article_path, headers: headers
+
+        expect(response).to have_http_status(:no_content)
+      end
+
+      it "removes the pinned article", :aggregate_failures do
+        PinnedArticle.set(article)
+
+        delete stories_feed_pinned_article_path, headers: headers
+
+        expect(PinnedArticle.exists?).to be(false)
+      end
+
+      it "creates an audit log" do
+        Audit::Subscribe.listen(:moderator)
+
+        expect do
+          delete stories_feed_pinned_article_path, headers: headers
+        end.to change(AuditLog, :count).by(1)
+
+        Audit::Subscribe.forget(:moderator)
+      end
     end
   end
 end

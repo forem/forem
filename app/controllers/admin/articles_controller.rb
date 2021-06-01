@@ -2,7 +2,7 @@ module Admin
   class ArticlesController < Admin::ApplicationController
     layout "admin"
 
-    after_action only: [:update] do
+    after_action only: %i[update unpin] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 

@@ -4,6 +4,10 @@ module Stories
     before_action :authorize_user!
     after_action :verify_authorized
 
+    after_action only: %i[update destroy] do
+      Audit::Logger.log(:moderator, current_user, params.dup)
+    end
+
     def show
       if PinnedArticle.id.present?
         article = PinnedArticle.get
