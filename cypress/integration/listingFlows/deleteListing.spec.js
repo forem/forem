@@ -18,7 +18,7 @@ describe('Delete listing', () => {
   });
 
   it('deletes a listing', () => {
-    cy.findByText('Delete').click();
+    cy.findByRole('link', { name: 'Delete' }).click();
 
     cy.findByRole('main').within(() => {
       cy.get('button', { name: /^Delete$/i }).click();
