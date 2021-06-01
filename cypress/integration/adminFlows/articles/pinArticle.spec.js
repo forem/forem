@@ -1,4 +1,4 @@
-describe('Pin an article', () => {
+describe('Pin an article from the admin area', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
