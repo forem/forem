@@ -42,21 +42,34 @@ describe('Pin an article from the admin area', () => {
   });
 
   it('should change the pinned article', () => {
-    cy.intercept(`${Cypress.config().baseUrl}/stories/feed/pinned_article`, {
-      statusCode: 404,
-    });
-
     cy.findAllByRole('checkbox', { name: 'Pinned' }).first().check();
     cy.findAllByRole('button', { name: 'Submit' }).first().click();
 
     cy.visit('/admin/content_manager/articles');
 
     cy.findAllByRole('checkbox', { name: 'Pinned' }).last().check();
+    cy.findAllByRole('button', { name: 'Pin new article' }).last().click();
     cy.findAllByRole('button', { name: 'Submit' }).last().click();
 
     cy.findAllByRole('checkbox', { name: 'Pinned' })
       .first()
       .as('pinnedCheckbox');
     cy.get('@pinnedCheckbox').should('be.checked');
+  });
+
+  it('should not change the pinned article', () => {
+    cy.findAllByRole('checkbox', { name: 'Pinned' }).first().check();
+    cy.findAllByRole('button', { name: 'Submit' }).first().click();
+
+    cy.visit('/admin/content_manager/articles');
+
+    cy.findAllByRole('checkbox', { name: 'Pinned' }).last().check();
+    cy.findAllByRole('button', { name: 'Dismiss' }).last().click();
+    cy.findAllByRole('button', { name: 'Submit' }).last().click();
+
+    cy.findAllByRole('checkbox', { name: 'Pinned' })
+      .first()
+      .as('pinnedCheckbox');
+    cy.get('@pinnedCheckbox').should('not.be.checked');
   });
 });
