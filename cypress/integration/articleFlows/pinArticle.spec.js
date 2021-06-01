@@ -39,6 +39,6 @@ describe('Pin an article', () => {
 
     cy.visit('/');
 
-    cy.findByRole('main').findByTestId('pinned-article').should('not.exist);
+    cy.findByRole('main').findByTestId('pinned-article').should('not.exist');
   });
 });
