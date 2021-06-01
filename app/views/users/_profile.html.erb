@@ -49,6 +49,7 @@
     </div>
   </div>
 
+  <% profile = @user.profile %>
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
     <% next if group.name == "Links" # TODO: [@jacobherrington] Remove this when we drop social links %>
     <div class="crayons-card crayons-card--content-rows">
@@ -60,7 +61,10 @@
       <% group.profile_fields.each do |field| %>
         <div class="crayons-field <%= "crayons-field--checkbox" if field.input_type == "check_box" %>">
           <% if field["input_type"] == "check_box" %>
-            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", checked: @user.profile.data[field.attribute_name], class: "crayons-checkbox") %>
+            <%= f.public_send(field["input_type"],
+                              "profile[#{field.attribute_name}]",
+                              checked: profile.public_send(field.attribute_name),
+                              class: "crayons-checkbox") %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
@@ -69,14 +73,24 @@
               <%= field.label %>
             </label>
             <div class="flex items-center w-100 m:w-50">
-              <%= f.public_send("text_field", "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], placeholder: field["placeholder_text"], class: "crayons-textfield js-color-field") %>
-              <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], class: "crayons-color-selector js-color-field ml-2") %>
+              <%= f.public_send("text_field", "profile[#{field.attribute_name}]",
+                                value: profile.public_send(field.attribute_name),
+                                placeholder: field["placeholder_text"],
+                                class: "crayons-textfield js-color-field") %>
+              <%= f.public_send(field["input_type"],
+                                "profile[#{field.attribute_name}]",
+                                value: profile.public_send(field.attribute_name),
+                                class: "crayons-color-selector js-color-field ml-2") %>
             </div>
           <% else %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
-            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], placeholder: field["placeholder_text"], class: "crayons-textfield") %>
+            <%= f.public_send(field["input_type"],
+                              "profile[#{field.attribute_name}]",
+                              value: profile.public_send(field.attribute_name),
+                              placeholder: field["placeholder_text"],
+                              class: "crayons-textfield") %>
           <% end %>
           <% if field.description.present? %>
             <p class="crayons-field__description"><%= field.description %></p>
