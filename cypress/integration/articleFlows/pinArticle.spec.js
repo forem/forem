@@ -39,8 +39,6 @@ describe('Pin an article', () => {
 
     cy.visit('/');
 
-    cy.findByRole('main').within(() => {
-      cy.get('[data-testid="pinned-article"]').should('not.exist');
-    });
+    cy.findByRole('main').findByTestId('pinned-article').should('not.exist);
   });
 });
