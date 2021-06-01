@@ -121,7 +121,7 @@
     "eslint-plugin-import": "^2.23.3",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-no-only-tests": "^2.6.0",
-    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react": "^7.24.0",
     "faker": "^5.5.3",
     "gitdocs": "^2.0.0",
     "husky": "^4.3.8",
