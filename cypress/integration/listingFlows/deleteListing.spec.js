@@ -22,8 +22,6 @@ describe('Delete listing', () => {
 
     cy.findByRole('main').findByRole('button', { name: /^Delete$/i }).click();
 
-    cy.findByRole('main').within(() => {
-      cy.get('[class=dashboard-listings-view]').should('be.empty');
-    });
+    cy.findByRole('main').findByRole('heading', { name: 'Test Listing' }).should('not.exist');
   });
 });
