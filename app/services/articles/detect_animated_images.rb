@@ -49,7 +49,7 @@ module Articles
 
       return unless uploader.file.exists?
 
-      uploader&.file&.file
+      uploader.file&.file
     end
     private_class_method :retrieve_image_from_uploader_store
   end
