@@ -33,9 +33,7 @@ describe('Pin an article', () => {
     cy.findAllByRole('button', { name: 'Submit' }).first().click();
 
     cy.findAllByRole('checkbox', { name: 'Pinned' })
-      .first()
-      .as('pinnedCheckbox');
-    cy.get('@pinnedCheckbox').should('be.checked');
+      .first().should('be.checked');
   });
 
   it('should change the pinned article', () => {
