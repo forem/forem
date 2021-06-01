@@ -23,19 +23,20 @@ gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cloudinary", "~> 1.20" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.47.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.49.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.5" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.5" # Oauth 2 provider
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
+gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
-gem "flipper", "~> 0.20.4" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.20.4" # Store Flipper flags in ActiveRecord
-gem "flipper-ui", "~> 0.20.4"
+gem "flipper", "~> 0.21.0" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.21.0" # Store Flipper flags in ActiveRecord
+gem "flipper-ui", "~> 0.21.0"
 gem "fog-aws", "~> 3.10" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
@@ -67,7 +68,7 @@ gem "parallel", "~> 1.20" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with GitHub OAuth client
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_search", "~> 2.3.5" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
-gem "puma", "~> 5.2.2" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 5.3.2" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 2.0" # Ruby library for Pusher Channels HTTP API
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
@@ -80,7 +81,7 @@ gem "ransack", "~> 2.4" # Searching and sorting
 gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.2.5" # Redis ruby client
-gem "rpush", "~> 5.4" # Push Notification library for Rails
+gem "rpush", "~> 6.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 
 # NOTE: [@rhymes]: sign in doesn't work with the redis-rack 2.1.0+ or with redis-actionpack 5.2.0+
@@ -98,14 +99,14 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.2.1" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.0.10" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.0.11" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "store_attribute", "~> 0.8.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.32" # Ruby library for the Stripe API
+gem "stripe", "~> 5.33" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
@@ -113,7 +114,7 @@ gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier 
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
-gem "webpacker", "~> 5.3.0" # Use webpack to manage app-like JavaScript modules in Rails
+gem "webpacker", "~> 5.4.0" # Use webpack to manage app-like JavaScript modules in Rails
 
 group :development do
   gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
@@ -123,9 +124,9 @@ group :development do
 
   gem "brakeman", "~> 5.0", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.8" # bundler-audit provides patch-level verification for Bundled apps
-  gem "derailed_benchmarks", "~> 2.0", require: false # A series of things you can use to benchmark a Rails or Ruby app
+  gem "derailed_benchmarks", "~> 2.1", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
-  gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
+  gem "guard", "~> 2.17", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "listen", "~> 3.5", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
@@ -143,11 +144,11 @@ group :development, :test do
   gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.5.0" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
-  gem "faker", "~> 2.17" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.15.0" # Help parallelize Ruby spec builds
+  gem "faker", "~> 2.18" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "knapsack_pro", "~> 2.17.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.14", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.15", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.11", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.10", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.3", require: false # Code style checking for RSpec files
@@ -158,7 +159,7 @@ end
 
 group :test do
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
-  gem "factory_bot_rails", "~> 6.1" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
+  gem "factory_bot_rails", "~> 6.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "fakeredis", "~> 0.8.0" # Fake (In-memory) driver for redis-rb. Useful for testing environment and machines without Redis.
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
@@ -172,6 +173,6 @@ group :test do
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 6.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 4.6" # Run Selenium tests more easily with install and updates for all supported webdrivers
-  gem "webmock", "~> 3.12", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
+  gem "webmock", "~> 3.13", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

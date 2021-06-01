@@ -8,7 +8,7 @@ module Emails
       # Temporary
       # @sre:mstruve This is temporary until we have an efficient way to handle this job
       # for our large DEV community. Smaller Forems should be able to handle it no problem
-      return if SiteConfig.dev_to?
+      return if ForemInstance.dev_to?
 
       EmailDigest.send_periodic_digest_email
     end

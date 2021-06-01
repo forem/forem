@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :users_setting, class: "Users::Setting" do
     config_font { "sans_serif" }
-    config_navbar { "default_navbar" }
+    config_navbar { "default" }
     config_theme { "night_theme" }
     display_announcements { true }
     display_sponsors { true }

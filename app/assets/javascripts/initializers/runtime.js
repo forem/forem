@@ -129,7 +129,7 @@ class Runtime {
             reject(e);
           });
       } else {
-        reject('Unsupported device unable to copy to clipboard');
+        reject('Unable to copy the text. Try reloading the page');
       }
     });
   }

@@ -49,7 +49,6 @@ RSpec.describe "User edits their profile", type: :system do
   describe "editing admin created profile fields" do
     before do
       allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
-      allow(FeatureFlag).to receive(:enabled?).with(:runtime_banner).and_return(false)
       Profile.refresh_attributes!
     end
 
@@ -79,6 +78,18 @@ RSpec.describe "User edits their profile", type: :system do
         expect(page).to have_text(header_profile_field.attribute_name.titleize)
         expect(page).to have_text("pistachio")
       end
+    end
+
+    it "respects static profile fields", :aggregate_failures do
+      fill_in "profile[summary]", with: "Star of hit 90s sitcom Horsin' Around"
+      fill_in "profile[location]", with: "Hollywoo"
+
+      click_button "Save"
+
+      visit "/#{user.username}"
+
+      expect(page).to have_text("Horsin' Around")
+      expect(page).to have_text("Hollywoo")
     end
   end
 end

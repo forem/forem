@@ -1,12 +1,46 @@
-<% title "Editor Guide" %>
+<% title "Editor Guide - Publishing from RSS or Atom" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="<%= app_url("/p/publishing_from_rss_guide") %>" />
-  <meta name="description" content="dev.to | publishing from rss guideline">
+  <link rel="canonical" href="<%= app_url(publishing_from_rss_guide_path) %>" />
+  <meta name="description" content="<%= community_name %> | Publishing from RSS or Atom guidelines">
   <%= meta_keywords_default %>
 <% end %>
 
-<header>
-  <div class="blank-space"></div>
-</header>
-<%= render "publishing_from_rss_guide_text" %>
+<main class="container article" id="main-content">
+  <div class="title help-guide-title">
+    <h1>Publishing from RSS or Atom</h1>
+  </div>
+
+  <div class="body">
+    <h2>Front Matter</h2>
+
+    <p>Our feed reader converts some elements from the RSS or Atom feeds to tags for the editor's front matter:</p>
+    <ul>
+      <li>
+        <code>&lt;title&gt;</code>: <strong>title</strong>, the title of the post
+      </li>
+
+      <li>
+        <code>&lt;category&gt;</code>: <strong>tags</strong>, only the first four <code>&lt;category&gt;</code> elements
+        can be used in a post on <%= community_name %> per each item in the feed.
+      </li>
+
+      <li>
+        <code>&lt;link&gt;</code>: <strong>canonical_url</strong>, only used if the "Mark the RSS source as canonical URL by default"
+        option is enabled in the <%= link_to "RSS Settings", user_settings_path(:extensions) %>.
+      </li>
+    </ul>
+
+    <h2>Post Content</h2>
+
+    <p>
+      The post content is prioritized in this order: <code>&lt;content&gt;</code>, <code>&lt;summary&gt;</code>, or
+      <code>&lt;description&gt;</code>.
+    </p>
+
+    <p>The HTML will be converted to Markdown as the body of the <%= community_name %> post.</p>
+
+    <p>If you're using Medium RSS feed all its tweet links, YouTube, and Gist iframes will be converted to Liquid tags.</p>
+    <div class="blank-space"></div>
+  </div>
+</main>

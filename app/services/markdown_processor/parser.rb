@@ -114,7 +114,7 @@ module MarkdownProcessor
 
     def escape_liquid_tags_in_codeblock(content)
       # Escape codeblocks, code spans, and inline code
-      content.gsub(/[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+      content.gsub(/[[:space:]]*~{3}.*?~{3}|[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
         codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
         codeblock.gsub!("{% raw %}", "{----% raw %----}")
         if codeblock.match?(/[[:space:]]*`{3}/)

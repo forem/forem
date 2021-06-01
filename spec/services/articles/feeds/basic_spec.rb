@@ -45,5 +45,15 @@ RSpec.describe Articles::Feeds::Basic, type: :service do
       result = feed.feed
       expect(result).not_to include(hot_story)
     end
+
+    it "doesn't display blocked articles", type: :system, js: true do
+      selector = "article[data-content-user-id='#{hot_story.user_id}']"
+      sign_in user
+      visit root_path
+      expect(page).to have_selector(selector, visible: :visible)
+      create(:user_block, blocker: user, blocked: hot_story.user, config: "default")
+      visit root_path
+      expect(page).to have_selector(selector, visible: :hidden)
+    end
   end
 end

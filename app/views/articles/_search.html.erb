@@ -18,7 +18,7 @@
 
   function searchMain(substories) {
     var query = filterXSS(params.q);
-    var filters = filterXSS(params.filters || "");
+    var filters = filterXSS(params.filters || "class_name:Article");
     var sortBy = filterXSS(params.sort_by || "");
     var sortDirection = filterXSS(params.sort_direction || "");
 

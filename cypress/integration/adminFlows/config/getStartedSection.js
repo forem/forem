@@ -26,15 +26,11 @@ describe('Get Started Section', () => {
             `My username is @${username} and this action is 100% safe and appropriate.`,
           );
 
-        cy.get('@getStartedSectionForm')
-          .findByText('Update Site Configuration')
-          .click();
+        cy.get('@getStartedSectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Site configuration was successfully updated.').should(
-          'be.visible',
-        );
+        cy.findByText('Successfully updated settings.').should('be.visible');
 
         // Page reloaded so need to get a new reference to the form.
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');
@@ -59,15 +55,11 @@ describe('Get Started Section', () => {
             `My username is @${username} and this action is 100% safe and appropriate.`,
           );
 
-        cy.get('@getStartedSectionForm')
-          .findByText('Update Site Configuration')
-          .click();
+        cy.get('@getStartedSectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Site configuration was successfully updated.').should(
-          'be.visible',
-        );
+        cy.findByText('Successfully updated settings.').should('be.visible');
 
         // Page reloaded so need to get a new reference to the form.
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');

@@ -14,8 +14,8 @@
 <div id="onboarding-container"
   data-community-name="<%= community_name %>"
   data-community-description="<%= Settings::Community.community_description %>"
-  data-community-logo="<%= optimized_image_url(SiteConfig.logo_png) %>"
-  data-community-background="<%= optimized_image_url(SiteConfig.onboarding_background_image, width: 1680, quality: 75, random_fallback: false) %>">
+  data-community-logo="<%= optimized_image_url(Settings::General.logo_png) %>"
+  data-community-background="<%= optimized_image_url(Settings::General.onboarding_background_image, width: 1680, quality: 75, random_fallback: false) %>">
   <%= javascript_packs_with_chunks_tag "Onboarding", defer: true %>
 </div>
 
