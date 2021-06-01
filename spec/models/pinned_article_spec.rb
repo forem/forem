@@ -65,7 +65,7 @@ RSpec.describe PinnedArticle, type: :model do
       Settings::General.feed_pinned_article_id = article.id
 
       another_article = create(:article)
-      described_class.set(another_article.id)
+      described_class.set(another_article)
 
       expect(Settings::General.feed_pinned_article_id).to eq(another_article.id)
     end
