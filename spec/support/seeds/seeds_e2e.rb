@@ -183,16 +183,15 @@ end
 ##############################################################################
 
 seeder.create_if_none(Listing) do
-  user = User.first
-  Credit.add_to(user, rand(100))
+  Credit.add_to(admin_user, rand(100))
 
   Listing.create!(
-    user: user,
+    user: admin_user,
     title: "Listing title",
     body_markdown: Faker::Markdown.random,
     location: Faker::Address.city,
-    organization_id: user.organizations.first&.id,
-    listing_category_id: ListingCategory.first&.id,
+    organization_id: admin_user.organizations.first&.id,
+    listing_category_id: ListingCategory.first.id,
     contact_via_connect: true,
     published: true,
     originally_published_at: Time.current,

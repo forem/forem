@@ -216,20 +216,3 @@ Cypress.Commands.add('createResponseTemplate', ({ title, content }) => {
     `utf8=%E2%9C%93&response_template%5Btitle%5D=${encodedTitle}&response_template%5Bcontent%5D=${encodedContent}`,
   );
 });
-
-/**
- * Creates a listing.
- *
- * @param {string} title The title of a a listing.
- * @param {string} [content=''] The content of the listing.
- *
- * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for creating a listing.
- */
-Cypress.Commands.add('createListing', ({ title, content }) => {
-  return cy.request('POST', '/listings', {
-    listing: {
-      title,
-      bodyMarkdown: content,
-    },
-  });
-});

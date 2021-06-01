@@ -7,21 +7,24 @@ describe('Delete listing', () => {
 
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
-        cy.createListing({
-          title: 'Test Listing',
-          content: `This is a test listing's contents.`,
-        }).then(() => {
-          cy.visit('/listings/dashboard');
-        });
+        cy.visit('/listings/dashboard');
       });
     });
   });
 
   it('deletes a listing', () => {
+    cy.findByRole('main')
+      .findByRole('heading', { name: 'Listing title' })
+      .should('exist');
+
     cy.findByRole('link', { name: 'Delete' }).click();
 
-    cy.findByRole('main').findByRole('button', { name: /^Delete$/i }).click();
+    cy.findByRole('main')
+      .findByRole('button', { name: /^Delete$/i })
+      .click();
 
-    cy.findByRole('main').findByRole('heading', { name: 'Test Listing' }).should('not.exist');
+    cy.findByRole('main')
+      .findByRole('heading', { name: 'Listing title' })
+      .should('not.exist');
   });
 });
