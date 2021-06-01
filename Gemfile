@@ -30,6 +30,7 @@ gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the Sta
 gem "doorkeeper", "~> 5.5" # Oauth 2 provider
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
+gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
