@@ -25,6 +25,7 @@ describe('Pin an article', () => {
   });
 
   it('should pin an article when no other article is currently pinned', () => {
+    // Simulate that there is no existing pinned post
     cy.intercept(`${Cypress.config().baseUrl}/stories/feed/pinned_article`, {
       statusCode: 404,
     });
