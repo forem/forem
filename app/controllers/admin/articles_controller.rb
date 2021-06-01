@@ -41,6 +41,19 @@ module Admin
       redirect_to admin_article_path(article.id)
     end
 
+    def unpin
+      article = Article.find(params[:id])
+
+      PinnedArticle.remove
+
+      respond_to do |format|
+        format.html { redirect_to admin_article_path(article.id) }
+        format.js do
+          render partial: "admin/articles/individual_article", locals: { article: article }, content_type: "text/html"
+        end
+      end
+    end
+
     private
 
     def articles_top(months_ago)

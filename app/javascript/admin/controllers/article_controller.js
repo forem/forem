@@ -2,7 +2,12 @@ import { Controller } from 'stimulus';
 
 export default class ArticleController extends Controller {
   static classes = ['bgHighlighted', 'borderHighlighted'];
-  static targets = ['featuredNumber', 'cardBody', 'pinnedCheckbox'];
+  static targets = [
+    'featuredNumber',
+    'cardBody',
+    'pinnedCheckbox',
+    'unpinButton',
+  ];
   static values = { id: Number, pinPath: String };
 
   increaseFeaturedNumber() {
@@ -81,5 +86,19 @@ export default class ArticleController extends Controller {
       // if there is no pinned article, it means we can go ahead and pin this one
       checkbox.checked = true;
     }
+  }
+
+  ajaxSuccess(event) {
+    if (event.target !== this.unpinButtonTarget) {
+      return;
+    }
+
+    // Replace the current Article HTML with the HTML sent by the server
+    const newArticle = document.createElement('div');
+
+    const [, , xhr] = event.detail;
+    newArticle.innerHTML = xhr.responseText;
+
+    this.element.innerHTML = newArticle.querySelector('.card').innerHTML;
   }
 }

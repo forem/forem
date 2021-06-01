@@ -2,16 +2,14 @@ require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
 RSpec.describe "/admin/content_manager/articles", type: :request do
+  let(:super_admin) { create(:user, :super_admin) }
+  let(:article) { create(:article) }
+
   it_behaves_like "an InternalPolicy dependant request", Article do
     let(:request) { get admin_articles_path }
   end
 
-  context "when updating an Article via /admin/content_manager/articles" do
-    let(:super_admin) { create(:user, :super_admin) }
-    let(:article) { create(:article) }
-    let(:second_user) { create(:user) }
-    let(:third_user) { create(:user) }
-
+  context "when updating an article via /admin/content_manager/articles" do
     before do
       sign_in super_admin
     end
@@ -61,6 +59,36 @@ RSpec.describe "/admin/content_manager/articles", type: :request do
           "published_at(6i)": updated_published_at.sec
         } }
       end.to change { article.reload.published_at }.to(DateTime.parse(updated_published_at.to_s))
+    end
+  end
+
+  context "when unpinning an article" do
+    before do
+      sign_in super_admin
+    end
+
+    it "responds with :not_found with an invalid article id" do
+      expect { delete unpin_admin_article_path(9999) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "allows an admin to unpin an article", :aggregate_failures do
+      PinnedArticle.set(article)
+
+      delete unpin_admin_article_path(article.id)
+
+      expect(PinnedArticle.exists?).to be(false)
+      expect(response).to redirect_to(admin_article_path(article.id))
+    end
+
+    it "allows an admin to unpin an article via Ajax", :aggregate_failures do
+      PinnedArticle.set(article)
+
+      delete unpin_admin_article_path(article.id), xhr: true
+
+      expect(PinnedArticle.exists?).to be(false)
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/html")
+      expect(response.body).to include('data-controller="article"')
     end
   end
 end
