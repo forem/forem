@@ -50,7 +50,6 @@ gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web se
 gem "imgproxy", "~> 2.0" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
-gem "jquery-rails", "~> 4.4" #  A gem to automate using jQuery with Rails
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
