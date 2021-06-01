@@ -40,6 +40,7 @@ export const AuthorInfo = ({ listing, onCategoryClick }) => {
           width="32"
           height="32"
           className="crayons-avatar__image"
+          loading="lazy"
         />
       </a>
 

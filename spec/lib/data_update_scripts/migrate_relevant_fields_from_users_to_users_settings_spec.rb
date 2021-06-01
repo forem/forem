@@ -3,7 +3,7 @@ require Rails.root.join(
   "lib/data_update_scripts/20210423155327_migrate_relevant_fields_from_users_to_users_settings.rb",
 )
 
-describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
+describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings, sidekiq: :inline do
   let(:users_setting) { Users::Setting.last }
 
   before do
@@ -12,9 +12,13 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
     User.destroy_all
   end
 
+  # NOTE: an after_commit in User model creates a users_notification_settings record for users
+  # So in these specs, we destroy these users_notification_settings records
+  # so that he migration script creates them instead
   context "when migrating data" do
     it "sets the expected number of records" do
       create_list(:user, 3)
+      Users::Setting.destroy_all
 
       expect do
         described_class.new.run
@@ -22,7 +26,8 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
     end
 
     it "sets the correct User records" do
-      create(:user, config_font: "sans_serif")
+      user = create(:user, config_font: "sans_serif")
+      user.setting.destroy
 
       described_class.new.run
 
@@ -64,7 +69,10 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
     end
 
     it "sets a fallback value for values that are null" do
-      create(:user, display_announcements: nil)
+      user = create(:user)
+      user.setting.destroy
+      user.update_columns(display_announcements: nil)
+      user.reload
 
       described_class.new.run
 
@@ -74,15 +82,17 @@ describe DataUpdateScripts::MigrateRelevantFieldsFromUsersToUsersSettings do
 
   context "when migrating enum settings" do
     it "assigns the correct mapping for enum settings" do
-      create(:user, config_font: "monospace")
+      user = create(:user, config_font: "monospace")
+      user.setting.destroy
 
       described_class.new.run
 
-      expect(users_setting.monospace?).to be(true)
+      expect(users_setting.monospace_font?).to be(true)
     end
 
     it "assigns the fallback value when the value passed does not have an enum defined" do
       user = create(:user)
+      user.setting.destroy
       user.update_columns(config_font: "fake_font")
       user.reload
 

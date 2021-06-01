@@ -1,4 +1,4 @@
-<%= form_with model: [:admin, tag], data: { remote: false } do |f| %>
+<%= form_with model: [:admin, tag] do |f| %>
   <% if !tag.persisted? %>
     <div class="crayons-field">
       <%= f.label :name, class: "crayons-field__label" %>

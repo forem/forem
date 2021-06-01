@@ -104,7 +104,7 @@ class Article < ApplicationRecord
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
 
-  after_commit :async_score_calc, :touch_collection, on: %i[create update]
+  after_commit :async_score_calc, :touch_collection, :detect_animated_images, on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -218,8 +218,6 @@ class Article < ApplicationRecord
       raise TypeError, "Cannot search tags for: #{tags.inspect}"
     end
   }
-
-  scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
@@ -816,5 +814,11 @@ class Article < ApplicationRecord
 
   def notify_slack_channel_about_publication
     Slack::Messengers::ArticlePublished.call(article: self)
+  end
+
+  def detect_animated_images
+    return unless saved_change_to_attribute?(:processed_html)
+
+    ::Articles::DetectAnimatedImagesWorker.perform_async(id)
   end
 end
