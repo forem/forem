@@ -20,9 +20,7 @@ describe('Delete listing', () => {
   it('deletes a listing', () => {
     cy.findByRole('link', { name: 'Delete' }).click();
 
-    cy.findByRole('main').within(() => {
-      cy.get('button', { name: /^Delete$/i }).click();
-    });
+    cy.findByRole('main').findByRole('button', { name: /^Delete$/i }).click();
 
     cy.findByRole('main').within(() => {
       cy.get('[class=dashboard-listings-view]').should('be.empty');
