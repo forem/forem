@@ -13,8 +13,9 @@
   background: var(--card-bg);
   font-size: var(--fs-base); // Todo: remove when ready.
   box-shadow: 0 0 0 1px var(--card-border);
-  margin-bottom: var(--su-2);
+  margin: 0 var(--su-3) var(--su-3);
   position: relative;
+  border-radius: var(--radius);
 
   &:focus-within {
     outline: none;
@@ -23,11 +24,7 @@
   }
 
   @media (min-width: $breakpoint-m) {
-    border-radius: var(--radius);
-  }
-
-  @media (min-width: $breakpoint-l) {
-    margin-bottom: var(--su-3);
+    margin: 0 0 var(--su-3);
   }
 
   --story-padding: var(--su-3) var(--su-3) var(--su-2);
