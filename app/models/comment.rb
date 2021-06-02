@@ -51,7 +51,7 @@ class Comment < ApplicationRecord
   validates :user_id, presence: true
   validates :commentable, on: :create, presence: {
     message: lambda do |object, _data|
-      "#{object.commentable_type.nil? ? 'item' : object.commentable_type} has been deleted."
+      "#{object.commentable_type.presence || 'item'} has been deleted."
     end
   }
 
