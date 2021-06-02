@@ -47,6 +47,8 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:trusted)
 end
 
+admin_user = User.find_by(email: "admin@forem.local")
+
 ##############################################################################
 
 seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") do
@@ -181,16 +183,15 @@ end
 ##############################################################################
 
 seeder.create_if_none(Listing) do
-  user = User.first
-  Credit.add_to(user, rand(100))
+  Credit.add_to(admin_user, rand(100))
 
   Listing.create!(
-    user: user,
+    user: admin_user,
     title: "Listing title",
     body_markdown: Faker::Markdown.random,
     location: Faker::Address.city,
-    organization_id: user.organizations.first&.id,
-    listing_category_id: ListingCategory.first&.id,
+    organization_id: admin_user.organizations.first&.id,
+    listing_category_id: ListingCategory.first.id,
     contact_via_connect: true,
     published: true,
     originally_published_at: Time.current,
@@ -201,8 +202,6 @@ end
 
 ##############################################################################
 
-moderator = User.where(email: "admin@forem.local").first
-
 seeder.create_if_none(Tag) do
   tag = Tag.create!(
     name: "tag1",
@@ -211,10 +210,23 @@ seeder.create_if_none(Tag) do
     supported: true,
   )
 
-  moderator.add_role(:tag_moderator, tag)
+  admin_user.add_role(:tag_moderator, tag)
 end
 
 # Show the tag in the sidebar
 Settings::General.sidebar_tags = %i[tag1]
 
 ##############################################################################
+
+seeder.create_if_none(Badge) do
+  Badge.create!(
+    title: "#{Faker::Lorem.word} #{rand(100)}",
+    description: Faker::Lorem.sentence,
+    badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+  )
+
+  admin_user.badge_achievements.create!(
+    badge: Badge.first,
+    rewarding_context_message_markdown: Faker::Markdown.random,
+  )
+end
