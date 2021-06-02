@@ -464,7 +464,7 @@ RSpec.describe Comment, type: :model do
     end
 
     context "when the commentable is not present" do
-      it "raises a validation error with message 'item has been deleted'" do
+      it "raises a validation error with message 'item has been deleted'", :aggregate_failures do
         comment = build(:comment, user: user, commentable: nil, commentable_type: nil)
         comment.validate
         expect(comment).not_to be_valid
