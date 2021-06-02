@@ -28,6 +28,13 @@ function initializeCommentDropdown() {
     }
   }
 
+  function addAhoyStats() {
+    const container = getAllByClassName('crayons-article-actions__inner')[0];
+    container.querySelectorAll('.dropdown-link-row').forEach((link) => {
+      console.log("LINK: ", link);
+    });
+  }
+
   function copyPermalink(event) {
     event.preventDefault();
     const permalink = event.target.href;
@@ -172,4 +179,6 @@ function initializeCommentDropdown() {
   setTimeout(function addListeners() {
     getAllByClassName('permalink-copybtn').forEach(copyPermalinkListener);
   }, 100);
+
+  addAhoyStats();
 }
