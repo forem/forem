@@ -130,7 +130,7 @@ describe('Pin an article - Admin User', () => {
       cy.findAllByRole('link', { name: 'Manage' }).first().click();
     });
 
-    cy.findByRole('heading', { name: 'Test Article' });
+    cy.findByRole('heading', { name: 'Tools:' });
 
     cy.findByRole('main')
       .findAllByRole('link', { name: 'Delete' })
