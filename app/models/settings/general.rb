@@ -129,7 +129,7 @@ module Settings
     field :push_notifications_ios_pem, type: :string
 
     # Feed
-    field :feed_pinned_article_id, type: :integer, validates: { existing_article_id: true, allow_nil: true }
+    field :feed_pinned_article_id, type: :integer, validates: { existing_published_article_id: true, allow_nil: true }
 
     # To get default values
     def self.get_default(field)

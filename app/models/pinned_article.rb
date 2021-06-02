@@ -1,32 +1,47 @@
 class PinnedArticle
   class << self
     def exists?
-      Settings::General.feed_pinned_article_id.present?
+      pinned_article_id.present? && setting.valid?
     end
 
     def id
-      Settings::General.feed_pinned_article_id
+      return unless setting.valid?
+
+      pinned_article_id
     end
 
     def updated_at
-      return if Settings::General.feed_pinned_article_id.blank?
+      return unless setting.valid?
 
-      setting = Settings::General.find_by(var: :feed_pinned_article_id)
       setting.updated_at
     end
 
     def get
-      return if Settings::General.feed_pinned_article_id.blank?
+      return unless setting.valid?
 
-      Article.published.find_by(id: Settings::General.feed_pinned_article_id)
+      Article.published.find_by(id: pinned_article_id)
     end
 
     def set(article)
-      Settings::General.feed_pinned_article_id = article.id
+      self.pinned_article_id = article.id
     end
 
     def remove
-      Settings::General.feed_pinned_article_id = nil
+      self.pinned_article_id = nil
+    end
+
+    private
+
+    def pinned_article_id
+      Settings::General.feed_pinned_article_id
+    end
+
+    def pinned_article_id=(article_id)
+      Settings::General.feed_pinned_article_id = article_id
+    end
+
+    def setting
+      Settings::General.find_by(var: :feed_pinned_article_id)
     end
   end
 end

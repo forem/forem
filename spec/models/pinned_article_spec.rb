@@ -5,13 +5,29 @@ RSpec.describe PinnedArticle, type: :model do
 
   describe ".exists?" do
     it "returns false if there is no pinned article" do
-      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(nil)
+      Settings::General.feed_pinned_article_id = nil
+
+      expect(described_class.exists?).to be(false)
+    end
+
+    it "returns false if the pinned article has been unpublished" do
+      Settings::General.feed_pinned_article_id = article.id
+
+      article.update_columns(published: false)
+
+      expect(described_class.exists?).to be(false)
+    end
+
+    it "returns false if the pinned article has been deleted" do
+      Settings::General.feed_pinned_article_id = article.id
+
+      article.destroy
 
       expect(described_class.exists?).to be(false)
     end
 
     it "returns true if there is a pinned article" do
-      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(article.id)
+      Settings::General.feed_pinned_article_id = article.id
 
       expect(described_class.exists?).to be(true)
     end
@@ -19,13 +35,29 @@ RSpec.describe PinnedArticle, type: :model do
 
   describe ".id" do
     it "returns nil if there is no pinned article" do
-      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(nil)
+      Settings::General.feed_pinned_article_id = nil
+
+      expect(described_class.id).to be_nil
+    end
+
+    it "returns nil if the pinned article has been unpublished" do
+      Settings::General.feed_pinned_article_id = article.id
+
+      article.update_columns(published: false)
+
+      expect(described_class.id).to be_nil
+    end
+
+    it "returns nil if the pinned article has been deleted" do
+      Settings::General.feed_pinned_article_id = article.id
+
+      article.destroy
 
       expect(described_class.id).to be_nil
     end
 
     it "returns the id of the pinned article" do
-      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(article.id)
+      Settings::General.feed_pinned_article_id = article.id
 
       expect(described_class.id).to eq(article.id)
     end
@@ -33,20 +65,29 @@ RSpec.describe PinnedArticle, type: :model do
 
   describe ".get" do
     it "returns nil if there is no pinned article" do
-      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(nil)
+      Settings::General.feed_pinned_article_id = nil
 
       expect(described_class.get).to be_nil
     end
 
-    it "returns nil if the article is a draft" do
-      draft_article = create(:article, published: false)
-      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(draft_article)
+    it "returns nil if the pinned article has been unpublished" do
+      Settings::General.feed_pinned_article_id = article.id
 
-      expect(described_class.get).to be(nil)
+      article.update_columns(published: false)
+
+      expect(described_class.get).to be_nil
+    end
+
+    it "returns nil if the pinned article has been deleted" do
+      Settings::General.feed_pinned_article_id = article.id
+
+      article.destroy
+
+      expect(described_class.get).to be_nil
     end
 
     it "returns the pinned article" do
-      allow(Settings::General).to receive(:feed_pinned_article_id).and_return(article)
+      Settings::General.feed_pinned_article_id = article.id
 
       expect(described_class.get.id).to eq(article.id)
     end
@@ -54,7 +95,7 @@ RSpec.describe PinnedArticle, type: :model do
 
   describe ".set" do
     it "sets the pinned article" do
-      expect(Settings::General.feed_pinned_article_id).to be(nil)
+      expect(Settings::General.feed_pinned_article_id).to be_nil
 
       described_class.set(article)
 
@@ -72,7 +113,7 @@ RSpec.describe PinnedArticle, type: :model do
   end
 
   describe ".remove" do
-    it "works correctly if there is no pinned article" do
+    it "works even if there is no pinned article" do
       Settings::General.feed_pinned_article_id = nil
 
       described_class.remove
