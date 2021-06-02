@@ -3,6 +3,6 @@ FactoryBot.define do
     association :user, strategy: :create
     association :consumer_app, strategy: :create
     sequence(:token) { |n| "unique_token_#{n}" }
-    platform { Device::IOS }
+    platform { :ios }
   end
 end

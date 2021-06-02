@@ -75,9 +75,6 @@
 <p><strong>Payment processing</strong>
   <br>
   <%= community_name %> does not process payments directly — we rely on third-party services such as Stripe, Shopify, and Paypal to receive payments and store any payment information.
-  <% if SiteConfig.shop_url.present? %>
-    <a href="<%= SiteConfig.shop_url %>">The <%= community_name %> Shop</a> is run through Shopify, a third-party e-commerce platform with their own Privacy Policy.
-  <% end %>
 </p>
 <p><strong>Third-Party Embeds</strong>
   <br>
@@ -135,14 +132,14 @@
 </p>
 <p><strong>Deleting Your Personal Information</strong>
   <br>
-  You may request deletion of your personal information and account by emailing <%= email_link(:privacy) %>.
+  You may request deletion of your personal information and account by emailing <%= email_link %>.
   <br>
   <br>
   To protect information from accidental or malicious destruction, we may maintain residual copies for a brief time period. But, if you delete your account, your information and content will be unrecoverable after that time.
 </p>
 <p><strong>Data Portability</strong>
   <br>
-  If you would like to request a copy of your user data, please email <%= email_link(:privacy) %>.</p>
+  If you would like to request a copy of your user data, please email <%= email_link %>.</p>
 <p><strong>Business Transfers</strong>
   <br>
   If we are involved in a merger, acquisition, bankruptcy, reorganization or sale of assets such that your information would be transferred or become subject to a different privacy policy, we’ll notify you in advance of any such change.
@@ -153,4 +150,4 @@
 </p>
 <p><strong>Questions</strong>
   <br>
-  We welcome feedback about this policy at <%= email_link(:privacy) %>.</p>
+  We welcome feedback about this policy at <%= email_link %>.</p>

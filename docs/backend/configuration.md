@@ -30,16 +30,16 @@ Settings managed via your ENV can be found in
 We use this gem for managing settings used within the app's business logic.
 Examples:
 
-- `SiteConfig.main_social_image`
+- `Settings::General.main_social_image`
 - `Settings::RateLimit.follow_count_daily`
 - `Settings::Authentication.twitter_secret`
 
 These settings can be accessed via the
-[`SiteConfig`](https://github.com/forem/forem/blob/master/app/models/site_config.rb)
+[`Settings::General`](https://github.com/forem/forem/blob/master/app/models/settins/general.rb)
 object and various models in the `Settings::` namespace and viewed / modified
 via `/admin/customization/config` (see [the Admin guide](/admin)).
 
-![Screenshot of site configuration admin interface](https://user-images.githubusercontent.com/47985/73627238-6276d500-467e-11ea-8724-afb703f056bc.png)
+![Screenshot of settings admin interface](https://user-images.githubusercontent.com/47985/73627238-6276d500-467e-11ea-8724-afb703f056bc.png)
 
 ## Vault
 

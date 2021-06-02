@@ -1,8 +1,8 @@
 require "rails_helper"
 
-RSpec.describe CloudCoverUrl, type: :view_object do
+RSpec.describe CloudCoverUrl, type: :view_object, cloudinary: true do
   let(:article) { create(:article) }
-  let(:cloudinary_prefix) { "https://res.cloudinary.com/TEST-CLOUD/image/fetch/" }
+  let(:cloudinary_prefix) { "https://res.cloudinary.com/#{Cloudinary.config.cloud_name}/image/fetch/" }
 
   it "returns proper url" do
     expect(described_class.new(article.main_image).call)

@@ -10,19 +10,19 @@
   <% if @event.cover_image.present? %>
     <meta property="og:image" content="<%= @event.cover_image_url %>" />
   <% else %>
-    <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
+    <meta property="og:image" content="<%= Settings::General.main_social_image %>" />
   <% end %>
   <meta property="og:description" content="<%= truncate(strip_tags(@event.description_html), length: 140) %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<%= truncate(strip_tags(@event.title), length: 70) %>">
   <meta property="og:description" content="<%= truncate(strip_tags(@event.description_html), length: 140) %>" />
   <% if @event.cover_image.present? %>
     <meta name="twitter:image:src" content="<%= @event.cover_image_url %>">
   <% else %>
-    <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
+    <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
   <% end %>
 <% end %>
 

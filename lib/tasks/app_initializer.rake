@@ -11,7 +11,7 @@ namespace :app_initializer do
     puts "\n== Bust Caches =="
     Rake::Task["cache:enqueue_path_bust_workers"].execute
 
-    SiteConfig.health_check_token ||= SecureRandom.hex(10)
+    Settings::General.health_check_token ||= SecureRandom.hex(10)
   end
 end
 
