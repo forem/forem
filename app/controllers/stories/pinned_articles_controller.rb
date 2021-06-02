@@ -11,7 +11,7 @@ module Stories
     def show
       article = PinnedArticle.get
 
-      if article.exists?
+      if article.present?
         render json: {
           id: article.id,
           path: article.path,

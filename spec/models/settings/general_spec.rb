@@ -39,9 +39,9 @@ RSpec.describe Settings::General, type: :model do
         expect { described_class.feed_pinned_article_id = nil }.not_to raise_error
       end
 
-      it "accepts the id of an existing draft article" do
+      it "does not accept the id of an existing draft article" do
         article = create(:article, published: false)
-        expect { described_class.feed_pinned_article_id = article.id }.not_to raise_error
+        expect { described_class.feed_pinned_article_id = article.id }.to raise_error(ActiveRecord::RecordInvalid)
       end
 
       it "accepts the id of an existing published article" do
