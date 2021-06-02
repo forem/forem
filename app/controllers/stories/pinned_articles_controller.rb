@@ -9,9 +9,9 @@ module Stories
     end
 
     def show
-      if PinnedArticle.id.present?
-        article = PinnedArticle.get
+      article = PinnedArticle.get
 
+      if article.exists?
         render json: {
           id: article.id,
           path: article.path,
