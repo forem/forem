@@ -20,7 +20,7 @@
           <% @tag_moderators.each do |user| %>
               <li class="flex justify-between mb-2">
                 <a href="<%= URL.user(user) %>" target="_blank" rel="noopener noreferer">@<%= user.username %></a>
-                <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :delete, data: { remote: false } do |f| %>
+                <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :delete do |f| %>
                   <%= f.hidden_field :user_id, value: user.id %>
                   <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
                 <% end %>
@@ -32,7 +32,7 @@
           This tag currently has no moderators.
         </div>
       <% end %>
-      <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :post, data: { remote: false } do |f| %>
+      <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :post do |f| %>
         <div class="crayons-field w-50">
           <%= f.label :user_id, "Add Moderator (ID):", class: "crayons-field__label" %>
           <%= f.text_field :user_id, class: "crayons-textfield" %>

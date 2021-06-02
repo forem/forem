@@ -1,11 +1,11 @@
 require "rails_helper"
 require Rails.root.join("lib/data_update_scripts/20200901040521_create_profile_fields.rb")
 
-def profile_field_and_group_count
-  [ProfileField.count, ProfileFieldGroup.count]
-end
-
 describe DataUpdateScripts::CreateProfileFields do
+  def profile_field_and_group_count
+    [ProfileField.count, ProfileFieldGroup.count]
+  end
+
   before do
     ProfileFieldGroup.destroy_all
     ProfileField.destroy_all
