@@ -14,7 +14,7 @@ module Stories
       return if params[:timeframe].present?
 
       pinned_article = PinnedArticle.get
-      return if !pinned_article || @stories.detect { |story| story.id == pinned_article.id }
+      return if pinned_article.nil? || @stories.detect { |story| story.id == pinned_article.id }
 
       @stories.prepend(pinned_article.decorate)
     end
