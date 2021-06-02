@@ -32,10 +32,10 @@ export default class ArticlePinnedModalController extends ModalController {
   }
 
   changePinnedCheckboxChecked(checked) {
-    // find the caller checkbox and uncheck it
-    const pinnedCheckbox = this.pinnedCheckboxTargets.filter(
+    // find the caller checkbox
+    const pinnedCheckbox = this.pinnedCheckboxTargets.find(
       (cb) => cb.id === this.pinnedCheckboxIdValue,
-    )[0];
+    );
     pinnedCheckbox.checked = checked;
   }
 
