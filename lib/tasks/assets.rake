@@ -1,3 +1,5 @@
+require "fileutils"
+
 namespace :assets do
   # Adapted from https://github.com/heroku/heroku-buildpack-ruby/issues/792
   desc "Remove 'node_modules' folder"
@@ -11,11 +13,17 @@ namespace :assets do
   task clean_gem_artifacts: :environment do
     Bundler.bundle_path.glob("**/ext/**/*.o").each(&:delete)
   end
+
+  desc "Remove asset and vendor caches"
+  task clean_caches: :environment do
+    FileUtils.rm_rf "tmp/cache"
+  end
 end
 
 unless ENV["WEBPACKER_PRECOMPILE"] == "false"
   Rake::Task["assets:clean"].enhance do
     Rake::Task["assets:rm_node_modules"].invoke
     Rake::Task["assets:clean_gem_artifacts"].invoke
+    Rake::Task["assets:clean_caches"].invoke
   end
 end
