@@ -22,7 +22,7 @@
               <% podcast = follow.followable %>
               <div class="crayons-card p-4 m:p-6 flex s:grid single-article break-word content-center" id="follows-<%= follow.id %>">
                 <a href="/<%= podcast.path %>" class="crayons-logo crayons-logo--2xl s:mb-2 s:mx-auto">
-                  <img alt="<%= podcast.name %> logo" class="crayons-logo__image" src="<%= podcast.image_url %>" />
+                  <img alt="<%= podcast.name %> logo" class="crayons-logo__image" src="<%= podcast.image_url %>" loading="lazy" />
                 </a>
 
                 <div class="pl-4 s:pl-0 self-center">

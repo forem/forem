@@ -50,9 +50,8 @@
                   class: "crayons-field__label" %>
     </div>
 
-    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.hidden_field :tab, value: @tab, id: nil %>
     <% button_text = @user.feed_url.present? ? "Save Feed Settings" : "Submit Feed Settings" %>
-    <div><button class="crayons-btn" type="submit"><%= button_text %></button></div>
+    <button class="crayons-btn w-max" type="submit"><%= button_text %></button>
   <% end %>
-
 </div>

@@ -973,6 +973,16 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  context "when callbacks are triggered after create" do
+    describe "detect animated images" do
+      it "enqueues Articles::DetectAnimatedImagesWorker" do
+        sidekiq_assert_enqueued_with(job: Articles::DetectAnimatedImagesWorker, args: [article.id]) do
+          build(:article).save
+        end
+      end
+    end
+  end
+
   context "when callbacks are triggered after save" do
     describe "article path sanitizing" do
       it "returns a downcased username when user has uppercase characters" do
@@ -1089,6 +1099,20 @@ RSpec.describe Article, type: :model do
             article.update_columns(published: false)
             article.update(published: true, published_at: Time.current)
           end
+        end
+      end
+    end
+
+    describe "detect animated images" do
+      it "enqueues Articles::DetectAnimatedImagesWorker if the HTML has changed" do
+        sidekiq_assert_enqueued_with(job: Articles::DetectAnimatedImagesWorker, args: [article.id]) do
+          article.update(body_markdown: "a body")
+        end
+      end
+
+      it "does not Articles::DetectAnimatedImagesWorker if the HTML does not change" do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
+          article.update(tag_list: %w[fsharp go])
         end
       end
     end

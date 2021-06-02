@@ -1083,6 +1083,10 @@ components:
               type: array
               items:
                 type: string
+                enum:
+                  - article_created
+                  - article_updated
+                  - article_destroyed
 
     WebhookIndex:
       description: Webhook

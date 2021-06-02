@@ -1,0 +1,5 @@
+<%= render partial: "articles/single_story", collection: @stories, as: :story, locals: { featured: false } %>
+<% if @stories.size > 1 %>
+  <div class="placeholder-div"></div>
+<% end %>
+<div class="single-article-small-pic" id="article-index-hidden-div" style="display:none"></div>
