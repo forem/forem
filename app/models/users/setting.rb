@@ -3,6 +3,7 @@ module Users
     self.table_name_prefix = "users_"
 
     belongs_to :user
+    scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
     # TODO: @msarit Double-check how these suffixes have impacted the rest of the codebase
     enum editor_version: { v2: 0, v1: 1 }, _suffix: :editor

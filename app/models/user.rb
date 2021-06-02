@@ -73,18 +73,9 @@ class User < ApplicationRecord
     end
   end
 
-  EDITORS = %w[v1 v2].freeze
-  FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
-  INBOXES = %w[open private].freeze
-  NAVBARS = %w[default static].freeze
-  THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
   MESSAGES = {
-    invalid_config_font: "%<value>s is not a valid font selection",
-    invalid_config_navbar: "%<value>s is not a valid navbar value",
-    invalid_config_theme: "%<value>s is not a valid theme",
-    invalid_editor_version: "%<value>s must be either v1 or v2",
     reserved_username: "username is reserved"
   }.freeze
   # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
@@ -241,14 +232,7 @@ class User < ApplicationRecord
   validates :blocked_by_count, presence: true
   validates :blocking_others_count, presence: true
   validates :comments_count, presence: true
-  validates :config_font, inclusion: { in: FONTS + ["default".freeze], message: MESSAGES[:invalid_config_font] }
-  validates :config_font, presence: true
-  validates :config_navbar, inclusion: { in: NAVBARS, message: MESSAGES[:invalid_config_navbar] }
-  validates :config_navbar, presence: true
-  validates :config_theme, inclusion: { in: THEMES, message: MESSAGES[:invalid_config_theme] }
-  validates :config_theme, presence: true
   validates :credits_count, presence: true
-  validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :email_digest_periodic, inclusion: { in: [true, false] }
@@ -258,8 +242,6 @@ class User < ApplicationRecord
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
   validates :following_users_count, presence: true
-  validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
-  validates :inbox_type, inclusion: { in: INBOXES }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
   validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_blank: true
@@ -274,7 +256,6 @@ class User < ApplicationRecord
   validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
     "#{data[:value]} is taken."
   end }, if: :username_changed?
-  validates :welcome_notifications, inclusion: { in: [true, false] }
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -298,8 +279,12 @@ class User < ApplicationRecord
   validate :password_matches_confirmation, if: :encrypted_password_changed?
 
   alias_attribute :public_reactions_count, :reactions_count
+
+  # [@msarit] to remove this once we've moved the related code
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
   alias_attribute :subscribed_to_mod_roundrobin_notifications?, :mod_roundrobin_notifications
+
+  # [@msarit] to remove this once we've updated the method
   alias_attribute :subscribed_to_email_follower_notifications?, :email_follower_notifications
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
@@ -337,7 +322,7 @@ class User < ApplicationRecord
       ),
     )
   }
-  scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
+  # scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
   before_validation :downcase_email
@@ -549,6 +534,8 @@ class User < ApplicationRecord
     username.starts_with?("spam_")
   end
 
+  # [@msarit]: update this method that contains email_newsletter from the
+  # users_notification_settings table
   def subscribe_to_mailchimp_newsletter
     return unless registered && email.present?
     return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
@@ -596,6 +583,9 @@ class User < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
+  # [@msarit] need to update this method that uses
+  # subscribed_to_email_follower_notifications from users_notification_settings
+  # table
   def receives_follower_email_notifications?
     email.present? && subscribed_to_email_follower_notifications?
   end
