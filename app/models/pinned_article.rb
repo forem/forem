@@ -1,23 +1,23 @@
 class PinnedArticle
   class << self
     def exists?
-      pinned_article_id.present? && setting.valid?
+      pinned_article_id.present? && valid?
     end
 
     def id
-      return unless setting.valid?
+      return unless valid?
 
       pinned_article_id
     end
 
     def updated_at
-      return unless setting.valid?
+      return unless valid?
 
       setting.updated_at
     end
 
     def get
-      return unless setting.valid?
+      return unless valid?
 
       Article.published.find_by(id: pinned_article_id)
     end
@@ -42,6 +42,10 @@ class PinnedArticle
 
     def setting
       Settings::General.find_by(var: :feed_pinned_article_id)
+    end
+
+    def valid?
+      setting&.valid?
     end
   end
 end
