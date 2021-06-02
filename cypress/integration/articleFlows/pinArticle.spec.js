@@ -135,6 +135,10 @@ describe('Pin an article - Admin User', () => {
       .first()
       .click();
 
+    cy.findByRole('heading', {
+      name: 'Are you sure you want to delete this article?',
+    });
+
     cy.findByRole('main')
       .findAllByRole('button', { name: 'Delete' })
       .first()
