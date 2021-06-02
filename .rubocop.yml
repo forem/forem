@@ -56,6 +56,10 @@ Layout/DotPosition:
   StyleGuide: '#consistent-multi-line-chains'
   EnforcedStyle: leading
 
+Lint/EmptyInPattern:
+  Description: 'Checks for the presence of `in` pattern branches without a body.'
+  Enabled: true
+
 Layout/EmptyLinesAroundAttributeAccessor:
   Description: "Keep blank lines around attribute accessors."
   StyleGuide: '#empty-lines-around-attribute-accessor'
@@ -536,6 +540,11 @@ Style/IfWithBooleanLiteralBranches:
 #   Description: 'Avoid trailing inline comments.'
 #   Enabled: false
 
+Style/InPatternThen:
+  Description: 'Checks for `in;` uses in `case` expressions.'
+  StyleGuide: '#no-in-pattern-semicolons'
+  Enabled: true
+
 # Style/IpAddresses:
 #   Description: "Don't include literal IP addresses in code."
 #   Enabled: false
@@ -550,10 +559,23 @@ Style/IfWithBooleanLiteralBranches:
 #   StyleGuide: '#single-line-blocks'
 #   Enabled: false
 
+Style/MultilineInPatternThen:
+  Description: 'Do not use `then` for multi-line `in` statement.'
+  Enabled: true
+
 Style/NegatedIfElseCondition:
   Description: >-
                 This cop checks for uses of `if-else` and ternary operators with a negated condition
                 which can be simplified by inverting condition and swapping branches.
+  Enabled: true
+
+Style/Next:
+  Description: 'Use `next` to skip iteration instead of a condition at the end.'
+  StyleGuide: '#no-nested-conditionals'
+  Enabled: true
+
+Style/NilLambda:
+  Description: 'Prefer `-> {}` to `-> { nil }`.'
   Enabled: true
 
 Style/OptionalBooleanParameter:
@@ -565,13 +587,8 @@ Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
   Enabled: true
 
-Style/Next:
-  Description: 'Use `next` to skip iteration instead of a condition at the end.'
-  StyleGuide: '#no-nested-conditionals'
-  Enabled: true
-
-Style/NilLambda:
-  Description: 'Prefer `-> {}` to `-> { nil }`.'
+Style/QuotedSymbols:
+  Description: 'Use a consistent style for quoted symbols.'
   Enabled: true
 
 Style/RedundantArgument:
