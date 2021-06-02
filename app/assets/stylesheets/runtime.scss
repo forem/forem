@@ -26,16 +26,6 @@
   display: none;
 }
 
-// Desktop-only helps specialize some actions based on Desktop OS's
-body[data-runtime='Browser-Linux'] .Desktop-only,
-body[data-runtime='Browser-macOS'] .Desktop-only,
-body[data-runtime='Browser-Windows'] .Desktop-only,
-body[data-runtime='PWA-Linux'] .Desktop-only,
-body[data-runtime='PWA-macOS'] .Desktop-only,
-body[data-runtime='PWA-Windows'] .Desktop-only {
-  display: var(--runtime-display, block);
-}
-
 // Elements with class 'ForemWebView' should be visible on any attribute that
 // matches that Medium regardless of OS
 body[data-runtime='ForemWebView-iOS'] .ForemWebView-only,
