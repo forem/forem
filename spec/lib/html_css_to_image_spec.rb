@@ -23,7 +23,7 @@ RSpec.describe HtmlCssToImage, type: :lib do
 
   describe ".fetch_url" do
     before do
-      allow(SiteConfig).to receive(:main_social_image).and_return("https://testimage.com/image.png")
+      allow(Settings::General).to receive(:main_social_image).and_return("https://testimage.com/image.png")
       allow(Rails.cache).to receive(:write)
       allow(Rails.cache).to receive(:read)
     end

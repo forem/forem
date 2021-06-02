@@ -67,7 +67,7 @@ class FollowsController < ApplicationController
     need_notification = Follow.need_new_follower_notification_for?(followable.class.name)
 
     @result = if params[:verb] == "unfollow"
-                unfollow(followable, need_notification: need_notification)
+                unfollow(followable, params[:followable_type], need_notification: need_notification)
               else
                 if rate_limiter.limit_by_action("follow_account")
                   render json: { error: "Daily account follow limit reached!" }, status: :too_many_requests
@@ -109,9 +109,11 @@ class FollowsController < ApplicationController
     "already followed"
   end
 
-  def unfollow(followable, need_notification: false)
+  def unfollow(followable, followable_type, need_notification: false)
     user_follow = current_user.stop_following(followable)
     Notification.send_new_follower_notification_without_delay(user_follow, is_read: true) if need_notification
+
+    Follows::DeleteCached.call(current_user, followable_type, followable.id)
 
     "unfollowed"
   end

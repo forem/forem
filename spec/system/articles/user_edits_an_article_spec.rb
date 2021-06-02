@@ -7,12 +7,12 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
   let(:svg_image) { file_fixture("300x100.svg").read }
 
   before do
-    allow(SiteConfig).to receive(:main_social_image).and_return("https://dummyimage.com/800x600.jpg")
-    allow(SiteConfig).to receive(:logo_png).and_return("https://dummyimage.com/800x600.png")
-    allow(SiteConfig).to receive(:mascot_image_url).and_return("https://dummyimage.com/800x600.jpg")
-    allow(SiteConfig).to receive(:suggested_tags).and_return("coding, beginners")
-    allow(SiteConfig).to receive(:suggested_users).and_return("romagueramica")
-    allow(SiteConfig).to receive(:logo_svg).and_return(svg_image)
+    allow(Settings::General).to receive(:main_social_image).and_return("https://dummyimage.com/800x600.jpg")
+    allow(Settings::General).to receive(:logo_png).and_return("https://dummyimage.com/800x600.png")
+    allow(Settings::General).to receive(:mascot_image_url).and_return("https://dummyimage.com/800x600.jpg")
+    allow(Settings::General).to receive(:suggested_tags).and_return("coding, beginners")
+    allow(Settings::General).to receive(:suggested_users).and_return("romagueramica")
+    allow(Settings::General).to receive(:logo_svg).and_return(svg_image)
     sign_in user
   end
 

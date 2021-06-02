@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_11_073505) do
+ActiveRecord::Schema.define(version: 2021_05_12_025422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1096,14 +1096,6 @@ ActiveRecord::Schema.define(version: 2021_05_11_073505) do
     t.index ["var"], name: "index_settings_communities_on_var", unique: true
   end
 
-  create_table "settings_mascots", force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.text "value"
-    t.string "var", null: false
-    t.index ["var"], name: "index_settings_mascots_on_var", unique: true
-  end
-
   create_table "settings_rate_limits", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -1453,7 +1445,7 @@ ActiveRecord::Schema.define(version: 2021_05_11_073505) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.boolean "welcome_notifications", default: true, null: false
-    t.index ["user_id"], name: "index_users_notification_settings_on_user_id"
+    t.index ["user_id"], name: "index_users_notification_settings_on_user_id", unique: true
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
@@ -1482,7 +1474,7 @@ ActiveRecord::Schema.define(version: 2021_05_11_073505) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_users_settings_on_user_id"
+    t.index ["user_id"], name: "index_users_settings_on_user_id", unique: true
   end
 
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|

@@ -27,8 +27,8 @@ merge them into your current workspace.
 
 Use this:
 
-- to get commits from upsteam main into your branch
-- to sync with latest changes from upsteam main before continuing with a new
+- to get commits from upstream main into your branch
+- to sync with latest changes from upstream main before continuing with a new
   feature on your current branch
 
 After you've fetched new commits from upstream, run `./bin/setup`, and it will

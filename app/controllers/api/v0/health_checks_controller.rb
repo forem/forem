@@ -30,7 +30,7 @@ module Api
 
         key = request.headers["health-check-token"]
 
-        return if key == SiteConfig.health_check_token
+        return if key == Settings::General.health_check_token
 
         error_unauthorized
       end

@@ -2,7 +2,7 @@
 title: Configuring Forem
 ---
 
-# Basic Site Configuration Guide for Forem
+# Basic Configuration Guide for Forem
 
 ## Overview
 
@@ -19,7 +19,7 @@ Forem link to your community._
 Once your Forem instance is set up for the first time, you will most likely see
 the following banner:
 
-![Banner showing outstanding site configuration](https://dev-to-uploads.s3.amazonaws.com/i/2nosvfr7l47ymipmyh4o.png)
+![Banner prompting for configuring mandatory settings](https://dev-to-uploads.s3.amazonaws.com/i/2nosvfr7l47ymipmyh4o.png)
 
 This banner indicates that the Forem configuration process hasn't been completed
 yet.
@@ -63,17 +63,17 @@ Currently, the configuration page is split into 3 sections. They are as follows:
 - A **Get Started section** that contains all required fields. These are the
   fields that are required to be filled out, in order to get your Forem in a
   usable state.
-- An **All Site Configuration section** that contains all the possible variables
-  that you can configure on the site. This section is broken down into sub
-  sections, whereby each subsection will contain a description of what it does,
-  and then list the fields that are available for configuration. Each field will
-  also contain a concise description of what it is used for.
+- An **All Settings section** that contains all the possible variables that you
+  can configure on the site. This section is broken down into sub sections,
+  whereby each subsection will contain a description of what it does, and then
+  list the fields that are available for configuration. Each field will also
+  contain a concise description of what it is used for.
 - An **Environment Variables section** that provides a read-only view of the
   environment variables that are available to be set on the server. If your
   instance is hosted by Forem, please get in touch with customer support to
   change any of these variables.
 
-![The Site Configuration Sections](https://dev-to-uploads.s3.amazonaws.com/i/o5p6kob6ctkzy38gw9vt.png)
+![The Settings Sections](https://user-images.githubusercontent.com/47985/116500126-13970a00-a8d8-11eb-824e-ace66e6e05d4.png)
 
 All required fields are marked as such. In addition, you will notice that we
 have set some defaults for certain fields, you may amend them as you see
@@ -81,10 +81,10 @@ relevant for your Forem.
 
 ## Updating your configurations
 
-In order to update any of the variables within the Get Started and All Site
-Configuration sections, you will set the new value and then navigate to the end
-of the section where you will verify that you would like to make the change by
-typing the following sentence:
+In order to update any of the variables within the Get Started and All Settings
+sections, you will set the new value and then navigate to the end of the section
+where you will verify that you would like to make the change by typing the
+following sentence:
 
 ```
 My username is <specify your username here> and this action is 100% safe and appropriate.

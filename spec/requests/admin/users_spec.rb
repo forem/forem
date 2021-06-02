@@ -131,7 +131,7 @@ RSpec.describe "/admin/users", type: :request do
 
       deliveries = ActionMailer::Base.deliveries
       expect(deliveries.count).to eq(1)
-      expect(deliveries.first.subject).to eq("Verify Your #{SiteConfig.community_name} Account Ownership")
+      expect(deliveries.first.subject).to eq("Verify Your #{Settings::Community.community_name} Account Ownership")
       expect(deliveries.first.text_part.body).to include(verification_link)
 
       sign_in(user)
