@@ -122,7 +122,7 @@ elif [ -z "$BUILDKITE_BRANCH" ]; then
     echo "BUILDKITE_BRANCH is set to an empty string! Exiting..."
     exit 1
 
-elif [[ "${BUILDKITE_BRANCH}" = "master" || "${BUILDKITE_BRANCH}" = "main" ]]; then
+elif [[ "${BUILDKITE_BRANCH}" = "master" || "${BUILDKITE_BRANCH}" = "main" || "${BUILDKITE_BRANCH}" = "stable" || "${BUILDKITE_BRANCH}" = "stable-next" ]]; then
 
     echo "Building Production Containers..."
     create_production_containers
