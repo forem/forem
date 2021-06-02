@@ -471,7 +471,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.errors_as_sentence).to match("item has been deleted")
       end
 
-      it "raises a validation error with commentable_type, if commentable_type is present" do
+      it "raises a validation error with commentable_type, if commentable_type is present", :aggregate_failures do
         comment = build(:comment, user: user, commentable: nil, commentable_type: "Article")
         comment.validate
         expect(comment).not_to be_valid
