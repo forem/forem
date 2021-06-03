@@ -23,9 +23,7 @@ module Admin
 
     def update
       @page = Page.find(params[:id])
-      @page.assign_attributes(page_params)
-      if @page.valid?
-        @page.update!(page_params)
+      if update_and_overwrite_landing_page
         flash[:success] = "Page has been successfully updated."
         redirect_to admin_pages_path
       else
@@ -95,6 +93,19 @@ module Admin
               else
                 Page.new
               end
+    end
+
+    def update_and_overwrite_landing_page
+      if page_params["overwrite"] == "true"
+        Page.transaction do
+          current_landing_page = Page.find_by(landing_page: true)
+          current_landing_page.update(landing_page: false)
+
+          @page.update(page_params)
+        end
+      else
+        @page.update(page_params)
+      end
     end
   end
 end

@@ -1,4 +1,6 @@
 class Page < ApplicationRecord
+  attr_accessor :overwrite
+
   TEMPLATE_OPTIONS = %w[contained full_within_layout json].freeze
 
   validates :title, presence: true

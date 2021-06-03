@@ -53,6 +53,10 @@
           <%= form.check_box :landing_page, class: "crayons-checkbox", data: { action: @page.has_a_landing_page? ? "modal#toggleModal" : "" } %>
           <p>Determines if this page will be used as a landing page for anonymous viewers.</p>
         </div>
+        <div class="form-group">
+          <%= form.label :overwrite, "Overwrite" %>
+          <%= form.check_box :overwrite, class: "crayons-checkbox" %>
+        </div>
         <div id="add-landing-page-link-modal" class="hidden">
           <div class="form-group grid p-6 mb-6 gap-1">
             <div class="form-group grid p-6 mb-6 gap-1">
@@ -63,7 +67,7 @@
                 <%= link_to "Current Locked Screen", @page.landing_page_path %>
               </span>
               <br>
-              <button class="crayons-btn">Overwrite current locked screen</button>&nbsp;<button class="crayons-btn crayons-btn--secondary">Dismiss</button>
+               <button id="overwrite-btn" class="crayons-btn" onclick="toggleOverwrite()">Overwrite current locked screen</button>&nbsp;<button class="crayons-btn crayons-btn--secondary">Dismiss</button>
             <p>
             </div>
           </div>
@@ -87,6 +91,7 @@
         <br>
       </p>
     </div>
+    <%= form.hidden_field :overwrite, value: true %>
     <%= form.submit class: "crayons-btn" %>
   <% end %>
 
@@ -118,4 +123,9 @@ window.addEventListener('load', function() {
 
   showBodyFields();
 });
+
+function toggleOverwrite() {
+    var elm = document.getElementById('page_overwrite');
+    elm.checked = !elm.checked;
+};
 </script>
