@@ -34,10 +34,20 @@ function updateUsername() {
   let username = document.getElementsByClassName(
     'js-forem-creator-signup-username',
   )[0];
-  username.innerHTML = setUsername(nameField);
+  username.innerHTML = getUsername(nameField);
+
+  let usernameField = document.getElementsByClassName(
+    'js-forem-creator-signup-username-field',
+  )[0];
+  usernameField.value = getUsername(nameField);
 }
 
 // maybe add to helper
-function setUsername(name) {
+function getUsername(name) {
   return name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_');
+}
+
+function showUsernameField() {
+  let usernameRow = document.getElementsByClassName('js-forem-creator-signup-username-row')[0];
+  usernameRow.classList.remove('hidden');
 }
