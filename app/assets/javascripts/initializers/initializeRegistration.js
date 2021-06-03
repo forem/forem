@@ -25,3 +25,19 @@ function toggleSVGelement(type) {
     eyeOffIcon.classList.add('hidden');
   }
 }
+
+function updateUsername() {
+  let nameField = document.getElementsByClassName(
+    'js-forem-creator-signup-name',
+  )[0].value;
+
+  let username = document.getElementsByClassName(
+    'js-forem-creator-signup-username',
+  )[0];
+  username.innerHTML = setUsername(nameField);
+}
+
+// maybe add to helper
+function setUsername(name) {
+  return name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_');
+}
