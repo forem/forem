@@ -99,7 +99,7 @@ module Admin
       if page_params["overwrite"] == "true"
         Page.transaction do
           current_landing_page = Page.find_by(landing_page: true)
-          current_landing_page.update(landing_page: false)
+          current_landing_page&.update(landing_page: false)
 
           @page.update(page_params)
         end
