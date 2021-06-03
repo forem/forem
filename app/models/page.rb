@@ -31,8 +31,10 @@ class Page < ApplicationRecord
   end
 
   def landing_page_path
+    return unless has_a_landing_page?
+
     landing_page = has_a_landing_page?
-    landing_page&.path
+    landing_page.path
   end
 
   private
