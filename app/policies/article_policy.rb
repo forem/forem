@@ -19,6 +19,14 @@ class ArticlePolicy < ApplicationPolicy
     update?
   end
 
+  def discussion_lock_confirm?
+    update?
+  end
+
+  def discussion_unlock_confirm?
+    update?
+  end
+
   def destroy?
     update?
   end

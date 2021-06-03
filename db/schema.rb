@@ -461,6 +461,17 @@ ActiveRecord::Schema.define(version: 2021_06_09_103939) do
     t.index ["user_id", "token", "platform", "consumer_app_id"], name: "index_devices_on_user_id_and_token_and_platform_and_app", unique: true
   end
 
+  create_table "discussion_locks", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "locking_user_id", null: false
+    t.text "notes"
+    t.text "reason"
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["article_id"], name: "index_discussion_locks_on_article_id", unique: true
+    t.index ["locking_user_id"], name: "index_discussion_locks_on_locking_user_id"
+  end
+
   create_table "display_ad_events", force: :cascade do |t|
     t.string "category"
     t.string "context_type"
@@ -1527,6 +1538,8 @@ ActiveRecord::Schema.define(version: 2021_06_09_103939) do
   add_foreign_key "custom_profile_fields", "profiles", on_delete: :cascade
   add_foreign_key "devices", "consumer_apps"
   add_foreign_key "devices", "users"
+  add_foreign_key "discussion_locks", "articles"
+  add_foreign_key "discussion_locks", "users", column: "locking_user_id"
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade

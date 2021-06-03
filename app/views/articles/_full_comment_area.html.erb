@@ -1,4 +1,4 @@
-<% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}", expires_in: 2.hours) do %>
+<% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}-#{@discussion_lock&.updated_at}", expires_in: 2.hours) do %>
   <section id="comments" data-updated-at="<%= Time.current %>" class="text-padding mb-4 border-t-1 border-0 border-solid border-base-10">
     <% if @article.show_comments %>
       <header class="relative flex justify-between items-center mb-6">
@@ -16,7 +16,12 @@
         data-commentable-id="<%= @article.id %>"
         data-commentable-type="Article"
         data-has-recent-comment-activity="<%= @article.has_recent_comment_activity? %>">
-        <%= render "/comments/form", commentable: @article, commentable_type: "Article" %>
+
+        <% if @discussion_lock %>
+          <%= render "/comments/discussion_lock_reason" %>
+        <% else %>
+          <%= render "/comments/form", commentable: @article, commentable_type: "Article" %>
+        <% end %>
 
         <div class="comments" id="comment-trees-container">
           <% if @article.comments_count > 0 %>

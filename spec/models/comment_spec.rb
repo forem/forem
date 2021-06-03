@@ -45,6 +45,12 @@ RSpec.describe Comment, type: :model do
         expect(subject).not_to be_valid
       end
 
+      it "is invalid if commentable is an article and the discussion is locked" do
+        subject.commentable = build(:article, :with_discussion_lock)
+
+        expect(subject).not_to be_valid
+      end
+
       it "is valid without a commentable" do
         subject.commentable = nil
 
