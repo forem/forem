@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_12_025422) do
+ActiveRecord::Schema.define(version: 2021_06_02_135607) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1469,6 +1469,7 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
     t.boolean "display_sponsors", default: true, null: false
     t.integer "editor_version", default: 0, null: false
     t.integer "experience_level"
+    t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false, null: false
     t.boolean "feed_referential_link", default: true, null: false
     t.string "feed_url"
