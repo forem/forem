@@ -9,11 +9,11 @@
   </div>
 
   <div class="js-ellipsis-menu relative inline-block float-right">
-    <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon js-ellipsis-menu-trigger">
+    <button id="ellipsis-menu-trigger-<%= article.id %>" aria-controls="ellipsis-menu-dropdown-<%= article.id %>" aria-expanded="false" aria-haspopup="true" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon">
       <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More...") %>
     </button>
 
-    <div class="crayons-dropdown top-100 right-0 z-10 align-left js-ellipsis-menu-dropdown p-1">
+    <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 z-10 align-left js-ellipsis-menu-dropdown p-1">
       <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "p-0 js-archive-toggle" }) do |f| %>
         <%= f.hidden_field :archived, value: !article.archived %>
 
@@ -104,3 +104,4 @@
     <% end %>
   <% end %>
 </div>
+<%= javascript_packs_with_chunks_tag "dashboardDropdowns", defer: true %>
