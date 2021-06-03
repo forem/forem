@@ -67,19 +67,22 @@ const handleFormSubmit = (e) => {
   xhr.onload = function onload() {
     const article = form.closest('.js-dashboard-story');
 
+    const messageContainer = article.querySelector(
+      '.js-dashboard-story-details',
+    );
+
     if (xhr.status === 200) {
       onXhrSuccess(form, article, values);
       const message =
         values.commit === 'Mute Notifications'
           ? 'Notifications Muted'
           : 'Notifications Restored';
-      article.getElementsByClassName(
-        'js-dashboard-story-details',
-      )[0].innerHTML = message;
-    } else {
-      article.getElementsByClassName(
-        'js-dashboard-story-details',
-      )[0].innerHTML = 'Failed to update article.';
+
+      if (messageContainer) {
+        messageContainer.innerHTML = message;
+      }
+    } else if (messageContainer) {
+      messageContainer.innerHTML = 'Failed to update article.';
     }
   };
 };
