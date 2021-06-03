@@ -67,7 +67,8 @@
                 <%= link_to "Current Locked Screen", @page.landing_page_path %>
               </span>
               <br>
-               <button id="overwrite-btn" class="crayons-btn" onclick="toggleOverwrite()">Overwrite current locked screen</button>&nbsp;<button class="crayons-btn crayons-btn--secondary">Dismiss</button>
+               <button type="button" id="overwrite-btn" class="crayons-btn" onclick="toggleOverwrite(); return false;">Overwrite current locked screen</button>&nbsp;
+               <button class="crayons-btn crayons-btn--secondary">Dismiss</button>
             <p>
             </div>
           </div>
