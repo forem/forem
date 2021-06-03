@@ -49,6 +49,10 @@ describe('Posts Dashboard', () => {
     }).click();
     cy.findByRole('link', { name: 'Stats' }).click();
     cy.findByRole('heading', { name: 'Stats for "Test Article"' });
+
+    // Go back to the dashboard, otherwise it's possible for Cypress to detect an error as the next beforeEach hook runs
+    // (due to the logged out user not being able to view the stats page)
+    cy.visit('/dashboard');
   });
 
   it('archives and unarchives a post', () => {
