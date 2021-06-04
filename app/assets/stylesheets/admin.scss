@@ -29,6 +29,11 @@ label {
   border: 12px solid #ff9900;
 }
 
+.bg-pinned {
+  background: $light-sky-blue;
+  border: 12px solid $sky-blue;
+}
+
 .bg-highlighted {
   background: #2effa8 !important;
   border: 20px solid black;
