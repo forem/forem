@@ -4,6 +4,11 @@ describe('Lock discussion', () => {
       name: /Lock discussion/,
     });
 
+  const getDiscussionUnlockButton = () =>
+    cy.findByRole('link', {
+      name: /Unlock discussion/,
+    });
+
   const getDiscussionLockSubmitButton = () => cy.get('.crayons-btn--danger');
 
   const exampleReason = 'Discussion lock example reason!';
@@ -32,9 +37,7 @@ describe('Lock discussion', () => {
       getDiscussionLockButton().click();
       getDiscussionLockSubmitButton().click();
 
-      cy.findByRole('heading', {
-        name: 'Discussion was successfully locked!',
-      }).should('exist');
+      getDiscussionUnlockButton().should('exist');
     });
 
     it('should ask the user to confirm the discussion lock', () => {

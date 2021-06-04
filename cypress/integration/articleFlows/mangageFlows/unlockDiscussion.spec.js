@@ -36,9 +36,7 @@ describe('Lock discussion', () => {
       getDiscussionUnlockButton().click();
       getDiscussionLockSubmitButton().click();
 
-      cy.findByRole('heading', {
-        name: 'Discussion was successfully unlocked!',
-      }).should('exist');
+      getDiscussionLockButton().should('exist');
     });
 
     it('should ask the user to confirm the discussion unlock', () => {
