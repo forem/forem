@@ -6,10 +6,14 @@
         <a href="/dashboard">Dashboard</a> 👉 Manage Your Post
       </div>
       <% if flash[:error] %>
-        <h3 class="manage-page-error">Uh Oh! <%= flash[:error] %> 😬</h3>
+        <div role="alert">
+          <h3 class="manage-page-error">Uh Oh! <%= flash[:error] %> 😬</h3>
+        </div>
       <% end %>
       <% if flash[:success] %>
-        <h3 class="manage-page-success"><%= flash[:success] %></h3>
+        <div role="alert">
+          <h3 class="manage-page-success"><%= flash[:success] %></h3>
+        </div>
       <% end %>
       <h2>Tools:</h2>
       <p><strong>Experience Level of Post:</strong> Is your post written more for a beginner or an advanced audience?  Adjust this level as a <em>gentle</em> indicator which will help show the post to the people who will benefit the most.
