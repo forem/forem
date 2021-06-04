@@ -6,7 +6,6 @@ function initializeRegistration() {
 
 function togglePasswordVisibility() {
   const passwordField = document.getElementsByClassName('js-password')[0];
-
   const type = passwordField.type === 'password' ? 'text' : 'password';
   passwordField.type = type;
 
