@@ -9,7 +9,7 @@ function togglePasswordVisibility() {
 }
 
 function toggleSVGelement(type) {
-  const eyeIcon    = document.getElementsByClassName('js-eye')[0];
+  const eyeIcon = document.getElementsByClassName('js-eye')[0];
   const eyeOffIcon = document.getElementsByClassName('js-eye-off')[0];
 
   if (type === 'text') {
@@ -22,13 +22,19 @@ function toggleSVGelement(type) {
 }
 
 function setDefaultUsername() {
-  const name = document.getElementsByClassName('js-creator-signup-name')[0]
-    .value;
-  // It's the first user and so we can assume that this username is not taken.
-  const usernameHint = createUsernameHint(name);
-  setUsernameHint(usernameHint);
-  setUsernameField(usernameHint);
-  showHintRow();
+  if (
+    document
+      .getElementsByClassName('js-creator-signup-username-row')[0]
+      .classList.contains('hidden')
+  ) {
+    const name = document.getElementsByClassName('js-creator-signup-name')[0]
+      .value;
+    // It's the first user and so we can assume that this username is not taken.
+    const usernameHint = createUsernameHint(name);
+    setUsernameHint(usernameHint);
+    setUsernameField(usernameHint);
+    showHintRow();
+  }
 }
 
 function showHintRow() {
