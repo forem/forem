@@ -1,4 +1,6 @@
 class DiscussionLockPolicy < ApplicationPolicy
+  PERMITTED_ATTRIBUTES = %i[article_id notes reason].freeze
+
   def create?
     user_author? || minimal_admin?
   end
@@ -8,7 +10,7 @@ class DiscussionLockPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    %i[article_id notes reason]
+    PERMITTED_ATTRIBUTES
   end
 
   private
