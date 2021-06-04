@@ -1,9 +1,5 @@
 'use strict';
 
-function initializeRegistration() {
-  togglePasswordVisibility();
-}
-
 function togglePasswordVisibility() {
   const passwordField = document.getElementsByClassName('js-password')[0];
   const type = passwordField.type === 'password' ? 'text' : 'password';
@@ -13,7 +9,7 @@ function togglePasswordVisibility() {
 }
 
 function toggleSVGelement(type) {
-  const eyeIcon = document.getElementsByClassName('js-eye')[0];
+  const eyeIcon    = document.getElementsByClassName('js-eye')[0];
   const eyeOffIcon = document.getElementsByClassName('js-eye-off')[0];
 
   if (type === 'text') {
