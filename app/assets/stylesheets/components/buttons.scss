@@ -119,6 +119,12 @@
     --with-icon-padding: var(--su-5);
     --icon-margin: var(--su-3);
   }
+
+  // This makes sure icons inside buttons don't cause problems with click handlers
+  // See: https://css-tricks.com/slightly-careful-sub-elements-clickable-things/
+  & > * {
+    pointer-events: none;
+  }
 }
 
 .crayons-btn--secondary {
