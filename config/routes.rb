@@ -423,7 +423,7 @@ Rails.application.routes.draw do
                                   constraints: { view: /moderate/ }
     get "/:username/:slug/mod", to: "moderations#article"
     get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
-    get "/:username/:slug/manage", to: "articles#manage"
+    get "/:username/:slug/manage", to: "articles#manage", as: :article_manage
     get "/:username/:slug/edit", to: "articles#edit"
     get "/:username/:slug/delete_confirm", to: "articles#delete_confirm"
     get "/:username/:slug/discussion_lock_confirm", to: "articles#discussion_lock_confirm"
