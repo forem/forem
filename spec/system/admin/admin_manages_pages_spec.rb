@@ -141,15 +141,6 @@ RSpec.describe "Admin manages pages", type: :system do
       check "Use as 'Locked Screen'"
       expect(page).to have_link("Current Locked Screen")
       click_on("Overwrite current locked screen")
-      # find('//*[@id="add-landing-page-link-modal-root"]/div/div[1]/div[1]/button').click
-      # click_button(class: "crayons-btn crayons-btn--ghost crayons-btn--icon")
-      # within("#crayons-modal__box") do
-      #   click_button(class: "crayons-btn crayons-btn--ghost crayons-btn--icon")
-      # end
-      # within("crayons-btn crayons-btn--ghost crayons-btn--icon") do
-      # find(:css, "svg.crayons-icon").first.click
-      # find(:xpath, "//*[@id='add-landing-page-link-modal-root']/div/div[1]/div[1]/button").click
-      # end
       click_on("Update Page")
       expect(page).to have_current_path(admin_pages_path)
     end
