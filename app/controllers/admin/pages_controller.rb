@@ -34,8 +34,7 @@ module Admin
 
     def create
       @page = Page.new(page_params)
-      if @page.valid?
-        @page.save!
+      if create_and_overwrite_landing_page
         flash[:success] = "Page has been successfully created."
         redirect_to admin_pages_path
       else
@@ -105,6 +104,19 @@ module Admin
         end
       else
         @page.update(page_params)
+      end
+    end
+
+    def create_and_overwrite_landing_page
+      if page_params["overwrite"] == "true"
+        Page.transaction do
+          current_landing_page = Page.find_by(landing_page: true)
+          current_landing_page&.update(landing_page: false)
+
+          @page.save
+        end
+      else
+        @page.save
       end
     end
   end
