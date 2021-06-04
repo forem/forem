@@ -124,6 +124,9 @@
   // See: https://css-tricks.com/slightly-careful-sub-elements-clickable-things/
   & > * {
     pointer-events: none;
+    + input {
+      pointer-events: revert;
+    }
   }
 }
 
