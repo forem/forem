@@ -14,6 +14,7 @@ module Users
     def update
       users_setting = Users::Setting.find(params[:id])
       users_setting.assign_attributes(users_setting_params)
+      tab = params["users_setting"]["tab"] || "profile"
 
       if users_setting.save
         notice = "Your config has been updated. Refresh to see all changes."
@@ -31,7 +32,7 @@ module Users
         Honeycomb.add_field("errored", true)
         flash[:error] = @user.errors.full_messages.join(", ")
       end
-      redirect_to "/settings/customization"
+      redirect_to "/settings/#{tab}"
     end
 
     private
