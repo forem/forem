@@ -1,17 +1,21 @@
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
+const ARTICLE_ID_REGEX = /\/(\d+)$/;
+const ARTICLE_FORM_KEY_REGEX = /\[(.*)\]/;
+
 function getFormValues(form) {
-  const articleId = form.action.match(/\/(\d+)$/)[1];
+  const articleId = form.action.match(ARTICLE_ID_REGEX)[1];
   const inputs = form.getElementsByTagName('input');
   const formData = { id: articleId, article: {} };
 
-  for (let i = 0; i < inputs.length; i += 1) {
+  for (let i = 0; i < inputs.length; i++) {
     const input = inputs[i];
     const name = input.getAttribute('name');
     const value = input.getAttribute('value');
 
-    if (name.match(/\[(.*)\]/)) {
-      const key = name.match(/\[(.*)\]$/)[1];
+    const articleFormKeyMatches = name.match(ARTICLE_FORM_KEY_REGEX);
+    if (articleFormKeyMatches) {
+      const key = articleFormKeyMatches[1];
       formData.article[key] = value;
     } else {
       formData[name] = value;
