@@ -27,7 +27,7 @@
           </span>
 
           <div class="profile-header__actions">
-            <div class="profile-dropdown mr-2 relative" data-username="<%= @user.username %>">
+            <div class="profile-dropdown mr-2 relative hidden" data-username="<%= @user.username %>">
               <button id="user-profile-dropdown" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
                 <%= inline_svg_tag("overflow-horizontal.svg", class: "dropdown-icon crayons-icon", aria: true, title: "Toggle dropdown menu") %>
               </button>

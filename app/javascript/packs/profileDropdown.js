@@ -1,13 +1,44 @@
 import { initBlock } from '../profileDropdown/blockButton';
 import { initFlag } from '../profileDropdown/flagButton';
+import { initializeDropdown } from '@utilities/dropdownUtils';
+
+/* global userData */
 
 function initButtons() {
   initBlock();
   initFlag();
 }
 
+function initDropdown() {
+  const profileDropdownDiv = document.querySelector('.profile-dropdown');
+  const currentUser = userData();
+
+  if (
+    currentUser &&
+    currentUser.username === profileDropdownDiv.dataset.username
+  ) {
+    // Hide this menu if not logged in, or when user views their own profile
+    return;
+  }
+
+  profileDropdownDiv.classList.remove('hidden');
+
+  initializeDropdown({
+    triggerElementId: 'user-profile-dropdown',
+    dropdownContentId: 'user-profile-dropdownmenu',
+  });
+
+  // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
+  const reportAbuseLink = profileDropdownDiv.querySelector(
+    '.report-abuse-link-wrapper',
+  );
+  reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
+}
+
 window.InstantClick.on('change', () => {
   initButtons();
+  initDropdown();
 });
 
 initButtons();
+initDropdown();
