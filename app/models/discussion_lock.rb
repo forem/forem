@@ -9,9 +9,9 @@ class DiscussionLock < ApplicationRecord
 
   private
 
-  def nullify_notes_and_reason
-    # Prevent empty strings from beings saved to the DB
-    self.notes = nil if notes == ""
-    self.reason = nil if reason == ""
+  def nullify_blank_notes_and_reason
+    # Prevent blank strings from beings saved to the DB
+    self.notes = nil if notes.blank?
+    self.reason = nil if reason.blank?
   end
 end
