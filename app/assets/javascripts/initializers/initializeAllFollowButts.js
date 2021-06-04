@@ -125,6 +125,7 @@ function addButtClickHandle(response, butt) {
     e.preventDefault();
     handleOptimisticButtRender(butt);
   };
+  butt.dataset.clickInitialized = 'true';
 }
 
 function handleTagButtAssignment(user, butt, buttInfo) {

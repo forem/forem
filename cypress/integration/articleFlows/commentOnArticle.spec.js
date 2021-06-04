@@ -500,4 +500,80 @@ describe('Comment on articles', () => {
     cy.findByTestId('modal-container').should('not.exist');
     cy.findByRole('button', { name: /^Submit$/i }).should('have.focus');
   });
+
+  it('should provide a dropdown of options', () => {
+    cy.findByRole('main').within(() => {
+      // Add a comment
+      cy.findByRole('textbox', { name: /^Add a comment to the discussion$/i })
+        .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
+        .type('this is a comment');
+
+      cy.findByRole('button', { name: /^Submit$/i }).click();
+
+      // Open and inspect the dropdown menu
+      cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).as(
+        'dropdownButton',
+      );
+      cy.get('@dropdownButton').click();
+      cy.findByRole('link', {
+        name: /^Copy link to Article Editor v1 User's comment$/i,
+      }).should('have.focus');
+      cy.findByRole('link', {
+        name: /^Go to Article Editor v1 User's comment settings$/i,
+      });
+      cy.findByRole('link', {
+        name: "Report Article Editor v1 User's comment as abusive or violating our code of conduct and/or terms and conditions",
+      });
+      cy.findByRole('link', { name: /^Edit this comment$/i });
+      cy.findByRole('link', { name: /^Delete this comment$/i });
+
+      // Verify that the dropdown closes again
+      cy.get('@dropdownButton').click();
+      cy.findByRole('link', {
+        name: /^Copy link to Article Editor v1 User's comment$/i,
+      }).should('not.exist');
+    });
+  });
+
+  it('should close the comment dropdown on Escape press, returning focus', () => {
+    // Add a comment
+    cy.findByRole('textbox', { name: /^Add a comment to the discussion$/i })
+      .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
+      .type('this is a comment');
+    cy.findByRole('button', { name: /^Submit$/i }).click();
+
+    cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).as(
+      'dropdownButton',
+    );
+    cy.get('@dropdownButton').click();
+    cy.findByRole('link', {
+      name: /^Copy link to Article Editor v1 User's comment$/i,
+    }).should('have.focus');
+
+    cy.get('body').type('{esc}');
+    cy.findByRole('link', {
+      name: /^Copy link to Article Editor v1 User's comment$/i,
+    }).should('not.exist');
+    cy.get('@dropdownButton').should('have.focus');
+  });
+
+  it('should show dropdown options on comment index page', () => {
+    cy.findByRole('textbox', { name: /^Add a comment to the discussion$/i })
+      .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
+      .type('this is a comment');
+    cy.findByRole('button', { name: /^Submit$/i }).click();
+
+    cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).click();
+    cy.findByRole('link', { name: /^Edit this comment$/i }).click();
+
+    // In the comment index page, click submit without making changes
+    cy.findByRole('button', { name: /^Submit$/i }).click();
+
+    // Check the dropdown has initialized
+    cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).click();
+    cy.findByRole('link', { name: /^Edit this comment$/i });
+    // Close the dropdown again
+    cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).click();
+    cy.findByRole('link', { name: /^Edit this comment$/i }).should('not.exist');
+  });
 });
