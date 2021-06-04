@@ -69,7 +69,8 @@ describe('Lock discussion', () => {
             content: `This is a test article's contents.`,
             published: true,
           }).then((response) => {
-            cy.visit(`${response.body.current_state_path}/manage`);
+            const articlePath = response.body.current_state_path;
+            cy.visit(`${articlePath}/manage`);
             getDiscussionLockButton().click();
             cy.get('#discussion_lock_reason')
               .should('be.visible')
@@ -78,7 +79,7 @@ describe('Lock discussion', () => {
               .should('be.visible')
               .type(exampleNotes);
             getDiscussionLockSubmitButton().click();
-            cy.visit(response.body.current_state_path);
+            cy.visit(articlePath);
           });
         });
       });
