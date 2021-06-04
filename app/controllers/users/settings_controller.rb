@@ -21,9 +21,7 @@ module Users
       tab = params["users_setting"]["tab"] || "profile"
 
       if users_setting.save
-        # NOTE: [@msarit] this queues a job to fetch the feed each time the profile is updated, regardless if the user
-        # explicitly requested "Feed fetch now" or simply updated any other field
-        import_articles_from_feed(user)
+        import_articles_from_feed(users_setting)
 
         notice = "Your config has been updated. Refresh to see all changes."
 
@@ -31,21 +29,22 @@ module Users
           cookies.permanent[:user_experience_level] =
             users_setting.experience_level.to_s
         end
+
         flash[:settings_notice] = notice
+        redirect_to "/settings/#{tab}"
       else
         Honeycomb.add_field("error", users_setting.errors.messages.reject { |_, v| v.empty? })
         Honeycomb.add_field("errored", true)
         flash[:error] = @user.errors.full_messages.join(", ")
       end
-      redirect_to "/settings/#{tab}"
     end
 
     private
 
-    def import_articles_from_feed(user)
-      return if user.feed_url.blank?
+    def import_articles_from_feed(users_setting)
+      return if users_setting.feed_url.blank?
 
-      Feeds::ImportArticlesWorker.perform_async(nil, user.id)
+      Feeds::ImportArticlesWorker.perform_async(nil, users_setting.user_id)
     end
 
     def users_setting_params

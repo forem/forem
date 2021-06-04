@@ -62,10 +62,18 @@ module Feeds
       @users.where(feed_fetched_at: nil).or(@users.where(feed_fetched_at: ..earlier_than))
     end
 
+    def user_id_and_feed_url_pairs(batch_of_users)
+      result_set = []
+      batch_of_users.each do |user|
+        pair = [user.id, user.setting.feed_url]
+        result_set.push(pair)
+      end
+      result_set
+    end
+
     # TODO: put this in separate service object
     def fetch_feeds(batch_of_users)
-      binding.pry
-      data = batch_of_users.pluck(:id, :feed_url)
+      data = user_id_and_feed_url_pairs(batch_of_users)
 
       result = Parallel.map(data, in_threads: num_fetchers) do |user_id, url|
         cleaned_url = url.to_s.strip
