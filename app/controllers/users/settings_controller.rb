@@ -32,7 +32,7 @@ module Users
         Honeycomb.add_field("errored", true)
         flash[:error] = @user.errors.full_messages.join(", ")
       end
-      redirect_to "/settings/profile"
+      redirect_to "/settings/customization"
     end
 
     private
