@@ -1,4 +1,4 @@
-<title>Confirm Discussion Lock</title>
+<% title("Confirm Discussion Lock") %>
 <main id="main-content" class="crayons-layout crayons-layout--limited-l gap-0">
   <div class="crayons-card crayons-card--secondary text-styles text-styles--secondary text-padding -mb-1 mx-3 m:mx-6 mt-3">
     <%= @article.title %>
@@ -25,7 +25,7 @@
           <%= f.text_field :notes,
                            placeholder: "More details as to why you locked the discussion.",
                            required: false,
-                           class: "crayons-textfield"  %>
+                           class: "crayons-textfield" %>
         </div>
       </div>
       <%= f.submit "Lock discussion", class: "crayons-btn crayons-btn--danger" %>
