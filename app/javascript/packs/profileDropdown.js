@@ -11,11 +11,16 @@ function initButtons() {
 
 function initDropdown() {
   const profileDropdownDiv = document.querySelector('.profile-dropdown');
+
+  if (profileDropdownDiv.dataset.dropdownInitialized === 'true') {
+    return;
+  }
   const currentUser = userData();
 
   if (
-    currentUser &&
-    currentUser.username === profileDropdownDiv.dataset.username
+    !profileDropdownDiv ||
+    (currentUser &&
+      currentUser.username === profileDropdownDiv.dataset.username)
   ) {
     // Hide this menu if not logged in, or when user views their own profile
     return;
@@ -33,12 +38,9 @@ function initDropdown() {
     '.report-abuse-link-wrapper',
   );
   reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
+
+  initButtons();
+  profileDropdownDiv.dataset.dropdownInitialized = true;
 }
 
-window.InstantClick.on('change', () => {
-  initButtons();
-  initDropdown();
-});
-
-initButtons();
 initDropdown();
