@@ -97,6 +97,10 @@
     @media (min-width: $breakpoint-m) {
       margin-bottom: var(--su-2);
     }
+
+    .pinned svg {
+      fill: var(--accent-brand);
+    }
   }
 
   &__overflow {

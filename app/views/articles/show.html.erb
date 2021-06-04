@@ -112,9 +112,13 @@
 
       <article class="crayons-card crayons-article mb-4"
         id="article-show-container"
+        data-article-id="<%= @article.id %>"
         data-author-id="<%= @article.user_id %>"
         data-path="<%= @article.path %>"
-        data-published="<%= @article.published? %>">
+        data-published="<%= @article.published? %>"
+        data-pin-path="<%= stories_feed_pinned_article_path %>"
+        data-pinned-article-id="<%= @pinned_article_id %>"
+        <%= @article.pinned? ? "data-pinned" : " " %>>
         <header class="crayons-article__header" id="main-title">
           <% if @article.video.present? %>
             <%= render "articles/video_player", meta_tags: true, article: @article %>
