@@ -2,6 +2,7 @@
 
 <%= form_for @users_setting, html: { id: "ux-customization-form", class: "sticky-footer-form" } do |f| %>
   <%= f.hidden_field :user_id, value: @users_setting.user_id, id: nil %>
+  <%= f.hidden_field :tab, value: @tab, id: nil %>
 
   <div class="crayons-card crayons-card--content-rows">
     <h2 class="crayons-subtitle-1">

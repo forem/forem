@@ -18,6 +18,7 @@ module Users
     def update
       users_setting = Users::Setting.find(params[:id])
       users_setting.assign_attributes(users_setting_params)
+      tab = params["users_setting"]["tab"] || "profile"
 
       if users_setting.save
         # NOTE: [@msarit] this queues a job to fetch the feed each time the profile is updated, regardless if the user
@@ -36,7 +37,7 @@ module Users
         Honeycomb.add_field("errored", true)
         flash[:error] = @user.errors.full_messages.join(", ")
       end
-      redirect_to "/settings/customization"
+      redirect_to "/settings/#{tab}"
     end
 
     private
