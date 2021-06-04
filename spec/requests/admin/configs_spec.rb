@@ -80,21 +80,25 @@ RSpec.describe "/admin/customization/config", type: :request do
       end
 
       describe "Authentication" do
+        let(:provider) { "twitter" }
+
+        before do
+          allow(Authentication::Providers).to receive(:available).and_return([provider])
+        end
+
         it "updates enabled authentication providers" do
-          enabled = "twitter"
           post admin_settings_authentications_path, params: {
             settings_authentication: {
-              "#{enabled}_key": "someKey",
-              "#{enabled}_secret": "someSecret",
-              auth_providers_to_enable: enabled
+              "#{provider}_key": "someKey",
+              "#{provider}_secret": "someSecret",
+              auth_providers_to_enable: provider
             },
             confirmation: confirmation_message
           }
-          expect(Settings::Authentication.providers).to eq([enabled])
+          expect(Settings::Authentication.providers).to eq([provider])
         end
 
         it "strips empty elements" do
-          provider = "twitter"
           enabled = "#{provider}, '', nil"
           post admin_settings_authentications_path, params: {
             settings_authentication: {
@@ -108,12 +112,13 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "does not update enabled authentication providers if any associated key missing" do
-          enabled = Authentication::Providers.available.first.to_s
+          allow(Settings::Authentication).to receive(:"#{provider}_secret").and_return(nil)
+
           post admin_settings_authentications_path, params: {
             settings_authentication: {
-              "#{enabled}_key": "someKey",
-              "#{enabled}_secret": "",
-              auth_providers_to_enable: enabled
+              "#{provider}_key": "someKey",
+              "#{provider}_secret": "",
+              auth_providers_to_enable: provider
             },
             confirmation: confirmation_message
           }

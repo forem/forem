@@ -5,8 +5,9 @@ module Settings
 
       def self.call(settings)
         auth_providers_to_enable = settings.delete("auth_providers_to_enable")
+        result = Settings::Upsert.call(settings, ::Settings::Authentication)
         update_enabled_providers(auth_providers_to_enable)
-        Settings::Upsert.call(settings, ::Settings::Authentication)
+        result
       end
 
       def self.update_enabled_providers(value)
