@@ -131,7 +131,6 @@ describe('Pin an article - Admin User', () => {
     });
 
     cy.findByRole('heading', { name: 'Tools:' });
-
     cy.findByRole('main')
       .findAllByRole('link', { name: 'Delete' })
       .first()
@@ -140,13 +139,10 @@ describe('Pin an article - Admin User', () => {
     cy.findByRole('heading', {
       name: 'Are you sure you want to delete this article?',
     });
-
     cy.findByRole('main')
       .findAllByRole('button', { name: 'Delete' })
       .first()
       .click();
-
-    cy.visit('/');
 
     cy.createArticle({
       title: 'Another Article',
@@ -157,6 +153,7 @@ describe('Pin an article - Admin User', () => {
       cy.visit(response.body.current_state_path);
     });
 
+    cy.findByRole('heading', { name: 'Another Article' });
     cy.findByRole('main')
       .findAllByRole('button', { name: 'Pin Post' })
       .first()
@@ -166,19 +163,10 @@ describe('Pin an article - Admin User', () => {
   it('should allow to pin another post after the current pinned post is unpublished', () => {
     cy.findByRole('main').within(() => {
       cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
-      cy.findAllByRole('link', { name: 'Manage' }).first().click();
+      cy.findAllByRole('link', { name: 'Edit' }).first().click();
     });
 
-    cy.findByRole('main')
-      .findAllByRole('link', { name: 'Delete' })
-      .first()
-      .click();
-
-    cy.findByRole('main')
-      .findAllByRole('link', { name: 'Unpublish' })
-      .first()
-      .click();
-
+    cy.findByRole('form', { name: 'Edit post' });
     cy.findByRole('main').within(() => {
       cy.findAllByTitle(/^Post options$/i)
         .first()
@@ -186,6 +174,7 @@ describe('Pin an article - Admin User', () => {
       cy.findAllByRole('button', { name: 'Unpublish post' }).first().click();
     });
 
+    cy.findByRole('heading', { name: 'Test Article' });
     cy.createArticle({
       title: 'Another Article',
       tags: ['beginner', 'ruby', 'go'],
@@ -195,6 +184,7 @@ describe('Pin an article - Admin User', () => {
       cy.visit(response.body.current_state_path);
     });
 
+    cy.findByRole('heading', { name: 'Another Article' });
     cy.findByRole('main')
       .findAllByRole('button', { name: 'Pin Post' })
       .first()
