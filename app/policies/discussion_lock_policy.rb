@@ -1,6 +1,6 @@
 class DiscussionLockPolicy < ApplicationPolicy
   def create?
-    authorized_user?
+    user_author? || minimal_admin?
   end
 
   def destroy?
@@ -12,10 +12,6 @@ class DiscussionLockPolicy < ApplicationPolicy
   end
 
   private
-
-  def authorized_user?
-    user_author? || minimal_admin?
-  end
 
   def user_author?
     record.locking_user_id == user.id
