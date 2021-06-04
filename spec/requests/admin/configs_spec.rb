@@ -81,7 +81,7 @@ RSpec.describe "/admin/customization/config", type: :request do
 
       describe "Authentication" do
         it "updates enabled authentication providers" do
-          enabled = Authentication::Providers.available.last.to_s
+          enabled = "twitter"
           post admin_settings_authentications_path, params: {
             settings_authentication: {
               "#{enabled}_key": "someKey",
@@ -94,7 +94,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "strips empty elements" do
-          provider = Authentication::Providers.available.last.to_s
+          provider = "twitter"
           enabled = "#{provider}, '', nil"
           post admin_settings_authentications_path, params: {
             settings_authentication: {
