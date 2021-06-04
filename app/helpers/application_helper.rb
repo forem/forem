@@ -195,7 +195,7 @@ module ApplicationHelper
   end
 
   def email_link(text: nil, additional_info: nil)
-    email = Settings::General.email_addresses[:default]
+    email = ForemInstance.email
     mail_to email, text || email, additional_info
   end
 
