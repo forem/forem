@@ -64,6 +64,7 @@ module Feeds
 
     # TODO: put this in separate service object
     def fetch_feeds(batch_of_users)
+      binding.pry
       data = batch_of_users.pluck(:id, :feed_url)
 
       result = Parallel.map(data, in_threads: num_fetchers) do |user_id, url|

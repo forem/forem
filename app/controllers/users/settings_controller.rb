@@ -20,6 +20,10 @@ module Users
       users_setting.assign_attributes(users_setting_params)
 
       if users_setting.save
+        # NOTE: [@msarit] this queues a job to fetch the feed each time the profile is updated, regardless if the user
+        # explicitly requested "Feed fetch now" or simply updated any other field
+        import_articles_from_feed(user)
+
         notice = "Your config has been updated. Refresh to see all changes."
 
         if users_setting.experience_level.present?
@@ -36,6 +40,12 @@ module Users
     end
 
     private
+
+    def import_articles_from_feed(user)
+      return if user.feed_url.blank?
+
+      Feeds::ImportArticlesWorker.perform_async(nil, user.id)
+    end
 
     def users_setting_params
       params.require(:users_setting).permit(ALLOWED_PARAMS)

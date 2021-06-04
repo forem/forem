@@ -7,9 +7,10 @@
       <%= form_for(@users_setting) do |f| %>
         <%= f.hidden_field :feed_url, value: @users_setting.feed_url %>
         <%= f.hidden_field :tab, value: @tab %>
+        <%= f.hidden_field :user, value: @user %>
         <div class="flex items-center">
           <button type="submit" class="crayons-btn crayons-btn--secondary">Fetch feed now</button>
-          <p>Last Fetched: <time id="rss-fetch-time" datetime="<%= @users_setting.feed_fetched_at.iso8601 %>"></time></p>
+          <p class="pl-2">Last Fetched: <time id="rss-fetch-time" datetime="<%= @users_setting.feed_fetched_at.iso8601 %>"></time></p>
         </div>
       <% end %>
     <% end %>

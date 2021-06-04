@@ -49,7 +49,7 @@ class UsersController < ApplicationController
     if @user.save
       # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
       # explicitly requested "Feed fetch now" or simply updated any other field
-      import_articles_from_feed(@user)
+      # import_articles_from_feed(@user)
 
       notice = "Your profile was successfully updated."
       if @user.export_requested?
@@ -372,11 +372,11 @@ class UsersController < ApplicationController
     Rails.cache.exist?("user-destroy-token-#{@user.id}")
   end
 
-  def import_articles_from_feed(user)
-    return if user.feed_url.blank?
+  # def import_articles_from_feed(user)
+  #   return if user.feed_url.blank?
 
-    Feeds::ImportArticlesWorker.perform_async(nil, user.id)
-  end
+  #   Feeds::ImportArticlesWorker.perform_async(nil, user.id)
+  # end
 
   def profile_params
     params[:profile] ? params[:profile].permit(Profile.attributes) : nil
