@@ -112,4 +112,46 @@ RSpec.describe "Admin manages pages", type: :system do
       end
     end
   end
+
+  describe "when there is a landing page" do
+    let(:current_landing_page) { create(:page, landing_page: true) }
+    let(:new_landing_page) { create(:page, landing_page: true) }
+
+    it "allows a landing page to be updated", :aggregate_failures do
+      visit edit_admin_page_path(current_landing_page.id)
+      expect(page).to have_content("Use as 'Locked Screen")
+      uncheck "Use as 'Locked Screen'"
+      click_on("Update Page")
+      expect(page).to have_current_path(admin_pages_path)
+    end
+
+    it "allows an Admin to click through to the current landing page via the modal", :aggregate_failures do
+      visit edit_admin_page_path(new_landing_page.id)
+      expect(page).to have_content("Use as 'Locked Screen")
+      check "Use as 'Locked Screen'"
+      expect(page).to have_link("Current Locked Screen")
+      click_on("Current Locked Screen")
+      expect(page).to have_current_path(new_landing_page.path)
+      expect(page).to have_content(new_landing_page.title)
+    end
+
+    xit "allows an Admin to overwrite the current landing page via the checkbox and modal", :aggregate_failures do
+      visit edit_admin_page_path(new_landing_page.id)
+      expect(page).to have_content("Use as 'Locked Screen")
+      check "Use as 'Locked Screen'"
+      expect(page).to have_link("Current Locked Screen")
+      click_on("Overwrite current locked screen")
+      # find('//*[@id="add-landing-page-link-modal-root"]/div/div[1]/div[1]/button').click
+      # click_button(class: "crayons-btn crayons-btn--ghost crayons-btn--icon")
+      # within("#crayons-modal__box") do
+      #   click_button(class: "crayons-btn crayons-btn--ghost crayons-btn--icon")
+      # end
+      # within("crayons-btn crayons-btn--ghost crayons-btn--icon") do
+      # find(:css, "svg.crayons-icon").first.click
+      # find(:xpath, "//*[@id='add-landing-page-link-modal-root']/div/div[1]/div[1]/button").click
+      # end
+      click_on("Update Page")
+      expect(page).to have_current_path(admin_pages_path)
+    end
+  end
 end
