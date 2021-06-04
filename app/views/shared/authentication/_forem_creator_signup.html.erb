@@ -35,20 +35,25 @@
           Name
           <span class="crayons-field__required crayons-tooltip"></span>
         <% end %>
-        <%= f.text_field :name, placeholder: "John Doe, john_doe, john, ...", class: "crayons-textfield js-forem-creator-signup-name", required: true, onChange: "updateUsername()" %>
+        <%= f.text_field :name, placeholder: "John Doe, john_doe, john, ...", class: "crayons-textfield js-creator-signup-name", required: true, onInput: "setDefaultUsername()" %>
 
-        <div class="fs-xs color-base-60">Your username will be
-          <span class="color-base-80 js-forem-creator-signup-username"></span>
-          <span class="js-forem-creator-signup-edit-username" onClick="showUsernameField()">Edit</span>
-        </div>
+        <div class="js-creator-signup-username-hint-row hidden">
+          <div class="fs-xs color-base-60 flex">
+            <span>Your username will be&nbsp;</span>
+            <span class="bold color-base-80 js-creator-signup-username-hint"></span>
+            <span onclick="showUsernameField()">
+              <%= inline_svg_tag("pencil.svg", class: "cursor-pointer", aria: true, title: "Pencil icon") %>
+            </span>
+          </div>
+          </div>
       </div>
 
-      <div class="crayons-field mt-6 hidden js-forem-creator-signup-username-row">
+      <div class="crayons-field mt-6 hidden js-creator-signup-username-row">
         <%= f.label :username, class: "crayons-field__label", aria: { label: "Username" } do %>
           Username
           <span class="crayons-field__required crayons-tooltip"></span>
         <% end %>
-        <%= f.email_field :username, class: "js-forem-creator-signup-username-field crayons-textfield", required: true %>
+        <%= f.email_field :username, class: "js-creator-signup-username crayons-textfield", required: true %>
       </div>
 
       <div class="crayons-field mt-6">
@@ -65,24 +70,24 @@
           <span class="crayons-field__required crayons-tooltip"></span>
         <% end %>
         <span onclick="togglePasswordVisibility()">
-          <%= inline_svg_tag("eye.svg", class: "absolute bottom-2 right-2 cursor-pointer js-eye", aria: true, title: "Eye icon", onClick: "togglePasswordVisibility()") %>
-          <%= inline_svg_tag("eye-off.svg", class: "absolute bottom-2 right-2 cursor-pointer hidden js-eye-off", aria: true, title: "Eye Off icon", onClick: "togglePasswordVisibility()") %>
+          <%= inline_svg_tag("eye.svg", class: "absolute bottom-2 right-2 cursor-pointer js-eye", aria: true, title: "Eye icon") %>
+          <%= inline_svg_tag("eye-off.svg", class: "absolute bottom-2 right-2 cursor-pointer hidden js-eye-off", aria: true, title: "Eye Off icon") %>
         </span>
-        <%= f.password_field :password, placeholder: "•••••••••", class: "crayons-textfield js-password", required: true %>
+        <%= f.password_field :password, class: "crayons-textfield js-password", required: true %>
       </div>
 
       <% if ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
-        <% if params[:forem_owner_secret].present? %>
-          <%= f.hidden_field :forem_owner_secret, value: params[:forem_owner_secret] %>
+        <% if params[:owner_secret].present? %>
+          <%= f.hidden_field :owner_secret, value: params[:owner_secret] %>
         <% else %>
           <div class="crayons-field mt-2">
-            <%= f.label :forem_owner_secret, "New Forem Secret", class: "crayons-field__label" %>
-            <%= f.password_field :forem_owner_secret, class: "crayons-textfield", required: true, placeholder: "As provided by your Forem host" %>
+            <%= f.label :owner_secret, "New Forem Secret", class: "crayons-field__label" %>
+            <%= f.password_field :owner_secret, class: "crayons-textfield", required: true, placeholder: "As provided by your Forem host" %>
           </div>
         <% end %>
       <% end %>
 
-      <div class="flex flex-col pt-3">
+      <div class="flex flex-col pt-6">
         <%= f.submit "Create my account", class: "crayons-btn" %>
       </div>
     <% end %>
