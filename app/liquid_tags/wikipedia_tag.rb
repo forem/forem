@@ -42,7 +42,7 @@ class WikipediaTag < LiquidTagBase
 
   def parse_page_with_anchor(url, lang, title, anchor)
     api_url = "https://#{lang}.wikipedia.org/api/rest_v1/page/mobile-sections/#{title}"
-    response = HTTParty.get(api_url, headers: { 'user-agent': URL.url("/contact") })
+    response = HTTParty.get(api_url, headers: { "user-agent": URL.url("/contact") })
     handle_response_error(response, url)
 
     text, section_title = get_section_contents(response, anchor, url)
@@ -57,7 +57,7 @@ class WikipediaTag < LiquidTagBase
 
   def parse_page(url, lang, title)
     api_url = "https://#{lang}.wikipedia.org/api/rest_v1/page/summary/#{title}"
-    response = HTTParty.get(api_url, headers: { 'user-agent': URL.url("/contact") })
+    response = HTTParty.get(api_url, headers: { "user-agent": URL.url("/contact") })
     handle_response_error(response, url)
 
     {
