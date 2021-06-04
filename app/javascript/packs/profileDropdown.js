@@ -22,7 +22,7 @@ function initDropdown() {
     (currentUser &&
       currentUser.username === profileDropdownDiv.dataset.username)
   ) {
-    // Hide this menu if not logged in, or when user views their own profile
+    // Hide this menu when user views their own profile
     return;
   }
 

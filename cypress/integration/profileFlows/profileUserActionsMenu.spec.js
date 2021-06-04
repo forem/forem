@@ -97,9 +97,18 @@ describe('Profile User Actions Menu', () => {
       cy.testSetup();
     });
 
-    it('should not show a dropdown menu when the user is not logged in', () => {
-      cy.visit('/admin_mcadmin');
-      cy.findByRole('button', { name: 'User actions' }).should('not.exist');
+    it('should show a dropdown menu with only the Report Abuse link when the user is not logged in', () => {
+      cy.visit('/article_editor_v1_user');
+      cy.findByRole('button', { name: 'User actions' }).click();
+
+      cy.findByRole('link', { name: 'Report Abuse' }).should('have.focus');
+
+      cy.findByRole('link', { name: 'Block @article_editor_v1_user' }).should(
+        'not.exist',
+      );
+      cy.findByRole('link', { name: 'Flag @article_editor_v1_user' }).should(
+        'not.exist',
+      );
     });
   });
 });
