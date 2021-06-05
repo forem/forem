@@ -4,11 +4,11 @@ module Users
                         config_theme
                         config_font
                         config_navbar
+                        display_announcements
+                        display_sponsors
                         editor_version
                         experience_level
-                        display_sponsors
                         permit_adjacent_sponsors
-                        display_announcements
                         user_id].freeze
 
     def update
