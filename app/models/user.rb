@@ -89,19 +89,11 @@ class User < ApplicationRecord
 
   # Relevant Fields for migration from Users table to Users_Settings table
   USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    config_font
-    config_navbar
-    config_theme
-    display_announcements
-    display_sponsors
-    editor_version
-    experience_level
     feed_mark_canonical
     feed_referential_link
     feed_url
     inbox_guidelines
     inbox_type
-    permit_adjacent_sponsors
   ].to_set.freeze
 
   # Relevant Fields for migration from Profiles table to Users_Settings table

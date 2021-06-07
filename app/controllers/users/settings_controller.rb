@@ -24,9 +24,7 @@ module Users
             users_setting.experience_level.to_s
         end
         flash[:settings_notice] = notice
-        # [@msarit]: double check if we still need to set the profile_updated_at
-        # like we did in the user controller
-        # users_setting.user.touch(:profile_updated_at)
+        users_setting.user.touch(:profile_updated_at)
       else
         Honeycomb.add_field("error", users_setting.errors.messages.reject { |_, v| v.empty? })
         Honeycomb.add_field("errored", true)
