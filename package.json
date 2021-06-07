@@ -153,7 +153,7 @@
     "@rails/webpacker": "5.4.0",
     "@reach/combobox": "^0.15.1",
     "ahoy.js": "^0.3.8",
-    "autoprefixer": "^10.2.5",
+    "autoprefixer": "^10.2.6",
     "babel-preset-preact": "^2.0.0",
     "canvas": "^2.8.0",
     "chart.js": "^3.3.2",
