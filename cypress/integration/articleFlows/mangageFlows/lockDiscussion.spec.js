@@ -44,7 +44,7 @@ describe('Lock discussion', () => {
       getDiscussionLockButton().click();
 
       cy.findByRole('heading', {
-        name: 'Are you sure you want to lock the discussion on this article?',
+        name: 'Are you sure you want to lock the discussion on this post?',
       }).should('exist');
 
       cy.findByRole('button', {

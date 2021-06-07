@@ -28,6 +28,13 @@ RSpec.describe DiscussionLockPolicy do
     it { is_expected.to permit_mass_assignment_of(valid_attributes) }
   end
 
+  context "when user is suspended" do
+    let(:user) { build_stubbed(:user, :suspended) }
+    let(:discussion_lock) { build_stubbed(:discussion_lock, locking_user: user, article: article) }
+
+    it { is_expected.to forbid_actions(%i[create destroy]) }
+  end
+
   context "when user is an admin" do
     let(:locking_user) { build(:user, :admin) }
 

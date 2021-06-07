@@ -21,13 +21,14 @@ class DiscussionLocksController < ApplicationController
   end
 
   def destroy
-    discussion_lock = DiscussionLock.includes(:article).find(params[:id])
+    discussion_lock = DiscussionLock.find(params[:id])
 
     authorize discussion_lock
     article = discussion_lock.article
 
     if discussion_lock.destroy
       bust_article_cache(article)
+
       flash[:success] = "Discussion was successfully unlocked!"
     else
       flash[:error] = "Error: #{discussion_lock.errors_as_sentence}"
@@ -39,7 +40,7 @@ class DiscussionLocksController < ApplicationController
   private
 
   def discussion_lock_params
-    params.require(:discussion_lock).permit(DISCUSSION_LOCK_PARAMS).merge!(locking_user_id: current_user.id)
+    params.require(:discussion_lock).permit(DISCUSSION_LOCK_PARAMS).merge(locking_user_id: current_user.id)
   end
 
   def bust_article_cache(article)
