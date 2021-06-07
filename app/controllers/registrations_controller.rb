@@ -12,7 +12,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    authorize(User, policy_class: RegistrationPolicy)
+    authorize(params, policy_class: RegistrationPolicy)
 
     resolve_profile_field_issues
 
