@@ -278,25 +278,6 @@ RSpec.describe "/admin/customization/config", type: :request do
       end
 
       describe "Emails" do
-        it "updates email_addresses" do
-          expected_email_addresses = {
-            contact: "contact@example.com",
-            business: "partners@example.com",
-            privacy: "privacy@example.com",
-            members: "members@example.com"
-          }
-
-          post admin_config_path, params: {
-            settings_general: { email_addresses: expected_email_addresses },
-            confirmation: confirmation_message
-          }
-
-          expect(Settings::General.email_addresses[:contact]).to eq("contact@example.com")
-          expect(Settings::General.email_addresses[:business]).to eq("partners@example.com")
-          expect(Settings::General.email_addresses[:privacy]).to eq("privacy@example.com")
-          expect(Settings::General.email_addresses[:members]).to eq("members@example.com")
-        end
-
         it "does not update the default email address" do
           post admin_config_path, params: {
             settings_general: { email_addresses: { default: "random@example.com" } },

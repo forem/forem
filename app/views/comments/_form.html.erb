@@ -29,7 +29,7 @@
   <% end %>
 
   <span class="crayons-avatar m:crayons-avatar--l mr-2 shrink-0">
-    <img src="<%= Images::Optimizer.call(Settings::General.logo_png, width: 256) %>" width="32" height="32" alt="pic" class="crayons-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar">
+    <img src="<%= Images::Optimizer.call(Settings::General.logo_png, width: 256) %>" width="32" height="32" alt="pic" class="crayons-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" loading="lazy" />
   </span>
   <div class="comment-form__inner">
     <div class="comment-form__field">
@@ -72,7 +72,7 @@
         <button type="button" class="moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment">Moderator</button>
       </header>
 
-      <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading">
+      <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading" loading="lazy" />
 
       <div class="personal-responses-container">
         <%# filled by JS %>
