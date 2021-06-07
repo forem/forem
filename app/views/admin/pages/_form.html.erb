@@ -50,12 +50,12 @@
             data-modal-title-value="There's another locked screen..." data-modal-size-value="default">
         <div class="form-group">
           <%= form.label :landing_page, "Use as 'Locked Screen'" %>
-          <%= form.check_box :landing_page, class: "crayons-checkbox", data: { action: @page.has_a_landing_page? ? "modal#toggleModal" : "" } %>
+          <%= form.check_box :landing_page, class: "crayons-checkbox", data: { action: @landing_page.present? && @landing_page.id != @page.id ? "modal#toggleModal" : "" } %>
           <p>Determines if this page will be used as a landing page for anonymous viewers.</p>
         </div>
         <div class="form-group">
-          <%= form.label :overwrite, "Overwrite" %>
-          <%= form.check_box :overwrite, class: "crayons-checkbox" %>
+          <%= form.label :overwrite_landing_page, "Overwrite" %>
+          <%= form.check_box :overwrite_landing_page, class: "crayons-checkbox" %>
         </div>
         <div id="add-landing-page-link-modal" class="hidden">
           <div class="form-group grid p-6 mb-6 gap-1">
@@ -64,7 +64,7 @@
               Only <b>one</b> page at a time can be used as a "locked screen." If you proceed, this page will no longer show as "locked screen":
               <br><br>
               <span style="display:block; border:none; padding:20px; background-color:#F9FAFA;">
-                <%= link_to "Current Locked Screen", @page.landing_page_path %>
+                <%= link_to "Current Locked Screen", Page.landing_page&.path %>
               </span>
               <br>
                <button type="button" class="crayons-btn" onclick="toggleOverwrite(); return false;">Overwrite current locked screen</button>&nbsp;
@@ -92,7 +92,7 @@
         <br>
       </p>
     </div>
-    <%= form.hidden_field :overwrite, value: true %>
+    <%= form.hidden_field :overwrite_landing_page, value: true %>
     <%= form.submit class: "crayons-btn" %>
   <% end %>
 
@@ -126,7 +126,7 @@ window.addEventListener('load', function() {
 });
 
 function toggleOverwrite() {
-    var elm = document.getElementById('page_overwrite');
+    var elm = document.getElementById('page_landing_page_overwrite');
     elm.checked = !elm.checked;
 };
 </script>

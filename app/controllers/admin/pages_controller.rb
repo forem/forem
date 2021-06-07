@@ -54,7 +54,7 @@ module Admin
 
     def page_params
       allowed_params = %i[title slug body_markdown body_html body_json description template is_top_level_path
-                          social_image landing_page overwrite]
+                          social_image landing_page overwrite_landing_page]
       params.require(:page).permit(allowed_params)
     end
 
@@ -95,7 +95,7 @@ module Admin
     end
 
     def update_and_overwrite_landing_page
-      if page_params["overwrite"] == "true"
+      if page_params["overwrite_landing_page"] == "true"
         Page.transaction do
           current_landing_page = Page.find_by(landing_page: true)
           current_landing_page&.update(landing_page: false)
@@ -108,7 +108,7 @@ module Admin
     end
 
     def create_and_overwrite_landing_page
-      if page_params["overwrite"] == "true"
+      if page_params["overwrite_landing_page"] == "true"
         Page.transaction do
           current_landing_page = Page.find_by(landing_page: true)
           current_landing_page&.update(landing_page: false)
