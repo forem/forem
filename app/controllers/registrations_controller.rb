@@ -12,7 +12,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    not_authorized unless email_registrable?
+    authorize(User, policy_class: RegistrationPolicy)
 
     resolve_profile_field_issues
 
@@ -38,18 +38,6 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   private
-
-  def email_registrable?
-    if Settings::General.waiting_on_first_user
-      if ENV["FOREM_OWNER_SECRET"].present?
-        ENV["FOREM_OWNER_SECRET"] == params[:user][:forem_owner_secret]
-      else
-        true
-      end
-    elsif Settings::Authentication.allow_email_password_registration
-      true
-    end
-  end
 
   def update_first_user_permissions(resource)
     return unless Settings::General.waiting_on_first_user
