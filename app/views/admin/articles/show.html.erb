@@ -1,1 +1,13 @@
-<%= render "individual_article", article: @article %>
+<div
+  data-controller="article-pinned-modal"
+  data-article-pinned-modal-root-selector-value="#article-pin-modal-root"
+  data-article-pinned-modal-content-selector-value="#article-pin-modal"
+  data-article-pinned-modal-title-value="There's another article pinned..."
+  data-article-pinned-modal-size-value="m"
+  data-article-pinned-modal-cancel-button-id-value="article-pin-modal-cancel"
+  data-article-pinned-modal-ok-button-id-value="article-pin-modal-ok"
+  data-action="article-pinned-modal:open@document->article-pinned-modal#openModal">
+
+  <%= render partial: "individual_article", locals: { article: @article } %>
+  <%= render partial: "pinned_article_modal" %>
+</div>

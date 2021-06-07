@@ -439,7 +439,7 @@ class User < ApplicationRecord
   end
 
   def any_admin?
-    @any_admin ||= (has_role?(:super_admin) || has_role?(:admin))
+    @any_admin ||= roles.where(name: ANY_ADMIN_ROLES).any?
   end
 
   def tech_admin?

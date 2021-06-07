@@ -817,6 +817,7 @@ class Article < ApplicationRecord
   end
 
   def detect_animated_images
+    return unless FeatureFlag.enabled?(:detect_animated_images)
     return unless saved_change_to_attribute?(:processed_html)
 
     ::Articles::DetectAnimatedImagesWorker.perform_async(id)
