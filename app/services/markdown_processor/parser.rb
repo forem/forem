@@ -34,10 +34,8 @@ module MarkdownProcessor
         # a String substitute, hence we force the conversion before passing it to Liquid::Template.
         # See <https://github.com/Shopify/liquid/issues/1390>
         parsed_liquid = Liquid::Template.parse(sanitized_content.to_str, liquid_tag_options)
-        options2 = { hard_wrap: false, filter_html: false, link_attributes: link_attributes }
-        renderer2 = Redcarpet::Render::HTMLRouge.new(options2)
-        markdown2 = Redcarpet::Markdown.new(renderer2, Constants::Redcarpet::CONFIG)
-        html = markdown2.render(parsed_liquid.render)
+
+        html = render_trimming_breaks(parsed_liquid, link_attributes)
       rescue Liquid::SyntaxError => e
         html = e.message
       end
@@ -138,6 +136,13 @@ module MarkdownProcessor
 
       # Convert all multiline code tags to triple backticks
       content.gsub(%r{^</?code>$}, "\n```\n")
+    end
+
+    def render_trimming_breaks(parsed_liquid, link_attributes)
+      options = { hard_wrap: false, filter_html: false, link_attributes: link_attributes }
+      renderer = Redcarpet::Render::HTMLRouge.new(options)
+      markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
+      markdown.render(parsed_liquid.render)
     end
 
     private
