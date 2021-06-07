@@ -19,7 +19,7 @@ const configureAhoyStats = () => {
   const container = document.getElementsByClassName(
     'crayons-article-actions__inner',
   )[0];
-  container.querySelectorAll('a.dropdown-link-row').forEach((link) => {
+  container?.querySelectorAll('a.dropdown-link-row').forEach((link) => {
     link.addEventListener('click', (event) => {
       ahoy.track('Post Dropdown', { option: event.target.text.trim() });
     });
