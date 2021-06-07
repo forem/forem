@@ -171,7 +171,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.8)
+    concurrent-ruby (1.1.9)
     connection_pool (2.2.5)
     counter_culture (2.8.0)
       activerecord (>= 4.2)
@@ -721,7 +721,7 @@ GEM
     sidekiq-cron (1.2.0)
       fugit (~> 1.1)
       sidekiq (>= 4.2.1)
-    sidekiq-unique-jobs (7.0.11)
+    sidekiq-unique-jobs (7.0.12)
       brpoplpush-redis_script (> 0.1.1, <= 2.0.0)
       concurrent-ruby (~> 1.0, >= 1.0.5)
       sidekiq (>= 5.0, < 7.0)
@@ -962,7 +962,7 @@ DEPENDENCIES
   shoulda-matchers (~> 4.5.1)
   sidekiq (~> 6.2.1)
   sidekiq-cron (~> 1.1)
-  sidekiq-unique-jobs (~> 7.0.11)
+  sidekiq-unique-jobs (~> 7.0.12)
   simplecov (~> 0.21.2)
   sitemap_generator (~> 6.1)
   slack-notifier (~> 2.4)
