@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import ahoy from 'ahoy.js';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '@utilities/dropdownUtils';
@@ -47,7 +48,18 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
     document
       .querySelectorAll('#article-show-more-dropdown [href]')
       .forEach((link) => link.addEventListener('click', closeDropdown));
+
+    // Add Ahoy stats for dropdown share options
+    const container = document.getElementsByClassName(
+      'crayons-article-actions__inner',
+    )[0];
+    container?.querySelectorAll('a.dropdown-link-row').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        ahoy.track('Post Dropdown', { option: event.target.text.trim() });
+      });
+    });
   }
+
   shareDropdownButton.dataset.initialized = 'true';
 }
 

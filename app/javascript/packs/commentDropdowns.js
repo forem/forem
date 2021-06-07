@@ -1,4 +1,3 @@
-import ahoy from 'ahoy.js';
 import { addSnackbarItem } from '../Snackbar';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
@@ -13,17 +12,6 @@ const handleCopyPermalink = (closeDropdown) => {
     });
     closeDropdown();
   };
-};
-
-const configureAhoyStats = () => {
-  const container = document.getElementsByClassName(
-    'crayons-article-actions__inner',
-  )[0];
-  container?.querySelectorAll('a.dropdown-link-row').forEach((link) => {
-    link.addEventListener('click', (event) => {
-      ahoy.track('Post Dropdown', { option: event.target.text.trim() });
-    });
-  });
 };
 
 const initializeArticlePageDropdowns = () => {
@@ -56,8 +44,6 @@ const initializeArticlePageDropdowns = () => {
     dropdownElement
       .querySelector('.permalink-copybtn')
       ?.addEventListener('click', handleCopyPermalink(closeDropdown));
-
-    configureAhoyStats();
 
     dropdownTrigger.dataset.initialized = 'true';
   }
