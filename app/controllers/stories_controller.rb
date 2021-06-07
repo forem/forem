@@ -255,6 +255,8 @@ class StoriesController < ApplicationController
     not_found if permission_denied?
     not_found unless @article.user
 
+    @pinned_article_id = PinnedArticle.id
+
     @article_show = true
 
     @user = @article.user

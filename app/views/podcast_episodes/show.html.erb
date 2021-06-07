@@ -93,6 +93,7 @@
         id="comments-container"
         data-commentable-id="<%= @episode.id %>"
         data-commentable-type="PodcastEpisode">
+        <%= javascript_packs_with_chunks_tag "commentDropdowns", defer: true %>
         <%= render "/comments/form",
                    commentable: @episode,
                    commentable_type: "PodcastEpisode" %>
