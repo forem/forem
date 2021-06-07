@@ -314,7 +314,6 @@ class User < ApplicationRecord
       ),
     )
   }
-  # scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
   before_validation :downcase_email
