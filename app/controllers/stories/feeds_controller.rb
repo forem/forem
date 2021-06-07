@@ -4,9 +4,20 @@ module Stories
 
     def show
       @stories = assign_feed_stories
+
+      add_pinned_article
     end
 
     private
+
+    def add_pinned_article
+      return if params[:timeframe].present?
+
+      pinned_article = PinnedArticle.get
+      return if pinned_article.nil? || @stories.detect { |story| story.id == pinned_article.id }
+
+      @stories.prepend(pinned_article.decorate)
+    end
 
     def assign_feed_stories
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
@@ -18,6 +29,7 @@ module Stories
                 else
                   signed_out_base_feed
                 end
+
       ArticleDecorator.decorate_collection(stories)
     end
 

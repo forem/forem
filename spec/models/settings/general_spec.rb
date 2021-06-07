@@ -25,5 +25,29 @@ RSpec.describe Settings::General, type: :model do
         end
       end
     end
+
+    describe "validating :feed_pinned_article_id" do
+      it "does not accept non numeric values" do
+        expect { described_class.feed_pinned_article_id = "string" }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "does not accept ids of non existing articles" do
+        expect { described_class.feed_pinned_article_id = 9999 }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "accepts nil" do
+        expect { described_class.feed_pinned_article_id = nil }.not_to raise_error
+      end
+
+      it "does not accept the id of an existing draft article" do
+        article = create(:article, published: false)
+        expect { described_class.feed_pinned_article_id = article.id }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "accepts the id of an existing published article" do
+        article = create(:article, published: true)
+        expect { described_class.feed_pinned_article_id = article.id }.not_to raise_error
+      end
+    end
   end
 end

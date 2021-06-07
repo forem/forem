@@ -75,10 +75,7 @@
     padding-bottom: 42%;
     background-size: cover;
     background-position: center center;
-
-    @media (min-width: $breakpoint-m) {
-      border-radius: var(--radius) var(--radius) 0 0;
-    }
+    border-radius: var(--radius) var(--radius) 0 0;
   }
 
   &__body {
@@ -99,6 +96,10 @@
 
     @media (min-width: $breakpoint-m) {
       margin-bottom: var(--su-2);
+    }
+
+    .pinned svg {
+      fill: var(--accent-brand);
     }
   }
 
