@@ -4,10 +4,15 @@
   }
 </style>
 
+<% decorated_article = article.decorate %>
+
 <div class="card my-3"
      data-controller="article"
+     data-article-id-value="<%= article.id %>"
+     data-article-pin-path-value="<%= stories_feed_pinned_article_path %>"
      data-article-bg-highlighted-class="bg-highlighted"
-     data-article-border-highlighted-class="border-highlighted">
+     data-article-border-highlighted-class="border-highlighted"
+     data-action="ajax:success@document->article#ajaxSuccess">
 
   <div class="card-header">
     <h2>
@@ -22,6 +27,17 @@
       <button class="btn btn-sm btn-success" data-action="article#increaseFeaturedNumber">Boost</button>
 
       <a class="btn btn-sm btn-secondary" href="<%= admin_user_path(article.user_id) %>" target="_blank" rel="noopener">Manage User</a>
+
+      <% if decorated_article.pinned? %>
+        <%= link_to(
+              "Unpin Post",
+              unpin_admin_article_path(decorated_article.id),
+              method: :delete,
+              remote: true,
+              class: "btn btn-sm btn-secondary",
+              data: { "article-target": "unpinButton" },
+            ) %>
+      <% end %>
 
       <a href="<%= admin_user_path(article.user_id) %>" class="badge badge-light">@<%= article.user&.username %></a>
 
@@ -39,7 +55,7 @@
         <% end %>
       </span>
 
-      <% article.decorate.cached_tag_list_array.each do |tag| %>
+      <% decorated_article.cached_tag_list_array.each do |tag| %>
         <a class="badge badge-secondary" href='<%= tag_path(tag) %>'>#<%= tag %></a>
       <% end %>
     </div>
@@ -47,7 +63,8 @@
 
   <% featured = article.featured ? "bg-featured" : "" %>
   <% approved = article.approved ? "bg-approved" : featured %>
-  <% background_color = approved %>
+  <% pinned = decorated_article.pinned? ? "bg-pinned" : approved %>
+  <% background_color = pinned %>
 
   <div
     data-article-target="cardBody"
@@ -127,8 +144,19 @@
         <%= f.check_box :boosted_additional_articles, id: "boosted_additional_articles-#{article.id}" %>
         <label for="boosted_additional_articles-<%= article.id %>">Boosted</label>
       </div>
+      <div class="form-check col">
+        <%= check_box_tag :pinned, "1", decorated_article.pinned?,
+                          name: "article[pinned]",
+                          id: "pinned-#{article.id}",
+                          data: {
+                            "article-target": "pinnedCheckbox",
+                            "article-pinned-modal-target": "pinnedCheckbox",
+                            action: "click->article#togglePin"
+                          } %>
+        <label for="pinned-<%= article.id %>">Pinned</label>
+      </div>
       <div class="col">
-          <button class="btn btn-primary float-right">Submit</button>
+        <button class="btn btn-primary float-right">Submit</button>
       </div>
     </div>
     <% end %>

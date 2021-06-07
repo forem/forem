@@ -2,7 +2,7 @@
  * Helper query string to identify interactive/focusable HTML elements
  */
 const INTERACTIVE_ELEMENTS_QUERY =
-  'button, [href], input, select, textarea, [tabindex="0"]';
+  'button, [href], input:not([type="hidden"]), select, textarea, [tabindex="0"]';
 
 /**
  * Used to close the given dropdown if:

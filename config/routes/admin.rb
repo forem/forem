@@ -41,7 +41,12 @@ namespace :admin do
   end
 
   scope :content_manager do
-    resources :articles, only: %i[index show update]
+    resources :articles, only: %i[index show update] do
+      member do
+        delete :unpin
+      end
+    end
+
     resources :badges, only: %i[index edit update new create]
     resources :badge_achievements, only: %i[index destroy]
     get "/badge_achievements/award_badges", to: "badge_achievements#award"

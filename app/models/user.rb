@@ -73,6 +73,7 @@ class User < ApplicationRecord
     end
   end
 
+  ANY_ADMIN_ROLES = %i[admin super_admin].freeze
   EDITORS = %w[v1 v2].freeze
   FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
   INBOXES = %w[open private].freeze
@@ -462,7 +463,7 @@ class User < ApplicationRecord
   end
 
   def any_admin?
-    @any_admin ||= (has_role?(:super_admin) || has_role?(:admin))
+    @any_admin ||= roles.where(name: ANY_ADMIN_ROLES).any?
   end
 
   def tech_admin?
