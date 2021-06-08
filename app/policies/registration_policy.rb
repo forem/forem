@@ -13,7 +13,7 @@ class RegistrationPolicy
   def email_registrable?
     if Settings::General.waiting_on_first_user
       if ENV["FOREM_OWNER_SECRET"].present?
-        ENV["FOREM_OWNER_SECRET"] == @params[:user][:forem_owner_secret]
+        ENV["FOREM_OWNER_SECRET"] == @params.dig(:user, :forem_owner_secret)
       else
         true
       end
