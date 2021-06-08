@@ -102,10 +102,6 @@ Rails.application.routes.draw do
           resources :listings, only: [:index], to: "organizations#listings"
           resources :articles, only: [:index], to: "organizations#articles"
         end
-
-        namespace :admin do
-          resource :config, only: %i[show update], defaults: { format: :json }
-        end
       end
     end
 
