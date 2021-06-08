@@ -99,5 +99,9 @@ describe('Lock discussion', () => {
         expect($discussionLock).not.to.contain.text(exampleNotes);
       });
     });
+
+    it('should not show the new comment box', () => {
+      cy.get('#new_comment').should('not.exist');
+    });
   });
 });

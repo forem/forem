@@ -57,4 +57,32 @@ describe('Unlock discussion', () => {
       getDiscussionUnlockSubmitButton().should('exist');
     });
   });
+
+  describe('when an article has its discussion unlocked', () => {
+    beforeEach(() => {
+      cy.testSetup();
+      cy.fixture('users/articleEditorV1User.json').as('user');
+
+      cy.get('@user').then((user) => {
+        cy.loginUser(user).then(() => {
+          cy.createArticle({
+            title: 'Test Article',
+            tags: ['beginner', 'ruby', 'go'],
+            content: `This is a test article's contents.`,
+            published: true,
+          }).then((response) => {
+            cy.visit(response.body.current_state_path);
+          });
+        });
+      });
+    });
+
+    it('should show the new comment box', () => {
+      cy.get('#new_comment').should('exist');
+    });
+
+    it('should not show a discussion lock', () => {
+      cy.get('#dicussion-lock').should('not.exist');
+    });
+  });
 });
