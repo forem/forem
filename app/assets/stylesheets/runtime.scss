@@ -17,6 +17,7 @@
 .PWA-Windows-only,
 .PWA-Linux-only,
 .PWA-macOS-only,
+.Desktop-only,
 .Browser-only,
 .Browser-iOS-only,
 .Browser-Android-only,
@@ -36,6 +37,13 @@ body[data-runtime='ForemWebView-Android'] .ForemWebView-only {
 // Elements that need to match both 'ForemWebView' Medium and OS
 body[data-runtime='ForemWebView-iOS'] .ForemWebView-iOS-only,
 body[data-runtime='ForemWebView-Android'] .ForemWebView-Android-only {
+  display: var(--runtime-display, block);
+}
+
+// Elements that will be presented on Desktop but not mobile OS's
+body[data-runtime$='Windows'] .Desktop-only,
+body[data-runtime$='Linux'] .Desktop-only,
+body[data-runtime$='macOS'] .Desktop-only {
   display: var(--runtime-display, block);
 }
 
