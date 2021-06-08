@@ -9,7 +9,7 @@
         <%= f.hidden_field :tab, value: @tab %>
         <div class="flex items-center">
           <button type="submit" class="crayons-btn crayons-btn--secondary">Fetch feed now</button>
-          <p class="pl-2">Last Fetched: <time id="rss-fetch-time" datetime="<%= @users_setting.feed_fetched_at.iso8601 %>"></time></p>
+          <p class="pl-2">Last Fetched: <time id="rss-fetch-time" datetime="<%= @users_setting.user.feed_fetched_at.iso8601 %>"></time></p>
         </div>
       <% end %>
     <% end %>

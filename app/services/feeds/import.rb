@@ -6,7 +6,7 @@ module Feeds
 
     def initialize(users: nil, earlier_than: nil)
       # using nil here to avoid an unnecessary table count to check presence
-      @users = users || User.with_feed
+      @users = users || User.where(id: Users::Setting.with_feed.select(:user_id))
       @earlier_than = earlier_than
 
       # NOTE: should these be configurable? Currently they are the result of empiric
@@ -62,18 +62,9 @@ module Feeds
       @users.where(feed_fetched_at: nil).or(@users.where(feed_fetched_at: ..earlier_than))
     end
 
-    def user_id_and_feed_url_pairs(batch_of_users)
-      result_set = []
-      batch_of_users.each do |user|
-        pair = [user.id, user.setting.feed_url]
-        result_set.push(pair)
-      end
-      result_set
-    end
-
     # TODO: put this in separate service object
     def fetch_feeds(batch_of_users)
-      data = user_id_and_feed_url_pairs(batch_of_users)
+      data = batch_of_users.joins(:setting).pluck(:id, "users_settings.feed_url")
 
       result = Parallel.map(data, in_threads: num_fetchers) do |user_id, url|
         cleaned_url = url.to_s.strip
