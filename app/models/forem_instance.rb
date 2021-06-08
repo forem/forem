@@ -21,6 +21,6 @@ class ForemInstance
   end
 
   def self.smtp_enabled?
-    Rails.configuration.action_mailer.perform_deliveries
+    ApplicationMailer.perform_deliveries?
   end
 end
