@@ -30,10 +30,6 @@ class Page < ApplicationRecord
     find_by(landing_page: true)
   end
 
-  def self.landing_page_exists?
-    exists?(landing_page: true)
-  end
-
   private
 
   def evaluate_markdown
