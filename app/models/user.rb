@@ -103,25 +103,6 @@ class User < ApplicationRecord
     display_email_on_profile
   ].to_set.freeze
 
-  # Relevant Fields for migration from Users table to Users_Notification_Settings table
-  USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
-    email_badge_notifications
-    email_comment_notifications
-    email_community_mod_newsletter
-    email_connect_messages
-    email_digest_periodic
-    email_follower_notifications
-    email_membership_newsletter
-    email_mention_notifications
-    email_newsletter
-    email_tag_mod_newsletter
-    email_unread_notifications
-    mobile_comment_notifications
-    mod_roundrobin_notifications
-    reaction_notifications
-    welcome_notifications
-  ].to_set.freeze
-
   USER_SETTINGS_ENUM_FIELDS = %w[
     config_font
     config_navbar
@@ -331,7 +312,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
-  after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
+  after_commit :sync_users_settings_table, on: %i[create update]
   after_commit :bust_cache
 
   def self.dev_account
@@ -636,16 +617,6 @@ class User < ApplicationRecord
     users_setting_record = Users::Setting.create_or_find_by(user_id: id)
 
     migrate_users_and_profile_fields_to_users_settings(users_setting_record)
-  end
-
-  def sync_users_notification_settings_table
-    users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)
-
-    USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
-      users_notification_setting_record.assign_attributes(field => public_send(field))
-    end
-
-    users_notification_setting_record.save
   end
 
   def send_welcome_notification

@@ -1,5 +1,9 @@
 module Users
   class NotificationSettingsController < ApplicationController
+    before_action :raise_suspended
+    before_action :authenticate_user!
+    after_action :verify_authorized
+
     ALLOWED_PARAMS = %i[id
                         email_badge_notifications
                         email_comment_notifications
@@ -19,19 +23,18 @@ module Users
                         user_id].freeze
 
     def update
-      users_notification_setting = Users::NotificationSetting.find(params[:id])
-      users_notification_setting.assign_attributes(users_notification_setting_params)
+      authorize current_user, policy_class: UserPolicy
 
-      if users_notification_setting.save
+      if current_user.notification_setting.update(users_notification_setting_params)
         notice = "Your notification settings have been updated."
 
         flash[:settings_notice] = notice
       else
-        Honeycomb.add_field("error", users_notification_setting.errors.messages.reject { |_, v| v.empty? })
+        Honeycomb.add_field("error", current_user.notification_setting.errors.messages.compact_blank)
         Honeycomb.add_field("errored", true)
-        flash[:error] = @users_notification_setting.errors.full_messages.join(", ")
+        flash[:error] = current_user.notification_setting.errors_as_sentence
       end
-      redirect_to "/settings/notifications"
+      redirect_to user_settings_path(:notifications)
     end
 
     private
