@@ -84,6 +84,5 @@ class RegistrationsController < Devise::RegistrationsController
     resource.remote_profile_image_url = Users::ProfileImageGenerator.call if resource.remote_profile_image_url.blank?
     check_allowed_email(resource) if resource.email.present?
     resource.save if resource.email.present?
-    yield resource if block_given?
   end
 end
