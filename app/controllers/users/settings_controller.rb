@@ -4,9 +4,9 @@ module Users
                         config_theme
                         config_font
                         config_navbar
-                        editor_version
                         display_announcements
                         display_sponsors
+                        editor_version
                         experience_level
                         feed_fetched_at
                         feed_mark_canonical
@@ -29,7 +29,7 @@ module Users
           cookies.permanent[:user_experience_level] =
             users_setting.experience_level.to_s
         end
-
+        users_setting.user.touch(:profile_updated_at)
         flash[:settings_notice] = notice
         redirect_to "/settings/#{tab}"
       else

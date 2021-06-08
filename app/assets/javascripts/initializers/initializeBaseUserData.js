@@ -8,24 +8,54 @@ function initializeProfileImage(user) {
 function addRelevantButtonsToArticle(user) {
   var articleContainer = document.getElementById('article-show-container');
   if (articleContainer) {
+    let actions = [];
+    const published = JSON.parse(articleContainer.dataset.published);
+
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
-      let actions = [
+      actions.push(
         `<a class="crayons-btn crayons-btn--s crayons-btn--secondary" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
-      ];
+      );
+
       let clickToEditButton = document.getElementById('author-click-to-edit');
       if (clickToEditButton) {
         clickToEditButton.style.display = 'inline-block';
       }
-      if (JSON.parse(articleContainer.dataset.published) === true) {
+
+      if (published === true) {
         actions.push(
           `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
         );
       }
+
       actions.push(
         `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
       );
-      document.getElementById('action-space').innerHTML = actions.join('');
     }
+
+    const { articleId, pinnedArticleId } = articleContainer.dataset;
+
+    // we hide the buttons for draft articles, for non admins and
+    // if there's already a pinned post different from the current one
+    if (
+      published &&
+      user.admin &&
+      (articleId === pinnedArticleId || !pinnedArticleId)
+    ) {
+      const isArticlePinned = articleContainer.hasAttribute('data-pinned');
+      const { pinPath } = articleContainer.dataset;
+
+      actions.push(
+        `<button
+            id="js-${isArticlePinned ? 'unpin' : 'pin'}-article"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1"
+            data-path="${pinPath}"
+            data-article-id="${articleId}">${
+          isArticlePinned ? 'Unpin' : 'Pin'
+        } Post</button>`,
+      );
+    }
+
+    document.getElementById('action-space').innerHTML = actions.join('');
   }
 }
 

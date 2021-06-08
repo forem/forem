@@ -2,7 +2,7 @@ module Users
   class Setting < ApplicationRecord
     self.table_name_prefix = "users_"
 
-    belongs_to :user
+    belongs_to :user, touch: true
     scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
     # TODO: @msarit Double-check how these suffixes have impacted the rest of the codebase

@@ -50,6 +50,7 @@
   </div>
 
   <% profile = @user.profile %>
+  <% users_setting = @user.setting %>
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
     <% next if group.name == "Links" # TODO: [@jacobherrington] Remove this when we drop social links %>
     <div class="crayons-card crayons-card--content-rows">
@@ -61,10 +62,17 @@
       <% group.profile_fields.each do |field| %>
         <div class="crayons-field <%= "crayons-field--checkbox" if field.input_type == "check_box" %>">
           <% if field["input_type"] == "check_box" %>
-            <%= f.public_send(field["input_type"],
-                              "profile[#{field.attribute_name}]",
-                              checked: profile.public_send(field.attribute_name),
-                              class: "crayons-checkbox") %>
+            <% if field["attribute_name"] == "display_email_on_profile" %>
+              <%= f.public_send(field["input_type"],
+                                "users_setting[#{field.attribute_name}]",
+                                checked: users_setting.public_send(field.attribute_name),
+                                class: "crayons-checkbox") %>
+            <% else %>
+              <%= f.public_send(field["input_type"],
+                                "profile[#{field.attribute_name}]",
+                                checked: profile.public_send(field.attribute_name),
+                                class: "crayons-checkbox") %>
+            <% end %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>

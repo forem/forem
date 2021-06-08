@@ -89,19 +89,11 @@ class User < ApplicationRecord
 
   # Relevant Fields for migration from Users table to Users_Settings table
   USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    config_font
-    config_navbar
-    config_theme
-    display_announcements
-    display_sponsors
-    editor_version
-    experience_level
     feed_mark_canonical
     feed_referential_link
     feed_url
     inbox_guidelines
     inbox_type
-    permit_adjacent_sponsors
   ].to_set.freeze
 
   # Relevant Fields for migration from Profiles table to Users_Settings table
@@ -322,7 +314,6 @@ class User < ApplicationRecord
       ),
     )
   }
-  # scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
   before_validation :downcase_email
@@ -447,7 +438,7 @@ class User < ApplicationRecord
   end
 
   def any_admin?
-    @any_admin ||= (has_role?(:super_admin) || has_role?(:admin))
+    @any_admin ||= roles.where(name: ANY_ADMIN_ROLES).any?
   end
 
   def tech_admin?
