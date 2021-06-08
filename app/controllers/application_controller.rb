@@ -54,7 +54,7 @@ class ApplicationController < ActionController::Base
     return if self.class.module_parent.to_s == "Admin"
     return if user_signed_in? || Settings::UserExperience.public
 
-    @page = Page.find_by(landing_page: true)
+    @page = Page.landing_page
 
     if api_action?
       authenticate!
