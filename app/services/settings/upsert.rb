@@ -1,68 +1,42 @@
 module Settings
+  # This service ensures that settings upserts to the database happen in a
+  # standardized way. Instead of subclassing this service I recommend wrapping
+  # it, see e.g. Settings::General::Upsert.
   class Upsert
-    VALID_DOMAIN = /^[a-zA-Z0-9]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.freeze
+    attr_reader :errors, :settings_class
 
-    PARAMS_TO_BE_CLEANED = %i[sidebar_tags suggested_tags suggested_users].freeze
-
-    attr_reader :errors
-
-    def self.call(configs)
-      new(configs).call
+    def self.call(settings, settings_class)
+      new(settings, settings_class).call
     end
 
-    def initialize(configs)
-      @configs = configs
-      @success = false
+    def initialize(settings, settings_class)
+      @settings = settings
+      @settings_class = settings_class
+      @errors = []
     end
 
     def call
-      clean_up_params
-
-      @errors = []
-      upsert_configs
-      return self if @errors.any?
-
-      @success = true
-      after_upsert_tasks
+      upsert_settings
       self
     end
 
     def success?
-      @success
+      @errors.none?
     end
 
-    def upsert_configs
-      @configs.each do |key, value|
-        if value.is_a?(Array)
-          Settings::General.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
-        elsif value.respond_to?(:to_h)
-          Settings::General.public_send("#{key}=", value.to_h) unless value.empty?
-        else
-          Settings::General.public_send("#{key}=", value.strip) unless value.nil?
+    def upsert_settings
+      @settings.each do |key, value|
+        if value.is_a?(Array) && value.any?
+          settings_class.public_send("#{key}=", value.reject(&:blank?))
+        elsif value.respond_to?(:to_h) && value.present?
+          settings_class.public_send("#{key}=", value.to_h)
+        elsif value.present?
+          settings_class.public_send("#{key}=", value.strip)
         end
       rescue ActiveRecord::RecordInvalid => e
         @errors << e.message
         next
       end
-    end
-
-    def after_upsert_tasks
-      create_tags_if_not_created
-    end
-
-    def clean_up_params
-      PARAMS_TO_BE_CLEANED.each do |param|
-        @configs[param] = @configs[param]&.downcase&.delete(" ") if @configs[param]
-      end
-      @configs[:credit_prices_in_cents]&.transform_values!(&:to_i)
-    end
-
-    def create_tags_if_not_created
-      # Bulk create tags if they should exist.
-      # This is an acts-as-taggable-on as used on saving of an Article, etc.
-      return unless (@configs.keys & %w[suggested_tags sidebar_tags]).any?
-
-      Tag.find_or_create_all_with_like_by_name(Settings::General.suggested_tags + Settings::General.sidebar_tags)
     end
   end
 end

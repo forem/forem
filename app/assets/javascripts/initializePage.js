@@ -6,7 +6,7 @@
   initializeCommentDate, initializeSettings,
   initializeCommentPreview, initializeRuntimeBanner,
   initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
-  initializeEllipsisMenu, initializeArchivedPostFilter, initializeCreditsPage,
+  initializeArchivedPostFilter, initializeCreditsPage,
   initializeUserProfilePage, initializeProfileInfoToggle, initializePodcastPlayback,
   initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
@@ -29,7 +29,6 @@ function callInitializers() {
   initializeTimeFixer();
   initializeDashboardSort();
   initializePWAFunctionality();
-  initializeEllipsisMenu();
   initializeArchivedPostFilter();
   initializeCreditsPage();
   initializeUserProfilePage();
