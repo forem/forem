@@ -135,7 +135,7 @@ RSpec.describe "Admin manages pages", type: :system do
       expect(page).to have_content(new_landing_page.title)
     end
 
-    xit "allows an Admin to overwrite the current landing page via the checkbox and modal", :aggregate_failures do
+    it "allows an Admin to overwrite the current landing page via the checkbox and modal", :aggregate_failures do
       visit edit_admin_page_path(new_landing_page.id)
       expect(page).to have_content("Use as 'Locked Screen")
       check "Use as 'Locked Screen'"
