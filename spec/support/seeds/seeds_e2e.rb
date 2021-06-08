@@ -234,12 +234,14 @@ end
 ##############################################################################
 
 seeder.create_if_none(Page) do
-  Page.create!(
-    slug: Faker::Lorem.word,
-    body_html: "<p>#{Faker::Hipster.paragraph(sentence_count: 2)}</p>",
-    title: "#{Faker::Lorem.word} #{rand(100)}",
-    description: "A test page",
-    is_top_level_path: true,
-    landing_page: false,
-  )
+  2.times do
+    Page.create!(
+      slug: Faker::Lorem.word,
+      body_html: "<p>#{Faker::Hipster.paragraph(sentence_count: 2)}</p>",
+      title: "#{Faker::Lorem.word} #{rand(100)}",
+      description: "A test page",
+      is_top_level_path: true,
+      landing_page: false,
+    )
+  end
 end
