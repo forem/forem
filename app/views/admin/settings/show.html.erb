@@ -1053,13 +1053,11 @@
               <% Settings::General.smtp_settings.each do |config, value| %>
                 <div class="crayons-field">
                   <%= admin_config_label config %>
-                  <p class="crayons-field__description">
-                    <%= config.capitalize %>
-                  </p>
+                  <%= admin_config_description Constants::Settings::General::DETAILS[:smtp_settings][config.to_sym][:description] = %>
                   <%= smtp_settings_field.text_field config,
                                                      class: "crayons-textfield",
                                                      value: Settings::General.smtp_settings[config],
-                                                     placeholder: "" %>
+                                                     placeholder: Constants::Settings::General::DETAILS[:smtp_settings][config.to_sym][:placeholder] %>
               </div>
             <% end %>
           <% end %>

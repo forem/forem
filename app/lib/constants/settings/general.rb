@@ -101,6 +101,32 @@ module Constants
           description: "Determines which tags are shown on the homepage righthand sidebar",
           placeholder: "List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta"
         },
+        smtp_settings: {
+          address: {
+            description: "Address of the remote mail server",
+            placeholder: ""
+          },
+          port: {
+            description: "",
+            placeholder: ""
+          },
+          authentication: {
+            description: "",
+            placeholder: "plain"
+          },
+          user_name: {
+            description: "if your mail server requires authentication, set the username in this setting",
+            placeholder: ""
+          },
+          password: {
+            description: "If your mail server requires authentication, set the password in this setting.",
+            placeholder: ""
+          },
+          domain: {
+            description: "",
+            placeholder: ""
+          }
+        },
         sponsor_headline: {
           description: "Determines the heading text of the main sponsors sidebar above the list of sponsors.",
           placeholder: "Community Sponsors"

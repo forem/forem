@@ -135,7 +135,7 @@ module Settings
     field :smtp_settings, type: :hash, default: {
       address: ApplicationConfig["SMTP_ADDRESS"],
       port: ApplicationConfig["SMTP_PORT"],
-      authentication: ApplicationConfig["SMTP_AUTHENTICATION"].presence || :plain,
+      authentication: ApplicationConfig["SMTP_AUTHENTICATION"],
       user_name: ApplicationConfig["SMTP_USER_NAME"],
       password: ApplicationConfig["SMTP_PASSWORD"],
       domain: ApplicationConfig["SMTP_DOMAIN"]
