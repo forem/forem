@@ -760,7 +760,7 @@ GEM
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (> 5, < 6)
-    strong_migrations (0.7.6)
+    strong_migrations (0.7.7)
       activerecord (>= 5)
     test-prof (1.0.5)
     thor (1.1.0)
