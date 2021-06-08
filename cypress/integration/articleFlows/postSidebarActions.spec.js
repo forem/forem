@@ -1,4 +1,10 @@
 describe('Post sidebar actions', () => {
+  const runtimeStub = {
+    onBeforeLoad: (win) => {
+      Object.defineProperty(win.navigator, 'share', { value: true });
+    },
+  };
+
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV2User.json').as('user');
@@ -11,7 +17,7 @@ describe('Post sidebar actions', () => {
           content: `This is a test article's contents.`,
           published: true,
         }).then((response) => {
-          cy.visit(response.body.current_state_path);
+          cy.visit(response.body.current_state_path, runtimeStub);
         });
       });
     });
@@ -37,6 +43,8 @@ describe('Post sidebar actions', () => {
     cy.findByRole('link', { name: /^Share to Reddit$/i });
     cy.findByRole('link', { name: /^Share to Hacker News$/i });
     cy.findByRole('link', { name: /^Share to Facebook$/i });
+    // The navigator.share API should be available making this option visible
+    cy.findByRole('link', { name: /^Share Post via...$/i });
     // There is a report abuse link at the bottom of the post too
     cy.findAllByRole('link', { name: /^Report Abuse$/i }).should(
       'have.length',
