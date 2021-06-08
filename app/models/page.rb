@@ -26,17 +26,6 @@ class Page < ApplicationRecord
     "page_#{slug}"
   end
 
-  # def has_a_landing_page?
-  #   Page.find_by(landing_page: true)
-  # end
-
-  # def landing_page_path
-  #   return unless has_a_landing_page?
-
-  #   landing_page = has_a_landing_page?
-  #   landing_page.path
-  # end
-
   def self.landing_page
     find_by(landing_page: true)
   end

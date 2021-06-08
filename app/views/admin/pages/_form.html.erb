@@ -50,7 +50,7 @@
             data-modal-title-value="There's another locked screen..." data-modal-size-value="default">
         <div class="form-group">
           <%= form.label :landing_page, "Use as 'Locked Screen'" %>
-          <%= form.check_box :landing_page, class: "crayons-checkbox", data: { action: @landing_page.present? && @landing_page.id != @page.id ? "modal#toggleModal" : "" } %>
+          <%= form.check_box :landing_page, class: "crayons-checkbox", data: { action: Page.landing_page_exists? ? "modal#toggleModal" : "" } %>
           <p>Determines if this page will be used as a landing page for anonymous viewers.</p>
         </div>
         <div class="form-group">
@@ -126,7 +126,7 @@ window.addEventListener('load', function() {
 });
 
 function toggleOverwrite() {
-    var elm = document.getElementById('page_landing_page_overwrite');
+    var elm = document.getElementById('page_overwrite_landing_page');
     elm.checked = !elm.checked;
 };
 </script>
