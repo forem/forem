@@ -66,7 +66,7 @@
     </header>
 
     <% if current_user.any_admin? || @should_show_adjust_tags %>
-      <button class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="Open adjust tags section">
+      <button aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="Open adjust tags section">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
             <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
@@ -81,7 +81,7 @@
         </div>
       </button>
 
-      <div class="adjust-tags-options dropdown-options hidden">
+      <div id="adjust-tags-options"  class="adjust-tags-options dropdown-options hidden">
         <% if current_user.any_admin? %>
           <% if @moderatable.tag_list.size < 4 %>
             <div class="add-tag-container">
@@ -122,7 +122,7 @@
     <% end %>
 
     <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
-    <button class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="Open experience level section">
+    <button aria-haspopup="true aria-expanded="false" aria-controls="set-experience-options" class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="Open experience level section">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
           <%= inline_svg_tag("book.svg", aria: true, title: "Book") %>
@@ -137,7 +137,7 @@
       </div>
     </button>
 
-    <div class="set-experience-options dropdown-options hidden">
+    <div id="set-experience-options" class="set-experience-options dropdown-options hidden">
       <% rating_hash = { "Expert" => [10, 5], "Advanced" => [8, 4], "Mid-level" => [5, 3], "Beginner" => [3, 2], "Novice" => [1, 1] } %>
       <% rating_hash.each do |rating_name, rating_level| %>
       <button

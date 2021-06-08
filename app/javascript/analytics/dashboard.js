@@ -1,13 +1,19 @@
 import { callHistoricalAPI, callReferrersAPI } from './client';
 
+const activeCharts = {};
+
 function resetActive(activeButton) {
-  const buttons = document.getElementsByClassName('timerange-button');
+  const buttons = document.querySelectorAll(
+    '.crayons-tabs--analytics .crayons-tabs__item',
+  );
   for (let i = 0; i < buttons.length; i += 1) {
     const button = buttons[i];
-    button.classList.remove('selected');
+    button.classList.remove('crayons-tabs__item--current');
+    button.removeAttribute('aria-current');
   }
 
-  activeButton.classList.add('selected');
+  activeButton.classList.add('crayons-tabs__item--current');
+  activeButton.setAttribute('aria-current', 'page');
 }
 
 function sumAnalytics(data, key) {
@@ -38,10 +44,12 @@ function writeCards(data, timeRangeLabel) {
   followerCard.innerHTML = cardHTML(follows, `Followers ${timeRangeLabel}`);
 }
 
-function drawChart({ canvas, title, labels, datasets }) {
+function drawChart({ id, title, labels, datasets }) {
   const options = {
-    legend: {
-      position: 'bottom',
+    plugins: {
+      legend: {
+        position: 'top',
+      },
     },
     responsive: true,
     title: {
@@ -49,28 +57,52 @@ function drawChart({ canvas, title, labels, datasets }) {
       text: title,
     },
     scales: {
-      yAxes: [
-        {
-          ticks: {
-            suggestedMin: 0,
-            precision: 0,
-          },
+      y: {
+        type: 'linear',
+        suggestedMin: 0,
+
+        ticks: {
+          precision: 0,
         },
-      ],
+      },
     },
   };
 
-  import('chart.js').then(({ Chart }) => {
-    // eslint-disable-next-line no-new
-    new Chart(canvas, {
-      type: 'line',
-      data: {
-        labels,
-        datasets,
-        options,
-      },
-    });
-  });
+  import('chart.js').then(
+    ({
+      Chart,
+      LineController,
+      LinearScale,
+      CategoryScale,
+      PointElement,
+      LineElement,
+      Legend,
+    }) => {
+      Chart.register(
+        LineController,
+        LinearScale,
+        CategoryScale,
+        PointElement,
+        LineElement,
+        Legend,
+      );
+      const currentChart = activeCharts[id];
+      if (currentChart) {
+        currentChart.destroy();
+      }
+
+      const canvas = document.getElementById(id);
+      // eslint-disable-next-line no-new
+      activeCharts[id] = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels,
+          datasets,
+          options,
+        },
+      });
+    },
+  );
 }
 
 function drawCharts(data, timeRangeLabel) {
@@ -85,7 +117,7 @@ function drawCharts(data, timeRangeLabel) {
   const readers = parsedData.map((date) => date.page_views.total);
 
   drawChart({
-    canvas: document.getElementById('reactions-chart'),
+    id: 'reactions-chart',
     title: `Reactions ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -94,6 +126,7 @@ function drawCharts(data, timeRangeLabel) {
         data: reactions,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgb(75, 192, 192)',
         lineTension: 0.1,
       },
       {
@@ -101,6 +134,7 @@ function drawCharts(data, timeRangeLabel) {
         data: likes,
         fill: false,
         borderColor: 'rgb(229, 100, 100)',
+        backgroundColor: 'rgb(229, 100, 100)',
         lineTension: 0.1,
       },
       {
@@ -108,6 +142,7 @@ function drawCharts(data, timeRangeLabel) {
         data: unicorns,
         fill: false,
         borderColor: 'rgb(157, 57, 233)',
+        backgroundColor: 'rgb(157, 57, 233)',
         lineTension: 0.1,
       },
       {
@@ -115,13 +150,14 @@ function drawCharts(data, timeRangeLabel) {
         data: readingList,
         fill: false,
         borderColor: 'rgb(10, 133, 255)',
+        backgroundColor: 'rgb(10, 133, 255)',
         lineTension: 0.1,
       },
     ],
   });
 
   drawChart({
-    canvas: document.getElementById('comments-chart'),
+    id: 'comments-chart',
     title: `Comments ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -130,13 +166,14 @@ function drawCharts(data, timeRangeLabel) {
         data: comments,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgb(75, 192, 192)',
         lineTension: 0.1,
       },
     ],
   });
 
   drawChart({
-    canvas: document.getElementById('followers-chart'),
+    id: 'followers-chart',
     title: `New Followers ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -145,13 +182,14 @@ function drawCharts(data, timeRangeLabel) {
         data: followers,
         fill: false,
         borderColor: 'rgb(10, 133, 255)',
+        backgroundColor: 'rgb(10, 133, 255)',
         lineTension: 0.1,
       },
     ],
   });
 
   drawChart({
-    canvas: document.getElementById('readers-chart'),
+    id: 'readers-chart',
     title: `Reads ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -160,6 +198,7 @@ function drawCharts(data, timeRangeLabel) {
         data: readers,
         fill: false,
         borderColor: 'rgb(157, 57, 233)',
+        backgroundColor: 'rgb(157, 57, 233)',
         lineTension: 0.1,
       },
     ],
@@ -173,8 +212,8 @@ function renderReferrers(data) {
     .map((referrer) => {
       return `
       <tr>
-        <td>${referrer.domain}</td>
-        <td>${referrer.count}</td>
+        <td class="align-left">${referrer.domain}</td>
+        <td class="align-right">${referrer.count}</td>
       </tr>
     `;
     });
@@ -186,8 +225,8 @@ function renderReferrers(data) {
   if (emptyDomainReferrer) {
     tableBody.push(`
       <tr>
-        <td>All other external referrers</td>
-        <td>${emptyDomainReferrer.count}</td>
+        <td class="align-left">All other external referrers</td>
+        <td class="align-right">${emptyDomainReferrer.count}</td>
       </tr>
     `);
   }
@@ -223,7 +262,7 @@ function drawMonthCharts({ organizationId, articleId }) {
 function drawInfinityCharts({ organizationId, articleId }) {
   resetActive(document.getElementById('infinity-button'));
   // April 1st is when the DEV analytics feature went into place
-  const beginningOfTime = new Date('2019-4-1');
+  const beginningOfTime = new Date('2019-04-01');
   callAnalyticsAPI(beginningOfTime, '', { organizationId, articleId });
 }
 

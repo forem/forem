@@ -31,7 +31,7 @@ class AsyncInfoController < ApplicationController
     set_surrogate_key_header "shell-version-endpoint"
     # shell_version will change on every deploy.
     # *Technically* could be only on changes to assets and shell, but this is more fool-proof.
-    shell_version = ForemInstance.deployed_at.to_s + SiteConfig.admin_action_taken_at.to_s
+    shell_version = ForemInstance.deployed_at.to_s + Settings::General.admin_action_taken_at.to_s
     render json: { version: shell_version }.to_json
   end
 
@@ -66,7 +66,6 @@ class AsyncInfoController < ApplicationController
         trusted: @user.trusted,
         moderator_for_tags: @user.moderator_for_tags,
         config_body_class: @user.config_body_class,
-        pro: @user.pro?,
         feed_style: feed_style_preference,
         created_at: @user.created_at,
         admin: @user.any_admin?
@@ -83,7 +82,6 @@ class AsyncInfoController < ApplicationController
     #{current_user&.updated_at}__
     #{current_user&.reactions_count}__
     #{current_user&.articles_count}__
-    #{current_user&.pro?}__
     #{current_user&.blocking_others_count}__"
   end
 end

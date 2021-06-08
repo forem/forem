@@ -21,7 +21,7 @@
   <div class="slanty-accent"></div>
   <div class="tag-or-query-header-container tag-edit-tag">
     <h1> Editing:
-      <a href="/t/<%= @tag.name %>" style="color: <%= @tag.text_color_hex %>;text-decoration: underline;"><%= @tag.name %></a>
+      <a href="<%= URL.tag @tag %>" style="color: <%= @tag.text_color_hex %>;text-decoration: underline;"><%= @tag.name %></a>
     </h1>
     <p>
       <code style="background-color: #D2D2D2; color: black; padding: 5px; border-radius: 5px;">#<%= @tag.name %></code> is the name of the tag used in Markdown.
@@ -84,7 +84,7 @@
 
 <% if current_user.has_role?(:super_admin) || current_user.has_role?(:admin) %>
   <center>
-    <h1><a href="/admin/tags/<%= @tag.id %>/edit" data-no-instant><%= @tag.name %>'s admin page</a></h1>
+    <h1><a href="<%= edit_admin_tag_path(@tag.id) %>" data-no-instant><%= @tag.name %>'s admin page</a></h1>
     <br />
     <br />
     <br />

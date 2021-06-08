@@ -12,18 +12,12 @@ module Authentication
           email: info.email.to_s,
           name: name,
           remote_profile_image_url: Users::SafeRemoteProfileImageUrl.call(remote_profile_image_url),
-          twitter_created_at: raw_info.created_at,
-          twitter_followers_count: raw_info.followers_count.to_i,
-          twitter_following_count: raw_info.friends_count.to_i,
           twitter_username: info.nickname
         }
       end
 
       def existing_user_data
         {
-          twitter_created_at: raw_info.created_at,
-          twitter_followers_count: raw_info.followers_count.to_i,
-          twitter_following_count: raw_info.friends_count.to_i,
           twitter_username: info.nickname
         }
       end

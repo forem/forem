@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'preact/hooks';
+import { calculateTextAreaHeight } from '@utilities/calculateTextAreaHeight';
+
 /**
  * A helper function to get the X/Y coordinates of the current cursor position within an element.
  * For a full explanation see the post by Jhey Tompkins: https://medium.com/@jh3y/how-to-where-s-the-caret-getting-the-xy-position-of-the-caret-a24ba372990a
@@ -14,8 +17,8 @@ export const getCursorXY = (input, selectionPoint) => {
   const bodyRect = document.body.getBoundingClientRect();
   const elementRect = input.getBoundingClientRect();
 
-  const inputY = elementRect.top - bodyRect.top;
-  const inputX = elementRect.left - bodyRect.left;
+  const inputY = elementRect.top - bodyRect.top - input.scrollTop;
+  const inputX = elementRect.left - bodyRect.left - input.scrollLeft;
 
   // create a dummy element with the computed style of the input
   const div = document.createElement('div');
@@ -101,11 +104,7 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
   const currentCharacter = content.charAt(selectionIndex);
   const previousCharacter = content.charAt(selectionIndex - 1);
 
-  if (
-    selectionIndex !== 0 &&
-    previousCharacter !== ' ' &&
-    previousCharacter !== ''
-  ) {
+  if (selectionIndex !== 0 && ![' ', '', '\n'].includes(previousCharacter)) {
     return getIndexOfCurrentWordAutocompleteSymbol(content, selectionIndex - 1);
   }
 
@@ -114,4 +113,57 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
   }
 
   return -1;
+};
+
+/**
+ * This hook can be used to keep the height of a textarea in step with the current content height, avoiding a scrolling textarea.
+ * An optional array of additional elements can be set. If provided, all elements will be set to the greatest content height.
+ * Optionally, it can be specified to also constrain the max-height to the content height. Otherwise the max-height will continue to be managed only by the textarea's CSS
+ *
+ * @example
+ *
+ * const { setTextArea } = useTextAreaAutoResize();
+ * setTextArea(myTextAreaRef.current);
+ * setAdditionalElements([myOtherElement.current]);
+ */
+export const useTextAreaAutoResize = () => {
+  const [textArea, setTextArea] = useState(null);
+  const [constrainToContentHeight, setConstrainToContentHeight] = useState(
+    false,
+  );
+  const [additionalElements, setAdditionalElements] = useState([]);
+
+  useEffect(() => {
+    if (!textArea) {
+      return;
+    }
+
+    const resizeTextArea = () => {
+      const allElements = [textArea, ...additionalElements];
+
+      const allContentHeights = allElements.map(
+        (element) => calculateTextAreaHeight(element).height,
+      );
+
+      const height = Math.max(...allContentHeights);
+      const newHeight = `${height}px`;
+
+      [textArea, ...additionalElements].forEach((element) => {
+        element.style['min-height'] = newHeight;
+        if (constrainToContentHeight) {
+          // Don't allow the textarea to grow to a size larger than the content
+          element.style['max-height'] = newHeight;
+        }
+      });
+    };
+
+    // Resize on first attach
+    resizeTextArea();
+    // Resize on subsequent value changes
+    textArea.addEventListener('input', resizeTextArea);
+
+    return () => textArea.removeEventListener('input', resizeTextArea);
+  }, [textArea, additionalElements, constrainToContentHeight]);
+
+  return { setTextArea, setAdditionalElements, setConstrainToContentHeight };
 };

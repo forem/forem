@@ -48,6 +48,7 @@
   cursor: pointer;
   transition: all var(--transition-props);
   border: var(--border-width) solid;
+  overflow-wrap: normal;
 
   // Styles
   --bg: var(--button-primary-bg);
@@ -117,6 +118,15 @@
     --font-size: var(--fs-l);
     --with-icon-padding: var(--su-5);
     --icon-margin: var(--su-3);
+  }
+
+  // This makes sure icons inside buttons don't cause problems with click handlers
+  // See: https://css-tricks.com/slightly-careful-sub-elements-clickable-things/
+  & > * {
+    pointer-events: none;
+    + input {
+      pointer-events: revert;
+    }
   }
 }
 

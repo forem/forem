@@ -83,26 +83,26 @@ const DEFAULT_AUTH_CONFIG = {
 };
 
 /**
- * Sets default values of SiteConfig atrributes relevant to Authentication Section.
+ * Sets default values of Settings::General atrributes relevant to Authentication Section.
  *
  * @param username {string} The username used in the test
- * @param siteConfig
- * @param siteConfig.inviteOnlyMode {boolean}
- * @param siteConfig.emailRegistration {boolean}
- * @param siteConfig.allowedEmailDomains {string}
- * @param siteConfig.publicEmailDomainList {boolean}
- * @param siteConfig.requireRecaptcha {boolean}
- * @param siteConfig.recaptchaSiteKey {string}
- * @param siteConfig.recaptchaSecretKey {string}
- * @param siteConfig.authProvidersToEnable {string} Comma-separated string of providers to be enabled
- * @param siteConfig.facebookKey {string}
- * @param siteConfig.facebookSecret {string}
- * @param siteConfig.githubKey {string}
- * @param siteConfig.githubSecret {string}
- * @param siteConfig.twitterKey {string}
- * @param siteConfig.twitterSecret {string}
+ * @param settingsGeneral
+ * @param settingsGeneral.inviteOnlyMode {boolean}
+ * @param settingsGeneral.emailRegistration {boolean}
+ * @param settingsGeneral.allowedEmailDomains {string}
+ * @param settingsGeneral.publicEmailDomainList {boolean}
+ * @param settingsGeneral.requireRecaptcha {boolean}
+ * @param settingsGeneral.recaptchaSiteKey {string}
+ * @param settingsGeneral.recaptchaSecretKey {string}
+ * @param settingsGeneral.authProvidersToEnable {string} Comma-separated string of providers to be enabled
+ * @param settingsGeneral.facebookKey {string}
+ * @param settingsGeneral.facebookSecret {string}
+ * @param settingsGeneral.githubKey {string}
+ * @param settingsGeneral.githubSecret {string}
+ * @param settingsGeneral.twitterKey {string}
+ * @param settingsGeneral.twitterSecret {string}
  *
- * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for setting SiteConfig values for the Authentication Section.
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for setting Settings::General values for the Authentication Section.
  */
 Cypress.Commands.add(
   'updateAdminAuthConfig',
@@ -127,16 +127,92 @@ Cypress.Commands.add(
   ) => {
     return cy.request(
       'POST',
-      '/admin/config',
-      `utf8=%E2%9C%93&site_config%5Binvite_only_mode%5D=${toPayload(
+      '/admin/settings/authentications',
+      `utf8=%E2%9C%93&settings_authentication%5Binvite_only_mode%5D=${toPayload(
         inviteOnlyMode,
-      )}&site_config%5Ballow_email_password_registration%5D=${toPayload(
+      )}&settings_authentication%5Ballow_email_password_registration%5D=${toPayload(
         emailRegistration,
-      )}&site_config%5Ballowed_registration_email_domains%5D=${allowedEmailDomains}&site_config%5Bdisplay_email_domain_allow_list_publicly%5D=${toPayload(
+      )}&settings_authentication%5Ballowed_registration_email_domains%5D=${allowedEmailDomains}&settings_authentication%5Bdisplay_email_domain_allow_list_publicly%5D=${toPayload(
         publicEmailDomainList,
-      )}&site_config%5Brequire_captcha_for_email_password_registration%5D=${toPayload(
+      )}&settings_authentication%5Brequire_captcha_for_email_password_registration%5D=${toPayload(
         requireRecaptcha,
-      )}&site_config%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&site_config%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&site_config%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&site_config%5Bfacebook_key%5D=${facebookKey}&site_config%5Bfacebook_secret%5D=${facebookSecret}&site_config%5Bgithub_key%5D=${githubKey}&site_config%5Bgithub_secret%5D=${githubSecret}&site_config%5Btwitter_key%5D=${twitterKey}&site_config%5Btwitter_secret%5D=${twitterSecret}&confirmation=My+username+is+%40${username}+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Site+Configuration`,
+      )}&settings_authentication%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&settings_authentication%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&settings_authentication%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&settings_authentication%5Bfacebook_key%5D=${facebookKey}&settings_authentication%5Bfacebook_secret%5D=${facebookSecret}&settings_authentication%5Bgithub_key%5D=${githubKey}&settings_authentication%5Bgithub_secret%5D=${githubSecret}&settings_authentication%5Btwitter_key%5D=${twitterKey}&settings_authentication%5Btwitter_secret%5D=${twitterSecret}&confirmation=My+username+is+%40${username}+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Settings`,
     );
   },
 );
+
+/**
+ * Creates an article.
+ *
+ * @param {string} title The title of an article.
+ * @param {Array<string>} [tags=[]] The tags of an article.
+ * @param {string} [content=''] The content of the article.
+ * @param {boolean} [published=true] Whether or not an article should be published.
+ * @param {string} [description=''] The description of the article.
+ * @param {string} [canonicalUrl=''] The canonical URL for the article.
+ * @param {string} [series=''] The series the article is associated with.
+ * @param {string} [allSeries=[]] The list of available series the article can be a part of.
+ * @param {string} [organizations=[]] The list of organizations the author of the article belongs to.
+ * @param {string} [organizationId=null] The selected organization's ID to create the article under.
+ * @param {'v1'|'v2'} [editorVersion='v2'] The editor version.
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for creating an article.
+ */
+Cypress.Commands.add(
+  'createArticle',
+  ({
+    title,
+    tags = [],
+    content = '',
+    published = true,
+    description = '',
+    canonicalUrl = '',
+    mainImage = null,
+    series = '',
+    allSeries = [],
+    organizations = [],
+    organizationId = null,
+    editorVersion = 'v2',
+  }) => {
+    return cy.request('POST', '/articles', {
+      article: {
+        id: null,
+        title,
+        tagList: tags.join(','),
+        description,
+        canonicalUrl,
+        series,
+        allSeries,
+        bodyMarkdown: content,
+        published,
+        submitting: false,
+        editing: false,
+        mainImage,
+        organizations,
+        organizationId,
+        edited: true,
+        updatedAt: null,
+        version: editorVersion,
+      },
+    });
+  },
+);
+
+/**
+ * Creates a response template.
+ *
+ * @param {string} title The title of a response template.
+ * @param {string} content The content of the response template.
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for creating a response template.
+ */
+Cypress.Commands.add('createResponseTemplate', ({ title, content }) => {
+  const encodedTitle = encodeURIComponent(title);
+  const encodedContent = encodeURIComponent(content);
+
+  return cy.request(
+    'POST',
+    '/response_templates',
+    `utf8=%E2%9C%93&response_template%5Btitle%5D=${encodedTitle}&response_template%5Bcontent%5D=${encodedContent}`,
+  );
+});

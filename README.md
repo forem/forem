@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/badge/Rails-v6.0.3-brightgreen.svg" alt="rails version">
   </a>
   <a href="https://travis-ci.com/forem/forem">
-    <img src="https://travis-ci.com/forem/forem.svg?branch=master" alt="Travis Status for forem/forem">
+    <img src="https://travis-ci.com/forem/forem.svg?branch=main" alt="Travis Status for forem/forem">
   </a>
   <a href="https://codeclimate.com/github/forem/forem/maintainability">
     <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/maintainability" alt="Code Climate maintainability">
@@ -116,7 +116,6 @@ A more complete overview of our stack is available in
 - [ImageMagick](https://imagemagick.org/): please refer to ImageMagick's
   [installation instructions](https://imagemagick.org/script/download.php).
 - [Redis](https://redis.io/) 4 or higher.
-- [Elasticsearch](https://www.elastic.co) 7 or higher.
 
 #### Containers
 
@@ -152,7 +151,6 @@ A more complete overview of our stack is available in
 - [@citizen428](https://dev.to/citizen428)
 - [@nickytonline](https://dev.to/nickytonline)
 - [@joshpuetz](http://dev.to/joshpuetz)
-- [@vaidehijoshi](https://dev.to/vaidehijoshi)
 - [@juliannatetreault](https://dev.to/juliannatetreault)
 - [@ridhwana](https://dev.to/ridhwana)
 - [@fdoxyz](https://dev.to/fdoxyz)

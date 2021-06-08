@@ -1,28 +1,28 @@
 require "rails_helper"
 
-RSpec.describe "/admin/sponsorships", type: :request do
+RSpec.describe "/admin/advanced/sponsorships", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let(:org) { create(:organization, username: "super-community") }
 
-  describe "GET /admin/sponsorships" do
+  describe "GET /admin/advanced/sponsorships" do
     before do
       sign_in admin
       create(:sponsorship, organization: org, level: :gold)
     end
 
     it "renders successfully" do
-      get "/admin/sponsorships"
+      get admin_sponsorships_path
       expect(response).to be_successful
     end
 
     it "shows sponsorship" do
-      get "/admin/sponsorships"
+      get admin_sponsorships_path
       expect(response.body).to include(org.username)
       expect(response.body).to include("gold")
     end
   end
 
-  describe "GET /admin/sponsorships/:id/edit" do
+  describe "GET /admin/advanced/sponsorships/:id/edit" do
     let(:ruby) { build_stubbed(:tag, name: "ruby") }
     let!(:sponsorship) do
       create(:sponsorship, organization: org, level: :tag, sponsorable: ruby, status: "pending",
@@ -39,7 +39,7 @@ RSpec.describe "/admin/sponsorships", type: :request do
     end
   end
 
-  describe "PUT /admin/sponsorships/:id" do
+  describe "PUT /admin/advanced/sponsorships/:id" do
     let(:ruby) { build_stubbed(:tag, name: "ruby") }
     let!(:sponsorship) do
       create(:sponsorship, organization: org, level: :tag, sponsorable: ruby, status: "pending",
@@ -53,12 +53,12 @@ RSpec.describe "/admin/sponsorships", type: :request do
     end
 
     it "redirects to index" do
-      put "/admin/sponsorships/#{sponsorship.id}", params: { sponsorship: valid_attributes }
+      put admin_sponsorship_path(sponsorship.id), params: { sponsorship: valid_attributes }
       expect(response).to redirect_to(admin_sponsorships_path)
     end
 
     it "updates the sponsorship" do
-      put "/admin/sponsorships/#{sponsorship.id}", params: { sponsorship: valid_attributes }
+      put admin_sponsorship_path(sponsorship.id), params: { sponsorship: valid_attributes }
       sponsorship.reload
       expect(sponsorship.status).to eq("live")
       expect(sponsorship.expires_at).to be > Time.current
@@ -66,18 +66,18 @@ RSpec.describe "/admin/sponsorships", type: :request do
     end
 
     it "doesn't update when attributes are invalid" do
-      put "/admin/sponsorships/#{sponsorship.id}", params: { sponsorship: invalid_attributes }
+      put admin_sponsorship_path(sponsorship.id), params: { sponsorship: invalid_attributes }
       sponsorship.reload
       expect(sponsorship.status).to eq("pending")
     end
 
     it "shows errors when attributes are invalid" do
-      put "/admin/sponsorships/#{sponsorship.id}", params: { sponsorship: invalid_attributes }
+      put admin_sponsorship_path(sponsorship.id), params: { sponsorship: invalid_attributes }
       expect(response.body).to include("Status is not included in the list")
     end
   end
 
-  describe "POST /admin/sponsorships/:id" do
+  describe "POST /admin/advanced/sponsorships/:id" do
     let(:ruby) { build_stubbed(:tag, name: "ruby") }
     let(:invalid_attributes) { { status: "super-live", expires_at: 1.month.from_now } }
     let(:valid_attributes) do
@@ -107,34 +107,34 @@ RSpec.describe "/admin/sponsorships", type: :request do
 
     it "creates and redirects to index without sponsorable association" do
       expect do
-        post "/admin/sponsorships", params: { sponsorship: valid_attributes }
+        post admin_sponsorships_path, params: { sponsorship: valid_attributes }
         expect(response).to redirect_to(admin_sponsorships_path)
       end.to change { Sponsorship.all.count }.by(1)
     end
 
     it "creates and redirects to index with empty sponsorable association params" do
       expect do
-        post "/admin/sponsorships", params: { sponsorship: valid_empty_sponsorable_attributes }
+        post admin_sponsorships_path, params: { sponsorship: valid_empty_sponsorable_attributes }
         expect(response).to redirect_to(admin_sponsorships_path)
       end.to change { Sponsorship.all.count }.by(1)
     end
 
     it "creates and redirects to index with sponsorable association" do
       expect do
-        post "/admin/sponsorships", params: { sponsorship: valid_sponsorable_attributes }
+        post admin_sponsorships_path, params: { sponsorship: valid_sponsorable_attributes }
         expect(response).to redirect_to(admin_sponsorships_path)
       end.to change { Sponsorship.all.count }.by(1)
     end
 
     it "shows errors when attributes are invalid & doesn't persist to the DB" do
       expect do
-        post "/admin/sponsorships", params: { sponsorship: invalid_attributes }
+        post admin_sponsorships_path, params: { sponsorship: invalid_attributes }
         expect(response.body).to include("Status is not included in the list")
       end.to change { Sponsorship.all.count }.by(0)
     end
   end
 
-  describe "DELETE /admin/sponsorships/:id" do
+  describe "DELETE /admin/advanced/sponsorships/:id" do
     let!(:sponsorship) do
       create(:sponsorship, organization: org, level: :silver, status: "live", expires_at: Time.current)
     end

@@ -1,59 +1,73 @@
-<div class="toggles">
-  <button class="selected timerange-button" id="week-button">Week</button>
-  <button class="timerange-button" id="month-button">Month</button>
-  <button class="timerange-button" id="infinity-button">Infinity</button>
-</div>
+<nav class="crayons-tabs crayons-tabs--analytics" aria-label="Analytics period">
+  <ul class="crayons-tabs__list">
+    <li>
+      <button data-text="Week" class="crayons-tabs__item crayons-tabs__item--current" id="week-button" aria-current="page">Week</button>
+    </li>
+    <li>
+      <button data-text="Month" class="crayons-tabs__item" id="month-button">Month</button>
+    </li>
+    <li>
+      <button data-text="Infinity" class="crayons-tabs__item" id="infinity-button">Infinity</button>
+    </li>
+  </ul>
+</nav>
 
 <div class="summary-stats">
-  <div class="card" id="readers-card"></div>
-  <div class="card" id="reactions-card"></div>
-  <div class="card" id="comments-card"></div>
-  <div class="card" id="followers-card"></div>
+  <div class="summary-stats__col crayons-card mx-5">
+    <div id="readers-card" class="py-3"></div>
+  </div>
+  <div class="summary-stats__col crayons-card mx-5">
+    <div id="reactions-card" class="py-3"></div>
+  </div>
+  <div class="summary-stats__col crayons-card mx-5">
+    <div id="comments-card" class="py-3"></div>
+  </div>
+  <div class="summary-stats__col crayons-card mx-5">
+    <div id="followers-card" class="py-3"></div>
+  </div>
 </div>
 
-<div class="graphs">
-  <div class="row">
-    <div class="card">
-      <h2>Readers Summary</h2>
-      <div class="charts-container">
-        <canvas id="readers-chart"></canvas>
-      </div>
-    </div>
-    <div class="card">
-      <h2>New Followers Summary</h2>
-      <div class="charts-container">
-        <canvas id="followers-chart"></canvas>
-      </div>
+<div class="graphs my-5">
+  <div class="graphs__col crayons-card mx-5">
+    <h2 class="my-5">Readers Summary</h2>
+    <div class="charts-container">
+      <canvas id="readers-chart"></canvas>
     </div>
   </div>
-  <div class="row">
-    <div class="card">
-      <h2>Reactions Summary ❤🦄🔖</h2>
-      <div class="charts-container">
-        <canvas id="reactions-chart"></canvas>
-      </div>
-    </div>
-    <div class="card">
-      <h2>Comments Summary 💬</h2>
-      <div class="charts-container">
-        <canvas id="comments-chart"></canvas>
-      </div>
+  <div class="graphs__col crayons-card mx-5">
+    <h2 class="my-5">New Followers Summary</h2>
+    <div class="charts-container">
+      <canvas id="followers-chart"></canvas>
     </div>
   </div>
-  <div class="row">
-    <div class="card">
-      <h2>Traffic Source Summary 🚦</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Source</th>
-            <th>Views</th>
-          </tr>
-        </thead>
+</div>
 
-        <tbody id="referrers-container">
-        </tbody>
-      </table>
+<div class="graphs mb-5">
+  <div class="graphs__col crayons-card mx-5">
+    <h2 class="my-5">Reactions Summary ❤🦄🔖</h2>
+    <div class="charts-container">
+      <canvas id="reactions-chart"></canvas>
     </div>
   </div>
+  <div class="graphs__col crayons-card mx-5">
+    <h2 class="my-5">Comments Summary 💬</h2>
+    <div class="charts-container">
+      <canvas id="comments-chart"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="w-90 crayons-card mx-5 mb-5 p-5">
+  <h2 class="align-center mb-5">Traffic Source Summary 🚦</h2>
+  <table class="w-100 m-auto crayons-table">
+    <thead>
+      <tr>
+        <th class="align-left">Source</th>
+        <th class="align-right">Views</th>
+      </tr>
+    </thead>
+
+    <tbody id="referrers-container">
+    </tbody>
+  </table>
 </div>

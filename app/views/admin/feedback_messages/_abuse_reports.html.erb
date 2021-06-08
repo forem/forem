@@ -31,14 +31,14 @@
               data-reaction-url-value="<%= admin_reaction_path(reaction.id) %>">
               <span>
                 🤢 <a href="<%= reaction.user.path %>" target="_blank" rel="noopener">@<%= reaction.user.username %></a>
-                <% if reaction.user_id == SiteConfig.mascot_user_id %>
+                <% if reaction.user_id == Settings::General.mascot_user_id %>
                   <strong>(auto-generated)</strong>
                 <% end %>
               </span>
               <span>
                 <strong><%= reaction.reactable_type %>:</strong>
                 <a href="<%= reaction.reactable.path %>" target="_blank" rel="noopener"><%= reaction.reactable_type == "User" ? reaction.reactable.username : reaction.reactable.title %></a>
-                <% if reaction.reactable_type == "User" && reaction.reactable.banned %>
+                <% if reaction.reactable_type == "User" && reaction.reactable.suspended? %>
                   <span class="badge badge-danger">Suspended</span>
                 <% end %>
                 <% if reaction.reactable_type == "User" && reaction.reactable.vomitted_on? %>

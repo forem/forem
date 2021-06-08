@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Authentication::Authenticator, type: :service do
   before do
     omniauth_mock_providers_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   context "when authenticating through an unknown provider" do
@@ -36,12 +36,10 @@ RSpec.describe Authentication::Authenticator, type: :service do
         user = service.call
 
         info = auth_payload.info
-        raw_info = auth_payload.extra.raw_info
 
         expect(user.email).to eq(info.email)
         expect(user.name).to eq("#{info.first_name} #{info.last_name}")
         expect(user.profile_image).not_to be_nil
-        expect(user.apple_created_at.to_i).to eq(raw_info.id_info.auth_time)
         expect(user.apple_username).to match(/#{info.first_name.downcase}_\w+/)
       end
 
@@ -130,13 +128,11 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
       it "updates the proper data from the auth payload" do
         # simulate changing apple data
-        auth_payload.extra.raw_info.id_info.auth_time = 10.days.ago.to_i
+        auth_payload.info.first_name = "Newname"
 
-        user = described_class.call(auth_payload)
-
-        raw_info = auth_payload.extra.raw_info
-
-        expect(user.apple_created_at.to_i).to eq(raw_info.id_info.auth_time)
+        expect do
+          described_class.call(auth_payload)
+        end.to change { user.reload.apple_username }.to("newname")
       end
 
       it "sets remember_me for the existing user" do
@@ -239,7 +235,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.email).to eq(info.email)
         expect(user.name).to eq(raw_info.name)
         expect(user.remote_profile_image_url).to eq(info.image)
-        expect(user.github_created_at.to_i).to eq(Time.zone.parse(raw_info.created_at).to_i)
         expect(user.github_username).to eq(info.nickname)
       end
 
@@ -419,15 +414,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:facebook] }
     let!(:service) { described_class.new(auth_payload) }
 
-    # Freeze time since `facebook_created_at` will be based on server time
-    before do
-      Timecop.freeze
-    end
-
-    after do
-      Timecop.return
-    end
-
     describe "new user" do
       it "creates a new user" do
         expect do
@@ -450,7 +436,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.email).to eq(info.email)
         expect(user.name).to eq(raw_info.name)
         expect(user.remote_profile_image_url).to eq(info.image)
-        expect(user.facebook_created_at.to_i).to eq(Time.zone.now.to_i)
         expect(user.facebook_username).to match(/#{info.name.sub(' ', '_')}_\S*\z/)
       end
 
@@ -540,9 +525,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.email).to eq(info.email)
         expect(user.name).to eq(raw_info.name)
         expect(user.remote_profile_image_url).to eq(info.image.to_s.gsub("_normal", ""))
-        expect(user.twitter_created_at.to_i).to eq(Time.zone.parse(raw_info.created_at).to_i)
-        expect(user.twitter_followers_count).to eq(raw_info.followers_count.to_i)
-        expect(user.twitter_following_count).to eq(raw_info.friends_count.to_i)
         expect(user.twitter_username).to eq(info.nickname)
       end
 
@@ -631,16 +613,11 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
       it "updates the proper data from the auth payload" do
         # simulate changing twitter data
-        auth_payload.extra.raw_info.followers_count = rand(100).to_s
-        auth_payload.extra.raw_info.friends_count = rand(100).to_s
+        auth_payload.info.nickname = "newnick"
 
-        user = described_class.call(auth_payload)
-
-        raw_info = auth_payload.extra.raw_info
-
-        expect(user.twitter_created_at.to_i).to eq(Time.zone.parse(raw_info.created_at).to_i)
-        expect(user.twitter_followers_count).to eq(raw_info.followers_count.to_i)
-        expect(user.twitter_following_count).to eq(raw_info.friends_count.to_i)
+        expect do
+          described_class.call(auth_payload)
+        end.to change { user.reload.twitter_username }.to eq("newnick")
       end
 
       it "sets remember_me for the existing user" do

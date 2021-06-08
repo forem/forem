@@ -1,5 +1,5 @@
 <div>
-  <h3><%= @organization.name %></h3>
+  <h2><%= @organization.name %></h2>
   <div class="grid gap-2">
     <% @organization.users.each do |user| %>
       <div class="crayons-card crayons-card--secondary p-4">
@@ -8,7 +8,7 @@
     <% end %>
   </div>
 </div>
-<h3>Danger zone</h3>
+<h2>Danger zone</h2>
 <%= form_tag users_leave_org_path(@organization), onsubmit: "return confirm('Are you sure you want to leave this organization?');" do %>
   <div class="field">
     <%= submit_tag "Leave Organization", class: "danger-button" %>

@@ -1,5 +1,5 @@
 <div class="navigation-progress" id="navigation-progress"></div>
-<header class="crayons-header print-hidden" role="banner">
+<header class="crayons-header print-hidden">
   <a href="#main-content" class="skip-content-link">Skip to content</a>
   <div class="crayons-header__container">
     <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded js-hamburger-trigger inline-block m:hidden mx-2">
@@ -30,7 +30,7 @@
         <%= inline_svg_tag("search.svg", aria: true, class: "crayons-icon", title: "Search") %>
       </a>
       <% if user_signed_in? %>
-        <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto">Write a post</a>
+        <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto">Create Post</a>
 
         <span class="trusted-visible-block">
           <a id="moderation-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded m:flex hidden" aria-label="Moderation" href="<%= mod_path %>">
@@ -49,7 +49,7 @@
         </a>
 
         <div class="crayons-header__menu" id="crayons-header__menu">
-          <button type="button" class="crayons-header__menu__trigger" id="member-menu-button" aria-label="Navigation menu">
+          <button type="button" class="crayons-header__menu__trigger" id="member-menu-button" aria-label="Navigation menu" aria-expanded="false">
             <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" /></span>
           </button>
           <%= render "layouts/nav_menu" %>

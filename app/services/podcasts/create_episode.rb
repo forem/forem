@@ -5,8 +5,8 @@ module Podcasts
       @item = item.is_a?(EpisodeRssItem) ? item : EpisodeRssItem.new(item)
     end
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(...)
+      new(...).call
     end
 
     def call
@@ -69,7 +69,6 @@ module Podcasts
 
     def finalize(episode)
       episode.purge_all
-      episode.index_to_elasticsearch
       episode.save if episode.processed_html.blank?
     end
   end

@@ -34,7 +34,8 @@
   (
     'opacity',
     'opacity',
-    ('100': 1, '75': 0.75, '50': 0.5, '25': 0.25, '0': 0),
+    // Explicitly set opacity-0 to 0.00001 to ensure accessibility on ChromeVox. See https://github.com/forem/forem/issues/12939
+    ('100': 1, '75': 0.75, '50': 0.5, '25': 0.25, '0': 0.00001),
     (),
     true
   ),

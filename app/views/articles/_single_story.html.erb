@@ -4,8 +4,9 @@
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
   <% end %>
   <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
-    <a href="<%= story.path %>" title="<%= story.title %>" class="crayons-story__cover" aria-label="article"
-      style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);" class="crayons-story__cover__image">
+    <a href="<%= story.path %>" title="<%= story.title %>" aria-label="article"
+      style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);"
+      class="crayons-story__cover crayons-story__cover__image">
       <span class="hidden"><%= story.title %></span>
     </a>
   <% end %>
@@ -24,12 +25,12 @@
         <div class="crayons-story__author-pic">
           <% if story.cached_organization && !@organization_article_index %>
           <a class="crayons-logo crayons-logo--l" href="/<%= story.cached_organization.slug %>">
-            <img alt="<%= story.cached_organization.name %> logo" src="<%= story.cached_organization.profile_image_90 %>" class="crayons-logo__image">
+            <img alt="<%= story.cached_organization.name %> logo" src="<%= story.cached_organization.profile_image_90 %>" class="crayons-logo__image" loading="lazy" />
           </a>
           <% end %>
 
           <a href="/<%= story.cached_user.username %>" class="crayons-avatar <% if story.cached_organization && !@organization_article_index %> crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted <% else %> crayons-avatar--l <% end %> ">
-            <img src="<%= Images::Profile.call(story.cached_user.profile_image_url, length: 90) %>" alt="<%= story.cached_user.username %> profile" class="crayons-avatar__image" />
+            <img src="<%= Images::Profile.call(story.cached_user.profile_image_url, length: 90) %>" alt="<%= story.cached_user.username %> profile" class="crayons-avatar__image" loading="lazy" />
           </a>
         </div>
         <div>
@@ -58,7 +59,7 @@
       <div class="crayons-story__tags">
         <% flare_tag = FlareTag.new(story, @tag).tag %>
         <% if flare_tag %>
-          <a href="/t/<%= flare_tag.name %>" class="crayons-tag" style="background:<%= flare_tag.bg_color_hex %>;color:<%= flare_tag.text_color_hex %>"><span className="crayons-tag__prefix">#</span><%= flare_tag.name %></a>
+          <a href="<%= URL.tag flare_tag %>" class="crayons-tag" style="background:<%= flare_tag.bg_color_hex %>;color:<%= flare_tag.text_color_hex %>"><span class="crayons-tag__prefix">#</span><%= flare_tag.name %></a>
         <% end %>
         <% tags_to_display = story.cached_tag_list_array
            if flare_tag

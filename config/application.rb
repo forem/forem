@@ -8,6 +8,8 @@ require "active_record/railtie"
 # require "active_storage/engine"
 require "action_controller/railtie"
 require "action_mailer/railtie"
+# require "action_mailbox/engine"
+# require "action_text/engine"
 require "action_view/railtie"
 # require "action_cable/engine"
 require "sprockets/railtie"
@@ -60,8 +62,6 @@ module PracticalDeveloper
     # Unfortunately there isn't an easy way to use them and use view caching at the same time.
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
-
-    config.middleware.use SetCookieDomain
 
     # NOTE: [Rails 6]
     # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.

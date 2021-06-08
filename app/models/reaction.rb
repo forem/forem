@@ -65,10 +65,8 @@ class Reaction < ApplicationRecord
   # - reaction is negative
   # - receiver is the same user as the one who reacted
   # - receive_notification is disabled
-  def skip_notification_for?(receiver)
-    points.negative? ||
-      (user_id == reactable.user_id) ||
-      (receiver.is_a?(User) && reactable.receive_notifications == false)
+  def skip_notification_for?(_receiver)
+    points.negative? || (user_id == reactable.user_id)
   end
 
   def vomit_on_user?
@@ -132,7 +130,7 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return if user&.any_admin? || user&.id == SiteConfig.mascot_user_id
+    return if user&.any_admin? || user&.id == Settings::General.mascot_user_id
 
     negative? && !user.trusted
   end

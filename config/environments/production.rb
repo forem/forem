@@ -1,3 +1,5 @@
+require "active_support/core_ext/integer/time"
+
 # rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Allow the app to know when booted up in context where we haven't set ENV vars
@@ -57,9 +59,6 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
-  # Store uploaded files on the local file system (see config/storage.yml for options)
-  # config.active_storage.service = :local
-
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = ENV["FORCE_SSL_IN_RAILS"] == "true"
 
@@ -79,7 +78,7 @@ Rails.application.configure do
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
-  # config.active_job.queue_name_prefix = "practical_developer_#{Rails.env}"
+  # config.active_job.queue_name_prefix = "practical_developer_production"
 
   config.action_mailer.perform_caching = false
 
@@ -93,6 +92,12 @@ Rails.application.configure do
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
+
+  # Log disallowed deprecations.
+  config.active_support.disallowed_deprecation = :log
+
+  # Tell Active Support which deprecation messages to disallow.
+  config.active_support.disallowed_deprecation_warnings = []
 
   # Filter sensitive information from production logs
   config.filter_parameters += %i[
@@ -122,22 +127,53 @@ Rails.application.configure do
   protocol = ENV["APP_PROTOCOL"] || "http://"
 
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.perform_deliveries = true
+  config.action_mailer.perform_deliveries =  ENV["SMTP_PASWORD"].present? || ENV["SENDGRID_API_KEY"].present?
   config.action_mailer.default_url_options = { host: protocol + ENV["APP_DOMAIN"].to_s }
-  ActionMailer::Base.smtp_settings = {
-    address: "smtp.sendgrid.net",
-    port: "587",
-    authentication: :plain,
-    user_name: "apikey",
-    password: ENV["SENDGRID_API_KEY"],
-    domain: ENV["APP_DOMAIN"],
-    enable_starttls_auto: true
-  }
+  ActionMailer::Base.smtp_settings = if ENV["SENDGRID_API_KEY"].present?
+                                       {
+                                         address: "smtp.sendgrid.net",
+                                         port: 587,
+                                         authentication: :plain,
+                                         user_name: "apikey",
+                                         password: ENV["SENDGRID_API_KEY"],
+                                         domain: ENV["APP_DOMAIN"]
+                                       }
+                                     else
+                                       {
+                                         address: ENV["SMTP_ADDRESS"],
+                                         port: ENV["SMTP_PORT"],
+                                         authentication: ENV["SMTP_AUTHENTICATION"],
+                                         user_name: ENV["SMTP_USER_NAME"],
+                                         password: ENV["SMTP_PASSWORD"],
+                                         domain: ENV["SMTP_DOMAIN"]
+                                       }
+                                     end
 
   if ENV["HEROKU_APP_URL"].present? && ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
     config.middleware.use Rack::HostRedirect,
                           ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
   end
+
+  # Inserts middleware to perform automatic connection switching.
+  # The `database_selector` hash is used to pass options to the DatabaseSelector
+  # middleware. The `delay` is used to determine how long to wait after a write
+  # to send a subsequent read to the primary.
+  #
+  # The `database_resolver` class is used by the middleware to determine which
+  # database is appropriate to use based on the time delay.
+  #
+  # The `database_resolver_context` class is used by the middleware to set
+  # timestamps for the last write to the primary. The resolver uses the context
+  # class timestamps to determine how long to wait before reading from the
+  # replica.
+  #
+  # By default Rails will store a last write timestamp in the session. The
+  # DatabaseSelector middleware is designed as such you can define your own
+  # strategy for connection switching and pass that into the middleware through
+  # these configuration options.
+  # config.active_record.database_selector = { delay: 2.seconds }
+  # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
+  # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 end
 # rubocop:enable Metrics/BlockLength
 

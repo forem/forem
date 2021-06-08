@@ -8,8 +8,8 @@ module Notifications
 
       delegate :user_data, to: Notifications
 
-      def self.call(*args)
-        new(*args).call
+      def self.call(...)
+        new(...).call
       end
 
       def call
@@ -35,7 +35,8 @@ module Notifications
             badge: {
               title: badge_achievement.badge.title,
               description: badge_achievement.badge.description,
-              badge_image_url: badge_achievement.badge.badge_image_url
+              badge_image_url: badge_achievement.badge.badge_image_url,
+              credits_awarded: badge_achievement.badge.credits_awarded
             }
           }
         }

@@ -49,7 +49,7 @@ RSpec.describe "Completing Onboarding", type: :system, js: true do
     end
   end
 
-  # TODO: Vaidehi Joshi - Extract this into a reusable helper
+  # TODO: Extract this into a reusable helper
   def log_in_user(user)
     fill_in("user_email", with: user.email)
     fill_in("user_password", with: user.password)

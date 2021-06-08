@@ -7,118 +7,120 @@
   <title><%= community_name %> ❤️</title>
 </head>
 <body>
-<%= @html_variant.html.html_safe %>
-<div id="html-variant-element" data-variant-id="<%= @html_variant.id %>"></div>
-<script defer>
-  setTimeout(function () {
-    var tokenMeta = document.querySelector("meta[name='csrf-token']")
-    var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
-    var variantEl = document.getElementById("html-variant-element")
-    if (tokenMeta && !isBot) {
-      var dataBody = {
-        html_variant_id: variantEl.dataset.variantId
-      };
-      var csrfToken = tokenMeta.getAttribute('content');
-      trackHTMLVariantTrial(dataBody, csrfToken)
-      var successLinks = document.querySelectorAll('a,button'); //track all links and button clicks within nav
-      for (var i = 0; i < successLinks.length; i++) {
-        successLinks[i].addEventListener('click', function (e) {
-          e.preventDefault();
-          var goTo = e.target.href
-          trackHtmlVariantSuccess(dataBody, csrfToken)
-          setTimeout(function () {
-            window.location.href = goTo;
-          }, 250)
-        });
-      }
-    }
-  }, 1500)
-
-  function trackHTMLVariantTrial(dataBody, csrfToken) {
-    var randomNumber = Math.floor(Math.random() * 10); // 1 in 10; Only track 1 in 10 impressions
-    if (randomNumber) {
-      window.fetch('/html_variant_trials', {
-        method: 'POST',
-        headers: {
-          'X-CSRF-Token': csrfToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataBody),
-        credentials: 'same-origin',
-      });
-    }
-  }
-
-  function trackHtmlVariantSuccess(dataBody, csrfToken) {
-    window.fetch('/html_variant_successes', {
-      method: 'POST',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataBody),
-      credentials: 'same-origin',
-    })
-  }
-
-  fetchBaseData();
-
-  function fetchBaseData() {
-    var xmlhttp;
-    if (window.XMLHttpRequest) {
-      xmlhttp = new XMLHttpRequest();
-    } else {
-      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange = function () {
-      if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-        var json = JSON.parse(xmlhttp.responseText);
-        if (json.token) {
-          removeExistingCSRF();
+  <% if @html_variant %>
+    <%= @html_variant.html.html_safe %>
+    <div id="html-variant-element" data-variant-id="<%= @html_variant.id %>"></div>
+    <script defer>
+      setTimeout(function () {
+        var tokenMeta = document.querySelector("meta[name='csrf-token']")
+        var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
+        var variantEl = document.getElementById("html-variant-element")
+        if (tokenMeta && !isBot) {
+          var dataBody = {
+            html_variant_id: variantEl.dataset.variantId
+          };
+          var csrfToken = tokenMeta.getAttribute('content');
+          trackHTMLVariantTrial(dataBody, csrfToken)
+          var successLinks = document.querySelectorAll('a,button'); //track all links and button clicks within nav
+          for (var i = 0; i < successLinks.length; i++) {
+            successLinks[i].addEventListener('click', function (e) {
+              e.preventDefault();
+              var goTo = e.target.href
+              trackHtmlVariantSuccess(dataBody, csrfToken)
+              setTimeout(function () {
+                window.location.href = goTo;
+              }, 250)
+            });
+          }
         }
-        var meta = document.createElement('meta');
-        var metaTag = document.querySelector("meta[name='csrf-token']");
-        meta.name = "csrf-param";
-        meta.content = json.param;
-        document.head.appendChild(meta);
-        var meta = document.createElement('meta');
-        meta.name = "csrf-token";
-        meta.content = json.token;
-        document.head.appendChild(meta);
-        document.body.dataset.loaded = "true";
+      }, 1500)
+
+      function trackHTMLVariantTrial(dataBody, csrfToken) {
+        var randomNumber = Math.floor(Math.random() * 10); // 1 in 10; Only track 1 in 10 impressions
+        if (randomNumber) {
+          window.fetch('/html_variant_trials', {
+            method: 'POST',
+            headers: {
+              'X-CSRF-Token': csrfToken,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataBody),
+            credentials: 'same-origin',
+          });
+        }
       }
-    };
 
-    xmlhttp.open("GET", "/async_info/base_data", true);
-    xmlhttp.send();
-  }
+      function trackHtmlVariantSuccess(dataBody, csrfToken) {
+        window.fetch('/html_variant_successes', {
+          method: 'POST',
+          headers: {
+            'X-CSRF-Token': csrfToken,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataBody),
+          credentials: 'same-origin',
+        })
+      }
 
-  function removeExistingCSRF() {
-    var csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
-    var csrfParamMeta = document.querySelector("meta[name='csrf-param']");
-    if (csrfTokenMeta && csrfParamMeta) {
-      csrfTokenMeta.parentNode.removeChild(csrfTokenMeta);
-      csrfParamMeta.parentNode.removeChild(csrfParamMeta);
-    }
-  }
-</script>
-<script>
-  (function (i, s, o, g, r, a, m) {
-    i['GoogleAnalyticsObject'] = r;
-    i[r] = i[r] || function () {
-      (i[r].q = i[r].q || []).push(arguments)
-    }, i[r].l = 1 * new Date();
-    a = s.createElement(o),
-      m = s.getElementsByTagName(o)[0];
-    a.async = 1;
-    a.src = g;
-    m.parentNode.insertBefore(a, m)
-  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+      fetchBaseData();
 
-  ga('create', '<%= SiteConfig.ga_tracking_id %>', 'auto');
-  ga('set', 'anonymizeIp', true);
-  ga('send', 'pageview');
-  ga('send', 'event', 'view', '/badge version impression', '<%= @html_variant.name %>', null);
-</script>
+      function fetchBaseData() {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+          xmlhttp = new XMLHttpRequest();
+        } else {
+          xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function () {
+          if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+            var json = JSON.parse(xmlhttp.responseText);
+            if (json.token) {
+              removeExistingCSRF();
+            }
+            var meta = document.createElement('meta');
+            var metaTag = document.querySelector("meta[name='csrf-token']");
+            meta.name = "csrf-param";
+            meta.content = json.param;
+            document.head.appendChild(meta);
+            var meta = document.createElement('meta');
+            meta.name = "csrf-token";
+            meta.content = json.token;
+            document.head.appendChild(meta);
+            document.body.dataset.loaded = "true";
+          }
+        };
+
+        xmlhttp.open("GET", "/async_info/base_data", true);
+        xmlhttp.send();
+      }
+
+      function removeExistingCSRF() {
+        var csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
+        var csrfParamMeta = document.querySelector("meta[name='csrf-param']");
+        if (csrfTokenMeta && csrfParamMeta) {
+          csrfTokenMeta.parentNode.removeChild(csrfTokenMeta);
+          csrfParamMeta.parentNode.removeChild(csrfParamMeta);
+        }
+      }
+    </script>
+    <script>
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+      ga('create', '<%= Settings::General.ga_tracking_id %>', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('send', 'pageview');
+      ga('send', 'event', 'view', '/badge version impression', '<%= @html_variant.name %>', null);
+    </script>
+  <% end %>
 </body>
 </html>

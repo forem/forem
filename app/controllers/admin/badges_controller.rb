@@ -22,7 +22,7 @@ module Admin
         redirect_to admin_badges_path
       else
         flash[:danger] = @badge.errors_as_sentence
-        render new_admin_badge_path
+        render :new
       end
     end
 
@@ -41,7 +41,7 @@ module Admin
     private
 
     def badge_params
-      params.require(:badge).permit(:title, :slug, :description, :badge_image)
+      params.require(:badge).permit(:title, :description, :badge_image, :credits_awarded)
     end
   end
 end

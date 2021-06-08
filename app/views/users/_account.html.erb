@@ -20,7 +20,7 @@
           <%= api_secret.text_field(:description, placeholder: "My Project Name", required: true, class: "crayons-textfield") %>
         </div>
       <% end %>
-      <button class="crayons-btn crayon-btn--secondary" id="new__api__secret__btn" type="submit">Generate API Key</button>
+      <button class="crayons-btn crayon-btn--secondary" type="submit">Generate API Key</button>
     <% end %>
   </div>
 
@@ -52,7 +52,7 @@
   </h2>
 
   <% if @user.export_requested? %>
-    <div class="crayons-notice crayons-notice--warning">
+    <div class="crayons-notice crayons-notice--warning" aria-live="polite">
       <p>You have recently requested an export of your content. Please check your email.</p>
     </div>
   <% else %>

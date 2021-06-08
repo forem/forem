@@ -8,20 +8,33 @@
         <h3 class="crayons-subtitle-1">Welcome Checklist</h3>
         <p class="crayons-subtitle-4 color-base-70 mb-3">Here are a few things we recommend doing now that you're using Forem!</p>
         <ol>
-          <li class="mb-1 -ml-4">Set up and configure your Forem under <a href="/admin/config" data-action="click->ahoy#trackOverviewLink">Config</a></li>
-          <li class="mb-1 -ml-4"><a href="/admin/invitations" data-action="click->ahoy#trackOverviewLink">Invite people</a> to join your Forem</li>
-          <li class="mb-1 -ml-4"><a href="/admin/tags" data-action="click->ahoy#trackOverviewLink">Update your Forem tags</a></li>
-          <li class="mb-1 -ml-4"><a href="/admin/pages" data-action="click->ahoy#trackOverviewLink">Create pages</a> and <a href="/admin/navigation_links" data-action="click->ahoy#trackOverviewLink">sort them in the navigation sidebar</a></li>
+          <li class="mb-1 -ml-4">Set up and configure your Forem under <%= link_to "Config", admin_config_path, 'data-action': "click->ahoy#trackOverviewLink" %></li>
+          <li class="mb-1 -ml-4"><%= link_to "Invite people", admin_invitations_path, 'data-action': "click->ahoy#trackOverviewLink" %> to join your Forem</li>
+          <li class="mb-1 -ml-4"><%= link_to "Update your Forem tags", admin_tags_path, 'data-action': "click->ahoy#trackOverviewLink" %></li>
+          <li class="mb-1 -ml-4"><%= link_to "Create pages", admin_pages_path, 'data-action': "click->ahoy#trackOverviewLink" %> and <%= link_to "sort them in the navigation sidebar", admin_navigation_links_path, 'data-action': "click->ahoy#trackOverviewLink" %></li>
           <li class="mb-1 -ml-4">Read the <a href="https://forem.gitbook.io/forem-admin-guide/quick-start-guide" data-action="click->ahoy#trackOverviewLink">Quick Start Guide</a></li>
-          <li class="mb-1 -ml-4"><a href="/admin/welcome" data-action="click->ahoy#trackOverviewLink">Set up a Welcome Thread</a></li>
+          <li class="mb-1 -ml-4"><%= link_to "Set up a Welcome Thread", admin_welcome_index_path, 'data-action': "click->ahoy#trackOverviewLink" %></li>
           <li class="mb-1 -ml-4">Browse the <a href="https://forem.gitbook.io/forem-admin-guide" data-action="click->ahoy#trackOverviewLink">Forem Admin Guide</a></li>
-          <li class="-ml-4">Join the private <a href="https://creators.forem.com">Creators Forem</a> (email <a href="mailto:support@forem.com" data-action="click->ahoy#trackOverviewLink">support@forem.com</a> if you need an invite)</li>
+          <li class="-ml-4">Join <a href="https://forem.dev">forem.dev</a> to learn from fellow Forem creators.</li>
         </ol>
         <div class="align-center">
           <a class="crayons-btn crayons-btn--ghost-brand" href="https://forem.gitbook.io/forem-admin-guide" data-action="click->ahoy#trackOverviewLink">Visit Forem Admin Guide</a>
         </div>
       </div>
     </section>
+    <h2 class="crayons-subtitle-1 mb-3">Analytics</h2>
+    <article class="grid s:grid-cols-2 gap-3 mb-4" data-controller="ahoy">
+      <section class="crayons-card">
+        <div class="crayons-card__body">
+          <h2 class="crayons-title"><%= @open_abuse_reports_count %></h2>
+          <p class="crayons-subtitle-4 color-base-70">
+            <a href=<%= admin_feedback_messages_path %>>
+              <%= "Open report".pluralize(@open_abuse_reports_count) %>
+            </a>
+          </p>
+        </div>
+      </section>
+    </article>
     <h2 class="crayons-subtitle-1 mb-3">Resources</h2>
     <article class="grid s:grid-cols-2 gap-3" data-controller="ahoy">
       <section class="crayons-card">
@@ -38,14 +51,13 @@
       </section>
       <section class="crayons-card">
         <div class="crayons-card__header">
-          <h3 class="crayons-subtitle-2">Forem Creators Community</h3>
+          <h3 class="crayons-subtitle-2">Forem.dev</h3>
         </div>
         <div class="crayons-card__body flex flex-wrap" style="min-height: 150px;">
           <p class="mb-2">
-            Meet other creators using Forem so that you can share tips with
-            each other.
+            Meet other creators using Forem so that you can share tips with each other.
           </p>
-          <a role="button" href="https://creators.forem.com" class="crayons-btn mt-1 w-100 self-end" data-action="click->ahoy#trackOverviewLink">Join Community</a>
+          <a role="button" href="https://forem.dev" class="crayons-btn mt-1 w-100 self-end" data-action="click->ahoy#trackOverviewLink">Join Community</a>
         </div>
       </section>
     </article>

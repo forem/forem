@@ -58,8 +58,8 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
   describe "#authentication_provider_enabled?" do
     before do
-      allow(SiteConfig).to receive(:invite_only_mode).and_return(false)
-      allow(SiteConfig).to receive(:authentication_providers).and_return(%i[twitter github])
+      allow(Settings::Authentication).to receive(:invite_only_mode).and_return(false)
+      allow(Settings::Authentication).to receive(:providers).and_return(%i[twitter github])
     end
 
     it "returns true when a provider has been enabled" do
@@ -76,9 +76,9 @@ RSpec.describe AuthenticationHelper, type: :helper do
   describe "tooltip classes, attributes and content" do
     context "when invite-only-mode enabled and no enabled registration options" do
       before do
-        allow(SiteConfig).to receive(:invite_only_mode).and_return(true)
-        allow(SiteConfig).to receive(:authentication_providers).and_return([])
-        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(false)
+        allow(Settings::Authentication).to receive(:invite_only_mode).and_return(true)
+        allow(Settings::Authentication).to receive(:providers).and_return([])
+        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(false)
       end
 
       it "returns 'crayons-tooltip' class for relevant helpers" do

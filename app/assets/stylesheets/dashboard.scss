@@ -1,5 +1,7 @@
 @import 'variables';
 @import 'mixins';
+@import 'config/import';
+
 .dashboard-container {
   .manage-header {
     background: $bold-blue;
@@ -257,70 +259,55 @@
   }
 }
 
-.charts-container {
-  max-width: 500px;
-  height: 250px;
-  margin: 0 auto;
-}
-
-.pro-container {
+.analytics-container {
   width: 1400px;
   margin: 0 auto;
 }
 
+.crayons-tabs--analytics {
+  width: min-content;
+  margin: var(--su-8) auto;
+}
+
+$column-flex: 1;
+
 .summary-stats {
+  text-align: center;
   display: flex;
-  flex-wrap: wrap;
-  width: 100%;
   justify-content: space-between;
 
-  .card {
-    flex: 1 0 150px;
+  &__col {
+    flex: $column-flex;
   }
 }
 
-.toggles {
-  text-align: center;
-}
-
-.toggles button {
-  display: inline-block;
-  padding: 2px 8px;
-  margin: 8px;
-  font-size: 1.3em;
-  border-radius: 2px;
-  border: 1px solid transparent;
-  font-family: $helvetica-condensed;
-  font-stretch: condensed;
-  top: 18px;
-  font-weight: 600;
-  background-color: transparent;
-
-  &:focus {
-    outline: 0;
-  }
-
-  &.selected {
-    background: #cfd7ff;
-    color: #0a0a0a !important;
-    border: 1px solid #4e57ef;
-    box-shadow: 3px 4px 0px #4e57ef;
-  }
+.crayons-tabs--analytics {
+  justify-content: center;
 }
 
 .graphs {
-  .row {
-    display: flex;
-    flex-wrap: wrap;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
 
-    .card {
-      flex: 1 0;
+  &__col {
+    flex: $column-flex;
+  }
+}
+
+@media screen and (max-width: $breakpoint-s) {
+  .summary-stats,
+  .graphs {
+    display: block;
+    &__col {
+      display: block;
+      width: 90%;
+      margin: 10px auto;
     }
   }
 
-  h2 {
-    margin: 5px;
-    text-align: center;
+  .crayons-tabs--analytics {
+    width: 100%;
   }
 }
 

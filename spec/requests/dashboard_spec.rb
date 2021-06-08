@@ -4,7 +4,6 @@ RSpec.describe "Dashboards", type: :request do
   let(:user)          { create(:user) }
   let(:second_user)   { create(:user) }
   let(:super_admin)   { create(:user, :super_admin) }
-  let(:pro_user)      { create(:user, :pro) }
   let(:article)       { create(:article, user: user) }
   let(:unpublished_article) { create(:article, user: user, published: false) }
   let(:organization) { create(:organization) }
@@ -28,9 +27,12 @@ RSpec.describe "Dashboards", type: :request do
         expect(response.body).to include(CGI.escapeHTML(article.title))
       end
 
-      it 'does not show "STATS" for articles' do
+      it 'shows "STATS" for articles' do
+        article = create(:article, user: user)
+
         get "/dashboard"
-        expect(response.body).not_to include("Stats")
+        expect(response.body).to include("Stats")
+        expect(response.body).to include("#{article.path}/stats")
       end
 
       it "renders the delete button for drafts" do
@@ -66,30 +68,30 @@ RSpec.describe "Dashboards", type: :request do
         expect(response.body).not_to include "pagination"
       end
 
-      it "does not render a link to pro analytics" do
+      it "renders a link to analytics dashboard" do
         get dashboard_path
 
-        expect(response.body).not_to include("Pro Analytics")
+        expect(response.body).to include("Analytics")
       end
 
-      it "does not render a link to pro analytics for the org" do
+      it "renders a link to analytics for the org" do
         create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
 
         get dashboard_path
 
-        expect(response.body).not_to include("Pro Analytics for #{organization.name}")
+        expect(response.body).to include(CGI.escapeHTML("Analytics for #{organization.name}"))
       end
 
       it "does not render a link to upload a video when enable_video_upload is false" do
         get dashboard_path
-        allow(SiteConfig).to receive(:enable_video_upload).and_return(false)
+        allow(Settings::General).to receive(:enable_video_upload).and_return(false)
 
         expect(response.body).not_to include("Upload a video")
       end
 
       it "does not render a link to upload a video for a recent user" do
         get dashboard_path
-        allow(SiteConfig).to receive(:enable_video_upload).and_return(true)
+        allow(Settings::General).to receive(:enable_video_upload).and_return(true)
 
         expect(response.body).not_to include("Upload a video")
       end
@@ -105,37 +107,11 @@ RSpec.describe "Dashboards", type: :request do
       end
     end
 
-    context "when logged in as a pro user" do
-      it 'shows "STATS" for articles' do
-        article = create(:article, user: pro_user)
-        sign_in pro_user
-        get "/dashboard"
-        expect(response.body).to include("Stats")
-        expect(response.body).to include("#{article.path}/stats")
-      end
-
-      it "renders a link to pro analytics" do
-        sign_in pro_user
-        get dashboard_path
-
-        expect(response.body).to include("Pro Analytics")
-      end
-
-      it "renders a link to pro analytics for the org" do
-        create(:organization_membership, type_of_user: :admin, organization: organization, user: pro_user)
-
-        sign_in pro_user
-        get dashboard_path
-
-        expect(response.body).to include("Pro Analytics for #{CGI.escapeHTML(organization.name)}")
-      end
-    end
-
     context "when logged in as a non recent user with enable_video_upload set to true on the Forem" do
       it "renders a link to upload a video" do
         Timecop.freeze(Time.current) do
           user.update!(created_at: 3.weeks.ago)
-          allow(SiteConfig).to receive(:enable_video_upload).and_return(true)
+          allow(Settings::General).to receive(:enable_video_upload).and_return(true)
 
           sign_in user
           get dashboard_path
@@ -278,49 +254,41 @@ RSpec.describe "Dashboards", type: :request do
     end
   end
 
-  describe "GET /dashboard/pro" do
+  describe "GET /dashboard/analytics" do
     context "when not logged in" do
       it "raises unauthorized" do
-        get "/dashboard/pro"
+        get "/dashboard/analytics"
         expect(response).to redirect_to("/enter")
       end
     end
 
-    context "when user does not have permission" do
-      it "raises unauthorized" do
-        sign_in user
-        expect { get "/dashboard/pro" }.to raise_error(Pundit::NotAuthorizedError)
-      end
-    end
-
-    context "when user has pro permission" do
+    context "when user is signed in" do
       it "shows page properly" do
-        user.add_role(:pro)
         sign_in user
-        get "/dashboard/pro"
-        expect(response.body).to include("pro")
+        get "/dashboard/analytics"
+        expect(response.body).to include("Analytics")
       end
     end
 
-    context "when user has pro permission and is an org admin" do
+    context "when user is an org admin" do
       it "shows page properly" do
         org = create :organization
         create(:organization_membership, user: user, organization: org, type_of_user: "admin")
-        user.add_role(:pro)
+
         sign_in user
-        get "/dashboard/pro/org/#{org.id}"
-        expect(response.body).to include("pro")
+        get "/dashboard/analytics/org/#{org.id}"
+        expect(response.body).to include("Analytics")
       end
     end
 
-    context "when user has pro permission and is an org member" do
+    context "when user has is an org member" do
       it "shows page properly" do
         org = create :organization
         create(:organization_membership, user: user, organization: org)
-        user.add_role(:pro)
+
         sign_in user
-        get "/dashboard/pro/org/#{org.id}"
-        expect(response.body).to include("pro")
+        get "/dashboard/analytics/org/#{org.id}"
+        expect(response.body).to include("Analytics")
       end
     end
   end

@@ -12,23 +12,28 @@ class ApplicationMailer < ActionMailer::Base
   default(
     from: -> { email_from },
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
+    reply_to: -> { Settings::General.email_addresses[:default] },
   )
 
   def email_from(topic = "")
-    community_name = topic.present? ? "#{SiteConfig.community_name} #{topic}" : SiteConfig.community_name
+    community_name = if topic.present?
+                       "#{Settings::Community.community_name} #{topic}"
+                     else
+                       Settings::Community.community_name
+                     end
 
-    "#{community_name} <#{SiteConfig.email_addresses[:default]}>"
+    "#{community_name} <#{Settings::General.email_addresses[:default]}>"
   end
 
   def generate_unsubscribe_token(id, email_type)
-    Rails.application.message_verifier(:unsubscribe).generate(
-      user_id: id,
-      email_type: email_type.to_sym,
-      expires_at: 31.days.from_now,
-    )
+    Rails.application.message_verifier(:unsubscribe).generate({
+                                                                user_id: id,
+                                                                email_type: email_type.to_sym,
+                                                                expires_at: 31.days.from_now
+                                                              })
   end
 
   def use_custom_host
-    ActionMailer::Base.default_url_options[:host] = SiteConfig.app_domain
+    ActionMailer::Base.default_url_options[:host] = Settings::General.app_domain
   end
 end

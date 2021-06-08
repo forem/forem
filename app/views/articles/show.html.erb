@@ -8,9 +8,9 @@
 
 <%= render "shared/webcomponents_loader_script" %>
 <% if user_signed_in? %>
-  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", "articleModerationTools", defer: true %>
+  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", "articleModerationTools", "commentDropdowns", defer: true %>
 <% else %>
-  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", defer: true %>
+  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", "commentDropdowns", defer: true %>
 <% end %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
@@ -66,7 +66,7 @@
     <meta property="og:title" content="<%= @article.title %>" />
     <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
     <meta property="og:site_name" content="<%= community_name %>" />
-    <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+    <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
     <meta name="twitter:title" content="<%= @article.title %>">
     <meta name="twitter:description" content="<%= @article.description || "An article from the community" %>">
@@ -98,7 +98,7 @@
   <main id="main-content" class="crayons-layout__content grid gap-4">
     <div class="article-wrapper">
       <% if !@article.published %>
-        <div class="crayons-notice crayons-notice--danger mb-4">
+        <div class="crayons-notice crayons-notice--danger mb-4" aria-live="polite">
           <strong>Unpublished Post.</strong> This URL is public but secret, so share at your own discretion.
           <% if user_signed_in? %>
             <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none">Click to edit</a>
@@ -107,14 +107,18 @@
       <% end %>
 
       <% if @article.video_state == "PROGRESSING" %>
-        <div class="crayons-notice crayons-notice--warning mb-4">⏳ Video Transcoding In Progress ⏳</div>
+        <div class="crayons-notice crayons-notice--warning mb-4" aria-live="polite">⏳ Video Transcoding In Progress ⏳</div>
       <% end %>
 
       <article class="crayons-card crayons-article mb-4"
         id="article-show-container"
+        data-article-id="<%= @article.id %>"
         data-author-id="<%= @article.user_id %>"
         data-path="<%= @article.path %>"
-        data-published="<%= @article.published? %>">
+        data-published="<%= @article.published? %>"
+        data-pin-path="<%= stories_feed_pinned_article_path %>"
+        data-pinned-article-id="<%= @pinned_article_id %>"
+        <%= @article.pinned? ? "data-pinned" : " " %>>
         <header class="crayons-article__header" id="main-title">
           <% if @article.video.present? %>
             <%= render "articles/video_player", meta_tags: true, article: @article %>
@@ -235,8 +239,8 @@
   <% end %>
 <% end %>
 
-<div class="mod-actions-menu"></div>
-<div id="mod-actions-menu-btn-area"></div>
+<div class="mod-actions-menu print-hidden"></div>
+<div id="mod-actions-menu-btn-area" class="print-hidden"></div>
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
 
 <div class="fullscreen-code js-fullscreen-code"></div>

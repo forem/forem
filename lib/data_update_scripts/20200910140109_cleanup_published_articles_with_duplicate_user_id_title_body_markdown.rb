@@ -34,7 +34,7 @@ module DataUpdateScripts
 
           # save all the magic
           article.save
-          article.index_to_elasticsearch_inline
+          # article.index_to_elasticsearch_inline
 
           articles_to_delete_ids += articles_to_graft.map { |a| a["id"] }
         end

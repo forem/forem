@@ -1,12 +1,12 @@
 <div id="sign-in-password-form" class="mt-8 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:580px;">
   <% if flash[:notice] %>
-    <div class="crayons-notice crayons-notice--danger mb-6">
+    <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
       <%= flash[:notice] %>
     </div>
   <% end %>
-  <%= form_for(User.new, as: :user, data: { testid: "registration-form" }, url: registration_path(:user)) do |f| %>
+  <%= form_for(@user, as: :user, data: { testid: "registration-form" }, url: registration_path(:user)) do |f| %>
     <% if defined?(resource) && resource&.errors&.any? %>
-      <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" data-testid="signup-errors">
+      <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
         <div class="crayons-card__header">
           <h3 class="crayons-card__headline">
             Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
@@ -21,7 +21,7 @@
         </div>
       </div>
     <% elsif forem_creator_flow_enabled? %>
-      <%# TODO: Vaidehi Joshi - Extract this into its own form %>
+      <%# TODO: Extract this into its own form %>
       <div class="align-center">
         <p class="pb-4 fw-bold">Almost there!</p>
         <p class="registration__description">Let's create an admin account for your community.</p>
@@ -29,15 +29,15 @@
     <% else %>
       <p class="pb-4 fw-bold">Create your account</p>
     <% end %>
-    <% if SiteConfig.display_email_domain_allow_list_publicly &&
-      SiteConfig.allowed_registration_email_domains.any? %>
-      <div class="crayons-notice crayons-notice--info">
-        <% if SiteConfig.allowed_registration_email_domains.one? %>
-          Registration restricted to <strong>@<%= SiteConfig.allowed_registration_email_domains.first %></strong> emails.
+    <% if Settings::Authentication.display_email_domain_allow_list_publicly &&
+      Settings::Authentication.allowed_registration_email_domains.any? %>
+      <div class="crayons-notice crayons-notice--info" aria-live="polite">
+        <% if Settings::Authentication.allowed_registration_email_domains.one? %>
+          Registration restricted to <strong>@<%= Settings::Authentication.allowed_registration_email_domains.first %></strong> emails.
         <% else %>
           Registration restricted to the following emails
           <ul>
-            <% SiteConfig.allowed_registration_email_domains.each do |domain| %>
+            <% Settings::Authentication.allowed_registration_email_domains.each do |domain| %>
               <li>
                 <strong>@<%= domain %></strong></strong>
               </li>
@@ -48,35 +48,50 @@
     <% end %>
     <div class="crayons-field mt-3">
       <%= f.label :profile_image, class: "crayons-field__label" %>
-      <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100", required: true %>
+      <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :name, class: "crayons-field__label" %>
+      <%= f.label :name, class: "crayons-field__label", aria: { label: "Name" } do %>
+        Name
+        <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
+      <% end %>
       <%= f.text_field :name, class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :username, class: "crayons-field__label" %>
+      <%= f.label :username, class: "crayons-field__label", aria: { label: "Username" } do %>
+        Username
+        <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
+      <% end %>
       <%= f.text_field :username, class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :email, class: "crayons-field__label" %>
+      <%= f.label :email, class: "crayons-field__label", aria: { label: "Email" } do %>
+        Email
+        <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
+      <% end %>
       <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :password, class: "crayons-field__label" %>
+      <%= f.label :password, class: "crayons-field__label", aria: { label: "Password" } do %>
+        Password
+        <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
+      <% end %>
       <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :password_confirmation, class: "crayons-field__label" %>
+      <%= f.label :password_confirmation, class: "crayons-field__label", aria: { label: "Password Confirmation" } do %>
+        Password Confirmation
+        <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
+      <% end %>
       <%= f.password_field :password_confirmation, autocomplete: "current-password", class: "crayons-textfield", required: true %>
     </div>
 
-    <% if ENV["FOREM_OWNER_SECRET"].present? && SiteConfig.waiting_on_first_user %>
+    <% if ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
       <% if params[:forem_owner_secret].present? %>
         <%= f.hidden_field :forem_owner_secret, value: params[:forem_owner_secret] %>
       <% else %>
@@ -89,12 +104,12 @@
 
     <% if ReCaptcha::CheckRegistrationEnabled.call %>
       <div class="recaptcha-tag-container mt-2">
-        <%= recaptcha_tags site_key: SiteConfig.recaptcha_site_key %>
+        <%= recaptcha_tags site_key: Settings::Authentication.recaptcha_site_key %>
       </div>
     <% end %>
 
     <% if forem_creator_flow_enabled? %>
-      <%# TODO: Vaidehi Joshi - Extract this into its own form %>
+      <%# TODO: Extract this into its own form %>
       <div class="flex flex-col pt-3">
         <%= f.submit "Create admin account", class: "crayons-btn" %>
       </div>

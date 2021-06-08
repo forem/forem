@@ -29,16 +29,17 @@ class ApplicationController < ActionController::Base
     )
   end
 
-  PUBLIC_CONTROLLERS = %w[shell
-                          async_info
-                          ga_events
-                          service_worker
-                          omniauth_callbacks
-                          registrations
+  PUBLIC_CONTROLLERS = %w[async_info
                           confirmations
+                          deep_links
+                          ga_events
+                          health_checks
                           invitations
+                          omniauth_callbacks
                           passwords
-                          health_checks].freeze
+                          registrations
+                          service_worker
+                          shell].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   CONTENT_CHANGE_PATHS = [
@@ -51,11 +52,12 @@ class ApplicationController < ActionController::Base
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
     return if self.class.module_parent.to_s == "Admin"
-    return if user_signed_in? || SiteConfig.public
+    return if user_signed_in? || Settings::UserExperience.public
 
     if api_action?
       authenticate!
     else
+      @user ||= User.new
       render template: "devise/registrations/new"
     end
   end
@@ -128,7 +130,7 @@ class ApplicationController < ActionController::Base
   end
 
   def raise_suspended
-    raise "SUSPENDED" if current_user&.banned
+    raise SuspendedError if current_user&.suspended?
   end
 
   def internal_navigation?
@@ -139,7 +141,7 @@ class ApplicationController < ActionController::Base
   def feed_style_preference
     # TODO: Future functionality will let current_user override this value with UX preferences
     # if current_user exists and has a different preference.
-    SiteConfig.feed_style
+    Settings::UserExperience.feed_style
   end
   helper_method :feed_style_preference
 
@@ -166,7 +168,7 @@ class ApplicationController < ActionController::Base
   end
 
   def initialize_stripe
-    Stripe.api_key = SiteConfig.stripe_api_key
+    Stripe.api_key = Settings::General.stripe_api_key
 
     return unless Rails.env.development? && Stripe.api_key.present?
 
@@ -184,16 +186,19 @@ class ApplicationController < ActionController::Base
   end
 
   def forward_to_app_config_domain
-    return unless request.get? && # Let's only redirect get requests for this purpose.
-      request.host == ENV["APP_DOMAIN"] && # If the request equals the original set domain, e.g. forem-x.forem.cloud.
-      ENV["APP_DOMAIN"] != SiteConfig.app_domain # If the app domain config has now been set, let's go there instead.
+    # Let's only redirect get requests for this purpose.
+    return unless request.get? &&
+      # If the request equals the original set domain, e.g. forem-x.forem.cloud.
+      request.host == ENV["APP_DOMAIN"] &&
+      # If the app domain config has now been set, let's go there instead.
+      ENV["APP_DOMAIN"] != Settings::General.app_domain
 
     redirect_to URL.url(request.fullpath)
   end
 
   def bust_content_change_caches
     EdgeCache::Bust.call(CONTENT_CHANGE_PATHS)
-    SiteConfig.admin_action_taken_at = Time.current # Used as cache key
+    Settings::General.admin_action_taken_at = Time.current # Used as cache key
   end
 
   protected

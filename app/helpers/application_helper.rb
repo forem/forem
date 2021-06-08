@@ -76,7 +76,7 @@ module ApplicationHelper
   def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
     image_options[:width] ||= optimizer_options[:width]
     image_options[:height] ||= optimizer_options[:height]
-    updated_image_url = Images::Optimizer.call(image_url, optimizer_options)
+    updated_image_url = Images::Optimizer.call(image_url, **optimizer_options)
 
     image_tag(updated_image_url, image_options)
   end
@@ -96,7 +96,7 @@ module ApplicationHelper
   end
 
   def invite_only_mode?
-    SiteConfig.invite_only_mode?
+    Settings::Authentication.invite_only_mode?
   end
 
   def any_enabled_auth_providers?
@@ -156,34 +156,30 @@ module ApplicationHelper
   end
 
   def logo_svg
-    if SiteConfig.logo_svg.present?
-      SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
+    if Settings::General.logo_svg.present?
+      Settings::General.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
     else
       inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end
   end
 
-  def safe_logo_url(logo)
-    logo.presence || SiteConfig.logo_png
-  end
-
   def community_name
-    @community_name ||= SiteConfig.community_name
+    @community_name ||= Settings::Community.community_name
   end
 
   def community_emoji
-    @community_emoji ||= SiteConfig.community_emoji
+    @community_emoji ||= Settings::Community.community_emoji
   end
 
   def release_adjusted_cache_key(path)
     release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}-#{SiteConfig.admin_action_taken_at.rfc3339}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}"
   end
 
   def copyright_notice
-    start_year = SiteConfig.community_copyright_start_year.to_s
+    start_year = Settings::Community.copyright_start_year.to_s
     current_year = Time.current.year.to_s
     return start_year if current_year == start_year
     return current_year if start_year.strip.length < 4 # 978 is not a valid year!
@@ -198,39 +194,37 @@ module ApplicationHelper
     link_to body, collection.path, **kwargs
   end
 
-  def email_link(type = :contact, text: nil, additional_info: nil)
-    # The allowed types for type are the keys of `SiteConfig.email_addresses`
-    # :default, :contact, :business, :privacy, :members
-    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:contact]
+  def email_link(text: nil, additional_info: nil)
+    email = Settings::General.email_addresses[:default]
     mail_to email, text || email, additional_info
   end
 
   def community_members_label
-    SiteConfig.community_member_label.pluralize
+    Settings::Community.member_label.pluralize
   end
 
   def meta_keywords_default
-    return if SiteConfig.meta_keywords[:default].blank?
+    return if Settings::General.meta_keywords[:default].blank?
 
-    tag.meta name: "keywords", content: SiteConfig.meta_keywords[:default]
+    tag.meta name: "keywords", content: Settings::General.meta_keywords[:default]
   end
 
   def meta_keywords_article(article_tags = nil)
-    return if SiteConfig.meta_keywords[:article].blank?
+    return if Settings::General.meta_keywords[:article].blank?
 
     content = if article_tags.present?
-                "#{article_tags}, #{SiteConfig.meta_keywords[:article]}"
+                "#{article_tags}, #{Settings::General.meta_keywords[:article]}"
               else
-                SiteConfig.meta_keywords[:article]
+                Settings::General.meta_keywords[:article]
               end
 
     tag.meta name: "keywords", content: content
   end
 
   def meta_keywords_tag(tag_name)
-    return if SiteConfig.meta_keywords[:tag].blank?
+    return if Settings::General.meta_keywords[:tag].blank?
 
-    tag.meta name: "keywords", content: "#{SiteConfig.meta_keywords[:tag]}, #{tag_name}"
+    tag.meta name: "keywords", content: "#{Settings::General.meta_keywords[:tag]}, #{tag_name}"
   end
 
   def app_url(uri = nil)
@@ -274,15 +268,16 @@ module ApplicationHelper
     estimated_user_count > LARGE_USERBASE_THRESHOLD
   end
 
-  def admin_config_label(method, content = nil)
+  def admin_config_label(method, content = nil, model: Settings::General)
     content ||= tag.span(method.to_s.humanize)
 
-    if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+    if method.to_sym.in?(Settings::Mandatory.keys)
       required = tag.span("Required", class: "crayons-indicator crayons-indicator--critical")
       content = safe_join([content, required])
     end
 
-    tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
+    label_prefix = model.name.split("::").map(&:underscore).join("_")
+    tag.label(content, class: "site-config__label crayons-field__label", for: "#{label_prefix}_#{method}")
   end
 
   def admin_config_description(content)
@@ -290,6 +285,8 @@ module ApplicationHelper
   end
 
   def role_display_name(role)
+    # TODO: [@jacobherrington] After all Forems have successfully deployed and the banned role
+    # has been deleted, removed this ternary.
     role.name == "banned" ? "Suspended" : role.name.titlecase
   end
 end

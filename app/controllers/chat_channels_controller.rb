@@ -14,7 +14,7 @@ class ChatChannelsController < ApplicationController
     when "unopened"
       authorize ChatChannel
       @chat_channels_memberships = unopened_json_response
-      render "index.json"
+      render "index", formats: :json
     when "unopened_ids"
       authorize ChatChannel
       @unopened_ids = unopened_ids_response
@@ -22,11 +22,11 @@ class ChatChannelsController < ApplicationController
     when "pending"
       authorize ChatChannel
       @chat_channels_memberships = pending_json_response
-      render "index.json"
+      render "index", formats: :json
     when "joining_request"
       authorize ChatChannel
       @chat_channels_memberships = joining_request_json_response
-      render "index.json"
+      render "index", formats: :json
     else
       skip_authorization
       render_channels_html
@@ -57,10 +57,10 @@ class ChatChannelsController < ApplicationController
       flash[:error] = chat_channel.errors.full_messages.to_sentence
     else
       if chat_channel_params[:discoverable].to_i.zero?
-        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id,
+        ChatChannelMembership.create(user_id: Settings::General.mascot_user_id, chat_channel_id: chat_channel.id,
                                      role: "member", status: "active")
       else
-        ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
+        ChatChannelMembership.find_by(user_id: Settings::General.mascot_user_id)&.destroy
       end
       flash[:settings_notice] = "Channel settings updated."
     end
@@ -76,10 +76,10 @@ class ChatChannelsController < ApplicationController
                      message: "Channel settings updation failed. Try again later." }, success: :bad_request
     else
       if chat_channel_params[:discoverable]
-        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: @chat_channel.id,
+        ChatChannelMembership.create(user_id: Settings::General.mascot_user_id, chat_channel_id: @chat_channel.id,
                                      role: "member", status: "active")
       else
-        ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
+        ChatChannelMembership.find_by(user_id: Settings::General.mascot_user_id)&.destroy
       end
       render json: { success: true, message: "Channel settings updated.", data: {} }, success: :ok
     end
@@ -101,7 +101,7 @@ class ChatChannelsController < ApplicationController
       user = User.find_by(username: username)
       membership = user&.chat_channel_memberships&.find_by(chat_channel: chat_channel)
       if user && membership
-        user.add_role(:banned)
+        user.add_role(:suspended)
         user.messages.where(chat_channel: chat_channel).delete_all
         membership.update(status: "removed_from_channel")
         Pusher.trigger(chat_channel.pusher_channels, "user-banned", { userId: user.id }.to_json)
@@ -116,7 +116,7 @@ class ChatChannelsController < ApplicationController
     when "/unban"
       user = User.find_by(username: username)
       if user
-        user.remove_role(:banned)
+        user.remove_role(:suspended)
         render json: { status: "moderation-success", message: "#{username} was unsuspended." }, status: :ok
       else
         render json: {
@@ -159,7 +159,6 @@ class ChatChannelsController < ApplicationController
     authorize chat_channel
     chat_channel.status = "blocked"
     chat_channel.save
-    chat_channel.chat_channel_memberships.map(&:index_to_elasticsearch)
     render json: { status: "success", message: "chat channel blocked" }, status: :ok
   end
 

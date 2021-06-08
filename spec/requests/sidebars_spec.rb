@@ -9,7 +9,7 @@ RSpec.describe "Sidebars", type: :request do
 
     it "includes relevant parts" do
       listing = create(:listing, published: true)
-      allow(SiteConfig).to receive(:sidebar_tags).and_return(["rubymagoo"])
+      allow(Settings::General).to receive(:sidebar_tags).and_return(["rubymagoo"])
       get "/sidebars/home"
       expect(response.body).to include("rubymagoo")
       expect(response.body).to include(CGI.escapeHTML(listing.title))

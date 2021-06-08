@@ -2,7 +2,6 @@ class UserPolicy < ApplicationPolicy
   PERMITTED_ATTRIBUTES = %i[
     reaction_notifications
     available_for
-    behance_url
     bg_color_hex
     config_font
     config_theme
@@ -11,7 +10,7 @@ class UserPolicy < ApplicationPolicy
     currently_hacking_on
     currently_learning
     display_announcements
-    display_sponsors dribbble_url
+    display_sponsors
     editor_version education email
     email_badge_notifications
     email_comment_notifications
@@ -29,19 +28,12 @@ class UserPolicy < ApplicationPolicy
     employment_title
     experience_level
     export_requested
-    facebook_url
-    youtube_url
     feed_mark_canonical
     feed_referential_link
     feed_url
-    gitlab_url
     inbox_guidelines
     inbox_type
-    instagram_url
-    linkedin_url
     location
-    mastodon_url
-    medium_url
     mobile_comment_notifications
     mod_roundrobin_notifications
     welcome_notifications
@@ -52,10 +44,8 @@ class UserPolicy < ApplicationPolicy
     payment_pointer
     permit_adjacent_sponsors
     profile_image
-    stackoverflow_url
     summary
     text_color_hex
-    twitch_url
     username
     website_url
   ].freeze
@@ -93,7 +83,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def join_org?
-    !user_is_banned?
+    !user_suspended?
   end
 
   def leave_org?
@@ -108,12 +98,8 @@ class UserPolicy < ApplicationPolicy
     current_user? || user_admin? || minimal_admin?
   end
 
-  def pro_user?
-    current_user? && user.pro?
-  end
-
   def moderation_routes?
-    (user.has_role?(:trusted) || minimal_admin?) && !user.banned
+    (user.has_role?(:trusted) || minimal_admin?) && !user.suspended?
   end
 
   def update_password?

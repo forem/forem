@@ -1,7 +1,13 @@
 import { h } from 'preact';
-import { useState, useEffect, useMemo } from 'preact/hooks';
+import {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useLayoutEffect,
+} from 'preact/hooks';
 import PropTypes from 'prop-types';
-import Textarea from 'preact-textarea-autosize';
+import { useTextAreaAutoResize } from '@utilities/textAreaUtils';
 
 export const Compose = ({
   handleKeyDown,
@@ -18,6 +24,15 @@ export const Compose = ({
   activeChannelName,
 }) => {
   const [value, setValue] = useState('');
+  const textAreaRef = useRef(null);
+
+  const { setTextArea } = useTextAreaAutoResize();
+
+  useLayoutEffect(() => {
+    if (textAreaRef.current) {
+      setTextArea(textAreaRef.current);
+    }
+  }, [setTextArea]);
 
   useEffect(() => {
     if (!markdownEdited && startEditing) {
@@ -45,9 +60,10 @@ export const Compose = ({
     () => (startEditing ? "Let's connect" : 'Compose a message'),
     [startEditing],
   );
-  const saveButtonText = useMemo(() => (startEditing ? 'Save' : 'Send'), [
-    startEditing,
-  ]);
+  const saveButtonText = useMemo(
+    () => (startEditing ? 'Save' : 'Send'),
+    [startEditing],
+  );
 
   return (
     <div className="compose__outer__container">
@@ -56,7 +72,9 @@ export const Compose = ({
           startEditing ? 'composer-container__edit' : 'messagecomposer'
         }
       >
-        <Textarea
+        <textarea
+          ref={textAreaRef}
+          data-gramm_editor="false"
           className={
             startEditing
               ? 'crayons-textfield composer-textarea__edit'

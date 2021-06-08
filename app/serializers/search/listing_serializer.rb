@@ -14,10 +14,12 @@ module Search
                :title,
                :user_id
 
-    attribute :tags, &:tag_list
+    attribute :tags do |listing|
+      listing.cached_tag_list.to_s.split(", ")
+    end
 
-    attribute :author do |cl|
-      ListingAuthorSerializer.new(cl.author)
+    attribute :author do |listing|
+      ListingAuthorSerializer.new(listing.author)
         .serializable_hash
         .dig(:data, :attributes)
     end

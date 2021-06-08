@@ -1,99 +1,118 @@
 require "rails_helper"
 
+# rubocop:disable Rails/PluckId
+# This spec uses `pluck` on an array of hashes, but Rubocop can't tell the difference.
 RSpec.describe Search::User, type: :service do
-  it "defines INDEX_NAME, INDEX_ALIAS, and MAPPINGS", :aggregate_failures do
-    expect(described_class::INDEX_NAME).not_to be_nil
-    expect(described_class::INDEX_ALIAS).not_to be_nil
-    expect(described_class::MAPPINGS).not_to be_nil
-  end
-
-  describe "::search_documents", elasticsearch: "User" do
-    let(:user1) { create(:user) }
-    let(:user2) { create(:user) }
-
-    it "parses user document hits from search response" do
-      mock_search_response = { "hits" => { "hits" => {} } }
-      allow(described_class).to receive(:search) { mock_search_response }
-      described_class.search_documents(params: {})
-      expect(described_class).to have_received(:search).with(body: a_kind_of(Hash))
+  describe "::search_documents" do
+    it "returns an empty result if there are no users" do
+      expect(described_class.search_documents).to be_empty
     end
 
-    context "with a query" do
-      it "searches by search_fields" do
-        allow(user1).to receive(:available_for).and_return("ruby")
-        allow(user2).to receive(:employer_name).and_return("Ruby Tuesday")
-        index_documents([user1, user2])
-        query_params = { size: 5, search_fields: "ruby" }
+    it "does not return suspended users" do
+      user = create(:user, :suspended)
 
-        user_docs = described_class.search_documents(params: query_params)
-        expect(user_docs.count).to eq(2)
-        doc_ids = user_docs.map { |t| t["id"] }
-        expect(doc_ids).to include(user1.id, user2.id)
-      end
-
-      it "searches by a username" do
-        allow(user1).to receive(:username).and_return("kyloren")
-        index_documents([user1])
-        query_params = { size: 5, search_fields: "kyloren" }
-
-        user_docs = described_class.search_documents(params: query_params)
-        expect(user_docs.count).to eq(1)
-        doc_ids = user_docs.map { |t| t["id"] }
-        expect(doc_ids).to include(user1.id)
-      end
+      expect(described_class.search_documents.pluck(:id)).not_to include(user.id)
     end
 
-    context "with a filter" do
-      it "searches by excluding roles" do
-        user1.add_role(:admin)
-        user2.add_role(:banned)
-        index_documents([user1, user2])
-        query_params = { size: 5, exclude_roles: ["banned"] }
+    it "returns regular users" do
+      user = create(:user)
 
-        user_docs = described_class.search_documents(params: query_params)
-        expect(user_docs.count).to eq(1)
-        doc_ids = user_docs.map { |t| t["id"] }
-        expect(doc_ids).to match_array([user1.id])
+      expect(described_class.search_documents.pluck(:id)).to include(user.id)
+    end
+
+    it "returns admins" do
+      user = create(:user, :super_admin)
+
+      expect(described_class.search_documents.pluck(:id)).to include(user.id)
+    end
+
+    context "when describing the result format" do
+      let(:results) { described_class.search_documents }
+
+      it "returns the correct attributes for a single result", :aggregate_failures do
+        user = create(:user)
+
+        result = results.first
+
+        expect(result.keys).to match_array(%i[class_name id path title user])
+        expect(result[:class_name]).to eq("User")
+        expect(result[:id]).to eq(user.id)
+        expect(result[:path]).to eq(user.path)
+        expect(result[:title]).to eq(user.name)
+
+        expect(result[:user][:name]).to eq(user.username)
+        expect(result[:user][:profile_image_90]).to eq(user.profile_image_90)
+        expect(result[:user][:username]).to eq(user.username)
       end
     end
-  end
 
-  describe "::search_usernames", elasticsearch: "User" do
-    let(:user1) { create(:user, username: "star_wars_is_the_best") }
-    let(:user2) { create(:user, username: "star_trek_is_the_best") }
+    context "when searching for a term" do
+      let(:user) { create(:user) }
 
-    before do
-      index_documents([user1, user2])
+      it "matches against the user's name", :aggregate_failures do
+        user.update_columns(name: "Langston Hughes")
+
+        result = described_class.search_documents(term: "lang")
+        expect(result.first[:id]).to eq(user.id)
+
+        result = described_class.search_documents(term: "fiesta")
+        expect(result).to be_empty
+      end
+
+      it "matches against the user's username", :aggregate_failures do
+        result = described_class.search_documents(term: user.username.first(3))
+        expect(result.first[:id]).to eq(user.id)
+
+        result = described_class.search_documents(term: "fiesta")
+        expect(result).to be_empty
+      end
     end
 
-    it "searches with username" do
-      usernames = described_class.search_usernames(user1.username)
-      expect(usernames.count).to eq(1)
-      expect(usernames.map { |u| u["username"] }).to match([user1.username])
+    context "when sorting" do
+      it "sorts by 'hotness_score' in descending order by default" do
+        user1, user2 = create_list(:user, 2)
+
+        user1.update_columns(articles_count: 10, reputation_modifier: 1.0)
+        user2.update_columns(articles_count: 10, reputation_modifier: 2.2)
+
+        results = described_class.search_documents
+        expect(results.pluck(:id)).to eq([user2.id, user1.id])
+      end
+
+      it "supports sorting by created_at in ascending and descending order", :aggregate_failures do
+        user1 = create(:user)
+
+        user2 = nil
+        Timecop.travel(1.week.ago) do
+          user2 = create(:user)
+        end
+
+        results = described_class.search_documents(sort_by: :created_at, sort_direction: :asc)
+        expect(results.pluck(:id)).to eq([user2.id, user1.id])
+
+        results = described_class.search_documents(sort_by: :created_at, sort_direction: :desc)
+        expect(results.pluck(:id)).to eq([user1.id, user2.id])
+      end
     end
 
-    it "analyzes wildcards" do
-      user3 = create(:user, username: "does_not_start_with_a_star")
-      index_documents([user3])
+    context "when paginating" do
+      it "returns no items when out of pagination bounds" do
+        create_list(:user, 2)
 
-      usernames = described_class.search_usernames("star*")
-      expect(usernames.map { |u| u["username"] }).to match(
-        [user1.username, user2.username],
-      )
-      expect(usernames.map { |u| u["username"] }).not_to include(user3.username)
-    end
+        result = described_class.search_documents(page: 99)
+        expect(result).to be_empty
+      end
 
-    it "does not allow leading wildcards" do
-      expect { described_class.search_usernames("*star") }.to raise_error(Search::Errors::Transport::BadRequest)
-    end
+      it "returns paginated items", :aggregate_failures do
+        create_list(:user, 2)
 
-    it "limits the number of results to the value of MAX_RESULTS" do
-      max_results = 1
-      stub_const("Search::Postgres::Username::MAX_RESULTS", max_results)
+        result = described_class.search_documents(page: 0, per_page: 1)
+        expect(result.length).to eq(1)
 
-      usernames = described_class.search_usernames("star*")
-      expect(usernames.size).to eq(max_results)
-      expect([user1.username, user2.username]).to include(usernames.first["username"])
+        result = described_class.search_documents(page: 1, per_page: 1)
+        expect(result.length).to eq(1)
+      end
     end
   end
 end
+# rubocop:enable Rails/PluckId

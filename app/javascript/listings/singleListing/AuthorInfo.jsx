@@ -29,7 +29,7 @@ export const AuthorInfo = ({ listing, onCategoryClick }) => {
   const { category, location, author = {} } = listing;
   const { username, name, profile_image_90 } = author;
   return (
-    <footer className="fs-s flex items-center">
+    <div className="fs-s flex items-center">
       <a
         href={`/${username}`}
         className="crayons-avatar crayons-avatar--l mr-2"
@@ -40,6 +40,7 @@ export const AuthorInfo = ({ listing, onCategoryClick }) => {
           width="32"
           height="32"
           className="crayons-avatar__image"
+          loading="lazy"
         />
       </a>
 
@@ -59,7 +60,7 @@ export const AuthorInfo = ({ listing, onCategoryClick }) => {
           <LocationText location={location} />
         </p>
       </div>
-    </footer>
+    </div>
   );
 };
 

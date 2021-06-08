@@ -6,6 +6,6 @@ namespace :forem do
   end
 
   task health_check_token: :environment do
-    puts SiteConfig.health_check_token
+    puts Settings::General.health_check_token
   end
 end

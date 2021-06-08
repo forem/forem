@@ -1,11 +1,13 @@
 module EdgeCache
   class BustArticle
+    # rubocop:disable Rails/RelativeDateConstant
     TIMEFRAMES = [
       [-> { 1.week.ago }, "week"],
       [-> { 1.month.ago }, "month"],
       [-> { 1.year.ago }, "year"],
       [-> { 5.years.ago }, "infinity"],
     ].freeze
+    # rubocop:enable Rails/RelativeDateConstant
 
     def self.call(article)
       return unless article
@@ -14,23 +16,35 @@ module EdgeCache
 
       cache_bust = EdgeCache::Bust.new
 
-      cache_bust.call(article.path)
-      cache_bust.call("/#{article.user.username}")
-      cache_bust.call("#{article.path}/")
-      cache_bust.call("#{article.path}?i=i")
-      cache_bust.call("#{article.path}/?i=i")
-      cache_bust.call("#{article.path}/comments")
-      cache_bust.call("#{article.path}?preview=#{article.password}")
-      cache_bust.call("#{article.path}?preview=#{article.password}&i=i")
-      cache_bust.call("/#{article.organization.slug}") if article.organization.present?
+      paths_for(article) do |path|
+        cache_bust.call(path)
+      end
+
       bust_home_pages(cache_bust, article)
       bust_tag_pages(cache_bust, article)
-      cache_bust.call("/api/articles/#{article.id}")
+    end
+
+    def self.paths_for(article, &block)
+      paths = [
+        article.path,
+        "/#{article.user.username}",
+        "#{article.path}/",
+        "#{article.path}?i=i",
+        "#{article.path}/?i=i",
+        "#{article.path}/comments",
+        "#{article.path}?preview=#{article.password}",
+        "#{article.path}?preview=#{article.password}&i=i",
+        "/api/articles/#{article.id}",
+      ]
+
+      paths.each(&block)
+
+      yield "/#{article.organization.slug}" if article.organization.present?
 
       return unless article.collection_id
 
       article.collection.articles.find_each do |collection_article|
-        cache_bust.call(collection_article.path)
+        yield collection_article.path
       end
     end
 

@@ -1,10 +1,10 @@
 class UserBlockPolicy < ApplicationPolicy
   def create?
-    !user_is_banned?
+    !user_suspended?
   end
 
   def destroy?
-    !user_is_banned?
+    !user_suspended?
   end
 
   def permitted_attributes

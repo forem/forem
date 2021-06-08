@@ -106,17 +106,17 @@ RSpec.describe UserDecorator, type: :decorator do
   end
 
   describe "#config_font_name" do
-    it "replaces 'default' with font configured for the site in SiteConfig" do
+    it "replaces 'default' with font configured for the site in Settings::General" do
       expect(user.config_font).to eq("default")
       %w[sans_serif serif open_dyslexic].each do |font|
-        allow(SiteConfig).to receive(:default_font).and_return(font)
+        allow(Settings::UserExperience).to receive(:default_font).and_return(font)
         expect(user.decorate.config_font_name).to eq(font)
       end
     end
 
     it "doesn't replace the user's custom selected font" do
       user_comic_sans = create(:user, config_font: "comic_sans")
-      allow(SiteConfig).to receive(:default_font).and_return("open_dyslexic")
+      allow(Settings::UserExperience).to receive(:default_font).and_return("open_dyslexic")
       expect(user_comic_sans.decorate.config_font_name).to eq("comic_sans")
     end
   end
@@ -231,7 +231,7 @@ RSpec.describe UserDecorator, type: :decorator do
 
   describe "#considered_new?" do
     before do
-      allow(SiteConfig).to receive(:user_considered_new_days).and_return(3)
+      allow(Settings::RateLimit).to receive(:user_considered_new_days).and_return(3)
     end
 
     it "returns true for new users" do

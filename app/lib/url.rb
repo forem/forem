@@ -5,8 +5,8 @@ module URL
   end
 
   def self.domain
-    if Rails.application&.initialized? && SiteConfig.respond_to?(:app_domain)
-      SiteConfig.app_domain
+    if Rails.application&.initialized? && Settings::General.respond_to?(:app_domain)
+      Settings::General.app_domain
     else
       ApplicationConfig["APP_DOMAIN"]
     end
@@ -46,7 +46,7 @@ module URL
   #
   # @param tag [Tag] the tag to create the URL for
   def self.tag(tag, page = 1)
-    url(["/t/#{tag.name}", ("/page/#{page}" if page > 1)].join)
+    url(["/t/#{CGI.escape(tag.name)}", ("/page/#{page}" if page > 1)].join)
   end
 
   # Creates a user URL
@@ -65,6 +65,16 @@ module URL
   def self.local_image(image_name, host: nil)
     host ||= ActionController::Base.asset_host || url(nil)
     ActionController::Base.helpers.image_url(image_name, host: host)
+  end
+
+  # Creates a deep link URL (for mobile) to a page in the current Forem and it
+  # relies on a UDL server to bounce back mobile users to the local `/r/mobile`
+  # fallback page. More details here: https://github.com/forem/udl-server
+  #
+  # @param path [String] the target path to deep link
+  def self.deep_link(path)
+    target_path = CGI.escape(url("/r/mobile?deep_link=#{path}"))
+    "https://udl.forem.com/?r=#{target_path}"
   end
 
   def self.organization(organization)

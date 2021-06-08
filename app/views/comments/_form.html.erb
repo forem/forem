@@ -2,7 +2,7 @@
 <%= javascript_packs_with_chunks_tag "validateFileInputs", "responseTemplates", defer: true %>
 
 <% if @comment.errors.any? %>
-  <div class="crayons-notice crayons-notice--danger">
+  <div class="crayons-notice crayons-notice--danger" role="alert">
     <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
     <ul>
       <% @comment.errors.full_messages.each do |message| %>
@@ -12,7 +12,7 @@
   </div>
 <% end %>
 
-<%= form_for(@comment, authenticity_token: false, html: { class: "comment-form" }) do |f| %>
+<%= form_for(@comment, authenticity_token: false, html: { class: "comment-form print-hidden" }) do |f| %>
   <% if @article&.comment_template.present? && @comment.new_record? %>
     <div class="article-comment-form-preamble">
       This post comes with a comment template
@@ -29,7 +29,7 @@
   <% end %>
 
   <span class="crayons-avatar m:crayons-avatar--l mr-2 shrink-0">
-    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 256) %>" width="32" height="32" alt="pic" class="crayons-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar">
+    <img src="<%= Images::Optimizer.call(Settings::General.logo_png, width: 256) %>" width="32" height="32" alt="pic" class="crayons-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" loading="lazy" />
   </span>
   <div class="comment-form__inner">
     <div class="comment-form__field">
@@ -47,8 +47,8 @@
         <div class="editor-image-upload">
           <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
           <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed" onclick="handleImageUpload(event,'main')">
-            <%= inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") %>
-            <span class="hidden s:inline-block">Upload image</span>
+            <%= inline_svg_tag("image.svg", aria: true, class: "crayons-icon") %>
+            <span class="hidden s:inline-block" aria-hidden="false">Upload image</span>
           </button>
           <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
           <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
@@ -56,8 +56,8 @@
         </div>
 
         <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed response-templates-button" title="Use a response template" data-has-listener="false" data-form-id="new_comment">
-          <%= inline_svg_tag("templates.svg", aria: true, class: "crayons-icon", title: "Templates") %>
-          <span class="hidden s:inline-block">Templates</span>
+          <%= inline_svg_tag("templates.svg", aria: true, class: "crayons-icon") %>
+          <span class="hidden s:inline-block" aria-hidden="false">Templates</span>
         </button>
 
         <a href="/p/editor_guide" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon crayons-btn--s ml-auto" target="_blank" rel="noopener" title="Markdown Guide">
@@ -72,7 +72,7 @@
         <button type="button" class="moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment">Moderator</button>
       </header>
 
-      <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading">
+      <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading" loading="lazy" />
 
       <div class="personal-responses-container">
         <%# filled by JS %>

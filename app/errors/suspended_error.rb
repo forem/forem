@@ -1,0 +1,1 @@
+class SuspendedError < StandardError; end

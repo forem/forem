@@ -22,12 +22,12 @@ RSpec.describe FeedbackMessage, type: :model do
 
       it do
         expect(feedback_message).to validate_inclusion_of(:category)
-          .in_array(["spam", "other", "rude or vulgar", "harassment", "bug"])
+          .in_array(described_class::CATEGORIES)
       end
 
       it do
         expect(feedback_message).to validate_inclusion_of(:status)
-          .in_array(%w[Open Invalid Resolved])
+          .in_array(described_class::STATUSES)
       end
     end
 
@@ -35,7 +35,13 @@ RSpec.describe FeedbackMessage, type: :model do
       subject(:feedback_message) { abuse_report }
 
       it { is_expected.to validate_presence_of(:reported_url) }
-      it { is_expected.to validate_uniqueness_of(:reporter_id).scoped_to(%i[reported_url feedback_type]) }
+
+      it do
+        expect(feedback_message).to validate_uniqueness_of(:reporter_id)
+          .scoped_to(described_class::REPORTER_UNIQUENESS_SCOPE)
+          .with_message(described_class::REPORTER_UNIQUENESS_MSG)
+      end
+
       it { is_expected.to validate_length_of(:reported_url).is_at_most(250) }
       it { is_expected.to validate_presence_of(:category) }
 

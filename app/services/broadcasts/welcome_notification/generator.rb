@@ -6,8 +6,8 @@ module Broadcasts
         @notification_enqueued = false
       end
 
-      def self.call(*args)
-        new(*args).call
+      def self.call(...)
+        new(...).call
       end
 
       def call
@@ -51,7 +51,7 @@ module Broadcasts
       def send_feed_customization_notification
         return if
           user.created_at > 3.days.ago ||
-            user_is_following_tags? ||
+            user_following_tags? ||
             received_notification?(customize_feed_broadcast)
 
         Notification.send_welcome_notification(user.id, customize_feed_broadcast.id)
@@ -98,7 +98,7 @@ module Broadcasts
         (ga_providers - enabled_providers).empty?
       end
 
-      def user_is_following_tags?
+      def user_following_tags?
         user.cached_followed_tag_names.count > 1
       end
 
@@ -131,9 +131,9 @@ module Broadcasts
       end
 
       def find_auth_broadcast
-        missing_identities = Authentication::Providers.enabled.map do |provider|
+        missing_identities = Authentication::Providers.enabled.filter_map do |provider|
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
-        end.compact
+        end
 
         Broadcast.active.find_by!(title: "Welcome Notification: #{missing_identities.first}")
       end

@@ -1,3 +1,4 @@
+# Helpers included in ApplicationController for working with image files
 module ImageUploads
   extend ActiveSupport::Concern
 

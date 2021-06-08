@@ -26,6 +26,13 @@ RSpec.describe Articles::Creator, type: :service do
       end
     end
 
+    it "delegates to the Mentions::CreateAll service" do
+      valid_attributes[:published] = true
+      allow(Mentions::CreateAll).to receive(:call)
+      article = described_class.call(user, valid_attributes)
+      expect(Mentions::CreateAll).to have_received(:call).with(article)
+    end
+
     it "creates a notification subscription" do
       expect do
         described_class.call(user, valid_attributes)
@@ -74,6 +81,12 @@ RSpec.describe Articles::Creator, type: :service do
       sidekiq_assert_no_enqueued_jobs only: Notifications::NotifiableActionWorker do
         described_class.call(user, invalid_body_attributes)
       end
+    end
+
+    it "doesn't delegate to the Mentions::CreateAll service" do
+      allow(Mentions::CreateAll).to receive(:call)
+      article = described_class.call(user, invalid_body_attributes)
+      expect(Mentions::CreateAll).not_to have_received(:call).with(article)
     end
 
     it "doesn't create a notification subscription" do

@@ -79,11 +79,11 @@ class CommentsController < ApplicationController
         return
       end
 
-      render partial: "comments/comment.json"
+      render partial: "comments/comment", formats: :json
 
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,
-      commentable_id: @comment.commentable.id,
+      commentable_id: @comment.commentable_id,
       ancestry: @comment.ancestry,
     )[1])
 
@@ -110,7 +110,7 @@ class CommentsController < ApplicationController
     response_template = ResponseTemplate.find(params[:response_template][:id])
     authorize response_template, :moderator_create?
 
-    moderator = User.find(SiteConfig.mascot_user_id)
+    moderator = User.find(Settings::General.mascot_user_id)
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = moderator.id
     @comment.body_markdown = response_template.content
@@ -139,6 +139,7 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1.json
   def update
     authorize @comment
+
     if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
 

@@ -26,8 +26,8 @@ complete and will need a few additional minutes before the change goes live.
 ## Travis Stages
 
 The following stages can be explored in our
-[.travis.yml](https://github.com/forem/forem/blob/master/.travis.yml) and
-[Procfile](https://github.com/forem/forem/blob/master/Procfile). Our Travis CI
+[.travis.yml](https://github.com/forem/forem/blob/main/.travis.yml) and
+[Procfile](https://github.com/forem/forem/blob/main/Procfile). Our Travis CI
 process consists of 2 stages.
 
 1. Running our test suite in 3 parallel jobs.
@@ -53,14 +53,14 @@ If all of the jobs pass then we move on to Stage 2 of the Travis CI process.
 ### Stage 2: Deploying
 
 If the build was kicked off from a pull request being created or updated this
-stage will do nothing. If the branch has been merged into master, then this
-stage will kick off a deploy. The deploy will run in its own job deploying our
+stage will do nothing. If the branch has been merged into main, then this stage
+will kick off a deploy. The deploy will run in its own job deploying our
 application to Heroku.
 
-Prior to deploying the code, Heroku will run database migrations, Elasticsearch
-updates, and do some final checks (more information on that below) to make sure
-everything is working as expected. If these all succeed, then the deploy
-completes and our team is notified.
+Prior to deploying the code, Heroku will run database migrations and do some
+final checks (more information on that below) to make sure everything is working
+as expected. If these all succeed, then the deploy completes and our team is
+notified.
 
 ## Deploying to Heroku
 
@@ -84,13 +84,8 @@ directory. During this release step we do a few checks.
    successfully before the code that uses it goes live.
 3. We run any data update scripts that need to be run. A data update script is
    one that allows us to update data in the background separate from a
-   migration. For example, if we add a new field to Elasticsearch and need to
-   reindex all of our documents we would use a data update script.
-4. We update Elasticsearch. Elasticsearch contains indexes which have mappings.
-   Mappings are similar to database schema. The same way we run a migration to
-   update our database we have to run a setup task to update any Elasticsearch
-   mappings.
-5. Following updating all of our datastores we use the Rails runner to output a
+   migration.
+4. Following updating all of our datastores we use the Rails runner to output a
    simple string. Executing a Rails runner command ensures that we can boot up
    the entire app successfully before it is deployed. We deploy asynchronously,
    so the website is running the new code a few minutes after deploy. A new

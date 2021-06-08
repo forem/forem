@@ -14,7 +14,7 @@ it('should have no a11y violations', async () => {
   expect(results).toHaveNoViolations();
 });
 
-it('should trap focus', async () => {
+it('should trap focus inside the modal by default', async () => {
   const { getByText, getByLabelText } = render(
     <div>
       <button>Outside modal button</button>
@@ -32,6 +32,23 @@ it('should trap focus', async () => {
 
   userEvent.tab();
   expect(closeButton).toHaveFocus();
+});
+
+it('should trap focus in the custom selector if provided in props', async () => {
+  const { getByText } = render(
+    <div>
+      <button>Outside modal button</button>
+      <Modal title="This is a modal title" focusTrapSelector="#trap-focus-here">
+        <button>Outside focus trap button</button>
+        <div id="trap-focus-here">
+          <button>Inside focus trap button</button>
+        </div>
+      </Modal>
+    </div>,
+  );
+
+  const buttonInsideFocusTrap = getByText('Inside focus trap button');
+  await waitFor(() => expect(buttonInsideFocusTrap).toHaveFocus());
 });
 
 it('should close when the close button is clicked', async () => {

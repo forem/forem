@@ -1,4 +1,4 @@
-<div data-controller="data-update-script" class="crayons-card p-6 grid gap-6">
+<div data-controller="data-update-script" data-data-update-script-url-value="<%= admin_data_update_scripts_path %>" class="crayons-card p-6 grid gap-6">
   <div class="alert hidden data-update-script__alert">
     <div id="data-update-script__error"></div>
   </div>
@@ -19,8 +19,11 @@
           <td data-filename="<%= script.file_name %>" id="data_update_script_<%= script.id %>_filename" class="data_update_script__filename">
             <%= script.file_name %>
             <% if script.status == "failed" %>
-              <button class="ml-2" id="data_update_script_<%= script.id %>_button"
- data-action="click->data-update-script#forceRun" data-value="<%= script.id %>" type="button" className="crayons-btn crayons-btn--secondary">
+              <button type="button"
+                      class="crayons-btn crayons-btn--s crayons-btn--secondary"
+                      id="data_update_script_<%= script.id %>_button"
+                      data-action="click->data-update-script#forceRun"
+                      data-value="<%= script.id %>">
                 Re-run
               </button>
             <% end %>

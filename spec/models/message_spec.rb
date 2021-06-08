@@ -43,6 +43,18 @@ RSpec.describe Message, type: :model do
 
     describe "#message_html" do
       it "creates rich link with proper link for article" do
+        link = URL.article(article)
+        message.message_markdown = "hello #{link}"
+        message.validate!
+
+        expect(message.message_html).to include(
+          article.title,
+          "sidecar-article",
+          link,
+        )
+      end
+
+      it "creates rich link with proper link for article when Cloudinary is enabled", cloudinary: true do
         message.message_markdown = "hello http://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
         message.validate!
 
@@ -158,15 +170,6 @@ RSpec.describe Message, type: :model do
   end
 
   describe "#after_create" do
-    it "enqueues ChatChannels::IndexesMembershipsWorker" do
-      chat_channel.add_users([user])
-      allow(ChatChannels::IndexesMembershipsWorker).to receive(:perform_async)
-
-      create(:message, chat_channel: chat_channel, user: user)
-
-      expect(ChatChannels::IndexesMembershipsWorker).to have_received(:perform_async)
-    end
-
     context "when chat_action is left_channel" do
       it "does not update unopened message statuses" do
         chat_channel.add_users([user, user2])

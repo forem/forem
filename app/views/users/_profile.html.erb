@@ -2,13 +2,13 @@
 
 <%= render "users/additional_authentication" %>
 
-<% if SiteConfig.dev_to? %>
+<% if ForemInstance.dev_to? %>
   <%# @forem/oss Temporary disabling of overly DEV-specialized link. %>
   <%# We should create a generalized version of the badge page, including a permanent proxied path for the badge image for hotlinking. %>
   <div class="crayons-card crayons-card--content-rows">
     <div class="flex items-center">
       <a href="<%= user_url(current_user) || "#" %>" aria-label="Go to your profile page" class="mr-2">
-        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= community_name %> badge" height="32" width="32" class="dev-badge crayons-icon" />
+        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= community_name %> badge" height="32" width="32" class="dev-badge crayons-icon" loading="lazy" />
       </a>
       <p>Add the <%= community_name %> badge to your personal site. <a href="/p/badges">Click here for the code</a>.</p>
     </div>
@@ -21,33 +21,37 @@
     <h2>User</h2>
 
     <div class="crayons-field">
-      <%= f.label :name, class: "crayons-field__label" %>
+      <%= f.label :name, for: "user[name]", class: "crayons-field__label" %>
       <%= f.text_field "user[name]", maxlength: 30, class: "crayons-textfield", placeholder: "John Doe", value: @user.name %>
     </div>
 
     <div class="crayons-field">
-      <%= f.label :email, class: "crayons-field__label" %>
+      <%= f.label :email, for: "user[email]", class: "crayons-field__label" %>
       <%= f.text_field "user[email]", class: "crayons-textfield", placeholder: "john.doe@example.com", value: @user.email %>
     </div>
 
     <div class="crayons-field">
-      <%= f.label :username, class: "crayons-field__label" %>
+      <%= f.label :username, for: "user[username]", class: "crayons-field__label" %>
       <%= f.text_field "user[username]", maxlength: 30, class: "crayons-textfield", placeholder: "johndoe", value: @user.username %>
     </div>
 
     <div class="crayons-field">
-      <%= f.label :profile_image, class: "crayons-field__label" %>
+      <%= f.label :profile_image, for: "user[profile_image]", class: "crayons-field__label" %>
 
       <div class="flex items-center">
         <% if @user.profile_image_url.present? %>
-          <span class="crayons-avatar crayons-avatar--xl mr-2"><img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" /></span>
+          <span class="crayons-avatar crayons-avatar--xl mr-2">
+            <img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" loading="lazy" />
+          </span>
         <% end %>
         <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
     </div>
   </div>
 
+  <% profile = @user.profile %>
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
+    <% next if group.name == "Links" # TODO: [@jacobherrington] Remove this when we drop social links %>
     <div class="crayons-card crayons-card--content-rows">
       <h2><%= group.name %></h2>
       <% if group.description.present? %>
@@ -57,7 +61,10 @@
       <% group.profile_fields.each do |field| %>
         <div class="crayons-field <%= "crayons-field--checkbox" if field.input_type == "check_box" %>">
           <% if field["input_type"] == "check_box" %>
-            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", checked: @user.profile.data[field.attribute_name], class: "crayons-checkbox") %>
+            <%= f.public_send(field["input_type"],
+                              "profile[#{field.attribute_name}]",
+                              checked: profile.public_send(field.attribute_name),
+                              class: "crayons-checkbox") %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
@@ -66,14 +73,24 @@
               <%= field.label %>
             </label>
             <div class="flex items-center w-100 m:w-50">
-              <%= f.public_send("text_field", "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], placeholder: field["placeholder_text"], class: "crayons-textfield js-color-field") %>
-              <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], class: "crayons-color-selector js-color-field ml-2") %>
+              <%= f.public_send("text_field", "profile[#{field.attribute_name}]",
+                                value: profile.public_send(field.attribute_name),
+                                placeholder: field["placeholder_text"],
+                                class: "crayons-textfield js-color-field") %>
+              <%= f.public_send(field["input_type"],
+                                "profile[#{field.attribute_name}]",
+                                value: profile.public_send(field.attribute_name),
+                                class: "crayons-color-selector js-color-field ml-2") %>
             </div>
           <% else %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
-            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], placeholder: field["placeholder_text"], class: "crayons-textfield") %>
+            <%= f.public_send(field["input_type"],
+                              "profile[#{field.attribute_name}]",
+                              value: profile.public_send(field.attribute_name),
+                              placeholder: field["placeholder_text"],
+                              class: "crayons-textfield") %>
           <% end %>
           <% if field.description.present? %>
             <p class="crayons-field__description"><%= field.description %></p>

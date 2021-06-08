@@ -2,40 +2,43 @@
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(request.path) %>" />
-  <meta name="description" content="<%= SiteConfig.community_description %>">
+  <meta name="description" content="<%= Settings::Community.community_description %>">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= app_url(request.path) %>" />
   <meta property="og:title" content="<%= page_title %>" />
-  <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
+  <meta property="og:image" content="<%= Settings::General.main_social_image %>">
   <meta property="og:description" content="All videos on <%= community_name %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
 
-  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<%= page_title %>">
   <meta name="twitter:description" content="All videos on <%= community_name %>">
-  <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
+  <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 
 <div class="home video-page-title" id="index-container" data-which="videos" data-params="<%= params.to_json(only: %i[tag username q]) %>">
-  <header>
-    <h1><%= community_name %> on Video</h1>
-  </header>
-  <div class="video-collection" id="video-collection">
-    <% @video_articles.each do |video_article| %>
-      <a class="single-video-article single-article" href="<%= video_article.path %>" id="video-article-<%= video_article.id %>">
-          <div class="video-image" style="background-image: url(<%= video_article.cloudinary_video_url %>)">
-            <span class="video-timestamp"><%= video_article.video_duration_in_minutes %></span>
-          </div>
-          <p><strong><%= video_article.title %></strong></p>
-          <p class="video-username"><%= video_article.user.name %></p>
-      </a>
-    <% end %>
-  </div>
-  <div class="subvideos"></div>
-  <div class="loading-articles" id="loading-articles">
-    loading...
-  </div>
+
+  <main id="main-content">
+    <header class="video-page-title">
+      <h1><%= community_name %> on Video</h1>
+    </header>
+    <div class="video-collection" id="video-collection">
+      <% @video_articles.each do |video_article| %>
+        <a class="single-video-article single-article" href="<%= video_article.path %>" id="video-article-<%= video_article.id %>">
+            <div class="video-image" style="background-image: url(<%= video_article.cloudinary_video_url %>)">
+              <span class="video-timestamp"><%= video_article.video_duration_in_minutes %></span>
+            </div>
+            <p><strong><%= video_article.title %></strong></p>
+            <p class="video-username"><%= video_article.user.name %></p>
+        </a>
+      <% end %>
+    </div>
+    <div class="subvideos"></div>
+    <div class="loading-articles" id="loading-articles">
+      loading...
+    </div>
+  </main>
 </div>

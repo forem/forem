@@ -34,22 +34,4 @@ RSpec.describe ChatChannelMembership, type: :model do
       expect(chat_channel_membership.channel_text).to eq(expected_text)
     end
   end
-
-  describe "#after_commit" do
-    it "on update enqueues job to index chat_channel_membership to elasticsearch" do
-      chat_channel_membership.save
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker,
-                                   args: [described_class.to_s, chat_channel_membership.id]) do
-        chat_channel_membership.save
-      end
-    end
-
-    it "on destroy enqueues job to delete chat_channel_membership from elasticsearch" do
-      chat_channel_membership.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
-                                   args: [described_class::SEARCH_CLASS.to_s, chat_channel_membership.id]) do
-        chat_channel_membership.destroy
-      end
-    end
-  end
 end

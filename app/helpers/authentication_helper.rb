@@ -42,12 +42,13 @@ module AuthenticationHelper
   end
 
   def waiting_on_first_user?
-    SiteConfig.waiting_on_first_user
+    Settings::General.waiting_on_first_user
   end
 
   def invite_only_mode_or_no_enabled_auth_options
-    SiteConfig.invite_only_mode ||
-      (authentication_enabled_providers.none? && !SiteConfig.allow_email_password_registration)
+    Settings::Authentication.invite_only_mode ||
+      (authentication_enabled_providers.none? &&
+       !Settings::Authentication.allow_email_password_registration)
   end
 
   def tooltip_class_on_auth_provider_enablebtn

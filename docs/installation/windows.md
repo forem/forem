@@ -78,7 +78,7 @@ One can verify `rbenv` installation using the `rbenv-doctor` script with the
 following commands:
 
 ```shell
-curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
+curl -fsSL https://raw.githubusercontent.com/rbenv/rbenv-installer/main/bin/rbenv-doctor | bash
 ```
 
 ### Installing nvm
@@ -176,60 +176,6 @@ We recommend to follow
 [this guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under
 WSL.
 
-### Elasticsearch
-
-Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
-not supported. We recommend version 7.5.2.
-
-We recommend that you **do not** install Elasticsearch in the app directory.
-Instead, we recommend installing it in your home directory (for example,
-`cd $HOME`). (This also ensures that we don't accidentally commit Elasticsearch
-code to the project's repository!)
-
-The following directions were taken from
-[the Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux),
-check them out to learn more about the installation process and troubleshooting
-issues. Make sure to refer to **the OSS version**, `elasticsearch-oss` while
-going through the Elasticsearch docs.
-
-To install Elasticsearch perform the following steps:
-
-1. Execute the following commands:
-
-   ```shell
-   cd
-   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
-   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
-   shasum -a 512 -c elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
-   tar -xzf elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
-   ```
-
-2. Next, switch to the correct directory with:
-
-   ```shell
-   cd elasticsearch-7.5.2/
-   ```
-
-3. To start Elasticsearch, run the following command:
-
-   ```shell
-   ./bin/elasticsearch
-   ```
-
-   or, start it as a daemonized process with:
-
-   ```shell
-   ./bin/elasticsearch -d
-   ```
-
-4. Once Elasticsearch is running,
-   [verify Elasticsearch's installation](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#_checking_that_elasticsearch_is_running)
-   by executing the `cURL` command as follows:
-
-   ```shell
-   curl -X GET "localhost:9200/?pretty"
-   ```
-
 ## Installing Forem
 
 1. Fork Forem's repository, eg. <https://github.com/forem/forem/fork>
@@ -277,8 +223,8 @@ To install Elasticsearch perform the following steps:
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-1. After ensuring that Elasticsearch, the PostgreSQL server, and the Redis
-   server are running, run `bin/setup`.
+1. After ensuring that the PostgreSQL server and the Redis server are running,
+   run `bin/setup`.
 
    > The `bin/setup` script is responsible for installing a varienty of
    > dependencies. One can find it inside the `bin` folder by the name of
@@ -290,8 +236,8 @@ To install Elasticsearch perform the following steps:
    > - It then installs JavaScript dependencies using the script in `bin/yarn`
    >   file. These dependencies are located in `package.json` in the root of the
    >   repository.
-   > - Next, it uses various Rake files located inside the `lib` folder to setup
-   >   ElasticSearch environment, PostgreSQL database creation and updation.
+   > - Next, it uses various Rake files located inside the `lib` folder for the
+   >   PostgreSQL database creation and updation.
    > - Finally it cleans up all the log files and restarts the Puma server.
 
 ### Possible error messages

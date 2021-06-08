@@ -26,8 +26,8 @@ RSpec.describe "Api::V0::Users", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it "returns unauthenticated if no authentication and site config is set to private" do
-      allow(SiteConfig).to receive(:public).and_return(false)
+    it "returns unauthenticated if no authentication and the Forem instance is set to private" do
+      allow(Settings::UserExperience).to receive(:public).and_return(false)
       get api_user_path("by_username"), params: { url: user.username }
       expect(response).to have_http_status(:unauthorized)
     end
@@ -77,8 +77,8 @@ RSpec.describe "Api::V0::Users", type: :request do
         expect(response_user["profile_image"]).to eq(Images::Profile.call(user.profile_image_url, length: 320))
       end
 
-      it "returns 200 if no authentication and site config is set to private but user is authenticated" do
-        allow(SiteConfig).to receive(:public).and_return(false)
+      it "returns 200 if no authentication and the Forem instance is set to private but user is authenticated" do
+        allow(Settings::UserExperience).to receive(:public).and_return(false)
         get me_api_users_path, params: { access_token: access_token.token }
 
         response_user = response.parsed_body

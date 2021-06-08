@@ -31,7 +31,6 @@ class Message < ApplicationRecord
 
   def update_chat_channel_last_message_at
     chat_channel.touch(:last_message_at)
-    ChatChannels::IndexesMembershipsWorker.perform_async(chat_channel.id)
   end
 
   def update_all_has_unopened_messages_statuses
@@ -86,11 +85,11 @@ class Message < ApplicationRecord
     username = mention.delete("@").downcase
     if User.find_by(username: username) && chat_channel.group?
       <<~HTML
-        <a class='comment-mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank" rel="noopener">@#{username}</a>
+        <a class='mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank" rel="noopener">@#{username}</a>
       HTML
     elsif username == "all" && chat_channel.channel_type == "invite_only"
       <<~HTML
-        <a class='comment-mentioned-user comment-mentioned-all' data-content="chat_channel_setting" href="#">@#{username}</a>
+        <a class='mentioned-user mentioned-all' data-content="chat_channel_setting" href="#">@#{username}</a>
       HTML
     else
       mention
@@ -194,19 +193,19 @@ class Message < ApplicationRecord
   end
 
   def rich_link_article(link)
-    return unless link["href"].include?("//#{SiteConfig.app_domain}/") && link["href"].split("/")[4]
+    return unless link["href"].include?("//#{Settings::General.app_domain}/") && link["href"].split("/")[4]
 
     Article.find_by(slug: link["href"].split("/")[4].split("?")[0])
   end
 
   def rich_link_tag(link)
-    return unless link["href"].include?("//#{SiteConfig.app_domain}/t/")
+    return unless link["href"].include?("//#{Settings::General.app_domain}/t/")
 
     Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0])
   end
 
   def rich_user_link(link)
-    return unless link["href"].include?("//#{SiteConfig.app_domain}/")
+    return unless link["href"].include?("//#{Settings::General.app_domain}/")
 
     User.find_by(username: link["href"].split("/")[3].split("/")[0])
   end

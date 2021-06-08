@@ -85,9 +85,8 @@ RSpec.describe Comment, type: :model do
       end
     end
 
-    describe "#mention_total" do
+    describe "#user_mentions_in_markdown" do
       before do
-        stub_const("Comment::MAX_USER_MENTIONS", 7)
         stub_const("Comment::MAX_USER_MENTION_LIVE_AT", 1.day.ago) # Set live_at date to a time in the past
       end
 
@@ -96,44 +95,27 @@ RSpec.describe Comment, type: :model do
         subject.created_at = 3.days.ago
         subject.commentable_type = "Article"
 
-        subject.body_markdown = "hi @#{user.username}! " * 8
+        subject.body_markdown = "hi @#{user.username}! " * (Settings::RateLimit.mention_creation + 1)
         expect(subject).to be_valid
       end
 
       it "is valid with seven or fewer mentions if created after MAX_USER_MENTION_LIVE_AT date" do
         subject.commentable_type = "Article"
 
-        subject.body_markdown = "hi @#{user.username}! " * 7
+        subject.body_markdown = "hi @#{user.username}! " * Settings::RateLimit.mention_creation
         expect(subject).to be_valid
       end
 
       it "is invalid with more than seven mentions if created after MAX_USER_MENTION_LIVE_AT date" do
         subject.commentable_type = "Article"
 
-        subject.body_markdown = "hi @#{user.username}! " * 8
+        subject.body_markdown = "hi @#{user.username}! " * (Settings::RateLimit.mention_creation + 1)
         expect(subject).not_to be_valid
         expect(subject.errors[:base])
-          .to include("You cannot mention more than 7 users in a comment!")
+          .to include("You cannot mention more than #{Settings::RateLimit.mention_creation} users in a comment!")
       end
     end
     # rubocop:enable RSpec/NamedSubject
-
-    describe "#after_commit" do
-      it "on update enqueues job to index comment to elasticsearch" do
-        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, comment.id]) do
-          comment.save
-        end
-      end
-
-      it "on destroy enqueues job to delete comment from elasticsearch" do
-        comment = create(:comment)
-
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
-                                     args: [described_class::SEARCH_CLASS.to_s, comment.search_id]) do
-          comment.destroy
-        end
-      end
-    end
 
     describe "#search_id" do
       it "returns comment_ID" do
@@ -255,7 +237,7 @@ RSpec.describe Comment, type: :model do
 
   describe "#readable_publish_date" do
     it "does not show year in readable time if not current year" do
-      expect(comment.readable_publish_date).to eq(comment.created_at.strftime("%b %e"))
+      expect(comment.readable_publish_date).to eq(comment.created_at.strftime("%b %-e"))
     end
 
     it "shows year in readable time if not current year" do
@@ -431,8 +413,8 @@ RSpec.describe Comment, type: :model do
 
   describe "spam" do
     before do
-      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
-      allow(SiteConfig).to receive(:spam_trigger_terms).and_return(["yahoomagoo gogo", "anothertestterm"])
+      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
+      allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(["yahoomagoo gogo", "anothertestterm"])
     end
 
     it "creates vomit reaction if possible spam" do
@@ -445,7 +427,7 @@ RSpec.describe Comment, type: :model do
     it "does no suspend user if only single vomit" do
       comment.body_markdown = "This post is about Yahoomagoo gogo"
       comment.save
-      expect(comment.user.banned).to be false
+      expect(comment.user.suspended?).to be false
     end
 
     it "suspends user with 3 comment vomits" do
@@ -456,7 +438,7 @@ RSpec.describe Comment, type: :model do
       comment.save
       second_comment.save
       third_comment.save
-      expect(comment.user.banned).to be true
+      expect(comment.user.suspended?).to be true
       expect(Note.last.reason).to eq "automatic_suspend"
     end
 
@@ -474,9 +456,27 @@ RSpec.describe Comment, type: :model do
   end
 
   context "when callbacks are triggered before save" do
-    it "generates character count before saving" do
-      comment.save
-      expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
+    context "when the post is present" do
+      it "generates character count before saving" do
+        comment.save
+        expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
+      end
+    end
+
+    context "when the commentable is not present" do
+      it "raises a validation error with message 'item has been deleted'", :aggregate_failures do
+        comment = build(:comment, user: user, commentable: nil, commentable_type: nil)
+        comment.validate
+        expect(comment).not_to be_valid
+        expect(comment.errors_as_sentence).to match("item has been deleted")
+      end
+
+      it "raises a validation error with commentable_type, if commentable_type is present", :aggregate_failures do
+        comment = build(:comment, user: user, commentable: nil, commentable_type: "Article")
+        comment.validate
+        expect(comment).not_to be_valid
+        expect(comment.errors_as_sentence).to match("Article has been deleted")
+      end
     end
   end
 

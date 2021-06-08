@@ -14,8 +14,8 @@ RSpec.describe "GaEvents", type: :request, vcr: vcr_option do
       expect(response.body).to eq("")
     end
 
-    it "renders normal response even if site config is private" do
-      allow(SiteConfig).to receive(:public).and_return(false)
+    it "renders normal response even if the Forem instance is private" do
+      allow(Settings::UserExperience).to receive(:public).and_return(false)
       post "/fallback_activity_recorder", params: {
         path: "/ben", user_language: "en"
       }.to_json
