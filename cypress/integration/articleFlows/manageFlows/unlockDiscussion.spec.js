@@ -1,15 +1,23 @@
-describe('Lock discussion', () => {
+describe('Unlock discussion', () => {
   const getDiscussionLockButton = () =>
     cy.findByRole('link', {
-      name: /Lock discussion/,
+      name: 'Lock discussion',
     });
 
   const getDiscussionUnlockButton = () =>
     cy.findByRole('link', {
-      name: /Unlock discussion/,
+      name: 'Unlock discussion',
     });
 
-  const getDiscussionLockSubmitButton = () => cy.get('.crayons-btn--danger');
+  const getDiscussionLockSubmitButton = () =>
+    cy.findByRole('button', {
+      name: 'Lock discussion',
+    });
+
+  const getDiscussionUnlockSubmitButton = () =>
+    cy.findByRole('button', {
+      name: 'Unlock discussion',
+    });
 
   describe('Unlocking the discussion', () => {
     beforeEach(() => {
@@ -34,7 +42,7 @@ describe('Lock discussion', () => {
 
     it('should allow a user to unlock a discussion', () => {
       getDiscussionUnlockButton().click();
-      getDiscussionLockSubmitButton().click();
+      getDiscussionUnlockSubmitButton().click();
 
       getDiscussionLockButton().should('exist');
     });
@@ -46,9 +54,7 @@ describe('Lock discussion', () => {
         name: 'Are you sure you want to unlock the discussion on this post?',
       }).should('exist');
 
-      cy.findByRole('button', {
-        name: /Unlock discussion/,
-      }).should('exist');
+      getDiscussionUnlockSubmitButton().should('exist');
     });
   });
 });

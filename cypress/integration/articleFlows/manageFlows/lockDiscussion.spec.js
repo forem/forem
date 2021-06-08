@@ -1,15 +1,18 @@
 describe('Lock discussion', () => {
   const getDiscussionLockButton = () =>
     cy.findByRole('link', {
-      name: /Lock discussion/,
+      name: 'Lock discussion',
     });
 
   const getDiscussionUnlockButton = () =>
     cy.findByRole('link', {
-      name: /Unlock discussion/,
+      name: 'Unlock discussion',
     });
 
-  const getDiscussionLockSubmitButton = () => cy.get('.crayons-btn--danger');
+  const getDiscussionLockSubmitButton = () =>
+    cy.findByRole('button', {
+      name: 'Lock discussion',
+    });
 
   const exampleReason = 'Discussion lock example reason!';
   const exampleNotes = 'Discussion lock example notes!';
@@ -35,27 +38,24 @@ describe('Lock discussion', () => {
 
     it('should allow a user to lock a discussion', () => {
       getDiscussionLockButton().click();
-      getDiscussionLockSubmitButton().click();
-
-      getDiscussionUnlockButton().should('exist');
-    });
-
-    it('should ask the user to confirm the discussion lock', () => {
-      getDiscussionLockButton().click();
 
       cy.findByRole('heading', {
         name: 'Are you sure you want to lock the discussion on this post?',
       }).should('exist');
 
-      cy.findByRole('button', {
-        name: /Lock discussion/,
-      }).should('exist');
+      getDiscussionLockSubmitButton().should('exist').click();
+      getDiscussionUnlockButton().should('exist');
     });
 
     it('should allow a user to supply a reason and notes', () => {
       getDiscussionLockButton().click();
-      cy.get('input[name="discussion_lock[notes]"]').should('exist');
-      cy.get('input[name="discussion_lock[reason]"]').should('exist');
+      cy.findByRole('textbox', {
+        name: 'Reason for locking the discussion (optional) - this will be publicly displayed',
+      }).should('exist');
+
+      cy.findByRole('textbox', {
+        name: 'Notes (optional) - this is only visible to you and admins',
+      }).should('exist');
     });
   });
 
@@ -86,10 +86,6 @@ describe('Lock discussion', () => {
           });
         });
       });
-    });
-
-    it('should show the discussion lock on an article', () => {
-      cy.get('#discussion-lock').should('exist');
     });
 
     it('should show the discussion lock reason on an article', () => {
