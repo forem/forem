@@ -1,6 +1,6 @@
 module Settings
   class General
-    class Upsert
+    module Upsert
       PARAMS_TO_BE_CLEANED = %i[sidebar_tags suggested_tags suggested_users].freeze
       TAG_PARAMS = %w[sidebar_tags suggested_tags].freeze
 
