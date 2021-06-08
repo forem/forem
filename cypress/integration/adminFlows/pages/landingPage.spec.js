@@ -5,28 +5,13 @@ describe('Set a landing page from the admin portal', () => {
 
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
-        cy.createPage({
-          title: 'Landing Page',
-          slug: 'landing-page',
-          description: `This is a test landing page's contents.`,
-          is_top_level_path: false,
-          landing_page: false,
-        }).then(() => {
-          cy.createPage({
-            title: 'Another Landing Page',
-            slug: 'another-landing-page',
-            description: `This is another test landing page's contents.`,
-            is_top_level_path: false,
-            landing_page: false,
-          }).then(() => {
-            cy.visit('/admin/customization/pages');
-          });
-        });
+        cy.visit('/admin/customization/pages');
       });
     });
   });
 
   it('should set a landing page when no other landing page exists', () => {
+    cy.findAllByRole('link', { name: 'Edit' }).first().click();
     cy.findAllByRole('checkbox', { name: 'Landing Page' }).first().check();
     cy.findAllByRole('button', { name: 'Update Page' }).first().click();
 
@@ -39,18 +24,9 @@ describe('Set a landing page from the admin portal', () => {
   });
 
   it('should overwrite the landing page when choosing to set a new landing page', () => {
+    cy.findAllByRole('link', { name: 'Edit' }).first().click();
     cy.findAllByRole('checkbox', { name: 'Landing Page' }).first().check();
     cy.findAllByRole('button', { name: 'Update Page' }).first().click();
-
-    cy.createPage({
-      title: 'A New Landing Page',
-      slug: 'a-new-landing-page',
-      description: `This is a new test landing page's contents.`,
-      is_top_level_path: false,
-      landing_page: false,
-    }).then((response) => {
-      cy.visit(`/admin/customization/pages/${response.body.id}`);
-    });
 
     cy.findByRole('main')
       .first()
@@ -69,18 +45,9 @@ describe('Set a landing page from the admin portal', () => {
   });
 
   it('should not change the landing page when clicking dismiss', () => {
+    cy.findAllByRole('link', { name: 'Edit' }).first().click();
     cy.findAllByRole('checkbox', { name: 'Landing Page' }).first().check();
     cy.findAllByRole('button', { name: 'Update Page' }).first().click();
-
-    cy.createPage({
-      title: 'A New Landing Page',
-      slug: 'a-new-landing-page',
-      description: `This is a new test landing page's contents.`,
-      is_top_level_path: false,
-      landing_page: false,
-    }).then((response) => {
-      cy.visit(`/admin/customization/pages/${response.body.id}`);
-    });
 
     cy.findByRole('main')
       .first()
