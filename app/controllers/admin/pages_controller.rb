@@ -19,6 +19,7 @@ module Admin
 
     def edit
       @page = Page.find(params[:id])
+      @landing_page = Page.find_by(landing_page: true)
     end
 
     def update

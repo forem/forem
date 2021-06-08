@@ -72,9 +72,8 @@ class Page < ApplicationRecord
     # while another landing page is already being used to ensure
     # that only one can be set to "true" at a time.
 
-    landing_page = Page.find_by(landing_page: true)
-    return unless landing_page &&
-      [nil, id].exclude?(landing_page.id)
+    landing_page = Page.where.not(id: id).find_by(landing_page: true)
+    return unless landing_page
 
     errors.add(:base, "Only one page at a time can be used as a 'locked screen.'")
   end
