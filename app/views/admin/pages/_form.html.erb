@@ -50,8 +50,8 @@
             data-modal-title-value="There's another locked screen..." data-modal-size-value="default">
         <div class="form-group">
           <%= form.label :landing_page, "Use as 'Locked Screen'" %>
-          <%= form.check_box :landing_page, class: "crayons-checkbox", data: { action: Page.landing_page_exists? ? "modal#toggleModal" : "" } %>
-          <p>Determines if this page will be used as a landing page for anonymous viewers.</p>
+          <%= form.check_box :landing_page, class: "crayons-checkbox", "aria-describedby": "lock-screen-description", data: { action: Page.landing_page_exists? ? "modal#toggleModal" : "" } %>
+          <p id="lock-screen-description">Determines if this page will be used as a landing page for anonymous viewers.</p>
         </div>
         <div class="form-group">
           <%= form.label :overwrite_landing_page, "Overwrite" %>
