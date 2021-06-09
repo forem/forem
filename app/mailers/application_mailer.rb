@@ -8,12 +8,12 @@ class ApplicationMailer < ActionMailer::Base
   helper AuthenticationHelper
 
   before_action :use_custom_host
+  before_action :set_delivery_options
 
   default(
     from: -> { email_from },
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
     reply_to: -> { Settings::General.email_addresses[:default] },
-    delivery_method_options: -> { delivery_method },
   )
 
   def email_from(topic = "")
@@ -39,23 +39,24 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def perform_deliveries?
-    ActionMailer::Base.perform_deliveries = Settings::General.smtp_settings["password"].present? ||
+    self.perform_deliveries = Settings::General.smtp_settings["password"].present? ||
       ENV["SENDGRID_API_KEY"].present?
-    ActionMailer::Base.perform_deliveries
   end
 
-  def delivery_method
-    if ENV["SENDGRID_API_KEY"].present?
-      {
-        address: "smtp.sendgrid.net",
-        port: 587,
-        authentication: :plain,
-        user_name: "apikey",
-        password: ENV["SENDGRID_API_KEY"],
-        domain: ENV["APP_DOMAIN"]
-      }
-    else
-      Settings::General.smtp_settings
-    end
+  protected
+
+  def set_delivery_options
+    self.smtp_settings = if ENV["SENDGRID_API_KEY"].present?
+                           {
+                             address: "smtp.sendgrid.net",
+                             port: 587,
+                             authentication: :plain,
+                             user_name: "apikey",
+                             password: ENV["SENDGRID_API_KEY"],
+                             domain: ENV["APP_DOMAIN"]
+                           }
+                         else
+                           Settings::General.smtp_settings
+                         end
   end
 end
