@@ -39,8 +39,12 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def perform_deliveries?
-    self.perform_deliveries = Settings::SMTP.password.present? ||
-      ENV["SENDGRID_API_KEY"].present?
+    if Rails.env.production?
+      self.perform_deliveries = Settings::SMTP.password.present? ||
+        ENV["SENDGRID_API_KEY"].present?
+    else
+      perform_deliveries
+    end
   end
 
   protected
