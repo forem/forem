@@ -14,11 +14,11 @@ class CreateTriggerArticlesInsertUpdate1 < ActiveRecord::Migration[6.1]
         declare("l_org_vector tsvector; l_user_vector tsvector") do
       <<-SQL_ACTIONS
 NEW.reading_list_document :=
-  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))), 'C') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))), 'A') ||
   setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))), 'B') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))), 'C') ||
   setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))), 'D') ||
   setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))), 'D') ||
-  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))), 'A') ||
   setweight(to_tsvector('simple'::regconfig,
     unaccent(
       coalesce(
