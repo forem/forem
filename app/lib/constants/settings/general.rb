@@ -115,11 +115,11 @@ module Constants
             placeholder: "plain"
           },
           user_name: {
-            description: "if your mail server requires authentication, set the username in this setting",
+            description: "If your mail server requires authentication, copy the username from your server",
             placeholder: ""
           },
           password: {
-            description: "If your mail server requires authentication, set the password in this setting.",
+            description: "If your mail server requires authentication, copy the password from your server.",
             placeholder: ""
           },
           domain: {
