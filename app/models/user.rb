@@ -87,23 +87,6 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
-  # Relevant Fields for migration from Users table to Users_Settings table
-  USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    config_font
-    config_navbar
-    config_theme
-    display_announcements
-    display_sponsors
-    editor_version
-    experience_level
-    feed_mark_canonical
-    feed_referential_link
-    feed_url
-    inbox_guidelines
-    inbox_type
-    permit_adjacent_sponsors
-  ].to_set.freeze
-
   # Relevant Fields for migration from Profiles table to Users_Settings table
   PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
     brand_color1
@@ -322,7 +305,6 @@ class User < ApplicationRecord
       ),
     )
   }
-  # scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
   before_validation :downcase_email
@@ -447,7 +429,7 @@ class User < ApplicationRecord
   end
 
   def any_admin?
-    @any_admin ||= (has_role?(:super_admin) || has_role?(:admin))
+    @any_admin ||= roles.where(name: ANY_ADMIN_ROLES).any?
   end
 
   def tech_admin?
@@ -627,15 +609,6 @@ class User < ApplicationRecord
   end
 
   def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
-    USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      if USER_SETTINGS_ENUM_FIELDS.include?(field)
-        field_enums = Users::Setting.defined_enums[field]
-        users_setting_record.assign_attributes(field => field_enums[public_send(field).to_sym])
-      else
-        users_setting_record.assign_attributes(field => public_send(field))
-      end
-    end
-
     sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
 
     users_setting_record.save

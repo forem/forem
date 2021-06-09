@@ -120,6 +120,15 @@ RSpec.describe RateLimitChecker, type: :service do
         tags: ["user:#{user.id}", "action:organization_creation"],
       )
     end
+
+    it "returns false if running in end to end tests even if the limit is reached" do
+      allow(ApplicationConfig).to receive(:[]).with("E2E").and_return("true")
+      allow(rate_limit_checker)
+        .to receive(:user_today_follow_count)
+        .and_return(Settings::RateLimit.follow_count_daily + 1)
+
+      expect(rate_limit_checker.limit_by_action("follow_account")).to be(false)
+    end
   end
 
   describe "#check_limit!" do
@@ -131,6 +140,12 @@ RSpec.describe RateLimitChecker, type: :service do
     it "raises an error if limit_by_action is true" do
       allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
       expect { rate_limit_checker.check_limit!(:image_upload) }.to raise_error(described_class::LimitReached)
+    end
+
+    it "returns nil if running in end to end tests" do
+      allow(ApplicationConfig).to receive(:[]).with("E2E").and_return("true")
+
+      expect(rate_limit_checker.check_limit!(:image_upload)).to be_nil
     end
   end
 
