@@ -1614,12 +1614,12 @@ ActiveRecord::Schema.define(version: 2021_06_09_164958) do
       declare("l_org_vector tsvector; l_user_vector tsvector") do
     <<-SQL_ACTIONS
 NEW.reading_list_document :=
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))) ||
-  to_tsvector('simple'::regconfig,
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))), 'A') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))), 'B') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))), 'C') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))), 'D') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))), 'D') ||
+  setweight(to_tsvector('simple'::regconfig,
     unaccent(
       coalesce(
         array_to_string(
@@ -1630,7 +1630,7 @@ NEW.reading_list_document :=
         ''
       )
     )
-  );
+  ), 'D');
     SQL_ACTIONS
   end
 
