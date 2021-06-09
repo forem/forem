@@ -18,9 +18,9 @@ describe('Set a landing page from the admin portal', () => {
     cy.findAllByRole('button', { name: 'Update Page' }).first().click();
 
     // Verify that the form has submitted and the page has changed to the confirmation page
-    cy.url().should('contain', '/customization/pages/');
+    cy.url().should('contain', '/admin/customization/pages');
 
-    cy.findAllByRole('svg', { name: 'Current locked screen' })
+    cy.findAllByRole('img', { name: 'Current locked screen' })
       .first()
       .should('be.visible');
   });
@@ -35,17 +35,19 @@ describe('Set a landing page from the admin portal', () => {
     cy.findByRole('main')
       .first()
       .within(() => {
+        cy.findAllByRole('link', { name: 'Edit' }).first().click();
         cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-          .last()
+          .first()
           .check();
         cy.findAllByRole('button', { name: 'Overwrite current locked screen' })
-          .last()
+          .first()
           .click();
-        cy.findAllByRole('button', { name: 'Update Page' }).last().click();
+        cy.findAllByRole('button', { name: 'Update Page' }).first().click();
       });
 
-    cy.findByRole('main')
-      .findAllByRole('checkbox', { name: 'Landing Page' })
+    cy.findByRole('main');
+    cy.findAllByRole('link', { name: 'Edit' }).first().click();
+    cy.findAllByRole('checkbox', { name: 'Landing Page' })
       .first()
       .should('be.checked');
   });
@@ -60,6 +62,7 @@ describe('Set a landing page from the admin portal', () => {
     cy.findByRole('main')
       .first()
       .within(() => {
+        cy.findAllByRole('link', { name: 'Edit' }).first().click();
         cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
           .first()
           .check();
@@ -67,8 +70,9 @@ describe('Set a landing page from the admin portal', () => {
         cy.findAllByRole('button', { name: 'Update Page' }).first().click();
       });
 
-    cy.findByRole('main')
-      .findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
+    cy.findByRole('main');
+    cy.findAllByRole('link', { name: 'Edit' }).first().click();
+    cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
       .first()
       .should('not.be.checked');
   });
