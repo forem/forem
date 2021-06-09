@@ -36,7 +36,6 @@ module Admin
           email_addresses: ::Settings::General.email_addresses.keys,
           meta_keywords: ::Settings::General.meta_keywords.keys,
           credit_prices_in_cents: ::Settings::General.credit_prices_in_cents.keys,
-          smtp_settings: ::Settings::General.smtp_settings.keys,
         )
       end
 

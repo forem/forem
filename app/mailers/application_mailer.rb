@@ -39,7 +39,7 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def perform_deliveries?
-    self.perform_deliveries = Settings::General.smtp_settings["password"].present? ||
+    self.perform_deliveries = Settings::SMTP.password.present? ||
       ENV["SENDGRID_API_KEY"].present?
   end
 
@@ -56,7 +56,14 @@ class ApplicationMailer < ActionMailer::Base
                              domain: ENV["APP_DOMAIN"]
                            }
                          else
-                           Settings::General.smtp_settings
+                           {
+                             address: Settings::SMTP.address,
+                             port: Settings::SMTP.port,
+                             authentication: Settings::SMTP.authentication,
+                             user_name: Settings::SMTP.user_name,
+                             password: Settings::SMTP.password,
+                             domain: Settings::SMTP.domain
+                           }
                          end
   end
 end

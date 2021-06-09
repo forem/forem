@@ -2,6 +2,8 @@ module Settings
   class SMTP < RailsSettings::Base
     self.table_name = :settings_smtps
 
+    OPTIONS = %i[address port authentication user_name password domain].freeze
+
     # The configuration is cached, change this if you want to force update
     # the cache, or call Settings::Smtp.clear_cache
     cache_prefix { "v1" }
