@@ -55,7 +55,7 @@ begin
 
   run "git push --quiet #{remote} #{target}"
   puts "Pushed #{target}, run the following to release:"
-  puts "    scripts/release --c #{target.sub(/-next$/, '')} --remote #{remote} --from #{target}"
+  puts "    scripts/release --channel #{target.sub(/-next$/, '')} --remote #{remote} --from #{target}"
 ensure
   # Go back to the branch we were on before running this script
   run "git checkout --quiet #{original_branch}"
