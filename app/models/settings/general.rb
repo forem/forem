@@ -131,16 +131,6 @@ module Settings
     # Feed
     field :feed_pinned_article_id, type: :integer, validates: { existing_published_article_id: true, allow_nil: true }
 
-    # SMTP Transactional email service
-    field :smtp_settings, type: :hash, default: {
-      address: ApplicationConfig["SMTP_ADDRESS"],
-      port: ApplicationConfig["SMTP_PORT"],
-      authentication: ApplicationConfig["SMTP_AUTHENTICATION"],
-      user_name: ApplicationConfig["SMTP_USER_NAME"],
-      password: ApplicationConfig["SMTP_PASSWORD"],
-      domain: ApplicationConfig["SMTP_DOMAIN"]
-    }
-
     # To get default values
     def self.get_default(field)
       get_field(field)[:default]
