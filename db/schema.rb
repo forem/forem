@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_12_025422) do
+ActiveRecord::Schema.define(version: 2021_06_09_164958) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1105,6 +1105,14 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
     t.text "value"
     t.string "var", null: false
     t.index ["var"], name: "index_settings_rate_limits_on_var", unique: true
+  end
+
+  create_table "settings_smtps", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_smtps_on_var", unique: true
   end
 
   create_table "settings_user_experiences", force: :cascade do |t|
