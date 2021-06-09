@@ -104,26 +104,27 @@ module Constants
         smtp_settings: {
           address: {
             description: "Address of the remote mail server",
-            placeholder: ""
+            placeholder: "ie. smtp.gmail.com"
           },
           port: {
-            description: "",
-            placeholder: ""
+            description: "The port that your mail server runs on",
+            placeholder: "25"
           },
           authentication: {
-            description: "",
-            placeholder: "plain"
+            description: " If your mail server requires authentication, " \
+            "you need to specify the authentication type here",
+            placeholder: "ie. plain, login, or cram_md5"
           },
           user_name: {
             description: "If your mail server requires authentication, copy the username from your server",
             placeholder: ""
           },
           password: {
-            description: "If your mail server requires authentication, copy the password from your server.",
+            description: "If your mail server requires authentication, copy the password from your server",
             placeholder: ""
           },
           domain: {
-            description: "",
+            description: "If you need to specify a HELO domain, you can do it here",
             placeholder: ""
           }
         },
