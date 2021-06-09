@@ -63,7 +63,7 @@ describe('Set a landing page from the admin portal', () => {
         cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
           .first()
           .check();
-        cy.findAllByRole('button', { name: 'Dismiss' }).first().click();
+        cy.findAllByRole('button', { name: 'Cancel' }).first().click();
         cy.findAllByRole('button', { name: 'Update Page' }).first().click();
       });
 

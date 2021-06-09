@@ -14,7 +14,7 @@ export default class LandingPageModalController extends ModalController {
     this.closeModal();
   }
 
-  dismiss() {
+  cancel() {
     this.landingPageCheckboxTarget.checked = false;
     this.overwriteTarget.value = false;
     this.closeModal();
