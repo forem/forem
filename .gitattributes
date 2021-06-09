@@ -8,3 +8,4 @@
 *.css  diff=css
 *.html diff=html
 *.erb  diff=html
+/CHANGELOG.md merge=union
