@@ -14,7 +14,7 @@ module Search
 
       relation = relation.search_articles(term) if term.present?
 
-      relation = sort(relation, sort_by, sort_direction)
+      relation = sort(relation, term, sort_by, sort_direction)
 
       tag_flares = Homepage::FetchTagFlares.call(relation)
 
@@ -25,7 +25,10 @@ module Search
       serialize(relation, tag_flares)
     end
 
-    def self.sort(relation, sort_by, sort_direction)
+    def self.sort(relation, term, sort_by, sort_direction)
+      # By skipping ordering, we rely on the custom ranking defined in the article's tsvector document
+      return relation if term.present? && sort_by.blank?
+
       return relation.reorder(sort_by => sort_direction) if sort_by&.to_sym == :published_at
 
       relation.reorder(DEFAULT_SORT_BY)
