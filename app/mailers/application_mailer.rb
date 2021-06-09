@@ -39,8 +39,6 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def perform_deliveries?
-    return unless Rails.env.production?
-
     ActionMailer::Base.perform_deliveries = Settings::General.smtp_settings["password"].present? ||
       ENV["SENDGRID_API_KEY"].present?
     ActionMailer::Base.perform_deliveries
