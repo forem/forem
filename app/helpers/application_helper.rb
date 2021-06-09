@@ -194,10 +194,8 @@ module ApplicationHelper
     link_to body, collection.path, **kwargs
   end
 
-  def email_link(type = :contact, text: nil, additional_info: nil)
-    # The allowed types for type are the keys of `Settings::General.email_addresses`
-    # :default, :contact, :business, :privacy, :members
-    email = Settings::General.email_addresses[type] || Settings::General.email_addresses[:contact]
+  def email_link(text: nil, additional_info: nil)
+    email = Settings::General.email_addresses[:default]
     mail_to email, text || email, additional_info
   end
 

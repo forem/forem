@@ -77,8 +77,6 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
-  config.action_mailer.perform_caching = false
-
   config.hosts << ENV["APP_DOMAIN"] unless ENV["APP_DOMAIN"].nil?
   if (gitpod_workspace_url = ENV["GITPOD_WORKSPACE_URL"])
     config.hosts << /.*#{URI.parse(gitpod_workspace_url).host}/

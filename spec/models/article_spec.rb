@@ -973,6 +973,25 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  context "when callbacks are triggered after create" do
+    describe "detect animated images" do
+      it "does not enqueue Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is disabled" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
+
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
+          build(:article).save
+        end
+      end
+
+      it "enqueues Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is enabled" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
+        sidekiq_assert_enqueued_jobs(1, only: Articles::DetectAnimatedImagesWorker) do
+          build(:article).save
+        end
+      end
+    end
+  end
+
   context "when callbacks are triggered after save" do
     describe "article path sanitizing" do
       it "returns a downcased username when user has uppercase characters" do
@@ -1089,6 +1108,32 @@ RSpec.describe Article, type: :model do
             article.update_columns(published: false)
             article.update(published: true, published_at: Time.current)
           end
+        end
+      end
+    end
+
+    describe "detect animated images" do
+      it "does not enqueue Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is disabled" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
+
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
+          article.update(body_markdown: "a body")
+        end
+      end
+
+      it "enqueues Articles::DetectAnimatedImagesWorker if the HTML has changed" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
+
+        sidekiq_assert_enqueued_with(job: Articles::DetectAnimatedImagesWorker, args: [article.id]) do
+          article.update(body_markdown: "a body")
+        end
+      end
+
+      it "does not Articles::DetectAnimatedImagesWorker if the HTML does not change" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
+
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
+          article.update(tag_list: %w[fsharp go])
         end
       end
     end

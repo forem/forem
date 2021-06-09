@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.9.6"
+  version: "0.9.7"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -676,11 +676,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Comment"
-    Settings::General:
-      type: object
-      properties:
-        site_config:
-          type: object
     FollowedTag:
       type: object
       required:
@@ -1831,8 +1826,6 @@ components:
         profile_image: https://res.cloudinary.com/...jpeg
 
 tags:
-  - name: admin-configuration
-    description: Site-wide configuration set by admins (requires super admin authorization)
   - name: articles
     description: Articles are all the posts users create on DEV
   - name: comments
@@ -1861,84 +1854,6 @@ tags:
     description: User or organization profile images
 
 paths:
-  /admin/config:
-    get:
-      operationId: getConfig
-      summary: Admin config
-      description: |
-        This endpoint returns the "site config" as set by admin.
-      tags:
-        - admin-configuration
-      security:
-        - api_key: []
-        - oauth2: []
-      x-codeSamples:
-        - lang: Shell
-          label: curl
-          source: |
-            curl -H "api-key: API_KEY" https://dev.to/api/admin/config
-      responses:
-        "200":
-          description: All site-wide config
-          content:
-            application/json:
-              schema:
-                type: object
-    put:
-      operationId: upsertConfig
-      summary: Update Site-wide Config
-      description: |
-        This endpoint allows admins to declare values or update values for "site config".
-      tags:
-        - admin-configuration
-      security:
-        - api_key: []
-        - oauth2: []
-      requestBody:
-        description: Config up upsert
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Settings::General"
-      responses:
-        "201":
-          description: Newly updated config
-        "400":
-          description: BadRequest
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIError"
-              examples:
-                error-bad-request:
-                  $ref: "#/components/examples/ErrorBadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIError"
-              examples:
-                error-unauthorized:
-                  $ref: "#/components/examples/ErrorUnauthorized"
-        "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIError"
-              examples:
-                error-forbidden:
-                  $ref: "#/components/examples/ErrorForbidden"
-        "422":
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIError"
-              examples:
-                error-unprocessable-entity:
-                  $ref: "#/components/examples/ErrorUnprocessableEntity"
   /articles:
     get:
       operationId: getArticles

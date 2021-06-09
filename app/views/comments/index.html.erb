@@ -41,6 +41,8 @@
   <% end %>
 <% end %>
 
+<%= javascript_packs_with_chunks_tag "commentDropdowns", defer: true %>
+
 <div class="crayons-layout crayons-layout--limited-l gap-0">
   <% if @commentable.class.name == "Article" %>
     <%= render "shared/payment_pointer", user: @commentable.user %>
