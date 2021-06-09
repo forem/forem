@@ -26,7 +26,7 @@ class LinkTag < LiquidTagBase
     path = url.path
 
     # If domain is present in url check if it belongs to the app
-    unless domain.blank? || domain&.casecmp?(SiteConfig.app_domain)
+    unless domain.blank? || domain&.casecmp?(Settings::General.app_domain)
       raise StandardError, "The article you're looking for does not exist: {% link #{slug} %}"
     end
 

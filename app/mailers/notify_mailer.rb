@@ -118,7 +118,7 @@ class NotifyMailer < ApplicationMailer
     @name = params[:name]
     @org_name = params[:org_name]
 
-    subject = "#{SiteConfig.community_name} - Organization Deletion Confirmation"
+    subject = "#{Settings::Community.community_name} - Organization Deletion Confirmation"
     mail(to: params[:email], subject: subject)
   end
 

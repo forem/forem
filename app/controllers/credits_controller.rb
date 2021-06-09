@@ -100,7 +100,7 @@ class CreditsController < ApplicationController
   end
 
   def cost_per_credit
-    prices = SiteConfig.credit_prices_in_cents
+    prices = Settings::General.credit_prices_in_cents
 
     case @number_to_purchase
     when ..9

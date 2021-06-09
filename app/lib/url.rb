@@ -5,8 +5,8 @@ module URL
   end
 
   def self.domain
-    if Rails.application&.initialized? && SiteConfig.respond_to?(:app_domain)
-      SiteConfig.app_domain
+    if Rails.application&.initialized? && Settings::General.respond_to?(:app_domain)
+      Settings::General.app_domain
     else
       ApplicationConfig["APP_DOMAIN"]
     end
@@ -74,7 +74,7 @@ module URL
   # @param path [String] the target path to deep link
   def self.deep_link(path)
     target_path = CGI.escape(url("/r/mobile?deep_link=#{path}"))
-    "https://forem-udl-server.herokuapp.com/?r=#{target_path}"
+    "https://udl.forem.com/?r=#{target_path}"
   end
 
   def self.organization(organization)

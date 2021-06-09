@@ -16,8 +16,8 @@ SMTP_PASSWORD=
 SMTP_AUTHENTICATION=  # defaults to :plain
 ```
 
-We follow the standard `ActionMailer` configuration. For more info, please check out
-Rails'
+We follow the standard `ActionMailer` configuration. For more info, please check
+out Rails'
 [official documentation](https://guides.rubyonrails.org/action_mailer_basics.html#action-mailer-configuration).
 
 # Previewing emails in development

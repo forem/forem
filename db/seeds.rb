@@ -13,19 +13,22 @@ SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 ##############################################################################
-# Default development site config if different from production scenario
+# Default development settings are different from production scenario
 
 Settings::UserExperience.public = true
-SiteConfig.waiting_on_first_user = false
+Settings::General.waiting_on_first_user = false
 Settings::Authentication.providers = Authentication::Providers.available
 
 ##############################################################################
+
+# Disable Redis cache while seeding
+Rails.cache = ActiveSupport::Cache.lookup_store(:null_store)
 
 # Put forem into "starter mode"
 
 if ENV["MODE"] == "STARTER"
   Settings::UserExperience.public = false
-  SiteConfig.waiting_on_first_user = true
+  Settings::General.waiting_on_first_user = true
   puts "Seeding forem in starter mode to replicate new creator experience"
   exit # We don't need any models if we're launching things from startup.
 end
@@ -238,7 +241,7 @@ seeder.create_if_none(Podcast) do
     {
       title: "CodingBlocks",
       description: "",
-      feed_url: "http://feeds.podtrac.com/c8yBGHRafqhz",
+      feed_url: "https://www.codingblocks.net/podcast-feed.xml",
       slug: "codingblocks",
       twitter_username: "CodingBlocks",
       website_url: "http://codingblocks.net",
@@ -303,14 +306,14 @@ seeder.create_if_none(Broadcast) do
       "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!",
     start_discussion: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; " \
-    "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+    "just click on 'Create Post' in the sidebar of the tag page to get started!",
     ask_question: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; " \
-      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+      "just click on 'Create Post' in the sidebar of the tag page to get started!",
     discuss_and_ask: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
       "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; " \
-      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+      "just click on 'Create Post' in the sidebar of the tag page to get started!",
     download_app: "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? " \
       "Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all " \
       "of your favorite DEV content on the go!"
@@ -406,7 +409,7 @@ end
 ##############################################################################
 
 seeder.create_if_none(FeedbackMessage) do
-  mod = User.first
+  mod = User.with_role(:trusted).take
 
   FeedbackMessage.create!(
     reporter: User.last,

@@ -44,7 +44,9 @@ Rails.application.routes.draw do
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
-        get ":timeframe", to: "feeds#show"
+        resource :pinned_article, only: %w[show update destroy]
+
+        get ":timeframe", to: "feeds#show", as: :timeframe
       end
     end
 
@@ -99,10 +101,6 @@ Rails.application.routes.draw do
           resources :users, only: [:index], to: "organizations#users"
           resources :listings, only: [:index], to: "organizations#listings"
           resources :articles, only: [:index], to: "organizations#articles"
-        end
-
-        namespace :admin do
-          resource :config, only: %i[show update], defaults: { format: :json }
         end
       end
     end
@@ -316,10 +314,6 @@ Rails.application.routes.draw do
     get "/page/post-a-job", to: "pages#post_a_job"
     get "/tag-moderation", to: "pages#tag_moderation"
 
-    # NOTE: can't remove the hardcoded URL here as SiteConfig is not available here, we should eventually
-    # setup dynamic redirects, see <https://github.com/thepracticaldev/dev.to/issues/7267>
-    get "/shop", to: redirect("https://shop.dev.to")
-
     get "/mod", to: "moderations#index", as: :mod
     get "/mod/:tag", to: "moderations#index"
 
@@ -394,15 +388,16 @@ Rails.application.routes.draw do
     get "/feed/:username", to: "articles#feed", as: "user_feed", defaults: { format: "rss" }
     get "/rss", to: "articles#feed", defaults: { format: "rss" }
 
-    get "/tag/:tag", to: "stories#index"
-    get "/t/:tag", to: "stories#index", as: :tag
+    get "/tag/:tag", to: "stories/tagged_articles#index"
+    get "/t/:tag", to: "stories/tagged_articles#index", as: :tag
+    get "/t/:tag/top/:timeframe", to: "stories/tagged_articles#index"
+    get "/t/:tag/page/:page", to: "stories/tagged_articles#index"
+    get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
+                              constraints: { timeframe: /latest/ }
+
     get "/t/:tag/edit", to: "tags#edit"
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
-    get "/t/:tag/top/:timeframe", to: "stories#index"
-    get "/t/:tag/page/:page", to: "stories#index"
-    get "/t/:tag/:timeframe", to: "stories#index",
-                              constraints: { timeframe: /latest/ }
 
     get "/badge/:slug", to: "badges#show", as: :badge
 
