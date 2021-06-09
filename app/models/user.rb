@@ -89,9 +89,6 @@ class User < ApplicationRecord
 
   # Relevant Fields for migration from Users table to Users_Settings table
   USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    feed_mark_canonical
-    feed_referential_link
-    feed_url
     inbox_guidelines
     inbox_type
   ].to_set.freeze
