@@ -155,6 +155,7 @@ const closeDropdown = ({
  * @param {string} args.dropdownContentId The ID of the dropdown content which should open/close on trigger button press
  * @param {string} args.dropdownContentCloseButtonId Optional ID of any button within the dropdown content which should close the dropdown
  * @param {Function} args.onClose An optional callback for when the dropdown is closed. This can be passed to execute any side-effects required when the dropdown closes.
+ * @param {Function} args.onOpen An optional callback for when the dropdown is opened. This can be passed to execute any side-effects required when the dropdown opens.
  *
  * @returns {{closeDropdown: Function}} Object with callback to close the initialized dropdown
  */
@@ -163,6 +164,7 @@ export const initializeDropdown = ({
   dropdownContentId,
   dropdownContentCloseButtonId,
   onClose = () => {},
+  onOpen = () => {},
 }) => {
   const triggerButton = document.getElementById(triggerElementId);
   const dropdownContent = document.getElementById(dropdownContentId);
@@ -194,6 +196,7 @@ export const initializeDropdown = ({
         dropdownContentId,
         onClose,
       });
+      onOpen();
     }
   });
 

@@ -10,6 +10,8 @@ export const Dropdown = ({
   triggerButtonId,
   dropdownContentId,
   dropdownContentCloseButtonId,
+  onOpen = () => {},
+  onClose = () => {},
   ...restOfProps
 }) => {
   const [isInitialized, setIsInitialized] = useState(false);
@@ -19,6 +21,8 @@ export const Dropdown = ({
         triggerElementId: triggerButtonId,
         dropdownContentId,
         dropdownContentCloseButtonId,
+        onOpen,
+        onClose,
       });
 
       setIsInitialized(true);
@@ -28,6 +32,8 @@ export const Dropdown = ({
     triggerButtonId,
     dropdownContentCloseButtonId,
     isInitialized,
+    onOpen,
+    onClose,
   ]);
 
   return (
