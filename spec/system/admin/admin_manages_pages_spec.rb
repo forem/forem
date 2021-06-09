@@ -129,7 +129,7 @@ RSpec.describe "Admin manages pages", type: :system do
       visit edit_admin_page_path(new_landing_page.id)
       expect(page).to have_content("Use as 'Locked Screen")
       check "Use as 'Locked Screen'"
-      expect(page).to have_link("Current Locked Screen")
+      expect(page).to have_link("Current Locked Screen: #{new_landing_page.title}")
       click_on("Current Locked Screen")
       expect(page).to have_current_path(new_landing_page.path)
       expect(page).to have_content(new_landing_page.title)
@@ -139,7 +139,7 @@ RSpec.describe "Admin manages pages", type: :system do
       visit edit_admin_page_path(new_landing_page.id)
       expect(page).to have_content("Use as 'Locked Screen")
       check "Use as 'Locked Screen'"
-      expect(page).to have_link("Current Locked Screen")
+      expect(page).to have_link("Current Locked Screen: #{new_landing_page.title}")
       click_on("Overwrite current locked screen")
       click_on("Update Page")
       expect(page).to have_current_path(admin_pages_path)
