@@ -24,7 +24,7 @@ class ApiSecretsController < ApplicationController
       flash[:notice] = "Your API Key has been revoked."
     else
       flash[:error] =
-        "An error occurred. Please try again or send an email to: #{Settings::General.email_addresses[:contact]}"
+        "An error occurred. Please try again or send an email to: #{Settings::General.email_addresses[:default]}"
     end
 
     redirect_back(fallback_location: root_path)

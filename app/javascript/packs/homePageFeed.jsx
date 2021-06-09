@@ -66,6 +66,7 @@ export const renderFeed = (timeFrame) => {
     <Feed
       timeFrame={timeFrame}
       renderFeed={({
+        pinnedArticle,
         feedItems,
         podcastEpisodes,
         bookmarkedFeedItems,
@@ -80,17 +81,27 @@ export const renderFeed = (timeFrame) => {
           bookmarkClick,
         };
 
-        const [featuredStory, ...subStories] = feedItems;
         const feedStyle = JSON.parse(document.body.dataset.user).feed_style;
+
+        const [featuredStory, ...subStories] = feedItems;
         if (featuredStory) {
           sendFeaturedArticleAnalytics(featuredStory.id);
         }
 
-        // 1. Show the featured story first
-        // 2. Podcast episodes out today
-        // 3. Rest of the stories for the feed
+        // 1. Show the pinned article first
+        // 2. Show the featured story next
+        // 3. Podcast episodes out today
+        // 4. Rest of the stories for the feed
         return (
           <div>
+            {timeFrame === '' && pinnedArticle && (
+              <Article
+                {...commonProps}
+                article={pinnedArticle}
+                feedStyle={feedStyle}
+                isBookmarked={bookmarkedFeedItems.has(pinnedArticle.id)}
+              />
+            )}
             {featuredStory && (
               <Article
                 {...commonProps}
