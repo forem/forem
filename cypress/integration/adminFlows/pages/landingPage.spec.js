@@ -12,31 +12,27 @@ describe('Set a landing page from the admin portal', () => {
 
   it('should set a landing page when no other landing page exists', () => {
     cy.findAllByRole('link', { name: 'Edit' }).first().click();
-    cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-      .first()
-      .check();
-    cy.findAllByRole('button', { name: 'Update Page' }).first().click();
+    cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" }).check();
+    cy.findByRole('button', { name: 'Update Page' }).click();
 
     // Verify that the form has submitted and the page has changed to the confirmation page
     cy.url().should('contain', '/admin/customization/pages');
 
-    cy.findAllByRole('img', { name: 'Current locked screen' })
-      .first()
-      .should('be.visible');
+    cy.findByRole('img', { name: 'Current locked screen' }).should(
+      'be.visible',
+    );
   });
 
   it('should overwrite the landing page when choosing to set a new landing page', () => {
     cy.findAllByRole('link', { name: 'Edit' }).first().click();
-
+    cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" });
     // Set landing page
     cy.findByRole('main').within(() => {
-      cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-        .first()
-        .check();
+      cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" }).check();
 
-      cy.findAllByRole('button', { name: 'Update Page' }).first().click();
+      cy.findByRole('button', { name: 'Update Page' }).click();
     });
-
+cy.url().should('contain', '/admin/customization/pages');
     // Retrieve the title of the landing page
     let landingPageTitle;
     cy.findByRole('main').within(() => {
@@ -53,18 +49,16 @@ describe('Set a landing page from the admin portal', () => {
 
       cy.findAllByRole('link', { name: 'Edit' }).first().click();
     });
-
+cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" })
     // Change landing page
     cy.findByRole('main').within(() => {
-      cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-        .first()
-        .check();
+      cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" });
 
-      cy.findAllByRole('button', { name: 'Overwrite current locked screen' })
-        .first()
-        .click();
+      cy.findByRole('button', {
+        name: 'Overwrite current locked screen',
+      }).click();
 
-      cy.findAllByRole('button', { name: 'Update Page' }).first().click();
+      cy.findByRole('button', { name: 'Update Page' }).click();
     });
 
     // Check the title of the landing page has changed
