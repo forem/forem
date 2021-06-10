@@ -18,13 +18,13 @@ module Settings
 
     class << self
       def enabled?
-        (user_name.present? && password.present?) || ENV["SENDGRID_API_KEY"].present?
+        (user_name.present? && password.present?) || ApplicationConfig["SENDGRID_API_KEY"].present?
       end
 
       def settings
-        return sendgrid_settings if ENV["SENDGRID_API_KEY"].present?
+        return sendgrid_settings if ApplicationConfig["SENDGRID_API_KEY"].present?
 
-        keys.index_with { |k| public_send(k) }
+        keys.index_with { |k| public_send(k) }.symbolize_keys
       end
 
       private
@@ -35,8 +35,8 @@ module Settings
           port: 587,
           authentication: :plain,
           user_name: "apikey",
-          password: ENV["SENDGRID_API_KEY"],
-          domain: ENV["APP_DOMAIN"]
+          password: ApplicationConfig["SENDGRID_API_KEY"],
+          domain: ApplicationConfig["APP_DOMAIN"]
         }
       end
     end
