@@ -6,7 +6,7 @@ describe('Subscribe to article comments', () => {
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
         cy.createArticle({
-          title: 'My own article',
+          title: 'My article',
           tags: ['beginner', 'ruby', 'go'],
           content: `This is a test article's contents.`,
           published: true,
@@ -65,5 +65,15 @@ describe('Subscribe to article comments', () => {
     cy.findByText('You have been subscribed to top level comments').should(
       'exist',
     );
+  });
+
+  it('should unsubscribe from comments', () => {
+    cy.findByRole('main').within(() => {
+      cy.findByRole('button', { name: 'Unsubscribe' }).click();
+
+      cy.findByRole('button', { name: 'Unsubscribe' }).should('not.exist');
+      cy.findByRole('button', { name: 'Preferences' }).should('not.exist');
+      cy.findByRole('button', { name: 'Subscribe' });
+    });
   });
 });
