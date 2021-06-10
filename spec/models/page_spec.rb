@@ -36,6 +36,13 @@ RSpec.describe Page, type: :model do
       expect(page).not_to be_valid
       expect(page.errors[:slug].to_s.include?("taken")).to be true
     end
+
+    it "only allows a single landing_page to be set to true" do
+      create(:page, landing_page: true)
+      page = build(:page, landing_page: true)
+      expect(page).not_to be_valid
+      expect(page.errors[:base].to_s.include?("Only one page")).to be true
+    end
   end
 
   context "when callbacks are triggered before save" do
