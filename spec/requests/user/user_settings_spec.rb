@@ -257,7 +257,7 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.setting.display_announcements).to be(true)
 
       expect do
-        patch users_setting_path(user.setting.id), params: { users_setting: { display_announcements: false } }
+        patch users_setting_path(user.setting.id), params: { users_setting: { display_announcements: 0 } }
       end.to change { user.setting.reload.display_announcements }.from(true).to(false)
 
       expect(user.setting.reload.display_announcements).to be(false)

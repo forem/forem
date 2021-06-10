@@ -102,7 +102,17 @@ RSpec.describe Search::Article, type: :service do
     end
 
     context "when sorting" do
-      it "sorts by 'hotness_score' and 'comments_count' in descending order by default" do
+      it "sorts by title, tags, body ranking by default with a search term", :aggregate_failures do
+        article_body = create(:article)
+        article_body.update(body_markdown: "The Other Side of Silence Impedit consequatur")
+        article_tag = create(:article, tags: "consequatur")
+        article_title = create(:article, title: "The Other Side of Silence Impedit consequatur")
+
+        results = described_class.search_documents(term: "consequatur")
+        expect(results.pluck(:id)).to eq([article_title.id, article_tag.id, article_body.id])
+      end
+
+      it "sorts by 'hotness_score' and 'comments_count' in descending order without a search term" do
         article1, article2, article3 = create_list(:article, 3)
 
         article1.update_columns(hotness_score: 10, comments_count: 10)
@@ -113,13 +123,21 @@ RSpec.describe Search::Article, type: :service do
         expect(results.pluck(:id)).to eq([article2.id, article1.id, article3.id])
       end
 
-      it "supports sorting by published_at in ascending and descending order", :aggregate_failures do
-        article1 = create(:article)
+      it "supports sorting by published_at in ascending and descending order with a search term", :aggregate_failures do
+        article1 = create(:article, tags: "ruby")
+        article2 = create(:article, tags: "ruby", published_at: 1.week.ago)
 
-        article2 = nil
-        Timecop.travel(1.week.ago) do
-          article2 = create(:article)
-        end
+        results = described_class.search_documents(term: "ruby", sort_by: :published_at, sort_direction: :asc)
+        expect(results.pluck(:id)).to eq([article2.id, article1.id])
+
+        results = described_class.search_documents(term: "ruby", sort_by: :published_at, sort_direction: :desc)
+        expect(results.pluck(:id)).to eq([article1.id, article2.id])
+      end
+
+      it "supports sorting by published_at in ascending and descending order without a search term",
+         :aggregate_failures do
+        article1 = create(:article)
+        article2 = create(:article, published_at: 1.week.ago)
 
         results = described_class.search_documents(sort_by: :published_at, sort_direction: :asc)
         expect(results.pluck(:id)).to eq([article2.id, article1.id])

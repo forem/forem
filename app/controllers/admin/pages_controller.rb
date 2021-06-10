@@ -3,13 +3,14 @@ module Admin
     layout "admin"
 
     def index
-      @pages = Page.all
+      @pages = Page.all.order(created_at: :desc)
       @code_of_conduct = Page.find_by(slug: "code-of-conduct")
       @privacy = Page.find_by(slug: "privacy")
       @terms = Page.find_by(slug: "terms")
     end
 
     def new
+      @landing_page = Page.find_by(landing_page: true)
       if (slug = params[:slug])
         prepopulate_new_form(slug)
       else
@@ -19,13 +20,12 @@ module Admin
 
     def edit
       @page = Page.find(params[:id])
+      @landing_page = Page.find_by(landing_page: true)
     end
 
     def update
       @page = Page.find(params[:id])
-      @page.assign_attributes(page_params)
-      if @page.valid?
-        @page.update!(page_params)
+      if update_and_overwrite_landing_page
         flash[:success] = "Page has been successfully updated."
         redirect_to admin_pages_path
       else
@@ -36,8 +36,7 @@ module Admin
 
     def create
       @page = Page.new(page_params)
-      if @page.valid?
-        @page.save!
+      if create_and_overwrite_landing_page
         flash[:success] = "Page has been successfully created."
         redirect_to admin_pages_path
       else
@@ -57,7 +56,7 @@ module Admin
 
     def page_params
       allowed_params = %i[title slug body_markdown body_html body_json description template is_top_level_path
-                          social_image]
+                          social_image landing_page overwrite_landing_page]
       params.require(:page).permit(allowed_params)
     end
 
@@ -95,6 +94,32 @@ module Admin
               else
                 Page.new
               end
+    end
+
+    def update_and_overwrite_landing_page
+      if page_params["overwrite_landing_page"] == "true"
+        Page.transaction do
+          current_landing_page = Page.find_by(landing_page: true)
+          current_landing_page&.update(landing_page: false)
+
+          @page.update(page_params)
+        end
+      else
+        @page.update(page_params)
+      end
+    end
+
+    def create_and_overwrite_landing_page
+      if page_params["overwrite_landing_page"] == "true"
+        Page.transaction do
+          current_landing_page = Page.find_by(landing_page: true)
+          current_landing_page&.update(landing_page: false)
+
+          @page.save
+        end
+      else
+        @page.save
+      end
     end
   end
 end

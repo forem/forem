@@ -36,14 +36,7 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  PROVIDER_COLUMNS = %w[
-    apple_created_at
-    facebook_created_at
-    github_created_at
-    twitter_created_at
-  ].freeze
-
-  self.ignored_columns = PROFILE_COLUMNS + PROVIDER_COLUMNS
+  self.ignored_columns = PROFILE_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -73,6 +66,7 @@ class User < ApplicationRecord
     end
   end
 
+  ANY_ADMIN_ROLES = %i[admin super_admin].freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
   MESSAGES = {
@@ -86,13 +80,6 @@ class User < ApplicationRecord
     (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
     \z
   }x.freeze
-
-  # Relevant Fields for migration from Profiles table to Users_Settings table
-  PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    brand_color1
-    brand_color2
-    display_email_on_profile
-  ].to_set.freeze
 
   # Relevant Fields for migration from Users table to Users_Notification_Settings table
   USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
@@ -111,14 +98,6 @@ class User < ApplicationRecord
     mod_roundrobin_notifications
     reaction_notifications
     welcome_notifications
-  ].to_set.freeze
-
-  USER_SETTINGS_ENUM_FIELDS = %w[
-    config_font
-    config_navbar
-    config_theme
-    editor_version
-    inbox_type
   ].to_set.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
@@ -160,6 +139,7 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
+  has_many :discussion_locks, dependent: :destroy, inverse_of: :locking_user, foreign_key: :locking_user_id
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
@@ -322,7 +302,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
-  after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
+  after_commit :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 
   def self.dev_account
@@ -599,26 +579,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
-    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      # rubocop:disable Layout/LineLength
-      users_setting_record.assign_attributes(field => profile.public_send(field)) if profile&.public_send(field).present?
-      # rubocop:enable Layout/LineLength
-    end
-  end
-
-  def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
-    sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
-
-    users_setting_record.save
-  end
-
-  def sync_users_settings_table
-    users_setting_record = Users::Setting.create_or_find_by(user_id: id)
-
-    migrate_users_and_profile_fields_to_users_settings(users_setting_record)
-  end
 
   def sync_users_notification_settings_table
     users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)

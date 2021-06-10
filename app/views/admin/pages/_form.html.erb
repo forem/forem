@@ -1,4 +1,9 @@
-<div class="crayons-card p-6">
+<div class="crayons-card p-6"
+     data-controller="landing-page-modal"
+     data-landing-page-modal-root-selector-value="#add-landing-page-link-modal-root"
+     data-landing-page-modal-content-selector-value="#add-landing-page-link-modal"
+     data-landing-page-modal-title-value="There's another locked screen..."
+     data-landing-page-modal-size-value="default">
   <%= form_for [:admin, @page] do |form| %>
     <div class="form-group">
       <%= form.label :title %>
@@ -38,9 +43,31 @@
     </div>
     <div class="form-group">
       <%= form.label :is_top_level_path %>
-      <%= form.check_box :is_top_level_path %>
-      <p>(Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code>) Be careful! ⚠️</p>
+      <%= form.check_box :is_top_level_path, class: "crayons-checkbox" %>
+      <p>Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code> Be careful! ⚠️</p>
     </div>
+
+    <div class="form-group">
+      <%= form.label :landing_page, "Use as 'Locked Screen'" %>
+      <%= form.check_box :landing_page, class: "crayons-checkbox", "aria-describedby": "lock-screen-description",
+                                        data: {
+                                          "landing-page-modal-target": "landingPageCheckbox",
+                                          action: (@landing_page.present? ? "landing-page-modal#openModal" : "")
+                                        } %>
+      <%= form.hidden_field :overwrite_landing_page, data: { "landing-page-modal-target": "overwrite" } %>
+      <p id="lock-screen-description">Determines if this page will be used as a landing page for anonymous viewers.</p>
+    </div>
+
+    <% if @page.errors.count > 0 %>
+      <div id="add-landing-page-link-modal-root">
+        <% @page.errors %>
+      </div>
+    <% end %>
+
+    <% if @landing_page %>
+      <%= render partial: "landing_page_modal", locals: { page: @landing_page } %>
+    <% end %>
+
     <div class="form-group">
       <p>
         <b><%= link_to "Feature Flag", "/admin/feature_flags" %></b>
@@ -58,12 +85,12 @@
         <br>
       </p>
     </div>
-    <%= form.submit class: "btn btn-primary" %>
+    <%= form.submit class: "crayons-btn" %>
   <% end %>
 
   <% if @page.persisted? %>
     <%= form_with model: [:admin, @page], local: true, method: :delete, class: "mt-3" do |f| %>
-      <%= f.submit "Delete Page", class: "btn btn-danger", data: { confirm: "Are you sure?" } %>
+      <%= f.submit "Delete Page", class: "crayons-btn crayons-btn--danger", data: { confirm: "Are you sure?" } %>
     <% end %>
   <% end %>
 </div>

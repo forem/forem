@@ -200,17 +200,22 @@ export class ArticleForm extends Component {
 
   fetchMarkdownLint = async () => {
     if (!window.markdownlint) {
+      const pathDataElement = document.getElementById('markdown-lint-js-path');
+      if (!pathDataElement) {
+        return;
+      }
+
+      // Retrieve the correct fingerprinted URL for the scripts
+      const { markdownItJsPath, markdownLintJsPath } = pathDataElement.dataset;
+
       const markdownItScript = document.createElement('script');
-      markdownItScript.setAttribute('src', '/assets/markdown-it.min.js');
+      markdownItScript.setAttribute('src', markdownItJsPath);
       document.body.appendChild(markdownItScript);
 
       // The markdownlint script needs the first script to have finished loading first
       markdownItScript.addEventListener('load', () => {
         const markdownLintScript = document.createElement('script');
-        markdownLintScript.setAttribute(
-          'src',
-          '/assets/markdownlint-browser.min.js',
-        );
+        markdownLintScript.setAttribute('src', markdownLintJsPath);
         document.body.appendChild(markdownLintScript);
 
         markdownLintScript.addEventListener('load', this.lintMarkdown);
