@@ -3,7 +3,7 @@ module Admin
     layout "admin"
 
     def index
-      @pages = Page.all
+      @pages = Page.all.order(created_at: :desc)
       @code_of_conduct = Page.find_by(slug: "code-of-conduct")
       @privacy = Page.find_by(slug: "privacy")
       @terms = Page.find_by(slug: "terms")
