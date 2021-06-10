@@ -43,7 +43,7 @@ class ApplicationMailer < ActionMailer::Base
       self.perform_deliveries = Settings::SMTP.password.present? ||
         ENV["SENDGRID_API_KEY"].present?
     else
-      perform_deliveries
+      Rails.configuration.action_mailer.perform_deliveries
     end
   end
 
