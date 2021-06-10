@@ -203,6 +203,8 @@ Rails.application.routes.draw do
 
     resources :liquid_tags, only: %i[index], defaults: { format: :json }
 
+    resources :discussion_locks, only: %i[create destroy]
+
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags", to: "search#tags"
     get "/search/chat_channels", to: "search#chat_channels"
@@ -421,9 +423,11 @@ Rails.application.routes.draw do
                                   constraints: { view: /moderate/ }
     get "/:username/:slug/mod", to: "moderations#article"
     get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
-    get "/:username/:slug/manage", to: "articles#manage"
+    get "/:username/:slug/manage", to: "articles#manage", as: :article_manage
     get "/:username/:slug/edit", to: "articles#edit"
     get "/:username/:slug/delete_confirm", to: "articles#delete_confirm"
+    get "/:username/:slug/discussion_lock_confirm", to: "articles#discussion_lock_confirm"
+    get "/:username/:slug/discussion_unlock_confirm", to: "articles#discussion_unlock_confirm"
     get "/:username/:slug/stats", to: "articles#stats"
     get "/:username/:view", to: "stories#index",
                             constraints: { view: /comments|moderate|admin/ }

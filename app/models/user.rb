@@ -180,6 +180,7 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
+  has_many :discussion_locks, dependent: :destroy, inverse_of: :locking_user, foreign_key: :locking_user_id
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
