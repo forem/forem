@@ -87,13 +87,6 @@ class User < ApplicationRecord
     inbox_type
   ].to_set.freeze
 
-  # Relevant Fields for migration from Profiles table to Users_Settings table
-  PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    brand_color1
-    brand_color2
-    display_email_on_profile
-  ].to_set.freeze
-
   # Relevant Fields for migration from Users table to Users_Notification_Settings table
   USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
     email_badge_notifications
@@ -600,14 +593,6 @@ class User < ApplicationRecord
 
   private
 
-  def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
-    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      # rubocop:disable Layout/LineLength
-      users_setting_record.assign_attributes(field => profile.public_send(field)) if profile&.public_send(field).present?
-      # rubocop:enable Layout/LineLength
-    end
-  end
-
   def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
     USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
       if USER_SETTINGS_ENUM_FIELDS.include?(field)
@@ -617,8 +602,6 @@ class User < ApplicationRecord
         users_setting_record.assign_attributes(field => public_send(field))
       end
     end
-
-    sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
 
     users_setting_record.save
   end
