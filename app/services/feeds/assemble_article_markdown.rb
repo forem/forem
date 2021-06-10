@@ -16,7 +16,7 @@ module Feeds
     def call
       body = <<~HEREDOC
         ---
-        title: #{@title}
+        title: #{processed_title}
         published: false
         date: #{@item.published}
         tags: #{get_tags}
@@ -30,6 +30,10 @@ module Feeds
     end
 
     private
+
+    def processed_title
+      @title.size <= 128 ? @title : "#{@title[0..124]}..."
+    end
 
     def get_tags
       @categories.first(4).map do |tag|
