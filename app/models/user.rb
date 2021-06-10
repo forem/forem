@@ -81,12 +81,6 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
-  # Relevant Fields for migration from Users table to Users_Settings table
-  USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    inbox_guidelines
-    inbox_type
-  ].to_set.freeze
-
   # Relevant Fields for migration from Users table to Users_Notification_Settings table
   USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
     email_badge_notifications
@@ -104,14 +98,6 @@ class User < ApplicationRecord
     mod_roundrobin_notifications
     reaction_notifications
     welcome_notifications
-  ].to_set.freeze
-
-  USER_SETTINGS_ENUM_FIELDS = %w[
-    config_font
-    config_navbar
-    config_theme
-    editor_version
-    inbox_type
   ].to_set.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
@@ -316,7 +302,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
-  after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
+  after_commit :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 
   def self.dev_account
@@ -593,25 +579,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
-    USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      if USER_SETTINGS_ENUM_FIELDS.include?(field)
-        field_enums = Users::Setting.defined_enums[field]
-        users_setting_record.assign_attributes(field => field_enums[public_send(field).to_sym])
-      else
-        users_setting_record.assign_attributes(field => public_send(field))
-      end
-    end
-
-    users_setting_record.save
-  end
-
-  def sync_users_settings_table
-    users_setting_record = Users::Setting.create_or_find_by(user_id: id)
-
-    migrate_users_and_profile_fields_to_users_settings(users_setting_record)
-  end
 
   def sync_users_notification_settings_table
     users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)
