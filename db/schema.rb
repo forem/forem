@@ -1107,12 +1107,12 @@ ActiveRecord::Schema.define(version: 2021_06_09_164958) do
     t.index ["var"], name: "index_settings_rate_limits_on_var", unique: true
   end
 
-  create_table "settings_smtps", force: :cascade do |t|
+  create_table "settings_smtp", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_smtps_on_var", unique: true
+    t.index ["var"], name: "index_settings_smtp_on_var", unique: true
   end
 
   create_table "settings_user_experiences", force: :cascade do |t|
