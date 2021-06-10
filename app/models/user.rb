@@ -66,6 +66,7 @@ class User < ApplicationRecord
     end
   end
 
+  ANY_ADMIN_ROLES = %i[admin super_admin].freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
   MESSAGES = {
