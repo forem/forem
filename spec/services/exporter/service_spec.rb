@@ -75,6 +75,7 @@ RSpec.describe Exporter::Service, type: :service do
     context "when emailing the user" do
       it "delivers one email" do
         service = valid_instance(article.user)
+        ApplicationMailer.deliveries.clear
         service.export(article.user.email)
         expect(ActionMailer::Base.deliveries.count).to eq(1)
       end
