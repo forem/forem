@@ -183,7 +183,7 @@ GEM
       puma (>= 3.8.0)
       railties (>= 5.2.0)
     dante (0.2.0)
-    ddtrace (0.49.0)
+    ddtrace (0.50.0)
       ffi (~> 1.0)
       msgpack
     dead_end (1.1.7)
@@ -864,7 +864,7 @@ DEPENDENCIES
   cloudinary (~> 1.20)
   counter_culture (~> 2.8)
   cypress-rails (~> 0.5.0)
-  ddtrace (~> 0.49.0)
+  ddtrace (~> 0.50.0)
   derailed_benchmarks (~> 2.1)
   devise (~> 4.8)
   devise_invitable (~> 2.0.5)
