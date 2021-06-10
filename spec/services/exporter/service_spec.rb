@@ -7,8 +7,8 @@ RSpec.describe Exporter::Service, type: :service do
   let(:other_user) { create(:user) }
   let(:other_user_article) { create(:article, user: other_user) }
 
-  before do
-    ActionMailer::Base.deliveries.clear
+  after do
+    ApplicationMailer.deliveries.clear
   end
 
   def valid_instance(user)

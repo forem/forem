@@ -8,8 +8,8 @@ class ApplicationMailer < ActionMailer::Base
   helper AuthenticationHelper
 
   before_action :use_custom_host
-  after_action :set_delivery_options
-  after_action :set_perform_deliveries
+  before_action :set_delivery_options
+  before_action :set_perform_deliveries
 
   default(
     from: -> { email_from },
