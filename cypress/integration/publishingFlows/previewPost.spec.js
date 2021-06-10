@@ -127,6 +127,8 @@ describe('Post Editor', () => {
       cy.get('@previewButton').should('have.attr', 'aria-current', 'page');
 
       cy.findByTestId('error-message').should('not.exist');
+      cy.get('#gist1885435').should('be.visible');
+      cy.findByRole('link', { name: 'view raw' });
     });
 
     it(`should show error if the post content can't be previewed`, () => {

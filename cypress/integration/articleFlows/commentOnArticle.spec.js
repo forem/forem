@@ -512,7 +512,10 @@ describe('Comment on articles', () => {
 
       cy.findByRole('button', { name: /^Submit$/i }).click();
     });
+    cy.get('#gist1885435').should('be.visible');
+    cy.findByRole('link', { name: 'view raw' });
   });
+
   it('should provide a dropdown of options', () => {
     cy.findByRole('main').within(() => {
       // Add a comment
