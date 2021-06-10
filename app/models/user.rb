@@ -36,14 +36,7 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  PROVIDER_COLUMNS = %w[
-    apple_created_at
-    facebook_created_at
-    github_created_at
-    twitter_created_at
-  ].freeze
-
-  self.ignored_columns = PROFILE_COLUMNS + PROVIDER_COLUMNS
+  self.ignored_columns = PROFILE_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.

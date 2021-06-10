@@ -1263,7 +1263,6 @@ ActiveRecord::Schema.define(version: 2021_06_09_103939) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.datetime "apple_created_at"
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
@@ -1312,7 +1311,6 @@ ActiveRecord::Schema.define(version: 2021_06_09_103939) do
     t.integer "experience_level"
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
-    t.datetime "facebook_created_at"
     t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
@@ -1323,7 +1321,6 @@ ActiveRecord::Schema.define(version: 2021_06_09_103939) do
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
-    t.datetime "github_created_at"
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
@@ -1388,7 +1385,6 @@ ActiveRecord::Schema.define(version: 2021_06_09_103939) do
     t.text "summary"
     t.string "text_color_hex"
     t.string "twitch_url"
-    t.datetime "twitter_created_at"
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.string "unlock_token"
