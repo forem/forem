@@ -77,6 +77,7 @@ class ArticlesController < ApplicationController
     authorize @article
 
     @article = @article.decorate
+    @discussion_lock = @article.discussion_lock
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @organizations = @user&.organizations
@@ -193,6 +194,24 @@ class ArticlesController < ApplicationController
     else
       render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def discussion_lock_confirm
+    # This allows admins to also use this action vs searching only in the current_user.articles scope
+    @article = Article.find_by(slug: params[:slug])
+    not_found unless @article
+    authorize @article
+
+    @discussion_lock = DiscussionLock.new
+  end
+
+  def discussion_unlock_confirm
+    # This allows admins to also use this action vs searching only in the current_user.articles scope
+    @article = Article.find_by(slug: params[:slug])
+    not_found unless @article
+    authorize @article
+
+    @discussion_lock = @article.discussion_lock
   end
 
   private
