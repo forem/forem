@@ -7,6 +7,10 @@ RSpec.describe Exporter::Service, type: :service do
   let(:other_user) { create(:user) }
   let(:other_user_article) { create(:article, user: other_user) }
 
+  before do
+    allow(Settings::SMTP).to receive(:enabled?).and_return(true)
+  end
+
   after do
     ApplicationMailer.deliveries.clear
   end
