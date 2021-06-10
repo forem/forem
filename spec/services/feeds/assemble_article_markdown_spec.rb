@@ -3,17 +3,19 @@ require "rails_helper"
 RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
   let(:user) { create(:user, feed_mark_canonical: true) }
   let(:feed_source_url) { "https://feed.source/url" }
-  let(:feed) { Struct.new(url: "https://feed.source/") }
+  let(:feed) { Struct.new(:url).new("https://feed.source/") }
   let(:title) { "A title" }
   let(:content) { "Some content that came in with the item, should be the body" }
 
   let(:item) do
-    Struct.new(
-      title: title,
-      categories: %w[tag1 tag2 tag3 tag4 tag5],
-      published: "2020-12-20",
-      content: content,
-    )
+    Struct
+      .new(:title, :categories, :published, :content)
+      .new(
+        title,
+        %w[tag1 tag2 tag3 tag4 tag5],
+        "2020-12-20",
+        content,
+      )
   end
 
   let(:feeds_assemble_article_markdown) { described_class.new(item, user, feed, feed_source_url) }
