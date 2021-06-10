@@ -32,7 +32,7 @@ describe('Set a landing page from the admin portal', () => {
 
       cy.findByRole('button', { name: 'Update Page' }).click();
     });
-cy.url().should('contain', '/admin/customization/pages');
+    cy.url().should('contain', '/admin/customization/pages');
     // Retrieve the title of the landing page
     let landingPageTitle;
     cy.findByRole('main').within(() => {
@@ -47,14 +47,14 @@ cy.url().should('contain', '/admin/customization/pages');
         }
       });
 
-      cy.findAllByRole('link', { name: 'Edit' }).first().click();
+      cy.findAllByRole('link', { name: 'Edit' }).eq(1).click();
     });
-cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" })
+    cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" });
     // Change landing page
     cy.findByRole('main').within(() => {
-      cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" });
+      cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" }).check();
 
-      cy.findByRole('button', {
+      cy.findAllByRole('button', {
         name: 'Overwrite current locked screen',
       }).click();
 
@@ -105,7 +105,7 @@ cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" })
         }
       });
 
-      cy.findAllByRole('link', { name: 'Edit' }).first().click();
+      cy.findAllByRole('link', { name: 'Edit' }).eq(1).click();
     });
 
     // Change landing page but then Cancel
