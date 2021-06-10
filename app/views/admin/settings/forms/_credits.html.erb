@@ -1,0 +1,50 @@
+<%= form_for(Settings::General.new, url: admin_settings_general_settings_path) do |f| %>
+  <div class="card mt-3">
+    <%= render partial: "admin/shared/card_header",
+               locals: {
+                 header: "Credits",
+                 state: "collapse",
+                 target: "creditsBodyContainer",
+                 expanded: false
+               } %>
+
+    <div id="creditsBodyContainer" class="card-body collapse hide" aria-labelledby="creditsBodyContainer">
+      <fieldset class="grid gap-4">
+        <%= f.fields_for :credit_prices_in_cents do |price_field| %>
+          <div class="crayons-field">
+            <%= admin_config_label "Credit price in cents (S)" %>
+            <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:small][:description] %>
+            <%= price_field.number_field :small,
+                                         class: "crayons-textfield",
+                                         value: Settings::General.credit_prices_in_cents[:small] %>
+          </div>
+
+          <div class="crayons-field">
+            <%= admin_config_label "Credit price in cents (M)" %>
+            <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:medium][:description] %>
+            <%= price_field.number_field :medium,
+                                         class: "crayons-textfield",
+                                         value: Settings::General.credit_prices_in_cents[:medium] %>
+          </div>
+          <div class="crayons-field">
+            <%= admin_config_label "Credit price in cents (L)" %>
+            <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:large][:description] %>
+            <%= price_field.number_field :large,
+                                         class: "crayons-textfield",
+                                         value: Settings::General.credit_prices_in_cents[:large] %>
+          </div>
+
+          <div class="crayons-field">
+            <%= admin_config_label "Credit price in cents (XL)" %>
+            <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:xlarge][:description] %>
+            <%= price_field.number_field :xlarge,
+                                         class: "crayons-textfield",
+                                         value: Settings::General.credit_prices_in_cents[:xlarge] %>
+          </div>
+        <% end %>
+
+        <%= render "form_submission", f: f %>
+      </fieldset>
+    </div>
+  </div>
+<% end %>
