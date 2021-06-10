@@ -10,6 +10,7 @@ module Admin
     end
 
     def new
+      @landing_page = Page.find_by(landing_page: true)
       if (slug = params[:slug])
         prepopulate_new_form(slug)
       else

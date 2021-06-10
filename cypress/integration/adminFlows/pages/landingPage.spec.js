@@ -27,53 +27,119 @@ describe('Set a landing page from the admin portal', () => {
 
   it('should overwrite the landing page when choosing to set a new landing page', () => {
     cy.findAllByRole('link', { name: 'Edit' }).first().click();
-    cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-      .first()
-      .check();
-    cy.findAllByRole('button', { name: 'Update Page' }).first().click();
 
-    cy.findByRole('main')
-      .first()
-      .within(() => {
-        cy.findAllByRole('link', { name: 'Edit' }).first().click();
-        cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-          .first()
-          .check();
-        cy.findAllByRole('button', { name: 'Overwrite current locked screen' })
-          .first()
-          .click();
-        cy.findAllByRole('button', { name: 'Update Page' }).first().click();
+    // Set landing page
+    cy.findByRole('main').within(() => {
+      cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
+        .first()
+        .check();
+
+      cy.findAllByRole('button', { name: 'Update Page' }).first().click();
+    });
+
+    // Retrieve the title of the landing page
+    let landingPageTitle;
+    cy.findByRole('main').within(() => {
+      cy.findAllByTestId('page').should((elements) => {
+        for (let i = elements.length - 1; i >= 0; i--) {
+          const el = elements[i];
+          const isLandingPage =
+            el.getElementsByClassName('crayons-icon').length > 0;
+          if (isLandingPage) {
+            landingPageTitle = el.querySelector('a').innerHTML;
+          }
+        }
       });
 
-    cy.findByRole('main');
-    cy.findAllByRole('link', { name: 'Edit' }).first().click();
-    cy.findAllByRole('checkbox', { name: 'Landing Page' })
-      .first()
-      .should('be.checked');
+      cy.findAllByRole('link', { name: 'Edit' }).first().click();
+    });
+
+    // Change landing page
+    cy.findByRole('main').within(() => {
+      cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
+        .first()
+        .check();
+
+      cy.findAllByRole('button', { name: 'Overwrite current locked screen' })
+        .first()
+        .click();
+
+      cy.findAllByRole('button', { name: 'Update Page' }).first().click();
+    });
+
+    // Check the title of the landing page has changed
+    cy.findByRole('main').within(() => {
+      let newLandingPageTitle;
+      cy.findAllByTestId('page').should((elements) => {
+        for (let i = elements.length - 1; i >= 0; i--) {
+          const el = elements[i];
+          const isLandingPage =
+            el.getElementsByClassName('crayons-icon').length > 0;
+          if (isLandingPage) {
+            newLandingPageTitle = el.querySelector('a').innerHTML;
+          }
+        }
+
+        assert.notEqual(landingPageTitle, newLandingPageTitle);
+      });
+    });
   });
 
-  it('should not change the landing page when clicking dismiss', () => {
+  it('should not change the landing page when clicking cancel', () => {
     cy.findAllByRole('link', { name: 'Edit' }).first().click();
-    cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-      .first()
-      .check();
-    cy.findAllByRole('button', { name: 'Update Page' }).first().click();
 
-    cy.findByRole('main')
-      .first()
-      .within(() => {
-        cy.findAllByRole('link', { name: 'Edit' }).first().click();
-        cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-          .first()
-          .check();
-        cy.findAllByRole('button', { name: 'Cancel' }).first().click();
-        cy.findAllByRole('button', { name: 'Update Page' }).first().click();
+    // Set landing page
+    cy.findByRole('main').within(() => {
+      cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
+        .first()
+        .check();
+
+      cy.findAllByRole('button', { name: 'Update Page' }).first().click();
+    });
+
+    // Retrieve the title of the landing page
+    let landingPageTitle;
+    cy.findByRole('main').within(() => {
+      cy.findAllByTestId('page').should((elements) => {
+        for (let i = elements.length - 1; i >= 0; i--) {
+          const el = elements[i];
+          const isLandingPage =
+            el.getElementsByClassName('crayons-icon').length > 0;
+          if (isLandingPage) {
+            landingPageTitle = el.querySelector('a').innerHTML;
+          }
+        }
       });
 
-    cy.findByRole('main');
-    cy.findAllByRole('link', { name: 'Edit' }).first().click();
-    cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-      .first()
-      .should('not.be.checked');
+      cy.findAllByRole('link', { name: 'Edit' }).first().click();
+    });
+
+    // Change landing page but then Cancel
+    cy.findByRole('main').within(() => {
+      cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
+        .first()
+        .check();
+
+      cy.findAllByRole('button', { name: 'Cancel' }).first().click();
+
+      cy.findAllByRole('button', { name: 'Update Page' }).first().click();
+    });
+
+    // Check the title of the landing page has not changed
+    cy.findByRole('main').within(() => {
+      let newLandingPageTitle;
+      cy.findAllByTestId('page').should((elements) => {
+        for (let i = elements.length - 1; i >= 0; i--) {
+          const el = elements[i];
+          const isLandingPage =
+            el.getElementsByClassName('crayons-icon').length > 0;
+          if (isLandingPage) {
+            newLandingPageTitle = el.querySelector('a').innerHTML;
+          }
+        }
+
+        assert.equal(landingPageTitle, newLandingPageTitle);
+      });
+    });
   });
 });
