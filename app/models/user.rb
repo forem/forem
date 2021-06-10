@@ -36,14 +36,7 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  PROVIDER_COLUMNS = %w[
-    apple_created_at
-    facebook_created_at
-    github_created_at
-    twitter_created_at
-  ].freeze
-
-  self.ignored_columns = PROFILE_COLUMNS + PROVIDER_COLUMNS
+  self.ignored_columns = PROFILE_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -73,6 +66,7 @@ class User < ApplicationRecord
     end
   end
 
+  ANY_ADMIN_ROLES = %i[admin super_admin].freeze
   EDITORS = %w[v1 v2].freeze
   FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
   INBOXES = %w[open private].freeze
@@ -95,6 +89,57 @@ class User < ApplicationRecord
     (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
     \z
   }x.freeze
+
+  # Relevant Fields for migration from Users table to Users_Settings table
+  USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
+    config_font
+    config_navbar
+    config_theme
+    display_announcements
+    display_sponsors
+    editor_version
+    experience_level
+    feed_mark_canonical
+    feed_referential_link
+    feed_url
+    inbox_guidelines
+    inbox_type
+    permit_adjacent_sponsors
+  ].to_set.freeze
+
+  # Relevant Fields for migration from Profiles table to Users_Settings table
+  PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
+    brand_color1
+    brand_color2
+    display_email_on_profile
+  ].to_set.freeze
+
+  # Relevant Fields for migration from Users table to Users_Notification_Settings table
+  USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
+    email_badge_notifications
+    email_comment_notifications
+    email_community_mod_newsletter
+    email_connect_messages
+    email_digest_periodic
+    email_follower_notifications
+    email_membership_newsletter
+    email_mention_notifications
+    email_newsletter
+    email_tag_mod_newsletter
+    email_unread_notifications
+    mobile_comment_notifications
+    mod_roundrobin_notifications
+    reaction_notifications
+    welcome_notifications
+  ].to_set.freeze
+
+  USER_SETTINGS_ENUM_FIELDS = %w[
+    config_font
+    config_navbar
+    config_theme
+    editor_version
+    inbox_type
+  ].to_set.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -303,6 +348,8 @@ class User < ApplicationRecord
   after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
+
+  after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 
   def self.dev_account
@@ -310,7 +357,7 @@ class User < ApplicationRecord
   end
 
   def self.mascot_account
-    find_by(id: SiteConfig.mascot_user_id)
+    find_by(id: Settings::General.mascot_user_id)
   end
 
   def tag_line
@@ -409,7 +456,7 @@ class User < ApplicationRecord
   end
 
   def any_admin?
-    @any_admin ||= (has_role?(:super_admin) || has_role?(:admin))
+    @any_admin ||= roles.where(name: ANY_ADMIN_ROLES).any?
   end
 
   def tech_admin?
@@ -498,7 +545,7 @@ class User < ApplicationRecord
 
   def subscribe_to_mailchimp_newsletter
     return unless registered && email.present?
-    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
     return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
@@ -526,7 +573,7 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
-    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
@@ -574,6 +621,45 @@ class User < ApplicationRecord
   end
 
   private
+
+  def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
+    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      # rubocop:disable Layout/LineLength
+      users_setting_record.assign_attributes(field => profile.public_send(field)) if profile&.public_send(field).present?
+      # rubocop:enable Layout/LineLength
+    end
+  end
+
+  def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
+    USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      if USER_SETTINGS_ENUM_FIELDS.include?(field)
+        field_enums = Users::Setting.defined_enums[field]
+        users_setting_record.assign_attributes(field => field_enums[public_send(field).to_sym])
+      else
+        users_setting_record.assign_attributes(field => public_send(field))
+      end
+    end
+
+    sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
+
+    users_setting_record.save
+  end
+
+  def sync_users_settings_table
+    users_setting_record = Users::Setting.create_or_find_by(user_id: id)
+
+    migrate_users_and_profile_fields_to_users_settings(users_setting_record)
+  end
+
+  def sync_users_notification_settings_table
+    users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)
+
+    USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
+      users_notification_setting_record.assign_attributes(field => public_send(field))
+    end
+
+    users_notification_setting_record.save
+  end
 
   def send_welcome_notification
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
@@ -693,5 +779,9 @@ class User < ApplicationRecord
 
   def strip_payment_pointer
     self.payment_pointer = payment_pointer.strip if payment_pointer
+  end
+
+  def confirmation_required?
+    ForemInstance.smtp_enabled?
   end
 end

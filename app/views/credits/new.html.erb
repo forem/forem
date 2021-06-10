@@ -47,7 +47,7 @@
     </div>
       <br />
     </div>
-    <p class="bulk-description"><em>Contact <%= email_link(:business, additional_info: { subject: "Custom Bulk Pricing/Partnerships" }) %> for custom bulk pricing and partnerships.</em></p>
+    <p class="bulk-description"><em>Contact <%= email_link(additional_info: { subject: "Custom Bulk Pricing/Partnerships" }) %> for custom bulk pricing and partnerships.</em></p>
     <details>
       <summary>
         How many credits does one listing cost?
@@ -154,7 +154,7 @@
       changeSubmitButton({ text: 'Submitting...', active: false })
     }
 
-    var stripe = Stripe('<%= SiteConfig.stripe_publishable_key %>');
+    var stripe = Stripe('<%= Settings::General.stripe_publishable_key %>');
     var elements = stripe.elements();
 
     <% if current_user.decorate.dark_theme? %>

@@ -72,21 +72,41 @@
     <%= render partial: "editor_guide_h3", locals: { id: "markdown-inline-images", title: "Inline Images" } %>
     <p>
       When adding GIFs to posts and comments, please note that there is a limit of 200 megapixels per frame/page.
-      <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_220,q_auto,w_220/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" />
+      <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_220,q_auto,w_220/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" loading="lazy" />
     </p>
     <pre>![Alt text of image](put-link-to-image-here)</pre>
     <figure>
-        <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_50,q_auto,w_50/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" />
+        <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_50,q_auto,w_50/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" loading="lazy" />
         <figcaption>You can even add a caption using the HTML <code>figcaption</code> tag!</figcaption>
     </figure>
 
-    <%= render partial: "editor_guide_h3", locals: { id: "markdown-headers", title: "Headers" } %>
-    <p>Add a header to your post with this syntax:</p>
-    <pre># One '#' for a h1 header<br>## Two '#'s for a h2 header<br>...<br>###### Six '#'s for a h6 header</pre>
+    <%= render partial: "editor_guide_h3", locals: { id: "markdown-headers", title: "Headings" } %>
+    <p>Add a heading to your post with this syntax:</p>
+    <pre># One '#' for a h1 heading<br>## Two '#'s for a h2 heading<br>...<br>###### Six '#'s for a h6 heading</pre>
 
     <%= render partial: "editor_guide_h3", locals: { id: "author-notes", title: "Author Notes/Comments" } %>
     <p>Add some hidden notes/comments to your article with this syntax:</p>
     <pre>&lt;!-- This won't show up in the content! --&gt;</pre>
+
+    <h2 style="font-size:2.8em" id="accessibility" class="permalink-heading">
+      <strong>Accessibility</strong>
+      <a href="#accessibility" aria-label="permalink for Accessibility"><%= inline_svg_tag("small-link.svg", aria_hidden: true) %></a>
+    </h2>
+    <p>People access online content in all kinds of different ways, and there are a few things you can do to make your posts more easily understood by a broad range of users. You can find out more about web accessibility at <a href="https://www.w3.org/WAI/fundamentals/accessibility-intro/">W3C's Introduction to Web Accessibility</a>, but there are two main ways you can make your posts more accessible: providing alternative descriptions of any images you use, and adding appropriate headings.</p>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "alt-text-for-images", title: "Providing alternative descriptions for images" } %>
+    <p>Some users might not be able to see or easily process images that you use in your posts. Providing an alternative description for an image helps make sure that everyone can understand your post, whether they can see the image or not.</p>
+    <p>When you upload an image in the editor, you will see the following text to copy and paste into your post:</p>
+    <pre>![Alt Text](/file-path/my-image.png)</pre>
+    <p>Replace the "Alt Text" in square brackets with a description of your image - for example:</p>
+    <pre>![A pie chart showing 40% responded "Yes", 50% responded "No" and 10% responded "Not sure"](/file-path/my-image.png)</pre>
+    <p>By doing this, if someone reads your post using an assistive device like a screen reader (which turns written content into spoken audio) they will hear the description you entered.</p>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "accessible-headings", title: "Providing headings" } %>
+    <p>Headings provide an outline of your post to readers, including people who can't see the screen well. Many assistive technologies (like screen readers) allow users to skip directly to a particular heading, helping them find and understand the content of your post with ease.</p>
+    <p><a href="#markdown-headers">Headings can be added in levels 1 - 6</a>. Avoid using a level one heading (i.e., '# Heading text'). When you create a post, your post title automatically becomes a level one heading and serves a special role on the page, much like the headline of a newspaper article. Similar to how a newspaper article only has one headline, it can be confusing if multiple level one headings exist on a page.</p>
+    <p>In your post content, start with level two headings for each section (e.g. '## Section heading text'), and increase the heading level by one when you'd like to add a sub-section, for example:</p>
+    <pre>## Fun facts about sloths</br></br>### Speed</br></br>Sloths move at a maximum speed of 0.27 km/h!</pre>
 
     <h2 style="font-size:2.8em" id="liquidtags" class="permalink-heading">
       <strong>🌊 Liquid Tags</strong>
@@ -356,7 +376,7 @@
     <%= render partial: "editor_guide_h3", locals: { id: "next-tech-embed", title: "Next Tech Embed" } %>
     <p>All you need is the share URL for your sandbox. You can get the share URL by clicking
     the "Share" button in the top right when the sandbox is open.</p>
-    <p><img src="https://thepracticaldev.s3.amazonaws.com/i/r449xp8cay3383i139qv.png" alt="Share Replit sandbox" /></p>
+    <p><img src="https://thepracticaldev.s3.amazonaws.com/i/r449xp8cay3383i139qv.png" alt="Share Replit sandbox" loading="lazy" /></p>
     <pre>{% nexttech https://nt.dev/s/6ba1fffbd09e %}</pre>
 
     <%= render partial: "editor_guide_h3", locals: { id: "instagram-embed", title: "Instagram Embed" } %>
@@ -442,7 +462,8 @@
       Here's an example of what to do:
       <img
         src="https://res.cloudinary.com/practicaldev/image/fetch/s--HjVUshkb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/8l29vxiir8k5d097o9o8.png"
-        alt="example image of writing lists with images in Markdown">
+        alt="example image of writing lists with images in Markdown"
+        loading="lazy" />
     </p>
 
     <p>

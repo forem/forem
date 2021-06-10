@@ -1,9 +1,9 @@
 <% if comment.deleted %>
   <span class="shrink-0 crayons-avatar <% if comment.depth == 0 %>m:crayons-avatar--l mt-4 m:mt-3<% else %>mt-4<% end %>">
-    <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_image_url, width: 32, height: 32, crop: "imagga_scale"), class: "crayons-avatar__image overflow-hidden", alt: "Sloan, the sloth mascot", loading: "lazy") %>
+    <%= image_tag(Images::Optimizer.call(Settings::General.mascot_image_url, width: 32, height: 32, crop: "imagga_scale"), class: "crayons-avatar__image overflow-hidden", alt: "Sloan, the sloth mascot", loading: "lazy") %>
   </span>
 <% else %>
   <a href="<%= URL.user(comment.user) %>" class="shrink-0 crayons-avatar <% if comment.depth == 0 %>m:crayons-avatar--l mt-4 m:mt-3<% else %>mt-4<% end %>">
-    <img class="crayons-avatar__image" width="32" height="32" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" />
+    <img class="crayons-avatar__image" width="32" height="32" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" loading="lazy" />
   </a>
 <% end %>

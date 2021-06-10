@@ -161,7 +161,7 @@ RSpec.describe "CommentsCreate", type: :request do
     end
 
     def reply_and_mention_comment_author_as_moderator(comment)
-      allow(SiteConfig).to receive(:mascot_user_id)
+      allow(Settings::General).to receive(:mascot_user_id)
         .and_return(moderator_replier.id)
 
       sign_in moderator_replier

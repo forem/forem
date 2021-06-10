@@ -25,12 +25,10 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
-  # TODO: Vaidehi Joshi - Extract this into a constant or SiteConfig variable
-  # after https://github.com/forem/rfcs/pull/22 has been completed?
-  MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
 
+  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
@@ -106,7 +104,7 @@ class Article < ApplicationRecord
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
 
-  after_commit :async_score_calc, :touch_collection, on: %i[create update]
+  after_commit :async_score_calc, :touch_collection, :detect_animated_images, on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -125,12 +123,12 @@ class Article < ApplicationRecord
     .declare("l_org_vector tsvector; l_user_vector tsvector") do
     <<~SQL
       NEW.reading_list_document :=
-        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))) ||
-        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))) ||
-        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))) ||
-        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))) ||
-        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))) ||
-        to_tsvector('simple'::regconfig,
+        setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))), 'A') ||
+        setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))), 'B') ||
+        setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))), 'C') ||
+        setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))), 'D') ||
+        setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))), 'D') ||
+        setweight(to_tsvector('simple'::regconfig,
           unaccent(
             coalesce(
               array_to_string(
@@ -141,7 +139,7 @@ class Article < ApplicationRecord
               ''
             )
           )
-        );
+        ), 'D');
     SQL
   end
 
@@ -178,7 +176,7 @@ class Article < ApplicationRecord
       .where(user_id: User.with_role(:super_admin)
                           .union(User.with_role(:admin))
                           .union(id: [Settings::Community.staff_user_id,
-                                      SiteConfig.mascot_user_id].compact)
+                                      Settings::General.mascot_user_id].compact)
                           .select(:id)).order(published_at: :desc).tagged_with(tag_name)
   }
 
@@ -220,8 +218,6 @@ class Article < ApplicationRecord
       raise TypeError, "Cannot search tags for: #{tags.inspect}"
     end
   }
-
-  scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
@@ -689,9 +685,9 @@ class Article < ApplicationRecord
 
     # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
-    return if mentions_count <= MAX_USER_MENTIONS
+    return if mentions_count <= Settings::RateLimit.mention_creation
 
-    errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a post!")
+    errors.add(:base, "You cannot mention more than #{Settings::RateLimit.mention_creation} users in a post!")
   end
 
   def create_slug
@@ -785,10 +781,12 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    return unless SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
+    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
+                    Regexp.new(term.downcase).match?(title.downcase)
+                  end
 
     Reaction.create(
-      user_id: SiteConfig.mascot_user_id,
+      user_id: Settings::General.mascot_user_id,
       reactable_id: id,
       reactable_type: "Article",
       category: "vomit",
@@ -798,7 +796,7 @@ class Article < ApplicationRecord
 
     user.add_role(:suspended)
     Note.create(
-      author_id: SiteConfig.mascot_user_id,
+      author_id: Settings::General.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
       reason: "automatic_suspend",
@@ -816,5 +814,12 @@ class Article < ApplicationRecord
 
   def notify_slack_channel_about_publication
     Slack::Messengers::ArticlePublished.call(article: self)
+  end
+
+  def detect_animated_images
+    return unless FeatureFlag.enabled?(:detect_animated_images)
+    return unless saved_change_to_attribute?(:processed_html)
+
+    ::Articles::DetectAnimatedImagesWorker.perform_async(id)
   end
 end

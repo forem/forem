@@ -22,7 +22,7 @@
               <% if user %>
                 <div class="crayons-card p-4 m:p-6 flex s:grid single-article break-word content-center" id="follows-<%= follow.id %>">
                   <a href="<%= user.path %>" class="crayons-avatar crayons-avatar--2xl s:mb-2 s:mx-auto">
-                    <img alt="<%= user.username %> profile image" class="crayons-avatar__image" src="<%= Images::Profile.call(user.profile_image_url, length: 60) %>" />
+                    <img alt="<%= user.username %> profile image" class="crayons-avatar__image" src="<%= Images::Profile.call(user.profile_image_url, length: 60) %>" loading="lazy" />
                   </a>
 
                   <div class="pl-4 s:pl-0 self-center">

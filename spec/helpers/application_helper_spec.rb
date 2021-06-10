@@ -80,11 +80,12 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(helper.release_adjusted_cache_key("cache-me")).to include("cache-me-fr-ca-abc123")
     end
 
-    it "includes SiteConfig.admin_action_taken_at" do
+    it "includes Settings::General.admin_action_taken_at" do
       Timecop.freeze do
-        allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
+        allow(Settings::General).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
         allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
-        expect(helper.release_adjusted_cache_key("cache-me")).to include(SiteConfig.admin_action_taken_at.rfc3339)
+        expect(helper.release_adjusted_cache_key("cache-me"))
+          .to include(Settings::General.admin_action_taken_at.rfc3339)
       end
     end
   end
@@ -118,7 +119,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     before do
       allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
       allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("dev.to")
-      allow(SiteConfig).to receive(:app_domain).and_return("dev.to")
+      allow(Settings::General).to receive(:app_domain).and_return("dev.to")
     end
 
     it "creates the correct base app URL" do
@@ -157,16 +158,12 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe "#email_link" do
-    let(:contact_email) { "contact@dev.to" }
+    let(:default_email) { "hi@dev.to" }
 
     before do
-      allow(SiteConfig).to receive(:email_addresses).and_return(
+      allow(Settings::General).to receive(:email_addresses).and_return(
         {
-          default: "hi@dev.to",
-          contact: contact_email,
-          business: "business@dev.to",
-          privacy: "privacy@dev.to",
-          members: "members@dev.to"
+          default: default_email
         },
       )
     end
@@ -176,17 +173,12 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "sets the correct href" do
-      expect(helper.email_link).to have_link(href: "mailto:#{contact_email}")
-      expect(helper.email_link(:business)).to have_link(href: "mailto:business@dev.to")
+      expect(helper.email_link).to have_link(href: "mailto:#{default_email}")
     end
 
     it "has the correct text in the a tag" do
       expect(helper.email_link(text: "Link Name")).to have_text("Link Name")
-      expect(helper.email_link).to have_text(contact_email)
-    end
-
-    it "returns the default email if it doesn't understand the type parameter" do
-      expect(helper.email_link(:nonsense)).to have_link(href: "mailto:#{contact_email}")
+      expect(helper.email_link).to have_text(default_email)
     end
 
     it "returns an href with additional_info parameters" do
@@ -195,7 +187,7 @@ RSpec.describe ApplicationHelper, type: :helper do
         body: "This is a longer body with a question mark ? \n and a newline"
       }
 
-      link = "<a href=\"mailto:#{contact_email}?body=This%20is%20a%20longer%20body%20with%20a%20" \
+      link = "<a href=\"mailto:#{default_email}?body=This%20is%20a%20longer%20body%20with%20a%20" \
         "question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>"
       expect(email_link(text: "text", additional_info: additional_info)).to eq(link)
     end
@@ -218,7 +210,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
-  describe "#cloudinary" do
+  describe "#cloudinary", cloudinary: true do
     it "returns cloudinary-manipulated link" do
       image = helper.optimized_image_url(Faker::Placeholdit.image)
       expect(image).to start_with("https://res.cloudinary.com")
@@ -240,7 +232,7 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe "#optimized_image_tag" do
-    it "works just like cl_image_tag" do
+    it "works just like cl_image_tag", cloudinary: true do
       image_url = "https://i.imgur.com/fKYKgo4.png"
       cloudinary_image_tag = cl_image_tag(image_url,
                                           type: "fetch", crop: "imagga_scale",
