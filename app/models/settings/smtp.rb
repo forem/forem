@@ -13,7 +13,32 @@ module Settings
                            validates: { inclusion: %w[plain login cram_md5] }
     field :domain, type: :string, default: ApplicationConfig["SMTP_DOMAIN"]
     field :password, type: :string, default: ApplicationConfig["SMTP_PASSWORD"]
-    field :port, type: :integer, default: ApplicationConfig["SMTP_PORT"]
+    field :port, type: :integer, default: ApplicationConfig["SMTP_PORT"] # should default to nil wtf
     field :user_name, type: :string, default: ApplicationConfig["SMTP_USER_NAME"]
+
+    class << self
+      def enabled?
+        (user_name.present? && password.present?) || ENV["SENDGRID_API_KEY"].present?
+      end
+
+      def settings
+        return sendgrid_settings if ENV["SENDGRID_API_KEY"].present?
+
+        keys.index_with { |k| public_send(k) }
+      end
+
+      private
+
+      def sendgrid_settings
+        {
+          address: "smtp.sendgrid.net",
+          port: 587,
+          authentication: :plain,
+          user_name: "apikey",
+          password: ENV["SENDGRID_API_KEY"],
+          domain: ENV["APP_DOMAIN"]
+        }
+      end
+    end
   end
 end

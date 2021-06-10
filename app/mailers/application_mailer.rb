@@ -8,7 +8,8 @@ class ApplicationMailer < ActionMailer::Base
   helper AuthenticationHelper
 
   before_action :use_custom_host
-  before_action :set_delivery_options
+  after_action :set_delivery_options
+  after_action :set_perform_deliveries
 
   default(
     from: -> { email_from },
@@ -38,36 +39,13 @@ class ApplicationMailer < ActionMailer::Base
     ActionMailer::Base.default_url_options[:host] = Settings::General.app_domain
   end
 
-  def perform_deliveries?
-    if Rails.env.production?
-      self.perform_deliveries = Settings::SMTP.password.present? ||
-        ENV["SENDGRID_API_KEY"].present?
-    else
-      Rails.configuration.action_mailer.perform_deliveries
-    end
+  def set_perform_deliveries
+    self.perform_deliveries = Settings::SMTP.enabled?
   end
 
   protected
 
   def set_delivery_options
-    self.smtp_settings = if ENV["SENDGRID_API_KEY"].present?
-                           {
-                             address: "smtp.sendgrid.net",
-                             port: 587,
-                             authentication: :plain,
-                             user_name: "apikey",
-                             password: ENV["SENDGRID_API_KEY"],
-                             domain: ENV["APP_DOMAIN"]
-                           }
-                         else
-                           {
-                             address: Settings::SMTP.address,
-                             port: Settings::SMTP.port,
-                             authentication: Settings::SMTP.authentication,
-                             user_name: Settings::SMTP.user_name,
-                             password: Settings::SMTP.password,
-                             domain: Settings::SMTP.domain
-                           }
-                         end
+    self.smtp_settings = Settings::SMTP.settings
   end
 end

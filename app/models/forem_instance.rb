@@ -21,6 +21,6 @@ class ForemInstance
   end
 
   def self.smtp_enabled?
-    ApplicationMailer.new.perform_deliveries?
+    Settings::SMTP.enabled?
   end
 end
