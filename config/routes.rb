@@ -102,10 +102,6 @@ Rails.application.routes.draw do
           resources :listings, only: [:index], to: "organizations#listings"
           resources :articles, only: [:index], to: "organizations#articles"
         end
-
-        namespace :admin do
-          resource :config, only: %i[show update], defaults: { format: :json }
-        end
       end
     end
 
@@ -327,10 +323,6 @@ Rails.application.routes.draw do
     post "/fallback_activity_recorder", to: "ga_events#create"
 
     get "/page/:slug", to: "pages#show"
-
-    # TODO: [forem/teamsmash] removed the /p/information view and added a redirect for SEO purposes.
-    # We need to remove this route in 2 months (11 January 2021).
-    get "/p/information", to: redirect("/about")
 
     scope "p" do
       pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics badges].freeze
