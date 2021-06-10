@@ -1,6 +1,6 @@
 module Settings
   class SMTP < RailsSettings::Base
-    self.table_name = :settings_smtps
+    self.table_name = :settings_smtp
 
     OPTIONS = %i[address port authentication user_name password domain].freeze
 
