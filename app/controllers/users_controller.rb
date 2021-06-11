@@ -134,7 +134,7 @@ class UsersController < ApplicationController
   def remove_identity
     set_current_tab("account")
 
-    error_message = format(REMOVE_IDENTITY_ERROR, email: Settings::General.email_addresses[:default])
+    error_message = format(REMOVE_IDENTITY_ERROR, email: ForemInstance.email)
     unless Authentication::Providers.enabled?(params[:provider])
       flash[:error] = error_message
       redirect_to user_settings_path(@tab)

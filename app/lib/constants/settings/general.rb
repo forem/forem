@@ -23,10 +23,6 @@ module Constants
             placeholder: ""
           }
         },
-        email_addresses: {
-          description: "Email address",
-          placeholder: ""
-        },
         favicon_url: {
           description: "Used as the site favicon",
           placeholder: IMAGE_PLACEHOLDER
