@@ -1,29 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Settings::SMTP do
-  after do
-    described_class.clear_cache
-  end
-
-  describe "::enabled?" do
-    it "return false when no credential is provided" do
-      expect(described_class.enabled?).to be(false)
-    end
-
-    it "returns true if user_name and password are present" do
-      described_class.user_name = "something"
-      described_class.password = "something"
-
-      expect(described_class.enabled?).to be(true)
-    end
-
-    it "returns true if sendgrid api key is available" do
-      ENV["SENDGRID_API_KEY"] = "something"
-      expect(described_class.enabled?).to be(true)
-      ENV["SENDGRID_API_KEY"] = nil
-    end
-  end
-
   describe "::settings" do
     it "use default sendgrid config if SENDGRID_API_KEY is available" do
       key = "something"

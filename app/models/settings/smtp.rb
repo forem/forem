@@ -17,10 +17,6 @@ module Settings
     field :user_name, type: :string, default: ApplicationConfig["SMTP_USER_NAME"]
 
     class << self
-      def enabled?
-        (user_name.present? && password.present?) || ENV["SENDGRID_API_KEY"].present?
-      end
-
       def settings
         return sendgrid_settings if ENV["SENDGRID_API_KEY"].present?
 

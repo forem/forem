@@ -21,6 +21,6 @@ class ForemInstance
   end
 
   def self.smtp_enabled?
-    Settings::SMTP.enabled?
+    (Settings::SMTP.user_name.present? && Settings::SMTP.password.present?) || ENV["SENDGRID_API_KEY"].present?
   end
 end
