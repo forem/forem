@@ -47,17 +47,13 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
     // We want to close the dropdown on link select (since they open in a new tab)
     document
       .querySelectorAll('#article-show-more-dropdown [href]')
-      .forEach((link) => link.addEventListener('click', closeDropdown));
-
-    // Add Ahoy stats for dropdown share options
-    const container = document.getElementsByClassName(
-      'crayons-article-actions__inner',
-    )[0];
-    container?.querySelectorAll('a.dropdown-link-row').forEach((link) => {
-      link.addEventListener('click', (event) => {
-        ahoy.track('Post Dropdown', { option: event.target.text.trim() });
+      .forEach((link) => {
+        link.addEventListener('click', closeDropdown);
+        // Temporary Ahoy Stats for usage reports
+        link.addEventListener('click', (event) => {
+          ahoy.track('Post Dropdown', { option: event.target.text.trim() });
+        });
       });
-    });
   }
 
   shareDropdownButton.dataset.initialized = 'true';
