@@ -289,7 +289,7 @@ RSpec.describe "/admin/customization/config", type: :request do
             confirmation: confirmation_message
           }
 
-          expect(Settings::General.email_addresses[:default]).not_to eq("random@example.com")
+          expect(ForemInstance.email).not_to eq("random@example.com")
         end
       end
 

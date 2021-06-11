@@ -27,15 +27,6 @@ module Settings
     field :health_check_token, type: :string
     field :video_encoder_key, type: :string
 
-    # Emails
-    field :email_addresses, type: :hash, default: {
-      default: ApplicationConfig["DEFAULT_EMAIL"],
-      contact: ApplicationConfig["DEFAULT_EMAIL"],
-      business: ApplicationConfig["DEFAULT_EMAIL"],
-      privacy: ApplicationConfig["DEFAULT_EMAIL"],
-      members: ApplicationConfig["DEFAULT_EMAIL"]
-    }
-
     # Email digest frequency
     field :periodic_email_digest, type: :integer, default: 2
 
