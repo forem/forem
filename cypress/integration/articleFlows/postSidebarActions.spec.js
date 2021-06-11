@@ -37,7 +37,6 @@ describe('Post sidebar actions', () => {
     cy.findByRole('link', { name: /^Share to Reddit$/i });
     cy.findByRole('link', { name: /^Share to Hacker News$/i });
     cy.findByRole('link', { name: /^Share to Facebook$/i });
-
     // There is a report abuse link at the bottom of the post too
     cy.findAllByRole('link', { name: /^Report Abuse$/i }).should(
       'have.length',
