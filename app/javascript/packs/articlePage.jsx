@@ -1,6 +1,7 @@
 import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
+import { embedGists } from '../utilities/gist';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 /* global Runtime */
@@ -161,3 +162,6 @@ actionsContainer.addEventListener('click', async (event) => {
     toggleArticlePin(event.target);
   }
 });
+
+const targetNode = document.querySelector('#comments');
+targetNode && embedGists(targetNode);

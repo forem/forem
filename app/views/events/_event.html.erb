@@ -75,7 +75,7 @@
       <span class="timezone">America/New_York</span>
       <span class="title"><%= event.title %></span>
       <span class="organizer"><%= community_name %></span>
-      <span class="organizer_email"><%= Settings::General.email_addresses[:default] %></span>
+      <span class="organizer_email"><%= ForemInstance.email %></span>
       <span class="calname">dev-event</span>
       <span class="location"><%= event.location_url %></span>
       <span class="alarm_reminder">15</span>
