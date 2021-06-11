@@ -32,7 +32,7 @@ module Feeds
     private
 
     def processed_title
-      @title.size <= 128 ? @title : "#{@title[0..124]}..."
+      @title.truncate(128, omission: "...", separator: " ")
     end
 
     def get_tags
