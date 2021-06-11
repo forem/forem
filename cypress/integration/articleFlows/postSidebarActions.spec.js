@@ -1,12 +1,4 @@
 describe('Post sidebar actions', () => {
-  const shareAvailableStub = {
-    onBeforeLoad: (win) => {
-      Object.defineProperty(win.navigator, 'share', { value: true });
-    },
-  };
-
-  let articlePath = '';
-
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV2User.json').as('user');
@@ -19,8 +11,7 @@ describe('Post sidebar actions', () => {
           content: `This is a test article's contents.`,
           published: true,
         }).then((response) => {
-          articlePath = response.body.current_state_path;
-          cy.visit(articlePath);
+          cy.visit(response.body.current_state_path);
         });
       });
     });
@@ -59,15 +50,6 @@ describe('Post sidebar actions', () => {
     cy.findByRole('img', {
       name: /^Copy article link to the clipboard$/i,
     }).should('not.exist');
-  });
-
-  it('should display "Share Post via..." when navigator.share is available', () => {
-    // When navigator.share is undefined (Cypress default) the button shouldn't exist
-    // cy.findByRole('link', { name: /^Share Post via...$/i }).should('not.exist');
-
-    // When navigator.share is available the button should exist
-    cy.visit(articlePath, shareAvailableStub);
-    cy.findByRole('link', { name: /^Share Post via...$/i }).should('exist');
   });
 
   it('should close the options dropdown on Escape press, returning focus', () => {
