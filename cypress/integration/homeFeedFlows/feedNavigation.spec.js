@@ -25,11 +25,6 @@ describe('Home Feed Navigation', () => {
         'aria-current',
         'page',
       );
-
-      cy.get('@week').should('have.attr', 'aria-current', '');
-      cy.get('@month').should('have.attr', 'aria-current', '');
-      cy.get('@year').should('have.attr', 'aria-current', '');
-      cy.get('@infinity').should('have.attr', 'aria-current', '');
     });
   });
 
