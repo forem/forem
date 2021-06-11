@@ -7,7 +7,10 @@
 
 <div class="crayons-card p-6 pages__table">
   <% @pages.each do |page| %>
-    <div class="flex py-2 items-center">
+    <div class="flex py-2 items-center" data-testid="page">
+      <% if page.landing_page? %>
+        <%= inline_svg_tag("lock.svg", class: "crayons-icon", aria: true, title: "Current locked screen") %>
+      <% end %>
       <%= link_to page.title, page.path %>
       <%= link_to "Edit", edit_admin_page_path(page.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
     </div>

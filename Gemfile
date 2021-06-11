@@ -11,7 +11,7 @@ group :production do
 end
 
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
-gem "acts-as-taggable-on", "~> 7.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
+gem "acts-as-taggable-on", "~> 8.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.7" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "ahoy_email", "~> 2.0.2" # Email analytics for Rails
@@ -23,7 +23,7 @@ gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cloudinary", "~> 1.20" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.49.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.50.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.5" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -105,7 +105,7 @@ gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "store_attribute", "~> 0.8.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.33" # Ruby library for the Stripe API
+gem "stripe", "~> 5.34" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
