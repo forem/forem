@@ -48,9 +48,10 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
     document
       .querySelectorAll('#article-show-more-dropdown [href]')
       .forEach((link) => {
-        link.addEventListener('click', closeDropdown);
-        // Temporary Ahoy Stats for usage reports
         link.addEventListener('click', (event) => {
+          closeDropdown(event)
+          
+          // Temporary Ahoy Stats for usage reports
           ahoy.track('Post Dropdown', { option: event.target.text.trim() });
         });
       });
