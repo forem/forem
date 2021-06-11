@@ -1,4 +1,11 @@
 module Payments
+  # This service encapsulates purchasing credits via the Stripe API.
+  #
+  # NOTE: We still use the legacy checkout API here. While this doesn't
+  # support all features of Stripe's new API (e.g. SCA) it's well suited
+  # for our use-case of occasional one-off purchases.
+  # An exploration of alternatives and the decision to stick to the legacy API
+  # can be found here: https://github.com/forem/internalEngineering/issues/364
   class ProcessCreditPurchase
     def self.call(user, credits_count, purchase_options:)
       new(
