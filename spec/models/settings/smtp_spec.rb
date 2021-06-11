@@ -18,9 +18,9 @@ RSpec.describe Settings::SMTP do
     end
 
     it "returns true if sendgrid api key is available" do
-      allow(ApplicationConfig).to receive(:[]).with("SENDGRID_API_KEY").and_return("something")
-
+      ENV["SENDGRID_API_KEY"] = "something"
       expect(described_class.enabled?).to be(true)
+      ENV["SENDGRID_API_KEY"] = nil
     end
   end
 
@@ -29,7 +29,8 @@ RSpec.describe Settings::SMTP do
       key = "something"
       domain = "test.com"
       allow(ApplicationConfig).to receive(:[]).with("SENDGRID_API_KEY").and_return(key)
-      allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return(domain)
+      ENV["SENDGRID_API_KEY"] = "something"
+      allow(Settings::General).to receive(:app_domain).and_return(domain)
 
       expect(described_class.settings).to eq({
                                                address: "smtp.sendgrid.net",
@@ -39,6 +40,7 @@ RSpec.describe Settings::SMTP do
                                                password: key,
                                                domain: domain
                                              })
+      ENV["SENDGRID_API_KEY"] = nil
     end
 
     it "uses Settings::SMTP config if SENDGRID_API_KEY is not available" do
