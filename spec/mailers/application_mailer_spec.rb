@@ -11,7 +11,7 @@ RSpec.describe ApplicationMailer, type: :mailer do
 
     it "changes perform_deliveries from false to true if smtp is enabled" do
       described_class.perform_deliveries = false
-      allow(Settings::SMTP).to receive(:enabled?).and_return(true)
+      allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
 
       expect { email.deliver_now }.to change(described_class, :perform_deliveries).from(false).to(true)
     end

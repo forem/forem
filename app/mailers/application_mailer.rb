@@ -40,7 +40,7 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def set_perform_deliveries
-    self.perform_deliveries = Settings::SMTP.enabled?
+    self.perform_deliveries = ForemInstance.smtp_enabled?
   end
 
   protected

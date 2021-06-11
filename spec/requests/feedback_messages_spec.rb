@@ -4,7 +4,7 @@ RSpec.describe "feedback_messages", type: :request do
   let(:user) { create(:user) }
 
   before do
-    allow(Settings::SMTP).to receive(:enabled?).and_return(true)
+    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
   end
 
   describe "POST /feedback_messages" do

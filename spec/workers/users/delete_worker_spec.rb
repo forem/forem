@@ -7,7 +7,7 @@ RSpec.describe Users::DeleteWorker, type: :worker do
   let(:message_delivery) { double }
 
   before do
-    allow(Settings::SMTP).to receive(:enabled?).and_return(true)
+    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
   end
 
   describe "#perform" do
