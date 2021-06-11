@@ -14,11 +14,7 @@ const INTERACTIVE_ELEMENTS_QUERY =
  * @param {string} args.dropdownContentId The id of the dropdown content element
  * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
  */
-const keyUpListener = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose = () => {},
-}) => {
+const keyUpListener = ({ triggerElementId, dropdownContentId, onClose }) => {
   return ({ key }) => {
     if (key === 'Escape') {
       // Close the dropdown and return focus to the trigger button to prevent focus being lost
@@ -53,7 +49,7 @@ const keyUpListener = ({
 const clickOutsideListener = ({
   triggerElementId,
   dropdownContentId,
-  onClose = () => {},
+  onClose,
 }) => {
   return ({ target }) => {
     const triggerElement = document.getElementById(triggerElementId);
@@ -86,11 +82,7 @@ const clickOutsideListener = ({
  * @param {string} args.dropdownContent The id of the dropdown content element
  * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
  */
-const openDropdown = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose = () => {},
-}) => {
+const openDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
   const dropdownContent = document.getElementById(dropdownContentId);
   const triggerElement = document.getElementById(triggerElementId);
 
@@ -121,11 +113,7 @@ const openDropdown = ({
  * @param {string} args.dropdownContent The id of the dropdown content element
  * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
  */
-const closeDropdown = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose = () => {},
-}) => {
+const closeDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
   const dropdownContent = document.getElementById(dropdownContentId);
 
   document
@@ -143,7 +131,7 @@ const closeDropdown = ({
     'click',
     clickOutsideListener({ triggerElementId, dropdownContentId, onClose }),
   );
-  onClose();
+  onClose?.();
 };
 
 /**
@@ -163,8 +151,8 @@ export const initializeDropdown = ({
   triggerElementId,
   dropdownContentId,
   dropdownContentCloseButtonId,
-  onClose = () => {},
-  onOpen = () => {},
+  onClose,
+  onOpen,
 }) => {
   const triggerButton = document.getElementById(triggerElementId);
   const dropdownContent = document.getElementById(dropdownContentId);
@@ -196,7 +184,7 @@ export const initializeDropdown = ({
         dropdownContentId,
         onClose,
       });
-      onOpen();
+      onOpen?.();
     }
   });
 
