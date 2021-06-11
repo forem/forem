@@ -6,8 +6,8 @@ module Feeds
 
     def initialize(item, user, feed, feed_source_url)
       @item = item
-      @title = item[:title].strip
-      @categories = item[:categories] || []
+      @title = item.title.strip
+      @categories = item.categories || []
       @user = user
       @feed = feed
       @feed_source_url = feed_source_url
@@ -58,7 +58,7 @@ module Feeds
     end
 
     def get_content
-      @item[:content] || @item[:summary] || @item[:description]
+      @item.content || @item.summary || @item.description
     end
 
     def thorough_parsing(content, feed_url)
