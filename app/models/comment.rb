@@ -49,6 +49,11 @@ class Comment < ApplicationRecord
   validates :public_reactions_count, presence: true
   validates :reactions_count, presence: true
   validates :user_id, presence: true
+  validates :commentable, on: :create, presence: {
+    message: lambda do |object, _data|
+      "#{object.commentable_type.presence || 'item'} has been deleted."
+    end
+  }
 
   after_create_commit :record_field_test_event
   after_create_commit :send_email_notification, if: :should_send_email_notification?
@@ -271,7 +276,7 @@ class Comment < ApplicationRecord
         user.registered_at > 5.days.ago
 
     Reaction.create(
-      user_id: SiteConfig.mascot_user_id,
+      user_id: Settings::General.mascot_user_id,
       reactable_id: id,
       reactable_type: "Comment",
       category: "vomit",
@@ -281,7 +286,7 @@ class Comment < ApplicationRecord
 
     user.add_role(:suspended)
     Note.create(
-      author_id: SiteConfig.mascot_user_id,
+      author_id: Settings::General.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
       reason: "automatic_suspend",

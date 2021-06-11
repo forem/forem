@@ -7,10 +7,10 @@ require Rails.root.join("app/lib/seeder")
 seeder = Seeder.new
 
 ##############################################################################
-# Default development site config if different from production scenario
+# Default development settings are different from production scenario
 
 Settings::UserExperience.public = true
-SiteConfig.waiting_on_first_user = false
+Settings::General.waiting_on_first_user = false
 Settings::Authentication.allow_email_password_registration = true
 
 ##############################################################################
@@ -46,6 +46,8 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:single_resource_admin, Config)
   user.add_role(:trusted)
 end
+
+admin_user = User.find_by(email: "admin@forem.local")
 
 ##############################################################################
 
@@ -172,7 +174,7 @@ end
 
 seeder.create_if_none(NavigationLink) do
   protocol = ApplicationConfig["APP_PROTOCOL"].freeze
-  domain = Rails.application&.initialized? ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
+  domain = Rails.application&.initialized? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
   base_url = "#{protocol}#{domain}".freeze
   reading_icon = File.read(Rails.root.join("app/assets/images/twemoji/drawer.svg")).freeze
 
@@ -237,16 +239,15 @@ end
 ##############################################################################
 
 seeder.create_if_none(Listing) do
-  user = User.first
-  Credit.add_to(user, rand(100))
+  Credit.add_to(admin_user, rand(100))
 
   Listing.create!(
-    user: user,
+    user: admin_user,
     title: "Listing title",
     body_markdown: Faker::Markdown.random,
     location: Faker::Address.city,
-    organization_id: user.organizations.first&.id,
-    listing_category_id: ListingCategory.first&.id,
+    organization_id: admin_user.organizations.first&.id,
+    listing_category_id: ListingCategory.first.id,
     contact_via_connect: true,
     published: true,
     originally_published_at: Time.current,
@@ -257,8 +258,6 @@ end
 
 ##############################################################################
 
-moderator = User.where(email: "admin@forem.local").first
-
 seeder.create_if_none(Tag) do
   tag = Tag.create!(
     name: "tag1",
@@ -267,7 +266,23 @@ seeder.create_if_none(Tag) do
     supported: true,
   )
 
-  moderator.add_role(:tag_moderator, tag)
+  admin_user.add_role(:tag_moderator, tag)
 end
 
+# Show the tag in the sidebar
+Settings::General.sidebar_tags = %i[tag1]
+
 ##############################################################################
+
+seeder.create_if_none(Badge) do
+  Badge.create!(
+    title: "#{Faker::Lorem.word} #{rand(100)}",
+    description: Faker::Lorem.sentence,
+    badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+  )
+
+  admin_user.badge_achievements.create!(
+    badge: Badge.first,
+    rewarding_context_message_markdown: Faker::Markdown.random,
+  )
+end

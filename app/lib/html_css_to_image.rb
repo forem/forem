@@ -27,6 +27,6 @@ module HtmlCssToImage
   end
 
   def self.fallback_image
-    SiteConfig.main_social_image.to_s
+    Settings::General.main_social_image.to_s
   end
 end

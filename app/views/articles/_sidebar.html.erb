@@ -9,7 +9,7 @@
       <% if @sponsorships.present? %>
         <div class="<%= "hidden" if user_signed_in? %> px-1" id="sponsorship-widget">
           <h4 class="flex align-center fs-s ff-monospace fw-bold tt-uppercase mb-4">
-            <%= SiteConfig.sponsor_headline %>
+            <%= Settings::General.sponsor_headline %>
             <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default ml-1", title: "Love") %>
           </h4>
           <div class="grid grid-cols-1 gap-6">

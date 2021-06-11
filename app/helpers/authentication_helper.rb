@@ -42,7 +42,7 @@ module AuthenticationHelper
   end
 
   def waiting_on_first_user?
-    SiteConfig.waiting_on_first_user
+    Settings::General.waiting_on_first_user
   end
 
   def invite_only_mode_or_no_enabled_auth_options

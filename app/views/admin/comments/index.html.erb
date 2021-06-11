@@ -19,7 +19,7 @@
           <h5 class="card-title text-center">
             <% if comment.user %>
               <a href="<%= comment.user.path %>" target="_blank" rel="noopener">
-                <img class="rounded" height="30" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile" /> <%= comment.user.username %>
+                <img class="rounded" height="30" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile" loading="lazy" /> <%= comment.user.username %>
               </a>
             <% end %>
             <% if comment.user && comment.user.twitter_username.present? %>

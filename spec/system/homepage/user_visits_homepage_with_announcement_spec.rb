@@ -1,19 +1,19 @@
 require "rails_helper"
 
-def expect_broadcast_data(page)
-  within ".broadcast-wrapper" do
-    expect(page).to have_selector(".broadcast-data")
-    expect(page).to have_text("Hello, World!")
-  end
-end
-
-def expect_no_broadcast_data(page)
-  expect(page).not_to have_css(".broadcast-wrapper")
-  expect(page).not_to have_selector(".broadcast-data")
-  expect(page).not_to have_text("Hello, World!")
-end
-
 RSpec.describe "User visits a homepage", type: :system do
+  def expect_broadcast_data(page)
+    within ".broadcast-wrapper" do
+      expect(page).to have_selector(".broadcast-data")
+      expect(page).to have_text("Hello, World!")
+    end
+  end
+
+  def expect_no_broadcast_data(page)
+    expect(page).not_to have_css(".broadcast-wrapper")
+    expect(page).not_to have_selector(".broadcast-data")
+    expect(page).not_to have_text("Hello, World!")
+  end
+
   context "when user hasn't logged in" do
     context "with an active announcement" do
       before do

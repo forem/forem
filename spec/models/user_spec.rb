@@ -1,29 +1,29 @@
 require "rails_helper"
 
-def user_from_authorization_service(service_name, signed_in_resource = nil, cta_variant = "navbar_basic")
-  auth = OmniAuth.config.mock_auth[service_name]
-  Authentication::Authenticator.call(
-    auth,
-    current_user: signed_in_resource,
-    cta_variant: cta_variant,
-  )
-end
-
-def mock_username(provider_name, username)
-  if provider_name == :apple
-    OmniAuth.config.mock_auth[provider_name].info.first_name = username
-  else
-    OmniAuth.config.mock_auth[provider_name].info.nickname = username
-  end
-end
-
-def provider_username(service_name)
-  auth_payload = OmniAuth.config.mock_auth[service_name]
-  provider_class = Authentication::Providers.get!(auth_payload.provider)
-  provider_class.new(auth_payload).user_nickname
-end
-
 RSpec.describe User, type: :model do
+  def user_from_authorization_service(service_name, signed_in_resource = nil, cta_variant = "navbar_basic")
+    auth = OmniAuth.config.mock_auth[service_name]
+    Authentication::Authenticator.call(
+      auth,
+      current_user: signed_in_resource,
+      cta_variant: cta_variant,
+    )
+  end
+
+  def mock_username(provider_name, username)
+    if provider_name == :apple
+      OmniAuth.config.mock_auth[provider_name].info.first_name = username
+    else
+      OmniAuth.config.mock_auth[provider_name].info.nickname = username
+    end
+  end
+
+  def provider_username(service_name)
+    auth_payload = OmniAuth.config.mock_auth[service_name]
+    provider_class = Authentication::Providers.get!(auth_payload.provider)
+    provider_class.new(auth_payload).user_nickname
+  end
+
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:org) { create(:organization) }
@@ -463,7 +463,7 @@ RSpec.describe User, type: :model do
       end
 
       it "does not enqueue if Mailchimp is not enabled" do
-        allow(SiteConfig).to receive(:mailchimp_api_key).and_return(nil)
+        allow(Settings::General).to receive(:mailchimp_api_key).and_return(nil)
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(email: "something@real.com")
         end
@@ -815,7 +815,7 @@ RSpec.describe User, type: :model do
     end
 
     it "returns the user if the account exists" do
-      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
 
       expect(described_class.mascot_account).to eq(user)
     end

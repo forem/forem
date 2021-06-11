@@ -27,7 +27,7 @@ module Constants
           placeholder: "Campaign sidebar enabled or not"
         },
         sidebar_image: {
-          description: ::Constants::SiteConfig::IMAGE_PLACEHOLDER,
+          description: ::Constants::Settings::General::IMAGE_PLACEHOLDER,
           placeholder: "Used at the top of the campaign sidebar"
         },
         url: {

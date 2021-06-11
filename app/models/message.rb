@@ -193,19 +193,19 @@ class Message < ApplicationRecord
   end
 
   def rich_link_article(link)
-    return unless link["href"].include?("//#{SiteConfig.app_domain}/") && link["href"].split("/")[4]
+    return unless link["href"].include?("//#{Settings::General.app_domain}/") && link["href"].split("/")[4]
 
     Article.find_by(slug: link["href"].split("/")[4].split("?")[0])
   end
 
   def rich_link_tag(link)
-    return unless link["href"].include?("//#{SiteConfig.app_domain}/t/")
+    return unless link["href"].include?("//#{Settings::General.app_domain}/t/")
 
     Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0])
   end
 
   def rich_user_link(link)
-    return unless link["href"].include?("//#{SiteConfig.app_domain}/")
+    return unless link["href"].include?("//#{Settings::General.app_domain}/")
 
     User.find_by(username: link["href"].split("/")[3].split("/")[0])
   end

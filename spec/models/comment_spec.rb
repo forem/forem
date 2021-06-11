@@ -413,7 +413,7 @@ RSpec.describe Comment, type: :model do
 
   describe "spam" do
     before do
-      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
       allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(["yahoomagoo gogo", "anothertestterm"])
     end
 
@@ -456,9 +456,27 @@ RSpec.describe Comment, type: :model do
   end
 
   context "when callbacks are triggered before save" do
-    it "generates character count before saving" do
-      comment.save
-      expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
+    context "when the post is present" do
+      it "generates character count before saving" do
+        comment.save
+        expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
+      end
+    end
+
+    context "when the commentable is not present" do
+      it "raises a validation error with message 'item has been deleted'", :aggregate_failures do
+        comment = build(:comment, user: user, commentable: nil, commentable_type: nil)
+        comment.validate
+        expect(comment).not_to be_valid
+        expect(comment.errors_as_sentence).to match("item has been deleted")
+      end
+
+      it "raises a validation error with commentable_type, if commentable_type is present", :aggregate_failures do
+        comment = build(:comment, user: user, commentable: nil, commentable_type: "Article")
+        comment.validate
+        expect(comment).not_to be_valid
+        expect(comment.errors_as_sentence).to match("Article has been deleted")
+      end
     end
   end
 

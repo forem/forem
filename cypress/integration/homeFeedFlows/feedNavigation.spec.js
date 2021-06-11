@@ -5,6 +5,8 @@ describe('Home Feed Navigation', () => {
 
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
+        // Explicitly set the viewport to make sure we're in the full desktop view for these tests
+        cy.viewport('macbook-15');
         cy.visit('/');
       });
     });
@@ -101,5 +103,41 @@ describe('Home Feed Navigation', () => {
         'page',
       );
     });
+  });
+
+  it('shows the sidebar on all feed views', () => {
+    // Default Feed view
+    cy.findByRole('heading', { name: '#tag1' });
+    cy.findByRole('heading', { name: 'Listings' });
+
+    // Week view
+    cy.findByRole('link', { name: 'Week' }).click();
+    cy.url().should('contain', '/top/week');
+    cy.findByRole('heading', { name: '#tag1' });
+    cy.findByRole('heading', { name: 'Listings' });
+
+    // Month view
+    cy.findByRole('link', { name: 'Month' }).click();
+    cy.url().should('contain', '/top/month');
+    cy.findByRole('heading', { name: '#tag1' });
+    cy.findByRole('heading', { name: 'Listings' });
+
+    // Year view
+    cy.findByRole('link', { name: 'Year' }).click();
+    cy.url().should('contain', '/top/year');
+    cy.findByRole('heading', { name: '#tag1' });
+    cy.findByRole('heading', { name: 'Listings' });
+
+    // Infinity view
+    cy.findByRole('link', { name: 'Infinity' }).click();
+    cy.url().should('contain', '/top/infinity');
+    cy.findByRole('heading', { name: '#tag1' });
+    cy.findByRole('heading', { name: 'Listings' });
+
+    // Latest view
+    cy.findByRole('link', { name: 'Latest' }).click();
+    cy.url().should('contain', '/latest');
+    cy.findByRole('heading', { name: '#tag1' });
+    cy.findByRole('heading', { name: 'Listings' });
   });
 });

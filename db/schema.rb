@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_12_025422) do
+ActiveRecord::Schema.define(version: 2021_06_09_103939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1014,8 +1014,11 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
   create_table "profiles", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.jsonb "data", default: {}, null: false
+    t.string "location"
+    t.text "summary"
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
+    t.string "website_url"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
   end
 
@@ -1260,7 +1263,6 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.datetime "apple_created_at"
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
@@ -1309,7 +1311,6 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
     t.integer "experience_level"
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
-    t.datetime "facebook_created_at"
     t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
@@ -1320,7 +1321,6 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
-    t.datetime "github_created_at"
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
@@ -1385,7 +1385,6 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
     t.text "summary"
     t.string "text_color_hex"
     t.string "twitch_url"
-    t.datetime "twitter_created_at"
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.string "unlock_token"
@@ -1445,7 +1444,7 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.boolean "welcome_notifications", default: true, null: false
-    t.index ["user_id"], name: "index_users_notification_settings_on_user_id"
+    t.index ["user_id"], name: "index_users_notification_settings_on_user_id", unique: true
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
@@ -1474,7 +1473,7 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_users_settings_on_user_id"
+    t.index ["user_id"], name: "index_users_settings_on_user_id", unique: true
   end
 
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|
@@ -1603,12 +1602,12 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
       declare("l_org_vector tsvector; l_user_vector tsvector") do
     <<-SQL_ACTIONS
 NEW.reading_list_document :=
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))) ||
-  to_tsvector('simple'::regconfig,
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))), 'A') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))), 'B') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))), 'C') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))), 'D') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))), 'D') ||
+  setweight(to_tsvector('simple'::regconfig,
     unaccent(
       coalesce(
         array_to_string(
@@ -1619,7 +1618,7 @@ NEW.reading_list_document :=
         ''
       )
     )
-  );
+  ), 'D');
     SQL_ACTIONS
   end
 

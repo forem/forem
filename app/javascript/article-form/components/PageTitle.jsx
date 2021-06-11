@@ -6,7 +6,7 @@ export const PageTitle = ({ organizations, organizationId, onToggle }) => {
   return (
     <div className="crayons-field__label flex items-center flex-1">
       <span className="hidden s:inline-block mr-2 whitespace-nowrap">
-        Write a new post
+        Create Post
       </span>
       {organizations && organizations.length > 0 && (
         <div>
