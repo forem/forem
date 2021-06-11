@@ -41,8 +41,8 @@ module Payments
 
     def process_purchase
       customer = find_or_create_customer
-      card = find_or_create_card(customer)
       update_user_stripe_info(customer)
+      card = find_or_create_card(customer)
       create_charge(customer, card)
       self.success = true
     rescue Payments::PaymentsError => e
