@@ -340,7 +340,7 @@ class Article < ApplicationRecord
   def processed_description
     if body_text.present?
       body_text
-        .truncate(100, separator: " ")
+        .truncate(104, separator: " ")
         .tr("\n", " ")
         .strip
     else
