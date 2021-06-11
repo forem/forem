@@ -1,9 +1,17 @@
 describe('Post sidebar actions', () => {
-  const runtimeStub = {
+  const shareAvailableStub = {
     onBeforeLoad: (win) => {
       Object.defineProperty(win.navigator, 'share', { value: true });
     },
   };
+
+  const shareUndefinedStub = {
+    onBeforeLoad: (win) => {
+      Object.defineProperty(win.navigator, 'share', undefined);
+    },
+  };
+
+  let articlePath = '';
 
   beforeEach(() => {
     cy.testSetup();
@@ -17,7 +25,8 @@ describe('Post sidebar actions', () => {
           content: `This is a test article's contents.`,
           published: true,
         }).then((response) => {
-          cy.visit(response.body.current_state_path, runtimeStub);
+          articlePath = response.body.current_state_path;
+          cy.visit(articlePath);
         });
       });
     });
@@ -43,8 +52,7 @@ describe('Post sidebar actions', () => {
     cy.findByRole('link', { name: /^Share to Reddit$/i });
     cy.findByRole('link', { name: /^Share to Hacker News$/i });
     cy.findByRole('link', { name: /^Share to Facebook$/i });
-    // The navigator.share API should be available making this option visible
-    cy.findByRole('link', { name: /^Share Post via...$/i });
+
     // There is a report abuse link at the bottom of the post too
     cy.findAllByRole('link', { name: /^Report Abuse$/i }).should(
       'have.length',
@@ -57,6 +65,16 @@ describe('Post sidebar actions', () => {
     cy.findByRole('img', {
       name: /^Copy article link to the clipboard$/i,
     }).should('not.exist');
+  });
+
+  it('should display "Share Post via..." when navigator.share is available', () => {
+    // When navigator.share is available the button should exist
+    cy.visit(articlePath, shareAvailableStub);
+    cy.findByRole('link', { name: /^Share Post via...$/i }).should('not.exist');
+
+    // When navigator.share is undefined the button shouldn't exist
+    cy.visit(articlePath, shareUndefinedStub);
+    cy.findByRole('link', { name: /^Share Post via...$/i }).should('exist');
   });
 
   it('should close the options dropdown on Escape press, returning focus', () => {
