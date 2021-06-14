@@ -24,6 +24,11 @@ describe('Tag index page navigation', () => {
         'aria-current',
         'page',
       );
+
+      cy.get('@week').should('not.have.attr', 'aria-current');
+      cy.get('@month').should('not.have.attr', 'aria-current');
+      cy.get('@year').should('not.have.attr', 'aria-current');
+      cy.get('@infinity').should('not.have.attr', 'aria-current');
     });
   });
 
