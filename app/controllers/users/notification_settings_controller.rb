@@ -19,8 +19,7 @@ module Users
                         mobile_comment_notifications
                         mod_roundrobin_notifications
                         reaction_notifications
-                        welcome_notifications
-                        user_id].freeze
+                        welcome_notifications].freeze
 
     def update
       authorize current_user, policy_class: UserPolicy
