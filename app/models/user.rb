@@ -81,25 +81,6 @@ class User < ApplicationRecord
     \z
   }x.freeze
 
-  # Relevant Fields for migration from Users table to Users_Notification_Settings table
-  USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
-    email_badge_notifications
-    email_comment_notifications
-    email_community_mod_newsletter
-    email_connect_messages
-    email_digest_periodic
-    email_follower_notifications
-    email_membership_newsletter
-    email_mention_notifications
-    email_newsletter
-    email_tag_mod_newsletter
-    email_unread_notifications
-    mobile_comment_notifications
-    mod_roundrobin_notifications
-    reaction_notifications
-    welcome_notifications
-  ].to_set.freeze
-
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password
@@ -583,16 +564,6 @@ class User < ApplicationRecord
   def create_users_settings_and_notification_settings_records
     Users::Setting.create(user_id: id)
     Users::NotificationSetting.create(user_id: id)
-  end
-
-  def sync_users_notification_settings_table
-    users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)
-
-    USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
-      users_notification_setting_record.assign_attributes(field => public_send(field))
-    end
-
-    users_notification_setting_record.save
   end
 
   def send_welcome_notification

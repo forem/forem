@@ -36,6 +36,7 @@ class UsersController < ApplicationController
     end
     set_user
     set_users_setting
+    set_users_notification_setting
     set_current_tab(params["tab"] || "profile")
     handle_settings_tab
   end
@@ -362,6 +363,12 @@ class UsersController < ApplicationController
     return unless @user
 
     @users_setting = @user.setting
+  end
+
+  def set_users_notification_setting
+    return unless @user
+
+    @users_notification_setting = @user.notification_setting
   end
 
   def set_current_tab(current_tab = "profile")
