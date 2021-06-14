@@ -46,13 +46,17 @@ describe('User Change Password', () => {
     cy.intercept('/notifications?i=i').as('notificationsRequest');
     cy.intercept('/notifications/counts').as('countsRequest');
     cy.intercept('/async_info/base_data').as('baseDataRequest');
+    cy.intercept('/chat_channels**').as('chatRequest');
 
     // Submit the form
     cy.get('@loginForm').findByText('Continue').click();
 
-    cy.wait('@notificationsRequest');
-    cy.wait('@countsRequest');
-    cy.wait('@baseDataRequest');
+    cy.wait([
+      '@notificationsRequest',
+      '@countsRequest',
+      '@baseDataRequest',
+      '@chatRequest',
+    ]);
 
     const { baseUrl } = Cypress.config();
     cy.url().should('equal', `${baseUrl}settings/account?signin=true`);
