@@ -17,6 +17,10 @@ class Page < ApplicationRecord
   mount_uploader :social_image, ProfileImageUploader
   resourcify
 
+  def self.landing_page
+    find_by(landing_page: true)
+  end
+
   def path
     is_top_level_path ? "/#{slug}" : "/page/#{slug}"
   end
