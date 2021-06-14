@@ -19,10 +19,9 @@ module Users
 
     def update
       users_setting = Users::Setting.find(params[:id])
-      users_setting.assign_attributes(users_setting_params)
       tab = params["users_setting"]["tab"] || "profile"
 
-      if users_setting.save
+      if user_settings.update(users_setting_params)
         import_articles_from_feed(users_setting)
 
         notice = "Your config has been updated. Refresh to see all changes."
@@ -33,7 +32,7 @@ module Users
         end
         users_setting.user.touch(:profile_updated_at)
         flash[:settings_notice] = notice
-        redirect_to "/settings/#{tab}"
+        redirect_to user_settings_path(tab)
       else
         Honeycomb.add_field("error", users_setting.errors.messages.reject { |_, v| v.empty? })
         Honeycomb.add_field("errored", true)
