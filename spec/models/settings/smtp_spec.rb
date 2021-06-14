@@ -1,6 +1,10 @@
 require "rails_helper"
 
 RSpec.describe Settings::SMTP do
+  after do
+    described_class.clear_cache
+  end
+
   describe "::settings" do
     it "use default sendgrid config if SENDGRID_API_KEY is available" do
       key = "something"

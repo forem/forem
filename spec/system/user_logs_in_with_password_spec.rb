@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Authenticating with a password" do
   def submit_login_form(email, password)
+    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
     fill_in "Email", with: email
     fill_in "Password", with: password
     click_button "Continue"
