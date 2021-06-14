@@ -234,9 +234,9 @@ end
 ##############################################################################
 
 seeder.create_if_none(Page) do
-  2.times do
+  2.times do |t|
     Page.create!(
-      slug: Faker::Lorem.word,
+      slug: "#{Faker::Lorem.word}-#{t}",
       body_html: "<p>#{Faker::Hipster.paragraph(sentence_count: 2)}</p>",
       title: "#{Faker::Lorem.word} #{rand(100)}",
       description: "A test page",

@@ -298,11 +298,11 @@ class User < ApplicationRecord
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
-  after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
 
-  after_commit :sync_users_notification_settings_table, on: %i[create update]
+  after_commit :subscribe_to_mailchimp_newsletter
+  after_commit :create_users_settings_and_notification_settings_records, on: %i[create]
   after_commit :bust_cache
 
   def self.dev_account
@@ -579,6 +579,11 @@ class User < ApplicationRecord
   end
 
   private
+
+  def create_users_settings_and_notification_settings_records
+    Users::Setting.create(user_id: id)
+    Users::NotificationSetting.create(user_id: id)
+  end
 
   def sync_users_notification_settings_table
     users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)

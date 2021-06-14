@@ -14,32 +14,6 @@
 <% end %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
-  <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js"
-            integrity="sha256-xOIPU/XvDtRLeDQ3qj9GOKmlbMSqKa6D7ZIS6ygHBSo="
-            crossorigin="anonymous" defer></script>
-    <script defer>
-      var waitingOnPostscribe = setInterval(function () {
-        if (typeof (postscribe) === "function") {
-          clearInterval(waitingOnPostscribe);
-          var els = document.getElementsByClassName("ltag_gist-liquid-tag");
-          for (var i = 0; i < els.length; i++) {
-            let current = els[i];
-            postscribe(current, current.firstElementChild.outerHTML, {
-              beforeWrite: function (context) {
-                return function (text) {
-                  if (context.childElementCount > 3) {
-                    return "";
-                  }
-                  return text;
-                }
-              }(current)
-            });
-          }
-        }
-      }, 500);
-    </script>
-  <% end %>
   <% unless internal_navigation? || user_signed_in? %>
     <script type="application/ld+json">
       <%= @article_json_ld.to_json.html_safe %>

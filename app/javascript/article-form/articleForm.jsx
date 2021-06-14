@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { embedGists } from '../utilities/gist';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
@@ -41,13 +42,6 @@ const LINT_OPTIONS = {
 };
 
 export class ArticleForm extends Component {
-  static handleGistPreview() {
-    const els = document.getElementsByClassName('ltag_gist-liquid-tag');
-    for (let i = 0; i < els.length; i += 1) {
-      postscribe(els[i], els[i].firstElementChild.outerHTML);
-    }
-  }
-
   static handleRunkitPreview() {
     activateRunkitTags();
   }
@@ -142,7 +136,7 @@ export class ArticleForm extends Component {
     const { previewResponse } = this.state;
 
     if (previewResponse) {
-      this.constructor.handleGistPreview();
+      embedGists(this.formElement);
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
     }
@@ -374,6 +368,9 @@ export class ArticleForm extends Component {
 
     return (
       <form
+        ref={(element) => {
+          this.formElement = element;
+        }}
         id="article-form"
         className="crayons-article-form"
         onSubmit={this.onSubmit}
