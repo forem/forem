@@ -138,6 +138,7 @@ Rails.application.routes.draw do
     end
     namespace :users do
       resources :settings, only: %i[update]
+      resource :notification_settings, only: %i[update]
     end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]

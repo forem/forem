@@ -1,4 +1,4 @@
-<%= form_for @user do |f| %>
+<%= form_for @user.notification_setting, url: users_notification_settings_path do |f| %>
   <div class="crayons-card crayons-card--content-rows">
     <header>
       <h2 class="crayons-subtitle-1">
