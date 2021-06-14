@@ -1,7 +1,7 @@
 import ModalController from './modal_controller';
 
 export default class LandingPageModalController extends ModalController {
-  static targets = ['overwrite', 'landingPageCheckbox'];
+  static targets = ['landingPageCheckbox'];
 
   openModal() {
     if (this.landingPageCheckboxTarget.checked) {
@@ -12,7 +12,6 @@ export default class LandingPageModalController extends ModalController {
   confirm(event) {
     event.preventDefault();
 
-    this.overwriteTarget.value = true;
     this.closeModal();
   }
 
@@ -20,7 +19,6 @@ export default class LandingPageModalController extends ModalController {
     event.preventDefault();
 
     this.landingPageCheckboxTarget.checked = false;
-    this.overwriteTarget.value = false;
     this.closeModal();
   }
 }

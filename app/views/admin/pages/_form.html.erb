@@ -54,7 +54,6 @@
                                           "landing-page-modal-target": "landingPageCheckbox",
                                           action: (@landing_page.present? ? "landing-page-modal#openModal" : "")
                                         } %>
-      <%= form.hidden_field :overwrite_landing_page, data: { "landing-page-modal-target": "overwrite" } %>
       <p id="lock-screen-description">Determines if this page will be used as a landing page for anonymous viewers.</p>
     </div>
 
