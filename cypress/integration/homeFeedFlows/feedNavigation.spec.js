@@ -30,6 +30,7 @@ describe('Home Feed Navigation', () => {
       cy.get('@month').should('not.have.attr', 'aria-current');
       cy.get('@year').should('not.have.attr', 'aria-current');
       cy.get('@infinity').should('not.have.attr', 'aria-current');
+      cy.get('@latest').should('not.have.attr', 'aria-current');
     });
   });
 
