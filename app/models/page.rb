@@ -62,7 +62,6 @@ class Page < ApplicationRecord
   # data integrity is preserved by setting `landing_page` to `false` for all
   # other pages if the current one was transformed into a landing page
   def ensure_uniqueness_of_landinge_page
-    return unless previous_changes["landing_page"]
     return unless previous_changes["landing_page"] == [false, true]
 
     Page.where.not(id: id).update_all(landing_page: false)
