@@ -432,17 +432,17 @@ RSpec.describe NotifyMailer, type: :mailer do
     end
 
     it "renders proper sender" do
-      expected_from = "#{Settings::Community.community_name} <#{Settings::General.email_addresses[:default]}>"
+      expected_from = "#{Settings::Community.community_name} <#{ForemInstance.email}>"
 
-      expect(moderator_email.from).to eq([Settings::General.email_addresses[:default]])
+      expect(moderator_email.from).to eq([ForemInstance.email])
       expect(moderator_email["from"].value).to eq(expected_from)
 
-      expect(member_email.from).to eq([Settings::General.email_addresses[:default]])
+      expect(member_email.from).to eq([ForemInstance.email])
       expect(member_email["from"].value).to eq(expected_from)
     end
 
     it "renders proper reply_to" do
-      expect(moderator_email["reply_to"].value).to eq(Settings::General.email_addresses[:default])
+      expect(moderator_email["reply_to"].value).to eq(ForemInstance.email)
     end
 
     it "renders proper receiver" do

@@ -9,6 +9,10 @@ class ForemInstance
     @latest_commit_id ||= ApplicationConfig["FOREM_BUILD_SHA"].presence || ENV["HEROKU_SLUG_COMMIT"].presence
   end
 
+  def self.email
+    ApplicationConfig["DEFAULT_EMAIL"]
+  end
+
   # Return true if we are operating on a local installation, false otherwise
   def self.local?
     Settings::General.app_domain.include?("localhost")

@@ -28,6 +28,8 @@ class Article < ApplicationRecord
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
 
+  has_one :discussion_lock, dependent: :destroy
+
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
@@ -336,11 +338,14 @@ class Article < ApplicationRecord
   end
 
   def processed_description
-    text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
-    text_portion = "#{text_portion.strip}..." if body_text.size > 100
-    return "A post by #{user.name}" if text_portion.blank?
-
-    text_portion.strip
+    if body_text.present?
+      body_text
+        .truncate(104, separator: " ")
+        .tr("\n", " ")
+        .strip
+    else
+      "A post by #{user.name}"
+    end
   end
 
   def body_text

@@ -1,4 +1,6 @@
 class Page < ApplicationRecord
+  attr_accessor :overwrite_landing_page
+
   TEMPLATE_OPTIONS = %w[contained full_within_layout json].freeze
 
   validates :title, presence: true
@@ -7,6 +9,7 @@ class Page < ApplicationRecord
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
   validate :unique_slug_including_users_and_orgs, if: :slug_changed?
+  validate :single_landing_page, if: :will_save_change_to_landing_page?
 
   before_validation :set_default_template
   before_save :evaluate_markdown
@@ -21,6 +24,10 @@ class Page < ApplicationRecord
 
   def feature_flag_name
     "page_#{slug}"
+  end
+
+  def self.landing_page
+    find_by(landing_page: true)
   end
 
   private
@@ -54,6 +61,17 @@ class Page < ApplicationRecord
     return unless slug_exists
 
     errors.add(:slug, "is taken.")
+  end
+
+  def single_landing_page
+    # Only add errors if we are trying to modify a landing page
+    # while another landing page is already being used to ensure
+    # that only one can be set to "true" at a time.
+
+    landing_page = Page.where.not(id: id).find_by(landing_page: true)
+    return unless landing_page
+
+    errors.add(:base, "Only one page at a time can be used as a 'locked screen.'")
   end
 
   def bust_cache

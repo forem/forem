@@ -36,14 +36,7 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  PROVIDER_COLUMNS = %w[
-    apple_created_at
-    facebook_created_at
-    github_created_at
-    twitter_created_at
-  ].freeze
-
-  self.ignored_columns = PROFILE_COLUMNS + PROVIDER_COLUMNS
+  self.ignored_columns = PROFILE_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -187,6 +180,7 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
+  has_many :discussion_locks, dependent: :destroy, inverse_of: :locking_user, foreign_key: :locking_user_id
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy

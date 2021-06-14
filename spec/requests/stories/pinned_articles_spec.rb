@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Stories::PinnedArticlesController", type: :request do
-  let(:headers) { { 'content-type': "application/json" } }
+  let(:headers) { { "content-type": "application/json" } }
   let(:user) { create(:user) }
   let(:admin) { create(:user, :admin) }
   let(:article) { create(:article) }

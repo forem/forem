@@ -9,8 +9,8 @@ RSpec.describe VerificationMailer, type: :mailer do
 
       expect(email.subject).not_to be_nil
       expect(email.to).to eq([user.email])
-      expect(email.from).to eq([Settings::General.email_addresses[:default]])
-      from = "#{Settings::Community.community_name} Email Verification <#{Settings::General.email_addresses[:default]}>"
+      expect(email.from).to eq([ForemInstance.email])
+      from = "#{Settings::Community.community_name} Email Verification <#{ForemInstance.email}>"
       expect(email["from"].value).to eq(from)
     end
   end

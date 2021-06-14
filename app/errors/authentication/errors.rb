@@ -19,7 +19,7 @@ module Authentication
       def message
         format(PREVIOUSLY_SUSPENDED_MESSAGE,
                community_name: Settings::Community.community_name,
-               community_email: Settings::General.email_addresses[:default])
+               community_email: ForemInstance.email)
       end
     end
   end
