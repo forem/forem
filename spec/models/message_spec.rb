@@ -122,6 +122,7 @@ RSpec.describe Message, type: :model do
 
   context "when callbacks are triggered after create" do
     before do
+      allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
       chat_channel.add_users([user, user2])
     end
 
