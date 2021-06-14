@@ -393,7 +393,7 @@ Rails.application.routes.draw do
     get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
                               constraints: { timeframe: /latest/ }
 
-    get "/t/:tag/edit", to: "tags#edit"
+    get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
 
