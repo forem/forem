@@ -8,8 +8,10 @@ class ApplicationMailer < ActionMailer::Base
   helper AuthenticationHelper
 
   before_action :use_custom_host
-  before_action :set_delivery_options
-  before_action :set_perform_deliveries
+
+  # [@SRE] temporarily disabled
+  # before_action :set_delivery_options
+  # before_action :set_perform_deliveries
 
   default(
     from: -> { email_from },
