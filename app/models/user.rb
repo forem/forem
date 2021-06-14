@@ -546,7 +546,7 @@ class User < ApplicationRecord
 
   def subscribe_to_mailchimp_newsletter
     return unless registered && email.present?
-    return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
     return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
@@ -574,7 +574,7 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
-    return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
