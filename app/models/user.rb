@@ -346,10 +346,10 @@ class User < ApplicationRecord
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
-  after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
 
+  after_commit :subscribe_to_mailchimp_newsletter
   after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 

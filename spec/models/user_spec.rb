@@ -435,7 +435,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  context "when callbacks are triggered after save" do
+  context "when callbacks are triggered after commit" do
     describe "subscribing to mailchimp newsletter" do
       let(:user) { build(:user) }
 
