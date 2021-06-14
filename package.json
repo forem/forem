@@ -145,7 +145,7 @@
     "@babel/core": "^7.14.2",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-react-jsx": "^7.14.3",
+    "@babel/plugin-transform-react-jsx": "^7.14.5",
     "@babel/preset-env": "^7.14.4",
     "@github/clipboard-copy-element": "^1.1.2",
     "@honeybadger-io/webpack": "^1.2.0",
