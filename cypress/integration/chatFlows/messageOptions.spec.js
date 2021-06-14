@@ -20,6 +20,8 @@ describe('Chat message options', () => {
     //   Enter the test chat
     cy.findByRole('button', { name: 'Toggle request manager' }).click();
     cy.findByRole('button', { name: 'Accept' }).click();
+    // Wait for acceptance to happen
+    cy.findByRole('button', { name: 'Accept' }).should('not.exist');
 
     // Send a message
     cy.findByRole('textbox', { name: 'Compose a message' })
@@ -27,6 +29,11 @@ describe('Chat message options', () => {
       .focus()
       .type('message');
     cy.findByRole('button', { name: 'Send' }).click();
+    // Wait for the message to send
+    cy.findByRole('textbox', { name: 'Compose a message' }).should(
+      'have.value',
+      '',
+    );
 
     // The sent message doesn't show up without reload
     cy.reload();
@@ -56,6 +63,7 @@ describe('Chat message options', () => {
         cy.visit('/connect');
         cy.findByRole('button', { name: 'Toggle request manager' }).click();
         cy.findByRole('button', { name: 'Accept' }).click();
+        cy.findByRole('button', { name: 'Accept' }).should('not.exist');
 
         // Check the report menu is present and opens
         cy.findByRole('button', { name: 'Report message options' }).as(
