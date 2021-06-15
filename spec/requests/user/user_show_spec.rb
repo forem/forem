@@ -37,7 +37,6 @@ RSpec.describe "UserShow", type: :request do
         ],
         "image" => Images::Profile.call(user.profile_image_url, length: 320),
         "name" => user.name,
-        "email" => user.email,
         "jobTitle" => user.employment_title,
         "description" => user.summary,
         "worksFor" => [
