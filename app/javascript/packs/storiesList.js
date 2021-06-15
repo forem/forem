@@ -10,8 +10,12 @@ if (isTouchDevice) {
 
   document.getElementById('main-content').addEventListener('click', (event) => {
     const clickedEl = event.target;
-    // the code does nothing if contains classes such as bm-initial or bm-success
-    if (clickedEl.parentNode.classList.contains('crayons-story')) {
+    if (
+      clickedEl.classList.contains('bm-initial') ||
+      clickedEl.classList.contains('bm-success')
+    ) {
+      //do nothing
+    } else if (clickedEl.parentNode.classList.contains('crayons-story')) {
       clickedEl.parentNode.classList.add('active');
     } else if (
       clickedEl.parentNode.parentNode.classList.contains('crayons-story')
