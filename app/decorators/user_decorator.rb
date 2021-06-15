@@ -109,4 +109,14 @@ class UserDecorator < ApplicationDecorator
 
     created_at.after?(min_days.days.ago)
   end
+
+  # rubocop:disable Rails/Delegate
+  def display_sponsors
+    setting.display_sponsors
+  end
+
+  def display_announcements
+    setting.display_announcements
+  end
+  # rubocop:enable Rails/Delegate
 end

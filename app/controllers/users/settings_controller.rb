@@ -32,12 +32,12 @@ module Users
         end
         users_setting.user.touch(:profile_updated_at)
         flash[:settings_notice] = notice
-        redirect_to user_settings_path(tab)
       else
         Honeycomb.add_field("error", users_setting.errors.messages.reject { |_, v| v.empty? })
         Honeycomb.add_field("errored", true)
-        flash[:error] = @user.errors.full_messages.join(", ")
+        flash[:error] = users_setting.errors.full_messages.join(", ")
       end
+      redirect_to user_settings_path(tab)
     end
 
     private
