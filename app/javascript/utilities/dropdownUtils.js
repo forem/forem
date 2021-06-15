@@ -141,6 +141,7 @@ const closeDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
  * @param {Object} args
  * @param {string} args.triggerButtonElementId The ID of the button which triggers the dropdown open/close behavior
  * @param {string} args.dropdownContentId The ID of the dropdown content which should open/close on trigger button press
+ * @param {string} args.dropdownContentCloseButtonId Optional ID of any button within the dropdown content which should close the dropdown
  * @param {Function} args.onClose An optional callback for when the dropdown is closed. This can be passed to execute any side-effects required when the dropdown closes.
  * @param {Function} args.onOpen An optional callback for when the dropdown is opened. This can be passed to execute any side-effects required when the dropdown opens.
  *
@@ -149,6 +150,7 @@ const closeDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
 export const initializeDropdown = ({
   triggerElementId,
   dropdownContentId,
+  dropdownContentCloseButtonId,
   onClose,
   onOpen,
 }) => {
@@ -185,6 +187,20 @@ export const initializeDropdown = ({
       onOpen?.();
     }
   });
+
+  if (dropdownContentCloseButtonId) {
+    // The dropdown content has a 'close' button inside that we also need to handle
+    document
+      .getElementById(dropdownContentCloseButtonId)
+      ?.addEventListener('click', () => {
+        closeDropdown({
+          triggerElementId,
+          dropdownContentId,
+          onClose,
+        });
+        document.getElementById(triggerElementId)?.focus();
+      });
+  }
 
   return {
     closeDropdown: () =>
