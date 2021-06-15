@@ -289,7 +289,7 @@ class User < ApplicationRecord
   end
 
   def tag_line
-    summary
+    profile.summary
   end
 
   def twitter_url
