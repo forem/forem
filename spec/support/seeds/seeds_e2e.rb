@@ -116,6 +116,62 @@ end
 
 ##############################################################################
 
+chat_user_1 = seeder.create_if_doesnt_exist(User, "email", "chat-user-1@forem.local") do
+  User.create!(
+    name: "Chat user 1",
+    email: "chat-user-1@forem.local",
+    username: "chat_user_1",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+end
+
+##############################################################################
+
+chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.local") do
+  User.create!(
+    name: "Chat user 2",
+    email: "chat-user-2@forem.local",
+    username: "chat_user_2",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(ChatChannel, "channel_name", "test chat channel") do
+  channel = ChatChannel.create(
+    channel_type: "open",
+    channel_name: "test chat channel",
+    slug: "test-chat-channel",
+    last_message_at: 1.week.ago,
+    status: "active",
+  )
+
+  channel.invite_users(users: [chat_user_1, chat_user_2])
+end
+
+##############################################################################
+
 seeder.create_if_none(NavigationLink) do
   protocol = ApplicationConfig["APP_PROTOCOL"].freeze
   domain = Rails.application&.initialized? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]

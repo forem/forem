@@ -14,11 +14,7 @@ const INTERACTIVE_ELEMENTS_QUERY =
  * @param {string} args.dropdownContentId The id of the dropdown content element
  * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
  */
-const keyUpListener = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose = () => {},
-}) => {
+const keyUpListener = ({ triggerElementId, dropdownContentId, onClose }) => {
   return ({ key }) => {
     if (key === 'Escape') {
       // Close the dropdown and return focus to the trigger button to prevent focus being lost
@@ -53,7 +49,7 @@ const keyUpListener = ({
 const clickOutsideListener = ({
   triggerElementId,
   dropdownContentId,
-  onClose = () => {},
+  onClose,
 }) => {
   return ({ target }) => {
     const triggerElement = document.getElementById(triggerElementId);
@@ -86,11 +82,7 @@ const clickOutsideListener = ({
  * @param {string} args.dropdownContent The id of the dropdown content element
  * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
  */
-const openDropdown = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose = () => {},
-}) => {
+const openDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
   const dropdownContent = document.getElementById(dropdownContentId);
   const triggerElement = document.getElementById(triggerElementId);
 
@@ -121,11 +113,7 @@ const openDropdown = ({
  * @param {string} args.dropdownContent The id of the dropdown content element
  * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
  */
-const closeDropdown = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose = () => {},
-}) => {
+const closeDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
   const dropdownContent = document.getElementById(dropdownContentId);
 
   document
@@ -143,7 +131,7 @@ const closeDropdown = ({
     'click',
     clickOutsideListener({ triggerElementId, dropdownContentId, onClose }),
   );
-  onClose();
+  onClose?.();
 };
 
 /**
@@ -154,13 +142,15 @@ const closeDropdown = ({
  * @param {string} args.triggerButtonElementId The ID of the button which triggers the dropdown open/close behavior
  * @param {string} args.dropdownContentId The ID of the dropdown content which should open/close on trigger button press
  * @param {Function} args.onClose An optional callback for when the dropdown is closed. This can be passed to execute any side-effects required when the dropdown closes.
+ * @param {Function} args.onOpen An optional callback for when the dropdown is opened. This can be passed to execute any side-effects required when the dropdown opens.
  *
  * @returns {{closeDropdown: Function}} Object with callback to close the initialized dropdown
  */
 export const initializeDropdown = ({
   triggerElementId,
   dropdownContentId,
-  onClose = () => {},
+  onClose,
+  onOpen,
 }) => {
   const triggerButton = document.getElementById(triggerElementId);
   const dropdownContent = document.getElementById(dropdownContentId);
@@ -192,6 +182,7 @@ export const initializeDropdown = ({
         dropdownContentId,
         onClose,
       });
+      onOpen?.();
     }
   });
 
