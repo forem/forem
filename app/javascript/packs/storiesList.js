@@ -3,10 +3,9 @@
  */
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 if (isTouchDevice) {
-  const activeLinks = document.getElementsByClassName('active');
-  Array.prototype.forEach.call(activeLinks, (el) => {
-    el.classList.remove('active');
-  });
+  Array.from(document.getElementsByClassName('active')).forEach((el) =>
+    el.classList.remove('active'),
+  );
 
   document.getElementById('main-content').addEventListener('click', (event) => {
     const clickedEl = event.target;
