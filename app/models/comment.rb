@@ -39,6 +39,7 @@ class Comment < ApplicationRecord
   after_save :synchronous_bust
   after_save :bust_cache
 
+  validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
   validate :user_mentions_in_markdown
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
@@ -314,6 +315,12 @@ class Comment < ApplicationRecord
   def set_markdown_character_count
     # body_markdown is actually markdown, but that's a separate issue to be fixed soon
     self.markdown_character_count = body_markdown.size
+  end
+
+  def discussion_not_locked
+    return unless commentable_type == "Article" && commentable.discussion_lock
+
+    errors.add(:commentable_id, "the discussion is locked on this Post")
   end
 
   def published_article

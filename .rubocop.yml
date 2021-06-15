@@ -894,6 +894,11 @@ RSpec/ExampleLength:
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
 
+RSpec/IdenticalEqualityAssertion:
+  Description: Checks for equality assertions with identical expressions on both sides.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/IdenticalEqualityAssertion
+
 RSpec/MessageExpectation:
   Description: Checks for consistent message expectation style.
   Enabled: true
@@ -909,3 +914,8 @@ RSpec/MultipleExpectations:
   Enabled: true
   Max: 8
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleExpectations
+
+RSpec/Rails/AvoidSetupHook:
+  Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook

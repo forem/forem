@@ -203,6 +203,8 @@ Rails.application.routes.draw do
 
     resources :liquid_tags, only: %i[index], defaults: { format: :json }
 
+    resources :discussion_locks, only: %i[create destroy]
+
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags", to: "search#tags"
     get "/search/chat_channels", to: "search#chat_channels"
@@ -321,10 +323,6 @@ Rails.application.routes.draw do
 
     get "/page/:slug", to: "pages#show"
 
-    # TODO: [forem/teamsmash] removed the /p/information view and added a redirect for SEO purposes.
-    # We need to remove this route in 2 months (11 January 2021).
-    get "/p/information", to: redirect("/about")
-
     scope "p" do
       pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics badges].freeze
       pages_actions.each do |action|
@@ -395,7 +393,7 @@ Rails.application.routes.draw do
     get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
                               constraints: { timeframe: /latest/ }
 
-    get "/t/:tag/edit", to: "tags#edit"
+    get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
 
@@ -425,9 +423,11 @@ Rails.application.routes.draw do
                                   constraints: { view: /moderate/ }
     get "/:username/:slug/mod", to: "moderations#article"
     get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
-    get "/:username/:slug/manage", to: "articles#manage"
+    get "/:username/:slug/manage", to: "articles#manage", as: :article_manage
     get "/:username/:slug/edit", to: "articles#edit"
     get "/:username/:slug/delete_confirm", to: "articles#delete_confirm"
+    get "/:username/:slug/discussion_lock_confirm", to: "articles#discussion_lock_confirm"
+    get "/:username/:slug/discussion_unlock_confirm", to: "articles#discussion_unlock_confirm"
     get "/:username/:slug/stats", to: "articles#stats"
     get "/:username/:view", to: "stories#index",
                             constraints: { view: /comments|moderate|admin/ }

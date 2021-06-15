@@ -43,7 +43,7 @@ _If your PR includes UI changes, please replace this line with details on how
 accessibility is impacted and tested. For more info, check out the
 [Forem Accessibility Docs](https://docs.forem.com/frontend/accessibility)._
 
-## Added tests?
+## Added/updated tests?
 
 - [ ] Yes
 - [ ] No, and this is why: _please replace this line with details on why tests

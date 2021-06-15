@@ -9,7 +9,7 @@ module ErrorMessages
     def self.call(error_message)
       return error_message unless error_message.match?(FRONTMATTER_ERROR)
 
-      format(REPLACEMENT_ERROR, Settings::General.email_addresses[:default])
+      format(REPLACEMENT_ERROR, ForemInstance.email)
     end
   end
 end

@@ -8,6 +8,7 @@ RSpec.describe "/admin/apps/chat_channels", type: :request do
     around { |example| perform_enqueued_jobs(&example) }
 
     it "creates chat_channel for with users as moderator" do
+      allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
       user.add_role(:super_admin)
       sign_in user
       expect do
