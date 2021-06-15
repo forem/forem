@@ -9,6 +9,10 @@ class ApplicationMailer < ActionMailer::Base
 
   before_action :use_custom_host
 
+  # [@SRE] temporarily disabled
+  # before_action :set_delivery_options
+  # before_action :set_perform_deliveries
+
   default(
     from: -> { email_from },
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
@@ -35,5 +39,15 @@ class ApplicationMailer < ActionMailer::Base
 
   def use_custom_host
     ActionMailer::Base.default_url_options[:host] = Settings::General.app_domain
+  end
+
+  def set_perform_deliveries
+    self.perform_deliveries = ForemInstance.smtp_enabled?
+  end
+
+  protected
+
+  def set_delivery_options
+    self.smtp_settings = Settings::SMTP.settings
   end
 end

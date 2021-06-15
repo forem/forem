@@ -27,12 +27,13 @@
           </span>
 
           <div class="profile-header__actions">
-            <div class="profile-dropdown mr-2 relative" data-username="<%= @user.username %>">
-              <button id="user-profile-dropdown" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
-                <%= inline_svg_tag("overflow-horizontal.svg", class: "dropdown-icon crayons-icon", aria: true, title: "Toggle dropdown menu") %>
+            <div class="profile-dropdown mr-2 relative hidden" data-username="<%= @user.username %>">
+              <button id="user-profile-dropdown" aria-expanded="false" aria-controls="user-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
+                <%= inline_svg_tag("overflow-horizontal.svg", class: "dropdown-icon crayons-icon", aria: true, title: "User actions") %>
               </button>
 
               <div id="user-profile-dropdownmenu" class="crayons-dropdown top-100 right-0 p-1">
+                <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>
                 <% if user_signed_in? %>
                   <a href="javascript:void(0);" id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="border-none crayons-link crayons-link--block">Block @<%= @user.username %></a>
                   <a
@@ -44,7 +45,6 @@
                     class="border-none crayons-link crayons-link--block">
                     <%= @flag_status ? "Unflag" : "Flag" %> @<%= @user.username %>
                   </a>
-                  <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>
                 <% end %>
                 <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= user_url(@user) %>"></span>
               </div>

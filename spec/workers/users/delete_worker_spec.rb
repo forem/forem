@@ -6,6 +6,10 @@ RSpec.describe Users::DeleteWorker, type: :worker do
   let(:mailer) { double }
   let(:message_delivery) { double }
 
+  before do
+    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+  end
+
   describe "#perform" do
     let!(:user) { create(:user) }
     let(:delete) { Users::Delete }

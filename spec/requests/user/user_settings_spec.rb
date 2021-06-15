@@ -321,6 +321,7 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "sends an email" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
         expect do
           sidekiq_perform_enqueued_jobs do
             send_request

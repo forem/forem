@@ -346,10 +346,10 @@ class User < ApplicationRecord
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
-  after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
 
+  after_commit :subscribe_to_mailchimp_newsletter
   after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 
@@ -546,7 +546,7 @@ class User < ApplicationRecord
 
   def subscribe_to_mailchimp_newsletter
     return unless registered && email.present?
-    return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
     return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
@@ -574,7 +574,7 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
-    return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
