@@ -1,3 +1,6 @@
+/**
+ * @file Manages logic to add active class on items when it's a touch device
+ */
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 if (isTouchDevice) {
   const activeLinks = document.getElementsByClassName('active');
