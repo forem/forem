@@ -17,7 +17,7 @@ RSpec.describe Profiles::Update, type: :service do
 
   it "correctly typecasts new attributes", :aggregate_failures do
     described_class.call(user, profile: { location: 123, education: "false" })
-    expect(user.location).to eq "123"
+    expect(user.profile.location).to eq "123"
     expect(profile.education).to eq "false"
   end
 
@@ -87,7 +87,7 @@ RSpec.describe Profiles::Update, type: :service do
 
     it "enqueues resave articles job when changing summary" do
       sidekiq_assert_resave_article_worker(user) do
-        described_class.call(user, profile: { summary: "#{user.summary} changed" })
+        described_class.call(user, profile: { summary: "#{user.profile.summary} changed" })
       end
     end
 
