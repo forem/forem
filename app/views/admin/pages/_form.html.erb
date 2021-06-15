@@ -1,9 +1,14 @@
+<% if @landing_page %>
 <div class="crayons-card p-6"
      data-controller="landing-page-modal"
      data-landing-page-modal-root-selector-value="#add-landing-page-link-modal-root"
      data-landing-page-modal-content-selector-value="#add-landing-page-link-modal"
      data-landing-page-modal-title-value="There's another locked screen..."
      data-landing-page-modal-size-value="default">
+<% else %>
+<div class="crayons-card p-6">
+<% end %>
+
   <%= form_for [:admin, @page] do |form| %>
     <div class="form-group">
       <%= form.label :title %>
@@ -54,7 +59,6 @@
                                           "landing-page-modal-target": "landingPageCheckbox",
                                           action: (@landing_page.present? ? "landing-page-modal#openModal" : "")
                                         } %>
-      <%= form.hidden_field :overwrite_landing_page, data: { "landing-page-modal-target": "overwrite" } %>
       <p id="lock-screen-description">Determines if this page will be used as a landing page for anonymous viewers.</p>
     </div>
 
