@@ -1,0 +1,216 @@
+<%= form_for(Settings::Authentication.new, url: admin_settings_authentications_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm", testid: "authSectionForm" } }) do |f| %>
+  <div class="card mt-3">
+    <%= render partial: "admin/shared/card_header",
+               locals: {
+                 header: "Authentication",
+                 state: "collapse",
+                 target: "authenticationBodyContainer",
+                 expanded: false
+               } %>
+    <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
+      <section class="mb-6">
+        <h3 class="crayons-subtitle-3 mb-3">
+          General settings
+        </h3>
+        <div
+            class="crayons-field crayons-field--checkbox <%= invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : "" %>"
+            data-tooltip="Unchecking this will enable Email Registration">
+            <%= f.check_box :invite_only_mode,
+                            checked: invite_only_mode_or_no_enabled_auth_options,
+                            data: { action: "config#adjustAuthenticationOptions", "config-target": "inviteOnlyMode" },
+                            class: "crayons-checkbox" %>
+            <div class="mt-0">
+              <%= admin_config_label :invite_only_mode, "Invite-only mode", model: Settings::Authentication %>
+              <%= admin_config_description Constants::Settings::Authentication::DETAILS[:invite_only_mode][:description] %>
+            </div>
+        </div>
+      </section>
+      <section>
+        <header class="mb-2">
+          <h3 class="crayons-subtitle-3">
+            Registration options
+          </h3>
+          <p class="crayons-field__description">
+          How can people create an account on your community?
+          </p>
+        </header>
+
+        <section class="config-authentication__item mb-0">
+          <figure class="config-authentication__item--icon">
+            <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Email icon") %>
+          </figure>
+          <div class="config-authentication__item--container">
+            <div
+                class="config-authentication__item--row flex items-center justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
+                data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
+
+                <div class="config-authentication__item--label">
+                  <p class="crayons-field__label <%= Settings::Authentication.allow_email_password_registration ? "pb-0" : "" %>">
+                  Email address
+                  </p>
+                  <div
+                      class="enabled-indicator <%= Settings::Authentication.allow_email_password_registration ? "visible" : "" %>"
+                      data-config-target="enabledIndicator">
+                      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Email enabled") %>
+                      <small class="crayons-field__description ml-1">Enabled</small>
+                  </div>
+                </div>
+
+                <button
+                    class="crayons-btn crayons-btn--secondary"
+                    id="email-auth-enable-edit-btn"
+                    data-button-text="<%= Settings::Authentication.allow_email_password_registration ? "edit" : "enable" %>"
+                    data-config-target="emailAuthSettingsBtn"
+                    data-action="click->config#enableOrEditEmailAuthSettings"
+                    <%= disabled_attr_on_auth_provider_enable_btn %>>
+                    <%= Settings::Authentication.allow_email_password_registration ? "Edit" : "Enable" %>
+                </button>
+
+            </div>
+            <div id="email-auth-settings-section" class="config-authentication__item--body hidden">
+              <fieldset class="config-authentication-form">
+                <div class="crayons-field--checkbox hidden">
+                  <%= f.check_box :allow_email_password_registration,
+                                  checked: Settings::Authentication.allow_email_password_registration,
+                                  id: "email-registration-checkbox",
+                                  class: "crayons-checkbox" %>
+                </div>
+                <div class="crayons-field">
+                  <%= admin_config_label :allowed_registration_email_domains, "Allowed email domains", model: Settings::Authentication %>
+                  <%= admin_config_description Constants::Settings::Authentication::DETAILS[:allowed_registration_email_domains][:description] %>
+                  <%= f.text_field :allowed_registration_email_domains,
+                                   class: "crayons-textfield",
+                                   value: Settings::Authentication.allowed_registration_email_domains.join(","),
+                                   placeholder: Constants::Settings::Authentication::DETAILS[:allowed_registration_email_domains][:placeholder] %>
+                </div>
+                <div class="crayons-field--checkbox">
+                  <%= f.check_box :display_email_domain_allow_list_publicly,
+                                  checked: Settings::Authentication.display_email_domain_allow_list_publicly,
+                                  id: "email-display-emails-publicly-checkbox",
+                                  class: "crayons-checkbox mt-2" %>
+                  <div>
+                    <%= admin_config_label :display_email_domain_allow_list_publicly, model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication::DETAILS[:display_email_domain_allow_list_publicly][:description] %>
+                  </div>
+                </div>
+                <div class="crayons-field--checkbox">
+                  <%= f.check_box :require_captcha_for_email_password_registration,
+                                  checked: Settings::Authentication.require_captcha_for_email_password_registration,
+                                  data: {
+                                    action: "config#toggleGoogleRecaptchaFields",
+                                    "config-target": "requireCaptchaForEmailPasswordRegistration"
+                                  },
+                                  class: "crayons-checkbox mt-2" %>
+                  <div>
+                    <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration", model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication::DETAILS[:require_captcha_for_email_password_registration][:description] %>
+                  </div>
+                </div>
+                <div id="recaptchaContainer" class="ml-7 <%= Settings::Authentication.require_captcha_for_email_password_registration ? "grid gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
+                  <div class="crayons-field">
+                    <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key", model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication::DETAILS[:recaptcha_site_key][:description] %>
+                    <%= f.text_field :recaptcha_site_key,
+                                     class: "crayons-textfield",
+                                     value: Settings::Authentication.recaptcha_site_key,
+                                     placeholder: Constants::Settings::Authentication::DETAILS[:recaptcha_site_key][:placeholder] %>
+                  </div>
+                  <div class="crayons-field">
+                    <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key", model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication::DETAILS[:recaptcha_secret_key][:description] %>
+                    <%= f.text_field :recaptcha_secret_key,
+                                     class: "crayons-textfield",
+                                     value: Settings::Authentication.recaptcha_secret_key,
+                                     placeholder: Constants::Settings::Authentication::DETAILS[:recaptcha_secret_key][:placeholder] %>
+                  </div>
+                </div>
+                <div class="crayons-btn-actions">
+                  <% if Settings::Authentication.allow_email_password_registration %>
+                    <button
+                        class="crayons-btn crayons-btn--danger"
+                        data-action="click->config#activateEmailAuthModal">
+                        Disable
+                    </button>
+                    <button
+                        class="crayons-btn crayons-btn--secondary"
+                        data-action="click->config#hideEmailAuthSettings">
+                        Close
+                    </button>
+                  <% else %>
+                    <button
+                        class="crayons-btn crayons-btn--secondary"
+                        data-action="click->config#disableEmailAuth">
+                        Undo
+                    </button>
+                  <% end %>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </section>
+        <hr class="my-0" />
+
+        <section class="mb-6">
+          <div class="form-group mb-0">
+            <%= f.text_field :auth_providers_to_enable,
+                             id: "auth_providers_to_enable",
+                             class: "form-control hidden",
+                             value: Settings::Authentication.providers.join(","),
+                             readonly: true %>
+          </div>
+          <% authentication_available_providers.each do |provider| %>
+            <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
+            <section class="config-authentication__item mb-0">
+              <figure class="config-authentication__item--icon">
+                <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
+              </figure>
+              <div class="config-authentication__item--container">
+                <div
+                    class="flex items-center justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
+                    data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
+                    <div class="config-authentication__item--label">
+                      <p class="crayons-field__label <%= authentication_provider_enabled?(provider) ? "pb-0" : "" %>">
+                      <%= provider.official_name %>
+                      </p>
+                      <div
+                          id="<%= provider.provider_name %>-enabled-indicator"
+                          class="enabled-indicator <%= authentication_provider_enabled?(provider) ? "visible" : "" %>">
+                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "#{provider.official_name} enabled") %>
+                          <small class="crayons-field__description ml-1">Enabled</small>
+                      </div>
+                    </div>
+                    <button
+                        class="crayons-btn crayons-btn--secondary"
+                        id="<%= provider.provider_name %>-auth-btn"
+                        data-button-text="<%= authentication_provider_enabled?(provider) ? "edit" : "enable" %>"
+                        data-action="click->config#enableOrEditAuthProvider"
+                        data-provider-name="<%= provider.provider_name %>"
+                        data-provider-official-name="<%= provider.official_name %>"
+                        data-enable-auth="<%= authentication_provider_enabled?(provider) ? "true" : "false" %>"
+                        <%= disabled_attr_on_auth_provider_enable_btn %>>
+                        <%= authentication_provider_enabled?(provider) ? "Edit" : "Enable" %>
+                    </button>
+                </div>
+                <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
+                  <% auth_partial = provider.provider_name == :apple ? "apple_auth_provider_settings" : "auth_provider_settings" %>
+                  <%= render partial: "forms/authentication/#{auth_partial}",
+                             locals: {
+                               f: f,
+                               provider: provider
+                             } %>
+                </div>
+              </div>
+            </section>
+            <hr class="my-0" />
+          <% end %>
+        </section>
+      </section>
+      <div class="crayons-notice crayons-notice--info mb-4" aria-live="polite">
+        Changing authentication keys will not take effect until this Forem instance is restarted.
+      </div>
+
+      <%= render "form_submission", f: f %>
+    </div>
+  </div>
+<% end %>
+<div data-config-target="configModalAnchor"></div>
