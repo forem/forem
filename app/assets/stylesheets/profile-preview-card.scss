@@ -10,8 +10,7 @@
     display: block;
   }
 
-  .profile-preview-card--trigger:hover
-    + .profile-preview-card__content.crayons-dropdown {
+  &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
     display: block;
   }
 }
