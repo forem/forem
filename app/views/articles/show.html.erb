@@ -128,10 +128,14 @@
             <% end %>
 
             <div class="crayons-article__subheader">
-              <a href="/<%= @user.username %>" class="flex items-center mr-4 mb-4 s:mb-0 fw-medium crayons-link">
-                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" /></span>
-                <%= @user.name %>
+              <a href="/<%= @user.username %>" class="flex items-center mr-2 mb-4 s:mb-0 fw-medium crayons-link">
+                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %>" /></span>
+                <span class="block m:hidden"><%= @user.name %></span>
               </a>
+              <div class="relative mr-4 mb-4 s:mb-0 fw-medium">
+                <button class="px-0 crayons-btn crayons-btn--ghost hidden m:block" aria-label="<%= @user.name %> profile details"><%= @user.name %></button>
+                <%= render "/shared/profile_preview_card", actor: @user %>
+              </div>
 
               <span class="fs-s mb-4 s:mb-0">
                 <% if @article.published_timestamp.present? %>
