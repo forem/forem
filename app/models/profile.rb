@@ -28,7 +28,6 @@ class Profile < ApplicationRecord
     brand_color1: :bg_color_hex,
     brand_color2: :text_color_hex,
     display_email_on_profile: :email_public,
-    education: :education,
     skills_languages: :mostly_work_with
   }.with_indifferent_access.freeze
 
