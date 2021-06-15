@@ -355,8 +355,7 @@ class StoriesController < ApplicationController
       email: @user.setting.display_email_on_profile ? @user.email : nil,
       jobTitle: @user.employment_title.presence,
       description: @user.summary.presence || "404 bio not found",
-      worksFor: [user_works_for].compact,
-      alumniOf: @user.education.presence
+      worksFor: [user_works_for].compact
     }.reject { |_, v| v.blank? }
   end
 

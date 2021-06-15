@@ -47,7 +47,6 @@ RSpec.describe "UserShow", type: :request do
             "url" => user.employer_url
           },
         ],
-        "alumniOf" => user.education,
       )
     end
     # rubocop:enable RSpec/ExampleLength
