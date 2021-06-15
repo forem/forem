@@ -18,7 +18,7 @@ else
   ].freeze
 
   Honeycomb.configure do |config|
-    config.write_key = honeycomb_api_key
+    config.write_key = honeycomb_api_key.presence
     if ENV["HONEYCOMB_DISABLE_AUTOCONFIGURE"]
       config.dataset = "background-work"
     else
