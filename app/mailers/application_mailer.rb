@@ -8,10 +8,8 @@ class ApplicationMailer < ActionMailer::Base
   helper AuthenticationHelper
 
   before_action :use_custom_host
-
-  # [@SRE] temporarily disabled
-  # before_action :set_delivery_options
-  # before_action :set_perform_deliveries
+  before_action :set_perform_deliveries
+  after_action  :set_delivery_options
 
   default(
     from: -> { email_from },
@@ -48,6 +46,6 @@ class ApplicationMailer < ActionMailer::Base
   protected
 
   def set_delivery_options
-    self.smtp_settings = Settings::SMTP.settings
+    mail.delivery_method.settings.merge!(Settings::SMTP.settings)
   end
 end
