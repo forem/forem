@@ -76,10 +76,8 @@ document
   ?.addEventListener('click', copyArticleLink);
 
 // Comment Subscription
-const userDataIntervalID = setInterval(async () => {
+getCsrfToken().then(async () => {
   const { user = null, userStatus } = document.body.dataset;
-
-  clearInterval(userDataIntervalID);
   const root = document.getElementById('comment-subscription');
   const isLoggedIn = userStatus === 'logged-in';
 
