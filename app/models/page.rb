@@ -1,6 +1,4 @@
 class Page < ApplicationRecord
-  attr_accessor :overwrite_landing_page
-
   TEMPLATE_OPTIONS = %w[contained full_within_layout json].freeze
 
   validates :title, presence: true
@@ -9,14 +7,19 @@ class Page < ApplicationRecord
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
   validate :unique_slug_including_users_and_orgs, if: :slug_changed?
-  validate :single_landing_page, if: :will_save_change_to_landing_page?
 
   before_validation :set_default_template
   before_save :evaluate_markdown
-  after_save :bust_cache
+
+  after_commit :ensure_uniqueness_of_landinge_page
+  after_commit :bust_cache
 
   mount_uploader :social_image, ProfileImageUploader
   resourcify
+
+  def self.landing_page
+    find_by(landing_page: true)
+  end
 
   def path
     is_top_level_path ? "/#{slug}" : "/page/#{slug}"
@@ -24,10 +27,6 @@ class Page < ApplicationRecord
 
   def feature_flag_name
     "page_#{slug}"
-  end
-
-  def self.landing_page
-    find_by(landing_page: true)
   end
 
   private
@@ -63,15 +62,13 @@ class Page < ApplicationRecord
     errors.add(:slug, "is taken.")
   end
 
-  def single_landing_page
-    # Only add errors if we are trying to modify a landing page
-    # while another landing page is already being used to ensure
-    # that only one can be set to "true" at a time.
+  # As there can only be one global landing page, we want to ensure that
+  # data integrity is preserved by setting `landing_page` to `false` for all
+  # other pages if the current one was transformed into a landing page
+  def ensure_uniqueness_of_landinge_page
+    return unless previous_changes["landing_page"] == [false, true]
 
-    landing_page = Page.where.not(id: id).find_by(landing_page: true)
-    return unless landing_page
-
-    errors.add(:base, "Only one page at a time can be used as a 'locked screen.'")
+    Page.where.not(id: id).update_all(landing_page: false)
   end
 
   def bust_cache
