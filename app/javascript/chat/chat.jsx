@@ -668,8 +668,7 @@ export class Chat extends Component {
         (message) => message.user_id === currentUserId,
       );
       const lastMessage =
-        messagesByCurrentUser &&
-        messagesByCurrentUser[messagesByCurrentUser.length - 1];
+        messagesByCurrentUser?.[messagesByCurrentUser.length - 1];
 
       if (lastMessage) {
         if (upArrowPressed) {
