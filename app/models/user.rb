@@ -12,7 +12,6 @@ class User < ApplicationRecord
     bg_color_hex
     currently_hacking_on
     currently_learning
-    currently_streaming_on
     dribbble_url
     education
     email_public
