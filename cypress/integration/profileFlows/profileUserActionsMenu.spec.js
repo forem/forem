@@ -14,6 +14,9 @@ describe('Profile User Actions Menu', () => {
     it("should show a dropdown menu when a user views another user's profile", () => {
       cy.visit('/article_editor_v1_user');
 
+      // Make sure the dropdown has initialized
+      cy.get('[data-dropdown-initialized]');
+
       cy.findByRole('button', { name: 'User actions' }).as('dropdownButton');
       cy.get('@dropdownButton').click();
       cy.findByRole('link', { name: 'Block @article_editor_v1_user' }).should(
@@ -48,6 +51,10 @@ describe('Profile User Actions Menu', () => {
       cy.on('window:confirm', () => true);
 
       cy.visit('/article_editor_v1_user');
+
+      // Make sure the dropdown has initialized
+      cy.get('[data-dropdown-initialized]');
+
       cy.findByRole('button', { name: 'User actions' }).click();
       cy.findByRole('link', { name: 'Block @article_editor_v1_user' }).click();
 
@@ -66,6 +73,10 @@ describe('Profile User Actions Menu', () => {
       cy.on('window:confirm', () => true);
 
       cy.visit('/article_editor_v1_user');
+
+      // Make sure the dropdown has initialized
+      cy.get('[data-dropdown-initialized]');
+
       cy.findByRole('button', { name: 'User actions' }).click();
       cy.findByRole('link', { name: 'Flag @article_editor_v1_user' }).click();
 
@@ -84,6 +95,10 @@ describe('Profile User Actions Menu', () => {
 
     it('should link to report abuse from user', () => {
       cy.visit('/article_editor_v1_user');
+
+      // Make sure the dropdown has initialized
+      cy.get('[data-dropdown-initialized]');
+
       cy.findByRole('button', { name: 'User actions' }).click();
       cy.findByRole('link', { name: 'Report Abuse' }).click();
 
@@ -99,6 +114,9 @@ describe('Profile User Actions Menu', () => {
 
     it('should show a dropdown menu with only the Report Abuse link when the user is not logged in', () => {
       cy.visit('/article_editor_v1_user');
+      // Make sure the dropdown has initialized
+      cy.get('[data-dropdown-initialized]');
+
       cy.findByRole('button', { name: 'User actions' }).click();
 
       cy.findByRole('link', { name: 'Report Abuse' }).should('have.focus');
