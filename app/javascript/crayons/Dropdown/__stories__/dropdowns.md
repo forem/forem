@@ -16,7 +16,7 @@ FYI: Dropdowns use “Box” component as background, with Level 3 elevation.
 
 The Preact Dropdown component has the below accessibility features baked-in. To
 make sure this works correctly, you need only pass the appropriate
-` triggerButtonId` and `dropdownContentId` to identify the button which controls
+`triggerButtonId` and `dropdownContentId` to identify the button which controls
 the dropdown, and the dropdown content div itself. All required aria attributes
 and click handlers will be initialized by the Preact component.
 
@@ -29,7 +29,7 @@ necessary aria attributes and click handlers.
 #### Expected interaction pattern
 
 When either the Preact component is used with appropriate props, or the HTML
-variant is initialized, all crayons dropdowns should conform to the following
+variant is initialized, all Crayons dropdowns should conform to the following
 behaviors:
 
 - The dropdown opens and closes with a mouse click on the trigger button
