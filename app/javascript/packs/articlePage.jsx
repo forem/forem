@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import ahoy from 'ahoy.js';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { embedGists } from '../utilities/gist';
@@ -47,8 +48,16 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
     // We want to close the dropdown on link select (since they open in a new tab)
     document
       .querySelectorAll('#article-show-more-dropdown [href]')
-      .forEach((link) => link.addEventListener('click', closeDropdown));
+      .forEach((link) => {
+        link.addEventListener('click', (event) => {
+          closeDropdown(event)
+          
+          // Temporary Ahoy Stats for usage reports
+          ahoy.track('Post Dropdown', { option: event.target.text.trim() });
+        });
+      });
   }
+
   shareDropdownButton.dataset.initialized = 'true';
 }
 
@@ -76,10 +85,8 @@ document
   ?.addEventListener('click', copyArticleLink);
 
 // Comment Subscription
-const userDataIntervalID = setInterval(async () => {
+getCsrfToken().then(async () => {
   const { user = null, userStatus } = document.body.dataset;
-
-  clearInterval(userDataIntervalID);
   const root = document.getElementById('comment-subscription');
   const isLoggedIn = userStatus === 'logged-in';
 

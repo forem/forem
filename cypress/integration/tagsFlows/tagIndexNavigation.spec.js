@@ -25,18 +25,18 @@ describe('Tag index page navigation', () => {
         'page',
       );
 
-      cy.get('@week').should('have.attr', 'aria-current', '');
-      cy.get('@month').should('have.attr', 'aria-current', '');
-      cy.get('@year').should('have.attr', 'aria-current', '');
-      cy.get('@infinity').should('have.attr', 'aria-current', '');
-      cy.get('@latest').should('have.attr', 'aria-current', '');
+      cy.get('@week').should('not.have.attr', 'aria-current');
+      cy.get('@month').should('not.have.attr', 'aria-current');
+      cy.get('@year').should('not.have.attr', 'aria-current');
+      cy.get('@infinity').should('not.have.attr', 'aria-current');
+      cy.get('@latest').should('not.have.attr', 'aria-current');
     });
   });
 
   it('should navigate to Week view', () => {
     cy.findByRole('navigation', { name: 'View tagged posts by' }).within(() => {
       cy.findByRole('link', { name: 'Week' }).as('week');
-      cy.get('@week').should('have.attr', 'aria-current', '');
+      cy.get('@week').should('not.have.attr', 'aria-current');
       cy.get('@week').click();
     });
 
@@ -54,7 +54,7 @@ describe('Tag index page navigation', () => {
   it('should navigate to Month view', () => {
     cy.findByRole('navigation', { name: 'View tagged posts by' }).within(() => {
       cy.findByRole('link', { name: 'Month' }).as('month');
-      cy.get('@month').should('have.attr', 'aria-current', '');
+      cy.get('@month').should('not.have.attr', 'aria-current');
       cy.get('@month').click();
     });
 
@@ -72,7 +72,7 @@ describe('Tag index page navigation', () => {
   it('should navigate to Year view', () => {
     cy.findByRole('navigation', { name: 'View tagged posts by' }).within(() => {
       cy.findByRole('link', { name: 'Year' }).as('year');
-      cy.get('@year').should('have.attr', 'aria-current', '');
+      cy.get('@year').should('not.have.attr', 'aria-current');
       cy.get('@year').click();
     });
 
@@ -90,7 +90,7 @@ describe('Tag index page navigation', () => {
   it('should navigate to Infinity view', () => {
     cy.findByRole('navigation', { name: 'View tagged posts by' }).within(() => {
       cy.findByRole('link', { name: 'Infinity' }).as('infinity');
-      cy.get('@infinity').should('have.attr', 'aria-current', '');
+      cy.get('@infinity').should('not.have.attr', 'aria-current');
       cy.get('@infinity').click();
     });
 
@@ -108,7 +108,7 @@ describe('Tag index page navigation', () => {
   it('should navigate to Latest view', () => {
     cy.findByRole('navigation', { name: 'View tagged posts by' }).within(() => {
       cy.findByRole('link', { name: 'Latest' }).as('latest');
-      cy.get('@latest').should('have.attr', 'aria-current', '');
+      cy.get('@latest').should('not.have.attr', 'aria-current');
       cy.get('@latest').click();
     });
 

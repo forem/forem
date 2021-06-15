@@ -3,6 +3,10 @@ module Admin
   # /admin/customization/config. The actual updates get handled by the settings
   # controllers in the Admin::Settings namespace.
   class SettingsController < Admin::ApplicationController
+    # NOTE: The "show" action uses a lot of partials, this makes it easier to
+    # reference them.
+    prepend_view_path("app/views/admin/settings")
+
     layout "admin"
 
     def show

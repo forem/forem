@@ -1,4 +1,29 @@
 describe('Profile User Actions Menu', () => {
+  // We complete logged out tests first, as unfinished network requests relating to logged-in users can cause unexpected failures
+  // See: https://github.com/forem/forem/issues/13988
+  describe('Logged out users', () => {
+    beforeEach(() => {
+      cy.testSetup();
+    });
+
+    it('should show a dropdown menu with only the Report Abuse link when the user is not logged in', () => {
+      cy.visit('/article_editor_v1_user');
+      // Make sure the dropdown has initialized
+      cy.get('[data-dropdown-initialized]');
+
+      cy.findByRole('button', { name: 'User actions' }).click();
+
+      cy.findByRole('link', { name: 'Report Abuse' }).should('have.focus');
+
+      cy.findByRole('link', { name: 'Block @article_editor_v1_user' }).should(
+        'not.exist',
+      );
+      cy.findByRole('link', { name: 'Flag @article_editor_v1_user' }).should(
+        'not.exist',
+      );
+    });
+  });
+
   describe('Logged in users', () => {
     beforeEach(() => {
       cy.testSetup();
@@ -13,6 +38,9 @@ describe('Profile User Actions Menu', () => {
 
     it("should show a dropdown menu when a user views another user's profile", () => {
       cy.visit('/article_editor_v1_user');
+
+      // Make sure the dropdown has initialized
+      cy.get('[data-dropdown-initialized]');
 
       cy.findByRole('button', { name: 'User actions' }).as('dropdownButton');
       cy.get('@dropdownButton').click();
@@ -48,6 +76,10 @@ describe('Profile User Actions Menu', () => {
       cy.on('window:confirm', () => true);
 
       cy.visit('/article_editor_v1_user');
+
+      // Make sure the dropdown has initialized
+      cy.get('[data-dropdown-initialized]');
+
       cy.findByRole('button', { name: 'User actions' }).click();
       cy.findByRole('link', { name: 'Block @article_editor_v1_user' }).click();
 
@@ -66,6 +98,10 @@ describe('Profile User Actions Menu', () => {
       cy.on('window:confirm', () => true);
 
       cy.visit('/article_editor_v1_user');
+
+      // Make sure the dropdown has initialized
+      cy.get('[data-dropdown-initialized]');
+
       cy.findByRole('button', { name: 'User actions' }).click();
       cy.findByRole('link', { name: 'Flag @article_editor_v1_user' }).click();
 
@@ -84,31 +120,15 @@ describe('Profile User Actions Menu', () => {
 
     it('should link to report abuse from user', () => {
       cy.visit('/article_editor_v1_user');
+
+      // Make sure the dropdown has initialized
+      cy.get('[data-dropdown-initialized]');
+
       cy.findByRole('button', { name: 'User actions' }).click();
       cy.findByRole('link', { name: 'Report Abuse' }).click();
 
       cy.url().should('contain', 'report-abuse');
       cy.url().should('contain', 'article_editor_v1_user');
-    });
-  });
-
-  describe('Logged out users', () => {
-    beforeEach(() => {
-      cy.testSetup();
-    });
-
-    it('should show a dropdown menu with only the Report Abuse link when the user is not logged in', () => {
-      cy.visit('/article_editor_v1_user');
-      cy.findByRole('button', { name: 'User actions' }).click();
-
-      cy.findByRole('link', { name: 'Report Abuse' }).should('have.focus');
-
-      cy.findByRole('link', { name: 'Block @article_editor_v1_user' }).should(
-        'not.exist',
-      );
-      cy.findByRole('link', { name: 'Flag @article_editor_v1_user' }).should(
-        'not.exist',
-      );
     });
   });
 });
