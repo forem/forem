@@ -1,4 +1,6 @@
 describe('Profile User Actions Menu', () => {
+  // We complete logged out tests first, as unfinished network requests relating to logged-in users can cause unexpected failures
+  // See: https://github.com/forem/forem/issues/13988
   describe('Logged out users', () => {
     beforeEach(() => {
       cy.testSetup();
