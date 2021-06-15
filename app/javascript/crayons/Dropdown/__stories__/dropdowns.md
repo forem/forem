@@ -29,7 +29,7 @@ necessary aria attributes and click handlers.
 #### Expected interaction pattern
 
 When either the Preact component is used with appropriate props, or the HTML
-variant is initialized, all crayons dropdowns should conform to the following
+variant is initialized, all Crayons dropdowns should conform to the following
 behaviors:
 
 - The dropdown opens and closes with a mouse click on the trigger button
