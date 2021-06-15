@@ -43,33 +43,47 @@
           </div>
         </li>
       <% end %>
-      <% if @user.employment_title.present? %>
-        <li>
-          <div class="key">
-            Work
-          </div>
-          <div class="value">
-            <%= @user.employment_title %>
-            <% if @user.employer_name.present? %>
-              <span class="opacity-50"> at </span>
-              <% if @user.employer_url.present? %>
-                <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
-              <% else %>
-                <%= @user.employer_name %>
+      <% if ForemInstance.dev_to? %>
+        <% if @user.employment_title.present? %>
+          <li>
+            <div class="key">
+              Work
+            </div>
+            <div class="value">
+              <%= @user.employment_title %>
+              <% if @user.employer_name.present? %>
+                <span class="opacity-50"> at </span>
+                <% if @user.employer_url.present? %>
+                  <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
+                <% else %>
+                  <%= @user.employer_name %>
+                <% end %>
               <% end %>
-            <% end %>
-          </div>
-        </li>
+            </div>
+          </li>
+        <% end %>
       <% end %>
-      <% if @user.location.present? %>
+      <% if @user.profile.location.present? %>
         <li>
           <div class="key">
             Location
           </div>
           <div class="value">
-            <%= @user.location %>
+            <%= @user.profile.location %>
           </div>
         </li>
+      <% end %>
+      <% if ForemInstance.dev_to? %>
+        <% if @user.education.present? %>
+          <li>
+            <div class="key">
+              Education
+            </div>
+            <ul class="value">
+              <%= @user.education %>
+            </ul>
+          </li>
+        <% end %>
       <% end %>
     <% end %>
     <li>
