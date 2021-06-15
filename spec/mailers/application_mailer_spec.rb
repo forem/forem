@@ -22,7 +22,7 @@ RSpec.describe ApplicationMailer, type: :mailer do
       Settings::SMTP.clear_cache
     end
 
-    it "evoked Settings::SMTP.settings during callback" do
+    it "sets proper SMTP credential during callback" do
       Settings::SMTP.user_name = Faker::Internet.username
       Settings::SMTP.password = Faker::Internet.password
       email.deliver_now
