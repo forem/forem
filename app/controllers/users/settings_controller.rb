@@ -21,7 +21,7 @@ module Users
       users_setting = Users::Setting.find(params[:id])
       tab = params["users_setting"]["tab"] || "profile"
 
-      if user_settings.update(users_setting_params)
+      if users_setting.update(users_setting_params)
         import_articles_from_feed(users_setting)
 
         notice = "Your config has been updated. Refresh to see all changes."

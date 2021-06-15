@@ -33,7 +33,7 @@
         <% end %>
       <% else %>
 
-      <% if @user.email_public && context != "sidebar" %>
+      <% if @user.setting.display_email_on_profile && context != "sidebar" %>
         <li>
           <div class="key">
             Email

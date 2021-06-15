@@ -35,8 +35,7 @@ class UsersController < ApplicationController
       return redirect_to sign_up_path
     end
     set_user
-    set_users_setting
-    set_users_notification_setting
+    set_users_setting_and_notification_setting
     set_current_tab(params["tab"] || "profile")
     handle_settings_tab
   end
@@ -359,15 +358,10 @@ class UsersController < ApplicationController
     authorize @user
   end
 
-  def set_users_setting
+  def set_users_setting_and_notification_setting
     return unless @user
 
     @users_setting = @user.setting
-  end
-
-  def set_users_notification_setting
-    return unless @user
-
     @users_notification_setting = @user.notification_setting
   end
 
