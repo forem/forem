@@ -621,6 +621,15 @@ class User < ApplicationRecord
     "User:#{id}"
   end
 
+  protected
+
+  # Send emails asynchronously
+  # see https://github.com/heartcombo/devise#activejob-integration
+  def send_devise_notification(notification, *args)
+    message = devise_mailer.public_send(notification, self, *args)
+    message.deliver_later
+  end
+
   private
 
   def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
