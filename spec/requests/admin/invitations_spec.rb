@@ -31,7 +31,7 @@ RSpec.describe "/admin/invitations", type: :request do
     end
 
     it "enqueues an invitation email to be sent", :aggregate_failures do
-      assert_enqueued_with(job: DeviseMailer.delivery_job) do
+      assert_enqueued_with(job: Devise.mailer.delivery_job) do
         post admin_invitations_path,
              params: { user: { email: "hey#{rand(1000)}@email.co", name: "Roger #{rand(1000)}" } }
       end
