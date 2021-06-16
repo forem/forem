@@ -1,39 +1,21 @@
 <style type="text/css">
-  section {
-    width: 100%;
-    height: 150px;
-    border: 5px solid red;
+  article {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: space-between;
   }
 
-  .column1 {
-    grid-column-start: 1;
-    grid-column-end: 1;
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 70%;
   }
 
-  .column2 {
-    grid-column-start: 2;
-    grid-column-end: 2;
-  }
-
-  #profile {
-    height: 300px;
-  }
-
-  #status {
-    grid-row: 1 / 2;
-  }
-
-  #admin-roles {
-    grid-row: 2 / 3;
-    align-self: start;
-  }
-
-  #tag-moderation {
-    grid-row: 3 / 4;
-  }
-
-  #activity {
-    grid-row: 4 / 5;
+  .right-column {
+    display: flex;
+    flex-direction: column;
   }
 </style>
 
@@ -42,32 +24,36 @@
   <p><a href="<%= admin_users_path %>">← Go back to All members</a></p>
 </header>
 
-<article class="crayons-layout crayons-layout--2-cols crayons-layout--2-cols--1-2 crayons-layout--2-cols--inverted crayons-layout__content">
-  <section class="column1" id="profile">
-    <h3><%= @user.name %></h3>
-  </section>
+<article>
+  <div class="left-column">
+    <section class="crayons-card" id="profile">
+      <h3><%= @user.name %></h3>
+    </section>
 
-  <section class="column1" id="tools">
-    <h3>Tools</h3>
-  </section>
+    <section class="crayons-card" id="tools">
+      <h3>Tools</h3>
+    </section>
 
-  <section class="column1" id="account">
-    <h3>Account Information & Settings</h3>
-  </section>
+    <section class="crayons-card" id="account">
+      <h3>Account Information & Settings</h3>
+    </section>
+  </div>
 
-  <section class="column2" id="status">
-    <h3>Status</h3>
-  </section>
+  <div class="right-column">
+    <section class="crayons-card" id="status">
+      <h3>Status</h3>
+    </section>
 
-  <section class="column2" id="admin-roles">
-    <h3>Admin Roles</h3>
-  </section>
+    <section class="crayons-card" id="admin-roles">
+      <h3>Admin Roles</h3>
+    </section>
 
-  <section class="column2" id="tag-moderation">
-    <h3>Tag Moderation</h3>
-  </section>
+    <section class="crayons-card" id="tag-moderation">
+      <h3>Tag Moderation</h3>
+    </section>
 
-  <section class="column2" id="activity">
-    <h3>Activity & Engagement</h3>
-  </section>
+    <section class="crayons-card" id="activity">
+      <h3>Activity & Engagement</h3>
+    </section>
+  </div>
 </article>
