@@ -4,7 +4,7 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "high_priority", 1
 
   describe "#perform" do
-    let(:user) { create(:user, currently_hacking_on: "text is here") }
+    let(:user) { create(:user, profile: create(:profile, :with_DEV_info)) }
     let(:user2) { create(:user) }
     let(:admin) { create(:user, :super_admin) }
 
@@ -33,7 +33,7 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
     end
 
     it "reassigns profile info" do
-      expect(user.currently_hacking_on).to be_blank
+      expect(user.profile.currently_hacking_on).to be_blank
     end
 
     it "creates an entry in the BanishedUsers table" do

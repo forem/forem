@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UsersOnboarding", type: :request do
-  let(:user) { create(:user, saw_onboarding: false, location: "Llama Town") }
+  let(:user) { create(:user, saw_onboarding: false, profile: create(:profile, location: "Llama Town")) }
 
   describe "PATCH /onboarding_update" do
     context "when signed in" do

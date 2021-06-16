@@ -116,6 +116,10 @@ class Organization < ApplicationRecord
     false
   end
 
+  def profile
+    self
+  end
+
   def destroyable?
     organization_memberships.count == 1 && articles.count.zero? && credits.count.zero?
   end
