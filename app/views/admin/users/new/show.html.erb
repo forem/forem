@@ -1,31 +1,10 @@
-<style type="text/css">
-  article {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-content: space-between;
-  }
-
-  .left-column {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 70%;
-  }
-
-  .right-column {
-    display: flex;
-    flex-direction: column;
-  }
-</style>
-
 <header>
   <h2 class="crayons-title">Members</h2>
   <p><a href="<%= admin_users_path %>">← Go back to All members</a></p>
 </header>
 
-<article>
-  <div class="left-column">
+<article class="flex flex-row flex-wrap justify-between content-between">
+  <div class="flex flex-column" style="flex-basis: 70%;">
     <section class="crayons-card" id="profile">
       <h3><%= @user.name %></h3>
     </section>
@@ -39,7 +18,7 @@
     </section>
   </div>
 
-  <div class="right-column">
+  <div class="flex flex-column">
     <section class="crayons-card" id="status">
       <h3>Status</h3>
     </section>
