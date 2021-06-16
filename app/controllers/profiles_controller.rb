@@ -15,7 +15,7 @@ class ProfilesController < ApplicationController
       render template: "users/edit", locals: {
         user: update_params[:user],
         profile: update_params[:profile],
-        users_settings: update_params[:users_setting]
+        users_setting: update_params[:users_setting]
       }
     end
   end

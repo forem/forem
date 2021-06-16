@@ -137,7 +137,7 @@ Rails.application.routes.draw do
       end
     end
     namespace :users do
-      resources :settings, only: %i[update]
+      resource :settings, only: %i[update]
       resource :notification_settings, only: %i[update]
     end
     resources :users, only: %i[update]

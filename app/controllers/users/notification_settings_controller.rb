@@ -4,8 +4,7 @@ module Users
     before_action :authenticate_user!
     after_action :verify_authorized
 
-    ALLOWED_PARAMS = %i[id
-                        email_badge_notifications
+    ALLOWED_PARAMS = %i[email_badge_notifications
                         email_comment_notifications
                         email_community_mod_newsletter
                         email_connect_messages
@@ -25,9 +24,7 @@ module Users
       authorize current_user, policy_class: UserPolicy
 
       if current_user.notification_setting.update(users_notification_setting_params)
-        notice = "Your notification settings have been updated."
-
-        flash[:settings_notice] = notice
+        flash[:settings_notice] = "Your notification settings have been updated."
       else
         Honeycomb.add_field("error", current_user.notification_setting.errors.messages.compact_blank)
         Honeycomb.add_field("errored", true)

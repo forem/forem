@@ -1433,6 +1433,7 @@ ActiveRecord::Schema.define(version: 2021_06_09_164958) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
+    t.check_constraint "username IS NOT NULL", name: "users_username_not_null"
   end
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
@@ -1483,7 +1484,6 @@ ActiveRecord::Schema.define(version: 2021_06_09_164958) do
     t.boolean "display_sponsors", default: true, null: false
     t.integer "editor_version", default: 0, null: false
     t.integer "experience_level"
-    t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false, null: false
     t.boolean "feed_referential_link", default: true, null: false
     t.string "feed_url"
