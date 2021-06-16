@@ -129,7 +129,7 @@
 
             <div class="crayons-article__subheader">
               <a href="/<%= @user.username %>" class="flex items-center mr-2 mb-4 s:mb-0 fw-medium crayons-link">
-                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %>" /></span>
+                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="" /></span>
                 <span class="block m:hidden"><%= @user.name %></span>
               </a>
               <div class="profile-preview-card relative mr-4 mb-4 s:mb-0 fw-medium">

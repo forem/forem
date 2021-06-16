@@ -1,4 +1,37 @@
 describe('Preview user profile from article page', () => {
+  describe('mobile screens', () => {
+    beforeEach(() => {
+      cy.testSetup();
+      cy.fixture('users/articleEditorV1User.json').as('user');
+
+      cy.viewport('iphone-7');
+
+      cy.get('@user').then((user) => {
+        cy.loginUser(user).then(() => {
+          cy.visit('/');
+          cy.findAllByRole('link', { name: 'Test article' })
+            .first()
+            .click({ force: true });
+
+          // Wait for page to load
+          cy.findByRole('button', { name: 'Share post options' });
+        });
+      });
+    });
+
+    it('should not show a preview profile details button', () => {
+      cy.findByRole('button', { name: 'Admin McAdmin profile details' })
+        .as('previewCardTrigger')
+        .should('not.exist');
+
+      // Check the user profile link is shown instead (there is also one in the user details card at the bottom)
+      cy.findAllByRole('link', { name: 'Admin McAdmin' }).should(
+        'have.length',
+        2,
+      );
+    });
+  });
+
   describe("Preview profile on another user's article", () => {
     beforeEach(() => {
       cy.testSetup();
