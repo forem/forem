@@ -53,8 +53,8 @@
                 <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: "GitHub logo") %>
               </a>
             <% end %>
-            <% if @user.website_url.present? %>
-              <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
+            <% if @user.profile.website_url.present? %>
+              <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
                 <%= inline_svg_tag("external.svg", class: "crayons-icon", aria: true, title: "External link icon") %>
               </a>
             <% end %>
