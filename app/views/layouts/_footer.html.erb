@@ -1,22 +1,24 @@
 <footer class="crayons-footer print-hidden">
   <div id="footer-container" class="crayons-layout crayons-layout--limited-m crayons-footer__container">
-    <nav class="m:-mt-4" aria-label="Site information">
-      <a href="/" class="crayons-link inline-block p-2">Home</a>
-      <% NavigationLink.ordered.each do |link| %>
-        <% if !link.display_only_when_signed_in? || (link.display_only_when_signed_in? && user_signed_in?) %>
-          <a href="<%= link.url %>" class="crayons-link inline-block p-2"><%= link.name %></a>
+    <% unless ForemInstance.private? %>
+      <nav class="m:-mt-4" aria-label="Site information">
+          <a href="/" class="crayons-link inline-block p-2">Home</a>
+          <% NavigationLink.ordered.each do |link| %>
+            <% if !link.display_only_when_signed_in? || (link.display_only_when_signed_in? && user_signed_in?) %>
+              <a href="<%= link.url %>" class="crayons-link inline-block p-2"><%= link.name %></a>
+            <% end %>
+          <% end %>
+
+        <% unless user_signed_in? %>
+          <a href="<%= sign_up_path %>" class="crayons-link fw-bold inline-block p-2">Sign In/Up</a>
+        <% else %>
+          <a href="/new" class="crayons-link fw-bold inline-block p-2">Create Post</a>
         <% end %>
-      <% end %>
 
-      <% unless user_signed_in? %>
-        <a href="<%= sign_up_path %>" class="crayons-link fw-bold inline-block p-2">Sign In/Up</a>
-      <% else %>
-        <a href="/new" class="crayons-link fw-bold inline-block p-2">Create Post</a>
-      <% end %>
-
-      <div class="pt-4"><%= render partial: "layouts/social_media" %></div>
-    </nav>
-    <hr class="crayons-footer__divider">
+        <div class="pt-4"><%= render partial: "layouts/social_media" %></div>
+      </nav>
+      <hr class="crayons-footer__divider">
+    <% end %>
     <p class="fs-s crayons-footer__description"><a href="/" aria-label="<%= community_name %> Home" class="crayons-link"><%= community_name %></a> – <%= Settings::Community.community_description %></p>
     <div class="m:-mb-4 crayons-footer__description">
       <%# The following copy is necessary for compatibility with the Forem AGPL licence which requires instances to link back to the source. %>
