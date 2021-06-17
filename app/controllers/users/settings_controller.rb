@@ -21,22 +21,22 @@ module Users
 
     def update
       authorize current_user, policy_class: UserPolicy
-
+      users_setting = current_user.setting
       tab = params["users_setting"]["tab"] || "profile"
 
-      if current_user.setting.update(users_setting_params)
-        import_articles_from_feed(current_user.setting)
+      if users_setting.update(users_setting_params)
+        import_articles_from_feed(users_setting)
 
-        if current_user.setting.experience_level.present?
+        if users_setting.experience_level.present?
           cookies.permanent[:user_experience_level] =
-            current_user.setting.experience_level.to_s
+            users_setting.experience_level.to_s
         end
         current_user.touch(:profile_updated_at)
         flash[:settings_notice] = "Your config has been updated. Refresh to see all changes."
       else
-        Honeycomb.add_field("error", current_user.setting.errors.messages.compact_blank)
+        Honeycomb.add_field("error", users_setting.errors.messages.compact_blank)
         Honeycomb.add_field("errored", true)
-        flash[:error] = current_user.setting.errors_as_sentence
+        flash[:error] = users_setting.errors_as_sentence
       end
       redirect_to user_settings_path(tab)
     end
