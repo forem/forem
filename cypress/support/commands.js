@@ -53,14 +53,12 @@ Cypress.Commands.add('testSetup', () => {
  * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for signing in a user.
  */
 Cypress.Commands.add('loginUser', ({ email, password }) => {
-  const encodedEmail = encodeURIComponent(email);
-  const encodedPassword = encodeURIComponent(password);
-
-  return cy.request(
-    'POST',
-    '/users/sign_in',
-    `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
-  );
+  return cy.visit('/enter').then(() => {
+    cy.get('#new_user').as('loginForm');
+    cy.get('@loginForm').get('#user_email').type(email);
+    cy.get('@loginForm').get('#user_password').type(password);
+    cy.get('@loginForm').findByText('Continue').click();
+  });
 });
 
 const toPayload = (isEnabled) => (isEnabled ? '1' : '0');
