@@ -6,33 +6,73 @@
 <article class="flex flex-row flex-wrap justify-between content-between">
   <div class="flex flex-column" style="flex-basis: 70%;">
     <section class="crayons-card" id="profile">
-      <h3><%= @user.name %></h3>
+      <h3 class="crayons-subtitle-2"><%= @user.name %></h3>
     </section>
 
-    <section class="crayons-card" id="tools">
-      <h3>Tools</h3>
+    <section class="crayons-card p-3">
+      <h3 class="crayons-subtitle-2">Tools</h3>
+
+      <div class="crayons-card__body grid grid-cols-2 grid-rows-3 gap-3">
+        <a class="crayons-card bg-base-10 p-3" href="" style="text-decoration: none;">
+          <%# temporarily declaring variables here so I can move them to a view component afterwards %>
+          <% verified = @last_email_verification_date.present? %>
+          <% num_emails = [@user.email_messages.count, 50].min # we display max 50 items... %>
+          <h4 class="crayons-subtitle-3 mb-3">Emails</h4>
+          <span class="color-base-70">
+            <%= num_emails %> past emails
+            <% if verified %>
+              - Verified
+            <% end %>
+          </span>
+        </a>
+
+        <div>
+          <h4 class="crayons-subtitle-3">Notes</h4>
+          2 notes
+        </div>
+
+        <div>
+          <h4 class="crayons-subtitle-3">Credits</h4>
+          0 credits
+        </div>
+
+        <div>
+          <h4 class="crayons-subtitle-3">Organizations</h4>
+          0 organizations
+        </div>
+
+        <div>
+          <h4 class="crayons-subtitle-3">Reports</h4>
+          0 reports
+        </div>
+
+        <div>
+          <h4 class="crayons-subtitle-3">Reactions</h4>
+          0 reactions
+        </div>
+      </div>
     </section>
 
     <section class="crayons-card" id="account">
-      <h3>Account Information & Settings</h3>
+      <h3 class="crayons-subtitle-2">Account Information & Settings</h3>
     </section>
   </div>
 
   <div class="flex flex-column">
     <section class="crayons-card" id="status">
-      <h3>Status</h3>
+      <h3 class="crayons-subtitle-2">Status</h3>
     </section>
 
     <section class="crayons-card" id="admin-roles">
-      <h3>Admin Roles</h3>
+      <h3 class="crayons-subtitle-2">Admin Roles</h3>
     </section>
 
     <section class="crayons-card" id="tag-moderation">
-      <h3>Tag Moderation</h3>
+      <h3 class="crayons-subtitle-2">Tag Moderation</h3>
     </section>
 
     <section class="crayons-card" id="activity">
-      <h3>Activity & Engagement</h3>
+      <h3 class="crayons-subtitle-2">Activity & Engagement</h3>
     </section>
   </div>
 </article>

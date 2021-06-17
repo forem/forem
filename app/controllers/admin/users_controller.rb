@@ -30,7 +30,7 @@ module Admin
         .includes(:organization)
       @last_email_verification_date = @user.email_authorizations
         .where.not(verified_at: nil)
-        .order(created_at: :desc).first&.verified_at || "Never"
+        .order(created_at: :desc).first&.verified_at
 
       if params.key?(:new)
         render "admin/users/new/show"
