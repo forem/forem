@@ -4,7 +4,7 @@
       Publishing to <%= community_name %> from RSS
     </h2>
     <% if @users_setting.feed_url.present? %>
-      <%= form_for(@users_setting) do |f| %>
+      <%= form_for(@users_setting), url: users_settings_path do |f| %>
         <%= f.hidden_field :feed_url, value: @users_setting.feed_url %>
         <%= f.hidden_field :tab, value: @tab %>
         <div class="flex items-center">
@@ -32,7 +32,7 @@
     <p><em>By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.</em></p>
   </div>
 
-  <%= form_for @users_setting, html: { class: "grid gap-6" } do |f| %>
+  <%= form_for @users_setting, url: users_settings_path, html: { class: "grid gap-6" } do |f| %>
     <div class="crayons-field">
       <%= f.label :feed_url, "RSS Feed URL", class: "crayons-field__label" %>
       <%= f.url_field :feed_url, placeholder: "https://yoursite.com/feed", class: "crayons-textfield" %>

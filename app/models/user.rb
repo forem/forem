@@ -51,21 +51,6 @@ class User < ApplicationRecord
     inbox_guidelines
     inbox_type
     permit_adjacent_sponsors
-    email_badge_notifications
-    email_comment_notifications
-    email_community_mod_newsletter
-    email_connect_messages
-    email_digest_periodic
-    email_follower_notifications
-    email_membership_newsletter
-    email_mention_notifications
-    email_newsletter
-    email_tag_mod_newsletter
-    email_unread_notifications
-    mobile_comment_notifications
-    mod_roundrobin_notifications
-    reaction_notifications
-    welcome_notifications
   ].freeze
 
   COLUMNS_NOW_IN_USERS_NOTIFICATION_SETTINGS = %w[
@@ -229,10 +214,6 @@ class User < ApplicationRecord
   validates :credits_count, presence: true
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
-  validates :email_digest_periodic, inclusion: { in: [true, false] }
-  validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
-  validates :feed_referential_link, inclusion: { in: [true, false] }
-  validates :feed_url, length: { maximum: 500 }, allow_nil: true
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
   validates :following_users_count, presence: true
@@ -265,7 +246,6 @@ class User < ApplicationRecord
 
   validate :non_banished_username, :username_changed?
   validate :unique_including_orgs_and_podcasts, if: :username_changed?
-  validate :validate_feed_url, if: :feed_url_changed?
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -312,7 +292,6 @@ class User < ApplicationRecord
 
   before_validation :check_for_username_change
   before_validation :downcase_email
-  before_validation :set_config_input
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :verify_email
   before_validation :set_username
@@ -668,12 +647,6 @@ class User < ApplicationRecord
     self.email = email.downcase if email
   end
 
-  def set_config_input
-    self.config_theme = config_theme&.tr(" ", "_")
-    self.config_font = config_font&.tr(" ", "_")
-    self.config_navbar = config_navbar&.tr(" ", "_")
-  end
-
   def check_for_username_change
     return unless username_changed?
 
@@ -691,16 +664,6 @@ class User < ApplicationRecord
 
   def bust_cache
     Users::BustCacheWorker.perform_async(id)
-  end
-
-  def validate_feed_url
-    return if feed_url.blank?
-
-    valid = Feeds::ValidateUrl.call(feed_url)
-
-    errors.add(:feed_url, "is not a valid RSS/Atom feed") unless valid
-  rescue StandardError => e
-    errors.add(:feed_url, e.message)
   end
 
   def tag_keywords_for_search

@@ -114,9 +114,9 @@
             </div>
 
             <div class="crayons-modal__box__body">
-              <% if @user.inbox_guidelines.present? %>
+              <% if @user.setting.inbox_guidelines.present? %>
                 <p class="fw-bold mb-2">@<%= @user.username %>'s guidelines:</p>
-                <p class="mb-6"><%= @user.inbox_guidelines %></p>
+                <p class="mb-6"><%= @user.setting.inbox_guidelines %></p>
               <% end %>
               <form id="new-message-form" class="message-form mb-4" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>"}'>
                 <textarea id="new-message" rows="4" cols="70" placeholder="Enter your message here..." class="crayons-textfield"></textarea>

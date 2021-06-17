@@ -1,6 +1,8 @@
 <%= javascript_packs_with_chunks_tag "stickySaveFooter", defer: true %>
 
-<%= form_for @users_setting, html: { id: "ux-customization-form", class: "sticky-footer-form" } do |f| %>
+<%= form_for @users_setting,
+             url: users_settings_path,
+             html: { id: "ux-customization-form", class: "sticky-footer-form" } do |f| %>
   <%= f.hidden_field :user_id, value: @users_setting.user_id, id: nil %>
   <%= f.hidden_field :tab, value: @tab, id: nil %>
 
