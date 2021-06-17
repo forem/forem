@@ -546,9 +546,6 @@ class User < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
-  # [@msarit] need to update this method that uses
-  # subscribed_to_email_follower_notifications from users_notification_settings
-  # table
   def receives_follower_email_notifications?
     email.present? && subscribed_to_email_follower_notifications?
   end

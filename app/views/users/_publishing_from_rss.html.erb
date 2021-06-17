@@ -4,13 +4,11 @@
       Publishing to <%= community_name %> from RSS
     </h2>
     <% if @users_setting.feed_url.present? %>
-      <%= form_for(@users_setting), url: users_settings_path do |f| %>
+      <%= form_for @users_setting, url: users_settings_path do |f| %>
         <%= f.hidden_field :feed_url, value: @users_setting.feed_url %>
         <%= f.hidden_field :tab, value: @tab %>
         <div class="flex items-center">
           <button type="submit" class="crayons-btn crayons-btn--secondary">Fetch feed now</button>
-          <%# TODO: @msarit After UsersSetting work has lived in codebase for some time, refactor
-                    feed_fetched_at to pull from users_settings and not users %>
           <p class="pl-2">Last Fetched: <time id="rss-fetch-time" datetime="<%= @users_setting.user.feed_fetched_at.iso8601 %>"></time></p>
         </div>
       <% end %>

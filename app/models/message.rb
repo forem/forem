@@ -217,7 +217,7 @@ class Message < ApplicationRecord
       recipient.chat_channel_memberships.order(last_opened_at: :desc)
         .first.last_opened_at > 15.hours.ago ||
       chat_channel.last_message_at > 30.minutes.ago ||
-      recipient.email_connect_messages == false
+      recipient.notification_setting.email_connect_messages == false
 
     NotifyMailer.with(message: self).new_message_email.deliver_now
   end
