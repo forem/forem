@@ -74,7 +74,7 @@ begin
     #
     #     fatal: tag 'stable.20210512.0' already exists
     #
-    STDERR.puts "Should the hotfix count be set to something other than #{hotfix}? Or maybe you need to delete the tag locally (hint: git tag --delete #{tag})"
+    STDERR.puts "Should the hotfix count be set to something other than #{hotfix}? Or maybe you need to delete the tag locally (hint: `git tag --delete #{tag}`)"
     exit 1
   end
 
