@@ -27,4 +27,8 @@ class ForemInstance
   def self.smtp_enabled?
     (Settings::SMTP.user_name.present? && Settings::SMTP.password.present?) || ENV["SENDGRID_API_KEY"].present?
   end
+
+  def self.private?
+    Settings::Authentication.invite_only_mode?
+  end
 end
