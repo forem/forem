@@ -25,6 +25,10 @@ class ForemInstance
   end
 
   def self.smtp_enabled?
-    Rails.configuration.action_mailer.perform_deliveries
+    (Settings::SMTP.user_name.present? && Settings::SMTP.password.present?) || ENV["SENDGRID_API_KEY"].present?
+  end
+
+  def self.private?
+    Settings::Authentication.invite_only_mode?
   end
 end

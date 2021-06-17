@@ -3,6 +3,10 @@ require "rails_helper"
 RSpec.describe "feedback_messages", type: :request do
   let(:user) { create(:user) }
 
+  before do
+    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+  end
+
   describe "POST /feedback_messages" do
     def mock_recaptcha_verification
       # rubocop:disable RSpec/AnyInstance

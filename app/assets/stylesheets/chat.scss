@@ -920,20 +920,25 @@
 }
 
 .message__actions {
-  display: none;
   position: relative;
   justify-content: end;
   -webkit-justify-content: flex-end;
 
-  .ellipsis__menubutton {
+  .ellipsis__menubutton img {
     height: 17px;
-    cursor: pointer;
+    vertical-align: middle;
     color: var(--theme-color, #0a0a0a);
   }
 
   &:hover {
-    .messagebody__dropdownmenu {
-      display: block;
+    .ellipsis__menubutton {
+      opacity: 1;
+    }
+  }
+
+  &:focus-within {
+    .ellipsis__menubutton {
+      opacity: 1;
     }
   }
 
@@ -943,15 +948,14 @@
   }
 
   .messagebody__dropdownmenu {
-    display: none;
     position: absolute;
     background-color: var(--theme-container-background, #fff);
     border-style: solid;
     border-color: var(--theme-color, #0a0a0a);
     border-radius: 5px;
     border-width: 1px;
-    margin-top: 1em;
-    margin-right: -0.6em;
+    top: 100%;
+    right: 0;
 
     button {
       width: 100%;

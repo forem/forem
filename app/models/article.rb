@@ -338,11 +338,14 @@ class Article < ApplicationRecord
   end
 
   def processed_description
-    text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
-    text_portion = "#{text_portion.strip}..." if body_text.size > 100
-    return "A post by #{user.name}" if text_portion.blank?
-
-    text_portion.strip
+    if body_text.present?
+      body_text
+        .truncate(104, separator: " ")
+        .tr("\n", " ")
+        .strip
+    else
+      "A post by #{user.name}"
+    end
   end
 
   def body_text

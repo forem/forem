@@ -36,13 +36,6 @@ RSpec.describe Page, type: :model do
       expect(page).not_to be_valid
       expect(page.errors[:slug].to_s.include?("taken")).to be true
     end
-
-    it "only allows a single landing_page to be set to true" do
-      create(:page, landing_page: true)
-      page = build(:page, landing_page: true)
-      expect(page).not_to be_valid
-      expect(page.errors[:base].to_s.include?("Only one page")).to be true
-    end
   end
 
   context "when callbacks are triggered before save" do
@@ -62,13 +55,29 @@ RSpec.describe Page, type: :model do
     end
   end
 
-  context "when callbacks are triggered after save" do
+  context "when callbacks are triggered after commit" do
     let(:page) { create(:page) }
 
     it "triggers cache busting on save" do
       sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [page.slug]) do
         page.save
       end
+    end
+
+    it "ensures only one page can be a landing page on create" do
+      p1 = create(:page, landing_page: true)
+      create(:page, landing_page: true)
+
+      expect(p1.reload.landing_page).to be(false)
+    end
+
+    it "ensures only one page can be a landing page on update" do
+      p1 = create(:page, landing_page: true)
+      p2 = create(:page, landing_page: false)
+
+      p2.update(landing_page: true)
+
+      expect(p1.reload.landing_page).to be(false)
     end
   end
 end
