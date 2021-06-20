@@ -43,4 +43,27 @@ describe('Analytics navigation', () => {
       .findByRole('button', { name: 'Infinity' })
       .should('have.attr', 'aria-current', 'page');
   });
+
+  it('should hide organizations menu', () => {
+    cy.findByRole('navigation', { name: 'Organizations menu' }).should(
+      'not.exist',
+    );
+  });
+});
+
+describe('when user is admin of an organization', () => {
+  before(() => {
+    cy.testSetup();
+    cy.fixture('users/adminUser.json').as('user');
+
+    cy.get('@user').then((user) => {
+      cy.loginUser(user).then(() => {
+        cy.visit('/dashboard/analytics');
+      });
+    });
+  });
+
+  it('should show organizations menu', () => {
+    cy.findByRole('navigation', { name: 'Organizations menu' }).should('exist');
+  });
 });
