@@ -4,8 +4,10 @@ class DeepLinksController < ApplicationController
   # Apple Application Site Association - based on Apple docs guidelines
   # https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html
   def aasa
-    @apps = ConsumerApps::FindOrCreateAllQuery.call.where(platform: Device::IOS)
-    supported_apps = @apps.map(&:app_bundle)
+    supported_apps = ConsumerApps::FindOrCreateAllQuery.call
+      .where(platform: Device::IOS)
+      .order(:created_at)
+      .pluck(:app_bundle)
     render json: {
       applinks: {
         apps: [],
