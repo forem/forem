@@ -289,10 +289,6 @@
     position: relative;
     @include dev-card;
 
-    &.active {
-      // TODO: what is this .active thingy?
-      opacity: 0.66;
-    }
     &.single-article-small-pic {
       vertical-align: top;
       overflow: hidden;

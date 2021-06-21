@@ -23,7 +23,7 @@ function loadForm() {
     window.currentUser = currentUser;
     window.csrfToken = csrfToken;
 
-    const root = document.getElementById('js-article-form');
+    const root = document.querySelector('main');
     const { article, organizations, version, siteLogo } = root.dataset;
 
     render(

@@ -45,6 +45,12 @@ RSpec.describe Comment, type: :model do
         expect(subject).not_to be_valid
       end
 
+      it "is invalid if commentable is an article and the discussion is locked" do
+        subject.commentable = build(:article, :with_discussion_lock)
+
+        expect(subject).not_to be_valid
+      end
+
       it "is valid without a commentable" do
         subject.commentable = nil
 
@@ -456,9 +462,27 @@ RSpec.describe Comment, type: :model do
   end
 
   context "when callbacks are triggered before save" do
-    it "generates character count before saving" do
-      comment.save
-      expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
+    context "when the post is present" do
+      it "generates character count before saving" do
+        comment.save
+        expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
+      end
+    end
+
+    context "when the commentable is not present" do
+      it "raises a validation error with message 'item has been deleted'", :aggregate_failures do
+        comment = build(:comment, user: user, commentable: nil, commentable_type: nil)
+        comment.validate
+        expect(comment).not_to be_valid
+        expect(comment.errors_as_sentence).to match("item has been deleted")
+      end
+
+      it "raises a validation error with commentable_type, if commentable_type is present", :aggregate_failures do
+        comment = build(:comment, user: user, commentable: nil, commentable_type: "Article")
+        comment.validate
+        expect(comment).not_to be_valid
+        expect(comment.errors_as_sentence).to match("Article has been deleted")
+      end
     end
   end
 

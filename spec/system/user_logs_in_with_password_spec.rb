@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Authenticating with a password" do
   def submit_login_form(email, password)
+    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
     fill_in "Email", with: email
     fill_in "Password", with: password
     click_button "Continue"
@@ -27,12 +28,14 @@ RSpec.describe "Authenticating with a password" do
       expect(page).to have_text("Invalid Email or password.")
     end
 
-    it "sends an email with the unlock link if the uset gets locked out" do
+    it "sends an email with the unlock link if the uset gets locked out", :aggregate_failures do
       allow(User).to receive(:maximum_attempts).and_return(1)
 
-      expect do
+      assert_enqueued_with(job: Devise.mailer.delivery_job) do
         submit_login_form(user.email, "wr0ng")
-      end.to change { Devise.mailer.deliveries.count }.by(1)
+      end
+
+      expect(enqueued_jobs.first[:args]).to match(array_including("unlock_instructions"))
     end
   end
 
