@@ -4,9 +4,9 @@ function renderOrgData() {
   const organizationsArray = Array.from(
     document.getElementsByClassName('organization'),
   );
-  const activeOrg = organizationsArray.filter(
+  const activeOrg = organizationsArray.find(
     (org) => org.getAttribute('aria-current') === 'page',
-  )[0];
+  );
   const chartData = activeOrg.dataset.organizationId
     ? activeOrg.dataset.organizationId
     : null;
