@@ -1,0 +1,16 @@
+.profile-preview-card {
+  &__content.crayons-dropdown {
+    color: var(--base-100);
+    padding-top: 0;
+    top: 100%;
+    left: 0;
+  }
+
+  &__content.crayons-dropdown:hover {
+    display: block;
+  }
+
+  &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
+    display: block;
+  }
+}
