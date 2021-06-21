@@ -109,7 +109,7 @@
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.6",
     "cssom": "^0.4.4",
-    "cypress": "^7.4.0",
+    "cypress": "^7.5.0",
     "cypress-file-upload": "^5.0.7",
     "eslint": "^7.28.0",
     "eslint-config-preact": "^1.1.4",
