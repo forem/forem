@@ -170,5 +170,18 @@ actionsContainer.addEventListener('click', async (event) => {
   }
 });
 
+// Initialize the profile preview functionality
+const profilePreviewTrigger = document.getElementById(
+  'profile-preview-trigger',
+);
+if (profilePreviewTrigger?.dataset.initialized !== 'true') {
+  initializeDropdown({
+    triggerElementId: 'profile-preview-trigger',
+    dropdownContentId: 'profile-preview-content',
+  });
+
+  profilePreviewTrigger.dataset.initialized = 'true';
+}
+
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
