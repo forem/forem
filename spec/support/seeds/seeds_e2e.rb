@@ -29,7 +29,6 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     name: "Admin McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
     email_comment_notifications: false,
@@ -42,6 +41,12 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     checked_terms_and_conditions: true,
   )
 
+  user.profile.update({
+                        summary: "Admin user summary",
+                        employment_title: "Software developer",
+                        location: "Edinburgh",
+                        education: "University of Life"
+                      })
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
   user.add_role(:trusted)
@@ -221,7 +226,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Test article") do
     body_markdown: markdown,
     featured: true,
     show_comments: true,
-    user_id: User.order(Arel.sql("RANDOM()")).first.id,
+    user_id: admin_user.id,
   )
 end
 
