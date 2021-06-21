@@ -2,7 +2,7 @@ import { initCharts } from '../analytics/dashboard';
 
 function renderOrgData() {
   const organizationsArray = Array.from(
-    document.querySelectorAll('.organization'),
+    document.getElementsByClassName('organization'),
   );
   const activeOrg = organizationsArray.filter(
     (org) => org.getAttribute('aria-current') === 'page',
@@ -15,7 +15,7 @@ function renderOrgData() {
 }
 
 function initDashboard() {
-  const organizationsMenu = document.querySelector('.organizations-menu');
+  const organizationsMenu = document.getElementsByClassName('organization')[0];
 
   if (!organizationsMenu) {
     initCharts({ organizationId: null });
