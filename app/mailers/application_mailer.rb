@@ -6,10 +6,9 @@ class ApplicationMailer < ActionMailer::Base
   helper Rails.application.routes.url_helpers
   helper ApplicationHelper
   helper AuthenticationHelper
+  include Deliverable
 
   before_action :use_custom_host
-  before_action :set_perform_deliveries
-  after_action  :set_delivery_options
 
   default(
     from: -> { email_from },
@@ -37,15 +36,5 @@ class ApplicationMailer < ActionMailer::Base
 
   def use_custom_host
     ActionMailer::Base.default_url_options[:host] = Settings::General.app_domain
-  end
-
-  def set_perform_deliveries
-    self.perform_deliveries = ForemInstance.smtp_enabled?
-  end
-
-  protected
-
-  def set_delivery_options
-    mail.delivery_method.settings.merge!(Settings::SMTP.settings)
   end
 end
