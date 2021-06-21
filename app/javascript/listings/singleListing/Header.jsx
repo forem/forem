@@ -5,7 +5,13 @@ import { listingPropTypes } from './listingPropTypes';
 import { DropdownMenu } from './DropdownMenu';
 import { TagLinks } from './TagLinks';
 
-export const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
+export const Header = ({
+  listing,
+  currentUserId,
+  onTitleClick,
+  onAddTag,
+  isModal,
+}) => {
   const {
     id,
     user_id: userId,
@@ -33,7 +39,11 @@ export const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
       <DateTime dateTime={listingDate} className="single-listing__date" />
       <TagLinks tags={listing.tags || listing.tag_list} onClick={onAddTag} />
 
-      <DropdownMenu listing={listing} isOwner={currentUserId === userId} />
+      <DropdownMenu
+        listing={listing}
+        isOwner={currentUserId === userId}
+        isModal={isModal}
+      />
     </div>
   );
 };

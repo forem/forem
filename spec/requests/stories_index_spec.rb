@@ -49,6 +49,14 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include("Continue with")
     end
 
+    it "renders a landing page if one is active and if the site config is set to private" do
+      allow(Settings::UserExperience).to receive(:public).and_return(false)
+      create(:page, title: "This is a landing page!", landing_page: true)
+
+      get root_path
+      expect(response.body).to include("This is a landing page!")
+    end
+
     it "renders all display_ads when published and approved" do
       org = create(:organization)
       ad = create(:display_ad, published: true, approved: true, organization: org)

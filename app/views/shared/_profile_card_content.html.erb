@@ -1,0 +1,32 @@
+<div class="-mt-4">
+  <a href="<%= actor.path %>" class="flex">
+    <span class="<% if actor.class.name == "User" %>crayons-avatar crayons-avatar--xl<% elsif actor.class.name == "Organization" %>crayons-logo crayons-logo--xl<% end %>  mr-2 shrink-0">
+      <img src="<%= Images::Profile.call(actor.profile_image_url, length: 90) %>" class="<% if actor.class.name == "User" %>crayons-avatar__image<% elsif actor.class.name == "Organization" %>crayons-logo__image<% end %>" alt="" loading="lazy" />
+    </span>
+    <span class="crayons-link crayons-subtitle-2 mt-5"><%= actor.name %></span>
+  </a>
+</div>
+<% if actor.tag_line.present? %>
+  <div class="color-base-70">
+    <%= truncate (actor.tag_line || actor.summary || "Posts in this tag"), length: 200 %>
+  </div>
+<% end %>
+
+<div class="print-hidden">
+  <%= follow_button(actor, style = "", classes = "w-100") %>&nbsp;
+</div>
+
+<% if actor.class.name == "User" %>
+  <%= render "shared/user_metadata", context: context %>
+<% elsif actor.class.name == "Organization" && actor.approved_and_filled_out_cta? %>
+  <div>
+    <%= sanitize_rendered_markdown(actor.cta_processed_html) %>
+  </div>
+  <% if actor.cta_button_text.present? && actor.cta_button_url.present? %>
+    <div>
+      <a href="<%= actor.cta_button_url || "Learn more" %>" class="crayons-btn crayons-btn--outlined w-100">
+        <%= actor.cta_button_text %>
+      </a>
+    </div>
+  <% end %>
+<% end %>

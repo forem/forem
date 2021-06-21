@@ -7,7 +7,7 @@ module Feeds
     # NOTE: [@rhymes] we need to default earlier_than to `nil` because sidekiq-cron,
     # by using YAML to define jobs arguments does not support datetimes evaluated
     # at runtime
-    def perform(earlier_than = nil, user_ids = [])
+    def perform(user_ids = [], earlier_than = nil)
       if user_ids.present?
         users = User.where(id: user_ids)
         # we assume that forcing a single import should not take into account

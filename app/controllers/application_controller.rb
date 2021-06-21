@@ -56,6 +56,8 @@ class ApplicationController < ActionController::Base
 
     if api_action?
       authenticate!
+    elsif (@page = Page.landing_page)
+      render template: "pages/show"
     else
       @user ||= User.new
       render template: "devise/registrations/new"

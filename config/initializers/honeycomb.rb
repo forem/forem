@@ -1,9 +1,10 @@
-if Rails.env.test? || ApplicationConfig["HONEYCOMB_API_KEY"].blank?
+if Rails.env.test?
   Honeycomb.configure do |config|
     config.client = Libhoney::TestClient.new
   end
 else
   honeycomb_api_key = ApplicationConfig["HONEYCOMB_API_KEY"]
+  release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
 
   # Honeycomb automatic Rails integration
   notification_events = %w[
@@ -18,7 +19,7 @@ else
   ].freeze
 
   Honeycomb.configure do |config|
-    config.write_key = honeycomb_api_key
+    config.write_key = honeycomb_api_key.presence
     if ENV["HONEYCOMB_DISABLE_AUTOCONFIGURE"]
       config.dataset = "background-work"
     else
@@ -27,7 +28,7 @@ else
 
       # Scrub unused data to save space in Honeycomb
       config.presend_hook do |fields|
-        fields["global.build_id"] = ApplicationConfig["RELEASE_FOOTPRINT"]
+        fields["global.build_id"] = release_footprint
 
         if fields.key?("redis.command")
           fields["redis.command"] = fields["redis.command"].slice(0, 300)
