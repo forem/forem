@@ -90,5 +90,5 @@
     <%= render "articles/sidebar_additional" %>
   </div>
 
-  <%= render "stories/stories_list_script" %>
+  <%= javascript_packs_with_chunks_tag "storiesList", defer: true %>
 <% end %>
