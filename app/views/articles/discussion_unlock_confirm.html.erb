@@ -1,0 +1,39 @@
+<% title("Confirm Discussion Unlock") %>
+<main id="main-content" class="crayons-layout crayons-layout--limited-l gap-0">
+  <div class="crayons-card crayons-card--secondary text-styles text-styles--secondary text-padding -mb-1 mx-3 m:mx-6 mt-3">
+    <%= @article.title %>
+  </div>
+  <div class="crayons-card text-padding">
+    <h1 class="crayons-subtitle-1 mb-2">Are you sure you want to unlock the discussion on this post?</h1>
+    <p class="fs-l mb-4">
+      Users will be able to add new comments. You can lock the discussion at
+      any time to prevent users from leaving comments again.
+    </p>
+
+    <div class="fs-l mb-5">
+      <div class="fw-bold">
+        Reason this discussion was locked (publicly visible):
+      </div>
+      <em>
+        <%= @discussion_lock.reason %>
+      </em>
+    </div>
+
+    <div class="fs-l mb-5">
+      <div class="fw-bold">
+        Notes from when this discussion was locked (only visible to you and admins):
+      </div>
+      <em>
+        <%= @discussion_lock.notes %>
+      </em>
+    </div>
+
+    <%= form_for @discussion_lock, method: :delete do |f| %>
+      <div class="form-group">
+        <%= f.hidden_field :article_id, value: @article.id %>
+      </div>
+      <%= f.submit "Unlock discussion", class: "crayons-btn crayons-btn--danger" %>
+      <a data-no-instant href="<%= dashboard_path %>" class="crayons-btn crayons-btn--ghost">Cancel</a>
+    <% end %>
+  </div>
+</main>

@@ -27,15 +27,6 @@ module Settings
     field :health_check_token, type: :string
     field :video_encoder_key, type: :string
 
-    # Emails
-    field :email_addresses, type: :hash, default: {
-      default: ApplicationConfig["DEFAULT_EMAIL"],
-      contact: ApplicationConfig["DEFAULT_EMAIL"],
-      business: ApplicationConfig["DEFAULT_EMAIL"],
-      privacy: ApplicationConfig["DEFAULT_EMAIL"],
-      members: ApplicationConfig["DEFAULT_EMAIL"]
-    }
-
     # Email digest frequency
     field :periodic_email_digest, type: :integer, default: 2
 
@@ -127,6 +118,9 @@ module Settings
 
     # Push Notifications
     field :push_notifications_ios_pem, type: :string
+
+    # Feed
+    field :feed_pinned_article_id, type: :integer, validates: { existing_published_article_id: true, allow_nil: true }
 
     # To get default values
     def self.get_default(field)

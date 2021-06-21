@@ -18,8 +18,10 @@ namespace :admin do
     resources :authentications, only: [:create]
     resources :campaigns, only: [:create]
     resources :communities, only: [:create]
+    resources :general_settings, only: [:create]
     resources :mandatory_settings, only: [:create]
     resources :rate_limits, only: [:create]
+    resources :smtp_settings, only: [:create]
     resources :user_experiences, only: [:create]
   end
   namespace :users do
@@ -41,7 +43,12 @@ namespace :admin do
   end
 
   scope :content_manager do
-    resources :articles, only: %i[index show update]
+    resources :articles, only: %i[index show update] do
+      member do
+        delete :unpin
+      end
+    end
+
     resources :badges, only: %i[index edit update new create]
     resources :badge_achievements, only: %i[index destroy]
     get "/badge_achievements/award_badges", to: "badge_achievements#award"
@@ -64,7 +71,8 @@ namespace :admin do
   end
 
   scope :customization do
-    resource :config
+    # We renamed the controller but don't want to change the route (yet)
+    resource :config, controller: "settings"
     resources :display_ads, only: %i[index edit update new create destroy]
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]

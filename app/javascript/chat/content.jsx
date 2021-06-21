@@ -39,12 +39,8 @@ export class Content extends Component {
   };
 
   render() {
-    const {
-      onTriggerContent,
-      fullscreen,
-      resource,
-      closeReportAbuseForm,
-    } = this.props;
+    const { onTriggerContent, fullscreen, resource, closeReportAbuseForm } =
+      this.props;
     if (!resource) {
       return '';
     }
@@ -52,13 +48,13 @@ export class Content extends Component {
     return (
       // TODO: A button (role="button") cannot contain other interactive elements, i.e. buttons.
       // TODO: These should have key click events as well.
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events
       <div
         className="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
         id="chat_activecontent"
         onClick={onTriggerContent}
         role="button"
         tabIndex="0"
-        aria-hidden="true"
       >
         <button
           type="button"

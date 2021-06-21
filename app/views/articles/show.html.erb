@@ -8,38 +8,12 @@
 
 <%= render "shared/webcomponents_loader_script" %>
 <% if user_signed_in? %>
-  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", "articleModerationTools", defer: true %>
+  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", "articleModerationTools", "commentDropdowns", defer: true %>
 <% else %>
-  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", defer: true %>
+  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", "commentDropdowns", defer: true %>
 <% end %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
-  <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js"
-            integrity="sha256-xOIPU/XvDtRLeDQ3qj9GOKmlbMSqKa6D7ZIS6ygHBSo="
-            crossorigin="anonymous" defer></script>
-    <script defer>
-      var waitingOnPostscribe = setInterval(function () {
-        if (typeof (postscribe) === "function") {
-          clearInterval(waitingOnPostscribe);
-          var els = document.getElementsByClassName("ltag_gist-liquid-tag");
-          for (var i = 0; i < els.length; i++) {
-            let current = els[i];
-            postscribe(current, current.firstElementChild.outerHTML, {
-              beforeWrite: function (context) {
-                return function (text) {
-                  if (context.childElementCount > 3) {
-                    return "";
-                  }
-                  return text;
-                }
-              }(current)
-            });
-          }
-        }
-      }, 500);
-    </script>
-  <% end %>
   <% unless internal_navigation? || user_signed_in? %>
     <script type="application/ld+json">
       <%= @article_json_ld.to_json.html_safe %>
@@ -112,9 +86,13 @@
 
       <article class="crayons-card crayons-article mb-4"
         id="article-show-container"
+        data-article-id="<%= @article.id %>"
         data-author-id="<%= @article.user_id %>"
         data-path="<%= @article.path %>"
-        data-published="<%= @article.published? %>">
+        data-published="<%= @article.published? %>"
+        data-pin-path="<%= stories_feed_pinned_article_path %>"
+        data-pinned-article-id="<%= @pinned_article_id %>"
+        <%= @article.pinned? ? "data-pinned" : " " %>>
         <header class="crayons-article__header" id="main-title">
           <% if @article.video.present? %>
             <%= render "articles/video_player", meta_tags: true, article: @article %>
@@ -150,10 +128,14 @@
             <% end %>
 
             <div class="crayons-article__subheader">
-              <a href="/<%= @user.username %>" class="flex items-center mr-4 mb-4 s:mb-0 fw-medium crayons-link">
-                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" /></span>
-                <%= @user.name %>
+              <a href="/<%= @user.username %>" class="flex items-center mr-2 mb-4 s:mb-0 fw-medium crayons-link">
+                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="" /></span>
+                <span class="block m:hidden"><%= @user.name %></span>
               </a>
+              <div class="profile-preview-card relative mr-4 mb-4 s:mb-0 fw-medium">
+                <button id="profile-preview-trigger" class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost hidden m:block" aria-label="<%= @user.name %> profile details"><%= @user.name %></button>
+                <%= render "/shared/profile_preview_card", actor: @user, id: "profile-preview-content" %>
+              </div>
 
               <span class="fs-s mb-4 s:mb-0">
                 <% if @article.published_timestamp.present? %>
