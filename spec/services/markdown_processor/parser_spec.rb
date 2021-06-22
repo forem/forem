@@ -40,6 +40,13 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(number_of_triple_backticks).to eq(0)
   end
 
+  it "does not insert extra newlines in codeblocks when using tildes" do
+    code_block = "~~~\nhello\n   there\n~~~"
+    parsed = generate_and_parse_markdown(code_block)
+    rendered_code_block = parsed.scan(/<code>.*?<\/code>/m).first
+    expect(rendered_code_block).to eq("<code>hello\n   there\n</code>")
+  end
+
   it "does not remove the non-'raw tag related' four dashes" do
     code_block = "```\n----\n```"
     expect(generate_and_parse_markdown(code_block)).to include("----")
