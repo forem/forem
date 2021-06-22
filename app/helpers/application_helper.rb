@@ -95,10 +95,6 @@ module ApplicationHelper
     end
   end
 
-  def invite_only_mode?
-    Settings::Authentication.invite_only_mode?
-  end
-
   def any_enabled_auth_providers?
     authentication_enabled_providers.any?
   end

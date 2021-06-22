@@ -234,7 +234,7 @@ RSpec.describe "Authenticating with Facebook" do
 
   context "when community is in invite only mode" do
     before do
-      allow(Settings::Authentication).to receive(:invite_only_mode).and_return(true)
+      allow(ForemInstance).to receive(:private?).and_return(true)
     end
 
     it "doesn't present the authentication option" do
