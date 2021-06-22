@@ -53,7 +53,7 @@ admin_user = User.find_by(email: "admin@forem.local")
 
 seeder.create_if_none(Organization) do
   organization = Organization.create!(
-    name: Faker::TvShows::SiliconValley.company,
+    name: "Bachmanity",
     summary: Faker::Company.bs,
     remote_profile_image_url: logo = Faker::Company.logo,
     nav_image: logo,

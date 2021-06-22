@@ -4,14 +4,14 @@
   <div class="dashboard-container analytics-container crayons-layout" id="user-dashboard">
     <% if @organizations.any? %>
       <nav aria-label="Dashboards">
-        <ul class="organizations-menu">
+        <ul class="list-none">
           <li>
             <a href="<%= dashboard_path %>" class="rounded-btn crayons-link--block rounded-btn--transparent">👈 Back to Main Dashboard</a>
           </li>
           <li>
             <a class="rounded-btn crayons-link--block organization" 
                href="<%= dashboard_analytics_path %>"
-               aria-current=<%= params[:org_id] ? nil : "page" %>>
+               <%= params[:org_id] ? "" : 'aria-current="page"'.html_safe %>>
                Your Dashboard
             </a>
           </li>
@@ -21,7 +21,7 @@
                 class="rounded-btn crayons-link--block organization"
                 href="<%= dashboard_analytics_org_path(org.id) %>"
                 data-organization-id="<%= org.id %>"
-                aria-current=<%= params[:org_id].to_i == org.id ? "page" : nil %>>
+                <%= params[:org_id].to_i == org.id ? 'aria-current="page"'.html_safe : "" %>>
                 <%= org.name %> Analytics Dashboard
               </a>
             </li>

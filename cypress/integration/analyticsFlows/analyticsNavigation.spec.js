@@ -52,7 +52,7 @@ describe('Analytics navigation', () => {
 });
 
 describe('when user is admin of an organization', () => {
-  before(() => {
+  beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
 
@@ -64,6 +64,13 @@ describe('when user is admin of an organization', () => {
   });
 
   it('should show organizations menu', () => {
-    cy.findByRole('navigation', { name: 'Organizations menu' }).should('exist');
+    cy.findByRole('navigation', { name: 'Dashboards' }).should('exist');
+  });
+
+  it('should navigate to correct organization analytics dashboard', () => {
+    cy.findByText('Bachmanity Analytics Dashboard').as('organizationLink');
+    cy.get('@organizationLink').click();
+
+    cy.contains('h1', 'Analytics Dashboard for Bachmanity');
   });
 });
