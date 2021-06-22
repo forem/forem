@@ -117,6 +117,8 @@ class Organization < ApplicationRecord
   end
 
   def profile
+    # Hacky! We use Organization and User objects interchangeably
+    # Generally, we want Organization to return self when profile is called.
     self
   end
 
