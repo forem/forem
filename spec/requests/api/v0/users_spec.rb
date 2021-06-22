@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::Users", type: :request do
   describe "GET /api/users/:id" do
-    let(:user) { create(:user, summary: "Something something", profile_image: "") }
+    let(:user) { create(:user, profile_image: "", profile: create(:profile, summary: "Something something")) }
 
     it "returns 404 if the user id is not found" do
       get api_user_path("invalid-id")
