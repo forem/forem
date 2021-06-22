@@ -1,40 +1,20 @@
-'use strict';
-
-function togglePasswordVisibility() {
-  const passwordField = document.getElementsByClassName('js-password')[0];
-  const type = passwordField.type === 'password' ? 'text' : 'password';
-  passwordField.type = type;
-
-  toggleSVGelement(type);
-}
-
-function toggleSVGelement(type) {
-  const eyeIcon = document.getElementsByClassName('js-eye')[0];
-  const eyeOffIcon = document.getElementsByClassName('js-eye-off')[0];
-
-  if (type === 'text') {
-    eyeOffIcon.classList.remove('hidden');
-    eyeIcon.classList.add('hidden');
-  } else {
-    eyeIcon.classList.remove('hidden');
-    eyeOffIcon.classList.add('hidden');
-  }
-}
-
-function setDefaultUsername() {
+function setDefaultUsername(event) {
   if (
     document
       .getElementsByClassName('js-creator-signup-username-row')[0]
       .classList.contains('hidden')
   ) {
-    const name = document.getElementsByClassName('js-creator-signup-name')[0]
-      .value;
+    const name = event.target.value;
     // It's the first user and so we can assume that this username is not taken.
     const usernameHint = createUsernameHint(name);
     setUsernameHint(usernameHint);
     setUsernameField(usernameHint);
     showHintRow();
   }
+}
+
+function createUsernameHint(name) {
+  return name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_');
 }
 
 function showHintRow() {
@@ -58,10 +38,6 @@ function setUsernameField(usernameHint) {
   usernameField.value = usernameHint;
 }
 
-function createUsernameHint(name) {
-  return name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_');
-}
-
 function showUsernameField() {
   const usernameRow = document.getElementsByClassName(
     'js-creator-signup-username-row',
@@ -76,3 +52,37 @@ function hideHintRow() {
   )[0];
   hintRow.classList.add('hidden');
 }
+
+function togglePasswordVisibility() {
+  const passwordField = document.getElementsByClassName('js-password')[0];
+  const type = passwordField.type === 'password' ? 'text' : 'password';
+  passwordField.type = type;
+
+  toggleSVGelement(type);
+}
+
+function toggleSVGelement(type) {
+  const eyeIcon = document.getElementsByClassName('js-eye')[0];
+  const eyeOffIcon = document.getElementsByClassName('js-eye-off')[0];
+
+  if (type === 'text') {
+    eyeOffIcon.classList.remove('hidden');
+    eyeIcon.classList.add('hidden');
+  } else {
+    eyeIcon.classList.remove('hidden');
+    eyeOffIcon.classList.add('hidden');
+  }
+}
+
+const visibility = document.getElementsByClassName(
+  'js-creator-password-visibility',
+)[0];
+visibility.addEventListener('click', togglePasswordVisibility);
+
+const name = document.getElementsByClassName('js-creator-signup-name')[0];
+name.addEventListener('input', setDefaultUsername);
+
+const editUsername = document.getElementsByClassName(
+  'js-creator-edit-username',
+)[0];
+editUsername.addEventListener('click', showUsernameField);

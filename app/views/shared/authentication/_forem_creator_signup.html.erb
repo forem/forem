@@ -1,3 +1,4 @@
+<%= javascript_packs_with_chunks_tag "foremCreatorSignup", defer: true %>
 <div class="mx-auto mt-8 mb-10 p-4 fs-2xl lh-base align-center" style="width:96%;max-width:1300px;">
   <div id="sign-in-password-form" class="mt-8 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:580px;">
     <% if flash[:notice] %>
@@ -35,13 +36,13 @@
           Name
           <span class="crayons-field__required crayons-tooltip"></span>
         <% end %>
-        <%= f.text_field :name, placeholder: "John Doe, john_doe, john, ...", class: "crayons-textfield js-creator-signup-name", required: true, onInput: "setDefaultUsername()" %>
+        <%= f.text_field :name, placeholder: "John Doe, john_doe, john, ...", class: "crayons-textfield js-creator-signup-name", required: true %>
 
         <div class="js-creator-signup-username-hint-row hidden">
           <div class="fs-xs color-base-60 flex">
             <span>Your username will be&nbsp;</span>
             <span class="bold color-base-80 js-creator-signup-username-hint"></span>
-            <span onclick="showUsernameField()">
+            <span class="js-creator-edit-username">
               <%= inline_svg_tag("pencil.svg", class: "cursor-pointer", aria: true, title: "Pencil icon") %>
             </span>
           </div>
@@ -69,7 +70,7 @@
           Password
           <span class="crayons-field__required crayons-tooltip"></span>
         <% end %>
-        <span onclick="togglePasswordVisibility()">
+        <span class="js-creator-password-visibility">
           <%= inline_svg_tag("eye.svg", class: "absolute bottom-2 right-2 cursor-pointer js-eye", aria: true, title: "Eye icon") %>
           <%= inline_svg_tag("eye-off.svg", class: "absolute bottom-2 right-2 cursor-pointer hidden js-eye-off", aria: true, title: "Eye Off icon") %>
         </span>
