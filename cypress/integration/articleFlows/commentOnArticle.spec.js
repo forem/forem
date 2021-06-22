@@ -501,6 +501,21 @@ describe('Comment on articles', () => {
     cy.findByRole('button', { name: /^Submit$/i }).should('have.focus');
   });
 
+  it('should add a comment with a gist embed', () => {
+    cy.findByRole('main').within(() => {
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      }).type(
+        'Here is a gist: {% gist https://gist.github.com/CristinaSolana/1885435.js %}',
+        { parseSpecialCharSequences: false },
+      );
+
+      cy.findByRole('button', { name: /^Submit$/i }).click();
+    });
+    cy.get('#gist1885435').should('be.visible');
+    cy.findByRole('link', { name: 'view raw' });
+  });
+
   it('should provide a dropdown of options', () => {
     cy.findByRole('main').within(() => {
       // Add a comment

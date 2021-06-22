@@ -121,6 +121,7 @@ RSpec.describe "/admin/users", type: :request do
 
   describe "POST /admin/users/:id/verify_email_ownership" do
     it "allows a user to verify email ownership" do
+      allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
       post verify_email_ownership_admin_user_path(user.id), params: { user_id: user.id }
 
       path = verify_email_authorizations_path(

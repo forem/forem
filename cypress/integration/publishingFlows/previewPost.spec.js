@@ -11,7 +11,7 @@ describe('Post Editor', () => {
       });
     });
 
-    it('should preview blank content of an post', () => {
+    it('should preview blank content of a post', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
       cy.get('@articleForm')
@@ -94,7 +94,7 @@ describe('Post Editor', () => {
       });
     });
 
-    it('should preview blank content of an post', () => {
+    it('should preview blank content of a post', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
       cy.get('@articleForm')
@@ -106,6 +106,29 @@ describe('Post Editor', () => {
       cy.get('@previewButton').should('have.attr', 'aria-current', 'page');
 
       cy.findByTestId('error-message').should('not.exist');
+    });
+
+    it('should preview content of a post with a gist embed', () => {
+      cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
+
+      cy.get('@articleForm')
+        .findByLabelText('Post Content')
+        .type(
+          'Here is a gist: {% gist https://gist.github.com/CristinaSolana/1885435.js %}',
+          { parseSpecialCharSequences: false },
+        );
+
+      cy.get('@articleForm')
+        .findByRole('button', { name: /^Preview$/i })
+        .as('previewButton');
+      cy.get('@previewButton').should('not.have.attr', 'aria-current');
+
+      cy.get('@previewButton').click();
+      cy.get('@previewButton').should('have.attr', 'aria-current', 'page');
+
+      cy.findByTestId('error-message').should('not.exist');
+      cy.get('#gist1885435').should('be.visible');
+      cy.findByRole('link', { name: 'view raw' });
     });
 
     it(`should show error if the post content can't be previewed`, () => {

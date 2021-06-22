@@ -1,0 +1,83 @@
+<div class="grid gap-6" data-controller="config">
+  <% unless current_user.has_role?(:super_admin) %>
+    <div class="crayons-notice crayons-notice--info" role="alert">
+      <p class="mb-1">
+        Only users with <strong>Super Admin</strong> privileges may edit this page.
+      </p>
+    </div>
+  <% end %>
+
+  <div id="getStarted">
+    <div class="card w-100">
+      <div
+        id="getStartedHeader"
+        class="card-header"
+        data-toggle="collapse"
+        data-target="#getStartedBodyContainer"
+        aria-expanded="true"
+        aria-controls="getStartedBodyContainer">
+
+        <h2 class="d-inline">Get Started</h2>
+
+        <button
+          class="crayons-btn crayons-btn--secondary float-right"
+          type="button"
+          data-action="click->config#toggleAccordionButtonLabel">
+
+          <%= VerifySetupCompleted.setup_completed? ? "Show Getting Started" : "Hide Getting Started" %>
+        </button>
+      </div>
+
+      <div
+        id="getStartedBodyContainer"
+        class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3"
+        aria-labelledby="getStartedHeader">
+        <%= render partial: "forms/mandatory" %>
+      </div>
+    </div>
+  </div>
+
+  <div id="settings">
+    <div class="card w-100">
+      <div
+        id="settingsHeader"
+        class="card-header"
+        data-toggle="collapse"
+        data-target="#settingsBodyContainer"
+        aria-expanded="true"
+        aria-controls="settingsBodyContainer">
+
+        <h2 class="d-inline">All Settings</h2>
+
+        <button
+          class="crayons-btn crayons-btn--secondary float-right"
+          type="button"
+          data-action="click->config#toggleAccordionButtonLabel">
+          Hide Settings
+        </button>
+      </div>
+
+      <div id="settingsBodyContainer" class="show expand p-3" aria-labelledby="settingsHeader">
+        <%= render partial: "forms/api_tokens" %>
+        <%= render partial: "forms/authentication" %>
+        <%= render partial: "forms/campaign" %>
+        <%= render partial: "forms/community" %>
+        <%= render partial: "forms/credits" %>
+        <%= render partial: "forms/emails" %>
+        <%= render partial: "forms/email_digest_frequency" %>
+        <%= render partial: "forms/google_analytics" %>
+        <%= render partial: "forms/images" %>
+        <%= render partial: "forms/mascot" %>
+        <%= render partial: "forms/meta_keywords" %>
+        <%= render partial: "forms/monetization" %>
+        <%= render partial: "forms/newsletter" %>
+        <%= render partial: "forms/onboarding" %>
+        <%= render partial: "forms/rate_limit" %>
+        <%= render partial: "forms/smtp" %>
+        <%= render partial: "forms/sponsors" %>
+        <%= render partial: "forms/tags" %>
+        <%= render partial: "forms/user_experience" %>
+      </div>
+    </div>
+  </div>
+</div>

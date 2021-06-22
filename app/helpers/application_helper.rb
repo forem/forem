@@ -95,10 +95,6 @@ module ApplicationHelper
     end
   end
 
-  def invite_only_mode?
-    Settings::Authentication.invite_only_mode?
-  end
-
   def any_enabled_auth_providers?
     authentication_enabled_providers.any?
   end
@@ -195,7 +191,7 @@ module ApplicationHelper
   end
 
   def email_link(text: nil, additional_info: nil)
-    email = Settings::General.email_addresses[:default]
+    email = ForemInstance.email
     mail_to email, text || email, additional_info
   end
 

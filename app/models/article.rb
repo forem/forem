@@ -28,6 +28,8 @@ class Article < ApplicationRecord
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
 
+  has_one :discussion_lock, dependent: :destroy
+
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
@@ -123,12 +125,12 @@ class Article < ApplicationRecord
     .declare("l_org_vector tsvector; l_user_vector tsvector") do
     <<~SQL
       NEW.reading_list_document :=
-        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))) ||
-        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))) ||
-        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))) ||
-        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))) ||
-        to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))) ||
-        to_tsvector('simple'::regconfig,
+        setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))), 'A') ||
+        setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))), 'B') ||
+        setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))), 'C') ||
+        setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))), 'D') ||
+        setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))), 'D') ||
+        setweight(to_tsvector('simple'::regconfig,
           unaccent(
             coalesce(
               array_to_string(
@@ -139,7 +141,7 @@ class Article < ApplicationRecord
               ''
             )
           )
-        );
+        ), 'D');
     SQL
   end
 
@@ -336,11 +338,14 @@ class Article < ApplicationRecord
   end
 
   def processed_description
-    text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
-    text_portion = "#{text_portion.strip}..." if body_text.size > 100
-    return "A post by #{user.name}" if text_portion.blank?
-
-    text_portion.strip
+    if body_text.present?
+      body_text
+        .truncate(104, separator: " ")
+        .tr("\n", " ")
+        .strip
+    else
+      "A post by #{user.name}"
+    end
   end
 
   def body_text
