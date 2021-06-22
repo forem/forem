@@ -119,7 +119,7 @@ module MarkdownProcessor
       content.gsub(/[[:space:]]*~{3}.*?~{3}|[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
         codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
         codeblock.gsub!("{% raw %}", "{----% raw %----}")
-        if codeblock.match?(/[[:space:]]*`{3}/)
+        if codeblock.match?(/[[:space:]]*(`{3}|~{3})/)
           "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
         else
           "{% raw %}#{codeblock}{% endraw %}"
