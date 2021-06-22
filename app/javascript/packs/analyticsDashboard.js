@@ -9,8 +9,4 @@ function initDashboard() {
   }
 }
 
-window.InstantClick.on('change', () => {
-  initDashboard();
-});
-
 initDashboard();
