@@ -120,7 +120,8 @@ const closeDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
     .getElementById(triggerElementId)
     ?.setAttribute('aria-expanded', 'false');
 
-  dropdownContent.style.display = 'none';
+  // Remove the inline style added when we opened the dropdown
+  dropdownContent.style.removeProperty('display');
 
   document.removeEventListener(
     'keyup',

@@ -6,13 +6,11 @@
     left: 0;
   }
 
-  // Dropdown hidden state is controlled by an inline style,
-  // !important is valid in this context to override any 'normal' dropdown behaviors
   &__content.crayons-dropdown:hover {
-    display: block !important;
+    display: block;
   }
 
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
-    display: block !important;
+    display: block;
   }
 }
