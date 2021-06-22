@@ -4,7 +4,7 @@ describe ApplicationConfig do
   it "logs warning if key is not found" do
     allow(Rails.logger).to receive(:debug)
     described_class["missing"]
-    expect(Rails.logger).to have_received(:debug).with("Unset ENV variable: missing.")
+    expect(Rails.logger).to have_received(:debug)
   end
 
   describe ".app_domain_no_port" do
