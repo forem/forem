@@ -13,10 +13,10 @@
           General settings
         </h3>
         <div
-            class="crayons-field crayons-field--checkbox <%= invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : "" %>"
+            class="crayons-field crayons-field--checkbox <%= private_forem_or_no_enabled_auth_options ? "crayons-tooltip" : "" %>"
             data-tooltip="Unchecking this will enable Email Registration">
             <%= f.check_box :invite_only_mode,
-                            checked: invite_only_mode_or_no_enabled_auth_options,
+                            checked: private_forem_or_no_enabled_auth_options,
                             data: { action: "config#adjustAuthenticationOptions", "config-target": "inviteOnlyMode" },
                             class: "crayons-checkbox" %>
             <div class="mt-0">
