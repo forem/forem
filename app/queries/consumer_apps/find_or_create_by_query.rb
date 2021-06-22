@@ -28,7 +28,7 @@ module ConsumerApps
     end
 
     def forem_consumer_app
-      relation.create_or_find_by(app_bundle: ConsumerApp::FOREM_BUNDLE)
+      relation.create_or_find_by(app_bundle: ConsumerApp::FOREM_BUNDLE, team_id: ConsumerApp::FOREM_TEAM_ID)
     end
   end
 end

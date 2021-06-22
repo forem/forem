@@ -5,7 +5,8 @@ module ConsumerApps
       existing_platforms = ConsumerApp.where(app_bundle: forem_bundle).pluck(:platform)
       (ConsumerApp::FOREM_APP_PLATFORMS - existing_platforms).each do |platform|
         # Re-create the supported Forem apps if they're missing
-        ConsumerApp.create(app_bundle: forem_bundle, platform: platform, active: true)
+        ConsumerApp.create(app_bundle: forem_bundle, platform: platform, active: true,
+                           team_id: ConsumerApp::FOREM_TEAM_ID)
       end
 
       ConsumerApp.limit(50)
