@@ -9,7 +9,7 @@ describe DataUpdateScripts::BackfillForemConsumerAppTeamId do
   end
 
   before do
-    # Find/Create the Forem iOS ConsumerApp $ save it with an empty team_id
+    # Find/Create the Forem iOS ConsumerApp & save it with an empty team_id
     consumer_app = forem_ios_consumer_app
     consumer_app.team_id = nil
     consumer_app.save
