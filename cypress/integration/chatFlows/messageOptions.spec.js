@@ -16,7 +16,7 @@ describe('Chat message options', () => {
     });
   });
 
-  it('should show message option menus', () => {
+  it.skip('should show message option menus', () => {
     //   Enter the test chat
     cy.findByRole('button', { name: 'Toggle request manager' }).click();
     cy.findByRole('button', { name: 'Accept' }).click();
