@@ -46,8 +46,6 @@ function buildCommentHTML(comment) {
     <img class="crayons-avatar__image" width="32" height="32" src="${ comment.user.profile_pic }" alt="${ comment.user.username } profile" />
   </a>`;
 
-  
-
   commentHeader = `<div class="comment__header" >
     <a href="/${ comment.user.username }" class="crayons-link crayons-link--secondary flex items-center fw-medium m:hidden">
       <span class="js-comment-username">${ comment.user.name }</span>
