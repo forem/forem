@@ -28,7 +28,9 @@
   data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
   data-deployed-at="<%= ForemInstance.deployed_at %>"
   data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
-  data-ga-tracking="<%= Settings::General.ga_tracking_id %>">
+  data-ga-tracking="<%= Settings::General.ga_tracking_id %>"
+  data-controller="snackbar"
+  data-action="snackbar:add@document->snackbar#addItem">
   <header class="crayons-header">
     <div class="crayons-header__container">
       <%= render "layouts/logo" %>
@@ -86,6 +88,8 @@
       <% end %>
     </main>
   </div>
+
+  <div data-snackbar-target="snackZone"></div>
 
   <!-- Bootstrap Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
