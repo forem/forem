@@ -159,7 +159,7 @@ module Admin
     end
 
     def verify_email_ownership
-      if VerificationMailer.with(user_id: params[:user_id]).account_ownership_verification_email.deliver_now
+      if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
         flash[:success] = "Email Verification Mailer sent!"
         redirect_back(fallback_location: admin_users_path)
       else

@@ -9,6 +9,8 @@
       <span class="color-base-60">
         (<%= @user.email %><% if @verified %> · Verified on <local-time datetime="<%= @verification_date.iso8601 %>"><%= @verification_date.strftime("%b %d, %Y") %></local-time><% end -%>)
       </span>
+      <%= button_to "Verify Email Ownership", verify_email_ownership_admin_user_path(@user),
+                    remote: true, class: "btn btn-secondary btn-sm mt-1 mb-4" %>
     </p>
 
     <%= form_with url: send_email_admin_user_path(@user), class: "my-2" do |f| %>
