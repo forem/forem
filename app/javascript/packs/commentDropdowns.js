@@ -1,7 +1,7 @@
 import { addSnackbarItem } from '../Snackbar';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
-/* global Runtime  */
+/* global Runtime initializeAllFollowButts  */
 
 const handleCopyPermalink = (closeDropdown) => {
   return (event) => {
@@ -27,7 +27,7 @@ const initializeArticlePageDropdowns = () => {
     }
 
     const dropdownContentId = dropdownTrigger.getAttribute('aria-controls');
-
+    // TODO: there's a brief moment where the trigger exists but the dropdown content doesn't, and we get an error here
     const { closeDropdown } = initializeDropdown({
       triggerElementId: dropdownTrigger.id,
       dropdownContentId,
@@ -51,17 +51,54 @@ const initializeArticlePageDropdowns = () => {
   }
 };
 
+const fetchMissingProfilePreviewCard = async (element) => {
+  window
+    .fetch(
+      `/profile_preview_card/show?userid=${element.dataset.jsCommentUserId}&preview_card_id=${element.dataset.jsDropdownContentId}`,
+    )
+    .then((res) => res.text())
+    .then((response) => {
+      const generatedElement = document.createElement('div');
+      generatedElement.innerHTML = response;
+      element.parentNode.replaceChild(
+        generatedElement.firstElementChild,
+        element,
+      );
+      // Make sure the button inside the dropdown is initialized
+      initializeAllFollowButts();
+    });
+};
+
 const observer = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
     if (mutation.type === 'childList') {
+      let profilePreviewMutation;
+
+      mutation.addedNodes.forEach((node) => {
+        if (
+          node.nodeType === Node.ELEMENT_NODE &&
+          node.getElementsByClassName('preview-card-placeholder')[0]
+        ) {
+          profilePreviewMutation = node.getElementsByClassName(
+            'preview-card-placeholder',
+          )[0];
+        }
+      });
+
+      if (profilePreviewMutation) {
+        fetchMissingProfilePreviewCard(profilePreviewMutation);
+      }
+
       initializeArticlePageDropdowns();
     }
   });
 });
+
 observer.observe(document.getElementById('comment-trees-container'), {
   childList: true,
   subtree: true,
 });
+
 InstantClick.on('change', () => {
   observer.disconnect();
 });
