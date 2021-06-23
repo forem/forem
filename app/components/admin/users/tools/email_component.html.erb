@@ -1,4 +1,9 @@
-<section class="crayons-card p-3 js-component" data-user-target="emailComponent">
+<%# find a way to not have this dependent on Stimulus's UserController, maybe with custom events? %>
+<section
+  class="crayons-card p-3 js-component"
+  data-controller="users--tools--email"
+  data-user-target="emailComponent"
+  data-action="ajax:success@document->users--tools--email#ajaxSuccess">
   <header>
     <a href="" class="crayons-title fs-l" data-action="click->user#closeEmail">← Email</a>
   </header>
@@ -10,7 +15,9 @@
         (<%= @user.email %><% if @verified %> · Verified on <local-time datetime="<%= @verification_date.iso8601 %>"><%= @verification_date.strftime("%b %d, %Y") %></local-time><% end -%>)
       </span>
       <%= button_to "Verify Email Ownership", verify_email_ownership_admin_user_path(@user),
-                    remote: true, class: "btn btn-secondary btn-sm mt-1 mb-4" %>
+                    remote: true,
+                    class: "btn btn-secondary btn-sm mt-1 mb-4",
+                    form: { data: { "users--tools--email-target": "verifyEmailOwnership" } } %>
     </p>
 
     <%= form_with url: send_email_admin_user_path(@user), class: "my-2" do |f| %>

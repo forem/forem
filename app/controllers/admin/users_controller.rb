@@ -160,10 +160,16 @@ module Admin
 
     def verify_email_ownership
       if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
-        flash[:success] = "Email Verification Mailer sent!"
-        redirect_back(fallback_location: admin_users_path)
+        respond_to do |format|
+          format.html do
+            flash[:success] = "Email Verification Mailer sent!"
+            redirect_back(fallback_location: admin_users_path)
+          end
+          format.js { head :ok }
+        end
       else
-        flash[:danger] = "Email failed to send!"
+        format.html { flash[:danger] = "Email failed to send!" }
+        format.js { head :bad_request }
       end
     end
 
