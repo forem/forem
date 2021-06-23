@@ -98,6 +98,40 @@ describe('Preview user profile from article page', () => {
         'false',
       );
     });
+
+    it('should detach listeners on preview card close', () => {
+      cy.findByRole('button', { name: 'Admin McAdmin profile details' }).as(
+        'previewCardTrigger',
+      );
+
+      // Open the preview
+      cy.get('@previewCardTrigger').click();
+      cy.get('@previewCardTrigger').should(
+        'have.attr',
+        'aria-expanded',
+        'true',
+      );
+
+      // Close by pressing Escape
+      cy.get('body').type('{esc}');
+      cy.get('@previewCardTrigger').should(
+        'have.attr',
+        'aria-expanded',
+        'false',
+      );
+      cy.get('@previewCardTrigger').should('have.focus');
+
+      // Focus another item on the page
+      cy.findByRole('button', { name: 'Share post options' }).focus();
+
+      // Press Escape again and check the focus isn't reverted back to the dropdown trigger
+      cy.get('body').type('{esc}');
+      cy.get('@previewCardTrigger').should('not.have.focus');
+
+      // Click on a non-interactive element and check the focus isn't reverted back to the dropdown trigger
+      cy.findByRole('heading', { name: 'Test article' }).click();
+      cy.get('@previewCardTrigger').should('not.have.focus');
+    });
   });
 
   describe("Preview profile on user's own article", () => {
