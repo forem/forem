@@ -92,3 +92,6 @@ production:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
   database: <%= ENV["DATABASE_NAME"] %>
+
+prepared_statements: false
+advisory_locks: false
