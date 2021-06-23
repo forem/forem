@@ -54,18 +54,14 @@ function hideHintRow() {
 }
 
 function togglePasswordVisibility() {
-  const passwordField = document.getElementsByClassName('js-password')[0];
-  const type = passwordField.type === 'password' ? 'text' : 'password';
+  visible = !visible;
+  const type = visible ? 'text' : 'password';
   passwordField.type = type;
-
-  toggleSVGelement(type);
+  toggleSVGelement(visible);
 }
 
-function toggleSVGelement(type) {
-  const eyeIcon = document.getElementsByClassName('js-eye')[0];
-  const eyeOffIcon = document.getElementsByClassName('js-eye-off')[0];
-
-  if (type === 'text') {
+function toggleSVGelement(visible) {
+  if (visible) {
     eyeOffIcon.classList.remove('hidden');
     eyeIcon.classList.add('hidden');
   } else {
@@ -74,6 +70,10 @@ function toggleSVGelement(type) {
   }
 }
 
+let visible = false;
+const eyeIcon = document.getElementsByClassName('js-eye')[0];
+const eyeOffIcon = document.getElementsByClassName('js-eye-off')[0];
+const passwordField = document.getElementsByClassName('js-password')[0];
 const visibility = document.getElementsByClassName(
   'js-creator-password-visibility',
 )[0];
