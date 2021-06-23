@@ -20,7 +20,7 @@
           <% @tag_moderators.each do |user| %>
               <li class="flex justify-between mb-2">
                 <a href="<%= URL.user(user) %>" target="_blank" rel="noopener noreferer">@<%= user.username %></a>
-                <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :delete do |f| %>
+                <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :delete, local: true do |f| %>
                   <%= f.hidden_field :user_id, value: user.id %>
                   <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
                 <% end %>
