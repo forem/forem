@@ -21,7 +21,7 @@ describe DataUpdateScripts::BackfillForemConsumerAppTeamId do
     expect(forem_ios_consumer_app.team_id).to eq(ConsumerApp::FOREM_TEAM_ID)
   end
 
-  it "doesn't affect other Consumer App Team IDs" do
+  it "doesn't affect other Consumer App Team IDs", :aggregate_failures do
     custom_team_id = "ABC123"
     custom_consumer_app = create(:consumer_app, team_id: custom_team_id)
 
