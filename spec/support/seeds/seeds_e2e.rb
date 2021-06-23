@@ -222,12 +222,21 @@ seeder.create_if_doesnt_exist(Article, "title", "Test article") do
     #{Faker::Markdown.random}
     #{Faker::Hipster.paragraph(sentence_count: 2)}
   MARKDOWN
-  Article.create(
+  article = Article.create(
     body_markdown: markdown,
     featured: true,
     show_comments: true,
     user_id: admin_user.id,
   )
+
+  comment_attributes = {
+    body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+    user_id: admin_user.id,
+    commentable_id: article.id,
+    commentable_type: "Article"
+  }
+
+  Comment.create!(comment_attributes)
 end
 
 ##############################################################################
