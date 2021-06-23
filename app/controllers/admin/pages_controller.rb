@@ -3,15 +3,13 @@ module Admin
     layout "admin"
 
     def index
-      @pages = Page.all.order(created_at: :desc)
+      @pages = Page.all
       @code_of_conduct = Page.find_by(slug: "code-of-conduct")
       @privacy = Page.find_by(slug: "privacy")
       @terms = Page.find_by(slug: "terms")
     end
 
     def new
-      @landing_page = Page.landing_page
-
       if (slug = params[:slug])
         prepopulate_new_form(slug)
       else
@@ -21,13 +19,13 @@ module Admin
 
     def edit
       @page = Page.find(params[:id])
-      @landing_page = Page.landing_page
     end
 
     def update
       @page = Page.find(params[:id])
-
-      if @page.update(page_params)
+      @page.assign_attributes(page_params)
+      if @page.valid?
+        @page.update!(page_params)
         flash[:success] = "Page has been successfully updated."
         redirect_to admin_pages_path
       else
@@ -38,8 +36,8 @@ module Admin
 
     def create
       @page = Page.new(page_params)
-
-      if @page.save
+      if @page.valid?
+        @page.save!
         flash[:success] = "Page has been successfully created."
         redirect_to admin_pages_path
       else
@@ -51,7 +49,6 @@ module Admin
     def destroy
       @page = Page.find(params[:id])
       @page.destroy
-
       flash[:success] = "Page has been successfully deleted."
       redirect_to admin_pages_path
     end
@@ -59,10 +56,8 @@ module Admin
     private
 
     def page_params
-      allowed_params = %i[
-        title slug body_markdown body_html body_json description template
-        is_top_level_path social_image landing_page
-      ]
+      allowed_params = %i[title slug body_markdown body_html body_json description template is_top_level_path
+                          social_image]
       params.require(:page).permit(allowed_params)
     end
 

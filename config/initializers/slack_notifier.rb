@@ -1,4 +1,3 @@
-# rubocop:disable Style/TopLevelMethodDefinition
 Rails.application.config.to_prepare do
   Dir.glob(Rails.root.join("lib/slack/notifier/util/*.rb")).each do |filename|
     require_dependency filename
@@ -50,4 +49,3 @@ def init_slack_client
 end
 
 SlackClient = init_slack_client
-# rubocop:enable Style/TopLevelMethodDefinition

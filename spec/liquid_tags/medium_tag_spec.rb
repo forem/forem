@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe MediumTag, type: :liquid_tag do
-  subject { Liquid::Template.parse("{% medium #{link} %}") }
+  setup { Liquid::Template.register_tag("medium", described_class) }
 
-  before { Liquid::Template.register_tag("medium", described_class) }
+  subject { Liquid::Template.parse("{% medium #{link} %}") }
 
   let(:stubbed_scraper) { instance_double("MediumArticleRetrievalService") }
   let(:medium_link) { "https://medium.com/@edisonywh/my-ruby-journey-hooking-things-up-91d757e1c59c" }

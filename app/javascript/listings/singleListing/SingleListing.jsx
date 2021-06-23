@@ -12,7 +12,6 @@ export class SingleListing extends Component {
     onChangeCategory,
     onOpenModal,
     onAddTag,
-    isModal = false,
   ) => {
     return (
       <div className="relative">
@@ -21,7 +20,6 @@ export class SingleListing extends Component {
           currentUserId={currentUserId}
           onTitleClick={onOpenModal}
           onAddTag={onAddTag}
-          isModal={isModal}
         />
         <div
           className="mb-4"
@@ -78,7 +76,6 @@ export class SingleListing extends Component {
             onChangeCategory,
             onOpenModal,
             onAddTag,
-            true,
           )}
         </div>
       </div>

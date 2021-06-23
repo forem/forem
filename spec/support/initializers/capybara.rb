@@ -27,7 +27,6 @@ RSpec.configure do |config|
   end
 end
 
-# rubocop:disable Style/TopLevelMethodDefinition
 # adapted from <https://medium.com/doctolib-engineering/hunting-flaky-tests-2-waiting-for-ajax-bd76d79d9ee9>
 def wait_for_javascript
   max_time = Capybara::Helpers.monotonic_time + Capybara.default_max_wait_time
@@ -43,4 +42,3 @@ def wait_for_javascript
 
   raise "wait_for_javascript timeout" unless finished
 end
-# rubocop:enable Style/TopLevelMethodDefinition

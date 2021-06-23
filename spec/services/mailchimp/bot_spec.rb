@@ -92,9 +92,9 @@ RSpec.describe Mailchimp::Bot, type: :service do
   end
 
   describe "manage community moderator list" do
-    before { Settings::General.mailchimp_community_moderators_id = "something" }
+    before { SiteConfig.mailchimp_community_moderators_id = "something" }
 
-    after { Settings::General.mailchimp_community_moderators_id = nil }
+    after { SiteConfig.mailchimp_community_moderators_id = nil }
 
     it "returns false if user isn't a community moderator" do
       expect(described_class.new(user).manage_community_moderator_list).to be(false)
@@ -103,7 +103,7 @@ RSpec.describe Mailchimp::Bot, type: :service do
     it "sends proper information" do
       user.update(email_community_mod_newsletter: true)
       user.add_role(:trusted)
-      Settings::General.mailchimp_community_moderators_id = "something"
+      SiteConfig.mailchimp_community_moderators_id = "something"
       described_class.new(user).manage_community_moderator_list
       expect(my_gibbon_client).to have_received(:upsert)
         .with(hash_including(
@@ -115,9 +115,9 @@ RSpec.describe Mailchimp::Bot, type: :service do
   end
 
   describe "manage tag moderator list" do
-    before { Settings::General.mailchimp_tag_moderators_id = "something" }
+    before { SiteConfig.mailchimp_tag_moderators_id = "something" }
 
-    after { Settings::General.mailchimp_tag_moderators_id = nil }
+    after { SiteConfig.mailchimp_tag_moderators_id = nil }
 
     it "returns false if user isn't a tag moderator" do
       expect(described_class.new(user).manage_tag_moderator_list).to be(false)

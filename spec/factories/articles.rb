@@ -8,7 +8,7 @@ FactoryBot.define do
       title { generate :title }
       published { true }
       date { "01/01/2015" }
-      tags { "javascript, html, discuss" }
+      tags { "javascript, html, css" }
       canonical_url { Faker::Internet.url }
       with_canonical_url { false }
       with_main_image { true }
@@ -60,9 +60,5 @@ FactoryBot.define do
 
   trait :with_user_subscription_tag_role_user do
     after(:build) { |article| article.user.add_role(:restricted_liquid_tag, LiquidTags::UserSubscriptionTag) }
-  end
-
-  trait :with_discussion_lock do
-    after(:create) { |article| create(:discussion_lock, locking_user_id: article.user_id, article_id: article.id) }
   end
 end

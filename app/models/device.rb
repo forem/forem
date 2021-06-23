@@ -34,11 +34,11 @@ class Device < ApplicationRecord
     n.data = {
       aps: {
         alert: {
-          title: Settings::Community.community_name,
+          title: SiteConfig.community_name,
           subtitle: title,
           body: body
         },
-        "thread-id": Settings::Community.community_name
+        'thread-id': SiteConfig.community_name
       },
       data: payload
     }

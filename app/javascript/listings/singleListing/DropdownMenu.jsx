@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { h, Component, createRef } from 'preact';
 import { listingPropTypes } from './listingPropTypes';
-import { Button, Dropdown } from '@crayons';
+import { Button } from '@crayons';
 
 const Icon = () => (
   <svg
@@ -27,8 +27,38 @@ export class DropdownMenu extends Component {
     listing: listingPropTypes.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isOpen: false,
+    };
+  }
+
+  toggleMenu = () => {
+    const { isOpen } = this.state;
+    this.setState({ isOpen: !isOpen }, this.addOrRemoveClickOutsideHandler);
+  };
+
+  addOrRemoveClickOutsideHandler = () => {
+    const { isOpen } = this.state;
+    return isOpen
+      ? document.addEventListener('mousedown', this.handleClickOutside)
+      : document.removeEventListener('mousedown', this.handleClickOutside);
+  };
+
+  handleClickOutside = (e) => {
+    if (
+      this.componentRef.current &&
+      !this.componentRef.current.contains(e.target)
+    ) {
+      this.toggleMenu();
+    }
+  };
+
   render() {
-    const { listing, isOwner, isModal } = this.props;
+    const { listing, isOwner } = this.props;
+    const { isOpen } = this.state;
     const { id, category, slug } = listing;
     const editUrl = `/listings/${id}/edit`;
     const reportUrl = `/report-abuse?url=https://dev.to/listings/${category}/${slug}`;
@@ -39,34 +69,28 @@ export class DropdownMenu extends Component {
         ref={this.componentRef}
       >
         <Button
-          id={`listing-header-dropdown-btn-${id}-${isModal ? 'modal' : ''}`}
           variant="ghost"
           contentType="icon"
           tagName="button"
-          aria-label="Listing options"
+          aria-label="Toggle dropdown menu"
           icon={Icon}
+          onClick={this.toggleMenu}
         />
-        <Dropdown
-          className="absolute right-0 top-100 p-1"
-          triggerButtonId={`listing-header-dropdown-btn-${id}-${
-            isModal ? 'modal' : ''
-          }`}
-          dropdownContentId={`listing-header-dropdown-${id}-${
-            isModal ? 'modal' : ''
+        <div
+          className={`crayons-dropdown absolute right-0 top-100 p-1 ${
+            isOpen ? 'block' : ''
           }`}
         >
-          <div>
-            {isOwner ? (
-              <a href={editUrl} className="crayons-link crayons-link--block">
-                Edit
-              </a>
-            ) : (
-              <a href={reportUrl} className="crayons-link crayons-link--block">
-                Report Abuse
-              </a>
-            )}
-          </div>
-        </Dropdown>
+          {isOwner ? (
+            <a href={editUrl} className="crayons-link crayons-link--block">
+              Edit
+            </a>
+          ) : (
+            <a href={reportUrl} className="crayons-link crayons-link--block">
+              Report Abuse
+            </a>
+          )}
+        </div>
       </div>
     );
   }

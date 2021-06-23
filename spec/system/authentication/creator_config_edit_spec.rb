@@ -9,7 +9,7 @@ RSpec.describe "Creator config edit", type: :system, js: true do
   context "when a creator browses /admin/customization/config" do
     before do
       sign_in admin
-      allow(ForemInstance).to receive(:private?).and_return(false)
+      allow(Settings::Authentication).to receive(:invite_only_mode).and_return(false)
     end
 
     it "presents all available OAuth providers" do

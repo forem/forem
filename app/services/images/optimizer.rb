@@ -5,10 +5,8 @@ module Images
 
       if imgproxy_enabled?
         imgproxy(img_src, **kwargs)
-      elsif cloudinary_enabled?
-        cloudinary(img_src, **kwargs)
       else
-        img_src
+        cloudinary(img_src, **kwargs)
       end
     end
 
@@ -59,12 +57,6 @@ module Images
 
     def self.imgproxy_enabled?
       Imgproxy.config.key.present? && Imgproxy.config.salt.present?
-    end
-
-    def self.cloudinary_enabled?
-      config = Cloudinary.config
-
-      config.cloud_name.present? && config.api_key.present? && config.api_secret.present?
     end
 
     def self.get_imgproxy_endpoint

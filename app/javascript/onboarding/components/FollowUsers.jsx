@@ -190,7 +190,6 @@ export class FollowUsers extends Component {
                         className="user-avatar"
                         src={user.profile_image_url}
                         alt=""
-                        loading="lazy"
                       />
                     </figure>
                     <div className="user-info">

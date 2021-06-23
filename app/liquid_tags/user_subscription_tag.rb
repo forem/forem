@@ -8,7 +8,7 @@ class UserSubscriptionTag < LiquidTagBase
   ].freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze
-    var subscribeBtn = document.getElementById('subscribe-btn');
+    const subscribeBtn = document.getElementById('subscribe-btn');
 
     function isUserSignedIn() {
       return document.head.querySelector('meta[name="user-signed-in"][content="true"]') !== null;

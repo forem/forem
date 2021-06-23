@@ -1,4 +1,3 @@
-# rubocop:disable Style/TopLevelMethodDefinition
 require "mini_magick"
 
 # Carrierwave uses MiniMagick for image processing. To prevent server timeouts
@@ -60,4 +59,3 @@ Rails.application.reloader.to_prepare do
     local_storage_config
   end
 end
-# rubocop:enable Style/TopLevelMethodDefinition

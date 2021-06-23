@@ -130,7 +130,7 @@ export function loadNextPage() {
   component.setState({ page: page + 1 });
   component.search(query, {
     page: page + 1,
-    tags: selectedTag ? [selectedTag] : [],
+    tags: [selectedTag],
     statusView,
     appendItems: true,
   });

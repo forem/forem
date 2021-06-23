@@ -23,10 +23,6 @@
     #{$el}:hover & {
       display: block;
     }
-
-    #{$el}:focus-within & {
-      display: block;
-    }
   }
 
   &__tags {

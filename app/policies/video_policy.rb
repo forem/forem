@@ -8,6 +8,6 @@ class VideoPolicy < ApplicationPolicy
   end
 
   def enabled?
-    Settings::General.enable_video_upload
+    SiteConfig.enable_video_upload
   end
 end

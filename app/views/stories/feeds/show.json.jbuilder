@@ -17,8 +17,6 @@ json.array!(@stories) do |article|
     json.organization article.cached_organization.as_json
   end
 
-  json.pinned article.pinned?
-
   if article.main_image?
     json.main_image cloud_cover_url(article.main_image)
   else

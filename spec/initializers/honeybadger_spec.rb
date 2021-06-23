@@ -1,12 +1,7 @@
 require "rails_helper"
 
 describe Honeybadger do
-  {
-    "SuspendedError" => "banned",
-    "Rack::Timeout::RequestTimeoutException" => "rack_timeout",
-    "Rack::Timeout::RequestTimeoutError" => "rack_timeout",
-    "PG::QueryCanceled" => "pg_query_canceled"
-  }.each do |error_key, fingerprint|
+  MESSAGE_FINGERPRINTS.each do |error_key, fingerprint|
     include_examples "#sets_correct_honeybadger_fingerprint", error_key, fingerprint
   end
 

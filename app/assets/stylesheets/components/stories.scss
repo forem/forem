@@ -13,9 +13,8 @@
   background: var(--card-bg);
   font-size: var(--fs-base); // Todo: remove when ready.
   box-shadow: 0 0 0 1px var(--card-border);
-  margin: 0 var(--su-3) var(--su-3);
+  margin-bottom: var(--su-2);
   position: relative;
-  border-radius: var(--radius);
 
   &:focus-within {
     outline: none;
@@ -24,7 +23,11 @@
   }
 
   @media (min-width: $breakpoint-m) {
-    margin: 0 0 var(--su-3);
+    border-radius: var(--radius);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    margin-bottom: var(--su-3);
   }
 
   --story-padding: var(--su-3) var(--su-3) var(--su-2);
@@ -75,7 +78,10 @@
     padding-bottom: 42%;
     background-size: cover;
     background-position: center center;
-    border-radius: var(--radius) var(--radius) 0 0;
+
+    @media (min-width: $breakpoint-m) {
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
   }
 
   &__body {
@@ -96,10 +102,6 @@
 
     @media (min-width: $breakpoint-m) {
       margin-bottom: var(--su-2);
-    }
-
-    .pinned svg {
-      fill: var(--accent-brand);
     }
   }
 

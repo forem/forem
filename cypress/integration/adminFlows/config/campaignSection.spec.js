@@ -25,7 +25,9 @@ describe('Campaign Section', () => {
             `My username is @${username} and this action is 100% safe and appropriate.`,
           );
 
-        cy.get('@campaignSectionForm').findByText('Update Settings').click();
+        cy.get('@campaignSectionForm')
+          .findByText('Update Site Configuration')
+          .click();
 
         cy.url().should('contains', '/admin/customization/config');
 
@@ -51,11 +53,15 @@ describe('Campaign Section', () => {
             `My username is @${username} and this action is 100% safe and appropriate.`,
           );
 
-        cy.get('@campaignSectionForm').findByText('Update Settings').click();
+        cy.get('@campaignSectionForm')
+          .findByText('Update Site Configuration')
+          .click();
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Successfully updated settings.').should('be.visible');
+        cy.findByText('Site configuration was successfully updated.').should(
+          'be.visible',
+        );
 
         // Page reloaded so need to get a new reference to the form.
         cy.get('#new_settings_campaign').as('campaignSectionForm');

@@ -6,24 +6,18 @@ class ApplicationMailer < ActionMailer::Base
   helper Rails.application.routes.url_helpers
   helper ApplicationHelper
   helper AuthenticationHelper
-  include Deliverable
 
   before_action :use_custom_host
 
   default(
     from: -> { email_from },
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
-    reply_to: -> { ForemInstance.email },
   )
 
   def email_from(topic = "")
-    community_name = if topic.present?
-                       "#{Settings::Community.community_name} #{topic}"
-                     else
-                       Settings::Community.community_name
-                     end
+    community_name = topic.present? ? "#{SiteConfig.community_name} #{topic}" : SiteConfig.community_name
 
-    "#{community_name} <#{ForemInstance.email}>"
+    "#{community_name} <#{SiteConfig.email_addresses[:default]}>"
   end
 
   def generate_unsubscribe_token(id, email_type)
@@ -35,6 +29,6 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def use_custom_host
-    ActionMailer::Base.default_url_options[:host] = Settings::General.app_domain
+    ActionMailer::Base.default_url_options[:host] = SiteConfig.app_domain
   end
 end

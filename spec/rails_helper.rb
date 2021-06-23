@@ -13,10 +13,9 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "fakeredis/rspec"
 require "pundit/matchers"
 require "pundit/rspec"
-require "sidekiq/testing"
-require "test_prof/factory_prof/nate_heckler"
-require "validate_url/rspec_matcher"
 require "webmock/rspec"
+require "sidekiq/testing"
+require "validate_url/rspec_matcher"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -36,7 +35,6 @@ Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].sort.each { |f| requ
 Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/mailers/shared_examples/**/*.rb")].sort.each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -86,19 +84,6 @@ RSpec.configure do |config|
     Warden::Manager._on_request.clear
   end
 
-  config.around do |example|
-    case example.metadata[:sidekiq]
-    when :inline
-      Sidekiq::Testing.inline! { example.run }
-    when :fake
-      Sidekiq::Testing.fake! { example.run }
-    when :disable
-      Sidekiq::Testing.disable! { example.run }
-    else
-      example.run
-    end
-  end
-
   config.before(:suite) do
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
@@ -133,7 +118,7 @@ RSpec.configure do |config|
   end
 
   config.after do
-    Settings::General.clear_cache
+    SiteConfig.clear_cache
   end
 
   # Only turn on VCR if :vcr is included metadata keys
@@ -179,7 +164,7 @@ RSpec.configure do |config|
 
     allow(Settings::Community).to receive(:community_description).and_return("Some description")
     allow(Settings::UserExperience).to receive(:public).and_return(true)
-    allow(Settings::General).to receive(:waiting_on_first_user).and_return(false)
+    allow(SiteConfig).to receive(:waiting_on_first_user).and_return(false)
 
     # Default to have field a field test available.
     config = { "experiments" =>
