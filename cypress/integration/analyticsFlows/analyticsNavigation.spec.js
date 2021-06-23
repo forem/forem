@@ -43,4 +43,33 @@ describe('Analytics navigation', () => {
       .findByRole('button', { name: 'Infinity' })
       .should('have.attr', 'aria-current', 'page');
   });
+
+  it('should hide organizations menu', () => {
+    cy.findByRole('navigation', { name: 'Organizations menu' }).should(
+      'not.exist',
+    );
+  });
+
+  describe.skip('when user is admin of an organization', () => {
+    beforeEach(() => {
+      cy.testSetup();
+      cy.fixture('users/adminUser.json').as('adminUser');
+
+      cy.get('@adminUser').then((user) => {
+        cy.loginUser(user).then(() => {
+          cy.visit('/dashboard/analytics');
+        });
+      });
+    });
+
+    it('should show organizations menu', () => {
+      cy.findByRole('navigation', { name: 'Dashboards' }).should('exist');
+    });
+
+    it('should navigate to correct organization analytics dashboard', () => {
+      cy.findByText('Bachmanity Analytics Dashboard').click();
+
+      cy.contains('h1', 'Analytics Dashboard for Bachmanity');
+    });
+  });
 });

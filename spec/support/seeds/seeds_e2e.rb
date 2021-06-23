@@ -56,6 +56,25 @@ admin_user = User.find_by(email: "admin@forem.local")
 
 ##############################################################################
 
+seeder.create_if_none(Organization) do
+  organization = Organization.create!(
+    name: "Bachmanity",
+    summary: Faker::Company.bs,
+    remote_profile_image_url: logo = Faker::Company.logo,
+    nav_image: logo,
+    url: Faker::Internet.url,
+    slug: "org#{rand(10_000)}",
+  )
+
+  OrganizationMembership.create!(
+    user_id: admin_user.id,
+    organization_id: organization.id,
+    type_of_user: "admin",
+  )
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") do
   User.create!(
     name: "Change Password User",
