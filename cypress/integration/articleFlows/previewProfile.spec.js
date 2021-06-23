@@ -109,6 +109,7 @@ describe('Preview user profile from article page', () => {
           'previewCardTrigger',
         );
 
+        cy.get('[data-initialized]');
         cy.get('@previewCardTrigger').click();
 
         cy.findByTestId('profile-preview-card').within(() => {
@@ -132,6 +133,40 @@ describe('Preview user profile from article page', () => {
           cy.findByRole('button', { name: 'Following' });
         });
       });
+    });
+
+    it('should detach listeners on preview card close', () => {
+      cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
+        .first()
+        .as('previewCardTrigger');
+
+      // Open the preview
+      cy.get('@previewCardTrigger').click();
+      cy.get('@previewCardTrigger').should(
+        'have.attr',
+        'aria-expanded',
+        'true',
+      );
+
+      // Close by pressing Escape
+      cy.get('body').type('{esc}');
+      cy.get('@previewCardTrigger').should(
+        'have.attr',
+        'aria-expanded',
+        'false',
+      );
+      cy.get('@previewCardTrigger').should('have.focus');
+
+      // Focus another item on the page
+      cy.findByRole('button', { name: 'Share post options' }).focus();
+
+      // Press Escape again and check the focus isn't reverted back to the dropdown trigger
+      cy.get('body').type('{esc}');
+      cy.get('@previewCardTrigger').should('not.have.focus');
+
+      // Click on a non-interactive element and check the focus isn't reverted back to the dropdown trigger
+      cy.findByRole('heading', { name: 'Test article' }).click();
+      cy.get('@previewCardTrigger').should('not.have.focus');
     });
   });
 
