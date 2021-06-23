@@ -1,6 +1,8 @@
 import { Controller } from 'stimulus';
 import Rails from '@rails/ujs';
 
+// NOTE: [@rhymes] there's a bit of coupling going on between this component
+// (see show.html.erb) and the ViewComponent used server side. Need to clean that.
 export default class UserController extends Controller {
   static targets = ['emailComponent', 'toolsComponent'];
   static values = { emailComponentPath: String, toolsComponentPath: String };
@@ -18,6 +20,8 @@ export default class UserController extends Controller {
           partial.documentElement.getElementsByClassName('js-component')[0]
             .outerHTML;
         this.toolsComponentTarget.insertAdjacentHTML('afterend', partialHTML);
+
+        this.toolsComponentTarget.remove();
       },
     });
   }
@@ -26,15 +30,17 @@ export default class UserController extends Controller {
     event.preventDefault();
 
     Rails.ajax({
-      url: this.admin_user_toolsValue,
+      url: this.toolsComponentPathValue,
       type: 'get',
       success: (partial) => {
-        this.emailComponent.classList.add('hidden');
+        this.emailComponentTarget.classList.add('hidden');
 
         const partialHTML =
           partial.documentElement.getElementsByClassName('js-component')[0]
             .outerHTML;
-        this.toolsComponentTarget.insertAdjacentHTML('afterend', partialHTML);
+        this.emailComponentTarget.insertAdjacentHTML('afterend', partialHTML);
+
+        this.emailComponentTarget.remove();
       },
     });
   }
