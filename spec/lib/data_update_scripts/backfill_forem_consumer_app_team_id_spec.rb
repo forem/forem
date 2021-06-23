@@ -5,17 +5,20 @@ require Rails.root.join(
 
 describe DataUpdateScripts::BackfillForemConsumerAppTeamId do
   def forem_ios_consumer_app
-    ConsumerApps::FindOrCreateByQuery.call(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: :ios)
+    ConsumerApp.find_by(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: :ios)
   end
 
   before do
-    # Find/Create the Forem iOS ConsumerApp & save it with an empty team_id
-    consumer_app = forem_ios_consumer_app
-    consumer_app.team_id = nil
-    consumer_app.save
+    # Destroy any existing ConsumerApps - so the test is absolutely certain
+    ConsumerApp.destroy_all
+    # Create the Forem iOS ConsumerApp with an empty team_id
+    ConsumerApp.create!(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: :ios)
   end
 
   it "adds the team_id to a the Forem iOS Consumer App" do
+    # The team_id is expected be nil at the start of the test
+    expect(forem_ios_consumer_app.team_id).to be_nil
+
     described_class.new.run
 
     expect(forem_ios_consumer_app.team_id).to eq(ConsumerApp::FOREM_TEAM_ID)
