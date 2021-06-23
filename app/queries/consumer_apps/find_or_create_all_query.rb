@@ -13,7 +13,7 @@ module ConsumerApps
           "app_bundle:#{forem_bundle}",
           "platform:#{platform}",
         ]
-        ForemStatsClient.increment("consumer_apps.create", 1, tags: error_tags)
+        ForemStatsClient.increment("consumer_apps.create", tags: error_tags)
       end
 
       ConsumerApp.limit(50)

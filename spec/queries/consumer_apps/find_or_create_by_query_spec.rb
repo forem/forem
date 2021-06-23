@@ -29,22 +29,4 @@ RSpec.describe ConsumerApps::FindOrCreateByQuery, type: :query do
       end.not_to change(ConsumerApp, :count)
     end
   end
-
-  context "when/if a failure occurs" do
-    it "logs to ForemStatsClient if the default ConsumerApp create fails" do
-      allow(ForemStatsClient).to receive(:increment)
-
-      # Destroy any existing ConsumerApps - so the test is absolutely certain
-      ConsumerApp.destroy_all
-      # Create the Forem iOS ConsumerApp with an empty team_id
-      ConsumerApp.create!(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: :ios)
-      # This will raise an error bc the Forem app_bundle+platform already exists
-      described_class.call(
-        app_bundle: ConsumerApp::FOREM_BUNDLE,
-        platform: :ios,
-      )
-
-      expect(ForemStatsClient).to have_received(:increment).at_least(:once)
-    end
-  end
 end
