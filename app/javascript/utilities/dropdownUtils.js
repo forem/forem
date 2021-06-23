@@ -5,84 +5,13 @@ const INTERACTIVE_ELEMENTS_QUERY =
   'button, [href], input:not([type="hidden"]), select, textarea, [tabindex="0"]';
 
 /**
- * Used to close the given dropdown if:
- * - Escape is pressed
- * - Tab is pressed and the newly focused element doesn't exist inside the dropdown
- *
- * @param {Object} args
- * @param {string} args.triggerElementId The id of the button which activates the dropdown
- * @param {string} args.dropdownContentId The id of the dropdown content element
- * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
- */
-const keyUpListener = ({ triggerElementId, dropdownContentId, onClose }) => {
-  return ({ key }) => {
-    if (key === 'Escape') {
-      // Close the dropdown and return focus to the trigger button to prevent focus being lost
-      const triggerElement = document.getElementById(triggerElementId);
-      const isCurrentlyOpen =
-        triggerElement.getAttribute('aria-expanded') === 'true';
-      if (isCurrentlyOpen) {
-        closeDropdown({ triggerElementId, dropdownContentId, onClose });
-        triggerElement.focus();
-      }
-    } else if (key === 'Tab') {
-      // Close the dropdown if the user has tabbed away from it
-      const isInsideDropdown = document
-        .getElementById(dropdownContentId)
-        ?.contains(document.activeElement);
-      if (!isInsideDropdown) {
-        closeDropdown({ triggerElementId, dropdownContentId, onClose });
-      }
-    }
-  };
-};
-
-/**
- * Used to listen for a click outside of a dropdown while it's open.
- * Closes the dropdown and refocuses the trigger button, if another interactive item has not been clicked.
- *
- * @param {Object} args
- * @param {string} args.triggerElementId The id of the button which activates the dropdown
- * @param {string} args.dropdownContentId The id of the dropdown content element
- * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
- */
-const clickOutsideListener = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose,
-}) => {
-  return ({ target }) => {
-    const triggerElement = document.getElementById(triggerElementId);
-    const dropdownContent = document.getElementById(dropdownContentId);
-    if (!dropdownContent) {
-      // User may have navigated away from the page
-      return;
-    }
-
-    if (
-      target !== triggerElement &&
-      !dropdownContent.contains(target) &&
-      !triggerElement.contains(target)
-    ) {
-      closeDropdown({ triggerElementId, dropdownContentId, onClose });
-
-      //   If the user did not click on another interactive item, return focus to the trigger
-      if (!target.matches(INTERACTIVE_ELEMENTS_QUERY)) {
-        triggerElement.focus();
-      }
-    }
-  };
-};
-
-/**
- * Open the given dropdown, updating aria attributes, attaching listeners and focus the first interactive element
+ * Open the given dropdown, updating aria attributes, and focusing the first interactive element
  *
  * @param {Object} args
  * @param {string} args.triggerElementId The id of the button which activates the dropdown
  * @param {string} args.dropdownContent The id of the dropdown content element
- * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
  */
-const openDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
+const openDropdown = ({ triggerElementId, dropdownContentId }) => {
   const dropdownContent = document.getElementById(dropdownContentId);
   const triggerElement = document.getElementById(triggerElementId);
 
@@ -93,20 +22,10 @@ const openDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
 
   // Send focus to the first suitable element
   dropdownContent.querySelector(INTERACTIVE_ELEMENTS_QUERY)?.focus();
-
-  document.addEventListener(
-    'keyup',
-    keyUpListener({ triggerElementId, dropdownContentId, onClose }),
-  );
-
-  document.addEventListener(
-    'click',
-    clickOutsideListener({ triggerElementId, dropdownContentId, onClose }),
-  );
 };
 
 /**
- * Close the given dropdown, updating aria attributes and removing event listeners
+ * Close the given dropdown, updating aria attributes
  *
  * @param {Object} args
  * @param {string} args.triggerElementId The id of the button which activates the dropdown
@@ -116,6 +35,11 @@ const openDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
 const closeDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
   const dropdownContent = document.getElementById(dropdownContentId);
 
+  if (!dropdownContent) {
+    // Component may have unmounted
+    return;
+  }
+
   document
     .getElementById(triggerElementId)
     ?.setAttribute('aria-expanded', 'false');
@@ -123,15 +47,6 @@ const closeDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
   // Remove the inline style added when we opened the dropdown
   dropdownContent.style.removeProperty('display');
 
-  document.removeEventListener(
-    'keyup',
-    keyUpListener({ triggerElementId, dropdownContentId, onClose }),
-  );
-
-  document.removeEventListener(
-    'click',
-    clickOutsideListener({ triggerElementId, dropdownContentId, onClose }),
-  );
   onClose?.();
 };
 
@@ -168,6 +83,62 @@ export const initializeDropdown = ({
   triggerButton.setAttribute('aria-controls', dropdownContentId);
   triggerButton.setAttribute('aria-haspopup', 'true');
 
+  const keyUpListener = ({ key }) => {
+    if (key === 'Escape') {
+      // Close the dropdown and return focus to the trigger button to prevent focus being lost
+      const isCurrentlyOpen =
+        triggerButton.getAttribute('aria-expanded') === 'true';
+      if (isCurrentlyOpen) {
+        closeDropdown({
+          triggerElementId,
+          dropdownContentId,
+          onClose: onCloseCleanupActions,
+        });
+        triggerButton.focus();
+      }
+    } else if (key === 'Tab') {
+      // Close the dropdown if the user has tabbed away from it
+      const isInsideDropdown = dropdownContent?.contains(
+        document.activeElement,
+      );
+      if (!isInsideDropdown) {
+        closeDropdown({
+          triggerElementId,
+          dropdownContentId,
+          onClose: onCloseCleanupActions,
+        });
+      }
+    }
+  };
+
+  // Close the dropdown if user has clicked outside
+  const clickOutsideListener = ({ target }) => {
+    if (
+      target !== triggerButton &&
+      !dropdownContent.contains(target) &&
+      !triggerButton.contains(target)
+    ) {
+      closeDropdown({
+        triggerElementId,
+        dropdownContentId,
+        onClose: onCloseCleanupActions,
+      });
+
+      // If the user did not click on another interactive item, return focus to the trigger
+      if (!target.matches(INTERACTIVE_ELEMENTS_QUERY)) {
+        triggerButton.focus();
+      }
+    }
+  };
+
+  // Any necessary side effects required on dropdown close
+  const onCloseCleanupActions = () => {
+    onClose?.();
+    document.removeEventListener('keyup', keyUpListener);
+    document.removeEventListener('click', clickOutsideListener);
+  };
+
+  // Add the main trigger button toggle funcationality
   triggerButton.addEventListener('click', () => {
     if (
       document
@@ -177,15 +148,17 @@ export const initializeDropdown = ({
       closeDropdown({
         triggerElementId,
         dropdownContentId,
-        onClose,
+        onClose: onCloseCleanupActions,
       });
     } else {
       openDropdown({
         triggerElementId,
         dropdownContentId,
-        onClose,
       });
       onOpen?.();
+
+      document.addEventListener('keyup', keyUpListener);
+      document.addEventListener('click', clickOutsideListener);
     }
   });
 
@@ -197,18 +170,20 @@ export const initializeDropdown = ({
         closeDropdown({
           triggerElementId,
           dropdownContentId,
-          onClose,
+          onClose: onCloseCleanupActions,
         });
+
         document.getElementById(triggerElementId)?.focus();
       });
   }
 
   return {
-    closeDropdown: () =>
+    closeDropdown: () => {
       closeDropdown({
         triggerElementId,
         dropdownContentId,
-        onClose,
-      }),
+        onClose: onCloseCleanupActions,
+      });
+    },
   };
 };
