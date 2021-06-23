@@ -78,12 +78,12 @@ export class CommentSubscription extends Component {
   };
 
   render() {
-    const { subscriptionType, subscribed } = this.state;
+    const { showOptions, subscriptionType, subscribed } = this.state;
     const {
       onSubscribe,
       onUnsubscribe,
       positionType = 'relative',
-      isLoggedIn,
+      isLoggedIn
     } = this.props;
 
     const CogIcon = () => (
@@ -130,28 +130,30 @@ export class CommentSubscription extends Component {
           </Button>
           {subscribed && (
             <Button
-              id="subscription-settings-btn"
               data-testid="subscription-settings"
               variant="outlined"
               icon={CogIcon}
               contentType="icon"
+              onClick={(_event) => {
+                this.setState({ showOptions: !showOptions });
+              }}
             />
           )}
         </ButtonGroup>
         {subscribed && (
           <Dropdown
-            triggerButtonId="subscription-settings-btn"
-            dropdownContentId="subscription-settings-dropdown"
-            dropdownContentCloseButtonId="subscription-settings-done-btn"
             data-testid="subscriptions-panel"
-            className={`right-4 left-4 s:right-0 s:left-auto${
-              positionType === 'relative' ? ' w-full' : ''
-            }`}
+            aria-hidden={!showOptions}
+            className={
+              showOptions
+                ? `inline-block right-4 left-4 s:right-0 s:left-auto${
+                    positionType === 'relative' ? ' w-full' : ''
+                  }`
+                : null
+            }
             ref={(element) => {
               this.dropdownElement = element;
             }}
-            onOpen={() => this.setState({ showOptions: true })}
-            onClose={() => this.setState({ showOptions: false })}
           >
             <div className="crayons-fields mb-5">
               <FormField variant="radio">
@@ -214,10 +216,13 @@ export class CommentSubscription extends Component {
             </div>
 
             <Button
-              id="subscription-settings-done-btn"
               className="w-100"
-              onClick={() => {
-                onSubscribe(this.state.subscriptionType);
+              onClick={(_event) => {
+                this.setState((prevState) => {
+                  onSubscribe(prevState.subscriptionType);
+
+                  return { ...prevState, showOptions: false };
+                });
               }}
             >
               Done

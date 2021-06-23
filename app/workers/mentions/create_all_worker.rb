@@ -1,5 +1,4 @@
 module Mentions
-  # This worker is currently only used to create mentions on comments.
   class CreateAllWorker
     include Sidekiq::Worker
     sidekiq_options queue: :default, retry: 10

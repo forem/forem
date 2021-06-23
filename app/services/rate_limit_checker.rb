@@ -34,7 +34,6 @@ class RateLimitChecker
   end
 
   def check_limit!(action)
-    return if ApplicationConfig["E2E"]
     return unless limit_by_action(action)
 
     retry_after = ACTION_LIMITERS.dig(action, :retry_after)
@@ -42,8 +41,6 @@ class RateLimitChecker
   end
 
   def limit_by_action(action)
-    return false if ApplicationConfig["E2E"]
-
     check_method = "check_#{action}_limit"
     result = respond_to?(check_method, true) ? __send__(check_method) : false
 
@@ -90,13 +87,13 @@ class RateLimitChecker
   end
 
   def check_published_article_creation_limit
-    # TODO: We should make this time frame configurable.
+    # TODO: Vaidehi Joshi - We should make this time frame configurable.
     user.articles.published.where("created_at > ?", 30.seconds.ago).size >
       Settings::RateLimit.published_article_creation
   end
 
   def check_published_article_antispam_creation_limit
-    # TODO: We should make this time frame configurable.
+    # TODO: Vaidehi Joshi - We should make this time frame configurable.
     user.articles.published.where("created_at > ?", 5.minutes.ago).size >
       Settings::RateLimit.published_article_antispam_creation
   end

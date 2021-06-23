@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe TagTag, type: :liquid_tag do
   let(:tag) { create(:tag) }
 
-  before { Liquid::Template.register_tag("tag", described_class) }
+  setup { Liquid::Template.register_tag("tag", described_class) }
 
   def generate_tag_tag(id_code)
     Liquid::Template.parse("{% tag #{id_code} %}")

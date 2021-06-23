@@ -1,29 +1,29 @@
 require "rails_helper"
 
+def user_from_authorization_service(service_name, signed_in_resource = nil, cta_variant = "navbar_basic")
+  auth = OmniAuth.config.mock_auth[service_name]
+  Authentication::Authenticator.call(
+    auth,
+    current_user: signed_in_resource,
+    cta_variant: cta_variant,
+  )
+end
+
+def mock_username(provider_name, username)
+  if provider_name == :apple
+    OmniAuth.config.mock_auth[provider_name].info.first_name = username
+  else
+    OmniAuth.config.mock_auth[provider_name].info.nickname = username
+  end
+end
+
+def provider_username(service_name)
+  auth_payload = OmniAuth.config.mock_auth[service_name]
+  provider_class = Authentication::Providers.get!(auth_payload.provider)
+  provider_class.new(auth_payload).user_nickname
+end
+
 RSpec.describe User, type: :model do
-  def user_from_authorization_service(service_name, signed_in_resource = nil, cta_variant = "navbar_basic")
-    auth = OmniAuth.config.mock_auth[service_name]
-    Authentication::Authenticator.call(
-      auth,
-      current_user: signed_in_resource,
-      cta_variant: cta_variant,
-    )
-  end
-
-  def mock_username(provider_name, username)
-    if provider_name == :apple
-      OmniAuth.config.mock_auth[provider_name].info.first_name = username
-    else
-      OmniAuth.config.mock_auth[provider_name].info.nickname = username
-    end
-  end
-
-  def provider_username(service_name)
-    auth_payload = OmniAuth.config.mock_auth[service_name]
-    provider_class = Authentication::Providers.get!(auth_payload.provider)
-    provider_class.new(auth_payload).user_nickname
-  end
-
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:org) { create(:organization) }
@@ -55,7 +55,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:collections).dependent(:destroy) }
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
-      it { is_expected.to have_many(:discussion_locks).dependent(:destroy) }
       it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
@@ -435,7 +434,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  context "when callbacks are triggered after commit" do
+  context "when callbacks are triggered after save" do
     describe "subscribing to mailchimp newsletter" do
       let(:user) { build(:user) }
 
@@ -464,7 +463,7 @@ RSpec.describe User, type: :model do
       end
 
       it "does not enqueue if Mailchimp is not enabled" do
-        allow(Settings::General).to receive(:mailchimp_api_key).and_return(nil)
+        allow(SiteConfig).to receive(:mailchimp_api_key).and_return(nil)
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(email: "something@real.com")
         end
@@ -816,7 +815,7 @@ RSpec.describe User, type: :model do
     end
 
     it "returns the user if the account exists" do
-      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
 
       expect(described_class.mascot_account).to eq(user)
     end

@@ -3,9 +3,9 @@ branches:
     - main
 language: ruby
 cache:
-  bundler: true
   directories:
-    - node_modules
+    - vendor/bundle
+    - ~/.cache
 rvm:
   - 2.7.2
 addons:
@@ -79,7 +79,6 @@ jobs:
         - bundle exec bundle-audit check --update
         - bin/test-console-check
         - yarn build-storybook
-        - yarn cypress install
         - bin/e2e-ci
 
     - stage: Deploy

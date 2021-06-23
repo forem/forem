@@ -59,7 +59,6 @@ package-lock.json
 
 #sitemap
 /public/sitemap.xml.gz
-/public/sitemaps/
 
 # Development Docker storage location
 _docker-storage/
@@ -101,4 +100,3 @@ postcss_error.log
 
 # ripgrep ignore file
 .rgignore
-config/definitions.rb

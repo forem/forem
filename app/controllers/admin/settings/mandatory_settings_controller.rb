@@ -1,13 +1,16 @@
 module Admin
   module Settings
-    class MandatorySettingsController < Admin::Settings::BaseController
-      Result = Struct.new(:errors) do
-        def success?
-          errors.none?
+    class MandatorySettingsController < Admin::ApplicationController
+      def create
+        errors = upsert_config(settings_params)
+
+        if errors.none?
+          Audit::Logger.log(:internal, current_user, params.dup)
+          redirect_to admin_config_path, notice: "Site configuration was successfully updated."
+        else
+          redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}"
         end
       end
-
-      private
 
       def upsert_config(configs)
         errors = []
@@ -22,8 +25,11 @@ module Admin
           errors << e.message
           next
         end
-        Result.new(errors)
+
+        errors
       end
+
+      private
 
       # NOTE: we need to override this since the controller name doesn't reflect
       # the model name

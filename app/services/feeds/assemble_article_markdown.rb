@@ -6,8 +6,8 @@ module Feeds
 
     def initialize(item, user, feed, feed_source_url)
       @item = item
-      @title = item.title.strip
-      @categories = item.categories || []
+      @title = item[:title].strip
+      @categories = item[:categories] || []
       @user = user
       @feed = feed
       @feed_source_url = feed_source_url
@@ -16,7 +16,7 @@ module Feeds
     def call
       body = <<~HEREDOC
         ---
-        title: #{processed_title}
+        title: #{@title}
         published: false
         date: #{@item.published}
         tags: #{get_tags}
@@ -30,10 +30,6 @@ module Feeds
     end
 
     private
-
-    def processed_title
-      @title.truncate(128, omission: "...", separator: " ")
-    end
 
     def get_tags
       @categories.first(4).map do |tag|
@@ -58,7 +54,7 @@ module Feeds
     end
 
     def get_content
-      @item.content || @item.summary || @item.description
+      @item[:content] || @item[:summary] || @item[:description]
     end
 
     def thorough_parsing(content, feed_url)

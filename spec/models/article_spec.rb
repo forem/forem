@@ -18,10 +18,7 @@ RSpec.describe Article, type: :model do
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:user) }
 
-    it { is_expected.to have_one(:discussion_lock).dependent(:destroy) }
-
     it { is_expected.to have_many(:comments).dependent(:nullify) }
-    it { is_expected.to have_many(:mentions).dependent(:destroy) }
     it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
     it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
@@ -58,7 +55,7 @@ RSpec.describe Article, type: :model do
 
     describe "::admin_published_with" do
       it "includes mascot-published articles" do
-        allow(Settings::General).to receive(:mascot_user_id).and_return(3)
+        allow(SiteConfig).to receive(:mascot_user_id).and_return(3)
         user = create(:user, id: 3)
         create(:article, user: user, tags: "challenge")
         expect(described_class.admin_published_with("challenge").count).to eq(1)
@@ -975,25 +972,6 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  context "when callbacks are triggered after create" do
-    describe "detect animated images" do
-      it "does not enqueue Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is disabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
-
-        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
-          build(:article).save
-        end
-      end
-
-      it "enqueues Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is enabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
-        sidekiq_assert_enqueued_jobs(1, only: Articles::DetectAnimatedImagesWorker) do
-          build(:article).save
-        end
-      end
-    end
-  end
-
   context "when callbacks are triggered after save" do
     describe "article path sanitizing" do
       it "returns a downcased username when user has uppercase characters" do
@@ -1011,8 +989,8 @@ RSpec.describe Article, type: :model do
 
     describe "spam" do
       before do
-        allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
-        allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(
+        allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+        allow(SiteConfig).to receive(:spam_trigger_terms).and_return(
           ["yahoomagoo gogo", "testtestetest", "magoo.+magee"],
         )
       end
@@ -1110,32 +1088,6 @@ RSpec.describe Article, type: :model do
             article.update_columns(published: false)
             article.update(published: true, published_at: Time.current)
           end
-        end
-      end
-    end
-
-    describe "detect animated images" do
-      it "does not enqueue Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is disabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
-
-        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
-          article.update(body_markdown: "a body")
-        end
-      end
-
-      it "enqueues Articles::DetectAnimatedImagesWorker if the HTML has changed" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
-
-        sidekiq_assert_enqueued_with(job: Articles::DetectAnimatedImagesWorker, args: [article.id]) do
-          article.update(body_markdown: "a body")
-        end
-      end
-
-      it "does not Articles::DetectAnimatedImagesWorker if the HTML does not change" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
-
-        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
-          article.update(tag_list: %w[fsharp go])
         end
       end
     end
@@ -1267,6 +1219,7 @@ RSpec.describe Article, type: :model do
 
   describe "#user_mentions_in_markdown" do
     before do
+      stub_const("Article::MAX_USER_MENTIONS", 7)
       stub_const("Article::MAX_USER_MENTION_LIVE_AT", 1.day.ago) # Set live_at date to a time in the past
     end
 
@@ -1274,20 +1227,20 @@ RSpec.describe Article, type: :model do
       # Explicitly set created_at date to a time before MAX_USER_MENTION_LIVE_AT
       article = create(:article, created_at: 3.days.ago)
 
-      article.body_markdown = "hi @#{user.username}! " * (Settings::RateLimit.mention_creation + 1)
+      article.body_markdown = "hi @#{user.username}! " * (Article::MAX_USER_MENTIONS + 1)
       expect(article).to be_valid
     end
 
     it "is valid with seven or fewer mentions if created after MAX_USER_MENTION_LIVE_AT date" do
-      article.body_markdown = "hi @#{user.username}! " * Settings::RateLimit.mention_creation
+      article.body_markdown = "hi @#{user.username}! " * Article::MAX_USER_MENTIONS
       expect(article).to be_valid
     end
 
     it "is invalid with more than seven mentions if created after MAX_USER_MENTION_LIVE_AT date" do
-      article.body_markdown = "hi @#{user.username}! " * (Settings::RateLimit.mention_creation + 1)
+      article.body_markdown = "hi @#{user.username}! " * (Article::MAX_USER_MENTIONS + 1)
       expect(article).not_to be_valid
       expect(article.errors[:base])
-        .to include("You cannot mention more than #{Settings::RateLimit.mention_creation} users in a post!")
+        .to include("You cannot mention more than #{Article::MAX_USER_MENTIONS} users in a post!")
     end
   end
 

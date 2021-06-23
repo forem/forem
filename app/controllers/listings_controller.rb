@@ -151,7 +151,7 @@ class ListingsController < ApplicationController
   def listings_for_index_view
     Listing.where(published: true)
       .order(bumped_at: :desc)
-      .includes(:user, :organization, :taggings, :listing_category)
+      .includes(:user, :organization, :taggings)
       .limit(12)
   end
 end

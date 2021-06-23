@@ -21,7 +21,6 @@ function create_pr_containers {
   docker build --target builder \
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
-               --label quay.expires-after=8w \
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" .
 
   # Build the pull request image
@@ -29,7 +28,6 @@ function create_pr_containers {
   docker build --target production \
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" \
-               --label quay.expires-after=8w \
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" .
 
   # Build the testing image
@@ -38,7 +36,6 @@ function create_pr_containers {
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" \
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" \
-               --label quay.expires-after=8w \
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" .
 
   # Push images to Quay

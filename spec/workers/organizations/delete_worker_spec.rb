@@ -38,7 +38,6 @@ RSpec.describe Organizations::DeleteWorker, type: :worker do
       end
 
       it "sends the notification" do
-        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
         expect do
           worker.perform(org.id, user.id)
         end.to change(ActionMailer::Base.deliveries, :count).by(1)

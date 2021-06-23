@@ -8,11 +8,7 @@ RSpec.describe Exporter::Service, type: :service do
   let(:other_user_article) { create(:article, user: other_user) }
 
   before do
-    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
-  end
-
-  after do
-    ApplicationMailer.deliveries.clear
+    ActionMailer::Base.deliveries.clear
   end
 
   def valid_instance(user)
@@ -75,7 +71,6 @@ RSpec.describe Exporter::Service, type: :service do
     context "when emailing the user" do
       it "delivers one email" do
         service = valid_instance(article.user)
-        ApplicationMailer.deliveries.clear
         service.export(article.user.email)
         expect(ActionMailer::Base.deliveries.count).to eq(1)
       end
@@ -99,7 +94,7 @@ RSpec.describe Exporter::Service, type: :service do
     context "when emailing an admin" do
       it "delivers one email to the contact admin email" do
         admin_email = "admin@example.com"
-        allow(ForemInstance).to receive(:email).and_return(admin_email)
+        allow(SiteConfig).to receive(:email_addresses).and_return({ contact: admin_email })
         service = valid_instance(article.user)
         service.export(admin_email)
         expect(ActionMailer::Base.deliveries.last.to.first).to eq admin_email

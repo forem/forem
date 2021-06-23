@@ -10,11 +10,5 @@ FactoryBot.define do
     trait :onboarding do
       show_in_onboarding { true }
     end
-
-    after :create do
-      # this is accomplished by ProfileFields::Add normally, it was added here
-      # in case the tests use the factory and not the service object
-      Profile.refresh_attributes!
-    end
   end
 end

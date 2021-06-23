@@ -82,8 +82,8 @@ RSpec.describe "UserSettings", type: :request do
       it "displays content on Extensions tab properly" do
         get user_settings_path(:extensions)
 
-        feed_section = "Publishing to #{Settings::Community.community_name} from RSS"
-        stackbit_section = "Generate a personal blog from your #{Settings::Community.community_name} posts"
+        feed_section = "Publishing to #{SiteConfig.community_name} from RSS"
+        stackbit_section = "Generate a personal blog from your #{SiteConfig.community_name} posts"
         titles = ["Comment templates", "Connect settings", feed_section, "Web monetization", stackbit_section]
         expect(response.body).to include(*titles)
       end
@@ -238,14 +238,9 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.reload.profile_updated_at).to be > 2.minutes.ago
     end
 
-    it "disables reaction notifications (in both users and notification_settings tables)" do
-      expect(user.notification_setting.reaction_notifications).to be(true)
-
-      expect do
-        put "/users/#{user.id}", params: { user: { tab: "notifications", reaction_notifications: 0 } }
-      end.to change { user.reload.reaction_notifications }.from(true).to(false)
-
-      expect(user.notification_setting.reload.reaction_notifications).to be(false)
+    it "disables reaction notifications" do
+      put "/users/#{user.id}", params: { user: { tab: "notifications", reaction_notifications: 0 } }
+      expect(user.reload.reaction_notifications).to be(false)
     end
 
     it "enables community-success notifications" do
@@ -253,14 +248,10 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.reload.subscribed_to_mod_roundrobin_notifications?).to be(true)
     end
 
-    it "updates the users announcement display preferences (in both users and user_settings tables)" do
-      expect(user.setting.display_announcements).to be(true)
-
+    it "updates the users announcement display preferences" do
       expect do
         put "/users/#{user.id}", params: { user: { tab: "misc", display_announcements: 0 } }
       end.to change { user.reload.display_announcements }.from(true).to(false)
-
-      expect(user.setting.reload.display_announcements).to be(false)
     end
 
     it "disables community-success notifications" do
@@ -321,7 +312,6 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "sends an email" do
-        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
         expect do
           sidekiq_perform_enqueued_jobs do
             send_request
@@ -341,11 +331,11 @@ RSpec.describe "UserSettings", type: :request do
       let(:user) { create(:user, feed_url: feed_url) }
 
       it "invokes Feeds::ImportArticlesWorker" do
-        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(user.id)
+        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(nil, user.id)
 
         put user_path(user.id), params: { user: { feed_url: feed_url } }
 
-        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(user.id)
+        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(nil, user.id)
       end
     end
   end
@@ -401,8 +391,7 @@ RSpec.describe "UserSettings", type: :request do
         delete users_remove_identity_path, params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
 
-        error =
-          "An error occurred. Please try again or send an email to: #{ForemInstance.email}"
+        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:contact]}"
         expect(flash[:error]).to eq(error)
       end
 
@@ -444,8 +433,7 @@ RSpec.describe "UserSettings", type: :request do
       it "sets the proper flash error message" do
         delete users_remove_identity_path, params: { provider: provider }
 
-        error =
-          "An error occurred. Please try again or send an email to: #{ForemInstance.email}"
+        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:contact]}"
         expect(flash[:error]).to eq(error)
       end
 

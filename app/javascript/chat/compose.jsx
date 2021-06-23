@@ -60,10 +60,9 @@ export const Compose = ({
     () => (startEditing ? "Let's connect" : 'Compose a message'),
     [startEditing],
   );
-  const saveButtonText = useMemo(
-    () => (startEditing ? 'Save' : 'Send'),
-    [startEditing],
-  );
+  const saveButtonText = useMemo(() => (startEditing ? 'Save' : 'Send'), [
+    startEditing,
+  ]);
 
   return (
     <div className="compose__outer__container">
@@ -74,7 +73,6 @@ export const Compose = ({
       >
         <textarea
           ref={textAreaRef}
-          data-gramm_editor="false"
           className={
             startEditing
               ? 'crayons-textfield composer-textarea__edit'

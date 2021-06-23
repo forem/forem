@@ -1,14 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Notifications::Milestone::Send, type: :service do
-  def send_milestone_notification_view
-    described_class.call("View", article)
-  end
-
-  def send_milestone_notification_reaction
-    described_class.call("Reaction", article)
-  end
-
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id, page_views_count: 4000, public_reactions_count: 70) }
 
@@ -85,4 +77,12 @@ RSpec.describe Notifications::Milestone::Send, type: :service do
       end
     end
   end
+end
+
+def send_milestone_notification_view
+  described_class.call("View", article)
+end
+
+def send_milestone_notification_reaction
+  described_class.call("Reaction", article)
 end

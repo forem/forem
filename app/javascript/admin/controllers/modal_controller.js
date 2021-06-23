@@ -8,13 +8,6 @@ export default class ModalController extends Controller {
     size: String,
   };
 
-  async closeModal() {
-    const { render } = await import('preact');
-    const modalRoot = document.querySelector(this.rootSelectorValue);
-
-    render(null, modalRoot);
-  }
-
   async toggleModal() {
     const [{ Modal }, { render, h }] = await Promise.all([
       import('@crayons/Modal'),
@@ -26,7 +19,9 @@ export default class ModalController extends Controller {
     render(
       <Modal
         title={this.titleValue}
-        onClose={() => this.closeModal()}
+        onClose={() => {
+          render(null, modalRoot);
+        }}
         size={this.sizeValue}
       >
         <div

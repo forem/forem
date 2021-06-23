@@ -29,11 +29,15 @@ describe('Campaign Section', () => {
             `My username is @${username} and this action is 100% safe and appropriate.`,
           );
 
-        cy.get('@rateLimitSectionForm').findByText('Update Settings').click();
+        cy.get('@rateLimitSectionForm')
+          .findByText('Update Site Configuration')
+          .click();
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Successfully updated settings.').should('be.visible');
+        cy.findByText('Site configuration was successfully updated.').should(
+          'be.visible',
+        );
 
         cy.get('#settings_rate_limit_user_considered_new_days').should(
           'have.value',
