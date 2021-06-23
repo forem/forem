@@ -24,11 +24,22 @@ namespace :admin do
     resources :smtp_settings, only: [:create]
     resources :user_experiences, only: [:create]
   end
+
   namespace :users do
     resources :gdpr_delete_requests, only: %i[index destroy]
   end
+
   resources :users, only: %i[index show edit update destroy] do
+    scope module: "users" do
+      resource :tools, only: :show
+
+      namespace :tools do
+        resource :email, only: :edit
+      end
+    end
+
     resources :email_messages, only: :show
+
     member do
       post "banish"
       post "export_data"

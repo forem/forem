@@ -145,7 +145,13 @@ module Admin
     end
 
     def send_email
-      if NotifyMailer.with(params).user_contact_email.deliver_now
+      email_params = {
+        email_body: params[:email_body],
+        email_subject: params[:email_subject],
+        user_id: params[:id]
+      }
+
+      if NotifyMailer.with(email_params).user_contact_email.deliver_now
         redirect_back(fallback_location: users_path)
       else
         flash[:danger] = "Email failed to send!"
