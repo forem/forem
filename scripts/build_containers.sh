@@ -179,7 +179,7 @@ elif [[ "${BUILDKITE_BRANCH}" = "master" || "${BUILDKITE_BRANCH}" = "main" ]]; t
     echo "Building Production Containers..."
     create_production_containers
 
-elif [[ "${BUILDKITE_BRANCH}" = "stable" || "${BUILDKITE_BRANCH}" = "stable-next" ]]; then
+elif [[ ${BUILDKITE_BRANCH} = stable* ]]; then
 
     echo "Building Production Containers for ${BUILDKITE_BRANCH}..."
     create_release_containers "${BUILDKITE_BRANCH}"
