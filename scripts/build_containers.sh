@@ -102,6 +102,53 @@ function create_production_containers {
 
 }
 
+function create_release_containers {
+  BRANCH=$1
+
+  # Pull images if available for caching
+  docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder ||:
+  docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":production ||:
+  docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing ||:
+  docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":development ||:
+
+  # Build the builder image
+  docker build --target builder \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
+               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder .
+
+  # Build the production image
+  docker build --target production \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
+               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":${BUILDKITE_COMMIT:0:7} \
+               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":${BRANCH} .
+
+  # Build the testing image
+  docker build --target testing \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing \
+               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-${BRANCH} .
+
+  # Build the development image
+  docker build --target development \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing \
+               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":development-${BRANCH} .
+
+  if [ -v BUILDKITE_TAG ]; then
+    docker build --target production \
+                 --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
+                 --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":${BUILDKITE_TAG} .
+  fi
+
+  # Push images to Quay
+  docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":${BRANCH}
+  docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":development-${BRANCH}
+  docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-${BRANCH}
+
+}
 
 function prune_containers {
 
@@ -127,10 +174,15 @@ elif [ -z "$BUILDKITE_BRANCH" ]; then
     echo "BUILDKITE_BRANCH is set to an empty string! Exiting..."
     exit 1
 
-elif [[ "${BUILDKITE_BRANCH}" = "master" || "${BUILDKITE_BRANCH}" = "main" || "${BUILDKITE_BRANCH}" = "stable" || "${BUILDKITE_BRANCH}" = "stable-next" ]]; then
+elif [[ "${BUILDKITE_BRANCH}" = "master" || "${BUILDKITE_BRANCH}" = "main" ]]; then
 
     echo "Building Production Containers..."
     create_production_containers
+
+elif [[ "${BUILDKITE_BRANCH}" = "stable" || "${BUILDKITE_BRANCH}" = "stable-next" ]]; then
+
+    echo "Building Production Containers for ${BUILDKITE_BRANCH}..."
+    create_release_containers "${BUILDKITE_BRANCH}"
 
 else
 
