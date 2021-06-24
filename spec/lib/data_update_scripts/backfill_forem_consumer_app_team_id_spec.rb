@@ -16,10 +16,11 @@ describe DataUpdateScripts::BackfillForemConsumerAppTeamId do
 
   it "adds the team_id to a the Forem iOS Consumer App" do
     # The team_id is expected be nil at the start of the test
-    expect(forem_ios_consumer_app.team_id).to be_nil
+    consumer_app = forem_ios_consumer_app
+    expect(consumer_app.team_id).to be_nil
 
     expect { described_class.new.run }
-      .to change(forem_ios_consumer_app, :team_id)
+      .to change { consumer_app.reload.team_id }
       .from(nil).to(ConsumerApp::FOREM_TEAM_ID)
 
     expect(forem_ios_consumer_app.team_id).to eq(ConsumerApp::FOREM_TEAM_ID)
