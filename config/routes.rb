@@ -324,7 +324,7 @@ Rails.application.routes.draw do
     get "/page/:slug", to: "pages#show"
 
     scope "p" do
-      pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics badges].freeze
+      pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics].freeze
       pages_actions.each do |action|
         get action, action: action, controller: "pages"
       end
