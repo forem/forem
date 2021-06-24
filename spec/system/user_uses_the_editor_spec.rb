@@ -94,8 +94,6 @@ RSpec.describe "Using the editor", type: :system do
   end
 
   describe "using v2 editor", js: true do
-    before { user.update(editor_version: "v2") }
-
     it "fill out form with rich content and click publish" do
       visit "/new"
       fill_in "article-form-title", with: "This is a test"

@@ -125,8 +125,7 @@ module Authentication
         signup_cta_variant: cta_variant,
         registered: true,
         registered_at: Time.current,
-        saw_onboarding: false,
-        editor_version: :v2
+        saw_onboarding: false
       }
     end
 
