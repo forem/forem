@@ -48,7 +48,7 @@ const initializeArticlePageDropdowns = () => {
         .querySelector('.permalink-copybtn')
         ?.addEventListener('click', handleCopyPermalink(closeDropdown));
 
-      dropdownTrigger.dataset.initialized = 'true';
+      dropdownTrigger.dataset.initialized = true;
     }
   }
 };
@@ -59,11 +59,10 @@ const initializeArticlePageDropdowns = () => {
  * @param {HTMLElement} placeholderElement The <span> placeholder element to be replaced by the preview dropdown
  */
 const fetchMissingProfilePreviewCard = async (placeholderElement) => {
-  const htmlContent = await window
-    .fetch(
-      `/profile_preview_card/show?userid=${placeholderElement.dataset.jsCommentUserId}&preview_card_id=${placeholderElement.dataset.jsDropdownContentId}`,
-    )
-    .then((res) => res.text());
+  const response = await window.fetch(
+    `/profile_preview_card/show?user_id=${placeholderElement.dataset.jsCommentUserId}&preview_card_id=${placeholderElement.dataset.jsDropdownContentId}`,
+  );
+  const htmlContent = await response.text();
 
   const generatedElement = document.createElement('div');
   generatedElement.innerHTML = htmlContent;
@@ -78,7 +77,7 @@ const fetchMissingProfilePreviewCard = async (placeholderElement) => {
 };
 
 /**
- * When a new comment is added to a dicussion, the preview card dropdown must be dynamically fetched.
+ * When a new comment is added to a discussion, the preview card dropdown must be dynamically fetched.
  * This function detects if a preview card placeholder has been added in a given mutation and initiates the profile card fetch.
  **/
 const checkMutationForProfilePreviewCardPlaceholder = (mutation) => {
