@@ -25,7 +25,7 @@ if Rails.env.production?
                    end
 
   if s3_config_hash
-    SitemapGenerator::Sitemap.adapter = SitemapGenerator::S3Adapter.new(config_hash)
+    SitemapGenerator::Sitemap.adapter = SitemapGenerator::S3Adapter.new(s3_config_hash)
     SitemapGenerator::Sitemap.sitemaps_host = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/"
     SitemapGenerator::Sitemap.public_path = "tmp/"
   else
