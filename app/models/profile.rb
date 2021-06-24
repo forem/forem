@@ -27,9 +27,6 @@ class Profile < ApplicationRecord
   # TODO: @msarit Should I remove brand_colors from this mapping? Now that we're
   # using brand_colors and not the hex colors
   MAPPED_ATTRIBUTES = {
-    brand_color1: :bg_color_hex,
-    brand_color2: :text_color_hex,
-    display_email_on_profile: :email_public,
     education: :education,
     skills_languages: :mostly_work_with
   }.with_indifferent_access.freeze
