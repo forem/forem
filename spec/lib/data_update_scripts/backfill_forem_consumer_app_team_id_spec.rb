@@ -22,8 +22,6 @@ describe DataUpdateScripts::BackfillForemConsumerAppTeamId do
     expect { described_class.new.run }
       .to change { consumer_app.reload.team_id }
       .from(nil).to(ConsumerApp::FOREM_TEAM_ID)
-
-    expect(forem_ios_consumer_app.team_id).to eq(ConsumerApp::FOREM_TEAM_ID)
   end
 
   it "doesn't affect other Consumer App Team IDs", :aggregate_failures do
