@@ -12,7 +12,8 @@
   flex-flow: row nowrap;
   align-items: center;
   padding: var(--su-3);
-  max-width: calc(min(100% - var(--su-4) * 2, 750px));
+  max-width: 750px;
+  width: calc(100% - var(--su-4) * 2);
   z-index: var(--z-popover);
   border-radius: var(--radius);
   background: #012026;
