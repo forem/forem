@@ -137,7 +137,9 @@ function create_release_containers {
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing \
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":development-${BRANCH} .
 
-  if [ -v BUILDKITE_TAG ]; then
+  # If the env var for the git tag doesn't exist or is an empty string, then we
+  # won't build a container image for a cut release.
+  if [ -v BUILDKITE_TAG || ! -z "${BUILDKITE_TAG}" ]; then
     docker build --target production \
                  --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                  --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
