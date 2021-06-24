@@ -36,14 +36,7 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  PROVIDER_COLUMNS = %w[
-    apple_created_at
-    facebook_created_at
-    github_created_at
-    twitter_created_at
-  ].freeze
-
-  self.ignored_columns = PROFILE_COLUMNS + PROVIDER_COLUMNS
+  self.ignored_columns = PROFILE_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -187,6 +180,7 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
+  has_many :discussion_locks, dependent: :destroy, inverse_of: :locking_user, foreign_key: :locking_user_id
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
@@ -352,10 +346,10 @@ class User < ApplicationRecord
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
-  after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
 
+  after_commit :subscribe_to_mailchimp_newsletter
   after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 
@@ -552,7 +546,7 @@ class User < ApplicationRecord
 
   def subscribe_to_mailchimp_newsletter
     return unless registered && email.present?
-    return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
     return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
@@ -580,7 +574,7 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
-    return if Settings::General.mailchimp_api_key.blank? && Settings::General.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
@@ -625,6 +619,15 @@ class User < ApplicationRecord
 
   def flipper_id
     "User:#{id}"
+  end
+
+  protected
+
+  # Send emails asynchronously
+  # see https://github.com/heartcombo/devise#activejob-integration
+  def send_devise_notification(notification, *args)
+    message = devise_mailer.public_send(notification, self, *args)
+    message.deliver_later
   end
 
   private

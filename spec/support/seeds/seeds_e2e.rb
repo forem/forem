@@ -29,7 +29,6 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     name: "Admin McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
     email_comment_notifications: false,
@@ -42,12 +41,37 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     checked_terms_and_conditions: true,
   )
 
+  user.profile.update({
+                        summary: "Admin user summary",
+                        employment_title: "Software developer",
+                        location: "Edinburgh",
+                        education: "University of Life"
+                      })
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
   user.add_role(:trusted)
 end
 
 admin_user = User.find_by(email: "admin@forem.local")
+
+##############################################################################
+
+seeder.create_if_none(Organization) do
+  organization = Organization.create!(
+    name: "Bachmanity",
+    summary: Faker::Company.bs,
+    remote_profile_image_url: logo = Faker::Company.logo,
+    nav_image: logo,
+    url: Faker::Internet.url,
+    slug: "org#{rand(10_000)}",
+  )
+
+  OrganizationMembership.create!(
+    user_id: admin_user.id,
+    organization_id: organization.id,
+    type_of_user: "admin",
+  )
+end
 
 ##############################################################################
 
@@ -116,6 +140,62 @@ end
 
 ##############################################################################
 
+chat_user_1 = seeder.create_if_doesnt_exist(User, "email", "chat-user-1@forem.local") do
+  User.create!(
+    name: "Chat user 1",
+    email: "chat-user-1@forem.local",
+    username: "chat_user_1",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+end
+
+##############################################################################
+
+chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.local") do
+  User.create!(
+    name: "Chat user 2",
+    email: "chat-user-2@forem.local",
+    username: "chat_user_2",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(ChatChannel, "channel_name", "test chat channel") do
+  channel = ChatChannel.create(
+    channel_type: "open",
+    channel_name: "test chat channel",
+    slug: "test-chat-channel",
+    last_message_at: 1.week.ago,
+    status: "active",
+  )
+
+  channel.invite_users(users: [chat_user_1, chat_user_2])
+end
+
+##############################################################################
+
 seeder.create_if_none(NavigationLink) do
   protocol = ApplicationConfig["APP_PROTOCOL"].freeze
   domain = Rails.application&.initialized? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
@@ -165,7 +245,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Test article") do
     body_markdown: markdown,
     featured: true,
     show_comments: true,
-    user_id: User.order(Arel.sql("RANDOM()")).first.id,
+    user_id: admin_user.id,
   )
 end
 
@@ -229,4 +309,19 @@ seeder.create_if_none(Badge) do
     badge: Badge.first,
     rewarding_context_message_markdown: Faker::Markdown.random,
   )
+end
+
+##############################################################################
+
+seeder.create_if_none(Page) do
+  2.times do |t|
+    Page.create!(
+      slug: "#{Faker::Lorem.word}-#{t}",
+      body_html: "<p>#{Faker::Hipster.paragraph(sentence_count: 2)}</p>",
+      title: "#{Faker::Lorem.word} #{rand(100)}",
+      description: "A test page",
+      is_top_level_path: true,
+      landing_page: false,
+    )
+  end
 end

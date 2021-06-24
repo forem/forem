@@ -5,10 +5,15 @@
 
 <div class="form-group">
   <%= label_tag :platform, "Platform:" %>
-  <%= select_tag :platform, options_for_select(ConsumerApp.platforms.invert, selected: @app.platform, class: "crayons-select"), class: "crayons-select" %>
+  <%= select_tag :platform, options_for_select(ConsumerApp.platforms.invert, selected: @app.platform, class: "crayons-select"), class: "crayons-select", data: { "consumer-app-target" => "platform", "action" => "consumer-app#checkPlatform" } %>
 </div>
 
 <div class="form-group">
   <%= label_tag :auth_key, "Authentication Key:" %>
   <%= text_area_tag :auth_key, @app.auth_key, size: "100x10", class: "form-control" %>
+</div>
+
+<div class="form-group hidden" data-consumer-app-target="teamId">
+  <%= label_tag :team_id, "Team ID (Universal Links Support):" %>
+  <%= text_field_tag :team_id, @app.team_id, class: "form-control" %>
 </div>

@@ -321,6 +321,7 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "sends an email" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
         expect do
           sidekiq_perform_enqueued_jobs do
             send_request
@@ -340,11 +341,11 @@ RSpec.describe "UserSettings", type: :request do
       let(:user) { create(:user, feed_url: feed_url) }
 
       it "invokes Feeds::ImportArticlesWorker" do
-        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(nil, user.id)
+        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(user.id)
 
         put user_path(user.id), params: { user: { feed_url: feed_url } }
 
-        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(nil, user.id)
+        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(user.id)
       end
     end
   end
@@ -401,7 +402,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response).to redirect_to("/settings/account")
 
         error =
-          "An error occurred. Please try again or send an email to: #{Settings::General.email_addresses[:default]}"
+          "An error occurred. Please try again or send an email to: #{ForemInstance.email}"
         expect(flash[:error]).to eq(error)
       end
 
@@ -444,7 +445,7 @@ RSpec.describe "UserSettings", type: :request do
         delete users_remove_identity_path, params: { provider: provider }
 
         error =
-          "An error occurred. Please try again or send an email to: #{Settings::General.email_addresses[:default]}"
+          "An error occurred. Please try again or send an email to: #{ForemInstance.email}"
         expect(flash[:error]).to eq(error)
       end
 

@@ -1,0 +1,22 @@
+<div class="card mt-3">
+  <%= render partial: "admin/shared/card_header",
+             locals: {
+               header: "Emails",
+               state: "collapse",
+               target: "emailBodyContainer",
+               expanded: false
+             } %>
+  <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
+    <fieldset class="grid gap-4">
+      <div class="crayons-field">
+        <label for="forem_instance_email" class="crayons-field__label">
+          Default
+        </label>
+        <div class="crayons-field__description">
+          Default (set via <span class="ff-monospace">default_email</span> environment variable)
+        </div>
+        <input id="forem_instance_email" type="text" value="<%= ForemInstance.email %>" class="form-control" readonly>
+      </div>
+    </fieldset>
+  </div>
+</div>

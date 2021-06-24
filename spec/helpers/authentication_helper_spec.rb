@@ -58,7 +58,7 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
   describe "#authentication_provider_enabled?" do
     before do
-      allow(Settings::Authentication).to receive(:invite_only_mode).and_return(false)
+      allow(ForemInstance).to receive(:private?).and_return(false)
       allow(Settings::Authentication).to receive(:providers).and_return(%i[twitter github])
     end
 
@@ -76,7 +76,7 @@ RSpec.describe AuthenticationHelper, type: :helper do
   describe "tooltip classes, attributes and content" do
     context "when invite-only-mode enabled and no enabled registration options" do
       before do
-        allow(Settings::Authentication).to receive(:invite_only_mode).and_return(true)
+        allow(ForemInstance).to receive(:private?).and_return(true)
         allow(Settings::Authentication).to receive(:providers).and_return([])
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(false)
       end
