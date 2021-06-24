@@ -24,10 +24,10 @@ describe('Preview user profile from article page', () => {
         .as('previewCardTrigger')
         .should('not.exist');
 
-      // Check the user profile link is shown instead (there is also one in the user details card at the bottom)
+      // Check the user profile link is shown instead (there are also some in the user details card at the bottom)
       cy.findAllByRole('link', { name: 'Admin McAdmin' }).should(
         'have.length',
-        2,
+        3,
       );
     });
   });
@@ -225,6 +225,45 @@ describe('Preview user profile from article page', () => {
       cy.url().should('contain', '/settings');
       cy.findByRole('heading', {
         name: 'Settings for @article_editor_v1_user',
+      });
+    });
+  });
+
+  describe('Preview author profile on an organization article', () => {
+    beforeEach(() => {
+      cy.testSetup();
+      cy.fixture('users/articleEditorV1User.json').as('user');
+
+      cy.get('@user').then((user) => {
+        cy.loginUser(user).then(() => {
+          cy.visit('/');
+          cy.findAllByRole('link', { name: 'Organization test article' })
+            .first()
+            .click({ force: true });
+          // Make sure we have arrived on the article page
+          cy.findByRole('button', { name: 'Share post options' });
+        });
+      });
+    });
+
+    it('Should show author details in the preview card', () => {
+      cy.findByRole('button', { name: 'Admin McAdmin profile details' }).as(
+        'profileDetailsButton',
+      );
+      // Make sure the button is initialized before interacting
+      cy.get('[data-initialized]');
+      cy.get('@profileDetailsButton').click();
+      cy.findByTestId('profile-preview-card').within(() => {
+        // Check user fields are present
+        cy.findByRole('link', {
+          name: 'Admin McAdmin',
+        }).should('have.focus');
+
+        cy.findByRole('button', { name: 'Follow' });
+        cy.findByText('Admin user summary');
+        cy.findByText('Software developer');
+        cy.findByText('Edinburgh');
+        cy.findByText('University of Life');
       });
     });
   });
