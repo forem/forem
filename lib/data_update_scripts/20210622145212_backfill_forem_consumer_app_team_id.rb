@@ -1,9 +1,9 @@
 module DataUpdateScripts
   class BackfillForemConsumerAppTeamId
     def run
-      forem_app = ConsumerApp.find_by(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: :ios)
-      forem_app&.team_id = "R9SWHSQNV8"
-      forem_app&.save!
+      ConsumerApp
+        .where(app_bundle: ConsumerApp::FOREM_BUNDLE, platform: :ios)
+        .update(team_id: ConsumerApp::FOREM_TEAM_ID)
     end
   end
 end

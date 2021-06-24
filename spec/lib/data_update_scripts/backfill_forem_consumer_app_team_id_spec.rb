@@ -18,7 +18,9 @@ describe DataUpdateScripts::BackfillForemConsumerAppTeamId do
     # The team_id is expected be nil at the start of the test
     expect(forem_ios_consumer_app.team_id).to be_nil
 
-    described_class.new.run
+    expect { described_class.new.run }
+      .to change(forem_ios_consumer_app, :team_id)
+      .from(nil).to(ConsumerApp::FOREM_TEAM_ID)
 
     expect(forem_ios_consumer_app.team_id).to eq(ConsumerApp::FOREM_TEAM_ID)
   end
@@ -27,9 +29,7 @@ describe DataUpdateScripts::BackfillForemConsumerAppTeamId do
     custom_team_id = "ABC123"
     custom_consumer_app = create(:consumer_app, team_id: custom_team_id)
 
-    described_class.new.run
-
-    expect(custom_consumer_app.reload.team_id).to eq(custom_team_id)
-    expect(forem_ios_consumer_app.team_id).to eq(ConsumerApp::FOREM_TEAM_ID)
+    expect { described_class.new.run }
+      .not_to change { custom_consumer_app.reload.team_id }
   end
 end
