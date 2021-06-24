@@ -24,8 +24,6 @@ class Profile < ApplicationRecord
 
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
-  # TODO: @msarit Should I remove brand_colors from this mapping? Now that we're
-  # using brand_colors and not the hex colors
   MAPPED_ATTRIBUTES = {
     education: :education,
     skills_languages: :mostly_work_with
