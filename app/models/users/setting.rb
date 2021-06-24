@@ -5,7 +5,6 @@ module Users
     belongs_to :user, touch: true
     scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
-    # TODO: @msarit Double-check how these suffixes have impacted the rest of the codebase
     enum editor_version: { v2: 0, v1: 1 }, _suffix: :editor
     enum config_font: { default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5 },
          _suffix: :font
