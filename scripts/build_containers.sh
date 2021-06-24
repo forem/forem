@@ -132,6 +132,12 @@ function create_release_containers {
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing \
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":development-${BRANCH} .
 
+  if [ -v BUILDKITE_TAG ]; then
+    docker build --target production \
+                 --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
+                 --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":${BUILDKITE_TAG} .
+  fi
+
   # Push images to Quay
   docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":${BRANCH}
   docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":development-${BRANCH}
