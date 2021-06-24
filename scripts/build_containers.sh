@@ -140,6 +140,7 @@ function create_release_containers {
   if [ -v BUILDKITE_TAG ]; then
     docker build --target production \
                  --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
+                 --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
                  --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":${BUILDKITE_TAG} .
   fi
 
