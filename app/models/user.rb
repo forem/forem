@@ -302,10 +302,9 @@ class User < ApplicationRecord
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
 
-  after_create_commit :send_welcome_notification
+  after_create_commit :send_welcome_notification, :create_users_settings_and_notification_settings_records
 
   after_commit :subscribe_to_mailchimp_newsletter
-  after_create_commit :create_users_settings_and_notification_settings_records
   after_commit :bust_cache
 
   def self.dev_account
@@ -503,7 +502,7 @@ class User < ApplicationRecord
     return unless registered && email.present?
     return if Settings::General.mailchimp_api_key.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
-    return unless saved_changes.key?(:email) || saved_changes.key?(notification_setting.email_newsletter)
+    return unless saved_changes.key?(:email)
 
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
@@ -600,12 +599,11 @@ class User < ApplicationRecord
   private
 
   def create_users_settings_and_notification_settings_records
-    create_setting(user_id: id) unless setting
-    create_notification_setting(user_id: id) unless notification_setting
+    Users::Setting.create(user_id: id) unless setting
+    Users::NotificationSetting.create(user_id: id) unless notification_setting
   end
 
   def send_welcome_notification
-    puts "\n\nWE HIT IT!!\n\n"
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
 
     Notification.send_welcome_notification(id, set_up_profile_broadcast.id)

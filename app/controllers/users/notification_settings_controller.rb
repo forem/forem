@@ -33,7 +33,26 @@ module Users
       redirect_to user_settings_path(:notifications)
     end
 
+    def onboarding_notifications_checkbox_update
+      if params[:notifications]
+        permitted_params = %i[email_newsletter email_digest_periodic]
+        current_user.notification_setting.assign_attributes(params[:notifications].permit(permitted_params))
+      end
+
+      current_user.saw_onboarding = true
+      authorize User
+      render_update_response(current_user.notification_setting.save)
+    end
+
     private
+
+    def render_update_response(success, errors = nil)
+      status = success ? 200 : 422
+
+      respond_to do |format|
+        format.json { render json: { errors: errors }, status: status }
+      end
+    end
 
     def users_notification_setting_params
       params.require(:users_notification_setting).permit(ALLOWED_PARAMS)

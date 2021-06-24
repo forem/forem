@@ -10,5 +10,13 @@ module Users
     alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
     alias_attribute :subscribed_to_mod_roundrobin_notifications?, :mod_roundrobin_notifications
     alias_attribute :subscribed_to_email_follower_notifications?, :email_follower_notifications
+
+    after_commit :subscribe_to_mailchimp_newsletter
+
+    def subscribe_to_mailchimp_newsletter
+      return unless email_newsletter
+
+      Users::SubscribeToMailchimpNewsletterWorker.perform_async(user.id)
+    end
   end
 end

@@ -183,9 +183,7 @@ class UsersController < ApplicationController
 
   def onboarding_checkbox_update
     if params[:user]
-      permitted_params = %i[
-        checked_code_of_conduct checked_terms_and_conditions email_newsletter email_digest_periodic
-      ]
+      permitted_params = %i[checked_code_of_conduct checked_terms_and_conditions]
       current_user.assign_attributes(params[:user].permit(permitted_params))
     end
 
