@@ -45,7 +45,6 @@ class ConsumerApp < ApplicationRecord
 
   # [@forem/backend] `.where().first` is necessary because we use Redis data storage
   # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
-  # rubocop:disable Rails/FindBy
   def clear_rpush_app
     case ConsumerApp.platforms[platform_was]
     when Device::IOS
@@ -57,5 +56,4 @@ class ConsumerApp < ApplicationRecord
     # This prevents the `destroy` method to return true or false in a callback
     true
   end
-  # rubocop:enable Rails/FindBy
 end

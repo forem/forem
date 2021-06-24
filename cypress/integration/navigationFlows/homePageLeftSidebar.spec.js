@@ -19,7 +19,7 @@ describe('Home Page Left Sidebar', () => {
 
     // go back to the homepage with InstantClick
     cy.intercept('/?i=i').as('homepage');
-    cy.findAllByText('Home').last().click();
+    cy.findAllByRole('link', { name: 'DEV(local) Home' }).first().click();
     cy.wait('@homepage');
 
     // Wait for home page to load

@@ -2,7 +2,7 @@
   <div class="registration crayons-card">
     <div class="registration__content">
       <h1 class="registration__title">
-        <% if params[:state] == "new-user" && invite_only_mode? %>
+        <% if params[:state] == "new-user" && ForemInstance.private? %>
           <%= community_name %> is invite only.
         <% else %>
           Welcome to <%= community_name %>

@@ -35,13 +35,39 @@ RSpec.describe LinkTag, type: :liquid_tag do
       <div class='ltag__link'>
         <a href='#{article.user.path}' class='ltag__link__link'>
           <div class='ltag__link__pic'>
-            <img src='#{Images::Profile.call(article.user.profile_image_url, length: 150)}' alt='#{article.user.username} image'>
+            <img src='#{Images::Profile.call(article.user.profile_image_url, length: 150)}' alt='#{article.user.username}'>
           </div>
         </a>
         <a href='#{article.path}' class='ltag__link__link'>
           <div class='ltag__link__content'>
             <h2>#{CGI.escapeHTML(article.title)}</h2>
             <h3>#{CGI.escapeHTML(article.user.name)} ・ #{article.readable_publish_date} ・ #{article.reading_time} min read</h3>
+            <div class='ltag__link__taglist'>
+              #{tags}
+            </div>
+          </div>
+        </a>
+      </div>
+    HTML
+  end
+
+  def correct_org_link_html(article)
+    tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.join("\n#{"\s" * 8}")
+
+    <<~HTML
+      <div class='ltag__link'>
+        <a href='#{article.organization.path}' class='ltag__link__link'>
+          <div class='ltag__link__org__pic'>
+            <img src='#{Images::Profile.call(article.organization.profile_image_url, length: 150)}' alt='#{article.organization.name}'>
+            <div class='ltag__link__user__pic'>
+              <img src='#{Images::Profile.call(article.user.profile_image_url, length: 150)}' alt=''>
+            </div>
+          </div>
+        </a>
+        <a href='#{article.path}' class='ltag__link__link'>
+          <div class='ltag__link__content'>
+            <h2>#{CGI.escapeHTML(article.title)}</h2>
+            <h3>#{CGI.escapeHTML(article.user.name)} for #{article.organization.name} ・ #{article.readable_publish_date} ・ #{article.reading_time} min read</h3>
             <div class='ltag__link__taglist'>
               #{tags}
             </div>
@@ -80,7 +106,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
 
   it "also tries to look for article by organization if failed to find by username" do
     liquid = generate_new_liquid(slug: "#{org_article.username}/#{org_article.slug}")
-    expect(liquid.render).to eq(correct_link_html(org_article))
+    expect(liquid.render).to eq(correct_org_link_html(org_article))
   end
 
   it "renders with a leading slash" do
