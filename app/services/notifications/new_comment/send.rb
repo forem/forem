@@ -35,6 +35,7 @@ module Notifications
         end
 
         # Send PNs using Rpush - respecting users' notificaton delivery settings
+        # TODO: [@msarit] update query to call mobile_comment_notifications from correct table
         targets = User.where(id: user_ids, mobile_comment_notifications: true).ids
         PushNotifications::Send.call(
           user_ids: targets,

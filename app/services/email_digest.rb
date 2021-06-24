@@ -25,6 +25,7 @@ class EmailDigest
   private
 
   def get_users
+    # TODO: [@msarit] update query to call email_digest_periodic from correct table
     User.registered.where(email_digest_periodic: true).where.not(email: "")
   end
 end
