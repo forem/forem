@@ -28,8 +28,7 @@ module Users
         import_articles_from_feed(users_setting)
 
         if users_setting.experience_level.present?
-          cookies.permanent[:user_experience_level] =
-            users_setting.experience_level.to_s
+          cookies.permanent[:user_experience_level] = users_setting.experience_level.to_s
         end
         current_user.touch(:profile_updated_at)
         flash[:settings_notice] = "Your config has been updated. Refresh to see all changes."

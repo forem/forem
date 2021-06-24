@@ -35,7 +35,7 @@ module Mailchimp
               ARTICLES: user.articles.size,
               COMMENTS: user.comments.size,
               ONBOARD_PK: user.onboarding_package_requested.to_s,
-              EXPERIENCE: user.experience_level || 666
+              EXPERIENCE: user.setting.experience_level || 666
             }
           },
         )

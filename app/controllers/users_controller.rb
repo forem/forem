@@ -56,7 +56,9 @@ class UsersController < ApplicationController
         notice += " The export will be emailed to you shortly."
         ExportContentWorker.perform_async(@user.id, @user.email)
       end
-      cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
+      if @users_setting.experience_level.present?
+        cookies.permanent[:user_experience_level] = @users_setting.experience_level.to_s
+      end
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
