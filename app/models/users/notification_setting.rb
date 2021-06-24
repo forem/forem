@@ -2,6 +2,8 @@ module Users
   class NotificationSetting < ApplicationRecord
     self.table_name_prefix = "users_"
 
+    belongs_to :user, touch: true
+
     validates :email_digest_periodic, inclusion: { in: [true, false] }
     validates :welcome_notifications, inclusion: { in: [true, false] }
 
