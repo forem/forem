@@ -140,6 +140,9 @@ describe('Preview user profile from article page', () => {
         .first()
         .as('previewCardTrigger');
 
+      // Make sure button has initialized
+      cy.get('[data-initialized]').should('exist');
+
       // Open the preview
       cy.get('@previewCardTrigger').click();
       cy.get('@previewCardTrigger').should(
