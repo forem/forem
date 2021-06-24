@@ -56,8 +56,8 @@ class UsersController < ApplicationController
         notice += " The export will be emailed to you shortly."
         ExportContentWorker.perform_async(@user.id, @user.email)
       end
-      if @users_setting.experience_level.present?
-        cookies.permanent[:user_experience_level] = @users_setting.experience_level.to_s
+      if @user.setting.experience_level.present?
+        cookies.permanent[:user_experience_level] = @user.setting.experience_level.to_s
       end
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
@@ -374,7 +374,7 @@ class UsersController < ApplicationController
   end
 
   def import_articles_from_feed(user)
-    return if user.feed_url.blank?
+    return if user.setting.feed_url.blank?
 
     Feeds::ImportArticlesWorker.perform_async(user.id)
   end
