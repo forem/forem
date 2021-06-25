@@ -17,7 +17,66 @@
 </div>
 
 <% if actor.class.name == "User" %>
-  <%= render "shared/user_metadata", context: context, actor: actor %>
+  <div class="user-metadata-details">
+    <ul class="user-metadata-details-inner">
+      <% if actor.email_public && context != "sidebar" %>
+        <li>
+          <div class="key">
+            Email
+          </div>
+          <div class="value">
+            <a href="mailto:<%= actor.email %>"><%= actor.email %></a>
+          </div>
+        </li>
+      <% end %>
+      <% if actor.employment_title.present? %>
+        <li>
+          <div class="key">
+            Work
+          </div>
+          <div class="value">
+            <%= actor.employment_title %>
+            <% if actor.employer_name.present? %>
+              <span class="opacity-50"> at </span>
+              <% if actor.employer_url.present? %>
+                <a href="<%= actor.employer_url %>" target="_blank" rel="noopener"><%= actor.employer_name %></a>
+              <% else %>
+                <%= actor.employer_name %>
+              <% end %>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+      <% if actor.location.present? %>
+        <li>
+          <div class="key">
+            Location
+          </div>
+          <div class="value">
+            <%= actor.location %>
+          </div>
+        </li>
+      <% end %>
+      <% if actor.education.present? %>
+        <li>
+          <div class="key">
+            Education
+          </div>
+          <ul class="value">
+            <%= actor.education %>
+          </ul>
+        </li>
+      <% end %>
+    <li>
+      <div class="key">
+        Joined
+      </div>
+      <div class="value">
+        <%= local_date(actor.created_at) %>
+      </div>
+    </li>
+  </ul>
+</div>
 <% elsif actor.class.name == "Organization" && actor.approved_and_filled_out_cta? %>
   <div>
     <%= sanitize_rendered_markdown(actor.cta_processed_html) %>
