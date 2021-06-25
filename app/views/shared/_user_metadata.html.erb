@@ -1,83 +1,83 @@
 <div class="user-metadata-details">
   <ul class="user-metadata-details-inner">
-      <% if @organization %>
-        <% if @organization.location.present? %>
+      <% if actor.class.name == "Organization" %>
+        <% if actor.location.present? %>
           <li>
             <div class="key">
               Headquarters
             </div>
             <div class="value">
-              <%= sanitize @organization.location %>
+              <%= sanitize actor.location %>
             </div>
           </li>
         <% end %>
-        <% if @organization.company_size.present? %>
+        <% if actor.company_size.present? %>
           <li>
             <div class="key">
               Employees
             </div>
             <div class="value">
-              <%= @organization.company_size %>
+              <%= actor.company_size %>
             </div>
           </li>
         <% end %>
-        <% if @organization.email.present? %>
+        <% if actor.email.present? %>
           <li>
             <div class="key">
               Support email
             </div>
             <div class="value">
-              <a href="mailto:<%= sanitize @organization.email %>"><%= sanitize @organization.email %></a>
+              <a href="mailto:<%= sanitize actor.email %>"><%= sanitize actor.email %></a>
             </div>
           </li>
         <% end %>
       <% else %>
 
-      <% if @user.email_public && context != "sidebar" %>
+      <% if actor.email_public && context != "sidebar" %>
         <li>
           <div class="key">
             Email
           </div>
           <div class="value">
-            <a href="mailto:<%= @user.email %>"><%= @user.email %></a>
+            <a href="mailto:<%= actor.email %>"><%= actor.email %></a>
           </div>
         </li>
       <% end %>
-      <% if @user.employment_title.present? %>
+      <% if actor.employment_title.present? %>
         <li>
           <div class="key">
             Work
           </div>
           <div class="value">
-            <%= @user.employment_title %>
-            <% if @user.employer_name.present? %>
+            <%= actor.employment_title %>
+            <% if actor.employer_name.present? %>
               <span class="opacity-50"> at </span>
-              <% if @user.employer_url.present? %>
-                <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
+              <% if actor.employer_url.present? %>
+                <a href="<%= actor.employer_url %>" target="_blank" rel="noopener"><%= actor.employer_name %></a>
               <% else %>
-                <%= @user.employer_name %>
+                <%= actor.employer_name %>
               <% end %>
             <% end %>
           </div>
         </li>
       <% end %>
-      <% if @user.location.present? %>
+      <% if actor.location.present? %>
         <li>
           <div class="key">
             Location
           </div>
           <div class="value">
-            <%= @user.location %>
+            <%= actor.location %>
           </div>
         </li>
       <% end %>
-      <% if @user.education.present? %>
+      <% if actor.education.present? %>
         <li>
           <div class="key">
             Education
           </div>
           <ul class="value">
-            <%= @user.education %>
+            <%= actor.education %>
           </ul>
         </li>
       <% end %>
@@ -87,7 +87,7 @@
         Joined
       </div>
       <div class="value">
-        <%= local_date(@user.created_at) %>
+        <%= local_date(actor.created_at) %>
       </div>
     </li>
   </ul>

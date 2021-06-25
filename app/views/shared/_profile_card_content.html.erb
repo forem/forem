@@ -17,7 +17,7 @@
 </div>
 
 <% if actor.class.name == "User" %>
-  <%= render "shared/user_metadata", context: context %>
+  <%= render "shared/user_metadata", context: context, actor: actor %>
 <% elsif actor.class.name == "Organization" && actor.approved_and_filled_out_cta? %>
   <div>
     <%= sanitize_rendered_markdown(actor.cta_processed_html) %>
