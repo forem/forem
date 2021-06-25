@@ -44,7 +44,9 @@ Rails.application.routes.draw do
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
-        get ":timeframe", to: "feeds#show"
+        resource :pinned_article, only: %w[show update destroy]
+
+        get ":timeframe", to: "feeds#show", as: :timeframe
       end
     end
 
@@ -99,10 +101,6 @@ Rails.application.routes.draw do
           resources :users, only: [:index], to: "organizations#users"
           resources :listings, only: [:index], to: "organizations#listings"
           resources :articles, only: [:index], to: "organizations#articles"
-        end
-
-        namespace :admin do
-          resource :config, only: %i[show update], defaults: { format: :json }
         end
       end
     end
@@ -187,6 +185,7 @@ Rails.application.routes.draw do
     resources :article_approvals, only: %i[create]
     resources :video_chats, only: %i[show]
     resources :sidebars, only: %i[show]
+    resources :profile_preview_card, only: %i[show]
     resources :user_subscriptions, only: %i[create] do
       collection do
         get "/subscribed", action: "subscribed"
@@ -204,6 +203,8 @@ Rails.application.routes.draw do
     resources :profile_field_groups, only: %i[index], defaults: { format: :json }
 
     resources :liquid_tags, only: %i[index], defaults: { format: :json }
+
+    resources :discussion_locks, only: %i[create destroy]
 
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags", to: "search#tags"
@@ -316,10 +317,6 @@ Rails.application.routes.draw do
     get "/page/post-a-job", to: "pages#post_a_job"
     get "/tag-moderation", to: "pages#tag_moderation"
 
-    # NOTE: can't remove the hardcoded URL here as SiteConfig is not available here, we should eventually
-    # setup dynamic redirects, see <https://github.com/thepracticaldev/dev.to/issues/7267>
-    get "/shop", to: redirect("https://shop.dev.to")
-
     get "/mod", to: "moderations#index", as: :mod
     get "/mod/:tag", to: "moderations#index"
 
@@ -327,12 +324,8 @@ Rails.application.routes.draw do
 
     get "/page/:slug", to: "pages#show"
 
-    # TODO: [forem/teamsmash] removed the /p/information view and added a redirect for SEO purposes.
-    # We need to remove this route in 2 months (11 January 2021).
-    get "/p/information", to: redirect("/about")
-
     scope "p" do
-      pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics badges].freeze
+      pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics].freeze
       pages_actions.each do |action|
         get action, action: action, controller: "pages"
       end
@@ -394,15 +387,16 @@ Rails.application.routes.draw do
     get "/feed/:username", to: "articles#feed", as: "user_feed", defaults: { format: "rss" }
     get "/rss", to: "articles#feed", defaults: { format: "rss" }
 
-    get "/tag/:tag", to: "stories#index"
-    get "/t/:tag", to: "stories#index", as: :tag
-    get "/t/:tag/edit", to: "tags#edit"
+    get "/tag/:tag", to: "stories/tagged_articles#index"
+    get "/t/:tag", to: "stories/tagged_articles#index", as: :tag
+    get "/t/:tag/top/:timeframe", to: "stories/tagged_articles#index"
+    get "/t/:tag/page/:page", to: "stories/tagged_articles#index"
+    get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
+                              constraints: { timeframe: /latest/ }
+
+    get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
-    get "/t/:tag/top/:timeframe", to: "stories#index"
-    get "/t/:tag/page/:page", to: "stories#index"
-    get "/t/:tag/:timeframe", to: "stories#index",
-                              constraints: { timeframe: /latest/ }
 
     get "/badge/:slug", to: "badges#show", as: :badge
 
@@ -430,9 +424,11 @@ Rails.application.routes.draw do
                                   constraints: { view: /moderate/ }
     get "/:username/:slug/mod", to: "moderations#article"
     get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
-    get "/:username/:slug/manage", to: "articles#manage"
+    get "/:username/:slug/manage", to: "articles#manage", as: :article_manage
     get "/:username/:slug/edit", to: "articles#edit"
     get "/:username/:slug/delete_confirm", to: "articles#delete_confirm"
+    get "/:username/:slug/discussion_lock_confirm", to: "articles#discussion_lock_confirm"
+    get "/:username/:slug/discussion_unlock_confirm", to: "articles#discussion_unlock_confirm"
     get "/:username/:slug/stats", to: "articles#stats"
     get "/:username/:view", to: "stories#index",
                             constraints: { view: /comments|moderate|admin/ }

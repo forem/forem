@@ -21,14 +21,10 @@ RSpec.describe PushNotifications::Send, type: :service do
   end
 
   context "with no devices for user" do
-    before do
-      user.devices.delete
-    end
-
     it "does nothing", :aggregate_failures do
-      expect(user.devices.count).to eq(0)
-      expect { described_class.call(**params) }
-        .not_to change { Rpush::Client::Redis::Notification.all.count }
+      described_class.call(**params)
+
+      sidekiq_assert_no_enqueued_jobs(only: PushNotifications::DeliverWorker)
     end
   end
 
@@ -36,44 +32,63 @@ RSpec.describe PushNotifications::Send, type: :service do
     before do
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("dGVzdGluZw==")
       allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("Forem")
-      create(:device, user: user)
     end
 
     it "creates a notification and enqueues it" do
-      expect { described_class.call(**params) }
-        .to change { Rpush::Client::Redis::Notification.all.count }.by(1)
-        .and change(PushNotifications::DeliverWorker.jobs, :size).by(1)
+      device = create(:device, user: user)
+      mocked_objects = mock_rpush(device.consumer_app)
+
+      described_class.call(**params)
+
+      expect(mocked_objects[:rpush_notification]).to have_received(:save!).once
+
+      sidekiq_assert_enqueued_jobs(1, only: PushNotifications::DeliverWorker)
     end
 
     it "creates a single notification for each of the user's devices when they have multiple" do
-      create(:device, user: user)
+      consumer_app = create(:consumer_app)
+      devices = create_list(:device, 2, user: user, consumer_app: consumer_app)
+      mocked_objects = mock_rpush(consumer_app)
 
-      expect { described_class.call(**params) }
-        .to change { Rpush::Client::Redis::Notification.all.count }.by(2)
-        .and change(PushNotifications::DeliverWorker.jobs, :size).by(1)
+      described_class.call(**params)
+
+      expect(mocked_objects[:rpush_notification]).to have_received(:save!).exactly(devices.size).times
+
+      sidekiq_assert_enqueued_jobs(1, only: PushNotifications::DeliverWorker)
     end
   end
 
   context "with devices for multiple users" do
+    let(:consumer_app) { create(:consumer_app) }
+
     before do
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("dGVzdGluZw==")
       allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("Forem")
-      create(:device, user: user)
-      create(:device, user: user2)
+
+      create(:device, user: user, consumer_app: consumer_app)
+      create(:device, user: user2, consumer_app: consumer_app)
     end
 
     it "creates a notification and enqueues it" do
-      expect { described_class.call(**many_targets_params) }
-        .to change { Rpush::Client::Redis::Notification.all.count }.by(2)
-        .and change { PushNotifications::DeliverWorker.jobs.size }.by(1)
+      mocked_objects = mock_rpush(consumer_app)
+
+      described_class.call(**many_targets_params)
+
+      expect(mocked_objects[:rpush_notification]).to have_received(:save!).exactly(2).times
+
+      sidekiq_assert_enqueued_jobs(1, only: PushNotifications::DeliverWorker)
     end
 
     it "creates a single notification for each of the user's devices when they have multiple" do
       create(:device, user: user)
 
-      expect { described_class.call(**many_targets_params) }
-        .to change { Rpush::Client::Redis::Notification.all.count }.by(3)
-        .and change { PushNotifications::DeliverWorker.jobs.size }.by(1)
+      mocked_objects = mock_rpush(consumer_app)
+
+      described_class.call(**many_targets_params)
+
+      expect(mocked_objects[:rpush_notification]).to have_received(:save!).exactly(3).times
+
+      sidekiq_assert_enqueued_jobs(1, only: PushNotifications::DeliverWorker)
     end
   end
 end

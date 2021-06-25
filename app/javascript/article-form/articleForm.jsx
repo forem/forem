@@ -3,9 +3,16 @@ import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { embedGists } from '../utilities/gist';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
+import {
+  noDefaultAltTextRule,
+  noEmptyAltTextRule,
+  noLevelOneHeadingsRule,
+  headingIncrement,
+} from '@utilities/markdown/markdownLintCustomRules';
 
 /* global activateRunkitTags */
 
@@ -14,14 +21,27 @@ import { Button, Modal } from '@crayons';
   editing are not used in this file, they are important to the
   editor.
 */
-export class ArticleForm extends Component {
-  static handleGistPreview() {
-    const els = document.getElementsByClassName('ltag_gist-liquid-tag');
-    for (let i = 0; i < els.length; i += 1) {
-      postscribe(els[i], els[i].firstElementChild.outerHTML);
-    }
-  }
 
+/**
+ * Settings for the markdownlint library we use to identify potential accessibility failings in posts
+ */
+const LINT_OPTIONS = {
+  customRules: [
+    noDefaultAltTextRule,
+    noLevelOneHeadingsRule,
+    headingIncrement,
+    noEmptyAltTextRule,
+  ],
+  config: {
+    default: false, // disable all default rules
+    [noDefaultAltTextRule.names[0]]: true,
+    [noLevelOneHeadingsRule.names[0]]: true,
+    [headingIncrement.names[0]]: true,
+    [noEmptyAltTextRule.names[0]]: true,
+  },
+};
+
+export class ArticleForm extends Component {
   static handleRunkitPreview() {
     activateRunkitTags();
   }
@@ -99,6 +119,7 @@ export class ArticleForm extends Component {
       helpFor: null,
       helpPosition: null,
       isModalOpen: false,
+      markdownLintErrors: [],
       ...previousContentState,
     };
   }
@@ -115,7 +136,7 @@ export class ArticleForm extends Component {
     const { previewResponse } = this.state;
 
     if (previewResponse) {
-      this.constructor.handleGistPreview();
+      embedGists(this.formElement);
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
     }
@@ -160,7 +181,46 @@ export class ArticleForm extends Component {
     }
   };
 
+  lintMarkdown = () => {
+    const options = {
+      ...LINT_OPTIONS,
+      strings: {
+        content: this.state.bodyMarkdown,
+      },
+    };
+    const { content: markdownLintErrors } = window.markdownlint.sync(options);
+    this.setState({ markdownLintErrors });
+  };
+
+  fetchMarkdownLint = async () => {
+    if (!window.markdownlint) {
+      const pathDataElement = document.getElementById('markdown-lint-js-path');
+      if (!pathDataElement) {
+        return;
+      }
+
+      // Retrieve the correct fingerprinted URL for the scripts
+      const { markdownItJsPath, markdownLintJsPath } = pathDataElement.dataset;
+
+      const markdownItScript = document.createElement('script');
+      markdownItScript.setAttribute('src', markdownItJsPath);
+      document.body.appendChild(markdownItScript);
+
+      // The markdownlint script needs the first script to have finished loading first
+      markdownItScript.addEventListener('load', () => {
+        const markdownLintScript = document.createElement('script');
+        markdownLintScript.setAttribute('src', markdownLintJsPath);
+        document.body.appendChild(markdownLintScript);
+
+        markdownLintScript.addEventListener('load', this.lintMarkdown);
+      });
+    } else {
+      this.lintMarkdown();
+    }
+  };
+
   showPreview = (response) => {
+    this.fetchMarkdownLint();
     this.setState({
       ...this.setCommonProps({ previewShowing: true }),
       previewResponse: response,
@@ -303,10 +363,14 @@ export class ArticleForm extends Component {
       helpFor,
       helpPosition,
       siteLogo,
+      markdownLintErrors,
     } = this.state;
 
     return (
       <form
+        ref={(element) => {
+          this.formElement = element;
+        }}
         id="article-form"
         className="crayons-article-form"
         onSubmit={this.onSubmit}
@@ -328,6 +392,7 @@ export class ArticleForm extends Component {
             previewResponse={previewResponse}
             articleState={this.state}
             errors={errors}
+            markdownLintErrors={markdownLintErrors}
           />
         ) : (
           <Form

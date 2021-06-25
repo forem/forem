@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_30_094954) do
+ActiveRecord::Schema.define(version: 2021_06_22_002941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.index ["comments_count"], name: "index_articles_on_comments_count"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
+    t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
@@ -408,6 +409,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.datetime "created_at", precision: 6, null: false
     t.string "last_error"
     t.string "platform", null: false
+    t.string "team_id"
     t.datetime "updated_at", precision: 6, null: false
     t.index ["app_bundle", "platform"], name: "index_consumer_apps_on_app_bundle_and_platform", unique: true
   end
@@ -458,6 +460,17 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.bigint "user_id", null: false
     t.index ["consumer_app_id"], name: "index_devices_on_consumer_app_id"
     t.index ["user_id", "token", "platform", "consumer_app_id"], name: "index_devices_on_user_id_and_token_and_platform_and_app", unique: true
+  end
+
+  create_table "discussion_locks", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "locking_user_id", null: false
+    t.text "notes"
+    t.text "reason"
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["article_id"], name: "index_discussion_locks_on_article_id", unique: true
+    t.index ["locking_user_id"], name: "index_discussion_locks_on_locking_user_id"
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -1013,8 +1026,11 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
   create_table "profiles", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.jsonb "data", default: {}, null: false
+    t.string "location"
+    t.text "summary"
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
+    t.string "website_url"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
   end
 
@@ -1095,20 +1111,20 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.index ["var"], name: "index_settings_communities_on_var", unique: true
   end
 
-  create_table "settings_mascots", force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.text "value"
-    t.string "var", null: false
-    t.index ["var"], name: "index_settings_mascots_on_var", unique: true
-  end
-
   create_table "settings_rate_limits", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "value"
     t.string "var", null: false
     t.index ["var"], name: "index_settings_rate_limits_on_var", unique: true
+  end
+
+  create_table "settings_smtp", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_smtp_on_var", unique: true
   end
 
   create_table "settings_user_experiences", force: :cascade do |t|
@@ -1267,7 +1283,6 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.datetime "apple_created_at"
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
@@ -1316,7 +1331,6 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.integer "experience_level"
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
-    t.datetime "facebook_created_at"
     t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
@@ -1327,7 +1341,6 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
-    t.datetime "github_created_at"
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
@@ -1392,7 +1405,6 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.text "summary"
     t.string "text_color_hex"
     t.string "twitch_url"
-    t.datetime "twitter_created_at"
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.string "unlock_token"
@@ -1452,7 +1464,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.boolean "welcome_notifications", default: true, null: false
-    t.index ["user_id"], name: "index_users_notification_settings_on_user_id"
+    t.index ["user_id"], name: "index_users_notification_settings_on_user_id", unique: true
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
@@ -1481,7 +1493,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_users_settings_on_user_id"
+    t.index ["user_id"], name: "index_users_settings_on_user_id", unique: true
   end
 
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|
@@ -1535,6 +1547,8 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
   add_foreign_key "custom_profile_fields", "profiles", on_delete: :cascade
   add_foreign_key "devices", "consumer_apps"
   add_foreign_key "devices", "users"
+  add_foreign_key "discussion_locks", "articles"
+  add_foreign_key "discussion_locks", "users", column: "locking_user_id"
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
@@ -1610,12 +1624,12 @@ ActiveRecord::Schema.define(version: 2021_04_30_094954) do
       declare("l_org_vector tsvector; l_user_vector tsvector") do
     <<-SQL_ACTIONS
 NEW.reading_list_document :=
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))) ||
-  to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))) ||
-  to_tsvector('simple'::regconfig,
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))), 'A') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))), 'B') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))), 'C') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))), 'D') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))), 'D') ||
+  setweight(to_tsvector('simple'::regconfig,
     unaccent(
       coalesce(
         array_to_string(
@@ -1626,7 +1640,7 @@ NEW.reading_list_document :=
         ''
       )
     )
-  );
+  ), 'D');
     SQL_ACTIONS
   end
 

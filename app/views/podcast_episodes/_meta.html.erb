@@ -9,17 +9,17 @@
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= app_url(@podcast.slug) %>" />
     <meta property="og:title" content="<%= @podcast.title %>" />
-    <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
+    <meta property="og:image" content="<%= Settings::General.main_social_image %>">
 
     <meta property="og:description" content="<%= @podcast.description %>" />
     <meta property="og:site_name" content="<%= community_name %>" />
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+    <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @podcast.twitter_username %>">
     <meta name="twitter:title" content="<%= @podcast.title %>">
     <meta name="twitter:description" content="<%= @podcast.description %>" />
-    <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
+    <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
   <% end %>
 <% else %>
   <% title "Podcasts" %>
@@ -31,16 +31,16 @@
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= app_url(pod_path) %>" />
     <meta property="og:title" content="Podcasts on <%= community_name %>" />
-    <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
+    <meta property="og:image" content="<%= Settings::General.main_social_image %>">
 
     <meta property="og:description" content="Discover technical podcasts for <%= community_members_label %>" />
     <meta property="og:site_name" content="<%= community_name %>" />
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
-    <meta name="twitter:creator" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+    <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
+    <meta name="twitter:creator" content="@<%= Settings::General.social_media_handles["twitter"] %>">
     <meta name="twitter:title" content="Podcasts on <%= community_name %>">
     <meta name="twitter:description" content="Discover technical podcasts for <%= community_members_label %>" />
-    <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
+    <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
   <% end %>
 <% end %>

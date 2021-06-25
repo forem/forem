@@ -121,6 +121,7 @@ RSpec.describe "/admin/users", type: :request do
 
   describe "POST /admin/users/:id/verify_email_ownership" do
     it "allows a user to verify email ownership" do
+      allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
       post verify_email_ownership_admin_user_path(user.id), params: { user_id: user.id }
 
       path = verify_email_authorizations_path(
@@ -131,7 +132,7 @@ RSpec.describe "/admin/users", type: :request do
 
       deliveries = ActionMailer::Base.deliveries
       expect(deliveries.count).to eq(1)
-      expect(deliveries.first.subject).to eq("Verify Your #{SiteConfig.community_name} Account Ownership")
+      expect(deliveries.first.subject).to eq("Verify Your #{Settings::Community.community_name} Account Ownership")
       expect(deliveries.first.text_part.body).to include(verification_link)
 
       sign_in(user)

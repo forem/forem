@@ -4,7 +4,7 @@ RSpec.describe URL, type: :lib do
   before do
     allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
     allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("test.forem.cloud")
-    allow(SiteConfig).to receive(:app_domain).and_return("dev.to")
+    allow(Settings::General).to receive(:app_domain).and_return("dev.to")
   end
 
   describe ".protocol" do
@@ -14,8 +14,8 @@ RSpec.describe URL, type: :lib do
   end
 
   describe ".domain" do
-    it "returns the value of SiteConfig" do
-      expect(described_class.domain).to eq(SiteConfig.app_domain)
+    it "returns the value of Settings::General" do
+      expect(described_class.domain).to eq(Settings::General.app_domain)
     end
   end
 
@@ -94,15 +94,22 @@ RSpec.describe URL, type: :lib do
     it "returns the correct URL for a tag" do
       expect(described_class.tag(tag, 2)).to eq("https://dev.to/t/#{tag.name}/page/2")
     end
+
+    it "returns the correct URL for a tag with a non-ASCII name" do
+      # Due to validations we can't trivially create a tag with a non-ASCII name
+      # so we just create something that quacks like one.
+      tag = instance_double("Tag", name: "histórico")
+      expect(described_class.tag(tag)).to eq("https://dev.to/t/hist%C3%B3rico")
+    end
   end
 
   describe ".deep_link" do
     it "returns the correct URL for the root path" do
-      expect(described_class.deep_link("/")).to eq("https://forem-udl-server.herokuapp.com/?r=https%3A%2F%2Fdev.to%2Fr%2Fmobile%3Fdeep_link%3D%2F")
+      expect(described_class.deep_link("/")).to eq("https://udl.forem.com/?r=https%3A%2F%2Fdev.to%2Fr%2Fmobile%3Fdeep_link%3D%2F")
     end
 
     it "returns the correct URL for an explicit path" do
-      expect(described_class.deep_link("/sloan")).to eq("https://forem-udl-server.herokuapp.com/?r=https%3A%2F%2Fdev.to%2Fr%2Fmobile%3Fdeep_link%3D%2Fsloan")
+      expect(described_class.deep_link("/sloan")).to eq("https://udl.forem.com/?r=https%3A%2F%2Fdev.to%2Fr%2Fmobile%3Fdeep_link%3D%2Fsloan")
     end
   end
 
@@ -118,7 +125,7 @@ RSpec.describe URL, type: :lib do
     it "returns the correct URL for an image name with no host" do
       image_url_regex = %r{
         #{ApplicationConfig["APP_PROTOCOL"]} # https://
-        #{SiteConfig.app_domain}/            # dev.to
+        #{Settings::General.app_domain}/            # dev.to
         assets/                              # assets/ directory
         #{image_name}-                       # social-media-cover
         [a-f0-9]*                            # letters and numbers

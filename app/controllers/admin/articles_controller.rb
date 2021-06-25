@@ -2,11 +2,13 @@ module Admin
   class ArticlesController < Admin::ApplicationController
     layout "admin"
 
-    after_action only: [:update] do
+    after_action only: %i[update unpin] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
     def index
+      @pinned_article = PinnedArticle.get
+
       case params[:state]
       when /top-/
         months_ago = params[:state].split("-")[1].to_i.months.ago
@@ -27,12 +29,29 @@ module Admin
 
     def update
       article = Article.find(params[:id])
+
       if article.update(article_params)
+        PinnedArticle.set(article) if params.dig(:article, :pinned)
+
         flash[:success] = "Article saved!"
       else
         flash[:danger] = article.errors_as_sentence
       end
+
       redirect_to admin_article_path(article.id)
+    end
+
+    def unpin
+      article = Article.find(params[:id])
+
+      PinnedArticle.remove
+
+      respond_to do |format|
+        format.html { redirect_to admin_article_path(article.id) }
+        format.js do
+          render partial: "admin/articles/individual_article", locals: { article: article }, content_type: "text/html"
+        end
+      end
     end
 
     private

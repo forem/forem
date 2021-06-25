@@ -3,9 +3,9 @@ branches:
     - main
 language: ruby
 cache:
+  bundler: true
   directories:
-    - vendor/bundle
-    - ~/.cache
+    - node_modules
 rvm:
   - 2.7.2
 addons:
@@ -18,8 +18,6 @@ addons:
       - $(ls cypress/screenshots/*.* | tr "\n" ":")
       - $(ls cypress/videos/*.* | tr "\n" ":")
     debug: true
-services:
-  - redis
 env:
   global:
     - RAILS_ENV=test
@@ -81,6 +79,7 @@ jobs:
         - bundle exec bundle-audit check --update
         - bin/test-console-check
         - yarn build-storybook
+        - yarn cypress install
         - bin/e2e-ci
 
     - stage: Deploy

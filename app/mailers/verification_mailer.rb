@@ -1,6 +1,6 @@
 class VerificationMailer < ApplicationMailer
   default from: lambda {
-    "#{Settings::Community.community_name} Email Verification <#{SiteConfig.email_addresses[:default]}>"
+    "#{Settings::Community.community_name} Email Verification <#{ForemInstance.email}>"
   }
 
   def account_ownership_verification_email

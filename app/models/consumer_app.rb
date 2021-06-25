@@ -2,12 +2,13 @@ class ConsumerApp < ApplicationRecord
   resourcify
 
   FOREM_BUNDLE = "com.forem.app".freeze
-  SUPPORTED_PLATFORMS = [Device::ANDROID, Device::IOS].freeze
-  FOREM_APP_PLATFORMS = [Device::IOS].freeze
+  FOREM_APP_PLATFORMS = %w[ios].freeze
+  FOREM_TEAM_ID = "R9SWHSQNV8".freeze
 
-  validates :app_bundle, presence: true
-  validates :platform, presence: true
-  validates :app_bundle, uniqueness: { scope: :platform }
+  enum platform: { android: Device::ANDROID, ios: Device::IOS }
+
+  validates :app_bundle, presence: true, uniqueness: { scope: :platform }
+  validates :platform, inclusion: { in: platforms.keys }
 
   has_many :devices, dependent: :destroy
 
@@ -45,9 +46,8 @@ class ConsumerApp < ApplicationRecord
 
   # [@forem/backend] `.where().first` is necessary because we use Redis data storage
   # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
-  # rubocop:disable Rails/FindBy
   def clear_rpush_app
-    case platform_was
+    case ConsumerApp.platforms[platform_was]
     when Device::IOS
       Rpush::Apns2::App.where(name: app_bundle_was).first&.destroy
     when Device::ANDROID
@@ -57,5 +57,4 @@ class ConsumerApp < ApplicationRecord
     # This prevents the `destroy` method to return true or false in a callback
     true
   end
-  # rubocop:enable Rails/FindBy
 end

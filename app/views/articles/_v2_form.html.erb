@@ -36,7 +36,7 @@
   }
 </style>
 
-<div id="js-article-form"
+<main id="main-content"
   data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
   data-version="<%= version %>"
@@ -49,7 +49,7 @@
       </span>
 
       <div class="crayons-field__label">
-        <span class="hidden s:inline-block mr-2">Write a new post</span>
+        <span class="hidden s:inline-block mr-2">Create Post</span>
         <% if organizations && organizations.size > 0 %>
           <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto mt-0">
             <%= options_for_select({ "Personal" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
@@ -57,9 +57,16 @@
         <% end %>
       </div>
 
-      <div class="crayons-article-form__tabs crayons-tabs ml-auto">
-        <button class="crayons-tabs__item crayons-tabs__item--current" type="button">Edit</button><button class="crayons-tabs__item " type="button">Preview</button>
-      </div>
+      <nav class="crayons-article-form__tabs crayons-tabs ml-auto" aria-label="View post modes">
+        <ul class="crayons-tabs__list">
+          <li>
+            <button data-text="Edit" class="crayons-tabs__item crayons-tabs__item--current" type="button" aria-current="page">Edit</button>
+          </li>
+          <li>
+            <button data-text="Preview" class="crayons-tabs__item " type="button">Preview</button>
+          </li>
+        </ul>
+      </nav>
 
       <div class="crayons-article-form__close">
         <a href="/" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon" title="Close the editor">
@@ -89,7 +96,7 @@
       <% end %>
     </div>
   </form>
-</div>
+</main>
 
 <div class="hidden">
   <%= render "pages/editor_markdown_help" %>

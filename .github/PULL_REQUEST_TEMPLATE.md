@@ -43,7 +43,7 @@ _If your PR includes UI changes, please replace this line with details on how
 accessibility is impacted and tested. For more info, check out the
 [Forem Accessibility Docs](https://docs.forem.com/frontend/accessibility)._
 
-## Added tests?
+## Added/updated tests?
 
 - [ ] Yes
 - [ ] No, and this is why: _please replace this line with details on why tests
@@ -57,7 +57,7 @@ development process, or any of our internal teams? If so, please note how you
 will share this change with the people who need to know about it._
 
 - [ ] I've updated the [Developer Docs](https://docs.forem.com) and/or
-      [Admin Guide](https://forem.gitbook.io/forem-admin-guide/), or
+      [Admin Guide](https://admin.forem.com/), or
       [Storybook](https://storybook.forem.com/) (for Crayons components)
 - [ ] I've updated the README or added inline documentation
 - [ ] I will share this change in a [Changelog](https://forem.dev/t/changelog)

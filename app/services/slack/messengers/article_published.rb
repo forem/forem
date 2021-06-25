@@ -23,10 +23,10 @@ module Slack
           url: URL.article(article),
         )
 
-        # [forem-fix] Remove channel name from SiteConfig
+        # [forem-fix] Remove channel name from Settings::General
         Slack::Messengers::Worker.perform_async(
           message: message,
-          channel: SiteConfig.article_published_slack_channel,
+          channel: Settings::General.article_published_slack_channel,
           username: "article_bot",
           icon_emoji: ":writing_hand:",
         )

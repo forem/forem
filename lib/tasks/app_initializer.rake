@@ -5,13 +5,16 @@ namespace :app_initializer do
     system("bin/rails db:prepare") || exit!(1)
     Rake::Task["db:migrate"].execute # it'll re-alphabetize the columns in `schema.rb`
 
+    puts "\n== Performing setup tasks =="
+    Rake::Task["forem:setup"].execute
+
     puts "\n== Updating Data =="
     Rake::Task["data_updates:enqueue_data_update_worker"].execute
 
     puts "\n== Bust Caches =="
     Rake::Task["cache:enqueue_path_bust_workers"].execute
 
-    SiteConfig.health_check_token ||= SecureRandom.hex(10)
+    Settings::General.health_check_token ||= SecureRandom.hex(10)
   end
 end
 
