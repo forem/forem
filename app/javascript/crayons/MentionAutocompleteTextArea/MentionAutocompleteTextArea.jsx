@@ -100,9 +100,8 @@ export const MentionAutocompleteTextArea = forwardRef(
     { replaceElement, fetchSuggestions, autoResize = false, ...inputProps },
     forwardedRef,
   ) => {
-    const [textContent, setTextContent] = useState(
-      inputProps.defaultValue ? inputProps.defaultValue : '',
-    );
+    const { defaultValue = '' } = inputProps;
+    const [textContent, setTextContent] = useState(defaultValue);
     const [searchTerm, setSearchTerm] = useState('');
     const [cachedSearches, setCachedSearches] = useState({});
     const [dropdownPositionPoints, setDropdownPositionPoints] = useState({
@@ -137,6 +136,10 @@ export const MentionAutocompleteTextArea = forwardRef(
         setAdditionalElements([comboboxRef.current, containerRef.current]);
       }
     }, [autoResize, setTextArea, setAdditionalElements]);
+
+    useEffect(() => {
+      setTextContent(defaultValue);
+    }, [defaultValue]);
 
     useEffect(() => {
       if (searchTerm.length < MIN_SEARCH_CHARACTERS) {
