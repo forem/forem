@@ -13,8 +13,7 @@ class Message < ApplicationRecord
   after_create      :update_all_has_unopened_messages_statuses
 
   def preferred_user_color
-    user_setting = user.setting
-    color_options = [user_setting.brand_color2 || "#000000", user_setting.brand_color1 || "#000000"]
+    color_options = [user.setting.brand_color1 || "#000000", user.setting.brand_color2 || "#000000"]
     Color::CompareHex.new(color_options).brightness(0.9)
   end
 
