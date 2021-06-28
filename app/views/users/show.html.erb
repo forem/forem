@@ -60,7 +60,7 @@
 
         <div class="profile-header__details">
           <h1 class="crayons-title fw-heavy mb-2"><%= @user.name %></h1>
-          <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.profile.summary.presence || ["404 bio not found"].sample %></p>
+          <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.tag_line.presence || ["404 bio not found"].sample %></p>
 
           <div class="profile-header__meta">
             <% if @user.profile.location.present? %>
