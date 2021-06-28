@@ -149,7 +149,7 @@
     "@babel/preset-env": "^7.14.7",
     "@github/clipboard-copy-element": "^1.1.2",
     "@honeybadger-io/webpack": "^1.2.0",
-    "@rails/ujs": "6.0.3-7",
+    "@rails/ujs": "6.1.4",
     "@rails/webpacker": "5.4.0",
     "@reach/combobox": "^0.15.1",
     "ahoy.js": "^0.3.8",
