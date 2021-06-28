@@ -29,7 +29,6 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     name: "Admin McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
     email_comment_notifications: false,
@@ -42,12 +41,37 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     checked_terms_and_conditions: true,
   )
 
+  user.profile.update({
+                        summary: "Admin user summary",
+                        employment_title: "Software developer",
+                        location: "Edinburgh",
+                        education: "University of Life"
+                      })
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
   user.add_role(:trusted)
 end
 
 admin_user = User.find_by(email: "admin@forem.local")
+
+##############################################################################
+
+seeder.create_if_none(Organization) do
+  organization = Organization.create!(
+    name: "Bachmanity",
+    summary: Faker::Company.bs,
+    remote_profile_image_url: logo = Faker::Company.logo,
+    nav_image: logo,
+    url: Faker::Internet.url,
+    slug: "org#{rand(10_000)}",
+  )
+
+  OrganizationMembership.create!(
+    user_id: admin_user.id,
+    organization_id: organization.id,
+    type_of_user: "admin",
+  )
+end
 
 ##############################################################################
 
@@ -217,11 +241,42 @@ seeder.create_if_doesnt_exist(Article, "title", "Test article") do
     #{Faker::Markdown.random}
     #{Faker::Hipster.paragraph(sentence_count: 2)}
   MARKDOWN
+  article = Article.create(
+    body_markdown: markdown,
+    featured: true,
+    show_comments: true,
+    user_id: admin_user.id,
+  )
+
+  comment_attributes = {
+    body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+    user_id: admin_user.id,
+    commentable_id: article.id,
+    commentable_type: "Article"
+  }
+
+  Comment.create!(comment_attributes)
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "title", "Organization test article") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Organization test article
+    published: true
+    cover_image: #{Faker::Company.logo}
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
   Article.create(
     body_markdown: markdown,
     featured: true,
     show_comments: true,
-    user_id: User.order(Arel.sql("RANDOM()")).first.id,
+    user_id: admin_user.id,
+    organization_id: Organization.first.id,
   )
 end
 
