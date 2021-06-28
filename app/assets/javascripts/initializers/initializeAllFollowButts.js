@@ -44,7 +44,11 @@ function initializeUserFollowButtons(buttons) {
         addModalEventListener(buttons[i]);
       } else {
         var userId = JSON.parse(buttons[i].dataset.info).id;
-        userIds[userId] = buttons[i];
+        if (userIds[userId]) {
+          userIds[userId].push(buttons[i]);
+        } else {
+          userIds[userId] = [buttons[i]];
+        }
       }
     }
 
@@ -117,15 +121,16 @@ function fetchButt(butt, buttInfo) {
   dataRequester.send();
 }
 
-function addButtClickHandle(response, butt) {
+function addButtClickHandle(response, buttons) {
   // currently lacking error handling
-  var buttInfo = JSON.parse(butt.dataset.info);
-  assignInitialButtResponse(response, butt);
-  butt.onclick = function (e) {
-    e.preventDefault();
-    handleOptimisticButtRender(butt);
-  };
-  butt.dataset.clickInitialized = 'true';
+  buttons.forEach((butt) => {
+    assignInitialButtResponse(response, butt);
+    butt.onclick = function (e) {
+      e.preventDefault();
+      handleOptimisticButtRender(butt);
+    };
+    butt.dataset.clickInitialized = 'true';
+  });
 }
 
 function handleTagButtAssignment(user, butt, buttInfo) {
