@@ -59,8 +59,9 @@ function initializeUserFollowButtons(buttons) {
 }
 
 function initializeUserFollowButts() {
-  var buttons = document.getElementsByClassName(
-    'follow-action-button follow-user',
+  // Get all user follow buttons, avoiding any initialized already
+  var buttons = document.querySelectorAll(
+    '.follow-action-button.follow-user:not([data-click-initialized])',
   );
   initializeUserFollowButtons(buttons);
 }
