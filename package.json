@@ -177,7 +177,7 @@
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",
     "stimulus": "^2.0.0",
-    "web-share-wrapper": "^0.2.1"
+    "web-share-wrapper": "^0.2.2"
   },
   "resolutions": {
     "gitdocs/markdown-to-jsx": "^6.11.4",

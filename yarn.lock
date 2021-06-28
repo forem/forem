@@ -19381,10 +19381,10 @@ web-namespaces@^1.0.0:
   resolved "https://registry.yarnpkg.com/web-namespaces/-/web-namespaces-1.1.4.tgz#bc98a3de60dadd7faefc403d1076d529f5e030ec"
   integrity sha512-wYxSGajtmoP4WxfejAPIr4l0fVh+jeMXZb08wNc0tMg6xsfZXj3cECqIK0G7ZAqUq0PP8WlMDtaOGVBTAWztNw==
 
-web-share-wrapper@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/web-share-wrapper/-/web-share-wrapper-0.2.1.tgz#679a8daf339fe6da17f5999c1744fb89552f99ee"
-  integrity sha512-YEHwLgxLP3qOiP7/pKNdwSLdXfJ8+U9b1A12jbALzE9nSX/sbu4TTZXxQWu1nFjAfzxeqbwokAhcMDWe/4ey0Q==
+web-share-wrapper@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/web-share-wrapper/-/web-share-wrapper-0.2.2.tgz#9a1db255bb36205c94facd21a47c5808824e9ab7"
+  integrity sha512-NO57bBonvwGEcbymfr9f74vCwob7wPUSqOAE2jM9ku/X9HnpEDyNbJ791+qL/k8jiCiF4M5rPVHCRUSUd9GlOg==
 
 webidl-conversions@^5.0.0:
   version "5.0.0"
