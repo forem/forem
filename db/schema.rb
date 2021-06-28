@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_22_002941) do
+ActiveRecord::Schema.define(version: 2021_06_24_153854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1309,7 +1309,7 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.boolean "display_announcements", default: true
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
-    t.string "editor_version", default: "v1"
+    t.string "editor_version", default: "v2"
     t.string "education"
     t.string "email"
     t.boolean "email_badge_notifications", default: true
