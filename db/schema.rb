@@ -1439,9 +1439,9 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.string "email"
+    t.string "email", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id"
+    t.integer "user_id", null: false
     t.string "username"
   end
 
