@@ -229,7 +229,7 @@ RSpec.describe "UserSettings", type: :request do
 
     it "updates summary" do
       put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
-      expect(user.profile.summary).to eq("Hello new summary")
+      expect(user.tag_line).to eq("Hello new summary")
     end
 
     it "updates profile_updated_at" do
