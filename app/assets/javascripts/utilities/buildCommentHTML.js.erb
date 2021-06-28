@@ -46,11 +46,14 @@ function buildCommentHTML(comment) {
     <img class="crayons-avatar__image" width="32" height="32" src="${ comment.user.profile_pic }" alt="${ comment.user.username } profile" />
   </a>`;
 
-  commentHeader = `<header class="comment__header">
-    <a href="/${ comment.user.username }" class="crayons-link crayons-link--secondary flex items-center fw-medium">
+  commentHeader = `<div class="comment__header" >
+    <a href="/${ comment.user.username }" class="crayons-link crayons-link--secondary flex items-center fw-medium m:hidden">
       <span class="js-comment-username">${ comment.user.name }</span>
     </a>
-
+    <div class="profile-preview-card relative mr-4 mb-4 s:mb-0 fw-medium hidden m:block">
+      <button id="comment-profile-preview-trigger-${comment.id}" aria-controls="comment-profile-preview-content-${comment.id}" class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost" aria-label="${comment.user.name} profile details">${comment.user.name}</button>
+      <span data-js-comment-user-id="${comment.user.id}" data-js-dropdown-content-id="comment-profile-preview-content-${comment.id}" class="preview-card-placeholder"></span>
+    </div>
     <span class="color-base-30 px-2" role="presentation">&bull;</span>
 
     <a href="${ comment.url }" class="comment-date crayons-link crayons-link--secondary fs-s">
@@ -71,7 +74,7 @@ function buildCommentHTML(comment) {
         <li class="${ comment.newly_created ? '' : 'hidden' }"><a data-no-instant="" href="${ comment.url }/delete_confirm" class="crayons-link crayons-link--block" rel="nofollow" aria-label="Delete this comment">Delete</a></li>
       </ul>
     </div>
-  </header>`;
+  </div>`;
 
   commentFooter = `<footer class="comment__footer">
     ${ react(comment) }

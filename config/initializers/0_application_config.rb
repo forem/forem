@@ -5,7 +5,7 @@ class ApplicationConfig
     if ENV.key?(key)
       ENV[key]
     else
-      Rails.logger.debug("Unset ENV variable: #{key}.")
+      Rails.logger.debug { "Unset ENV variable: #{key}." }
       nil
     end
   end

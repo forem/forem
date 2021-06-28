@@ -773,14 +773,30 @@ Rails/ActiveRecordCallbacksOrder:
   StyleGuide: 'https://rails.rubystyle.guide/#callbacks-order'
   Enabled: true
 
+Rails/AddColumnIndex:
+  Description: >-
+    Rails migrations don't make use of a given `index` key, but also
+    doesn't given an error when it's used, so it makes it seem like an
+    index might be used.
+  Enabled: true
+
 Rails/DefaultScope:
   Description: 'Avoid use of `default_scope`.'
   StyleGuide: 'https://rails.rubystyle.guide#avoid-default-scope'
   Enabled: true
 
+Rails/EagerEvaluationLogMessage:
+  Description: 'Checks that blocks are used for interpolated strings passed to `Rails.logger.debug`.'
+  Reference: 'https://guides.rubyonrails.org/debugging_rails_applications.html#impact-of-logs-on-performance'
+  Enabled: true
+
 Rails/EnvironmentVariableAccess:
   Description: 'Do not access `ENV` directly after initialization.'
   Enabled: false
+
+Rails/ExpandedDateRange:
+  Description: 'Checks for expanded date range.'
+  Enabled: true
 
 Rails/FilePath:
   EnforcedStyle: slashes
@@ -790,6 +806,10 @@ Rails/FindById:
                 Favor the use of `find` over `where.take!`, `find_by!`, and `find_by_id!` when you
                 need to retrieve a single record by primary key when you expect it to be found.
   StyleGuide: 'https://rails.rubystyle.guide/#find'
+  Enabled: true
+
+Rails/I18nLocaleAssignment:
+  Description: 'Prefer the usage of `I18n.with_locale` instead of manually updating `I18n.locale` value.'
   Enabled: true
 
 Rails/Inquiry:
@@ -866,6 +886,10 @@ Rails/SquishedSQLHeredocs:
 Rails/TimeZoneAssignment:
   Description: 'Prefer the usage of `Time.use_zone` instead of manually updating `Time.zone` value.'
   Reference: 'https://thoughtbot.com/blog/its-about-time-zones'
+  Enabled: true
+
+Rails/UnusedIgnoredColumns:
+  Description: 'Remove a column that does not exist from `ignored_columns`.'
   Enabled: true
 
 Rails/WhereExists:

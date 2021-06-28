@@ -341,11 +341,11 @@ RSpec.describe "UserSettings", type: :request do
       let(:user) { create(:user, feed_url: feed_url) }
 
       it "invokes Feeds::ImportArticlesWorker" do
-        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(nil, user.id)
+        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(user.id)
 
         put user_path(user.id), params: { user: { feed_url: feed_url } }
 
-        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(nil, user.id)
+        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(user.id)
       end
     end
   end

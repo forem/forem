@@ -375,7 +375,7 @@ class UsersController < ApplicationController
   def import_articles_from_feed(user)
     return if user.feed_url.blank?
 
-    Feeds::ImportArticlesWorker.perform_async(nil, user.id)
+    Feeds::ImportArticlesWorker.perform_async(user.id)
   end
 
   def profile_params
