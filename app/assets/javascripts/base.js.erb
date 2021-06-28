@@ -123,9 +123,14 @@ var instantClick
     prog.classList.remove("showing");
 
     if (newUrl) {
-      const skipLink = document.querySelector('.skip-content-link');
-      if (skipLink) {
-        skipLink.focus();
+      // We skip showing the "Skip to content" button for the search page, see
+      // https://github.com/forem/forem/issues/13876
+      var path = new URL(newUrl).pathname;
+      if (path != '/search') {
+        const skipLink = document.querySelector('.skip-content-link');
+        if (skipLink) {
+          skipLink.focus();
+        }
       }
       history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
 
