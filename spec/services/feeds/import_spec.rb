@@ -7,9 +7,10 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
 
   describe ".call" do
     before do
+      User.destroy_all
       [link, nonmedium_link, nonpermanent_link].each do |feed_url|
         user = create(:user)
-        user.setting.update(feed_url: feed_url)
+        Users::Setting.find_by(user_id: user.id).update(feed_url: feed_url)
       end
     end
 
