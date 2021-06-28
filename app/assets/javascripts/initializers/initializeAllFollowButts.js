@@ -30,7 +30,7 @@ function fetchUserFollowStatuses(idButtonHash) {
     .then((response) => response.json())
     .then((idStatuses) => {
       Object.keys(idStatuses).forEach(function (id) {
-        addButtClickHandle(idStatuses[id], idButtonHash[id]);
+        addButtClickHandles(idStatuses[id], idButtonHash[id]);
       });
     });
 }
@@ -111,7 +111,7 @@ function fetchButt(butt, buttInfo) {
       dataRequester.readyState === XMLHttpRequest.DONE &&
       dataRequester.status === 200
     ) {
-      addButtClickHandle(dataRequester.response, butt);
+      addButtClickHandles(dataRequester.response, [butt]);
     }
   };
   dataRequester.open(
@@ -122,7 +122,7 @@ function fetchButt(butt, buttInfo) {
   dataRequester.send();
 }
 
-function addButtClickHandle(response, buttons) {
+function addButtClickHandles(response, buttons) {
   // currently lacking error handling
   buttons.forEach((butt) => {
     assignInitialButtResponse(response, butt);
@@ -143,7 +143,7 @@ function handleTagButtAssignment(user, butt, buttInfo) {
       .indexOf(buttInfo.id) !== -1;
 
   var buttAssignmentBoolText = buttAssignmentBoolean ? 'true' : 'false';
-  addButtClickHandle(buttAssignmentBoolText, butt);
+  addButtClickHandles(buttAssignmentBoolText, [butt]);
 }
 
 function assignInitialButtResponse(response, butt) {
