@@ -23,12 +23,18 @@
     <%= form_with url: send_email_admin_user_path(@user), class: "my-2" do |f| %>
       <div class="crayons-field form-group">
         <%= f.label :email_subject, "Subject", class: "crayons-field__label" %>
-        <%= f.text_field :email_subject, placeholder: "What do you want to say in the subject line?", class: "crayons-textfield" %>
+        <%= f.text_field :email_subject,
+                         required: true,
+                         placeholder: "What do you want to say in the subject line?",
+                         class: "crayons-textfield" %>
       </div>
 
       <div class="crayons-field form-group">
         <%= f.label :email_body, "Body", class: "crayons-field__label" %>
-        <%= f.text_area :email_body, placeholder: "What do you want to say?", class: "crayons-textfield" %>
+        <%= f.text_area :email_body,
+                        required: true,
+                        placeholder: "What do you want to say?",
+                        class: "crayons-textfield" %>
       </div>
 
       <%= f.submit "Send Email", class: "btn btn-primary" %>
