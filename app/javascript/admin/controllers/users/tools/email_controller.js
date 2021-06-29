@@ -17,9 +17,13 @@ export default class EmailController extends Controller {
       message = 'Email sent!';
     }
 
+    // display success info message
     document.dispatchEvent(
       new CustomEvent('snackbar:add', { detail: { message } }),
     );
+
+    // close the panel and go back to the home view
+    document.dispatchEvent(new CustomEvent('user:home'));
   }
 
   // This method listens to Rails's Ajax event `ajax:error`.
