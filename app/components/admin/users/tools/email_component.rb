@@ -7,7 +7,8 @@ module Admin
         def initialize(user:, verification_date:)
           @user = user
           @verification_date = verification_date
-          @verified = @verification_date.present?
+          @verified = verification_date.present?
+          @messages = user.email_messages.order(sent_at: :desc).limit(50)
         end
       end
     end
