@@ -3,7 +3,7 @@
   class="crayons-card p-3 js-component"
   data-controller="users--tools--email"
   data-user-target="emailComponent"
-  data-action="ajax:success@document->users--tools--email#ajaxSuccess">
+  data-action="ajax:success@document->users--tools--email#ajaxSuccess ajax:error@document->users--tools--email#ajaxError">
   <header>
     <h3><a href="" class="crayons-title fs-l" data-action="click->user#closeEmail">← Email</a></h3>
   </header>
