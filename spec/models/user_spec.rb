@@ -271,26 +271,6 @@ RSpec.describe User, type: :model do
       expect(user.errors[:base].to_s).to include("could not be saved. Rate limit reached")
       expect(limiter).to have_received(:track_limit_by_action).with(:user_update).twice
     end
-
-    context "when validating feed_url", vcr: true do
-      it "is valid with no feed_url" do
-        user.feed_url = nil
-
-        expect(user).to be_valid
-      end
-
-      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
-        user.feed_url = "http://example.com"
-
-        expect(user).not_to be_valid
-      end
-
-      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
-        user.feed_url = "https://medium.com/feed/@vaidehijoshi"
-
-        expect(user).to be_valid
-      end
-    end
   end
 
   context "when callbacks are triggered before validation" do
@@ -621,7 +601,7 @@ RSpec.describe User, type: :model do
     end
 
     it "creates proper body class with defaults" do
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
@@ -643,28 +623,30 @@ RSpec.describe User, type: :model do
     it "creates proper body class with sans serif config" do
       user.setting.config_font = "sans_serif"
 
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.setting.config_font = "open_dyslexic"
 
-      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
+      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with night theme" do
       user.setting.config_theme = "night_theme"
 
-      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
+      # rubocop:disable Layout/LineLength
+      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with pink theme" do
       user.setting.config_theme = "pink_theme"
 
-      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
+      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
@@ -746,12 +728,12 @@ RSpec.describe User, type: :model do
     end
 
     it "returns false if user opted out from follower notifications" do
-      user.assign_attributes(email_follower_notifications: false)
+      user.notification_setting.update(email_follower_notifications: false)
       expect(user.receives_follower_email_notifications?).to be(false)
     end
 
     it "returns true if user opted in from follower notifications and has an email" do
-      user.assign_attributes(email_follower_notifications: true)
+      user.notification_setting.update(email_follower_notifications: true)
       expect(user.receives_follower_email_notifications?).to be(true)
     end
   end
@@ -853,15 +835,6 @@ RSpec.describe User, type: :model do
 
       # Changes were also persisted in the users table
       expect(user.reload.available_for).to eq "profile migrations"
-    end
-
-    it "propagates changes of mapped attributes to the profile model", :aggregate_failures do
-      expect do
-        user.update(bg_color_hex: "#abcdef")
-      end.to change { user.profile.reload.brand_color1 }.to("#abcdef")
-
-      # Changes were also persisted in the users table
-      expect(user.reload.bg_color_hex).to eq "#abcdef"
     end
   end
 end

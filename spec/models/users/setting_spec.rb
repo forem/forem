@@ -5,7 +5,7 @@ RSpec.describe Users::Setting, type: :model do
     subject { setting }
 
     let(:user) { create(:user) }
-    let(:setting) { user.setting }
+    let(:setting) { described_class.find_by(user_id: user.id) }
 
     it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
     it { is_expected.to define_enum_for(:inbox_type).with_values(private: 0, open: 1).with_suffix(:inbox) }
@@ -46,6 +46,26 @@ RSpec.describe Users::Setting, type: :model do
 
       it "does not accept invalid navbar" do
         expect { setting.config_navbar = 10 }.to raise_error(ArgumentError)
+      end
+    end
+
+    context "when validating feed_url", vcr: true do
+      it "is valid with no feed_url" do
+        setting.feed_url = nil
+
+        expect(setting).to be_valid
+      end
+
+      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
+        setting.feed_url = "http://example.com"
+
+        expect(setting).not_to be_valid
+      end
+
+      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+        setting.feed_url = "https://medium.com/feed/@vaidehijoshi"
+
+        expect(setting).to be_valid
       end
     end
   end

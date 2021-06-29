@@ -6,10 +6,9 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
 
   before do
-    User.destroy_all
     [link, nonmedium_link, nonpermanent_link].each do |feed_url|
       user = create(:user)
-      Users::Setting.find_by(user_id: user.id).update(feed_url: feed_url)
+      user.setting.update(feed_url: feed_url)
     end
   end
 
@@ -112,7 +111,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
 
       it "imports no articles if given users are without feed" do
         user = create(:user)
-        Users::Setting.find_by(user_id: user.id).update(feed_url: nil)
+        user.setting.update(feed_url: nil)
 
         # rubocop:disable Layout/LineLength
         expect(described_class.call(users: User.where(id: Users::Setting.where(feed_url: nil).select(:user_id)))).to eq(0)
@@ -175,8 +174,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       allow(Article).to receive(:find_by).and_call_original
 
       user = create(:user)
-      Users::Setting.find_by(user_id: user.id)
-        .update(feed_url: nonpermanent_link, feed_referential_link: false)
+      user.setting.update(feed_url: nonpermanent_link, feed_referential_link: false)
 
       described_class.call
 
@@ -187,7 +185,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
   describe "feeds parsing and regressions" do
     it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "rss_reader_dvirsegal" } do
       user = create(:user)
-      Users::Setting.find_by(user_id: user.id).update(feed_url: "https://medium.com/feed/@dvirsegal")
+      user.setting.update(feed_url: "https://medium.com/feed/@dvirsegal")
 
       expect do
         described_class.call(users: User.where(id: user.id))
@@ -196,7 +194,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
 
     it "converts/replaces <picture> tags to <img>", vcr: { cassette_name: "rss_reader_swimburger" } do
       user = create(:user)
-      Users::Setting.find_by(user_id: user.id).update(feed_url: "https://swimburger.net/atom.xml")
+      user.setting.update(feed_url: "https://swimburger.net/atom.xml")
 
       expect do
         described_class.call(users: User.where(id: user.id))

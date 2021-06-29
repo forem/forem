@@ -106,7 +106,7 @@ module Articles
 
       def score_experience_level(article)
         # rubocop:disable Layout/LineLength
-        - (((article.experience_level_rating - (@user.setting&.experience_level || 5)).abs / 2) * @experience_level_weight)
+        - (((article.experience_level_rating - (@user&.setting&.experience_level || 5)).abs / 2) * @experience_level_weight)
         # rubocop:enable Layout/LineLength
       end
 
