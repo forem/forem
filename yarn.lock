@@ -2101,20 +2101,20 @@
     "@stoplight/yaml-ast-parser" "0.0.48"
     tslib "^1.12.0"
 
-"@storybook/addon-a11y@^6.2.9":
-  version "6.2.9"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.2.9.tgz#8386d73343db03c15d07f6bf927a4030d441d1ff"
-  integrity sha512-wo7nFpEqEeiHDsRKnhqe2gIHZ9Z7/Aefw570kBgReU5tKlmrb5rFAfTVBWGBZlLHWeJMsFsRsWrWrmkf1B52OQ==
+"@storybook/addon-a11y@^6.3.1":
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.3.1.tgz#376f380f99855ee7171b97fa92995ad7c723f719"
+  integrity sha512-UFBm4NWHV1tm/DfIjFmZeG2Csfv1rh5vsqbllMiTXnvuKAFSTxMTzyk/mEy4wSDAC58+MAyiJ+x6JM8oQKfUTQ==
   dependencies:
-    "@storybook/addons" "6.2.9"
-    "@storybook/api" "6.2.9"
-    "@storybook/channels" "6.2.9"
-    "@storybook/client-api" "6.2.9"
-    "@storybook/client-logger" "6.2.9"
-    "@storybook/components" "6.2.9"
-    "@storybook/core-events" "6.2.9"
-    "@storybook/theming" "6.2.9"
-    axe-core "^4.1.1"
+    "@storybook/addons" "6.3.1"
+    "@storybook/api" "6.3.1"
+    "@storybook/channels" "6.3.1"
+    "@storybook/client-api" "6.3.1"
+    "@storybook/client-logger" "6.3.1"
+    "@storybook/components" "6.3.1"
+    "@storybook/core-events" "6.3.1"
+    "@storybook/theming" "6.3.1"
+    axe-core "^4.2.0"
     core-js "^3.8.2"
     global "^4.4.0"
     lodash "^4.17.20"
@@ -2694,6 +2694,19 @@
     qs "^6.10.0"
     telejson "^5.3.2"
 
+"@storybook/channel-postmessage@6.3.1":
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/@storybook/channel-postmessage/-/channel-postmessage-6.3.1.tgz#a255f89b8fdac62f26b20eec6e95e432db25b2a6"
+  integrity sha512-6+luEe2H/84ZYCfcNgH5WCYtUbSIJiMjKFsV17iRVLECRxX8PtxxH5zB3kzhpAngp9WwKDEAS0T1+lEZoHh2Yw==
+  dependencies:
+    "@storybook/channels" "6.3.1"
+    "@storybook/client-logger" "6.3.1"
+    "@storybook/core-events" "6.3.1"
+    core-js "^3.8.2"
+    global "^4.4.0"
+    qs "^6.10.0"
+    telejson "^5.3.2"
+
 "@storybook/channels@5.3.21":
   version "5.3.21"
   resolved "https://registry.yarnpkg.com/@storybook/channels/-/channels-5.3.21.tgz#53ba622b171d68b3b102983a62aa05149a49497b"
@@ -2771,6 +2784,30 @@
     "@storybook/channels" "6.2.9"
     "@storybook/client-logger" "6.2.9"
     "@storybook/core-events" "6.2.9"
+    "@storybook/csf" "0.0.1"
+    "@types/qs" "^6.9.5"
+    "@types/webpack-env" "^1.16.0"
+    core-js "^3.8.2"
+    global "^4.4.0"
+    lodash "^4.17.20"
+    memoizerific "^1.11.3"
+    qs "^6.10.0"
+    regenerator-runtime "^0.13.7"
+    stable "^0.1.8"
+    store2 "^2.12.0"
+    ts-dedent "^2.0.0"
+    util-deprecate "^1.0.2"
+
+"@storybook/client-api@6.3.1":
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/@storybook/client-api/-/client-api-6.3.1.tgz#a375142b5a49499afa060de10a81ecbbb6904aa1"
+  integrity sha512-LZrJ5zUT88n2VIf4c+3IkWXWmBzpz5DMc9ly2KOPywzgAPkTOwRzaNY6lg2ozMhN262N5meRAST86kYRYG3DKw==
+  dependencies:
+    "@storybook/addons" "6.3.1"
+    "@storybook/channel-postmessage" "6.3.1"
+    "@storybook/channels" "6.3.1"
+    "@storybook/client-logger" "6.3.1"
+    "@storybook/core-events" "6.3.1"
     "@storybook/csf" "0.0.1"
     "@types/qs" "^6.9.5"
     "@types/webpack-env" "^1.16.0"
@@ -5105,10 +5142,10 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
-axe-core@^4.0.1, axe-core@^4.0.2, axe-core@^4.1.1:
-  version "4.1.3"
-  resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.1.3.tgz#64a4c85509e0991f5168340edc4bedd1ceea6966"
-  integrity sha512-vwPpH4Aj4122EW38mxO/fxhGKtwWTMLDIJfZ1He0Edbtjcfna/R3YB67yVhezUMzqc3Jr3+Ii50KRntlENL4xQ==
+axe-core@^4.0.1, axe-core@^4.0.2, axe-core@^4.2.0:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.2.3.tgz#2a3afc332f0031b42f602f4a3de03c211ca98f72"
+  integrity sha512-pXnVMfJKSIWU2Ml4JHP7pZEPIrgBO1Fd3WGx+fPBsS+KRGhE4vxooD8XBGWbQOIVSZsVK7pUDBBkCicNu80yzQ==
 
 axios@^0.18.0, axios@^0.21.1:
   version "0.21.1"
