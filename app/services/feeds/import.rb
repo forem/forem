@@ -149,7 +149,7 @@ module Feeds
           e,
           feeds_import_info: {
             username: user.username,
-            feed_url: user.feed_url,
+            feed_url: user.setting&.feed_url,
             item_count: item_count_error(feed),
             error: "Feeds::Import::CreateArticleError:#{item.url}"
           },

@@ -44,7 +44,6 @@ class User < ApplicationRecord
     display_sponsors
     editor_version
     experience_level
-    feed_fetched_at
     feed_mark_canonical
     feed_referential_link
     feed_url

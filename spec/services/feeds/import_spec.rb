@@ -5,15 +5,15 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
 
-  describe ".call" do
-    before do
-      User.destroy_all
-      [link, nonmedium_link, nonpermanent_link].each do |feed_url|
-        user = create(:user)
-        Users::Setting.find_by(user_id: user.id).update(feed_url: feed_url)
-      end
+  before do
+    User.destroy_all
+    [link, nonmedium_link, nonpermanent_link].each do |feed_url|
+      user = create(:user)
+      Users::Setting.find_by(user_id: user.id).update(feed_url: feed_url)
     end
+  end
 
+  describe ".call" do
     # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
     it "fetch only articles from a feed_url", vcr: { cassette_name: "feeds_import" } do
       num_articles = described_class.call
@@ -111,7 +111,9 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       end
 
       it "imports no articles if given users are without feed" do
-        create(:user, feed_url: nil)
+        user = create(:user)
+        Users::Setting.find_by(user_id: user.id).update(feed_url: nil)
+
         # rubocop:disable Layout/LineLength
         expect(described_class.call(users: User.where(id: Users::Setting.where(feed_url: nil).select(:user_id)))).to eq(0)
         # rubocop:enable Layout/LineLength
@@ -120,13 +122,6 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
   end
 
   context "when refetching" do
-    before do
-      [link, nonmedium_link, nonpermanent_link].each do |feed_url|
-        user = create(:user)
-        user.setting.update(feed_url: feed_url)
-      end
-    end
-
     it "does refetch same user over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
       user = Users::Setting.find_by(feed_url: nonpermanent_link).user
 
@@ -180,7 +175,8 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       allow(Article).to receive(:find_by).and_call_original
 
       user = create(:user)
-      user.setting.update(feed_url: nonpermanent_link, feed_referential_link: false)
+      Users::Setting.find_by(user_id: user.id)
+        .update(feed_url: nonpermanent_link, feed_referential_link: false)
 
       described_class.call
 
@@ -191,7 +187,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
   describe "feeds parsing and regressions" do
     it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "rss_reader_dvirsegal" } do
       user = create(:user)
-      user.setting.update(feed_url: "https://medium.com/feed/@dvirsegal")
+      Users::Setting.find_by(user_id: user.id).update(feed_url: "https://medium.com/feed/@dvirsegal")
 
       expect do
         described_class.call(users: User.where(id: user.id))
@@ -200,7 +196,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
 
     it "converts/replaces <picture> tags to <img>", vcr: { cassette_name: "rss_reader_swimburger" } do
       user = create(:user)
-      user.setting.update(feed_url: "https://swimburger.net/atom.xml")
+      Users::Setting.find_by(user_id: user.id).update(feed_url: "https://swimburger.net/atom.xml")
 
       expect do
         described_class.call(users: User.where(id: user.id))
