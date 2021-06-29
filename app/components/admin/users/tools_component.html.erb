@@ -2,11 +2,10 @@
   <h3 class="crayons-subtitle-2">Tools</h3>
 
   <div class="crayons-card__body grid grid-cols-2 grid-rows-3 gap-3">
-    <a class="crayons-card bg-base-10 p-3"
+    <a class="crayons-card bg-base-10 p-3 cursor-pointer"
        style="text-decoration: none;"
-       href=""
        data-action="click->user#openEmail">
-      <h4 class="crayons-subtitle-3 mb-3">Emails</h4>
+      <h4 class="crayons-subtitle-3 mb-4">Emails</h4>
 
       <span class="color-base-70">
         <%= @num_emails %> past emails
@@ -14,29 +13,36 @@
       </span>
     </a>
 
-    <div>
-      <h4 class="crayons-subtitle-3">Notes</h4>
-      2 notes
-    </div>
+    <a class="crayons-card bg-base-10 p-3">
+      <h4 class="crayons-subtitle-3 mb-4">Notes</h4>
 
-    <div>
-      <h4 class="crayons-subtitle-3">Credits</h4>
-      0 credits
-    </div>
+      <span class="color-base-70">
+        2 notes
+      </span>
+    </a>
 
-    <div>
-      <h4 class="crayons-subtitle-3">Organizations</h4>
-      0 organizations
-    </div>
+    <a class="crayons-card bg-base-10 p-3">
+      <h4 class="crayons-subtitle-3 mb-4">Credits</h4>
 
-    <div>
-      <h4 class="crayons-subtitle-3">Reports</h4>
-      0 reports
-    </div>
+      <span class="color-base-70">0 credits</span>
+    </a>
 
-    <div>
-      <h4 class="crayons-subtitle-3">Reactions</h4>
-      0 reactions
-    </div>
+    <a class="crayons-card bg-base-10 p-3">
+      <h4 class="crayons-subtitle-3 mb-4">Organizations</h4>
+
+      <span class="color-base-70">0 organizations</span>
+    </a>
+
+    <a class="crayons-card bg-base-10 p-3">
+      <h4 class="crayons-subtitle-3 mb-4">Reports</h4>
+
+      <span class="color-base-70">0 reports</span>
+    </a>
+
+    <a class="crayons-card bg-base-10 p-3">
+      <h4 class="crayons-subtitle-3 mb-4">Reactions</h4>
+
+      <span class="color-base-70">0 reactions</span>
+    </a>
   </div>
 </section>
