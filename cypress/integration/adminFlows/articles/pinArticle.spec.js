@@ -4,7 +4,7 @@ describe('Pin an article from the admin area', () => {
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
+      cy.loginAndVisit(user, '/').then(() => {
         cy.createArticle({
           title: 'Test Article',
           tags: ['beginner', 'ruby', 'go'],

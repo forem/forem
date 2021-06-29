@@ -55,9 +55,8 @@ describe('Authentication Section', () => {
           cy.findByLabelText('GitHub enabled').should('not.be.visible');
           cy.findByLabelText('Twitter enabled').should('not.be.visible');
 
-          cy.visit('/signout_confirm');
+          cy.signOutUser();
 
-          cy.findByRole('button', { name: 'Yes, sign out' }).click();
           cy.findByRole('link', { name: 'Create account' }).click();
 
           cy.findByLabelText('Sign up with Email').should('not.exist');

@@ -11,19 +11,18 @@ export const getInterceptsForLingeringUserRequests = (userLoggedIn = false) => {
   cy.intercept('/api/analytics/referrers**', {});
 
   // Await these requests as response may affect app behavior
-  cy.intercept('/notifications/counts').as('countsRequest');
-  cy.intercept('/notifications?i=i').as('notificationsRequest');
   cy.intercept('/async_info/base_data').as('baseDataRequest');
 
-  const awaitedRequests = [
-    '@notificationsRequest',
-    '@countsRequest',
-    '@baseDataRequest',
-  ];
+  const awaitedRequests = ['@baseDataRequest'];
 
   if (userLoggedIn) {
     cy.intercept('/chat_channels**').as('chatRequest');
+    cy.intercept('/notifications/counts').as('countsRequest');
+    cy.intercept('/notifications?i=i').as('notificationsRequest');
+
     awaitedRequests.push('@chatRequest');
+    awaitedRequests.push('@countsRequest');
+    awaitedRequests.push('@notificationsRequest');
   }
 
   return awaitedRequests;

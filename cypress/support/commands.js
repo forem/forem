@@ -44,9 +44,14 @@ Cypress.Commands.add('signOutUser', () => {
  */
 Cypress.Commands.add('loginAndVisit', (user, url) => {
   cy.loginUser(user).then(() => {
-    const intercepts = getInterceptsForLingeringUserRequests(true);
-    cy.visit(url);
-    cy.wait(intercepts);
+    // If navigating directly to an admin route, no relevant network requests to intercept
+    if (url.includes('/admin')) {
+      cy.visit(url);
+    } else {
+      const intercepts = getInterceptsForLingeringUserRequests(true);
+      cy.visit(url);
+      cy.wait(intercepts);
+    }
   });
 });
 
