@@ -52,27 +52,29 @@ describe('Chat message options', () => {
     cy.findByRole('button', { name: 'Delete' }).should('not.exist');
 
     // Log out the current user
-    cy.signOutUser();
+    cy.signOutUser().then(() => {
+      // Log in as someone else to verify the report abuse options
+      cy.get('@user2').then((user) => {
+        cy.loginAndVisit(user, '/connect').then(() => {
+          //   Enter the test chat
+          cy.findByRole('button', { name: 'Toggle request manager' }).click();
+          cy.findByRole('button', { name: 'Accept' }).click();
+          cy.findByRole('button', { name: 'Accept' }).should('not.exist');
 
-    // Log in as someone else to verify the report abuse options
-    cy.get('@user2').then((user) => {
-      cy.loginAndVisit(user, '/connect').then(() => {
-        //   Enter the test chat
-        cy.findByRole('button', { name: 'Toggle request manager' }).click();
-        cy.findByRole('button', { name: 'Accept' }).click();
-        cy.findByRole('button', { name: 'Accept' }).should('not.exist');
+          // Check the report menu is present and opens
+          cy.findByRole('button', { name: 'Report message options' }).as(
+            'reportMenuButton',
+          );
+          cy.get('@reportMenuButton').click();
+          cy.findByRole('button', { name: 'Report Abuse' }).should(
+            'have.focus',
+          );
 
-        // Check the report menu is present and opens
-        cy.findByRole('button', { name: 'Report message options' }).as(
-          'reportMenuButton',
-        );
-        cy.get('@reportMenuButton').click();
-        cy.findByRole('button', { name: 'Report Abuse' }).should('have.focus');
-
-        // Check Escape closes the menu
-        cy.get('body').type('{esc}');
-        cy.get('@reportMenuButton').should('have.focus');
-        cy.findByRole('button', { name: 'Report Abuse' }).should('not.exist');
+          // Check Escape closes the menu
+          cy.get('body').type('{esc}');
+          cy.get('@reportMenuButton').should('have.focus');
+          cy.findByRole('button', { name: 'Report Abuse' }).should('not.exist');
+        });
       });
     });
   });

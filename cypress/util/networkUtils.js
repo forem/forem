@@ -13,17 +13,18 @@ export const getInterceptsForLingeringUserRequests = (userLoggedIn = false) => {
   // Await these requests as response may affect app behavior
   cy.intercept('/async_info/base_data').as('baseDataRequest');
 
-  const awaitedRequests = ['@baseDataRequest'];
-
-  if (userLoggedIn) {
-    cy.intercept('/chat_channels**').as('chatRequest');
-    cy.intercept('/notifications/counts').as('countsRequest');
-    cy.intercept('/notifications?i=i').as('notificationsRequest');
-
-    awaitedRequests.push('@chatRequest');
-    awaitedRequests.push('@countsRequest');
-    awaitedRequests.push('@notificationsRequest');
+  if (!userLoggedIn) {
+    return ['@baseDataRequest'];
   }
 
-  return awaitedRequests;
+  cy.intercept('/chat_channels**').as('chatRequest');
+  cy.intercept('/notifications/counts').as('countsRequest');
+  cy.intercept('/notifications?i=i').as('notificationsRequest');
+
+  return [
+    '@baseDataRequest',
+    '@chatRequest',
+    '@countsRequest',
+    '@notificationsRequest',
+  ];
 };

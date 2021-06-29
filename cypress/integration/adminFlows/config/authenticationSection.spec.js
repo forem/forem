@@ -55,13 +55,13 @@ describe('Authentication Section', () => {
           cy.findByLabelText('GitHub enabled').should('not.be.visible');
           cy.findByLabelText('Twitter enabled').should('not.be.visible');
 
-          cy.signOutUser();
+          cy.signOutUser().then(() => {
+            cy.findByRole('link', { name: 'Create account' }).click();
 
-          cy.findByRole('link', { name: 'Create account' }).click();
-
-          cy.findByLabelText('Sign up with Email').should('not.exist');
-          cy.findByLabelText('Sign up with Facebook').should('not.exist');
-          cy.contains('invite only').should('be.visible');
+            cy.findByLabelText('Sign up with Email').should('not.exist');
+            cy.findByLabelText('Sign up with Facebook').should('not.exist');
+            cy.contains('invite only').should('be.visible');
+          });
         });
       });
     });
