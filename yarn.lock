@@ -9648,10 +9648,10 @@ focus-lock@^0.8.1:
   dependencies:
     tslib "^1.9.3"
 
-focus-trap@^6.4.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-6.4.0.tgz#e9951484fddf933d9b9b0e95b499f9420f6a54d6"
-  integrity sha512-RpH291GjfNhy1ek+Iwe00oCaqJN0sBaB+S/v7BpCIldf39IslPI7657nOZ6HwgoEHpjCmUJoAY+Mfgrm0rohvQ==
+focus-trap@^6.5.1:
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-6.5.1.tgz#2d2bb91198f17e8bc52070f1fb48ac36be4230b5"
+  integrity sha512-q57JebeQXVThn9DWvWLP2rUwuArvk8w3PyqZLSddto0thmVmklFzYJQO97Aq3pUcWkTXjflUa88fT0CrASsaHQ==
   dependencies:
     tabbable "^5.2.0"
 
