@@ -44,15 +44,24 @@ Cypress.Commands.add('signOutUser', () => {
  */
 Cypress.Commands.add('loginAndVisit', (user, url) => {
   cy.loginUser(user).then(() => {
-    // If navigating directly to an admin route, no relevant network requests to intercept
-    if (url.includes('/admin')) {
-      cy.visit(url);
-    } else {
-      const intercepts = getInterceptsForLingeringUserRequests(true);
-      cy.visit(url);
-      cy.wait(intercepts);
-    }
+    cy.visitAndWaitForUserSideEffects(url);
   });
+});
+
+/**
+ * Visits the given URL, waiting for all user-related network requests to complete.
+ * This ensures that no user side effects bleed into subsequent tests.
+ */
+Cypress.Commands.add('visitAndWaitForUserSideEffects', (url, options) => {
+  // If navigating directly to an admin route, no relevant network requests to intercept
+  const { baseUrl } = Cypress.config().baseUrl;
+  if (url === `${baseUrl}/admin` || url.includes('/admin/')) {
+    cy.visit(url, options);
+  } else {
+    const intercepts = getInterceptsForLingeringUserRequests(true);
+    cy.visit(url, options);
+    cy.wait(intercepts);
+  }
 });
 
 /**
