@@ -20,7 +20,7 @@
                     form: { data: { "users--tools--email-target": "verifyEmailOwnership" } } %>
     </p>
 
-    <%= form_with url: send_email_admin_user_path(@user), class: "my-2" do |f| %>
+    <%= form_with url: send_email_admin_user_path(@user), class: "my-2", data: { "users--tools--email-target": "sendEmail" } do |f| %>
       <div class="crayons-field form-group">
         <%= f.label :email_subject, "Subject", class: "crayons-field__label" %>
         <%= f.text_field :email_subject,
@@ -37,7 +37,9 @@
                         class: "crayons-textfield" %>
       </div>
 
-      <%= f.submit "Send Email", class: "btn btn-primary" %>
+      <%= f.submit "Send Email",
+                   class: "btn btn-primary",
+                   data: { disable_with: "Sending..." } %>
     <% end -%>
   </article>
 </section>

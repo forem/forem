@@ -146,15 +146,28 @@ module Admin
 
     def send_email
       email_params = {
-        email_body: params[:email_body],
-        email_subject: params[:email_subject],
+        email_body: send_email_params[:email_body],
+        email_subject: send_email_params[:email_subject],
         user_id: params[:id]
       }
 
       if NotifyMailer.with(email_params).user_contact_email.deliver_now
-        redirect_back(fallback_location: users_path)
+        respond_to do |format|
+          format.html do
+            flash[:success] = "Email sent!"
+            redirect_back(fallback_location: admin_users_path)
+          end
+          format.js { head :ok }
+        end
       else
-        flash[:danger] = "Email failed to send!"
+        respond_to do |format|
+          format.html { flash[:danger] = "Email failed to send!" }
+          format.js { head :bad_request }
+        end
+      end
+    rescue ActionController::ParameterMissing
+      respond_to do |format|
+        format.json { render json: { error: "Both subject and body are required!" }, status: :unprocessable_entity }
       end
     end
 
@@ -218,6 +231,11 @@ module Admin
         organization_id identity_id
       ]
       params.require(:user).permit(allowed_params)
+    end
+
+    def send_email_params
+      params.require(%i[email_subject email_body])
+      params.permit(%i[email_subject email_body])
     end
   end
 end
