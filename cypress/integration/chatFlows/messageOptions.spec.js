@@ -1,6 +1,7 @@
 describe('Chat message options', () => {
   beforeEach(() => {
     cy.testSetup();
+
     cy.intercept(
       { method: 'POST', url: '/chat_channels/1/open' },
       { body: {} },
@@ -10,13 +11,11 @@ describe('Chat message options', () => {
     cy.fixture('users/chatUser2.json').as('user2');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/connect');
-      });
+      cy.loginAndVisit(user, '/connect');
     });
   });
 
-  it.skip('should show message option menus', () => {
+  it('should show message option menus', () => {
     //   Enter the test chat
     cy.findByRole('button', { name: 'Toggle request manager' }).click();
     cy.findByRole('button', { name: 'Accept' }).click();
@@ -53,14 +52,12 @@ describe('Chat message options', () => {
     cy.findByRole('button', { name: 'Delete' }).should('not.exist');
 
     // Log out the current user
-    cy.findByText('Sign Out').click({ force: true });
-    cy.findByRole('button', { name: 'Yes, sign out' }).click();
+    cy.signOutUser();
 
     // Log in as someone else to verify the report abuse options
     cy.get('@user2').then((user) => {
-      cy.loginUser(user).then(() => {
+      cy.loginAndVisit(user, '/connect').then(() => {
         //   Enter the test chat
-        cy.visit('/connect');
         cy.findByRole('button', { name: 'Toggle request manager' }).click();
         cy.findByRole('button', { name: 'Accept' }).click();
         cy.findByRole('button', { name: 'Accept' }).should('not.exist');
