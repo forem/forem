@@ -15,6 +15,6 @@ RSpec.describe TagModerators::AddTrustedRole, type: :service do
   it "signs the user up for the community mods newsletter" do
     expect do
       described_class.call(user)
-    end.to change { user.reload.email_community_mod_newsletter }.from(false).to(true)
+    end.to change { user.reload.notification_setting.email_community_mod_newsletter }.from(false).to(true)
   end
 end

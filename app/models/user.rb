@@ -70,6 +70,12 @@ class User < ApplicationRecord
     welcome_notifications
   ].freeze
 
+  INACTIVE_PROFILE_COLUMNS = %w[
+    bg_color_hex
+    text_color_hex
+    email_public
+  ].freeze
+
   self.ignored_columns = PROFILE_COLUMNS + COLUMNS_NOW_IN_USERS_SETTINGS + COLUMNS_NOW_IN_USERS_NOTIFICATION_SETTINGS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
@@ -87,6 +93,8 @@ class User < ApplicationRecord
 
       # Getters and setters for unmapped profile attributes
       (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
+        next if INACTIVE_PROFILE_COLUMNS.include?(column)
+
         delegate column, "#{column}=", to: :profile, allow_nil: true
       end
 
@@ -498,6 +506,9 @@ class User < ApplicationRecord
   end
 
   def subscribe_to_mailchimp_newsletter
+    # in app/services/mailchimp/bot.rb, the user object has no setting or
+    # notification_setting records without calling this hook within this method
+    create_users_settings_and_notification_settings_records
     return unless registered && email.present?
     return if Settings::General.mailchimp_api_key.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
