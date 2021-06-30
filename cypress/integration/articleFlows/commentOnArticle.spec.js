@@ -415,6 +415,21 @@ describe('Comment on articles', () => {
 
       cy.findByText(/^this is a comment$/i);
       cy.findByRole('heading', { name: 'Discussion (1)' });
+
+      // Check that the profile preview card is there and can be displayed
+      cy.findByTestId('comments-container').within(() => {
+        // Wait for the dropdown to initialize
+        cy.get('button[id^=comment-profile-preview-trigger][data-initialized]');
+
+        cy.findByRole('button', {
+          name: 'Article Editor v1 User profile details',
+        }).click();
+
+        cy.findByTestId('profile-preview-card').within(() => {
+          cy.findByRole('button', { name: 'Edit profile' });
+          cy.findByRole('link', { name: 'Article Editor v1 User' });
+        });
+      });
     });
   });
 

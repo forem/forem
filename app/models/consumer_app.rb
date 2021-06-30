@@ -3,6 +3,7 @@ class ConsumerApp < ApplicationRecord
 
   FOREM_BUNDLE = "com.forem.app".freeze
   FOREM_APP_PLATFORMS = %w[ios].freeze
+  FOREM_TEAM_ID = "R9SWHSQNV8".freeze
 
   enum platform: { android: Device::ANDROID, ios: Device::IOS }
 
