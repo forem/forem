@@ -4,9 +4,7 @@ describe('Badge Achievements', () => {
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/admin/content_manager/badge_achievements');
-      });
+      cy.loginAndVisit(user, '/admin/content_manager/badge_achievements');
     });
   });
 
