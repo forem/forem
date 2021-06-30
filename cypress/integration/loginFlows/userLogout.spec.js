@@ -1,3 +1,5 @@
+import { getInterceptsForLingeringUserRequests } from '../../util/networkUtils';
+
 describe('User Logout', () => {
   beforeEach(() => {
     cy.testSetup();
@@ -5,9 +7,7 @@ describe('User Logout', () => {
     cy.fixture('users/changePasswordUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/');
-      });
+      cy.loginAndVisit(user, '/');
     });
   });
 
@@ -15,9 +15,14 @@ describe('User Logout', () => {
     // Click on the sign out button
     cy.findByText('Sign Out').click({ force: true });
 
+    // We intercept user-related network requests triggered on logout, so we can await them and avoid issues with a subsequent login
+    const logoutNetworkRequests = getInterceptsForLingeringUserRequests(false);
+
     // Sign out confirmation page is rendered
     cy.url().should('contains', '/signout_confirm');
     cy.findByRole('button', { name: 'Yes, sign out' }).click();
+
+    cy.wait(logoutNetworkRequests);
 
     // User should be redirected to the homepage
     const { baseUrl } = Cypress.config();

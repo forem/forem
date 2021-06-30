@@ -4,9 +4,7 @@ describe('Follow user from profile page', () => {
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/article_editor_v1_user');
-      });
+      cy.loginAndVisit(user, '/article_editor_v1_user');
     });
   });
 

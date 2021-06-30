@@ -11,7 +11,7 @@ describe('Posts Dashboard', () => {
           content: `This is a test article's contents.`,
           published: true,
         }).then(() => {
-          cy.visit('/dashboard');
+          cy.visitAndWaitForUserSideEffects('/dashboard');
         });
       });
     });

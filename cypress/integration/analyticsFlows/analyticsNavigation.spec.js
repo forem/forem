@@ -4,9 +4,7 @@ describe('Analytics navigation', () => {
     cy.fixture('users/articleEditorV1User.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/dashboard/analytics');
-      });
+      cy.loginAndVisit(user, '/dashboard/analytics');
     });
   });
 
@@ -50,15 +48,13 @@ describe('Analytics navigation', () => {
     );
   });
 
-  describe.skip('when user is admin of an organization', () => {
+  describe('when user is admin of an organization', () => {
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('adminUser');
 
       cy.get('@adminUser').then((user) => {
-        cy.loginUser(user).then(() => {
-          cy.visit('/dashboard/analytics');
-        });
+        cy.loginAndVisit(user, '/dashboard/analytics');
       });
     });
 
