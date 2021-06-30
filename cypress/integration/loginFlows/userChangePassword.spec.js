@@ -1,12 +1,12 @@
+import { getInterceptsForLingeringUserRequests } from '../../util/networkUtils';
+
 describe('User Change Password', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/changePasswordUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/settings/account');
-      });
+      cy.loginAndVisit(user, '/settings/account');
     });
   });
 
@@ -43,20 +43,11 @@ describe('User Change Password', () => {
 
     // We intercept these requests to make sure all async sign-in requests have completed before finishing the test.
     // This ensures async responses do not intefere with subsequent test setup
-    cy.intercept('/notifications?i=i').as('notificationsRequest');
-    cy.intercept('/notifications/counts').as('countsRequest');
-    cy.intercept('/async_info/base_data').as('baseDataRequest');
-    cy.intercept('/chat_channels**').as('chatRequest');
+    const loginNetworkRequests = getInterceptsForLingeringUserRequests(true);
 
     // Submit the form
     cy.get('@loginForm').findByText('Continue').click();
-
-    cy.wait([
-      '@notificationsRequest',
-      '@countsRequest',
-      '@baseDataRequest',
-      '@chatRequest',
-    ]);
+    cy.wait(loginNetworkRequests);
 
     const { baseUrl } = Cypress.config();
     cy.url().should('equal', `${baseUrl}settings/account?signin=true`);
