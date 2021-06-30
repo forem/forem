@@ -2,7 +2,7 @@
 <% proper_email = params[:email] || (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
 <div class="crayons-layout crayons-layout--limited-l align-center mt-9 mb-10 p-3">
 
-  <% if request.referer.include?("/users/sign_up?state=email_signup") %>
+  <% if request.referer&.include?("/users/sign_up?state=email_signup") %>
     <h1 class="fs-5xl mb-5">Welcome to <%= community_name %>! 🎉</h1>
   <% end %>
 
