@@ -309,7 +309,8 @@ class User < ApplicationRecord
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
 
-  after_create_commit :send_welcome_notification, :create_users_settings_and_notification_settings_records
+  after_create_commit :send_welcome_notification, :create_users_setting_record,
+                      :create_users_notification_setting_record
 
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
@@ -507,8 +508,9 @@ class User < ApplicationRecord
 
   def subscribe_to_mailchimp_newsletter
     # in app/services/mailchimp/bot.rb, the user object has no setting or
-    # notification_setting records without calling this hook within this method
-    create_users_settings_and_notification_settings_records
+    # notification_setting records, unless created within this method
+    create_users_setting_record unless setting
+    create_users_notification_setting_record unless notification_setting
     return unless registered && email.present?
     return if Settings::General.mailchimp_api_key.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
@@ -608,11 +610,19 @@ class User < ApplicationRecord
 
   private
 
-  def create_users_settings_and_notification_settings_records
+  def create_users_setting_record
     Users::Setting.create(user_id: id) unless setting
+    # User object in memory lacks setting record;
+    # 'reload' associates user object with setting record after_create,
+    # and gives access to user.setting in specs
+    reload
+  end
+
+  def create_users_notification_setting_record
     Users::NotificationSetting.create(user_id: id) unless notification_setting
-    # User object in memory lacks setting or notification_setting records;
-    # 'reload' associates them after_create, and gives access to user.setting in specs
+    # User object in memory lacks notification_setting record;
+    # 'reload' associates user object with notification_setting record after_create,
+    # and gives access to user.notification_setting in specs
     reload
   end
 
