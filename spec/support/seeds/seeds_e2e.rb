@@ -134,7 +134,6 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.com")
     saw_onboarding: true,
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
-    editor_version: "v2",
   )
 end
 
