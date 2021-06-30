@@ -18,6 +18,15 @@ describe('Pin an article - Non admin user', () => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
 
+    // Responses from these requests are not required for this test, and are stubbed to prevent responses interfering with subsequent tests
+    cy.intercept('/reactions?article**', {
+      body: { reactions: [], article_reaction_counts: [] },
+    });
+    cy.intercept('/reactions?commentable**', {
+      body: { reactions: [], public_reaction_counts: [] },
+    });
+    cy.intercept('/follows**', {});
+
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
         cy.createArticle({
