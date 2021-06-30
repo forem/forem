@@ -4,9 +4,7 @@ describe('User Update Settings Profile', () => {
     cy.fixture('users/articleEditorV1User.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/settings/profile');
-      });
+      cy.loginAndVisit(user, '/settings/profile');
     });
   });
 
