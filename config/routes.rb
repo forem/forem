@@ -185,6 +185,7 @@ Rails.application.routes.draw do
     resources :article_approvals, only: %i[create]
     resources :video_chats, only: %i[show]
     resources :sidebars, only: %i[show]
+    resources :profile_preview_card, only: %i[show]
     resources :user_subscriptions, only: %i[create] do
       collection do
         get "/subscribed", action: "subscribed"
@@ -324,7 +325,7 @@ Rails.application.routes.draw do
     get "/page/:slug", to: "pages#show"
 
     scope "p" do
-      pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics badges].freeze
+      pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics].freeze
       pages_actions.each do |action|
         get action, action: action, controller: "pages"
       end

@@ -59,6 +59,7 @@ package-lock.json
 
 #sitemap
 /public/sitemap.xml.gz
+/public/sitemaps/
 
 # Development Docker storage location
 _docker-storage/

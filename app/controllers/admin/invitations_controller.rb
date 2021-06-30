@@ -24,7 +24,6 @@ module Admin
                    username: username,
                    remote_profile_image_url: ::Users::ProfileImageGenerator.call,
                    saw_onboarding: false,
-                   editor_version: :v2,
                    registered: false)
       flash[:success] = "The invite has been sent to the user's email."
       redirect_to admin_invitations_path

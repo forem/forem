@@ -5,6 +5,7 @@ RSpec.describe "Admin creates new page", type: :system do
 
   context "when we pass through a slug param" do
     before do
+      allow(ForemInstance).to receive(:private?).and_return(true)
       sign_in admin
       visit new_admin_page_path(slug: "code-of-conduct")
     end
