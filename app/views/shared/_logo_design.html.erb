@@ -1,6 +1,6 @@
 <div class="grid gap-6 m:grid-cols-2">
   <div class="grid gap-6">
-    <% if account.class.name == "User") %>
+    <% if account.class.name == "User" %>
       <% account.setting.brand_color1 = user_colors(account)[:bg] if account.setting && account.setting.brand_color1.blank? %>
       <% account.setting.brand_color2 = user_colors(account)[:text] if account.setting && account.setting.brand_color2.blank? %>
     <% else %>
