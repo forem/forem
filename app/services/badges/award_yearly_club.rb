@@ -12,7 +12,7 @@ module Badges
 
     MESSAGE_TEMPLATE =
       "Happy #{Settings::Community.community_name} birthday! " \
-      "Can you believe it's been %<years>d %<noun>s already?!".freeze
+        "Can you believe it's been %<years>d %<noun>s already?!".freeze
 
     def self.call
       new.call

@@ -9,7 +9,7 @@ module Badges
 
     MESSAGE_TEMPLATE =
       "Congrats on achieving this streak! Consistent writing is hard. " \
-      "The next streak badge you can get is the %<weeks>d Week Badge. 😉".freeze
+        "The next streak badge you can get is the %<weeks>d Week Badge. 😉".freeze
 
     def self.call(weeks:)
       new(weeks: weeks).call

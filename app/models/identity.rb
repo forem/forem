@@ -1,6 +1,6 @@
 class Identity < ApplicationRecord
   NO_EMAIL_MSG = "No email found. Please relink your %<provider>s " \
-                 "account to avoid errors.".freeze
+    "account to avoid errors.".freeze
 
   belongs_to :user
 

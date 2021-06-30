@@ -27,7 +27,7 @@ RSpec.describe "User uses response templates settings", type: :system do
           accept_confirm { click_button("Remove") }
         rescue Capybara::ModalNotFound => e
           puts "This spec is known to hit this error because " \
-               "accept_confirm has issues. Hits this error: #{e}"
+            "accept_confirm has issues. Hits this error: #{e}"
         end
         expect(page).to have_text "was deleted."
       end

@@ -56,11 +56,19 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
   end
 
   it "escapes codeblocks in numbered lists" do
-    code_block = "1. Define your hooks in config file `lefthook.yml`\n
-    ```yaml
-     pre-push:\n        parallel: true\n        commands:\n        rubocop:
-     run: bundle exec rspec --fail-fast\n
-    ```"
+    code_block = <<~CODE_BLOCK
+      1. Define your hooks in config file `lefthook.yml`
+
+        ```yaml
+         pre-push:
+            parallel: true
+            commands:
+            rubocop:
+         run: bundle exec rspec --fail-fast
+
+        ```
+    CODE_BLOCK
+
     escaped_codeblock = generate_and_parse_markdown(code_block)
     expect(escaped_codeblock).not_to include("```")
     expect(escaped_codeblock).not_to include("`")
