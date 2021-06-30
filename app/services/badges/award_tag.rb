@@ -2,9 +2,9 @@ module Badges
   class AwardTag
     MESSAGE_TEMPLATE =
       "Congratulations on posting the most beloved [#%<tag_name>s](%<tag_url>s) post " \
-        "from the past seven days! " \
-        "Your winning post was [%<article_title>s](%<article_url>s). " \
-        "(You can only win once per badge-eligible tag)".freeze
+      "from the past seven days! " \
+      "Your winning post was [%<article_title>s](%<article_url>s). " \
+      "(You can only win once per badge-eligible tag)".freeze
 
     def self.call
       new.call

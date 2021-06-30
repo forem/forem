@@ -96,12 +96,6 @@ Layout/EmptyLinesAroundAttributeAccessor:
 #   Enabled: false
 #   StyleGuide: '#heredoc-argument-closing-parentheses'
 
-Layout/LineEndStringConcatenationIndentation:
-  Description: >-
-                 Checks the indentation of the next line after a line that
-                 ends with a string literal and a backslash.  Enabled: true
-  EnforcedStyle: indented
-
 Layout/LineLength:
   Description: 'Checks that line length does not exceed the configured limit.'
   AutoCorrect: true # this is false by default

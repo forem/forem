@@ -4,7 +4,7 @@ module Badges
 
     MESSAGE_TEMPLATE =
       "You're famous! " \
-        "[This is the comment](%<comment>s) for which you're being recognized. 😄".freeze
+      "[This is the comment](%<comment>s) for which you're being recognized. 😄".freeze
 
     def self.call(comment_count = 25)
       new(comment_count).call
