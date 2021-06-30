@@ -202,7 +202,7 @@ class Comment < ApplicationRecord
   def shorten_urls!
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.css("a").each do |anchor|
-      unless anchor.to_s.include?("<img") || anchor.attr("class")&.include?("ltag")
+      unless anchor.to_s.include?("<img") || anchor.to_s.include?("<del") || anchor.attr("class")&.include?("ltag")
         anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img") # rubocop:disable Style/SoleNestedConditional
       end
     end

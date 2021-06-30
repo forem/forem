@@ -2,9 +2,27 @@ describe('Set a landing page from the admin portal', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
-
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
+        // Ensure Forem instance is private
+        // NOTE: @citizen428 - We may need to find a better situation for this
+        // long-term.
+        cy.visit('/admin/customization/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('@authSectionForm')
+          .findByLabelText('Invite-only mode')
+          .should('not.be.checked')
+          .check();
+
+        cy.get('@authSectionForm')
+          .findByPlaceholderText('Confirmation text')
+          .type(
+            `My username is @${user.username} and this action is 100% safe and appropriate.`,
+          );
+        cy.get('@authSectionForm').findByText('Update Settings').click();
+
         cy.visit('/admin/customization/pages');
       });
     });
