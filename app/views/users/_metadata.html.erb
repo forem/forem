@@ -12,23 +12,13 @@
         </p>
       </div>
     <% end %>
-    <% if ForemInstance.dev_to? %>
-      <% if @user.employment_title.present? %>
-        <div class="crayons-definition">
-          <strong class="crayons-definition__title">Work</strong>
-          <p class="crayons-definition__value">
-            <%= @user.employment_title %>
-            <% if @user.employer_name.present? %>
-              <span class="opacity-50"> at </span>
-              <% if @user.employer_url.present? %>
-                <a href="<%= @user.employer_url %>" class="crayons-link crayons-link--brand" target="_blank" rel="noopener"><%= @user.employer_name %></a>
-              <% else %>
-                <%= @user.employer_name %>
-              <% end %>
-            <% end %>
-          </p>
-        </div>
-      <% end %>
+    <% if @user.profile.work.present? %>
+      <div class="crayons-definition">
+        <strong class="crayons-definition__title">Work</strong>
+        <p class="crayons-definition__value">
+          <%= @user.profile.work %>
+        </p>
+      </div>
     <% end %>
   </div>
 <% end %>
