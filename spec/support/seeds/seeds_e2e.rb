@@ -191,6 +191,9 @@ seeder.create_if_doesnt_exist(ChatChannel, "channel_name", "test chat channel") 
   )
 
   channel.invite_users(users: [chat_user_1, chat_user_2])
+
+  Message.create(message_markdown: "Test message from chat_user_1", user_id: chat_user_1.id,
+                 chat_channel_id: channel.id)
 end
 
 ##############################################################################

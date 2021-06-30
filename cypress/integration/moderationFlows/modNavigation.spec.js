@@ -3,11 +3,11 @@ describe('Moderation navigation', () => {
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
+
+      cy.viewport('iphone-6');
+
       cy.get('@user').then((user) => {
-        cy.loginUser(user).then(() => {
-          cy.viewport('iphone-6');
-          cy.visit('/mod');
-        });
+        cy.loginAndVisit(user, '/mod');
       });
     });
 

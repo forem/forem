@@ -5,7 +5,7 @@ describe('Reading List Archive', () => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
     cy.get('@user').then((user) => {
-      cy.loginUser(user);
+      cy.loginAndVisit(user, '/');
     });
   });
 

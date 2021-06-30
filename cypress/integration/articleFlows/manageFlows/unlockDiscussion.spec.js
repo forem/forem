@@ -32,7 +32,9 @@ describe('Unlock discussion', () => {
             content: `This is a test article's contents.`,
             published: true,
           }).then((response) => {
-            cy.visit(`${response.body.current_state_path}/manage`);
+            cy.visitAndWaitForUserSideEffects(
+              `${response.body.current_state_path}/manage`,
+            );
             getDiscussionLockButton().click();
             getDiscussionLockSubmitButton().click();
           });
@@ -71,7 +73,7 @@ describe('Unlock discussion', () => {
             content: `This is a test article's contents.`,
             published: true,
           }).then((response) => {
-            cy.visit(response.body.current_state_path);
+            cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
           });
         });
       });
