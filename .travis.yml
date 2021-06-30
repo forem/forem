@@ -1,6 +1,4 @@
 branches:
-  only:
-    - main
 language: ruby
 cache:
   bundler: true
