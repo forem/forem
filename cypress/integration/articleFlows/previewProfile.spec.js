@@ -7,8 +7,7 @@ describe('Preview user profile from article page', () => {
       cy.viewport('iphone-7');
 
       cy.get('@user').then((user) => {
-        cy.loginUser(user).then(() => {
-          cy.visit('/');
+        cy.loginAndVisit(user, '/').then(() => {
           cy.findAllByRole('link', { name: 'Test article' })
             .first()
             .click({ force: true });
@@ -38,8 +37,7 @@ describe('Preview user profile from article page', () => {
       cy.fixture('users/articleEditorV1User.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginUser(user).then(() => {
-          cy.visit('/');
+        cy.loginAndVisit(user, '/').then(() => {
           cy.findAllByRole('link', { name: 'Test article' })
             .first()
             .click({ force: true });
@@ -186,7 +184,7 @@ describe('Preview user profile from article page', () => {
             content: `This is a test article's contents.`,
             published: true,
           }).then((response) => {
-            cy.visit(response.body.current_state_path);
+            cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
           });
         });
       });

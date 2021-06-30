@@ -3,12 +3,11 @@ describe('Home Feed Navigation', () => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
 
+    // Explicitly set the viewport to make sure we're in the full desktop view for these tests
+    cy.viewport('macbook-15');
+
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        // Explicitly set the viewport to make sure we're in the full desktop view for these tests
-        cy.viewport('macbook-15');
-        cy.visit('/');
-      });
+      cy.loginAndVisit(user, '/');
     });
   });
 

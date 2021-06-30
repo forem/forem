@@ -46,35 +46,35 @@
             target="_blank"
             class="dropdown-link-row crayons-link crayons-link--block"
             rel="noopener"
-            href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name %> <%= u Settings::General.twitter_hashtag %> <%= article_url(@article) %>'>
+            href='https://twitter.com/intent/tweet?text=<%= u "\"#{@article.title.strip}\" by " %><%= u @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name %><%= u " #{Settings::General.twitter_hashtag} " %><%= u " #{article_url(@article)}" %>'>
             Share to Twitter
           </a>
           <a
             target="_blank"
             class="dropdown-link-row crayons-link crayons-link--block"
             rel="noopener"
-            href="https://www.linkedin.com/shareArticle?mini=true&url=<%= article_url(@article) %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=<%= community_name %>">
+            href="https://www.linkedin.com/shareArticle?mini=true&url=<%= u article_url(@article) %>&title=<%= u @article.title %>&summary=<%= u @article.description %>&source=<%= u community_name %>">
             Share to LinkedIn
           </a>
           <a
             target="_blank"
             class="dropdown-link-row crayons-link crayons-link--block"
             rel="noopener"
-            href="https://www.reddit.com/submit?url=<%= article_url(@article) %>&title=<%= @article.title %>">
+            href="https://www.reddit.com/submit?url=<%= u article_url(@article) %>&title=<%= u @article.title %>">
             Share to Reddit
           </a>
           <a
             target="_blank"
             class="dropdown-link-row crayons-link crayons-link--block"
             rel="noopener"
-            href="https://news.ycombinator.com/submitlink?u=<%= article_url(@article) %>&t=<%= @article.title %>">
+            href="https://news.ycombinator.com/submitlink?u=<%= u article_url(@article) %>&t=<%= u @article.title %>">
             Share to Hacker News
           </a>
           <a
             target="_blank"
             class="dropdown-link-row crayons-link crayons-link--block"
             rel="noopener"
-            href="https://www.facebook.com/sharer.php?u=<%= article_url(@article) %>">
+            href="https://www.facebook.com/sharer.php?u=<%= u article_url(@article) %>">
             Share to Facebook
           </a>
         </div>

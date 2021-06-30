@@ -26,7 +26,7 @@ describe('Post share options', () => {
   });
 
   it('should display "Share Post via..." when navigator.share is available', () => {
-    cy.visit(articlePath, shareAvailableStub);
+    cy.visitAndWaitForUserSideEffects(articlePath, shareAvailableStub);
     cy.findByRole('button', { name: /^Share post options$/i }).as(
       'dropdownButton',
     );
@@ -35,7 +35,7 @@ describe('Post share options', () => {
   });
 
   it('should not display "Share Post via..." when navigator.share is unavailable', () => {
-    cy.visit(articlePath);
+    cy.visitAndWaitForUserSideEffects(articlePath);
     cy.findByRole('button', { name: /^Share post options$/i }).as(
       'dropdownButton',
     );
