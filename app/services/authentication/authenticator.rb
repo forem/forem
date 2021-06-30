@@ -124,8 +124,7 @@ module Authentication
         password_confirmation: password,
         signup_cta_variant: cta_variant,
         registered: true,
-        registered_at: Time.current,
-        saw_onboarding: false
+        registered_at: Time.current
       }
     end
 
