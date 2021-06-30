@@ -16,9 +16,8 @@ RSpec.describe Profiles::Update, type: :service do
   let(:user) { profile.user }
 
   it "correctly typecasts new attributes", :aggregate_failures do
-    described_class.call(user, profile: { location: 123, education: "false" })
+    described_class.call(user, profile: { location: 123 })
     expect(user.profile.location).to eq "123"
-    expect(profile.education).to eq "false"
   end
 
   it "removes old attributes from the profile" do

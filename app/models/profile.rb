@@ -36,7 +36,7 @@ class Profile < ApplicationRecord
       # TODO: [@jacobherrington] Remove this when ProfileFields for the static
       # fields are dropped from production and the associated data is removed.
       # https://github.com/forem/forem/pull/13641#discussion_r637641185
-      next if STATIC_FIELDS.any?(field.attribute_name)
+      next if field.attribute_name.in?(STATIC_FIELDS)
 
       store_attribute :data, field.attribute_name.to_sym, field.type
     end
