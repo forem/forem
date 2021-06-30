@@ -52,6 +52,7 @@ class FollowsController < ApplicationController
 
   def create
     authorize Follow
+
     followable = case params[:followable_type]
                  when "Organization"
                    Organization.find(params[:followable_id])

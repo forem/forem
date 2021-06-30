@@ -609,11 +609,8 @@ class User < ApplicationRecord
   private
 
   def create_users_settings_and_notification_settings_records
-    Users::Setting.create(user_id: id) unless setting
-    Users::NotificationSetting.create(user_id: id) unless notification_setting
-    # User object in memory lacks setting or notification_setting records;
-    # 'reload' associates them after_create, and gives access to user.setting in specs
-    reload
+    Users::Setting.find_or_create_by(user_id: id)
+    Users::NotificationSetting.find_or_create_by(user_id: id)
   end
 
   def send_welcome_notification

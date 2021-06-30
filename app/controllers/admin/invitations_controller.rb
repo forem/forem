@@ -19,7 +19,6 @@ module Admin
       end
 
       username = "#{name.downcase.tr(' ', '_').gsub(/[^0-9a-z ]/i, '')}_#{rand(1000)}"
-
       User.invite!(email: email,
                    name: name,
                    username: username,
