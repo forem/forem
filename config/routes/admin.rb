@@ -34,7 +34,7 @@ namespace :admin do
       resource :tools, only: :show
 
       namespace :tools do
-        resource :email, only: :edit
+        resource :emails, only: :edit
       end
     end
 

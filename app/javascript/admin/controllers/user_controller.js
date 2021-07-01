@@ -7,7 +7,7 @@ export default class UserController extends Controller {
   static targets = ['emailComponent', 'toolsComponent'];
   static values = { emailComponentPath: String, toolsComponentPath: String };
 
-  openEmail(event) {
+  openEmails(event) {
     event.preventDefault();
 
     Rails.ajax({
@@ -26,7 +26,7 @@ export default class UserController extends Controller {
     });
   }
 
-  closeEmail(event) {
+  closeEmails(event) {
     event.preventDefault();
 
     Rails.ajax({

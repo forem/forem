@@ -1,11 +1,11 @@
 <%# find a way to not have this dependent on Stimulus's UserController, maybe with custom events? %>
 <section
   class="crayons-card p-3 js-component"
-  data-controller="users--tools--email"
+  data-controller="users--tools--emails"
   data-user-target="emailComponent"
-  data-action="ajax:success@document->users--tools--email#ajaxSuccess ajax:error@document->users--tools--email#ajaxError">
+  data-action="ajax:success@document->users--tools--emails#ajaxSuccess ajax:error@document->users--tools--emails#ajaxError">
   <header>
-    <h3><a href="" class="crayons-title fs-l" data-action="click->user#closeEmail">← Email</a></h3>
+    <h3><a href="" class="crayons-title fs-l" data-action="click->user#closeEmails">← Emails</a></h3>
   </header>
 
   <%# Email verification #%>
@@ -17,7 +17,7 @@
                     remote: true,
                     class: "btn btn-secondary btn-sm mt-1",
                     form: {
-                      data: { "users--tools--email-target": "verifyEmailOwnership" },
+                      data: { "users--tools--emails-target": "verifyEmailOwnership" },
                       class: "inline-block"
                     } %>
     </span>
@@ -25,7 +25,7 @@
 
   <%# Send email to user #%>
   <article class="my-3">
-    <%= form_with url: send_email_admin_user_path(@user), data: { "users--tools--email-target": "sendEmail" } do |f| %>
+    <%= form_with url: send_email_admin_user_path(@user), data: { "users--tools--emails-target": "sendEmail" } do |f| %>
       <div class="crayons-field form-group">
         <%= f.label :email_subject, "Subject", class: "crayons-field__label" %>
         <%= f.text_field :email_subject,

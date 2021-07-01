@@ -17,9 +17,9 @@
 <article
   class="flex flex-row flex-wrap justify-between content-between"
   data-controller="user"
-  data-user-email-component-path-value="<%= edit_admin_user_tools_email_path(@user.id) %>"
+  data-user-email-component-path-value="<%= edit_admin_user_tools_emails_path(@user.id) %>"
   data-user-tools-component-path-value="<%= admin_user_tools_path(@user.id) %>"
-  data-action="user:home@document->user#closeEmail">
+  data-action="user:home@document->user#closeEmails">
   <div class="flex flex-column" style="flex-basis: 70%;">
     <section class="crayons-card" id="profile">
       <h3 class="crayons-subtitle-2"><%= @user.name %></h3>

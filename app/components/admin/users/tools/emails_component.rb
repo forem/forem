@@ -1,7 +1,7 @@
 module Admin
   module Users
     module Tools
-      class EmailComponent < ViewComponent::Base
+      class EmailsComponent < ViewComponent::Base
         delegate :send_email_admin_user_path, to: :helpers
 
         def initialize(user:, verification_date:)

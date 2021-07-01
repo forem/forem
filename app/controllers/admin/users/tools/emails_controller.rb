@@ -8,7 +8,7 @@ module Admin
           user = ::User.find(params[:user_id])
           verification_date = user.last_verification_date
 
-          render(EmailComponent.new(user: user, verification_date: verification_date))
+          render(EmailsComponent.new(user: user, verification_date: verification_date))
         end
 
         private
