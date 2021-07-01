@@ -78,7 +78,6 @@ class RegistrationsController < Devise::RegistrationsController
 
   def build_devise_resource
     build_resource(sign_up_params)
-    resource.saw_onboarding = false
     resource.registered_at = Time.current
     resource.remote_profile_image_url = Users::ProfileImageGenerator.call if resource.remote_profile_image_url.blank?
     check_allowed_email(resource) if resource.email.present?

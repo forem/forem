@@ -16,7 +16,7 @@ module Reactions
         cache_bust.call("/reactions?article_id=#{reaction.reactable_id}")
       when "Comment"
         path = "/reactions?commentable_id=#{reaction.reactable.commentable_id}&" \
-          "commentable_type=#{reaction.reactable.commentable_type}"
+               "commentable_type=#{reaction.reactable.commentable_type}"
         cache_bust.call(path)
       end
     end
