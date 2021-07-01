@@ -82,6 +82,8 @@ Rails.application.configure do
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
     # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :setting)
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :notification_setting)
   end
 end
 # rubocop:enable Metrics/BlockLength

@@ -89,7 +89,7 @@ RSpec.describe "User visits a homepage", type: :system do
 
     context "when opting-out of announcements" do
       before do
-        user.update!(display_announcements: false)
+        user.setting.update!(display_announcements: false)
         create(:announcement_broadcast, active: true)
         get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
         visit "/"
