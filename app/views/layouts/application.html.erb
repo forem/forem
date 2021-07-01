@@ -104,20 +104,8 @@
       </div>
     <% end %>
     <%= yield %>
-    <div class="Browser-iOS-only">
-      <div class="runtime-banner">
-        <a href="<%= URL.deep_link(request.path) %>" target="_blank" class="flex items-center flex-1">
-          <%= inline_svg_tag("logo-forem-app.svg", aria_hidden: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32) %>
-          <div class="flex flex-col pl-3">
-            <span class="">Forem</span>
-            <span class="">Open with the Forem app</span>
-          </div>
-        </a>
-        <button type="button" class="runtime-banner__dismiss crayons-btn crayons-btn--ghost crayons-btn--icon crayons-btn--inverted crayons-btn--s">
-          <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Dismiss banner: Open with the Forem app") %>
-        </button>
-      </div>
-    </div>
+    <%= javascript_packs_with_chunks_tag "runtimeBanner", defer: true %>
+    <div id="runtime-banner-container"></div>
   </div>
 </div>
 <% unless internal_navigation? %>
