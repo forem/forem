@@ -43,6 +43,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/:id.:format
   def update
     set_current_tab(params["user"]["tab"])
+    set_users_setting_and_notification_setting
 
     @user.assign_attributes(permitted_attributes(@user))
 

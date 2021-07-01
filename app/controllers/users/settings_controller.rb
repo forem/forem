@@ -45,7 +45,7 @@ module Users
     def import_articles_from_feed(users_setting)
       return if users_setting.feed_url.blank?
 
-      Feeds::ImportArticlesWorker.perform_async(nil, users_setting.user_id)
+      Feeds::ImportArticlesWorker.perform_async(users_setting.user_id)
     end
 
     def users_setting_params
