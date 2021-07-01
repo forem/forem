@@ -5,7 +5,7 @@ RSpec.describe "ChatChannels", type: :request do
   let(:user_open_inbox) do
     u = create(:user)
     u.setting.update(inbox_type: "open")
-    u.reload
+    u
   end
   let(:user_closed_inbox) { create(:user) }
   let(:test_subject) { create(:user) }
