@@ -3,7 +3,7 @@ require Rails.root.join(
   "lib/data_update_scripts/20210630041322_migrate_data_to_work_field.rb",
 )
 
-describe DataUpdateScripts::MigrateDataToWorkField do
+describe DataUpdateScripts::MigrateDataToWorkField, sidekiq: :inline do
   let!(:user) { create(:user) }
   let(:profile) { user.profile }
 

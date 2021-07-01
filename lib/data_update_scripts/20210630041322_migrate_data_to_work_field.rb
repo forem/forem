@@ -1,14 +1,10 @@
 module DataUpdateScripts
   class MigrateDataToWorkField
-    QUERY = "data->>'employment_title' IS NOT NULL AND data->>'employment_title' <> ''".freeze
+    QUERY = "data->>'employment_title' <> '' AND data->'work' IS NULL".freeze
 
     def run
-      Profile.where(QUERY).find_each do |profile|
-        next if profile.work.present?
-
-        work_info = profile.employment_title
-        work_info << " at #{profile.employer_name}" if profile.employer_name.present?
-        profile.update(work: work_info)
+      Profile.where(QUERY).ids.each do |profile_id|
+        MigrateDataToWorkFieldWorker.perform_async(profile_id)
       end
     end
   end
