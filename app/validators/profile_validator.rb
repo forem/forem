@@ -9,8 +9,8 @@ class ProfileValidator < ActiveModel::Validator
 
   ERRORS = {
     color_field: "is not a valid hex color",
-    text_area: "is too long (maximum: #{MAX_TEXT_AREA_LENGTH})",
-    text_field: "is too long (maximum: #{MAX_TEXT_FIELD_LENGTH})"
+    text_area: "is too long (maximum is #{MAX_TEXT_AREA_LENGTH} characters)",
+    text_field: "is too long (maximum is #{MAX_TEXT_FIELD_LENGTH} characters)"
   }.with_indifferent_access.freeze
 
   def validate(record)
