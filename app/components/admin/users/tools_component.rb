@@ -1,14 +1,14 @@
 module Admin
   module Users
     class ToolsComponent < ViewComponent::Base
-      renders_one :emails
+      include ActiveModel::Validations
 
-      def initialize(user:, num_emails:, verified:)
-        @user = user
+      validates :emails, presence: true
 
-        # emails
-        @num_emails = num_emails
-        @verified = verified
+      # REMINDER: should these hashes be simply sub components?
+      # @param emails [Hash] {count:, verified:}
+      def initialize(emails: {})
+        @emails = emails
       end
 
       private

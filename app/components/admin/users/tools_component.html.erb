@@ -8,8 +8,8 @@
       <h4 class="crayons-subtitle-3 mb-4">Emails</h4>
 
       <span class="color-base-70">
-        <%= @num_emails %> past emails
-        <% if @verified %> - Verified<% end -%>
+        <%= pluralize(@emails[:count], "past email") %>
+        <% if @emails[:verified] %> - Verified<% end -%>
       </span>
     </a>
 

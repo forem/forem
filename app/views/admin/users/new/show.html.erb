@@ -26,11 +26,12 @@
     </section>
 
     <%= render(
+          # TODO: move up params logic to the controller
           Admin::Users::ToolsComponent.new(
-            user: @user,
-            # to move up to the controller
-            num_emails: [@user.email_messages.count, 50].min, # we only display 50 emails at most
-            verified: @user.last_verification_date.present?,
+            emails: {
+              count: [@user.email_messages.count, 50].min, # we only display 50 emails at most
+              verified: @user.last_verification_date.present?
+            },
           ),
         ) %>
 
