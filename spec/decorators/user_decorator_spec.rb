@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe UserDecorator, type: :decorator do
   let(:saved_user) { create(:user) }
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
 
   context "with serialization" do
     it "serializes both the decorated object IDs and decorated methods" do
@@ -118,7 +118,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user_comic_sans = create(:user)
       user_comic_sans.setting.update(config_font: "comic_sans")
       allow(Settings::UserExperience).to receive(:default_font).and_return("open_dyslexic")
-      expect(user_comic_sans.decorate.config_font_name).to eq("comic_sans")
+      expect(user_comic_sans.setting.decorate.config_font_name).to eq("comic_sans")
     end
   end
 
