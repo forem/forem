@@ -10,14 +10,12 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
-require "capybara/rspec" # needed by ViewComponent tests
 require "fakeredis/rspec"
 require "pundit/matchers"
 require "pundit/rspec"
 require "sidekiq/testing"
 require "test_prof/factory_prof/nate_heckler"
 require "validate_url/rspec_matcher"
-require "view_component/test_helpers"
 require "webmock/rspec"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -72,7 +70,6 @@ RSpec.configure do |config|
 
   config.include ActionMailer::TestHelper
   config.include ApplicationHelper
-  config.include Capybara::RSpecMatchers, type: :component
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Devise::Test::IntegrationHelpers, type: :system
@@ -80,7 +77,6 @@ RSpec.configure do |config|
   config.include OmniauthHelpers
   config.include RpushHelpers
   config.include SidekiqTestHelpers
-  config.include ViewComponent::TestHelpers, type: :component
 
   config.after(:each, type: :system) do
     Warden::Manager._on_request.clear

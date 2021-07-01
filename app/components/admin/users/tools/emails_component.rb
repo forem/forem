@@ -4,10 +4,10 @@ module Admin
       class EmailsComponent < ViewComponent::Base
         delegate :send_email_admin_user_path, to: :helpers
 
-        def initialize(user:, verification_date:)
+        def initialize(user:)
           @user = user
-          @verification_date = verification_date
-          @verified = verification_date.present?
+          @verification_date = user.last_verification_date
+          @verified = @verification_date.present?
           @messages = user.email_messages.order(sent_at: :desc).limit(50)
         end
       end

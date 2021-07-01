@@ -48,11 +48,11 @@
     <% end -%>
   </article>
 
-  <%# Emails list #%>
+  <%# Emails history #%>
   <% if @messages.any? %>
   <article class="mt-5">
     <details>
-      <summary class="fw-medium">Email history (<%= @messages.size %>)</summary>
+      <summary class="fw-medium">Emails history (<%= @messages.size %>)</summary>
 
       <ul class="list-none">
         <% @messages.each_with_index do |email, index| %>
