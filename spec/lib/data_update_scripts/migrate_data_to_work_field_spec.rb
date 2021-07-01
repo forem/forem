@@ -31,7 +31,7 @@ describe DataUpdateScripts::MigrateDataToWorkField, sidekiq: :inline do
   end
 
   it "ignores blank employment titles" do
-    profile.update(employment_title: "", employer_name: "ACME Inc.")
+    profile.update!(employment_title: "", employer_name: "ACME Inc.")
     expect { described_class.new.run }.not_to change { profile.reload.work }
   end
 
