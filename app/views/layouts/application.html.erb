@@ -19,11 +19,11 @@
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
       <% unless user_signed_in? %>
-        <%= javascript_packs_with_chunks_tag "base", "Search", defer: true %>
+        <%= javascript_packs_with_chunks_tag "base", "Search", "runtimeBanner", defer: true %>
       <% end %>
       <%= javascript_include_tag "base", defer: true %>
       <% if user_signed_in? %>
-        <%= javascript_packs_with_chunks_tag "base", "Search", "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
+        <%= javascript_packs_with_chunks_tag "base", "Search", "runtimeBanner", "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
       <% end %>
       <%= yield(:page_meta) %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -104,7 +104,6 @@
       </div>
     <% end %>
     <%= yield %>
-    <%= javascript_packs_with_chunks_tag "runtimeBanner", defer: true %>
     <div id="runtime-banner-container"></div>
   </div>
 </div>

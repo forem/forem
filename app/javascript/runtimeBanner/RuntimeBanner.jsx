@@ -13,25 +13,15 @@ const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
  * <RuntimeBanner/>
  */
 export class RuntimeBanner extends Component {
-  dismissBanner = (e) => {
-    e.preventDefault();
-    // localStorage.setItem(BANNER_DISMISS_KEY, userData);
+  dismissBanner = () => {
+    localStorage.setItem(BANNER_DISMISS_KEY, true);
+    this.removeFromDOM();
+  };
 
+  removeFromDOM = () => {
     const container = document.getElementById('runtime-banner-container');
     container?.remove();
   };
-
-  /**
-   * This function redirects the browser to custom schemes, i.e. deep link into
-   * mobile apps. A separate function is needed in this case in order to test
-   * the feature using Cypress. More details can be found here:
-   * https://medium.com/cypress-io-thailand/understand-stub-spy-apis-that-will-make-your-test-better-than-ever-on-cypress-io-797cb9eb205a#b6ad
-   *
-   * @param {string} targetURI - The target custom scheme URI
-   */
-  // launchCustomSchemeDeepLink = (targetURI) => {
-  //   window.location.href = targetURI;
-  // }
 
   handleDeepLinkFallback = () => {
     // These buttons should exist in the DOM in order to attempt the fallback
@@ -80,21 +70,22 @@ export class RuntimeBanner extends Component {
   render() {
     // If the banner was dismissed it shouldn't appear again
     if (localStorage.getItem(BANNER_DISMISS_KEY)) {
+      this.removeFromDOM();
       return;
     }
 
     // Check for iOS browser only based on current Runtime
-    // if (Runtime.currentContext() !== 'Browser-iOS') {
-    //   return;
-    // }
+    if (Runtime.currentContext() !== 'Browser-iOS') {
+      this.removeFromDOM();
+      return;
+    }
 
     // If we land on `/r/mobile` it means the automatic (i.e. Universal Links)
     // deep linking didn't go through and we want to rely on the fallback
-    // mechanisms (i.e. custom scheme) to open the apps. Also, we should never
-    // render the banner in this path.
+    // mechanisms (i.e. custom scheme) to open the apps.
+    // Also, we should never render the banner in this fallback path.
     if (window.location.pathname === '/r/mobile') {
-      // We just landed into the deep link path  which means we don't
-      // need to render the banner. Instead we want to launch a custom scheme
+      this.removeFromDOM();
       this.handleDeepLinkFallback();
       return;
     }
