@@ -11,7 +11,7 @@ describe DataUpdateScripts::MigrateDataToWorkField, sidekiq: :inline do
   # will not automatically be rolled back.
   # rubocop:disable RSpec/BeforeAfterAll
   before(:all) do
-    ProfileField.find_or_create_by(label: "Work", input_type: :text_field)
+    ProfileField.find_or_create_by!(label: "Work", input_type: :text_field)
     Profile.refresh_attributes!
   end
 
