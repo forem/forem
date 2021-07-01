@@ -25,7 +25,7 @@ describe DataUpdateScripts::MigrateDataToWorkField, sidekiq: :inline do
   end
 
   it "migrates employment titles and employer name" do
-    profile.update(employment_title: "Tester", employer_name: "ACME Inc.")
+    profile.update!(employment_title: "Tester", employer_name: "ACME Inc.")
     expect { described_class.new.run }
       .to change { profile.reload.work }.from(nil).to("Tester at ACME Inc.")
   end
