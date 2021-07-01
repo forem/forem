@@ -36,7 +36,7 @@ describe DataUpdateScripts::MigrateDataToWorkField, sidekiq: :inline do
   end
 
   it "ignores blank employer names" do
-    profile.update(employment_title: "Tester", employer_name: "")
+    profile.update!(employment_title: "Tester", employer_name: "")
     expect { described_class.new.run }
       .to change { profile.reload.work }.from(nil).to("Tester")
   end
