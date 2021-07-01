@@ -1,7 +1,4 @@
 Display email on profile,check_box,,,Basic,settings_only,false
-Website URL,text_field,https://yoursite.com,,Basic,settings_only,true
-Summary,text_area,A short bio...,,Basic,settings_only,true
-Location,text_field,"Halifax, Nova Scotia",,Basic,header,true
 Education,text_field,,,Work,header,false
 Employer name,text_field,Acme Inc.,,Work,header,false
 Employer URL,text_field,https://dev.com,,Work,header,false
