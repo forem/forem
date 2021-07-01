@@ -135,7 +135,7 @@ Rails.application.configure do
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?
       message = "Data update scripts need to be run before you can start the application. " \
-        "Please run 'rails data_updates:run'"
+                "Please run 'rails data_updates:run'"
       raise message
     end
   end
