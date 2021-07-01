@@ -19,7 +19,7 @@ describe DataUpdateScripts::MigrateDataToWorkField, sidekiq: :inline do
   # rubocop:enable RSpec/BeforeAfterAll
 
   it "migrates employment titles without employer name" do
-    profile.update(employment_title: "Tester")
+    profile.update!(employment_title: "Tester")
     expect { described_class.new.run }
       .to change { profile.reload.work }.from(nil).to("Tester")
   end
