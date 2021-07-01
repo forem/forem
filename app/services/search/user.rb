@@ -12,10 +12,12 @@ module Search
 
     # User.search_score used to take employer related fields into account, but they have since been moved to profile
     # and removed from fields that are searched against.
+    # rubocop:disable Layout/LineEndStringConcatenationIndentation
     HOTNESS_SCORE_ORDER = Arel.sql(%{
       (((articles_count + comments_count + reactions_count + badge_achievements_count) * 10) * reputation_modifier)
       DESC
     }.squish).freeze
+    # rubocop:enable Layout/LineEndStringConcatenationIndentation
 
     def self.search_documents(term: nil, sort_by: :nil, sort_direction: :desc, page: 0, per_page: DEFAULT_PER_PAGE)
       # NOTE: we should eventually update the frontend
