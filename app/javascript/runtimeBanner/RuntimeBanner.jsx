@@ -8,9 +8,6 @@ const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
  * A banner that will be displayed to provide a deep link into a specified
  * ConsumerApp based on the Runtime context. If the banner is dismissed it will
  * keep track of this in localStorage so it won't be rendered again.
- *
- * @example
- * <RuntimeBanner/>
  */
 export class RuntimeBanner extends Component {
   dismissBanner = () => {

@@ -8,7 +8,7 @@ function loadElement() {
   }
 }
 
-window.InstantClick?.on('change', () => {
+window.InstantClick.on('change', () => {
   loadElement();
 });
 
