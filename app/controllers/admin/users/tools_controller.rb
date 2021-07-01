@@ -9,7 +9,7 @@ module Admin
         render(
           ToolsComponent.new(
             emails: {
-              num_emails: [user.email_messages.count, 50].min, # we only display 50 emails at most
+              count: [user.email_messages.count, 50].min, # we only display 50 emails at most
               verified: user.last_verification_date.present?
             },
           ),
