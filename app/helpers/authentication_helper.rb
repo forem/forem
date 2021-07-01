@@ -66,4 +66,8 @@ module AuthenticationHelper
       ""
     end
   end
+
+  def came_from_sign_up?
+    request.referer&.include?(new_user_registration_path)
+  end
 end
