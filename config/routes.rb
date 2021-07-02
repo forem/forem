@@ -231,9 +231,8 @@ Rails.application.routes.draw do
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     patch "/onboarding_update", to: "users#onboarding_update"
     patch "/onboarding_checkbox_update", to: "users#onboarding_checkbox_update"
-    # rubocop:disable Layout/LineLength
-    patch "/onboarding_notifications_checkbox_update", to: "users/notification_settings#onboarding_notifications_checkbox_update"
-    # rubocop:enable Layout/LineLength
+    patch "/onboarding_notifications_checkbox_update",
+          to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
     post "/chat_channels/:id/moderate", to: "chat_channels#moderate"
     post "/chat_channels/:id/open", to: "chat_channels#open"
