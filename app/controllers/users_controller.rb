@@ -11,6 +11,7 @@ class UsersController < ApplicationController
   before_action :initialize_stripe, only: %i[edit]
 
   ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
+  ALLOWED_ONBOARDING_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
   REMOVE_IDENTITY_ERROR = "An error occurred. Please try again or send an email to: %<email>s".freeze
@@ -186,8 +187,7 @@ class UsersController < ApplicationController
 
   def onboarding_checkbox_update
     if params[:user]
-      permitted_params = %i[checked_code_of_conduct checked_terms_and_conditions]
-      current_user.assign_attributes(params[:user].permit(permitted_params))
+      current_user.assign_attributes(params[:user].permit(ALLOWED_ONBOARDING_PARAMS))
     end
 
     current_user.saw_onboarding = true

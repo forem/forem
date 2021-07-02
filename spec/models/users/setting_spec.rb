@@ -1,11 +1,11 @@
 require "rails_helper"
 # rubocop:disable Layout/LineLength
 RSpec.describe Users::Setting, type: :model do
+  let(:user) { create(:user) }
+  let(:setting) { described_class.find_by(user_id: user.id) }
+
   describe "validations" do
     subject { setting }
-
-    let(:user) { create(:user) }
-    let(:setting) { described_class.find_by(user_id: user.id) }
 
     it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
     it { is_expected.to define_enum_for(:inbox_type).with_values(private: 0, open: 1).with_suffix(:inbox) }
@@ -67,6 +67,23 @@ RSpec.describe Users::Setting, type: :model do
 
         expect(setting).to be_valid
       end
+    end
+  end
+
+  describe "#resolved_font_name" do
+    it "replaces 'default' with font configured for the site in Settings::General" do
+      expect(setting.config_font).to eq("default")
+      %w[sans_serif serif open_dyslexic].each do |font|
+        allow(Settings::UserExperience).to receive(:default_font).and_return(font)
+        expect(setting.resolved_font_name).to eq(font)
+      end
+    end
+
+    it "doesn't replace the user's custom selected font" do
+      user_comic_sans = create(:user)
+      user_comic_sans.setting.update(config_font: "comic_sans")
+      allow(Settings::UserExperience).to receive(:default_font).and_return("open_dyslexic")
+      expect(user_comic_sans.setting.resolved_font_name).to eq("comic_sans")
     end
   end
 end

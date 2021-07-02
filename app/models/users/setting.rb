@@ -21,6 +21,10 @@ module Users
 
     validate :validate_feed_url, if: :feed_url_changed?
 
+    def resolved_font_name
+      config_font.gsub("default", Settings::UserExperience.default_font)
+    end
+
     private
 
     def validate_feed_url

@@ -105,23 +105,6 @@ RSpec.describe UserDecorator, type: :decorator do
     end
   end
 
-  describe "#config_font_name" do
-    it "replaces 'default' with font configured for the site in Settings::General" do
-      expect(saved_user.setting.config_font).to eq("default")
-      %w[sans_serif serif open_dyslexic].each do |font|
-        allow(Settings::UserExperience).to receive(:default_font).and_return(font)
-        expect(saved_user.setting.decorate.config_font_name).to eq(font)
-      end
-    end
-
-    it "doesn't replace the user's custom selected font" do
-      user_comic_sans = create(:user)
-      user_comic_sans.setting.update(config_font: "comic_sans")
-      allow(Settings::UserExperience).to receive(:default_font).and_return("open_dyslexic")
-      expect(user_comic_sans.setting.decorate.config_font_name).to eq("comic_sans")
-    end
-  end
-
   describe "#config_body_class" do
     it "creates proper body class with defaults" do
       expected_result = %W[
