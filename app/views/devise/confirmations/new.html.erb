@@ -13,6 +13,7 @@
     </div>
     <div class="bg-base-10 p-4 m-auto">
       <span onclick="window.Forem.showModal({
+        title: 'Did not get the email?',
         contentSelector: '#confirm-email-modal',
         overlay: true,
       })"> Click here</span> if you didnt get the email
@@ -20,17 +21,16 @@
   </div>
 
   <div id="confirm-email-modal" class="hidden">
-    <div>Didn't get thhe email?</div>
-    <div>Re-enter the email address to resent the confirmation link</div>
+    <div>Re-enter the email address below to resend the confirmation link</div>
 
     <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }, data: { testid: "resend-confirmation-form" }) do |f| %>
       <%= render "devise/shared/error_messages", resource: resource %>
 
-      <div class="crayons-field mt-2">
-        <%= f.email_field :email, tgclass: "crayons-textfield", aria: { label: "Confirmation email address" }, autofocus: false, value: proper_email %>
+      <div class="crayons-field mt-5 mb-3">
+        <%= f.email_field :email, placeholder: "john@example.com", autocomplete: "email", aria: { label: "Confirmation email address" }, class: "crayons-textfield", required: true, value: proper_email %>
       </div>
 
-      <div class="crayons-field mt-2">
+      <div class="flex">
         <%= f.submit "Resend", class: "crayons-btn mr-1" %>
         <%= f.submit "Dismiss", class: "crayons-btn crayons-btn--secondary", id: "cancel-btn" %>
       </div>
