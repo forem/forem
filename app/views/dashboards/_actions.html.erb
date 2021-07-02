@@ -28,7 +28,7 @@
   </a>
 
   <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_users" %>"
-    href="/dashboard/following_users"
+    href="<%= dashboard_following_users_path %>"
     <%= params[:action] == "following_users" ? ' aria-current="page"'.html_safe : "" %>>
     Following users
     <span class="crayons-indicator"><%= @user.following_users_count %></span>
