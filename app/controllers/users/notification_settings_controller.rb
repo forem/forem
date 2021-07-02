@@ -34,14 +34,16 @@ module Users
     end
 
     def onboarding_notifications_checkbox_update
+      authorize User
+
       if params[:notifications]
         permitted_params = %i[email_newsletter email_digest_periodic]
         current_user.notification_setting.assign_attributes(params[:notifications].permit(permitted_params))
       end
 
       current_user.saw_onboarding = true
-      authorize User
-      render_update_response(current_user.notification_setting.save)
+      success = current_user.notification_setting.save
+      render_update_response(success, current_user.notification_setting.errors_as_sentence)
     end
 
     private
