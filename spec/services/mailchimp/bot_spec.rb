@@ -50,6 +50,7 @@ RSpec.describe Mailchimp::Bot, type: :service do
 
   describe "#upsert_to_newsletter" do
     it "sends proper information" do
+      user.notification_setting.update(email_newsletter: true)
       described_class.new(user).upsert_to_newsletter
       expect(my_gibbon_client).to have_received(:upsert).with(matcher)
     end
