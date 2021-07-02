@@ -44,6 +44,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     resource.add_role(:super_admin)
     resource.add_role(:trusted)
+    resource.skip_confirmation!
     Settings::General.waiting_on_first_user = false
     Users::CreateMascotAccount.call
   end
