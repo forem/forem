@@ -7,7 +7,7 @@
   </a>
 
   <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) %>"
-    href="/<%= current_user.username %>/series"
+    href="<%= user_series_path(current_user.username) %>"
     <%= params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) ? ' aria-current="page"'.html_safe : "" %>>
     Series
     <span class="crayons-indicator"><%= @user.collections.count %></span>
