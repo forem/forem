@@ -1,4 +1,6 @@
-# NOTE: we can remove this once the DUS using it finished
+# NOTE: this worker is only used inside a DUS. Once that ran across the fleet
+# and we gave self-hosters some time to run it to we should be able to remove
+# this.
 class MigrateDataToWorkFieldWorker
   include Sidekiq::Worker
 
@@ -8,6 +10,11 @@ class MigrateDataToWorkFieldWorker
 
     work_info = profile.employment_title
     work_info << " at #{profile.employer_name}" if profile.employer_name.present?
-    profile.update(work: work_info)
+
+    # NOTE: This worker is only concerned with updating "work", an unvalidated
+    # key in the JSONB data object. We don't want this to fail, even if e.g.
+    # a newly added validation makes the record invalid.
+    profile.data[:work] = work_info
+    profile.save(validate: false)
   end
 end
