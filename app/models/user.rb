@@ -303,13 +303,14 @@ class User < ApplicationRecord
   before_validation :verify_email
   before_validation :set_username
   before_validation :strip_payment_pointer
+  before_create :create_users_settings_and_notification_settings_records
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
 
-  after_create_commit :send_welcome_notification, :create_users_settings_and_notification_settings_records
+  after_create_commit :send_welcome_notification
 
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
@@ -606,8 +607,8 @@ class User < ApplicationRecord
   private
 
   def create_users_settings_and_notification_settings_records
-    Users::Setting.find_or_create_by(user_id: id)
-    Users::NotificationSetting.find_or_create_by(user_id: id)
+    self.setting = Users::Setting.create
+    self.notification_setting = Users::NotificationSetting.create
   end
 
   def send_welcome_notification
