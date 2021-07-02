@@ -18,6 +18,8 @@
     <% if any_enabled_auth_providers? %>
       If you haven't created an account, we recommend signing up with social authentication below.
     <% end %>
-      Contact <%= email_link %> if you continue having trouble.
+    If you haven't received your confirmation email yet, <a href="<%= confirm_email_path %>">click here</a> to resend it.
+    <br>
+    Contact <%= email_link %> if you continue having trouble.
   </div>
 <% end %>
