@@ -506,9 +506,6 @@ class User < ApplicationRecord
   end
 
   def subscribe_to_mailchimp_newsletter
-    # in app/services/mailchimp/bot.rb, the user object has no setting or
-    # notification_setting records without calling this hook within this method
-    create_users_settings_and_notification_settings_records
     return unless registered && email.present?
     return if Settings::General.mailchimp_api_key.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
