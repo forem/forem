@@ -67,9 +67,14 @@ function create_production_containers {
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":$(date +%Y%m%d) \
-               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":${BUILDKITE_COMMIT:0:7} \
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":latest .
+
+  docker build --target production \
+               --label quay.expires-after=8w \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
+               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":${BUILDKITE_COMMIT:0:7} .
 
   # Build the testing image
   docker build --target testing \
