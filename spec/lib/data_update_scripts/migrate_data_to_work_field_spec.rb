@@ -7,16 +7,10 @@ describe DataUpdateScripts::MigrateDataToWorkField, sidekiq: :inline do
   let!(:user) { create(:user) }
   let(:profile) { user.profile }
 
-  # Since we have use_transactional_fixtures enabled changes in before(:all)
-  # will not automatically be rolled back.
-  # rubocop:disable RSpec/BeforeAfterAll
-  before(:all) do
+  before do
     ProfileField.find_or_create_by!(label: "Work", input_type: :text_field)
     Profile.refresh_attributes!
   end
-
-  after(:all) { ProfileField.destroy_by(label: "Work") }
-  # rubocop:enable RSpec/BeforeAfterAll
 
   it "migrates employment titles without employer name" do
     profile.update!(employment_title: "Tester")
