@@ -39,7 +39,7 @@ RSpec.describe "UserNotificationSettings", type: :request do
 
     it "returns error message if settings can't be saved" do
       put users_notification_settings_path(user.notification_setting.id),
-          params: { users_notification_setting: { tab: "notifications", welcome_notifications: nil } }
+          params: { users_notification_setting: { tab: "notifications", email_digest_periodic: nil } }
 
       expect(flash[:error]).not_to be_blank
     end
