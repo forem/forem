@@ -1,10 +1,6 @@
 module Settings
-  class Campaign < RailsSettings::Base
+  class Campaign < Base
     self.table_name = :settings_campaigns
-
-    # The configuration is cached, change this if you want to force update
-    # the cache, or call Settings::Campaign.clear_cache
-    cache_prefix { "v1" }
 
     # Define your fields
     field :articles_expiry_time, type: :integer, default: 4

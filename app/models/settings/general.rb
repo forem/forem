@@ -1,12 +1,6 @@
-# Settings based on RailsSettings models,
-# see <https://github.com/huacnlee/rails-settings-cached> for further info
 module Settings
-  class General < RailsSettings::Base
+  class General < Base
     self.table_name = "site_configs"
-
-    # the configuration is cached, change this if you want to force update
-    # the cache, or call Settings::General.clear_cache
-    cache_prefix { "v1" }
 
     HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/.freeze
     LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze

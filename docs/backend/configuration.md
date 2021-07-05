@@ -7,7 +7,6 @@ title: Configuration
 We currently use the following gems for configuring the application:
 
 - [dotenv](https://github.com/bkeepers/dotenv)
-- [rails-settings-cached](https://github.com/huacnlee/rails-settings-cached)
 - [vault](https://github.com/hashicorp/vault-ruby)
 
 ## dotenv
@@ -24,22 +23,6 @@ Settings managed via your ENV can be found in
 `/admin/customization/config` (see [the Admin guide](/admin)):
 
 ![Screenshot of env variable admin interface](https://user-images.githubusercontent.com/47985/73627243-67d41f80-467e-11ea-9121-221275ff8a89.png)
-
-## rails-settings-cached
-
-We use this gem for managing settings used within the app's business logic.
-Examples:
-
-- `Settings::General.main_social_image`
-- `Settings::RateLimit.follow_count_daily`
-- `Settings::Authentication.twitter_secret`
-
-These settings can be accessed via the
-[`Settings::General`](https://github.com/forem/forem/blob/master/app/models/settins/general.rb)
-object and various models in the `Settings::` namespace and viewed / modified
-via `/admin/customization/config` (see [the Admin guide](/admin)).
-
-![Screenshot of settings admin interface](https://user-images.githubusercontent.com/47985/73627238-6276d500-467e-11ea-8724-afb703f056bc.png)
 
 ## Vault
 
@@ -79,3 +62,24 @@ One advantage of using Vault with Forem is that it allows you to update your
 secrets easily through the application rather than having to mess with ENV
 files. If you would like to try out Vault, follow our
 [installation guide for setting it up locally](/installation/vault).
+
+## `Settings::Base`
+
+This is our customized version of the
+[rails-settings-cached](https://github.com/huacnlee/rails-settings-cached) code
+which allows for multiple settings model by defining class-specic request
+caches.
+
+We use this base class for defining settings classes used within the app's
+business logic. Examples:
+
+- `Settings::General.main_social_image`
+- `Settings::RateLimit.follow_count_daily`
+- `Settings::Authentication.twitter_secret`
+
+These settings can be accessed via the
+[`Settings::General`](https://github.com/forem/forem/blob/master/app/models/settins/general.rb)
+object and various models in the `Settings::` namespace and viewed / modified
+via `/admin/customization/config` (see [the Admin guide](/admin)).
+
+![Screenshot of settings admin interface](https://user-images.githubusercontent.com/47985/73627238-6276d500-467e-11ea-8724-afb703f056bc.png)

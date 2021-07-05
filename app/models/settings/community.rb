@@ -1,10 +1,6 @@
 module Settings
-  class Community < RailsSettings::Base
+  class Community < Base
     self.table_name = :settings_communities
-
-    # The configuration is cached, change this if you want to force update
-    # the cache, or call Settings::Community.clear_cache
-    cache_prefix { "v1" }
 
     field :copyright_start_year,
           type: :integer,

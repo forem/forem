@@ -1,10 +1,6 @@
 module Settings
-  class Authentication < RailsSettings::Base
+  class Authentication < Base
     self.table_name = :settings_authentications
-
-    # The configuration is cached, change this if you want to force update
-    # the cache, or call Settings::Authentication.clear_cache
-    cache_prefix { "v1" }
 
     field :allow_email_password_login, type: :boolean, default: true
     field :allow_email_password_registration, type: :boolean, default: false

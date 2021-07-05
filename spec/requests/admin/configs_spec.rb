@@ -14,7 +14,9 @@ RSpec.describe "/admin/customization/config", type: :request do
     end
 
     it "bars the regular user to access" do
-      expect { post admin_settings_general_settings_path, params: {} }.to raise_error(Pundit::NotAuthorizedError)
+      expect do
+        post admin_settings_general_settings_path, params: {}
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 
