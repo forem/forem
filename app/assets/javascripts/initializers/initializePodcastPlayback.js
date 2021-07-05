@@ -183,6 +183,7 @@ function initializePodcastPlayback() {
     Array.prototype.forEach.call(records, function (record) {
       var episodeSlug = record.getAttribute('data-episode');
       var podcastSlug = record.getAttribute('data-podcast');
+      let isPressed = record.getAttribute('aria-pressed');
 
       var togglePodcastState = function (e) {
         e.preventDefault();
@@ -192,7 +193,9 @@ function initializePodcastPlayback() {
             (isValidKey || e.type === "onclick") 
             && podcastBarAlreadyExistAndPlayingTargetEpisode(episodeSlug)
           ) {
+          
           var audio = getById('audio');
+          record.setAttribute('aria-pressed', String(!isPressed));
 
           if (audio) {
             playPause(audio);
