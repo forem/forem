@@ -13,7 +13,7 @@ end
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
 gem "acts-as-taggable-on", "~> 8.1" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
-gem "addressable", "~> 2.7" # A replacement for the URI implementation that is part of Ruby's standard library
+gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "ahoy_email", "~> 2.0.2" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.2" # Tracking analytics for Rails
 gem "ancestry", "~> 4.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
@@ -98,7 +98,7 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.2.1" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.0.12" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.1.2" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
@@ -161,7 +161,7 @@ group :test do
   gem "factory_bot_rails", "~> 6.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "fakeredis", "~> 0.8.0" # Fake (In-memory) driver for redis-rb. Useful for testing environment and machines without Redis.
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
-  gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
+  gem "pundit-matchers", "~> 1.7" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "~> 4.5.1", require: false # Simple one-liner tests for common Rails functionality

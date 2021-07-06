@@ -3,6 +3,7 @@ class Profile < ApplicationRecord
 
   validates :data, presence: true
   validates :user_id, uniqueness: true
+  validates :location, :website_url, length: { maximum: 100 }
   validates_with ProfileValidator
 
   has_many :custom_profile_fields, dependent: :destroy
