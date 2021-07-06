@@ -1,7 +1,7 @@
 # app/workers/images/delete_worker.rb
 
 module Images
-  class DeleteImageWorker
+  class DeleteWorker
     include Sidekiq::Worker
     sidekiq_options queue: :low_priority, retry: 5
 

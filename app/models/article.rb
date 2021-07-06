@@ -830,12 +830,12 @@ class Article < ApplicationRecord
 
     ::Articles::DetectAnimatedImagesWorker.perform_async(id)
   end
-  
+
   def delete_images
-    image_paths = article.body_markdown.scan(IMG_MARKDOWN_REGEX).flatten
-    main_image_presence = article.main_image&.scan(IMG_MARKDOWN_REGEX)
-    image_paths << main_image_presence if main_image_presence # this isn't quite right but you get the idea
-    DeleteImageWorker.perform_async(image_paths)
+    image_paths = body_markdown.scan(IMG_MARKDOWN_REGEX).flatten
+    main_image_path = main_image&.scan(IMG_MARKDOWN_REGEX)
+    image_paths << main_image_path if main_image_path
+    Images::DeleteWorker.perform_async(image_paths)
   end
 
 end
