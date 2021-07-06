@@ -3,8 +3,8 @@ describe('Dashboard navigation', () => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
 
-    cy.intercept('/api/followers**', []);
-    cy.intercept('/api/followings**', []);
+    cy.intercept('/api/followers/**', []);
+    cy.intercept('/followings/**', []);
 
     cy.get('@user').then((user) => {
       cy.loginAndVisit(user, '/dashboard');
