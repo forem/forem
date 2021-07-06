@@ -56,7 +56,7 @@ gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML us
 gem "liquid", "~> 5.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.11" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.21" # Simple wrapper for the GitHub API
-gem "oj", "~> 3.11" # JSON parser and object serializer
+gem "oj", "~> 3.12" # JSON parser and object serializer
 gem "omniauth", "~> 2.0" # A generalized Rack framework for multiple-provider authentication
 gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
 gem "omniauth-facebook", "~> 8.0" # OmniAuth strategy for Facebook
