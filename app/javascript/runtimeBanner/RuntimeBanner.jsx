@@ -51,15 +51,13 @@ export class RuntimeBanner extends Component {
       window.location.href = targetLink;
     } else if (Runtime.currentOS() === 'Android') {
       const targetIntent =
-        'intent://scan/#Intent;scheme=zxing;package=com.google.zxing.client.android;end';
+        'intent://scan/#Intent;scheme=com.forem.app;package=com.forem.app;end';
       retryButton.href = targetIntent;
       installNowButton.href = FOREM_GOOGLE_PLAY_URL;
 
-      // Android support will not be available yet. Links to `/r/mobile` won't be
-      // visible in Android browsers. However, as a fallback (safety) measure to
-      // avoid having Android users land in this page we redirect them back to the
-      // home page. This to avoids users landing in an unsupported (not working
-      // for them) page.
+      // Android support isn't available yet. Android users visiting `/r/mobile`
+      // will be redirected to the home page so they don't land on a unsupported
+      // page until this feature is ready for them.
       window.location.href = '/';
     }
   };
@@ -87,16 +85,14 @@ export class RuntimeBanner extends Component {
       return;
     }
 
-    const targetPath = `/r/mobile?deep_link=${window.location.pathname}`;
-    const targetURL = `https://udl.forem.com/?r=${targetPath}`;
+    const targetPath = `https://${window.location.host}/r/mobile?deep_link=${window.location.pathname}`;
+    // const targetURL = `https://udl.forem.com/?r=${targetPath}`;
+    const targetURL = `https://udl-server.ngrok.io/${encodeURIComponent(
+      targetPath,
+    )}`;
     return (
       <div class="runtime-banner">
-        <a
-          href={targetURL}
-          target="_blank"
-          class="flex items-center flex-1"
-          rel="noreferrer"
-        >
+        <a href={targetURL} class="flex items-center flex-1">
           <svg
             class="crayons-icon crayons-icon--default"
             width="32"
