@@ -38,15 +38,15 @@ module Settings
         @defined_fields.detect { |field| field[:key] == key.to_s } || {}
       end
 
-      def cache_key
-        @cache_key ||= name.underscore
-      end
-
       def keys
         @defined_fields.pluck(:key)
       end
 
       private
+
+      def cache_key
+        @cache_key ||= name.underscore
+      end
 
       def define_field(key, default: nil, type: :string, separator: nil, validates: nil)
         key = key.to_s
