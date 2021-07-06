@@ -4,6 +4,7 @@ describe('Dashboard navigation', () => {
     cy.fixture('users/articleEditorV1User.json').as('user');
 
     cy.intercept('/api/followers**', []);
+    cy.intercept('/api/followings**', []);
 
     cy.get('@user').then((user) => {
       cy.loginAndVisit(user, '/dashboard');
