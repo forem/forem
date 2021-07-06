@@ -4,9 +4,7 @@ describe('User Update Settings Profile', () => {
     cy.fixture('users/articleEditorV1User.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/settings/profile');
-      });
+      cy.loginAndVisit(user, '/settings/profile');
     });
   });
 
@@ -16,7 +14,7 @@ describe('User Update Settings Profile', () => {
     const location = 'New York City';
 
     cy.findByLabelText(/^Website URL$/i).type(websiteURL);
-    cy.findByLabelText(/^Summary$/i).type(summary);
+    cy.findByLabelText(/^Bio$/i).type(summary);
     cy.findByLabelText(/^Location$/i).type(location);
 
     cy.findByText(/^Save Profile Information$/i).click();
@@ -30,7 +28,7 @@ describe('User Update Settings Profile', () => {
       'have.value',
       websiteURL,
     );
-    cy.findByRole('textbox', { name: 'Summary' }).should('have.value', summary);
+    cy.findByRole('textbox', { name: 'Bio' }).should('have.value', summary);
     cy.findByRole('textbox', { name: 'Location' }).should(
       'have.value',
       location,

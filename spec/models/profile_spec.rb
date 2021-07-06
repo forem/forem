@@ -13,12 +13,6 @@ RSpec.describe Profile, type: :model do
     describe "conditionally validating summary" do
       let(:invalid_summary) { "x" * ProfileValidator::MAX_SUMMARY_LENGTH.next }
 
-      it "doesn't validate if the profile field doesn't exist" do
-        allow(ProfileField).to receive(:exists?).with(attribute_name: "summary").and_return(false)
-        profile.summary = invalid_summary
-        expect(profile).to be_valid
-      end
-
       it "is valid if users previously had long summaries and are grandfathered" do
         profile.summary = invalid_summary
         profile.save(validate: false)
@@ -76,7 +70,8 @@ RSpec.describe Profile, type: :model do
       it "is invalid if the text is too long" do
         profile.skills_languages = "x" * ProfileValidator::MAX_TEXT_AREA_LENGTH.next
         expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Skills languages is too long (maximum: 200)"
+        expect(profile.errors_as_sentence)
+          .to eq "Skills languages is too long (maximum is 200 characters)"
       end
     end
 
@@ -89,7 +84,7 @@ RSpec.describe Profile, type: :model do
       it "is invalid if the text is too long" do
         profile.location = "x" * ProfileValidator::MAX_TEXT_FIELD_LENGTH.next
         expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Location is too long (maximum: 100)"
+        expect(profile.errors_as_sentence).to eq "Location is too long (maximum is 100 characters)"
       end
     end
   end

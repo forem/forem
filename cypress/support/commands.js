@@ -1,3 +1,5 @@
+import { getInterceptsForLingeringUserRequests } from '../util/networkUtils';
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -23,6 +25,44 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+/**
+ * Use this function to sign a user out without lingering network calls causing unintended side-effects.
+ */
+Cypress.Commands.add('signOutUser', () => {
+  const intercepts = getInterceptsForLingeringUserRequests(false);
+
+  return cy.request('DELETE', '/users/sign_out').then(() => {
+    cy.visit('/');
+    cy.wait(intercepts);
+  });
+});
+
+/**
+ * Logins in a user and visits the given URL, waiting for all user-related network requests triggered by the login to complete.
+ * This ensures that no user side effects bleed into subsequent tests.
+ */
+Cypress.Commands.add('loginAndVisit', (user, url) => {
+  cy.loginUser(user).then(() => {
+    cy.visitAndWaitForUserSideEffects(url);
+  });
+});
+
+/**
+ * Visits the given URL, waiting for all user-related network requests to complete.
+ * This ensures that no user side effects bleed into subsequent tests.
+ */
+Cypress.Commands.add('visitAndWaitForUserSideEffects', (url, options) => {
+  // If navigating directly to an admin route, no relevant network requests to intercept
+  const { baseUrl } = Cypress.config().baseUrl;
+  if (url === `${baseUrl}/admin` || url.includes('/admin/')) {
+    cy.visit(url, options);
+  } else {
+    const intercepts = getInterceptsForLingeringUserRequests(true);
+    cy.visit(url, options);
+    cy.wait(intercepts);
+  }
+});
 
 /**
  * Runs necessary test setup to run a clean test.

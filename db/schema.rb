@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_24_153854) do
+ActiveRecord::Schema.define(version: 2021_06_29_174206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1393,7 +1393,7 @@ ActiveRecord::Schema.define(version: 2021_06_24_153854) do
     t.float "reputation_modifier", default: 1.0
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
-    t.boolean "saw_onboarding", default: true
+    t.boolean "saw_onboarding", default: false
     t.integer "score", default: 0
     t.string "secret"
     t.integer "sign_in_count", default: 0, null: false
