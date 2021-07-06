@@ -4,7 +4,6 @@
 #
 # See: https://github.com/huacnlee/rails-settings-cached
 module Settings
-  # rubocop:disable Security/YAMLLoad
   class Base < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
     self.abstract_class = true
 
@@ -16,19 +15,8 @@ module Settings
     SEPARATOR_REGEXP = /[\n,;]+/.freeze
 
     class << self
-      def inherited(subclass)
-        super
-
-        # This defines a custom request cache based on ActiveSupport::CurrentAttributes.
-        # See: https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html
-        # NOTE: An anonymous class doesn't work here due to implementation details of
-        # CurrentAttributes.
-        request_cache = Class.new(ActiveSupport::CurrentAttributes) { attribute :settings }
-        subclass.const_set(:RequestCache, request_cache)
-      end
-
       def clear_cache
-        self::RequestCache.reset
+        RequestStore.delete(cache_key)
         Rails.cache.delete(cache_key)
       end
 
@@ -47,7 +35,7 @@ module Settings
       end
 
       def cache_key
-        @cache_key ||= name.underscore.tr("/", "_")
+        @cache_key ||= name.underscore
       end
 
       def keys
@@ -113,16 +101,11 @@ module Settings
         when :array
           value.split(separator || SEPARATOR_REGEXP).reject(&:empty?).map(&:strip)
         when :hash
-          value =
-            begin
-              begin
-                YAML.load(value).to_h
-              rescue StandardError
-                eval(value).to_h # rubocop:disable Security/Eval
-              end
-            rescue StandardError
-              {}
-            end
+          value = begin
+            YAML.safe_load(value).to_h
+          rescue StandardError
+            {}
+          end
           value.deep_stringify_keys!
           ActiveSupport::HashWithIndifferentAccess.new(value)
         when :integer
@@ -147,17 +130,17 @@ module Settings
       end
 
       def all_settings
-        self::RequestCache.settings ||=
-          Rails.cache.fetch(cache_key, expires_in: 1.week) do
-            result = unscoped.select("var, value").map { |record| [record.var, record.value] }.to_h
-            result.with_indifferent_access
-          end
+        RequestStore[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 1.week) do
+          unscoped.select(:var, :value).each_with_object({}) do |record, result|
+            result[record.var] = record.value
+          end.with_indifferent_access
+        end
       end
     end
 
     # get the value field, YAML decoded
     def value
-      YAML.load(self[:value]) if self[:value].present?
+      YAML.load(self[:value]) if self[:value].present? # rubocop:disable Security/YAMLLoad
     end
 
     # set the value field, YAML encoded
@@ -169,5 +152,4 @@ module Settings
       self.class.clear_cache
     end
   end
-  # rubocop:enable Security/YAMLLoad
 end
