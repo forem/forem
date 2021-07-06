@@ -14,7 +14,9 @@ describe('Remove main image v2 editor', () => {
           mainImage:
             'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/248/dog-face_1f436.png',
         }).then((response) => {
-          cy.visit(`${response.body.current_state_path}/edit`);
+          cy.visitAndWaitForUserSideEffects(
+            `${response.body.current_state_path}/edit`,
+          );
         });
       });
     });

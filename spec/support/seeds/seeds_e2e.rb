@@ -134,7 +134,6 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.com")
     saw_onboarding: true,
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
-    editor_version: "v2",
   )
 end
 
@@ -192,6 +191,9 @@ seeder.create_if_doesnt_exist(ChatChannel, "channel_name", "test chat channel") 
   )
 
   channel.invite_users(users: [chat_user_1, chat_user_2])
+
+  Message.create(message_markdown: "Test message from chat_user_1", user_id: chat_user_1.id,
+                 chat_channel_id: channel.id)
 end
 
 ##############################################################################
@@ -215,9 +217,9 @@ end
 
 seeder.create_if_doesnt_exist(NavigationLink, "url", "/contact") do
   icon = '<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">'\
-      '<path d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342'\
-      '7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"/>'\
-    '</svg>'
+         '<path d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342'\
+         '7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"/>'\
+         '</svg>'
   6.times do |i|
     NavigationLink.create!(
       name: "Nav link #{i}",

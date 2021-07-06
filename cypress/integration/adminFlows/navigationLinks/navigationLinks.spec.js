@@ -4,9 +4,7 @@ describe('Navigation links', () => {
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/admin/customization/navigation_links');
-      });
+      cy.loginAndVisit(user, '/admin/customization/navigation_links');
     });
   });
 

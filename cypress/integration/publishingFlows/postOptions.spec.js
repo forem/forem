@@ -4,9 +4,7 @@ describe('V2 Editor Post options', () => {
     cy.fixture('users/articleEditorV2User.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/new');
-      });
+      cy.loginAndVisit(user, '/new');
     });
   });
 
@@ -16,9 +14,7 @@ describe('V2 Editor Post options', () => {
       cy.fixture('users/articleEditorV2User.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginUser(user).then(() => {
-          cy.visit('/new');
-        });
+        cy.loginAndVisit(user, '/new');
       });
     });
 
@@ -123,7 +119,7 @@ describe('V2 Editor Post options', () => {
             content: `This is a test article's contents.`,
             published: true,
           }).then(() => {
-            cy.visit('/dashboard');
+            cy.visitAndWaitForUserSideEffects('/dashboard');
             cy.findByRole('link', {
               name: 'Edit post: Post options test article',
             }).click();
