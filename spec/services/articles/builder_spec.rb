@@ -129,7 +129,7 @@ RSpec.describe Articles::Builder, type: :service do
     let(:user) { create(:user, editor_version: "v1") }
     let(:correct_attributes) do
       body = "---\ntitle: \npublished: false\ndescription: \ntags: " \
-        "\n//cover_image: https://direct_url_to_image.jpg\n---\n\n"
+             "\n//cover_image: https://direct_url_to_image.jpg\n---\n\n"
 
       {
         body_markdown: body,

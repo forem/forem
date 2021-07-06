@@ -6,8 +6,8 @@ module Constants
           description: "Determines the default reading font (registered users can change this in their UX settings)"
         },
         feed_strategy: {
-          description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental
-        (which should only be used for 10k+ member communities)",
+          description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental " \
+                       "(which should only be used for 10k+ member communities)",
           placeholder: "basic"
         },
         feed_style: {

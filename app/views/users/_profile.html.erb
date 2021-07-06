@@ -37,7 +37,52 @@
   </div>
 
   <% profile = @user.profile %>
+
+  <div class="crayons-card crayons-card--content-rows">
+    <h2>Basic</h2>
+
+    <div class="crayons-field">
+      <label class="crayons-field__label" for="profile[website_url]">
+        Website URL
+      </label>
+      <%= f.text_field "profile[website_url]",
+                       value: profile.website_url,
+                       placeholder: "https://yoursite.com",
+                       class: "crayons-textfield js-color-field" %>
+    </div>
+
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box "profile[display_email_on_profile]",
+                      checked: profile.display_email_on_profile,
+                      class: "crayons-checkbox" %>
+      <label class="crayons-field__label" for="profile[display_email_on_profile]">
+        Display email on profile
+      </label>
+    </div>
+
+    <div class="crayons-field">
+      <label class="crayons-field__label" for="profile[location]">
+        Location
+      </label>
+      <%= f.text_field "profile[location]",
+                       value: profile.location,
+                       placeholder: "Halifax, Nova Scotia",
+                       class: "crayons-textfield js-color-field" %>
+    </div>
+
+    <div class="crayons-field">
+      <label class="crayons-field__label" for="profile[summary]">
+        Bio
+      </label>
+      <%= f.text_field "profile[summary]",
+                       value: profile.summary,
+                       placeholder: "A short bio...",
+                       class: "crayons-textfield js-color-field" %>
+    </div>
+  </div>
+
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
+    <% next if group.name == "Basic" # TODO: @citizen428 Remove this after user settings work (email field) %>
     <% next if group.name == "Links" # TODO: [@jacobherrington] Remove this when we drop social links %>
     <div class="crayons-card crayons-card--content-rows">
       <h2><%= group.name %></h2>

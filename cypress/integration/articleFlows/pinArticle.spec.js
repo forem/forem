@@ -18,6 +18,23 @@ describe('Pin an article - Non admin user', () => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
 
+    // Responses from these requests are not required for this test, and are stubbed to prevent responses interfering with subsequent tests
+    cy.intercept('/reactions?article**', {
+      body: {
+        current_user: { id: '' },
+        reactions: [],
+        article_reaction_counts: [],
+      },
+    });
+    cy.intercept('/reactions?commentable**', {
+      body: {
+        current_user: { id: '' },
+        reactions: [],
+        public_reaction_counts: [],
+      },
+    });
+    cy.intercept('/follows**', {});
+
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
         cy.createArticle({
@@ -27,6 +44,8 @@ describe('Pin an article - Non admin user', () => {
           published: true,
         }).then((response) => {
           cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
+          // Wait for page to load
+          cy.findByRole('heading', { name: 'Test Article' });
         });
       });
     });
