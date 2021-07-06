@@ -14,6 +14,10 @@ module Settings
     PROTECTED_KEYS = %w[var value].freeze
     SEPARATOR_REGEXP = /[\n,;]+/.freeze
 
+    # In rails-settings-cache this is defined in the railtie.
+    # See: https://github.com/huacnlee/rails-settings-cached/blob/main/lib/rails-settings/railtie.rb
+    after_commit :clear_cache, on: %i[create update destroy]
+
     class << self
       def clear_cache
         RequestStore.delete(cache_key)
