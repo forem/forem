@@ -122,9 +122,18 @@ module ApplicationHelper
   def follow_button(followable, style = "full", classes = "")
     return if followable == DELETED_USER
 
-    info   = { id: followable.id, className: followable.class.name, style: style }.to_json
-    button_tag("Follow", type: "button", data: { info: info },
-                         class: "crayons-btn follow-action-button #{classes} whitespace-nowrap")
+    tag.button(
+      name: :button,
+      type: :button,
+      data: {
+        info: {
+          id: followable.id,
+          className: followable.class.name,
+          style: style
+        }
+      },
+      class: "crayons-btn follow-action-button whitespace-nowrap #{classes}",
+    )
   end
 
   def user_colors_style(user)
