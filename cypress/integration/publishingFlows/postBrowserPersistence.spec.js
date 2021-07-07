@@ -82,6 +82,31 @@ describe('Post Editor', () => {
           getPostContent().should('have.value', initialContent);
         });
       });
+
+      it('should not revert changes in the editor if the member clicks cancel in the confirmation dialog', () => {
+        const updatedContent = `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`;
+
+        cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
+
+        // Fill out the title, tags, and content for an post.
+        getPostContent().clear();
+
+        // Clearing out the whole content area as this seemed simpler than finding where to add the fields in the v1 editor
+        getPostContent().click();
+        getPostContent()
+          // The v1 editor has all the post info in one textarea
+          .type(updatedContent, { force: true })
+          .should('have.value', updatedContent);
+
+        cy.findByRole('button', {
+          name: /^Revert new changes$/i,
+        }).click();
+
+        cy.on('window:confirm', () => false);
+
+        // The post editor should reset to it's initial values
+        getPostContent().should('have.value', updatedContent);
+      });
     });
   });
 
@@ -218,6 +243,42 @@ describe('Post Editor', () => {
             `This is a Test Post's contents.`,
           );
         });
+      });
+
+      it('should not revert changes in the editor if the member clicks cancel in the confirmation dialog', () => {
+        cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
+        const title = 'Some Title';
+        const tags = 'tag1, tag2, tag3';
+        const content = 'This is some text in the body.';
+
+        // Fill out the title, tags, and content for an post.
+        cy.get('@articleForm')
+          .findByLabelText(/^Post Title$/i)
+          .as('postTitle')
+          .type(title);
+        cy.get('@articleForm')
+          .findByLabelText(/^Post Tags$/i)
+          .as('postTags')
+          .type(tags);
+        cy.get('@articleForm')
+          .findByLabelText(/^Post Content$/i)
+          .as('postContent')
+          .type(content, { force: true });
+
+        cy.get('@postTitle').should('have.value', title);
+        cy.get('@postTags').should('have.value', tags);
+        getPostContent().should('have.value', content);
+
+        cy.findByRole('button', { name: /^Revert new changes$/i }).click();
+
+        cy.on('window:confirm', () => false);
+
+        // The post editor should reset to it's initial values
+        // NOTE: The aliases for the title and tags input are not being used because the DOM nodes
+        // are no longer the same reference after reverting changes in the editor.
+        cy.get('@postTitle').should('have.value', title);
+        cy.get('@postTags').should('have.value', tags);
+        getPostContent().should('have.value', content);
       });
     });
   });
