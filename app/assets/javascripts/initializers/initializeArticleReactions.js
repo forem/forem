@@ -2,14 +2,9 @@
 
 // Set reaction count to correct number
 function setReactionCount(reactionName, newCount) {
-  var reactionButton = document.getElementById('reaction-butt-' + reactionName);
-
-  if (!reactionButton) {
-    // This happens if you leave a page too quickly.
-    return;
-  }
-
-  var reactionClassList = reactionButton.classList;
+  var reactionClassList = document.getElementById(
+    'reaction-butt-' + reactionName,
+  ).classList;
   var reactionNumber = document.getElementById(
     'reaction-number-' + reactionName,
   );
