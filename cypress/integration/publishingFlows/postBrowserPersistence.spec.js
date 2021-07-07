@@ -128,8 +128,15 @@ describe('Post Editor', () => {
         cy.findByRole('button', { name: /^Revert new changes$/i }).click();
 
         // The post editor should reset to it's initial values
-        cy.get('@postTitle').should('have.value', '');
-        cy.get('@postTags').should('have.value', '');
+        // NOTE: The aliases for the title and tags input are not being used because the DOM nodes
+        // are no longer the same reference after reverting changes in the editor.
+        cy.get('@articleForm')
+          .findByLabelText(/^Post Title$/i)
+          .should('have.value', '');
+        cy.get('@articleForm')
+          .findByLabelText(/^Post Tags$/i)
+          .as('postTags')
+          .should('have.value', '');
         getPostContent().should('have.value', '');
       });
 
@@ -196,8 +203,16 @@ describe('Post Editor', () => {
           cy.findByRole('button', { name: /^Revert new changes$/i }).click();
 
           // The post editor should reset to it's saved version from the server that was initially loaded into the editor.
-          cy.get('@postTitle').should('have.value', 'Test Post');
-          cy.get('@postTags').should('have.value', 'beginner, ruby, go');
+          // NOTE: The aliases for the title and tags input are not being used because the DOM nodes
+          // are no longer the same reference after reverting changes in the editor.
+          cy.get('@articleForm')
+            .findByLabelText(/^Post Title$/i)
+            .as('postTags')
+            .should('have.value', 'Test Post');
+          cy.get('@articleForm')
+            .findByLabelText(/^Post Tags$/i)
+            .as('postTags')
+            .should('have.value', 'beginner, ruby, go');
           getPostContent().should(
             'have.value',
             `This is a Test Post's contents.`,
