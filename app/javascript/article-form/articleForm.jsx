@@ -95,6 +95,7 @@ export class ArticleForm extends Component {
         : {};
 
     this.state = {
+      formKey: new Date().toISOString(),
       id: this.article.id || null, // eslint-disable-line react/no-unused-state
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
@@ -284,6 +285,7 @@ export class ArticleForm extends Component {
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
 
     this.setState({
+      formKey: new Date().toISOString(),
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
@@ -364,6 +366,7 @@ export class ArticleForm extends Component {
       helpPosition,
       siteLogo,
       markdownLintErrors,
+      formKey,
     } = this.state;
 
     return (
@@ -396,6 +399,7 @@ export class ArticleForm extends Component {
           />
         ) : (
           <Form
+            key={formKey}
             titleDefaultValue={title}
             titleOnChange={linkState(this, 'title')}
             tagsDefaultValue={tagList}
