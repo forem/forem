@@ -116,9 +116,7 @@ describe('Post Editor', () => {
       cy.fixture('users/articleEditorV2User.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginUser(user).then(() => {
-          cy.visit('/new');
-        });
+        cy.loginAndVisit(user, '/new');
       });
     });
 
