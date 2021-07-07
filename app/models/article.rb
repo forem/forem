@@ -57,7 +57,7 @@ class Article < ApplicationRecord
   validates :canonical_url, uniqueness: { allow_nil: true }
   validates :canonical_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :comments_count, presence: true
-  validates :feed_source_url, uniqueness: { allow_nil: true }
+  validates :feed_source_url, uniqueness: { allow_nil: true, scope: :published }, if: :published?
   validates :feed_source_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/

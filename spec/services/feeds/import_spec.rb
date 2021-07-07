@@ -208,4 +208,15 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       expect(body_markdown).to include(expected_image_markdown)
     end
   end
+
+  context "when multiple users fetch from the same feed_url" do
+    it "fetches the articles in both accounts (if feed_mark_canonical = false)" do
+      rss_feed_user1 = create(:user, feed_url: link)
+      rss_feed_user2 = create(:user, feed_url: link)
+
+      expect do
+        described_class.call(users: User.where(feed_url: link))
+      end.to change(rss_feed_user1.articles, :count).by(10) and change(rss_feed_user2.articles, :count).by(10)
+    end
+  end
 end
