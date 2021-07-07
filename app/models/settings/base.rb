@@ -1,15 +1,13 @@
 # This was taken from the rails-settings-cached gem and adapted to work with
 # more than one settings model by making the request cache class-specific. We
-# also removed features we don't need like cache scopes and readonly fields.
+# also removed features we don't need like cache scopes and readonly settings.
 #
 # See: https://github.com/huacnlee/rails-settings-cached
 module Settings
-  class Base < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
+  class ProtectedKeyError < ArgumentError; end
+
+  class Base < ApplicationRecord
     self.abstract_class = true
-
-    class SettingNotFound < RuntimeError; end
-
-    class ProcetedKeyError < ArgumentError; end
 
     PROTECTED_KEYS = %w[var value].freeze
     SEPARATOR_REGEXP = /[\n,;]+/.freeze
@@ -24,8 +22,8 @@ module Settings
         Rails.cache.delete(cache_key)
       end
 
-      def field(key, default: nil, type: :string, separator: nil, validates: nil)
-        define_field(
+      def setting(key, default: nil, type: :string, separator: nil, validates: nil)
+        define_setting(
           key,
           default: default,
           type: type,
@@ -34,12 +32,16 @@ module Settings
         )
       end
 
-      def get_field(key)
-        @defined_fields.detect { |field| field[:key] == key.to_s } || {}
+      def get_setting(key)
+        @defined_settings.detect { |setting| setting[:key] == key.to_s } || {}
+      end
+
+      def get_default(key)
+        get_setting(key)[:default]
       end
 
       def keys
-        @defined_fields.pluck(:key)
+        @defined_settings.pluck(:key)
       end
 
       private
@@ -48,13 +50,13 @@ module Settings
         @cache_key ||= name.underscore
       end
 
-      def define_field(key, default: nil, type: :string, separator: nil, validates: nil)
+      def define_setting(key, default: nil, type: :string, separator: nil, validates: nil)
         key = key.to_s
 
-        raise(ProcetedKeyError, "Can't use #{key} as setting key.") if key.in?(PROTECTED_KEYS)
+        raise(ProtectedKeyError, "Can't use '#{key}' as setting name") if key.in?(PROTECTED_KEYS)
 
-        @defined_fields ||= []
-        @defined_fields << {
+        @defined_settings ||= []
+        @defined_settings << {
           key: key,
           default: default,
           type: type || :string
@@ -142,12 +144,12 @@ module Settings
       end
     end
 
-    # get the value field, YAML decoded
+    # get the setting's value, YAML decoded
     def value
       YAML.load(self[:value]) if self[:value].present? # rubocop:disable Security/YAMLLoad
     end
 
-    # set the value field, YAML encoded
+    # set the settings's value, YAML encoded
     def value=(new_value)
       self[:value] = new_value.to_yaml
     end

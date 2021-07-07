@@ -4,13 +4,13 @@ module Settings
 
     OPTIONS = %i[address port authentication user_name password domain].freeze
 
-    field :address, type: :string, default: ApplicationConfig["SMTP_ADDRESS"]
-    field :authentication, type: :string, default: ApplicationConfig["SMTP_AUTHENTICATION"],
-                           validates: { inclusion: %w[plain login cram_md5] }
-    field :domain, type: :string, default: ApplicationConfig["SMTP_DOMAIN"]
-    field :password, type: :string, default: ApplicationConfig["SMTP_PASSWORD"]
-    field :port, type: :integer, default: ApplicationConfig["SMTP_PORT"].presence || 25
-    field :user_name, type: :string, default: ApplicationConfig["SMTP_USER_NAME"]
+    setting :address, type: :string, default: ApplicationConfig["SMTP_ADDRESS"]
+    setting :authentication, type: :string, default: ApplicationConfig["SMTP_AUTHENTICATION"],
+                             validates: { inclusion: %w[plain login cram_md5] }
+    setting :domain, type: :string, default: ApplicationConfig["SMTP_DOMAIN"]
+    setting :password, type: :string, default: ApplicationConfig["SMTP_PASSWORD"]
+    setting :port, type: :integer, default: ApplicationConfig["SMTP_PORT"].presence || 25
+    setting :user_name, type: :string, default: ApplicationConfig["SMTP_USER_NAME"]
 
     class << self
       def settings
