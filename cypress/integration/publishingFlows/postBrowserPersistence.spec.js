@@ -179,7 +179,7 @@ describe('Post Editor', () => {
               `${response.body.current_state_path}/edit?i=i`,
           ).as('editPage');
 
-          cy.visit(response.body.current_state_path);
+          cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
 
           cy.findByRole('link', { name: /^Edit$/i })
             .should('be.visible')
