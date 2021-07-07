@@ -285,6 +285,9 @@ export class ArticleForm extends Component {
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
 
     this.setState({
+      // When the formKey prop changes, it causes the <Form /> component to recreate the DOM nodes that it manages.
+      // This permits us to reset the defaultValue for the MentionAutcompleteTextArea component without having to change
+      // MentionAutcompleteTextArea component's implementation.
       formKey: new Date().toISOString(),
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
