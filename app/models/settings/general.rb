@@ -117,10 +117,5 @@ module Settings
     setting :feed_pinned_article_id, type: :integer, validates: {
       existing_published_article_id: true, allow_nil: true
     }
-
-    # To get default values
-    def self.get_default(setting)
-      get_setting(setting)[:default]
-    end
   end
 end
