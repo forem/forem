@@ -100,8 +100,9 @@ export const MentionAutocompleteTextArea = forwardRef(
     { replaceElement, fetchSuggestions, autoResize = false, ...inputProps },
     forwardedRef,
   ) => {
-    const { defaultValue = '' } = inputProps;
-    const [textContent, setTextContent] = useState(defaultValue);
+    const [textContent, setTextContent] = useState(
+      inputProps.defaultValue ? inputProps.defaultValue : '',
+    );
     const [searchTerm, setSearchTerm] = useState('');
     const [cachedSearches, setCachedSearches] = useState({});
     const [dropdownPositionPoints, setDropdownPositionPoints] = useState({
@@ -171,10 +172,6 @@ export const MentionAutocompleteTextArea = forwardRef(
         }
       });
     }, [searchTerm, fetchSuggestions, cachedSearches, ariaHelperText]);
-
-    useEffect(() => {
-      setTextContent(defaultValue);
-    }, [defaultValue]);
 
     useLayoutEffect(() => {
       const popover = popoverRef.current;
