@@ -1,5 +1,5 @@
 # This was taken from the rails-settings-cached gem and adapted to work with
-# more than one settings model by making the request cache class-specific. We
+# more than one settings model by changing how request caching works. We
 # also removed features we don't need like cache scopes and readonly settings.
 #
 # See: https://github.com/huacnlee/rails-settings-cached
