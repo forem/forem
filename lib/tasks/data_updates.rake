@@ -5,7 +5,7 @@ namespace :data_updates do
       Rake::Task["data_updates:run"].execute
     else
       # Ensure new code has been deployed before we run our update scripts
-      DataUpdateWorker.perform_in(10.minutes)
+      DataUpdateWorker.perform_in(ENV["DATA_UPDATE_WORKER_DELAY"] || 0)
     end
   end
 
