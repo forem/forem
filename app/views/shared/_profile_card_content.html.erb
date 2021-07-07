@@ -13,7 +13,7 @@
 <% end %>
 
 <div class="print-hidden">
-  <%= follow_button(actor, style = "", classes = "w-100") %>&nbsp;
+  <%= follow_button(actor, style = "", classes = "w-100") %>
 </div>
 
 <% if actor.class.name == "User" %>
@@ -62,9 +62,9 @@
           <div class="key">
             Education
           </div>
-          <ul class="value">
+          <div class="value">
             <%= actor.education %>
-          </ul>
+          </div>
         </li>
       <% end %>
     <li>
