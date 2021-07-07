@@ -173,10 +173,8 @@ export const MentionAutocompleteTextArea = forwardRef(
     }, [searchTerm, fetchSuggestions, cachedSearches, ariaHelperText]);
 
     useEffect(() => {
-      if (defaultValue !== textContent) {
-        setTextContent(defaultValue);
-      }
-    }, [defaultValue, textContent]);
+      setTextContent(defaultValue);
+    }, [defaultValue]);
 
     useLayoutEffect(() => {
       const popover = popoverRef.current;
