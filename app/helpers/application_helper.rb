@@ -123,6 +123,7 @@ module ApplicationHelper
     return if followable == DELETED_USER
 
     tag.button(
+      "Follow",
       name: :button,
       type: :button,
       data: {
