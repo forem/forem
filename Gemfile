@@ -86,7 +86,9 @@ gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 # NOTE: [@rhymes]: sign in doesn't work with the redis-rack 2.1.0+ or with redis-actionpack 5.2.0+
 # We need to investigate why exactly, in the meantime we are hardcoding these two transitive dependencies
 # (added by redis-rails) to keep them at the latest working version
+gem "redis-actionpack", "5.1.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 gem "redis-rack", "2.0.6" # Redis Store for Rack applications
+
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
@@ -115,6 +117,7 @@ gem "webpacker", "~> 5.4.0" # Use webpack to manage app-like JavaScript modules 
 
 group :development do
   gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
+
   gem "brakeman", "~> 5.0", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.8" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 2.1", require: false # A series of things you can use to benchmark a Rails or Ruby app
