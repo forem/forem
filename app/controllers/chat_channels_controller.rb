@@ -137,7 +137,7 @@ class ChatChannelsController < ApplicationController
     valid_listing = Listing.where(user_id: params[:user_id], contact_via_connect: true).limit(1)
     authorize ChatChannel
 
-    if chat_recipient.inbox_type == "open" || valid_listing.length == 1
+    if chat_recipient.setting.inbox_type == "open" || valid_listing.length == 1
       chat = ChatChannels::CreateWithUsers.call(users: [current_user, chat_recipient], channel_type: "direct")
       message_markdown = params[:message]
       message = Message.new(

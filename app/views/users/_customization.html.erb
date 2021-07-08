@@ -1,6 +1,9 @@
 <%= javascript_packs_with_chunks_tag "stickySaveFooter", defer: true %>
 
-<%= form_for @user, html: { id: "ux-customization-form", class: "sticky-footer-form" } do |f| %>
+<%= form_for @users_setting,
+             url: users_settings_path,
+             html: { id: "ux-customization-form", class: "sticky-footer-form" } do |f| %>
+  <%= f.hidden_field :user_id, value: @users_setting.user_id, id: nil %>
   <%= f.hidden_field :tab, value: @tab, id: nil %>
 
   <div class="crayons-card crayons-card--content-rows">
@@ -11,7 +14,7 @@
     <fieldset class="crayons-field">
       <legend class="crayons-field__label">Site Theme</legend>
       <div class="theme-selector-field grid gap-4 grid-cols-2 l:grid-cols-3">
-        <% %w[default night_theme minimal_light_theme pink_theme ten_x_hacker_theme].each do |theme| %>
+        <% Users::Setting.config_themes.keys.each do |theme| %>
           <%= render partial: "theme_selector", locals: { f: f, theme: theme } %>
         <% end %>
       </div>
@@ -20,7 +23,7 @@
     <div class="crayons-field">
       <%= f.label :config_font, "Base Reading Font", class: "crayons-field__label" %>
       <div class="theme-selector-field grid gap-4 grid-cols-2 l:grid-cols-3">
-        <% User::FONTS.each do |font| %>
+        <% Users::Setting.config_fonts.keys.each do |font| %>
           <%= render partial: "font_selector", locals: { f: f, font: font } %>
         <% end %>
       </div>
@@ -29,7 +32,7 @@
     <div class="crayons-field">
       <%= f.label :config_navbar, "Site Navbar", class: "crayons-field__label" %>
       <div class="theme-selector-field grid gap-4 grid-cols-2 l:grid-cols-3">
-        <% %w[default static].each do |navbar| %>
+        <% Users::Setting.config_navbars.keys.each do |navbar| %>
           <%= render partial: "navbar_selector", locals: { f: f, navbar: navbar } %>
         <% end %>
       </div>
@@ -43,7 +46,7 @@
     <div class="crayons-field">
       <%= f.label :editor_version, "Editor Version", class: "crayons-field__label" %>
       <div class="theme-selector-field grid gap-4 grid-cols-2 l:grid-cols-3">
-        <% %w[v1 v2].each do |version| %>
+        <% Users::Setting.editor_versions.keys.each do |version| %>
           <%= render partial: "editor_selector", locals: { f: f, version: version } %>
         <% end %>
       </div>

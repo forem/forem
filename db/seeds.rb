@@ -75,8 +75,6 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
       website_url: Faker::Internet.url,
       twitter_username: Faker::Internet.username(specifier: name),
-      email_comment_notifications: false,
-      email_follower_notifications: false,
       # Emails limited to 50 characters
       email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
@@ -142,8 +140,6 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
-    email_comment_notifications: false,
-    email_follower_notifications: false,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",

@@ -36,7 +36,47 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS
+  COLUMNS_NOW_IN_USERS_SETTINGS = %w[
+    config_theme
+    config_font
+    config_navbar
+    display_announcements
+    display_sponsors
+    editor_version
+    experience_level
+    feed_mark_canonical
+    feed_referential_link
+    feed_url
+    inbox_guidelines
+    inbox_type
+    permit_adjacent_sponsors
+  ].freeze
+
+  COLUMNS_NOW_IN_USERS_NOTIFICATION_SETTINGS = %w[
+    email_badge_notifications
+    email_comment_notifications
+    email_community_mod_newsletter
+    email_connect_messages
+    email_digest_periodic
+    email_follower_notifications
+    email_membership_newsletter
+    email_mention_notifications
+    email_newsletter
+    email_tag_mod_newsletter
+    email_unread_notifications
+    mobile_comment_notifications
+    mod_roundrobin_notifications
+    reaction_notifications
+    welcome_notifications
+  ].freeze
+
+  INACTIVE_PROFILE_COLUMNS = %w[
+    bg_color_hex
+    text_color_hex
+    email_public
+  ].freeze
+
+  self.ignored_columns = PROFILE_COLUMNS + COLUMNS_NOW_IN_USERS_SETTINGS + COLUMNS_NOW_IN_USERS_NOTIFICATION_SETTINGS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -53,6 +93,8 @@ class User < ApplicationRecord
 
       # Getters and setters for unmapped profile attributes
       (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
+        next if INACTIVE_PROFILE_COLUMNS.include?(column)
+
         delegate column, "#{column}=", to: :profile, allow_nil: true
       end
 
@@ -67,18 +109,9 @@ class User < ApplicationRecord
   end
 
   ANY_ADMIN_ROLES = %i[admin super_admin].freeze
-  EDITORS = %w[v1 v2].freeze
-  FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
-  INBOXES = %w[open private].freeze
-  NAVBARS = %w[default static].freeze
-  THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
   MESSAGES = {
-    invalid_config_font: "%<value>s is not a valid font selection",
-    invalid_config_navbar: "%<value>s is not a valid navbar value",
-    invalid_config_theme: "%<value>s is not a valid theme",
-    invalid_editor_version: "%<value>s must be either v1 or v2",
     reserved_username: "username is reserved"
   }.freeze
   # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
@@ -89,57 +122,6 @@ class User < ApplicationRecord
     (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
     \z
   }x.freeze
-
-  # Relevant Fields for migration from Users table to Users_Settings table
-  USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    config_font
-    config_navbar
-    config_theme
-    display_announcements
-    display_sponsors
-    editor_version
-    experience_level
-    feed_mark_canonical
-    feed_referential_link
-    feed_url
-    inbox_guidelines
-    inbox_type
-    permit_adjacent_sponsors
-  ].to_set.freeze
-
-  # Relevant Fields for migration from Profiles table to Users_Settings table
-  PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    brand_color1
-    brand_color2
-    display_email_on_profile
-  ].to_set.freeze
-
-  # Relevant Fields for migration from Users table to Users_Notification_Settings table
-  USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
-    email_badge_notifications
-    email_comment_notifications
-    email_community_mod_newsletter
-    email_connect_messages
-    email_digest_periodic
-    email_follower_notifications
-    email_membership_newsletter
-    email_mention_notifications
-    email_newsletter
-    email_tag_mod_newsletter
-    email_unread_notifications
-    mobile_comment_notifications
-    mod_roundrobin_notifications
-    reaction_notifications
-    welcome_notifications
-  ].to_set.freeze
-
-  USER_SETTINGS_ENUM_FIELDS = %w[
-    config_font
-    config_navbar
-    config_theme
-    editor_version
-    inbox_type
-  ].to_set.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -236,25 +218,12 @@ class User < ApplicationRecord
   validates :blocked_by_count, presence: true
   validates :blocking_others_count, presence: true
   validates :comments_count, presence: true
-  validates :config_font, inclusion: { in: FONTS + ["default".freeze], message: MESSAGES[:invalid_config_font] }
-  validates :config_font, presence: true
-  validates :config_navbar, inclusion: { in: NAVBARS, message: MESSAGES[:invalid_config_navbar] }
-  validates :config_navbar, presence: true
-  validates :config_theme, inclusion: { in: THEMES, message: MESSAGES[:invalid_config_theme] }
-  validates :config_theme, presence: true
   validates :credits_count, presence: true
-  validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
-  validates :email_digest_periodic, inclusion: { in: [true, false] }
-  validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
-  validates :feed_referential_link, inclusion: { in: [true, false] }
-  validates :feed_url, length: { maximum: 500 }, allow_nil: true
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
   validates :following_users_count, presence: true
-  validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
-  validates :inbox_type, inclusion: { in: INBOXES }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
   validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_blank: true
@@ -269,7 +238,6 @@ class User < ApplicationRecord
   validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
     "#{data[:value]} is taken."
   end }, if: :username_changed?
-  validates :welcome_notifications, inclusion: { in: [true, false] }
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -285,7 +253,6 @@ class User < ApplicationRecord
 
   validate :non_banished_username, :username_changed?
   validate :unique_including_orgs_and_podcasts, if: :username_changed?
-  validate :validate_feed_url, if: :feed_url_changed?
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -293,9 +260,6 @@ class User < ApplicationRecord
   validate :password_matches_confirmation, if: :encrypted_password_changed?
 
   alias_attribute :public_reactions_count, :reactions_count
-  alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
-  alias_attribute :subscribed_to_mod_roundrobin_notifications?, :mod_roundrobin_notifications
-  alias_attribute :subscribed_to_email_follower_notifications?, :email_follower_notifications
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
@@ -332,15 +296,14 @@ class User < ApplicationRecord
       ),
     )
   }
-  scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
   before_validation :downcase_email
-  before_validation :set_config_input
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :verify_email
   before_validation :set_username
   before_validation :strip_payment_pointer
+  before_create :create_users_settings_and_notification_settings_records
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
@@ -350,7 +313,6 @@ class User < ApplicationRecord
   after_create_commit :send_welcome_notification
 
   after_commit :subscribe_to_mailchimp_newsletter
-  after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 
   def self.dev_account
@@ -548,7 +510,7 @@ class User < ApplicationRecord
     return unless registered && email.present?
     return if Settings::General.mailchimp_api_key.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
-    return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
+    return unless saved_changes.key?(:email)
 
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
@@ -621,6 +583,18 @@ class User < ApplicationRecord
     "User:#{id}"
   end
 
+  def subscribed_to_welcome_notifications?
+    notification_setting.welcome_notifications
+  end
+
+  def subscribed_to_mod_roundrobin_notifications?
+    notification_setting.mod_roundrobin_notifications
+  end
+
+  def subscribed_to_email_follower_notifications?
+    notification_setting.email_follower_notifications
+  end
+
   protected
 
   # Send emails asynchronously
@@ -632,43 +606,9 @@ class User < ApplicationRecord
 
   private
 
-  def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
-    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      # rubocop:disable Layout/LineLength
-      users_setting_record.assign_attributes(field => profile.public_send(field)) if profile&.public_send(field).present?
-      # rubocop:enable Layout/LineLength
-    end
-  end
-
-  def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
-    USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      if USER_SETTINGS_ENUM_FIELDS.include?(field)
-        field_enums = Users::Setting.defined_enums[field]
-        users_setting_record.assign_attributes(field => field_enums[public_send(field).to_sym])
-      else
-        users_setting_record.assign_attributes(field => public_send(field))
-      end
-    end
-
-    sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
-
-    users_setting_record.save
-  end
-
-  def sync_users_settings_table
-    users_setting_record = Users::Setting.create_or_find_by(user_id: id)
-
-    migrate_users_and_profile_fields_to_users_settings(users_setting_record)
-  end
-
-  def sync_users_notification_settings_table
-    users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)
-
-    USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
-      users_notification_setting_record.assign_attributes(field => public_send(field))
-    end
-
-    users_notification_setting_record.save
+  def create_users_settings_and_notification_settings_records
+    self.setting = Users::Setting.create
+    self.notification_setting = Users::NotificationSetting.create
   end
 
   def send_welcome_notification
@@ -711,12 +651,6 @@ class User < ApplicationRecord
     self.email = email.downcase if email
   end
 
-  def set_config_input
-    self.config_theme = config_theme&.tr(" ", "_")
-    self.config_font = config_font&.tr(" ", "_")
-    self.config_navbar = config_navbar&.tr(" ", "_")
-  end
-
   def check_for_username_change
     return unless username_changed?
 
@@ -734,16 +668,6 @@ class User < ApplicationRecord
 
   def bust_cache
     Users::BustCacheWorker.perform_async(id)
-  end
-
-  def validate_feed_url
-    return if feed_url.blank?
-
-    valid = Feeds::ValidateUrl.call(feed_url)
-
-    errors.add(:feed_url, "is not a valid RSS/Atom feed") unless valid
-  rescue StandardError => e
-    errors.add(:feed_url, e.message)
   end
 
   def tag_keywords_for_search
