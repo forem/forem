@@ -153,6 +153,8 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:tech_admin)
 end
 
+Users::CreateMascotAccount.call unless Settings::General.mascot_user_id
+
 ##############################################################################
 
 seeder.create_if_none(Tag) do
