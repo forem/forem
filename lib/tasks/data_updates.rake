@@ -4,8 +4,9 @@ namespace :data_updates do
     if Rails.env.development?
       Rake::Task["data_updates:run"].execute
     else
-      # Ensure new code has been deployed before we run our update scripts
-      DataUpdateWorker.perform_in(ENV["DATA_UPDATE_WORKER_DELAY"] || 0)
+      # Use the env variable to delay running data update scripts if your
+      # deploy strategy requires it
+      DataUpdateWorker.perform_in(ENV["DATA_UPDATE_WORKER_DELAY_SECONDS"] || 0)
     end
   end
 
