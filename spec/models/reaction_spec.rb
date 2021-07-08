@@ -44,13 +44,13 @@ RSpec.describe Reaction, type: :model do
     end
 
     it "does not allow vomit reaction for users without trusted role" do
-      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id + 1)
+      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id + 1)
       reaction.category = "vomit"
       expect(reaction).not_to be_valid
     end
 
     it "does not allow thumbsdown reaction for users without trusted role" do
-      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id + 1)
+      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id + 1)
       reaction.category = "thumbsdown"
       expect(reaction).not_to be_valid
     end
@@ -123,11 +123,6 @@ RSpec.describe Reaction, type: :model do
         reaction.user_id = user_id
         reaction.reactable.user_id = user_id
         expect(reaction.skip_notification_for?(user)).to be(true)
-      end
-
-      it "is true when the receive_notifications is false" do
-        reaction.reactable.receive_notifications = false
-        expect(reaction.skip_notification_for?(receiver)).to be(true)
       end
     end
   end

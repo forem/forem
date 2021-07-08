@@ -34,6 +34,7 @@ class RateLimitChecker
   end
 
   def check_limit!(action)
+    return if ApplicationConfig["E2E"]
     return unless limit_by_action(action)
 
     retry_after = ACTION_LIMITERS.dig(action, :retry_after)
@@ -41,6 +42,8 @@ class RateLimitChecker
   end
 
   def limit_by_action(action)
+    return false if ApplicationConfig["E2E"]
+
     check_method = "check_#{action}_limit"
     result = respond_to?(check_method, true) ? __send__(check_method) : false
 
@@ -59,7 +62,7 @@ class RateLimitChecker
   def limit_by_email_recipient_address(address)
     # This is related to the recipient, not the "user" initiator, like in action.
     EmailMessage.where(to: address).where("sent_at > ?", 2.minutes.ago).size >
-      SiteConfig.rate_limit_email_recipient
+      Settings::RateLimit.email_recipient
   end
 
   private
@@ -78,39 +81,39 @@ class RateLimitChecker
   end
 
   def action_rate_limit(action)
-    SiteConfig.public_send("rate_limit_#{action}")
+    Settings::RateLimit.public_send(action)
   end
 
   def check_comment_creation_limit
     user.comments.where("created_at > ?", 30.seconds.ago).size >
-      SiteConfig.rate_limit_comment_creation
+      Settings::RateLimit.comment_creation
   end
 
   def check_published_article_creation_limit
-    # TODO: Vaidehi Joshi - We should make this time frame configurable.
+    # TODO: We should make this time frame configurable.
     user.articles.published.where("created_at > ?", 30.seconds.ago).size >
-      SiteConfig.rate_limit_published_article_creation
+      Settings::RateLimit.published_article_creation
   end
 
   def check_published_article_antispam_creation_limit
-    # TODO: Vaidehi Joshi - We should make this time frame configurable.
+    # TODO: We should make this time frame configurable.
     user.articles.published.where("created_at > ?", 5.minutes.ago).size >
-      SiteConfig.rate_limit_published_article_antispam_creation
+      Settings::RateLimit.published_article_antispam_creation
   end
 
   def check_comment_antispam_creation_limit
     # TODO: We should make this time frame configurable.
     user.comments.where(created_at: 5.minutes.ago...).size >
-      SiteConfig.rate_limit_comment_antispam_creation
+      Settings::RateLimit.comment_antispam_creation
   end
 
   def check_follow_account_limit
-    user_today_follow_count > SiteConfig.rate_limit_follow_count_daily
+    user_today_follow_count > Settings::RateLimit.follow_count_daily
   end
 
   def user_today_follow_count
     following_users_count = user.following_users_count
-    return following_users_count if following_users_count < SiteConfig.rate_limit_follow_count_daily
+    return following_users_count if following_users_count < Settings::RateLimit.follow_count_daily
 
     now = Time.zone.now
     user.follows.where(created_at: (now.beginning_of_day..now)).size

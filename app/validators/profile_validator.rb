@@ -9,8 +9,8 @@ class ProfileValidator < ActiveModel::Validator
 
   ERRORS = {
     color_field: "is not a valid hex color",
-    text_area: "is too long (maximum: #{MAX_TEXT_AREA_LENGTH})",
-    text_field: "is too long (maximum: #{MAX_TEXT_FIELD_LENGTH})"
+    text_area: "is too long (maximum is #{MAX_TEXT_AREA_LENGTH} characters)",
+    text_field: "is too long (maximum is #{MAX_TEXT_FIELD_LENGTH} characters)"
   }.with_indifferent_access.freeze
 
   def validate(record)
@@ -32,15 +32,10 @@ class ProfileValidator < ActiveModel::Validator
   private
 
   def summary_too_long?(record)
-    # Calling the summary attribute method on record during onboarding
-    # throws a NoMethodError
-    return unless record.respond_to?(SUMMARY_ATTRIBUTE)
-
-    return unless ProfileField.exists?(attribute_name: SUMMARY_ATTRIBUTE)
     return if record.summary.blank?
 
     # Grandfather in people who had a too long summary before
-    previous_summary = record.data_was[SUMMARY_ATTRIBUTE]
+    previous_summary = record.summary_was
     return if previous_summary && previous_summary.size > MAX_SUMMARY_LENGTH
 
     record.summary.size > MAX_SUMMARY_LENGTH

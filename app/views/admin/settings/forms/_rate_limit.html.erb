@@ -1,0 +1,87 @@
+<%= form_for(Settings::RateLimit.new, url: admin_settings_rate_limits_path) do |f| %>
+  <div class="card mt-3">
+    <%= render partial: "admin/shared/card_header",
+               locals: {
+                 header: "Rate limits and anti-spam",
+                 state: "collapse",
+                 target: "rateLimitsBodyContainer",
+                 expanded: false
+               } %>
+    <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
+      <fieldset class="grid gap-4">
+        <div class="crayons-field">
+          <%= admin_config_label :user_considered_new_days, model: Settings::RateLimit %>
+          <%= admin_config_description Constants::Settings::RateLimit::DETAILS[:user_considered_new_days][:description] %>
+          <%= f.number_field :user_considered_new_days,
+                             class: "crayons-textfield",
+                             value: Settings::RateLimit.user_considered_new_days,
+                             placeholder: Constants::Settings::RateLimit::DETAILS[:user_considered_new_days][:placeholder] %>
+        </div>
+
+        <% configurable_rate_limits.each do |key, field_hash| %>
+          <div class="crayons-field">
+            <%= admin_config_label field_hash[:title], model: Settings::RateLimit %>
+            <p class="crayons-field__description">
+            <%= field_hash[:description] %>
+            </p>
+            <%= f.number_field key,
+                               class: "crayons-textfield",
+                               value: Settings::RateLimit.public_send(key),
+                               min: field_hash[:min],
+                               placeholder: field_hash[:placeholder] %>
+          </div>
+        <% end %>
+
+        <div class="crayons-field">
+          <%= admin_config_label :spam_trigger_terms, model: Settings::RateLimit %>
+          <%= admin_config_description Constants::Settings::RateLimit::DETAILS[:spam_trigger_terms][:description] %>
+          <%= f.text_area :spam_trigger_terms,
+                          class: "crayons-textfield",
+                          value: Settings::RateLimit.spam_trigger_terms.join(","),
+                          placeholder: Constants::Settings::RateLimit::DETAILS[:spam_trigger_terms][:placeholder] %>
+        </div>
+        <%= render "form_submission", f: f %>
+      </fieldset>
+    </div>
+  </div>
+<% end %>
+
+<%= form_for(Settings::General.new, url: admin_settings_general_settings_path) do |f| %>
+  <div class="card mt-3">
+    <%= render partial: "admin/shared/card_header",
+               locals: {
+                 header: "Social Media",
+                 state: "collapse",
+                 target: "socialMediaBodyContainer",
+                 expanded: false
+               } %>
+    <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
+      <fieldset class="grid gap-4">
+        <div class="crayons-field">
+          <%= admin_config_label :twitter_hashtag %>
+          <%= admin_config_description Constants::Settings::General::DETAILS[:twitter_hashtag][:description] %>
+          <%= f.text_field :twitter_hashtag,
+                           class: "crayons-textfield",
+                           value: Settings::General.twitter_hashtag.to_s,
+                           placeholder: Constants::Settings::General::DETAILS[:twitter_hashtag][:placeholder] %>
+        </div>
+        <%= f.fields_for :social_media_handles do |social_media_field| %>
+          <% Settings::General.social_media_handles.each do |platform, username| %>
+            <div class="crayons-field">
+              <%= admin_config_label platform %>
+              <p class="crayons-field__description">
+              <%= platform.capitalize %> username
+              </p>
+              <%= social_media_field.text_field platform,
+                                                class: "crayons-textfield",
+                                                value: Settings::General.social_media_handles[platform],
+                                                placeholder: "" %>
+            </div>
+          <% end %>
+        <% end %>
+
+        <%= render "form_submission", f: f %>
+      </fieldset>
+    </div>
+  </div>
+<% end %>

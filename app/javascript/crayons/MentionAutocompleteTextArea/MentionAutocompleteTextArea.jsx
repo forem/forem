@@ -124,7 +124,12 @@ export const MentionAutocompleteTextArea = forwardRef(
 
     const { setTextArea, setAdditionalElements } = useTextAreaAutoResize();
 
-    const { onChange, id: inputId, ...autocompleteInputProps } = inputProps;
+    const {
+      onChange,
+      onBlur,
+      id: inputId,
+      ...autocompleteInputProps
+    } = inputProps;
 
     useLayoutEffect(() => {
       if (autoResize && comboboxRef.current && plainTextAreaRef.current) {
@@ -180,6 +185,13 @@ export const MentionAutocompleteTextArea = forwardRef(
           setSearchTerm('');
           setAriaHelperText('');
           setUsers([]);
+
+          const { selectionStart } = comboboxRef.current;
+
+          // Switch back to the plain text area
+          comboboxRef.current.classList.add('hidden');
+          plainTextAreaRef.current.classList.remove('hidden');
+          setCursorPosition(selectionStart + 1);
         }
       };
 
@@ -214,16 +226,14 @@ export const MentionAutocompleteTextArea = forwardRef(
 
     const handleTextInputChange = ({ target: { value } }) => {
       setTextContent(value);
-      const isComboboxVisible = !comboboxRef.current.classList.contains(
-        'hidden',
-      );
+      const isComboboxVisible =
+        !comboboxRef.current.classList.contains('hidden');
       const currentActiveInput = isComboboxVisible
         ? comboboxRef.current
         : plainTextAreaRef.current;
 
-      const { isUserMention, indexOfMentionStart } = getMentionWordData(
-        currentActiveInput,
-      );
+      const { isUserMention, indexOfMentionStart } =
+        getMentionWordData(currentActiveInput);
 
       const { selectionStart } = currentActiveInput;
 
@@ -268,6 +278,12 @@ export const MentionAutocompleteTextArea = forwardRef(
           setCursorPosition(selectionStart + 1);
         }
       }
+    };
+
+    const handleComboboxBlur = () => {
+      // User has left the textarea, exit combobox functionality without refocusing plainTextArea
+      comboboxRef.current.classList.add('hidden');
+      plainTextAreaRef.current.classList.remove('hidden');
     };
 
     const handleSelect = (username) => {
@@ -325,11 +341,13 @@ export const MentionAutocompleteTextArea = forwardRef(
         <Combobox
           ref={containerRef}
           id="combobox-container"
+          data-testid="autocomplete-wrapper"
           onSelect={handleSelect}
           className={`crayons-autocomplete${autoResize ? ' h-100' : ''}`}
         >
           <ComboboxInput
             {...autocompleteInputProps}
+            data-gramm_editor="false"
             aria-label="Mention user"
             ref={comboboxRef}
             value={textContent}
@@ -340,10 +358,15 @@ export const MentionAutocompleteTextArea = forwardRef(
               onChange?.(e);
               handleTextInputChange(e);
             }}
+            onBlur={(e) => {
+              onBlur?.(e);
+              handleComboboxBlur();
+            }}
           />
 
           <textarea
             {...autocompleteInputProps}
+            data-gramm_editor="false"
             id={inputId}
             data-mention-autocomplete-active="true"
             ref={mergeInputRefs([plainTextAreaRef, forwardedRef])}
@@ -368,6 +391,7 @@ export const MentionAutocompleteTextArea = forwardRef(
                 <ComboboxList>
                   {users.map((user) => (
                     <ComboboxOption
+                      key={user.username}
                       value={user.username}
                       className="crayons-autocomplete__option flex items-center"
                     >

@@ -22,6 +22,12 @@ class PagesController < ApplicationController
     set_surrogate_key_header "about_listings_page"
   end
 
+  def badge
+    @html_variant = HtmlVariant.find_for_test([], "badge_landing_page")
+    render layout: false
+    set_surrogate_key_header "badge_page"
+  end
+
   def bounty
     @page = Page.find_by(slug: "security")
     render :show if @page
@@ -52,22 +58,16 @@ class PagesController < ApplicationController
     set_surrogate_key_header "faq_page"
   end
 
-  def privacy
-    @page = Page.find_by(slug: "privacy")
-    render :show if @page
-    set_surrogate_key_header "privacy_page"
-  end
-
   def post_a_job
     @page = Page.find_by(slug: "post-a-job")
     render :show if @page
     set_surrogate_key_header "post_a_job_page"
   end
 
-  def terms
-    @page = Page.find_by(slug: "terms")
+  def privacy
+    @page = Page.find_by(slug: "privacy")
     render :show if @page
-    set_surrogate_key_header "terms_page"
+    set_surrogate_key_header "privacy_page"
   end
 
   def tag_moderation
@@ -76,10 +76,10 @@ class PagesController < ApplicationController
     set_surrogate_key_header "tag_moderation_page"
   end
 
-  def badge
-    @html_variant = HtmlVariant.find_for_test([], "badge_landing_page")
-    render layout: false
-    set_surrogate_key_header "badge_page"
+  def terms
+    @page = Page.find_by(slug: "terms")
+    render :show if @page
+    set_surrogate_key_header "terms_page"
   end
 
   def report_abuse
@@ -97,22 +97,11 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    daily_thread = Article.admin_published_with("welcome").first
-    if daily_thread
-      redirect_to URI.parse(daily_thread.path).path
-    else
-      # fail safe if we haven't made the first welcome thread
-      redirect_to "/notifications"
-    end
+    redirect_daily_thread_request(Article.admin_published_with("welcome").first)
   end
 
   def challenge
-    daily_thread = Article.admin_published_with("challenge").first
-    if daily_thread
-      redirect_to URI.parse(daily_thread.path).path
-    else
-      redirect_to "/notifications"
-    end
+    redirect_daily_thread_request(Article.admin_published_with("challenge").first)
   end
 
   def checkin
@@ -123,10 +112,16 @@ class PagesController < ApplicationController
         .order("articles.published_at" => :desc)
         .first
 
+    redirect_daily_thread_request(daily_thread)
+  end
+
+  private
+
+  def redirect_daily_thread_request(daily_thread)
     if daily_thread
-      redirect_to URI.parse(daily_thread.path).path
+      redirect_to(URI.parse(daily_thread.path).path)
     else
-      redirect_to "/notifications"
+      redirect_to(notifications_path)
     end
   end
 end

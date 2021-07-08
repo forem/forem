@@ -141,6 +141,7 @@ module Feeds
           organization_id: nil,
         )
 
+        subscribe_author_to_comments(user, article)
         articles.append(article)
       rescue StandardError => e
         # TODO: add better exception handling
@@ -170,6 +171,15 @@ module Feeds
       return "NIL FEED, INVALID URL" unless feed
 
       feed.entries ? feed.entries.length : "no count"
+    end
+
+    def subscribe_author_to_comments(user, article)
+      NotificationSubscription.create!(
+        user: user,
+        notifiable_id: article.id,
+        notifiable_type: "Article",
+        config: "all_comments",
+      )
     end
   end
 end

@@ -21,8 +21,14 @@ describe('<ImageUploader />', () => {
   });
 
   it('should have no a11y violations', async () => {
+    // TODO: The axe custom rules here should be removed when the below issue is fixed
+    // https://github.com/forem/forem/issues/13947
+    const customAxeRules = {
+      'nested-interactive': { enabled: false },
+    };
+
     const { container } = render(<ImageUploader />);
-    const results = await axe(container);
+    const results = await axe(container, { rules: customAxeRules });
     expect(results).toHaveNoViolations();
   });
 
@@ -106,12 +112,8 @@ describe('<ImageUploader />', () => {
       }),
     );
 
-    const {
-      findByTitle,
-      getByDisplayValue,
-      getByLabelText,
-      queryByText,
-    } = render(<ImageUploader />);
+    const { findByTitle, getByDisplayValue, getByLabelText, queryByText } =
+      render(<ImageUploader />);
     const inputEl = getByLabelText(/Upload an image/i);
 
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
@@ -119,7 +121,7 @@ describe('<ImageUploader />', () => {
     });
 
     fireEvent.change(inputEl, { target: { files: [file] } });
-    let uploadingImage = queryByText(/uploading.../i);
+    const uploadingImage = queryByText(/uploading.../i);
 
     expect(uploadingImage).toBeDefined();
 

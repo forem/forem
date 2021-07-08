@@ -54,7 +54,7 @@ class Reaction < ApplicationRecord
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.instance_of?(ArticleDecorator) ? "Article" : reactable.class.name
       cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-" \
-        "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
+                   "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
@@ -65,10 +65,8 @@ class Reaction < ApplicationRecord
   # - reaction is negative
   # - receiver is the same user as the one who reacted
   # - receive_notification is disabled
-  def skip_notification_for?(receiver)
-    points.negative? ||
-      (user_id == reactable.user_id) ||
-      (receiver.is_a?(User) && reactable.receive_notifications == false)
+  def skip_notification_for?(_receiver)
+    points.negative? || (user_id == reactable.user_id)
   end
 
   def vomit_on_user?
@@ -132,7 +130,7 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return if user&.any_admin? || user&.id == SiteConfig.mascot_user_id
+    return if user&.any_admin? || user&.id == Settings::General.mascot_user_id
 
     negative? && !user.trusted
   end

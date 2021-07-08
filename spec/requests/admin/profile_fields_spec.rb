@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/profile_fields", type: :request do
+RSpec.describe "/admin/customization/profile_fields", type: :request do
   let(:admin) { create(:user, :super_admin) }
 
   before do
@@ -9,7 +9,7 @@ RSpec.describe "/admin/profile_fields", type: :request do
     allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
   end
 
-  describe "GET /admin/profile_fields" do
+  describe "GET /admin/customization/profile_fields" do
     it "renders successfully" do
       get admin_profile_fields_path
       expect(response).to be_successful
@@ -27,7 +27,7 @@ RSpec.describe "/admin/profile_fields", type: :request do
     end
   end
 
-  describe "POST /admin/profile_fields" do
+  describe "POST /admin/customization/profile_fields" do
     let(:new_profile_field) do
       {
         label: "Test Location",

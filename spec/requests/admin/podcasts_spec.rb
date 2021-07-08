@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/podcasts", type: :request do
+RSpec.describe "/admin/content_manager/podcasts", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let(:podcast) { create(:podcast, published: false) }
   let(:user) { create(:user) }
@@ -10,7 +10,7 @@ RSpec.describe "/admin/podcasts", type: :request do
     sign_in admin
   end
 
-  describe "GET /admin/podcasts" do
+  describe "GET /admin/content_manager/podcasts" do
     let!(:no_eps_podcast) { create(:podcast, title: Faker::Book.title) }
 
     before do
@@ -96,7 +96,7 @@ RSpec.describe "/admin/podcasts", type: :request do
     end
   end
 
-  describe "POST /admin/podcasts/:id/fetch_podcasts" do
+  describe "POST /admin/content_manager/podcasts/:id/fetch_podcasts" do
     it "redirects back to index with a notice" do
       post fetch_admin_podcast_path(podcast.id)
       expect(response).to redirect_to(admin_podcasts_path)

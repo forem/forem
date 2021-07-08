@@ -4,7 +4,7 @@ RSpec.describe "HealthCheck", type: :request do
   let(:token) { "secret" }
   let(:headers) { { "health-check-token" => token } }
 
-  before { allow(SiteConfig).to receive(:health_check_token).and_return(token) }
+  before { allow(Settings::General).to receive(:health_check_token).and_return(token) }
 
   context "without a token" do
     it "returns an unauthorized request" do
@@ -19,21 +19,6 @@ RSpec.describe "HealthCheck", type: :request do
       get app_api_health_checks_path, headers: headers
       expect(response.status).to eq(200)
       expect(response.parsed_body["message"]).to eq("App is up!")
-    end
-  end
-
-  describe "GET /api/health_checks/search" do
-    it "returns json success if ping succeeds" do
-      get search_api_health_checks_path, headers: headers
-      expect(response.status).to eq(200)
-      expect(response.parsed_body["message"]).to eq("Search ping succeeded!")
-    end
-
-    it "returns json failure if ping fails" do
-      allow(Search::Client).to receive(:ping).and_return(false)
-      get search_api_health_checks_path, headers: headers
-      expect(response.status).to eq(500)
-      expect(response.parsed_body["message"]).to eq("Search ping failed!")
     end
   end
 

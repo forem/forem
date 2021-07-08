@@ -14,22 +14,19 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
+  config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"], expires_in: 1.hour.to_i }
+
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join("tmp/caching-dev.txt").exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
 
-    DEFAULT_EXPIRATION = 1.hour.to_i.freeze
-    config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"], expires_in: DEFAULT_EXPIRATION }
-
     config.public_file_server.headers = {
       "Cache-Control" => "public, max-age=#{2.days.to_i}"
     }
   else
     config.action_controller.perform_caching = false
-
-    config.cache_store = :null_store
   end
 
   # Don't care if the mailer can't send.
@@ -73,14 +70,12 @@ Rails.application.configure do
   # config.i18n.raise_on_missing_translations = true
 
   # Annotate rendered view with file names.
-  # config.action_view.annotate_rendered_view_with_filenames = true
+  config.action_view.annotate_rendered_view_with_filenames = true
 
   # Adds additional error checking when serving assets at runtime.
   # Checks for improperly declared sprockets dependencies.
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
-
-  config.action_mailer.perform_caching = false
 
   config.hosts << ENV["APP_DOMAIN"] unless ENV["APP_DOMAIN"].nil?
   if (gitpod_workspace_url = ENV["GITPOD_WORKSPACE_URL"])
@@ -92,13 +87,12 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: config.app_domain }
   config.action_mailer.smtp_settings = {
-    address: "smtp.gmail.com",
-    port: "587",
-    enable_starttls_auto: true,
-    user_name: '<%= ENV["DEVELOPMENT_EMAIL_USERNAME"] %>',
-    password: '<%= ENV["DEVELOPMENT_EMAIL_PASSWORD"] %>',
-    authentication: :plain,
-    domain: config.app_domain
+    address: ENV["SMTP_ADDRESS"],
+    port: ENV["SMTP_PORT"],
+    authentication: ENV["SMTP_AUTHENTICATION"].presence || :plain,
+    user_name: ENV["SMTP_USER_NAME"],
+    password: ENV["SMTP_PASSWORD"],
+    domain: ENV["SMTP_DOMAIN"].presence || config.app_domain
   }
 
   config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
@@ -141,7 +135,7 @@ Rails.application.configure do
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?
       message = "Data update scripts need to be run before you can start the application. " \
-        "Please run 'rails data_updates:run'"
+                "Please run 'rails data_updates:run'"
       raise message
     end
   end

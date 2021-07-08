@@ -1,12 +1,12 @@
+import { getInterceptsForLingeringUserRequests } from '../../util/networkUtils';
+
 describe('User Change Password', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/changePasswordUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/settings/account');
-      });
+      cy.loginAndVisit(user, '/settings/account');
     });
   });
 
@@ -41,11 +41,17 @@ describe('User Change Password', () => {
         .type(newPassword);
     });
 
+    // We intercept these requests to make sure all async sign-in requests have completed before finishing the test.
+    // This ensures async responses do not intefere with subsequent test setup
+    const loginNetworkRequests = getInterceptsForLingeringUserRequests(true);
+
     // Submit the form
     cy.get('@loginForm').findByText('Continue').click();
+    cy.wait(loginNetworkRequests);
 
     const { baseUrl } = Cypress.config();
     cy.url().should('equal', `${baseUrl}settings/account?signin=true`);
+    cy.findByRole('heading', { name: 'Set new password' });
   });
 
   it('should give an error if the new password/confirm new password fields do not match when changing the password of a user', () => {

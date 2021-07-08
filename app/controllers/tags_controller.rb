@@ -31,13 +31,13 @@ class TagsController < ApplicationController
   def admin
     tag = Tag.find_by!(name: params[:tag])
     authorize tag
-    redirect_to "/admin/tags/#{tag.id}/edit"
+    redirect_to edit_admin_tag_path(tag.id)
   end
 
   def onboarding
     skip_authorization
 
-    @tags = Tag.where(name: SiteConfig.suggested_tags)
+    @tags = Tag.where(name: Settings::General.suggested_tags)
       .select(ATTRIBUTES_FOR_SERIALIZATION)
 
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)

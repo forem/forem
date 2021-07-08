@@ -22,6 +22,12 @@ AllCops:
 
 #################### Bundler ###########################
 
+Bundler/GemVersion:
+  Description: 'Requires or forbids specifying gem versions.'
+  Enabled: true
+  EnforcedStyle: 'required'
+  AllowedGems: ['acts_as_follower']
+
 Bundler/OrderedGems:
   Description: >-
                  Gems within groups in the Gemfile should be alphabetically sorted.
@@ -49,6 +55,10 @@ Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   StyleGuide: '#consistent-multi-line-chains'
   EnforcedStyle: leading
+
+Lint/EmptyInPattern:
+  Description: 'Checks for the presence of `in` pattern branches without a body.'
+  Enabled: true
 
 Layout/EmptyLinesAroundAttributeAccessor:
   Description: "Keep blank lines around attribute accessors."
@@ -332,6 +342,10 @@ Naming/AccessorMethodName:
   StyleGuide: '#accessor_mutator_method_names'
   Enabled: false
 
+Naming/InclusiveLanguage:
+  Description: 'Recommend the use of inclusive language instead of problematic terms.'
+  Enabled: false
+
 Naming/PredicateName:
   Description: 'Check the names of predicate methods.'
   StyleGuide: '#bool-methods-qmark'
@@ -530,6 +544,11 @@ Style/IfWithBooleanLiteralBranches:
 #   Description: 'Avoid trailing inline comments.'
 #   Enabled: false
 
+Style/InPatternThen:
+  Description: 'Checks for `in;` uses in `case` expressions.'
+  StyleGuide: '#no-in-pattern-semicolons'
+  Enabled: true
+
 # Style/IpAddresses:
 #   Description: "Don't include literal IP addresses in code."
 #   Enabled: false
@@ -544,10 +563,23 @@ Style/IfWithBooleanLiteralBranches:
 #   StyleGuide: '#single-line-blocks'
 #   Enabled: false
 
+Style/MultilineInPatternThen:
+  Description: 'Do not use `then` for multi-line `in` statement.'
+  Enabled: true
+
 Style/NegatedIfElseCondition:
   Description: >-
                 This cop checks for uses of `if-else` and ternary operators with a negated condition
                 which can be simplified by inverting condition and swapping branches.
+  Enabled: true
+
+Style/Next:
+  Description: 'Use `next` to skip iteration instead of a condition at the end.'
+  StyleGuide: '#no-nested-conditionals'
+  Enabled: true
+
+Style/NilLambda:
+  Description: 'Prefer `-> {}` to `-> { nil }`.'
   Enabled: true
 
 Style/OptionalBooleanParameter:
@@ -559,13 +591,8 @@ Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
   Enabled: true
 
-Style/Next:
-  Description: 'Use `next` to skip iteration instead of a condition at the end.'
-  StyleGuide: '#no-nested-conditionals'
-  Enabled: true
-
-Style/NilLambda:
-  Description: 'Prefer `-> {}` to `-> { nil }`.'
+Style/QuotedSymbols:
+  Description: 'Use a consistent style for quoted symbols.'
   Enabled: true
 
 Style/RedundantArgument:
@@ -640,6 +667,10 @@ Style/SwapValues:
   StyleGuide: '#values-swapping'
   Enabled: true
 
+Style/TopLevelMethodDefinition:
+  Description: 'This cop looks for top-level method definitions.'
+  Enabled: true
+
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
   StyleGuide: '#no-trailing-params-comma'
@@ -690,14 +721,18 @@ Performance/IoReadlines:
   Reference: 'https://docs.gitlab.com/ee/development/performance.html#reading-from-files-and-other-data-sources'
   Enabled: true
 
-Performance/RedundantEqualityComparisonBlock:
-  Description: >-
-                  Checks for uses `Enumerable#all?`, `Enumerable#any?`, `Enumerable#one?`,
-                  or `Enumerable#none?` are compared with `===` or similar methods in block.
+Performance/MapCompact:
+  Description: 'Use `filter_map` instead of `collection.map(&:do_something).compact`.'
   Enabled: true
 
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
+  Enabled: true
+
+Performance/RedundantEqualityComparisonBlock:
+  Description: >-
+                  Checks for uses `Enumerable#all?`, `Enumerable#any?`, `Enumerable#one?`,
+                  or `Enumerable#none?` are compared with `===` or similar methods in block.
   Enabled: true
 
 Performance/RedundantSortBlock:
@@ -714,6 +749,10 @@ Performance/RedundantStringChars:
 
 Performance/ReverseFirst:
   Description: 'Use `last(n).reverse` instead of `reverse.first(n)`.'
+  Enabled: true
+
+Performance/SelectMap:
+  Description: 'Use `filter_map` instead of `ary.select(&:foo).map(&:bar)`.'
   Enabled: true
 
 Performance/SortReverse:
@@ -738,9 +777,29 @@ Rails/ActiveRecordCallbacksOrder:
   StyleGuide: 'https://rails.rubystyle.guide/#callbacks-order'
   Enabled: true
 
+Rails/AddColumnIndex:
+  Description: >-
+    Rails migrations don't make use of a given `index` key, but also
+    doesn't given an error when it's used, so it makes it seem like an
+    index might be used.
+  Enabled: true
+
 Rails/DefaultScope:
   Description: 'Avoid use of `default_scope`.'
   StyleGuide: 'https://rails.rubystyle.guide#avoid-default-scope'
+  Enabled: true
+
+Rails/EagerEvaluationLogMessage:
+  Description: 'Checks that blocks are used for interpolated strings passed to `Rails.logger.debug`.'
+  Reference: 'https://guides.rubyonrails.org/debugging_rails_applications.html#impact-of-logs-on-performance'
+  Enabled: true
+
+Rails/EnvironmentVariableAccess:
+  Description: 'Do not access `ENV` directly after initialization.'
+  Enabled: false
+
+Rails/ExpandedDateRange:
+  Description: 'Checks for expanded date range.'
   Enabled: true
 
 Rails/FilePath:
@@ -751,6 +810,10 @@ Rails/FindById:
                 Favor the use of `find` over `where.take!`, `find_by!`, and `find_by_id!` when you
                 need to retrieve a single record by primary key when you expect it to be found.
   StyleGuide: 'https://rails.rubystyle.guide/#find'
+  Enabled: true
+
+Rails/I18nLocaleAssignment:
+  Description: 'Prefer the usage of `I18n.with_locale` instead of manually updating `I18n.locale` value.'
   Enabled: true
 
 Rails/Inquiry:
@@ -797,6 +860,18 @@ Rails/RenderPlainText:
   StyleGuide: 'https://rails.rubystyle.guide/#plain-text-rendering'
   Enabled: true
 
+# TODO: enable this once all loader related deprecations on console/server startup are dealt with
+Rails/RequireDependency:
+  Description: 'Do not use `require_dependency` when running in Zeitwerk mode. `require_dependency` is for autoloading in classic mode.'
+  Reference: 'https://guides.rubyonrails.org/autoloading_and_reloading_constants.html'
+  Enabled: false
+
+Rails/ReversibleMigrationMethodDefinition:
+  Description: 'Checks whether the migration implements either a `change` method or both an `up` and a `down` method.'
+  Enabled: true
+  Include:
+    - db/migrate/*.rb
+
 Rails/ShortI18n:
   Description: 'Use the short form of the I18n methods: `t` instead of `translate` and `l` instead of `localize`.'
   StyleGuide: 'https://rails.rubystyle.guide/#short-i18n'
@@ -811,6 +886,15 @@ Rails/SkipsModelValidations:
 
 Rails/SquishedSQLHeredocs:
   Enabled: false
+
+Rails/TimeZoneAssignment:
+  Description: 'Prefer the usage of `Time.use_zone` instead of manually updating `Time.zone` value.'
+  Reference: 'https://thoughtbot.com/blog/its-about-time-zones'
+  Enabled: true
+
+Rails/UnusedIgnoredColumns:
+  Description: 'Remove a column that does not exist from `ignored_columns`.'
+  Enabled: true
 
 Rails/WhereExists:
   Description: 'Prefer `exists?(...)` over `where(...).exists?`.'
@@ -838,6 +922,11 @@ RSpec/ExampleLength:
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
 
+RSpec/IdenticalEqualityAssertion:
+  Description: Checks for equality assertions with identical expressions on both sides.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/IdenticalEqualityAssertion
+
 RSpec/MessageExpectation:
   Description: Checks for consistent message expectation style.
   Enabled: true
@@ -853,3 +942,8 @@ RSpec/MultipleExpectations:
   Enabled: true
   Max: 8
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleExpectations
+
+RSpec/Rails/AvoidSetupHook:
+  Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook

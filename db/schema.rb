@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_31_181505) do
+ActiveRecord::Schema.define(version: 2021_06_29_174206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.boolean "published_from_feed", default: false
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
+    t.tsvector "reading_list_document"
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
     t.integer "score", default: 0
@@ -157,13 +158,16 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
+    t.index ["comments_count"], name: "index_articles_on_comments_count"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
+    t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
+    t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
@@ -341,6 +345,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index "(((((to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((cached_tag_list)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((location)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((slug)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))))", name: "index_classified_listings_on_search_fields_as_tsvector", using: :gin
     t.index ["classified_listing_category_id"], name: "index_classified_listings_on_classified_listing_category_id"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["published"], name: "index_classified_listings_on_published"
@@ -386,12 +391,27 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
+    t.index "to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text))", name: "index_comments_on_body_markdown_as_tsvector", using: :gin
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["ancestry"], name: "index_comments_on_ancestry_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
+    t.index ["deleted"], name: "index_comments_on_deleted", where: "(deleted = false)"
+    t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
     t.index ["score"], name: "index_comments_on_score"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "consumer_apps", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "app_bundle", null: false
+    t.string "auth_key"
+    t.datetime "created_at", precision: 6, null: false
+    t.string "last_error"
+    t.string "platform", null: false
+    t.string "team_id"
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["app_bundle", "platform"], name: "index_consumer_apps_on_app_bundle_and_platform", unique: true
   end
 
   create_table "credits", force: :cascade do |t|
@@ -431,13 +451,26 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.string "app_bundle", null: false
+    t.string "app_bundle"
+    t.bigint "consumer_app_id"
     t.datetime "created_at", precision: 6, null: false
     t.string "platform", null: false
     t.string "token", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id", "token", "platform", "app_bundle"], name: "index_devices_on_user_id_and_token_and_platform_and_app_bundle", unique: true
+    t.index ["consumer_app_id"], name: "index_devices_on_consumer_app_id"
+    t.index ["user_id", "token", "platform", "consumer_app_id"], name: "index_devices_on_user_id_and_token_and_platform_and_app", unique: true
+  end
+
+  create_table "discussion_locks", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "locking_user_id", null: false
+    t.text "notes"
+    t.text "reason"
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["article_id"], name: "index_discussion_locks_on_article_id", unique: true
+    t.index ["locking_user_id"], name: "index_discussion_locks_on_locking_user_id"
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -874,6 +907,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "website_url"
+    t.index "(((to_tsvector('simple'::regconfig, COALESCE(body, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((subtitle)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))))", name: "index_podcast_episodes_on_search_fields_as_tsvector", using: :gin
     t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
     t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
     t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"
@@ -912,6 +946,8 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.string "website_url"
     t.index ["creator_id"], name: "index_podcasts_on_creator_id"
     t.index ["feed_url"], name: "index_podcasts_on_feed_url", unique: true
+    t.index ["published"], name: "index_podcasts_on_published", where: "(published = true)"
+    t.index ["reachable"], name: "index_podcasts_on_reachable", where: "(reachable = true)"
     t.index ["slug"], name: "index_podcasts_on_slug", unique: true
   end
 
@@ -990,8 +1026,11 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
   create_table "profiles", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.jsonb "data", default: {}, null: false
+    t.string "location"
+    t.text "summary"
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
+    t.string "website_url"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
   end
 
@@ -1046,6 +1085,54 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
+  end
+
+  create_table "settings_authentications", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_authentications_on_var", unique: true
+  end
+
+  create_table "settings_campaigns", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_campaigns_on_var", unique: true
+  end
+
+  create_table "settings_communities", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_communities_on_var", unique: true
+  end
+
+  create_table "settings_rate_limits", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_rate_limits_on_var", unique: true
+  end
+
+  create_table "settings_smtp", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_smtp_on_var", unique: true
+  end
+
+  create_table "settings_user_experiences", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_settings_user_experiences_on_var", unique: true
   end
 
   create_table "site_configs", force: :cascade do |t|
@@ -1196,7 +1283,6 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.datetime "apple_created_at"
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
@@ -1223,7 +1309,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.boolean "display_announcements", default: true
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
-    t.string "editor_version", default: "v1"
+    t.string "editor_version", default: "v2"
     t.string "education"
     t.string "email"
     t.boolean "email_badge_notifications", default: true
@@ -1245,7 +1331,6 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.integer "experience_level"
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
-    t.datetime "facebook_created_at"
     t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
@@ -1256,7 +1341,6 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
-    t.datetime "github_created_at"
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
@@ -1309,7 +1393,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.float "reputation_modifier", default: 1.0
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
-    t.boolean "saw_onboarding", default: true
+    t.boolean "saw_onboarding", default: false
     t.integer "score", default: 0
     t.string "secret"
     t.integer "sign_in_count", default: 0, null: false
@@ -1321,7 +1405,6 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.text "summary"
     t.string "text_color_hex"
     t.string "twitch_url"
-    t.datetime "twitter_created_at"
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.string "unlock_token"
@@ -1332,6 +1415,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
+    t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
     t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_users_on_username_as_tsvector", using: :gin
     t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
@@ -1350,6 +1434,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
+    t.check_constraint "username IS NOT NULL", name: "users_username_not_null"
   end
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
@@ -1379,7 +1464,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.boolean "welcome_notifications", default: true, null: false
-    t.index ["user_id"], name: "index_users_notification_settings_on_user_id"
+    t.index ["user_id"], name: "index_users_notification_settings_on_user_id", unique: true
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
@@ -1408,7 +1493,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_users_settings_on_user_id"
+    t.index ["user_id"], name: "index_users_settings_on_user_id", unique: true
   end
 
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|
@@ -1460,7 +1545,10 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
   add_foreign_key "credits", "organizations", on_delete: :restrict
   add_foreign_key "credits", "users", on_delete: :cascade
   add_foreign_key "custom_profile_fields", "profiles", on_delete: :cascade
+  add_foreign_key "devices", "consumer_apps"
   add_foreign_key "devices", "users"
+  add_foreign_key "discussion_locks", "articles"
+  add_foreign_key "discussion_locks", "users", column: "locking_user_id"
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
@@ -1528,4 +1616,32 @@ ActiveRecord::Schema.define(version: 2021_03_31_181505) do
   add_foreign_key "users_settings", "users"
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
+  create_trigger("update_reading_list_document", :generated => true, :compatibility => 1).
+      on("articles").
+      name("update_reading_list_document").
+      before(:insert, :update).
+      for_each(:row).
+      declare("l_org_vector tsvector; l_user_vector tsvector") do
+    <<-SQL_ACTIONS
+NEW.reading_list_document :=
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.title, ''))), 'A') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_tag_list, ''))), 'B') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.body_markdown, ''))), 'C') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_name, ''))), 'D') ||
+  setweight(to_tsvector('simple'::regconfig, unaccent(coalesce(NEW.cached_user_username, ''))), 'D') ||
+  setweight(to_tsvector('simple'::regconfig,
+    unaccent(
+      coalesce(
+        array_to_string(
+          -- cached_organization is serialized to the DB as a YAML string, we extract only the name attribute
+          regexp_match(NEW.cached_organization, 'name: (.*)$', 'n'),
+          ' '
+        ),
+        ''
+      )
+    )
+  ), 'D');
+    SQL_ACTIONS
+  end
+
 end

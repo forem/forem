@@ -1,15 +1,15 @@
 <% title "Welcome!" %>
 
-<% if params[:state] == "email_signup" && SiteConfig.allow_email_password_registration %>
+<% if params[:state] == "email_signup" && Settings::Authentication.allow_email_password_registration %>
   <%= render "shared/authentication/email_registration_form" %>
 <% elsif params[:state] == "email_signup" %>
-  <div class="crayons-notice crayons-notice--danger mb-10 mt-8 mx-auto" style="width: 680px;max-width:94%;">
+  <div class="crayons-notice crayons-notice--danger mb-10 mt-8 mx-auto" style="width: 680px;max-width:94%;" role="alert">
     Email authentication is not enabled for this Forem.
   </div>
 <% elsif forem_creator_flow_enabled? %>
   <%= render "shared/authentication/forem_creator_signup" %>
 <% elsif waiting_on_first_user? %>
-  <%# TODO: Vaidehi Joshi - Delete this view once forem creator onboarding is shipped %>
+  <%# TODO: Delete this view once forem creator onboarding is shipped %>
   <%= render "shared/authentication/initial_account_wizard" %>
 <% else %>
   <%= render "devise/shared/authorization_error" %>

@@ -14,8 +14,8 @@ RSpec.describe "AsyncInfo", type: :request do
         expect(response.parsed_body.keys).to match_array(%w[broadcast param token])
       end
 
-      it "renders normal response even if site config is private" do
-        allow(SiteConfig).to receive(:public).and_return(false)
+      it "renders normal response even if the Forem instance is private" do
+        allow(Settings::UserExperience).to receive(:public).and_return(false)
         get "/async_info/base_data"
         expect(response.parsed_body.keys).to match_array(%w[broadcast param token])
       end

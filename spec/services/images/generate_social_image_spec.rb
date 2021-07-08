@@ -15,7 +15,7 @@ RSpec.describe Images::GenerateSocialImage, type: :labor do
     expect(described_class.call(article)).to eq(article.main_image)
   end
 
-  it "returns article social image" do
+  it "returns article social image", cloudinary: true do
     article.main_image = nil
     article.social_image = nil
     article.cached_tag_list = "discuss, hello, goodbye"
@@ -34,7 +34,7 @@ RSpec.describe Images::GenerateSocialImage, type: :labor do
   end
 
   it "creates optimized images" do
-    allow(SiteConfig).to receive(:app_domain).and_return("example.com")
+    allow(Settings::General).to receive(:app_domain).and_return("example.com")
     allow(Images::Optimizer).to receive(:call)
 
     described_class.call(user)

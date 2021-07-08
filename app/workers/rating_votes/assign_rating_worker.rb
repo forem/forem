@@ -16,7 +16,6 @@ module RatingVotes
         experience_level_rating_distribution: ratings.max - ratings.min,
         last_experience_level_rating_at: Time.current,
       )
-      article.index_to_elasticsearch_inline
     end
   end
 end

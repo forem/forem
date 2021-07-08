@@ -42,27 +42,32 @@ module AuthenticationHelper
   end
 
   def waiting_on_first_user?
-    SiteConfig.waiting_on_first_user
+    Settings::General.waiting_on_first_user
   end
 
-  def invite_only_mode_or_no_enabled_auth_options
-    SiteConfig.invite_only_mode ||
-      (authentication_enabled_providers.none? && !SiteConfig.allow_email_password_registration)
+  def private_forem_or_no_enabled_auth_options
+    ForemInstance.private? ||
+      (authentication_enabled_providers.none? &&
+       !Settings::Authentication.allow_email_password_registration)
   end
 
   def tooltip_class_on_auth_provider_enablebtn
-    invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : ""
+    private_forem_or_no_enabled_auth_options ? "crayons-tooltip" : ""
   end
 
   def disabled_attr_on_auth_provider_enable_btn
-    invite_only_mode_or_no_enabled_auth_options ? "disabled" : ""
+    private_forem_or_no_enabled_auth_options ? "disabled" : ""
   end
 
   def tooltip_text_email_or_auth_provider_btns
-    if invite_only_mode_or_no_enabled_auth_options
+    if private_forem_or_no_enabled_auth_options
       "You cannot do this until you disable Invite Only Mode"
     else
       ""
     end
+  end
+
+  def came_from_sign_up?
+    request.referer&.include?(new_user_registration_path)
   end
 end

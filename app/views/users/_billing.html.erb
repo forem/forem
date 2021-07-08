@@ -7,7 +7,7 @@
     <%= form_tag stripe_active_cards_path, id: "credit-card-form", method: :post do %>
       <article>
         <% if flash[:error].present? %>
-          <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger">
+          <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert">
             <p><%= flash[:error] %></p>
           </div>
         <% end %>
@@ -48,7 +48,7 @@
   <script>
     setTimeout(function () {
       var handler = StripeCheckout.configure({
-        key: '<%= SiteConfig.stripe_publishable_key %>',
+        key: '<%= Settings::General.stripe_publishable_key %>',
         image: "https://thepracticaldev.s3.amazonaws.com/i/xoxvppfjorrnxudkzskw.jpg",
         locale: 'auto',
         token: function (token) {

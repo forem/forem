@@ -3,6 +3,10 @@ require "rails_helper"
 RSpec.describe "feedback_messages", type: :request do
   let(:user) { create(:user) }
 
+  before do
+    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+  end
+
   describe "POST /feedback_messages" do
     def mock_recaptcha_verification
       # rubocop:disable RSpec/AnyInstance
@@ -13,8 +17,8 @@ RSpec.describe "feedback_messages", type: :request do
     end
 
     def mock_recaptcha_config_enabled
-      allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-      allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
+      allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+      allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
     end
 
     valid_abuse_report_params = {
@@ -81,8 +85,8 @@ RSpec.describe "feedback_messages", type: :request do
 
     context "with valid params and recaptcha not configured" do
       before do
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return(nil)
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return(nil)
+        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return(nil)
+        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return(nil)
       end
 
       it "does not show the recaptcha tag" do

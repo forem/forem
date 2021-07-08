@@ -27,7 +27,7 @@ function isFormField(element) {
 
 /**
  * Function to handle converting key presses to callback functions
- * 
+ *
  * @param {KeyboardEvent} e Keyboard event
  * @param {String} keys special keys formatted in a string
  * @param {Array} chain array of past keys
@@ -96,7 +96,7 @@ export function useKeyboardShortcuts(
   const [keyChain, setKeyChain] = useState([]);
   const [mergedOptions, setMergedOptions] = useState({
     ...defaultOptions,
-    ...options
+    ...options,
   });
 
   // update mergedOptions if options prop changes

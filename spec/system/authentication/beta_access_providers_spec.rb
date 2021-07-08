@@ -5,7 +5,7 @@ RSpec.describe "Beta provider access", type: :system do
   let(:beta_providers) { ["Apple"] }
 
   before do
-    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
   context "when a user tries to sign_up" do

@@ -1,13 +1,13 @@
 <div id="global-signup-modal" class="authentication-modal hidden">
 <div class="authentication-modal__container">
   <figure class="authentication-modal__image-container">
-    <img class="authentication-modal__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
-      alt="<%= community_name %>" />
+    <img class="authentication-modal__image" src="<%= optimized_image_url(Settings::General.logo_png, width: 190) %>"
+      alt="<%= community_name %>" loading="lazy" />
   </figure>
   <div class="authentication-modal__content">
     <p class="authentication-modal__description">
-      <% if SiteConfig.tagline.present? %>
-        <%= SiteConfig.tagline %>
+      <% if Settings::Community.tagline.present? %>
+        <%= Settings::Community.tagline %>
       <% else %>
         We’d love for you to be a part of this community.
       <% end %>

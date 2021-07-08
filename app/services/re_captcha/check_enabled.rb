@@ -1,6 +1,6 @@
 # This service encapsulates the logic related to validating if reCAPTCHA is
 # enabled in the current Forem instance. The decision is based on making
-# sure the necessary SiteConfig keys are available and also on the user
+# sure the necessary Settings::General keys are available and also on the user
 # object passed in.
 #
 # Example use: ReCaptcha::CheckEnabled.call(current_user) => true/false
@@ -31,7 +31,8 @@ module ReCaptcha
     private
 
     def keys_configured?
-      SiteConfig.recaptcha_site_key.present? && SiteConfig.recaptcha_secret_key.present?
+      Settings::Authentication.recaptcha_site_key.present? &&
+        Settings::Authentication.recaptcha_secret_key.present?
     end
   end
 end

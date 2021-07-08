@@ -56,7 +56,7 @@ class Runtime {
     } else if (/Android/i.test(window.navigator.userAgent)) {
       return 'Android';
     } else if (/Linux/i.test(window.navigator.platform)) {
-     return 'Linux';
+      return 'Linux';
     }
 
     return 'Unsupported';
@@ -129,7 +129,7 @@ class Runtime {
             reject(e);
           });
       } else {
-        reject('Unsupported device unable to copy to clipboard');
+        reject('Unable to copy the text. Try reloading the page');
       }
     });
   }

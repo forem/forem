@@ -10,11 +10,10 @@ RSpec.describe "User searches users", type: :system do
     sign_in current_user
     current_user.follow(followed_user)
     follow_back_user.follow(current_user)
-    [current_user, followed_user, not_followed_user, follow_back_user].each(&:index_to_elasticsearch_inline)
-    Search::User.refresh_index
+    not_followed_user
   end
 
-  it "shows the correct follow buttons", js: true, elasticsearch: "User" do
+  it "shows the correct follow buttons", js: true do
     visit "/search?q=&filters=class_name:User"
 
     expect(JSON.parse(find_button("Edit profile")["data-info"])["id"]).to eq(current_user.id)

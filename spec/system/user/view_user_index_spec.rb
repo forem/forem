@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User index", type: :system, stub_elasticsearch: true do
+RSpec.describe "User index", type: :system do
   let!(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
   let!(:other_article) { create(:article) }
@@ -34,7 +34,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       end
 
       def shows_title
-        expect(page).to have_title("#{user.name} - #{SiteConfig.community_name}")
+        expect(page).to have_title("#{user.name} - #{Settings::Community.community_name}")
       end
 
       def shows_articles

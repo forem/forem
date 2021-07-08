@@ -6,7 +6,8 @@ module Articles
       author
         .articles
         .published
-        .tagged_with(article_tags, any: true).unscope(:select)
+        .cached_tagged_with_any(article_tags)
+        .unscope(:select)
         .limited_column_select
         .where.not(id: article.id)
         .order(published_at: :desc)

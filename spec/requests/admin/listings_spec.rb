@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/listings", type: :request do
+RSpec.describe "/admin/app/listings", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let!(:listing) { create(:listing, user_id: admin.id) }
 
@@ -9,7 +9,7 @@ RSpec.describe "/admin/listings", type: :request do
     sign_in admin
   end
 
-  describe "PUT /admin/listings/:id" do
+  describe "PUT /admin/app/listings/:id" do
     it "clears listing cache" do
       put admin_listing_path(id: listing.id), params: {
         listing: { title: "updated" }
@@ -18,7 +18,7 @@ RSpec.describe "/admin/listings", type: :request do
       expect(EdgeCache::BustListings).to have_received(:call)
     end
 
-    describe "GET /admin/listings" do
+    describe "GET /admin/app/listings" do
       let!(:unpublished_listing) { create(:listing, published: false) }
 
       it "shows published listings" do

@@ -1,3 +1,4 @@
+# rubocop:disable Style/TopLevelMethodDefinition
 require "mini_magick"
 
 # Carrierwave uses MiniMagick for image processing. To prevent server timeouts
@@ -11,9 +12,7 @@ def local_storage_config
     config.storage = :file
     config.enable_processing = !Rails.env.test? # disabled for test
     config.asset_host = if Rails.env.production?
-                          "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
-                        elsif Images::Optimizer.imgproxy_enabled?
-                          "http://#{ApplicationConfig['APP_DOMAIN']}"
+                          "https://#{ApplicationConfig['APP_DOMAIN']}"
                         end
   end
 end
@@ -61,3 +60,4 @@ Rails.application.reloader.to_prepare do
     local_storage_config
   end
 end
+# rubocop:enable Style/TopLevelMethodDefinition

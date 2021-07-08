@@ -2,20 +2,16 @@ class Comment < ApplicationRecord
   has_ancestry
   resourcify
 
+  include PgSearch::Model
   include Reactable
-  include Searchable
-
-  SEARCH_SERIALIZER = Search::CommentSerializer
-  SEARCH_CLASS = Search::FeedContent
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
+
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
+
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
 
-  # TODO: Vaidehi Joshi - Extract this into a constant or SiteConfig variable
-  # after https://github.com/forem/rfcs/pull/22 has been completed?
-  MAX_USER_MENTIONS = 7 # Explicitly set to 7 to accommodate DEV Top 7 Posts
   # The date that we began limiting the number of user mentions in a comment.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
 
@@ -28,7 +24,6 @@ class Comment < ApplicationRecord
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
-
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
   before_save :synchronous_spam_score_check
@@ -44,6 +39,7 @@ class Comment < ApplicationRecord
   after_save :synchronous_bust
   after_save :bust_cache
 
+  validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
   validate :user_mentions_in_markdown
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
@@ -54,6 +50,11 @@ class Comment < ApplicationRecord
   validates :public_reactions_count, presence: true
   validates :reactions_count, presence: true
   validates :user_id, presence: true
+  validates :commentable, on: :create, presence: {
+    message: lambda do |object, _data|
+      "#{object.commentable_type.presence || 'item'} has been deleted."
+    end
+  }
 
   after_create_commit :record_field_test_event
   after_create_commit :send_email_notification, if: :should_send_email_notification?
@@ -61,11 +62,21 @@ class Comment < ApplicationRecord
   after_create_commit :send_to_moderator
 
   after_commit :calculate_score, on: %i[create update]
-  after_commit :index_to_elasticsearch, on: %i[create update]
 
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
-  after_commit :remove_from_elasticsearch, on: [:destroy]
+  pg_search_scope :search_comments,
+                  against: %i[body_markdown],
+                  using: {
+                    tsearch: {
+                      prefix: true,
+                      highlight: {
+                        StartSel: "<mark>",
+                        StopSel: "</mark>",
+                        MaxFragments: 2
+                      }
+                    }
+                  }
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
 
@@ -126,9 +137,9 @@ class Comment < ApplicationRecord
 
   def readable_publish_date
     if created_at.year == Time.current.year
-      created_at.strftime("%b %e")
+      created_at.strftime("%b %-e")
     else
-      created_at.strftime("%b %e '%y")
+      created_at.strftime("%b %-e '%y")
     end
   end
 
@@ -191,7 +202,7 @@ class Comment < ApplicationRecord
   def shorten_urls!
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.css("a").each do |anchor|
-      unless anchor.to_s.include?("<img") || anchor.attr("class")&.include?("ltag")
+      unless anchor.to_s.include?("<img") || anchor.to_s.include?("<del") || anchor.attr("class")&.include?("ltag")
         anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img") # rubocop:disable Style/SoleNestedConditional
       end
     end
@@ -255,18 +266,18 @@ class Comment < ApplicationRecord
 
   def synchronous_spam_score_check
     return unless
-      SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
+      Settings::RateLimit.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
 
     self.score = -1 # ensure notification is not sent if possibly spammy
   end
 
   def create_conditional_autovomits
     return unless
-      SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) } &&
+      Settings::RateLimit.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) } &&
         user.registered_at > 5.days.ago
 
     Reaction.create(
-      user_id: SiteConfig.mascot_user_id,
+      user_id: Settings::General.mascot_user_id,
       reactable_id: id,
       reactable_type: "Comment",
       category: "vomit",
@@ -276,7 +287,7 @@ class Comment < ApplicationRecord
 
     user.add_role(:suspended)
     Note.create(
-      author_id: SiteConfig.mascot_user_id,
+      author_id: Settings::General.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
       reason: "automatic_suspend",
@@ -306,6 +317,12 @@ class Comment < ApplicationRecord
     self.markdown_character_count = body_markdown.size
   end
 
+  def discussion_not_locked
+    return unless commentable_type == "Article" && commentable.discussion_lock
+
+    errors.add(:commentable_id, "the discussion is locked on this Post")
+  end
+
   def published_article
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
   end
@@ -313,11 +330,11 @@ class Comment < ApplicationRecord
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
-    # The "comment-mentioned-user" css is added by Html::Parser#user_link_if_exists
-    mentions_count = Nokogiri::HTML(processed_html).css(".comment-mentioned-user").size
-    return if mentions_count <= MAX_USER_MENTIONS
+    # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
+    mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
+    return if mentions_count <= Settings::RateLimit.mention_creation
 
-    errors.add(:base, "You cannot mention more than #{MAX_USER_MENTIONS} users in a comment!")
+    errors.add(:base, "You cannot mention more than #{Settings::RateLimit.mention_creation} users in a comment!")
   end
 
   def record_field_test_event

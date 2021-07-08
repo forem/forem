@@ -2,7 +2,7 @@
   <div class="registration crayons-card">
     <div class="registration__content">
       <h1 class="registration__title">
-        <% if params[:state] == "new-user" && invite_only_mode? %>
+        <% if params[:state] == "new-user" && ForemInstance.private? %>
           <%= community_name %> is invite only.
         <% else %>
           Welcome to <%= community_name %>
@@ -24,7 +24,7 @@
         </div>
       <% else %>
         <div class="registration__actions-email" id="sign-in-password-form">
-          <% if SiteConfig.allow_email_password_login %>
+          <% if Settings::Authentication.allow_email_password_login %>
             <div class="registration__hr">
               <span class="registration__hr-label">
                 Have a password? Continue with your email address

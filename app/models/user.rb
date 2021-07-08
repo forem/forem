@@ -1,14 +1,9 @@
 class User < ApplicationRecord
   resourcify
+  rolify
 
   include CloudinaryHelper
-  include Searchable
   include Storext.model
-
-  include PgSearch::Model
-  pg_search_scope :search_by_username,
-                  against: :username,
-                  using: { tsearch: { prefix: true } }
 
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
@@ -71,6 +66,7 @@ class User < ApplicationRecord
     end
   end
 
+  ANY_ADMIN_ROLES = %i[admin super_admin].freeze
   EDITORS = %w[v1 v2].freeze
   FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
   INBOXES = %w[open private].freeze
@@ -94,15 +90,60 @@ class User < ApplicationRecord
     \z
   }x
 
+  # Relevant Fields for migration from Users table to Users_Settings table
+  USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
+    config_font
+    config_navbar
+    config_theme
+    display_announcements
+    display_sponsors
+    editor_version
+    experience_level
+    feed_mark_canonical
+    feed_referential_link
+    feed_url
+    inbox_guidelines
+    inbox_type
+    permit_adjacent_sponsors
+  ].to_set.freeze
+
+  # Relevant Fields for migration from Profiles table to Users_Settings table
+  PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
+    brand_color1
+    brand_color2
+    display_email_on_profile
+  ].to_set.freeze
+
+  # Relevant Fields for migration from Users table to Users_Notification_Settings table
+  USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
+    email_badge_notifications
+    email_comment_notifications
+    email_community_mod_newsletter
+    email_connect_messages
+    email_digest_periodic
+    email_follower_notifications
+    email_membership_newsletter
+    email_mention_notifications
+    email_newsletter
+    email_tag_mod_newsletter
+    email_unread_notifications
+    mobile_comment_notifications
+    mod_roundrobin_notifications
+    reaction_notifications
+    welcome_notifications
+  ].to_set.freeze
+
+  USER_SETTINGS_ENUM_FIELDS = %w[
+    config_font
+    config_navbar
+    config_theme
+    editor_version
+    inbox_type
+  ].to_set.freeze
+
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password
-
-  rolify after_add: :index_roles, after_remove: :index_roles
-
-  SEARCH_SERIALIZER = Search::UserSerializer
-  SEARCH_CLASS = Search::User
-  DATA_SYNC_CLASS = DataSync::Elasticsearch::User
 
   acts_as_followable
   acts_as_follower
@@ -139,6 +180,7 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
+  has_many :discussion_locks, dependent: :destroy, inverse_of: :locking_user, foreign_key: :locking_user_id
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
@@ -257,6 +299,39 @@ class User < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
+  # Unfortunately pg_search's default SQL query is not performant enough in this
+  # particular case (~ 500ms). There are multiple reasons:
+  # => creates a complex query like `SELECT FROM users INNER JOIN users` to compute ranking.
+  #    See https://github.com/Casecommons/pg_search/issues/292#issuecomment-202604151
+  # => it concatenates the content of `name` and the content of `username` to match
+  #    against the search term. By doing that, it can't use `tsvector` indexes correctly
+  #
+  # For these reasons we need to build a query manually using an `OR` condition,
+  # thus allowing the database to use the indexes properly. With this the SQL time is ~ 8-10ms.
+  #
+  # NOTE: we can't use unaccent() on the `tsvector` document because `unaccent()` can't be
+  # used in expression indexes as it's a mutable function and depends on server settings
+  # => https://stackoverflow.com/a/11007216/4186181
+  #
+  scope :search_by_name_and_username, lambda { |term|
+    where(
+      sanitize_sql_array(
+        [
+          "to_tsvector('simple', coalesce(name::text, '')) @@ to_tsquery('simple', ? || ':*')",
+          connection.quote(term),
+        ],
+      ),
+    ).or(
+      where(
+        sanitize_sql_array(
+          [
+            "to_tsvector('simple', coalesce(username::text, '')) @@ to_tsquery('simple', ? || ':*')",
+            connection.quote(term),
+          ],
+        ),
+      ),
+    )
+  }
   scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
@@ -271,20 +346,19 @@ class User < ApplicationRecord
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
-  after_save :bust_cache
-  after_save :subscribe_to_mailchimp_newsletter
 
   after_create_commit :send_welcome_notification
-  after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :sync_related_elasticsearch_docs, on: %i[create update]
-  after_commit :remove_from_elasticsearch, on: [:destroy]
+
+  after_commit :subscribe_to_mailchimp_newsletter
+  after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
+  after_commit :bust_cache
 
   def self.dev_account
-    find_by(id: SiteConfig.staff_user_id)
+    find_by(id: Settings::Community.staff_user_id)
   end
 
   def self.mascot_account
-    find_by(id: SiteConfig.mascot_user_id)
+    find_by(id: Settings::General.mascot_user_id)
   end
 
   def tag_line
@@ -383,7 +457,7 @@ class User < ApplicationRecord
   end
 
   def any_admin?
-    @any_admin ||= (has_role?(:super_admin) || has_role?(:admin))
+    @any_admin ||= roles.where(name: ANY_ADMIN_ROLES).any?
   end
 
   def tech_admin?
@@ -472,7 +546,7 @@ class User < ApplicationRecord
 
   def subscribe_to_mailchimp_newsletter
     return unless registered && email.present?
-    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
     return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
@@ -500,7 +574,7 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
-    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
+    return if Settings::General.mailchimp_api_key.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
@@ -547,7 +621,55 @@ class User < ApplicationRecord
     "User:#{id}"
   end
 
+  protected
+
+  # Send emails asynchronously
+  # see https://github.com/heartcombo/devise#activejob-integration
+  def send_devise_notification(notification, *args)
+    message = devise_mailer.public_send(notification, self, *args)
+    message.deliver_later
+  end
+
   private
+
+  def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
+    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      # rubocop:disable Layout/LineLength
+      users_setting_record.assign_attributes(field => profile.public_send(field)) if profile&.public_send(field).present?
+      # rubocop:enable Layout/LineLength
+    end
+  end
+
+  def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
+    USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
+      if USER_SETTINGS_ENUM_FIELDS.include?(field)
+        field_enums = Users::Setting.defined_enums[field]
+        users_setting_record.assign_attributes(field => field_enums[public_send(field).to_sym])
+      else
+        users_setting_record.assign_attributes(field => public_send(field))
+      end
+    end
+
+    sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
+
+    users_setting_record.save
+  end
+
+  def sync_users_settings_table
+    users_setting_record = Users::Setting.create_or_find_by(user_id: id)
+
+    migrate_users_and_profile_fields_to_users_settings(users_setting_record)
+  end
+
+  def sync_users_notification_settings_table
+    users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)
+
+    USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
+      users_notification_setting_record.assign_attributes(field => public_send(field))
+    end
+
+    users_notification_setting_record.save
+  end
 
   def send_welcome_notification
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
@@ -628,6 +750,7 @@ class User < ApplicationRecord
     "#{employer_name}#{mostly_work_with}#{available_for}"
   end
 
+  # TODO: this can be removed once we migrate away from ES
   def search_score
     counts_score = (articles_count + comments_count + reactions_count + badge_achievements_count) * 10
     score = (counts_score + tag_keywords_for_search.size) * reputation_modifier
@@ -638,14 +761,6 @@ class User < ApplicationRecord
     follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
     follows.destroy_all
-  end
-
-  def index_roles(_role)
-    return unless persisted?
-
-    index_to_elasticsearch_inline
-  rescue StandardError => e
-    Honeybadger.notify(e, context: { user_id: id })
   end
 
   def can_send_confirmation_email
@@ -674,5 +789,9 @@ class User < ApplicationRecord
 
   def strip_payment_pointer
     self.payment_pointer = payment_pointer.strip if payment_pointer
+  end
+
+  def confirmation_required?
+    ForemInstance.smtp_enabled?
   end
 end

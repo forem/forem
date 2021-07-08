@@ -37,7 +37,7 @@ module Admin
       @user = User.find(params[:id])
       Credits::Manage.call(@user, user_params)
       add_note if user_params[:new_note]
-      redirect_to "/admin/users/#{params[:id]}"
+      redirect_to admin_user_path(params[:id])
     end
 
     def destroy
@@ -66,14 +66,14 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to "/admin/users/#{@user.id}/edit"
+      redirect_to edit_admin_user_path(@user.id)
     end
 
     def export_data
       user = User.find(params[:id])
       send_to_admin = params[:send_to_admin].to_boolean
       if send_to_admin
-        email = SiteConfig.email_addresses[:contact]
+        email = ::ForemInstance.email
         receiver = "admin"
       else
         email = user.email
@@ -87,7 +87,7 @@ module Admin
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
       flash[:success] = "This user is being banished in the background. The job will complete soon."
-      redirect_to "/admin/users/#{params[:id]}/edit"
+      redirect_to edit_admin_user_path(params[:id])
     end
 
     def full_delete
@@ -96,14 +96,14 @@ module Admin
         Moderator::DeleteUser.call(user: @user)
         link = helpers.tag.a("the page", href: admin_users_gdpr_delete_requests_path, data: { "no-instant" => true })
         message = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) " \
-          "has been fully deleted. " \
-          "If this is a GDPR delete, delete them from Mailchimp & Google Analytics " \
-          " and confirm on "
+                  "has been fully deleted. " \
+                  "If this is a GDPR delete, delete them from Mailchimp & Google Analytics " \
+                  " and confirm on "
         flash[:success] = helpers.safe_join([message, link, "."])
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to "/admin/users"
+      redirect_to admin_users_path
     end
 
     def merge
@@ -114,7 +114,7 @@ module Admin
         flash[:danger] = e.message
       end
 
-      redirect_to "/admin/users/#{@user.id}/edit"
+      redirect_to edit_admin_user_path(@user.id)
     end
 
     def remove_identity
@@ -135,7 +135,7 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to "/admin/users/#{@user.id}/edit"
+      redirect_to edit_admin_user_path(@user.id)
     end
 
     def send_email

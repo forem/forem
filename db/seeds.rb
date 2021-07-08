@@ -13,19 +13,22 @@ SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 ##############################################################################
-# Default development site config if different from production scenario
+# Default development settings are different from production scenario
 
-SiteConfig.public = true
-SiteConfig.waiting_on_first_user = false
-SiteConfig.authentication_providers = Authentication::Providers.available
+Settings::UserExperience.public = true
+Settings::General.waiting_on_first_user = false
+Settings::Authentication.providers = Authentication::Providers.available
 
 ##############################################################################
+
+# Disable Redis cache while seeding
+Rails.cache = ActiveSupport::Cache.lookup_store(:null_store)
 
 # Put forem into "starter mode"
 
 if ENV["MODE"] == "STARTER"
-  SiteConfig.public = false
-  SiteConfig.waiting_on_first_user = true
+  Settings::UserExperience.public = false
+  Settings::General.waiting_on_first_user = true
   puts "Seeding forem in starter mode to replicate new creator experience"
   exit # We don't need any models if we're launching things from startup.
 end
@@ -238,7 +241,7 @@ seeder.create_if_none(Podcast) do
     {
       title: "CodingBlocks",
       description: "",
-      feed_url: "http://feeds.podtrac.com/c8yBGHRafqhz",
+      feed_url: "https://www.codingblocks.net/podcast-feed.xml",
       slug: "codingblocks",
       twitter_username: "CodingBlocks",
       website_url: "http://codingblocks.net",
@@ -287,33 +290,38 @@ end
 seeder.create_if_none(Broadcast) do
   broadcast_messages = {
     set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. " \
-      "Let's begin by <a href='/settings'>setting up your profile</a>!",
+                    "Let's begin by <a href='/settings'>setting up your profile</a>!",
     welcome_thread: "Sloan here again! 👋 DEV is a friendly community. " \
-      "Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
+                    "Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
     twitter_connect: "You're on a roll! 🎉 Do you have a Twitter account? " \
-      "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
-      "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
+                     "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
+                     "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
     facebook_connect: "You're on a roll! 🎉  Do you have a Facebook account? " \
-    "Consider <a href='/settings'>connecting it</a>.",
+                      "Consider <a href='/settings'>connecting it</a>.",
     github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
-      "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
-    customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
+                    "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
+    customize_feed:
+      "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
       "your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
-    customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
+    customize_experience:
+      "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
       "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!",
-    start_discussion: "Sloan here! 👋 I noticed that you haven't " \
+    start_discussion:
+      "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; " \
-    "just click on 'Write a Post' in the sidebar of the tag page to get started!",
-    ask_question: "Sloan here! 👋 I noticed that you haven't " \
+      "just click on 'Create Post' in the sidebar of the tag page to get started!",
+    ask_question:
+      "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; " \
-      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
-    discuss_and_ask: "Sloan here! 👋 I noticed that you haven't " \
+      "just click on 'Create Post' in the sidebar of the tag page to get started!",
+    discuss_and_ask:
+      "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
       "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; " \
-      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+      "just click on 'Create Post' in the sidebar of the tag page to get started!",
     download_app: "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? " \
-      "Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all " \
-      "of your favorite DEV content on the go!"
+                  "Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all " \
+                  "of your favorite DEV content on the go!"
   }
 
   broadcast_messages.each do |type, message|
@@ -333,7 +341,7 @@ seeder.create_if_none(Broadcast) do
     tags: welcome
     ---
 
-    Hey there! Welcome to #{SiteConfig.community_name}!
+    Hey there! Welcome to #{Settings::Community.community_name}!
 
     Leave a comment below to introduce yourself to the community!✌️
   HEREDOC
@@ -406,7 +414,7 @@ end
 ##############################################################################
 
 seeder.create_if_none(FeedbackMessage) do
-  mod = User.first
+  mod = User.with_role(:trusted).take
 
   FeedbackMessage.create!(
     reporter: User.last,

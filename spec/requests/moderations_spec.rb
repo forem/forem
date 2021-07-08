@@ -149,7 +149,7 @@ RSpec.describe "Moderations", type: :request do
     let(:user) { create(:user) }
 
     before do
-      allow(SiteConfig).to receive(:community_name).and_return("DEV")
+      allow(Settings::Community).to receive(:community_name).and_return("DEV")
     end
 
     context "when user logged in" do
