@@ -65,10 +65,10 @@ files. If you would like to try out Vault, follow our
 
 ## `Settings::Base`
 
-This class is adapted from 
+This class is adapted from
 [rails-settings-cached](https://github.com/huacnlee/rails-settings-cached).
-It allows for multiple settings model by defining class-specic request
-caches.
+Unlike the original it allows for multiple settings model by changing how
+request caching works.
 
 We use this base class for defining settings classes used within the app's
 business logic. Examples:

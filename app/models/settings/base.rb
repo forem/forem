@@ -1,8 +1,11 @@
-# This was taken from the rails-settings-cached gem and adapted to work with
-# more than one settings model by changing how request caching works. We
-# also removed features we don't need like cache scopes and readonly settings.
-#
+# This class was adapted from the rails-settings-cached gem.
 # See: https://github.com/huacnlee/rails-settings-cached
+#
+# It has changed in several significant ways:
+#   * renamed DSL method from "field" to "setting"
+#   * refactored request caching to allow for more than one settings model
+#   * removed features like cache prefixes and readonly fields
+#   * changed code in accordance with Rubocop and our internal practices
 module Settings
   class ProtectedKeyError < ArgumentError; end
 
@@ -12,8 +15,6 @@ module Settings
     PROTECTED_KEYS = %w[var value].freeze
     SEPARATOR_REGEXP = /[\n,;]+/.freeze
 
-    # In rails-settings-cache this is defined in the railtie.
-    # See: https://github.com/huacnlee/rails-settings-cached/blob/main/lib/rails-settings/railtie.rb
     after_commit :clear_cache, on: %i[create update destroy]
 
     class << self
