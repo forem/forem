@@ -6,9 +6,7 @@ describe('Delete listing', () => {
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/listings/dashboard');
-      });
+      cy.loginAndVisit(user, '/listings/dashboard');
     });
   });
 

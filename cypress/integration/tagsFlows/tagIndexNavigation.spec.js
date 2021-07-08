@@ -4,9 +4,7 @@ describe('Tag index page navigation', () => {
     cy.fixture('users/articleEditorV1User.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user).then(() => {
-        cy.visit('/t/tag1');
-      });
+      cy.loginAndVisit(user, '/t/tag1');
     });
   });
 

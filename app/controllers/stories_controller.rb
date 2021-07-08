@@ -344,7 +344,7 @@ class StoriesController < ApplicationController
       sameAs: user_same_as,
       image: Images::Profile.call(@user.profile_image_url, length: 320),
       name: @user.name,
-      email: @user.email_public ? @user.email : nil,
+      email: @user.setting.display_email_on_profile ? @user.email : nil,
       jobTitle: @user.employment_title.presence,
       description: @user.summary.presence || "404 bio not found",
       worksFor: [user_works_for].compact,

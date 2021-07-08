@@ -6,7 +6,7 @@ RSpec.describe Articles::Builder, type: :service do
   let(:prefill) { nil }
 
   context "when tag_user_editor_v2" do
-    let(:user) { create(:user, editor_version: "v2") }
+    let(:user) { create(:user) }
     let(:tag) { create(:tag) }
     let(:submission_template) { tag.submission_template_customized(user.name).to_s }
     let(:correct_attributes) do
@@ -48,7 +48,7 @@ RSpec.describe Articles::Builder, type: :service do
   end
 
   context "when prefill_user_editor_v2" do
-    let(:user) { create(:user, editor_version: "v2") }
+    let(:user) { create(:user) }
     let(:prefill) { "dsdweewewew" }
     let(:correct_attributes) do
       {
@@ -89,6 +89,7 @@ RSpec.describe Articles::Builder, type: :service do
   end
 
   context "when tag" do
+    let(:user) { create(:user) }
     let(:tag) { create(:tag) }
     let(:correct_attributes) do
       {
@@ -99,6 +100,7 @@ RSpec.describe Articles::Builder, type: :service do
     end
 
     it "initializes an article with the correct attributes and does not need authorization" do
+      user.setting.update(editor_version: "v1")
       subject, needs_authorization = described_class.call(user, tag, prefill)
 
       expect(subject).to be_an_instance_of(Article)
@@ -108,7 +110,7 @@ RSpec.describe Articles::Builder, type: :service do
   end
 
   context "when user_editor_v2" do
-    let(:user) { create(:user, editor_version: "v2") }
+    let(:user) { create(:user) }
     let(:correct_attributes) do
       {
         user_id: user.id
@@ -125,9 +127,10 @@ RSpec.describe Articles::Builder, type: :service do
   end
 
   context "when user_editor_v1" do
+    let(:user) { create(:user) }
     let(:correct_attributes) do
       body = "---\ntitle: \npublished: false\ndescription: \ntags: " \
-        "\n//cover_image: https://direct_url_to_image.jpg\n---\n\n"
+             "\n//cover_image: https://direct_url_to_image.jpg\n---\n\n"
 
       {
         body_markdown: body,
@@ -137,6 +140,7 @@ RSpec.describe Articles::Builder, type: :service do
     end
 
     it "initializes an article with the correct attributes and does not need authorization" do
+      user.setting.update(editor_version: "v1")
       subject, needs_authorization = described_class.call(user, tag, prefill)
 
       expect(subject).to be_an_instance_of(Article)

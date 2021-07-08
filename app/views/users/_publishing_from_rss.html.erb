@@ -3,13 +3,13 @@
     <h2 class="crayons-subtitle-1">
       Publishing to <%= community_name %> from RSS
     </h2>
-    <% if @user.feed_url.present? %>
-      <%= form_for(@user) do |f| %>
-        <%= f.hidden_field :feed_url, value: @user.feed_url %>
+    <% if @users_setting.feed_url.present? %>
+      <%= form_for @users_setting, url: users_settings_path do |f| %>
+        <%= f.hidden_field :feed_url, value: @users_setting.feed_url %>
         <%= f.hidden_field :tab, value: @tab %>
         <div class="flex items-center">
           <button type="submit" class="crayons-btn crayons-btn--secondary">Fetch feed now</button>
-          <p>Last Fetched: <time id="rss-fetch-time" datetime="<%= @user.feed_fetched_at.iso8601 %>"></time></p>
+          <p class="pl-2">Last Fetched: <time id="rss-fetch-time" datetime="<%= @users_setting.user.feed_fetched_at.iso8601 %>"></time></p>
         </div>
       <% end %>
     <% end %>
@@ -30,7 +30,7 @@
     <p><em>By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.</em></p>
   </div>
 
-  <%= form_for @user, html: { class: "grid gap-6" } do |f| %>
+  <%= form_for @users_setting, url: users_settings_path, html: { class: "grid gap-6" } do |f| %>
     <div class="crayons-field">
       <%= f.label :feed_url, "RSS Feed URL", class: "crayons-field__label" %>
       <%= f.url_field :feed_url, placeholder: "https://yoursite.com/feed", class: "crayons-textfield" %>
@@ -51,7 +51,7 @@
     </div>
 
     <%= f.hidden_field :tab, value: @tab, id: nil %>
-    <% button_text = @user.feed_url.present? ? "Save Feed Settings" : "Submit Feed Settings" %>
+    <% button_text = @users_setting.feed_url.present? ? "Save Feed Settings" : "Submit Feed Settings" %>
     <button class="crayons-btn w-max" type="submit"><%= button_text %></button>
   <% end %>
 </div>

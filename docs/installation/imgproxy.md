@@ -11,7 +11,7 @@ Cloud.
 ## Installation
 
 - MacOS: install via homebrew with `brew install imgproxy`.
-- Window: please install
+- Windows: please install
   [via docker](https://docs.imgproxy.net/#/installation?id=docker).
 - Linux: you can either use
   [docker installation](https://docs.imgproxy.net/#/installation?id=docker) or

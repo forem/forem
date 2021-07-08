@@ -30,7 +30,9 @@ describe('Lock discussion', () => {
             content: `This is a test article's contents.`,
             published: true,
           }).then((response) => {
-            cy.visit(`${response.body.current_state_path}/manage`);
+            cy.visitAndWaitForUserSideEffects(
+              `${response.body.current_state_path}/manage`,
+            );
           });
         });
       });
@@ -65,7 +67,7 @@ describe('Lock discussion', () => {
       cy.fixture('users/articleEditorV1User.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginUser(user).then(() => {
+        cy.loginAndVisit(user, '/').then(() => {
           cy.createArticle({
             title: 'Test Article',
             tags: ['beginner', 'ruby', 'go'],

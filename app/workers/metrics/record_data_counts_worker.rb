@@ -4,7 +4,8 @@ module Metrics
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform
-      models = [User, Article, Organization, Comment, Podcast, PodcastEpisode, Listing, PageView, Notification, Message]
+      models = [User, Article, Organization, Comment, Podcast, PodcastEpisode, Listing, PageView, Notification,
+                Message, Profile]
       models.each do |model|
         db_count = begin
           model.count
