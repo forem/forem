@@ -46,7 +46,7 @@ module AuthenticationHelper
   end
 
   def private_forem_or_no_enabled_auth_options
-    ForemInstance.private? ||
+    ForemInstance.invitation_only? ||
       (authentication_enabled_providers.none? &&
        !Settings::Authentication.allow_email_password_registration)
   end
