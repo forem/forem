@@ -153,7 +153,7 @@ RSpec.describe "Admin manages pages", type: :system do
 
     context "when a Forem is public" do
       it "does not give admins the option to set a lock screen" do
-        allow(ForemInstance).to receive(:private).and_return(true)
+        allow(ForemInstance).to receive(:private).and_return(false)
         visit edit_admin_page_path(new_landing_page.id)
         expect(page).not_to have_content("Use as 'Locked Screen'")
       end
