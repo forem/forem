@@ -83,4 +83,13 @@ RSpec.describe Podcasts::GetMediaUrl, type: :service do
     expect(result.reachable).to be false
     expect(result.url).to eq(http_url)
   end
+
+  it "marks socket errors as invalid url exception" do
+    allow(HTTParty).to receive(:head).with(https_url).and_raise(SocketError)
+    allow(HTTParty).to receive(:head).with(http_url).and_raise(SocketError)
+    result = described_class.call(http_url)
+    expect(result.https).to be false
+    expect(result.reachable).to be false
+    expect(result.url).to eq(http_url)
+  end
 end
