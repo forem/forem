@@ -36,31 +36,35 @@ class UserDecorator < ApplicationDecorator
   end
 
   def enriched_colors
-    if setting.brand_color1.blank? || setting.brand_color2.blank?
+    if bg_color_hex.blank? || text_color_hex.blank?
       {
         bg: assigned_color[:bg],
         text: assigned_color[:text]
       }
     else
       {
-        bg: setting.brand_color1,
-        text: setting.brand_color2
+        bg: bg_color_hex,
+        text: text_color_hex
       }
     end
   end
 
+  def config_font_name
+    config_font.gsub("default", Settings::UserExperience.default_font)
+  end
+
   def config_body_class
     body_class = [
-      setting.config_theme.tr("_", "-"),
-      "#{setting.resolved_font_name.tr('_', '-')}-article-body",
+      config_theme.tr("_", "-"),
+      "#{config_font_name.tr('_', '-')}-article-body",
       "trusted-status-#{trusted}",
-      "#{setting.config_navbar.tr('_', '-')}-header",
+      "#{config_navbar.tr('_', '-')}-header",
     ]
     body_class.join(" ")
   end
 
   def dark_theme?
-    setting.config_theme == "night_theme" || setting.config_theme == "ten_x_hacker_theme"
+    config_theme == "night_theme" || config_theme == "ten_x_hacker_theme"
   end
 
   def assigned_color
@@ -109,8 +113,4 @@ class UserDecorator < ApplicationDecorator
 
     created_at.after?(min_days.days.ago)
   end
-
-  delegate :display_sponsors, to: :setting
-
-  delegate :display_announcements, to: :setting
 end

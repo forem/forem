@@ -2,11 +2,7 @@ require "rails_helper"
 
 RSpec.describe Emails::SendUserDigestWorker, type: :worker do
   let(:worker) { subject }
-  let(:user) do
-    u = create(:user)
-    u.notification_setting.update(email_digest_periodic: true)
-    u
-  end
+  let(:user) { create(:user, email_digest_periodic: true) }
   let(:author) { create(:user) }
   let(:mailer) { double }
   let(:message_delivery) { double }
@@ -35,7 +31,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
       it "does not send email when user does not have email_digest_periodic" do
         create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
-        user.notification_setting.update_column(:email_digest_periodic, false)
+        user.update_column(:email_digest_periodic, false)
         worker.perform(user.id)
 
         expect(DigestMailer).not_to have_received(:with)

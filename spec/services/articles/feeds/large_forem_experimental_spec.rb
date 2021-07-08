@@ -282,11 +282,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     let(:article) { create(:article, experience_level_rating: 7) }
 
     context "when user has a further experience level" do
-      let(:user) { create(:user) }
-
-      before do
-        user.setting.update(experience_level: 1)
-      end
+      let(:user) { create(:user, experience_level: 1) }
 
       it "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
         expect(feed.score_experience_level(article)).to eq(-3)
@@ -299,11 +295,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     end
 
     context "when user has a closer experience level" do
-      let(:user) { create(:user) }
-
-      before do
-        user.setting.update(experience_level: 9)
-      end
+      let(:user) { create(:user, experience_level: 9) }
 
       it "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
         expect(feed.score_experience_level(article)).to eq(-1)
@@ -311,11 +303,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     end
 
     context "when the user does not have an experience level set" do
-      let(:user) { create(:user) }
-
-      before do
-        user.setting.update(experience_level: nil)
-      end
+      let(:user) { create(:user, experience_level: nil) }
 
       it "uses a value of 5 for user experience level" do
         expect(feed.score_experience_level(article)).to eq(-1)

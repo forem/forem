@@ -24,10 +24,8 @@ module Profiles
     def initialize(user, updated_attributes)
       @user = user
       @profile = user.profile
-      @users_setting = user.setting
       @updated_profile_attributes = updated_attributes[:profile] || {}
       @updated_user_attributes = updated_attributes[:user].to_h || {}
-      @updated_users_setting_attributes = updated_attributes[:users_setting].to_h || {}
       @errors = []
       @success = false
     end
@@ -40,7 +38,6 @@ module Profiles
       else
         errors.concat(@profile.errors.full_messages)
         errors.concat(@user.errors.full_messages)
-        errors.concat(@users_setting.errors.full_messages)
         Honeycomb.add_field("error", errors_as_sentence)
         Honeycomb.add_field("errored", true)
       end
@@ -65,7 +62,6 @@ module Profiles
       Profile.transaction do
         update_profile
         @user.update!(@updated_user_attributes)
-        @users_setting.update!(@updated_users_setting_attributes)
       end
       true
     rescue ActiveRecord::RecordInvalid

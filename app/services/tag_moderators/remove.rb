@@ -2,9 +2,7 @@ module TagModerators
   class Remove
     def self.call(user, tag)
       user.remove_role(:tag_moderator, tag)
-      if user.notification_setting.email_tag_mod_newsletter?
-        user.notification_setting.update(email_tag_mod_newsletter: false)
-      end
+      user.update(email_tag_mod_newsletter: false) if user.email_tag_mod_newsletter?
       Rails.cache.delete("user-#{user.id}/tag_moderators_list")
       return unless tag_mod_newsletter_enabled?
 
