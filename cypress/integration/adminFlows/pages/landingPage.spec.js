@@ -5,16 +5,15 @@ describe('Set a landing page from the admin portal', () => {
     cy.get('@user').then((user) => {
       cy.loginAndVisit(user, '/admin/customization/config').then(() => {
         cy.get('#new_settings_user_experience').as('userExperienceSectionForm');
-        //   // Ensure Forem instance is private
-        //   // NOTE: @citizen428 - We may need to find a better situation for this
-        //   // long-term.
-        cy.findByTestId('authSectionForm').as('authSectionForm');
+        // Ensure Forem instance is private
+        // NOTE: @citizen428 - We may need to find a better situation for this
+        // long-term.
 
         cy.get('@userExperienceSectionForm')
           .findByText('User Experience and Brand')
           .click();
         cy.get('@userExperienceSectionForm')
-          .findByLabelText('Public')
+          .findByRole('checkbox', { name: 'Public' })
           .should('be.checked')
           .uncheck();
 
@@ -24,7 +23,7 @@ describe('Set a landing page from the admin portal', () => {
             `My username is @${user.username} and this action is 100% safe and appropriate.`,
           );
         cy.get('@userExperienceSectionForm')
-          .findByText('Update Settings')
+          .findByRole('button', { name: 'Update Settings' })
           .click();
 
         cy.visit('/admin/customization/pages');

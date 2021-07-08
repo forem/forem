@@ -119,7 +119,7 @@ RSpec.describe "Admin manages pages", type: :system do
 
     context "when a Forem is private" do
       before do
-        allow(Settings::UserExperience).to receive(:public?).and_return(false)
+        allow(ForemInstance).to receive(:private?).and_return(true)
       end
 
       it "allows a landing page to be updated", :aggregate_failures do
@@ -153,7 +153,7 @@ RSpec.describe "Admin manages pages", type: :system do
 
     context "when a Forem is public" do
       it "does not give admins the option to set a lock screen" do
-        allow(Settings::UserExperience).to receive(:public?).and_return(true)
+        allow(ForemInstance).to receive(:private).and_return(true)
         visit edit_admin_page_path(new_landing_page.id)
         expect(page).not_to have_content("Use as 'Locked Screen'")
       end
