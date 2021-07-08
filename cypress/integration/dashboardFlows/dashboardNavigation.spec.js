@@ -1,4 +1,4 @@
-describe('Dashboard navigation', () => {
+describe.skip('Dashboard navigation', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
