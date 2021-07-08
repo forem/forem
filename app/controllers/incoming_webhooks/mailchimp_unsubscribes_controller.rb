@@ -18,7 +18,7 @@ module IncomingWebhooks
     def create
       not_authorized unless valid_secret?
       user = User.find_by!(email: params.dig(:data, :email))
-      user.update(email_type => false)
+      user.notification_setting.update(email_type => false)
     end
 
     private

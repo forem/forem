@@ -4,7 +4,11 @@ RSpec.describe Notifications::NewReactionWorker, type: :worker do
   let(:reaction_data) { { reactable_type: "Comment", reactable_id: 1, reactable_user_id: 2 } }
   let(:org) { create(:organization) }
   let(:user) { create(:user) }
-  let(:user_disabled) { create(:user, reaction_notifications: false) }
+  let(:user_disabled) do
+    u = create(:user)
+    u.notification_setting.update(reaction_notifications: false)
+    u
+  end
   let(:receiver_data_org) { { klass: "Organization", id: org.id } }
   let(:receiver_data_user) { { klass: "User", id: user.id } }
   let(:receiver_data_user_disabled) { { klass: "User", id: user_disabled.id } }

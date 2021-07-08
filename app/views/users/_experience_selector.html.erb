@@ -1,5 +1,5 @@
 <label>
-  <%= f.radio_button :experience_level, exp, checked: @user.experience_level == exp.to_i, class: "rich-selector-radio" %>
+  <%= f.radio_button :experience_level, exp, checked: @users_setting.experience_level == exp.to_i, class: "rich-selector-radio" %>
   <div class="rich-selector rich-selector--experience align-center my-2 mx-1 fw-medium fs-l px-0 s:px-1">
     <p><%= i + 1 %></p>
     <p class="fs-xs m:fs-s fw-normal"><%= label[i] %></p>
