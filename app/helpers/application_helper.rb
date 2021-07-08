@@ -122,6 +122,8 @@ module ApplicationHelper
   def follow_button(followable, style = "full", classes = "")
     return if followable == DELETED_USER
 
+    user_follow = followable.instance_of?(User) ? "follow-user" : ""
+
     tag.button(
       "Follow",
       name: :button,
@@ -133,7 +135,7 @@ module ApplicationHelper
           style: style
         }
       },
-      class: "crayons-btn follow-action-button whitespace-nowrap #{classes}",
+      class: "crayons-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
     )
   end
 
