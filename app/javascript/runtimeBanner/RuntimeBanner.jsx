@@ -86,13 +86,17 @@ export class RuntimeBanner extends Component {
     }
 
     const targetPath = `https://${window.location.host}/r/mobile?deep_link=${window.location.pathname}`;
-    // const targetURL = `https://udl.forem.com/?r=${targetPath}`;
-    const targetURL = `https://udl-server.ngrok.io/${encodeURIComponent(
+    const targetURL = `https://udl.forem.com/?r=${encodeURIComponent(
       targetPath,
     )}`;
     return (
       <div class="runtime-banner">
-        <a href={targetURL} class="flex items-center flex-1">
+        <a
+          href={targetURL}
+          class="flex items-center flex-1"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <svg
             class="crayons-icon crayons-icon--default"
             width="32"
