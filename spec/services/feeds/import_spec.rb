@@ -210,7 +210,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
   end
 
   context "when multiple users fetch from the same feed_url" do
-    it "fetches the articles in both accounts (if feed_mark_canonical = false)", vcr: { cassette_name: "feeds_import_by_multiple_users" } do
+    it "fetches the articles in both accounts (if feed_mark_canonical = false)" do
       rss_feed_user1 = create(:user, feed_url: link)
       rss_feed_user2 = create(:user, feed_url: link)
 
