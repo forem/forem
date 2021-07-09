@@ -56,7 +56,7 @@ describe('Authentication Section', () => {
 
           // Ensure that none of the authentication providers are enabled.
           cy.findByLabelText('Email enabled').should('not.be.visible');
-          cy.findByLabelText('Facebook enabled').should('not.be.visible');
+          cy.findByLabelText('Facebook enabled').should('to.be.visible');
           cy.findByLabelText('GitHub enabled').should('not.be.visible');
           cy.findByLabelText('Twitter enabled').should('not.be.visible');
 
