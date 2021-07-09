@@ -1315,7 +1315,6 @@ RSpec.describe Article, type: :model do
     it "is valid when both articles are drafts" do
       body_markdown = "---\ntitle: Title\npublished: false\n---\n\n"
       create(:article, body_markdown: body_markdown, feed_source_url: url)
-      body_markdown = "---\ntitle: Title\npublished: false\n---\n\n"
       another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
 
       expect(another_article).to be_valid
