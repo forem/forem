@@ -58,6 +58,30 @@ admin_user = User.find_by(email: "admin@forem.local")
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
+  user = User.create!(
+    name: "Trusted User 1",
+    email: "trusted-user-1@forem.local",
+    username: "trusted_user_1",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+
+  user.add_role(:trusted)
+end
+
+##############################################################################
+
 seeder.create_if_none(Organization) do
   organization = Organization.create!(
     name: "Bachmanity",
