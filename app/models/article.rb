@@ -27,8 +27,9 @@ class Article < ApplicationRecord
 
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
-  IMG_MARKDOWN_REGEX = `%r/!\[.*\]\(#{ApplicationConfig["APP_PROTOCOL"]}#{ApplicationConfig["AWS_BUCKET_NAME"]}
-                       .s3.amazonaws.com\/(uploads\/articles.*)\)/`.freeze
+  # The commented variable below is the image markdown regex for images stored in the local public folder.
+  # IMG_MARKDOWN_REGEX = %r{!\[.*\]\(#{ApplicationConfig["APP_PROTOCOL"]}#{ApplicationConfig["APP_DOMAIN"]}\/uploads\/articles\/(.*)\)}.freeze
+  IMG_MARKDOWN_REGEX = %r{!\[.*\]\(#{ApplicationConfig["APP_PROTOCOL"]}#{ApplicationConfig["AWS_BUCKET_NAME"]}.s3.amazonaws.com\/uploads\/articles(.*)\)}.freeze
 
   has_one :discussion_lock, dependent: :destroy
 

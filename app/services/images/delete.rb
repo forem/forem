@@ -15,6 +15,8 @@ module Images
     def call
       uploader = ArticleImageUploader.new
       image_paths.each do |image_path|
+        next if image_path.blank?
+
         uploader.retrieve_from_store!(image_path)
         uploader.remove!
       end

@@ -92,4 +92,23 @@ describe ArticleImageUploader, type: :uploader do
       expect(EXIFR::JPEG.new(uploader.file.path).gps.present?).to be(true)
     end
   end
+
+  describe "image deletion on deleting articles" do
+    it "deletes all images within the article when the article is deleted" do
+      uploader.store!(image_jpg)
+      image_url = uploader.url
+      uploader.retrieve_from_store!(File.basename(image_url))
+      expect(uploader.size).not_to eq(0)
+
+      body_markdown = "---\ntitle: Title\n---\n\n![Alt Text](#{ApplicationConfig["APP_PROTOCOL"]}#{ApplicationConfig["APP_DOMAIN"]}#{image_url})"
+      article = build(:article, body_markdown: body_markdown)
+      article.main_image = image_url
+      sidekiq_perform_enqueued_jobs do
+        article.destroy
+      end
+
+      uploader.retrieve_from_store!(File.basename(image_url))
+      expect(uploader.size).to eq(0)
+    end
+  end
 end
