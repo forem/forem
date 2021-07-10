@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_12_025422) do
+ActiveRecord::Schema.define(version: 2021_07_09_180819) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1323,6 +1323,8 @@ ActiveRecord::Schema.define(version: 2021_05_12_025422) do
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
+    t.string "forem_created_at"
+    t.string "forem_username"
     t.datetime "github_created_at"
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
