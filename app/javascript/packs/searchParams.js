@@ -1,9 +1,5 @@
-import '../../assets/javascripts/utilities/checkUserLoggedIn';
-import '../../assets/javascripts/utilities/showLoginModal';
-import '../../assets/javascripts/utilities/userData';
-import '../../assets/javascripts/utilities/buildArticleHTML';
-import '../../assets/javascripts/initializers/initializeReadingListIcons';
-import '../../assets/javascripts/initializers/initializeAllFollowButts';
+/*global checkUserLoggedIn, showLoginModal, userData, buildArticleHTML, initializeReadingListIcons, initializeAllFollowButts, initializeUserFollowButts*/
+/*eslint no-undef: "error"*/
 
 function getQueryParams(qs) {
   qs = qs.split('+').join(' ');
@@ -55,11 +51,11 @@ function initializeSortingTabs(query) {
         window.history.pushState(
           null,
           null,
-          `/search?q=${  query  }&filters=${  filters  }${sortString}`,
+          `/search?q=${query}&filters=${filters}${sortString}`,
         );
         search(query, filters, sortBy, sortDirection);
       } else {
-        window.history.pushState(null, null, `/search?q=${  query  }${sortString}`);
+        window.history.pushState(null, null, `/search?q=${query}${sortString}`);
         search(query, '', sortBy, sortDirection);
       }
 
@@ -99,9 +95,9 @@ function initializeFilters(query, filters) {
       window.history.pushState(
         null,
         null,
-        `/search?q=${  query  }&filters=${  filters  }${sortString}`,
+        `/search?q=${query}&filters=${filters}${sortString}`,
       );
-      const {className} = e.target;
+      const { className } = e.target;
       for (let i = 0; i < filterButts.length; i++) {
         filterButts[i].classList.remove('crayons-link--current');
       }
@@ -110,14 +106,14 @@ function initializeFilters(query, filters) {
         window.history.replaceState(
           null,
           null,
-          `/search?q=${  query  }&filters=${  filters  }${sortString}`,
+          `/search?q=${query}&filters=${filters}${sortString}`,
         );
         search(query, filters, sortBy, sortDirection);
       } else {
         window.history.replaceState(
           null,
           null,
-          `/search?q=${  query  }${sortString}`,
+          `/search?q=${query}${sortString}`,
         );
         search(query, '', sortBy, sortDirection);
       }
@@ -127,7 +123,7 @@ function initializeFilters(query, filters) {
 
 function buildSortString(sortBy, sortDirection) {
   return sortBy && sortDirection
-    ? `&sort_by=${  sortBy  }&sort_direction=${  sortDirection}`
+    ? `&sort_by=${sortBy}&sort_direction=${sortDirection}`
     : '';
 }
 
