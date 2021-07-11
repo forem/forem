@@ -1,12 +1,9 @@
-import { checkUserLoggedIn } from '../../assets/javascripts/utilities/checkUserLoggedIn';
-import { showLoginModal } from '../../assets/javascripts/utilities/showLoginModal';
-import { userData } from '../../assets/javascripts/utilities/userData';
-import { buildArticleHTML } from '../../assets/javascripts/utilities/buildArticleHTML';
-import { initializeReadingListIcons } from '../../assets/javascripts/initializers/initializeReadingListIcons';
-import {
-  initializeAllFollowButts,
-  initializeUserFollowButts,
-} from '../../assets/javascripts/initializers/initializeAllFollowButts';
+import '../../assets/javascripts/utilities/checkUserLoggedIn';
+import '../../assets/javascripts/utilities/showLoginModal';
+import '../../assets/javascripts/utilities/userData';
+import '../../assets/javascripts/utilities/buildArticleHTML';
+import '../../assets/javascripts/initializers/initializeReadingListIcons';
+import '../../assets/javascripts/initializers/initializeAllFollowButts';
 
 function getQueryParams(qs) {
   qs = qs.split('+').join(' ');
