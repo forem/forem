@@ -279,13 +279,13 @@ GEM
       browser (>= 2.0)
       distribution
       railties (>= 5)
-    flipper (0.21.0)
-    flipper-active_record (0.21.0)
-      activerecord (>= 5.0, < 7)
-      flipper (~> 0.21.0)
-    flipper-ui (0.21.0)
+    flipper (0.22.0)
+    flipper-active_record (0.22.0)
+      activerecord (>= 4.2, < 7)
+      flipper (~> 0.22.0)
+    flipper-ui (0.22.0)
       erubi (>= 1.0.0, < 2.0.0)
-      flipper (~> 0.21.0)
+      flipper (~> 0.22.0)
       rack (>= 1.4, < 3)
       rack-protection (>= 1.5.3, < 2.2.0)
     fog-aws (3.10.0)
@@ -882,9 +882,9 @@ DEPENDENCIES
   fastly (~> 3.0)
   feedjira (~> 3.2)
   field_test (~> 0.4)
-  flipper (~> 0.21.0)
-  flipper-active_record (~> 0.21.0)
-  flipper-ui (~> 0.21.0)
+  flipper (~> 0.22.0)
+  flipper-active_record (~> 0.22.0)
+  flipper-ui (~> 0.22.0)
   fog-aws (~> 3.10)
   front_matter_parser (~> 1.0)
   gemoji (~> 4.0.0.rc2)
@@ -998,4 +998,4 @@ RUBY VERSION
    ruby 2.7.2p137
 
 BUNDLED WITH
-   2.2.15
+   2.2.16
