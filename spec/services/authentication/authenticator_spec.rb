@@ -49,7 +49,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.password).to be_present
         expect(user.signup_cta_variant).to be_nil
         expect(user.saw_onboarding).to be(false)
-        expect(user.editor_version).to eq("v2")
+        expect(user.setting.editor_version).to eq("v2")
       end
 
       it "sets the correct sign up cta variant" do
@@ -244,7 +244,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.password).to be_present
         expect(user.signup_cta_variant).to be_nil
         expect(user.saw_onboarding).to be(false)
-        expect(user.editor_version).to eq("v2")
+        expect(user.setting.editor_version).to eq("v2")
       end
 
       it "sets the correct sign up cta variant" do
@@ -445,7 +445,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.password).to be_present
         expect(user.signup_cta_variant).to be_nil
         expect(user.saw_onboarding).to be(false)
-        expect(user.editor_version).to eq("v2")
+        expect(user.setting.editor_version).to eq("v2")
       end
 
       it "sets the correct sign up cta variant" do
@@ -534,7 +534,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.password).to be_present
         expect(user.signup_cta_variant).to be_nil
         expect(user.saw_onboarding).to be(false)
-        expect(user.editor_version).to eq("v2")
+        expect(user.setting.editor_version).to eq("v2")
       end
 
       it "sets the correct sign up cta variant" do

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Notifications::Moderation::Send, type: :service do
-  let(:last_moderation_time) { Time.zone.now - Notifications::Moderation::MODERATORS_AVAILABILITY_DELAY - 3.hours }
+  let(:last_moderation_time) { Time.zone.now - Notifications::Moderation::MODERATORS_AVAILABILITY_DELAY - 1.week }
   let(:dev_account) { create(:user) }
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
@@ -10,7 +10,8 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
   let(:moderator) { available_moderators.first }
 
   before do
-    create(:user, :trusted, last_moderation_notification: last_moderation_time)
+    u = create(:user, :trusted, last_moderation_notification: last_moderation_time)
+    u.notification_setting.update(mod_roundrobin_notifications: true)
     allow(User).to receive(:dev_account).and_return(dev_account)
     # Creating a comment calls moderation job which itself call moderation service
     Comment.skip_callback(:commit, :after, :send_to_moderator)

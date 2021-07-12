@@ -25,6 +25,8 @@ class EmailDigest
   private
 
   def get_users
-    User.registered.where(email_digest_periodic: true).where.not(email: "")
+    User.registered.joins(:notification_setting)
+      .where(notification_setting: { email_digest_periodic: true })
+      .where.not(email: "")
   end
 end

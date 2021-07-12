@@ -1,7 +1,6 @@
 describe('Pin an article - Anonymous user', () => {
   beforeEach(() => {
     cy.testSetup();
-
     cy.visit('/');
   });
 
@@ -19,6 +18,23 @@ describe('Pin an article - Non admin user', () => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
 
+    // Responses from these requests are not required for this test, and are stubbed to prevent responses interfering with subsequent tests
+    cy.intercept('/reactions?article**', {
+      body: {
+        current_user: { id: '' },
+        reactions: [],
+        article_reaction_counts: [],
+      },
+    });
+    cy.intercept('/reactions?commentable**', {
+      body: {
+        current_user: { id: '' },
+        reactions: [],
+        public_reaction_counts: [],
+      },
+    });
+    cy.intercept('/follows**', {});
+
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
         cy.createArticle({
@@ -27,7 +43,9 @@ describe('Pin an article - Non admin user', () => {
           content: `This is a test article's contents.`,
           published: true,
         }).then((response) => {
-          cy.visit(response.body.current_state_path);
+          cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
+          // Wait for page to load
+          cy.findByRole('heading', { name: 'Test Article' });
         });
       });
     });
@@ -53,7 +71,7 @@ describe('Pin an article - Admin User', () => {
           content: `This is a test article's contents.`,
           published: true,
         }).then((response) => {
-          cy.visit(response.body.current_state_path);
+          cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
         });
       });
     });
@@ -67,7 +85,7 @@ describe('Pin an article - Admin User', () => {
       cy.findAllByRole('button', { name: 'Unpin Post' }).first();
     });
 
-    cy.visit('/');
+    cy.visitAndWaitForUserSideEffects('/');
 
     cy.findByRole('main').findByTestId('pinned-article').should('be.visible');
   });
@@ -79,7 +97,7 @@ describe('Pin an article - Admin User', () => {
       cy.findAllByRole('button', { name: 'Pin Post' }).first();
     });
 
-    cy.visit('/');
+    cy.visitAndWaitForUserSideEffects('/');
 
     cy.findByRole('main').findByTestId('pinned-article').should('not.exist');
   });
@@ -96,12 +114,13 @@ describe('Pin an article - Admin User', () => {
       content: `This is a test article's contents.`,
       published: false,
     }).then((response) => {
-      cy.visit(response.body.current_state_path);
-    });
+      cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
 
-    cy.findByRole('main')
-      .findByRole('button', { name: 'Pin Post' })
-      .should('not.exist');
+      cy.findByRole('heading', { name: 'Test Article 2' });
+      cy.findByRole('main')
+        .findByRole('button', { name: 'Pin Post' })
+        .should('not.exist');
+    });
   });
 
   it('should not add the "Pin Post" button to the non currently pinned article', () => {
@@ -116,12 +135,13 @@ describe('Pin an article - Admin User', () => {
       content: `This is a test article's contents.`,
       published: true,
     }).then((response) => {
-      cy.visit(response.body.current_state_path);
-    });
+      cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
+      cy.findByRole('heading', { name: 'Test Article 2' });
 
-    cy.findByRole('main')
-      .findByRole('button', { name: 'Pin Post' })
-      .should('not.exist');
+      cy.findByRole('main')
+        .findByRole('button', { name: 'Pin Post' })
+        .should('not.exist');
+    });
   });
 
   it('should allow to pin another post after the current pinned post is deleted', () => {
@@ -150,14 +170,13 @@ describe('Pin an article - Admin User', () => {
       content: `This is a test article's contents.`,
       published: true,
     }).then((response) => {
-      cy.visit(response.body.current_state_path);
+      cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
+      cy.findByRole('heading', { name: 'Another Article' });
+      cy.findByRole('main')
+        .findAllByRole('button', { name: 'Pin Post' })
+        .first()
+        .should('exist');
     });
-
-    cy.findByRole('heading', { name: 'Another Article' });
-    cy.findByRole('main')
-      .findAllByRole('button', { name: 'Pin Post' })
-      .first()
-      .should('exist');
   });
 
   it('should allow to pin another post after the current pinned post is unpublished', () => {
@@ -181,13 +200,12 @@ describe('Pin an article - Admin User', () => {
       content: `This is a test article's contents.`,
       published: true,
     }).then((response) => {
-      cy.visit(response.body.current_state_path);
+      cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
+      cy.findByRole('heading', { name: 'Another Article' });
+      cy.findByRole('main')
+        .findAllByRole('button', { name: 'Pin Post' })
+        .first()
+        .should('exist');
     });
-
-    cy.findByRole('heading', { name: 'Another Article' });
-    cy.findByRole('main')
-      .findAllByRole('button', { name: 'Pin Post' })
-      .first()
-      .should('exist');
   });
 });

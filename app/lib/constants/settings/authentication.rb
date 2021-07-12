@@ -60,8 +60,8 @@ module Constants
           placeholder: "What is the Google reCAPTCHA secret key?"
         },
         require_captcha_for_email_password_registration: {
-          description: "People will be required to fill out a captcha when
-          they're creating a new account in your community",
+          description:
+            "People will be required to fill out a captcha when they're creating a new account in your community",
           placeholder: ""
         },
         twitter_key: {

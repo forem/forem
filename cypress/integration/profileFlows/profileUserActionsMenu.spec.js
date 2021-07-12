@@ -30,9 +30,7 @@ describe('Profile User Actions Menu', () => {
       cy.fixture('users/adminUser.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginUser(user).then(() => {
-          cy.visit('/');
-        });
+        cy.loginAndVisit(user, '/');
       });
     });
 

@@ -202,7 +202,7 @@ class Comment < ApplicationRecord
   def shorten_urls!
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.css("a").each do |anchor|
-      unless anchor.to_s.include?("<img") || anchor.attr("class")&.include?("ltag")
+      unless anchor.to_s.include?("<img") || anchor.to_s.include?("<del") || anchor.attr("class")&.include?("ltag")
         anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img") # rubocop:disable Style/SoleNestedConditional
       end
     end
@@ -299,7 +299,7 @@ class Comment < ApplicationRecord
     parent_exists? &&
       parent_user.class.name != "Podcast" &&
       parent_user != user &&
-      parent_user.email_comment_notifications &&
+      parent_user.notification_setting.email_comment_notifications &&
       parent_user.email &&
       parent_or_root_article.receive_notifications
   end

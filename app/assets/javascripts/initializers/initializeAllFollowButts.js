@@ -30,7 +30,7 @@ function fetchUserFollowStatuses(idButtonHash) {
     .then((response) => response.json())
     .then((idStatuses) => {
       Object.keys(idStatuses).forEach(function (id) {
-        addButtClickHandle(idStatuses[id], idButtonHash[id]);
+        addButtClickHandles(idStatuses[id], idButtonHash[id]);
       });
     });
 }
@@ -44,7 +44,11 @@ function initializeUserFollowButtons(buttons) {
         addModalEventListener(buttons[i]);
       } else {
         var userId = JSON.parse(buttons[i].dataset.info).id;
-        userIds[userId] = buttons[i];
+        if (userIds[userId]) {
+          userIds[userId].push(buttons[i]);
+        } else {
+          userIds[userId] = [buttons[i]];
+        }
       }
     }
 
@@ -55,8 +59,9 @@ function initializeUserFollowButtons(buttons) {
 }
 
 function initializeUserFollowButts() {
-  var buttons = document.getElementsByClassName(
-    'follow-action-button follow-user',
+  // Get all user follow buttons, avoiding any initialized already
+  var buttons = document.querySelectorAll(
+    '.follow-action-button.follow-user:not([data-click-initialized])',
   );
   initializeUserFollowButtons(buttons);
 }
@@ -106,7 +111,7 @@ function fetchButt(butt, buttInfo) {
       dataRequester.readyState === XMLHttpRequest.DONE &&
       dataRequester.status === 200
     ) {
-      addButtClickHandle(dataRequester.response, butt);
+      addButtClickHandles(dataRequester.response, [butt]);
     }
   };
   dataRequester.open(
@@ -117,15 +122,16 @@ function fetchButt(butt, buttInfo) {
   dataRequester.send();
 }
 
-function addButtClickHandle(response, butt) {
+function addButtClickHandles(response, buttons) {
   // currently lacking error handling
-  var buttInfo = JSON.parse(butt.dataset.info);
-  assignInitialButtResponse(response, butt);
-  butt.onclick = function (e) {
-    e.preventDefault();
-    handleOptimisticButtRender(butt);
-  };
-  butt.dataset.clickInitialized = 'true';
+  buttons.forEach((butt) => {
+    assignInitialButtResponse(response, butt);
+    butt.onclick = function (e) {
+      e.preventDefault();
+      handleOptimisticButtRender(butt);
+    };
+    butt.dataset.clickInitialized = 'true';
+  });
 }
 
 function handleTagButtAssignment(user, butt, buttInfo) {
@@ -137,7 +143,7 @@ function handleTagButtAssignment(user, butt, buttInfo) {
       .indexOf(buttInfo.id) !== -1;
 
   var buttAssignmentBoolText = buttAssignmentBoolean ? 'true' : 'false';
-  addButtClickHandle(buttAssignmentBoolText, butt);
+  addButtClickHandles(buttAssignmentBoolText, [butt]);
 }
 
 function assignInitialButtResponse(response, butt) {

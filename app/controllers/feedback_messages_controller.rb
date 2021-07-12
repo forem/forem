@@ -2,7 +2,7 @@ class FeedbackMessagesController < ApplicationController
   # No authorization required for entirely public controller
   skip_before_action :verify_authenticity_token
   FLASH_MESSAGE = "Make sure the forms are filled. 🤖 Other possible errors: "\
-    "%<errors>s".freeze
+                  "%<errors>s".freeze
 
   def create
     flash.clear

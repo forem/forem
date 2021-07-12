@@ -31,14 +31,16 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
-    email_comment_notifications: false,
-    email_follower_notifications: false,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
+  )
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
   )
 
   user.profile.update({
@@ -76,15 +78,13 @@ end
 ##############################################################################
 
 seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") do
-  User.create!(
+  user = User.create!(
     name: "Change Password User",
     email: "change-password-user@forem.com",
     username: "changepassworduser",
     summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
-    email_comment_notifications: false,
-    email_follower_notifications: false,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -92,64 +92,72 @@ seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") d
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
   )
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+  user
 end
 
 ##############################################################################
 
 seeder.create_if_doesnt_exist(User, "email", "article-editor-v1-user@forem.com") do
-  User.create!(
+  user = User.create!(
     name: "Article Editor v1 User",
     email: "article-editor-v1-user@forem.local",
     username: "article_editor_v1_user",
     summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
-    email_comment_notifications: false,
-    email_follower_notifications: false,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
-    editor_version: "v1",
   )
+  user.setting.update(editor_version: "v1")
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+  user
 end
 
 ##############################################################################
 
 seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.com") do
-  User.create!(
+  user = User.create!(
     name: "Article Editor v2 User",
     email: "article-editor-v2-user@forem.local",
     username: "article_editor_v2_user",
     summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
-    email_comment_notifications: false,
-    email_follower_notifications: false,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
-    editor_version: "v2",
   )
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+  user
 end
 
 ##############################################################################
 
 chat_user_1 = seeder.create_if_doesnt_exist(User, "email", "chat-user-1@forem.local") do
-  User.create!(
+  user = User.create!(
     name: "Chat user 1",
     email: "chat-user-1@forem.local",
     username: "chat_user_1",
     summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
-    email_comment_notifications: false,
-    email_follower_notifications: false,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -157,20 +165,23 @@ chat_user_1 = seeder.create_if_doesnt_exist(User, "email", "chat-user-1@forem.lo
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
   )
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+  user
 end
 
 ##############################################################################
 
 chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.local") do
-  User.create!(
+  user = User.create!(
     name: "Chat user 2",
     email: "chat-user-2@forem.local",
     username: "chat_user_2",
     summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
-    email_comment_notifications: false,
-    email_follower_notifications: false,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -178,6 +189,11 @@ chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.lo
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
   )
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+  user
 end
 
 ##############################################################################
@@ -192,6 +208,9 @@ seeder.create_if_doesnt_exist(ChatChannel, "channel_name", "test chat channel") 
   )
 
   channel.invite_users(users: [chat_user_1, chat_user_2])
+
+  Message.create(message_markdown: "Test message from chat_user_1", user_id: chat_user_1.id,
+                 chat_channel_id: channel.id)
 end
 
 ##############################################################################
@@ -215,9 +234,9 @@ end
 
 seeder.create_if_doesnt_exist(NavigationLink, "url", "/contact") do
   icon = '<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">'\
-      '<path d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342'\
-      '7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"/>'\
-    '</svg>'
+         '<path d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342'\
+         '7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"/>'\
+         '</svg>'
   6.times do |i|
     NavigationLink.create!(
       name: "Nav link #{i}",
