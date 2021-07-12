@@ -39,9 +39,6 @@ describe('Runtime Banner Deep Linking', () => {
         .should('be.visible');
       cy.get('a').contains('Take me back').should('be.visible');
       cy.get('a').contains('Try again').should('be.visible');
-      // cy.get('a').contains('Try again')
-      //   .should('have.attr', 'href')
-      //   .and('contains', deepLinkPath);
       cy.get('a').contains('Install the app').should('be.visible');
 
       // Also the loading text should not exist anymore
