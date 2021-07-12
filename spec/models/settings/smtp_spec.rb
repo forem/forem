@@ -30,6 +30,7 @@ RSpec.describe Settings::SMTP do
       described_class.authentication = "plain"
       described_class.user_name = "username"
       described_class.password = "password"
+      described_class.domain = "forem.local"
 
       expect(described_class.settings).to eq({
                                                address: "smtp.google.com",
@@ -37,7 +38,7 @@ RSpec.describe Settings::SMTP do
                                                authentication: "plain",
                                                user_name: "username",
                                                password: "password",
-                                               domain: ""
+                                               domain: "forem.local"
                                              })
     end
   end
