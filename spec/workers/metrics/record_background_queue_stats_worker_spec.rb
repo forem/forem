@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Metrics::RecordBackgroundQueueStatsWorker, type: :worker do
-  include_examples "#enqueues_on_correct_queue", "low_priority", 1
+  include_examples "#enqueues_on_correct_queue", "high_priority", 1
 
   describe "#perform" do
     it "logs estimated counts in Datadog" do

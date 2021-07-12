@@ -62,6 +62,10 @@ class UserPolicy < ApplicationPolicy
     true
   end
 
+  def onboarding_notifications_checkbox_update?
+    true
+  end
+
   def update?
     current_user?
   end

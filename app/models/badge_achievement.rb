@@ -42,7 +42,7 @@ class BadgeAchievement < ApplicationRecord
 
   def send_email_notification
     return unless user.is_a?(User)
-    return unless user.email && user.email_badge_notifications
+    return unless user.email && user.notification_setting.email_badge_notifications
 
     BadgeAchievements::SendEmailNotificationWorker.perform_async(id)
   end
