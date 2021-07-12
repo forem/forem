@@ -12,6 +12,8 @@ class NavigationLink < ApplicationRecord
   validates :display_only_when_signed_in, inclusion: { in: [true, false] }
 
   scope :ordered, -> { order(position: :asc, name: :asc) }
+  scope :default_links, -> { where(section: 0) }
+  scope :other_links, -> { where(section: 1) }
 
   private
 
