@@ -13,13 +13,6 @@ class Profile < ApplicationRecord
 
   SPECIAL_DISPLAY_ATTRIBUTES = %w[summary location work].freeze
 
-  # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
-  # profile migration/generalization work.
-  MAPPED_ATTRIBUTES = {
-    education: :education,
-    skills_languages: :mostly_work_with
-  }.with_indifferent_access.freeze
-
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
     return if ENV["ENV_AVAILABLE"] == "false"
