@@ -636,7 +636,7 @@ class User < ApplicationRecord
   end
 
   def tag_keywords_for_search
-    "#{employer_name}#{mostly_work_with}#{available_for}"
+    "#{work}#{mostly_work_with}#{available_for}"
   end
 
   # TODO: this can be removed once we migrate away from ES
