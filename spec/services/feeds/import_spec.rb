@@ -212,11 +212,10 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
 
   context "when multiple users fetch from the same feed_url" do
     it "fetches the articles in both accounts (if feed_mark_canonical = false)" do
-      rss_feed_user1 = create(:user)
-      rss_feed_user1.setting.update(feed_url: link)
+      rss_feed_user1 = Users::Setting.find_by(feed_url: link).user
       rss_feed_user2 = create(:user)
       rss_feed_user2.setting.update(feed_url: link)
-      expect { described_class.call(users: User.find_by(id: Users::Setting.where(feed_url: link).select(:user_id))) }
+      expect { described_class.call(users: User.where(id: Users::Setting.where(feed_url: link).select(:user_id))) }
         .to change(rss_feed_user1.articles, :count).by(10)
         .and change(rss_feed_user2.articles, :count).by(10)
     end
