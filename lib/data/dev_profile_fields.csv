@@ -1,4 +1,3 @@
-Display email on profile,check_box,,,Basic,settings_only,false
 Education,text_field,,,Work,header,false
 Employer name,text_field,Acme Inc.,,Work,header,false
 Employer URL,text_field,https://dev.com,,Work,header,false
@@ -7,5 +6,3 @@ Skills/Languages,text_area,,What tools and languages are you most experienced wi
 Currently learning,text_area,,"What are you learning right now? What are the new tools and languages you're picking up right now?",Coding,left_sidebar,false
 Currently hacking on,text_area,,What projects are currently occupying most of your time?,Coding,left_sidebar,false
 Available for,text_area,,"What kinds of collaborations or discussions are you available for? What's a good reason to say Hey! to you these days?",Coding,left_sidebar,false
-Brand color 1,color_field,#000000,"Used for backgrounds, borders etc.",Branding,settings_only,false
-Brand color 2,color_field,#000000,Used for texts (usually put on Brand color 1).,Branding,settings_only,false
