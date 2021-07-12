@@ -8,8 +8,8 @@ class MigrateDataToWorkFieldWorker
     profile = Profile.find_by(id: profile_id)
     return unless profile
 
-    work_info = profile.employment_title.dup
-    work_info << " at #{profile.employer_name}" if profile.employer_name.present?
+    work_info = profile.employment_title
+    work_info += " at #{profile.employer_name}" if profile.employer_name.present?
 
     # NOTE: This worker is only concerned with updating "work", an unvalidated
     # key in the JSONB data object. We don't want this to fail, even if e.g.
