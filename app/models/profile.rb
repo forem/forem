@@ -11,7 +11,7 @@ class Profile < ApplicationRecord
   # any profile on a given Forem.
   STATIC_FIELDS = %w[summary location website_url].freeze
 
-  SPECIAL_DISPLAY_ATTRIBUTES = %w[summary location work].freeze
+  SPECIAL_DISPLAY_ATTRIBUTES = %w[summary location].freeze
 
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
