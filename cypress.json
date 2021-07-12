@@ -1,6 +1,5 @@
 {
   "screenshotsFolder": "tmp/cypress_screenshots",
   "trashAssetsBeforeRuns": false,
-  "video": false,
-  "reporter": "dot"
+  "video": false
 }
