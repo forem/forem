@@ -227,6 +227,7 @@ seeder.create_if_none(NavigationLink) do
     icon: reading_icon,
     display_only_when_signed_in: true,
     position: 0,
+    section: 0,
   )
 end
 
@@ -243,6 +244,7 @@ seeder.create_if_doesnt_exist(NavigationLink, "url", "/contact") do
       position: i + 1,
       url: "/contact",
       icon: icon,
+      section: 0,
     )
   end
 end
