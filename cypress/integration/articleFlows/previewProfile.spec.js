@@ -1,4 +1,4 @@
-describe('Preview user profile from article page', () => {
+describe.skip('Preview user profile from article page', () => {
   describe('mobile screens', () => {
     beforeEach(() => {
       cy.testSetup();
