@@ -58,7 +58,7 @@
 
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box "profile[display_email_on_profile]",
-                      checked: profile.display_email_on_profile,
+                      checked: @user.setting.display_email_on_profile,
                       class: "crayons-checkbox" %>
       <label class="crayons-field__label" for="profile[display_email_on_profile]">
         Display email on profile
