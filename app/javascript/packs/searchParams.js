@@ -1,5 +1,5 @@
-/*global checkUserLoggedIn, showLoginModal, userData, buildArticleHTML, initializeReadingListIcons, initializeAllFollowButts, initializeUserFollowButts*/
-/*eslint no-undef: "error"*/
+/* global checkUserLoggedIn, showLoginModal, userData, buildArticleHTML, initializeReadingListIcons, initializeAllFollowButts, initializeUserFollowButts */
+/* eslint no-undef: "error" */
 
 function getQueryParams(qs) {
   qs = qs.split('+').join(' ');
