@@ -54,7 +54,7 @@ class Article < ApplicationRecord
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validates :boost_states, presence: true
   validates :cached_tag_list, length: { maximum: 126 }
-  validates :canonical_url, uniqueness: { allow_nil: true }
+  validates :canonical_url, uniqueness: { allow_nil: true, scope: :published }, if: :published?
   validates :canonical_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :comments_count, presence: true
   validates :feed_source_url, uniqueness: { allow_nil: true, scope: :published }, if: :published?
