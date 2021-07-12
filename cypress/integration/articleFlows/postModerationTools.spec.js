@@ -28,4 +28,16 @@ describe('Moderation Tools for Posts', () => {
       });
     });
   });
+
+  it('should not load moderation tools for a post when not logged in', () => {
+    cy.fixture('users/articleEditorV1User.json').as('user');
+
+    cy.visit('/').then(() => {
+      cy.findAllByRole('link', { name: 'Test article' })
+        .first()
+        .click({ force: true });
+
+      cy.findByRole('button', { name: 'Moderation' }).should('not.exist');
+    });
+  });
 });
