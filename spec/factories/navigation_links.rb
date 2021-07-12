@@ -16,7 +16,7 @@ FactoryBot.define do
 
     trait :other_section_link do
       after(:create) do |navigation_link|
-        navigation_link.update_column(section: "other")
+        navigation_link.update(section: "other")
       end
     end
   end

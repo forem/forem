@@ -4,5 +4,19 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::BackfillSectionColumnForNavigationLinks do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "backfills relevant navigation links with 'other' section" do
+    other_navigation_link = create(:navigation_link, url: "/privacy")
+
+    expect do
+      described_class.new.run
+    end.to change { other_navigation_link.reload.section }.from("default").to("other")
+  end
+
+  it "leaves irrelevant navigation links unchanged" do
+    default_navigation_link = create(:navigation_link, url: "/readinglist")
+
+    expect do
+      described_class.new.run
+    end.not_to change { default_navigation_link.reload.section }
+  end
 end
