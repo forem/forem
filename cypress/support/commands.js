@@ -96,11 +96,25 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   const encodedEmail = encodeURIComponent(email);
   const encodedPassword = encodeURIComponent(password);
 
-  return cy.request(
-    'POST',
-    '/users/sign_in',
-    `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
-  );
+  function getLoginRequest() {
+    return cy.request(
+      'POST',
+      '/users/sign_in',
+      `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
+    );
+  }
+
+  return getLoginRequest().then((response) => {
+    if (response.status === 200) {
+      return response;
+    }
+
+    cy.log('Login failed. Attempting one more login.');
+
+    // If we have a login failure, try one more time.
+    // This is to combat some flaky tests where the login fails occasionnally.
+    return getLoginRequest();
+  });
 });
 
 const toPayload = (isEnabled) => (isEnabled ? '1' : '0');

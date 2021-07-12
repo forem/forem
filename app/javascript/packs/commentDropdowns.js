@@ -59,18 +59,20 @@ const initializeArticlePageDropdowns = () => {
  * @param {HTMLElement} placeholderElement The <span> placeholder element to be replaced by the preview dropdown
  */
 const fetchMissingProfilePreviewCard = async (placeholderElement) => {
-  const response = await window.fetch(
-    `/profile_preview_card/show?user_id=${placeholderElement.dataset.jsCommentUserId}&preview_card_id=${placeholderElement.dataset.jsDropdownContentId}`,
-  );
+  const {
+    jsCommentUserId: commentUserId,
+    jsDropdownContentId: dropdownContentId,
+  } = placeholderElement.dataset;
+  const response = await window.fetch(`/profile_preview_card/${commentUserId}`);
   const htmlContent = await response.text();
 
   const generatedElement = document.createElement('div');
   generatedElement.innerHTML = htmlContent;
 
-  placeholderElement.parentNode.replaceChild(
-    generatedElement.firstElementChild,
-    placeholderElement,
-  );
+  const { firstElementChild: previewCard } = generatedElement;
+  previewCard.id = dropdownContentId;
+
+  placeholderElement.parentNode.replaceChild(previewCard, placeholderElement);
 
   // Make sure the button inside the dropdown is initialized
   initializeUserFollowButts();
