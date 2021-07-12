@@ -1,0 +1,10 @@
+#page-content.confirmations {
+  display: flex;
+  flex-direction: column;
+}
+
+#page-content.confirmations #page-content-inner {
+  flex: 1;
+  display: flex;
+  background: pink;
+}
