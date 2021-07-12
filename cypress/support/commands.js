@@ -109,6 +109,8 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
       return response;
     }
 
+    cy.log('Login failed. Attempting one more login.');
+
     // If we have a login failure, try one more time.
     // This is to combat some flaky tests where the login fails occasionnally.
     return getLoginRequest();
