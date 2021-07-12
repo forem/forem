@@ -13,6 +13,35 @@ RSpec.describe Users::Setting, type: :model do
     it { is_expected.to define_enum_for(:config_navbar).with_values(default: 0, static: 1).with_suffix(:navbar) }
     it { is_expected.to define_enum_for(:config_theme).with_values(default: 0, minimal_light_theme: 1, night_theme: 2, pink_theme: 3, ten_x_hacker_theme: 4) }
 
+    describe "validating color fields" do
+      it "is valid if the field is a correct hex color with leading #" do
+        setting.brand_color1 = "#abcdef"
+        expect(setting).to be_valid
+      end
+
+      it "is valid if the field is a correct hex color without leading #" do
+        setting.brand_color1 = "abcdef"
+        expect(setting).to be_valid
+      end
+
+      it "is valid if the field is a 3-digit hex color" do
+        setting.brand_color1 = "#ccc"
+        expect(setting).to be_valid
+      end
+
+      it "is invalid if the field is too long" do
+        setting.brand_color1 = "#deadbeef"
+        expect(setting).not_to be_valid
+        expect(setting.errors_as_sentence).to eq "Brand color1 is not a valid hex color"
+      end
+
+      it "is invalid if the field contains non hex characters" do
+        setting.brand_color1 = "#abcdeg"
+        expect(setting).not_to be_valid
+        expect(setting.errors_as_sentence).to eq "Brand color1 is not a valid hex color"
+      end
+    end
+
     describe "#config_theme" do
       it "accepts valid theme" do
         setting.config_theme = 2
