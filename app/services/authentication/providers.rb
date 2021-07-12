@@ -44,7 +44,7 @@ module Authentication
     # TODO: [@forem/oss] ideally this should be "available - disabled"
     # we can get there once we have feature flags
     def self.enabled
-      return [] if ForemInstance.private?
+      return [] if ForemInstance.invitation_only?
 
       Settings::Authentication.providers.map(&:to_sym).sort
     end
