@@ -47,7 +47,7 @@ RSpec.describe "User edits their extensions", type: :system, js: true do
       stub_request(:get, "https://medium.com/feed/alkdmksadksa")
         .to_return(status: 200, body: "not an xml feed")
 
-      fill_in "user[feed_url]", with: "https://medium.com/feed/alkdmksadksa"
+      fill_in "users_setting[feed_url]", with: "https://medium.com/feed/alkdmksadksa"
       click_on "Submit Feed Settings"
 
       expect(page).to have_text("Feed url is not a valid RSS/Atom feed")

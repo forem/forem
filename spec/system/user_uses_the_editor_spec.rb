@@ -58,7 +58,7 @@ RSpec.describe "Using the editor", type: :system do
   end
 
   describe "Submitting an article with v1 editor", js: true do
-    before { user.update!(editor_version: "v1") }
+    before { user.setting.update!(editor_version: "v1") }
 
     it "fill out form and submit", cloudinary: true do
       fill_markdown_with(read_from_file(raw_text))

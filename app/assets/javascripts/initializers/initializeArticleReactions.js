@@ -37,6 +37,7 @@ function showUserReaction(reactionName, animatedClass) {
     'aria-label',
     getReactionAriaLabel(reactionName, true),
   );
+  reactionButton.setAttribute('aria-pressed', 'true');
 }
 
 function hideUserReaction(reactionName) {
@@ -48,6 +49,7 @@ function hideUserReaction(reactionName) {
     'aria-label',
     getReactionAriaLabel(reactionName, false),
   );
+  reactionButton.setAttribute('aria-pressed', 'false');
 }
 
 function hasUserReacted(reactionName) {
