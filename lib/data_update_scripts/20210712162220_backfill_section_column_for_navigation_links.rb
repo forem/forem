@@ -8,7 +8,7 @@ module DataUpdateScripts
 
     def run
       NavigationLink.where(url: OTHER_LINKS).find_each do |link|
-        link.update_column(section: 1)
+        link.update_column(section: "other")
       end
     end
   end
