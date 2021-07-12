@@ -17,6 +17,11 @@
       <%= f.text_field "user[email]", class: "crayons-textfield", placeholder: "john.doe@example.com", value: @user.email %>
     </div>
 
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box "users_setting[display_email_on_profile]", class: "crayons-checkbox", checked: @user.setting.display_email_on_profile %>
+      <%= f.label :display_email_on_profile, for: "users_setting[display_email_on_profile]", class: "crayons-field__label" %>
+    </div>
+
     <div class="crayons-field">
       <%= f.label :username, for: "user[username]", class: "crayons-field__label" %>
       <%= f.text_field "user[username]", maxlength: 30, class: "crayons-textfield", placeholder: "johndoe", value: @user.username %>
@@ -84,6 +89,7 @@
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
     <% next if group.name == "Basic" # TODO: @citizen428 Remove this after user settings work (email field) %>
     <% next if group.name == "Links" # TODO: [@jacobherrington] Remove this when we drop social links %>
+    <% next if group.name == "Branding" # TODO: [@msarit @jacobherrington] May be further refactored later as part of Profiles work %>
     <div class="crayons-card crayons-card--content-rows">
       <h2><%= group.name %></h2>
       <% if group.description.present? %>
@@ -91,6 +97,7 @@
       <% end %>
 
       <% group.profile_fields.each do |field| %>
+        <% next if field.attribute_name == "display_email_on_profile" %>
         <div class="crayons-field <%= "crayons-field--checkbox" if field.input_type == "check_box" %>">
           <% if field["input_type"] == "check_box" %>
             <%= f.public_send(field["input_type"],
@@ -131,6 +138,44 @@
       <% end %>
     </div>
   <% end %>
+
+  <% users_setting = @user.setting %>
+  <div class="crayons-card crayons-card--content-rows">
+    <h2>Branding</h2>
+    <div class="crayons-field ">
+      <label class="crayons-field__label" for="users_setting[brand_color1]">
+        Brand color 1
+      </label>
+      <div class="flex items-center w-100 m:w-50">
+        <%= f.public_send("text_field", "users_setting[brand_color1]",
+                          value: users_setting.public_send("brand_color1"),
+                          placeholder: "#000000",
+                          class: "crayons-textfield js-color-field") %>
+        <%= f.public_send("color_field",
+                          "users_setting[brand_color1]",
+                          value: users_setting.public_send("brand_color1"),
+                          class: "crayons-color-selector js-color-field ml-2") %>
+      </div>
+      <p class="crayons-field__description">Used for backgrounds, borders etc.</p>
+    </div>
+
+    <div class="crayons-field ">
+      <label class="crayons-field__label" for="users_setting[brand_color1]">
+        Brand color 2
+      </label>
+      <div class="flex items-center w-100 m:w-50">
+        <%= f.public_send("text_field", "users_setting[brand_color2]",
+                          value: users_setting.public_send("brand_color2"),
+                          placeholder: "#000000",
+                          class: "crayons-textfield js-color-field") %>
+        <%= f.public_send("color_field",
+                          "users_setting[brand_color2]",
+                          value: users_setting.public_send("brand_color2"),
+                          class: "crayons-color-selector js-color-field ml-2") %>
+      </div>
+      <p class="crayons-field__description">Used for texts (usually put on Brand color 1).</p>
+    </div>
+  </div>
 
   <div class="save-footer crayons-card crayons-card--content-rows">
     <button type="submit" class="crayons-btn">Save Profile Information</button>

@@ -17,7 +17,7 @@ class Mention < ApplicationRecord
 
   def send_email_notification
     user = User.find(user_id)
-    return unless user.email.present? && user.email_mention_notifications
+    return unless user.email.present? && user.notification_setting.email_mention_notifications
 
     Mentions::SendEmailNotificationWorker.perform_async(id)
   end

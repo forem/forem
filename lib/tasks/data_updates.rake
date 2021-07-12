@@ -4,8 +4,15 @@ namespace :data_updates do
     if Rails.env.development?
       Rake::Task["data_updates:run"].execute
     else
-      # Ensure new code has been deployed before we run our update scripts
-      DataUpdateWorker.perform_in(10.minutes)
+      # @mstruve: Due to many folks already hosting their Forems on Heroku lets
+      # set a friendly default for them. Ideally we get everyone to use
+      # the ENV variable below but until we can do a hard cut over with
+      # a version I think this is a good compromise
+      default_delay = ENV["HEROKU_SLUG_COMMIT"].present? ? 10.minutes : 0
+
+      # Use the env variable to delay running data update scripts if your
+      # deploy strategy requires it
+      DataUpdateWorker.perform_in(ENV["WORKERS_DATA_UPDATE_DELAY_SECONDS"] || default_delay)
     end
   end
 

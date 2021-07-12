@@ -19,7 +19,7 @@
 
 <center style="margin-top:50px;">
   <em>
-    <% if @user.experience_level == nil %>
+    <% if @user.setting.experience_level.nil? %>
       <b>
         You can now add your experience level to your account in order to receive more relevant content.
       </b>
