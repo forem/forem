@@ -45,22 +45,22 @@ module AuthenticationHelper
     Settings::General.waiting_on_first_user
   end
 
-  def private_forem_or_no_enabled_auth_options
-    ForemInstance.private? ||
+  def invite_only_mode_or_no_enabled_auth_options
+    ForemInstance.invitation_only? ||
       (authentication_enabled_providers.none? &&
        !Settings::Authentication.allow_email_password_registration)
   end
 
   def tooltip_class_on_auth_provider_enablebtn
-    private_forem_or_no_enabled_auth_options ? "crayons-tooltip" : ""
+    invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : ""
   end
 
   def disabled_attr_on_auth_provider_enable_btn
-    private_forem_or_no_enabled_auth_options ? "disabled" : ""
+    invite_only_mode_or_no_enabled_auth_options ? "disabled" : ""
   end
 
   def tooltip_text_email_or_auth_provider_btns
-    if private_forem_or_no_enabled_auth_options
+    if invite_only_mode_or_no_enabled_auth_options
       "You cannot do this until you disable Invite Only Mode"
     else
       ""
