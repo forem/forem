@@ -75,7 +75,6 @@ jobs:
       script:
         - yarn lint:frontend
         - yarn test --colors
-        - bundle exec rails db:create db:schema:load assets:precompile
         - bundle exec bundle-audit check --update
         - bin/test-console-check
         - yarn build-storybook
