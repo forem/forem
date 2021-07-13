@@ -82,9 +82,9 @@ jobs:
     - stage: test
       name: "E2E"
       script:
+        - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
         - bin/e2e-ci
-
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request
