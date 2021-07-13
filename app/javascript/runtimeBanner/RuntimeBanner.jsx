@@ -10,17 +10,17 @@ const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
  * keep track of this in localStorage so it won't be rendered again.
  */
 export const RuntimeBanner = () => {
-  const dismissBanner = () => {
+  function dismissBanner() {
     localStorage.setItem(BANNER_DISMISS_KEY, true);
     removeFromDOM();
-  };
+  }
 
-  const removeFromDOM = () => {
+  function removeFromDOM() {
     const container = document.getElementById('runtime-banner-container');
     container?.remove();
-  };
+  }
 
-  const handleDeepLinkFallback = () => {
+  function handleDeepLinkFallback() {
     // These buttons should exist in the DOM in order to attempt the fallback
     // mechanism (they only exist in the path `/r/mobile`)
     const installNowButton = document.getElementById('link-to-mobile-install');
@@ -60,16 +60,13 @@ export const RuntimeBanner = () => {
       // page until this feature is ready for them.
       window.location.href = '/';
     }
-  };
-
-  // If the banner was dismissed it shouldn't appear again
-  if (localStorage.getItem(BANNER_DISMISS_KEY)) {
-    removeFromDOM();
-    return;
   }
 
-  // Check for iOS browser only based on current Runtime
-  if (Runtime.currentContext() !== 'Browser-iOS') {
+  // The banner shouldn't appear if it was already dismissed or if it doesn't match the context
+  if (
+    localStorage.getItem(BANNER_DISMISS_KEY) ||
+    Runtime.currentContext() !== 'Browser-iOS'
+  ) {
     removeFromDOM();
     return;
   }
