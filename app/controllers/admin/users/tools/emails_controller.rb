@@ -7,7 +7,7 @@ module Admin
         def edit
           user = ::User.find(params[:user_id])
 
-          render(EmailsComponent.new(user: user))
+          render EmailsComponent.new(user: user), content_type: "text/html"
         end
 
         private

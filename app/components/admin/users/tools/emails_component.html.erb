@@ -5,7 +5,10 @@
   data-user-target="emailComponent"
   data-action="ajax:success@document->users--tools--emails#ajaxSuccess ajax:error@document->users--tools--emails#ajaxError">
   <header>
-    <h3><a href="" class="crayons-title fs-l" data-action="click->user#closeEmails">← Emails</a></h3>
+    <h3><%= link_to "← Emails", admin_user_tools_path(@user.id),
+                    remote: true,
+                    data: { action: "ajax:success->user#replacePartial" },
+                    class: "crayons-title fs-l" %></h3>
   </header>
 
   <%# Email verification #%>

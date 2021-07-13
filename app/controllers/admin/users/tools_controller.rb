@@ -8,11 +8,16 @@ module Admin
 
         render(
           ToolsComponent.new(
+            user.id,
             emails: {
               count: [user.email_messages.count, 50].min, # we only display 50 emails at most
               verified: user.last_verification_date.present?
             },
+            notes: {
+              count: [user.notes.count, 10].min # we only display 10 notes at most
+            },
           ),
+          content_type: "text/html",
         )
       end
 

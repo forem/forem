@@ -23,7 +23,7 @@ export default class EmailController extends Controller {
     );
 
     // close the panel and go back to the home view
-    document.dispatchEvent(new CustomEvent('user:home'));
+    document.dispatchEvent(new CustomEvent('user:tools'));
   }
 
   // This method listens to Rails's Ajax event `ajax:error`.

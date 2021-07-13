@@ -5,10 +5,12 @@ module Admin
 
       validates :emails, :notes, presence: true
 
-      # REMINDER: should these hashes be simply sub components?
+      # REMINDER: should the hashes be simply sub components?
+      # @param user_id [Integer]
       # @param emails [Hash] {count:, verified:}
       # @param notes [Hash] {count:}
-      def initialize(emails: {}, notes: {})
+      def initialize(user_id, emails: {}, notes: {})
+        @user_id = user_id
         @emails = emails
         @notes = notes
       end
