@@ -8,9 +8,25 @@
 
   &__content.crayons-dropdown:hover {
     display: block;
+    animation: hoverAppear 500ms;
   }
 
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
     display: block;
+    animation: hoverAppear 500ms;
+  }
+
+  @keyframes hoverAppear {
+    0% {
+      opacity: var(--opacity-0);
+    }
+
+    99% {
+      opacity: var(--opacity-0);
+    }
+
+    100% {
+      opacity: var(--opacity-100);
+    }
   }
 }
