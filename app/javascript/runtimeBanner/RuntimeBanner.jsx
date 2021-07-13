@@ -119,8 +119,8 @@ export const RuntimeBanner = () => {
           />
         </svg>
         <div class="flex flex-col pl-3">
-          <span class="">Forem</span>
-          <span class="">Open with the Forem app</span>
+          <span>Forem</span>
+          <span>Open with the Forem app</span>
         </div>
       </a>
       <button
