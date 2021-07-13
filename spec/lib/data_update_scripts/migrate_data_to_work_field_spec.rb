@@ -34,4 +34,10 @@ describe DataUpdateScripts::MigrateDataToWorkField, sidekiq: :inline do
     expect { described_class.new.run }
       .to change { profile.reload.work }.from(nil).to("Tester")
   end
+
+  # Regression spec for https://github.com/forem/forem/issues/14188
+  it "does not accidentally update employment_title" do
+    profile.update!(employment_title: "Tester", employer_name: "ACME Inc.")
+    expect { described_class.new.run }.not_to change { profile.reload.employment_title }
+  end
 end
