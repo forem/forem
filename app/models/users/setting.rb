@@ -2,9 +2,9 @@ module Users
   class Setting < ApplicationRecord
     self.table_name_prefix = "users_"
 
-    belongs_to :user
+    belongs_to :user, touch: true
+    scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
-    # TODO: @msarit Double-check how these suffixes have impacted the rest of the codebase
     enum editor_version: { v2: 0, v1: 1 }, _suffix: :editor
     enum config_font: { default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5 },
          _suffix: :font
@@ -18,7 +18,23 @@ module Users
     validates :feed_referential_link, inclusion: { in: [true, false] }
     validates :feed_url, length: { maximum: 500 }, allow_nil: true
     validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
-  end
 
-  # TODO: @msarit Re-add feed_url validation after updates are pointed directly to users_settings table
+    validate :validate_feed_url, if: :feed_url_changed?
+
+    def resolved_font_name
+      config_font.gsub("default", Settings::UserExperience.default_font)
+    end
+
+    private
+
+    def validate_feed_url
+      return if feed_url.blank?
+
+      valid = Feeds::ValidateUrl.call(feed_url)
+
+      errors.add(:feed_url, "is not a valid RSS/Atom feed") unless valid
+    rescue StandardError => e
+      errors.add(:feed_url, e.message)
+    end
+  end
 end

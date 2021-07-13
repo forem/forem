@@ -122,7 +122,14 @@
               <div class="mb-4 spec__tags">
                 <% @article.cached_tag_list_array.each do |tag| %>
                   <% tag_hash = tag_colors(tag) %>
-                  <a class="crayons-tag mr-1" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+                  <% styles = "" %>
+                  <% if tag_hash[:background] %>
+                    <% styles = "background-color:#{tag_hash[:background]};" %>
+                  <% end %>
+                  <% if tag_hash[:color] %>
+                    <% styles = "#{styles}color:#{tag_hash[:color]};" %>
+                  <% end %>
+                  <a class="crayons-tag mr-1" href="/t/<%= tag %>" style="<%= styles %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
                 <% end %>
               </div>
             <% end %>

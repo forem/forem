@@ -136,6 +136,10 @@ Rails.application.routes.draw do
         resources :devices, only: %i[create destroy]
       end
     end
+    namespace :users do
+      resource :settings, only: %i[update]
+      resource :notification_settings, only: %i[update]
+    end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]
@@ -227,6 +231,8 @@ Rails.application.routes.draw do
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     patch "/onboarding_update", to: "users#onboarding_update"
     patch "/onboarding_checkbox_update", to: "users#onboarding_checkbox_update"
+    patch "/onboarding_notifications_checkbox_update",
+          to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
     post "/chat_channels/:id/moderate", to: "chat_channels#moderate"
     post "/chat_channels/:id/open", to: "chat_channels#open"
