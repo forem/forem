@@ -208,4 +208,17 @@ describe('Pin an article - Admin User', () => {
         .should('exist');
     });
   });
+
+  it('should show the pinned post to a logged out user', () => {
+    cy.findByRole('main').within(() => {
+      cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
+
+      // check the button has changed to "Unpin Post"
+      cy.findAllByRole('button', { name: 'Unpin Post' }).first();
+    });
+
+    cy.signOutUser();
+
+    cy.findByRole('main').findByTestId('pinned-article').should('be.visible');
+  });
 });
