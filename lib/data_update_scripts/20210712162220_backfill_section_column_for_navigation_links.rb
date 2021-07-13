@@ -7,9 +7,7 @@ module DataUpdateScripts
     ].freeze
 
     def run
-      NavigationLink.where(url: OTHER_LINKS).find_each do |link|
-        link.update(section: "other")
-      end
+      NavigationLink.where(url: OTHER_LINKS).update(section: "other")
     end
   end
 end

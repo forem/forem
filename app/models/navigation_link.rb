@@ -4,7 +4,7 @@ class NavigationLink < ApplicationRecord
   before_validation :allow_relative_url, if: :url?
   before_save :strip_local_hostname, if: :url?
 
-  enum section: { default: 0, other: 1 }, _suffix: :section
+  enum section: { default: 0, other: 1 }, _suffix: true
 
   validates :name, :url, :icon, presence: true
   validates :url, url: { schemes: %w[https http] }, uniqueness: { scope: :name }
@@ -12,8 +12,6 @@ class NavigationLink < ApplicationRecord
   validates :display_only_when_signed_in, inclusion: { in: [true, false] }
 
   scope :ordered, -> { order(position: :asc, name: :asc) }
-  scope :default_links, -> { where(section: 0) }
-  scope :other_links, -> { where(section: 1) }
 
   private
 

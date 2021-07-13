@@ -15,8 +15,8 @@ FactoryBot.define do
     end
 
     trait :other_section_link do
-      after(:create) do |navigation_link|
-        navigation_link.update(section: "other")
+      after(:build) do |navigation_link|
+        navigation_link.section = "other"
       end
     end
   end
