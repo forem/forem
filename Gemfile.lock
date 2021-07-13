@@ -579,7 +579,7 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    recaptcha (5.8.0)
+    recaptcha (5.8.1)
       json
     redcarpet (3.5.1)
     redis (4.3.1)
