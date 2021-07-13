@@ -99,7 +99,7 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     bcrypt (3.1.16)
-    benchmark-ips (2.8.4)
+    benchmark-ips (2.9.1)
     better_errors (2.9.1)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
@@ -188,7 +188,7 @@ GEM
       msgpack
     dead_end (1.1.7)
     debug_inspector (1.1.0)
-    derailed_benchmarks (2.1.0)
+    derailed_benchmarks (2.1.1)
       benchmark-ips (~> 2)
       dead_end
       get_process_mem (~> 0)
