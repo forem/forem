@@ -111,6 +111,8 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
     }
 
     cy.log('Login failed. Attempting one more login.');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
 
     // If we have a login failure, try one more time. On the retry, we will fail the test if a non 2xx/3xx response is received.
     // This is to combat some flaky tests where the login fails occasionally.
