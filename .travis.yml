@@ -71,7 +71,7 @@ jobs:
       name: "Node 2"
       env: KNAPSACK_PRO_CI_NODE_INDEX=2
     - stage: Test
-      name: "Front-end tests, Storybook, bundle audit, console check, e2e"
+      name: "Front-end tests, Storybook, bundle audit, console check"
       script:
         - yarn lint:frontend
         - yarn test --colors
@@ -79,6 +79,9 @@ jobs:
         - bundle exec bundle-audit check --update
         - bin/test-console-check
         - yarn build-storybook
+    - stage: test
+      name: "E2E"
+      script:
         - yarn cypress install
         - bin/e2e-ci
 
