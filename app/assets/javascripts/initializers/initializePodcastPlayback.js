@@ -183,30 +183,27 @@ function initializePodcastPlayback() {
     Array.prototype.forEach.call(records, function (record) {
       var episodeSlug = record.getAttribute('data-episode');
       var podcastSlug = record.getAttribute('data-podcast');
-      let isPressed = record.getAttribute('aria-pressed');
 
       var togglePodcastState = function (e) {
         e.preventDefault();
-        var isValidKey = e.type === "keydown" && ["32", "13"].includes(e.keyCode);
-        
-        if (
-            (isValidKey || e.type === "onclick") 
-            && podcastBarAlreadyExistAndPlayingTargetEpisode(episodeSlug)
-          ) {
-          
-          var audio = getById('audio');
-          record.setAttribute('aria-pressed', String(!isPressed));
+        var isPressed = record.getAttribute('aria-pressed') === 'true';
+        var isValidKey = e.type === 'keydown' && [32, 13].includes(e.keyCode);
+        if (isValidKey || e.type === 'click') {
+          if (podcastBarAlreadyExistAndPlayingTargetEpisode(episodeSlug)) {
+            var audio = getById('audio');
+            record.setAttribute('aria-pressed', !isPressed);
 
-          if (audio) {
-            playPause(audio);
+            if (audio) {
+              playPause(audio);
+            }
+          } else {
+            stopRotatingActivePodcastIfExist();
+            loadAndPlayNewPodcast(episodeSlug);
           }
-        } else {
-          stopRotatingActivePodcastIfExist();
-          loadAndPlayNewPodcast(episodeSlug);
         }
-      }
-      record.onclick = togglePodcastState;
-      record.onkeydown = togglePodcastState;
+      };
+      record.addEventListener('click', togglePodcastState);
+      record.addEventListener('keydown', togglePodcastState);
     });
   }
 
