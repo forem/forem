@@ -30,7 +30,7 @@ module Settings
           settings_class.public_send("#{key}=", value.reject(&:blank?))
         elsif value.respond_to?(:to_h) && value.present?
           settings_class.public_send("#{key}=", value.to_h)
-        elsif value.present?
+        else
           settings_class.public_send("#{key}=", value.strip)
         end
       rescue ActiveRecord::RecordInvalid => e
