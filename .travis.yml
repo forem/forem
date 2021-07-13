@@ -78,7 +78,7 @@ jobs:
         - bundle exec bundle-audit check --update
         - bin/test-console-check
         - yarn build-storybook
-    - stage: test
+    - stage: Test
       name: "E2E"
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
