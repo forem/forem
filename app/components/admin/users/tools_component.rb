@@ -3,12 +3,14 @@ module Admin
     class ToolsComponent < ViewComponent::Base
       include ActiveModel::Validations
 
-      validates :emails, presence: true
+      validates :emails, :notes, presence: true
 
       # REMINDER: should these hashes be simply sub components?
       # @param emails [Hash] {count:, verified:}
-      def initialize(emails: {})
+      # @param notes [Hash] {count:}
+      def initialize(emails: {}, notes: {})
         @emails = emails
+        @notes = notes
       end
 
       private
