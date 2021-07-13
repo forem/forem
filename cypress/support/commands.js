@@ -114,7 +114,7 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
 
     // If we have a login failure, try one more time. On the retry, we will fail the test if a non 2xx/3xx response is received.
     // This is to combat some flaky tests where the login fails occasionally.
-    return getLoginRequest(true);
+    return getLoginRequest();
   });
 });
 
