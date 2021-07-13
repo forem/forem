@@ -2,7 +2,7 @@ module Feeds
   class ImportArticlesWorker
     include Sidekiq::Worker
 
-    sidekiq_options queue: :medium_priority, retry: 10
+    sidekiq_options queue: :medium_priority, retry: 10, lock: :until_and_while_executing
 
     # NOTE: [@rhymes] we need to default earlier_than to `nil` because sidekiq-cron,
     # by using YAML to define jobs arguments does not support datetimes evaluated
