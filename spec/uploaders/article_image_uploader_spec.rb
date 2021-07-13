@@ -100,8 +100,6 @@ describe ArticleImageUploader, type: :uploader do
       uploader.retrieve_from_store!(File.basename(image_url))
       expect(uploader.size).not_to eq(0)
 
-      # Commented body_markdown contains localhost image url
-      # body_markdown = "---\ntitle: Title\n---\n\n![Alt Text](#{ApplicationConfig["APP_PROTOCOL"]}#{ApplicationConfig["APP_DOMAIN"]}#{image_url})"
       body_markdown = "---\ntitle: Title\n---\n\n![Alt Text](#{ApplicationConfig["APP_PROTOCOL"]}#{ApplicationConfig["AWS_BUCKET_NAME"]}.s3.amazonaws.com#{image_url})"
       article = build(:article, body_markdown: body_markdown)
       article.main_image = image_url
