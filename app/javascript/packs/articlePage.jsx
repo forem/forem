@@ -50,8 +50,8 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
       .querySelectorAll('#article-show-more-dropdown [href]')
       .forEach((link) => {
         link.addEventListener('click', (event) => {
-          closeDropdown(event)
-          
+          closeDropdown(event);
+
           // Temporary Ahoy Stats for usage reports
           ahoy.track('Post Dropdown', { option: event.target.text.trim() });
         });
@@ -178,6 +178,16 @@ if (profilePreviewTrigger?.dataset.initialized !== 'true') {
   initializeDropdown({
     triggerElementId: 'profile-preview-trigger',
     dropdownContentId: 'profile-preview-content',
+    onOpen: () => {
+      document
+        .getElementById('profile-preview-content')
+        ?.classList.add('showing');
+    },
+    onClose: () => {
+      document
+        .getElementById('profile-preview-content')
+        ?.classList.remove('showing');
+    },
   });
 
   profilePreviewTrigger.dataset.initialized = 'true';

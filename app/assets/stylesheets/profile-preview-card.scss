@@ -9,11 +9,19 @@
   &__content.crayons-dropdown:hover {
     display: block;
     animation: hoverAppear 500ms;
+
+    &.showing {
+      animation: none;
+    }
   }
 
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
     display: block;
     animation: hoverAppear 500ms;
+
+    &.showing {
+      animation: none;
+    }
   }
 
   @keyframes hoverAppear {
