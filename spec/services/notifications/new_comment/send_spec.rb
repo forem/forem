@@ -97,4 +97,16 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
     expect(Notification.where(notifiable_type: "Comment", notifiable_id: child_comment.id,
                               organization_id: organization.id)).to be_any
   end
+
+  it "properly filters users for sending mobile push notifications" do
+    user.notification_setting.update(mobile_comment_notifications: true)
+    user2.notification_setting.update(mobile_comment_notifications: true)
+    user3.notification_setting.update(mobile_comment_notifications: true)
+    allow(PushNotifications::Send).to receive(:call)
+
+    described_class.call(comment)
+    expect(PushNotifications::Send).to have_received(:call).with hash_including(
+      user_ids: [author_comment.user_id],
+    )
+  end
 end
