@@ -699,7 +699,7 @@ ActiveRecord::Schema.define(version: 2021_07_12_155135) do
     t.string "icon", null: false
     t.string "name", null: false
     t.integer "position"
-    t.integer "section", default: 0
+    t.integer "section", default: 0, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "url", null: false
     t.index ["url", "name"], name: "index_navigation_links_on_url_and_name", unique: true
