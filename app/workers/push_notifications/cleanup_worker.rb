@@ -2,7 +2,7 @@ module PushNotifications
   class CleanupWorker
     include Sidekiq::Worker
 
-    sidekiq_options queue: :low_priority, retry: 10
+    sidekiq_options queue: :low_priority, retry: 10, lock: :until_and_while_executing
 
     def perform
       redis = Redis.new(url: ENV["REDIS_RPUSH_URL"] || ENV["REDIS_URL"])
