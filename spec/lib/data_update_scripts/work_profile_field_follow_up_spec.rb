@@ -14,7 +14,10 @@ describe DataUpdateScripts::WorkProfileFieldFollowUp do
 
   it "changes the group of the work field" do
     work_field = ProfileField.find_or_create_by(attribute_name: "work", label: "Work")
+    work_field.update(profile_field_group: nil) # ensure we start without a group
+    work_group = ProfileFieldGroup.find_or_create_by(name: "Work")
+
     expect { described_class.new.run }
-      .to change { work_field.reload.profile_field_group }.from(nil)
+      .to change { work_field.reload.profile_field_group }.from(nil).to(work_group)
   end
 end

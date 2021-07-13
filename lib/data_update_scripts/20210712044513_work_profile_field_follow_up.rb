@@ -3,12 +3,15 @@ module DataUpdateScripts
     OBSOLETE_FIELDS = %w[employer_name employer_url employment_title].freeze
 
     def run
-      work_field = ProfileField.find_by(attribute_name: "work")
-      if work_field
-        work_group_id = ProfileFieldGroup.find_or_create_by(name: "Work").id
-        work_field.update(profile_field_group_id: work_group_id)
-      end
       ProfileField.destroy_by(attribute_name: OBSOLETE_FIELDS)
+
+      work_field = ProfileField.find_by(attribute_name: "work")
+      return unless work_field
+
+      work_group = ProfileFieldGroup.find_by(name: "Work")
+      return unless work_group
+
+      work_field.update(profile_field_group_id: work_group.id)
     end
   end
 end
