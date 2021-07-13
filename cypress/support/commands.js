@@ -96,24 +96,25 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   const encodedEmail = encodeURIComponent(email);
   const encodedPassword = encodeURIComponent(password);
 
-  function getLoginRequest() {
-    return cy.request(
-      'POST',
-      '/users/sign_in',
-      `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
-    );
+  function getLoginRequest(failOnStatusCode = true) {
+    return cy.request({
+      method: 'POST',
+      url: '/users/sign_in',
+      body: `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
+      failOnStatusCode,
+    });
   }
 
-  return getLoginRequest().then((response) => {
+  return getLoginRequest(false).then((response) => {
     if (response.status === 200) {
       return response;
     }
 
     cy.log('Login failed. Attempting one more login.');
 
-    // If we have a login failure, try one more time.
-    // This is to combat some flaky tests where the login fails occasionnally.
-    return getLoginRequest();
+    // If we have a login failure, try one more time. On the retry, we will fail the test if a non 2xx/3xx response is received.
+    // This is to combat some flaky tests where the login fails occasionally.
+    return getLoginRequest(true);
   });
 });
 
