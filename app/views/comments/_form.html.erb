@@ -100,15 +100,15 @@
 <% end %>
 
 <% if @comment.persisted? %>
-  <script defer>
-    var editForm = document.getElementById("edit_comment_<%= @comment&.id %>");
+  <script>
+    const editForm = document.getElementById("edit_comment_<%= @comment&.id %>");
     if ( editForm ) {
       editForm.onsubmit = function (e) {
         e.preventDefault();
         document.getElementsByClassName("comment-form")[0].classList.add("opacity-50");
-        var form = this;
-        var waitingOnCSRF = setInterval(function () {
-          var metaTag = document.querySelector("meta[name='csrf-token']")
+        const form = this;
+        const waitingOnCSRF = setInterval(function () {
+          const metaTag = document.querySelector("meta[name='csrf-token']")
           if (metaTag) {
             clearInterval(waitingOnCSRF);
             authToken = metaTag.getAttribute("content");
