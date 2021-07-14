@@ -32,7 +32,7 @@
       <button id="article-show-more-button" aria-controls="article-show-more-dropdown" aria-expanded="false" aria-haspopup="true" class="dropbtn crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-rounded" aria-label="Share post options">
         <%= inline_svg_tag("overflow-horizontal.svg", aria_hidden: true, class: "dropdown-icon crayons-icon", title: "More...") %>
       </button>
-      <div id="article-show-more-dropdown" class="crayons-dropdown p-1 right-1 left-1 s:left-auto bottom-100 m:bottom-0 m:right-auto m:left-100 fs-base">
+      <div id="article-show-more-dropdown" class="crayons-dropdown p-1 right-1 left-1 s:left-auto bottom-100 m:bottom-auto m:top-0 m:right-auto m:left-100 fs-base">
         <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer" class="dropdown-link-row">
           <div class="flex items-center">
             <input type="text" id="article-copy-link-input" value="<%= article_url(@article) %>" aria-label="Post URL" class="crayons-textfield" readonly />
