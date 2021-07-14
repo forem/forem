@@ -23,9 +23,11 @@ describe('Authentication Section', () => {
           cy.visit('/admin/customization/config');
           cy.findByTestId('authSectionForm').as('authSectionForm');
 
-          cy.get('@authSectionForm').findByText('Authentication').click();
           cy.get('@authSectionForm')
-            .findByLabelText('Invite-only mode')
+            .findByRole('heading', { name: 'Authentication' })
+            .click();
+          cy.get('@authSectionForm')
+            .findByRole('checkbox', { name: 'Invite-only mode' })
             .should('not.be.checked')
             .check();
 
@@ -34,7 +36,9 @@ describe('Authentication Section', () => {
             .type(
               `My username is @${username} and this action is 100% safe and appropriate.`,
             );
-          cy.get('@authSectionForm').findByText('Update Settings').click();
+          cy.get('@authSectionForm')
+            .findByRole('button', { name: 'Update Settings' })
+            .click();
 
           cy.url().should('contains', '/admin/customization/config');
 
@@ -43,10 +47,11 @@ describe('Authentication Section', () => {
 
           cy.findByText('Successfully updated settings.').should('be.visible');
 
-          cy.get('@authSectionForm').findByText('Authentication').click();
-
           cy.get('@authSectionForm')
-            .findByLabelText('Invite-only mode')
+            .findByRole('heading', { name: 'Authentication' })
+            .click();
+          cy.get('@authSectionForm')
+            .findByRole('checkbox', { name: 'Invite-only mode' })
             .should('be.checked');
 
           // Ensure that none of the authentication providers are enabled.
