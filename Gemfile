@@ -23,7 +23,7 @@ gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cloudinary", "~> 1.20" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.51.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.51.1" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.5" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -164,7 +164,7 @@ group :test do
   gem "pundit-matchers", "~> 1.7" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
-  gem "shoulda-matchers", "~> 4.5.1", require: false # Simple one-liner tests for common Rails functionality
+  gem "shoulda-matchers", "~> 5.0.0", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "~> 0.21.2", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "3.1.0.rc2", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
