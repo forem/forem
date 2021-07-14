@@ -1341,8 +1341,11 @@ RSpec.describe Article, type: :model do
       body_markdown = "---\ntitle: Title\npublished: true\ncanonical_url: #{url}\n---\n\n"
       create(:article, body_markdown: body_markdown, feed_source_url: url)
       another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
-
+      error_message = "This post could not be published because %s has already been taken. " \
+                      "Email #{ForemInstance.email} for further details."
       expect(another_article).not_to be_valid
+      expect(another_article.errors.messages[:canonical_url]).to include(format(error_message, "Canonical URL"))
+      expect(another_article.errors.messages[:feed_source_url]).to include(format(error_message, "Feed Source URL"))
     end
   end
 end
