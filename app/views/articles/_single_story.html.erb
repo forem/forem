@@ -49,7 +49,7 @@
         </div>
       </div>
 
-      <% if defined?(pinned) && pinned == true %>
+      <% if local_assigns[:pinned] == true %>
         <div
           class="pinned color-accent-brand fw-bold"
           data-testid="pinned-article">
