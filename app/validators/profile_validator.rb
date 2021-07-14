@@ -20,10 +20,7 @@ class ProfileValidator < ActiveModel::Validator
       attribute = field.attribute_name
       next if attribute == SUMMARY_ATTRIBUTE # validated above
       next unless record.respond_to?(attribute) # avoid caching issues
-
-      validation_method = "#{field.input_type}_valid?"
-      next unless record.respond_to?(validation_method)
-      next if __send__(validation_method, record, attribute)
+      next if __send__("#{field.input_type}_valid?", record, attribute)
 
       record.errors.add(attribute, ERRORS[field.input_type])
     end
@@ -43,6 +40,10 @@ class ProfileValidator < ActiveModel::Validator
 
   def check_box_valid?(_record, _attribute)
     true # checkboxes are always valid
+  end
+
+  def color_field_valid?(_record, _attribute)
+    true # we do not currently validate color fields here
   end
 
   def text_area_valid?(record, attribute)
