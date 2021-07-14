@@ -1,21 +1,12 @@
 import { Controller } from 'stimulus';
 
 // eslint-disable-next-line no-restricted-syntax
-export default class EmailsController extends Controller {
-  static targets = ['verifyEmailOwnership', 'sendEmail'];
-
+export default class NotesController extends Controller {
   // This method listens to Rails's Ajax event `ajax:success`.
   // See https://guides.rubyonrails.org/working_with_javascript_in_rails.html#rails-ujs-event-handlers
   // It is bound to Stimulus via the server side EmailsComponent's HTML
-  ajaxSuccess(event) {
-    const { target } = event;
-
-    let message;
-    if (target == this.verifyEmailOwnershipTarget) {
-      message = 'Verification email sent!';
-    } else if (target == this.sendEmailTarget) {
-      message = 'Email sent!';
-    }
+  ajaxSuccess(_event) {
+    const message = 'Note created!';
 
     // display success info message
     document.dispatchEvent(

@@ -2,9 +2,9 @@
   <h3 class="crayons-subtitle-2">Tools</h3>
 
   <div class="crayons-card__body grid grid-cols-2 grid-rows-3 gap-3">
-    <%= link_to edit_admin_user_tools_emails_path(@user_id), remote: true,
-                                                             data: { action: "ajax:success->user#replacePartial" },
-                                                             class: "crayons-card box js-action" do %>
+    <%= link_to admin_user_tools_emails_path(@user_id), remote: true,
+                                                        data: { action: "ajax:success->user#replacePartial" },
+                                                        class: "crayons-card box js-action" do %>
       <h4 class="crayons-subtitle-3 mb-4">Emails</h4>
 
       <span class="color-base-70">
@@ -13,13 +13,14 @@
       </span>
     <% end %>
 
-    <a class="crayons-card box">
-      <h4 class="crayons-subtitle-3 mb-4">Notes</h4>
+    <%= link_to admin_user_tools_notes_path(@user_id), remote: true,
+                                                       data: { action: "ajax:success->user#replacePartial" },
+                                                       class: "crayons-card box js-action" do %>      <h4 class="crayons-subtitle-3 mb-4">Notes</h4>
 
       <span class="color-base-70">
         <%= pluralize(@notes[:count], "note") %>
       </span>
-    </a>
+    <% end %>
 
     <a class="crayons-card box">
       <h4 class="crayons-subtitle-3 mb-4">Credits</h4>

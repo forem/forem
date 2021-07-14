@@ -4,7 +4,7 @@ module Admin
       class EmailsController < Admin::ApplicationController
         layout false
 
-        def edit
+        def show
           user = ::User.find(params[:user_id])
 
           render EmailsComponent.new(user: user), content_type: "text/html"
