@@ -71,17 +71,19 @@ jobs:
       name: "Node 2"
       env: KNAPSACK_PRO_CI_NODE_INDEX=2
     - stage: Test
-      name: "Front-end tests, Storybook, bundle audit, console check, e2e"
+      name: "Front-end tests, Storybook, bundle audit, console check"
       script:
         - yarn lint:frontend
         - yarn test --colors
-        - bundle exec rails db:create db:schema:load assets:precompile
         - bundle exec bundle-audit check --update
         - bin/test-console-check
         - yarn build-storybook
+    - stage: Test
+      name: "E2E"
+      script:
+        - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
         - bin/e2e-ci
-
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request
