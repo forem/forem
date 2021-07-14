@@ -19,6 +19,13 @@ RSpec.describe Users::NotificationSetting, type: :model do
         end
       end
 
+      it "does not enqueue if email is not set" do
+        user.update(email: "")
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          notification_setting.update(email_newsletter: !notification_setting.email_newsletter)
+        end
+      end
+
       it "does not enqueue if Mailchimp is not enabled" do
         allow(Settings::General).to receive(:mailchimp_api_key).and_return(nil)
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
