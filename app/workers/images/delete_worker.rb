@@ -5,8 +5,8 @@ module Images
     include Sidekiq::Worker
     sidekiq_options queue: :low_priority, retry: 5
 
-    def perform(image_paths)
-      Images::Delete.call(image_paths)
+    def perform(image_path)
+      Images::Delete.call(image_path)
     end
   end
 end

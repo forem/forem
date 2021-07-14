@@ -835,7 +835,7 @@ class Article < ApplicationRecord
     main_image_path = main_image&.scan(IMG_MARKDOWN_REGEX)
     image_paths << main_image_path if main_image_path
     image_paths.each do |image_path|
-      Images::DeleteWorker.perform_async([image_path])
+      Images::DeleteWorker.perform_async(image_path)
     end
   end
 end

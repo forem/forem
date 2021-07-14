@@ -4,8 +4,8 @@ module Images
   class Delete
     attr_accessor :image_paths
 
-    def initialize(image_paths)
-      @image_paths = image_paths
+    def initialize(image_path)
+      @image_path = image_path
     end
 
     def self.call(...)
@@ -14,12 +14,10 @@ module Images
 
     def call
       uploader = ArticleImageUploader.new
-      image_paths.each do |image_path|
-        next if image_path.blank?
+      return if image_path.blank?
 
-        uploader.retrieve_from_store!(image_path)
-        uploader.remove!
-      end
+      uploader.retrieve_from_store!(image_path)
+      uploader.remove!
     end
   end
 end
