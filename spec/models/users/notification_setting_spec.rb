@@ -4,14 +4,6 @@ RSpec.describe Users::NotificationSetting, type: :model do
   let!(:user) { create(:user) }
   let(:notification_setting) { described_class.find_by(user_id: user.id) }
 
-  describe "validations" do
-    subject { notification_setting }
-
-    describe "builtin validations" do
-      it { is_expected.to validate_inclusion_of(:email_digest_periodic).in_array([true, false]) }
-    end
-  end
-
   context "when callbacks are triggered after commit" do
     describe "subscribing to mailchimp newsletter" do
       it "enqueues SubscribeToMailchimpNewsletterWorker when updating email_newsletter to true" do
