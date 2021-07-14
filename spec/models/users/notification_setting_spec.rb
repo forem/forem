@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Users::NotificationSetting, type: :model do
   let!(:user) { create(:user) }
-  let(:notification_setting) { described_class.find_by(user_id: user.id) }
+  let(:notification_setting) { user.notification_setting.reload }
 
   context "when callbacks are triggered after commit" do
     describe "subscribing to mailchimp newsletter" do
