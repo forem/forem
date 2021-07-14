@@ -9,63 +9,6 @@ function initializeAllFollowButts() {
   }
 }
 
-function fetchUserFollowStatuses(idButtonHash) {
-  const url = new URL('/follows/bulk_show', document.location);
-  const searchParams = new URLSearchParams();
-  Object.keys(idButtonHash).forEach((id) => {
-    searchParams.append('ids[]', id);
-  });
-  searchParams.append('followable_type', 'User');
-  url.search = searchParams;
-
-  fetch(url, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    credentials: 'same-origin',
-  })
-    .then((response) => response.json())
-    .then((idStatuses) => {
-      Object.keys(idStatuses).forEach(function (id) {
-        addButtClickHandles(idStatuses[id], idButtonHash[id]);
-      });
-    });
-}
-
-function initializeUserFollowButtons(buttons) {
-  if (buttons.length > 0) {
-    var userIds = {};
-    for (var i = 0; i < buttons.length; i++) {
-      var userStatus = document.body.getAttribute('data-user-status');
-      if (userStatus === 'logged-out') {
-        addModalEventListener(buttons[i]);
-      } else {
-        var userId = JSON.parse(buttons[i].dataset.info).id;
-        if (userIds[userId]) {
-          userIds[userId].push(buttons[i]);
-        } else {
-          userIds[userId] = [buttons[i]];
-        }
-      }
-    }
-
-    if (Object.keys(userIds).length > 0) {
-      fetchUserFollowStatuses(userIds);
-    }
-  }
-}
-
-function initializeUserFollowButts() {
-  // Get all user follow buttons, avoiding any initialized already
-  var buttons = document.querySelectorAll(
-    '.follow-action-button.follow-user:not([data-click-initialized])',
-  );
-  initializeUserFollowButtons(buttons);
-}
-
 //private
 
 function initializeFollowButt(butt) {
@@ -91,11 +34,6 @@ function initializeFollowButt(butt) {
 
 function addModalEventListener(butt) {
   assignState(butt, 'login');
-  butt.onclick = function (e) {
-    e.preventDefault();
-    showLoginModal();
-    return;
-  };
 }
 
 function fetchButt(butt, buttInfo) {
@@ -126,10 +64,6 @@ function addButtClickHandles(response, buttons) {
   // currently lacking error handling
   buttons.forEach((butt) => {
     assignInitialButtResponse(response, butt);
-    butt.onclick = function (e) {
-      e.preventDefault();
-      handleOptimisticButtRender(butt);
-    };
     butt.dataset.clickInitialized = 'true';
   });
 }
@@ -148,6 +82,7 @@ function handleTagButtAssignment(user, butt, buttInfo) {
 
 function assignInitialButtResponse(response, butt) {
   butt.classList.add('showing');
+
   if (response === 'true' || response === 'mutual') {
     assignState(butt, 'unfollow');
   } else if (response === 'follow-back') {
@@ -161,99 +96,33 @@ function assignInitialButtResponse(response, butt) {
   }
 }
 
-function handleOptimisticButtRender(butt) {
-  if (butt.dataset.verb === 'self') {
-    window.location.href = '/settings';
-  } else if (butt.dataset.verb === 'login') {
-    showLoginModal();
-  } else {
-    // Handles actual following of tags/users
-    try {
-      //lets try grab the event buttons info data attribute user id
-      var evFabUserId = JSON.parse(butt.dataset.info).id;
-      var requestVerb = butt.dataset.verb;
-      //now for all follow action buttons
-      let actionButtons = document.getElementsByClassName(
-        'follow-action-button',
-      );
-      Array.from(actionButtons).forEach(function (fab) {
-        try {
-          //lets check they have info data attributes
-          if (fab.dataset.info) {
-            //and attempt to parse those, to grab that buttons info user id
-            var fabUserId = JSON.parse(fab.dataset.info).id;
-            //now does that user id match our event buttons user id?
-            if (fabUserId && fabUserId === evFabUserId) {
-              //yes - time to assign the same state!
-              assignState(fab, requestVerb);
-            }
-          }
-        } catch (err) {
-          return;
-        }
-      });
-    } catch (err) {
-      return;
-    }
-
-    handleFollowButtPress(butt);
-  }
-}
-
-function handleFollowButtPress(butt) {
-  var buttonDataInfo = JSON.parse(butt.dataset.info);
-  var formData = new FormData();
-  formData.append('followable_type', buttonDataInfo.className);
-  formData.append('followable_id', buttonDataInfo.id);
-  formData.append('verb', butt.dataset.verb);
-  getCsrfToken().then(sendFetch('follow-creation', formData));
-}
-
 function assignState(butt, newState) {
-  var style = JSON.parse(butt.dataset.info).style;
-  var followStyle = JSON.parse(butt.dataset.info).followStyle;
-  butt.classList.add('showing');
-  if (newState === 'follow' || newState === 'follow-back') {
-    butt.dataset.verb = 'unfollow';
-    butt.classList.remove('crayons-btn--outlined');
-    if (followStyle === 'primary') {
-      butt.classList.add('crayons-btn--primary');
-    } else if (followStyle === 'secondary') {
-      butt.classList.add('crayons-btn--secondary');
-    }
-    if (newState === 'follow-back') {
-      addFollowText(butt, newState);
-    } else if (newState === 'follow') {
-      addFollowText(butt, style);
-    }
-  } else if (newState === 'login') {
-    addFollowText(butt, style);
-  } else if (newState === 'self') {
-    butt.dataset.verb = 'self';
-    butt.textContent = 'Edit profile';
-  } else {
-    butt.dataset.verb = 'follow';
-    addFollowingText(butt, style);
-    butt.classList.remove('crayons-btn--primary');
-    butt.classList.remove('crayons-btn--secondary');
-    butt.classList.add('crayons-btn--outlined');
-  }
-}
-
-function addFollowText(butt, style) {
-  if (style === 'small') {
-    butt.textContent = '+';
-  } else if (style === 'follow-back') {
-    butt.textContent = 'Follow back';
-  } else {
-    butt.textContent = 'Follow';
-  }
-}
-
-function addFollowingText(butt, style) {
-  if (style === 'small') {
-    butt.textContent = '✓';
-  } else {
-    butt.textContent = 'Following';
-  }
+  // var style = JSON.parse(butt.dataset.info).style;
+  // var followStyle = JSON.parse(butt.dataset.info).followStyle;
+  // butt.classList.add('showing');
+  // if (newState === 'follow' || newState === 'follow-back') {
+  //   butt.dataset.verb = 'unfollow';
+  //   butt.classList.remove('crayons-btn--outlined');
+  //   if (followStyle === 'primary') {
+  //     butt.classList.add('crayons-btn--primary');
+  //   } else if (followStyle === 'secondary') {
+  //     butt.classList.add('crayons-btn--secondary');
+  //   }
+  //   if (newState === 'follow-back') {
+  //     addFollowText(butt, newState);
+  //   } else if (newState === 'follow') {
+  //     addFollowText(butt, style);
+  //   }
+  // } else if (newState === 'login') {
+  //   addFollowText(butt, style);
+  // } else if (newState === 'self') {
+  //   butt.dataset.verb = 'self';
+  //   butt.textContent = 'Edit profile';
+  // } else {
+  //   butt.dataset.verb = 'follow';
+  //   addFollowingText(butt, style);
+  //   butt.classList.remove('crayons-btn--primary');
+  //   butt.classList.remove('crayons-btn--secondary');
+  //   butt.classList.add('crayons-btn--outlined');
+  // }
 }
