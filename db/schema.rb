@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_29_174206) do
+ActiveRecord::Schema.define(version: 2021_07_12_155135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
+  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -699,6 +700,7 @@ ActiveRecord::Schema.define(version: 2021_06_29_174206) do
     t.string "icon", null: false
     t.string "name", null: false
     t.integer "position"
+    t.integer "section", default: 0, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "url", null: false
     t.index ["url", "name"], name: "index_navigation_links_on_url_and_name", unique: true
@@ -1439,9 +1441,9 @@ ActiveRecord::Schema.define(version: 2021_06_29_174206) do
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.string "email"
+    t.string "email", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id"
+    t.integer "user_id", null: false
     t.string "username"
   end
 
