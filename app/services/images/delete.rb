@@ -2,7 +2,7 @@
 
 module Images
   class Delete
-    attr_accessor :image_paths
+    attr_accessor :image_path
 
     def initialize(image_path)
       @image_path = image_path
