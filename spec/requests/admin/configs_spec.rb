@@ -806,14 +806,16 @@ RSpec.describe "/admin/customization/config", type: :request do
           expect(Settings::SMTP.port).to eq(1234)
         end
 
-        it "unsets appropriate SMTP config" do
+        it "unsets appropriate SMTP config, and apply default value if applicable" do
           Settings::SMTP.address = "smtp.example.com"
-          expected_handle = { "address" => "" }
+          Settings::SMTP.port = 12_345
+          expected_handle = { "address" => "", "port" => "" }
           post admin_settings_smtp_settings_path, params: {
             settings_smtp: expected_handle,
             confirmation: confirmation_message
           }
           expect(Settings::SMTP.address).to eq("")
+          expect(Settings::SMTP.port).to eq(25)
         end
       end
 
