@@ -60,7 +60,7 @@ class User < ApplicationRecord
       # Getters and setters for unmapped profile attributes
       (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
         next if INACTIVE_PROFILE_COLUMNS.include?(column)
-        next unless profile.respond_to?(column)
+        next unless column.in?(Profile.attributes)
 
         delegate column, "#{column}=", to: :profile, allow_nil: true
       end
