@@ -516,6 +516,31 @@ describe('Comment on articles', () => {
     cy.findByRole('button', { name: /^Submit$/i }).should('have.focus');
   });
 
+  it('server error that return empty body should show error modal', () => {
+    cy.intercept('POST', '/comments', {
+      statusCode: 503,
+    });
+    cy.findByRole('main').within(() => {
+      cy.findByRole('textbox', { name: /^Add a comment to the discussion$/i })
+        .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
+        .type('this is a comment');
+
+      cy.findByRole('button', { name: /^Submit$/i }).click();
+    });
+
+    cy.findByTestId('modal-container').within(() => {
+      cy.findByRole('button', { name: /Close/ }).should('have.focus');
+      cy.findByRole('heading', { name: 'Error posting comment' }).should(
+        'exist',
+      );
+      cy.findByText('Your comment could not be posted due to a server error');
+      cy.findByRole('button', { name: 'OK' }).click();
+    });
+
+    cy.findByTestId('modal-container').should('not.exist');
+    cy.findByRole('button', { name: /^Submit$/i }).should('have.focus');
+  });
+
   it('should add a comment with a gist embed', () => {
     cy.findByRole('main').within(() => {
       cy.findByRole('textbox', {
