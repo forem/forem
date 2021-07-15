@@ -184,7 +184,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.include?("Hello <a")).to be(true)
       end
 
-      it "shortens long urls does not strips out only urls" do
+      it "shortens long urls without removing formatting", :aggregate_failures do
         long_url = "https://longurl.com/#{'x' * 100}?#{'y' * 100}"
         comment.body_markdown = "Hello #{long_url}"
         comment.validate!
