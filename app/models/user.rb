@@ -352,7 +352,7 @@ class User < ApplicationRecord
   end
 
   def processed_website_url
-    website_url.to_s.strip if website_url.present?
+    profile.website_url.to_s.strip if profile.website_url.present?
   end
 
   def remember_me
