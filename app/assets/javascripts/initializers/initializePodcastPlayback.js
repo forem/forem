@@ -185,25 +185,21 @@ function initializePodcastPlayback() {
       var podcastSlug = record.getAttribute('data-podcast');
 
       var togglePodcastState = function (e) {
-        e.preventDefault();
         var isPressed = record.getAttribute('aria-pressed') === 'true';
-        var isValidKey = e.type === 'keydown' && [32, 13].includes(e.keyCode);
-        if (isValidKey || e.type === 'click') {
-          if (podcastBarAlreadyExistAndPlayingTargetEpisode(episodeSlug)) {
-            var audio = getById('audio');
-            record.setAttribute('aria-pressed', !isPressed);
+        e.preventDefault();
+        if (podcastBarAlreadyExistAndPlayingTargetEpisode(episodeSlug)) {
+          var audio = getById('audio');
+          record.setAttribute('aria-pressed', !isPressed);
 
-            if (audio) {
-              playPause(audio);
-            }
-          } else {
-            stopRotatingActivePodcastIfExist();
-            loadAndPlayNewPodcast(episodeSlug);
+          if (audio) {
+            playPause(audio);
           }
+        } else {
+          stopRotatingActivePodcastIfExist();
+          loadAndPlayNewPodcast(episodeSlug);
         }
       };
       record.addEventListener('click', togglePodcastState);
-      record.addEventListener('keydown', togglePodcastState);
     });
   }
 
