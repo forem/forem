@@ -29,7 +29,7 @@
           </div>
         </li>
       <% end %>
-      <% if actor.profile.work.present? %>
+      <% if actor.profile.respond_to?(:work) && actor.profile.work.present? %>
         <li>
           <div class="key">
             Work
@@ -39,7 +39,7 @@
           </div>
         </li>
       <% end %>
-      <% if actor.location.present? %>
+      <% if actor.profile.location.present? %>
         <li>
           <div class="key">
             Location
@@ -49,7 +49,7 @@
           </div>
         </li>
       <% end %>
-      <% if actor.education.present? %>
+      <% if actor.profile.respond_to?(:education) && actor.profile.education.present? %>
         <li>
           <div class="key">
             Education
