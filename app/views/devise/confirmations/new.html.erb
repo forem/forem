@@ -19,7 +19,7 @@
     </div>
     <div class="bg-base-10 p-4 self-end mx-auto mb-6">
       <span class="color-accent-brand text-underline cursor-pointer" onclick="window.Forem.showModal({
-        title: 'Did not get the email?',
+        title: 'Didn\'t get the email?',
         contentSelector: '#confirm-email-modal',
         overlay: true,
       })"> Click here</span> if you didn't get the email...
@@ -36,7 +36,7 @@
 
         <div class="flex">
           <%= f.submit "Resend", class: "crayons-btn mr-1" %>
-          <%= f.submit "Dismiss", class: "crayons-btn crayons-btn--secondary", id: "cancel-btn" %>
+          <%= f.submit "Dismiss", class: "crayons-btn color-base-70 crayons-btn--ghost", id: "cancel-btn" %>
         </div>
       <% end %>
     </div>
