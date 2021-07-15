@@ -2,6 +2,7 @@
   <div class="profile-header__bottom fs-base">
     <% header_fields.each do |title, value| %>
       <% next if Profile.special_attributes.include?(title) %>
+      <% next if title == "work" %>
       <div class="crayons-definition">
         <strong class="crayons-definition__title">
           <%= sanitized_sidebar title.titleize %>
