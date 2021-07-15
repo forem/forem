@@ -17,4 +17,16 @@
     max-width: 360px;
     width: max-content;
   }
+
+  &.side-bar {
+    bottom: 100%;
+    padding: var(--su-1);
+    right: calc(var(--su-1));
+    font-size: var(--fs-base);
+    @media (min-width: $breakpoint-m) {
+      bottom: -60%;
+      right: auto;
+      left: 100%;
+    }
+  }
 }
