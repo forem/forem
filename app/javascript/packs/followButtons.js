@@ -276,9 +276,9 @@ function fetchFollowButtonStatus(button, buttonInfo) {
     },
     credentials: 'same-origin',
   })
-    .then((response) => response.json())
+    .then((response) => response.text())
     .then((followStatus) => {
-      updateInitialButtonUI(followStatus.toString(), button);
+      updateInitialButtonUI(followStatus, button);
       button.dataset.buttonInitialized = true;
     });
 }
@@ -296,11 +296,16 @@ function initializeNonUserFollowButtons() {
   nonUserFollowButtons.forEach((button) => {
     const { info, fetched } = button.dataset;
     const buttonInfo = JSON.parse(info);
-    if (buttonInfo.className === 'Tag' && user) {
+    if (
+      buttonInfo.className === 'Tag' &&
+      user &&
+      button.dataset.buttonInitialized !== 'true'
+    ) {
       const initialButtonFollowState = doesUserFollowTag(user, buttonInfo.id)
         ? 'true'
         : 'false';
       updateInitialButtonUI(initialButtonFollowState, button);
+      button.dataset.buttonInitialized = true;
     } else if (fetched !== 'fetched') {
       fetchFollowButtonStatus(button, buttonInfo);
     }

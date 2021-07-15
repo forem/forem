@@ -68,6 +68,7 @@
     </div>
     <%= render "articles/fitvids" %>
   </main>
+  <%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
 <% else %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>
