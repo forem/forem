@@ -17,7 +17,6 @@
 
 function callInitializers() {
   initializeBaseTracking();
-  initializeRuntimeBanner();
   initializePaymentPointers();
   initializeCommentsPage();
   initializeArticleDate();
