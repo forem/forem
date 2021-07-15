@@ -25,5 +25,7 @@ module.exports = (on, config) => {
     ...process.env,
   };
 
+  require('cypress-fail-fast/plugin')(on, config);
+
   return config;
 };
