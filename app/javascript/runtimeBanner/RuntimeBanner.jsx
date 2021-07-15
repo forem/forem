@@ -1,7 +1,6 @@
 /* global Runtime */
 
 import { h } from 'preact';
-import { useEffect } from 'preact/hooks';
 
 const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
 
@@ -63,26 +62,24 @@ function handleDeepLinkFallback() {
  * keep track of this in localStorage so it won't be rendered again.
  */
 export const RuntimeBanner = () => {
-  useEffect(() => {
-    // The banner shouldn't appear if it was already dismissed or if it doesn't match the context
-    if (
-      localStorage.getItem(BANNER_DISMISS_KEY) ||
-      Runtime.currentContext() !== 'Browser-iOS'
-    ) {
-      removeFromDOM();
-      return;
-    }
+  // The banner shouldn't appear if it was already dismissed or if it doesn't match the context
+  if (
+    localStorage.getItem(BANNER_DISMISS_KEY) ||
+    Runtime.currentContext() !== 'Browser-iOS'
+  ) {
+    removeFromDOM();
+    return;
+  }
 
-    // If we land on `/r/mobile` it means the automatic (i.e. Universal Links)
-    // deep linking didn't go through and we want to rely on the fallback
-    // mechanisms (i.e. custom scheme) to open the apps.
-    // Also, we should never render the banner in this fallback path.
-    if (window.location.pathname === '/r/mobile') {
-      removeFromDOM();
-      handleDeepLinkFallback();
-      return;
-    }
-  }, []);
+  // If we land on `/r/mobile` it means the automatic (i.e. Universal Links)
+  // deep linking didn't go through and we want to rely on the fallback
+  // mechanisms (i.e. custom scheme) to open the apps.
+  // Also, we should never render the banner in this fallback path.
+  if (window.location.pathname === '/r/mobile') {
+    removeFromDOM();
+    handleDeepLinkFallback();
+    return;
+  }
 
   const targetPath = `https://${window.location.host}/r/mobile?deep_link=${window.location.pathname}`;
   const targetURL = `https://udl.forem.com/?r=${encodeURIComponent(
