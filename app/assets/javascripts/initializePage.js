@@ -55,7 +55,6 @@ function initializePage() {
         initializeAllTagEditButtons();
       }
       initializeBroadcast();
-      initializeAllFollowButts();
       initializeReadingListIcons();
       initializeSponsorshipVisibility();
       if (document.getElementById('sidebar-additional')) {

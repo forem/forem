@@ -1,4 +1,4 @@
-/* global showLoginModal */
+/* global showLoginModal userData */
 
 /**
  * Sets the text content of the button to the correct 'Follow' state
@@ -106,8 +106,12 @@ function updateFollowButton(button, newState, buttonInfo) {
   addButtonFollowText(button, nextButtonStyle);
 }
 
-function handleFollowButtonClick(event) {
-  const { target } = event;
+/**
+ * Checks a click event's target, and if it is a follow button, triggers the appropriate follow action
+ *
+ * @param {HTMLElement} target The target of the click event
+ */
+function handleFollowButtonClick({ target }) {
   if (
     target.classList.contains('follow-action-button') ||
     target.classList.contains('follow-user')
@@ -134,18 +138,27 @@ function handleFollowButtonClick(event) {
   }
 }
 
+/**
+ * Adds an event listener to the inner page content, to handle any and all follow button clicks with a single handler
+ */
 function listenForFollowButtonClicks() {
   document
     .getElementById('page-content-inner')
     .addEventListener('click', handleFollowButtonClick);
 }
 
-function updateInitialButtonUI(response, button) {
+/**
+ * Sets the UI of the button based on the current following status
+ *
+ * @param {string} followStatus The current following status for the button
+ * @param {HTMLElement} button The button to update
+ */
+function updateInitialButtonUI(followStatus, button) {
   const buttonInfo = JSON.parse(button.dataset.info);
   const { style } = buttonInfo;
   button.classList.add('showing');
 
-  switch (response) {
+  switch (followStatus) {
     case 'true':
     case 'mutual':
       updateFollowingButton(button, style);
@@ -164,6 +177,11 @@ function updateInitialButtonUI(response, button) {
   }
 }
 
+/**
+ * Fetches all user 'follow statuses' for the given userIds, and then updates the UI for all buttons related to each user
+ *
+ * @param {Object} idButtonHash A hash of user IDs and the array buttons which relate to them
+ */
 function fetchUserFollowStatuses(idButtonHash) {
   const url = new URL('/follows/bulk_show', document.location);
   const searchParams = new URLSearchParams();
@@ -193,6 +211,10 @@ function fetchUserFollowStatuses(idButtonHash) {
     });
 }
 
+/**
+ * Sets up the initial state of all user follow buttons on the page,
+ * by obtaining the 'follow status' of each user and updating the associated buttons' UI.
+ */
 function initializeAllUserFollowButtons() {
   const buttons = document.querySelectorAll(
     '.follow-action-button.follow-user:not([data-button-initialized])',
@@ -225,7 +247,60 @@ function initializeAllUserFollowButtons() {
   }
 }
 
+/**
+ * Individually fetches the current status of a follow button and updates the UI to match
+ *
+ * @param {HTMLElement} button
+ * @param {Object} buttonInfo The parsed buttonInfo object obtained from the button's data-attribute
+ */
+function fetchFollowButtonStatus(button, buttonInfo) {
+  button.dataset.fetched = 'fetched';
+
+  fetch(`/follows/${buttonInfo.id}?followable_type=${buttonInfo.className}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => response.json())
+    .then((followStatus) => {
+      updateInitialButtonUI(followStatus.toString(), button);
+      button.dataset.buttonInitialized = true;
+    });
+}
+
+/**
+ * Makes sure the initial state of follow buttons is fetched and presented in the UI.
+ * User follow buttons are initialized separately via bulk request
+ */
+function initializeNonUserFollowButtons() {
+  const nonUserFollowButtons = document.querySelectorAll(
+    '.follow-action-button:not(.follow-user)',
+  );
+
+  const user = userData();
+  nonUserFollowButtons.forEach((button) => {
+    const { info, fetched } = button.dataset;
+    const buttonInfo = JSON.parse(info);
+    if (buttonInfo.className === 'Tag' && user) {
+      const initialButtonFollowState = doesUserFollowTag(user, buttonInfo.id)
+        ? 'true'
+        : 'false';
+      updateInitialButtonUI(initialButtonFollowState, button);
+    } else if (fetched !== 'fetched') {
+      fetchFollowButtonStatus(button, buttonInfo);
+    }
+  });
+}
+
+const doesUserFollowTag = (user, tagId) =>
+  !!JSON.parse(user.followed_tags).find((tag) => tag.id === tagId);
+
 initializeAllUserFollowButtons();
+initializeNonUserFollowButtons();
 listenForFollowButtonClicks();
 
 // TODO: initialize the non-user follow buttons
