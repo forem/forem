@@ -20,13 +20,13 @@
 
   &.side-bar {
     bottom: 100%;
-    padding: var(--su-1);
-    right: calc(var(--su-1));
     font-size: var(--fs-base);
+    padding: var(--su-1);
+    right: var(--su-1);
     @media (min-width: $breakpoint-m) {
-      bottom: -60%;
       right: auto;
-      left: 100%;
+      bottom: auto;
+      top: 0;
     }
   }
 }
