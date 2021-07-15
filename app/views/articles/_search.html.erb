@@ -175,8 +175,6 @@
         })
         document.getElementById("substories").innerHTML = resultDivs.join("");
         initializeReadingListIcons();
-        // initializeAllFollowButts();
-        // initializeUserFollowButts();
         document.getElementById("substories").classList.add("search-results-loaded");
         if (content.result.length === 0) {
           document.getElementById("substories").innerHTML = '<div class="p-9 align-center crayons-card">No results match that query</div>'

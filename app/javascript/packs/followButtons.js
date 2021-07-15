@@ -1,6 +1,17 @@
 /* global showLoginModal userData */
 
 /**
+ * Helper function to check if a user is currently following a tag
+ *
+ * @param {Object} user The current user
+ * @param {string} tagId The ID of the tag
+ *
+ * @returns {boolean}
+ */
+const doesUserFollowTag = (user, tagId) =>
+  !!JSON.parse(user.followed_tags).find((tag) => tag.id === tagId);
+
+/**
  * Sets the text content of the button to the correct 'Follow' state
  *
  * @param {HTMLElement} button The Follow button to update
@@ -296,15 +307,30 @@ function initializeNonUserFollowButtons() {
   });
 }
 
-const doesUserFollowTag = (user, tagId) =>
-  !!JSON.parse(user.followed_tags).find((tag) => tag.id === tagId);
-
 initializeAllUserFollowButtons();
 initializeNonUserFollowButtons();
 listenForFollowButtonClicks();
 
-// TODO: initialize the non-user follow buttons
+// Some follow buttons are added to the DOM dynamically, e.g. search results,
+// So we listen for any new additions to be fetched
+const observer = new MutationObserver((mutationsList) => {
+  mutationsList.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      initializeAllUserFollowButtons();
+      initializeNonUserFollowButtons();
+    }
+  });
+});
 
-// TODO: verify lots of combos in the UI
+observer.observe(document.getElementById('page-content-inner'), {
+  childList: true,
+  subtree: true,
+});
 
-// TODO: catalog all pages with follow buttons, and make sure pack is added
+InstantClick.on('change', () => {
+  observer.disconnect();
+});
+
+window.addEventListener('beforeunload', () => {
+  observer.disconnect();
+});
