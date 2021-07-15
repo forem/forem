@@ -297,6 +297,8 @@ function handleCommentSubmit(event) {
           } else {
             showUserAlertModal('Error posting comment', 'Your comment could not be posted due to an error: ' + errorReponse.error, 'OK')
           }
+        }).catch(function parseError(error){
+            showUserAlertModal('Error posting comment', 'Your comment could not be posted due to a server error', 'OK') 
         });
         return false;
       }
