@@ -29,44 +29,20 @@ describe('Runtime Banner Deep Linking', () => {
     });
   });
 
-  it('should redirect to custom scheme when someone taps on the banner', () => {
-    const deepLinkPath = '/custom_path';
-    const launchCustomSchemeDeepLinkStub = (url) => {
-      expect(url).to.eq(`com.forem.app:/${deepLinkPath}`);
-    };
-    cy.window()
-      .then((win) => {
-        cy.stub(
-          win,
-          'launchCustomSchemeDeepLink',
-          launchCustomSchemeDeepLinkStub,
-        );
-      })
-      .then(() => {
-        // After visiting the deep link redirect page (`/r/mobile`) it should
-        // immediately trigger the custom scheme, which gets caught by the stub
-        cy.visit(`/r/mobile?deep_link=${deepLinkPath}`);
-      });
-  });
-
   it('should show a loading spinner and then the fallback page', () => {
     const deepLinkPath = '/custom_path2';
-    cy.visit(`/r/mobile?deep_link=${deepLinkPath}`)
-      .then(() => {
-        // The loading spinner appears with the following text
-        cy.get('p').contains('Opening the mobile app...').should('be.visible');
-      })
-      .then(() => {
-        // After 3 seconds the following options appear visible
-        cy.get('p')
-          .contains('Whoops! Did you get stuck trying to open the mobile app?')
-          .should('be.visible');
-        cy.get('a').contains('Take me back').should('be.visible');
-        cy.get('a').contains('Try again').should('be.visible');
-        cy.get('a').contains('Install the app').should('be.visible');
+    cy.visit(`/r/mobile?deep_link=${deepLinkPath}`).then(() => {
+      // The loading spinner appears with the following text
+      cy.get('p').contains('Opening the mobile app...').should('be.visible');
+      cy.get('p')
+        .contains('Whoops! Did you get stuck trying to open the mobile app?')
+        .should('be.visible');
+      cy.get('a').contains('Take me back').should('be.visible');
+      cy.get('a').contains('Try again').should('be.visible');
+      cy.get('a').contains('Install the app').should('be.visible');
 
-        // Also the loading text should not exist anymore
-        cy.get('p').contains('Opening the mobile app...').should('not.exist');
-      });
+      // Also the loading text should not exist anymore
+      cy.get('p').contains('Opening the mobile app...').should('not.exist');
+    });
   });
 });
