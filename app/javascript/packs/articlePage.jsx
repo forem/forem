@@ -78,6 +78,12 @@ document
   .querySelector('clipboard-copy')
   ?.addEventListener('click', copyArticleLink);
 
+document.querySelector('clipboard-copy')?.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    copyArticleLink();
+  }
+});
+
 // Comment Subscription
 getCsrfToken().then(async () => {
   const { user = null, userStatus } = document.body.dataset;
