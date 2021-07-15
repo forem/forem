@@ -102,3 +102,12 @@ postcss_error.log
 # ripgrep ignore file
 .rgignore
 config/definitions.rb
+
+# Vite Ruby
+/public/vite
+/public/vite-dev
+/public/vite-test
+node_modules
+*.local
+.DS_Store
+

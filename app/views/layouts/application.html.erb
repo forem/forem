@@ -43,6 +43,18 @@
       <meta property="forem:logo" content="<%= optimized_image_url(Settings::General.logo_png, width: 512, fetch_format: "png") %>" />
       <meta property="forem:domain" content="<%= Settings::General.app_domain %>" />
     <% end %>
+    <%= vite_client_tag %>
+    <%= vite_javascript_tag "application" %>
+    <!--
+      If using a TypeScript entrypoint file:
+        vite_typescript_tag 'application'
+
+      If using a .jsx or .tsx entrypoint, add the extension:
+        vite_javascript_tag 'application.jsx'
+
+      Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
+    -->
+
   </head>
   <% unless internal_navigation? %>
     <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>

@@ -112,6 +112,7 @@ gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
+gem "vite_rails", "~> 2.0.12" # vite_hanami for Hanami apps, vite_ruby for Rack apps
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.4.0" # Use webpack to manage app-like JavaScript modules in Rails
 
