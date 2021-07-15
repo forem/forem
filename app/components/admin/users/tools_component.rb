@@ -9,10 +9,12 @@ module Admin
       # @param user_id [Integer]
       # @param emails [Hash] {count:, verified:}
       # @param notes [Hash] {count:}
-      def initialize(user_id, emails: {}, notes: {})
+      # @param credits [Hash] {count:}
+      def initialize(user_id, emails: {}, notes: {}, credits: {})
         @user_id = user_id
         @emails = emails
         @notes = notes
+        @credits = credits
       end
 
       private

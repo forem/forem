@@ -34,6 +34,7 @@ namespace :admin do
       resource :tools, only: :show
 
       namespace :tools do
+        resource :credits, only: %i[show create destroy]
         resource :emails, only: :show
         resource :notes, only: %i[show create]
       end

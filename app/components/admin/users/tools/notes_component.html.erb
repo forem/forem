@@ -14,9 +14,9 @@
                 url: admin_user_tools_notes_path(@user),
                 method: :post,
                 remote: true,
-                class: "mt-1" do |f| %>
+                class: "mt-2" do |f| %>
     <div class="crayons-field form-group">
-      <%= f.label "Add a new note", class: "crayons-field__label" %>
+      <%= f.label :content, "Add a new note", class: "crayons-field__label" %>
       <%= f.text_area :content, required: true, class: "crayons-textfield" %>
     </div>
 

@@ -15,18 +15,23 @@
 
     <%= link_to admin_user_tools_notes_path(@user_id), remote: true,
                                                        data: { action: "ajax:success->user#replacePartial" },
-                                                       class: "crayons-card box js-action" do %>      <h4 class="crayons-subtitle-3 mb-4">Notes</h4>
+                                                       class: "crayons-card box js-action" do %>
+      <h4 class="crayons-subtitle-3 mb-4">Notes</h4>
 
       <span class="color-base-70">
         <%= pluralize(@notes[:count], "note") %>
       </span>
     <% end %>
 
-    <a class="crayons-card box">
+    <%= link_to admin_user_tools_credits_path(@user_id), remote: true,
+                                                         data: { action: "ajax:success->user#replacePartial" },
+                                                         class: "crayons-card box js-action" do %>
       <h4 class="crayons-subtitle-3 mb-4">Credits</h4>
 
-      <span class="color-base-70">0 credits</span>
-    </a>
+      <span class="color-base-70">
+        <%= pluralize(@credits[:count], "credit") %>
+      </span>
+    <% end %>
 
     <a class="crayons-card box">
       <h4 class="crayons-subtitle-3 mb-4">Organizations</h4>

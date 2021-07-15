@@ -16,6 +16,9 @@ module Admin
             notes: {
               count: [user.notes.count, 10].min # we only display 10 notes at most
             },
+            credits: {
+              count: user.unspent_credits_count
+            },
           ),
           content_type: "text/html",
         )
