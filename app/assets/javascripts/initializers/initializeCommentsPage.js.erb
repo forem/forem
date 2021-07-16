@@ -114,9 +114,9 @@ function initializeCommentsPage() {
 
         function successCb(response) {
           var reactionCount = thisButt.querySelector('.reactions-count');
-          var heartFilledSvg = thisButt.querySelector('.reaction-icon.reacted')
-          var heartNotFilledSvg = thisButt.querySelector('.reaction-icon.not-reacted')
           var reactionLabel = thisButt.querySelector('.reactions-label');
+          var heartFilledSvg = thisButt.querySelector('.reaction-icon.reacted');
+          var heartNotFilledSvg = thisButt.querySelector('.reaction-icon.not-reacted');
           if (response.result === 'create') {
             thisButt.classList.add('reacted');
             thisButt.ariaPressed = true;
@@ -125,8 +125,12 @@ function initializeCommentsPage() {
               reactionCount.classList.remove("hidden");
               if(parseInt(reactionCount.innerHTML) == 1) {
                 reactionLabel.innerHTML = "&nbsp;like"
+                heartFilledSvg.querySelector('title').textContent = "Like Comment: 1 like"
+                heartNotFilledSvg.querySelector('title').textContent = "Unlike Comment: 1 like"
               } else if(parseInt(reactionCount.innerHTML) > 1) {
                 reactionLabel.innerHTML = "&nbsp;likes"
+                heartFilledSvg.querySelector('title').textContent = `Like Comment: ${reactionCount.innerHTML} likes`
+                heartNotFilledSvg.querySelector('title').textContent = `Unlike Comment: ${reactionCount.innerHTML} likes`
               }
             }
           } else {
@@ -137,6 +141,15 @@ function initializeCommentsPage() {
               if(parseInt(reactionCount.innerHTML) == 0) {
                 reactionCount.classList.add("hidden");
                 reactionLabel.innerHTML = "Like"
+                heartFilledSvg.querySelector('title').textContent = "Like Comment: 0 likes"
+                heartNotFilledSvg.querySelector('title').textContent = "Unlike Comment: 0 likes"
+              }
+              if(parseInt(reactionCount.innerHTML) == 1) {
+                heartFilledSvg.querySelector('title').textContent = "Like Comment: 1 like"
+                heartNotFilledSvg.querySelector('title').textContent = "Unlike Comment: 1 like"
+              } else if(parseInt(reactionCount.innerHTML) > 1) {
+                heartFilledSvg.querySelector('title').textContent = `Like Comment: ${reactionCount.innerHTML} likes`
+                heartNotFilledSvg.querySelector('title').textContent = `Unlike Comment: ${reactionCount.innerHTML} likes`
               }
             }
           }
