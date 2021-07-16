@@ -48,6 +48,14 @@
           <a href="<%= story.path %>" class="crayons-story__tertiary fs-xs"><time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span></a>
         </div>
       </div>
+
+      <% if local_assigns[:pinned] == true %>
+        <div
+          class="pinned color-accent-brand fw-bold"
+          data-testid="pinned-article">
+          <%= inline_svg_tag("pin.svg", alt: "", aria_hidden: true, class: "mr-1 align-text-bottom color-accent-brand") %>Pinned <span class="hidden s:inline">post</span>
+        </div>
+      <% end %>
     </div>
 
     <div class="crayons-story__indention">
