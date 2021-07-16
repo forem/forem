@@ -5,10 +5,7 @@ class ProfileValidator < ActiveModel::Validator
   MAX_TEXT_AREA_LENGTH = 200
   MAX_TEXT_FIELD_LENGTH = 100
 
-  HEX_COLOR_REGEXP = /^#?(?:\h{6}|\h{3})$/.freeze
-
   ERRORS = {
-    color_field: "is not a valid hex color",
     text_area: "is too long (maximum is #{MAX_TEXT_AREA_LENGTH} characters)",
     text_field: "is too long (maximum is #{MAX_TEXT_FIELD_LENGTH} characters)"
   }.with_indifferent_access.freeze
@@ -45,9 +42,8 @@ class ProfileValidator < ActiveModel::Validator
     true # checkboxes are always valid
   end
 
-  def color_field_valid?(record, attribute)
-    hex_value = record.public_send(attribute)
-    hex_value.nil? || hex_value.match?(HEX_COLOR_REGEXP)
+  def color_field_valid?(_record, _attribute)
+    true # we do not currently validate color fields here
   end
 
   def text_area_valid?(record, attribute)
