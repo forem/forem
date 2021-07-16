@@ -95,6 +95,7 @@ app/javascript/generated_stories/
 # Cypress test run artifacts
 cypress/videos
 cypress/screenshots
+cypress/logs
 
 # PostCSS error log
 postcss_error.log
