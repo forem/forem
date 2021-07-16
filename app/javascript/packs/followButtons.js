@@ -175,7 +175,7 @@ function updateInitialButtonUI(followStatus, button) {
       updateFollowingButton(button, style);
       break;
     case 'follow-back':
-      addButtonFollowText(button, style);
+      addButtonFollowText(button, followStatus);
       break;
     case 'false':
       updateFollowButton(button, 'follow', buttonInfo);
