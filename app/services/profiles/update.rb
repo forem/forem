@@ -4,8 +4,9 @@ module Profiles
     using HashAnyKey
     include ImageUploads
 
-    CORE_PROFILE_FIELDS = %i[summary brand_color1 brand_color2].freeze
+    CORE_PROFILE_FIELDS = %i[summary].freeze
     CORE_USER_FIELDS = %i[name username profile_image].freeze
+    CORE_SETTINGS_FIELDS = %i[brand_color1 brand_color2].freeze
 
     # @param user [User] the user whose profile we are updating
     # @param updated_attributes [Hash<Symbol, Hash<Symbol, Object>>] the profile
@@ -112,15 +113,16 @@ module Profiles
     end
 
     def conditionally_resave_articles
-      return unless core_profile_details_changed? && !@user.suspended?
+      return unless resave_articles? && !@user.suspended?
 
       Users::ResaveArticlesWorker.perform_async(@user.id)
     end
 
-    def core_profile_details_changed?
+    def resave_articles?
       user_fields = CORE_USER_FIELDS + Authentication::Providers.username_fields
       @updated_user_attributes.any_key?(user_fields) ||
-        @updated_profile_attributes.any_key?(CORE_PROFILE_FIELDS)
+        @updated_profile_attributes.any_key?(CORE_PROFILE_FIELDS) ||
+        @updated_users_setting_attributes.any_key?(CORE_SETTINGS_FIELDS)
     end
   end
 end
