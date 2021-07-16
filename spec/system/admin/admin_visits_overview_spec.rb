@@ -9,6 +9,6 @@ RSpec.describe "Admin visits the overview page", type: :system, js: true do
   end
 
   it "tracks link clicks" do
-    expect { click_link("Invite people") }.to change { Ahoy::Event.count }.by 1
+    expect { click_link("Invite people to join your community") }.to change { Ahoy::Event.count }.by 1
   end
 end
