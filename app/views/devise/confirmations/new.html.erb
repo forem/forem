@@ -4,7 +4,6 @@
 <% if FeatureFlag.enabled?(:creator_onboarding) %>
   <div class="crayons-layout crayons-layout--limited-l">
     <div class="flex flex-col items-center">
-
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <%= inline_svg_tag("mail.svg", aria: true, title: "Email") %>
@@ -29,11 +28,9 @@
     <div id="confirm-email-modal" class="hidden">
       <div>Re-enter the email address below to resend the confirmation link</div>
       <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }, data: { testid: "resend-confirmation-form" }) do |f| %>
-
         <div class="crayons-field mt-5 mb-3">
           <%= f.email_field :email, placeholder: "john@example.com", autocomplete: "email", aria: { label: "Confirmation email address" }, class: "crayons-textfield", required: true, value: proper_email %>
         </div>
-
         <div class="flex">
           <%= f.submit "Resend", class: "crayons-btn mr-1" %>
           <%= f.submit "Dismiss", class: "crayons-btn color-base-70 crayons-btn--ghost", id: "cancel-btn" %>
