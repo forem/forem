@@ -184,20 +184,11 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.include?("Hello <a")).to be(true)
       end
 
-      it "shortens long urls without removing formatting", :aggregate_failures do
-        long_url = "https://longurl.com/#{'x' * 100}?#{'y' * 100}"
-        comment.body_markdown = "Hello #{long_url}"
+      it "shortens long urls" do
+        comment.body_markdown = "Hello https://longurl.com/#{'x' * 100}?#{'y' * 100}"
         comment.validate!
-        expect(comment.processed_html.include?("...")).to be(true)
+        expect(comment.processed_html.include?("...</a>")).to be(true)
         expect(comment.processed_html.size < 450).to be(true)
-
-        comment.body_markdown = "Hello [**#{long_url}**](#{long_url})"
-        comment.validate!
-        expect(comment.processed_html.include?("...</strong>")).to be(true)
-
-        comment.body_markdown = "Hello ![Alt-text](#{long_url})"
-        comment.validate!
-        expect(comment.processed_html.include?("<img")).to be(true)
       end
 
       # rubocop:disable RSpec/ExampleLength
