@@ -156,6 +156,10 @@ function listenForFollowButtonClicks() {
   document
     .getElementById('page-content-inner')
     .addEventListener('click', handleFollowButtonClick);
+
+  document.getElementById(
+    'page-content-inner',
+  ).dataset.followClicksInitialized = true;
 }
 
 /**
@@ -228,7 +232,7 @@ function fetchUserFollowStatuses(idButtonHash) {
  */
 function initializeAllUserFollowButtons() {
   const buttons = document.querySelectorAll(
-    '.follow-action-button.follow-user:not([data-button-initialized])',
+    '.follow-action-button.follow-user:not([data-fetched])',
   );
 
   if (buttons.length === 0) {
@@ -238,6 +242,7 @@ function initializeAllUserFollowButtons() {
   const userIds = {};
 
   Array.from(buttons).forEach((button) => {
+    button.dataset.fetched = 'fetched';
     const userStatus = document.body.getAttribute('data-user-status');
 
     if (userStatus === 'logged-out') {

@@ -41,6 +41,8 @@ describe('Preview user profile from article page', () => {
           cy.findAllByRole('link', { name: 'Test article' })
             .first()
             .click({ force: true });
+
+          cy.get('[data-follow-clicks-initialized]');
           cy.findByRole('heading', { name: 'Test article' });
         });
       });
@@ -80,12 +82,12 @@ describe('Preview user profile from article page', () => {
           cy.findByText('University of Life');
 
           // Make sure click event is initialized, and check we can follow a user
-          cy.get('[data-click-initialized]').should('exist');
+          cy.get('[data-button-initialized]').should('exist');
           cy.findByRole('button', { name: 'Follow' }).click();
 
           // Wait for Follow button to disappear and Following button to be initialized
           cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-          cy.get('[data-click-initialized]').should('exist');
+          cy.get('[data-button-initialized]').should('exist');
           cy.findByRole('button', { name: 'Following' });
         });
 
@@ -122,12 +124,12 @@ describe('Preview user profile from article page', () => {
           cy.findByText('University of Life');
 
           // Make sure click event is initialized, and check we can follow a user
-          cy.get('[data-click-initialized]').should('exist');
+          cy.get('[data-button-initialized]').should('exist');
           cy.findByRole('button', { name: 'Follow' }).click();
 
           // Wait for Follow button to disappear and Following button to be initialized
           cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-          cy.get('[data-click-initialized]').should('exist');
+          cy.get('[data-button-initialized]').should('exist');
           cy.findByRole('button', { name: 'Following' });
         });
       });
