@@ -29,16 +29,6 @@
           </div>
         </li>
       <% end %>
-      <% if actor.profile.respond_to?(:work) && actor.profile.work.present? %>
-        <li>
-          <div class="key">
-            Work
-          </div>
-          <div class="value">
-            <%= actor.work %>
-          </div>
-        </li>
-      <% end %>
       <% if actor.profile.location.present? %>
         <li>
           <div class="key">
@@ -49,26 +39,29 @@
           </div>
         </li>
       <% end %>
-      <% if actor.profile.respond_to?(:education) && actor.profile.education.present? %>
-        <li>
-          <div class="key">
-            Education
-          </div>
-          <div class="value">
-            <%= actor.education %>
-          </div>
-        </li>
+      <% if (header_fields = actor.decorate.ui_attributes_for(area: :header)).present? %>
+        <% header_fields.sort.each do |title, value| %>
+          <% next if Profile.special_attributes.include?(title) %>
+          <li>
+            <div class="key">
+              <%= title %>
+            </div>
+            <div class="value">
+              <%= value %>
+            </div>
+          </li>
+        <% end %>
       <% end %>
-    <li>
-      <div class="key">
-        Joined
-      </div>
-      <div class="value">
-        <%= local_date(actor.created_at) %>
-      </div>
-    </li>
-  </ul>
-</div>
+      <li>
+        <div class="key">
+          Joined
+        </div>
+        <div class="value">
+          <%= local_date(actor.created_at) %>
+        </div>
+      </li>
+    </ul>
+  </div>
 <% elsif actor.class.name == "Organization" && actor.approved_and_filled_out_cta? %>
   <div>
     <%= sanitize_rendered_markdown(actor.cta_processed_html) %>

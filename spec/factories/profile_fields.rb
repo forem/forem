@@ -11,6 +11,10 @@ FactoryBot.define do
       show_in_onboarding { true }
     end
 
+    trait :header do
+      display_area { :header }
+    end
+
     after :create do
       # this is accomplished by ProfileFields::Add normally, it was added here
       # in case the tests use the factory and not the service object
