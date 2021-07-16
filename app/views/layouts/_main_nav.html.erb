@@ -15,20 +15,22 @@
       Sign In/Up
     </a>
   <% end %>
-  <div class="sidebar-navigation-links spec-sidebar-navigation-links">
+  <div class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
     <% default_nav_links.each do |link| %>
       <%= render "layouts/sidebar_nav_link", link: link %>
     <% end %>
   </div>
 
-  <div class="mt-6 mb-2 fw-bold">
-    Other
-  </div>
-  <div class="sidebar-navigation-links spec-sidebar-navigation-links">
-    <% other_nav_links.each do |link| %>
-      <%= render "layouts/sidebar_nav_link", link: link %>
-    <% end %>
-  </div>
+  <% if other_nav_links.any? %>
+    <div class="mt-6 mb-2 fw-bold">
+      Other
+    </div>
+    <div class="other-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
+      <% other_nav_links.each do |link| %>
+        <%= render "layouts/sidebar_nav_link", link: link %>
+      <% end %>
+    </div>
+  <% end %>
 
   <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
     <%= render partial: "layouts/social_media" %>

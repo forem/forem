@@ -39,21 +39,48 @@ RSpec.describe "User visits a homepage", type: :system do
                name: "Listings",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
                display_only_when_signed_in: true,
+               section: :default,
                position: 1)
+        create(:navigation_link,
+               name: "Shop",
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: false,
+               section: :default,
+               position: 2)
         create(:navigation_link,
                name: "Podcasts",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
                display_only_when_signed_in: false,
+               section: :other,
                position: nil)
+        create(:navigation_link,
+               name: "Privacy Policy",
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: false,
+               section: :other,
+               position: 1)
+      end
+
+      it "shows the Other section when other nav links exist" do
+        visit "/"
+        expect(page).to have_selector(".other-navigation-links")
+
+        NavigationLink.other_section.destroy_all
+
+        visit "/"
+        expect(page).not_to have_selector(".other-navigation-links")
+      end
+
+      fit "hides link when display_only_when_signed_in is true" do
+        visit "/"
+        save_and_open_page
+        expect(page).to have_selector(".default-navigation-links .sidebar-navigation-link", count: 1)
       end
 
       it "shows the correct count of links" do
         visit "/"
         expect(page).to have_selector(".spec-sidebar-navigation-links", count: 2)
-
-        within(".spec-sidebar-navigation-links", match: :first) do
-          expect(page).to have_selector(".sidebar-navigation-link", count: 1)
-        end
+        expect(page).to have_selector(".sidebar-navigation-link", count: 3)
       end
     end
   end
