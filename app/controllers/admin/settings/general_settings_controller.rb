@@ -1,6 +1,8 @@
 module Admin
   module Settings
     class GeneralSettingsController < Admin::Settings::BaseController
+      after_action :bust_content_change_caches, only: %i[create]
+
       SPECIAL_PARAMS_TO_ADD = %w[
         credit_prices_in_cents
         meta_keywords
