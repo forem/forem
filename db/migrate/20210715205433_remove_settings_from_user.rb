@@ -8,7 +8,7 @@ class RemoveSettingsFromUser < ActiveRecord::Migration[6.1]
       remove_column :users, :display_announcements, :boolean
       remove_column :users, :display_sponsors, :boolean
       remove_column :users, :editor_version, :string
-      remove_column :users, :experience_level, :intege
+      remove_column :users, :experience_level, :integer
       remove_column :users, :feed_mark_canonical, :boolean
       remove_column :users, :feed_referential_link, :boolean
       remove_column :users, :feed_url, :string
