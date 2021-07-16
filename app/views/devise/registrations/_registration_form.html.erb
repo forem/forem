@@ -14,22 +14,22 @@
     </div>
 
     <div class="registration__actions">
+      <% if params[:state] == "new-user" && !Settings::Authentication.allow_email_password_registration && !display_social_login? %>
+        <h2 class="mt-8">Sorry to be a bummer...</h2>
+        <p class="mb-8">Unfortunately, we do not support creating new accounts right now on our iOS app. If you want create a new account to join <%= community_name %>, please do that on the web.</p>
+      <% end %>
+
       <%= render partial: "shared/authentication/providers_registration_form" %>
 
       <% if params[:state] == "new-user" %>
         <div class="registration__hr">
           <span class="registration__hr-label">
-            Already have an account? <a href="<%= sign_up_path %>">View more sign in options</a>.
+            Already have an account? <a href="<%= sign_up_path %>">Log in</a>.
           </span>
         </div>
       <% else %>
         <div class="registration__actions-email" id="sign-in-password-form">
           <% if Settings::Authentication.allow_email_password_login %>
-            <div class="registration__hr">
-              <span class="registration__hr-label">
-                Have a password? Continue with your email address
-              </span>
-            </div>
             <%= render partial: "shared/authentication/email_login_form" %>
           <% end %>
         </div>

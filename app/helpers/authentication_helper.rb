@@ -70,4 +70,8 @@ module AuthenticationHelper
   def came_from_sign_up?
     request.referer&.include?(new_user_registration_path)
   end
+
+  def display_social_login?
+    Authentication::Providers.enabled.include?(:apple) || request.user_agent.exclude?("ForemWebView")
+  end
 end
