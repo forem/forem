@@ -1,6 +1,10 @@
-<% nav_links = NavigationLink.all.ordered.to_a %>
+<% default_nav_links = NavigationLink.default_section.ordered.to_a %>
+<% other_nav_links = NavigationLink.other_section.ordered.to_a %>
 
 <nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" aria-label="Primary sidebar nav">
+  <div class="mb-1 fw-bold">
+    <%= community_name %>
+  </div>
   <a href="<%= root_path %>" class="crayons-link crayons-link--block">
     <%= inline_svg_tag("twemoji/house.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
     Home
@@ -12,21 +16,21 @@
     </a>
   <% end %>
   <div class="sidebar-navigation-links spec-sidebar-navigation-links">
-    <% nav_links[0..4].each do |link| %>
+    <% default_nav_links.each do |link| %>
       <%= render "layouts/sidebar_nav_link", link: link %>
     <% end %>
+  </div>
 
-    <% if nav_links.length > 5 %>
-      <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s js-nav-more-trigger">More...</a>
-
-      <div class="hidden js-nav-more spec-nav-more">
-        <% nav_links[5..].each do |link| %>
-          <%= render "layouts/sidebar_nav_link", link: link %>
-        <% end %>
-        <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
-          <%= render partial: "layouts/social_media" %>
-        </div>
-      </div>
+  <div class="mt-6 mb-2 fw-bold">
+    Other
+  </div>
+  <div class="sidebar-navigation-links spec-sidebar-navigation-links">
+    <% other_nav_links.each do |link| %>
+      <%= render "layouts/sidebar_nav_link", link: link %>
     <% end %>
+  </div>
+
+  <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
+    <%= render partial: "layouts/social_media" %>
   </div>
 </nav>
