@@ -16,5 +16,16 @@ RSpec.describe Users::SubscribeToMailchimpNewsletterWorker, type: :worker do
 
       expect(mailchimp_bot).to have_received(:upsert)
     end
+
+    it "does not subscribe the user if they don't have an email" do
+      mailchimp_bot = double
+      allow(Mailchimp::Bot).to receive(:new).and_return(mailchimp_bot)
+      allow(mailchimp_bot).to receive(:upsert)
+      user.update! email: nil
+
+      worker.perform(user.id)
+
+      expect(mailchimp_bot).not_to have_received(:upsert)
+    end
   end
 end
