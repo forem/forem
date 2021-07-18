@@ -205,10 +205,14 @@ class Comment < ApplicationRecord
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.css("a").each do |anchor|
       anchor_inner_html = anchor.inner_html
-      urls = anchor_inner_html.scan(URI_REGEXP).flatten.compact
+      next if anchor_inner_html.include?("<img")
+
+      anchor_content = anchor.content
+      urls = anchor_content.scan(URI_REGEXP).flatten.compact
       urls.each do |url|
-        anchor_inner_html.sub!(/#{Regexp.escape(url)}/, strip_url(url))
+        anchor_content.sub!(/#{Regexp.escape(url)}/, strip_url(url))
       end
+      anchor_inner_html.sub!(/#{Regexp.escape(anchor.content)}/, anchor_content)
       anchor.inner_html = anchor_inner_html
     end
     self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety

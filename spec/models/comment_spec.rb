@@ -195,9 +195,10 @@ RSpec.describe Comment, type: :model do
         comment.validate!
         expect(comment.processed_html.include?("...</strong>")).to be(true)
 
-        comment.body_markdown = "Hello ![Alt-text](#{long_url})"
+        image_url = "https://i.picsum.photos/id/126/500/500.jpg?hmac=jNnQC44a_UR01TNuazfKROio0T_HaZVg0ikfR0d_xWY"
+        comment.body_markdown = "Hello ![Alt-text](#{image_url})"
         comment.validate!
-        expect(comment.processed_html.include?("<img")).to be(true)
+        expect(comment.processed_html.include?("<img src=\"#{image_url}\"")).to be(true)
       end
 
       # rubocop:disable RSpec/ExampleLength
