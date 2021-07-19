@@ -107,20 +107,6 @@
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
-          <% elsif field["input_type"] == "color_field" %>
-            <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
-              <%= field.label %>
-            </label>
-            <div class="flex items-center w-100 m:w-50">
-              <%= f.public_send("text_field", "profile[#{field.attribute_name}]",
-                                value: profile.public_send(field.attribute_name),
-                                placeholder: field["placeholder_text"],
-                                class: "crayons-textfield js-color-field") %>
-              <%= f.public_send(field["input_type"],
-                                "profile[#{field.attribute_name}]",
-                                value: profile.public_send(field.attribute_name),
-                                class: "crayons-color-selector js-color-field ml-2") %>
-            </div>
           <% else %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>

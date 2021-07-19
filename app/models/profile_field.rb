@@ -5,8 +5,7 @@ class ProfileField < ApplicationRecord
   enum input_type: {
     text_field: 0,
     text_area: 1,
-    check_box: 2,
-    color_field: 3
+    check_box: 2
   }
 
   enum display_area: {
