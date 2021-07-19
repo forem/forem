@@ -29,6 +29,7 @@ function highlightButton(button) {
     button.classList.remove('selected');
   }
   button.addEventListener('click', reactToReadingListButtonClick);
+  button.dataset.clickInitialized = true;
 }
 
 function addReadingListCountToHomePage() {
