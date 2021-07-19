@@ -6,8 +6,15 @@
 <main id="main-content">
   <div class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4">
     <div class="block m:hidden" id="mobile-search-container">
-      <form accept-charset="UTF-8" method="get" action="/search">
-        <input class="crayons-textfield" type="text" name="q" placeholder="Search..." autocomplete="on" />
+      <form accept-charset="UTF-8" method="get" action="/search" role="search">
+        <div class="crayons-fields crayons-fields--horizontal">
+          <div class="crayons-field flex-1">
+            <input class="crayons-textfield" type="text" name="q" placeholder="Search..." autocomplete="on" />
+          </div>
+          <div class="crayons-field">
+            <button type="submit" class="crayons-btn">Search</button>
+          </div>
+        </div>
       </form>
     </div>
 
@@ -43,7 +50,7 @@
 
     <div class="articles-list crayons-layout__content" id="articles-list">
       <div id="banner-section"></div>
-      <div class="substories" id="substories">
+      <div class="substories" id="substories" aria-live="polite">
         <div class="p-9 align-center crayons-card">
           <br />
         </div>

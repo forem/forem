@@ -9,19 +9,29 @@ export const SearchForm = forwardRef(
       acceptCharset="UTF-8"
       method="get"
       onSubmit={onSubmitSearch}
+      role="search"
     >
       <input name="utf8" type="hidden" value="✓" />
-      <input
-        ref={ref}
-        className="crayons-header--search-input crayons-textfield"
-        type="text"
-        name="q"
-        placeholder="Search..."
-        autoComplete="off"
-        aria-label="search"
-        onKeyDown={onSearch}
-        value={searchTerm}
-      />
+      <div class="crayons-fields crayons-fields--horizontal">
+        <div class="crayons-field flex-1">
+          <input
+            ref={ref}
+            className="crayons-header--search-input crayons-textfield"
+            type="text"
+            name="q"
+            placeholder="Search..."
+            autoComplete="off"
+            aria-label="search"
+            onKeyDown={onSearch}
+            value={searchTerm}
+          />
+        </div>
+        <div class="crayons-field">
+          <button type="submit" class="crayons-btn">
+            Search
+          </button>
+        </div>
+      </div>
     </form>
   ),
 );
