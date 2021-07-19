@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_12_155135) do
+ActiveRecord::Schema.define(version: 2021_07_15_211923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1296,9 +1296,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_155135) do
     t.boolean "checked_code_of_conduct", default: false
     t.boolean "checked_terms_and_conditions", default: false
     t.integer "comments_count", default: 0, null: false
-    t.string "config_font", default: "default"
-    t.string "config_navbar", default: "default", null: false
-    t.string "config_theme", default: "default"
     t.datetime "confirmation_sent_at"
     t.string "confirmation_token"
     t.datetime "confirmed_at"
@@ -1308,46 +1305,26 @@ ActiveRecord::Schema.define(version: 2021_07_12_155135) do
     t.inet "current_sign_in_ip"
     t.string "currently_hacking_on"
     t.string "currently_learning"
-    t.boolean "display_announcements", default: true
-    t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
-    t.string "editor_version", default: "v2"
     t.string "education"
     t.string "email"
-    t.boolean "email_badge_notifications", default: true
-    t.boolean "email_comment_notifications", default: true
-    t.boolean "email_community_mod_newsletter", default: false
-    t.boolean "email_connect_messages", default: true
-    t.boolean "email_digest_periodic", default: false, null: false
-    t.boolean "email_follower_notifications", default: true
-    t.boolean "email_membership_newsletter", default: false
-    t.boolean "email_mention_notifications", default: true
-    t.boolean "email_newsletter", default: false
     t.boolean "email_public", default: false
-    t.boolean "email_tag_mod_newsletter", default: false
-    t.boolean "email_unread_notifications", default: true
     t.string "employer_name"
     t.string "employer_url"
     t.string "employment_title"
     t.string "encrypted_password", default: "", null: false
-    t.integer "experience_level"
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
     t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
-    t.boolean "feed_mark_canonical", default: false
-    t.boolean "feed_referential_link", default: true, null: false
-    t.string "feed_url"
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
-    t.string "inbox_guidelines"
-    t.string "inbox_type", default: "private"
     t.string "instagram_url"
     t.datetime "invitation_accepted_at"
     t.datetime "invitation_created_at"
@@ -1372,8 +1349,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_155135) do
     t.datetime "locked_at"
     t.string "mastodon_url"
     t.string "medium_url"
-    t.boolean "mobile_comment_notifications", default: true
-    t.boolean "mod_roundrobin_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
@@ -1382,11 +1357,9 @@ ActiveRecord::Schema.define(version: 2021_07_12_155135) do
     t.boolean "onboarding_package_requested", default: false
     t.datetime "organization_info_updated_at"
     t.string "payment_pointer"
-    t.boolean "permit_adjacent_sponsors", default: true
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
-    t.boolean "reaction_notifications", default: true
     t.integer "reactions_count", default: 0, null: false
     t.boolean "registered", default: true
     t.datetime "registered_at"
@@ -1414,7 +1387,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_155135) do
     t.datetime "updated_at", null: false
     t.string "username"
     t.string "website_url"
-    t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
     t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
@@ -1425,7 +1397,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_155135) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
     t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"
-    t.index ["feed_url"], name: "index_users_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
@@ -1495,6 +1466,7 @@ ActiveRecord::Schema.define(version: 2021_07_12_155135) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
+    t.index ["feed_url"], name: "index_users_settings_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["user_id"], name: "index_users_settings_on_user_id", unique: true
   end
 

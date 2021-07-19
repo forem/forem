@@ -36,47 +36,13 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  COLUMNS_NOW_IN_USERS_SETTINGS = %w[
-    config_theme
-    config_font
-    config_navbar
-    display_announcements
-    display_sponsors
-    editor_version
-    experience_level
-    feed_mark_canonical
-    feed_referential_link
-    feed_url
-    inbox_guidelines
-    inbox_type
-    permit_adjacent_sponsors
-  ].freeze
-
-  COLUMNS_NOW_IN_USERS_NOTIFICATION_SETTINGS = %w[
-    email_badge_notifications
-    email_comment_notifications
-    email_community_mod_newsletter
-    email_connect_messages
-    email_digest_periodic
-    email_follower_notifications
-    email_membership_newsletter
-    email_mention_notifications
-    email_newsletter
-    email_tag_mod_newsletter
-    email_unread_notifications
-    mobile_comment_notifications
-    mod_roundrobin_notifications
-    reaction_notifications
-    welcome_notifications
-  ].freeze
-
   INACTIVE_PROFILE_COLUMNS = %w[
     bg_color_hex
     text_color_hex
     email_public
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS + COLUMNS_NOW_IN_USERS_SETTINGS + COLUMNS_NOW_IN_USERS_NOTIFICATION_SETTINGS
+  self.ignored_columns = PROFILE_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
