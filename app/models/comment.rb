@@ -12,8 +12,6 @@ class Comment < ApplicationRecord
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
 
-  URI_REGEXP = %r{(?<scheme>https?://)?(?<host>.+?)(?<port>:\d+)?$}.freeze
-
   # The date that we began limiting the number of user mentions in a comment.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
 
@@ -204,12 +202,9 @@ class Comment < ApplicationRecord
   def shorten_urls!
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.css("a").each do |anchor|
-      anchor_inner_html = anchor.inner_html
-      urls = anchor_inner_html.scan(URI_REGEXP).flatten.compact
-      urls.each do |url|
-        anchor_inner_html.sub!(/#{Regexp.escape(url)}/, strip_url(url))
+      unless anchor.to_s.include?("<img") || anchor.to_s.include?("<del") || anchor.attr("class")&.include?("ltag")
+        anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img") # rubocop:disable Style/SoleNestedConditional
       end
-      anchor.inner_html = anchor_inner_html
     end
     self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
   end
