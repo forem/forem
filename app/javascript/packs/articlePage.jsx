@@ -68,21 +68,15 @@ function showAnnouncer() {
 
 function copyArticleLink() {
   const inputValue = document
-    .getElementById('article-copy-link-p')
+    .getElementById('copy-post-url-button')
     .getAttribute('data-postUrl');
   Runtime.copyToClipboard(inputValue).then(() => {
     showAnnouncer();
   });
 }
 document
-  .querySelector('clipboard-copy')
+  .getElementById('copy-post-url-button')
   ?.addEventListener('click', copyArticleLink);
-
-document.querySelector('clipboard-copy')?.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    copyArticleLink();
-  }
-});
 
 // Comment Subscription
 getCsrfToken().then(async () => {

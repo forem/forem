@@ -19,19 +19,14 @@ describe('Post sidebar actions', () => {
 
   it('should open and close the share menu for the post', () => {
     // Check dropdown is closed by asserting the first option isn't visible
-    cy.findByRole('img', {
-      name: /^Copy article link to the clipboard$/i,
-    }).should('not.exist');
+    cy.get('#copy-post-url-button').should('not.be.visible');
 
     cy.findByRole('button', { name: /^Share post options$/i }).as(
       'dropdownButton',
     );
     cy.get('@dropdownButton').click();
 
-    cy.findByLabelText('Post URL').parent('div').should('have.focus');
-    cy.findByRole('img', {
-      name: /^Copy article link to the clipboard$/i,
-    });
+    cy.get('#copy-post-url-button').should('have.focus');
     cy.findByRole('link', { name: /^Share to Twitter$/i });
     cy.findByRole('link', { name: /^Share to LinkedIn$/i });
     cy.findByRole('link', { name: /^Share to Reddit$/i });
@@ -46,9 +41,7 @@ describe('Post sidebar actions', () => {
     cy.get('@dropdownButton').click();
 
     // Check dropdown is closed by asserting the first option isn't visible
-    cy.findByRole('img', {
-      name: /^Copy article link to the clipboard$/i,
-    }).should('not.exist');
+    cy.get('#copy-post-url-button').should('not.be.visible');
   });
 
   it('should close the options dropdown on Escape press, returning focus', () => {
@@ -57,27 +50,10 @@ describe('Post sidebar actions', () => {
     );
     cy.get('@dropdownButton').click();
 
-    cy.findByLabelText('Post URL').parent('div').should('have.focus');
+    cy.get('#copy-post-url-button').should('have.focus');
     cy.get('body').type('{esc}');
-    cy.findByLabelText('Post URL').should('not.be.visible');
+    cy.get('#copy-post-url-button').should('not.be.visible');
     cy.get('@dropdownButton').should('have.focus');
-  });
-
-  it('should display clipboard copy announcer when enter is press', () => {
-    cy.findByRole('button', { name: /^Share post options$/i }).as(
-      'dropdownButton',
-    );
-    cy.get('@dropdownButton').click();
-
-    cy.findByText('Copied to Clipboard').should('not.be.visible');
-    cy.findByLabelText('Post URL').parent('div').should('have.focus');
-    cy.get('body').type('{enter}');
-    cy.findByText('Copied to Clipboard').should('be.visible');
-
-    // Close the dropdown, and reopen it to check the message has disappeared
-    cy.get('@dropdownButton').click();
-    cy.get('@dropdownButton').click();
-    cy.findByText('Copied to Clipboard').should('not.be.visible');
   });
 
   it('should display clipboard copy announcer until the dropdown is next closed', () => {
@@ -87,7 +63,7 @@ describe('Post sidebar actions', () => {
     cy.get('@dropdownButton').click();
 
     cy.findByText('Copied to Clipboard').should('not.be.visible');
-    cy.findByLabelText('Post URL').parent('div').click();
+    cy.get('#copy-post-url-button').click();
     cy.findByText('Copied to Clipboard').should('be.visible');
 
     // Close the dropdown, and reopen it to check the message has disappeared
