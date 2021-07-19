@@ -814,7 +814,7 @@ RSpec.describe "/admin/customization/config", type: :request do
             settings_smtp: expected_handle,
             confirmation: confirmation_message
           }
-          expect(Settings::SMTP.address).to eq("")
+          expect(Settings::SMTP.address).to eq(nil)
           expect(Settings::SMTP.port).to eq(25)
         end
       end
