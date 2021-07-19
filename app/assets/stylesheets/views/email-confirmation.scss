@@ -7,5 +7,9 @@
   flex: 1;
   display: flex;
   background: white;
-  padding: 1em;
+
+  @media (max-width: $breakpoint-s) {
+    padding: 1em 1em 0;
+  }
+
 }

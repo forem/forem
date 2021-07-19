@@ -3,7 +3,7 @@
 
 <% if FeatureFlag.enabled?(:creator_onboarding) %>
   <div class="crayons-layout crayons-layout--limited-l">
-    <div class="flex flex-col items-center">
+    <div class="flex flex-col items-center justify-center">
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <%= inline_svg_tag("mail.svg", aria: true, title: "Email") %>
