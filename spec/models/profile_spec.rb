@@ -32,35 +32,6 @@ RSpec.describe Profile, type: :model do
       end
     end
 
-    describe "validating color fields" do
-      it "is valid if the field is a correct hex color with leading #" do
-        profile.brand_color1 = "#abcdef"
-        expect(profile).to be_valid
-      end
-
-      it "is valid if the field is a correct hex color without leading #" do
-        profile.brand_color1 = "abcdef"
-        expect(profile).to be_valid
-      end
-
-      it "is valid if the field is a 3-digit hex color" do
-        profile.brand_color1 = "#ccc"
-        expect(profile).to be_valid
-      end
-
-      it "is invalid if the field is too long" do
-        profile.brand_color1 = "#deadbeef"
-        expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Brand color1 is not a valid hex color"
-      end
-
-      it "is invalid if the field contains non hex characters" do
-        profile.brand_color1 = "#abcdeg"
-        expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Brand color1 is not a valid hex color"
-      end
-    end
-
     describe "validating text areas" do
       it "is valid if the text is short enough" do
         profile.skills_languages = "Ruby"
