@@ -39,7 +39,7 @@
           </div>
         </li>
       <% end %>
-      <% if (header_fields = actor.decorate.ui_attributes_for(area: :header)).present? %>
+      <% if (header_fields = actor.profile.decorate.ui_attributes_for(area: :header)).present? %>
         <% header_fields.sort.each do |title, value| %>
           <% next if Profile.special_attributes.include?(title) %>
           <li>
