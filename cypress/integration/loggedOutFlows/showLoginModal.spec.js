@@ -4,7 +4,7 @@ describe('Show log in modal', () => {
     cy.visit('/');
   });
 
-  it('should show a log in modal on Feed bookmark click', () => {
+  it.skip('should show a log in modal on Feed bookmark click', () => {
     cy.findAllByRole('button', { name: /Save/ }).first().as('bookmarkButton');
     // Wait for the click handler to be attached to the button
     cy.get('@bookmarkButton').should('have.attr', 'data-click-initialized');
