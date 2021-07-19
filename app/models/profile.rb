@@ -11,8 +11,6 @@ class Profile < ApplicationRecord
   # any profile on a given Forem.
   STATIC_FIELDS = %w[summary location website_url].freeze
 
-  SPECIAL_DISPLAY_ATTRIBUTES = %w[summary location].freeze
-
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
     return if ENV["ENV_AVAILABLE"] == "false"
@@ -36,10 +34,6 @@ class Profile < ApplicationRecord
   # Returns an array of all currently defined `store_attribute`s on `data`.
   def self.attributes
     (stored_attributes[:data] || []).map(&:to_s)
-  end
-
-  def self.special_attributes
-    SPECIAL_DISPLAY_ATTRIBUTES
   end
 
   def self.static_fields
