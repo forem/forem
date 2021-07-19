@@ -72,6 +72,6 @@ module AuthenticationHelper
   end
 
   def display_social_login?
-    Authentication::Providers.enabled.include?(:apple) || request.user_agent.exclude?("ForemWebView")
+    Authentication::Providers.enabled.include?(:apple) || request.user_agent.to_s.exclude?("ForemWebView")
   end
 end
