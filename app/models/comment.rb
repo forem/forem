@@ -215,7 +215,7 @@ class Comment < ApplicationRecord
       urls = anchor.content.scan(URI_REGEXP).flatten
       anchor_content = anchor.content
       urls.each do |url|
-        anchor_content = anchor_content.sub!(/#{Regexp.escape(url)}/, strip_url(url))
+        anchor_content.sub!(/#{Regexp.escape(url)}/, strip_url(url))
       end
       anchor.inner_html = anchor.inner_html.sub!(/#{Regexp.escape(anchor.content)}/, anchor_content)
     end
