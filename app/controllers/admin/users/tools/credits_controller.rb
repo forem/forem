@@ -24,7 +24,7 @@ module Admin
               Credits::Manage.call(user, add_credits: credits_params[:count])
             end
 
-            create_note
+            create_note(user)
 
             format.js { head :no_content }
           rescue ActiveRecord::RecordInvalid => e
@@ -46,7 +46,7 @@ module Admin
               Credits::Manage.call(user, remove_credits: credits_params[:count])
             end
 
-            create_note
+            create_note(user)
 
             format.js { head :no_content }
           rescue ActiveRecord::RecordInvalid => e

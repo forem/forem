@@ -103,7 +103,8 @@
                            class: "crayons-textfield mr-1",
                            "aria-labelledby": "add-org-credits" %>
 
-          <%= f.select "credits[organization_id]", orgs_with_credits(@organizations), id: nil, class: "mr-1" %>
+          <%= select_tag "credits[organization_id]", orgs_with_credits(@organizations),
+                         id: "select_add_org_credits", class: "crayons-select", "aria-labelledby": "add-org-credits" %>
 
           <%= f.submit "Add", class: "crayons-btn", data: { disable_with: "Add" } %>
         </div>
@@ -128,15 +129,16 @@
                              in: 1..10_000,
                              required: true,
                              class: "crayons-textfield mr-1",
-                             "aria-labelledby": "remove-credits" %>
+                             "aria-labelledby": "remove-org-credits" %>
           <%= f.text_field "credits[note]",
                            id: nil,
                            placeholder: "Why are you removing these credits?",
                            required: true,
                            class: "crayons-textfield mr-1",
-                           "aria-labelledby": "remove-credits" %>
+                           "aria-labelledby": "remove-org-credits" %>
 
-          <%= f.select "credits_org[organization_id]", orgs_with_credits(@organizations), class: "mr-1" %>
+          <%= select_tag "credits[organization_id]", orgs_with_credits(@organizations),
+                         id: "select_remove_org_credits", class: "crayons-select", "aria-labelledby": "remove-org-credits" %>
 
           <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger", data: { disable_with: "Remove" } %>
         </div>
