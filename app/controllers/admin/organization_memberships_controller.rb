@@ -15,15 +15,31 @@ module Admin
     def create
       organization_membership = OrganizationMembership.new(organization_membership_params)
       organization = Organization.find_by(id: organization_membership_params[:organization_id])
-      if organization && organization_membership.save
-        flash[:success] = "User was successfully added to #{organization.name}"
-      elsif organization.blank?
-        message = "Organization ##{organization_membership_params[:organization_id]} does not exist. Perhaps a typo?"
-        flash[:danger] = message
-      else
-        flash[:danger] = organization_membership.errors.full_messages
+
+      respond_to do |format|
+        format.html do
+          if organization && organization_membership.save
+            flash[:success] = "User was successfully added to #{organization.name}"
+          elsif organization.blank?
+            message = "Organization ##{organization_membership_params[:organization_id]} does not exist."
+            flash[:danger] = message
+          else
+            flash[:danger] = organization_membership.errors.full_messages
+          end
+          redirect_to admin_user_path(organization_membership.user_id)
+        end
+
+        format.js do
+          if organization && organization_membership.save
+            head :no_content
+          elsif organization.blank?
+            message = "Organization ##{organization_membership_params[:organization_id]} does not exist."
+            render json: { error: message }, status: :unprocessable_entity
+          else
+            render json: { error: organization_membership.errors_as_sentence }, status: :unprocessable_entity
+          end
+        end
       end
-      redirect_to admin_user_path(organization_membership.user_id)
     end
 
     def destroy

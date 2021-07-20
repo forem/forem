@@ -1,0 +1,37 @@
+<section
+  class="crayons-card p-3 js-component"
+  data-controller="users--tools--organizations"
+  data-action="ajax:success@document->users--tools--organizations#ajaxSuccess ajax:error@document->users--tools--organizations#ajaxError">
+  <header>
+    <h3><%= link_to "← Organizations Memberships", admin_user_tools_path(@user.id),
+                    remote: true,
+                    data: { action: "ajax:success->user#replacePartial" },
+                    class: "crayons-title fs-l" %></h3>
+  </header>
+
+  <%# Add new org membership %>
+  <%= form_with model: [:admin, OrganizationMembership.new],
+                remote: true,
+                class: "my-3",
+                data: { "users--tools--organizations-target": "addUserToOrg" } do |f| %>
+
+    <%= f.hidden_field :user_id, value: @user.id %>
+    <fieldset>
+      <legend class="fs-base fw-medium mb-3">Add <%= @user.name %> to a new organization</legend>
+
+      <div class="crayons-field form-group w-50">
+        <%= f.label :organization_id, "Organization ID", class: "crayons-field__label" %>
+        <%= f.number_field :organization_id, class: "crayons-textfield" %>
+      </div>
+
+      <div class="crayons-field form-group w-50">
+        <%= f.label :type_of_user, "Membership Level", class: "crayons-field__label" %>
+        <%= select_tag "organization_membership[type_of_user]", options_for_select(@memberships_for_select, "Member"), class: "crayons-select" %>
+      </div>
+
+      <%= f.submit "Add",
+                   class: "crayons-btn",
+                   data: { disable_with: "Adding..." } %>
+    </fieldset>
+  <% end -%>
+</section>

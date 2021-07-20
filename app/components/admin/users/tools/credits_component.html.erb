@@ -36,9 +36,9 @@
                          required: true,
                          class: "crayons-textfield",
                          "aria-labelledby": "add-credits" %>
-
-        <%= f.submit "Add", class: "crayons-btn", data: { disable_with: "Add" } %>
       </div>
+
+      <%= f.submit "Add", class: "crayons-btn", data: { disable_with: "Add" } %>
     </fieldset>
   <% end -%>
 
@@ -68,9 +68,9 @@
                            required: true,
                            class: "crayons-textfield mr-1",
                            "aria-labelledby": "remove-credits" %>
-
-          <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger", data: { disable_with: "Remove" } %>
         </div>
+
+        <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger", data: { disable_with: "Remove" } %>
       </fieldset>
     <% end -%>
   <% end %>
@@ -105,9 +105,9 @@
 
           <%= select_tag "credits[organization_id]", orgs_with_credits(@organizations),
                          id: "select_add_org_credits", class: "crayons-select", "aria-labelledby": "add-org-credits" %>
-
-          <%= f.submit "Add", class: "crayons-btn", data: { disable_with: "Add" } %>
         </div>
+
+        <%= f.submit "Add", class: "crayons-btn", data: { disable_with: "Add" } %>
       </fieldset>
     <% end -%>
 
@@ -139,9 +139,9 @@
 
           <%= select_tag "credits[organization_id]", orgs_with_credits(@organizations),
                          id: "select_remove_org_credits", class: "crayons-select", "aria-labelledby": "remove-org-credits" %>
-
-          <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger", data: { disable_with: "Remove" } %>
         </div>
+
+        <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger", data: { disable_with: "Remove" } %>
       </fieldset>
     <% end -%>
   <% end %>

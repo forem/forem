@@ -12,6 +12,7 @@ module Admin
         @emails = emails
         @notes = notes
         @credits = credits
+        @organizations = organizations
       end
 
       private
@@ -34,6 +35,12 @@ module Admin
       def credits
         DATA.new(
           total: user.unspent_credits_count,
+        )
+      end
+
+      def organizations
+        DATA.new(
+          total: user.organizations.count,
         )
       end
     end
