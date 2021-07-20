@@ -16,7 +16,7 @@ RSpec.describe "Conditional registration (ForemWebView)", type: :system do
   end
 
   before do
-    Flipper.enable(:apple_auth)
+    allow(FeatureFlag).to receive(:enabled?).with(:apple_auth).and_return(true)
     allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
   end
 
