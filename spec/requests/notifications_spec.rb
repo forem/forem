@@ -42,11 +42,9 @@ RSpec.describe "NotificationsIndex", type: :request do
 
     context "when signed out" do
       it "renders the signup page" do
-        allow(Authentication::Providers).to receive(:enabled).and_return(%i[github twitter])
         get "/notifications"
 
-        expect(response.body).to include("Continue with GitHub")
-        expect(response.body).to include("Continue with Twitter")
+        expect(response.body).to include("Continue with")
       end
     end
 
