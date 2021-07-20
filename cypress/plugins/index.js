@@ -25,5 +25,9 @@ module.exports = (on, config) => {
     ...process.env,
   };
 
+  on('task', {
+    failed: require('cypress-failed-log/src/failed')(),
+  });
+
   return config;
 };
