@@ -25,7 +25,7 @@ end
 CypressRails.hooks.before_server_stop do
   # Called once, at_exit
   puts "Cleaning up and stopping server for end to end tests."
-  Rake::Task["db:truncate_all"].invoke
+  Rake::Task["db:truncate_all"].invoke if ENV["SKIP_SEED_DATA"].blank?
   puts "The end to end test server shutdown gracefully."
 end
 
