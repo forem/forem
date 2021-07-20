@@ -67,10 +67,10 @@ function showAnnouncer() {
 }
 
 function copyArticleLink() {
-  const inputValue = document
+  const postUrlValue = document
     .getElementById('copy-post-url-button')
     .getAttribute('data-postUrl');
-  Runtime.copyToClipboard(inputValue).then(() => {
+  Runtime.copyToClipboard(postUrlValue).then(() => {
     showAnnouncer();
   });
 }
