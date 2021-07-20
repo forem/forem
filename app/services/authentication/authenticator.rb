@@ -35,13 +35,13 @@ module Authentication
 
       ActiveRecord::Base.transaction do
         user = proper_user(identity)
-
+        p "Here"
         user = if user.nil?
                  find_or_create_user!
                else
                  update_user(user)
                end
-
+        p user
         identity.user = user if identity.user_id.blank?
         new_identity = identity.new_record?
         successful_save = identity.save!
@@ -96,17 +96,27 @@ module Authentication
     end
 
     def find_or_create_user!
+      p provider.to_json
       username = provider.user_nickname
       suspended_user = Users::SuspendedUsername.previously_suspended?(username)
       raise ::Authentication::Errors::PreviouslySuspended if suspended_user
 
+      p provider.user_username_field
       existing_user = User.where(
         provider.user_username_field => username,
       ).take
+      p existing_user
       return existing_user if existing_user
-
+      p "on to the next"
+      p provider
+      p provider.to_json
+      p "~~~~~"
+      p provider.new_user_data
+      p ":::"
       User.new.tap do |user|
+        p provider.new_user_data
         user.assign_attributes(provider.new_user_data)
+        p default_user_fields
         user.assign_attributes(default_user_fields)
 
         user.set_remember_fields

@@ -3,15 +3,17 @@ module Authentication
     # GitHub authentication provider, uses omniauth-github as backend
     class Forem < Provider
       OFFICIAL_NAME = "Forem".freeze
-      SETTINGS_URL = "https://passport.forem.com".freeze
+      SETTINGS_URL = "https://passport.forem.com/oauth/authorized_applications".freeze
 
       def new_user_data
-        name = raw_info.name.presence || info.name
-
+        # name = raw_info.name.presence || info.name
+        # p "new user data"
+        # p name
         {
-          email: info.email.to_s,
-          name: name,
-          remote_profile_image_url: Users::SafeRemoteProfileImageUrl.call(info.image.to_s)
+          email: "ben@forem.com",
+          name: "name",
+          remote_profile_image_url: "https://res.cloudinary.com/hkyugldxm/image/fetch/s--SVXRShhn--/c_limit,f_png,fl_progressive,q_80,w_512/https://thismmalife-images.s3.amazonaws.com/i/c6aakaen9bmk70qaduy9.png",
+          forem_username: "ben#{rand(100000)}"
         }
       end
 
