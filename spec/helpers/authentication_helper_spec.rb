@@ -98,14 +98,14 @@ RSpec.describe AuthenticationHelper, type: :helper do
   end
 
   describe "#display_social_login?" do
-    let(:mobile_ua) { "Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148" }
+    let(:mobile_browser_ua) { "Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148" }
     let(:foremwebview_ua) do
       "Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 ForemWebView/1.0"
     end
 
     context "when the request is from a non-ForemWebView User Agent" do
       before do
-        helper.request.env["HTTP_USER_AGENT"] = mobile_ua
+        helper.request.env["HTTP_USER_AGENT"] = mobile_browser_ua
       end
 
       it "responds with true regardless if the Apple Auth is enabled" do

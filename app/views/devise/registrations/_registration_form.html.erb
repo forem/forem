@@ -16,7 +16,7 @@
     <div class="registration__actions">
       <% if params[:state] == "new-user" && !Settings::Authentication.allow_email_password_registration && !display_social_login? %>
         <h2 class="mt-8">Sorry to be a bummer...</h2>
-        <p class="mb-8">Unfortunately, we do not support creating new accounts right now on our iOS app. If you want create a new account to join <%= community_name %>, please do that on the web.</p>
+        <p class="mb-8">Unfortunately, we do not support creating new accounts right now on our mobile app. If you want create a new account to join <%= community_name %>, please do that on the web.</p>
       <% end %>
 
       <%= render partial: "shared/authentication/providers_registration_form" %>
