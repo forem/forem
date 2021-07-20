@@ -43,7 +43,7 @@ describe('Post sidebar actions', () => {
     cy.get('@dropdownButton').click();
 
     // Check dropdown is closed by asserting the first option isn't visible
-    cy.get('#copy-post-url-button').should('not.be.visible');
+    cy.get('@copyPostUrlButton').should('not.be.visible');
   });
 
   it('should close the options dropdown on Escape press, returning focus', () => {
