@@ -89,7 +89,7 @@ seeder.create_if_none(Organization) do
     remote_profile_image_url: logo = Faker::Company.logo,
     nav_image: logo,
     url: Faker::Internet.url,
-    slug: "org#{rand(10_000)}",
+    slug: "bachmanity",
   )
 
   OrganizationMembership.create!(
