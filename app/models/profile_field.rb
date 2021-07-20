@@ -40,7 +40,7 @@ class ProfileField < ApplicationRecord
   end
 
   def maximum_header_field_count
-    return if self.class.header.count <= HEADER_FIELD_LIMIT
+    return if self.class.header.count < HEADER_FIELD_LIMIT
 
     errors.add(:display_area, HEADER_LIMIT_MESSAGE)
   end
