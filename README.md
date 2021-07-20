@@ -161,6 +161,7 @@ A more complete overview of our stack is available in
 - [@s_aitchison](https://dev.to/s_aitchison)
 - [@jgaskins](https://dev.to/jgaskins)
 - [@djuber](https://dev.to/djuber)
+- [@rt4914](https://dev.to/rt4914)
 
 ## Vulnerability disclosure
 
