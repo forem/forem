@@ -14642,6 +14642,11 @@ prismjs@^1.21.0, prismjs@^1.23.0, prismjs@^1.8.4, prismjs@~1.23.0:
   optionalDependencies:
     clipboard "^2.0.0"
 
+prismjs@^1.24.0:
+  version "1.24.1"
+  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.24.1.tgz#c4d7895c4d6500289482fa8936d9cdd192684036"
+  integrity sha512-mNPsedLuk90RVJioIky8ANZEwYm5w9LcvCXrxHlwf4fNVSn8jEipMybMkWUyyF0JhnC+C4VcOVSBuHRKs1L5Ow==
+
 prismjs@~1.17.0:
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.17.1.tgz#e669fcbd4cdd873c35102881c33b14d0d68519be"
@@ -15512,10 +15517,10 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redoc-cli@0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.12.1.tgz#38a459b33e8e83c899d5aa902b3d73c960356e4c"
-  integrity sha512-Ew8ByEayRBZgG9iLv2ZO+h3ZMz55naz1jA1CPt6Vm0xcSbVNYb7ubnbHhSvUGshc2bGu8Je74k1veFZZqXjBeQ==
+redoc-cli@0.12.2:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.12.2.tgz#d81195961783bb00b020cd93bd19ead348411d70"
+  integrity sha512-GyOCEr1g+U/Js7lgHj+0vH9L2uCwbc0m9CJrlb099qp6jzmxnJQ6sC85BiN9DOwr4/fsQfVhoNpWQSkkpFBo5Q==
   dependencies:
     chokidar "^3.5.1"
     handlebars "^4.7.7"
@@ -15525,14 +15530,14 @@ redoc-cli@0.12.1:
     node-libs-browser "^2.2.1"
     react "^17.0.1"
     react-dom "^17.0.1"
-    redoc "2.0.0-rc.54"
+    redoc "2.0.0-rc.55"
     styled-components "^5.3.0"
     yargs "^17.0.1"
 
-redoc@2.0.0-rc.54:
-  version "2.0.0-rc.54"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.54.tgz#004d993d72d726b1aeb6c90ad1c303945f4ec5ba"
-  integrity sha512-xwukaWdoktkDAoQuhajekdC54+/lSLwIUqJCNSTVEjeYEuZPq2tFUj9H5SBt8/YSq5UF/zOmDQrXPWMgildQpQ==
+redoc@2.0.0-rc.55:
+  version "2.0.0-rc.55"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.55.tgz#372b4d2ab40199eb92043fcfd14cdc5db644081f"
+  integrity sha512-32sUHhc33m8zQKz2V7xREwlf05S52dDOkn7K0WMquu2GDl6ZquxmrQfqnlj0IPoVCWQPR+XosmmIJj4rZbqjeA==
   dependencies:
     "@babel/runtime" "^7.14.0"
     "@redocly/openapi-core" "^1.0.0-beta.50"
@@ -15552,7 +15557,7 @@ redoc@2.0.0-rc.54:
     path-browserify "^1.0.1"
     perfect-scrollbar "^1.5.1"
     polished "^4.1.3"
-    prismjs "^1.23.0"
+    prismjs "^1.24.0"
     prop-types "^15.7.2"
     react-tabs "^3.2.2"
     slugify "~1.4.7"
