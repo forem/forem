@@ -27,6 +27,8 @@ class Article < ApplicationRecord
 
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
+  UNIQUE_URL_ERROR = "has already been taken. " \
+                     "Email #{ForemInstance.email} for further details.".freeze
 
   has_one :discussion_lock, dependent: :destroy
 
@@ -54,10 +56,14 @@ class Article < ApplicationRecord
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validates :boost_states, presence: true
   validates :cached_tag_list, length: { maximum: 126 }
-  validates :canonical_url, uniqueness: { allow_nil: true }
+  validates :canonical_url,
+            uniqueness: { allow_nil: true, scope: :published, message: UNIQUE_URL_ERROR },
+            if: :published?
   validates :canonical_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :comments_count, presence: true
-  validates :feed_source_url, uniqueness: { allow_nil: true }
+  validates :feed_source_url,
+            uniqueness: { allow_nil: true, scope: :published, message: UNIQUE_URL_ERROR },
+            if: :published?
   validates :feed_source_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/

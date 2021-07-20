@@ -42,10 +42,6 @@ class ProfileValidator < ActiveModel::Validator
     true # checkboxes are always valid
   end
 
-  def color_field_valid?(_record, _attribute)
-    true # we do not currently validate color fields here
-  end
-
   def text_area_valid?(record, attribute)
     text = record.public_send(attribute)
     text.nil? || text.size <= MAX_TEXT_AREA_LENGTH
