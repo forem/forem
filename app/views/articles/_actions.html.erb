@@ -32,47 +32,51 @@
       <button id="article-show-more-button" aria-controls="article-show-more-dropdown" aria-expanded="false" aria-haspopup="true" class="dropbtn crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-rounded" aria-label="Share post options">
         <%= inline_svg_tag("overflow-horizontal.svg", aria_hidden: true, class: "dropdown-icon crayons-icon", title: "More...") %>
       </button>
-      <div id="article-show-more-dropdown" class="crayons-dropdown p-1 right-1 left-1 s:left-auto bottom-100 m:bottom-auto m:top-0 m:right-auto m:left-100 fs-base">
-        <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer" class="dropdown-link-row">
-          <div class="flex items-center">
-            <input type="text" id="article-copy-link-input" value="<%= article_url(@article) %>" aria-label="Post URL" class="crayons-textfield" readonly />
-            <%= inline_svg_tag("copy.svg", aria: true, id: "article-copy-icon", class: "crayons-icon mx-2 shrink-0", title: "Copy article link to the clipboard") %>
-          </div>
-          <div id="article-copy-link-announcer" class="crayons-notice crayons-notice--success my-2 p-1" aria-live="polite" hidden>Copied to Clipboard</div>
-        </clipboard-copy>
+
+      <div id="article-show-more-dropdown" class="crayons-dropdown side-bar left-1 s:left-auto m:left-100">
+        <div>
+          <button
+            id="copy-post-url-button"
+            class="flex justify-between crayons-link crayons-link--block w-100 bg-transparent border-0"
+            data-postUrl="<%= article_url(@article) %>">
+            <span class="fw-bold">Copy Post URL</span>
+            <%= inline_svg_tag("copy.svg", aria_hidden: true, id: "article-copy-icon", class: "crayons-icon mx-2 shrink-0", title: "Copy article link to the clipboard") %>
+          </button>
+          <div id="article-copy-link-announcer" aria-live="polite" class="crayons-notice crayons-notice--success my-2 p-1" aria-live="polite" hidden>Copied to Clipboard</div>
+        </div>
 
         <div class="Desktop-only">
           <a
             target="_blank"
-            class="dropdown-link-row crayons-link crayons-link--block"
+            class="crayons-link crayons-link--block"
             rel="noopener"
             href='https://twitter.com/intent/tweet?text=<%= u "\"#{@article.title.strip}\" by " %><%= u @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name %><%= u " #{Settings::General.twitter_hashtag} " %><%= u " #{article_url(@article)}" %>'>
             Share to Twitter
           </a>
           <a
             target="_blank"
-            class="dropdown-link-row crayons-link crayons-link--block"
+            class="crayons-link crayons-link--block"
             rel="noopener"
             href="https://www.linkedin.com/shareArticle?mini=true&url=<%= u article_url(@article) %>&title=<%= u @article.title %>&summary=<%= u @article.description %>&source=<%= u community_name %>">
             Share to LinkedIn
           </a>
           <a
             target="_blank"
-            class="dropdown-link-row crayons-link crayons-link--block"
+            class="crayons-link crayons-link--block"
             rel="noopener"
             href="https://www.reddit.com/submit?url=<%= u article_url(@article) %>&title=<%= u @article.title %>">
             Share to Reddit
           </a>
           <a
             target="_blank"
-            class="dropdown-link-row crayons-link crayons-link--block"
+            class="crayons-link crayons-link--block"
             rel="noopener"
             href="https://news.ycombinator.com/submitlink?u=<%= u article_url(@article) %>&t=<%= u @article.title %>">
             Share to Hacker News
           </a>
           <a
             target="_blank"
-            class="dropdown-link-row crayons-link crayons-link--block"
+            class="crayons-link crayons-link--block"
             rel="noopener"
             href="https://www.facebook.com/sharer.php?u=<%= u article_url(@article) %>">
             Share to Facebook
@@ -85,7 +89,7 @@
           <a href="#" class="dropdown-link-row crayons-link crayons-link--block">Share Post via...</a>
         </template>
 
-        <a href="/report-abuse" class="dropdown-link-row crayons-link crayons-link--block">Report Abuse</a>
+        <a href="/report-abuse" class="crayons-link crayons-link--block">Report Abuse</a>
       </div>
     </div>
   </div>
