@@ -50,8 +50,8 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
       .querySelectorAll('#article-show-more-dropdown [href]')
       .forEach((link) => {
         link.addEventListener('click', (event) => {
-          closeDropdown(event)
-          
+          closeDropdown(event);
+
           // Temporary Ahoy Stats for usage reports
           ahoy.track('Post Dropdown', { option: event.target.text.trim() });
         });
@@ -63,25 +63,19 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
 
 // Initialize the copy to clipboard functionality
 function showAnnouncer() {
-  const { activeElement } = document;
-  const input =
-    activeElement.localName === 'clipboard-copy'
-      ? activeElement.querySelector('input')
-      : document.getElementById('article-copy-link-input');
-  input.focus();
-  input.setSelectionRange(0, input.value.length);
-
   document.getElementById('article-copy-link-announcer').hidden = false;
 }
 
 function copyArticleLink() {
-  const inputValue = document.getElementById('article-copy-link-input').value;
-  Runtime.copyToClipboard(inputValue).then(() => {
+  const postUrlValue = document
+    .getElementById('copy-post-url-button')
+    .getAttribute('data-postUrl');
+  Runtime.copyToClipboard(postUrlValue).then(() => {
     showAnnouncer();
   });
 }
 document
-  .querySelector('clipboard-copy')
+  .getElementById('copy-post-url-button')
   ?.addEventListener('click', copyArticleLink);
 
 // Comment Subscription
