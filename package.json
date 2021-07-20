@@ -133,7 +133,7 @@
     "lint-staged": "^11.0.1",
     "markdown-loader": "^6.0.0",
     "prettier": "^2.3.2",
-    "redoc-cli": "0.12.1",
+    "redoc-cli": "0.12.2",
     "sass": "1.35.2",
     "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
