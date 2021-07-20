@@ -241,7 +241,7 @@ function initializeAllUserFollowButtons() {
 
   const userIds = {};
 
-  Array.from(buttons).forEach((button) => {
+  Array.from(buttons, (button) => {
     button.dataset.fetched = 'fetched';
     const userStatus = document.body.getAttribute('data-user-status');
 
