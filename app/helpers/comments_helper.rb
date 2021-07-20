@@ -50,6 +50,10 @@ module CommentsHelper
     view == "comments" ? MAX_COMMENTS_TO_RENDER : MIN_COMMENTS_TO_RENDER
   end
 
+  def comment_svg_title(comments_count)
+    "Like comment: #{comments_count} #{'like'.pluralize(comments_count)}"
+  end
+
   def like_button_text(comment)
     case comment.public_reactions_count
     when 0
