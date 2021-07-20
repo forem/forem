@@ -1,5 +1,5 @@
 describe('Describe for the new E2E build node', () => {
   it('Test for the new E2E build node', () => {
-    expect(true).toBe(true);
+    expect(true).to.be.true;
   });
 });
