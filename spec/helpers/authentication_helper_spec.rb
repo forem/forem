@@ -99,7 +99,10 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
   describe "#display_social_login?" do
     let(:mobile_browser_ua) { "Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148" }
-    let(:foremwebview_ua) do
+    let(:android_foremwebview_ua) do
+      "Mozilla/5.0 (Linux; Android 10; SM-A217M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0 ForemWebView/1.0"
+    end
+    let(:ios_foremwebview_ua) do
       "Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 ForemWebView/1.0"
     end
 
@@ -117,9 +120,9 @@ RSpec.describe AuthenticationHelper, type: :helper do
       end
     end
 
-    context "when the request is from a ForemWebView User Agent" do
+    context "when the request is from an iOS ForemWebView User Agent" do
       before do
-        helper.request.env["HTTP_USER_AGENT"] = foremwebview_ua
+        helper.request.env["HTTP_USER_AGENT"] = ios_foremwebview_ua
       end
 
       it "responds with true when Apple Auth is enabled" do
@@ -130,6 +133,20 @@ RSpec.describe AuthenticationHelper, type: :helper do
       it "responds with false when Apple Auth isn't enabled" do
         allow(Authentication::Providers).to receive(:enabled).and_return([:twitter])
         expect(helper.display_social_login?).to be false
+      end
+    end
+
+    context "when the request is from an Android ForemWebView User Agent" do
+      before do
+        helper.request.env["HTTP_USER_AGENT"] = android_foremwebview_ua
+      end
+
+      it "responds with true regardless of Apple Auth being enabled" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(%i[apple twitter])
+        expect(helper.display_social_login?).to be true
+
+        allow(Authentication::Providers).to receive(:enabled).and_return([:twitter])
+        expect(helper.display_social_login?).to be true
       end
     end
   end

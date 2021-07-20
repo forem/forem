@@ -12,7 +12,7 @@ RSpec.describe "Conditional registration (ForemWebView)", type: :system do
   let(:flow_b_fallback_text) do
     "Unfortunately, we do not support creating new accounts right now on our "\
       "mobile app. If you want create a new account to join "\
-      "#{Settings::Community.community_name}, please do that on the web."
+      "#{Settings::Community.community_name}, please do that on the web at"
   end
 
   before do

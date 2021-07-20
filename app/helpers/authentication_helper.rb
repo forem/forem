@@ -72,6 +72,10 @@ module AuthenticationHelper
   end
 
   def display_social_login?
-    Authentication::Providers.enabled.include?(:apple) || request.user_agent.to_s.exclude?("ForemWebView")
+    return true if Authentication::Providers.enabled.include?(:apple)
+    return true if /Android/.match?(request.user_agent)
+
+    # Don't display (return false) if User Agent matches ForemWebview (iOS only)
+    !/ForemWebView/.match?(request.user_agent)
   end
 end
