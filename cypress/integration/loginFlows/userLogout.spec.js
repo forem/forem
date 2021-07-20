@@ -16,7 +16,10 @@ describe('User Logout', () => {
     cy.findByText('Sign Out').click({ force: true });
 
     // We intercept user-related network requests triggered on logout, so we can await them and avoid issues with a subsequent login
-    const logoutNetworkRequests = getInterceptsForLingeringUserRequests(false);
+    const logoutNetworkRequests = getInterceptsForLingeringUserRequests(
+      '/signout_confirm',
+      false,
+    );
 
     // Sign out confirmation page is rendered
     cy.url().should('contains', '/signout_confirm');
