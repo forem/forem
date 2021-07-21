@@ -4,7 +4,7 @@ class Profile < ApplicationRecord
   validates :data, presence: true
   validates :user_id, uniqueness: true
   validates :location, :website_url, length: { maximum: 100 }
-  validates_format_of :website_url, with: URI::regexp(["https", "http"])
+  validates :website_url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[https http]) }
   validates_with ProfileValidator
 
   has_many :custom_profile_fields, dependent: :destroy
