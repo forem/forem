@@ -115,8 +115,6 @@ function initializeCommentsPage() {
         function successCb(response) {
           var reactionCount = thisButt.querySelector('.reactions-count');
           var reactionLabel = thisButt.querySelector('.reactions-label');
-          var heartFilledSvgTitle = thisButt.querySelector('.reaction-icon.reacted > title');
-          var heartNotFilledSvgTitle = thisButt.querySelector('.reaction-icon.not-reacted > title');
           if (response.result === 'create') {
             thisButt.classList.add('reacted');
             thisButt.setAttribute('aria-pressed', 'true');
@@ -125,12 +123,8 @@ function initializeCommentsPage() {
               reactionCount.classList.remove("hidden");
               if(parseInt(reactionCount.innerHTML) == 1) {
                 reactionLabel.innerHTML = "&nbsp;like"
-                heartFilledSvgTitle.textContent = "Like Comment: 1 like"
-                heartNotFilledSvgTitle.textContent = "Like Comment: 1 like"
               } else if(parseInt(reactionCount.innerHTML) > 1) {
                 reactionLabel.innerHTML = "&nbsp;likes"
-                heartFilledSvgTitle.textContent = `Like Comment: ${reactionCount.innerHTML} likes`
-                heartNotFilledSvgTitle.textContent = `Like Comment: ${reactionCount.innerHTML} likes`
               }
             }
           } else {
@@ -141,15 +135,6 @@ function initializeCommentsPage() {
               if(parseInt(reactionCount.innerHTML) == 0) {
                 reactionCount.classList.add("hidden");
                 reactionLabel.innerHTML = "Like"
-                heartFilledSvgTitle.textContent = "Like Comment: 0 likes"
-                heartNotFilledSvgTitle.textContent = "Like Comment: 0 likes"
-              }
-              if(parseInt(reactionCount.innerHTML) == 1) {
-                heartFilledSvgTitle.textContent = "Like Comment: 1 like"
-                heartNotFilledSvgTitle.textContent = "Like Comment: 1 like"
-              } else if(parseInt(reactionCount.innerHTML) > 1) {
-                heartFilledSvgTitle.textContent = `Like Comment: ${reactionCount.innerHTML} likes`
-                heartNotFilledSvgTitle.textContent = `Like Comment: ${reactionCount.innerHTML} likes`
               }
             }
           }
