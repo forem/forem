@@ -305,7 +305,7 @@ GEM
       fog-core
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.3.0)
-    front_matter_parser (1.0.0)
+    front_matter_parser (1.0.1)
     fugit (1.4.4)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
