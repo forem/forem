@@ -103,12 +103,6 @@ RSpec.configure do |config|
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
     ENV["TZ"] = Time.zone.tzinfo.name
-
-    # NOTE: @citizen428 needed while we delegate from User to Profile to keep
-    # spec changes limited for the time being.
-    csv = Rails.root.join("lib/data/dev_profile_fields.csv")
-    ProfileFields::ImportFromCsv.call(csv)
-    Profile.refresh_attributes!
   end
 
   config.before do
@@ -120,6 +114,12 @@ RSpec.configure do |config|
     allow_any_instance_of(CarrierWave::Downloader::Base)
       .to receive(:skip_ssrf_protection?).and_return(true)
     # rubocop:enable RSpec/AnyInstance
+
+    # NOTE: @citizen428 needed while we delegate from User to Profile to keep
+    # spec changes limited for the time being.
+    csv = Rails.root.join("lib/data/dev_profile_fields.csv")
+    ProfileFields::ImportFromCsv.call(csv)
+    Profile.refresh_attributes!
   end
 
   config.around(:each, :flaky) do |ex|
