@@ -60,6 +60,10 @@ RSpec.describe Profile, type: :model do
     end
 
     describe "validating website_url" do
+      it "is valid if blank" do
+        profile.website_url = nil
+        expect(profile).to be_valid
+      end
       it "is valid with a complete url" do
         profile.website_url = "https://dev.to"
         expect(profile).to be_valid
