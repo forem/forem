@@ -1,15 +1,12 @@
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 function initializeHomePageFeedPreviewCards() {
+  // Select all preview card triggers that haven't already been initialized
   const allPreviewCardTriggers = document.querySelectorAll(
-    'button[id^=story-author-preview-trigger]',
+    'button[id^=story-author-preview-trigger]:not([data-initialized])',
   );
-  for (const previewTrigger of allPreviewCardTriggers) {
-    if (previewTrigger.dataset.initialized) {
-      //  Make sure we only initialize once
-      continue;
-    }
 
+  for (const previewTrigger of allPreviewCardTriggers) {
     const dropdownContentId = previewTrigger.getAttribute('aria-controls');
     const dropdownElement = document.getElementById(dropdownContentId);
 
