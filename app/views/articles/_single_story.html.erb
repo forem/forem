@@ -35,9 +35,16 @@
         </div>
         <div>
           <p>
-            <a href="/<%= story.cached_user.username %>" class="crayons-story__secondary fw-medium">
+            <a href="/<%= story.cached_user.username %>" class="crayons-story__secondary fw-medium m:hidden">
               <%= story.cached_user.name %>
             </a>
+            <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
+              <button id="story-author-preview-trigger-<%= story.id %>" aria-controls="story-author-preview-content-<%= story.id %>" class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost" aria-label="<%= story.cached_user.username %> profile details">
+                <%= story.cached_user.name %>
+              </button>
+              <%= render "/shared/profile_preview_card", actor: story.user, id: "story-author-preview-content-#{story.id}" %>
+            </div>
+
             <% if story.cached_organization && !@organization_article_index %>
             <span>
               <span class="crayons-story__tertiary fw-normal"> for </span>
