@@ -73,9 +73,14 @@ module AuthenticationHelper
 
   def display_social_login?
     return true if Authentication::Providers.enabled.include?(:apple)
-    return true if request.user_agent.match?(/Android/)
+    return true if request.user_agent.to_s.include?("Android")
 
     # Don't display (return false) if User Agent matches ForemWebview (iOS only)
-    !request.user_agent.match?(/ForemWebView/)
+    request.user_agent.to_s.exclude?("ForemWebView")
+  end
+
+  # Display the fallback message if we can't register with email and at the same time can't display the social options.
+  def display_registration_fallback?(state)
+    state == "new-user" && !Settings::Authentication.allow_email_password_registration && !display_social_login?
   end
 end
