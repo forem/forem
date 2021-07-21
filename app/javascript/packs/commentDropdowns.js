@@ -26,6 +26,10 @@ const initializeArticlePageDropdowns = () => {
       continue;
     }
 
+    const isProfilePreview = dropdownTrigger.id.includes(
+      'comment-profile-preview-trigger',
+    );
+
     const dropdownContentId = dropdownTrigger.getAttribute('aria-controls');
     const dropdownElement = document.getElementById(dropdownContentId);
 
@@ -33,6 +37,16 @@ const initializeArticlePageDropdowns = () => {
       const { closeDropdown } = initializeDropdown({
         triggerElementId: dropdownTrigger.id,
         dropdownContentId,
+        onOpen: () => {
+          if (isProfilePreview) {
+            dropdownElement?.classList.add('showing');
+          }
+        },
+        onClose: () => {
+          if (isProfilePreview) {
+            dropdownElement?.classList.remove('showing');
+          }
+        },
       });
 
       // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
