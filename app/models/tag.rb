@@ -36,6 +36,7 @@ class Tag < ActsAsTaggableOn::Tag
 
   after_commit :bust_cache
   after_update_commit :bust_articles_cache
+  
   pg_search_scope :search_by_name,
                   against: :name,
                   using: { tsearch: { prefix: true } }
