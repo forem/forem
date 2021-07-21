@@ -79,13 +79,13 @@ jobs:
         - bin/test-console-check
         - yarn build-storybook
     - stage: Test
-      name: "E2E Node 1"
+      name: "E2E Seeded"
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
         - bin/e2e-ci
     - stage: Test
-      name: "E2E Node 2"
+      name: "E2E Non-seeded"
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
