@@ -174,19 +174,18 @@ actionsContainer.addEventListener('click', async (event) => {
 const profilePreviewTrigger = document.getElementById(
   'profile-preview-trigger',
 );
+
+const dropdownContent = document.getElementById('profile-preview-content');
+
 if (profilePreviewTrigger?.dataset.initialized !== 'true') {
   initializeDropdown({
     triggerElementId: 'profile-preview-trigger',
     dropdownContentId: 'profile-preview-content',
     onOpen: () => {
-      document
-        .getElementById('profile-preview-content')
-        ?.classList.add('showing');
+      dropdownContent?.classList.add('showing');
     },
     onClose: () => {
-      document
-        .getElementById('profile-preview-content')
-        ?.classList.remove('showing');
+      dropdownContent?.classList.remove('showing');
     },
   });
 

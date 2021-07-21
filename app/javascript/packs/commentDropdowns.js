@@ -39,16 +39,12 @@ const initializeArticlePageDropdowns = () => {
         dropdownContentId,
         onOpen: () => {
           if (isProfilePreview) {
-            document
-              .getElementById(dropdownContentId)
-              ?.classList.add('showing');
+            dropdownElement?.classList.add('showing');
           }
         },
         onClose: () => {
           if (isProfilePreview) {
-            document
-              .getElementById(dropdownContentId)
-              ?.classList.remove('showing');
+            dropdownElement?.classList.remove('showing');
           }
         },
       });
