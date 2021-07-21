@@ -14,12 +14,17 @@
     </div>
 
     <div class="registration__actions">
+      <% if display_registration_fallback?(params[:state]) %>
+        <h2 class="mt-8" style="text-align: center;" aria-live="polite">Sorry to be a bummer...</h2>
+        <p class="mb-8" style="text-align: center;" aria-live="polite">Unfortunately, we do not support creating new accounts right now on our mobile app. If you want create a new account to join <%= community_name %>, please do that on the web at <a href="<%= URL.url %>"><%= URL.url %></a>.</p>
+      <% end %>
+
       <%= render partial: "shared/authentication/providers_registration_form" %>
 
       <% if params[:state] == "new-user" %>
         <div class="registration__hr">
           <span class="registration__hr-label">
-            Already have an account? <a href="<%= sign_up_path %>">View more sign in options</a>.
+            Already have an account? <a href="<%= sign_up_path %>">Log in</a>.
           </span>
         </div>
       <% else %>
