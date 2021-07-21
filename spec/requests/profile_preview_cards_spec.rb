@@ -70,6 +70,15 @@ RSpec.describe "ProfilePreviewCards", type: :request do
         expect(preview_card["created_at"]).to eq(profile.created_at.utc.iso8601)
       end
 
+      it "has the correct card color" do
+        user.setting.update(brand_color1: Faker::Color.hex_color)
+
+        get profile_preview_card_path(user), as: :json
+
+        expected_card_color = Color::CompareHex.new([user_colors(user)[:bg], user_colors(user)[:text]]).brightness(0.88)
+        expect(response.parsed_body["card_color"]).to eq(expected_card_color)
+      end
+
       it "does not return the email if the user has asked not to" do
         user.setting.update_columns(display_email_on_profile: false)
 
@@ -113,6 +122,15 @@ RSpec.describe "ProfilePreviewCards", type: :request do
         expect(preview_card["location"]).to eq(profile.location)
         expect(preview_card["education"]).to eq(profile.education)
         expect(preview_card["created_at"]).to eq(profile.created_at.utc.iso8601)
+      end
+
+      it "has the correct card color" do
+        user.setting.update(brand_color1: Faker::Color.hex_color)
+
+        get profile_preview_card_path(user), as: :json
+
+        expected_card_color = Color::CompareHex.new([user_colors(user)[:bg], user_colors(user)[:text]]).brightness(0.88)
+        expect(response.parsed_body["card_color"]).to eq(expected_card_color)
       end
 
       it "does not return the email if the user has asked not to" do
