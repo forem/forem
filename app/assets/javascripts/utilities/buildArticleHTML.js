@@ -172,44 +172,55 @@ function buildArticleHTML(article) {
       }
     }
 
-    var meta =
-      '<div class="crayons-story__meta">\
-      <div class="crayons-story__author-pic">\
-        ' +
-      organizationLogo +
-      '\
-        <a href="/' +
-      profileUsername +
-      '" class="crayons-avatar ' +
-      organizationClasses +
-      '">\
-          <img src="' +
-      picUrl +
-      '" alt="' +
-      profileUsername +
-      ' profile" class="crayons-avatar__image" loading="lazy" />\
-        </a>\
-      </div>\
-      <div>\
-        <p>\
-          <a href="/' +
-      profileUsername +
-      '" class="crayons-story__secondary fw-medium">' +
-      filterXSS(article.user.name) +
-      '</a>\
-          ' +
-      forOrganization +
-      '\
-        </p>\
-        <a href="' +
-      article.path +
-      '" class="crayons-story__tertiary fs-xs">\
-          ' +
-      publishDate +
-      '\
-        </a>\
-      </div>\
-    </div>';
+    var previewCardContent = `
+      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
+        <div class="gap-4 grid">
+          <div class="-mt-4">
+            <a href="/${profileUsername}" class="flex">
+              <span class="crayons-avatar crayons-avatar--xl mr-2 shrink-0">
+                <img src="${picUrl}" class="crayons-avatar__image" alt="" loading="lazy" />
+              </span>
+              <span class="crayons-link crayons-subtitle-2 mt-5">${article.user.name}</span>
+            </a>
+          </div>
+          <div class="print-hidden">
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info="{"id": ${article.user.id}, "className": "User", "style": "full"}">Follow</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    var meta = `
+      <div class="crayons-story__meta">
+        <div class="crayons-story__author-pic"> 
+          ${organizationLogo}
+          <a href="/${profileUsername}" class="crayons-avatar ${organizationClasses}">
+            <img src="${picUrl}" alt="${profileUsername} profile" class="crayons-avatar__image" loading="lazy" />
+          </a>
+        </div>
+        <div>
+          <p>
+            <a href="/${profileUsername}" class="crayons-story__secondary fw-medium m:hidden">${filterXSS(
+      article.user.name,
+    )}</a>
+        <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
+          <button id="story-author-preview-trigger-${
+            article.id
+          }" aria-controls="story-author-preview-content-${
+      article.id
+    }" class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost p-0" aria-label="${profileUsername} profile details">
+            ${article.user.name}
+          </button>
+            ${previewCardContent}
+            </div>
+            ${forOrganization}
+          </p>
+          <a href="${
+            article.path
+          }" class="crayons-story__tertiary fs-xs">${publishDate}</a>
+        </div>
+      </div>
+    `;
 
     var bodyTextSnippet = '';
     var searchSnippetHTML = '';

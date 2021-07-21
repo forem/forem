@@ -23,4 +23,27 @@ function initializeHomePageFeedPreviewCards() {
   }
 }
 
+const observer = new MutationObserver((mutationsList) => {
+  mutationsList.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      initializeHomePageFeedPreviewCards();
+    }
+  });
+});
+
+observer.observe(document.getElementById('index-container'), {
+  childList: true,
+  subtree: true,
+});
+
+InstantClick.on('change', () => {
+  observer.disconnect();
+});
+
+window.addEventListener('beforeunload', () => {
+  observer.disconnect();
+});
+
+// TODO: init the follow buttons
+
 initializeHomePageFeedPreviewCards();
