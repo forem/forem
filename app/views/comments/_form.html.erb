@@ -106,9 +106,9 @@
       editForm.onsubmit = function (e) {
         e.preventDefault();
         document.getElementsByClassName("comment-form")[0].classList.add("opacity-50");
-        const form = this;
-        const waitingOnCSRF = setInterval(function () {
-          const metaTag = document.querySelector("meta[name='csrf-token']")
+        var form = this;
+        var waitingOnCSRF = setInterval(function () {
+          var metaTag = document.querySelector("meta[name='csrf-token']")
           if (metaTag) {
             clearInterval(waitingOnCSRF);
             authToken = metaTag.getAttribute("content");
