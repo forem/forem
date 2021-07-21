@@ -122,6 +122,18 @@ RSpec.describe Tag, type: :model do
     end
   end
 
+  it "triggers articles cache busting on save" do
+    sidekiq_perform_enqueued_jobs do
+      tag.save
+    end
+    create(:article, tags: tag.name)
+    create(:article, tags: tag.name)
+    article_ids = Article.tagged_with(tag.name).order(created_at: :desc).limit(100).ids
+    sidekiq_assert_enqueued_with(job: Articles::BustMultipleCachesWorker, args: [article_ids]) do
+      tag.save
+    end
+  end
+
   it "finds mod chat channel" do
     channel = create(:chat_channel)
     tag.mod_chat_channel_id = channel.id

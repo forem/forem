@@ -35,7 +35,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_save :mark_as_updated
 
   after_commit :bust_cache
-
+  after_update_commit :bust_articles_cache
   pg_search_scope :search_by_name,
                   against: :name,
                   using: { tsearch: { prefix: true } }
@@ -99,6 +99,13 @@ class Tag < ActsAsTaggableOn::Tag
 
   def bust_cache
     Tags::BustCacheWorker.perform_async(name)
+  end
+
+  def bust_articles_cache
+    article_ids = Article.tagged_with(name).order(created_at: :desc).limit(100).ids
+    article_ids.each_slice(10) do |ids|
+      Articles::BustMultipleCachesWorker.perform_async(ids)
+    end
   end
 
   def validate_alias_for
