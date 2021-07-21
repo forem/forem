@@ -34,6 +34,7 @@ RSpec.describe "User visits a homepage", type: :system do
     end
 
     describe "navigation_links" do
+      community_name = Settings::Community.community_name
       before do
         create(:navigation_link,
                name: "Listings",
@@ -61,41 +62,43 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows expected number of links when signed out" do
-        within("nav[aria-label='Primary sidebar nav']", match: :first) do
-          expect(page).to have_selector(".sidebar-navigation-link", count: 3)
+        within("nav[aria-labelledby='#{community_name}']", match: :first) do
+          expect(page).to have_selector(".sidebar-navigation-link", count: 1)
+        end
+
+        within("nav[aria-labelledby='Other']", match: :first) do
+          expect(page).to have_selector(".sidebar-navigation-link", count: 2)
         end
       end
 
       it "shows the Other section when other nav links exist" do
-        within("nav[aria-label='Primary sidebar nav']", match: :first) do
+        within("nav[aria-labelledby='Other']", match: :first) do
           expect(page).to have_selector(".other-navigation-links")
         end
 
         NavigationLink.other_section.destroy_all
         visit "/"
 
-        within("nav[aria-label='Primary sidebar nav']", match: :first) do
-          expect(page).not_to have_selector(".other-navigation-links")
-        end
+        expect(page).not_to have_selector("nav[aria-labelledby='Other']")
       end
 
       it "hides link when display_only_when_signed_in is true" do
-        within("nav[aria-label='Primary sidebar nav']", match: :first) do
+        within("nav[aria-labelledby='#{community_name}']", match: :first) do
           expect(page).to have_selector(".default-navigation-links .sidebar-navigation-link", count: 1)
         end
       end
 
-      it "shows links in their correct section" do
-        within("nav[aria-label='Primary sidebar nav']", match: :first) do
-          expect(page).to have_selector(".default-navigation-links .sidebar-navigation-link", count: 1)
-          expect(page).to have_selector(".other-navigation-links .sidebar-navigation-link", count: 2)
-        end
-      end
+      it "shows links in their correct section and order" do
+        create(:navigation_link,
+               name: "Mock",
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: false,
+               position: 3)
+        visit "/"
 
-      it "shows links in the correct order" do
-        within("nav[aria-label='Primary sidebar nav']", match: :first) do
-          expect(page).to have_selector(".other-navigation-links a:nth-child(1)", text: "Privacy Policy")
-          expect(page).to have_selector(".other-navigation-links a:nth-child(2)", text: "Podcasts")
+        within("nav[aria-labelledby='#{community_name}']", match: :first) do
+          expect(page).to have_selector(".default-navigation-links li:nth-child(1)", text: "Shop")
+          expect(page).to have_selector(".default-navigation-links li:nth-child(2)", text: "Mock")
         end
       end
     end
@@ -188,30 +191,36 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the correct navigation_links" do
-        within("nav[aria-label='Primary sidebar nav']", match: :first) do
+        within("nav[aria-labelledby='#{community_name}']", match: :first) do
           expect(page).to have_text(navigation_link_1.name)
-          expect(page).to have_text(navigation_link_2.name)
           expect(page).to have_text(navigation_link_3.name)
+        end
+
+        within("nav[aria-labelledby='Other']", match: :first) do
+          expect(page).to have_text(navigation_link_2.name)
         end
       end
 
       it "shows the correct urls" do
-        within("nav[aria-label='Primary sidebar nav']", match: :first) do
+        within("nav[aria-labelledby='#{community_name}']", match: :first) do
           expect(page).to have_link(href: navigation_link_1.url)
-          expect(page).to have_link(href: navigation_link_2.url)
           expect(page).to have_link(href: navigation_link_3.url)
+        end
+
+        within("nav[aria-labelledby='Other']", match: :first) do
+          expect(page).to have_link(href: navigation_link_2.url)
         end
       end
 
       it "shows expected # of links when signed in" do
-        within("nav[aria-label='Primary sidebar nav']", match: :first) do
-          expect(page).to have_selector(".sidebar-navigation-link", count: 3)
+        within("nav[aria-labelledby='#{community_name}']", match: :first) do
+          expect(page).to have_selector(".sidebar-navigation-link", count: 2) # it's count: 1 when signed out
         end
       end
 
       it "shows link when display_only_when_signed_in is true" do
-        within("nav[aria-label='Primary sidebar nav']", match: :first) do
-          expect(page).to have_selector(".default-navigation-links .sidebar-navigation-link", count: 2)
+        within("nav[aria-labelledby='#{community_name}']", match: :first) do
+          expect(page).to have_selector(".default-navigation-links li:nth-child(2)", text: "Beauty")
         end
       end
     end
