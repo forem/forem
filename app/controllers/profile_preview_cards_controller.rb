@@ -2,6 +2,6 @@ class ProfilePreviewCardsController < ApplicationController
   layout false
 
   def show
-    @user = User.find(params[:id])
+    @user = User.includes(:profile, :setting).find(params[:id])
   end
 end
