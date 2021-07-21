@@ -84,9 +84,7 @@ function initializePodcastPlayback() {
     if (audioExistAndIsPlaying() && recordExist()) {
       var podcastPlaybackButton = getById(`record-${window.activeEpisode}`);
       podcastPlaybackButton.classList.add('playing');
-      var isPressed =
-        podcastPlaybackButton.getAttribute('aria-pressed') === 'true';
-      podcastPlaybackButton.setAttribute('aria-pressed', !isPressed);
+      podcastPlaybackButton.setAttribute('aria-pressed', 'true');
       changeStatusMessage(customMessage);
     }
   }
@@ -95,9 +93,7 @@ function initializePodcastPlayback() {
     if (window.activeEpisode && getById(`record-${window.activeEpisode}`)) {
       var podcastPlaybackButton = getById(`record-${window.activeEpisode}`);
       podcastPlaybackButton.classList.remove('playing');
-      var isPressed =
-        podcastPlaybackButton.getAttribute('aria-pressed') === 'true';
-      podcastPlaybackButton.setAttribute('aria-pressed', !isPressed);
+      podcastPlaybackButton.setAttribute('aria-pressed', 'false');
       window.activeEpisode = undefined;
     }
   }
@@ -193,9 +189,8 @@ function initializePodcastPlayback() {
       var podcastSlug = record.getAttribute('data-podcast');
 
       var togglePodcastState = function (e) {
-        e.preventDefault();
-        var audio = getById('audio');
         if (podcastBarAlreadyExistAndPlayingTargetEpisode(episodeSlug)) {
+          var audio = getById('audio');
           if (audio) {
             playPause(audio);
           }
