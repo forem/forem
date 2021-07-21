@@ -101,7 +101,7 @@
 
 <% if @comment.persisted? %>
   <script>
-    const editForm = document.getElementById("edit_comment_<%= @comment&.id %>");
+    var editForm = document.getElementById("edit_comment_<%= @comment&.id %>");
     if ( editForm ) {
       editForm.onsubmit = function (e) {
         e.preventDefault();
