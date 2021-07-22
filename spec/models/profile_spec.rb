@@ -8,7 +8,6 @@ RSpec.describe Profile, type: :model do
     subject { profile }
 
     it { is_expected.to validate_uniqueness_of(:user_id) }
-    it { is_expected.to validate_presence_of(:data) }
 
     describe "conditionally validating summary" do
       let(:invalid_summary) { "x" * ProfileValidator::MAX_SUMMARY_LENGTH.next }

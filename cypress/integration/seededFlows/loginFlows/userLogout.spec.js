@@ -1,4 +1,4 @@
-import { getInterceptsForLingeringUserRequests } from '../../util/networkUtils';
+import { getInterceptsForLingeringUserRequests } from '../../../util/networkUtils';
 
 describe('User Logout', () => {
   beforeEach(() => {
