@@ -211,7 +211,6 @@ function fetchUserFollowStatuses(idButtonHash) {
       Object.keys(idStatuses).forEach((id) => {
         idButtonHash[id].forEach((button) => {
           updateInitialButtonUI(idStatuses[id], button);
-          button.dataset.buttonInitialized = true;
         });
       });
     });
@@ -275,7 +274,6 @@ function fetchFollowButtonStatus(button, buttonInfo) {
     .then((response) => response.text())
     .then((followStatus) => {
       updateInitialButtonUI(followStatus, button);
-      button.dataset.buttonInitialized = true;
     });
 }
 
@@ -296,16 +294,11 @@ function initializeNonUserFollowButtons() {
   nonUserFollowButtons.forEach((button) => {
     const { info, fetched } = button.dataset;
     const buttonInfo = JSON.parse(info);
-    if (
-      buttonInfo.className === 'Tag' &&
-      user &&
-      button.dataset.buttonInitialized !== 'true'
-    ) {
+    if (buttonInfo.className === 'Tag' && user) {
       const initialButtonFollowState = followedTagIds.has(user, buttonInfo.id)
         ? 'true'
         : 'false';
       updateInitialButtonUI(initialButtonFollowState, button);
-      button.dataset.buttonInitialized = true;
     } else if (fetched !== 'fetched') {
       fetchFollowButtonStatus(button, buttonInfo);
     }

@@ -5,13 +5,12 @@ describe('Follow user from profile page', () => {
 
     cy.get('@user').then((user) => {
       cy.loginAndVisit(user, '/bachmanity');
+      cy.get('[data-follow-clicks-initialized]');
     });
   });
 
   it('follows and unfollows an organisation', () => {
     cy.intercept('/follows').as('followsRequest');
-    // Wait for the button to be initialised
-    cy.get('[data-button-initialized="true"]');
 
     cy.findByRole('button', { name: 'Follow' }).click();
     cy.wait('@followsRequest');
@@ -20,7 +19,6 @@ describe('Follow user from profile page', () => {
     // Check that the update persists after reload
     cy.visitAndWaitForUserSideEffects('/bachmanity');
 
-    cy.get('[data-button-initialized="true"]');
     cy.findByRole('button', { name: 'Following' }).click();
     cy.wait('@followsRequest');
 
@@ -28,7 +26,6 @@ describe('Follow user from profile page', () => {
 
     // Check that the update persists after reload
     cy.visitAndWaitForUserSideEffects('/bachmanity');
-    cy.get('[data-button-initialized="true"]');
     cy.findByRole('button', { name: 'Follow' });
   });
 });
