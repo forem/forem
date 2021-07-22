@@ -9,14 +9,14 @@ describe DataUpdateScripts::ProfileWebsiteUrlFormat do
   let(:valid_profile) { create(:profile, website_url: "https://www.example.com") }
 
   let(:invalid_profile) do
-    create(:profile).tap do |profile|
-      profile.update_column(:website_url, "www.example.com")
+    build(:profile, website_url: "www.example.com").tap do |profile|
+      profile.save(validate: false)
     end
   end
 
   let(:unfixable_profile) do
-    create(:profile).tap do |profile|
-      profile.update_column(:website_url, "/local.html")
+    build(:profile, website_url: "/local.html").tap do |profile|
+      profile.save(validate: false)
     end
   end
 
