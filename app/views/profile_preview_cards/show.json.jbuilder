@@ -1,6 +1,6 @@
 json.extract!(
   @user.profile,
-  :summary, :employment_title, :employer_name, :employer_url, :location, :education
+  :summary, :location, :education, :work
 )
 
 json.card_color(
