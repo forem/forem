@@ -1,4 +1,4 @@
-/* global showLoginModal userData */
+/* global showLoginModal  userData */
 
 /**
  * Sets the text content of the button to the correct 'Follow' state
@@ -301,7 +301,10 @@ function initializeNonUserFollowButtons() {
     '.follow-action-button:not(.follow-user)',
   );
 
-  const user = userData();
+  const userLoggedIn =
+    document.body.getAttribute('data-user-status') === 'logged-in';
+
+  const user = userLoggedIn ? userData() : null;
   const followedTagIds = new Set(
     user ? JSON.parse(user.followed_tags).map(({ tagId }) => tagId) : [],
   );
@@ -341,9 +344,11 @@ export const initializeFollowButtons = () => {
     subtree: true,
   });
 
-  InstantClick.on('change', () => {
-    observer.disconnect();
-  });
+  if (typeof instantClick !== 'undefined') {
+    InstantClick.on('change', () => {
+      observer.disconnect();
+    });
+  }
 
   window.addEventListener('beforeunload', () => {
     observer.disconnect();
