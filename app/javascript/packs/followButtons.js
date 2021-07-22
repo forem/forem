@@ -1,17 +1,6 @@
 /* global showLoginModal userData */
 
 /**
- * Helper function to check if a user is currently following a tag
- *
- * @param {Object} user The current user
- * @param {string} tagId The ID of the tag
- *
- * @returns {boolean}
- */
-const doesUserFollowTag = (user, tagId) =>
-  !!JSON.parse(user.followed_tags).find((tag) => tag.id === tagId);
-
-/**
  * Sets the text content of the button to the correct 'Follow' state
  *
  * @param {HTMLElement} button The Follow button to update
@@ -300,6 +289,10 @@ function initializeNonUserFollowButtons() {
   );
 
   const user = userData();
+  const followedTagIds = new Set(
+    user ? JSON.parse(user.followed_tags).map(({ tagId }) => tagId) : [],
+  );
+
   nonUserFollowButtons.forEach((button) => {
     const { info, fetched } = button.dataset;
     const buttonInfo = JSON.parse(info);
@@ -308,7 +301,7 @@ function initializeNonUserFollowButtons() {
       user &&
       button.dataset.buttonInitialized !== 'true'
     ) {
-      const initialButtonFollowState = doesUserFollowTag(user, buttonInfo.id)
+      const initialButtonFollowState = followedTagIds.has(user, buttonInfo.id)
         ? 'true'
         : 'false';
       updateInitialButtonUI(initialButtonFollowState, button);
