@@ -305,30 +305,32 @@ function initializeNonUserFollowButtons() {
   });
 }
 
-initializeAllUserFollowButtons();
-initializeNonUserFollowButtons();
-listenForFollowButtonClicks();
+export const initializeFollowButtons = () => {
+  initializeAllUserFollowButtons();
+  initializeNonUserFollowButtons();
+  listenForFollowButtonClicks();
 
-// Some follow buttons are added to the DOM dynamically, e.g. search results,
-// So we listen for any new additions to be fetched
-const observer = new MutationObserver((mutationsList) => {
-  mutationsList.forEach((mutation) => {
-    if (mutation.type === 'childList') {
-      initializeAllUserFollowButtons();
-      initializeNonUserFollowButtons();
-    }
+  // Some follow buttons are added to the DOM dynamically, e.g. search results,
+  // So we listen for any new additions to be fetched
+  const observer = new MutationObserver((mutationsList) => {
+    mutationsList.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        initializeAllUserFollowButtons();
+        initializeNonUserFollowButtons();
+      }
+    });
   });
-});
 
-observer.observe(document.getElementById('page-content-inner'), {
-  childList: true,
-  subtree: true,
-});
+  observer.observe(document.getElementById('page-content-inner'), {
+    childList: true,
+    subtree: true,
+  });
 
-InstantClick.on('change', () => {
-  observer.disconnect();
-});
+  InstantClick.on('change', () => {
+    observer.disconnect();
+  });
 
-window.addEventListener('beforeunload', () => {
-  observer.disconnect();
-});
+  window.addEventListener('beforeunload', () => {
+    observer.disconnect();
+  });
+};

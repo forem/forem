@@ -1,3 +1,4 @@
+import { initializeFollowButtons } from '../followButtons/initializeFollowButtons';
 import {
   initializeMobileMenu,
   setCurrentPageIconLink,
@@ -39,11 +40,8 @@ window.Forem = {
       return;
     }
 
-    const [
-      { MentionAutocompleteTextArea },
-      { fetchSearch },
-      { render, h },
-    ] = await window.Forem.getMentionAutoCompleteImports();
+    const [{ MentionAutocompleteTextArea }, { fetchSearch }, { render, h }] =
+      await window.Forem.getMentionAutoCompleteImports();
 
     render(
       <MentionAutocompleteTextArea
@@ -138,7 +136,11 @@ if (memberMenu) {
 }
 
 getInstantClick().then((spa) => {
-  spa.on('change', initializeNav);
+  spa.on('change', () => {
+    initializeNav();
+    initializeFollowButtons();
+  });
 });
 
 initializeNav();
+initializeFollowButtons();
