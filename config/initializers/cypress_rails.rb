@@ -7,8 +7,11 @@ return unless Rails.env.test? && ENV["E2E"].present?
 CypressRails.hooks.before_server_start do
   # Called once, before either the transaction or the server is started
   puts "Starting up server for end to end tests."
-  Rails.application.load_tasks
-  Rake::Task["db:seed:e2e"].invoke
+
+  if ENV["SKIP_SEED_DATA"].blank?
+    Rails.application.load_tasks
+    Rake::Task["db:seed:e2e"].invoke
+  end
 end
 
 CypressRails.hooks.after_transaction_start do
@@ -22,7 +25,7 @@ end
 CypressRails.hooks.before_server_stop do
   # Called once, at_exit
   puts "Cleaning up and stopping server for end to end tests."
-  Rake::Task["db:truncate_all"].invoke
+  Rake::Task["db:truncate_all"].invoke if ENV["SKIP_SEED_DATA"].blank?
   puts "The end to end test server shutdown gracefully."
 end
 
