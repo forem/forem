@@ -29,6 +29,11 @@ RSpec.describe Users::Setting, type: :model do
         expect(setting).to be_valid
       end
 
+      it "is valid if the brand color is nil" do
+        setting.brand_color1 = nil
+        expect(setting).to be_valid
+      end
+
       it "is invalid if the field is too long" do
         setting.brand_color1 = "#deadbeef"
         expect(setting).not_to be_valid
