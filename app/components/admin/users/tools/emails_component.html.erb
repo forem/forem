@@ -1,32 +1,29 @@
 <section
   class="crayons-card p-3 js-component"
-  data-controller="users--tools--emails"
-  data-action="ajax:success@document->users--tools--emails#ajaxSuccess ajax:error@document->users--tools--emails#ajaxError">
+  data-controller="users--tools--ajax"
+  data-action="ajax:success@document->users--tools--ajax#success ajax:error@document->users--tools--ajax#error">
   <header>
     <h3><%= link_to "← Emails", admin_user_tools_path(@user.id),
                     remote: true,
-                    data: { action: "ajax:success->user#replacePartial" },
+                    data: { action: "ajax:success@document->user#replacePartial" },
                     class: "crayons-title fs-l" %></h3>
   </header>
 
   <%# Email verification #%>
-  <article class="my-3">
-    <strong>To: <%= @user.name %></strong>
-    <span class="color-base-60">
-      (<%= @user.email %><% if @verified %> · Verified on <local-time datetime="<%= @verification_date.iso8601 %>"><%= @verification_date.strftime("%b %d, %Y") %></local-time><% end -%>)
-      <%= button_to "Verify Email Ownership", verify_email_ownership_admin_user_path(@user),
-                    remote: true,
-                    class: "btn btn-secondary btn-sm mt-1",
-                    form: {
-                      data: { "users--tools--emails-target": "verifyEmailOwnership" },
-                      class: "inline-block"
-                    } %>
+  <article class="my-3 flex justify-between items-center">
+    <span>
+      <strong>To: <%= @user.name %></strong>
+      <span class="color-base-60">(<%= @user.email %><% if @verified %> · Verified on <local-time datetime="<%= @verification_date.iso8601 %>"><%= @verification_date.strftime("%b %d, %Y") %></local-time><% end -%>)</span>
     </span>
+
+    <%= button_to "Verify Email Ownership", verify_email_ownership_admin_user_path(@user),
+                  remote: true,
+                  class: "btn btn-secondary btn-sm" %>
   </article>
 
   <%# Send email to user #%>
   <article class="my-3">
-    <%= form_with url: send_email_admin_user_path(@user), data: { "users--tools--emails-target": "sendEmail" } do |f| %>
+    <%= form_with url: send_email_admin_user_path(@user) do |f| %>
       <div class="crayons-field form-group">
         <%= f.label :email_subject, "Subject", class: "crayons-field__label" %>
         <%= f.text_field :email_subject,

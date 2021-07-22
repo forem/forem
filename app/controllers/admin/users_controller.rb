@@ -153,36 +153,49 @@ module Admin
 
       if NotifyMailer.with(email_params).user_contact_email.deliver_now
         respond_to do |format|
+          message = "Email sent!"
           format.html do
-            flash[:success] = "Email sent!"
+            flash[:success] = message
             redirect_back(fallback_location: admin_users_path)
           end
-          format.js { head :ok }
+          format.js { render json: { result: message }, content_type: "application/json" }
         end
       else
         respond_to do |format|
           format.html { flash[:danger] = "Email failed to send!" }
-          format.js { head :bad_request }
+          format.js do
+            render json: { error: message },
+                   content_type: "application/json",
+                   status: :service_unavailable
+          end
         end
       end
     rescue ActionController::ParameterMissing
       respond_to do |format|
-        format.json { render json: { error: "Both subject and body are required!" }, status: :unprocessable_entity }
+        format.json do
+          render json: { error: "Both subject and body are required!" },
+                 content_type: "application/json",
+                 status: :unprocessable_entity
+        end
       end
     end
 
     def verify_email_ownership
       if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
         respond_to do |format|
+          message = "Verification email sent!"
           format.html do
-            flash[:success] = "Email Verification Mailer sent!"
+            flash[:success] = message
             redirect_back(fallback_location: admin_users_path)
           end
-          format.js { head :ok }
+          format.js { render json: { result: message }, content_type: "application/json" }
         end
       else
-        format.html { flash[:danger] = "Email failed to send!" }
-        format.js { head :bad_request }
+        message = "Email failed to send!"
+        respond_to do |format|
+          format.html { flash[:danger] = message }
+          format.js { render json: { error: message }, content_type: "application/json", status: :service_unavailable }
+        end
       end
     end
 
