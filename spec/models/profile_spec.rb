@@ -57,6 +57,23 @@ RSpec.describe Profile, type: :model do
         expect(profile.errors_as_sentence).to eq "Location is too long (maximum is 100 characters)"
       end
     end
+
+    describe "validating website_url" do
+      it "is valid if blank" do
+        profile.website_url = nil
+        expect(profile).to be_valid
+      end
+      it "is valid with a complete url" do
+        profile.website_url = "https://dev.to"
+        expect(profile).to be_valid
+      end
+
+      it "is invalid with an incomplete url" do
+        profile.website_url = "dev.to"
+        expect(profile).not_to be_valid
+        expect(profile.errors_as_sentence).to eq "Website url is not a valid URL"
+      end
+    end
   end
 
   context "when accessing profile fields" do

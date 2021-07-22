@@ -3,6 +3,7 @@ class Profile < ApplicationRecord
 
   validates :user_id, uniqueness: true
   validates :location, :website_url, length: { maximum: 100 }
+  validates :website_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates_with ProfileValidator
 
   # Static fields are columns on the profiles table; they have no relationship

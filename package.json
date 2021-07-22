@@ -24,7 +24,8 @@
     "test": "jest app/javascript/ bin/ --coverage",
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
-    "e2e": "bin/e2e"
+    "e2e": "bin/e2e",
+    "e2e:noseed": "yarn run e2e --no-seed"
   },
   "husky": {
     "hooks": {
