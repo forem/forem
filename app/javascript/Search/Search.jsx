@@ -73,9 +73,13 @@ export class Search extends Component {
     return event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
   };
 
-  submit = (event) => {
-    if (hasInstantClick) {
-      event.preventDefault();
+  submit = () => {
+    const { searchTerm } = this.props;
+    this.enableSearchPageChecker = false;
+
+    if (hasInstantClick()) {
+      preloadSearchResults({ searchTerm });
+      displaySearchResults({ searchTerm });
     }
   };
 
