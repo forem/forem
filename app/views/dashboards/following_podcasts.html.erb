@@ -12,38 +12,36 @@
       <aside class="crayons-layout__sidebar-left">
         <%= render "actions" %>
       </aside>
-      <main id="main-content">
-        <div class="crayons-layout__content" id="user-dashboard">
-          <% if @followed_podcasts.any? %>
-            <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
-              <% @followed_podcasts.each do |follow| %>
-                <% podcast = follow.followable %>
-                <div class="crayons-card p-4 m:p-6 flex s:grid single-article break-word content-center" id="follows-<%= follow.id %>">
-                  <a href="/<%= podcast.path %>" class="crayons-logo crayons-logo--2xl s:mb-2 s:mx-auto">
-                    <img alt="<%= podcast.name %> logo" class="crayons-logo__image" src="<%= podcast.image_url %>" loading="lazy" />
-                  </a>
+      <main class="crayons-layout__content" id="main-content">
+        <% if @followed_podcasts.any? %>
+          <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
+            <% @followed_podcasts.each do |follow| %>
+              <% podcast = follow.followable %>
+              <div class="crayons-card p-4 m:p-6 flex s:grid single-article break-word content-center" id="follows-<%= follow.id %>">
+                <a href="/<%= podcast.path %>" class="crayons-logo crayons-logo--2xl s:mb-2 s:mx-auto">
+                  <img alt="<%= podcast.name %> logo" class="crayons-logo__image" src="<%= podcast.image_url %>" loading="lazy" />
+                </a>
 
-                  <div class="pl-4 s:pl-0 self-center">
-                    <h3 class="s:mb-1 p-0">
-                      <a href="/<%= podcast.path %>">
-                        <%= podcast.name %>
-                      </a>
-                    </h3>
+                <div class="pl-4 s:pl-0 self-center">
+                  <h3 class="s:mb-1 p-0">
+                    <a href="/<%= podcast.path %>">
+                      <%= podcast.name %>
+                    </a>
+                  </h3>
 
-                    <p>
-                      <a href="/<%= podcast.path %>" class="crayons-link crayons-link--secondary">
-                        @<%= podcast.name %>
-                      </a>
-                    </p>
-                  </div>
+                  <p>
+                    <a href="/<%= podcast.path %>" class="crayons-link crayons-link--secondary">
+                      @<%= podcast.name %>
+                    </a>
+                  </p>
                 </div>
-              <% end %>
-            </div>
-          <% else %>
-            <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any podcasts yet...</div>
-          <% end %>
-          <%= render "sublist" %>
-        </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any podcasts yet...</div>
+        <% end %>
+        <%= render "sublist" %>
       </main>
     </div>
 </div>

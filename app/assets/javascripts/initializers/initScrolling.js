@@ -378,12 +378,12 @@ function fetchNextPageIfNearBottom() {
       fetchNextVideoPage(indexContainer);
     };
   } else if (indexWhich === 'followers') {
-    scrollableElem = document.getElementById('user-dashboard');
+    scrollableElem = document.getElementById('main-content');
     fetchCallback = function fetch() {
       fetchNextFollowersPage(indexContainer);
     };
   } else if (indexWhich === 'following') {
-    scrollableElem = document.getElementById('user-dashboard');
+    scrollableElem = document.getElementById('main-content');
     fetchCallback = function fetch() {
       fetchNextFollowingPage(indexContainer);
     };
