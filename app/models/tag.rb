@@ -102,7 +102,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def bust_articles_cache
-    article_ids = Article.tagged_with(name).order(created_at: :desc).limit(100).ids
+    article_ids = articles.published.order(created_at: :desc).limit(100).ids
     article_ids.each_slice(10) do |ids|
       Articles::BustMultipleCachesWorker.perform_async(ids)
     end
