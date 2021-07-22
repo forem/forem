@@ -39,22 +39,37 @@ function optimisticallyUpdateButtonUI(button) {
   const buttonInfo = JSON.parse(button.dataset.info);
   const { style } = buttonInfo;
 
-  button.classList.add('showing');
+  // Often there are multiple follow buttons for the same followable item on the page
+  // We collect all buttons which match the click, and update them all
+  const matchingFollowButtons = Array.from(
+    document.getElementsByClassName('follow-action-button'),
+  ).filter((button) => {
+    const { info } = button.dataset;
+    if (info) {
+      const { id } = JSON.parse(info);
+      return id === buttonInfo.id;
+    }
+    return false;
+  });
 
-  switch (newState) {
-    case 'follow':
-    case 'follow-back':
-      updateFollowButton(button, newState, buttonInfo);
-      break;
-    case 'login':
-      addButtonFollowText(button, style);
-      break;
-    case 'self':
-      updateUserOwnFollowButton(button);
-      break;
-    default:
-      updateFollowingButton(button, style);
-  }
+  matchingFollowButtons.forEach((matchingButton) => {
+    matchingButton.classList.add('showing');
+
+    switch (newState) {
+      case 'follow':
+      case 'follow-back':
+        updateFollowButton(matchingButton, newState, buttonInfo);
+        break;
+      case 'login':
+        addButtonFollowText(matchingButton, style);
+        break;
+      case 'self':
+        updateUserOwnFollowButton(matchingButton);
+        break;
+      default:
+        updateFollowingButton(matchingButton, style);
+    }
+  });
 }
 
 /**

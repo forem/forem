@@ -129,6 +129,32 @@ describe('Preview user profile from article page', () => {
       });
     });
 
+    it('should update any other matching follow buttons when follow CTA is clicked', () => {
+      cy.get('[data-initialized]');
+      // Click the follow button in the author byline preview
+      cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
+        .first()
+        .click();
+
+      cy.findAllByTestId('profile-preview-card')
+        .first()
+        .within(() => {
+          cy.findByRole('button', { name: 'Follow' }).click();
+          // Confirm the follow button has been updated
+          cy.findByRole('button', { name: 'Follow' }).should('not.exist');
+          cy.findByRole('button', { name: 'Following' });
+        });
+
+      // Check the follow button in the comment author preview card has updated
+      cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
+        .last()
+        .click();
+
+      cy.findAllByTestId('profile-preview-card')
+        .last()
+        .findByRole('button', { name: 'Following' });
+    });
+
     it('should detach listeners on preview card close', () => {
       cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
         .first()
