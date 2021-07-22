@@ -127,6 +127,12 @@ function handleFollowButtonClick({ target }) {
     target.classList.contains('follow-action-button') ||
     target.classList.contains('follow-user')
   ) {
+    const userStatus = document.body.getAttribute('data-user-status');
+    if (userStatus === 'logged-out') {
+      showLoginModal();
+      return;
+    }
+
     optimisticallyUpdateButtonUI(target);
 
     const { verb } = target.dataset;
@@ -134,10 +140,6 @@ function handleFollowButtonClick({ target }) {
     if (verb === 'self') {
       window.location.href = '/settings';
       return;
-    }
-
-    if (verb === 'login') {
-      showLoginModal();
     }
 
     const buttonDataInfo = JSON.parse(target.dataset.info);
