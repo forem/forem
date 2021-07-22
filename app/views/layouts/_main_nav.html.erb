@@ -1,21 +1,25 @@
 <% default_nav_links = NavigationLink.default_section.ordered.to_a %>
 <% other_nav_links = NavigationLink.other_section.ordered.to_a %>
 
-<nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" aria-labelledby="<%= community_name %>">
-  <h2 class="mb-1 fs-base">
+<nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" aria-labelledby="default-nav-heading">
+  <h2 id="default-nav-heading" class="mb-1 fs-base">
     <%= community_name %>
   </h2>
-  <a href="<%= root_path %>" class="crayons-link crayons-link--block">
-    <%= inline_svg_tag("twemoji/house.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
-    Home
-  </a>
-  <% unless user_signed_in? %>
-    <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
-      <%= inline_svg_tag("twemoji/handshake.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
-      Sign In/Up
-    </a>
-  <% end %>
   <ul class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
+    <li>
+      <a href="<%= root_path %>" class="crayons-link crayons-link--block">
+        <%= inline_svg_tag("twemoji/house.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
+        Home
+      </a>
+    </li>
+    <li>
+      <% unless user_signed_in? %>
+        <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
+          <%= inline_svg_tag("twemoji/handshake.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
+          Sign In/Up
+        </a>
+      <% end %>
+    </li>
     <% default_nav_links.each do |link| %>
       <%= render "layouts/sidebar_nav_link", link: link %>
     <% end %>
@@ -23,8 +27,8 @@
 </nav>
 
 <% if other_nav_links.any? %>
-  <nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" aria-labelledby="Other">
-    <h2 class="mt-6 mb-2 fs-base">
+  <nav class="mb-6 <%= "mt-4" if user_signed_in? %>" aria-labelledby="other-nav-heading">
+    <h2 id="other-nav-heading" class="mt-6 mb-2 fs-base">
       Other
     </h2>
     <ul class="other-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
