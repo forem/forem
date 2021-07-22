@@ -79,11 +79,17 @@ jobs:
         - bin/test-console-check
         - yarn build-storybook
     - stage: Test
-      name: "E2E"
+      name: "E2E Seeded"
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
         - bin/e2e-ci
+    - stage: Test
+      name: "E2E Non-seeded"
+      script:
+        - bundle exec rails db:create db:schema:load assets:precompile
+        - yarn cypress install
+        - SKIP_SEED_DATA=1 E2E_FOLDER=nonSeededFlows bin/e2e-ci
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request

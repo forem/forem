@@ -25,6 +25,10 @@ module.exports = (on, config) => {
     ...process.env,
   };
 
+  const { E2E_FOLDER = 'seededFlows' } = process.env;
+
+  config.testFiles = `**/${E2E_FOLDER}/**/*.spec.js`;
+
   on('task', {
     failed: require('cypress-failed-log/src/failed')(),
   });

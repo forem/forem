@@ -44,9 +44,11 @@ RSpec.describe "StoriesIndex", type: :request do
 
     it "renders registration page if the Forem instance is private" do
       allow(Settings::UserExperience).to receive(:public).and_return(false)
+      allow(Authentication::Providers).to receive(:enabled).and_return(%i[github twitter])
 
       get root_path
-      expect(response.body).to include("Continue with")
+      expect(response.body).to include("Continue with GitHub")
+      expect(response.body).to include("Continue with Twitter")
     end
 
     it "renders a landing page if one is active and if the site config is set to private" do

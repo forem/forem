@@ -231,7 +231,7 @@
 <div class="fullscreen-code js-fullscreen-code"></div>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
-  <script async>
+  <script>
     <%# we consider these scripts safe for embedding as they come from our code %>
     <%== PodcastTag.script %>
     <%== PollTag.script %>

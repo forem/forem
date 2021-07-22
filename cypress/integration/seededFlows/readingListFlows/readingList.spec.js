@@ -1,4 +1,4 @@
-import { BREAKPOINTS } from '../../../app/javascript/shared/components/useMediaQuery';
+import { BREAKPOINTS } from '../../../../app/javascript/shared/components/useMediaQuery';
 
 describe('Reading List Archive', () => {
   beforeEach(() => {
@@ -9,21 +9,22 @@ describe('Reading List Archive', () => {
     });
   });
 
-  it('should load an empty archive', () => {
+  it('should load an empty reading list', () => {
     cy.intercept(
       Cypress.config().baseUrl +
-        'search/reactions?page=0&per_page=80&status%5B%5D=archived',
+        'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
       { fixture: 'search/emptyReadingList.json' },
     ).as('emptyReadingList');
 
-    cy.visit('/readinglist/archive');
+    cy.visit('/readinglist');
     cy.wait('@emptyReadingList');
 
     cy.findByRole('main')
       .as('main')
-      .findByText(/^Your Archive is empty...$/i);
+      .findByText(/^Your reading list is empty$/i);
+    cy.get('@main').findByText(/^View archive$/i);
     cy.get('@main').findByLabelText(/^Filter reading list by text$/i);
-    cy.get('@main').findByText(/^Archive \(0\)$/i);
+    cy.get('@main').findByText(/^Reading list \(0\)$/i);
     cy.get('@main')
       .findByRole('navigation', { name: /^Filter by tag$/i })
       .findByText(/all tags/i);
@@ -32,17 +33,17 @@ describe('Reading List Archive', () => {
   it('should filter by text', () => {
     cy.intercept(
       Cypress.config().baseUrl +
-        'search/reactions?page=0&per_page=80&status%5B%5D=archived',
+        'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
       { fixture: 'search/readingList.json' },
     ).as('readingList');
 
     cy.intercept(
       Cypress.config().baseUrl +
-        'search/reactions?search_fields=article+3&page=0&per_page=80&status%5B%5D=archived',
+        'search/reactions?search_fields=article+3&page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
       { fixture: 'search/readingListFilterByText.json' },
     ).as('readingListFilteredByText');
 
-    cy.visit('/readinglist/archive');
+    cy.visit('/readinglist');
     cy.wait('@readingList');
 
     cy.findByRole('main').as('main');
@@ -61,23 +62,23 @@ describe('Reading List Archive', () => {
     beforeEach(() => {
       cy.intercept(
         Cypress.config().baseUrl +
-          'search/reactions?page=0&per_page=80&status%5B%5D=archived',
+          'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
         { fixture: 'search/readingList.json' },
-      ).as('archiveList');
+      ).as('readingList');
 
       cy.viewport(BREAKPOINTS.Medium - 1, BREAKPOINTS.Medium);
-      cy.visit('/readinglist/archive');
-      cy.wait('@archiveList');
+      cy.visit('/readinglist');
+      cy.wait('@readingList');
     });
 
-    it('should load the reading list archive with items', () => {
+    it('should load the reading list with items', () => {
       cy.findByRole('main')
         .as('main')
         .findByText(/^Your reading list is empty$/i)
         .should('not.exist');
-      cy.get('@main').findByText(/^View reading list$/i);
+      cy.get('@main').findByText(/^View archive$/i);
       cy.get('@main').findByLabelText(/Filter reading list by text$/i);
-      cy.get('@main').findByText(/^Archive \(3\)$/);
+      cy.get('@main').findByText(/^Reading list \(3\)$/);
       cy.get('@main').findByLabelText(/^Filter by tag$/i, {
         selector: 'select',
       });
@@ -93,11 +94,9 @@ describe('Reading List Archive', () => {
     it('should filter by tag', () => {
       cy.intercept(
         Cypress.config().baseUrl +
-          'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=archived',
-        {
-          fixture: 'search/readingListFilterByTagProductivity.json',
-        },
-      ).as('filteredArchiveList');
+          'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingListFilterByTagProductivity.json' },
+      ).as('filteredReadingList');
 
       cy.findByRole('main')
         .as('main')
@@ -105,7 +104,7 @@ describe('Reading List Archive', () => {
         .as('tagFilter')
         .select('productivity');
 
-      cy.wait('@filteredArchiveList');
+      cy.wait('@filteredReadingList');
 
       cy.get('@main').findByText('Test Article 1');
       cy.get('@main').findByText('Test Article 2').should('not.exist');
@@ -117,24 +116,23 @@ describe('Reading List Archive', () => {
     beforeEach(() => {
       cy.intercept(
         Cypress.config().baseUrl +
-          'search/reactions?page=0&per_page=80&status%5B%5D=archived',
+          'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
         { fixture: 'search/readingList.json' },
-      ).as('archiveList');
+      ).as('readingList');
 
       cy.viewport(BREAKPOINTS.Large, 600);
-      cy.visit('/readinglist/archive');
-      cy.wait('@archiveList');
+      cy.visit('/readinglist');
+      cy.wait('@readingList');
     });
 
-    it('should load the reading list archive items', () => {
+    it('should load the reading list with items', () => {
       cy.findByRole('main')
         .as('main')
-        .findByText(/^Your Archive is empty$/i)
+        .findByText(/^Your reading list is empty$/i)
         .should('not.exist');
-
-      cy.get('@main').findByText(/^View reading list$/i);
+      cy.get('@main').findByText(/^View archive$/i);
       cy.get('@main').findByLabelText(/Filter reading list by text$/i);
-      cy.get('@main').findByText(/^Archive \(3\)$/);
+      cy.get('@main').findByText(/^Reading list \(3\)$/);
       cy.get('@main').findByRole('navigation', { name: /^Filter by tag$/i });
       cy.get('@main')
         .findByRole('select', { name: /^Filter by tag$/i })
@@ -148,11 +146,9 @@ describe('Reading List Archive', () => {
     it('should filter by tag', () => {
       cy.intercept(
         Cypress.config().baseUrl +
-          'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=archived',
-        {
-          fixture: 'search/readingListFilterByTagProductivity.json',
-        },
-      ).as('filteredArchiveList');
+          'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingListFilterByTagProductivity.json' },
+      ).as('filteredReadingList');
 
       cy.findByRole('main')
         .as('main')
@@ -160,7 +156,7 @@ describe('Reading List Archive', () => {
         .findByText('#productivity')
         .click();
 
-      cy.wait('@filteredArchiveList');
+      cy.wait('@filteredReadingList');
 
       cy.get('@main').findByText('Test Article 1');
       cy.get('@main').findByText('Test Article 2').should('not.exist');

@@ -32,6 +32,8 @@ module Settings
           settings_class.public_send("#{key}=", value.to_h)
         elsif value.present?
           settings_class.public_send("#{key}=", value.strip)
+        elsif value.blank?
+          settings_class.public_send("#{key}=", nil)
         end
       rescue ActiveRecord::RecordInvalid => e
         @errors << e.message
