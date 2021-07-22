@@ -126,10 +126,9 @@ RSpec.describe Tag, type: :model do
     sidekiq_perform_enqueued_jobs do
       tag.save
     end
-    create(:article, tags: tag.name, published: true)
-    create(:article, tags: tag.name, published: true)
-    article_ids = Article.tagged_with(tag.name).published.order(created_at: :desc).limit(100).ids
-    sidekiq_assert_enqueued_with(job: Articles::BustMultipleCachesWorker, args: [article_ids]) do
+    first = create(:article, tags: tag.name, published: true)
+    second = create(:article, tags: tag.name, published: true)
+    sidekiq_assert_enqueued_with(job: Articles::BustMultipleCachesWorker, args: [[second.id, first.id]]) do
       tag.save
     end
   end
