@@ -1,10 +1,15 @@
 require "rails_helper"
 require Rails.root.join(
-  "lib/data_update_scripts/20210722160452_profile_website_url_format.rb",
+  "lib/data_update_scripts/20210722135549_profile_website_url_format.rb",
 )
 
-describe DataUpdateScripts::ProfileWebsiteUrlFormatFixup do
+describe DataUpdateScripts::ProfileWebsiteUrlFormat do
   let(:nil_profile) { create(:profile, website_url: nil) }
+  let(:invalid_profile) { make_profile_for("www.example.com") }
+  let(:unfixable_profile) { make_profile_for("/local.html") }
+  let(:email_profile) { make_profile_for("dan@forem.com") }
+  let(:spacey_profile) { make_profile_for("  example.com  ") }
+  let(:unparseable_profile) { make_profile_for("this will not parse") }
   let(:empty_profile) { create(:profile, website_url: "") }
   let(:valid_profile) { create(:profile, website_url: "https://www.example.com") }
 
@@ -13,12 +18,6 @@ describe DataUpdateScripts::ProfileWebsiteUrlFormatFixup do
       profile.save(validate: false)
     end
   end
-
-  let(:invalid_profile) { make_profile_for("www.example.com") }
-  let(:unfixable_profile) { make_profile_for("/local.html") }
-  let(:email_profile) { make_profile_for("dan@forem.com") }
-  let(:spacey_profile) { make_profile_for("  example.com  ") }
-  let(:unparseable_profile) { make_profile_for("this will not parse") }
 
   it "does not modify profiles where website url is null" do
     expect { described_class.new.run }.not_to change(nil_profile, :website_url)

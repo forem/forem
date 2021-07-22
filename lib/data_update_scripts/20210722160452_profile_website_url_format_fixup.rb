@@ -35,7 +35,7 @@ module DataUpdateScripts
     def acceptable_uri?(uri)
       uri.scheme.present? &&
         uri.host.present? &&
-        ! uri.user.present?
+        uri.user.blank?
     end
   end
 end
