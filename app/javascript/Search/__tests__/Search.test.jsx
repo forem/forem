@@ -34,9 +34,9 @@ describe('<Search />', () => {
       setSearchTerm: jest.fn(),
     };
 
-    const { getByLabelText } = render(<Search {...props} />);
+    const { getByRole } = render(<Search {...props} />);
 
-    const searchInput = getByLabelText(/search/i);
+    const searchInput = getByRole('textbox', { name: /search/i });
 
     expect(searchInput.value).toEqual('fish');
     expect(searchInput.getAttribute('placeholder')).toEqual('Search...');
@@ -48,9 +48,9 @@ describe('<Search />', () => {
       searchTerm: 'fish',
       setSearchTerm: jest.fn(),
     };
-    const { getByLabelText, findByLabelText } = render(<Search {...props} />);
+    const { getByRole, findByRole } = render(<Search {...props} />);
 
-    let searchInput = getByLabelText(/search/i);
+    let searchInput = getByRole('textbox', { name: /search/i });
 
     expect(searchInput.value).toEqual('fish');
 
@@ -64,7 +64,7 @@ describe('<Search />', () => {
       target: { value: 'hello' },
     });
 
-    searchInput = await findByLabelText(/search/i);
+    searchInput = await findByRole('textbox', { name: /search/i });
 
     expect(searchInput.value).toEqual('hello');
   });
@@ -74,9 +74,9 @@ describe('<Search />', () => {
       searchTerm: '',
       setSearchTerm: jest.fn(),
     };
-    const { getByLabelText } = render(<Search {...props} />);
+    const { getByRole } = render(<Search {...props} />);
 
-    let searchInput = getByLabelText(/search/i);
+    const searchInput = getByRole('textbox', { name: /search/i });
 
     expect(searchInput.value).toEqual('');
 
@@ -101,9 +101,9 @@ describe('<Search />', () => {
       searchTerm: '',
       setSearchTerm: jest.fn(),
     };
-    const { getByLabelText, findByLabelText } = render(<Search {...props} />);
+    const { getByRole, findByRole } = render(<Search {...props} />);
 
-    let searchInput = getByLabelText(/search/i);
+    let searchInput = getByRole('textbox', { name: /search/i });
 
     expect(searchInput.value).toEqual('');
 
@@ -117,7 +117,7 @@ describe('<Search />', () => {
       target: { value: 'hello' },
     });
 
-    searchInput = await findByLabelText(/search/i);
+    searchInput = await findByRole('textbox', { name: /search/i });
 
     expect(searchInput.value).toEqual('hello');
     expect(Search.prototype.search).toHaveBeenCalledWith('Enter', 'hello');
