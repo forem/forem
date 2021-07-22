@@ -15,10 +15,14 @@ module Admin
 
           note = user.notes.build(note_params.merge(author: current_user, reason: :misc_note))
           respond_to do |format|
-            if note.save
-              format.js { head :no_content }
-            else
-              format.js { render json: { error: note.errors_as_sentence }, status: :unprocessable_entity }
+            format.js do
+              if note.save
+                render json: { result: "Note created!" }, content_type: "application/json", status: :created
+              else
+                render json: { error: note.errors_as_sentence },
+                       content_type: "application/json",
+                       status: :unprocessable_entity
+              end
             end
           end
         end
