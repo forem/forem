@@ -2,7 +2,11 @@ import { Controller } from 'stimulus';
 
 // eslint-disable-next-line no-restricted-syntax
 export default class OrganizationsController extends Controller {
-  static targets = ['addUserToOrg', 'changeUserPermissions'];
+  static targets = [
+    'addUserToOrg',
+    'changeUserPermissions',
+    'removeUserFromOrg',
+  ];
 
   // This method listens to Rails's Ajax event `ajax:success`.
   // See https://guides.rubyonrails.org/working_with_javascript_in_rails.html#rails-ujs-event-handlers
@@ -15,6 +19,8 @@ export default class OrganizationsController extends Controller {
       message = 'User added to organization!';
     } else if (target == this.changeUserPermissionsTarget) {
       message = 'Membership updated!';
+    } else if (target == this.removeUserFromOrgTarget) {
+      message = 'User removed from organization!';
     }
 
     // display success info message

@@ -49,9 +49,19 @@
         <ul class="list-none">
           <% @memberships.each do |membership, index| %>
             <li class="py-3 pl-3 <%= index == @memberships.size - 1 ? "border-b-0" : "border-b-1" %> border-l-0 border-t-0 border-r-0 border-solid border-base-50">
-              <a href="<%= membership.organization.path %>" target="_blank" rel="noopener">
-                <h4><%= membership.organization.name %></h4>
-              </a>
+              <div class="flex justify-between">
+                <a href="<%= membership.organization.path %>" target="_blank" rel="noopener" class="inline-block">
+                  <h4><%= membership.organization.name %></h4>
+                </a>
+
+                <%= button_to "Remove from organization",
+                              admin_organization_membership_path(membership),
+                              method: :delete,
+                              remote: true,
+                              class: "crayons-btn crayons-btn--danger",
+                              data: { confirm: "Are you sure?" },
+                              form: { data: { "users--tools--organizations-target": "removeUserFromOrg" } } %>
+              </div>
 
               <%= form_with model: [:admin, membership],
                             method: :patch,
