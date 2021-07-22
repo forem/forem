@@ -1,11 +1,11 @@
 <section
   class="crayons-card p-3 js-component"
-  data-controller="users--tools--credits"
-  data-action="ajax:success@document->users--tools--credits#ajaxSuccess ajax:error@document->users--tools--credits#ajaxError">
+  data-controller="users--tools--ajax"
+  data-action="ajax:success@document->users--tools--ajax#success ajax:error@document->users--tools--ajax#error">
   <header>
     <h3><%= link_to "← Credits", admin_user_tools_path(@user.id),
                     remote: true,
-                    data: { action: "ajax:success->user#replacePartial" },
+                    data: { action: "ajax:success@document->user#replacePartial" },
                     class: "crayons-title fs-l" %></h3>
   </header>
 
@@ -14,8 +14,7 @@
                 method: :post,
                 remote: true,
                 class: "my-3",
-                id: :credits_add,
-                data: { "users--tools--credits-target": "addUserCredits" } do |f| %>
+                id: :credits_add do |f| %>
     <fieldset>
       <legend class="fs-base fw-medium mb-3"><%= pluralize(@user_unspent_credits_count, "available user credit") %></legend>
 
@@ -48,8 +47,7 @@
                   method: :delete,
                   remote: true,
                   class: "my-3",
-                  id: :credits_remove,
-                  data: { "users--tools--credits-target": "removeUserCredits" } do |f| %>
+                  id: :credits_remove do |f| %>
       <fieldset>
         <div class="crayons-field mb-2">
           <%= f.label "Remove credits", class: "crayons-field__label", id: "remove-credits" %>
@@ -81,8 +79,7 @@
                   method: :post,
                   remote: true,
                   class: "my-3",
-                  id: :org_credits_add,
-                  data: { "users--tools--credits-target": "addOrganizationCredits" } do |f| %>
+                  id: :org_credits_add do |f| %>
 
       <fieldset>
         <div class="crayons-field mb-1">
@@ -115,8 +112,7 @@
                   method: :delete,
                   remote: true,
                   class: "my-3",
-                  id: :org_credits_remove,
-                  data: { "users--tools--credits-target": "removeOrganizationCredits" } do |f| %>
+                  id: :org_credits_remove do |f| %>
 
       <fieldset>
         <div class="crayons-field mb-1">
