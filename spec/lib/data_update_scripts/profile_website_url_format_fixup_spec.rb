@@ -1,9 +1,9 @@
 require "rails_helper"
 require Rails.root.join(
-  "lib/data_update_scripts/20210722135549_profile_website_url_format.rb",
+  "lib/data_update_scripts/20210722160452_profile_website_url_format_fixup.rb",
 )
 
-describe DataUpdateScripts::ProfileWebsiteUrlFormat do
+describe DataUpdateScripts::ProfileWebsiteUrlFormatFixup do
   let(:nil_profile) { create(:profile, website_url: nil) }
   let(:invalid_profile) { make_profile_for("www.example.com") }
   let(:unfixable_profile) { make_profile_for("/local.html") }
