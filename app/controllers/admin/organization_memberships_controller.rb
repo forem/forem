@@ -4,12 +4,26 @@ module Admin
 
     def update
       organization_membership = OrganizationMembership.find_by(id: params[:id])
-      if organization_membership.update(organization_membership_params)
-        flash[:success] = "User was successfully updated to #{organization_membership.type_of_user}"
-      else
-        flash[:danger] = organization_membership.errors.full_messages
+
+      respond_to do |format|
+        format.html do
+          if organization_membership.update(organization_membership_params)
+            flash[:success] = "User was successfully updated to #{organization_membership.type_of_user}"
+          else
+            flash[:danger] = organization_membership.errors_as_sentence
+          end
+
+          redirect_to admin_user_path(organization_membership.user_id)
+        end
+
+        format.js do
+          if organization_membership.update(organization_membership_params)
+            head :no_content
+          else
+            render json: { error: organization_membership.errors_as_sentence }, status: :unprocessable_entity
+          end
+        end
       end
-      redirect_to admin_user_path(organization_membership.user_id)
     end
 
     def create
@@ -24,7 +38,7 @@ module Admin
             message = "Organization ##{organization_membership_params[:organization_id]} does not exist."
             flash[:danger] = message
           else
-            flash[:danger] = organization_membership.errors.full_messages
+            flash[:danger] = organization_membership.errors_as_sentence
           end
           redirect_to admin_user_path(organization_membership.user_id)
         end

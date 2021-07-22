@@ -10,6 +10,10 @@ module Admin
         def initialize(user:)
           @user = user
           @memberships_for_select = MEMBERSHIPS_FOR_SELECT
+          @memberships = @user.organization_memberships
+            .joins(:organization)
+            .order("organizations.name" => :asc)
+            .includes(:organization)
         end
       end
     end
