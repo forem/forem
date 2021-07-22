@@ -168,10 +168,19 @@ actionsContainer.addEventListener('click', async (event) => {
 const profilePreviewTrigger = document.getElementById(
   'profile-preview-trigger',
 );
+
+const dropdownContent = document.getElementById('profile-preview-content');
+
 if (profilePreviewTrigger?.dataset.initialized !== 'true') {
   initializeDropdown({
     triggerElementId: 'profile-preview-trigger',
     dropdownContentId: 'profile-preview-content',
+    onOpen: () => {
+      dropdownContent?.classList.add('showing');
+    },
+    onClose: () => {
+      dropdownContent?.classList.remove('showing');
+    },
   });
 
   profilePreviewTrigger.dataset.initialized = 'true';

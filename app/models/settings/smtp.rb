@@ -8,13 +8,13 @@ module Settings
     # the cache, or call Settings::Smtp.clear_cache
     cache_prefix { "v1" }
 
-    field :address, type: :string, default: ApplicationConfig["SMTP_ADDRESS"]
-    field :authentication, type: :string, default: ApplicationConfig["SMTP_AUTHENTICATION"],
+    field :address, type: :string, default: ApplicationConfig["SMTP_ADDRESS"].presence
+    field :authentication, type: :string, default: ApplicationConfig["SMTP_AUTHENTICATION"].presence,
                            validates: { inclusion: %w[plain login cram_md5] }
-    field :domain, type: :string, default: ApplicationConfig["SMTP_DOMAIN"]
-    field :password, type: :string, default: ApplicationConfig["SMTP_PASSWORD"]
+    field :domain, type: :string, default: ApplicationConfig["SMTP_DOMAIN"].presence
+    field :password, type: :string, default: ApplicationConfig["SMTP_PASSWORD"].presence
     field :port, type: :integer, default: ApplicationConfig["SMTP_PORT"].presence || 25
-    field :user_name, type: :string, default: ApplicationConfig["SMTP_USER_NAME"]
+    field :user_name, type: :string, default: ApplicationConfig["SMTP_USER_NAME"].presence
 
     class << self
       def settings

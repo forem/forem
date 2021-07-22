@@ -793,6 +793,32 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
       end
 
+      describe "SMTP configs" do
+        after { Settings::SMTP.clear_cache }
+
+        it "updates appropriate SMTP configs" do
+          expected_handle = { "address" => "smtp.example.com", "port" => "1234" }
+          post admin_settings_smtp_settings_path, params: {
+            settings_smtp: expected_handle,
+            confirmation: confirmation_message
+          }
+          expect(Settings::SMTP.address).to eq("smtp.example.com")
+          expect(Settings::SMTP.port).to eq(1234)
+        end
+
+        it "unsets appropriate SMTP config, and apply default value if applicable" do
+          Settings::SMTP.address = "smtp.example.com"
+          Settings::SMTP.port = 12_345
+          expected_handle = { "address" => "", "port" => "" }
+          post admin_settings_smtp_settings_path, params: {
+            settings_smtp: expected_handle,
+            confirmation: confirmation_message
+          }
+          expect(Settings::SMTP.address).to eq(nil)
+          expect(Settings::SMTP.port).to eq(25)
+        end
+      end
+
       describe "Sponsors" do
         it "updates the sponsor_headline" do
           headline = "basic"
