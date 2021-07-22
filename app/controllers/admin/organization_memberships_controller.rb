@@ -18,9 +18,11 @@ module Admin
 
         format.js do
           if organization_membership.update(organization_membership_params)
-            head :no_content
+            message = "User was successfully updated to #{organization_membership.type_of_user}"
+            render json: { result: message }, content_type: "application/json"
           else
-            render json: { error: organization_membership.errors_as_sentence }, status: :unprocessable_entity
+            render json: { error: organization_membership.errors_as_sentence }, content_type: "application/json",
+                   status: :unprocessable_entity
           end
         end
       end
@@ -45,10 +47,11 @@ module Admin
 
         format.js do
           if organization && organization_membership.save
-            head :no_content
+            message = "User was successfully added to #{organization.name}"
+            render json: { result: message }, content_type: "application/json", status: :created
           elsif organization.blank?
             message = "Organization ##{organization_membership_params[:organization_id]} does not exist."
-            render json: { error: message }, status: :unprocessable_entity
+            render json: { error: message }, content_type: "application/json", status: :unprocessable_entity
           else
             render json: { error: organization_membership.errors_as_sentence }, status: :unprocessable_entity
           end
