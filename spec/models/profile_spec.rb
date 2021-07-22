@@ -72,7 +72,7 @@ RSpec.describe Profile, type: :model do
       it "is invalid with an incomplete url" do
         profile.website_url = "dev.to"
         expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Website url is invalid"
+        expect(profile.errors_as_sentence).to eq "Website url is not a valid URL"
       end
     end
   end
