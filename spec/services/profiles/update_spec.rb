@@ -33,14 +33,6 @@ RSpec.describe Profiles::Update, type: :service do
     expect(profile.user.name).to eq new_name
   end
 
-  it "sets custom attributes for the user" do
-    custom_profile_field = create(:custom_profile_field, label: "Custom test", profile: profile)
-    custom_attribute = custom_profile_field.attribute_name
-
-    described_class.call(user, profile: { custom_attribute => "Test" }, user: {})
-    expect(profile.custom_attributes[custom_attribute]).to eq "Test"
-  end
-
   it "updates the profile_updated_at column" do
     expect do
       described_class.call(user, profile: { education: "false" })
