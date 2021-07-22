@@ -1,5 +1,5 @@
 module DataUpdateScripts
-  class ProfileWebsiteUrlFormat
+  class ProfileWebsiteUrlFormatFixup
     def run
       profiles_to_fix.each do |profile|
         fix_or_clear_website_url(profile)
