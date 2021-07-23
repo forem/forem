@@ -43,6 +43,10 @@ coordinate all this work.
 
 ### 1. From the command line, run `yarn e2e`
 
+Note: If you want to run E2E tests that do not require seeded data, run
+`yarn e2e:noseed`. Some tests, like the admin onboarding require there to be no
+seeded data.
+
 Some initial setup and checks will automatically run as part of this command:
 
 - `bundle check`: You will be prompted to run `bundle install` if gems for the
