@@ -31,7 +31,12 @@ export class ModerationArticles extends Component {
     }
 
     selectedArticle.classList.add('opened');
-    selectedArticle.innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe data-testid="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>`;
+    selectedArticle.innerHTML = `
+    <div class="article-referrer-heading"></div>
+    <div class="iframes-container">
+      <iframe class="article-iframe" src="${path}"></iframe>
+      <iframe data-testid="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>
+    </div>`;
   };
 
   render() {
