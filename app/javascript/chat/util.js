@@ -53,7 +53,18 @@ export function setupObserver(callback) {
   const somethingObserver = new IntersectionObserver(callback, {
     threshold: [0, 1],
   });
+
   somethingObserver.observe(sentinel);
+
+  window.addEventListener('beforeunload', () => {
+    somethingObserver.disconnect();
+  });
+
+  if (typeof instantClick !== 'undefined') {
+    InstantClick.on('change', () => {
+      somethingObserver.disconnect();
+    });
+  }
 }
 
 export function hideMessages(messages, userId) {

@@ -45,25 +45,42 @@ module AuthenticationHelper
     Settings::General.waiting_on_first_user
   end
 
-  def private_forem_or_no_enabled_auth_options
-    ForemInstance.private? ||
+  def invite_only_mode_or_no_enabled_auth_options
+    ForemInstance.invitation_only? ||
       (authentication_enabled_providers.none? &&
        !Settings::Authentication.allow_email_password_registration)
   end
 
   def tooltip_class_on_auth_provider_enablebtn
-    private_forem_or_no_enabled_auth_options ? "crayons-tooltip" : ""
+    invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : ""
   end
 
   def disabled_attr_on_auth_provider_enable_btn
-    private_forem_or_no_enabled_auth_options ? "disabled" : ""
+    invite_only_mode_or_no_enabled_auth_options ? "disabled" : ""
   end
 
   def tooltip_text_email_or_auth_provider_btns
-    if private_forem_or_no_enabled_auth_options
+    if invite_only_mode_or_no_enabled_auth_options
       "You cannot do this until you disable Invite Only Mode"
     else
       ""
     end
+  end
+
+  def came_from_sign_up?
+    request.referer&.include?(new_user_registration_path)
+  end
+
+  def display_social_login?
+    return true if Authentication::Providers.enabled.include?(:apple)
+    return true if request.user_agent.to_s.match?(/Android/i)
+
+    # Don't display (return false) if UserAgent includes ForemWebview - iOS only
+    request.user_agent.to_s.exclude?("ForemWebView")
+  end
+
+  # Display the fallback message if we can't register with email and at the same time can't display the social options.
+  def display_registration_fallback?(state)
+    state == "new-user" && !Settings::Authentication.allow_email_password_registration && !display_social_login?
   end
 end

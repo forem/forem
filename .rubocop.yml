@@ -342,6 +342,10 @@ Naming/AccessorMethodName:
   StyleGuide: '#accessor_mutator_method_names'
   Enabled: false
 
+Naming/InclusiveLanguage:
+  Description: 'Recommend the use of inclusive language instead of problematic terms.'
+  Enabled: false
+
 Naming/PredicateName:
   Description: 'Check the names of predicate methods.'
   StyleGuide: '#bool-methods-qmark'

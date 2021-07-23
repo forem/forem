@@ -144,7 +144,8 @@ RSpec.describe Message, type: :model do
 
     it "does not send email if user has email_messages turned off" do
       chat_channel.update_column(:channel_type, "direct")
-      user2.update_columns(updated_at: 1.day.ago, email_connect_messages: false)
+      user2.update_columns(updated_at: 1.day.ago)
+      user2.notification_setting.update_columns(email_connect_messages: false)
       user2.chat_channel_memberships.last.update_column(:last_opened_at, 2.days.ago)
 
       expect do

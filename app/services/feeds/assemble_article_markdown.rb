@@ -20,7 +20,7 @@ module Feeds
         published: false
         date: #{@item.published}
         tags: #{get_tags}
-        canonical_url: #{@user.feed_mark_canonical ? @feed_source_url : ''}
+        canonical_url: #{@user.setting.feed_mark_canonical ? @feed_source_url : ''}
         ---
 
         #{assemble_body_markdown}
@@ -64,7 +64,7 @@ module Feeds
     def thorough_parsing(content, feed_url)
       html_doc = Nokogiri::HTML(content)
 
-      find_and_replace_possible_links!(html_doc) if @user.feed_referential_link
+      find_and_replace_possible_links!(html_doc) if @user.setting.feed_referential_link
       find_and_replace_picture_tags_with_img!(html_doc)
 
       if feed_url&.include?("medium.com")

@@ -18,7 +18,7 @@ RSpec.describe Follows::SendEmailNotificationWorker, type: :worker do
 
     context "with follow" do
       it "sends a new_follower_email" do
-        user2.update_columns(email_follower_notifications: true)
+        user2.notification_setting.update(email_follower_notifications: true)
         follow = user.follow(user2)
 
         sidekiq_perform_enqueued_jobs(only: described_class)
@@ -29,7 +29,7 @@ RSpec.describe Follows::SendEmailNotificationWorker, type: :worker do
       end
 
       it "doesn't send an email if user has disabled notifications" do
-        user2.update_columns(email_follower_notifications: false)
+        user2.notification_setting.update(email_follower_notifications: false)
         follow = user.follow(user2)
 
         sidekiq_perform_enqueued_jobs(only: described_class)
@@ -43,7 +43,7 @@ RSpec.describe Follows::SendEmailNotificationWorker, type: :worker do
         subject = "#{user.username} just followed you on #{ApplicationConfig['COMMUNITY_NAME']}"
         EmailMessage.create!(user_id: user2.id, sent_at: Time.current, subject: subject)
 
-        user2.update_columns(email_follower_notifications: false)
+        user2.notification_setting.update(email_follower_notifications: false)
         follow = user.follow(user2)
 
         sidekiq_perform_enqueued_jobs(only: described_class)

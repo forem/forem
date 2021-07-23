@@ -75,7 +75,7 @@ class StackexchangeTag < LiquidTagBase
     id = input.split.first
 
     url = "#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}" \
-      "&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
+          "&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
     post_response = HTTParty.get(url)
 
     handle_response_error(post_response, input)
@@ -83,7 +83,7 @@ class StackexchangeTag < LiquidTagBase
     @post_type = post_response["items"][0]["post_type"]
 
     url = "#{API_URL}#{@post_type.pluralize}/#{id}?site=#{@site}" \
-      "&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
+          "&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
     final_response = HTTParty.get(url)
 
     handle_response_error(final_response, input)
