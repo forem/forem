@@ -10,7 +10,7 @@ RSpec.describe "Api::V0::Instances", type: :request do
       expect(response.parsed_body["logo_image_url"]).to eq Settings::General.logo_png
       expect(response.parsed_body["name"]).to eq Settings::Community.community_name
       expect(response.parsed_body["tagline"]).to eq Settings::Community.tagline
-      expect(response.parsed_body["version"]).to match(/(stable|beta|edge)\.\d{8}.\d+/)
+      expect(response.parsed_body["version"]).to match(/(stable|beta|edge)\.\d{8}\.\d+/)
       expect(response.parsed_body["visibility"]).to eq "public"
     end
 
