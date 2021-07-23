@@ -14,7 +14,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
-  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -1401,9 +1400,9 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.string "email", null: false
+    t.string "email"
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.string "username"
   end
 

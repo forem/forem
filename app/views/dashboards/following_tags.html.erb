@@ -8,11 +8,11 @@
       <%= render "actions_mobile" %>
     </header>
 
-    <div class="crayons-layout crayons-layout--2-cols">
-      <aside class="crayons-layout__sidebar-left">
+    <main id="main-content" class="crayons-layout crayons-layout--2-cols">
+      <nav class="crayons-layout__sidebar-left">
         <%= render "actions" %>
-      </aside>
-      <main class="crayons-layout__content mb-5" id="main-content">
+      </nav>
+      <div class="crayons-layout__content mb-5" id="user-dashboard">
         <% if @followed_tags.any? %>
           <%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
 
@@ -56,6 +56,6 @@
           <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any tags yet...</div>
         <% end %>
         <%= render "sublist" %>
-      </main>
-    </div>
+      </div>
+    </main>
 </div>

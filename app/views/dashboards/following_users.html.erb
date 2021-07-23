@@ -9,11 +9,11 @@
       <%= render "actions_mobile" %>
     </header>
 
-    <div class="crayons-layout crayons-layout--2-cols">
-      <aside class="crayons-layout__sidebar-left">
+    <div id="main-content" class="crayons-layout crayons-layout--2-cols">
+      <nav class="crayons-layout__sidebar-left">
         <%= render "actions" %>
-      </aside>
-      <main class="crayons-layout__content" id="main-content">
+      </nav>
+      <div class="crayons-layout__content" id="user-dashboard">
         <% if @follows.any? %>
           <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
             <% @follows.each do |follow| %>
@@ -45,6 +45,6 @@
           <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any users...</div>
         <% end %>
         <%= render "sublist" %>
-      </main>
-    </div>
+      </div>
+    </main>
 </div>
