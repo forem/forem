@@ -76,7 +76,7 @@
               <%= local_date(@user.created_at) %>
             </span>
 
-            <% if @user.email_public %>
+            <% if @user.setting.display_email_on_profile %>
               <a href="mailto:<%= @user.email %>" class="profile-header__meta__item">
                 <%= inline_svg_tag("email.svg", class: "crayons-icon mr-2 shrink-0", aria: true, title: "Email address") %>
                 <%= @user.email %>
@@ -114,11 +114,11 @@
             </div>
 
             <div class="crayons-modal__box__body">
-              <% if @user.inbox_guidelines.present? %>
+              <% if @user.setting.inbox_guidelines.present? %>
                 <p class="fw-bold mb-2">@<%= @user.username %>'s guidelines:</p>
-                <p class="mb-6"><%= @user.inbox_guidelines %></p>
+                <p class="mb-6"><%= @user.setting.inbox_guidelines %></p>
               <% end %>
-              <form id="new-message-form" class="message-form mb-4" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>"}'>
+              <form id="new-message-form" class="message-form mb-4" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.setting.inbox_type %>"}'>
                 <textarea id="new-message" rows="4" cols="70" placeholder="Enter your message here..." class="crayons-textfield"></textarea>
                 <button type="submit" class="submit-message crayons-btn">Send</button>
               </form>

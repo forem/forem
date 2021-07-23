@@ -218,7 +218,7 @@ class ArticlesController < ApplicationController
 
   def base_editor_assigments
     @user = current_user
-    @version = @user.editor_version if @user
+    @version = @user.setting.editor_version if @user
     @organizations = @user&.organizations
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")

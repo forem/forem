@@ -2,8 +2,14 @@
 <% proper_email = params[:email] || (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
 <div class="crayons-layout crayons-layout--limited-l align-center mt-9 mb-10 p-3">
 
-  <h1 class="fs-5xl mb-5">Welcome to <%= community_name %>! 🎉</h1>
-  <h3 class="mb-5">A confirmation email has been sent to <a href="mailto:<%= proper_email %>"><%= proper_email %></a></h3>
+  <% if came_from_sign_up? %>
+    <h1 class="fs-5xl mb-5">Welcome to <%= community_name %>! 🎉</h1>
+  <% end %>
+
+  <% if proper_email.present? %>
+    <h3 class="mb-5">A confirmation email has been sent to <a href="mailto:<%= proper_email %>"><%= proper_email %></a></h3>
+  <% end %>
+
   <div class="mt-8 mb-6 crayons-card p-7 align-left mx-auto">
     <h2 class="pb-4">Didn't get the email?</h2>
     <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }, data: { testid: "resend-confirmation-form" }) do |f| %>

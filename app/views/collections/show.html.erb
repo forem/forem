@@ -1,7 +1,8 @@
 <% title_string = "#{@collection.slug} Series' Articles" %>
+<% description_string = "View #{title_string} on #{community_name}" %>
 
 <%= content_for :page_meta do %>
-  <%= render "collections/meta", title_string: title_string %>
+  <%= render "collections/meta", title_string: title_string, description_string: description_string, path: @collection.path %>
 <% end %>
 
 <div class="crayons-layout crayons-layout--1-col">

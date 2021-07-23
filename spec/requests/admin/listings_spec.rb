@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/app/listings", type: :request do
+RSpec.describe "/admin/apps/listings", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let!(:listing) { create(:listing, user_id: admin.id) }
 
@@ -16,6 +16,15 @@ RSpec.describe "/admin/app/listings", type: :request do
       }
       sidekiq_perform_enqueued_jobs
       expect(EdgeCache::BustListings).to have_received(:call)
+    end
+
+    it "updates the organization ID" do
+      org = create(:organization)
+      put admin_listing_path(id: listing.id), params: {
+        listing: { organization_id: org.id }
+      }
+      sidekiq_perform_enqueued_jobs
+      expect(listing.reload.organization_id).to eq org.id
     end
 
     describe "GET /admin/app/listings" do

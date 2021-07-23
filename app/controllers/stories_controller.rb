@@ -150,6 +150,10 @@ class StoriesController < ApplicationController
     render template: "articles/index"
   end
 
+  def pinned_article
+    @pinned_article ||= PinnedArticle.get
+  end
+
   def featured_story
     @featured_story ||= Articles::Feeds::LargeForemExperimental.find_featured_story(@stories)
   end
@@ -239,6 +243,7 @@ class StoriesController < ApplicationController
 
   def assign_feed_stories
     feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
+
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
@@ -247,7 +252,10 @@ class StoriesController < ApplicationController
       @default_home_feed = true
       @featured_story, @stories = feed.default_home_feed_and_featured_story(user_signed_in: user_signed_in?)
     end
+
+    @pinned_article = pinned_article&.decorate
     @featured_story = (featured_story || Article.new)&.decorate
+
     @stories = ArticleDecorator.decorate_collection(@stories)
   end
 
@@ -344,7 +352,7 @@ class StoriesController < ApplicationController
       sameAs: user_same_as,
       image: Images::Profile.call(@user.profile_image_url, length: 320),
       name: @user.name,
-      email: @user.email_public ? @user.email : nil,
+      email: @user.setting.display_email_on_profile ? @user.email : nil,
       jobTitle: @user.employment_title.presence,
       description: @user.summary.presence || "404 bio not found",
       worksFor: [user_works_for].compact,

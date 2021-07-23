@@ -18,6 +18,12 @@ const getTestArticle = () => ({
 
 describe('<SingleArticle />', () => {
   it('should have no a11y violations', async () => {
+    // TODO: The axe custom rules here should be removed when the below issue is fixed
+    // https://github.com/forem/forem/issues/14100
+    const customAxeRules = {
+      'nested-interactive': { enabled: false },
+    };
+
     const { container } = render(
       <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
@@ -28,7 +34,7 @@ describe('<SingleArticle />', () => {
         />
       </Fragment>,
     );
-    const results = await axe(container);
+    const results = await axe(container, { rules: customAxeRules });
     expect(results).toHaveNoViolations();
   });
 
@@ -83,8 +89,7 @@ describe('<SingleArticle />', () => {
       id: 2,
       title:
         'An article title that is quite very actually rather extremely long with all things considered',
-      path:
-        'an-article-title-that-is-quite-very-actually-rather-extremely-long-with-all-things-considered-fi8',
+      path: 'an-article-title-that-is-quite-very-actually-rather-extremely-long-with-all-things-considered-fi8',
       publishedAt: '2019-06-24T09:32:10.590Z',
       cachedTagList: '',
       user: {
