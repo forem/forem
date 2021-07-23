@@ -34,7 +34,7 @@ export const SearchForm = forwardRef(
             name="q"
             placeholder="Search..."
             autoComplete="off"
-            aria-label="search"
+            aria-label="Search term"
             onKeyDown={onSearch}
             value={searchTerm}
           />
