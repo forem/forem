@@ -7,9 +7,9 @@ import { formatDate } from './util';
 export class SingleArticle extends Component {
   activateToggle = (e) => {
     e.preventDefault();
-    const { id, path, toggleArticle } = this.props;
+    const { id, title, path, toggleArticle } = this.props;
 
-    toggleArticle(id, path);
+    toggleArticle(id, title, path);
   };
 
   tagsFormat = (tag, key) => {
@@ -58,10 +58,8 @@ export class SingleArticle extends Component {
         >
           <span className="article-title">
             <header>
-              <h3 className="fs-base fw-bold lh-tight">
-                <a className="article-title-link" href={path}>
-                  {title}
-                </a>
+              <h3 className="fs-base fw-bold lh-tight article-title-heading">
+                {title}
               </h3>
             </header>
             {tags}

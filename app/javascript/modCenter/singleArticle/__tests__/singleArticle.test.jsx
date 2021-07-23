@@ -63,7 +63,7 @@ describe('<SingleArticle />', () => {
       </Fragment>,
     );
     const text = getNodeText(
-      container.getElementsByClassName('article-title-link')[0],
+      container.getElementsByClassName('article-title-heading')[0],
     );
     expect(text).toContain(getTestArticle().title);
   });

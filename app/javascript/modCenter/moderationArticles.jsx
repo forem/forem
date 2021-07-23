@@ -10,7 +10,7 @@ export class ModerationArticles extends Component {
     selectedArticleId: undefined,
   };
 
-  toggleArticle = (id, path) => {
+  toggleArticle = (id, title, path) => {
     const { prevSelectedArticleId } = this.state;
     const selectedArticle = document.getElementById(`article-iframe-${id}`);
 
@@ -32,7 +32,11 @@ export class ModerationArticles extends Component {
 
     selectedArticle.classList.add('opened');
     selectedArticle.innerHTML = `
-    <div class="article-referrer-heading"></div>
+    <div class="article-referrer-heading">
+      <a class="article-title-link fw-bold" href=${path}>
+        ${title}
+      </a>
+    </div>
     <div class="iframes-container">
       <iframe class="article-iframe" src="${path}"></iframe>
       <iframe data-testid="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>
