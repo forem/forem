@@ -77,7 +77,9 @@ const fetchMissingProfilePreviewCard = async (placeholderElement) => {
     jsCommentUserId: commentUserId,
     jsDropdownContentId: dropdownContentId,
   } = placeholderElement.dataset;
-  const response = await window.fetch(`/profile_preview_card/${commentUserId}`);
+  const response = await window.fetch(
+    `/profile_preview_cards/${commentUserId}`,
+  );
   const htmlContent = await response.text();
 
   const generatedElement = document.createElement('div');
