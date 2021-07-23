@@ -300,26 +300,31 @@ function fetchFollowButtonStatus(button, buttonInfo) {
  */
 function initializeNonUserFollowButtons() {
   const nonUserFollowButtons = document.querySelectorAll(
-    '.follow-action-button:not(.follow-user)',
+    '.follow-action-button:not(.follow-user):not([data-fetched])',
   );
 
   const userLoggedIn =
     document.body.getAttribute('data-user-status') === 'logged-in';
 
   const user = userLoggedIn ? userData() : null;
-  const followedTagIds = new Set(
-    user ? JSON.parse(user.followed_tags).map(({ tagId }) => tagId) : [],
-  );
+
+  const followedTags = user
+    ? JSON.parse(user.followed_tags).map((tag) => tag.id)
+    : [];
+
+  const followedTagIds = new Set(followedTags);
 
   nonUserFollowButtons.forEach((button) => {
-    const { info, fetched } = button.dataset;
+    const { info } = button.dataset;
     const buttonInfo = JSON.parse(info);
     if (buttonInfo.className === 'Tag' && user) {
-      const initialButtonFollowState = followedTagIds.has(user, buttonInfo.id)
+      // We don't need to make a network request to 'fetch' the status of tag buttons
+      button.dataset.fetched = true;
+      const initialButtonFollowState = followedTagIds.has(buttonInfo.id)
         ? 'true'
         : 'false';
       updateInitialButtonUI(initialButtonFollowState, button);
-    } else if (fetched !== 'fetched') {
+    } else {
       fetchFollowButtonStatus(button, buttonInfo);
     }
   });
