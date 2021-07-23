@@ -34,6 +34,7 @@ class ApplicationController < ActionController::Base
                           deep_links
                           ga_events
                           health_checks
+                          instances
                           invitations
                           omniauth_callbacks
                           passwords

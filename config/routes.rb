@@ -102,6 +102,7 @@ Rails.application.routes.draw do
           resources :listings, only: [:index], to: "organizations#listings"
           resources :articles, only: [:index], to: "organizations#articles"
         end
+        resource :instance, only: %i[show]
       end
     end
 
