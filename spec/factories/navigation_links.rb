@@ -13,5 +13,11 @@ FactoryBot.define do
         navigation_link.class.set_callback :save, :before, :strip_local_hostname
       end
     end
+
+    trait :other_section_link do
+      after(:build) do |navigation_link|
+        navigation_link.section = "other"
+      end
+    end
   end
 end

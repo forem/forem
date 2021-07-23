@@ -20,6 +20,12 @@ else
 
   Honeycomb.configure do |config|
     config.write_key = honeycomb_api_key.presence
+
+    # libhoney client will automatically fall back to using a null transmission
+    # when no write key is provided, but it will log a warning (visible in a few places)
+    # explicitly override the client to disable the warning
+    config.client = Libhoney::NullClient.new unless config.write_key
+
     if ENV["HONEYCOMB_DISABLE_AUTOCONFIGURE"]
       config.dataset = "background-work"
     else

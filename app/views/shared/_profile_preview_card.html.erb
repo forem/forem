@@ -1,5 +1,5 @@
-<div id="<%= id %>" class="profile-preview-card__content crayons-dropdown" style="--card-color: <%= Color::CompareHex.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>; border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
+<div id="<%= id %>" class="profile-preview-card__content crayons-dropdown" style="--card-color: <%= Color::CompareHex.new([user_colors(actor)[:bg], user_colors(actor)[:text]]).brightness(0.88) %>; border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
     <div class="gap-4 grid">
-        <%= render "shared/profile_card_content", context: "preview-card", actor: @user %>
+        <%= render "shared/profile_card_content", context: "preview-card", actor: actor %>
     </div>
 </div>

@@ -43,7 +43,7 @@ function fetchNext(el, endpoint, insertCallback) {
 }
 
 function insertNext(params, buildCallback) {
-  return function insertEntries(entries) {
+  return function insertEntries(entries = []) {
     var list = document.getElementById(params.listId || 'sublist');
     var newFollowersHTML = '';
     entries.forEach(function insertAnEntry(entry) {
@@ -57,7 +57,9 @@ function insertNext(params, buildCallback) {
     });
 
     var followList = document.getElementById('following-wrapper');
-    followList.insertAdjacentHTML('beforeend', newFollowersHTML);
+    if (followList) {
+      followList.insertAdjacentHTML('beforeend', newFollowersHTML);
+    }
     if (nextPage > 0) {
       fetching = false;
     }
