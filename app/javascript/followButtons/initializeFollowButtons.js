@@ -1,3 +1,5 @@
+import { getInstantClick } from '../topNavigation/utilities';
+
 /* global showLoginModal  userData */
 
 /**
@@ -344,11 +346,11 @@ export const initializeFollowButtons = () => {
     subtree: true,
   });
 
-  if (typeof instantClick !== 'undefined') {
-    InstantClick.on('change', () => {
+  getInstantClick().then((ic) => {
+    ic.on('change', () => {
       observer.disconnect();
     });
-  }
+  });
 
   window.addEventListener('beforeunload', () => {
     observer.disconnect();
