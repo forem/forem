@@ -62,7 +62,7 @@
             </li>
             <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
             <li class="block s:hidden">
-              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>" aria-current "<%= "page" if controller.controller_name == "overview" %>">
+              <a class="crayons-link crayons-link--block" href="/">
                 <%= inline_svg_tag("website.svg", aria: true, class: "dropdown-icon crayons-icon") %>
                 Go to <%= community_name %> home page
               </a>
@@ -70,7 +70,7 @@
           </ul>
       </nav>
     </div>
-    <main class="crayons-layout__content min-w-0">
+    <main class="crayons-layout__content min-w-0 p-2">
       <% flash.each do |type, message| %>
         <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
           <button class="close" data-dismiss="alert" aria-label="Close">
