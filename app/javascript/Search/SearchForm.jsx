@@ -15,46 +15,42 @@ const SearchIcon = () => (
   </svg>
 );
 
-export const SearchForm = forwardRef(
-  ({ searchTerm, onSearch, onSubmitSearch }, ref) => (
-    <form
-      action="/search"
-      acceptCharset="UTF-8"
-      method="get"
-      onSubmit={onSubmitSearch}
-      role="search"
-    >
-      <input name="utf8" type="hidden" value="✓" />
-      <div class="crayons-fields crayons-fields--horizontal">
-        <div class="crayons-field flex-1 relative">
-          <input
-            ref={ref}
-            className="crayons-header--search-input crayons-textfield"
-            type="text"
-            name="q"
-            placeholder="Search..."
-            autoComplete="off"
-            aria-label="Search term"
-            onKeyDown={onSearch}
-            value={searchTerm}
-          />
-          <Button
-            type="submit"
-            variant="ghost"
-            contentType="icon-rounded"
-            icon={SearchIcon}
-            size="s"
-            className="absolute right-2 bottom-0 top-0 m-1"
-            aria-label="Search"
-          />
-        </div>
+export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch }, ref) => (
+  <form
+    action="/search"
+    acceptCharset="UTF-8"
+    method="get"
+    onSubmit={onSubmitSearch}
+    role="search"
+  >
+    <input name="utf8" type="hidden" value="✓" />
+    <div class="crayons-fields crayons-fields--horizontal">
+      <div class="crayons-field flex-1 relative">
+        <input
+          ref={ref}
+          className="crayons-header--search-input crayons-textfield"
+          type="text"
+          name="q"
+          placeholder="Search..."
+          autoComplete="off"
+          aria-label="Search term"
+          value={searchTerm}
+        />
+        <Button
+          type="submit"
+          variant="ghost"
+          contentType="icon-rounded"
+          icon={SearchIcon}
+          size="s"
+          className="absolute right-2 bottom-0 top-0 m-1"
+          aria-label="Search"
+        />
       </div>
-    </form>
-  ),
-);
+    </div>
+  </form>
+));
 
 SearchForm.propTypes = {
   searchTerm: PropTypes.string.isRequired,
-  onSearch: PropTypes.func.isRequired,
   onSubmitSearch: PropTypes.func.isRequired,
 };
