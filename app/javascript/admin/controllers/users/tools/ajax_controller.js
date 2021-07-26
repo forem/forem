@@ -7,15 +7,17 @@ export default class AjaxController extends Controller {
   // It is bound to Stimulus via the server side EmailsComponent's HTML
   success(event) {
     const [data, ,] = event.detail;
-    const message = data.result || 'Action successful!';
+    const message = data.result;
 
     // close the panel and go back to the home view
     document.dispatchEvent(new CustomEvent('user:tools'));
 
-    // display success info message
-    document.dispatchEvent(
-      new CustomEvent('snackbar:add', { detail: { message } }),
-    );
+    if (message) {
+      // display success info message
+      document.dispatchEvent(
+        new CustomEvent('snackbar:add', { detail: { message } }),
+      );
+    }
   }
 
   // This method listens to Rails's Ajax event `ajax:error`.
