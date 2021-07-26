@@ -70,7 +70,7 @@
           </ul>
       </nav>
     </div>
-    <main class="crayons-layout__content min-w-0">
+    <main class="crayons-layout__content min-w-0 p-2">
       <% flash.each do |type, message| %>
         <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
           <button class="close" data-dismiss="alert" aria-label="Close">
