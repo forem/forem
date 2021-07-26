@@ -330,34 +330,37 @@ function initializeNonUserFollowButtons() {
   });
 }
 
-export const initializeFollowButtons = () => {
-  initializeAllUserFollowButtons();
-  initializeNonUserFollowButtons();
-  listenForFollowButtonClicks();
+initializeAllUserFollowButtons();
+initializeNonUserFollowButtons();
+listenForFollowButtonClicks();
 
-  // Some follow buttons are added to the DOM dynamically, e.g. search results,
-  // So we listen for any new additions to be fetched
-  const observer = new MutationObserver((mutationsList) => {
-    mutationsList.forEach((mutation) => {
-      if (mutation.type === 'childList') {
-        initializeAllUserFollowButtons();
-        initializeNonUserFollowButtons();
-      }
+// Some follow buttons are added to the DOM dynamically, e.g. search results,
+// So we listen for any new additions to be fetched
+const observer = new MutationObserver((mutationsList) => {
+  mutationsList.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      initializeAllUserFollowButtons();
+      initializeNonUserFollowButtons();
+    }
+  });
+});
+
+// Any element containing the given data-attribute will be monitored for new follow buttons
+document
+  .querySelectorAll('[data-follow-button-container]')
+  .forEach((followButtonContainer) => {
+    observer.observe(followButtonContainer, {
+      childList: true,
+      subtree: true,
     });
   });
 
-  observer.observe(document.getElementById('page-content-inner'), {
-    childList: true,
-    subtree: true,
-  });
-
-  getInstantClick().then((ic) => {
-    ic.on('change', () => {
-      observer.disconnect();
-    });
-  });
-
-  window.addEventListener('beforeunload', () => {
+getInstantClick().then((ic) => {
+  ic.on('change', () => {
     observer.disconnect();
   });
-};
+});
+
+window.addEventListener('beforeunload', () => {
+  observer.disconnect();
+});

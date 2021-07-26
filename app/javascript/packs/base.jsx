@@ -1,4 +1,3 @@
-import { initializeFollowButtons } from '../followButtons/initializeFollowButtons';
 import {
   initializeMobileMenu,
   setCurrentPageIconLink,
@@ -138,9 +137,7 @@ if (memberMenu) {
 getInstantClick().then((spa) => {
   spa.on('change', () => {
     initializeNav();
-    initializeFollowButtons();
   });
 });
 
 initializeNav();
-initializeFollowButtons();
