@@ -9,7 +9,7 @@ module Admin
     def create
       welcome_thread = Article.create(
         body_markdown: welcome_thread_content,
-        user: User.dev_account,
+        user: User.staff_account,
       )
       redirect_to "#{URI.parse(welcome_thread.path).path}/edit"
     end
