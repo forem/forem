@@ -25,6 +25,22 @@
   </div>
 </div>
 <div class="form-group">
+  <fieldset aria-describedby="section-description">
+    <legend class="fs-l">Section</legend>
+    <div class="grid gap-4 grid-cols-2 l:grid-cols-3">
+      <label class="rich-selector crayons-field crayons-field--radio">
+        <%= form.radio_button :section, "default", checked: true, class: "crayons-radio" %>
+        <div class="crayons-field__label">Default</div>
+      </label>
+      <label class="rich-selector crayons-field crayons-field--radio">
+        <%= form.radio_button :section, "other", class: "crayons-radio" %>
+        <div class="crayons-field__label">Other</div>
+      </label>
+    </div>
+  </fieldset>
+  <div id="section-description" class="alert alert-info">Determines which section the link will be displayed in</div>
+</div>
+<div class="form-group">
   <%= form.label :position %>
   <%= form.number_field :position, class: "form-control" %>
   <div class="alert alert-info">Determines the order placement of the links in the sidebar</div>

@@ -28,7 +28,7 @@ class ArticleWithVideoCreationService
   end
 
   def initial_article_with_params(article)
-    if @current_user.editor_version == "v1"
+    if @current_user.setting.editor_version == "v1"
       title = "Unpublished Video ~ #{rand(100_000).to_s(26)}"
       article.body_markdown = "---\ntitle: #{title}\npublished: false\ndescription: \ntags: \n---\n\n"
     else

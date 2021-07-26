@@ -125,7 +125,7 @@ var instantClick
     if (newUrl) {
       // We skip showing the "Skip to content" button for the search page, see
       // https://github.com/forem/forem/issues/13876
-      var path = new URL(newUrl).pathname;
+      var path = new URL(newUrl, window.location.origin).pathname;
       if (path != '/search') {
         const skipLink = document.querySelector('.skip-content-link');
         if (skipLink) {

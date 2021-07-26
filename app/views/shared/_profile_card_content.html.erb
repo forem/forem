@@ -13,13 +13,13 @@
 <% end %>
 
 <div class="print-hidden">
-  <%= follow_button(actor, style = "", classes = "w-100") %>
+  <%= follow_button(actor, style = "", classes = "w-100") %>&nbsp;
 </div>
 
 <% if actor.class.name == "User" %>
   <div class="user-metadata-details">
     <ul class="user-metadata-details-inner">
-      <% if actor.email_public && context != "sidebar" %>
+      <% if actor.setting.display_email_on_profile && context != "sidebar" %>
         <li>
           <div class="key">
             Email

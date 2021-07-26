@@ -102,6 +102,7 @@ Rails.application.routes.draw do
           resources :listings, only: [:index], to: "organizations#listings"
           resources :articles, only: [:index], to: "organizations#articles"
         end
+        resource :instance, only: %i[show]
       end
     end
 
@@ -135,6 +136,10 @@ Rails.application.routes.draw do
       collection do
         resources :devices, only: %i[create destroy]
       end
+    end
+    namespace :users do
+      resource :settings, only: %i[update]
+      resource :notification_settings, only: %i[update]
     end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
@@ -185,7 +190,7 @@ Rails.application.routes.draw do
     resources :article_approvals, only: %i[create]
     resources :video_chats, only: %i[show]
     resources :sidebars, only: %i[show]
-    resources :profile_preview_card, only: %i[show]
+    resources :profile_preview_cards, only: %i[show]
     resources :user_subscriptions, only: %i[create] do
       collection do
         get "/subscribed", action: "subscribed"
@@ -227,6 +232,8 @@ Rails.application.routes.draw do
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     patch "/onboarding_update", to: "users#onboarding_update"
     patch "/onboarding_checkbox_update", to: "users#onboarding_checkbox_update"
+    patch "/onboarding_notifications_checkbox_update",
+          to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
     post "/chat_channels/:id/moderate", to: "chat_channels#moderate"
     post "/chat_channels/:id/open", to: "chat_channels#open"

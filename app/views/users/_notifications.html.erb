@@ -1,4 +1,4 @@
-<%= form_for @user do |f| %>
+<%= form_for @users_notification_setting, url: users_notification_settings_path do |f| %>
   <div class="crayons-card crayons-card--content-rows">
     <header>
       <h2 class="crayons-subtitle-1">
@@ -105,7 +105,6 @@
   <% end %>
 
   <div class="crayons-card crayons-card--content-rows">
-    <%= f.hidden_field :tab, value: @tab %>
     <button type="submit" class="crayons-btn">Save</button>
   </div>
 

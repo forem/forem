@@ -145,7 +145,6 @@ A more complete overview of our stack is available in
 - [@zhao-andy](https://dev.to/andy)
 - [@lightalloy](https://dev.to/lightalloy)
 - [@rhymes](https://dev.to/rhymes)
-- [@jacobherrington](https://dev.to/jacobherrington)
 - [@mstruve](https://dev.to/molly_struve)
 - [@atsmith813](https://dev.to/atsmith813)
 - [@citizen428](https://dev.to/citizen428)
@@ -162,6 +161,7 @@ A more complete overview of our stack is available in
 - [@s_aitchison](https://dev.to/s_aitchison)
 - [@jgaskins](https://dev.to/jgaskins)
 - [@djuber](https://dev.to/djuber)
+- [@rt4914](https://dev.to/rt4914)
 
 ## Vulnerability disclosure
 

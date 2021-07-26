@@ -179,10 +179,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to allow_value(nil).for(:payment_pointer) }
       it { is_expected.to allow_value("").for(:payment_pointer) }
 
-      it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
-
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
-      it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
@@ -192,9 +189,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_presence_of(:blocked_by_count) }
       it { is_expected.to validate_presence_of(:blocking_others_count) }
       it { is_expected.to validate_presence_of(:comments_count) }
-      it { is_expected.to validate_presence_of(:config_font) }
-      it { is_expected.to validate_presence_of(:config_navbar) }
-      it { is_expected.to validate_presence_of(:config_theme) }
       it { is_expected.to validate_presence_of(:credits_count) }
       it { is_expected.to validate_presence_of(:following_orgs_count) }
       it { is_expected.to validate_presence_of(:following_tags_count) }
@@ -277,26 +271,6 @@ RSpec.describe User, type: :model do
       expect(user.errors[:base].to_s).to include("could not be saved. Rate limit reached")
       expect(limiter).to have_received(:track_limit_by_action).with(:user_update).twice
     end
-
-    context "when validating feed_url", vcr: true do
-      it "is valid with no feed_url" do
-        user.feed_url = nil
-
-        expect(user).to be_valid
-      end
-
-      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
-        user.feed_url = "http://example.com"
-
-        expect(user).not_to be_valid
-      end
-
-      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
-        user.feed_url = "https://medium.com/feed/@vaidehijoshi"
-
-        expect(user).to be_valid
-      end
-    end
   end
 
   context "when callbacks are triggered before validation" do
@@ -346,42 +320,6 @@ RSpec.describe User, type: :model do
 
       it "does not allow to change to a username that is taken by an organization" do
         user.username = create(:organization).slug
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#config_theme" do
-      it "accepts valid theme" do
-        user.config_theme = "night theme"
-        expect(user).to be_valid
-      end
-
-      it "does not accept invalid theme" do
-        user.config_theme = "no night mode"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#config_font" do
-      it "accepts valid font" do
-        user.config_font = "sans serif"
-        expect(user).to be_valid
-      end
-
-      it "does not accept invalid font" do
-        user.config_font = "goobledigook"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#config_navbar" do
-      it "accepts valid navbar" do
-        user.config_navbar = "static"
-        expect(user).to be_valid
-      end
-
-      it "does not accept invalid navbar" do
-        user.config_navbar = "not valid navbar input"
         expect(user).not_to be_valid
       end
     end
@@ -663,50 +601,52 @@ RSpec.describe User, type: :model do
     end
 
     it "creates proper body class with defaults" do
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "determines dark theme if night theme" do
-      user.config_theme = "night_theme"
+      user.setting.config_theme = "night_theme"
       expect(user.decorate.dark_theme?).to eq(true)
     end
 
     it "determines dark theme if ten x hacker" do
-      user.config_theme = "ten_x_hacker_theme"
+      user.setting.config_theme = "ten_x_hacker_theme"
       expect(user.decorate.dark_theme?).to eq(true)
     end
 
     it "determines not dark theme if not one of the dark themes" do
-      user.config_theme = "default"
+      user.setting.config_theme = "default"
       expect(user.decorate.dark_theme?).to eq(false)
     end
 
     it "creates proper body class with sans serif config" do
-      user.config_font = "sans_serif"
+      user.setting.config_font = "sans_serif"
 
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
-      user.config_font = "open_dyslexic"
+      user.setting.config_font = "open_dyslexic"
 
-      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
+      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with night theme" do
-      user.config_theme = "night_theme"
+      user.setting.config_theme = "night_theme"
 
-      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
+      # rubocop:disable Layout/LineLength
+      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with pink theme" do
-      user.config_theme = "pink_theme"
+      user.setting.config_theme = "pink_theme"
 
-      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
+      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
@@ -788,12 +728,12 @@ RSpec.describe User, type: :model do
     end
 
     it "returns false if user opted out from follower notifications" do
-      user.assign_attributes(email_follower_notifications: false)
+      user.notification_setting.update(email_follower_notifications: false)
       expect(user.receives_follower_email_notifications?).to be(false)
     end
 
     it "returns true if user opted in from follower notifications and has an email" do
-      user.assign_attributes(email_follower_notifications: true)
+      user.notification_setting.update(email_follower_notifications: true)
       expect(user.receives_follower_email_notifications?).to be(true)
     end
   end
@@ -895,15 +835,6 @@ RSpec.describe User, type: :model do
 
       # Changes were also persisted in the users table
       expect(user.reload.available_for).to eq "profile migrations"
-    end
-
-    it "propagates changes of mapped attributes to the profile model", :aggregate_failures do
-      expect do
-        user.update(bg_color_hex: "#abcdef")
-      end.to change { user.profile.reload.brand_color1 }.to("#abcdef")
-
-      # Changes were also persisted in the users table
-      expect(user.reload.bg_color_hex).to eq "#abcdef"
     end
   end
 end

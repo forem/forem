@@ -7,7 +7,7 @@ module Articles
       @tag = tag
       @prefill = prefill
 
-      @editor_version2 = @user&.editor_version == "v2"
+      @editor_version2 = @user&.setting&.editor_version == "v2"
     end
 
     def self.call(...)

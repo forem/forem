@@ -10,7 +10,8 @@ RSpec.describe ArticleWithVideoCreationService, type: :service do
   describe "#create!" do
     it "works" do
       Timecop.travel(3.weeks.ago)
-      user = create(:user, editor_version: "v1")
+      user = create(:user)
+      user.setting.update(editor_version: "v1")
       Timecop.return
       test = build_stubbed(:article, user: user, video: link).attributes.symbolize_keys
       article = described_class.new(test, user).create!
