@@ -14,6 +14,7 @@ module Admin
         @credits = credits
         @organizations = organizations
         @reports = reports
+        @reactions = reactions
       end
 
       private
@@ -48,6 +49,12 @@ module Admin
       def reports
         DATA.new(
           total: [user.reports.count, 15].min, # we only display 15 reports at most
+        )
+      end
+
+      def reactions
+        DATA.new(
+          total: [user.related_negative_reactions.count, 15].min, # we only display 15 reactions at most
         )
       end
     end

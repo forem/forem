@@ -572,6 +572,12 @@ class User < ApplicationRecord
     reporter_feedback_messages.or(affected_feedback_messages).or(offender_feedback_messages)
   end
 
+  def related_negative_reactions
+    Reaction.article_vomits.where(reactable_id: article_ids)
+      .or(Reaction.comment_vomits.where(reactable_id: comment_ids))
+      .or(Reaction.user_vomits.where(user_id: id))
+  end
+
   protected
 
   # Send emails asynchronously

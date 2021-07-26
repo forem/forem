@@ -228,12 +228,12 @@ module Admin
     def set_related_reactions
       user_article_ids = @user.articles.ids
       user_comment_ids = @user.comments.ids
-      @related_vomit_reactions = Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids,
-                                                category: "vomit")
-        .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
-        .or(Reaction.where(reactable_type: "User", user_id: @user.id, category: "vomit"))
-        .includes(:reactable)
-        .order(created_at: :desc).limit(15)
+      @related_vomit_reactions =
+        Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids, category: "vomit")
+          .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
+          .or(Reaction.where(reactable_type: "User", user_id: @user.id, category: "vomit"))
+          .includes(:reactable)
+          .order(created_at: :desc).limit(15)
     end
 
     def user_params

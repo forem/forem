@@ -39,6 +39,7 @@ namespace :admin do
         resource :notes, only: %i[show create]
         resource :organizations, only: %i[show]
         resource :reports, only: %i[show]
+        resource :reactions, only: %i[show]
       end
     end
 
