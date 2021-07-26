@@ -829,6 +829,8 @@ RSpec.describe User, type: :model do
     end
 
     it "propagates changes of unmapped attributes to the profile model", :aggregate_failures do
+      ProfileField.find_or_create_by(label: "Available for")
+
       expect do
         user.update(available_for: "profile migrations")
       end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
