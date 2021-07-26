@@ -12,11 +12,14 @@ const UserMetadata = ({
   employer_url,
 }) => {
   const joinedOnDate = new Date(created_at);
-  const joinedOnDateString = joinedOnDate.toLocaleString(undefined, {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  const joinedOnDateString = new Intl.DateTimeFormat(
+    navigator.language || 'default',
+    {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    },
+  ).format(joinedOnDate);
 
   return (
     <Fragment>
