@@ -4,12 +4,13 @@ import {
   organizationPropType,
 } from '../../common-prop-types';
 import { PublishDate } from './PublishDate';
+import { MinimalProfilePreviewCard } from '@components/ProfilePreviewCard';
 
 export const Meta = ({ article, organization }) => {
   const orgArticleIndexClassAbsent = !document.getElementById(
     'organization-article-index',
   );
-  // TODO: Extract preview card
+
   return (
     <div className="crayons-story__meta">
       <div className="crayons-story__author-pic">
@@ -54,57 +55,14 @@ export const Meta = ({ article, organization }) => {
                 : article.user.name,
             )}
           </a>
-          <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
-            <button
-              id={`story-author-preview-trigger-${article.id}`}
-              aria-controls={`story-author-preview-content-${article.id}`}
-              class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost p-0"
-              aria-label={`${article.user.username} profile details`}
-            >
-              {article.user.name}
-            </button>
-
-            <div
-              id={`story-author-preview-content-${article.id}`}
-              class="profile-preview-card__content crayons-dropdown"
-              style="border-top: var(--su-7) solid var(--card-color);"
-              data-testid="profile-preview-card"
-            >
-              <div class="gap-4 grid">
-                <div class="-mt-4">
-                  <a href={`/${article.user.username}`} class="flex">
-                    <span class="crayons-avatar crayons-avatar--xl mr-2 shrink-0">
-                      <img
-                        src={`${article.user.profile_image_90}`}
-                        class="crayons-avatar__image"
-                        alt=""
-                        loading="lazy"
-                      />
-                    </span>
-                    <span class="crayons-link crayons-subtitle-2 mt-5">
-                      {article.user.name}
-                    </span>
-                  </a>
-                </div>
-                <div class="print-hidden">
-                  <button
-                    class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
-                    data-info={{
-                      id: article.user_id,
-                      className: 'User',
-                      style: 'full',
-                    }}
-                  >
-                    Follow
-                  </button>
-                </div>
-                <span
-                  class="author-preview-metadata-container"
-                  data-author-id={article.user_id}
-                />
-              </div>
-            </div>
-          </div>
+          <MinimalProfilePreviewCard
+            triggerId={`story-author-preview-trigger-${article.id}`}
+            contentId={`story-author-preview-content-${article.id}`}
+            username={article.user.username}
+            name={article.user.name}
+            profileImage={article.user.profile_image_90}
+            userId={article.user_id}
+          />
           {organization &&
             !document.getElementById('organization-article-index') && (
               <span>
