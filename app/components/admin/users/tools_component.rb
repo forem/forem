@@ -13,6 +13,7 @@ module Admin
         @notes = notes
         @credits = credits
         @organizations = organizations
+        @reports = reports
       end
 
       private
@@ -41,6 +42,12 @@ module Admin
       def organizations
         DATA.new(
           total: user.organizations.count,
+        )
+      end
+
+      def reports
+        DATA.new(
+          total: [user.reports.count, 15].min, # we only display 15 reports at most
         )
       end
     end

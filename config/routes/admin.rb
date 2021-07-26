@@ -38,6 +38,7 @@ namespace :admin do
         resource :emails, only: :show
         resource :notes, only: %i[show create]
         resource :organizations, only: %i[show]
+        resource :reports, only: %i[show]
       end
     end
 

@@ -262,7 +262,6 @@ class User < ApplicationRecord
       ),
     )
   }
-
   before_validation :check_for_username_change
   before_validation :downcase_email
   # make sure usernames are not empty, to be able to use the database unique index
@@ -567,6 +566,10 @@ class User < ApplicationRecord
       .order(created_at: :desc)
       .first
       &.verified_at
+  end
+
+  def reports
+    reporter_feedback_messages.or(affected_feedback_messages).or(offender_feedback_messages)
   end
 
   protected
