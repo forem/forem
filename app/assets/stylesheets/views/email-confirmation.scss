@@ -1,3 +1,5 @@
+@import '../config/import';
+
 #page-content.confirmations {
   display: flex;
   flex-direction: column;
@@ -8,8 +10,7 @@
   display: flex;
   background: white;
 
-  @media (max-width: $breakpoint-s) {
+  @media (max-width: $breakpoint-m) {
     padding: 1em 1em 0;
   }
-
 }
