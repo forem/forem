@@ -281,7 +281,7 @@ class User < ApplicationRecord
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
 
-  def self.dev_account
+  def self.staff_account
     find_by(id: Settings::Community.staff_user_id)
   end
 

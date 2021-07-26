@@ -3,13 +3,13 @@ require "rails_helper"
 RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
-  let(:dev_account) { create(:user) }
+  let(:staff_account) { create(:user) }
   let(:mascot_account) { create(:user) }
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
 
   before do
-    allow(User).to receive(:dev_account).and_return(dev_account)
+    allow(User).to receive(:staff_account).and_return(staff_account)
     allow(User).to receive(:mascot_account).and_return(mascot_account)
   end
 

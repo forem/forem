@@ -738,15 +738,15 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe ".dev_account" do
+  describe ".staff_account" do
     it "returns nil if the account does not exist" do
-      expect(described_class.dev_account).to be_nil
+      expect(described_class.staff_account).to be_nil
     end
 
     it "returns the user if the account exists" do
       allow(Settings::Community).to receive(:staff_user_id).and_return(user.id)
 
-      expect(described_class.dev_account).to eq(user)
+      expect(described_class.staff_account).to eq(user)
     end
   end
 
