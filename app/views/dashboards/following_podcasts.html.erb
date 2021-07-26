@@ -9,9 +9,9 @@
     </header>
 
     <main id="main-content" class="crayons-layout crayons-layout--2-cols">
-      <nav class="crayons-layout__sidebar-left">
+      <div class="crayons-layout__sidebar-left">
         <%= render "actions" %>
-      </nav>
+      </div>
       <div class="crayons-layout__content" id="user-dashboard">
         <% if @followed_podcasts.any? %>
           <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
