@@ -1,4 +1,3 @@
-dist: focal
 branches:
   only:
     - main
@@ -7,6 +6,8 @@ cache:
   bundler: true
   directories:
     - node_modules
+rvm:
+  - 3.0.2
 addons:
   postgresql: '10' # Travis does not work out of the box with Postgres 11 yet
   chrome: 'stable'
@@ -17,9 +18,6 @@ addons:
       - $(ls cypress/screenshots/*.* | tr "\n" ":")
       - $(ls cypress/videos/*.* | tr "\n" ":")
     debug: true
-  apt:
-    sources:
-      - sourceline: 'deb http://dl.google.com/linux/chrome/deb/ stable main'
 env:
   global:
     - RAILS_ENV=test
@@ -40,8 +38,6 @@ env:
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
 before_install:
-  - rvm reinstall ruby-head --binary
-  - rvm use 3.0.2 --install --binary --fuzzy
   - gem install bundler:"<2.3"
 install:
   - date --rfc-3339=seconds
