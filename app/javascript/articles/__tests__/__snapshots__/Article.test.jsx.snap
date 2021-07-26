@@ -65,12 +65,12 @@ Object {
                       Stella Macejkovic
                     </a>
                     <div
-                      class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block"
+                      class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block"
                     >
                       <button
                         aria-controls="story-author-preview-content-62407"
                         aria-label="Emil99 profile details"
-                        class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost p-0"
+                        class="profile-preview-card__trigger fs-s px-0 crayons-btn crayons-btn--ghost p-0"
                         id="story-author-preview-trigger-62407"
                       >
                         Stella Macejkovic
@@ -312,12 +312,12 @@ Object {
                     Stella Macejkovic
                   </a>
                   <div
-                    class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block"
+                    class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block"
                   >
                     <button
                       aria-controls="story-author-preview-content-62407"
                       aria-label="Emil99 profile details"
-                      class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost p-0"
+                      class="profile-preview-card__trigger fs-s px-0 crayons-btn crayons-btn--ghost p-0"
                       id="story-author-preview-trigger-62407"
                     >
                       Stella Macejkovic

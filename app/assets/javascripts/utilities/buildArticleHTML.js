@@ -204,12 +204,12 @@ function buildArticleHTML(article) {
             <a href="/${profileUsername}" class="crayons-story__secondary fw-medium m:hidden">${filterXSS(
       article.user.name,
     )}</a>
-        <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
+        <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block">
           <button id="story-author-preview-trigger-${
             article.id
           }" aria-controls="story-author-preview-content-${
       article.id
-    }" class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost p-0" aria-label="${profileUsername} profile details">
+    }" class="profile-preview-card__trigger fs-s px-0 crayons-btn crayons-btn--ghost p-0" aria-label="${profileUsername} profile details">
             ${article.user.name}
           </button>
             ${previewCardContent}

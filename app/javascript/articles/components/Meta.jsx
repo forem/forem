@@ -3,8 +3,8 @@ import {
   articlePropTypes,
   organizationPropType,
 } from '../../common-prop-types';
+import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
 import { PublishDate } from './PublishDate';
-import { MinimalProfilePreviewCard } from '@components/MinimalProfilePreviewCard';
 
 export const Meta = ({ article, organization }) => {
   const orgArticleIndexClassAbsent = !document.getElementById(

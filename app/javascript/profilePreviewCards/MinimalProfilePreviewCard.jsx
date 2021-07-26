@@ -8,11 +8,11 @@ export const MinimalProfilePreviewCard = ({
   profileImage,
   userId,
 }) => (
-  <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
+  <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block">
     <button
       id={triggerId}
       aria-controls={contentId}
-      class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost p-0"
+      class="profile-preview-card__trigger fs-s px-0 crayons-btn crayons-btn--ghost p-0"
       aria-label={`${username} profile details`}
     >
       {name}
