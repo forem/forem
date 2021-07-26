@@ -24,7 +24,6 @@ RSpec.describe "Navigation Links tasks", type: :task do
 
       it "does not create nav links if they already exist" do
         expect { Rake::Task["navigation_links:create"].invoke }.to change(NavigationLink, :count).from(1).to(5)
-        puts NavigationLink.last.inspect
       end
     end
   end
