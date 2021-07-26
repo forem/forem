@@ -161,7 +161,7 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["comments_count"], name: "index_articles_on_comments_count"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
-    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
+    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true, where: "(published IS TRUE)"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
@@ -689,6 +689,7 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.string "icon", null: false
     t.string "name", null: false
     t.integer "position"
+    t.integer "section", default: 0, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "url", null: false
     t.index ["url", "name"], name: "index_navigation_links_on_url_and_name", unique: true
