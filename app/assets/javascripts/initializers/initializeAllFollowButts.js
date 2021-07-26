@@ -125,12 +125,14 @@ function fetchButt(butt, buttInfo) {
 function addButtClickHandles(response, buttons) {
   // currently lacking error handling
   buttons.forEach((butt) => {
-    assignInitialButtResponse(response, butt);
-    butt.onclick = function (e) {
-      e.preventDefault();
-      handleOptimisticButtRender(butt);
-    };
-    butt.dataset.clickInitialized = 'true';
+    if (butt.dataset.clickInitialized !== 'true') {
+      assignInitialButtResponse(response, butt);
+      butt.addEventListener('click', function (e) {
+        e.preventDefault();
+        handleOptimisticButtRender(butt);
+      });
+      butt.dataset.clickInitialized = 'true';
+    }
   });
 }
 

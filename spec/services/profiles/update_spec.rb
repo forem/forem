@@ -33,14 +33,6 @@ RSpec.describe Profiles::Update, type: :service do
     expect(profile.user.name).to eq new_name
   end
 
-  it "sets custom attributes for the user" do
-    custom_profile_field = create(:custom_profile_field, label: "Custom test", profile: profile)
-    custom_attribute = custom_profile_field.attribute_name
-
-    described_class.call(user, profile: { custom_attribute => "Test" }, user: {})
-    expect(profile.custom_attributes[custom_attribute]).to eq "Test"
-  end
-
   it "updates the profile_updated_at column" do
     expect do
       described_class.call(user, profile: { education: "false" })
@@ -101,13 +93,13 @@ RSpec.describe Profiles::Update, type: :service do
 
     it "enqueues resave articles job when changing bg_color_hex" do
       sidekiq_assert_resave_article_worker(user) do
-        described_class.call(user, profile: { brand_color1: "#12345F" })
+        described_class.call(user, user_settings: { brand_color1: "#12345F" })
       end
     end
 
     it "enqueues resave articles job when changing text_color_hex" do
       sidekiq_assert_resave_article_worker(user) do
-        described_class.call(user, profile: { brand_color2: "#12345F" })
+        described_class.call(user, user_settings: { brand_color2: "#12345F" })
       end
     end
 

@@ -100,7 +100,7 @@
 <% end %>
 
 <% if @comment.persisted? %>
-  <script defer>
+  <script>
     var editForm = document.getElementById("edit_comment_<%= @comment&.id %>");
     if ( editForm ) {
       editForm.onsubmit = function (e) {

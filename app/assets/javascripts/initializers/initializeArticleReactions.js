@@ -17,26 +17,11 @@ function setReactionCount(reactionName, newCount) {
   }
 }
 
-function getReactionAriaLabel(reactionName, reacted) {
-  switch (reactionName) {
-    case 'readinglist':
-      return reacted ? 'Remove from reading list' : 'Add to reading list';
-    case 'unicorn':
-      return reacted ? 'Remove unicorn reaction' : 'React with unicorn';
-    case 'like':
-      return reacted ? 'Unlike' : 'Like';
-  }
-}
-
 function showUserReaction(reactionName, animatedClass) {
   const reactionButton = document.getElementById(
     'reaction-butt-' + reactionName,
   );
   reactionButton.classList.add('user-activated', animatedClass);
-  reactionButton.setAttribute(
-    'aria-label',
-    getReactionAriaLabel(reactionName, true),
-  );
   reactionButton.setAttribute('aria-pressed', 'true');
 }
 
@@ -45,10 +30,6 @@ function hideUserReaction(reactionName) {
     'reaction-butt-' + reactionName,
   );
   reactionButton.classList.remove('user-activated', 'user-animated');
-  reactionButton.setAttribute(
-    'aria-label',
-    getReactionAriaLabel(reactionName, false),
-  );
   reactionButton.setAttribute('aria-pressed', 'false');
 }
 

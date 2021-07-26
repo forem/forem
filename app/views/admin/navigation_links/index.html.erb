@@ -2,26 +2,63 @@
   <div class="my-5"> Configure the left sidebar navigation links that appear at <a href="<%= app_url %>"><%= app_url %></a> using the form below:</div>
 
   <%= render "add_navigation_link_modal" %>
-  <% @navigation_links.each do |link| %>
-    <div class="flex pt-5 items-center">
-      <div class="mr-5"><%= link[:position] %></div>
-      <div class="admin-navigation-links">
-        <a href="<%= link[:url] %>" class="crayons-link crayons-link--block bg-base-20">
-          <div class="crayons-icon crayons-icon--default">
-              <%= link[:icon].html_safe %>
+  <div class="pt-8">
+    <h2 class="fw-bold fs-base">
+      <%= community_name %>
+    </h2>
+    <ul class="ml-0">
+      <% @default_nav_links.each_with_index do |link, index| %>
+        <li class="flex <% index.zero? ? "pt-4" : "pt-5" %> items-center">
+          <div class="mr-5"><%= link[:position] %></div>
+          <div class="admin-navigation-links">
+            <a href="<%= link[:url] %>" class="crayons-link crayons-link--block bg-base-20">
+              <div class="crayons-icon crayons-icon--default">
+                  <%= link[:icon].html_safe %>
+              </div>
+              <%= link[:name] %><span id="reading-list-count" class="crayons-indicator"></span>
+            </a>
           </div>
-          <%= link[:name] %><span id="reading-list-count" class="crayons-indicator"></span>
-        </a>
-      </div>
 
-      <div class="flex items-center mx-5">
-        <div class="mx-3">
-          <%= render partial: "edit_navigation_link_modal", locals: { link: link } %>
-        </div>
-        <div class="mx-3">
-          <%= link_to "Delete", admin_navigation_link_path(link), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %>
-        </div>
-      </div>
-    </div>
-  <% end %>
+          <div class="flex items-center mx-5">
+            <div class="mx-3">
+              <%= render partial: "edit_navigation_link_modal", locals: { link: link } %>
+            </div>
+            <div class="mx-3">
+              <%= link_to "Delete", admin_navigation_link_path(link), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div class="pb-8">
+    <h2 class="mt-9 fw-bold fs-base">
+      Other
+    </h2>
+    <ul class="ml-0">
+      <% @other_nav_links.each_with_index do |link, index| %>
+        <li class="flex <% if index == 0 %>pt-4<% else %>pt-5<% end %> items-center">
+          <div class="mr-5"><%= link[:position] %></div>
+          <div class="admin-navigation-links">
+            <a href="<%= link[:url] %>" class="crayons-link crayons-link--block bg-base-20">
+              <div class="crayons-icon crayons-icon--default">
+                  <%= link[:icon].html_safe %>
+              </div>
+              <%= link[:name] %><span id="reading-list-count" class="crayons-indicator"></span>
+            </a>
+          </div>
+
+          <div class="flex items-center mx-5">
+            <div class="mx-3">
+              <%= render partial: "edit_navigation_link_modal", locals: { link: link } %>
+            </div>
+            <div class="mx-3">
+              <%= link_to "Delete", admin_navigation_link_path(link), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
 </div>
