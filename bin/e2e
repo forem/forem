@@ -29,4 +29,10 @@ fi
 printf "Starting the test runner...\n\n"
 
 bundle exec rails assets:precompile;
-CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.json" RAILS_ENV=test E2E=true bundle exec rake cypress:open
+
+if [ $1 = "--no-seed" ]; then
+   echo "Running E2E tests without seed data"
+   CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.json" RAILS_ENV=test E2E=true SKIP_SEED_DATA=1 E2E_FOLDER=nonSeededFlows bundle exec rake cypress:open
+else
+   CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.json" RAILS_ENV=test E2E=true bundle exec rake cypress:open
+fi
