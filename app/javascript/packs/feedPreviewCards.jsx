@@ -130,7 +130,7 @@ function listenForHoveredOrFocusedStoryCards() {
     .addEventListener('focusin', checkForPreviewCardDetails);
 }
 
-function initializeHomePageFeedPreviewCards() {
+function initializeFeedPreviewCards() {
   // Select all preview card triggers that haven't already been initialized
   const allPreviewCardTriggers = document.querySelectorAll(
     'button[id^=story-author-preview-trigger]:not([data-initialized])',
@@ -156,7 +156,7 @@ function initializeHomePageFeedPreviewCards() {
 const observer = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
     if (mutation.type === 'childList') {
-      initializeHomePageFeedPreviewCards();
+      initializeFeedPreviewCards();
     }
   });
 });
@@ -176,5 +176,5 @@ window.addEventListener('beforeunload', () => {
 
 // TODO: init the follow buttons
 
-initializeHomePageFeedPreviewCards();
+initializeFeedPreviewCards();
 listenForHoveredOrFocusedStoryCards();
