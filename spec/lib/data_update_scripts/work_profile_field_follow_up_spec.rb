@@ -5,9 +5,9 @@ require Rails.root.join(
 
 describe DataUpdateScripts::WorkProfileFieldFollowUp do
   it "removes the three obsolete profile fields" do
-    ProfileField.find_or_create_by(attribute_name: "employer_name", label: "Employer name")
-    ProfileField.find_or_create_by(attribute_name: "employer_url", label: "Employer URL")
-    ProfileField.find_or_create_by(attribute_name: "employment_title", label: "Employer title")
+    ProfileField.find_or_create_by(label: "Employer name")
+    ProfileField.find_or_create_by(label: "Employer URL")
+    ProfileField.find_or_create_by(label: "Employment title")
 
     expect { described_class.new.run }.to change(ProfileField, :count).by(-3)
   end
