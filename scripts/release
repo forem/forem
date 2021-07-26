@@ -7,7 +7,7 @@ def run(command, abort_on_fail: true)
   puts "> #{command}" if $VERBOSE
 
   system(command, exception: abort_on_fail)
-rescue => e
+rescue StandardError => e
   raise "#{command.inspect} failed: #{e}"
 end
 
@@ -19,25 +19,28 @@ source = ENV.fetch("FOREM_STAGING_FROM", "#{channel}-next")
 
 OptionParser.new ARGV.dup do |options|
   options.banner = <<~USAGE
-    Usage: #$0 [options]
+    Usage: #{$PROGRAM_NAME} [options]
 
     Releases are named CHANNEL.DATE.HOTFIX_COUNT. Example: #{channel}.#{date}.#{hotfix}
 
   USAGE
 
-  options.on "-c", "--channel CHANNEL", "Specify the release channel (defaults to #{channel.inspect})" do |release_channel|
+  options.on "-c", "--channel CHANNEL",
+             "Specify the release channel (defaults to #{channel.inspect})" do |release_channel|
     channel = release_channel
   end
 
   options.on "-d", "--date DATE", "Specify the release date (defaults to today)" do |release_date|
-    date = release_date.gsub(/-/, "")
+    date = release_date.delete("-")
   end
 
-  options.on "-f", "--from BRANCH/COMMIT/TAG", "Specify the source branch for this release (defaults to #{source.inspect})" do |from_branch|
+  options.on "-f", "--from BRANCH/COMMIT/TAG",
+             "Specify the source branch for this release (defaults to #{source.inspect})" do |from_branch|
     source = from_branch
   end
 
-  options.on "-h", "--hotfix HOTFIX", "Specify the hotfix count for this release branch (defaults to #{hotfix.inspect})" do |hotfix_opt|
+  options.on "-h", "--hotfix HOTFIX",
+             "Specify the hotfix count for this release branch (defaults to #{hotfix.inspect})" do |hotfix_opt|
     hotfix = hotfix_opt
   end
 
@@ -68,13 +71,14 @@ begin
   begin
     run "git tag #{tag}"
     puts "Tagged #{tag}"
-  rescue
+  rescue StandardError
     # If `git tag` fails, it's because the tag already exists. In this case, git
     # will have already output an error that looks like this:
     #
     #     fatal: tag 'stable.20210512.0' already exists
     #
-    STDERR.puts "Should the hotfix count be set to something other than #{hotfix}? Or maybe you need to delete the tag locally (hint: `git tag --delete #{tag}`)"
+    warn "Should the hotfix count be set to something other than #{hotfix}?" \
+         "Or maybe you need to delete the tag locally (hint: `git tag --delete #{tag}`)"
     exit 1
   end
 

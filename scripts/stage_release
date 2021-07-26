@@ -7,27 +7,29 @@ def run(command, abort_on_fail: true)
   puts "> #{command}" if $VERBOSE
 
   system(command, exception: abort_on_fail)
-rescue => e
+rescue StandardError => e
   raise "#{command.inspect} failed: #{e}"
 end
 
 remote = ENV.fetch("FOREM_RELEASE_REMOTE",  "origin")
 source = ENV.fetch("FOREM_RELEASE_FROM",    "main")
-target = ENV.fetch("FOREM_RELEASE_CHANNEL", "stable") + "-next"
+target = "#{ENV.fetch('FOREM_RELEASE_CHANNEL', 'stable')}-next"
 
 OptionParser.new ARGV.dup do |options|
   options.banner = <<~USAGE
-    Usage: #$0 [options]
+    Usage: #{$PROGRAM_NAME} [options]
 
     Staging banches are named CHANNEL-next. Example: #{target}
 
   USAGE
 
-  options.on "-c", "--channel CHANNEL", "Specify the release channel (defaults to #{target.sub(/-next$/, "").inspect})" do |release_channel|
+  options.on "-c", "--channel CHANNEL",
+             "Specify the release channel (defaults to #{target.sub(/-next$/, '').inspect})" do |release_channel|
     target = "#{release_channel}-next"
   end
 
-  options.on "-f", "--from BRANCH/COMMIT/TAG", "Specify the source branch for this release (defaults to #{source.inspect})" do |from_branch|
+  options.on "-f", "--from BRANCH/COMMIT/TAG",
+             "Specify the source branch for this release (defaults to #{source.inspect})" do |from_branch|
     source = from_branch
   end
 
