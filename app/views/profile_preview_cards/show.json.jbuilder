@@ -1,3 +1,5 @@
+# TODO: @citizen428 - We shouldn't use education and work directly here, since
+# we can't guarantee that these profile fields will exist on all Forems.
 json.extract!(
   @user.profile,
   :summary, :location, :education, :work
