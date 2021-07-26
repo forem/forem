@@ -117,7 +117,7 @@ describe('Preview user profile from article page', () => {
 
           // Check all the expected user data sections are present
           cy.findByText('Admin user summary');
-          cy.findByText('Software developer');
+          cy.findByText('Software developer at Company');
           cy.findByText('Edinburgh');
           cy.findByText('University of Life');
 
@@ -259,7 +259,7 @@ describe('Preview user profile from article page', () => {
 
         cy.findByRole('button', { name: 'Follow' });
         cy.findByText('Admin user summary');
-        cy.findByText('Software developer');
+        cy.findByText('Software developer at Company');
         cy.findByText('Edinburgh');
         cy.findByText('University of Life');
       });

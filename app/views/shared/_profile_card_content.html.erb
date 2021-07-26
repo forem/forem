@@ -29,6 +29,16 @@
           </div>
         </li>
       <% end %>
+      <% if actor.location.present? %>
+        <li>
+          <div class="key">
+            Location
+          </div>
+          <div class="value">
+            <%= actor.location %>
+          </div>
+        </li>
+      <% end %>
       <% if (header_fields = actor.profile.decorate.ui_attributes_for(area: :header)).present? %>
         <% header_fields.sort.each do |title, value| %>
           <% next if Profile.special_attributes.include?(title) %>
