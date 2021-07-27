@@ -7,7 +7,7 @@ module Admin
 
       validates :emails, :notes, presence: true
 
-      def initialize(user)
+      def initialize(user:)
         @user = user
         @emails = emails
         @notes = notes
