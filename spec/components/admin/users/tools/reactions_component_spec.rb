@@ -1,13 +1,45 @@
 require "rails_helper"
 
 RSpec.describe Admin::Users::Tools::ReactionsComponent, type: :component do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:user) { create(:user) }
+  let(:moderator) { create(:user, :trusted) }
 
-  # it "renders something useful" do
-  #   expect(
-  #     render_inline(described_class.new(attr: "value")) { "Hello, components!" }.css("p").to_html
-  #   ).to include(
-  #     "Hello, components!"
-  #   )
-  # end
+  describe "View reactions" do
+    it "does not render the section by default" do
+      render_inline(described_class.new(user: user))
+
+      expect(rendered_component).not_to have_css("article")
+    end
+
+    it "renders the section if the user receives a vomit on one of their articles", :aggregate_failures do
+      article = create(:article, user: user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: article)
+
+      render_inline(described_class.new(user: user))
+
+      expect(rendered_component).to have_text(reaction.category.capitalize)
+      expect(rendered_component).to have_text(reaction.reactable_type)
+      expect(rendered_component).to have_text(reaction.reactable.title)
+    end
+
+    it "renders the section if the user receives a vomit on one of their comments", :aggregate_failures do
+      comment = create(:comment, user: user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: comment)
+
+      render_inline(described_class.new(user: user))
+
+      expect(rendered_component).to have_text(reaction.category.capitalize)
+      expect(rendered_component).to have_text(reaction.reactable_type)
+      expect(rendered_component).to have_text(reaction.reactable.title)
+    end
+
+    it "renders the section if the user left vomit reactions", :aggregate_failures do
+      reaction = create(:vomit_reaction, user: moderator, reactable: user)
+
+      render_inline(described_class.new(user: moderator))
+
+      expect(rendered_component).to have_text(reaction.category.capitalize)
+      expect(rendered_component).to have_text(reaction.reactable_type)
+    end
+  end
 end
