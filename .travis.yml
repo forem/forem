@@ -28,9 +28,9 @@ env:
     - PGPORT=5433
     - PGUSER=travis
     - RAILS_ENV=test
-    - DATABASE_URL=postgres://postgres@localhost/Forem_prod_test
+    - DATABASE_URL=postgres://travis@localhost/Forem_prod_test
     - DATABASE_NAME=Forem_prod_test
-    - DATABASE_URL_TEST=postgres://postgres@localhost/Forem_test
+    - DATABASE_URL_TEST=postgres://travis@localhost/Forem_test
     - DATABASE_NAME_TEST=Forem_test
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
