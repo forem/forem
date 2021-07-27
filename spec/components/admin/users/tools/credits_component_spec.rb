@@ -8,7 +8,7 @@ RSpec.describe Admin::Users::Tools::CreditsComponent, type: :component do
       render_inline(described_class.new(user: user))
 
       expect(rendered_component).to have_text("available user credit".pluralize(user.unspent_credits_count))
-      expect(rendered_component).to have_css("form[action=\"#{admin_user_tools_credits_path(user)}\"]")
+      expect(rendered_component).to have_css("form[action='#{admin_user_tools_credits_path(user)}']")
     end
   end
 
@@ -24,7 +24,7 @@ RSpec.describe Admin::Users::Tools::CreditsComponent, type: :component do
 
       render_inline(described_class.new(user: user))
 
-      expect(rendered_component).to have_css("form[action=\"#{admin_user_tools_credits_path(user)}\"]")
+      expect(rendered_component).to have_css("form[action='#{admin_user_tools_credits_path(user)}']")
     end
   end
 
