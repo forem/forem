@@ -1,7 +1,7 @@
 import { addSnackbarItem } from '../Snackbar';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
-/* global Runtime initializeUserFollowButts  */
+/* global Runtime   */
 
 const handleCopyPermalink = (closeDropdown) => {
   return (event) => {
@@ -89,9 +89,6 @@ const fetchMissingProfilePreviewCard = async (placeholderElement) => {
   previewCard.id = dropdownContentId;
 
   placeholderElement.parentNode.replaceChild(previewCard, placeholderElement);
-
-  // Make sure the button inside the dropdown is initialized
-  initializeUserFollowButts();
 };
 
 /**
