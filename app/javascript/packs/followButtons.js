@@ -148,10 +148,10 @@ function handleFollowButtonClick({ target }) {
       return;
     }
 
-    const buttonDataInfo = JSON.parse(target.dataset.info);
+    const { className, id } = JSON.parse(target.dataset.info);
     const formData = new FormData();
-    formData.append('followable_type', buttonDataInfo.className);
-    formData.append('followable_id', buttonDataInfo.id);
+    formData.append('followable_type', className);
+    formData.append('followable_id', id);
     formData.append('verb', verb);
     getCsrfToken().then(sendFetch('follow-creation', formData));
   }
@@ -250,7 +250,7 @@ function initializeAllUserFollowButtons() {
 
   Array.from(buttons, (button) => {
     button.dataset.fetched = 'fetched';
-    const userStatus = document.body.getAttribute('data-user-status');
+    const { userStatus } = document.body.dataset;
 
     if (userStatus === 'logged-out') {
       const { style } = JSON.parse(button.dataset.info);
