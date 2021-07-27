@@ -21,7 +21,7 @@ export class CommentSubscription extends Component {
   constructor(props) {
     const { subscriptionType } = props;
     super(props);
-    console.log('yo'); // eslint-disable-line
+
     const subscribed =
       subscriptionType &&
       (subscriptionType.length > 0 && subscriptionType) !==
