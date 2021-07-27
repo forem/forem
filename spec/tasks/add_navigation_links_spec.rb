@@ -8,13 +8,12 @@ RSpec.describe "Navigation Links tasks", type: :task do
 
   describe "#create" do
     it "creates navigation links for new forem if nonexistent" do
-      expect { Rake::Task["navigation_links:create"].invoke }.to change(NavigationLink, :count).from(0).to(5)
+      expect { Rake::Task["navigation_links:create"].invoke }.to change(NavigationLink, :count).by(5)
     end
 
     context "when navigation links exist" do
       before do
         NavigationLink.destroy_all
-        NavigationLink.count
         create(:navigation_link,
                name: "Reading List",
                url: URL.url("readinglist"),
