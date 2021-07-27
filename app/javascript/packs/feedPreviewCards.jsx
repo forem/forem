@@ -15,20 +15,25 @@ async function populateMissingMetadata(metadataPlaceholder) {
   });
   const authorMetadata = await response.json();
 
-  // TODO: get all the matching placeholders, not just the hovered ones
-
-  render(
-    <UserMetadata {...authorMetadata} />,
-    metadataPlaceholder.parentElement,
-    metadataPlaceholder,
+  // A given author may have multiple cards in the feed - populate their metadata everywhere it is missing
+  const allPlaceholdersForThisAuthor = document.querySelectorAll(
+    `.author-preview-metadata-container[data-author-id="${authorId}"]`,
   );
 
-  metadataPlaceholder.parentElement.parentElement.style.setProperty(
-    '--card-color',
-    authorMetadata.card_color,
-  );
+  for (const placeholder of allPlaceholdersForThisAuthor) {
+    render(
+      <UserMetadata {...authorMetadata} />,
+      placeholder.parentElement,
+      placeholder,
+    );
 
-  metadataPlaceholder.remove();
+    placeholder.parentElement.parentElement.style.setProperty(
+      '--card-color',
+      authorMetadata.card_color,
+    );
+
+    placeholder.remove();
+  }
 }
 
 function checkForPreviewCardDetails(event) {
