@@ -22,7 +22,7 @@ RSpec.describe "Dashboard", type: :system, js: true do
 
       visit dashboard_path
 
-      within "main > header" do
+      within "header:nth-child(1)" do
         expect(page).to have_text("1")
       end
     end

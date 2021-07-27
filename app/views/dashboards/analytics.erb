@@ -1,43 +1,41 @@
 <% title "Analytics" %>
 
-<main id="main-content">
-  <div class="dashboard-container analytics-container crayons-layout" id="user-dashboard">
-    <% if @organizations.any? %>
-      <nav aria-label="Dashboards">
-        <ul class="list-none">
+<main class="dashboard-container analytics-container crayons-layout" id="main-content">
+  <% if @organizations.any? %>
+    <nav aria-label="Dashboards">
+      <ul class="list-none">
+        <li>
+          <a href="<%= dashboard_path %>" class="rounded-btn crayons-link--block rounded-btn--transparent">👈 Back to Main Dashboard</a>
+        </li>
+        <li>
+          <a class="rounded-btn crayons-link--block organization" 
+             href="<%= dashboard_analytics_path %>"
+             <%= params[:org_id] ? "" : 'aria-current="page"'.html_safe %>>
+             Your Dashboard
+          </a>
+        </li>
+        <% @organizations.each do |org| %>
           <li>
-            <a href="<%= dashboard_path %>" class="rounded-btn crayons-link--block rounded-btn--transparent">👈 Back to Main Dashboard</a>
-          </li>
-          <li>
-            <a class="rounded-btn crayons-link--block organization" 
-               href="<%= dashboard_analytics_path %>"
-               <%= params[:org_id] ? "" : 'aria-current="page"'.html_safe %>>
-               Your Dashboard
+            <a
+              class="rounded-btn crayons-link--block organization"
+              href="<%= dashboard_analytics_org_path(org.id) %>"
+              data-organization-id="<%= org.id %>"
+              <%= params[:org_id].to_i == org.id ? 'aria-current="page"'.html_safe : "" %>>
+              <%= org.name %> Analytics Dashboard
             </a>
           </li>
-          <% @organizations.each do |org| %>
-            <li>
-              <a
-                class="rounded-btn crayons-link--block organization"
-                href="<%= dashboard_analytics_org_path(org.id) %>"
-                data-organization-id="<%= org.id %>"
-                <%= params[:org_id].to_i == org.id ? 'aria-current="page"'.html_safe : "" %>>
-                <%= org.name %> Analytics Dashboard
-              </a>
-            </li>
-          <% end %>
-        </ul>
-      </nav>
-    <% end %>
+        <% end %>
+      </ul>
+    </nav>
+  <% end %>
 
-    <div class="crayons-card p-3 mt-5">
-      <h1 class="fs-4xl fw-medium">Analytics Dashboard for <%= @user_or_org.name %></h1>
-      <p>Welcome to the Analytics Dashboard, the home of in-depth user metrics so that authors can make data-driven decisions about the  <%= Settings::Community.member_label %> ecosystem.</p>
-      <p>This dashboard highlights deep insights especially relevant to  <%= Settings::Community.member_label %> relations, authors, and serious bloggers.</p>
-    </div>
-
-    <%= render "shared/stats" %>
+  <div class="crayons-card p-3 mt-5">
+    <h1 class="fs-4xl fw-medium">Analytics Dashboard for <%= @user_or_org.name %></h1>
+    <p>Welcome to the Analytics Dashboard, the home of in-depth user metrics so that authors can make data-driven decisions about the  <%= Settings::Community.member_label %> ecosystem.</p>
+    <p>This dashboard highlights deep insights especially relevant to  <%= Settings::Community.member_label %> relations, authors, and serious bloggers.</p>
   </div>
+
+  <%= render "shared/stats" %>
 </main>
 
 <%= javascript_packs_with_chunks_tag "analyticsDashboard", defer: true %>
