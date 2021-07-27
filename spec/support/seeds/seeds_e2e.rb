@@ -89,7 +89,7 @@ seeder.create_if_none(Organization) do
     remote_profile_image_url: logo = Faker::Company.logo,
     nav_image: logo,
     url: Faker::Internet.url,
-    slug: "org#{rand(10_000)}",
+    slug: "bachmanity",
   )
 
   OrganizationMembership.create!(
@@ -218,6 +218,31 @@ chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.lo
     email_follower_notifications: false,
   )
   user
+end
+
+##############################################################################
+seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.com") do
+  user = User.create!(
+    name: "Notifications User",
+    email: "notifications-user@forem.local",
+    username: "notifications_user",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+
+  follow = admin_user.follows.create!(followable: user)
+  Notification.send_new_follower_notification_without_delay(follow)
 end
 
 ##############################################################################

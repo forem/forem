@@ -24,7 +24,7 @@
     <h1>Top tags</h1>
   </header>
 
-  <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
+  <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0" data-follow-button-container="true">
     <% @tags.each do |tag| %>
       <% color = Color::CompareHex.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
       <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative" style="border-top-color: <%= color %>; ">
@@ -60,3 +60,4 @@
     <% end %>
   </div>
 </main>
+<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
