@@ -24,7 +24,6 @@ module.exports = {
     browserStoreCache: false,
     initializeBaseUserData: false,
     initializeReadingListIcons: false,
-    initializeAllFollowButts: false,
     initializeSponsorshipVisibility: false,
     ActiveXObject: false,
     AndroidBridge: false,
