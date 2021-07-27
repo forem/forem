@@ -106,7 +106,7 @@ RSpec.describe Admin::Users::ToolsComponent, type: :component do
 
     it "renders the credits count" do
       moderator = create(:user, :trusted)
-      reaction = create(:vomit_reaction, user: moderator, reactable: user)
+      create(:vomit_reaction, user: moderator, reactable: user)
 
       render_inline(described_class.new(moderator))
 
