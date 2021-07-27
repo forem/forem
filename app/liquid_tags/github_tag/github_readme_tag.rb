@@ -86,7 +86,7 @@ class GithubTag
         element["src"] = "" if attribute == "src" && element.attributes[attribute].blank?
 
         path = element.attributes[attribute].value
-        element.attributes[attribute].value = "#{url}/#{path}" if path[0, 4] != "http"
+        element.attributes[attribute].value = "#{url}#{path}" if path[0, 4] != "http"
       end
 
       readme.to_html
