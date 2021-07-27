@@ -10,10 +10,7 @@ cache:
 rvm:
   - 2.7.2
 addons:
-  apt:
-    sources:
-      - sourceline: 'deb http://dl.google.com/linux/chrome/deb/ stable main'
-  postgresql: '10' # Travis does not work out of the box with Postgres 11 yet
+  postgresql: '12.2' # Travis does not work out of the box with Postgres 11 yet
   chrome: 'stable'
   artifacts:
     paths:
