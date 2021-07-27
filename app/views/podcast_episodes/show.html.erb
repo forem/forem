@@ -92,7 +92,8 @@
         class="comments-container text-padding"
         id="comments-container"
         data-commentable-id="<%= @episode.id %>"
-        data-commentable-type="PodcastEpisode">
+        data-commentable-type="PodcastEpisode"
+        data-follow-button-container="true">
         <%= javascript_packs_with_chunks_tag "commentDropdowns", defer: true %>
         <%= render "/comments/form",
                    commentable: @episode,
@@ -110,3 +111,4 @@
 </main>
 
 <%= render "podcast_episodes/podcast_bar", podcast: @podcast, episode: @episode %>
+<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
