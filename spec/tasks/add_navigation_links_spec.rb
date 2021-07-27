@@ -1,11 +1,6 @@
-require "rails_helper"
+require "task_helper"
 
 RSpec.describe "Navigation Links tasks", type: :task do
-  before do
-    Rake::Task.clear
-    PracticalDeveloper::Application.load_tasks
-  end
-
   describe "#create" do
     it "creates navigation links for new forem if nonexistent" do
       expect { Rake::Task["navigation_links:create"].invoke }.to change(NavigationLink, :count).by(5)

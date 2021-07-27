@@ -1,11 +1,6 @@
-require "rails_helper"
+require "task_helper"
 
 RSpec.describe "Fastly tasks", type: :task do
-  before do
-    Rake::Task.clear
-    PracticalDeveloper::Application.load_tasks
-  end
-
   describe "#update_configs" do
     it "doesn't run if Fastly isn't configured" do
       %w[FASTLY_API_KEY FASTLY_SERVICE_ID].each do |var|

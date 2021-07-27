@@ -1,11 +1,6 @@
-require "rails_helper"
+require "task_helper"
 
 RSpec.describe "Metrics Overview task", type: :task do
-  before do
-    Rake::Task.clear
-    PracticalDeveloper::Application.load_tasks
-  end
-
   describe "#overview" do
     let(:event_name) { "Admin Overview Link Clicked" }
     let(:click_target) { "https://admin.forem.com/docs/quick-start-guide" }
