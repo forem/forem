@@ -43,7 +43,7 @@ gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard a
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 0.2.24" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 4.9" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 2.5.0" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 2.6.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -144,7 +144,7 @@ group :development, :test do
   gem "cypress-rails", "~> 0.5.1" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.18" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.18.0" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 2.18.1" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.18", require: false # Automatic Ruby code style checking tool
