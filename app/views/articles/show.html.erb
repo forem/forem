@@ -64,12 +64,12 @@
   <% end %>
 <% end %>
 
-<div class="crayons-layout crayons-layout--3-cols crayons-layout--article" data-follow-button-container="true">
+<div class="crayons-layout crayons-layout--3-cols crayons-layout--article">
   <aside class="crayons-layout__sidebar-left" aria-label="Article actions">
     <%= render "articles/actions" %>
   </aside>
 
-  <main id="main-content" class="crayons-layout__content grid gap-4">
+  <main id="main-content" class="crayons-layout__content grid gap-4" data-follow-button-container="true">
     <div class="article-wrapper">
       <% if !@article.published %>
         <div class="crayons-notice crayons-notice--danger mb-4" aria-live="polite">
