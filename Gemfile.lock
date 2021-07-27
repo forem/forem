@@ -647,6 +647,8 @@ GEM
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
     rspec-support (3.10.2)
+    rss (0.2.9)
+      rexml
     rubocop (1.18.4)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
@@ -952,6 +954,7 @@ DEPENDENCIES
   rpush-redis (~> 1.1)
   rspec-rails (~> 5.0)
   rspec-retry (~> 0.6)
+  rss (~> 0.2.9)
   rubocop (~> 1.18)
   rubocop-performance (~> 1.11)
   rubocop-rails (~> 2.11)
