@@ -25,7 +25,7 @@ RSpec.describe Admin::Users::Tools::OrganizationsComponent, type: :component do
       render_inline(described_class.new(user: user))
 
       expect(rendered_component).to have_text(membership.organization.name)
-      expect(rendered_component).to have_css("input[value='delete']", visible: false)
+      expect(rendered_component).to have_css("input[value='delete']", visible: :hidden)
     end
   end
 end
