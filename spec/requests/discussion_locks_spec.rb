@@ -43,6 +43,20 @@ RSpec.describe "DiscussionLocks", type: :request do
 
       expect(cache_buster).to have_received(:call).with(article).once
     end
+
+    it "does not allow to lock another user's article" do
+      article = create(:article, user: user)
+      other_user = create(:user)
+      sign_out user
+      sign_in other_user
+
+      reason = "Unproductice comments."
+      notes = "Hostile comment from user @user"
+      valid_attributes = { article_id: article.id, locking_user_id: other_user.id, notes: notes, reason: reason }
+      expect do
+        post discussion_locks_path, params: { discussion_lock: valid_attributes }
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
   end
 
   describe "DELETE /discussion_locks/:id - DiscussionLocks#destroy" do

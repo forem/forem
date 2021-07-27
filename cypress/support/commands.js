@@ -30,7 +30,7 @@ import { getInterceptsForLingeringUserRequests } from '../util/networkUtils';
  * Use this function to sign a user out without lingering network calls causing unintended side-effects.
  */
 Cypress.Commands.add('signOutUser', () => {
-  const intercepts = getInterceptsForLingeringUserRequests(false);
+  const intercepts = getInterceptsForLingeringUserRequests('/', false);
 
   return cy.request('DELETE', '/users/sign_out').then(() => {
     cy.visit('/');
@@ -58,7 +58,7 @@ Cypress.Commands.add('visitAndWaitForUserSideEffects', (url, options) => {
   if (url === `${baseUrl}/admin` || url.includes('/admin/')) {
     cy.visit(url, options);
   } else {
-    const intercepts = getInterceptsForLingeringUserRequests(true);
+    const intercepts = getInterceptsForLingeringUserRequests(url, true);
     cy.visit(url, options);
     cy.wait(intercepts);
   }
