@@ -100,7 +100,5 @@ window.addEventListener('beforeunload', () => {
   observer.disconnect();
 });
 
-// TODO: init the follow buttons
-
 initializeFeedPreviewCards();
 listenForHoveredOrFocusedStoryCards();

@@ -184,7 +184,7 @@ function buildArticleHTML(article) {
             </a>
           </div>
           <div class="print-hidden">
-            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info="{"id": ${article.user_id}, "className": "User", "style": "full"}">Follow</button>
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full"}'>Follow</button>
           </div>
           <span class="author-preview-metadata-container" data-author-id="${article.user_id}"></span>
         </div>

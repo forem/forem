@@ -113,7 +113,7 @@ Object {
                           >
                             <button
                               class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
-                              data-info="[object Object]"
+                              data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"style\\":\\"full\\"}"
                             >
                               Follow
                             </button>
@@ -360,7 +360,7 @@ Object {
                         >
                           <button
                             class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
-                            data-info="[object Object]"
+                            data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"style\\":\\"full\\"}"
                           >
                             Follow
                           </button>
