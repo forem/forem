@@ -44,7 +44,7 @@ env:
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
 before_install:
-  - "if [ ! -z $PGVERSION ]; then sudo cp /etc/postgresql/{$PGVERSION}/main/pg_hba.conf; fi"
+  - "if [ ! -z $PGVERSION ]; then sudo cp /etc/postgresql/$PGVERSION/main/pg_hba.conf; fi"
   - "if [ ! -z $PGVERSION ]; then sudo service postgresql restart $PGVERSION; fi"
   - gem install bundler:"<2.3"
 install:
