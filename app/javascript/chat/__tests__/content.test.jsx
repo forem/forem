@@ -35,17 +35,11 @@ const getLoadingUserData = () => ({
 describe('<Content />', () => {
   describe('as loading-user', () => {
     it('should have no a11y violations', async () => {
-      // TODO: The axe custom rules here should be removed when the below issue is fixed
-      // https://github.com/forem/forem/issues/14101
-      const customAxeRules = {
-        'nested-interactive': { enabled: false },
-      };
-
       const channelRequestResource = getChannelRequestData();
       const { container } = render(
         <Content resource={channelRequestResource} />,
       );
-      const results = await axe(container, { rules: customAxeRules });
+      const results = await axe(container);
 
       expect(results).toHaveNoViolations();
     });
@@ -72,15 +66,9 @@ describe('<Content />', () => {
 
   describe('as channel-request', () => {
     it('should have no a11y violations', async () => {
-      // TODO: The axe custom rules here should be removed when the below issue is fixed
-      // https://github.com/forem/forem/issues/14101
-      const customAxeRules = {
-        'nested-interactive': { enabled: false },
-      };
-
       const loadinUserResource = getLoadingUserData();
       const { container } = render(<Content resource={loadinUserResource} />);
-      const results = await axe(container, { rules: customAxeRules });
+      const results = await axe(container);
 
       expect(results).toHaveNoViolations();
     });
