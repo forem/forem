@@ -25,6 +25,7 @@ addons:
     debug: true
 env:
   global:
+    - PGVERSION=12
     - RAILS_ENV=test
     - DATABASE_URL=postgres://travis@localhost:5433/Forem_prod_test
     - DATABASE_NAME=Forem_prod_test
