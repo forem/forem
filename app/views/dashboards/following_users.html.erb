@@ -3,19 +3,17 @@
 <div id="index-container"
   data-params="<%= params.to_json(only: %i[action per_page]) %>"
   data-which="following">
-  <main id="main-content">
+
     <header class="crayons-layout">
       <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Following users</h1>
       <%= render "actions_mobile" %>
     </header>
 
-    <div class="crayons-layout crayons-layout--2-cols">
-      <aside class="crayons-layout__sidebar-left">
+    <div id="main-content" class="crayons-layout crayons-layout--2-cols">
+      <div class="crayons-layout__sidebar-left">
         <%= render "actions" %>
-      </aside>
-
+      </div>
       <div class="crayons-layout__content" id="user-dashboard">
-
         <% if @follows.any? %>
           <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
             <% @follows.each do |follow| %>
@@ -48,6 +46,5 @@
         <% end %>
         <%= render "sublist" %>
       </div>
-    </div>
-  </main>
+    </main>
 </div>
