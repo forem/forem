@@ -1,13 +1,43 @@
 require "rails_helper"
 
 RSpec.describe Admin::Users::Tools::ReportsComponent, type: :component do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:user) { create(:user) }
 
-  # it "renders something useful" do
-  #   expect(
-  #     render_inline(described_class.new(attr: "value")) { "Hello, components!" }.css("p").to_html
-  #   ).to include(
-  #     "Hello, components!"
-  #   )
-  # end
+  describe "View reports" do
+    it "does not render the section by default" do
+      render_inline(described_class.new(user: user))
+
+      expect(rendered_component).not_to have_css("article")
+    end
+
+    it "renders the section if the user leaves a report", :aggregate_failures do
+      report = create(:feedback_message, reporter: user)
+
+      render_inline(described_class.new(user: user))
+
+      expect(rendered_component).to have_text(report.category.capitalize)
+      expect(rendered_component).to have_text(report.status)
+      expect(rendered_component).to have_text(report.message)
+    end
+
+    it "renders the section if the user is affected by a report", :aggregate_failures do
+      report = create(:feedback_message, affected: user)
+
+      render_inline(described_class.new(user: user))
+
+      expect(rendered_component).to have_text(report.category.capitalize)
+      expect(rendered_component).to have_text(report.status)
+      expect(rendered_component).to have_text(report.message)
+    end
+
+    it "renders the section if the user is reported", :aggregate_failures do
+      report = create(:feedback_message, offender: user)
+
+      render_inline(described_class.new(user: user))
+
+      expect(rendered_component).to have_text(report.category.capitalize)
+      expect(rendered_component).to have_text(report.status)
+      expect(rendered_component).to have_text(report.message)
+    end
+  end
 end
