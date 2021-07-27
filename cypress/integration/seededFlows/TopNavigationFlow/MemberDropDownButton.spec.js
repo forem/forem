@@ -12,80 +12,70 @@ describe('Member Menu Dropdown', () => {
   });
 
   it('hovering on User Avatar should show User Dropdown menu', () => {
-    cy.findByRole('button', { name: 'Navigation Menu' }).as(
+    cy.findByRole('button', { name: 'Navigation menu' }).as(
       'memberDropDownButton',
     );
     cy.get('@memberDropDownButton').trigger('mouseover');
-    cy.findByRole('div', { name: 'top-user-dropdown-menu' })
-      .as('topUserDropdownMenu')
-      .should('be.visible');
-    cy.get('@topUserDropdownMenu').within(() => {
+    cy.get('#crayons-header__menu__dropdown__list').within(() => {
       cy.findByRole('link', { name: 'Dashboard' });
       cy.findByRole('link', { name: 'Create Post' });
-      cy.findByRole('link', { name: 'Reading list' }).cy.findByRole('link', {
-        name: 'Settings',
-      });
+      cy.findByRole('link', { name: 'Reading list' });
+      cy.findByRole('link', { name: 'Settings' });
       cy.findByRole('link', { name: 'Sign Out' });
     });
   });
 
   it('pressing escape close the User Dropdown menu', () => {
-    cy.findByRole('button', { name: 'Navigation Menu' }).as(
+    cy.findByRole('button', { name: 'Navigation menu' }).as(
       'memberDropDownButton',
     );
     cy.get('@memberDropDownButton').trigger('mouseover');
-    cy.findByRole('div', { name: 'top-user-dropdown-menu' })
-      .as('topUserDropdownMenu')
+    cy.findByRole('link', { name: 'Dashboard' })
+      .as('dashboard')
       .should('be.visible');
     cy.get('body').type('{esc}');
-    cy.get('@topUserDropdownMenu').should('not.be.visible');
+    cy.get('@dashboard').should('not.be.visible');
   });
 
   it('close menu on clicking', () => {
-    cy.findByRole('button', { name: 'Navigation Menu' }).as(
+    cy.findByRole('button', { name: 'Navigation menu' }).as(
       'memberDropDownButton',
     );
     cy.get('@memberDropDownButton').trigger('mouseover');
-    cy.findByRole('div', { name: 'top-user-dropdown-menu' })
-      .as('topUserDropdownMenu')
-      .should('be.visible');
-    cy.findByRole('link', { name: 'Dashboard' }).click();
-    cy.get('@topUserDropdownMenu').should('not.be.visible');
+    cy.findByRole('link', { name: 'Dashboard' }).as('dashboard').click();
+    cy.get('@dashboard').should('not.be.visible');
   });
 
   it('If User profile is already hoverede, clicking on it again will not close it', () => {
-    cy.findByRole('button', { name: 'Navigation Menu' }).as(
+    cy.findByRole('button', { name: 'Navigation menu' }).as(
       'memberDropDownButton',
     );
     cy.get('@memberDropDownButton').trigger('mouseover');
-    cy.findByRole('div', { name: 'top-user-dropdown-menu' })
-      .as('topUserDropdownMenu')
-      .should('be.visible');
+    cy.findByRole('link', { name: 'Dashboard' }).as('dashboard');
     cy.get('@memberDropDownButton').click();
-    cy.get('@topUserDropdownMenu').should('be.visible');
+    cy.get('@dashboard').should('be.visible');
   });
 
   it('hovering out should close menu', () => {
-    cy.findByRole('button', { name: 'Navigation Menu' }).as(
+    cy.findByRole('button', { name: 'Navigation menu' }).as(
       'memberDropDownButton',
     );
     cy.get('@memberDropDownButton').trigger('mouseover');
-    cy.findByRole('div', { name: 'top-user-dropdown-menu' })
-      .as('topUserDropdownMenu')
-      .should('be.visible');
+    cy.findByRole('link', { name: 'Dashboard' }).as('dashboard');
     cy.get('@memberDropDownButton').trigger('mouseout');
-    cy.get('@topUserDropdownMenu').should('not.be.visible');
+    cy.get('@dashboard').should('not.be.visible');
   });
 
   it('Dropdown menu opened by click will not close on hovering out', () => {
-    cy.findByRole('button', { name: 'Navigation Menu' }).as(
+    cy.findByRole('button', { name: 'Navigation menu' }).as(
       'memberDropDownButton',
     );
+    cy.get('@memberDropDownButton').trigger('mouseover');
     cy.get('@memberDropDownButton').click();
-    cy.findByRole('div', { name: 'top-user-dropdown-menu' })
-      .as('topUserDropdownMenu')
+    cy.findByRole('link', { name: 'Dashboard' })
+      .as('dashboard')
       .should('be.visible');
     cy.get('@memberDropDownButton').trigger('mouseout');
-    cy.get('@topUserDropdownMenu').should('be.visible');
+    cy.get('@dashboard').should('be.visible');
   });
 });
