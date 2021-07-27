@@ -10,7 +10,7 @@ RSpec.describe Admin::Users::Tools::EmailsComponent, type: :component do
       expect(rendered_component).to have_text("To: #{user.name}")
       expect(rendered_component).to have_text(user.email)
       expect(rendered_component).not_to have_text("Verified on")
-      expect(rendered_component).to have_css('form[data-users--tools--emails-target="verifyEmailOwnership"]')
+      expect(rendered_component).to have_css("form[action=\"#{verify_email_ownership_admin_user_path(user)}\"]")
     end
 
     it "renders the section with verification info" do
@@ -25,7 +25,7 @@ RSpec.describe Admin::Users::Tools::EmailsComponent, type: :component do
     it "renders the section" do
       render_inline(described_class.new(user: user))
 
-      expect(rendered_component).to have_css('form[data-users--tools--emails-target="sendEmail"]')
+      expect(rendered_component).to have_css("form[action=\"#{send_email_admin_user_path(user)}\"]")
     end
   end
 
