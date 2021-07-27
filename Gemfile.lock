@@ -231,7 +231,7 @@ GEM
       activemodel
     emoji_regex (3.2.2)
     equalizer (0.0.11)
-    erb_lint (0.0.37)
+    erb_lint (0.1.0)
       activesupport
       better_html (~> 1.0.7)
       html_tokenizer
@@ -878,7 +878,7 @@ DEPENDENCIES
   dotenv-rails (~> 2.7.6)
   email_validator (~> 2.2)
   emoji_regex (~> 3.2)
-  erb_lint (~> 0.0.37)
+  erb_lint (~> 0.1.0)
   exifr (>= 1.3.6)
   factory_bot_rails (~> 6.2)
   faker (~> 2.18)
