@@ -25,7 +25,6 @@ addons:
     debug: true
 env:
   global:
-    - PGVERSION=12
     - RAILS_ENV=test
     - DATABASE_URL=postgres://travis@localhost:5433/Forem_prod_test
     - DATABASE_NAME=Forem_prod_test
@@ -44,8 +43,13 @@ env:
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
 before_install:
-  - "if [ ! -z $PGVERSION ]; then sudo cp /etc/postgresql/$PGVERSION/main/pg_hba.conf; fi"
-  - "if [ ! -z $PGVERSION ]; then sudo service postgresql restart $PGVERSION; fi"
+  - >-
+    sudo sed -i
+    -e '/local.*peer/s/postgres/all/'
+    -e 's/peer\|md5/trust/g'
+    /etc/postgresql/12/main/pg_hba.conf
+  # Restart the PostgreSQL service:
+  - sudo service postgresql@12-main restart
   - gem install bundler:"<2.3"
 install:
   - date --rfc-3339=seconds
