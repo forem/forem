@@ -25,7 +25,7 @@ describe('Member Menu Dropdown', () => {
     });
   });
 
-  it('pressing escape close the User Dropdown menu', () => {
+  it('pressing escape should close the User Dropdown menu', () => {
     cy.findByRole('button', { name: 'Navigation menu' }).as(
       'memberDropDownButton',
     );
@@ -46,7 +46,7 @@ describe('Member Menu Dropdown', () => {
     cy.get('@dashboard').should('not.be.visible');
   });
 
-  it('If User profile is already hoverede, clicking on it again will not close it', () => {
+  it('if User profile is already hovered, clicking on it again should not close it', () => {
     cy.findByRole('button', { name: 'Navigation menu' }).as(
       'memberDropDownButton',
     );
