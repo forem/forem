@@ -11,6 +11,10 @@ rvm:
   - 2.7.2
 addons:
   postgresql: '12.2' # Travis does not work out of the box with Postgres 11 yet
+  apt:
+    packages:
+      - postgresql-12.2
+      - postgresql-client-12.2
   chrome: 'stable'
   artifacts:
     paths:
