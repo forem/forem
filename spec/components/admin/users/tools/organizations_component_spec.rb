@@ -3,6 +3,13 @@ require "rails_helper"
 RSpec.describe Admin::Users::Tools::OrganizationsComponent, type: :component do
   let(:user) { create(:user) }
 
+  it "renders the header", :aggregate_failures do
+    render_inline(described_class.new(user: user))
+
+    expect(rendered_component).to have_css("h3", text: "← Organizations")
+    expect(rendered_component).to have_link(href: admin_user_tools_path(user))
+  end
+
   describe "Add new org membership" do
     it "renders the section", :aggregate_failures do
       render_inline(described_class.new(user: user))

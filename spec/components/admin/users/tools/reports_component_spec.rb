@@ -3,6 +3,13 @@ require "rails_helper"
 RSpec.describe Admin::Users::Tools::ReportsComponent, type: :component do
   let(:user) { create(:user) }
 
+  it "renders the header", :aggregate_failures do
+    render_inline(described_class.new(user: user))
+
+    expect(rendered_component).to have_css("h3", text: "← Reports")
+    expect(rendered_component).to have_link(href: admin_user_tools_path(user))
+  end
+
   describe "View reports" do
     it "does not render the section by default" do
       render_inline(described_class.new(user: user))

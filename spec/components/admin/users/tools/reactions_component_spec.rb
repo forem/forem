@@ -4,6 +4,13 @@ RSpec.describe Admin::Users::Tools::ReactionsComponent, type: :component do
   let(:user) { create(:user) }
   let(:moderator) { create(:user, :trusted) }
 
+  it "renders the header", :aggregate_failures do
+    render_inline(described_class.new(user: user))
+
+    expect(rendered_component).to have_css("h3", text: "← Reactions")
+    expect(rendered_component).to have_link(href: admin_user_tools_path(user))
+  end
+
   describe "View reactions" do
     it "does not render the section by default" do
       render_inline(described_class.new(user: user))
