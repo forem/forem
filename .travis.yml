@@ -10,11 +10,11 @@ cache:
 rvm:
   - 2.7.2
 addons:
-  postgresql: '11'
+  postgresql: '12'
   apt:
     packages:
-      - postgresql-11
-      - postgresql-client-11
+      - postgresql-12
+      - postgresql-client-12
   chrome: 'stable'
   artifacts:
     paths:
@@ -25,6 +25,8 @@ addons:
     debug: true
 env:
   global:
+    - PGPORT=5433
+    - PGUSER=travis
     - RAILS_ENV=test
     - DATABASE_URL=postgres://postgres@localhost/Forem_prod_test
     - DATABASE_NAME=Forem_prod_test
