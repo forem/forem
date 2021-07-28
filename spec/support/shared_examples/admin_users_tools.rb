@@ -1,7 +1,6 @@
-require "rails_helper"
 require "view_component/test_helpers"
 
-RSpec.describe "/admin/users/:user_id/tools", type: :request do
+RSpec.shared_examples "Admin::Users::Tools" do |path_helper, component|
   include ViewComponent::TestHelpers
 
   let(:admin) { create(:user, :super_admin) }
@@ -14,25 +13,25 @@ RSpec.describe "/admin/users/:user_id/tools", type: :request do
     let(:user) { create(:user) }
 
     it "returns not found for non existing users" do
-      expect { get admin_user_tools_path(9999) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get public_send(path_helper, 9999) }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "renders successfully" do
-      get admin_user_tools_path(user)
+      get public_send(path_helper, user)
 
       expect(response).to have_http_status(:ok)
     end
 
     it "returns HTML" do
-      get admin_user_tools_path(user)
+      get public_send(path_helper, user)
 
       expect(response.media_type).to eq("text/html")
     end
 
-    it "renders the ToolsComponent" do
-      get admin_user_tools_path(user)
+    it "renders the EmailsComponent" do
+      get public_send(path_helper, user)
 
-      render_inline(Admin::Users::ToolsComponent.new(user: user))
+      render_inline(component.new(user: user))
 
       expect(response.body).to eq(rendered_component)
     end
