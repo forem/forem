@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "/admin/users/:user_id/tools/notes", type: :request do
-  include_examples "Admin::Users::Tools::ShowAction", :admin_user_tools_credits_path,
-                   Admin::Users::Tools::CreditsComponent
+  include_examples "Admin::Users::Tools::ShowAction", :admin_user_tools_notes_path,
+                   Admin::Users::Tools::NotesComponent
 
   describe "#create" do
     let(:user) { create(:user) }
