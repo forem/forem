@@ -48,7 +48,6 @@ before_install:
     -e '/local.*peer/s/postgres/all/'
     -e 's/peer\|md5/trust/g'
     /etc/postgresql/12/main/pg_hba.conf
-  # Restart the PostgreSQL service:
   - sudo service postgresql@12-main restart
   - gem install bundler:"<2.3"
 install:
