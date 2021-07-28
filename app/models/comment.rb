@@ -217,7 +217,8 @@ class Comment < ApplicationRecord
       urls.each do |url|
         anchor_content.sub!(/#{Regexp.escape(url)}/, strip_url(url))
       end
-      anchor.inner_html = anchor.inner_html.sub!(/#{Regexp.escape(anchor.content)}/, anchor_content)
+      shortened_content = anchor.inner_html.sub!(/#{Regexp.escape(anchor.content)}/, anchor_content)
+      anchor.inner_html = shortened_content if shortened_content.present?
     end
     self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
   end
