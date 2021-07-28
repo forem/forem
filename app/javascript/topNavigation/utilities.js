@@ -1,6 +1,7 @@
 function closeHeaderMenu(memberMenu, menuNavButton) {
   menuNavButton.setAttribute('aria-expanded', 'false');
-  memberMenu.classList.remove('desktop', 'showing', 'clicked');
+  memberMenu.classList.remove('desktop', 'showing');
+  memberMenu.removeAttribute('data-clicked');
 }
 
 const firstItem = document.getElementById('first-nav-link');
@@ -54,12 +55,12 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
   }
   const { classList } = memberTopMenu;
   menuNavButton.addEventListener('click', (_event) => {
-    if (classList.contains('showing') && classList.contains('clicked')) {
+    if (classList.contains('showing') && memberTopMenu.dataset.clicked) {
       closeHeaderMenu(memberTopMenu, menuNavButton);
       menuNavButton.focus();
     } else {
       openHeaderMenu(memberTopMenu, menuNavButton);
-      classList.add('clicked');
+      memberTopMenu.setAttribute('data-clicked', 'clicked');
     }
   });
 
@@ -73,7 +74,7 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
       openHeaderMenu(memberTopMenu, menuNavButton);
     });
     memberTopMenu.addEventListener('mouseout', (_event) => {
-      if (!classList.contains('clicked')) {
+      if (!memberTopMenu.dataset.clicked) {
         closeHeaderMenu(memberTopMenu, menuNavButton);
       }
     });
