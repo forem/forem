@@ -1,6 +1,6 @@
 require "view_component/test_helpers"
 
-RSpec.shared_examples "Admin::Users::Tools" do |path_helper, component|
+RSpec.shared_examples "Admin::Users::Tools::ShowAction" do |path_helper, component|
   include ViewComponent::TestHelpers
 
   let(:admin) { create(:user, :super_admin) }

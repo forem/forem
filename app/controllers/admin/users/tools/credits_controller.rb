@@ -15,17 +15,19 @@ module Admin
 
           respond_to do |format|
             format.js do
-              if credits_params[:organization_id].present?
-                Credits::Manage.call(
-                  user,
-                  add_org_credits: credits_params[:count],
-                  organization_id: credits_params[:organization_id],
-                )
-              else
-                Credits::Manage.call(user, add_credits: credits_params[:count])
-              end
+              ActiveRecord::Base.transaction do
+                if credits_params[:organization_id].present?
+                  Credits::Manage.call(
+                    user,
+                    add_org_credits: credits_params[:count],
+                    organization_id: credits_params[:organization_id],
+                  )
+                else
+                  Credits::Manage.call(user, add_credits: credits_params[:count])
+                end
 
-              create_note(user)
+                create_note(user)
+              end
 
               message = "Added #{credits_params[:count]} #{'credit'.pluralize(credits_params[:count])}!"
               render json: { result: message }, content_type: "application/json", status: :created
@@ -40,20 +42,22 @@ module Admin
 
           respond_to do |format|
             format.js do
-              if credits_params[:organization_id].present?
-                Credits::Manage.call(
-                  user,
-                  remove_org_credits: credits_params[:count],
-                  organization_id: credits_params[:organization_id],
-                )
-              else
-                Credits::Manage.call(user, remove_credits: credits_params[:count])
+              ActiveRecord::Base.transaction do
+                if credits_params[:organization_id].present?
+                  Credits::Manage.call(
+                    user,
+                    remove_org_credits: credits_params[:count],
+                    organization_id: credits_params[:organization_id],
+                  )
+                else
+                  Credits::Manage.call(user, remove_credits: credits_params[:count])
+                end
+
+                create_note(user)
               end
 
-              create_note(user)
-
               message = "Removed #{credits_params[:count]} #{'credit'.pluralize(credits_params[:count])}!"
-              render json: { result: message }, content_type: "application/json", status: :created
+              render json: { result: message }, content_type: "application/json", status: :ok
             rescue ActiveRecord::RecordInvalid => e
               render json: { error: e.message }, content_type: "application/json", status: :unprocessable_entity
             end
