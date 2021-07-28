@@ -1,7 +1,7 @@
 function closeHeaderMenu(memberMenu, menuNavButton) {
   menuNavButton.setAttribute('aria-expanded', 'false');
   memberMenu.classList.remove('desktop', 'showing');
-  memberMenu.removeAttribute('data-clicked');
+  delete memberMenu.dataset.clicked;
 }
 
 const firstItem = document.getElementById('first-nav-link');
@@ -60,7 +60,7 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
       menuNavButton.focus();
     } else {
       openHeaderMenu(memberTopMenu, menuNavButton);
-      memberTopMenu.setAttribute('data-clicked', 'clicked');
+      memberTopMenu.dataset.clicked = 'clicked';
     }
   });
 
