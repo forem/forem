@@ -10,31 +10,29 @@ RSpec.describe ProfileFields::ImportFromCsv do
   context "when missing attributes" do
     before { described_class.call(file_fixture("profile_fields.csv")) }
 
-    it "handles missing descriptions", :aggregate_failures do
-      field = ProfileField.find_by!(label: "Test name")
+    it "imports fields" do
+      field = ProfileField.find_by!(label: "Full test")
       expect(field.input_type).to eq "text_field"
-      expect(field.placeholder_text).to eq "John Doe"
-      expect(field.description).to be_nil
+      expect(field.placeholder_text).to eq "Test"
+      expect(field.description).to eq "Test field"
       expect(field.profile_field_group.name).to eq "Basic"
       expect(field.display_area).to eq "header"
+      expect(field.show_in_onboarding).to be true
     end
 
-    it "handles missing placeholder_texts", :aggregate_failures do
+    it "handles missing descriptions" do
+      field = ProfileField.find_by!(label: "Test name")
+      expect(field.description).to be_nil
+    end
+
+    it "handles missing placeholder_texts" do
       field = ProfileField.find_by!(label: "Test languages")
-      expect(field.input_type).to eq "text_area"
       expect(field.placeholder_text).to be_nil
-      expect(field.description).to eq "Programming languages"
-      expect(field.profile_field_group.name).to eq "Coding"
-      expect(field.display_area).to eq "left_sidebar"
     end
 
-    it "handles commas in correctly quoted fields", :aggregate_failures do
-      field = ProfileField.find_by!(label: "Test color")
-      expect(field.input_type).to eq "color_field"
-      expect(field.placeholder_text).to eq "#000000"
-      expect(field.description).to eq "Used for backgrounds, borders etc."
-      expect(field.profile_field_group.name).to eq "Branding"
-      expect(field.display_area).to eq "settings_only"
+    it "handles commas in correctly quoted fields" do
+      field = ProfileField.find_by!(label: "Test languages")
+      expect(field.description).to eq "Programming languages, frameworks, etc."
     end
   end
 end

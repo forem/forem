@@ -513,6 +513,22 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.parsed_body.length).to eq(1)
       end
 
+      it "has correct keys in the response" do
+        article = create(:article, user: user)
+        article.update_columns(organization_id: organization.id)
+
+        get me_api_articles_path, params: { access_token: access_token.token }
+
+        keys = %w[
+          type_of id title description published published_at slug path url
+          comments_count public_reactions_count page_views_count
+          published_timestamp body_markdown positive_reactions_count cover_image
+          tag_list canonical_url reading_time_minutes user organization flare_tag
+        ]
+
+        expect(response.parsed_body.first.keys).to match_array(keys)
+      end
+
       it "only includes published articles by default" do
         create(:article, published: false, published_at: nil, user: user)
         get me_api_articles_path, params: { access_token: access_token.token }
@@ -548,6 +564,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
         get me_api_articles_path(status: :all), params: { access_token: access_token.token }
         expected_order = response.parsed_body.map { |resp| resp["published"] }
         expect(expected_order).to eq([false, true])
+      end
+
+      it "correctly returns reading time in minutes" do
+        create(:article, user: user)
+
+        get me_api_articles_path, params: { access_token: access_token.token }
+        expect(response.parsed_body.first["reading_time_minutes"]).to eq(article.reading_time)
       end
     end
   end

@@ -96,12 +96,6 @@ module Profiles
     end
 
     def update_profile
-      # Handle user specific custom profile fields
-      if (custom_profile_attributes = @profile.custom_profile_attributes).any?
-        custom_attributes = @updated_profile_attributes.extract!(*custom_profile_attributes)
-        @updated_profile_attributes[:custom_attributes] = custom_attributes
-      end
-
       # We don't update `data` directly. This uses the defined store_attributes
       # so we can make use of their typecasting.
       @profile.assign_attributes(@updated_profile_attributes)
