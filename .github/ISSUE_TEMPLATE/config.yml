@@ -6,6 +6,6 @@ contact_links:
   - name: Forem Questions and Discussions
     url: https://forem.dev/
     about: Please ask and answer questions, discuss features, or reach out for help on forem.dev
-  - name: Self Host Bug Report
+  - name: Self-Host Bug Report
     url: https://github.com/forem/selfhost/issues/new
-    about: Create a report to help us improve the Self Host repository.
+    about: Create a report to help us improve the Self-Host repository.
