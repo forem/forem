@@ -81,7 +81,7 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
     end
 
     it "renders a repository with relative links in README" do
-      VCR.use_cassette("github_client_repository") do
+      VCR.use_cassette("github_client_repository_relative_links") do
         html = generate_tag(url_repository_relative_links).render
         expect(html).to include(relative_link)
       end
