@@ -132,6 +132,7 @@ var instantClick
           skipLink.focus();
         }
       }
+      document.getElementById('page-route-change').textContent = title;
       history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
 
       var hashIndex = newUrl.indexOf('#'),
