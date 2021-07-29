@@ -14,6 +14,7 @@ puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 ##############################################################################
 # Default development settings are different from production scenario
+
 Settings::UserExperience.public = true
 Settings::General.waiting_on_first_user = false
 Settings::Authentication.providers = Authentication::Providers.available
