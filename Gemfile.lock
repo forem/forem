@@ -115,7 +115,7 @@ GEM
     bindex (0.8.1)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    blazer (2.4.2)
+    blazer (2.4.3)
       activerecord (>= 5)
       chartkick (>= 3.2)
       railties (>= 5)
@@ -156,7 +156,7 @@ GEM
       activesupport (>= 3.2.0)
       carrierwave
       fastimage
-    chartkick (4.0.2)
+    chartkick (4.0.5)
     childprocess (3.0.0)
     cloudinary (1.20.0)
       aws_cf_signer
@@ -858,7 +858,7 @@ DEPENDENCIES
   ancestry (~> 4.1)
   better_errors (~> 2.9)
   binding_of_caller (~> 0.8)
-  blazer (~> 2.4.2)
+  blazer (~> 2.4.3)
   bootsnap (>= 1.1.0)
   brakeman (~> 5.1)
   bullet (~> 6.1)
