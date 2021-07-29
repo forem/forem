@@ -184,7 +184,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       }
 
       link = "<a href=\"mailto:#{default_email}?body=This%20is%20a%20longer%20body%20with%20a%20" \
-        "question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>"
+             "question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>"
       expect(email_link(text: "text", additional_info: additional_info)).to eq(link)
     end
   end

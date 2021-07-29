@@ -82,7 +82,7 @@ RSpec.describe Follow, type: :model do
 
     it "sends an email notification" do
       allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
-      user_2.update_column(:email_follower_notifications, true)
+      user_2.notification_setting.update(email_follower_notifications: true)
       expect do
         Sidekiq::Testing.inline! do
           described_class.create!(follower: user, followable: user_2)

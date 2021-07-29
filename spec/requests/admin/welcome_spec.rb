@@ -54,4 +54,17 @@ RSpec.describe "/admin/apps/welcome", type: :request do
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
+
+  # Regression test for https://github.com/forem/forem/issues/14315
+  it "renders the editor to create a welcome thread" do
+    admin = create(:user, :super_admin)
+    sign_in admin
+    allow(Settings::Community).to receive(:staff_user_id).and_return(admin.id)
+
+    post admin_welcome_index_path
+
+    expect(response).to have_http_status(:found)
+    follow_redirect!
+    expect(response.body).to match(/Introduce yourself to the community/)
+  end
 end

@@ -7,7 +7,7 @@ describe DataUpdateScripts::UpdateArticleMainImagePath do
     allow(ENV).to receive(:[]).with("FOREM_CONTEXT").and_return("forem_cloud")
 
     bad_path = "https://res.cloudinary.com/practicaldev/image/fetch/s--d-pOh1Z_--/c_imagga_scale,f_auto," \
-      "fl_progressive,h_420,q_auto,w_1000/#{URL.url}/images/i/some-image.jpeg"
+               "fl_progressive,h_420,q_auto,w_1000/#{URL.url}/images/i/some-image.jpeg"
     article = create(:article, main_image: bad_path)
 
     described_class.new.run

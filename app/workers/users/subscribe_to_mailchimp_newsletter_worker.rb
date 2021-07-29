@@ -6,7 +6,7 @@ module Users
     def perform(user_id)
       user = User.find_by(id: user_id)
 
-      Mailchimp::Bot.new(user).upsert if user
+      Mailchimp::Bot.new(user).upsert if user&.email
     end
   end
 end

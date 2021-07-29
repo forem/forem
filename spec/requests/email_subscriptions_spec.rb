@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "EmailSubscriptions", type: :request do
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
 
   before do
     allow(User).to receive(:find).and_return(user)
@@ -24,7 +24,7 @@ RSpec.describe "EmailSubscriptions", type: :request do
     it "does unsubscribe the user" do
       get email_subscriptions_unsubscribe_url(ut: generate_token(user.id))
       user.reload
-      expect(user.email_mention_notifications).to be(false)
+      expect(user.notification_setting.email_mention_notifications).to be(false)
     end
 
     it "handles error properly" do

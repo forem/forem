@@ -54,7 +54,7 @@ class Reaction < ApplicationRecord
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.instance_of?(ArticleDecorator) ? "Article" : reactable.class.name
       cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-" \
-        "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
+                   "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end

@@ -1,5 +1,5 @@
 <label class="rich-selector crayons-field crayons-field--radio font-selector--<%= font.tr("_", "-") %>">
-  <%= f.radio_button :config_font, font, checked: @user.decorate.config_font_name == font, class: "crayons-radio" %>
+  <%= f.radio_button :config_font, font, checked: @users_setting.resolved_font_name == font, class: "crayons-radio" %>
   <div class="crayons-field__label fw-normal">
     <%= font.tr("_", " ") %>
   </div>

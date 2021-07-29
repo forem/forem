@@ -43,6 +43,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     resource.add_role(:super_admin)
     resource.add_role(:trusted)
+    resource.skip_confirmation!
     Settings::General.waiting_on_first_user = false
     Users::CreateMascotAccount.call
   end
@@ -77,9 +78,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   def build_devise_resource
     build_resource(sign_up_params)
-    resource.saw_onboarding = false
     resource.registered_at = Time.current
-    resource.editor_version = "v2"
+    resource.build_setting(editor_version: "v2")
     resource.remote_profile_image_url = Users::ProfileImageGenerator.call if resource.remote_profile_image_url.blank?
     if FeatureFlag.enabled?(:creator_onboarding)
       resource.password_confirmation = resource.password

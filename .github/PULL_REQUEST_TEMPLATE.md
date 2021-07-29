@@ -57,9 +57,11 @@ development process, or any of our internal teams? If so, please note how you
 will share this change with the people who need to know about it._
 
 - [ ] I've updated the [Developer Docs](https://docs.forem.com) and/or
-      [Admin Guide](https://forem.gitbook.io/forem-admin-guide/), or
+      [Admin Guide](https://admin.forem.com/), or
       [Storybook](https://storybook.forem.com/) (for Crayons components)
 - [ ] I've updated the README or added inline documentation
+- [ ] I've added an entry to
+      [`CHANGELOG.md`](https://github.com/forem/forem/tree/main/CHANGELOG.md)
 - [ ] I will share this change in a [Changelog](https://forem.dev/t/changelog)
       or in a [forem.dev](http://forem.dev) post
 - [ ] I will share this change internally with the appropriate teams
