@@ -41,8 +41,13 @@ module Admin
 
     def update
       @user = User.find(params[:id])
+
+      # TODO: [@rhymes] in the new Admin Member view this logic has been moved
+      # to Admin::Users::Tools::CreditsController and Admin::Users::Tools::NotesController#create.
+      # It can eventually be removed when we transition away from the old Admin UI
       Credits::Manage.call(@user, user_params)
       add_note if user_params[:new_note]
+
       redirect_to admin_user_path(params[:id])
     end
 
@@ -144,6 +149,8 @@ module Admin
       redirect_to edit_admin_user_path(@user.id)
     end
 
+    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
+    # once the HTML response isn't required anymore
     def send_email
       email_params = {
         email_body: send_email_params[:email_body],
@@ -180,6 +187,8 @@ module Admin
       end
     end
 
+    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
+    # once the HTML response isn't required anymore
     def verify_email_ownership
       if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
         respond_to do |format|
