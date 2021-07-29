@@ -161,15 +161,23 @@ module Admin
       if NotifyMailer.with(email_params).user_contact_email.deliver_now
         respond_to do |format|
           message = "Email sent!"
+
           format.html do
             flash[:success] = message
             redirect_back(fallback_location: admin_users_path)
           end
+
           format.js { render json: { result: message }, content_type: "application/json" }
         end
       else
         respond_to do |format|
-          format.html { flash[:danger] = "Email failed to send!" }
+          message = "Email failed to send!"
+
+          format.html do
+            flash[:danger] = message
+            redirect_back(fallback_location: admin_users_path)
+          end
+
           format.js do
             render json: { error: message },
                    content_type: "application/json",
@@ -193,16 +201,23 @@ module Admin
       if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
         respond_to do |format|
           message = "Verification email sent!"
+
           format.html do
             flash[:success] = message
             redirect_back(fallback_location: admin_users_path)
           end
+
           format.js { render json: { result: message }, content_type: "application/json" }
         end
       else
         message = "Email failed to send!"
+
         respond_to do |format|
-          format.html { flash[:danger] = message }
+          format.html do
+            flash[:danger] = message
+            redirect_back(fallback_location: admin_users_path)
+          end
+
           format.js { render json: { error: message }, content_type: "application/json", status: :service_unavailable }
         end
       end
