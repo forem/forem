@@ -1,4 +1,4 @@
-describe('Confirmation page', () => {
+describe('Confirm Email page', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.visit('/confirm-email?email=user%40forem.com');
@@ -39,10 +39,6 @@ describe('Confirmation page', () => {
       .last()
       .should('have.value', 'user@forem.com');
 
-    cy.get('@confirmationModal')
-      .findAllByRole('button')
-      .first()
-      .should('have.focus');
     cy.get('@confirmationModal')
       .findByRole('button', { name: /Dismiss/ })
       .click();
