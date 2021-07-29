@@ -1,4 +1,4 @@
-/* global checkUserLoggedIn, showLoginModal, userData, buildArticleHTML, initializeReadingListIcons, initializeAllFollowButts, initializeUserFollowButts */
+/* global checkUserLoggedIn, showLoginModal, userData, buildArticleHTML, initializeReadingListIcons */
 /* eslint no-undef: "error" */
 
 function getQueryParams(qs) {
@@ -190,8 +190,6 @@ function search(query, filters, sortBy, sortDirection) {
       });
       document.getElementById('substories').innerHTML = resultDivs.join('');
       initializeReadingListIcons();
-      initializeAllFollowButts();
-      initializeUserFollowButts();
       document
         .getElementById('substories')
         .classList.add('search-results-loaded');

@@ -41,7 +41,7 @@
       <%= render "articles/search/nav_menu" %>
     </div>
 
-    <div class="articles-list crayons-layout__content" id="articles-list">
+    <div class="articles-list crayons-layout__content" id="articles-list" data-follow-button-container="true">
       <div id="banner-section"></div>
       <div class="substories" id="substories">
         <div class="p-9 align-center crayons-card">
@@ -55,4 +55,4 @@
   </div>
 </main>
 
-<%= javascript_packs_with_chunks_tag "searchParams", "storiesList", defer: true %>
+<%= javascript_packs_with_chunks_tag "searchParams", "storiesList", "followButtons", defer: true %>

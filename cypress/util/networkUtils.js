@@ -5,7 +5,10 @@
  * @param {Boolean} userLoggedIn Whether or not the user state is transitioning to logged in - defaults to false
  * @returns {Array} Array of aliased Cypress intercepts which may be awaited to ensure they run to completion
  */
-export const getInterceptsForLingeringUserRequests = (userLoggedIn = false) => {
+export const getInterceptsForLingeringUserRequests = (
+  url,
+  userLoggedIn = false,
+) => {
   // Stub these as response not needed to test app functionality
   cy.intercept('/api/analytics/historical**', {});
   cy.intercept('/api/analytics/referrers**', {});
@@ -18,13 +21,16 @@ export const getInterceptsForLingeringUserRequests = (userLoggedIn = false) => {
   }
 
   cy.intercept('/chat_channels**').as('chatRequest');
-  cy.intercept('/notifications/counts').as('countsRequest');
-  cy.intercept('/notifications?i=i').as('notificationsRequest');
 
-  return [
-    '@baseDataRequest',
-    '@chatRequest',
-    '@countsRequest',
-    '@notificationsRequest',
-  ];
+  const intercepts = ['@baseDataRequest', '@chatRequest'];
+
+  if (!url.includes('/notifications')) {
+    cy.intercept('/notifications?i=i').as('notificationsRequest');
+    cy.intercept('/notifications/counts').as('countsRequest');
+
+    intercepts.push('@notificationsRequest');
+    intercepts.push('@countsRequest');
+  }
+
+  return intercepts;
 };

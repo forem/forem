@@ -7,15 +7,33 @@
       <div class="crayons-card__body p-4" data-controller="ahoy">
         <h3 class="crayons-subtitle-1">Welcome Checklist</h3>
         <p class="crayons-subtitle-4 color-base-70 mb-3">Here are a few things we recommend doing now that you're using Forem!</p>
+
         <ol>
-          <li class="mb-1 -ml-4">Set up and configure your Forem under <%= link_to "Config", admin_config_path, "data-action": "click->ahoy#trackOverviewLink" %></li>
-          <li class="mb-1 -ml-4"><%= link_to "Invite people", admin_invitations_path, "data-action": "click->ahoy#trackOverviewLink" %> to join your Forem</li>
-          <li class="mb-1 -ml-4"><%= link_to "Update your Forem tags", admin_tags_path, "data-action": "click->ahoy#trackOverviewLink" %></li>
-          <li class="mb-1 -ml-4"><%= link_to "Create pages", admin_pages_path, "data-action": "click->ahoy#trackOverviewLink" %> and <%= link_to "sort them in the navigation sidebar", admin_navigation_links_path, "data-action": "click->ahoy#trackOverviewLink" %></li>
-          <li class="mb-1 -ml-4">Read the <a href="https://admin.forem.com/docs/quick-start-guide" data-action="click->ahoy#trackOverviewLink">Quick Start Guide</a></li>
-          <li class="mb-1 -ml-4"><%= link_to "Set up a Welcome Thread", admin_welcome_index_path, "data-action": "click->ahoy#trackOverviewLink" %></li>
-          <li class="mb-1 -ml-4">Browse the <a href="https://admin.forem.com" data-action="click->ahoy#trackOverviewLink">Forem Admin Guide</a></li>
-          <li class="-ml-4">Join <a href="https://forem.dev">forem.dev</a> to learn from fellow Forem creators.</li>
+          <li class="mb-1 -ml-4">
+            Fully review the
+            <a href="https://admin.forem.com" data-action="click->ahoy#trackOverviewLink">Forem Admin Documentation</a>
+            and the latest Forem
+            <a href="https://admin.forem.com/docs/getting-started/forem-setup-checklist" data-action="click->ahoy#trackOverviewLink">Quick Start Guide</a>
+          </li>
+          <li class="mb-1 -ml-4">
+            <a href="https://admin.forem.com/docs/getting-started/forem-setup-checklist" data-action="click->ahoy#trackOverviewLink">
+              Set up and configure your Forem
+            </a>
+            under <%= link_to "the Config section", admin_config_path, "data-action": "click->ahoy#trackOverviewLink" %>
+          </li>
+          <li class="mb-1 -ml-4"><%= link_to "Create a Welcome Thread", admin_welcome_index_path, "data-action": "click->ahoy#trackOverviewLink" %></li>
+          <li class="mb-1 -ml-4"><%= link_to "Update and customize your Forem tags", admin_tags_path, "data-action": "click->ahoy#trackOverviewLink" %></li>
+          <li class="mb-1 -ml-4">
+            <%= link_to "Create pages", admin_pages_path, "data-action": "click->ahoy#trackOverviewLink" %>
+            and
+            <%= link_to "sort them in the navigation sidebar", admin_navigation_links_path, "data-action": "click->ahoy#trackOverviewLink" %>
+          </li>
+          <li class="mb-1 -ml-4">
+            <a href="https://admin.forem.com/docs/advanced-customization/config/authentication" data-action="click->ahoy#trackOverviewLink">Set your Forem's access level</a>
+            and
+            <a href="https://admin.forem.com/docs/advanced-customization/config/smtp-settings" data-action="click->ahoy#trackOverviewLink">email settings</a>
+          </li>
+          <li class="-ml-4">Join <a href="https://forem.dev" data-action="click->ahoy#trackOverviewLink">forem.dev</a> to learn from fellow Forem creators</li>
         </ol>
         <div class="align-center">
           <a class="crayons-btn crayons-btn--ghost-brand" href="https://admin.forem.com" data-action="click->ahoy#trackOverviewLink">Visit Forem Admin Guide</a>

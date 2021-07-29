@@ -57,7 +57,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
   context "when user is trusted" do
     before do
       dev_user = create(:user)
-      allow(User).to receive(:dev_account).and_return(dev_user)
+      allow(User).to receive(:staff_account).and_return(dev_user)
       alex.add_role(:trusted)
     end
 

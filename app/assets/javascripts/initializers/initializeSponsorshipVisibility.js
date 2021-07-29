@@ -3,10 +3,6 @@
  * see: https://github.com/thepracticaldev/dev.to/issues/6468
  */
 function sponsorClickHandler(event) {
-  if (event.target.classList.contains('follow-action-button')) {
-    handleOptimisticButtRender(event.target);
-    handleFollowButtPress(event.target);
-  }
   ga(
     'send',
     'event',

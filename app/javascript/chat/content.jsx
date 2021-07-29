@@ -44,23 +44,17 @@ export class Content extends Component {
     if (!resource) {
       return '';
     }
-
     return (
-      // TODO: A button (role="button") cannot contain other interactive elements, i.e. buttons.
-      // TODO: These should have key click events as well.
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events
       <div
         className="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
         id="chat_activecontent"
-        onClick={onTriggerContent}
-        role="button"
-        tabIndex="0"
       >
         <button
           type="button"
           className="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
           data-content="exit"
           title="exit"
+          onClick={onTriggerContent}
         >
           {smartSvgIcon(
             'exit',
@@ -73,6 +67,7 @@ export class Content extends Component {
           data-content="fullscreen"
           style={{ left: '-80px', marginLeft: '0px' }}
           title="fullscreen"
+          onClick={onTriggerContent}
         >
           {' '}
           {fullscreen

@@ -1,3 +1,4 @@
+dist: focal
 branches:
   only:
     - main
@@ -9,7 +10,11 @@ cache:
 rvm:
   - 2.7.2
 addons:
-  postgresql: '10' # Travis does not work out of the box with Postgres 11 yet
+  postgresql: '12'
+  apt:
+    packages:
+      - postgresql-12
+      - postgresql-client-12
   chrome: 'stable'
   artifacts:
     paths:
@@ -21,9 +26,9 @@ addons:
 env:
   global:
     - RAILS_ENV=test
-    - DATABASE_URL=postgres://postgres@localhost/Forem_prod_test
+    - DATABASE_URL=postgres://travis@localhost:5433/Forem_prod_test
     - DATABASE_NAME=Forem_prod_test
-    - DATABASE_URL_TEST=postgres://postgres@localhost/Forem_test
+    - DATABASE_URL_TEST=postgres://travis@localhost:5433/Forem_test
     - DATABASE_NAME_TEST=Forem_test
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
@@ -38,6 +43,12 @@ env:
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
 before_install:
+  - >-
+    sudo sed -i
+    -e '/local.*peer/s/postgres/all/'
+    -e 's/peer\|md5/trust/g'
+    /etc/postgresql/12/main/pg_hba.conf
+  - sudo service postgresql@12-main restart
   - gem install bundler:"<2.3"
 install:
   - date --rfc-3339=seconds

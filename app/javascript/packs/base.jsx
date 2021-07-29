@@ -140,7 +140,9 @@ if (memberMenu) {
 }
 
 getInstantClick().then((spa) => {
-  spa.on('change', initializeNav);
+  spa.on('change', () => {
+    initializeNav();
+  });
 });
 
 initializeNav();
