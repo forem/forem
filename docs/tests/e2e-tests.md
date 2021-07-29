@@ -43,9 +43,8 @@ coordinate all this work.
 
 ### 1. From the command line, run `yarn e2e`
 
-Note: If you want to run E2E tests that do not require seeded data, run
-`yarn e2e:noseed`. Some tests, like the admin onboarding require there to be no
-seeded data.
+Note: If you want to run E2E tests for the creator onboarding flow, you can run
+`yarn e2e:creator-onboarding-seed`.
 
 Some initial setup and checks will automatically run as part of this command:
 
