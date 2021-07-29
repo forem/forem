@@ -17,7 +17,7 @@ gem "addressable", "~> 2.8" # A replacement for the URI implementation that is p
 gem "ahoy_email", "~> 2.0.2" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.2" # Tracking analytics for Rails
 gem "ancestry", "~> 4.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "blazer", "~> 2.4.2" # Allows admins to query data
+gem "blazer", "~> 2.4.3" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
@@ -80,7 +80,7 @@ gem "rails-settings-cached", "2.6.0" # Settings plugin for Rails that makes mana
 gem "ransack", "~> 2.4" # Searching and sorting
 gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
-gem "redis", "~> 4.3.1" # Redis ruby client
+gem "redis", "~> 4.4.0" # Redis ruby client
 gem "rpush", "~> 6.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 
@@ -122,7 +122,7 @@ group :development do
   gem "brakeman", "~> 5.1", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.8" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 2.1", require: false # A series of things you can use to benchmark a Rails or Ruby app
-  gem "erb_lint", "~> 0.1.0", require: false # ERB Linter tool
+  gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
   gem "guard", "~> 2.18", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "listen", "~> 3.6", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
