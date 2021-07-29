@@ -49,7 +49,7 @@ RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
 RUN rm -rf node_modules vendor/assets spec
 
 ## Production
-FROM quay.io/forem/ruby:2.7.2 as production
+FROM quay.io/forem/ruby:3.0.2 as production
 
 USER root
 
