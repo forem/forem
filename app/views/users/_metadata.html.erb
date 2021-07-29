@@ -1,7 +1,6 @@
 <% if (header_fields = @profile.ui_attributes_for(area: :header)).present? %>
   <div class="profile-header__bottom fs-base">
     <% header_fields.sort.each do |title, value| %>
-      <% next if Profile.special_attributes.include?(title) %>
       <div class="crayons-definition">
         <strong class="crayons-definition__title">
           <%= sanitized_sidebar title.titleize %>
