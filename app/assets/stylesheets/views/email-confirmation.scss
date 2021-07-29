@@ -3,14 +3,18 @@
 #page-content.confirmations {
   display: flex;
   flex-direction: column;
-}
 
-#page-content.confirmations #page-content-inner {
-  flex: 1;
-  display: flex;
-  background: white;
+  #page-content-inner {
+    display: flex;
+    flex: 1;
+    background: white;
+  }
 
-  @media (max-width: $breakpoint-m) {
-    padding: 1em 1em 0;
+  #main-content {
+    display: flex;
+    flex: 1;
+    @media (max-width: $breakpoint-m) {
+      padding: 1em 1em 0;
+    }
   }
 }
