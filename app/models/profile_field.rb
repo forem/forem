@@ -23,6 +23,7 @@ class ProfileField < ApplicationRecord
   validates :display_area, presence: true
   validates :input_type, presence: true
   validates :label, presence: true, uniqueness: { case_sensitive: false }
+  validates :show_in_onboarding, inclusion: { in: [true, false] }
   validate :maximum_header_field_count
 
   before_create :generate_attribute_name
