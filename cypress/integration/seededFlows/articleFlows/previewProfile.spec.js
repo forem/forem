@@ -31,7 +31,7 @@ describe('Preview user profile from article page', () => {
     });
   });
 
-  describe("Preview profile on another user's article", () => {
+  describe.skip("Preview profile on another user's article", () => {
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/articleEditorV1User.json').as('user');
