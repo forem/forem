@@ -8,8 +8,11 @@ CypressRails.hooks.before_server_start do
   # Called once, before either the transaction or the server is started
   puts "Starting up server for end to end tests."
 
-  if ENV["SKIP_SEED_DATA"].blank?
-    Rails.application.load_tasks
+  Rails.application.load_tasks
+
+  if ENV["MINIMAL_SEED_DATA"]
+    Rake::Task["db:seed:minimal"].invoke
+  else
     Rake::Task["db:seed:e2e"].invoke
   end
 end

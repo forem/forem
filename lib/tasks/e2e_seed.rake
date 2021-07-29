@@ -10,5 +10,13 @@ namespace :db do
       filename = SEED_DIR.join("seeds_e2e.rb")
       load(filename) if File.exist?(filename)
     end
+
+    desc "Minimal Seed data for e2e tests"
+    task minimal: :environment do
+      raise "Attempting to seed production environment, aborting!" if Rails.env.production?
+
+      filename = SEED_DIR.join("minimal_seed_e2e.rb")
+      load(filename) if File.exist?(filename)
+    end
   end
 end
