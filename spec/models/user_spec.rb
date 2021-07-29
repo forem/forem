@@ -822,8 +822,6 @@ RSpec.describe User, type: :model do
   end
 
   describe "profiles" do
-    let!(:user) { create(:user) }
-
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)
       expect(user.profile).to be_present
@@ -831,8 +829,6 @@ RSpec.describe User, type: :model do
     end
 
     it "propagates changes of unmapped attributes to the profile model", :aggregate_failures do
-      Profile.refresh_attributes!
-
       expect do
         user.update(available_for: "profile migrations")
       end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
