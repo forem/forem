@@ -11,11 +11,11 @@ namespace :db do
       load(filename) if File.exist?(filename)
     end
 
-    desc "Minimal Seed data for e2e tests"
-    task minimal: :environment do
+    desc "Creator Onboarding Seed data for e2e tests"
+    task e2e_creator_onboarding: :environment do
       raise "Attempting to seed production environment, aborting!" if Rails.env.production?
 
-      filename = SEED_DIR.join("minimal_seed_e2e.rb")
+      filename = SEED_DIR.join("creator_onboarding_seed_e2e.rb")
       load(filename) if File.exist?(filename)
     end
   end

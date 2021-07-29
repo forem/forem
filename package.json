@@ -25,7 +25,7 @@
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
     "e2e": "bin/e2e",
-    "e2e:minimal-seed": "yarn run e2e --minimal-seed"
+    "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed"
   },
   "husky": {
     "hooks": {

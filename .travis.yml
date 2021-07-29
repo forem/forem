@@ -89,7 +89,7 @@ jobs:
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
-        - MINIMAL_SEED_DATA=1 E2E_FOLDER=minimalSeededFlows bin/e2e-ci
+        - CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows bin/e2e-ci
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request

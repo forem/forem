@@ -10,8 +10,8 @@ CypressRails.hooks.before_server_start do
 
   Rails.application.load_tasks
 
-  if ENV["MINIMAL_SEED_DATA"]
-    Rake::Task["db:seed:minimal"].invoke
+  if ENV["CREATOR_ONBOARDING_SEED_DATA"]
+    Rake::Task["db:seed:e2e_creator_onboarding"].invoke
   else
     Rake::Task["db:seed:e2e"].invoke
   end
