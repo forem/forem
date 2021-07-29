@@ -19,7 +19,7 @@ class Sponsorship < ApplicationRecord
   validates :status, presence: true, inclusion: { in: STATUSES }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[http https] }
   validates :user, :organization, :featured_number, presence: true
-
+  validates :sponsorable_type, with: "validate_sponsorable_type"
   validate :validate_tag_uniqueness, if: proc { level.to_s == "tag" }
   validate :validate_level_uniqueness, if: proc { METAL_LEVELS.include?(level) }
 
@@ -46,5 +46,17 @@ class Sponsorship < ApplicationRecord
       .exists?(["level IN (?) AND expires_at > ? AND id != ?", METAL_LEVELS, Time.current, id.to_i])
 
     errors.add(:level, "You can have only one sponsorship of #{METAL_LEVELS.join(', ')}")
+  end
+
+  def validate_sponsorable_type
+    return if sponsorable_type.blank?
+
+    begin
+      sponsorable_type.constantize
+      true
+    rescue NameError
+      errors.add(:sponsorable_type, "is not a valid class name")
+      false
+    end
   end
 end
