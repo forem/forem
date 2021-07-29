@@ -28,7 +28,7 @@
 
 <% end %>
 
-<div class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>">
+<main id="main-content" class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>">
   <div class="hero">
     <% image_url = Images::Optimizer.call(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png", fetch_format: "jpg", crop: nil) %>
     <div class="title" style="background:#<%= @podcast.main_color_hex %> url(<%= image_url %>)">
@@ -92,7 +92,8 @@
         class="comments-container text-padding"
         id="comments-container"
         data-commentable-id="<%= @episode.id %>"
-        data-commentable-type="PodcastEpisode">
+        data-commentable-type="PodcastEpisode"
+        data-follow-button-container="true">
         <%= javascript_packs_with_chunks_tag "commentDropdowns", defer: true %>
         <%= render "/comments/form",
                    commentable: @episode,
@@ -107,6 +108,7 @@
       </section>
     </div>
   </div>
-</div>
+</main>
 
 <%= render "podcast_episodes/podcast_bar", podcast: @podcast, episode: @episode %>
+<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>

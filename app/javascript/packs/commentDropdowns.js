@@ -1,7 +1,7 @@
 import { addSnackbarItem } from '../Snackbar';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
-/* global Runtime initializeUserFollowButts  */
+/* global Runtime   */
 
 const handleCopyPermalink = (closeDropdown) => {
   return (event) => {
@@ -26,6 +26,10 @@ const initializeArticlePageDropdowns = () => {
       continue;
     }
 
+    const isProfilePreview = dropdownTrigger.id.includes(
+      'comment-profile-preview-trigger',
+    );
+
     const dropdownContentId = dropdownTrigger.getAttribute('aria-controls');
     const dropdownElement = document.getElementById(dropdownContentId);
 
@@ -33,6 +37,16 @@ const initializeArticlePageDropdowns = () => {
       const { closeDropdown } = initializeDropdown({
         triggerElementId: dropdownTrigger.id,
         dropdownContentId,
+        onOpen: () => {
+          if (isProfilePreview) {
+            dropdownElement?.classList.add('showing');
+          }
+        },
+        onClose: () => {
+          if (isProfilePreview) {
+            dropdownElement?.classList.remove('showing');
+          }
+        },
       });
 
       // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
@@ -63,7 +77,9 @@ const fetchMissingProfilePreviewCard = async (placeholderElement) => {
     jsCommentUserId: commentUserId,
     jsDropdownContentId: dropdownContentId,
   } = placeholderElement.dataset;
-  const response = await window.fetch(`/profile_preview_card/${commentUserId}`);
+  const response = await window.fetch(
+    `/profile_preview_cards/${commentUserId}`,
+  );
   const htmlContent = await response.text();
 
   const generatedElement = document.createElement('div');
@@ -73,9 +89,6 @@ const fetchMissingProfilePreviewCard = async (placeholderElement) => {
   previewCard.id = dropdownContentId;
 
   placeholderElement.parentNode.replaceChild(previewCard, placeholderElement);
-
-  // Make sure the button inside the dropdown is initialized
-  initializeUserFollowButts();
 };
 
 /**

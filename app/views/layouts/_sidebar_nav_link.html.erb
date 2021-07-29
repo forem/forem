@@ -1,11 +1,13 @@
 <% if !link.display_only_when_signed_in || (link.display_only_when_signed_in && user_signed_in?) %>
-  <a href="<%= link.url %>" class="sidebar-navigation-link crayons-link crayons-link--block">
-    <span class="crayons-icon crayons-icon--default">
-      <%= link.icon.html_safe %>
-    </span>
-    <%= link.name %>
-    <% if link.url.include?("readinglist") %>
-      <span id="reading-list-count" class="crayons-indicator"></span>
-    <% end %>
-  </a>
+  <li>
+    <a href="<%= link.url %>" class="sidebar-navigation-link crayons-link crayons-link--block">
+      <span class="crayons-icon crayons-icon--default">
+        <%= link.icon.html_safe %>
+      </span>
+      <%= link.name %>
+      <% if link.url.include?("readinglist") %>
+        <span id="reading-list-count" class="crayons-indicator"></span>
+      <% end %>
+    </a>
+  </li>
 <% end %>

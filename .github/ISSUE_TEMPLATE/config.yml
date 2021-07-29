@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Feature Request
+    url: https://forem.dev/t/features
+    about: Please use the `Create Post` feature request template to suggest an idea to make Forem better. 
+  - name: Forem Questions and Discussions
+    url: https://forem.dev/
+    about: Please ask and answer questions, discuss features, or reach out for help on forem.dev
+  - name: Self-Host Bug Report
+    url: https://github.com/forem/selfhost/issues/new
+    about: Create a report to help us improve the Self-Host repository.

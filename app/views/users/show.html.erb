@@ -54,7 +54,7 @@
                 <button class="chat-action-button crayons-btn crayons-btn--outlined hidden" id="modal-opener">Chat</button>
               </a>
             <% end %>
-            <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button user-profile-follow-button" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>Follow</button>
+            <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button user-profile-follow-button follow-user" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>Follow</button>
           </div>
         </div>
 
@@ -158,4 +158,4 @@
   </main>
 </div>
 
-<%= javascript_packs_with_chunks_tag "storiesList", defer: true %>
+<%= javascript_packs_with_chunks_tag "storiesList", "followButtons", defer: true %>
