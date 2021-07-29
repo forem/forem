@@ -10,7 +10,7 @@ RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo 
     dnf -y clean all && \
     rm -rf /var/cache/yum
 
-ENV BUNDLER_VERSION=2.2.15 BUNDLE_SILENCE_ROOT_WARNING=true BUNDLE_SILENCE_DEPRECATIONS=true
+ENV BUNDLER_VERSION=2.2.22 BUNDLE_SILENCE_ROOT_WARNING=true BUNDLE_SILENCE_DEPRECATIONS=true
 RUN gem install -N bundler:"${BUNDLER_VERSION}"
 
 ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \
@@ -59,7 +59,7 @@ RUN dnf install --setopt install_weak_deps=false -y bash curl ImageMagick \
                 && dnf -y clean all \
                 && rm -rf /var/cache/yum
 
-ENV BUNDLER_VERSION=2.2.15 BUNDLE_SILENCE_ROOT_WARNING=1
+ENV BUNDLER_VERSION=2.2.22 BUNDLE_SILENCE_ROOT_WARNING=1
 RUN gem install -N bundler:"${BUNDLER_VERSION}"
 
 ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \
