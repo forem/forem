@@ -353,9 +353,7 @@ class StoriesController < ApplicationController
       image: Images::Profile.call(@user.profile_image_url, length: 320),
       name: @user.name,
       email: @user.setting.display_email_on_profile ? @user.email : nil,
-      jobTitle: @user.employment_title.presence,
-      description: @user.summary.presence || "404 bio not found",
-      worksFor: [user_works_for].compact,
+      description: @user.profile.summary.presence || "404 bio not found",
       alumniOf: @user.education.presence
     }.reject { |_, v| v.blank? }
   end
@@ -421,25 +419,13 @@ class StoriesController < ApplicationController
     }
   end
 
-  def user_works_for
-    # For further examples of the worksFor properties, please refer to this
-    # link: https://jsonld.com/person/
-    return unless @user.employer_name.presence || @user.employer_url.presence
-
-    {
-      "@type": "Organization",
-      name: @user.employer_name,
-      url: @user.employer_url
-    }.reject { |_, v| v.blank? }
-  end
-
   def user_same_as
     # For further information on the sameAs property, please refer to this link:
     # https://schema.org/sameAs
     [
       @user.twitter_username.present? ? "https://twitter.com/#{@user.twitter_username}" : nil,
       @user.github_username.present? ? "https://github.com/#{@user.github_username}" : nil,
-      @user.website_url,
+      @user.profile.website_url,
     ].reject(&:blank?)
   end
 
