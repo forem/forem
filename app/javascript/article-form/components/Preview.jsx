@@ -16,7 +16,7 @@ function titleArea({
     tags = tagArray.map((tag) => {
       return (
         tag.length > 0 && (
-          <span className="crayons-tag mr-2">
+          <span key={tag} className="crayons-tag mr-2">
             <span className="crayons-tag__prefix">#</span>
             {tag}
           </span>

@@ -381,6 +381,7 @@ export class Tags extends Component {
     const { activeElement } = document;
     const searchResultsRows = searchResults.map((tag, index) => (
       <div
+        key={tag.id}
         tabIndex="-1"
         role="button"
         className={`${classPrefix}__tagoptionrow ${classPrefix}__tagoptionrow--${

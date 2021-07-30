@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { defaultMembershipPropType } from '../../../common-prop-types/membership-prop-type';
 import { Membership } from './Membership';
 
 export const MembershipSection = ({
@@ -17,6 +18,7 @@ export const MembershipSection = ({
     <div className="membership-section">
       {memberships.map((activeMembership) => (
         <Membership
+          key={activeMembership.membership_id}
           membership={activeMembership}
           membershipType="active"
           currentMembershipRole={() => {}}
@@ -32,17 +34,7 @@ export const MembershipSection = ({
 };
 
 MembershipSection.propType = {
-  memberships: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      membership_id: PropTypes.number.isRequired,
-      user_id: PropTypes.number.isRequired,
-      role: PropTypes.string.isRequired,
-      image: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
-      status: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
+  memberships: PropTypes.arrayOf(defaultMembershipPropType).isRequired,
   currentMembership: PropTypes.isRequired,
   removeMembership: PropTypes.func.isRequired,
   handleUpdateMembershipRole: PropTypes.func.isRequired,

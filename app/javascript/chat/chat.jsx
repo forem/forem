@@ -1166,6 +1166,7 @@ export class Chat extends Component {
     return messages[activeChannelId].map((message) =>
       message.action ? (
         <ActionMessage
+          key={message.id}
           user={message.username}
           profileImageUrl={message.profile_image_url}
           message={message.message}
@@ -1175,6 +1176,7 @@ export class Chat extends Component {
         />
       ) : (
         <Message
+          key={message.id}
           currentUserId={currentUserId}
           id={message.id}
           user={message.username}

@@ -18,7 +18,7 @@ function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
           </a>
         </li>
         {availableTags.map((tag) => (
-          <li>
+          <li key={tag}>
             <a
               className={`crayons-link crayons-link--block${
                 selectedTag === tag ? ' crayons-link--current' : ''
@@ -61,6 +61,7 @@ export function TagList({
       <option>all tags</option>
       {availableTags.map((tag) => (
         <option
+          key={tag}
           selected={tag === selectedTag}
           className={`crayons-link crayons-link--block ${
             tag === selectedTag ? 'crayons-link--current' : ''

@@ -22,7 +22,7 @@ export const TagList = ({ tags = [], flare_tag }) => {
         </a>
       )}
       {tagsToDisplay.map((tag) => (
-        <a className="crayons-tag" href={`/t/${tag}`}>
+        <a key={tag} className="crayons-tag" href={`/t/${tag}`}>
           <span className="crayons-tag__prefix">#</span>
           {tag}
         </a>

@@ -19,6 +19,7 @@ export const PersonalInvitationSection = ({
         userInvitations.map((userInvitation) => {
           return (
             <PendingInvitationListItem
+              key={`${userInvitation.channel_name}-${userInvitation.membership_id}`}
               request={userInvitation}
               updateMembership={updateMembership}
             />

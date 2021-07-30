@@ -172,7 +172,7 @@ class UnopenedChannelNotice extends Component {
       const message = unopenedChannels.map((channel) => {
         if (channel.notified) return null;
         return (
-          <div>
+          <div key={channel.adjusted_slug}>
             {channel.request_type === 'mentioned'
               ? 'You got mentioned in'
               : 'New Message from'}{' '}

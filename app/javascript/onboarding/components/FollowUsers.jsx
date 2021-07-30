@@ -180,6 +180,7 @@ export class FollowUsers extends Component {
 
                 return (
                   <div
+                    key={user.username}
                     data-testid="onboarding-user-button"
                     className={`user content-row ${
                       selected ? 'selected' : 'unselected'

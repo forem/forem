@@ -23,6 +23,7 @@ export const PendingMembershipSection = ({
       {pendingMemberships && pendingMemberships.length > 0
         ? pendingMemberships.map((pendingMembership) => (
             <Membership
+              key={pendingMembership.membership_id}
               membership={pendingMembership}
               removeMembership={removeMembership}
               membershipType="pending"

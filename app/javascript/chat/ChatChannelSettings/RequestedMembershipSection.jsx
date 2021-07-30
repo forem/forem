@@ -26,6 +26,7 @@ export const RequestedMembershipSection = ({
       {requestedMemberships && requestedMemberships.length > 0
         ? requestedMemberships.map((pendingMembership) => (
             <Membership
+              key={pendingMembership.membership_id}
               membership={pendingMembership}
               removeMembership={removeMembership}
               chatChannelAcceptMembership={chatChannelAcceptMembership}

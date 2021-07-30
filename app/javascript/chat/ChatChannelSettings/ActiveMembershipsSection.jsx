@@ -22,6 +22,7 @@ export const ActiveMembershipsSection = ({
       <h3 className="mb-2 active_members">Members</h3>
       {activeMembershipList.map((activeMembership) => (
         <Membership
+          key={activeMembership.membership_id}
           membership={activeMembership}
           removeMembership={removeMembership}
           membershipType="active"

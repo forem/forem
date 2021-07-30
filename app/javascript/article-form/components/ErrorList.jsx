@@ -11,7 +11,7 @@ export const ErrorList = ({ errors }) => {
       <ul className="list-disc pl-6">
         {Object.keys(errors).map((key) => {
           return (
-            <li>
+            <li key={key}>
               {key}
               {`: `}
               {errors[key]}
