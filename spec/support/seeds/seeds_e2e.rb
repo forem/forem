@@ -38,17 +38,19 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
   )
+
   user.notification_setting.update(
     email_comment_notifications: false,
     email_follower_notifications: false,
   )
 
-  user.profile.update({
-                        summary: "Admin user summary",
-                        employment_title: "Software developer",
-                        location: "Edinburgh",
-                        education: "University of Life"
-                      })
+  user.profile.update(
+    summary: "Admin user summary",
+    work: "Software developer at Company",
+    location: "Edinburgh",
+    education: "University of Life",
+  )
+
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
   user.add_role(:trusted)

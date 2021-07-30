@@ -1,4 +1,4 @@
-Full test,text_field,Test,Test field,Basic,header,true
-Test name,text_field,John Doe,,Basic,header,false
+Full test,text_field,Test,Test field,Basic,left_sidebar,true
+Test name,text_field,John Doe,,Basic,left_sidebar,false
 
 Test languages,text_area,,"Programming languages, frameworks, etc.",Coding,left_sidebar,false

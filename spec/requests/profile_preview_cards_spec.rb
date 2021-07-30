@@ -62,9 +62,7 @@ RSpec.describe "ProfilePreviewCards", type: :request do
 
         preview_card = response.parsed_body
         expect(preview_card["summary"]).to eq(profile.summary)
-        expect(preview_card["employment_title"]).to eq(profile.employment_title)
-        expect(preview_card["employer_name"]).to eq(profile.employer_name)
-        expect(preview_card["employer_url"]).to eq(profile.employer_url)
+        expect(preview_card["work"]).to eq(profile.work)
         expect(preview_card["location"]).to eq(profile.location)
         expect(preview_card["education"]).to eq(profile.education)
         expect(preview_card["created_at"]).to eq(profile.created_at.utc.iso8601)
@@ -116,9 +114,7 @@ RSpec.describe "ProfilePreviewCards", type: :request do
 
         preview_card = response.parsed_body
         expect(preview_card["summary"]).to eq(profile.summary)
-        expect(preview_card["employment_title"]).to eq(profile.employment_title)
-        expect(preview_card["employer_name"]).to eq(profile.employer_name)
-        expect(preview_card["employer_url"]).to eq(profile.employer_url)
+        expect(preview_card["work"]).to eq(profile.work)
         expect(preview_card["location"]).to eq(profile.location)
         expect(preview_card["education"]).to eq(profile.education)
         expect(preview_card["created_at"]).to eq(profile.created_at.utc.iso8601)
