@@ -821,6 +821,69 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#last_verification_date" do
+    it "returns nil if there are no email authorizations" do
+      expect(user.last_verification_date).to be(nil)
+    end
+
+    it "does not return unverified email authorizations" do
+      create(:email_authorization, user: user, verified_at: nil)
+
+      expect(user.last_verification_date).to be(nil)
+    end
+
+    it "returns the last email authorization's date" do
+      ea1 = create(:email_authorization, user: user, created_at: 1.day.ago, verified_at: 1.day.ago)
+      create(:email_authorization, user: user, created_at: 1.month.ago, verified_at: 1.month.ago)
+
+      expect(user.last_verification_date.iso8601).to eq(ea1.verified_at.iso8601)
+    end
+  end
+
+  describe "#reports" do
+    it "returns reported feedback messages" do
+      report = create(:feedback_message, reporter: user)
+
+      expect(user.reports.first.id).to eq(report.id)
+    end
+
+    it "returns affected feedback messages" do
+      report = create(:feedback_message, affected: user)
+
+      expect(user.reports.first.id).to eq(report.id)
+    end
+
+    it "returns offender feedback messages" do
+      report = create(:feedback_message, offender: user)
+
+      expect(user.reports.first.id).to eq(report.id)
+    end
+  end
+
+  describe "#related_negative_reactions" do
+    let(:moderator) { create(:user, :trusted) }
+
+    it "returns vomit reactions on user's articles" do
+      article = create(:article, user: user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: article)
+
+      expect(user.related_negative_reactions.first.id).to eq(reaction.id)
+    end
+
+    it "returns vomit reactions on user's comments" do
+      comment = create(:comment, user: user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: comment)
+
+      expect(user.related_negative_reactions.first.id).to eq(reaction.id)
+    end
+
+    it "returns the user's vomit reactions" do
+      reaction = create(:vomit_reaction, user: moderator, reactable: user)
+
+      expect(moderator.related_negative_reactions.first.id).to eq(reaction.id)
+    end
+  end
+
   describe "profiles" do
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)
