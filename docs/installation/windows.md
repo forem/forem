@@ -287,3 +287,10 @@ There are currently two work-arounds.
 
 > If you encountered any errors that you subsequently resolved, **please
 > consider updating this section** with your errors and their solutions.
+
+### WSL2 and End to End Test
+
+In order to run Cypress Test Runner, a few extra setups are required to run GUIs
+natively inside of WSL2.
+[this guide](https://nickymeuleman.netlify.app/blog/gui-on-wsl2-cypress) show
+how to use graphical user interfaces like Cypress in WSL2.
