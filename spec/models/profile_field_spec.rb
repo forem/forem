@@ -28,7 +28,7 @@ RSpec.describe ProfileField, type: :model do
       end
 
       it "limits the number of header fields on update", :aggregate_errors do
-        expect(descri.header.count).to be >= 3
+        expect(described_class.header.count).to be >= 3
         profile_field = described_class.left_sidebar.first
 
         expect { profile_field.header! }
