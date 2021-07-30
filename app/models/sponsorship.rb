@@ -2,6 +2,7 @@ class Sponsorship < ApplicationRecord
   LEVELS = %w[gold silver bronze tag media devrel].freeze
   METAL_LEVELS = %w[gold silver bronze].freeze
   STATUSES = %w[none pending live].freeze
+  SPONSORABLE_TYPES = [Tag, ActsAsTaggableOn::Tag].map(&:name).freeze
   # media has no fixed amount of credits
   CREDITS = {
     gold: 6_000,
@@ -50,13 +51,8 @@ class Sponsorship < ApplicationRecord
 
   def validate_sponsorable_type
     return if sponsorable_type.blank?
+    return if SPONSORABLE_TYPES.include?(sponsorable_type)
 
-    begin
-      sponsorable_type.constantize
-      true
-    rescue NameError
-      errors.add(:sponsorable_type, "is not a valid class name")
-      false
-    end
+    errors.add(:sponsorable_type, "is not a sponsorable type")
   end
 end
