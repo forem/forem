@@ -12,7 +12,11 @@
     </div>
   </a>
   <div class="ltag__user__content">
-    <h2><a href="/<%= organization.slug %>" class="ltag__user__link"><%= organization.name %></a><%= follow_button %></h2>
+    <h2>
+      <a href="/<%= organization.slug %>" class="ltag__user__link"><%= organization.name %></a>
+      <%= follow_button %>
+      <span class="hidden screen-reader-only">Follow organization: <%= organization.second %></span>
+    </h2>
     <div class="ltag__user__summary">
       <a href="/<%= organization.slug %>" class="ltag__user__link">
         <%= organization.summary %>

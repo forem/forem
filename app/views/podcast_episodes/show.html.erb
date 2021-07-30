@@ -37,6 +37,7 @@
           <img alt="<%= @podcast.title %>" src="<%= optimized_image_url(@podcast.image_url, width: 60, quality: 80) %>" /><%= @podcast.title %>
         </a>
         <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
+        <span class="hidden screen-reader-only">Follow podcast: <%= @podcast.name %></span>
       </h2>
       <% if @episode.title.size > 60 %>
         <h1 class="smaller"><%= @episode.title %></h1>

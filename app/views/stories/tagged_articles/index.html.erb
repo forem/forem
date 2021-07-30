@@ -22,6 +22,7 @@
             </h1>
             <% if @tag_model %>
               <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'>Follow</button>
+              <span class="hidden screen-reader-only">Follow tag: <%= @tag_model.pretty_name || @tag %></span>
             <% end %>
           </div>
           <% if @tag_model && @tag_model.short_summary.present? %>
