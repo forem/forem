@@ -13,6 +13,7 @@
     "test": "test"
   },
   "scripts": {
+    "prepare": "husky install",
     "api-docs:lint": "spectral lint -F hint -v docs/api_v0.yml",
     "api-docs:serve": "redoc-cli serve docs/api_v0.yml --options.pathInMiddlePanel --options.jsonSampleExpandLevel=all --options.menuToggle -t docs/api_template.hbs --watch",
     "storybook-prerequisites": "sass -q app/assets/stylesheets/themes:app/javascript/storybook-static/themes && bin/generate-css-utility-classes-docs.js",
@@ -25,12 +26,7 @@
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
     "e2e": "bin/e2e",
-    "e2e:noseed": "yarn run e2e --no-seed"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed"
   },
   "lint-staged": {
     "app/assets/config/manifest.js": [
@@ -47,6 +43,9 @@
     ],
     "{app,spec,config,lib}/**/*.rb": [
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
+    ],
+    "scripts/{release,stage_release}": [
+      "bundle exec rubocop --require rubocop-rspec --auto-correct --except Style/TopLevelMethodDefinition,Rails/Date"
     ],
     "app/views/**/*.jbuilder": [
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
@@ -90,9 +89,9 @@
     "@stoplight/spectral": "5.9.1",
     "@storybook/addon-a11y": "^6.3.6",
     "@storybook/addon-actions": "^6.3.5",
-    "@storybook/addon-docs": "^6.3.4",
+    "@storybook/addon-docs": "^6.3.6",
     "@storybook/addon-knobs": "^6.2.9",
-    "@storybook/addon-links": "^6.3.4",
+    "@storybook/addon-links": "^6.3.6",
     "@storybook/addon-notes": "^5.3.21",
     "@storybook/addon-storysource": "^6.3.6",
     "@storybook/addons": "^6.2.8",
@@ -102,7 +101,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/preact": "^2.0.1",
     "@testing-library/preact-hooks": "^1.1.0",
-    "@testing-library/user-event": "^13.2.0",
+    "@testing-library/user-event": "^13.2.1",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.3",
@@ -125,17 +124,17 @@
     "eslint-plugin-react": "^7.24.0",
     "faker": "^5.5.3",
     "gitdocs": "^2.0.0",
-    "husky": "^4.3.8",
+    "husky": "^7.0.1",
     "jest": "26.6.3",
     "jest-axe": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^0.6.3",
     "jsdom": "^16.6.0",
-    "lint-staged": "^11.0.1",
+    "lint-staged": "^11.1.1",
     "markdown-loader": "^6.0.0",
     "prettier": "^2.3.2",
     "redoc-cli": "0.12.2",
-    "sass": "1.35.2",
+    "sass": "1.36.0",
     "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
     "svgo": "2.3.1",
@@ -143,7 +142,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@babel/core": "^7.14.6",
+    "@babel/core": "^7.14.8",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-react-jsx": "^7.14.5",

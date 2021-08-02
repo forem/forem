@@ -38,17 +38,19 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
   )
+
   user.notification_setting.update(
     email_comment_notifications: false,
     email_follower_notifications: false,
   )
 
-  user.profile.update({
-                        summary: "Admin user summary",
-                        employment_title: "Software developer",
-                        location: "Edinburgh",
-                        education: "University of Life"
-                      })
+  user.profile.update(
+    summary: "Admin user summary",
+    work: "Software developer at Company",
+    location: "Edinburgh",
+    education: "University of Life",
+  )
+
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
   user.add_role(:trusted)
@@ -245,6 +247,30 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.com") do
   Notification.send_new_follower_notification_without_delay(follow)
 end
 
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.com") do
+  liquid_tags_user = User.create!(
+    name: "Liquid tags User",
+    email: "liquid-tags-user@forem.local",
+    username: "liquid_tags_user",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+  liquid_tags_user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+
+  admin_user.follows.create!(followable: liquid_tags_user)
+end
 ##############################################################################
 
 seeder.create_if_doesnt_exist(ChatChannel, "channel_name", "test chat channel") do

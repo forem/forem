@@ -11,13 +11,7 @@ class Profile < ApplicationRecord
   # any profile on a given Forem.
   STATIC_FIELDS = %w[summary location website_url].freeze
 
-  SPECIAL_DISPLAY_ATTRIBUTES = %w[
-    summary
-    employment_title
-    employer_name
-    employer_url
-    location
-  ].freeze
+  SPECIAL_DISPLAY_ATTRIBUTES = %w[summary location].freeze
 
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
