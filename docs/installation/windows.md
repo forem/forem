@@ -288,7 +288,7 @@ There are currently two work-arounds.
 > If you encountered any errors that you subsequently resolved, **please
 > consider updating this section** with your errors and their solutions.
 
-### WSL2 and End to End Test
+### WSL2 and End to End Tests
 
 In order to run Cypress Test Runner, a few extra setups are required to run GUIs
 natively inside of WSL2.
