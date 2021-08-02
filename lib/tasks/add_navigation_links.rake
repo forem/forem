@@ -1,18 +1,26 @@
 # rubocop:disable Metrics/BlockLength
 namespace :navigation_links do
-  reading_icon = File.read(Rails.root.join("app/assets/images/twemoji/drawer.svg")).freeze
-  contact_icon = File.read(Rails.root.join("app/assets/images/twemoji/contact.svg")).freeze
-  thumb_up_icon = File.read(Rails.root.join("app/assets/images/twemoji/thumb-up.svg")).freeze
-  smart_icon = File.read(Rails.root.join("app/assets/images/twemoji/smart.svg")).freeze
-  look_icon = File.read(Rails.root.join("app/assets/images/twemoji/look.svg")).freeze
-  listing_icon = File.read(Rails.root.join("app/assets/images/twemoji/listing.svg")).freeze
-  mic_icon = File.read(Rails.root.join("app/assets/images/twemoji/mic.svg")).freeze
-  camera_icon = File.read(Rails.root.join("app/assets/images/twemoji/camera.svg")).freeze
-  tag_icon = File.read(Rails.root.join("app/assets/images/twemoji/tag.svg")).freeze
-  bulb_icon = File.read(Rails.root.join("app/assets/images/twemoji/bulb.svg")).freeze
-  shopping_icon = File.read(Rails.root.join("app/assets/images/twemoji/shopping.svg")).freeze
-  heart_icon = File.read(Rails.root.join("app/assets/images/twemoji/heart.svg")).freeze
-  rainbowdev = File.read(Rails.root.join("app/assets/images/rainbowdev.svg")).freeze
+  def image_path(*paths)
+    File.read(Rails.root.join("app/assets/images/#{paths.join('/')}")).freeze
+  end
+
+  def twemoji_path(name)
+    image_path("twemoji", name)
+  end
+
+  reading_icon = twemoji_path("drawer.svg")
+  contact_icon = twemoji_path("contact.svg")
+  thumb_up_icon = twemoji_path("thumb-up.svg")
+  smart_icon = twemoji_path("smart.svg")
+  look_icon = twemoji_path("look.svg")
+  listing_icon = twemoji_path("listing.svg")
+  mic_icon = twemoji_path("mic.svg")
+  camera_icon = twemoji_path("camera.svg")
+  tag_icon = twemoji_path("tag.svg")
+  bulb_icon = twemoji_path("bulb.svg")
+  shopping_icon = twemoji_path("shopping.svg")
+  heart_icon = twemoji_path("heart.svg")
+  rainbowdev = image_path("rainbowdev.svg")
 
   desc "Create navigation links for new forem"
   task create: :environment do
