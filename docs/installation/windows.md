@@ -293,5 +293,5 @@ There are currently two work-arounds.
 In order to run Cypress Test Runner, a few extra setup steps are required to run GUIs
 natively inside of WSL2.
 
-[this guide](https://nickymeuleman.netlify.app/blog/gui-on-wsl2-cypress) show
-how to use graphical user interfaces like Cypress in WSL2.
+[This guide](https://nickymeuleman.netlify.app/blog/gui-on-wsl2-cypress) explains
+how to use graphical user interfaces like Cypress inside WSL2.
