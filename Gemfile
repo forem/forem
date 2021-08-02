@@ -54,7 +54,7 @@ gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.0" # A secure, non-evaling end user template engine with aesthetic markup
-gem "nokogiri", "~> 1.11" # HTML, XML, SAX, and Reader parser
+gem "nokogiri", "~> 1.12" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.21" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.12" # JSON parser and object serializer
 gem "omniauth", "~> 2.0" # A generalized Rack framework for multiple-provider authentication
