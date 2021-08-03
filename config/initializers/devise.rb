@@ -21,7 +21,6 @@ APPLE_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:key_id] = Settings::Authentication.apple_key_id
   env["omniauth.strategy"].options[:pem] = Settings::Authentication.apple_pem.to_s.gsub("\\n", "\n")
   env["omniauth.strategy"].options[:provider_ignores_state] = true
-  # env["omniauth.strategy"].options[:nonce_supported] = false
   env["omniauth.strategy"].options[:team_id] = Settings::Authentication.apple_team_id
 end
 
