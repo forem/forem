@@ -1,27 +1,67 @@
 <% title "Confirm your email" %>
 <% proper_email = params[:email] || (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
-<div class="crayons-layout crayons-layout--limited-l align-center mt-9 mb-10 p-3">
+<main id="main-content">
+  <% if FeatureFlag.enabled?(:creator_onboarding) %>
+    <%= javascript_packs_with_chunks_tag "confirmationEmail", defer: true %>
+    <div class="crayons-layout crayons-layout--limited-l" id="email-confirmation">
+      <div class="flex flex-col items-center justify-center">
+        <%= render "devise/shared/error_messages", resource: resource %>
 
-  <% if came_from_sign_up? %>
-    <h1 class="fs-5xl mb-5">Welcome to <%= community_name %>! 🎉</h1>
-  <% end %>
+        <%= inline_svg_tag("mail.svg", aria: true, title: "Email") %>
+        <div class="fs-3xl fw-bold">Great! Now confirm your email address.</div>
 
-  <% if proper_email.present? %>
-    <h3 class="mb-5">A confirmation email has been sent to <a href="mailto:<%= proper_email %>"><%= proper_email %></a></h3>
-  <% end %>
-
-  <div class="mt-8 mb-6 crayons-card p-7 align-left mx-auto">
-    <h2 class="pb-4">Didn't get the email?</h2>
-    <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }, data: { testid: "resend-confirmation-form" }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
-
-      <div class="crayons-field mt-2">
-        <%= f.email_field :email, class: "crayons-textfield", aria: { label: "Confirmation email address" }, autofocus: false, value: proper_email %>
+        <% if proper_email.present? %>
+          <div class="fs-xl color-base-70">
+            <div>We've sent an email to <span class="fw-bold"><%= proper_email %></span></div>
+            <div>Click the button inside to confirm your email</div>
+          </div>
+        <% end %>
       </div>
-
-      <div class="crayons-field mt-2">
-        <%= f.submit "Resend confirmation instructions", class: "crayons-btn" %>
+      <div class="bg-base-10 p-4 self-end mx-auto mb-6">
+        <button class="color-accent-brand text-underline cursor-pointer js-confirmation-button border-none" role="button">Click here</button>if you didn't get the email...
       </div>
-    <% end %>
-  </div>
-</div>
+      <%= inline_svg_tag("forem-background.svg", aria: true, title: "forem background", class: "absolute bottom-0 right-0") %>
+
+      <div id="confirm-email-modal" class="hidden">
+        <div>Re-enter the email address below to resend the confirmation link</div>
+        <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }, data: { testid: "resend-confirmation-form" }) do |f| %>
+          <div class="crayons-field mt-5 mb-3">
+            <%= f.email_field :email, placeholder: "user@example.com", autocomplete: "email", aria: { label: "Confirmation email address" }, class: "crayons-textfield", required: true, value: proper_email %>
+          </div>
+
+          <div class="flex">
+            <%= f.submit "Resend", role: "button", class: "crayons-btn mr-1" %>
+            <button class="crayons-btn color-base-70 crayons-btn--ghost js-dismiss-button" role="button">
+              Dismiss
+            </button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="crayons-layout crayons-layout--limited-l align-center mt-9 mb-10 p-3">
+
+      <% if came_from_sign_up? %>
+        <h1 class="fs-5xl mb-5">Welcome to <%= community_name %>! 🎉</h1>
+      <% end %>
+      <% if proper_email.present? %>
+        <h3 class="mb-5">A confirmation email has been sent to <a href="mailto:<%= proper_email %>"><%= proper_email %></a></h3>
+      <% end %>
+
+      <div class="mt-8 mb-6 crayons-card p-7 align-left mx-auto">
+        <h2 class="pb-4">Didn't get the email?</h2>
+        <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }, data: { testid: "resend-confirmation-form" }) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
+
+          <div class="crayons-field mt-2">
+            <%= f.email_field :email, class: "crayons-textfield", aria: { label: "Confirmation email address" }, autofocus: false, value: proper_email %>
+          </div>
+
+          <div class="crayons-field mt-2">
+            <%= f.submit "Resend confirmation instructions", class: "crayons-btn" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</main>
