@@ -1,7 +1,6 @@
 <div class="registration__actions-providers">
   <% authentication_enabled_providers.each do |provider| %>
     <% next unless display_social_login? %>
-    <% next if provider.provider_name == :apple && !FeatureFlag.enabled?(:apple_auth) %>
     <%= form_with url: provider.sign_in_path(state: "navbar_basic"), class: "flex w-100", local: true do |f| %>
       <%= f.button type: :submit, class: "crayons-btn crayons-btn--l crayons-btn--brand-#{provider.provider_name} crayons-btn--icon-left grow-1 whitespace-nowrap" do %>
         <%= inline_svg_tag("#{provider.provider_name}.svg", aria_hidden: true, class: "crayons-icon", title: provider.provider_name) %>
