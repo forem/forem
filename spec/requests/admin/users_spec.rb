@@ -19,9 +19,19 @@ RSpec.describe "/admin/users", type: :request do
   end
 
   describe "GET /admin/users/:id" do
-    it "renders to appropriate page" do
-      get admin_user_path(user.id)
+    it "renders to appropriate page", :aggregate_failures do
+      get admin_user_path(user)
+
       expect(response.body).to include(user.username)
+      expect(response.body).not_to include("Go back to All members")
+    end
+
+    it "renders the new admin page if the feature flag is enabled" do
+      FeatureFlag.enable(:new_admin_members, admin)
+
+      get admin_user_path(user)
+
+      expect(response.body).to include("Go back to All members")
     end
 
     context "when a user is unregistered" do
