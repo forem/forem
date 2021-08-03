@@ -5,18 +5,18 @@ module Admin
     after_action :verify_authorized
 
     HELP_URLS = {
-      badges: "https://forem.gitbook.io/forem-admin-guide/admin/badges",
-      badge_achievements: "https://forem.gitbook.io/forem-admin-guide/admin/badges",
-      configs: "https://forem.gitbook.io/forem-admin-guide/admin/config",
-      navigation_links: "https://forem.gitbook.io/forem-admin-guide/admin/navigation-links",
-      pages: "https://forem.gitbook.io/forem-admin-guide/admin/pages",
-      podcasts: "https://forem.gitbook.io/forem-admin-guide/admin/podcasts",
-      reports: "https://forem.gitbook.io/forem-admin-guide/admin/reports",
-      users: "https://forem.gitbook.io/forem-admin-guide/admin/users",
-      html_variants: "https://forem.gitbook.io/forem-admin-guide/admin/html-variants",
-      display_ads: "https://forem.gitbook.io/forem-admin-guide/admin/display-ads",
-      chat_channels: "https://forem.gitbook.io/forem-admin-guide/admin/chat-channels",
-      tags: "https://forem.gitbook.io/forem-admin-guide/admin/tags"
+      badges: "https://admin.forem.com/docs/admin/badges",
+      badge_achievements: "https://admin.forem.com/docs/admin/badges",
+      configs: "https://admin.forem.com/docs/admin/config/README",
+      navigation_links: "https://admin.forem.com/docs/admin/navigation-links",
+      pages: "https://admin.forem.com/docs/admin/pages",
+      podcasts: "https://admin.forem.com/docs/admin/podcasts",
+      reports: "https://admin.forem.com/docs/admin/reports",
+      users: "https://admin.forem.com/docs/admin/users/README",
+      html_variants: "https://admin.forem.com/docs/admin/html-variants",
+      display_ads: "https://admin.forem.com/docs/admin/display-ads",
+      chat_channels: "https://admin.forem.com/docs/admin/chat-channels",
+      tags: "https://admin.forem.com/docs/admin/tags"
     }.freeze
 
     private

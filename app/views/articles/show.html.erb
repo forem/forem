@@ -14,32 +14,6 @@
 <% end %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
-  <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js"
-            integrity="sha256-xOIPU/XvDtRLeDQ3qj9GOKmlbMSqKa6D7ZIS6ygHBSo="
-            crossorigin="anonymous" defer></script>
-    <script defer>
-      var waitingOnPostscribe = setInterval(function () {
-        if (typeof (postscribe) === "function") {
-          clearInterval(waitingOnPostscribe);
-          var els = document.getElementsByClassName("ltag_gist-liquid-tag");
-          for (var i = 0; i < els.length; i++) {
-            let current = els[i];
-            postscribe(current, current.firstElementChild.outerHTML, {
-              beforeWrite: function (context) {
-                return function (text) {
-                  if (context.childElementCount > 3) {
-                    return "";
-                  }
-                  return text;
-                }
-              }(current)
-            });
-          }
-        }
-      }, 500);
-    </script>
-  <% end %>
   <% unless internal_navigation? || user_signed_in? %>
     <script type="application/ld+json">
       <%= @article_json_ld.to_json.html_safe %>
@@ -148,16 +122,27 @@
               <div class="mb-4 spec__tags">
                 <% @article.cached_tag_list_array.each do |tag| %>
                   <% tag_hash = tag_colors(tag) %>
-                  <a class="crayons-tag mr-1" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+                  <% styles = "" %>
+                  <% if tag_hash[:background] %>
+                    <% styles = "background-color:#{tag_hash[:background]};" %>
+                  <% end %>
+                  <% if tag_hash[:color] %>
+                    <% styles = "#{styles}color:#{tag_hash[:color]};" %>
+                  <% end %>
+                  <a class="crayons-tag mr-1" href="/t/<%= tag %>" style="<%= styles %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
                 <% end %>
               </div>
             <% end %>
 
             <div class="crayons-article__subheader">
-              <a href="/<%= @user.username %>" class="flex items-center mr-4 mb-4 s:mb-0 fw-medium crayons-link">
-                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" /></span>
-                <%= @user.name %>
+              <a href="/<%= @user.username %>" class="flex items-center mr-2 mb-4 s:mb-0 fw-medium crayons-link">
+                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="" /></span>
+                <span class="block m:hidden"><%= @user.name %></span>
               </a>
+              <div class="profile-preview-card relative mr-4 mb-4 s:mb-0 fw-medium">
+                <button id="profile-preview-trigger" class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost hidden m:block" aria-label="<%= @user.name %> profile details"><%= @user.name %></button>
+                <%= render "/shared/profile_preview_card", actor: @user, id: "profile-preview-content" %>
+              </div>
 
               <span class="fs-s mb-4 s:mb-0">
                 <% if @article.published_timestamp.present? %>
@@ -218,7 +203,7 @@
     </div>
   </main>
 
-  <aside class="crayons-layout__sidebar-right" aria-label="Right sidebar navigation">
+  <aside class="crayons-layout__sidebar-right" aria-label="Author details">
     <% stick_nav_cache_key = "sticky-sidebar-#{@article.id}-#{(@organization || @user).profile_updated_at}-#{(@organization || @user).latest_article_updated_at}" %>
     <% cache(stick_nav_cache_key, expires_in: 50.hours) do %>
       <%= render "articles/sticky_nav" %>
@@ -244,9 +229,10 @@
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
 
 <div class="fullscreen-code js-fullscreen-code"></div>
+<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
-  <script async>
+  <script>
     <%# we consider these scripts safe for embedding as they come from our code %>
     <%== PodcastTag.script %>
     <%== PollTag.script %>

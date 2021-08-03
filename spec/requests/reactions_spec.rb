@@ -209,7 +209,7 @@ RSpec.describe "Reactions", type: :request do
 
     context "when creating readinglist" do
       before do
-        user.update_column(:experience_level, 8)
+        user.setting.update_column(:experience_level, 8)
         sign_in user
         post "/reactions", params: {
           reactable_id: article.id,

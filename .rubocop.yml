@@ -342,6 +342,10 @@ Naming/AccessorMethodName:
   StyleGuide: '#accessor_mutator_method_names'
   Enabled: false
 
+Naming/InclusiveLanguage:
+  Description: 'Recommend the use of inclusive language instead of problematic terms.'
+  Enabled: false
+
 Naming/PredicateName:
   Description: 'Check the names of predicate methods.'
   StyleGuide: '#bool-methods-qmark'
@@ -773,14 +777,30 @@ Rails/ActiveRecordCallbacksOrder:
   StyleGuide: 'https://rails.rubystyle.guide/#callbacks-order'
   Enabled: true
 
+Rails/AddColumnIndex:
+  Description: >-
+    Rails migrations don't make use of a given `index` key, but also
+    doesn't given an error when it's used, so it makes it seem like an
+    index might be used.
+  Enabled: true
+
 Rails/DefaultScope:
   Description: 'Avoid use of `default_scope`.'
   StyleGuide: 'https://rails.rubystyle.guide#avoid-default-scope'
   Enabled: true
 
+Rails/EagerEvaluationLogMessage:
+  Description: 'Checks that blocks are used for interpolated strings passed to `Rails.logger.debug`.'
+  Reference: 'https://guides.rubyonrails.org/debugging_rails_applications.html#impact-of-logs-on-performance'
+  Enabled: true
+
 Rails/EnvironmentVariableAccess:
   Description: 'Do not access `ENV` directly after initialization.'
   Enabled: false
+
+Rails/ExpandedDateRange:
+  Description: 'Checks for expanded date range.'
+  Enabled: true
 
 Rails/FilePath:
   EnforcedStyle: slashes
@@ -790,6 +810,10 @@ Rails/FindById:
                 Favor the use of `find` over `where.take!`, `find_by!`, and `find_by_id!` when you
                 need to retrieve a single record by primary key when you expect it to be found.
   StyleGuide: 'https://rails.rubystyle.guide/#find'
+  Enabled: true
+
+Rails/I18nLocaleAssignment:
+  Description: 'Prefer the usage of `I18n.with_locale` instead of manually updating `I18n.locale` value.'
   Enabled: true
 
 Rails/Inquiry:
@@ -868,6 +892,10 @@ Rails/TimeZoneAssignment:
   Reference: 'https://thoughtbot.com/blog/its-about-time-zones'
   Enabled: true
 
+Rails/UnusedIgnoredColumns:
+  Description: 'Remove a column that does not exist from `ignored_columns`.'
+  Enabled: true
+
 Rails/WhereExists:
   Description: 'Prefer `exists?(...)` over `where(...).exists?`.'
   Enabled: true
@@ -894,6 +922,11 @@ RSpec/ExampleLength:
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
 
+RSpec/IdenticalEqualityAssertion:
+  Description: Checks for equality assertions with identical expressions on both sides.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/IdenticalEqualityAssertion
+
 RSpec/MessageExpectation:
   Description: Checks for consistent message expectation style.
   Enabled: true
@@ -909,3 +942,8 @@ RSpec/MultipleExpectations:
   Enabled: true
   Max: 8
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleExpectations
+
+RSpec/Rails/AvoidSetupHook:
+  Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook

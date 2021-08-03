@@ -1,10 +1,12 @@
 import { h } from 'preact';
+import { useState, useRef, useLayoutEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/overflow-horizontal.svg';
 import { adjustTimestamp } from './util';
 import { ErrorMessage } from './messages/errorMessage';
 import { Button } from '@crayons';
+import { initializeDropdown } from '@utilities/dropdownUtils';
 
 export const Message = ({
   currentUserId,
@@ -22,7 +24,21 @@ export const Message = ({
   onReportMessageTrigger,
   onEditMessageTrigger,
 }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const messageWrapperRef = useRef(null);
   const spanStyle = { color };
+
+  const triggerElementId = `message-dropdown-trigger-${id}`;
+  const dropdownContentId = `message-dropdown-${id}`;
+
+  useLayoutEffect(() => {
+    initializeDropdown({
+      triggerElementId,
+      dropdownContentId,
+      onOpen: () => setIsDropdownOpen(true),
+      onClose: () => setIsDropdownOpen(false),
+    });
+  }, [triggerElementId, dropdownContentId]);
 
   if (type === 'error') {
     return <ErrorMessage message={message} />;
@@ -44,30 +60,57 @@ export const Message = ({
 
   const dropdown = (
     <div className="message__actions">
-      <span className="ellipsis__menubutton">
-        <img src={ThreeDotsIcon} alt="dropdown menu icon" />
-      </span>
+      <Button
+        id={triggerElementId}
+        className={`ellipsis__menubutton ${
+          isDropdownOpen ? 'opacity-1' : 'opacity-0'
+        }`}
+        size="s"
+        variant="ghost"
+      >
+        <img src={ThreeDotsIcon} alt="Message options menu" />
+      </Button>
 
-      <div className="messagebody__dropdownmenu">
-        <Button variant="ghost" onClick={(_) => onEditMessageTrigger(id)}>
-          Edit
-        </Button>
-        <Button
-          variant="ghost-danger"
-          onClick={(_) => onDeleteMessageTrigger(id)}
-        >
-          Delete
-        </Button>
+      <div id={dropdownContentId} className="messagebody__dropdownmenu hidden">
+        <ul class="list-none">
+          <li>
+            <Button
+              id={`edit-button-${id}`}
+              variant="ghost"
+              onClick={(_) => onEditMessageTrigger(id)}
+            >
+              Edit
+            </Button>
+          </li>
+          <li>
+            <Button
+              variant="ghost-danger"
+              onClick={(_) => onDeleteMessageTrigger(id)}
+            >
+              Delete
+            </Button>
+          </li>
+        </ul>
       </div>
     </div>
   );
   const dropdownReport = (
     <div className="message__actions">
-      <span className="ellipsis__menubutton">
-        <img src={ThreeDotsIcon} alt="message actions" />
-      </span>
+      <Button
+        id={triggerElementId}
+        className={`ellipsis__menubutton ${
+          isDropdownOpen ? 'opacity-1' : 'opacity-0'
+        }`}
+        size="s"
+        variant="ghost"
+      >
+        <img src={ThreeDotsIcon} alt="Report message options" />
+      </Button>
 
-      <div className="messagebody__dropdownmenu report__abuse__button">
+      <div
+        id={dropdownContentId}
+        className={`messagebody__dropdownmenu report__abuse__button hidden`}
+      >
         <Button
           variant="ghost-danger"
           onClick={(_) => onReportMessageTrigger(id)}
@@ -79,7 +122,7 @@ export const Message = ({
   );
 
   return (
-    <div className="chatmessage">
+    <div ref={messageWrapperRef} className="chatmessage">
       <div className="chatmessage__profilepic">
         <a
           href={`/${user}`}

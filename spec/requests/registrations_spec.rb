@@ -21,7 +21,7 @@ RSpec.describe "Registrations", type: :request do
 
         get sign_up_path
 
-        expect(response.body).not_to include("Have a password? Continue with your email address")
+        expect(response.body).not_to include("Have a password? Log in")
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe "Registrations", type: :request do
       it "does not show the sign in text for password based authentication" do
         get sign_up_path
 
-        expect(response.body).not_to include("Have a password? Continue with your email address")
+        expect(response.body).not_to include("Have a password? Log in")
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe "Registrations", type: :request do
       it "shows the sign in text for password based authentication" do
         get sign_up_path, params: { state: "new-user" }
 
-        expect(response.body).to include("View more sign in options")
+        expect(response.body).to include("Already have an account? <a href=\"/enter\">Log in</a>")
       end
 
       it "creates a user with a random profile image if none was uploaded" do

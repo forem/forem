@@ -1,0 +1,18 @@
+<div id="add-landing-page-link-modal" class="hidden">
+  <div class="form-group grid p-6 mb-6 gap-1">
+    <p>
+      Only <b>one</b> page at a time can be used as a "locked screen." If you proceed, this page will no longer show as "locked screen":
+      <br><br>
+
+      <span style="display:block; border:none; padding:20px; background-color:#F9FAFA;">
+        <%= link_to "Current Locked Screen: #{page.title}", page.path, target: :_blank, rel: :noopener %>
+      </span>
+
+      <br>
+       <button type="button" class="crayons-btn" data-action="landing-page-modal#confirm">Overwrite current locked screen</button>&nbsp;
+       <button class="crayons-btn crayons-btn--secondary" data-action="landing-page-modal#cancel">Cancel</button>
+    <p>
+  </div>
+</div>
+
+<div id="add-landing-page-link-modal-root"></div>

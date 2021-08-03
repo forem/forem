@@ -76,4 +76,23 @@ RSpec.describe ForemInstance, type: :model do
       expect(described_class.dev_to?).to be(false)
     end
   end
+
+  describe ".smtp_enabled?" do
+    it "return false when no credential is provided" do
+      expect(described_class.smtp_enabled?).to be(false)
+    end
+
+    it "returns true if user_name and password are present" do
+      allow(Settings::SMTP).to receive(:user_name).and_return("something")
+      allow(Settings::SMTP).to receive(:password).and_return("something")
+
+      expect(described_class.smtp_enabled?).to be(true)
+    end
+
+    it "returns true if sendgrid api key is available" do
+      ENV["SENDGRID_API_KEY"] = "something"
+      expect(described_class.smtp_enabled?).to be(true)
+      ENV["SENDGRID_API_KEY"] = nil
+    end
+  end
 end

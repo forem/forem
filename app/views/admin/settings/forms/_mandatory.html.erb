@@ -1,0 +1,57 @@
+<%= form_with(url: admin_settings_mandatory_settings_path, local: true, data: { testid: "getStartedSectionForm" }) do |f| %>
+  <fieldset class="grid gap-4">
+
+    <% Settings::Mandatory::MAPPINGS.each do |config_key, settings_model| %>
+      <%# we need to list the config as separate fields if the data structure is a Hash %>
+      <% placeholder_module = Constants.const_get(settings_model.name) %>
+      <% if settings_model.public_send(config_key).is_a?(Hash) %>
+        <%= admin_config_label config_key.to_s %>
+        <div class="form-group">
+          <%= f.fields_for config_key do |a_field| %>
+            <% settings_model.public_send(config_key).each do |key, value| %>
+              <div class="crayons-field">
+                <%= admin_config_label key.to_s %>
+                <%= admin_config_description "#{key} #{config_key.to_s.tr! '_', ' '}" %>
+                <%= a_field.text_field key,
+                                       class: "crayons-textfield",
+                                       value: settings_model.public_send(config_key)[key],
+                                       placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% elsif settings_model.public_send(config_key).is_a?(Array) %>
+        <div class="crayons-field">
+          <%= admin_config_label config_key %>
+          <%= admin_config_description placeholder_module::DETAILS[config_key][:description] %>
+          <%= f.text_field config_key,
+                           class: "crayons-textfield",
+                           value: settings_model.public_send(config_key).join(","),
+                           placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
+        </div>
+      <% else %>
+        <div class="crayons-field">
+          <%= admin_config_label config_key %>
+          <%= admin_config_description placeholder_module::DETAILS[config_key][:description] %>
+          <%= f.text_field config_key,
+                           class: "form-control",
+                           value: settings_model.public_send(config_key),
+                           placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% if current_user.has_role?(:super_admin) %>
+      <div class="crayons-notice p-4 mt-4">
+        <div class="crayons-field">
+          <%= label_tag :confirmation_update, "Confirmation update", class: "crayons-field__label" %>
+          <p class="crayons-field__description">Type the sentence: <strong><%= @confirmation_text %></strong></p>
+          <div class="flex">
+            <%= text_field_tag :confirmation, nil, class: "crayons-textfield flex-1 mr-2", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
+            <%= f.submit "Update Settings", class: "crayons-btn align-self-start" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </fieldset>
+<% end %>

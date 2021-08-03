@@ -86,6 +86,7 @@ RSpec.describe "/admin/moderation/reports", type: :request do
       end
 
       it "creates a new email message with the same params" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
         post send_email_admin_reports_path, params: send_email_params
 
         expect(EmailMessage.last.attributes).to include(email_message_attributes)

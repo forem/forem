@@ -1,0 +1,22 @@
+<%= form_for(Settings::SMTP.new, url: admin_settings_smtp_settings_path) do |f| %>
+  <div class="card mt-3">
+    <%= render partial: "admin/shared/card_header",
+               locals: { header: "SMTP Settings", state: "collapse", target: "smtpSettingsBodyContainer", expanded: false } %>
+    <div id="smtpSettingsBodyContainer" class="card-body collapse hide" aria-labelledby="smtpSettingsBodyContainer">
+      <fieldset class="grid gap-4">
+        <% Settings::SMTP::OPTIONS.each do |config_key| %>
+          <div class="crayons-field">
+            <%= admin_config_label config_key %>
+            <%= admin_config_description Constants::Settings::SMTP::DETAILS[config_key][:description] %>
+            <%= f.text_field config_key,
+                             class: "crayons-textfield",
+                             value: Settings::SMTP.public_send(config_key),
+                             placeholder: Constants::Settings::SMTP::DETAILS[config_key][:placeholder] %>
+
+          </div>
+        <% end %>
+        <%= render "form_submission", f: f %>
+      </fieldset>
+    </div>
+  </div>
+<% end %>

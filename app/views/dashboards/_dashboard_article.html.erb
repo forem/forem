@@ -67,6 +67,12 @@
 
     <a href="<%= article.path %>/stats" data-no-instant class="crayons-btn">Stats</a>
 
+    <% if discussion_lock %>
+      <a href="<%= article.path %>/discussion_unlock_confirm" data-no-instant class="crayons-btn">Unlock discussion</a>
+    <% else %>
+      <a href="<%= article.path %>/discussion_lock_confirm" data-no-instant class="crayons-btn">Lock discussion</a>
+    <% end %>
+
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="crayons-btn dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="page-views-count">

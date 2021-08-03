@@ -10,7 +10,7 @@
   <% if @html_variant %>
     <%= @html_variant.html.html_safe %>
     <div id="html-variant-element" data-variant-id="<%= @html_variant.id %>"></div>
-    <script defer>
+    <script>
       setTimeout(function () {
         var tokenMeta = document.querySelector("meta[name='csrf-token']")
         var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler

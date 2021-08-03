@@ -1,5 +1,13 @@
 module Podcasts
   class GetMediaUrl
+    HANDLED_ERRORS = [
+      Addressable::URI::InvalidURIError,
+      Net::OpenTimeout,
+      SocketError,
+      SystemCallError,
+      URI::InvalidURIError,
+    ].freeze
+
     def initialize(enclosure_url)
       @enclosure_url = enclosure_url.to_s
     end
@@ -35,7 +43,7 @@ module Podcasts
     def url_reachable?(url)
       url = Addressable::URI.parse(url).normalize.to_s
       HTTParty.head(url).code == 200
-    rescue Net::OpenTimeout, SystemCallError, URI::InvalidURIError, Addressable::URI::InvalidURIError
+    rescue *HANDLED_ERRORS
       false
     end
   end

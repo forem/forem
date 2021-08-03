@@ -34,6 +34,7 @@ class ApplicationController < ActionController::Base
                           deep_links
                           ga_events
                           health_checks
+                          instances
                           invitations
                           omniauth_callbacks
                           passwords
@@ -56,6 +57,8 @@ class ApplicationController < ActionController::Base
 
     if api_action?
       authenticate!
+    elsif (@page = Page.landing_page)
+      render template: "pages/show"
     else
       @user ||= User.new
       render template: "devise/registrations/new"

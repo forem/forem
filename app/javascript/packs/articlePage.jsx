@@ -1,6 +1,8 @@
 import { h, render } from 'preact';
+import ahoy from 'ahoy.js';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
+import { embedGists } from '../utilities/gist';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 /* global Runtime */
@@ -46,39 +48,39 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
     // We want to close the dropdown on link select (since they open in a new tab)
     document
       .querySelectorAll('#article-show-more-dropdown [href]')
-      .forEach((link) => link.addEventListener('click', closeDropdown));
+      .forEach((link) => {
+        link.addEventListener('click', (event) => {
+          closeDropdown(event);
+
+          // Temporary Ahoy Stats for usage reports
+          ahoy.track('Post Dropdown', { option: event.target.text.trim() });
+        });
+      });
   }
+
   shareDropdownButton.dataset.initialized = 'true';
 }
 
 // Initialize the copy to clipboard functionality
 function showAnnouncer() {
-  const { activeElement } = document;
-  const input =
-    activeElement.localName === 'clipboard-copy'
-      ? activeElement.querySelector('input')
-      : document.getElementById('article-copy-link-input');
-  input.focus();
-  input.setSelectionRange(0, input.value.length);
-
   document.getElementById('article-copy-link-announcer').hidden = false;
 }
 
 function copyArticleLink() {
-  const inputValue = document.getElementById('article-copy-link-input').value;
-  Runtime.copyToClipboard(inputValue).then(() => {
+  const postUrlValue = document
+    .getElementById('copy-post-url-button')
+    .getAttribute('data-postUrl');
+  Runtime.copyToClipboard(postUrlValue).then(() => {
     showAnnouncer();
   });
 }
 document
-  .querySelector('clipboard-copy')
+  .getElementById('copy-post-url-button')
   ?.addEventListener('click', copyArticleLink);
 
 // Comment Subscription
-const userDataIntervalID = setInterval(async () => {
+getCsrfToken().then(async () => {
   const { user = null, userStatus } = document.body.dataset;
-
-  clearInterval(userDataIntervalID);
   const root = document.getElementById('comment-subscription');
   const isLoggedIn = userStatus === 'logged-in';
 
@@ -161,3 +163,28 @@ actionsContainer.addEventListener('click', async (event) => {
     toggleArticlePin(event.target);
   }
 });
+
+// Initialize the profile preview functionality
+const profilePreviewTrigger = document.getElementById(
+  'profile-preview-trigger',
+);
+
+const dropdownContent = document.getElementById('profile-preview-content');
+
+if (profilePreviewTrigger?.dataset.initialized !== 'true') {
+  initializeDropdown({
+    triggerElementId: 'profile-preview-trigger',
+    dropdownContentId: 'profile-preview-content',
+    onOpen: () => {
+      dropdownContent?.classList.add('showing');
+    },
+    onClose: () => {
+      dropdownContent?.classList.remove('showing');
+    },
+  });
+
+  profilePreviewTrigger.dataset.initialized = 'true';
+}
+
+const targetNode = document.querySelector('#comments');
+targetNode && embedGists(targetNode);

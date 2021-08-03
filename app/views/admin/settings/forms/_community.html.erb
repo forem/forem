@@ -1,0 +1,78 @@
+<%= form_for(Settings::Community.new, url: admin_settings_communities_path) do |f| %>
+  <div class="card mt-3">
+    <%= render partial: "admin/shared/card_header",
+               locals: {
+                 header: "Community Content",
+                 state: "collapse",
+                 target: "contentBodyContainer",
+                 expanded: false
+               } %>
+    <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
+      <fieldset class="grid gap-4">
+        <div class="crayons-field">
+          <%= admin_config_label :community_name, model: Settings::Community %>
+          <%= admin_config_description Constants::Settings::Community::DETAILS[:community_name][:description] %>
+          <%= f.text_field :community_name,
+                           class: "crayons-textfield",
+                           value: Settings::Community.community_name,
+                           placeholder: Constants::Settings::Community::DETAILS[:community_name][:placeholder] %>
+        </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label :community_emoji, model: Settings::Community %>
+          <%= admin_config_description Constants::Settings::Community::DETAILS[:community_emoji][:description] %>
+          <%= f.text_field :community_emoji,
+                           class: "crayons-textfield",
+                           value: Settings::Community.community_emoji,
+                           placeholder: Constants::Settings::Community::DETAILS[:community_emoji][:placeholder] %>
+        </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label :tagline, model: Settings::Community %>
+          <%= admin_config_description Constants::Settings::Community::DETAILS[:tagline][:description] %>
+          <%= f.text_field :tagline,
+                           class: "crayons-textfield",
+                           value: Settings::Community.tagline,
+                           placeholder: Constants::Settings::Community::DETAILS[:tagline][:placeholder] %>
+        </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label :community_description, model: Settings::Community %>
+          <%= admin_config_description Constants::Settings::Community::DETAILS[:community_description][:description] %>
+          <%= f.text_field :community_description,
+                           class: "crayons-textfield",
+                           value: Settings::Community.community_description,
+                           placeholder: Constants::Settings::Community::DETAILS[:community_description][:placeholder] %>
+        </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label :member_label, model: Settings::Community %>
+          <%= admin_config_description Constants::Settings::Community::DETAILS[:member_label][:description] %>
+          <%= f.text_field :member_label,
+                           class: "crayons-textfield",
+                           value: Settings::Community.member_label,
+                           placeholder: Constants::Settings::Community::DETAILS[:member_label][:placeholder] %>
+        </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label :copyright_start_year, model: Settings::Community %>
+          <%= admin_config_description Constants::Settings::Community::DETAILS[:copyright_start_year][:description] %>
+          <%= f.text_field :copyright_start_year,
+                           class: "crayons-textfield",
+                           value: Settings::Community.copyright_start_year,
+                           placeholder: Constants::Settings::Community::DETAILS[:copyright_start_year][:placeholder] %>
+        </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label :staff_user_id, model: Settings::Community %>
+          <%= admin_config_description Constants::Settings::Community::DETAILS[:staff_user_id][:description] %>
+          <%= f.text_field :staff_user_id,
+                           class: "crayons-textfield",
+                           value: Settings::Community.staff_user_id,
+                           placeholder: Constants::Settings::Community::DETAILS[:staff_user_id][:placeholder] %>
+        </div>
+        <%= render "form_submission", f: f %>
+      </fieldset>
+    </div>
+  </div>
+<% end %>

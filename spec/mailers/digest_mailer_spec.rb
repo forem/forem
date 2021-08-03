@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe DigestMailer, type: :mailer do
-  let(:user) { build_stubbed(:user) }
+  let(:user) { create(:user) }
   let(:article) { build_stubbed(:article) }
 
   describe "#digest_email" do
@@ -14,8 +14,8 @@ RSpec.describe DigestMailer, type: :mailer do
 
       expect(email.subject).not_to be_nil
       expect(email.to).to eq([user.email])
-      expect(email.from).to eq([Settings::General.email_addresses[:default]])
-      expected_from = "#{Settings::Community.community_name} Digest <#{Settings::General.email_addresses[:default]}>"
+      expect(email.from).to eq([ForemInstance.email])
+      expected_from = "#{Settings::Community.community_name} Digest <#{ForemInstance.email}>"
       expect(email["from"].value).to eq(expected_from)
     end
   end

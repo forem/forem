@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe UserTag, type: :liquid_tag do
-  let(:user)  { create(:user) }
+  let(:user) { create(:user) }
 
-  setup       { Liquid::Template.register_tag("user", described_class) }
+  before { Liquid::Template.register_tag("user", described_class) }
 
   def generate_user_tag(id_code)
     Liquid::Template.parse("{% user #{id_code} %}")

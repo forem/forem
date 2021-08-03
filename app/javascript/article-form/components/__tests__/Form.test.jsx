@@ -6,11 +6,18 @@ import { Form } from '../Form';
 let bodyMarkdown;
 let mainImage;
 
+// TODO: These image uploader axe custom rules here should be removed when the below issue is fixed
+// https://github.com/forem/forem/issues/13947
+const imageUploadAxeRules = {
+  'nested-interactive': { enabled: false },
+};
+
 // Axe flags an error for the multi-line combobox we use for Autosuggest, since a combobox should be a single line input.
 // This is a known issue documented on https://github.com/forem/forem/pull/13044, and these custom rules only apply to the two tests referencing them below.
 const customAxeRules = {
   'aria-allowed-role': { enabled: false },
   'aria-required-children': { enabled: false },
+  ...imageUploadAxeRules,
 };
 
 describe('<Form />', () => {

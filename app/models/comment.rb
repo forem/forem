@@ -12,6 +12,14 @@ class Comment < ApplicationRecord
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
 
+  URI_REGEXP = %r{
+    \A
+    (?:https?://)?  # optional scheme
+    .+?             # host
+    (?::\d+)?       # optional port
+    \z
+  }x.freeze
+
   # The date that we began limiting the number of user mentions in a comment.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
 
@@ -39,6 +47,7 @@ class Comment < ApplicationRecord
   after_save :synchronous_bust
   after_save :bust_cache
 
+  validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
   validate :user_mentions_in_markdown
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
@@ -201,9 +210,14 @@ class Comment < ApplicationRecord
   def shorten_urls!
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.css("a").each do |anchor|
-      unless anchor.to_s.include?("<img") || anchor.attr("class")&.include?("ltag")
-        anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img") # rubocop:disable Style/SoleNestedConditional
+      next if anchor.inner_html.include?("<img")
+
+      urls = anchor.content.scan(URI_REGEXP).flatten
+      anchor_content = anchor.content
+      urls.each do |url|
+        anchor_content.sub!(/#{Regexp.escape(url)}/, strip_url(url))
       end
+      anchor.inner_html = anchor.inner_html.sub(/#{Regexp.escape(anchor.content)}/, anchor_content)
     end
     self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
   end
@@ -298,7 +312,7 @@ class Comment < ApplicationRecord
     parent_exists? &&
       parent_user.class.name != "Podcast" &&
       parent_user != user &&
-      parent_user.email_comment_notifications &&
+      parent_user.notification_setting.email_comment_notifications &&
       parent_user.email &&
       parent_or_root_article.receive_notifications
   end
@@ -314,6 +328,12 @@ class Comment < ApplicationRecord
   def set_markdown_character_count
     # body_markdown is actually markdown, but that's a separate issue to be fixed soon
     self.markdown_character_count = body_markdown.size
+  end
+
+  def discussion_not_locked
+    return unless commentable_type == "Article" && commentable.discussion_lock
+
+    errors.add(:commentable_id, "the discussion is locked on this Post")
   end
 
   def published_article

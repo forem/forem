@@ -6,6 +6,7 @@ module Admin
       id supported rules_markdown short_summary pretty_name bg_color_hex
       text_color_hex user_id alias_for badge_id requires_approval
       category social_preview_template wiki_body_markdown submission_template
+      name
     ].freeze
 
     before_action :set_default_options, only: %i[index]
@@ -28,7 +29,7 @@ module Admin
       @tag.name = params[:tag][:name].downcase
 
       if @tag.save
-        flash[:success] = "Tag has been created!"
+        flash[:success] = "#{@tag.name} has been created!"
         redirect_to edit_admin_tag_path(@tag)
       else
         flash[:danger] = @tag.errors_as_sentence
