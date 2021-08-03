@@ -5,8 +5,10 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
     let(:url_repository) { "https://github.com/rust-lang/rust" }
     let(:url_repository_fragment) { "https://github.com/rust-lang/rust#contributing" }
     let(:url_repository_not_found) { "https://github.com/abra/cadabra" }
+    let(:url_repository_relative_links) { "https://github.com/nlepage/gophers" }
     let(:path_repository) { "rust-lang/rust" }
     let(:repo_owner) { "rust-lang" }
+    let(:relative_link) { "<a href=\"https://github.com/nlepage/gophers#license\">License</a>" }
 
     def generate_tag(path, options = "")
       Liquid::Template.register_tag("github", GithubTag)
@@ -75,6 +77,13 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
         template = generate_tag(url_repository).render
         readme_class = "ltag-github-body"
         expect(template).not_to include(readme_class)
+      end
+    end
+
+    it "renders a repository with relative links in README" do
+      VCR.use_cassette("github_client_repository_relative_links") do
+        html = generate_tag(url_repository_relative_links).render
+        expect(html).to include(relative_link)
       end
     end
 

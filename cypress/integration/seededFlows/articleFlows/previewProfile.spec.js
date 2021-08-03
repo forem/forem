@@ -31,7 +31,7 @@ describe('Preview user profile from article page', () => {
     });
   });
 
-  describe("Preview profile on another user's article", () => {
+  describe.skip("Preview profile on another user's article", () => {
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/articleEditorV1User.json').as('user');
@@ -41,6 +41,8 @@ describe('Preview user profile from article page', () => {
           cy.findAllByRole('link', { name: 'Test article' })
             .first()
             .click({ force: true });
+
+          cy.get('[data-follow-clicks-initialized]');
           cy.findByRole('heading', { name: 'Test article' });
         });
       });
@@ -75,17 +77,14 @@ describe('Preview user profile from article page', () => {
 
           // Check all the expected user data sections are present
           cy.findByText('Admin user summary');
-          cy.findByText('Software developer');
+          cy.findByText('Software developer at Company');
           cy.findByText('Edinburgh');
           cy.findByText('University of Life');
 
-          // Make sure click event is initialized, and check we can follow a user
-          cy.get('[data-click-initialized]').should('exist');
           cy.findByRole('button', { name: 'Follow' }).click();
 
           // Wait for Follow button to disappear and Following button to be initialized
           cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-          cy.get('[data-click-initialized]').should('exist');
           cy.findByRole('button', { name: 'Following' });
         });
 
@@ -117,20 +116,43 @@ describe('Preview user profile from article page', () => {
 
           // Check all the expected user data sections are present
           cy.findByText('Admin user summary');
-          cy.findByText('Software developer');
+          cy.findByText('Software developer at Company');
           cy.findByText('Edinburgh');
           cy.findByText('University of Life');
 
-          // Make sure click event is initialized, and check we can follow a user
-          cy.get('[data-click-initialized]').should('exist');
           cy.findByRole('button', { name: 'Follow' }).click();
 
           // Wait for Follow button to disappear and Following button to be initialized
           cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-          cy.get('[data-click-initialized]').should('exist');
           cy.findByRole('button', { name: 'Following' });
         });
       });
+    });
+
+    it('should update any other matching follow buttons when follow CTA is clicked', () => {
+      cy.get('[data-initialized]');
+      // Click the follow button in the author byline preview
+      cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
+        .first()
+        .click();
+
+      cy.findAllByTestId('profile-preview-card')
+        .first()
+        .within(() => {
+          cy.findByRole('button', { name: 'Follow' }).click();
+          // Confirm the follow button has been updated
+          cy.findByRole('button', { name: 'Follow' }).should('not.exist');
+          cy.findByRole('button', { name: 'Following' });
+        });
+
+      // Check the follow button in the comment author preview card has updated
+      cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
+        .last()
+        .click();
+
+      cy.findAllByTestId('profile-preview-card')
+        .last()
+        .findByRole('button', { name: 'Following' });
     });
 
     it('should detach listeners on preview card close', () => {
@@ -259,7 +281,7 @@ describe('Preview user profile from article page', () => {
 
         cy.findByRole('button', { name: 'Follow' });
         cy.findByText('Admin user summary');
-        cy.findByText('Software developer');
+        cy.findByText('Software developer at Company');
         cy.findByText('Edinburgh');
         cy.findByText('University of Life');
       });
