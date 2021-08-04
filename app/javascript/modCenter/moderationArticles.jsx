@@ -7,44 +7,57 @@ export class ModerationArticles extends Component {
       document.getElementById('mod-index-list').dataset.articles,
     ),
     prevSelectedArticleId: undefined,
-    selectedArticleId: undefined,
   };
 
   toggleArticle = (id, title, path) => {
     const { prevSelectedArticleId } = this.state;
     const selectedArticle = document.getElementById(`article-iframe-${id}`);
+    const selectedDetailsPanel = document.querySelector(
+      `details[data-testid='mod-article-${id}']`
+    );
 
     if (prevSelectedArticleId > 0) {
-      document.getElementById(
-        `article-iframe-${prevSelectedArticleId}`,
-      ).innerHTML = '';
+      if (
+        selectedDetailsPanel.getAttribute("open") !== null
+      ) {
+        if (prevSelectedArticleId !== id) {
+          const previousOpenDetailsPanel = document.querySelector(
+            `details[data-testid='mod-article-${prevSelectedArticleId}']`
+          );
+        
+          if (previousOpenDetailsPanel.getAttribute("open") !== null) {
+            previousOpenDetailsPanel.removeAttribute("open")
+          }
+        }
+      } else {
+        document.getElementById(
+          `article-iframe-${id}`,
+        ).innerHTML = "";
+      }
     }
-
-    this.setState({ selectedArticleId: id, prevSelectedArticleId: id });
 
     if (
-      id === prevSelectedArticleId &&
-      document.getElementsByClassName('opened').length > 0
+      selectedDetailsPanel.getAttribute("open") !== null
     ) {
-      selectedArticle.classList.remove('opened');
-      return;
-    }
+      selectedArticle.innerHTML = `
+      <div class="article-referrer-heading">
+        <a class="article-title-link fw-bold" href=${path}>
+          ${title}
+        </a>
+      </div>
+      <div class="iframes-container">
+        <iframe class="article-iframe" src="${path}"></iframe>
+        <iframe data-testid="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>
+      </div>`;
 
-    selectedArticle.classList.add('opened');
-    selectedArticle.innerHTML = `
-    <div class="article-referrer-heading">
-      <a class="article-title-link fw-bold" href=${path}>
-        ${title}
-      </a>
-    </div>
-    <div class="iframes-container">
-      <iframe class="article-iframe" src="${path}"></iframe>
-      <iframe data-testid="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>
-    </div>`;
+      this.setState({prevSelectedArticleId: id});
+    } else {
+      document.getElementById(`article-iframe-${id}`).classList.remove("opened");
+    }
   };
 
   render() {
-    const { articles, selectedArticleId } = this.state;
+    const { articles, prevSelectedArticleId } = this.state;
 
     return (
       <div className="moderation-articles-list">
@@ -66,7 +79,7 @@ export class ModerationArticles extends Component {
               key={id}
               publishedAt={publishedAt}
               user={user}
-              articleOpened={id === selectedArticleId}
+              articleOpened={id === prevSelectedArticleId}
               toggleArticle={this.toggleArticle}
             />
           );

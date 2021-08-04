@@ -197,8 +197,9 @@ describe('<SingleArticle />', () => {
       </Fragment>,
     );
 
-    const button = getByTestId(`mod-article-${article.id}`);
-    button.click();
+    const detailsElement = getByTestId(`mod-article-${article.id}`);
+    const summarySection = detailsElement.getElementsByTagName("summary")[0];
+    summarySection.click();
 
     expect(toggleArticle).toHaveBeenCalledTimes(1);
   });

@@ -5,8 +5,7 @@ import { FlagUserModal } from '../../packs/flagUserModal';
 import { formatDate } from './util';
 
 export class SingleArticle extends Component {
-  activateToggle = (e) => {
-    e.preventDefault();
+  activateToggle = () => {
     const { id, title, path, toggleArticle } = this.props;
 
     toggleArticle(id, title, path);
@@ -50,34 +49,35 @@ export class SingleArticle extends Component {
             <FlagUserModal moderationUrl={path} authorId={user.id} />,
             document.getElementsByClassName('flag-user-modal-container')[0],
           )}
-        <button
+        <details
           data-testid={`mod-article-${id}`}
-          type="button"
           className="moderation-single-article"
-          onClick={this.activateToggle}
+          onToggle={this.activateToggle}
         >
-          <span className="article-title">
-            <header>
-              <h3 className="fs-base fw-bold lh-tight article-title-heading">
-                {title}
-              </h3>
-            </header>
-            {tags}
-          </span>
-          <span className="article-author">
-            {newAuthorNotification}
-            {user.name}
-          </span>
-          <span className="article-published-at">
-            <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
-          </span>
+          <summary>
+            <span className="article-title">
+              <header>
+                <h3 className="fs-base fw-bold lh-tight article-title-heading">
+                  {title}
+                </h3>
+              </header>
+              {tags}
+            </span>
+            <span className="article-author">
+              {newAuthorNotification}
+              {user.name}
+            </span>
+            <span className="article-published-at">
+              <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
+            </span>
+          </summary>
           <div
-            className={`article-iframes-container ${
-              articleOpened ? 'opened' : ''
+            className={`article-iframes-container${
+              articleOpened ? ' opened' : ''
             }`}
             id={`article-iframe-${id}`}
           />
-        </button>
+        </details>
       </Fragment>
     );
   }
