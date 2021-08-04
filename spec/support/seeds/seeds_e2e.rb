@@ -342,6 +342,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Test article") do
     featured: true,
     show_comments: true,
     user_id: admin_user.id,
+    slug: "test-article-slug",
   )
 
   comment_attributes = {
