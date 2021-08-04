@@ -358,3 +358,24 @@ seeder.create_if_none(Page) do
     )
   end
 end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Podcast, "title", "Test podcast") do
+  podcast_attributes = {
+    title: "Developer on Fire",
+    description: "",
+    feed_url: "http://developeronfire.com/rss.xml",
+    itunes_url: "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326",
+    slug: "developeronfire",
+    twitter_username: "raelyard",
+    website_url: "http://developeronfire.com",
+    main_color_hex: "343d46",
+    overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
+    android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
+    image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    published: true
+  }
+  podcast = Podcast.create!(podcast_attributes)
+  Podcasts::GetEpisodesWorker.new.perform(podcast_id: podcast.id, limit: 1)
+end
