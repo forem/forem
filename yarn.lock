@@ -3507,15 +3507,15 @@
     resolve-from "^5.0.0"
     store2 "^2.12.0"
 
-"@testing-library/cypress@^7.0.6":
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/@testing-library/cypress/-/cypress-7.0.6.tgz#5445dac4f4852c26901c356e9d3a69371bd20ccf"
-  integrity sha512-atnjqlkEt6spU4Mv7evvpA8fMXeRw7AN2uTKOR1dP6WBvBixVwAYMZY+1fMOaZULWAj9vGLCXXvmw++u3TxuCQ==
+"@testing-library/cypress@^7.0.7":
+  version "7.0.7"
+  resolved "https://registry.yarnpkg.com/@testing-library/cypress/-/cypress-7.0.7.tgz#b3e8696e707bcaa1664f5f9452f96f87cb90f438"
+  integrity sha512-4yavolmN9o4Lmtrff6sbOTNFW9VqRRqDrP6gS2hkqLri4+lKURRYblg8kjOlcni/5h/qctFych+gkUOkpgypxw==
   dependencies:
     "@babel/runtime" "^7.12.5"
-    "@testing-library/dom" "^7.28.1"
+    "@testing-library/dom" "^7.29.6"
 
-"@testing-library/dom@^7.16.2", "@testing-library/dom@^7.28.1", "@testing-library/dom@^7.31.2":
+"@testing-library/dom@^7.16.2", "@testing-library/dom@^7.29.6", "@testing-library/dom@^7.31.2":
   version "7.31.2"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.31.2.tgz#df361db38f5212b88555068ab8119f5d841a8c4a"
   integrity sha512-3UqjCpey6HiTZT92vODYLPxTBWlM8ZOOjr3LX5F37/VRipW2M1kX6I/Cm4VXzteZqfGfagg8yXywpcOgQBlNsQ==
