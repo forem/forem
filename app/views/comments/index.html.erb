@@ -42,7 +42,7 @@
   <% end %>
 <% end %>
 
-<%= javascript_packs_with_chunks_tag "commentDropdowns", defer: true %>
+<%= javascript_packs_with_chunks_tag "commentDropdowns", "followButtons", defer: true %>
 
 <div class="crayons-layout crayons-layout--limited-l gap-0">
   <% if @commentable.class.name == "Article" %>
