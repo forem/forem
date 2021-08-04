@@ -25,8 +25,8 @@
                            value: Settings::General.video_encoder_key,
                            placeholder: Constants::Settings::General::DETAILS[:video_encoder_key][:placeholder] %>
         </div>
-        <%= render "form_submission", f: f %>
       </fieldset>
+      <%= render "update_setting_button", f: f %>
     </div>
   </div>
 <% end %>
