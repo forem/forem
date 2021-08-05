@@ -1,4 +1,5 @@
 import { h, Fragment } from 'preact';
+import { memo } from 'preact/compat';
 
 /**
  * Component which renders the user metadata detail in a profile preview card.
@@ -11,7 +12,7 @@ import { h, Fragment } from 'preact';
  * @param {string} employer_name The user's employer, if provided
  * @param {string} employer_url The user's employer URL, if provided
  */
-export const UserMetadata = ({
+const UserMetadata = ({
   email,
   location,
   summary,
@@ -88,3 +89,5 @@ export const UserMetadata = ({
     </Fragment>
   );
 };
+
+export const MemoizedUserMetadata = memo(UserMetadata);

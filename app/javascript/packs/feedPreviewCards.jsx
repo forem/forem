@@ -1,39 +1,38 @@
 import { h, render } from 'preact';
-import { UserMetadata } from '../profilePreviewCards/UserMetadata';
+import { MemoizedUserMetadata } from '../profilePreviewCards/UserMetadata';
 import { initializeDropdown } from '@utilities/dropdownUtils';
+import { request } from '@utilities/http/request';
+
+const cachedAuthorMetadata = {};
 
 async function populateMissingMetadata(metadataPlaceholder) {
   const { authorId } = metadataPlaceholder.dataset;
-  const response = await fetch(`/profile_preview_cards/${authorId}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    credentials: 'same-origin',
-  });
-  const authorMetadata = await response.json();
 
-  // A given author may have multiple cards in the feed - populate their metadata everywhere it is missing
-  const allPlaceholdersForThisAuthor = document.querySelectorAll(
-    `.author-preview-metadata-container[data-author-id="${authorId}"]`,
+  const previouslyFetchedAuthorMetadata = cachedAuthorMetadata[authorId];
+
+  if (previouslyFetchedAuthorMetadata) {
+    renderMetadata(previouslyFetchedAuthorMetadata, metadataPlaceholder);
+  } else {
+    const response = await request(`/profile_preview_cards/${authorId}`);
+    const authorMetadata = await response.json();
+
+    cachedAuthorMetadata[authorId] = authorMetadata;
+    renderMetadata(authorMetadata, metadataPlaceholder);
+  }
+}
+
+function renderMetadata(metadata, placeholder) {
+  render(
+    <MemoizedUserMetadata {...metadata} />,
+    placeholder.parentElement,
+    placeholder,
   );
 
-  for (const placeholder of allPlaceholdersForThisAuthor) {
-    render(
-      <UserMetadata {...authorMetadata} />,
-      placeholder.parentElement,
-      placeholder,
-    );
+  placeholder
+    .closest('.profile-preview-card__content')
+    .style.setProperty('--card-color', metadata.card_color);
 
-    placeholder.parentElement.parentElement.style.setProperty(
-      '--card-color',
-      authorMetadata.card_color,
-    );
-
-    placeholder.remove();
-  }
+  placeholder.remove();
 }
 
 function checkForPreviewCardDetails(event) {
@@ -52,13 +51,10 @@ function checkForPreviewCardDetails(event) {
 }
 
 function listenForHoveredOrFocusedStoryCards() {
-  document
-    .getElementById('main-content')
-    .addEventListener('mouseover', checkForPreviewCardDetails);
+  const mainContent = document.getElementById('main-content');
 
-  document
-    .getElementById('main-content')
-    .addEventListener('focusin', checkForPreviewCardDetails);
+  mainContent.addEventListener('mouseover', checkForPreviewCardDetails);
+  mainContent.addEventListener('focusin', checkForPreviewCardDetails);
 }
 
 function initializeFeedPreviewCards() {
