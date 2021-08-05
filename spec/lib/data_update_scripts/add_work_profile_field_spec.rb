@@ -4,6 +4,8 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::AddWorkProfileField do
+  before { ProfileField.destroy_by(label: "Work") }
+
   it "adds a new profile field" do
     expect { described_class.new.run }.to change(ProfileField, :count).by(1)
   end

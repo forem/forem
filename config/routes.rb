@@ -102,6 +102,7 @@ Rails.application.routes.draw do
           resources :listings, only: [:index], to: "organizations#listings"
           resources :articles, only: [:index], to: "organizations#articles"
         end
+        resource :instance, only: %i[show]
       end
     end
 
@@ -310,7 +311,7 @@ Rails.application.routes.draw do
     get "/events", to: "events#index"
     get "/workshops", to: redirect("events")
     get "/sponsors", to: "pages#sponsors"
-    get "/search", to: "stories#search"
+    get "/search", to: "stories/articles_search#index"
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
 

@@ -1,6 +1,7 @@
 function closeHeaderMenu(memberMenu, menuNavButton) {
   menuNavButton.setAttribute('aria-expanded', 'false');
   memberMenu.classList.remove('desktop', 'showing');
+  delete memberMenu.dataset.clicked;
 }
 
 const firstItem = document.getElementById('first-nav-link');
@@ -52,17 +53,16 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
   if (navigator.userAgent === 'DEV-Native-ios') {
     document.body.classList.add('dev-ios-native-body');
   }
-
+  const { classList } = memberTopMenu;
   menuNavButton.addEventListener('click', (_event) => {
-    if (memberTopMenu.classList.contains('showing')) {
+    if (classList.contains('showing') && memberTopMenu.dataset.clicked) {
       closeHeaderMenu(memberTopMenu, menuNavButton);
       menuNavButton.focus();
     } else {
       openHeaderMenu(memberTopMenu, menuNavButton);
+      memberTopMenu.dataset.clicked = 'clicked';
     }
   });
-
-  const { classList } = memberTopMenu;
 
   if (isTouchDevice()) {
     memberTopMenu.addEventListener('focus', (_event) => {
@@ -74,7 +74,9 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
       openHeaderMenu(memberTopMenu, menuNavButton);
     });
     memberTopMenu.addEventListener('mouseout', (_event) => {
-      closeHeaderMenu(memberTopMenu, menuNavButton);
+      if (!memberTopMenu.dataset.clicked) {
+        closeHeaderMenu(memberTopMenu, menuNavButton);
+      }
     });
 
     memberTopMenu.addEventListener('keyup', (e) => {

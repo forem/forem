@@ -50,7 +50,7 @@
       <label class="crayons-field__label" for="profile[website_url]">
         Website URL
       </label>
-      <%= f.text_field "profile[website_url]",
+      <%= f.url_field "profile[website_url]",
                        value: profile.website_url,
                        placeholder: "https://yoursite.com",
                        class: "crayons-textfield js-color-field" %>

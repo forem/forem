@@ -43,6 +43,9 @@ coordinate all this work.
 
 ### 1. From the command line, run `yarn e2e`
 
+Note: If you want to run E2E tests for the creator onboarding flow, you can run
+`yarn e2e:creator-onboarding-seed`.
+
 Some initial setup and checks will automatically run as part of this command:
 
 - `bundle check`: You will be prompted to run `bundle install` if gems for the

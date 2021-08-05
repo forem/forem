@@ -1,6 +1,6 @@
 <div class="block" id="block-index-<%= i %>">
   <% if show_published %>
-    <script async>
+    <script>
       <%== block.published_javascript %>
     </script>
     <%= tag.style block.published_css, escape_attributes: false %>
@@ -8,7 +8,7 @@
       <%= sanitize block.published_html %>
     </div>
   <% else %>
-    <script async>
+    <script>
       <%== block.processed_javascript %>
     </script>
     <%= tag.style block.processed_css, escape_attributes: false %>
