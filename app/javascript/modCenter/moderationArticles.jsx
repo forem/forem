@@ -13,16 +13,14 @@ export class ModerationArticles extends Component {
     const { prevSelectedArticleId } = this.state;
     const selectedArticle = document.getElementById(`article-iframe-${id}`);
     const selectedDetailsPanel = document.querySelector(
-      `details[data-id='mod-article-${id}']`,
+      `details[id='mod-article-${id}']`,
     );
 
     if (prevSelectedArticleId > 0) {
       if (selectedDetailsPanel.getAttribute('open') !== null) {
         if (prevSelectedArticleId !== id) {
           document
-            .querySelector(
-              `details[data-id='mod-article-${prevSelectedArticleId}']`,
-            )
+            .querySelector(`details[id='mod-article-${prevSelectedArticleId}']`)
             ?.removeAttribute('open');
         }
       } else {
@@ -39,7 +37,7 @@ export class ModerationArticles extends Component {
       </div>
       <div class="iframes-container">
         <iframe class="article-iframe" src="${path}"></iframe>
-        <iframe data-testid="mod-iframe-${id}" data-id="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>
+        <iframe data-testid="mod-iframe-${id}" id="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>
       </div>`;
 
       this.setState({ prevSelectedArticleId: id });
