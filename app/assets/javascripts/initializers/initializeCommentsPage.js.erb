@@ -410,7 +410,14 @@ var KEY_CODE_K = 75;
 var ENTER_KEY_CODE = 13;
 
 function handleKeyDown(event) {
-  if (event.ctrlKey || event.metaKey) {
+  var modifier;
+  if (navigator.userAgent.indexOf('Mac OS X') != -1) {
+    modifier = event.metaKey;
+  } else {
+    modifier = event.ctrlKey;
+  }
+
+  if (modifier) {
     switch (event.keyCode) {
       case KEY_CODE_B:
         event.preventDefault();
