@@ -69,7 +69,7 @@ Object {
                     >
                       <button
                         aria-controls="story-author-preview-content-62407"
-                        aria-label="Emil99 profile details"
+                        aria-label="Stella Macejkovic profile details"
                         class="profile-preview-card__trigger fs-s px-0 crayons-btn crayons-btn--ghost p-0"
                         id="story-author-preview-trigger-62407"
                       >
@@ -118,7 +118,7 @@ Object {
                               Follow
                             </button>
                           </div>
-                          <span
+                          <div
                             class="author-preview-metadata-container"
                             data-author-id="23289"
                           />
@@ -316,7 +316,7 @@ Object {
                   >
                     <button
                       aria-controls="story-author-preview-content-62407"
-                      aria-label="Emil99 profile details"
+                      aria-label="Stella Macejkovic profile details"
                       class="profile-preview-card__trigger fs-s px-0 crayons-btn crayons-btn--ghost p-0"
                       id="story-author-preview-trigger-62407"
                     >
@@ -365,7 +365,7 @@ Object {
                             Follow
                           </button>
                         </div>
-                        <span
+                        <div
                           class="author-preview-metadata-container"
                           data-author-id="23289"
                         />

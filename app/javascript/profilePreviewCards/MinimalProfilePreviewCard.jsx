@@ -13,7 +13,7 @@ export const MinimalProfilePreviewCard = ({
       id={triggerId}
       aria-controls={contentId}
       class="profile-preview-card__trigger fs-s px-0 crayons-btn crayons-btn--ghost p-0"
-      aria-label={`${username} profile details`}
+      aria-label={`${name} profile details`}
     >
       {name}
     </button>
@@ -50,7 +50,7 @@ export const MinimalProfilePreviewCard = ({
             Follow
           </button>
         </div>
-        <span
+        <div
           class="author-preview-metadata-container"
           data-author-id={userId}
         />

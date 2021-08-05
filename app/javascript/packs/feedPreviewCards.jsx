@@ -6,7 +6,13 @@ import { request } from '@utilities/http/request';
 const cachedAuthorMetadata = {};
 
 async function populateMissingMetadata(metadataPlaceholder) {
-  const { authorId } = metadataPlaceholder.dataset;
+  const { authorId, fetched } = metadataPlaceholder.dataset;
+
+  // If the metadata is already being fetched, do nothing
+  if (fetched) {
+    return;
+  }
+  metadataPlaceholder.dataset.fetched = 'true';
 
   const previouslyFetchedAuthorMetadata = cachedAuthorMetadata[authorId];
 
@@ -22,17 +28,13 @@ async function populateMissingMetadata(metadataPlaceholder) {
 }
 
 function renderMetadata(metadata, placeholder) {
-  render(
-    <MemoizedUserMetadata {...metadata} />,
-    placeholder.parentElement,
-    placeholder,
-  );
+  const container = placeholder.parentElement;
 
-  placeholder
+  render(<MemoizedUserMetadata {...metadata} />, container, placeholder);
+
+  container
     .closest('.profile-preview-card__content')
     .style.setProperty('--card-color', metadata.card_color);
-
-  placeholder.remove();
 }
 
 function checkForPreviewCardDetails(event) {

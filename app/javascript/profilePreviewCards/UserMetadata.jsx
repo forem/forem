@@ -18,9 +18,7 @@ const UserMetadata = ({
   summary,
   created_at,
   education,
-  employment_title,
-  employer_name,
-  employer_url,
+  work,
 }) => {
   const joinedOnDate = new Date(created_at);
   const joinedOnDateString = new Intl.DateTimeFormat(
@@ -45,23 +43,10 @@ const UserMetadata = ({
               </div>
             </li>
           )}
-          {employment_title && (
+          {work && (
             <li>
               <div className="key">Work</div>
-              <div className="value">
-                {employment_title}
-                {employer_name && <span class="opacity-50"> at </span>}
-                {employer_name && employer_url && (
-                  <a
-                    href={employer_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {employer_name}
-                  </a>
-                )}
-                {!employer_url && employer_name}
-              </div>
+              <div className="value">{work}</div>
             </li>
           )}
           {location && (
