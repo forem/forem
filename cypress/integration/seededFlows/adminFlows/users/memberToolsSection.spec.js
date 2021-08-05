@@ -49,7 +49,7 @@ describe('Tools Section', () => {
       });
     });
 
-    it('Sends an email to the user and check its presence in the history', () => {
+    it('Sends an email to the user and checks its presence in the history', () => {
       cy.get('@user').then(({ username }) => {
         cy.visitAndWaitForUserSideEffects('/admin/users');
 
@@ -78,6 +78,38 @@ describe('Tools Section', () => {
 
         // Check the email is present in the details
         cy.findByRole('link', { name: /Hello!/ }).should('exist');
+      });
+    });
+  });
+
+  describe('Notes', () => {
+    it('Creates a note and checks its presence in the history', () => {
+      cy.get('@user').then(({ username }) => {
+        cy.visitAndWaitForUserSideEffects('/admin/users');
+
+        cy.findAllByText(username).first().click();
+
+        cy.findAllByText('Notes').first().click();
+
+        cy.findByRole('textbox', { name: 'Add a new note' }).type(
+          'Hello, this is a note about them',
+        );
+        cy.findByRole('button', { name: 'Create Note' }).click();
+
+        cy.findByTestId('snackbar').should('have.text', 'Note created!');
+
+        // Go back to check its presence in the history
+        cy.visitAndWaitForUserSideEffects('/admin/users');
+        cy.findAllByText(username).first().click();
+        cy.findAllByText('Notes').first().click();
+
+        cy.findAllByText(/Recent Notes/)
+          .first()
+          .within((details) => {
+            details.click(); // open the details
+          });
+
+        cy.findAllByText(/a note about them/).should('exist');
       });
     });
   });
