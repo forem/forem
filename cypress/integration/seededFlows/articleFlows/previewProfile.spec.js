@@ -37,14 +37,11 @@ describe('Preview user profile from article page', () => {
       cy.fixture('users/articleEditorV1User.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/').then(() => {
-          cy.findAllByRole('link', { name: 'Test article' })
-            .first()
-            .click({ force: true });
+        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug');
 
-          cy.get('[data-follow-clicks-initialized]');
-          cy.findByRole('heading', { name: 'Test article' });
-        });
+        // Wait for the page to load
+        cy.findByRole('button', { name: 'Share post options' });
+        cy.get('[data-follow-clicks-initialized]');
       });
     });
 
