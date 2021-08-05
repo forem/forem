@@ -55,21 +55,23 @@ export class SingleArticle extends Component {
           onToggle={this.activateToggle}
         >
           <summary>
-            <span className="article-title">
-              <header>
-                <h3 className="fs-base fw-bold lh-tight article-title-heading">
-                  {title}
-                </h3>
-              </header>
-              {tags}
-            </span>
-            <span className="article-author">
-              {newAuthorNotification}
-              {user.name}
-            </span>
-            <span className="article-published-at">
-              <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
-            </span>
+            <div className="article-details-container">
+              <span className="article-title">
+                <header>
+                  <h3 className="fs-base fw-bold lh-tight article-title-heading">
+                    {title}
+                  </h3>
+                </header>
+                {tags}
+              </span>
+              <span className="article-author">
+                {newAuthorNotification}
+                {user.name}
+              </span>
+              <span className="article-published-at">
+                <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
+              </span>
+            </div>
           </summary>
           <div
             className={`article-iframes-container${
