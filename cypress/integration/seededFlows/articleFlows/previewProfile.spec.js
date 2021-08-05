@@ -31,7 +31,7 @@ describe('Preview user profile from article page', () => {
     });
   });
 
-  describe.skip("Preview profile on another user's article", () => {
+  describe("Preview profile on another user's article", () => {
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/articleEditorV1User.json').as('user');
@@ -134,7 +134,8 @@ describe('Preview user profile from article page', () => {
       // Click the follow button in the author byline preview
       cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
         .first()
-        .click();
+        .as('bylinePreviewButton');
+      cy.get('@bylinePreviewButton').click();
 
       cy.findAllByTestId('profile-preview-card')
         .first()
@@ -144,6 +145,9 @@ describe('Preview user profile from article page', () => {
           cy.findByRole('button', { name: 'Follow' }).should('not.exist');
           cy.findByRole('button', { name: 'Following' });
         });
+
+      // Close the preview card so the next preview button can be clicked
+      cy.get('@bylinePreviewButton').click();
 
       // Check the follow button in the comment author preview card has updated
       cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
