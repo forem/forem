@@ -181,4 +181,52 @@ describe('Tools Section', () => {
       });
     });
   });
+
+  describe('Organizations', () => {
+    it('Changes a user membership level within an organization', () => {
+      cy.get('@user').then(({ username }) => {
+        cy.visitAndWaitForUserSideEffects('/admin/users');
+        cy.findByRole('link', { name: username }).click();
+        cy.findByRole('link', { name: /Organizations/ }).click();
+
+        cy.findAllByText(/Manage memberships/)
+          .first()
+          .within((details) => {
+            details.click();
+          });
+
+        // Change role
+        cy.findAllByRole('combobox', { name: /Membership Level/ })
+          .last()
+          .select('Member');
+        cy.findAllByRole('button', { name: 'Update Permissions' })
+          .first()
+          .click();
+
+        cy.findByTestId('snackbar').contains(
+          /User was successfully updated to member/i,
+        );
+      });
+    });
+
+    it('Removes a user from an organization', () => {
+      cy.get('@user').then(({ username }) => {
+        cy.visitAndWaitForUserSideEffects('/admin/users');
+        cy.findByRole('link', { name: username }).click();
+        cy.findByRole('link', { name: /Organizations/ }).click();
+
+        cy.findAllByText(/Manage memberships/)
+          .first()
+          .within((details) => {
+            details.click();
+          });
+
+        cy.findAllByRole('button', { name: /Remove from organization/i })
+          .first()
+          .click();
+
+        cy.findByTestId('snackbar').contains(/User was successfully removed/i);
+      });
+    });
+  });
 });
