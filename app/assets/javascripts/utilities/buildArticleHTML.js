@@ -172,31 +172,21 @@ function buildArticleHTML(article) {
       }
     }
 
-    var isUser = article.class_name === 'User';
-
     var previewCardContent = `
-      <div id="story-author-preview-content-${
-        article.id
-      }" class="profile-preview-card__content crayons-dropdown" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
+      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
           <div class="-mt-4">
             <a href="/${profileUsername}" class="flex">
               <span class="crayons-avatar crayons-avatar--xl mr-2 shrink-0">
                 <img src="${picUrl}" class="crayons-avatar__image" alt="" loading="lazy" />
               </span>
-              <span class="crayons-link crayons-subtitle-2 mt-5">${
-                article.user.name
-              }</span>
+              <span class="crayons-link crayons-subtitle-2 mt-5">${article.user.name}</span>
             </a>
           </div>
           <div class="print-hidden">
-            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${
-              isUser ? article.id : article.user_id
-            }, "className": "User", "style": "full"}'>Follow</button>
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full"}'>Follow</button>
           </div>
-          <span class="author-preview-metadata-container" data-author-id="${
-            isUser ? article.id : article.user_id
-          }"></span>
+          <span class="author-preview-metadata-container" data-author-id="${article.user_id}"></span>
         </div>
       </div>
     `;
