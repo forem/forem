@@ -172,6 +172,9 @@ function buildArticleHTML(article) {
       }
     }
 
+    // We only show profile preview cards for Posts
+    var isArticle = article.class_name === 'Article';
+
     var previewCardContent = `
       <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
@@ -201,19 +204,14 @@ function buildArticleHTML(article) {
         </div>
         <div>
           <p>
-            <a href="/${profileUsername}" class="crayons-story__secondary fw-medium m:hidden">${filterXSS(
-      article.user.name,
-    )}</a>
-        <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block">
-          <button id="story-author-preview-trigger-${
-            article.id
-          }" aria-controls="story-author-preview-content-${
-      article.id
-    }" class="profile-preview-card__trigger fs-s px-0 crayons-btn crayons-btn--ghost p-0" aria-label="${profileUsername} profile details">
-            ${article.user.name}
-          </button>
-            ${previewCardContent}
-            </div>
+            <a href="/${profileUsername}" class="crayons-story__secondary fw-medium ${
+      isArticle ? 'm:hidden' : ''
+    }">${filterXSS(article.user.name)}</a>
+    ${
+      isArticle
+        ? `<div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block"><button id="story-author-preview-trigger-${article.id}" aria-controls="story-author-preview-content-${article.id}" class="profile-preview-card__trigger fs-s px-0 crayons-btn crayons-btn--ghost p-0" aria-label="${profileUsername} profile details">${article.user.name}</button>${previewCardContent}</div>`
+        : ''
+    }
             ${forOrganization}
           </p>
           <a href="${
