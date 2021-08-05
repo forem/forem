@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+
+require "date"
+require "optparse"
+
+def run(command, abort_on_fail: true)
+  puts "> #{command}" if $VERBOSE
+
+  system(command, exception: abort_on_fail)
+rescue StandardError => e
+  raise "#{command.inspect} failed: #{e}"
+end
+
+remote = ENV.fetch("FOREM_RELEASE_REMOTE",  "origin")
+source = ENV.fetch("FOREM_RELEASE_FROM",    "main")
+target = "#{ENV.fetch('FOREM_RELEASE_CHANNEL', 'stable')}-next"
+
+OptionParser.new ARGV.dup do |options|
+  options.banner = <<~USAGE
+    Usage: #{$PROGRAM_NAME} [options]
+
+    Staging banches are named CHANNEL-next. Example: #{target}
+
+  USAGE
+
+  options.on "-c", "--channel CHANNEL",
+             "Specify the release channel (defaults to #{target.sub(/-next$/, '').inspect})" do |release_channel|
+    target = "#{release_channel}-next"
+  end
+
+  options.on "-f", "--from BRANCH/COMMIT/TAG",
+             "Specify the source branch for this release (defaults to #{source.inspect})" do |from_branch|
+    source = from_branch
+  end
+
+  options.on "-r", "--remote REMOTE", "Git remote to push to (defaults to #{remote.inspect})" do |git_remote|
+    remote = git_remote
+  end
+
+  options.on "-v", "--verbose", "Enable verbose mode" do
+    $VERBOSE = true
+  end
+end.parse!
+
+original_branch = `git branch --show-current`.strip
+
+begin
+  puts "Fetching from #{remote}..."
+  [source, target].each do |branch|
+    run "git checkout --quiet #{branch}"
+    run "git pull --ff-only --quiet #{remote} #{branch}"
+    puts "Pulled latest #{branch.inspect}"
+  end
+
+  run "git merge --quiet #{source}"
+  puts "Merged latest #{source} into #{target}"
+
+  run "git push --quiet #{remote} #{target}"
+  puts "Pushed #{target}, run the following to release:"
+  puts "    scripts/release --channel #{target.sub(/-next$/, '')} --remote #{remote} --from #{target}"
+ensure
+  # Go back to the branch we were on before running this script
+  run "git checkout --quiet #{original_branch}"
+end

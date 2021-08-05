@@ -120,6 +120,12 @@ class Organization < ApplicationRecord
     organization_memberships.count == 1 && articles.count.zero? && credits.count.zero?
   end
 
+  # NOTE: We use Organization and User objects interchangeably. Since the former
+  # don't have profiles we return self instead.
+  def profile
+    self
+  end
+
   private
 
   def evaluate_markdown
