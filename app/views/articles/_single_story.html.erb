@@ -42,7 +42,36 @@
               <button id="story-author-preview-trigger-<%= story.id %>" aria-controls="story-author-preview-content-<%= story.id %>" class="profile-preview-card__trigger fs-s px-0 crayons-btn crayons-btn--ghost p-0" aria-label="<%= story.cached_user.username %> profile details">
                 <%= story.cached_user.name %>
               </button>
-              <%= render "/shared/profile_preview_card", actor: story.user, id: "story-author-preview-content-#{story.id}" %>
+              <div
+                id="story-author-preview-content-<%= story.id %>"
+                class="profile-preview-card__content crayons-dropdown"
+                style="border-top: var(--su-7) solid var(--card-color);"
+                data-testid="profile-preview-card">
+                <div class="gap-4 grid">
+                  <div class="-mt-4">
+                    <a href="/<%= story.cached_user.username %>" class="flex">
+                      <span class="crayons-avatar crayons-avatar--xl mr-2 shrink-0">
+                        <img
+                          src="<%= Images::Profile.call(story.cached_user.profile_image_url, length: 90) %>"
+                          class="crayons-avatar__image"
+                          alt=""
+                          loading="lazy" />
+                      </span>
+                      <span class="crayons-link crayons-subtitle-2 mt-5"><%= story.cached_user.name %></span>
+                    </a>
+                  </div>
+                  <div class="print-hidden">
+                    <button
+                      class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
+                      data-info='{"id": <%= story.user_id %>, "className": "User", "style": "full"}'>
+                      Follow
+                    </button>
+                  </div>
+                  <span
+                    class="author-preview-metadata-container"
+                    data-author-id="<%= story.user_id %>" />
+                </div>
+              </div>
             </div>
 
             <% if story.cached_organization && !@organization_article_index %>
