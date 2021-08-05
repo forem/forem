@@ -50,6 +50,7 @@ export class SingleArticle extends Component {
             document.getElementsByClassName('flag-user-modal-container')[0],
           )}
         <details
+          data-id={`mod-article-${id}`}
           data-testid={`mod-article-${id}`}
           className="moderation-single-article"
           onToggle={this.activateToggle}

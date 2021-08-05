@@ -13,32 +13,24 @@ export class ModerationArticles extends Component {
     const { prevSelectedArticleId } = this.state;
     const selectedArticle = document.getElementById(`article-iframe-${id}`);
     const selectedDetailsPanel = document.querySelector(
-      `details[data-testid='mod-article-${id}']`
+      `details[data-id='mod-article-${id}']`,
     );
 
     if (prevSelectedArticleId > 0) {
-      if (
-        selectedDetailsPanel.getAttribute("open") !== null
-      ) {
+      if (selectedDetailsPanel.getAttribute('open') !== null) {
         if (prevSelectedArticleId !== id) {
-          const previousOpenDetailsPanel = document.querySelector(
-            `details[data-testid='mod-article-${prevSelectedArticleId}']`
-          );
-        
-          if (previousOpenDetailsPanel.getAttribute("open") !== null) {
-            previousOpenDetailsPanel.removeAttribute("open")
-          }
+          document
+            .querySelector(
+              `details[data-id='mod-article-${prevSelectedArticleId}']`,
+            )
+            ?.removeAttribute('open');
         }
       } else {
-        document.getElementById(
-          `article-iframe-${id}`,
-        ).innerHTML = "";
+        document.getElementById(`article-iframe-${id}`).innerHTML = '';
       }
     }
 
-    if (
-      selectedDetailsPanel.getAttribute("open") !== null
-    ) {
+    if (selectedDetailsPanel.getAttribute('open') !== null) {
       selectedArticle.innerHTML = `
       <div class="article-referrer-heading">
         <a class="article-title-link fw-bold" href=${path}>
@@ -47,12 +39,14 @@ export class ModerationArticles extends Component {
       </div>
       <div class="iframes-container">
         <iframe class="article-iframe" src="${path}"></iframe>
-        <iframe data-testid="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>
+        <iframe data-testid="mod-iframe-${id}" data-id="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>
       </div>`;
 
-      this.setState({prevSelectedArticleId: id});
+      this.setState({ prevSelectedArticleId: id });
     } else {
-      document.getElementById(`article-iframe-${id}`).classList.remove("opened");
+      document
+        .getElementById(`article-iframe-${id}`)
+        .classList.remove('opened');
     }
   };
 
