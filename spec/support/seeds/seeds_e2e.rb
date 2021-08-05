@@ -394,6 +394,7 @@ end
 
 seeder.create_if_none(Listing) do
   Credit.add_to(admin_user, rand(100))
+  Credit.add_to(admin_user.organizations.first, rand(1..100))
 
   Listing.create!(
     user: admin_user,

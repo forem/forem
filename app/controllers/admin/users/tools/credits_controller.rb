@@ -29,7 +29,7 @@ module Admin
                 create_note(user)
               end
 
-              message = "Added #{credits_params[:count]} #{'credit'.pluralize(credits_params[:count])}!"
+              message = "Added #{credits_params[:count]} #{'credit'.pluralize(credits_params[:count].to_i)}!"
               render json: { result: message }, content_type: "application/json", status: :created
             rescue ActiveRecord::RecordInvalid => e
               render json: { error: e.message }, content_type: "application/json", status: :unprocessable_entity
@@ -56,7 +56,7 @@ module Admin
                 create_note(user)
               end
 
-              message = "Removed #{credits_params[:count]} #{'credit'.pluralize(credits_params[:count])}!"
+              message = "Removed #{credits_params[:count]} #{'credit'.pluralize(credits_params[:count].to_i)}!"
               render json: { result: message }, content_type: "application/json", status: :ok
             rescue ActiveRecord::RecordInvalid => e
               render json: { error: e.message }, content_type: "application/json", status: :unprocessable_entity
