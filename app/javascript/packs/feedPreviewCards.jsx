@@ -88,10 +88,12 @@ const observer = new MutationObserver((mutationsList) => {
   });
 });
 
-observer.observe(document.getElementById('index-container'), {
-  childList: true,
-  subtree: true,
-});
+if (document.getElementById('index-container')) {
+  observer.observe(document.getElementById('index-container'), {
+    childList: true,
+    subtree: true,
+  });
+}
 
 InstantClick.on('change', () => {
   observer.disconnect();
