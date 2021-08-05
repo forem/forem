@@ -426,6 +426,28 @@ Settings::General.sidebar_tags = %i[tag1]
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Tag test article
+    published: true
+    cover_image: #{Faker::Company.logo}
+    tags: tag1
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  Article.create(
+    body_markdown: markdown,
+    featured: true,
+    show_comments: true,
+    user_id: admin_user.id,
+  )
+end
+
+##############################################################################
+
 seeder.create_if_none(Badge) do
   Badge.create!(
     title: "#{Faker::Lorem.word} #{rand(100)}",
