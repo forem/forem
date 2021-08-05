@@ -36,47 +36,13 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  COLUMNS_NOW_IN_USERS_SETTINGS = %w[
-    config_theme
-    config_font
-    config_navbar
-    display_announcements
-    display_sponsors
-    editor_version
-    experience_level
-    feed_mark_canonical
-    feed_referential_link
-    feed_url
-    inbox_guidelines
-    inbox_type
-    permit_adjacent_sponsors
-  ].freeze
-
-  COLUMNS_NOW_IN_USERS_NOTIFICATION_SETTINGS = %w[
-    email_badge_notifications
-    email_comment_notifications
-    email_community_mod_newsletter
-    email_connect_messages
-    email_digest_periodic
-    email_follower_notifications
-    email_membership_newsletter
-    email_mention_notifications
-    email_newsletter
-    email_tag_mod_newsletter
-    email_unread_notifications
-    mobile_comment_notifications
-    mod_roundrobin_notifications
-    reaction_notifications
-    welcome_notifications
-  ].freeze
-
   INACTIVE_PROFILE_COLUMNS = %w[
     bg_color_hex
     text_color_hex
     email_public
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS + COLUMNS_NOW_IN_USERS_SETTINGS + COLUMNS_NOW_IN_USERS_NOTIFICATION_SETTINGS
+  self.ignored_columns = PROFILE_COLUMNS
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
@@ -315,7 +281,7 @@ class User < ApplicationRecord
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
 
-  def self.dev_account
+  def self.staff_account
     find_by(id: Settings::Community.staff_user_id)
   end
 
@@ -385,7 +351,7 @@ class User < ApplicationRecord
   end
 
   def processed_website_url
-    website_url.to_s.strip if website_url.present?
+    profile.website_url.to_s.strip if profile.website_url.present?
   end
 
   def remember_me
@@ -670,8 +636,12 @@ class User < ApplicationRecord
     Users::BustCacheWorker.perform_async(id)
   end
 
+  # TODO: @citizen428 I don't want to completely remove this method yet, as we
+  # have similar methods in other models. But the previous implementation used
+  # three profile fields that we can't guarantee to exist across all Forems. So
+  # for now this method will just return an empty string.
   def tag_keywords_for_search
-    "#{employer_name}#{mostly_work_with}#{available_for}"
+    ""
   end
 
   # TODO: this can be removed once we migrate away from ES

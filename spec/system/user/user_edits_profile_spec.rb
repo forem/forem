@@ -15,12 +15,6 @@ RSpec.describe "User edits their profile", type: :system do
            label: "Hate Ice Cream Flavor",
            display_area: "header")
   end
-  let!(:settings_only_profile_field) do
-    create(:profile_field,
-           profile_field_group: profile_field_group,
-           label: "Imaginary Ice Cream Flavor",
-           display_area: "settings_only")
-  end
 
   before do
     sign_in user
@@ -55,18 +49,15 @@ RSpec.describe "User edits their profile", type: :system do
     it "renders profile fields" do
       expect(page).to have_text(left_sidebar_profile_field.attribute_name.titleize)
       expect(page).to have_text(header_profile_field.attribute_name.titleize)
-      expect(page).to have_text(settings_only_profile_field.attribute_name.titleize)
     end
 
     it "reflects set profile fields in the interface" do
       fill_in "profile[#{left_sidebar_profile_field.attribute_name}]", with: "chocolate"
       fill_in "profile[#{header_profile_field.attribute_name}]", with: "pistachio"
-      fill_in "profile[#{settings_only_profile_field.attribute_name}]", with: "cthulhu"
       click_button "Save"
 
       visit "/#{user.username}"
 
-      expect(page).not_to have_text(settings_only_profile_field.attribute_name.titleize)
       expect(page).not_to have_text("cthulhu")
 
       within(".crayons-layout__sidebar-left") do

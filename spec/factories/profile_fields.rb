@@ -6,9 +6,14 @@ FactoryBot.define do
     description { "some description" }
     placeholder_text { "john.doe@example.com" }
     show_in_onboarding { false }
+    display_area { :left_sidebar }
 
     trait :onboarding do
       show_in_onboarding { true }
+    end
+
+    trait :header do
+      display_area { :header }
     end
 
     after :create do

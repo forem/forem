@@ -1,27 +1,17 @@
 class Profile < ApplicationRecord
   belongs_to :user
 
-  validates :data, presence: true
   validates :user_id, uniqueness: true
   validates :location, :website_url, length: { maximum: 100 }
+  validates :website_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates_with ProfileValidator
-
-  has_many :custom_profile_fields, dependent: :destroy
-
-  store_attribute :data, :custom_attributes, :json, default: {}
 
   # Static fields are columns on the profiles table; they have no relationship
   # to a ProfileField record. These are columns we can safely assume exist for
   # any profile on a given Forem.
   STATIC_FIELDS = %w[summary location website_url].freeze
 
-  SPECIAL_DISPLAY_ATTRIBUTES = %w[
-    summary
-    employment_title
-    employer_name
-    employer_url
-    location
-  ].freeze
+  SPECIAL_DISPLAY_ATTRIBUTES = %w[summary location].freeze
 
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
@@ -61,10 +51,6 @@ class Profile < ApplicationRecord
 
   def self.static_fields
     STATIC_FIELDS
-  end
-
-  def custom_profile_attributes
-    custom_profile_fields.pluck(:attribute_name)
   end
 
   def clear!
