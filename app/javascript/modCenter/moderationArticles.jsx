@@ -12,15 +12,13 @@ export class ModerationArticles extends Component {
   toggleArticle = (id, title, path) => {
     const { prevSelectedArticleId } = this.state;
     const selectedArticle = document.getElementById(`article-iframe-${id}`);
-    const selectedDetailsPanel = document.querySelector(
-      `details[id='mod-article-${id}']`,
-    );
+    const selectedDetailsPanel = document.getElementById(`mod-article-${id}`);
 
     if (prevSelectedArticleId > 0) {
       if (selectedDetailsPanel.getAttribute('open') !== null) {
         if (prevSelectedArticleId !== id) {
           document
-            .querySelector(`details[id='mod-article-${prevSelectedArticleId}']`)
+            .getElementById(`mod-article-${prevSelectedArticleId}`)
             ?.removeAttribute('open');
         }
       } else {

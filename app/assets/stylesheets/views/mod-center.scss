@@ -43,7 +43,6 @@
   align-items: center;
   background-color: var(--base-inverted);
   color: var(--base-100);
-  padding: var(--su-4);
   text-align: left;
   width: 100%;
 
@@ -57,11 +56,13 @@
     }
 
     .article-details-container {
+      cursor: pointer;
       display: grid;
       grid-column-gap: var(--su-2);
       grid-template-columns: 1fr;
       grid-template-rows: auto;
       grid-row-gap: var(--su-1);
+      padding: var(--su-4);
 
       @media (min-width: $breakpoint-m) {
         grid-template-columns: 4fr 2fr 1fr;
