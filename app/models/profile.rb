@@ -31,6 +31,7 @@ class Profile < ApplicationRecord
       # fields are dropped from production and the associated data is removed.
       # https://github.com/forem/forem/pull/13641#discussion_r637641185
       next if STATIC_FIELDS.any?(field.attribute_name)
+      next if method_defined?(field.attribute_name)
 
       store_attribute :data, field.attribute_name.to_sym, field.type
     end
