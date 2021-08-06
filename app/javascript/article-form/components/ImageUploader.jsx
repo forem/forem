@@ -105,7 +105,6 @@ const StandardImageUpload = ({ handleInsertionImageUpload, uploadingImage }) =>
           multiple
           accept="image/*"
           data-max-file-size-mb="25"
-          aria-label="Upload an image"
         />
       </label>
     </Fragment>

@@ -34,7 +34,7 @@ describe('<ImageUploader />', () => {
 
   it('displays an upload input', () => {
     const { getByLabelText } = render(<ImageUploader />);
-    const uploadInput = getByLabelText(/Upload an image/i);
+    const uploadInput = getByLabelText(/Upload image/i);
 
     expect(uploadInput.getAttribute('type')).toEqual('file');
   });
@@ -49,8 +49,8 @@ describe('<ImageUploader />', () => {
     });
 
     it('does not display the file input', async () => {
-      const { queryByText } = render(<ImageUploader />);
-      expect(queryByText(/Upload an image/i)).not.toBeInTheDocument();
+      const { queryByLabelText } = render(<ImageUploader />);
+      expect(queryByLabelText(/Upload image/i)).not.toBeInTheDocument();
     });
 
     it('triggers a webkit messageHandler call when isNativeIOS', async () => {
@@ -93,7 +93,7 @@ describe('<ImageUploader />', () => {
 
     const { getByLabelText, queryByText } = render(<ImageUploader />);
 
-    const inputEl = getByLabelText(/Upload an image/i);
+    const inputEl = getByLabelText(/Upload image/i);
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
       type: 'image/png',
     });
@@ -114,7 +114,7 @@ describe('<ImageUploader />', () => {
 
     const { findByTitle, getByDisplayValue, getByLabelText, queryByText } =
       render(<ImageUploader />);
-    const inputEl = getByLabelText(/Upload an image/i);
+    const inputEl = getByLabelText(/Upload image/i);
 
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
       type: 'image/png',
@@ -145,7 +145,7 @@ describe('<ImageUploader />', () => {
     const { getByLabelText, findByText, queryByText } = render(
       <ImageUploader />,
     );
-    const inputEl = getByLabelText(/Upload an image/i);
+    const inputEl = getByLabelText(/Upload image/i);
 
     // Check the input validation settings
     expect(inputEl.getAttribute('accept')).toEqual('image/*');
