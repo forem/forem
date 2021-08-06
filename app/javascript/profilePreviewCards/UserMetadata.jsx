@@ -8,9 +8,7 @@ import { memo } from 'preact/compat';
  * @param {string} location The user's location
  * @param {string} created_at The user's join date string
  * @param {string} education The user's education detail
- * @param {string} employment_title The user's employment title, if provided
- * @param {string} employer_name The user's employer, if provided
- * @param {string} employer_url The user's employer URL, if provided
+ * @param {string} work The user's work details
  */
 const UserMetadata = ({
   email,
