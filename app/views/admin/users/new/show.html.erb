@@ -24,7 +24,7 @@
       <h3 class="crayons-subtitle-2"><%= @user.name %></h3>
     </section>
 
-    <div data-user-target="replace"></div>
+    <div data-user-target="replace" role="region" aria-live="polite"></div>
 
     <%= render(Admin::Users::ToolsComponent.new(user: @user)) %>
 
