@@ -456,3 +456,20 @@ seeder.create_if_none(Page) do
     )
   end
 end
+
+##############################################################################
+
+seeder.create_if_none(Reaction) do
+  user = User.find_by(username: "trusted_user_1")
+  admin_user.reactions.create!(category: :vomit, reactable: user)
+end
+
+##############################################################################
+
+seeder.create_if_none(FeedbackMessage) do
+  admin_user.reporter_feedback_messages.create!(
+    feedback_type: "bug-reports",
+    message: "a bug",
+    category: :bug,
+  )
+end

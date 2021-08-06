@@ -229,4 +229,28 @@ describe('Tools Section', () => {
       });
     });
   });
+
+  describe('Reports', () => {
+    it('Shows a report', () => {
+      cy.get('@user').then(({ username }) => {
+        cy.visitAndWaitForUserSideEffects('/admin/users');
+        cy.findByRole('link', { name: username }).click();
+        cy.findByRole('link', { name: /Reports/ }).click();
+
+        cy.findByRole('link', { name: /a bug/ }).should('be.visible');
+      });
+    });
+  });
+
+  describe('Reactions', () => {
+    it('Shows a reaction', () => {
+      cy.get('@user').then(({ username }) => {
+        cy.visitAndWaitForUserSideEffects('/admin/users');
+        cy.findByRole('link', { name: username }).click();
+        cy.findByRole('link', { name: /Reactions/ }).click();
+
+        cy.findByRole('link', { name: /vomit\s+user/i }).should('be.visible');
+      });
+    });
+  });
 });
