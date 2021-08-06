@@ -1,11 +1,7 @@
 module Admin
   module Users
     class ToolsComponent < ViewComponent::Base
-      include ActiveModel::Validations
-
       DATA = Struct.new(:total, :verified, keyword_init: true)
-
-      validates :emails, :notes, presence: true
 
       def initialize(user:)
         @user = user
