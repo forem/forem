@@ -4,7 +4,7 @@ describe('Preview profile from series', () => {
     cy.fixture('users/articleEditorV1User.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginAndVisit(user, '/admin_mcadmin/series');
+      cy.loginAndVisit(user, '/series_user/series');
     });
   });
 
@@ -14,7 +14,7 @@ describe('Preview profile from series', () => {
     cy.findByRole('heading', { name: "seriestest Series' Articles" });
 
     // Find the preview button and check it functions as expected
-    cy.findByRole('button', { name: 'Admin McAdmin profile details' }).as(
+    cy.findByRole('button', { name: 'Series User profile details' }).as(
       'previewButton',
     );
     cy.get('@previewButton').should('have.attr', 'data-initialized');
@@ -23,11 +23,11 @@ describe('Preview profile from series', () => {
 
     cy.findByTestId('profile-preview-card').within(() => {
       cy.findByRole('link', {
-        name: 'Admin McAdmin',
+        name: 'Series User',
       }).should('have.focus');
 
       // Check all the expected user data sections are present
-      cy.findByText('Admin user summary');
+      cy.findByText('Series user summary');
       cy.findByText('Software developer at Company');
       cy.findByText('Edinburgh');
       cy.findByText('University of Life');
