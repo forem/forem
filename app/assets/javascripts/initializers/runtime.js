@@ -146,7 +146,11 @@ class Runtime {
    *                    the event is not a KeyboardEvent.
    */
   static hasOSSpecificModifier(event) {
-    if (navigator.userAgent.indexOf('Mac OS X') != -1) {
+    if (!(event instanceof KeyboardEvent)) {
+      return false;
+    }
+
+    if (navigator.userAgent.indexOf('Mac OS X') >= 0) {
       return event.metaKey;
     } else {
       return event.ctrlKey;
