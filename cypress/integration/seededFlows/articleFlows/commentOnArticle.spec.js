@@ -636,53 +636,49 @@ describe('Comment on articles', () => {
     cy.visitAndWaitForUserSideEffects('/admin_mcadmin/test-article-slug');
 
     // SVG should exists with Like comment: as title
-    cy.get(`div.inner-comment.comment__details`)
-      .first()
-      .contains('svg', 'Like comment:')
-      .should('exist');
+    cy.findByRole('img', { name: 'Like comment:' });
 
-    cy.get('div.inner-comment.comment__details')
-      .first()
-      .within(() => {
-        cy.findByRole('button', { name: /^heart$/i })
-          .should('exist')
-          .and('have.attr', 'aria-pressed', 'false')
-          .and('not.have.class', 'reacted');
+    cy.findByTestId('comments-container').within(() => {
+      cy.findByRole('button', { name: /^heart$/i })
+        .as('likeButton')
+        .should('exist')
+        .and('have.attr', 'aria-pressed', 'false')
+        .and('not.have.class', 'reacted');
 
-        cy.findByRole('button', { name: /^heart$/i }).within(() => {
-          cy.get('span.reactions-count').should('have.text', '0');
-          cy.get('span.reactions-label').should(($span) => {
-            expect($span.text().trim()).equal('Like');
-          });
-        });
-
-        // React on comment
-        cy.findByRole('button', { name: /^heart$/i }).click();
-
-        // Text should change and react class should be added along with aria-pressed
-        cy.findByRole('button', { name: /^heart$/i })
-          .and('have.attr', 'aria-pressed', 'true')
-          .and('have.class', 'reacted');
-        cy.findByRole('button', { name: /^heart$/i }).within(() => {
-          cy.get('span.reactions-count').should('have.text', '1');
-          cy.get('span.reactions-label').should(($span) => {
-            expect($span.text().trim()).equal('like');
-          });
-        });
-
-        // Unreact on comment
-        cy.findByRole('button', { name: /^heart$/i }).click();
-
-        // Text should change and react class should be added along with aria-pressed
-        cy.findByRole('button', { name: /^heart$/i })
-          .and('have.attr', 'aria-pressed', 'false')
-          .and('not.have.class', 'reacted');
-        cy.findByRole('button', { name: /^heart$/i }).within(() => {
-          cy.get('span.reactions-count').should('have.text', '0');
-          cy.get('span.reactions-label').should(($span) => {
-            expect($span.text().trim()).equal('Like');
-          });
+      cy.get('@likeButton').within(() => {
+        cy.get('span.reactions-count').should('have.text', '0');
+        cy.get('span.reactions-label').should(($span) => {
+          expect($span.text().trim()).equal('Like');
         });
       });
+
+      // React on comment
+      cy.get('@likeButton').click();
+
+      // Text should change and react class should be added along with aria-pressed
+      cy.get('@likeButton')
+        .and('have.attr', 'aria-pressed', 'true')
+        .and('have.class', 'reacted');
+      cy.get('@likeButton').within(() => {
+        cy.get('span.reactions-count').should('have.text', '1');
+        cy.get('span.reactions-label').should(($span) => {
+          expect($span.text().trim()).equal('like');
+        });
+      });
+
+      // Unreact on comment
+      cy.get('@likeButton').click();
+
+      // Text should change and react class should be added along with aria-pressed
+      cy.get('@likeButton')
+        .and('have.attr', 'aria-pressed', 'false')
+        .and('not.have.class', 'reacted');
+      cy.get('@likeButton').within(() => {
+        cy.get('span.reactions-count').should('have.text', '0');
+        cy.get('span.reactions-label').should(($span) => {
+          expect($span.text().trim()).equal('Like');
+        });
+      });
+    });
   });
 });
