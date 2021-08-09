@@ -47,10 +47,10 @@
           <div class="mt-auto">
             <button
               class="crayons-btn crayons-btn--secondary follow-action-button"
-              data-info='{"id":<%= tag.id %>,"className":"Tag", "followStyle":"secondary"}'>
+              data-info='{"id":<%= tag.id %>,"className":"Tag", "followStyle":"secondary"}'
+              aria-label="Follow tag: <%= tag.name %>">
               Follow
             </button>
-            <span class="hidden screen-reader-only">Follow tag: <%= tag.name %></span>
           </div>
         <% end %>
 

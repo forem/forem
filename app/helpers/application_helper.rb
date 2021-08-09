@@ -119,7 +119,7 @@ module ApplicationHelper
                                             tags: %w[p b i em strike strong u br]
   end
 
-  def follow_button(followable, style = "full", classes = "")
+  def follow_button(followable, style = "full", classes = "", aria_label: "")
     return if followable == DELETED_USER
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
@@ -136,6 +136,7 @@ module ApplicationHelper
         }
       },
       class: "crayons-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
+      aria: { label: aria_label },
     )
   end
 
