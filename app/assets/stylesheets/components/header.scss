@@ -44,6 +44,10 @@
     margin: 0 var(--su-4);
     display: block;
   }
+
+  .crayons-btn:focus {
+    outline: revert;
+  }
 }
 
 .crayons-header__link {
