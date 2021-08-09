@@ -3,7 +3,7 @@ describe('Search form', () => {
     cy.visit('/');
 
     cy.findByRole('textbox', { name: /search/i }).type('test');
-    cy.get('#header-search').get('button').click();
+    cy.findByRole('button', { name: /search/i }).click();
 
     cy.url().should('include', '/search?q=test');
   });
