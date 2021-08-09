@@ -39,7 +39,16 @@ const StandardImageUpload = ({
   handleImageUpload,
   isUploadingImage,
 }) =>
-  isUploadingImage ? null : (
+  isUploadingImage ? (
+    <input
+      id="cover-image-input"
+      type="file"
+      onChange={handleImageUpload}
+      accept="image/*"
+      className="screen-reader-only"
+      data-max-file-size-mb="25"
+    />
+  ) : (
     <Fragment>
       <label className="cursor-pointer crayons-btn crayons-btn--outlined">
         {uploadLabel}
