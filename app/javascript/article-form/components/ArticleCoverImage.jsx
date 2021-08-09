@@ -15,9 +15,9 @@ const NativeIosImageUpload = ({
   uploadLabel,
   isUploadingImage,
   handleNativeMessage,
-}) =>
-  isUploadingImage ? null : (
-    <Fragment>
+}) => (
+  <Fragment>
+    {isUploadingImage ? null : (
       <Button
         variant="outlined"
         className="mr-2 whitespace-nowrap"
@@ -25,30 +25,22 @@ const NativeIosImageUpload = ({
       >
         {uploadLabel}
       </Button>
-      <input
-        type="hidden"
-        id="native-cover-image-upload-message"
-        value=""
-        onChange={handleNativeMessage}
-      />
-    </Fragment>
-  );
+    )}
+    <input
+      type="hidden"
+      id="native-cover-image-upload-message"
+      value=""
+      onChange={handleNativeMessage}
+    />
+  </Fragment>
+);
 
 const StandardImageUpload = ({
   uploadLabel,
   handleImageUpload,
   isUploadingImage,
 }) =>
-  isUploadingImage ? (
-    <input
-      id="cover-image-input"
-      type="file"
-      onChange={handleImageUpload}
-      accept="image/*"
-      className="screen-reader-only"
-      data-max-file-size-mb="25"
-    />
-  ) : (
+  isUploadingImage ? null : (
     <Fragment>
       <label className="cursor-pointer crayons-btn crayons-btn--outlined">
         {uploadLabel}
