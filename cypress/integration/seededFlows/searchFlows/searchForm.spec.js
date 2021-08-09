@@ -6,5 +6,6 @@ describe('Search form', () => {
     cy.findByRole('button', { name: /search/i }).click();
 
     cy.url().should('include', '/search?q=test');
+    cy.findByRole('heading', { name: 'Test article' }).should('exist');
   });
 });
