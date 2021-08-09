@@ -23,7 +23,7 @@ gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cloudinary", "~> 1.20" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.51.1" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.52.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.5" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -37,7 +37,7 @@ gem "field_test", "~> 0.4" # A/B testing
 gem "flipper", "~> 0.22.0" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.22.0" # Store Flipper flags in ActiveRecord
 gem "flipper-ui", "~> 0.22.0"
-gem "fog-aws", "~> 3.10" # 'fog' gem to support Amazon Web Services
+gem "fog-aws", "~> 3.11" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
@@ -56,7 +56,7 @@ gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML us
 gem "liquid", "~> 5.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.12" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.21" # Simple wrapper for the GitHub API
-gem "oj", "~> 3.12" # JSON parser and object serializer
+gem "oj", "~> 3.13" # JSON parser and object serializer
 gem "omniauth", "~> 2.0" # A generalized Rack framework for multiple-provider authentication
 gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
 gem "omniauth-facebook", "~> 8.0" # OmniAuth strategy for Facebook
@@ -144,7 +144,7 @@ group :development, :test do
   gem "cypress-rails", "~> 0.5.1" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.18" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.18.2" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 3.0.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.18", require: false # Automatic Ruby code style checking tool
@@ -172,6 +172,6 @@ group :test do
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 6.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 4.6" # Run Selenium tests more easily with install and updates for all supported webdrivers
-  gem "webmock", "~> 3.13", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
+  gem "webmock", "~> 3.14", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

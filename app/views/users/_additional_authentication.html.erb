@@ -2,10 +2,9 @@
   <div class="crayons-card crayons-card--content-rows block">
     <% authentication_enabled_providers.each do |provider| %>
       <!--
-        TODO: [@forem/oss] Only until we refactor our cookie configurations
-        we'll be able to connect existing accounts with SIWA. This should be
-        done when Apple Auth Provider is no longer in 'Beta':
-        https://github.com/forem/forem/pull/12114
+        INFO: [@forem/oss] We only support creating new accounts and then
+        signing in with them) using Apple Auth. Connecting Forem existing
+        accounts to Apple Auth isn't supported and is why we skip it here.
       -->
       <% next if provider.provider_name == :apple %>
       <% unless @user.authenticated_through?(provider.provider_name) %>
