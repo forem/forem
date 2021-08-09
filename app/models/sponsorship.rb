@@ -2,7 +2,7 @@ class Sponsorship < ApplicationRecord
   LEVELS = %w[gold silver bronze tag media devrel].freeze
   METAL_LEVELS = %w[gold silver bronze].freeze
   STATUSES = %w[none pending live].freeze
-  SPONSORABLE_TYPES = [Tag, ActsAsTaggableOn::Tag].map(&:name).freeze
+  SPONSORABLE_TYPES = %w[Tag ActsAsTaggableOn::Tag].freeze
   # media has no fixed amount of credits
   CREDITS = {
     gold: 6_000,
