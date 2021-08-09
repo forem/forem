@@ -28,11 +28,11 @@ describe('<SearchFormSync />', () => {
   });
 
   it('should synchronize search forms', async () => {
-    const { findByLabelText, findAllByLabelText } = render(<SearchFormSync />);
+    const { getByRole, getAllByRole } = render(<SearchFormSync />);
 
     // Only one input is rendered at this point because the synchSearchForms custom event is what
     // tells us that there is a new search form to sync with the existing one.
-    const searchInput = await findByLabelText('search');
+    const searchInput = await getByRole('textbox', { name: /search/i });
 
     // Because window.location has no search term in it's URL
     expect(searchInput.value).toEqual('');
@@ -50,18 +50,20 @@ describe('<SearchFormSync />', () => {
       }),
     );
 
-    const [desktopSearch, mobileSearch] = await findAllByLabelText('search');
+    const [desktopSearch, mobileSearch] = await getAllByRole('textbox', {
+      name: /search/i,
+    });
 
     expect(desktopSearch.value).toEqual(searchTerm);
     expect(mobileSearch.value).toEqual(searchTerm);
   });
 
   it('should synchronize search forms on a subsequent search', async () => {
-    const { findByLabelText, findAllByLabelText } = render(<SearchFormSync />);
+    const { getByRole, getAllByRole } = render(<SearchFormSync />);
 
     // Only one input is rendered at this point because the synchSearchForms custom event is what
     // tells us that there is a new search form to sync with the existing one.
-    const searchInput = await findByLabelText('search');
+    const searchInput = await getByRole('textbox', { name: /search/i });
 
     // Because window.location has no search term in it's URL
     expect(searchInput.value).toEqual('');
@@ -79,7 +81,9 @@ describe('<SearchFormSync />', () => {
       }),
     );
 
-    let [desktopSearch, mobileSearch] = await findAllByLabelText('search');
+    let [desktopSearch, mobileSearch] = await getAllByRole('textbox', {
+      name: /search/i,
+    });
 
     expect(desktopSearch.value).toEqual(searchTerm);
     expect(mobileSearch.value).toEqual(searchTerm);
@@ -107,7 +111,9 @@ describe('<SearchFormSync />', () => {
       }),
     );
 
-    [desktopSearch, mobileSearch] = await findAllByLabelText('search');
+    [desktopSearch, mobileSearch] = await getAllByRole('textbox', {
+      name: /search/i,
+    });
 
     expect(desktopSearch.value).toEqual(searchTerm2);
     expect(mobileSearch.value).toEqual(searchTerm2);
