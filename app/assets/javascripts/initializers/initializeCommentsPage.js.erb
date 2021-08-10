@@ -43,6 +43,7 @@ function initializeCommentsPage() {
                   var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
                   if (buttForComment) {
                     buttForComment.classList.add('reacted');
+                    buttForComment.setAttribute('aria-pressed', 'true')
                   }
                 }
                 for (var i = 0; i < publicReactionCounts.length; i++) {
@@ -51,7 +52,7 @@ function initializeCommentsPage() {
                     var reactionsCountWrapper = buttForComment.querySelector('.reactions-count');
                     var reactionsLabelWrapper = buttForComment.querySelector('.reactions-label');
                     if (publicReactionCounts[i].count > 0) {
-                      
+
                       if (publicReactionCounts[i].count > 1) {
                         reactionsLabelWrapper.innerHTML = "&nbsp;likes";
                       } else {
@@ -64,6 +65,10 @@ function initializeCommentsPage() {
                     } else {
                       reactionsCountWrapper.classList.add("hidden");
                       reactionsCountWrapper.innerHTML = '0';
+                    }
+
+                    if (!buttForComment.classList.contains("reacted")) {
+                      buttForComment.setAttribute('aria-pressed', 'false')
                     }
                   }
                 }
@@ -112,6 +117,7 @@ function initializeCommentsPage() {
           var reactionLabel = thisButt.querySelector('.reactions-label');
           if (response.result === 'create') {
             thisButt.classList.add('reacted');
+            thisButt.setAttribute('aria-pressed', 'true');
             if (reactionCount) {
               reactionCount.innerHTML = parseInt(reactionCount.innerHTML) + 1;
               reactionCount.classList.remove("hidden");
@@ -123,6 +129,7 @@ function initializeCommentsPage() {
             }
           } else {
             thisButt.classList.remove('reacted');
+            thisButt.setAttribute('aria-pressed', 'false');
             if (reactionCount) {
               reactionCount.innerHTML = parseInt(reactionCount.innerHTML) - 1;
               if(parseInt(reactionCount.innerHTML) == 0) {
