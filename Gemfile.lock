@@ -265,7 +265,7 @@ GEM
     faraday-excon (1.1.0)
     faraday-net_http (1.0.1)
     faraday-net_http_persistent (1.1.0)
-    fastimage (2.2.4)
+    fastimage (2.2.5)
     fastly (3.0.2)
     feedjira (3.2.0)
       loofah (>= 2.3.1)
