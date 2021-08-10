@@ -377,5 +377,23 @@ seeder.create_if_doesnt_exist(Podcast, "title", "Test podcast") do
     published: true
   }
   podcast = Podcast.create!(podcast_attributes)
-  Podcasts::GetEpisodesWorker.new.perform(podcast_id: podcast.id, limit: 1)
+
+  podcast_episode_attributes = {
+    body: "<p>A real good crow call</p>",
+    guid: "<guid isPermaLink=\"true\">/media/crow-call.mp3</guid>",
+    https: false,
+    itunes_url: nil,
+    image: nil,
+    media_url: "/media/crow-call.mp3",
+    processed_html: "<p>A real good crow call</p>",
+    published_at: Date.new(2021,1,1),
+    slug: "crow-call",
+    subtitle: "Example media: Crow Call",
+    summary: "<p>6 seconds of bird song</p>",
+    title: "Example media | crow call",
+    website_url: "https://github.com/forem/",
+    tag_list: nil,
+    podcast_id: podcast.id
+  }
+  PodcastEpisode.create!(podcast_episode_attributes)
 end
