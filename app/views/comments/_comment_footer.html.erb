@@ -4,8 +4,11 @@
     id="button-for-comment-<%= comment.id %>"
     data-comment-id="<%= comment.id %>"
     title="heart">
-    <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Favorite heart outline button") %>
-    <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: "Favorite heart outline button") %>
+    <%= inline_svg_tag("small-heart.svg",
+                       aria: true,
+                       class: "crayons-icon reaction-icon not-reacted",
+                       title: "Like comment:") %>
+    <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: "Like comment: ") %>
     <span class="reactions-count">
       <%= comment.public_reactions_count if comment.public_reactions_count.positive? %>
     </span>
