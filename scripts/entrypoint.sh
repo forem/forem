@@ -24,22 +24,22 @@ case "$@" in
 
   precompile)
     echo "Running rake assets:precompile..."
-    bundle exec rake assets:precompile
+    bundle exec rails assets:precompile
     ;;
 
   clean)
     echo "Running rake assets:clean..."
-    bundle exec rake assets:clean
+    bundle exec rails assets:clean
     ;;
 
   clobber)
     echo "Running rake assets:clobber..."
-    bundle exec rake assets:clobber
+    bundle exec rails assets:clobber
     ;;
 
   bootstrap)
     echo "Running rake app_initializer:setup..."
-    bundle exec rake app_initializer:setup
+    bundle exec rails app_initializer:setup
     ;;
 
   *)
