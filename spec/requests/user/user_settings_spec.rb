@@ -180,6 +180,17 @@ RSpec.describe "UserSettings", type: :request do
 
         expect(response.body).to include("Connect GitHub Account")
       end
+
+      it "does not allow to connect an Apple Account to an existing user" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :with_identity, identities: [:twitter])
+
+        sign_in user
+        get user_settings_path
+
+        expect(response.body).to include("Connect GitHub Account")
+        expect(response.body).not_to include("Connect Apple Account")
+      end
     end
 
     describe "GitHub repositories" do

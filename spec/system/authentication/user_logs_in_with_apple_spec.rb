@@ -5,7 +5,6 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
 
   before do
     omniauth_mock_apple_payload
-    Flipper.enable(:apple_auth)
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 

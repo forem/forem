@@ -22,6 +22,7 @@ class ProfileField < ApplicationRecord
   validates :display_area, presence: true
   validates :input_type, presence: true
   validates :label, presence: true, uniqueness: { case_sensitive: false }
+  validates :show_in_onboarding, inclusion: { in: [true, false] }
   validate :maximum_header_field_count
 
   before_create :generate_attribute_name
@@ -39,7 +40,17 @@ class ProfileField < ApplicationRecord
   end
 
   def maximum_header_field_count
-    return if self.class.header.count < HEADER_FIELD_LIMIT
+    return unless header?
+
+    header_field_count = self.class.header.count
+
+    # We need to have less than the maximum number so we can still create one.
+    if new_record? || display_area_was == "left_sidebar"
+      return if header_field_count < HEADER_FIELD_LIMIT
+    # We can change existing fields or update them as long as we're within the limit.
+    elsif header_field_count <= HEADER_FIELD_LIMIT
+      return
+    end
 
     errors.add(:display_area, HEADER_LIMIT_MESSAGE)
   end

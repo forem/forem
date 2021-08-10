@@ -270,13 +270,6 @@ RSpec.describe "StoriesIndex", type: :request do
     end
   end
 
-  describe "GET query page" do
-    it "renders page with proper header" do
-      get "/search?q=hello"
-      expect(response.body).to include("=> Search Results")
-    end
-  end
-
   describe "GET podcast index" do
     include_examples "redirects to the lowercase route" do
       let(:path) { "/#{build(:podcast).slug.upcase}" }

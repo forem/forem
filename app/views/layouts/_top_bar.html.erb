@@ -20,8 +20,15 @@
     </div>
 
     <div class="crayons-header--search js-search-form" id="header-search">
-      <form accept-charset="UTF-8" method="get" action="<%= search_path %>">
-        <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="Search..." autocomplete="off" />
+      <form accept-charset="UTF-8" method="get" action="<%= search_path %>" role="search">
+        <div class="crayons-fields crayons-fields--horizontal">
+          <div class="crayons-field flex-1 relative">
+            <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="Search..." autocomplete="off" />
+            <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
+              <%= inline_svg_tag("search.svg", aria_hidden: true, width: 24, height: 24, class: "crayons-icon", title: "Search") %>
+            </button>
+          </div>
+        </div>
       </form>
     </div>
 

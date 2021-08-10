@@ -1,6 +1,6 @@
 /* global Runtime */
 
-import { h } from 'preact';
+import { Fragment, h } from 'preact';
 import { useReducer } from 'preact/hooks';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
@@ -16,7 +16,7 @@ const ImageIcon = () => (
     className="crayons-icon"
     xmlns="http://www.w3.org/2000/svg"
     role="img"
-    aria-labelledby="a17qec5pfhrwzk9w4kg0tp62v27qqu9t"
+    aria-hidden="true"
   >
     <title id="a17qec5pfhrwzk9w4kg0tp62v27qqu9t">Upload image</title>
     <path d="M20 5H4v14l9.292-9.294a1 1 0 011.414 0L20 15.01V5zM2 3.993A1 1 0 012.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 01-.992.993H2.992A.993.993 0 012 20.007V3.993zM8 11a2 2 0 110-4 2 2 0 010 4z" />
@@ -65,6 +65,50 @@ function imageUploaderReducer(state, action) {
       return state;
   }
 }
+
+const NativeIosImageUpload = ({
+  uploadingImage,
+  extraProps,
+  handleNativeMessage,
+}) => (
+  <Fragment>
+    {!uploadingImage && (
+      <Button
+        className="mr-2 fw-normal"
+        variant="ghost"
+        contentType="icon-left"
+        icon={ImageIcon}
+        {...extraProps}
+      >
+        Upload image
+      </Button>
+    )}
+    <input
+      type="hidden"
+      id="native-image-upload-message"
+      value=""
+      onChange={handleNativeMessage}
+    />
+  </Fragment>
+);
+
+const StandardImageUpload = ({ handleInsertionImageUpload, uploadingImage }) =>
+  uploadingImage ? null : (
+    <Fragment>
+      <label className="cursor-pointer crayons-btn crayons-btn--ghost">
+        <ImageIcon /> Upload image
+        <input
+          type="file"
+          id="image-upload-field"
+          onChange={handleInsertionImageUpload}
+          className="screen-reader-only"
+          multiple
+          accept="image/*"
+          data-max-file-size-mb="25"
+        />
+      </label>
+    </Fragment>
+  );
 
 export const ImageUploader = () => {
   const [state, dispatch] = useReducer(imageUploaderReducer, {
@@ -174,40 +218,22 @@ export const ImageUploader = () => {
 
   return (
     <div className="flex items-center">
-      {uploadingImage ? (
+      {uploadingImage && (
         <span class="lh-base pl-3 border-0 py-2 inline-block">
           <Spinner /> Uploading...
         </span>
-      ) : (
-        <Button
-          className="mr-2 fw-normal"
-          variant="ghost"
-          contentType="icon-left"
-          icon={ImageIcon}
-          {...extraProps}
-        >
-          Upload image
-          {!useNativeUpload && (
-            <input
-              type="file"
-              id="image-upload-field"
-              onChange={handleInsertionImageUpload}
-              className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
-              multiple
-              accept="image/*"
-              data-max-file-size-mb="25"
-              aria-label="Upload an image"
-            />
-          )}
-        </Button>
       )}
 
-      {useNativeUpload && (
-        <input
-          type="hidden"
-          id="native-image-upload-message"
-          value=""
-          onChange={handleNativeMessage}
+      {useNativeUpload ? (
+        <NativeIosImageUpload
+          extraProps={extraProps}
+          uploadingImage={uploadingImage}
+          handleNativeMessage={handleNativeMessage}
+        />
+      ) : (
+        <StandardImageUpload
+          uploadingImage={uploadingImage}
+          handleInsertionImageUpload={handleInsertionImageUpload}
         />
       )}
 

@@ -65,7 +65,7 @@ RSpec.describe "ProfilePreviewCards", type: :request do
         expect(preview_card["work"]).to eq(profile.work)
         expect(preview_card["location"]).to eq(profile.location)
         expect(preview_card["education"]).to eq(profile.education)
-        expect(preview_card["created_at"]).to eq(profile.created_at.utc.iso8601)
+        expect(preview_card["created_at"]).to eq(user.created_at.utc.iso8601)
       end
 
       it "has the correct card color" do
@@ -117,7 +117,7 @@ RSpec.describe "ProfilePreviewCards", type: :request do
         expect(preview_card["work"]).to eq(profile.work)
         expect(preview_card["location"]).to eq(profile.location)
         expect(preview_card["education"]).to eq(profile.education)
-        expect(preview_card["created_at"]).to eq(profile.created_at.utc.iso8601)
+        expect(preview_card["created_at"]).to eq(user.created_at.utc.iso8601)
       end
 
       it "has the correct card color" do
