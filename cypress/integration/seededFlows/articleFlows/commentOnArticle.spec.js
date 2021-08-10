@@ -631,4 +631,54 @@ describe('Comment on articles', () => {
     cy.findByRole('button', { name: /^Toggle dropdown menu$/i }).click();
     cy.findByRole('link', { name: /^Edit this comment$/i }).should('not.exist');
   });
+
+  it('should toggle aria-pressed button', () => {
+    cy.visitAndWaitForUserSideEffects('/admin_mcadmin/test-article-slug');
+
+    // SVG should exists with Like comment: as title
+    cy.findByRole('img', { name: 'Like comment:' });
+
+    cy.findByTestId('comments-container').within(() => {
+      cy.findByRole('button', { name: /^heart$/i })
+        .as('likeButton')
+        .should('exist')
+        .and('have.attr', 'aria-pressed', 'false')
+        .and('not.have.class', 'reacted');
+
+      cy.get('@likeButton').within(() => {
+        cy.get('span.reactions-count').should('have.text', '0');
+        cy.get('span.reactions-label').should(($span) => {
+          expect($span.text().trim()).equal('Like');
+        });
+      });
+
+      // React on comment
+      cy.get('@likeButton').click();
+
+      // Text should change and react class should be added along with aria-pressed
+      cy.get('@likeButton')
+        .and('have.attr', 'aria-pressed', 'true')
+        .and('have.class', 'reacted');
+      cy.get('@likeButton').within(() => {
+        cy.get('span.reactions-count').should('have.text', '1');
+        cy.get('span.reactions-label').should(($span) => {
+          expect($span.text().trim()).equal('like');
+        });
+      });
+
+      // Unreact on comment
+      cy.get('@likeButton').click();
+
+      // Text should change and react class should be added along with aria-pressed
+      cy.get('@likeButton')
+        .and('have.attr', 'aria-pressed', 'false')
+        .and('not.have.class', 'reacted');
+      cy.get('@likeButton').within(() => {
+        cy.get('span.reactions-count').should('have.text', '0');
+        cy.get('span.reactions-label').should(($span) => {
+          expect($span.text().trim()).equal('Like');
+        });
+      });
+    });
+  });
 });
