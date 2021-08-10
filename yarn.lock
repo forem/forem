@@ -2256,18 +2256,18 @@
     prop-types "^15.7.2"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-storysource@^6.3.6":
-  version "6.3.6"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-6.3.6.tgz#3ecacd39690675ffcba0d40ca235090fc2bf5574"
-  integrity sha512-BNNuy/6Vb7NzeCDbt+bCL1dC/XQOalzKHW6FplO0pR0eMSi6EmJJnU9V+5rFAUtG5zxGeCx2h7TrrFecouM2BA==
+"@storybook/addon-storysource@^6.3.7":
+  version "6.3.7"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-6.3.7.tgz#7818f2402e19453747274d2c1e8e0a99f24fc2ab"
+  integrity sha512-cb1F47aD/c5TQDMmYwuKz608YeLWYSYQXGtCdijzjznYVSMJ4eAFnd38AiF2Ax1EM79BEMqzqH1SrveibAaQlA==
   dependencies:
-    "@storybook/addons" "6.3.6"
-    "@storybook/api" "6.3.6"
-    "@storybook/client-logger" "6.3.6"
-    "@storybook/components" "6.3.6"
-    "@storybook/router" "6.3.6"
-    "@storybook/source-loader" "6.3.6"
-    "@storybook/theming" "6.3.6"
+    "@storybook/addons" "6.3.7"
+    "@storybook/api" "6.3.7"
+    "@storybook/client-logger" "6.3.7"
+    "@storybook/components" "6.3.7"
+    "@storybook/router" "6.3.7"
+    "@storybook/source-loader" "6.3.7"
+    "@storybook/theming" "6.3.7"
     core-js "^3.8.2"
     estraverse "^5.2.0"
     loader-utils "^2.0.0"
