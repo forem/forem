@@ -1,16 +1,27 @@
 import { initCharts } from '../analytics/dashboard';
 
-function initDashboard() {
-  const activeOrg = document.querySelector('.organization.active');
-  if (activeOrg) {
-    initCharts({ organizationId: activeOrg.dataset.organizationId });
-  } else {
-    initCharts({ organizationId: null });
-  }
+function renderOrgData() {
+  const organizationsArray = Array.from(
+    document.getElementsByClassName('organization'),
+  );
+  const activeOrg = organizationsArray.find(
+    (org) => org.getAttribute('aria-current') === 'page',
+  );
+  const chartData = activeOrg.dataset.organizationId
+    ? activeOrg.dataset.organizationId
+    : null;
+
+  initCharts({ organizationId: chartData });
 }
 
-window.InstantClick.on('change', () => {
-  initDashboard();
-});
+function initDashboard() {
+  const organizationsMenu = document.getElementsByClassName('organization')[0];
+
+  if (!organizationsMenu) {
+    initCharts({ organizationId: null });
+  } else {
+    renderOrgData();
+  }
+}
 
 initDashboard();

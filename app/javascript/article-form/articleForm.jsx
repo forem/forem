@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { embedGists } from '../utilities/gist';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
@@ -41,13 +42,6 @@ const LINT_OPTIONS = {
 };
 
 export class ArticleForm extends Component {
-  static handleGistPreview() {
-    const els = document.getElementsByClassName('ltag_gist-liquid-tag');
-    for (let i = 0; i < els.length; i += 1) {
-      postscribe(els[i], els[i].firstElementChild.outerHTML);
-    }
-  }
-
   static handleRunkitPreview() {
     activateRunkitTags();
   }
@@ -101,6 +95,7 @@ export class ArticleForm extends Component {
         : {};
 
     this.state = {
+      formKey: new Date().toISOString(),
       id: this.article.id || null, // eslint-disable-line react/no-unused-state
       title: this.article.decoded_title || '',
       tagList: this.article.cached_tag_list || '',
@@ -142,7 +137,7 @@ export class ArticleForm extends Component {
     const { previewResponse } = this.state;
 
     if (previewResponse) {
-      this.constructor.handleGistPreview();
+      embedGists(this.formElement);
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
     }
@@ -200,17 +195,22 @@ export class ArticleForm extends Component {
 
   fetchMarkdownLint = async () => {
     if (!window.markdownlint) {
+      const pathDataElement = document.getElementById('markdown-lint-js-path');
+      if (!pathDataElement) {
+        return;
+      }
+
+      // Retrieve the correct fingerprinted URL for the scripts
+      const { markdownItJsPath, markdownLintJsPath } = pathDataElement.dataset;
+
       const markdownItScript = document.createElement('script');
-      markdownItScript.setAttribute('src', '/assets/markdown-it.min.js');
+      markdownItScript.setAttribute('src', markdownItJsPath);
       document.body.appendChild(markdownItScript);
 
       // The markdownlint script needs the first script to have finished loading first
       markdownItScript.addEventListener('load', () => {
         const markdownLintScript = document.createElement('script');
-        markdownLintScript.setAttribute(
-          'src',
-          '/assets/markdownlint-browser.min.js',
-        );
+        markdownLintScript.setAttribute('src', markdownLintJsPath);
         document.body.appendChild(markdownLintScript);
 
         markdownLintScript.addEventListener('load', this.lintMarkdown);
@@ -289,6 +289,10 @@ export class ArticleForm extends Component {
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
 
     this.setState({
+      // When the formKey prop changes, it causes the <Form /> component to recreate the DOM nodes that it manages.
+      // This permits us to reset the defaultValue for the MentionAutcompleteTextArea component without having to change
+      // MentionAutcompleteTextArea component's implementation.
+      formKey: new Date().toISOString(),
       title: this.article.decoded_title || '',
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
@@ -369,10 +373,14 @@ export class ArticleForm extends Component {
       helpPosition,
       siteLogo,
       markdownLintErrors,
+      formKey,
     } = this.state;
 
     return (
       <form
+        ref={(element) => {
+          this.formElement = element;
+        }}
         id="article-form"
         className="crayons-article-form"
         onSubmit={this.onSubmit}
@@ -398,6 +406,7 @@ export class ArticleForm extends Component {
           />
         ) : (
           <Form
+            key={formKey}
             titleDefaultValue={title}
             titleOnChange={linkState(this, 'title')}
             tagsDefaultValue={tagList}

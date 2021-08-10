@@ -10,8 +10,10 @@ RSpec.describe Notifications::ModerationNotificationWorker do
     comment
   end
   let(:mod) do
-    last_moderation_time = Time.current - Notifications::Moderation::MODERATORS_AVAILABILITY_DELAY - 2.hours
-    create(:user, :trusted, last_moderation_notification: last_moderation_time)
+    last_moderation_time = Time.current - Notifications::Moderation::MODERATORS_AVAILABILITY_DELAY - 1.week
+    u = create(:user, :trusted, last_moderation_notification: last_moderation_time)
+    u.notification_setting.update(mod_roundrobin_notifications: true)
+    u
   end
   let(:worker) { subject }
 

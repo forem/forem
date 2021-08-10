@@ -39,32 +39,22 @@ export class Content extends Component {
   };
 
   render() {
-    const {
-      onTriggerContent,
-      fullscreen,
-      resource,
-      closeReportAbuseForm,
-    } = this.props;
+    const { onTriggerContent, fullscreen, resource, closeReportAbuseForm } =
+      this.props;
     if (!resource) {
       return '';
     }
-
     return (
-      // TODO: A button (role="button") cannot contain other interactive elements, i.e. buttons.
-      // TODO: These should have key click events as well.
       <div
         className="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
         id="chat_activecontent"
-        onClick={onTriggerContent}
-        role="button"
-        tabIndex="0"
-        aria-hidden="true"
       >
         <button
           type="button"
           className="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
           data-content="exit"
           title="exit"
+          onClick={onTriggerContent}
         >
           {smartSvgIcon(
             'exit',
@@ -77,6 +67,7 @@ export class Content extends Component {
           data-content="fullscreen"
           style={{ left: '-80px', marginLeft: '0px' }}
           title="fullscreen"
+          onClick={onTriggerContent}
         >
           {' '}
           {fullscreen

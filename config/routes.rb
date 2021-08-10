@@ -102,6 +102,7 @@ Rails.application.routes.draw do
           resources :listings, only: [:index], to: "organizations#listings"
           resources :articles, only: [:index], to: "organizations#articles"
         end
+        resource :instance, only: %i[show]
       end
     end
 
@@ -135,6 +136,10 @@ Rails.application.routes.draw do
       collection do
         resources :devices, only: %i[create destroy]
       end
+    end
+    namespace :users do
+      resource :settings, only: %i[update]
+      resource :notification_settings, only: %i[update]
     end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
@@ -185,6 +190,7 @@ Rails.application.routes.draw do
     resources :article_approvals, only: %i[create]
     resources :video_chats, only: %i[show]
     resources :sidebars, only: %i[show]
+    resources :profile_preview_cards, only: %i[show]
     resources :user_subscriptions, only: %i[create] do
       collection do
         get "/subscribed", action: "subscribed"
@@ -202,6 +208,8 @@ Rails.application.routes.draw do
     resources :profile_field_groups, only: %i[index], defaults: { format: :json }
 
     resources :liquid_tags, only: %i[index], defaults: { format: :json }
+
+    resources :discussion_locks, only: %i[create destroy]
 
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags", to: "search#tags"
@@ -224,6 +232,8 @@ Rails.application.routes.draw do
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     patch "/onboarding_update", to: "users#onboarding_update"
     patch "/onboarding_checkbox_update", to: "users#onboarding_checkbox_update"
+    patch "/onboarding_notifications_checkbox_update",
+          to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
     post "/chat_channels/:id/moderate", to: "chat_channels#moderate"
     post "/chat_channels/:id/open", to: "chat_channels#open"
@@ -301,7 +311,7 @@ Rails.application.routes.draw do
     get "/events", to: "events#index"
     get "/workshops", to: redirect("events")
     get "/sponsors", to: "pages#sponsors"
-    get "/search", to: "stories#search"
+    get "/search", to: "stories/articles_search#index"
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
 
@@ -321,12 +331,8 @@ Rails.application.routes.draw do
 
     get "/page/:slug", to: "pages#show"
 
-    # TODO: [forem/teamsmash] removed the /p/information view and added a redirect for SEO purposes.
-    # We need to remove this route in 2 months (11 January 2021).
-    get "/p/information", to: redirect("/about")
-
     scope "p" do
-      pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics badges].freeze
+      pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics].freeze
       pages_actions.each do |action|
         get action, action: action, controller: "pages"
       end
@@ -395,7 +401,7 @@ Rails.application.routes.draw do
     get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
                               constraints: { timeframe: /latest/ }
 
-    get "/t/:tag/edit", to: "tags#edit"
+    get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
 
@@ -425,9 +431,11 @@ Rails.application.routes.draw do
                                   constraints: { view: /moderate/ }
     get "/:username/:slug/mod", to: "moderations#article"
     get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
-    get "/:username/:slug/manage", to: "articles#manage"
+    get "/:username/:slug/manage", to: "articles#manage", as: :article_manage
     get "/:username/:slug/edit", to: "articles#edit"
     get "/:username/:slug/delete_confirm", to: "articles#delete_confirm"
+    get "/:username/:slug/discussion_lock_confirm", to: "articles#discussion_lock_confirm"
+    get "/:username/:slug/discussion_unlock_confirm", to: "articles#discussion_unlock_confirm"
     get "/:username/:slug/stats", to: "articles#stats"
     get "/:username/:view", to: "stories#index",
                             constraints: { view: /comments|moderate|admin/ }

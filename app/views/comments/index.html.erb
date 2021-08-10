@@ -1,3 +1,4 @@
+<%= javascript_packs_with_chunks_tag "postCommentsPage", defer: true %>
 <% if @root_comment.present? %>
   <% title("#{@root_comment.title} - #{community_name}") %>
 <% else %>
@@ -41,9 +42,9 @@
   <% end %>
 <% end %>
 
-<%= javascript_packs_with_chunks_tag "commentDropdowns", defer: true %>
+<%= javascript_packs_with_chunks_tag "commentDropdowns", "followButtons", defer: true %>
 
-<div class="crayons-layout crayons-layout--limited-l gap-0">
+<div class="crayons-layout crayons-layout--limited-l gap-0" data-follow-button-container="true">
   <% if @commentable.class.name == "Article" %>
     <%= render "shared/payment_pointer", user: @commentable.user %>
     <span id="comment-article-indicator" data-article-id="<%= @commentable.id %>"></span>
@@ -86,7 +87,7 @@
     </article>
   <% else %>
     <div id="response-templates-data" class="hidden"></div>
-    <%= javascript_packs_with_chunks_tag "responseTemplates", defer: true %>
+    <%= javascript_packs_with_chunks_tag "responseTemplates", "commentsDisplay", defer: true %>
     <header class="p-2 pb-4 m:p-6 m:pb-6 crayons-card crayons-card--secondary s:mx-2 m:mx-4 -mb-1 z-0">
       <h1 class="crayons-subtitle-1 mb-4">
         <span class="fw-normal color-base-60">Discussion on: </span>
@@ -94,7 +95,7 @@
       </h1>
       <div class="flex">
         <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %>">View post</a>
-        <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments">Full discussion</a>
+        <a class="view-discussion crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments">Full discussion</a>
       </div>
     </header>
   <% end %>
@@ -153,10 +154,11 @@
 
 <div class="fullscreen-code js-fullscreen-code"></div>
 
-<script async>
+<script>
   <%== TweetTag.script %>
   <%== YoutubeTag.script %>
   <%== PodcastTag.script %>
   <%== GistTag.script %>
+  <%== RunkitTag.script %>
 </script>
 <%== TwitterTimelineTag.script %>

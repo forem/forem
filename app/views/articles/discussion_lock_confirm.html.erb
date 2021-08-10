@@ -1,0 +1,35 @@
+<% title("Confirm Discussion Lock") %>
+<main id="main-content" class="crayons-layout crayons-layout--limited-l gap-0">
+  <div class="crayons-card crayons-card--secondary text-styles text-styles--secondary text-padding -mb-1 mx-3 m:mx-6 mt-3">
+    <%= @article.title %>
+  </div>
+  <div class="crayons-card text-padding">
+    <h1 class="crayons-subtitle-1 mb-2">Are you sure you want to lock the discussion on this post?</h1>
+    <p class="fs-l mb-4">
+      Users will not be able to add new comments. This will <em class="fw-bold">not</em> remove
+      existing comments. You can unlock the discussion at any time to allow users to leave comments
+      again.
+    </p>
+
+    <%= form_for @discussion_lock, method: :post do |f| %>
+      <div class="form-group">
+        <%= f.hidden_field :article_id, value: @article.id %>
+        <div class="crayons-field mb-5">
+          <%= f.label :reason, "Reason for locking the discussion (optional) - this will be publicly displayed", class: "crayons-field__label" %>
+          <%= f.text_field :reason,
+                           placeholder: "The reason why you're locking this discussion.",
+                           required: false,
+                           class: "crayons-textfield" %>
+        <div class="crayons-field">
+          <%= f.label :notes, "Notes (optional) - this is only visible to you and admins", class: "crayons-field__label" %>
+          <%= f.text_field :notes,
+                           placeholder: "More details as to why you locked the discussion.",
+                           required: false,
+                           class: "crayons-textfield" %>
+        </div>
+      </div>
+      <%= f.submit "Lock discussion", class: "crayons-btn crayons-btn--danger" %>
+      <a data-no-instant href="<%= dashboard_path %>" class="crayons-btn crayons-btn--ghost">Cancel</a>
+    <% end %>
+  </div>
+</main>

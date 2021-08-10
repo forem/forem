@@ -7,7 +7,7 @@ module Mentions
       mention = Mention.find_by(id: mention_id)
       return unless mention
 
-      NotifyMailer.with(mention: mention).new_mention_email
+      NotifyMailer.with(mention: mention).new_mention_email.deliver_now
     end
   end
 end

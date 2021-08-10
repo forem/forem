@@ -289,7 +289,7 @@ RSpec.describe "/admin/customization/config", type: :request do
             confirmation: confirmation_message
           }
 
-          expect(Settings::General.email_addresses[:default]).not_to eq("random@example.com")
+          expect(ForemInstance.email).not_to eq("random@example.com")
         end
       end
 
@@ -790,6 +790,32 @@ RSpec.describe "/admin/customization/config", type: :request do
             post admin_settings_general_settings_path, params: params
             expect(Settings::General.twitter_hashtag.to_s).to eq twitter_hashtag
           end
+        end
+      end
+
+      describe "SMTP configs" do
+        after { Settings::SMTP.clear_cache }
+
+        it "updates appropriate SMTP configs" do
+          expected_handle = { "address" => "smtp.example.com", "port" => "1234" }
+          post admin_settings_smtp_settings_path, params: {
+            settings_smtp: expected_handle,
+            confirmation: confirmation_message
+          }
+          expect(Settings::SMTP.address).to eq("smtp.example.com")
+          expect(Settings::SMTP.port).to eq(1234)
+        end
+
+        it "unsets appropriate SMTP config, and apply default value if applicable" do
+          Settings::SMTP.address = "smtp.example.com"
+          Settings::SMTP.port = 12_345
+          expected_handle = { "address" => "", "port" => "" }
+          post admin_settings_smtp_settings_path, params: {
+            settings_smtp: expected_handle,
+            confirmation: confirmation_message
+          }
+          expect(Settings::SMTP.address).to eq(nil)
+          expect(Settings::SMTP.port).to eq(25)
         end
       end
 

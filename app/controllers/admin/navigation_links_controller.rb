@@ -2,12 +2,13 @@ module Admin
   class NavigationLinksController < Admin::ApplicationController
     after_action :bust_content_change_caches, only: %i[create update destroy]
     ALLOWED_PARAMS = %i[
-      name url icon display_only_when_signed_in position
+      name url icon display_only_when_signed_in position section
     ].freeze
     layout "admin"
 
     def index
-      @navigation_links = NavigationLink.ordered
+      @default_nav_links = NavigationLink.default_section.ordered
+      @other_nav_links = NavigationLink.other_section.ordered
     end
 
     def create

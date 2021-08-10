@@ -14,21 +14,23 @@
     </span>
   </button>
 
-  <% if comment.depth < 2 || is_childless %>
-    <a
-      class="actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
-      href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>"
-      data-comment-id="<%= comment.id %>"
-      data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"
-      rel="nofollow">
-      <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Comment button") %>
-      <span class="hidden m:inline-block">Reply</span>
-    </a>
-  <% else %>
-    <span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">
-      <%= inline_svg_tag("small-thread.svg", aria: true, class: "crayons-icon", title: "Thread") %>
-      Thread
-    </span>
+  <% unless @discussion_lock %>
+    <% if (comment.depth < 2 || is_childless) %>
+      <a
+        class="actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
+        href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>"
+        data-comment-id="<%= comment.id %>"
+        data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"
+        rel="nofollow">
+        <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Comment button") %>
+        <span class="hidden m:inline-block">Reply</span>
+      </a>
+    <% else %>
+      <span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">
+        <%= inline_svg_tag("small-thread.svg", aria: true, class: "crayons-icon", title: "Thread") %>
+        Thread
+      </span>
+    <% end %>
   <% end %>
 
 </footer>

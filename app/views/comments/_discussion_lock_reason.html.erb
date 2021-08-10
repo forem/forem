@@ -1,0 +1,10 @@
+<div id="discussion-lock" class="crayons-notice crayons-notice--warning mb-5" aria-live="polite">
+  The discussion has been locked. New comments can't be added.
+  <% if @discussion_lock&.reason %>
+    <div>
+      <em>
+        <%= @discussion_lock.reason %>
+      </em>
+    </div>
+  <% end %>
+</div>

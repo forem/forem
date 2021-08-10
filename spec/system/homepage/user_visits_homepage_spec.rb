@@ -41,18 +41,63 @@ RSpec.describe "User visits a homepage", type: :system do
                display_only_when_signed_in: true,
                position: 1)
         create(:navigation_link,
+               name: "Shop",
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: false,
+               position: 2)
+        create(:navigation_link,
+               :other_section_link,
                name: "Podcasts",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
                display_only_when_signed_in: false,
                position: nil)
+        create(:navigation_link,
+               :other_section_link,
+               name: "Privacy Policy",
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: false,
+               position: 1)
+        visit "/"
       end
 
-      it "shows the correct count of links" do
-        visit "/"
-        expect(page).to have_selector(".spec-sidebar-navigation-links", count: 2)
-
-        within(".spec-sidebar-navigation-links", match: :first) do
+      it "shows expected number of links when signed out" do
+        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
           expect(page).to have_selector(".sidebar-navigation-link", count: 1)
+        end
+
+        within("nav[aria-labelledby='other-nav-heading']", match: :first) do
+          expect(page).to have_selector(".sidebar-navigation-link", count: 2)
+        end
+      end
+
+      it "shows the Other section when other nav links exist" do
+        within("nav[aria-labelledby='other-nav-heading']", match: :first) do
+          expect(page).to have_selector(".other-navigation-links")
+        end
+
+        NavigationLink.other_section.destroy_all
+        visit "/"
+
+        expect(page).not_to have_selector("nav[aria-labelledby='other-nav-heading']")
+      end
+
+      it "hides link when display_only_when_signed_in is true" do
+        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+          expect(page).to have_selector(".default-navigation-links .sidebar-navigation-link", count: 1)
+        end
+      end
+
+      it "shows links in their correct section and order" do
+        create(:navigation_link,
+               name: "Mock",
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: false,
+               position: 3)
+        visit "/"
+
+        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+          expect(page).to have_selector(".default-navigation-links li:nth-child(3)", text: "Shop")
+          expect(page).to have_selector(".default-navigation-links li:nth-child(4)", text: "Mock")
         end
       end
     end
@@ -115,7 +160,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
     end
 
-    context "when rendering < 5 navigation links" do
+    describe "navigation_links" do
       let!(:navigation_link_1) do
         create(:navigation_link,
                name: "Reading List",
@@ -126,6 +171,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
       let!(:navigation_link_2) do
         create(:navigation_link,
+               :other_section_link,
                name: "Podcasts",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
                display_only_when_signed_in: false,
@@ -143,59 +189,37 @@ RSpec.describe "User visits a homepage", type: :system do
         visit "/"
       end
 
-      it "shows the correct count of links" do
-        within(".spec-sidebar-navigation-links", match: :first) do
-          expect(page).to have_selector(".sidebar-navigation-link", count: 3)
-        end
-      end
-
       it "shows the correct navigation_links" do
-        within(".spec-sidebar-navigation-links", match: :first) do
+        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
           expect(page).to have_text(navigation_link_1.name)
-          expect(page).to have_text(navigation_link_2.name)
           expect(page).to have_text(navigation_link_3.name)
+        end
+
+        within("nav[aria-labelledby='other-nav-heading']", match: :first) do
+          expect(page).to have_text(navigation_link_2.name)
         end
       end
 
       it "shows the correct urls" do
-        within(".spec-sidebar-navigation-links", match: :first) do
+        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
           expect(page).to have_link(href: navigation_link_1.url)
-          expect(page).to have_link(href: navigation_link_2.url)
           expect(page).to have_link(href: navigation_link_3.url)
         end
-      end
 
-      it "shows the correct order of the links" do
-        within(".spec-sidebar-navigation-links", match: :first) do
-          sidebar_navigation_link1 = page.find(".sidebar-navigation-link:nth-child(1)")
-          expect(sidebar_navigation_link1).to have_text(navigation_link_1.name)
-
-          sidebar_navigation_link2 = page.find(".sidebar-navigation-link:nth-child(2)")
-          expect(sidebar_navigation_link2).to have_text(navigation_link_3.name)
-
-          sidebar_navigation_link3 = page.find(".sidebar-navigation-link:nth-child(3)")
-          expect(sidebar_navigation_link3).to have_text(navigation_link_2.name)
+        within("nav[aria-labelledby='other-nav-heading']", match: :first) do
+          expect(page).to have_link(href: navigation_link_2.url)
         end
       end
 
-      it "shows the count when the url /readinglist is added" do
-        within(".spec-sidebar-navigation-links", match: :first) do
-          within(".sidebar-navigation-link:nth-child(1)") do
-            expect(page).to have_selector("#reading-list-count")
-          end
+      it "shows expected # of links when signed in" do
+        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+          expect(page).to have_selector(".sidebar-navigation-link", count: 2) # it's count: 1 when signed out
         end
       end
-    end
 
-    context "when rendering > 5 navigation links" do
-      before do
-        create_list(:navigation_link, 7)
-      end
-
-      it "shows some in the 'More' section" do
-        visit "/"
-        within(".spec-nav-more", match: :first) do
-          expect(page).to have_selector(".sidebar-navigation-link", count: 2)
+      it "shows link when display_only_when_signed_in is true" do
+        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+          expect(page).to have_selector(".default-navigation-links li:nth-child(4)", text: "Beauty")
         end
       end
     end

@@ -1,5 +1,9 @@
-<% if @featured_story.id %>
-  <%= render "articles/single_story", story: @featured_story, featured: true %>
+<% if @pinned_article %>
+  <%= render partial: "articles/single_story", locals: { story: @pinned_article, pinned: true, featured: @pinned_article.id == @featured_story.id } %>
+<% end %>
+
+<% if @featured_story.id && @pinned_article&.id != @featured_story.id %>
+  <%= render partial: "articles/single_story", locals: { story: @featured_story, featured: true, pinned: false } %>
 <% end %>
 
 <div id="article-index-podcast-div"></div>
@@ -8,10 +12,12 @@
   <% if @stories.any? %>
     <% @stories.each_with_index do |story, i| %>
       <% next if story.id == @featured_story.id %>
+      <% next if story.id == @pinned_article&.id %>
+
       <% if !user_signed_in? && i == 4 %>
         <%= render "stories/sign_in_invitation" %>
       <% end %>
-      <%= render "articles/single_story", story: story, featured: false %>
+      <%= render partial: "articles/single_story", locals: { story: story, featured: false, pinned: false } %>
     <% end %>
     <% if @stories.size > 1 %>
       <div class="placeholder-div"></div>

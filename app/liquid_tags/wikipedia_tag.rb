@@ -1,6 +1,8 @@
 class WikipediaTag < LiquidTagBase
   PARTIAL = "liquids/wikipedia".freeze
   WIKI_REGEXP = %r{\Ahttps?://([a-z-]+)\.wikipedia.org/wiki/(\S+)\z}.freeze
+  TEXT_CLEANUP_XPATH = "//div[contains(@class, 'noprint') or contains(@class, 'hatnote')] | " \
+                       "//span[@class='mw-ref'] | //figure | //sup".freeze
 
   def initialize(_tag_name, input, _parse_context)
     super
@@ -89,12 +91,10 @@ class WikipediaTag < LiquidTagBase
 
   def text_clean_up(text)
     doc = Nokogiri::HTML(text)
-    path_expression = "//div[contains(@class, 'noprint') or contains(@class, 'hatnote')] |
-                      //span[@class='mw-ref'] |
-                      //figure |
-                      //sup"
-    doc.xpath(path_expression).each(&:remove)
+
+    doc.xpath(TEXT_CLEANUP_XPATH).each(&:remove)
     doc.xpath("//a").each { |x| x.replace Nokogiri::XML::Text.new(x.inner_html, x.document) }
+
     doc.to_html
   end
 end
