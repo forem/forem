@@ -97,9 +97,7 @@ window.Forem = {
       currentModalContainer,
     );
 
-    if (onOpen) {
-      onOpen();
-    }
+    onOpen?.();
   },
   closeModal: async () => {
     const currentModalContainer = document.getElementById(WINDOW_MODAL_ID);
