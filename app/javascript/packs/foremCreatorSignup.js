@@ -53,22 +53,23 @@ function hideHintRow() {
   hintRow.classList.add('hidden');
 }
 
-function togglePasswordVisibility() {
+function togglePasswordMask() {
   visible = !visible;
-  const type = visible ? 'text' : 'password';
-  passwordField.type = type;
-  toggleSVGelement(visible);
+  togglePasswordType(visible);
+  toggleEyeIcons(visible);
 }
 
-function toggleSVGelement(visible) {
-  if (visible) {
-    eyeOffIcon.classList.remove('hidden');
-    eyeIcon.classList.add('hidden');
-  } else {
-    eyeIcon.classList.remove('hidden');
-    eyeOffIcon.classList.add('hidden');
-  }
+
+function togglePasswordType(visible) {
+  const passwordType = visible ? 'text' : 'password';
+  passwordField.type = passwordType;
 }
+
+function toggleEyeIcons(visible) {
+  eyeOffIcon.classList.toggle("hidden", !visible);
+  eyeIcon.classList.toggle("hidden", visible);
+}
+
 
 let visible = false;
 const eyeIcon = document.getElementsByClassName('js-eye')[0];
@@ -77,7 +78,7 @@ const passwordField = document.getElementsByClassName('js-password')[0];
 const visibility = document.getElementsByClassName(
   'js-creator-password-visibility',
 )[0];
-visibility.addEventListener('click', togglePasswordVisibility);
+visibility.addEventListener('click', togglePasswordMask);
 
 const name = document.getElementsByClassName('js-creator-signup-name')[0];
 name.addEventListener('input', setDefaultUsername);
