@@ -2786,36 +2786,6 @@
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
 
-"@storybook/components@6.3.6":
-  version "6.3.6"
-  resolved "https://registry.yarnpkg.com/@storybook/components/-/components-6.3.6.tgz#bc2fa1dbe59f42b5b2aeb9f84424072835d4ce8b"
-  integrity sha512-aZkmtAY8b+LFXG6dVp6cTS6zGJuxkHRHcesRSWRQPxtgitaz1G58clRHxbKPRokfjPHNgYA3snogyeqxSA7YNQ==
-  dependencies:
-    "@popperjs/core" "^2.6.0"
-    "@storybook/client-logger" "6.3.6"
-    "@storybook/csf" "0.0.1"
-    "@storybook/theming" "6.3.6"
-    "@types/color-convert" "^2.0.0"
-    "@types/overlayscrollbars" "^1.12.0"
-    "@types/react-syntax-highlighter" "11.0.5"
-    color-convert "^2.0.1"
-    core-js "^3.8.2"
-    fast-deep-equal "^3.1.3"
-    global "^4.4.0"
-    lodash "^4.17.20"
-    markdown-to-jsx "^7.1.3"
-    memoizerific "^1.11.3"
-    overlayscrollbars "^1.13.1"
-    polished "^4.0.5"
-    prop-types "^15.7.2"
-    react-colorful "^5.1.2"
-    react-popper-tooltip "^3.1.1"
-    react-syntax-highlighter "^13.5.3"
-    react-textarea-autosize "^8.3.0"
-    regenerator-runtime "^0.13.7"
-    ts-dedent "^2.0.0"
-    util-deprecate "^1.0.2"
-
 "@storybook/components@6.3.7":
   version "6.3.7"
   resolved "https://registry.yarnpkg.com/@storybook/components/-/components-6.3.7.tgz#42b1ca6d24e388e02eab82aa9ed3365db2266ecc"
@@ -3328,22 +3298,6 @@
   dependencies:
     core-js "^3.6.5"
     find-up "^4.1.0"
-
-"@storybook/source-loader@6.3.6":
-  version "6.3.6"
-  resolved "https://registry.yarnpkg.com/@storybook/source-loader/-/source-loader-6.3.6.tgz#2d3d01919baad7a40f67d1150c74e41dea5f1d4c"
-  integrity sha512-om3iS3a+D287FzBrbXB/IXB6Z5Ql2yc4dFKTy6FPe5v4N3U0p5puWOKUYWWbTX1JbcpRj0IXXo7952G68tcC1g==
-  dependencies:
-    "@storybook/addons" "6.3.6"
-    "@storybook/client-logger" "6.3.6"
-    "@storybook/csf" "0.0.1"
-    core-js "^3.8.2"
-    estraverse "^5.2.0"
-    global "^4.4.0"
-    loader-utils "^2.0.0"
-    lodash "^4.17.20"
-    prettier "~2.2.1"
-    regenerator-runtime "^0.13.7"
 
 "@storybook/source-loader@6.3.7":
   version "6.3.7"
