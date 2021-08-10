@@ -16,7 +16,7 @@ RSpec.describe ProfileFields::ImportFromCsv do
       expect(field.placeholder_text).to eq "Test"
       expect(field.description).to eq "Test field"
       expect(field.profile_field_group.name).to eq "Basic"
-      expect(field.display_area).to eq "header"
+      expect(field.display_area).to eq "left_sidebar"
       expect(field.show_in_onboarding).to be true
     end
 

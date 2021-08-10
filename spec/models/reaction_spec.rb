@@ -125,6 +125,21 @@ RSpec.describe Reaction, type: :model do
         expect(reaction.skip_notification_for?(user)).to be(true)
       end
     end
+
+    context "when reactable is a user" do
+      let(:user) { create(:user) }
+      let(:reaction) { build(:reaction, reactable: user, user: nil) }
+
+      it "returns true if the reactable is the user that reacted" do
+        reaction.user_id = user.id
+        expect(reaction.skip_notification_for?(receiver)).to be(true)
+      end
+
+      it "returns false if the reactable is not the user that reacted" do
+        reaction.user_id = create(:user).id
+        expect(reaction.skip_notification_for?(receiver)).to be(false)
+      end
+    end
   end
 
   describe ".count_for_article" do

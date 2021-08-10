@@ -10,6 +10,52 @@ import { Button } from '@crayons';
 import { Spinner } from '@crayons/Spinner/Spinner';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
 
+const NativeIosImageUpload = ({
+  extraProps,
+  uploadLabel,
+  isUploadingImage,
+  handleNativeMessage,
+}) => (
+  <Fragment>
+    {isUploadingImage ? null : (
+      <Button
+        variant="outlined"
+        className="mr-2 whitespace-nowrap"
+        {...extraProps}
+      >
+        {uploadLabel}
+      </Button>
+    )}
+    <input
+      type="hidden"
+      id="native-cover-image-upload-message"
+      value=""
+      onChange={handleNativeMessage}
+    />
+  </Fragment>
+);
+
+const StandardImageUpload = ({
+  uploadLabel,
+  handleImageUpload,
+  isUploadingImage,
+}) =>
+  isUploadingImage ? null : (
+    <Fragment>
+      <label className="cursor-pointer crayons-btn crayons-btn--outlined">
+        {uploadLabel}
+        <input
+          id="cover-image-input"
+          type="file"
+          onChange={handleImageUpload}
+          accept="image/*"
+          className="screen-reader-only"
+          data-max-file-size-mb="25"
+        />
+      </label>
+    </Fragment>
+  );
+
 export class ArticleCoverImage extends Component {
   state = {
     uploadError: false,
@@ -140,47 +186,37 @@ export class ArticleCoverImage extends Component {
             />
           )}
           <div className="flex items-center">
-            {uploadingImage ? (
+            {uploadingImage && (
               <span class="lh-base pl-1 border-0 py-2 inline-block">
                 <Spinner /> Uploading...
               </span>
-            ) : (
-              <Fragment>
+            )}
+
+            <Fragment>
+              {this.useNativeUpload() ? (
+                <NativeIosImageUpload
+                  isUploadingImage={uploadingImage}
+                  extraProps={extraProps}
+                  uploadLabel={uploadLabel}
+                  handleNativeMessage={this.handleNativeMessage}
+                />
+              ) : (
+                <StandardImageUpload
+                  isUploadingImage={uploadingImage}
+                  uploadLabel={uploadLabel}
+                  handleImageUpload={this.handleMainImageUpload}
+                />
+              )}
+
+              {mainImage && !uploadingImage && (
                 <Button
-                  variant="outlined"
-                  className="mr-2 whitespace-nowrap"
-                  {...extraProps}
+                  variant="ghost-danger"
+                  onClick={this.triggerMainImageRemoval}
                 >
-                  <label htmlFor="cover-image-input">{uploadLabel}</label>
-                  {!this.useNativeUpload() && (
-                    <input
-                      id="cover-image-input"
-                      type="file"
-                      onChange={this.handleMainImageUpload}
-                      accept="image/*"
-                      className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
-                      data-max-file-size-mb="25"
-                    />
-                  )}
+                  Remove
                 </Button>
-                {mainImage && (
-                  <Button
-                    variant="ghost-danger"
-                    onClick={this.triggerMainImageRemoval}
-                  >
-                    Remove
-                  </Button>
-                )}
-              </Fragment>
-            )}
-            {this.useNativeUpload() && (
-              <input
-                type="hidden"
-                id="native-cover-image-upload-message"
-                value=""
-                onChange={this.handleNativeMessage}
-              />
-            )}
+              )}
+            </Fragment>
           </div>
           {uploadError && (
             <p className="articleform__uploaderror">{uploadErrorMessage}</p>
