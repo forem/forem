@@ -351,7 +351,7 @@ class User < ApplicationRecord
   end
 
   def processed_website_url
-    website_url.to_s.strip if website_url.present?
+    profile.website_url.to_s.strip if profile.website_url.present?
   end
 
   def remember_me
@@ -636,8 +636,12 @@ class User < ApplicationRecord
     Users::BustCacheWorker.perform_async(id)
   end
 
+  # TODO: @citizen428 I don't want to completely remove this method yet, as we
+  # have similar methods in other models. But the previous implementation used
+  # three profile fields that we can't guarantee to exist across all Forems. So
+  # for now this method will just return an empty string.
   def tag_keywords_for_search
-    "#{employer_name}#{mostly_work_with}#{available_for}"
+    ""
   end
 
   # TODO: this can be removed once we migrate away from ES
