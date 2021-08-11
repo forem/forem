@@ -66,7 +66,7 @@
             <%= inline_svg_tag("eye.svg", class: "absolute bottom-2 right-2 cursor-pointer js-eye", aria: true, title: "Eye icon") %>
             <%= inline_svg_tag("eye-off.svg", class: "absolute bottom-2 right-2 cursor-pointer hidden js-eye-off", aria: true, title: "Eye Off icon") %>
           </span>
-          <%= f.password_field :password, class: "crayons-textfield js-password", required: true %>
+          <%= f.password_field :password, minlength:"8", class: "crayons-textfield js-password", required: true %>
         </div>
 
         <% if ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
