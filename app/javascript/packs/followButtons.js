@@ -22,6 +22,20 @@ function addButtonFollowText(button, style) {
 }
 
 /**
+ * Sets the aria-label of the button
+ *
+ * @param {HTMLElement} button The Follow button to update.
+ * @param {string} followType The followableType of the button.
+ * @param {string} followName The name of the followable to be followed.
+ */
+function addAriaLabelToButton(button, followType, followName) {
+  button.setAttribute(
+    'aria-label',
+    `Follow ${followType.toLowerCase()}: ${followName}`,
+  );
+}
+
+/**
  * Sets the text content of the button to the correct 'Following' state
  *
  * @param {HTMLElement} button The Follow button to update
@@ -251,6 +265,10 @@ function initializeAllUserFollowButtons() {
   Array.from(buttons, (button) => {
     button.dataset.fetched = 'fetched';
     const { userStatus } = document.body.dataset;
+    const buttonInfo = JSON.parse(button.dataset.info);
+    const { name, className } = buttonInfo;
+
+    addAriaLabelToButton(button, className, name);
 
     if (userStatus === 'logged-out') {
       const { style } = JSON.parse(button.dataset.info);
@@ -317,7 +335,9 @@ function initializeNonUserFollowButtons() {
   nonUserFollowButtons.forEach((button) => {
     const { info } = button.dataset;
     const buttonInfo = JSON.parse(info);
-    if (buttonInfo.className === 'Tag' && user) {
+    const { className, name } = buttonInfo;
+    addAriaLabelToButton(button, className, name);
+    if (className === 'Tag' && user) {
       // We don't need to make a network request to 'fetch' the status of tag buttons
       button.dataset.fetched = true;
       const initialButtonFollowState = followedTagIds.has(buttonInfo.id)

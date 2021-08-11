@@ -57,8 +57,7 @@
             <button
               id="user-follow-butt"
               class="crayons-btn whitespace-nowrap follow-action-button user-profile-follow-button follow-user"
-              data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'
-              aria-label="Follow user: <%= @user.name %>">
+              data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'>
               Follow
             </button>
           </div>

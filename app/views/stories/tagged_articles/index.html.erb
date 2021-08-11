@@ -24,8 +24,7 @@
               <button
                 id="user-follow-butt"
                 class="crayons-btn follow-action-button"
-                data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'
-                aria-label="Follow tag: <%= @tag_model.pretty_name || @tag %>">
+                data-info='{"id":<%= @tag_model.id %>,"className":"Tag", "name": "<%= @tag_model.pretty_name || @tag %>"}'>
                 Follow
               </button>
             <% end %>

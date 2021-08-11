@@ -119,10 +119,12 @@ module ApplicationHelper
                                             tags: %w[p b i em strike strong u br]
   end
 
-  def follow_button(followable, style = "full", classes = "", aria_label: "")
+  def follow_button(followable, style = "full", classes = "")
     return if followable == DELETED_USER
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
+    followable_type = followable.decorated? ? followable.object.class.name.downcase : followable.class.name.downcase
+    followable_name = followable.name
 
     tag.button(
       "Follow",
@@ -131,12 +133,12 @@ module ApplicationHelper
       data: {
         info: {
           id: followable.id,
-          className: followable.class.name,
+          className: followable_type,
+          name: followable_name,
           style: style
         }
       },
       class: "crayons-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
-      aria: { label: aria_label },
     )
   end
 
