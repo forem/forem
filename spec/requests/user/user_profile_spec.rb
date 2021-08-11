@@ -98,12 +98,6 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body.split("Whoaaaa").first).to include "crayons-layout__sidebar-left"
     end
 
-    it "does not render settings_only on page" do
-      create(:profile_field, label: "whoaaaa", display_area: "settings_only")
-      get "/#{user.username}"
-      expect(response.body).not_to include "Whoaaaa"
-    end
-
     it "does not render special display header elements naively" do
       user.profile.location = "hawaii"
       user.save
