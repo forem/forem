@@ -1,3 +1,50 @@
+import { isInViewport } from '@utilities/viewport';
+import { debounceAction } from '@utilities/debounceAction';
+
+/**
+ * Helper function designed to be used on scroll to detect when dropdowns should switch from dropping downwards/upwards.
+ * The action is debounced since scroll events are usually fired several at a time.
+ *
+ * @returns {Function} a debounced function that handles the repositioning of dropdowns
+ * @example
+ *
+ * document.addEventListener('scroll', getDropdownRepositionListener());
+ */
+export const getDropdownRepositionListener = () =>
+  debounceAction(handleDropdownRepositions);
+
+/**
+ * Checks for all dropdowns on the page which have the attribute 'data-repositioning-dropdown', signalling
+ * they should dynamically change between dropping downwards or upwards, depending on viewport position.
+ *
+ * Any dropdowns not fully in view when dropping down will be switched to dropping upwards.
+ */
+const handleDropdownRepositions = () => {
+  // Select all of the dropdowns which should reposition
+  const allRepositioningDropdowns = document.querySelectorAll(
+    '[data-repositioning-dropdown]',
+  );
+
+  for (const element of allRepositioningDropdowns) {
+    // Default to dropping downwards
+    element.classList.remove('reverse');
+
+    // We can't determine position on an element with display:none, so we "show" the dropdown with 0 opacity very temporarily
+    element.style.opacity = 0;
+    element.style.display = 'block';
+    const isWithinViewport = isInViewport({ element });
+
+    // Revert the temporary changes to determine position
+    element.style.removeProperty('display');
+    element.style.removeProperty('opacity');
+
+    if (!isWithinViewport) {
+      // If the element isn't fully visible when dropping down, reverse the direction
+      element.classList.add('reverse');
+    }
+  }
+};
+
 /**
  * Helper query string to identify interactive/focusable HTML elements
  */
