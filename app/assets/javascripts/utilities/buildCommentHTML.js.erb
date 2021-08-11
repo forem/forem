@@ -46,15 +46,15 @@ function buildCommentHTML(comment) {
     <img class="crayons-avatar__image" width="32" height="32" src="${ comment.user.profile_pic }" alt="${ comment.user.username } profile" />
   </a>`;
 
-  commentHeader = `<div class="comment__header" >
+  commentHeader = `<div class="comment__header m:pl-1" >
     <a href="/${ comment.user.username }" class="crayons-link crayons-link--secondary flex items-center fw-medium m:hidden">
       <span class="js-comment-username">${ comment.user.name }</span>
     </a>
     <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
-      <button id="comment-profile-preview-trigger-${comment.id}" aria-controls="comment-profile-preview-content-${comment.id}" class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost" aria-label="${comment.user.name} profile details">${comment.user.name}</button>
+      <button id="comment-profile-preview-trigger-${comment.id}" aria-controls="comment-profile-preview-content-${comment.id}" class="profile-preview-card__trigger px-2 crayons-btn crayons-btn--ghost" aria-label="${comment.user.name} profile details">${comment.user.name}</button>
       <span data-js-comment-user-id="${comment.user.id}" data-js-dropdown-content-id="comment-profile-preview-content-${comment.id}" class="preview-card-placeholder"></span>
     </div>
-    <span class="color-base-30 px-2" role="presentation">&bull;</span>
+    <span class="color-base-30 px-2 m:pl-0" role="presentation">&bull;</span>
 
     <a href="${ comment.url }" class="comment-date crayons-link crayons-link--secondary fs-s">
       <time datetime="${ comment.published_timestamp }">
