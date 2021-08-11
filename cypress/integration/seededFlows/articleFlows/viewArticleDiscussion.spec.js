@@ -1,4 +1,4 @@
-describe('View article discussion', () => {
+describe.skip('View article discussion', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
@@ -10,7 +10,7 @@ describe('View article discussion', () => {
     });
   });
 
-  xit('follows and unfollows a user from a comment preview card', () => {
+  it('follows and unfollows a user from a comment preview card', () => {
     // Make sure the preview card is ready to be interacted with
     cy.get('[data-initialized]');
     cy.findByRole('button', { name: 'Admin McAdmin profile details' }).click();
