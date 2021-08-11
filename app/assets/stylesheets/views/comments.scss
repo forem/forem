@@ -271,10 +271,6 @@
   }
 }
 
-.response-templates-container header {
-  padding-bottom: 1rem;
-}
-
 .personal-template-button:not(.active),
 .moderator-template-button:not(.active) {
    @extend .crayons-btn--outlined;
