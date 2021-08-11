@@ -1,9 +1,16 @@
 <script>
-  try {
-    const bodyClass = localStorage.getItem('config_body_class');
-    const userString = localStorage.getItem('current_user');
+  const clearInitInterval = setInterval(function() {
 
-    if (bodyClass) {
+    try {
+      const bodyClass = localStorage.getItem('config_body_class');
+      const userString = localStorage.getItem('current_user');
+      console.log('checking class')
+      if (!bodyClass && !userString) {
+        console.log('not yet...')
+        return;
+      }
+      console.log('got it', bodyClass);
+
       document.body.className = bodyClass;
 
       if (bodyClass.includes('night-theme')) {
@@ -24,21 +31,35 @@
         link.href = '<%= asset_path "OpenDyslexic-Regular.otf" %>';
         document.head.appendChild(link);
       }
+
+      if (userString.length > 0) {
+        const user = JSON.parse(userString)
+        const numTags = JSON.parse(user.followed_tags).length
+        if (numTags < 6) {
+          document.body.classList.add("user-tags-followed-"+numTags);
+        } else {
+          document.body.classList.add("user-tags-followed-max");
+        }
+      }
+      clearInterval(clearInitInterval);
+    } catch(e) {
+      setTimeout(function(){
+        Honeybadger.notify(e);
+      },1000)
+      clearInterval(clearInitInterval);
     }
+  }, 250);
+
+  setTimeout(function() {
+    clearInitInterval();
+  }, 10000);
+
+  try {
     if (navigator.userAgent === 'DEV-Native-ios') {
       document.body.classList.add("dev-ios-native-body");
     }
     if (window.frameElement) { // Hide top bar and footer when loaded within iframe
       document.body.classList.add("hidden-shell");
-    }
-    if (userString && userString.length > 0) {
-      const user = JSON.parse(userString)
-      const numTags = JSON.parse(user.followed_tags).length
-      if (numTags < 6) {
-        document.body.classList.add("user-tags-followed-"+numTags);
-      } else {
-        document.body.classList.add("user-tags-followed-max");
-      }
     }
   } catch(e) {
     setTimeout(function(){
