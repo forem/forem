@@ -93,6 +93,32 @@ export default class ConfigController extends Controller {
     }
   }
 
+  async activateLightConfirmation(event) {
+    event.preventDefault();
+    try {
+      const response = await fetch('admin/settings/general_settings/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
+            ?.content,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      });
+
+      const outcome = await response.json();
+
+      if (outcome.ok) {
+        alert(outcome.message);
+      } else {
+        alert(outcome.error);
+      }
+    } catch (err) {
+      alert(`Caught Error: ${err}`);
+    }
+  }
+
   // GENERAL FUNCTIONS END
 
   // EMAIL AUTH FUNCTIONS START
@@ -158,7 +184,7 @@ export default class ConfigController extends Controller {
 
   enableOrEditAuthProvider(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     const enabledIndicator = document.getElementById(
       `${providerName}-enabled-indicator`,
     );
@@ -177,7 +203,7 @@ export default class ConfigController extends Controller {
 
   disableAuthProvider(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     const enabledIndicator = document.getElementById(
       `${providerName}-enabled-indicator`,
     );
@@ -200,8 +226,8 @@ export default class ConfigController extends Controller {
 
   activateAuthProviderModal(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
-    const {providerOfficialName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
+    const { providerOfficialName } = event.target.dataset;
     this.configModalAnchorTarget.innerHTML = adminModal({
       title: this.authProviderModalTitle(providerOfficialName),
       body: this.authProviderModalBody(providerOfficialName),
@@ -218,7 +244,7 @@ export default class ConfigController extends Controller {
 
   disableAuthProviderFromModal(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     const authEnableButton = document.getElementById(
       `${providerName}-auth-btn`,
     );
@@ -254,7 +280,7 @@ export default class ConfigController extends Controller {
 
   hideAuthProviderSettings(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     document
       .getElementById(`${providerName}-auth-settings`)
       .classList.add('hidden');

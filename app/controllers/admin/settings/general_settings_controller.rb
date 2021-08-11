@@ -11,10 +11,26 @@ module Admin
       def create
         result = ::Settings::General::Upsert.call(settings_params)
         if result.success?
-          Audit::Logger.log(:internal, current_user, params.dup)
-          redirect_to admin_config_path, notice: "Successfully updated settings."
+          respond_to do |format|
+            format.html do
+              Audit::Logger.log(:internal, current_user, params.dup)
+              redirect_to admin_config_path, notice: "Successfully updated settings."
+            end
+
+            format.json do
+              render json: { message: "Successfully updated settings." }, status: :ok
+            end
+          end
         else
-          redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
+          respond_to do |format|
+            format.html do
+              redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
+            end
+
+            format.json do
+              render json: { error: "😭 #{result.errors.to_sentence}" }, status: :unauthorized
+            end
+          end
         end
       end
 
