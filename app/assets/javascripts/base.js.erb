@@ -123,10 +123,7 @@ var instantClick
     prog.classList.remove("showing");
 
     if (newUrl) {
-      const skipLink = document.querySelector('.skip-content-link');
-        if (skipLink) {
-          skipLink.focus();
-        }
+      document.querySelector('.skip-content-link')?.focus();
       document.getElementById('page-route-change').textContent = title;
       history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
 
