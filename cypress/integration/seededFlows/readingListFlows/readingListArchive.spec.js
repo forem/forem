@@ -67,15 +67,13 @@ describe('Reading List Archive', () => {
     cy.intercept(
       { method: 'put', url: '/reading_list_items/**' },
       { body: { current_status: 'archived' } },
-    );
+    ).as('unarchiveItem');
 
     cy.visit('/readinglist/archive');
     cy.wait('@readingList');
 
     cy.findByRole('main').as('main');
-    cy.findByRole('header').as('header');
 
-    cy.get('@header').findByText('Archive (3)');
     cy.get('@main').findByText('Test Article 1');
     cy.get('@main').findByText('Test Article 2');
     cy.get('@main').findByText('Test Article 3');
@@ -86,7 +84,9 @@ describe('Reading List Archive', () => {
       .findByLabelText(/^Archive item$/i)
       .click();
 
-    cy.get('@header').findByText('Archive (2)');
+    cy.wait('@unarchiveItem');
+
+    cy.get('@main').findByText('Archive (2)');
     cy.get('@main').findByText('Test Article 1').should('not.exist');
     cy.get('@main').findByText('Test Article 2');
     cy.get('@main').findByText('Test Article 3');
