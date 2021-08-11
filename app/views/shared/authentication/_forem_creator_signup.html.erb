@@ -1,99 +1,95 @@
 <%= javascript_packs_with_chunks_tag "foremCreatorSignup", defer: true %>
-<div class="mx-auto mt-8 mb-10 p-4 fs-2xl lh-base align-center" style="width:96%;max-width:1300px;">
-  <div id="sign-in-password-form" class="mt-8 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:580px;">
-    <% if flash[:notice] %>
-      <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
-        <%= flash[:notice] %>
-      </div>
-    <% end %>
-
-    <%= form_for(@user, as: :user, data: { testid: "registration-form" }, url: registration_path(:user)) do |f| %>
-      <% if defined?(resource) && resource&.errors&.any? %>
-        <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
-          <div class="crayons-card__header">
-            <h3 class="crayons-card__headline">
-              Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
-            </h3>
-          </div>
-          <div class="crayons-card__body">
-            <ul>
-              <% resource.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
+<main id="main-content">
+  <div class="mx-auto mt-8 mb-10 p-4 fs-2xl lh-base align-center" style="width:96%;max-width:1300px;">
+    <div id="sign-in-password-form" class="mt-8 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:580px;">
+      <% if flash[:notice] %>
+        <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
+          <%= flash[:notice] %>
         </div>
       <% end %>
 
-      <div class="align-center">
-        <p class="pb-4 fs-3xl fw-bold">Let's start your Forem journey!</p>
-        <p class="color-base-70 fs-xl">Create your admin account first.</p>
-        <p class="color-base-70 fs-xl">Then we'll walk you through your Forem setup.</p>
-      </div>
-
-      <div class="crayons-field mt-6">
-        <%= f.label :name, class: "crayons-field__label", aria: { label: "Name" } do %>
-          Name
-          <span class="crayons-field__required crayons-tooltip"></span>
-        <% end %>
-        <%= f.text_field :name, placeholder: "John Doe, john_doe, john, ...", class: "crayons-textfield js-creator-signup-name", required: true %>
-
-        <div class="js-creator-signup-username-hint-row hidden">
-          <div class="fs-xs color-base-60 flex">
-            <span>Your username will be&nbsp;</span>
-            <span class="bold color-base-80 js-creator-signup-username-hint"></span>
-            <span class="js-creator-edit-username">
-              <%= inline_svg_tag("pencil.svg", class: "cursor-pointer", aria: true, title: "Pencil icon") %>
-            </span>
-          </div>
-          </div>
-      </div>
-
-      <div class="crayons-field mt-6 hidden js-creator-signup-username-row">
-        <%= f.label :username, class: "crayons-field__label", aria: { label: "Username" } do %>
-          Username
-          <span class="crayons-field__required crayons-tooltip"></span>
-        <% end %>
-        <%= f.text_field :username, pattern: "[A-Za-z0-9_]+", title:"A username can only contain letters, numbers and underscores", class: "js-creator-signup-username crayons-textfield", required: true %>
-      </div>
-
-      <div class="crayons-field mt-6">
-        <%= f.label :email, class: "crayons-field__label", aria: { label: "Email" } do %>
-          Email
-          <span class="crayons-field__required crayons-tooltip"></span>
-        <% end %>
-        <%= f.email_field :email, placeholder: "john@example.com", autocomplete: "email", class: "crayons-textfield", required: true %>
-      </div>
-
-      <div class="crayons-field mt-6 relative">
-        <%= f.label :password, class: "crayons-field__label", aria: { label: "Password" } do %>
-          Password
-          <span class="crayons-field__required crayons-tooltip"></span>
-        <% end %>
-        <span class="js-creator-password-visibility">
-          <%= inline_svg_tag("eye.svg", class: "absolute bottom-2 right-2 cursor-pointer js-eye", aria: true, title: "Eye icon") %>
-          <%= inline_svg_tag("eye-off.svg", class: "absolute bottom-2 right-2 cursor-pointer hidden js-eye-off", aria: true, title: "Eye Off icon") %>
-        </span>
-        <%= f.password_field :password, class: "crayons-textfield js-password", required: true %>
-      </div>
-
-      <% if ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
-        <% if params[:owner_secret].present? %>
-          <%= f.hidden_field :owner_secret, value: params[:owner_secret] %>
-        <% else %>
-          <div class="crayons-field mt-2">
-            <%= f.label :owner_secret, "New Forem Secret", class: "crayons-field__label" %>
-            <%= f.password_field :owner_secret, class: "crayons-textfield", required: true, placeholder: "As provided by your Forem host" %>
+      <%= form_for(@user, as: :user, data: { testid: "registration-form" }, url: registration_path(:user)) do |f| %>
+        <% if defined?(resource) && resource&.errors&.any? %>
+          <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
+            <div class="crayons-card__header">
+              <h3 class="crayons-card__headline">
+                Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
+              </h3>
+            </div>
+            <div class="crayons-card__body">
+              <ul>
+                <% resource.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
           </div>
         <% end %>
+
+        <div class="align-center">
+          <p class="pb-4 fs-3xl fw-bold">Let's start your Forem journey!</p>
+          <p class="color-base-70 fs-xl">Create your admin account first.</p>
+          <p class="color-base-70 fs-xl">Then we'll walk you through your Forem setup.</p>
+        </div>
+
+        <div class="crayons-field mt-6">
+          <%= f.label :name, "Name", for: "name", class: "crayons-field__label" %>
+          <%= f.text_field :name, id: "name", placeholder: "John Doe, john_doe, john, ...", class: "crayons-textfield js-creator-signup-name", required: true %>
+
+          <div class="js-creator-signup-username-hint-row hidden">
+            <div class="fs-xs color-base-60 flex">
+              <span>Your username will be&nbsp;</span>
+              <span class="bold color-base-80 js-creator-signup-username-hint"></span>
+              <button class="cursor-pointer border-none bg-transparent p-0 js-creator-edit-username" role="button">
+                <%= inline_svg_tag("pencil.svg", class: "cursor-pointer", aria: true, title: "Pencil icon") %>
+              </button>
+            </div>
+            </div>
+        </div>
+
+        <div class="crayons-field mt-6 hidden js-creator-signup-username-row">
+          <%= f.label :username, "Username", class: "crayons-field__label" %>
+          <%= f.text_field :username, pattern: "[A-Za-z0-9_]+", "aria-labelledby":"add-credits", title:"A username can only contain letters, numbers and underscores", class: "js-creator-signup-username crayons-textfield", required: true %>
+        </div>
+
+        <div class="crayons-field mt-6">
+          <%= f.label :email, class: "crayons-field__label", aria: { label: "Email" } do %>
+            Email
+            <span class="crayons-field__required crayons-tooltip"></span>
+          <% end %>
+          <%= f.email_field :email, placeholder: "john@example.com", autocomplete: "email", class: "crayons-textfield", required: true %>
+        </div>
+
+        <div class="crayons-field mt-6 relative">
+          <%= f.label :password, class: "crayons-field__label", aria: { label: "Password" } do %>
+            Password
+            <span class="crayons-field__required crayons-tooltip"></span>
+          <% end %>
+          <span class="js-creator-password-visibility">
+            <%= inline_svg_tag("eye.svg", class: "absolute bottom-2 right-2 cursor-pointer js-eye", aria: true, title: "Eye icon") %>
+            <%= inline_svg_tag("eye-off.svg", class: "absolute bottom-2 right-2 cursor-pointer hidden js-eye-off", aria: true, title: "Eye Off icon") %>
+          </span>
+          <%= f.password_field :password, class: "crayons-textfield js-password", required: true %>
+        </div>
+
+        <% if ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
+          <% if params[:owner_secret].present? %>
+            <%= f.hidden_field :owner_secret, value: params[:owner_secret] %>
+          <% else %>
+            <div class="crayons-field mt-2">
+              <%= f.label :owner_secret, "New Forem Secret", class: "crayons-field__label" %>
+              <%= f.password_field :owner_secret, class: "crayons-textfield", required: true, placeholder: "As provided by your Forem host" %>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div class="flex flex-col pt-6">
+          <%= f.submit "Create my account", class: "crayons-btn" %>
+        </div>
+
+        <%= inline_svg_tag("forem-background.svg", aria: true, title: "forem background", class: "forem-background absolute bottom-0 right-0") %>
       <% end %>
 
-      <div class="flex flex-col pt-6">
-        <%= f.submit "Create my account", class: "crayons-btn" %>
-      </div>
-
-      <%= inline_svg_tag("forem-background.svg", aria: true, title: "forem background", class: "forem-background absolute bottom-0 right-0") %>
-    <% end %>
-
+    </div>
   </div>
-</div>
+</main>

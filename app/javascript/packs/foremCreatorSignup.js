@@ -43,7 +43,16 @@ function showUsernameField() {
     'js-creator-signup-username-row',
   )[0];
   usernameRow.classList.remove('hidden');
+  focusUsernameInput(usernameRow);
   hideHintRow();
+}
+
+function focusUsernameInput(usernameRow) {
+  // A timer with a count of 0 will run when the thread becomes idle
+  window.setTimeout(function () {
+    usernameRow.getElementsByTagName("input")[0].focus();
+  }, 0);
+
 }
 
 function hideHintRow() {
