@@ -10,7 +10,7 @@ describe('View article discussion', () => {
     });
   });
 
-  it('follows and unfollows a user from a comment preview card', () => {
+  it.skip('follows and unfollows a user from a comment preview card', () => {
     // Make sure the preview card is ready to be interacted with
     cy.get('[data-initialized]');
     cy.findByRole('button', { name: 'Admin McAdmin profile details' }).click();
