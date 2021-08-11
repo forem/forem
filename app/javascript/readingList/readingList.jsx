@@ -117,6 +117,7 @@ export class ReadingList extends Component {
     this.setState({
       archiving: true,
       items: newItems,
+      itemsTotal: this.state.itemsTotal - 1,
     });
 
     // hide the snackbar in a few moments
