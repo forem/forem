@@ -14,7 +14,7 @@ function setDefaultUsername(event) {
 }
 
 function createUsernameHint(name) {
-  return name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_');
+  return name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_').substr(0, 30);
 }
 
 function showHintRow() {
