@@ -10,7 +10,7 @@
 
       <%= form_for(@user, as: :user, data: { testid: "registration-form" }, url: registration_path(:user)) do |f| %>
         <% if defined?(resource) && resource&.errors&.any? %>
-          <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
+          <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger my-8" role="alert" data-testid="signup-errors">
             <div class="crayons-card__header">
               <h3 class="crayons-card__headline">
                 Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
