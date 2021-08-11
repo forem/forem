@@ -1,4 +1,5 @@
 @import '../config/import';
+@import '../components/buttons';
 
 .comment-form {
   --preview-display: none;
@@ -273,67 +274,8 @@
 .response-templates-container header {
   padding-bottom: 1rem;
 }
-.personal-template-button,
-.moderator-template-button {
-    --border-width: 0px;
-    --shadow-color: rgba(0, 0, 0, 0.05);
-    --vertical-padding: var(--su-2);
-    --horizontal-padding: var(--su-4);
-    --font-size: var(--fs-base);
-    --with-icon-padding: var(--su-3);
-    --icon-margin: var(--su-2);
-    position: relative;
-    display: inline-block;
-    padding: calc(var(--vertical-padding) - var(--border-width)) calc(var(--horizontal-padding) - var(--border-width));
-    border-radius: var(--radius);
-    outline: none;
-    font-family: inherit;
-    font-size: var(--font-size);
-    line-height: var(--su-6);
-    font-weight: var(--fw-medium);
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all var(--transition-props);
-    border: var(--border-width) solid;
-    overflow-wrap: normal;
-    --bg: var(--button-primary-bg);
-    --bg-hover: var(--button-primary-bg-hover);
-    --border: transparent;
-    --border-hover: transparent;
-    --color: var(--button-primary-color);
-    --color-hover: var(--button-primary-color-hover);
-    --shadow: 0 1px 3px var(--shadow-color);
-    --shadow-hover: 0 2px 5px var(--shadow-color);
-    --bg-inverted: var(--button-primary-inverted-bg);
-    --bg-inverted-hover: var(--button-primary-inverted-bg-hover);
-    --color-inverted: var(--button-primary-inverted-color);
-    --color-inverted-hover: var(--button-primary-inverted-color-hover);
-    background-color: var(--bg);
-    border-color: var(--border);
-    box-shadow: var(--shadow);
-    color: var(--color);
-    --bg: var(--button-outlined-bg);
-    --bg-hover: var(--button-outlined-bg-hover);
-    --border: var(--button-outlined-border);
-    --border-hover: var(--button-outlined-border-hover);
-    --color: var(--button-outlined-color);
-    --color-hover: var(--button-outlined-color-hover);
-    --bg-inverted: var(--button-outlined-inverted-bg);
-    --bg-inverted-hover: var(--button-outlined-inverted-bg-hover);
-    --border-inverted: var(--button-outlined-inverted-border);
-    --border-inverted-hover: var(--button-outlined-inverted-border-hover);
-    --color-inverted: var(--button-outlined-inverted-color);
-    --color-inverted-hover: var(--button-outlined-inverted-color-hover);
-    --border-width: 2px;
-}
 
-.personal-template-button.active,
-.moderator-template-button.active {
-    --bg: var(--button-primary-bg);
-    --bg-hover: var(--button-primary-bg-hover);
-    --border: transparent;
-    --border-hover: transparent;
-    --color: var(--button-primary-color);
-    --color-hover: var(--button-primary-color-hover);
+.personal-template-button:not(.active),
+.moderator-template-button:not(.active) {
+   @extend .crayons-btn--outlined;
 }
