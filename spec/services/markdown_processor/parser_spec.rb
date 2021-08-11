@@ -22,6 +22,11 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
   end
 
+  it "does not allow button tag" do
+    button = "<button>no</button>"
+    expect(generate_and_parse_markdown(button)).not_to include("button")
+  end
+
   it "does not render the escaped dashes when using a `raw` Liquid tag in codeblocks with syntax highlighting" do
     code_block = "```js\n{% raw %}some text{% endraw %}\n```"
     expect(generate_and_parse_markdown(code_block)).not_to include("----")
