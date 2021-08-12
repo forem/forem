@@ -46,7 +46,8 @@ class UsersController < ApplicationController
     set_current_tab(params["user"]["tab"])
     set_users_setting_and_notification_setting
 
-    update_result = Profiles::Update.call(current_user, user: user_params, profile: profile_params)
+    user_params = permitted_attributes(@user)
+    update_result = Profiles::Update.call(@user, user: user_params, profile: profile_params)
 
     if update_result.success?
       # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
