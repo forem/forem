@@ -77,6 +77,7 @@ Object {
                       </button>
                       <div
                         class="profile-preview-card__content crayons-dropdown"
+                        data-repositioning-dropdown="true"
                         data-testid="profile-preview-card"
                         id="story-author-preview-content-62407"
                         style=""
@@ -324,6 +325,7 @@ Object {
                     </button>
                     <div
                       class="profile-preview-card__content crayons-dropdown"
+                      data-repositioning-dropdown="true"
                       data-testid="profile-preview-card"
                       id="story-author-preview-content-62407"
                       style=""

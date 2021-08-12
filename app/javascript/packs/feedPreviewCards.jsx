@@ -1,6 +1,9 @@
 import { h, render } from 'preact';
 import { UserMetadata } from '../profilePreviewCards/UserMetadata';
-import { initializeDropdown } from '@utilities/dropdownUtils';
+import {
+  initializeDropdown,
+  getDropdownRepositionListener,
+} from '@utilities/dropdownUtils';
 import { request } from '@utilities/http/request';
 
 const cachedAuthorMetadata = {};
@@ -97,12 +100,18 @@ if (document.getElementById('index-container')) {
   });
 }
 
+// Preview card dropdowns reposition on scroll
+const dropdownRepositionListener = getDropdownRepositionListener();
+document.addEventListener('scroll', dropdownRepositionListener);
+
 InstantClick.on('change', () => {
   observer.disconnect();
+  document.removeEventListener('scroll', dropdownRepositionListener);
 });
 
 window.addEventListener('beforeunload', () => {
   observer.disconnect();
+  document.removeEventListener('scroll', dropdownRepositionListener);
 });
 
 initializeFeedPreviewCards();
