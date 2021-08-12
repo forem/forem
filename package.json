@@ -173,7 +173,6 @@
     "postcss-smart-import": "^0.7.6",
     "postscribe": "^2.0.8",
     "preact": "^10.5.14",
-    "prismjs": "^1.23.0",
     "prop-types": "^15.7.2",
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",
