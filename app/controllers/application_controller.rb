@@ -210,7 +210,7 @@ class ApplicationController < ActionController::Base
     render component_class.new(*args, **kwargs), content_type: "text/html"
   end
 
-  protected
+  private
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
