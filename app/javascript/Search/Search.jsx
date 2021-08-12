@@ -11,7 +11,6 @@ import { SearchForm } from './SearchForm';
 
 const GLOBAL_MINIMIZE_KEY = 'Digit0';
 const GLOBAL_SEARCH_KEY = '/';
-const ENTER_KEY = 'Enter';
 
 export class Search extends Component {
   constructor(props) {
@@ -74,27 +73,21 @@ export class Search extends Component {
   };
 
   submit = (event) => {
-    if (hasInstantClick) {
-      event.preventDefault();
-    }
-  };
+    event.preventDefault();
 
-  search(key, searchTerm) {
+    const { value: searchTerm } = this.searchInputRef.current;
     const { searchTerm: currentSearchTerm } = this.props;
+
     this.enableSearchPageChecker = false;
 
-    if (
-      hasInstantClick() &&
-      key === ENTER_KEY &&
-      currentSearchTerm !== searchTerm
-    ) {
+    if (hasInstantClick() && searchTerm !== currentSearchTerm) {
       const { setSearchTerm } = this.props;
-
       setSearchTerm(searchTerm);
+
       preloadSearchResults({ searchTerm });
       displaySearchResults({ searchTerm });
     }
-  }
+  };
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.globalKeysListener);
@@ -128,13 +121,6 @@ export class Search extends Component {
         />
         <SearchForm
           searchTerm={searchTerm}
-          onSearch={(event) => {
-            const {
-              key,
-              target: { value },
-            } = event;
-            this.search(key, value);
-          }}
           onSubmitSearch={this.submit}
           ref={this.searchInputRef}
         />

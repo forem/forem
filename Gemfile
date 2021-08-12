@@ -23,7 +23,7 @@ gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cloudinary", "~> 1.20" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.51.1" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.52.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.5" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -56,7 +56,7 @@ gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML us
 gem "liquid", "~> 5.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.12" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.21" # Simple wrapper for the GitHub API
-gem "oj", "~> 3.12" # JSON parser and object serializer
+gem "oj", "~> 3.13" # JSON parser and object serializer
 gem "omniauth", "~> 2.0" # A generalized Rack framework for multiple-provider authentication
 gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
 gem "omniauth-facebook", "~> 8.0" # OmniAuth strategy for Facebook
@@ -105,7 +105,7 @@ gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "store_attribute", "~> 0.8.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.37" # Ruby library for the Stripe API
+gem "stripe", "~> 5.38" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files

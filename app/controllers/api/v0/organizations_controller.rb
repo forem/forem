@@ -17,7 +17,7 @@ module Api
 
       LISTINGS_FOR_SERIALIZATION = %i[
         id user_id organization_id title slug body_markdown cached_tag_list
-        classified_listing_category_id processed_html published
+        classified_listing_category_id processed_html published created_at
       ].freeze
       private_constant :LISTINGS_FOR_SERIALIZATION
 

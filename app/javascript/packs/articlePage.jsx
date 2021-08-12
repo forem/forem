@@ -3,7 +3,11 @@ import ahoy from 'ahoy.js';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { embedGists } from '../utilities/gist';
-import { initializeDropdown } from '@utilities/dropdownUtils';
+import {
+  initializeDropdown,
+  getDropdownRepositionListener,
+} from '../utilities/dropdownUtils';
+import { getInstantClick } from '../topNavigation/utilities';
 
 /* global Runtime */
 
@@ -188,3 +192,18 @@ if (profilePreviewTrigger?.dataset.initialized !== 'true') {
 
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
+
+// Preview card dropdowns reposition on scroll
+const dropdownRepositionListener = getDropdownRepositionListener();
+
+document.addEventListener('scroll', dropdownRepositionListener);
+
+getInstantClick().then((ic) => {
+  ic.on('change', () => {
+    document.removeEventListener('scroll', dropdownRepositionListener);
+  });
+});
+
+window.addEventListener('beforeunload', () => {
+  document.removeEventListener('scroll', dropdownRepositionListener);
+});
