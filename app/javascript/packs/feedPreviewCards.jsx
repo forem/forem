@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { MemoizedUserMetadata } from '../profilePreviewCards/UserMetadata';
+import { UserMetadata } from '../profilePreviewCards/UserMetadata';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 import { request } from '@utilities/http/request';
 
@@ -30,7 +30,7 @@ async function populateMissingMetadata(metadataPlaceholder) {
 function renderMetadata(metadata, placeholder) {
   const container = placeholder.parentElement;
 
-  render(<MemoizedUserMetadata {...metadata} />, container, placeholder);
+  render(<UserMetadata {...metadata} />, container, placeholder);
 
   container
     .closest('.profile-preview-card__content')
