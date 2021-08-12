@@ -161,10 +161,10 @@ function prune_containers {
 
 trap prune_containers ERR INT EXIT
 
-echo "Branch: $BUILDKITE_BRANCH"
-echo "PR    : $BUILDKITE_PULL_REQUEST"
-echo "Commit: $BUILDKITE_COMMIT"
-echo "Tag   : $BUILDKITE_TAG"
+if [ -v BUILDKITE_BRANCH ]; then echo "Branch: $BUILDKITE_BRANCH"; fi
+if [ -v BUILDKITE_PULL_REQUEST ]; then echo "PR    : $BUILDKITE_PULL_REQUEST"; fi
+if [ -v BUILDKITE_COMMIT ]; then echo "Commit: $BUILDKITE_COMMIT"; fi
+if [ -v BUILDKITE_TAG ]; then echo "Tag   : $BUILDKITE_TAG"; fi
 
 if [ ! -v BUILDKITE_BRANCH ]; then
 
