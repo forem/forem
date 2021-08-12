@@ -4,3 +4,4 @@ export * from '@crayons/Dropdown';
 export * from '@crayons/formElements';
 export * from '@crayons/Modal';
 export * from '@crayons/Spinner';
+export * from '@crayons/MobileDrawer';
