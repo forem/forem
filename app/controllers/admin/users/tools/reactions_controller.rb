@@ -7,7 +7,7 @@ module Admin
         def show
           user = ::User.find(params[:user_id])
 
-          render ReactionsComponent.new(user: user), content_type: "text/html"
+          render_component(ReactionsComponent, user: user)
         end
 
         private

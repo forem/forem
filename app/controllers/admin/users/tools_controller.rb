@@ -6,7 +6,7 @@ module Admin
       def show
         user = ::User.find(params[:user_id])
 
-        render ToolsComponent.new(user: user), content_type: "text/html"
+        render_component(ToolsComponent, user: user)
       end
 
       private
