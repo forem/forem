@@ -14,6 +14,13 @@ RSpec.describe Users::DeleteArticles, type: :service do
     expect(Article.find(article3.id)).to be_present
   end
 
+  it "deletes the articles' discussion locks before deleting the article" do
+    create(:discussion_lock, article: article, locking_user: user)
+    expect do
+      described_class.call(user)
+    end.to change(DiscussionLock, :count).from(1).to(0)
+  end
+
   context "with comments" do
     before do
       allow(EdgeCache::BustComment).to receive(:call)
