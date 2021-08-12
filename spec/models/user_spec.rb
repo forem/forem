@@ -860,30 +860,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#related_negative_reactions" do
-    let(:moderator) { create(:user, :trusted) }
-
-    it "returns vomit reactions on user's articles" do
-      article = create(:article, user: user)
-      reaction = create(:vomit_reaction, user: moderator, reactable: article)
-
-      expect(user.related_negative_reactions.first.id).to eq(reaction.id)
-    end
-
-    it "returns vomit reactions on user's comments" do
-      comment = create(:comment, user: user)
-      reaction = create(:vomit_reaction, user: moderator, reactable: comment)
-
-      expect(user.related_negative_reactions.first.id).to eq(reaction.id)
-    end
-
-    it "returns the user's vomit reactions" do
-      reaction = create(:vomit_reaction, user: moderator, reactable: user)
-
-      expect(moderator.related_negative_reactions.first.id).to eq(reaction.id)
-    end
-  end
-
   describe "profiles" do
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)

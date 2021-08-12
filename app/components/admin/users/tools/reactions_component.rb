@@ -12,7 +12,7 @@ module Admin
         attr_reader :user
 
         def reactions
-          user.related_negative_reactions
+          Reaction.related_negative_reactions_for_user(user)
             .includes(:reactable)
             .order(created_at: :desc)
             .limit(15)

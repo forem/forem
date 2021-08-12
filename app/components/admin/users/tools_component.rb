@@ -50,7 +50,8 @@ module Admin
 
       def reactions
         DATA.new(
-          total: [user.related_negative_reactions.count, 15].min, # we only display 15 reactions at most
+          # we only display 15 reactions at most
+          total: [Reaction.related_negative_reactions_for_user(user).count, 15].min,
         )
       end
     end
