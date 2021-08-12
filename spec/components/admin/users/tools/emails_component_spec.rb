@@ -21,7 +21,7 @@ RSpec.describe Admin::Users::Tools::EmailsComponent, type: :component do
     end
 
     it "renders the section with verification info" do
-      allow(user).to receive(:last_verification_date).and_return(1.day.ago)
+      allow(EmailAuthorization).to receive(:last_verification_date).with(user).and_return(1.day.ago)
       render_inline(described_class.new(user: user))
 
       expect(rendered_component).to have_text("Verified on")

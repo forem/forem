@@ -32,7 +32,7 @@ module Admin
           .joins(:organization)
           .order("organizations.name" => :asc)
           .includes(:organization)
-        @last_email_verification_date = @user.last_verification_date
+        @last_email_verification_date = EmailAuthorization.last_verification_date(user)
 
         render :show
       end

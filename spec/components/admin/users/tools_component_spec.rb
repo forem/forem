@@ -25,7 +25,7 @@ RSpec.describe Admin::Users::ToolsComponent, type: :component do
     end
 
     it "render the Verified text when verified is true" do
-      allow(user).to receive(:last_verification_date).and_return(Time.current)
+      allow(EmailAuthorization).to receive(:last_verification_date).with(user).and_return(Time.current)
 
       render_inline(described_class.new(user: user))
 

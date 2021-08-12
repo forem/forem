@@ -821,25 +821,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#last_verification_date" do
-    it "returns nil if there are no email authorizations" do
-      expect(user.last_verification_date).to be(nil)
-    end
-
-    it "does not return unverified email authorizations" do
-      create(:email_authorization, user: user, verified_at: nil)
-
-      expect(user.last_verification_date).to be(nil)
-    end
-
-    it "returns the last email authorization's date" do
-      ea1 = create(:email_authorization, user: user, created_at: 1.day.ago, verified_at: 1.day.ago)
-      create(:email_authorization, user: user, created_at: 1.month.ago, verified_at: 1.month.ago)
-
-      expect(user.last_verification_date.iso8601).to eq(ea1.verified_at.iso8601)
-    end
-  end
-
   describe "profiles" do
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)

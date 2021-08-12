@@ -20,7 +20,7 @@ module Admin
       def emails
         DATA.new(
           total: [user.email_messages.count, 50].min, # we only display 50 emails at most
-          verified: user.last_verification_date.present?,
+          verified: EmailAuthorization.last_verification_date(user).present?,
         )
       end
 
