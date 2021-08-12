@@ -1,8 +1,7 @@
 <% organization = sponsorship.organization %>
 <div class="sidebar-sponsor">
   <a class="partner-link" href="<%= sponsorship.url %>" target="_blank" data-details="<%= organization.slug %>__image" rel="noopener">
-    <img src="<%= optimized_image_url(organization.nav_image_url) %>" alt="<%= organization.name %> logo" loading="lazy" class="partner-image-light-mode" />
-    <img src="<%= optimized_image_url(organization.dark_nav_image_url || organization.nav_image_url) %>" alt="<%= organization.name %> logo" loading="lazy" class="partner-image-dark-mode" />
+    <%= render partial: "pages/sponsor_image", locals: { sponsor: organization } %>
   </a>
   <p class="fs-s"><%= sponsorship.sponsorable_type == "ActsAsTaggableOn::Tag" ? sanitize(sponsorship.blurb_html) : sponsorship.tagline %></p>
 </div>
