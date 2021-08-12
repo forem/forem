@@ -840,26 +840,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#reports" do
-    it "returns reported feedback messages" do
-      report = create(:feedback_message, reporter: user)
-
-      expect(user.reports.first.id).to eq(report.id)
-    end
-
-    it "returns affected feedback messages" do
-      report = create(:feedback_message, affected: user)
-
-      expect(user.reports.first.id).to eq(report.id)
-    end
-
-    it "returns offender feedback messages" do
-      report = create(:feedback_message, offender: user)
-
-      expect(user.reports.first.id).to eq(report.id)
-    end
-  end
-
   describe "profiles" do
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)

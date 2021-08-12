@@ -568,10 +568,6 @@ class User < ApplicationRecord
       &.verified_at
   end
 
-  def reports
-    reporter_feedback_messages.or(affected_feedback_messages).or(offender_feedback_messages)
-  end
-
   protected
 
   # Send emails asynchronously

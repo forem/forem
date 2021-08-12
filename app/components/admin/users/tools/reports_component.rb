@@ -4,7 +4,7 @@ module Admin
       class ReportsComponent < ViewComponent::Base
         def initialize(user:)
           @user = user
-          @reports = user.reports.order(created_at: :desc).limit(15)
+          @reports = FeedbackMessage.all_user_reports(user).order(created_at: :desc).limit(15)
         end
       end
     end

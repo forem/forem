@@ -44,7 +44,8 @@ module Admin
 
       def reports
         DATA.new(
-          total: [user.reports.count, 15].min, # we only display 15 reports at most
+          # we only display 15 reports at most
+          total: [FeedbackMessage.all_user_reports(user).count, 15].min,
         )
       end
 
