@@ -29,18 +29,23 @@ const handleDropdownRepositions = () => {
     // Default to dropping downwards
     element.classList.remove('reverse');
 
-    // We can't determine position on an element with display:none, so we "show" the dropdown with 0 opacity very temporarily
-    element.style.opacity = 0;
-    element.style.display = 'block';
-    const isWithinViewport = isInViewport({ element });
+    const isDropdownCurrentlyOpen = element.style.display === 'block';
 
-    // Revert the temporary changes to determine position
-    element.style.removeProperty('display');
-    element.style.removeProperty('opacity');
+    if (!isDropdownCurrentlyOpen) {
+      // We can't determine position on an element with display:none, so we "show" the dropdown with 0 opacity very temporarily
+      element.style.opacity = 0;
+      element.style.display = 'block';
+    }
 
-    if (!isWithinViewport) {
+    if (!isInViewport({ element })) {
       // If the element isn't fully visible when dropping down, reverse the direction
       element.classList.add('reverse');
+    }
+
+    if (!isDropdownCurrentlyOpen) {
+      // Revert the temporary changes to determine position
+      element.style.removeProperty('display');
+      element.style.removeProperty('opacity');
     }
   }
 };
