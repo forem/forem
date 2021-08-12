@@ -1,4 +1,4 @@
-<div class="comment__header">
+<div class="comment__header m:pl-1">
   <a href="<%= URL.user(comment.user) %>" class="crayons-link crayons-link--secondary flex items-center fw-medium m:hidden">
     <span class="js-comment-username"><%= comment.user.name %></span>
     <% if commentable_author_is_op?(commentable, comment) %>
@@ -8,7 +8,7 @@
     <% end %>
   </a>
   <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
-    <button id="comment-profile-preview-trigger-<%= comment.id %>" aria-controls="comment-profile-preview-content-<%= comment.id %>" class="profile-preview-card__trigger px-0 crayons-btn crayons-btn--ghost" aria-label="<%= comment.user.name %> profile details">
+    <button id="comment-profile-preview-trigger-<%= comment.id %>" aria-controls="comment-profile-preview-content-<%= comment.id %>" class="profile-preview-card__trigger px-2 crayons-btn crayons-btn--ghost" aria-label="<%= comment.user.name %> profile details">
       <%= comment.user.name %>
     </button>
     <%= render "/shared/profile_preview_card", actor: comment.user, id: "comment-profile-preview-content-#{comment.id}" %>

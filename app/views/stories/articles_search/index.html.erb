@@ -6,8 +6,15 @@
 <main id="main-content">
   <div class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4">
     <div class="block m:hidden" id="mobile-search-container">
-      <form accept-charset="UTF-8" method="get" action="/search">
-        <input class="crayons-textfield" type="text" name="q" placeholder="Search..." autocomplete="on" />
+      <form accept-charset="UTF-8" method="get" action="/search" role="search">
+        <div class="crayons-fields crayons-fields--horizontal">
+          <div class="crayons-field flex-1 relative">
+            <input class="crayons-textfield" type="text" name="q" placeholder="Search..." autocomplete="on" />
+            <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
+              <%= inline_svg_tag("search.svg", aria_hidden: true, width: 24, height: 24, class: "crayons-icon", title: "Search") %>
+            </button>
+          </div>
+        </div>
       </form>
     </div>
 
