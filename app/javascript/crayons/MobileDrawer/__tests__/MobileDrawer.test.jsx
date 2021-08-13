@@ -17,6 +17,16 @@ describe('<MobileDrawer />', () => {
     expect(results).toHaveNoViolations();
   });
 
+  it('should render correctly', () => {
+    const { container } = render(
+      <MobileDrawer title="Example MobileDrawer">
+        <button>Click me</button>
+      </MobileDrawer>,
+    );
+
+    expect(container.innerHTML).toMatchSnapshot();
+  });
+
   it('should trap focus inside the drawer by default', async () => {
     const { getByRole } = render(
       <div>
