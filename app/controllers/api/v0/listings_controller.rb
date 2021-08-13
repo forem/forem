@@ -18,7 +18,7 @@ module Api
       # actual column name for the listing category, prefixed with classified_.
       ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id title slug body_markdown cached_tag_list
-        classified_listing_category_id processed_html published
+        classified_listing_category_id processed_html published created_at
       ].freeze
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
