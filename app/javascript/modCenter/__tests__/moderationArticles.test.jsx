@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, fireEvent } from '@testing-library/preact';
+import { render, fireEvent, waitFor } from '@testing-library/preact';
 import { ModerationArticles } from '../moderationArticles';
 
 const getTestArticles = () => {
@@ -20,8 +20,7 @@ const getTestArticles = () => {
       id: 2,
       title:
         'An article title that is quite very actually rather extremely long with all things considered',
-      path:
-        'an-article-title-that-is-quite-very-actually-rather-extremely-long-with-all-things-considered-fi8',
+      path: 'an-article-title-that-is-quite-very-actually-rather-extremely-long-with-all-things-considered-fi8',
       published_at: '2019-06-24T09:32:10.590Z',
       cached_tag_list: '',
       user: {
@@ -59,29 +58,37 @@ describe('<ModerationArticles />', () => {
     expect(listOfArticles.length).toEqual(2);
   });
 
-  it('renders the iframes on click', () => {
+  it('renders the iframes on click', async () => {
     const { getByTestId } = render(<ModerationArticles />);
     const singleArticle = getByTestId('mod-article-1');
-    singleArticle.click();
-    const iframes = singleArticle.getElementsByTagName('iframe');
-    expect(iframes.length).toEqual(2);
+    const summarySection = singleArticle.getElementsByTagName('summary')[0];
+    summarySection.click();
+    await waitFor(() => {
+      const iframes = singleArticle.getElementsByTagName('iframe');
+      expect(iframes.length).toEqual(2);
+    });
   });
 
-  it('toggles the "opened" class when opening or closing an article', () => {
+  it('toggles the "opened" class when opening or closing an article', async () => {
     const { getByTestId } = render(<ModerationArticles />);
     const singleArticle = getByTestId('mod-article-2');
+    const summarySection = singleArticle.getElementsByTagName('summary')[0];
 
-    fireEvent.click(singleArticle);
-    expect(
-      singleArticle.getElementsByClassName('article-iframes-container')[0]
-        .classList,
-    ).toContain('opened');
+    fireEvent.click(summarySection);
+    await waitFor(() => {
+      expect(
+        singleArticle.getElementsByClassName('article-iframes-container')[0]
+          .classList,
+      ).toContain('opened');
+    });
 
-    fireEvent.click(singleArticle);
-    expect(
-      singleArticle.getElementsByClassName('article-iframes-container')[0]
-        .classList,
-    ).not.toContain('opened');
+    fireEvent.click(summarySection);
+    await waitFor(() => {
+      expect(
+        singleArticle.getElementsByClassName('article-iframes-container')[0]
+          .classList,
+      ).not.toContain('opened');
+    });
   });
 
   it('adds the FlagUser Modal HTML associated with author when article opened', async () => {
@@ -93,8 +100,9 @@ describe('<ModerationArticles />', () => {
     ).toBeNull();
 
     const singleArticle = getByTestId(`mod-article-${expectedArticleId}`);
+    const summarySection = singleArticle.getElementsByTagName('summary')[0];
 
-    singleArticle.click();
+    summarySection.click();
 
     // We need the iframe to load first before checking for the modal having been loaded.
     await findByTestId(`mod-iframe-${expectedArticleId}`);

@@ -1,12 +1,12 @@
 <% title "Analytics" %>
 
 <main class="dashboard-container analytics-container crayons-layout" id="main-content">
-  <% if @organizations.any? %>
-    <nav aria-label="Dashboards">
-      <ul class="list-none">
-        <li>
-          <a href="<%= dashboard_path %>" class="rounded-btn crayons-link--block rounded-btn--transparent">👈 Back to Main Dashboard</a>
-        </li>
+  <nav aria-label="Dashboards">
+    <ul class="list-none">
+      <li>
+        <a href="<%= dashboard_path %>" class="rounded-btn crayons-link--block rounded-btn--transparent">👈 Back to Main Dashboard</a>
+      </li>
+      <% if @organizations.any? %>
         <li>
           <a class="rounded-btn crayons-link--block organization" 
              href="<%= dashboard_analytics_path %>"
@@ -25,9 +25,10 @@
             </a>
           </li>
         <% end %>
+      <% end %>
       </ul>
     </nav>
-  <% end %>
+      
 
   <div class="crayons-card p-3 mt-5">
     <h1 class="fs-4xl fw-medium">Analytics Dashboard for <%= @user_or_org.name %></h1>

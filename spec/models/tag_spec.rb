@@ -122,6 +122,12 @@ RSpec.describe Tag, type: :model do
     end
   end
 
+  it "delete tag-colors server cache on save" do
+    allow(Rails.cache).to receive(:delete)
+    tag.save
+    expect(Rails.cache).to have_received(:delete).with("view-helper-#{tag.name}/tag_colors")
+  end
+
   it "finds mod chat channel" do
     channel = create(:chat_channel)
     tag.mod_chat_channel_id = channel.id
