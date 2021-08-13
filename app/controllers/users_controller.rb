@@ -46,9 +46,7 @@ class UsersController < ApplicationController
     set_current_tab(params["user"]["tab"])
     set_users_setting_and_notification_setting
 
-    user_params = permitted_attributes(@user)
-
-    if @user.update(user_params)
+    if @user.update(permitted_attributes(@user))
       # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
       # explicitly requested "Feed fetch now" or simply updated any other field
       import_articles_from_feed(@user)
