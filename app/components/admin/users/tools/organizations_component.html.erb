@@ -3,9 +3,9 @@
   data-controller="users--tools--ajax"
   data-action="ajax:success@document->users--tools--ajax#success ajax:error@document->users--tools--ajax#error">
   <header>
-    <h3><%= link_to "← Organizations Memberships", admin_user_tools_path(@user.id),
+    <h3><%= link_to "← Users", admin_user_tools_path(@user.id),
                     remote: true,
-                    data: { action: "ajax:success->user#replacePartial" },
+                    data: { action: "ajax:success@document->user#replacePartial" },
                     class: "crayons-title fs-l" %></h3>
   </header>
 
