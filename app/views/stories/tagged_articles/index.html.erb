@@ -43,7 +43,7 @@
       data-requires-approval="<%= @tag_model.requires_approval %>"
       data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
     <%= render "stories/tagged_articles/sidebar" %>
-    <main class="articles-list" id="main-content">
+    <main class="articles-list" id="main-content" data-follow-button-container="true">
       <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden" id="on-page-nav-butt-left" aria-label="nav-button-left">
           <div class="crayons-icon nav-icon ">
@@ -113,5 +113,5 @@
     <%= render "stories/tagged_articles/sidebar_additional" %>
   </div>
 
-  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", defer: true %>
+  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", defer: true %>
 <% end %>

@@ -3,12 +3,14 @@ import {
   articlePropTypes,
   organizationPropType,
 } from '../../common-prop-types';
+import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
 import { PublishDate } from './PublishDate';
 
 export const Meta = ({ article, organization }) => {
   const orgArticleIndexClassAbsent = !document.getElementById(
     'organization-article-index',
   );
+
   return (
     <div className="crayons-story__meta">
       <div className="crayons-story__author-pic">
@@ -45,7 +47,7 @@ export const Meta = ({ article, organization }) => {
         <p>
           <a
             href={`/${article.user.username}`}
-            className="crayons-story__secondary fw-medium"
+            className="crayons-story__secondary fw-medium m:hidden"
           >
             {filterXSS(
               article.class_name === 'User'
@@ -53,6 +55,14 @@ export const Meta = ({ article, organization }) => {
                 : article.user.name,
             )}
           </a>
+          <MinimalProfilePreviewCard
+            triggerId={`story-author-preview-trigger-${article.id}`}
+            contentId={`story-author-preview-content-${article.id}`}
+            username={article.user.username}
+            name={article.user.name}
+            profileImage={article.user.profile_image_90}
+            userId={article.user_id}
+          />
           {organization &&
             !document.getElementById('organization-article-index') && (
               <span>
