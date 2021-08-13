@@ -1,5 +1,6 @@
 require "rails_helper"
 
+# rubocop:disable RSpec/NestedGroups
 RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
   %i[enable disable].each do |method|
     context "when :optimize_article_tag_query is #{method}d" do
@@ -92,7 +93,8 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
         it "shows meta keywords if set" do
           allow(Settings::General).to receive(:meta_keywords).and_return({ tag: "software engineering, ruby" })
           get "/t/#{tag.name}"
-          expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
+          expect(response.body)
+            .to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
         end
 
         it "does not show meta keywords if not set" do
@@ -223,3 +225,4 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
     end
   end
 end
+# rubocop:enable RSpec/NestedGroups
