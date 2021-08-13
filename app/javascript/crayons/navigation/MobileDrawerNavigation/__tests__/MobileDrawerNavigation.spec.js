@@ -15,7 +15,7 @@ describe('<MobileDrawerNavigation />', () => {
     const { container } = render(
       <MobileDrawerNavigation
         navigationTitle="Test navigation"
-        headingComponent="h1"
+        headingLevel={1}
         navigationLinks={testLinks}
       />,
     );
@@ -28,7 +28,7 @@ describe('<MobileDrawerNavigation />', () => {
     const { container, getByRole } = render(
       <MobileDrawerNavigation
         navigationTitle="Test navigation"
-        headingComponent="h1"
+        headingLevel={1}
         navigationLinks={testLinks}
       />,
     );
@@ -44,7 +44,7 @@ describe('<MobileDrawerNavigation />', () => {
     const { container } = render(
       <MobileDrawerNavigation
         navigationTitle="Test navigation"
-        headingComponent="h1"
+        headingLevel={1}
         navigationLinks={testLinks}
       />,
     );
@@ -56,7 +56,7 @@ describe('<MobileDrawerNavigation />', () => {
     const { container, getByRole } = render(
       <MobileDrawerNavigation
         navigationTitle="Test navigation"
-        headingComponent="h1"
+        headingLevel={1}
         navigationLinks={testLinks}
       />,
     );
@@ -70,7 +70,7 @@ describe('<MobileDrawerNavigation />', () => {
     const { getByRole } = render(
       <MobileDrawerNavigation
         navigationTitle="Test navigation"
-        headingComponent="h1"
+        headingLevel={1}
         navigationLinks={testLinks}
       />,
     );

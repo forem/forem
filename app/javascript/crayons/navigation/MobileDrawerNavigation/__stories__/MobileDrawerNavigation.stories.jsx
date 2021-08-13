@@ -1,8 +1,10 @@
 import { h, Fragment } from 'preact';
+import notes from './mobileDrawerNavigation.md';
 import { MobileDrawerNavigation } from '@crayons';
 
 export default {
   title: 'App Components/MobileDrawerNavigation',
+  parameters: { notes },
 };
 
 export const Default = () => {
@@ -36,7 +38,7 @@ export const Default = () => {
   return (
     <Fragment>
       <MobileDrawerNavigation
-        headingComponent="h2"
+        headingLevel={2}
         navigationTitle="Example MobileDrawerNavigation"
         navigationLinks={links}
       />

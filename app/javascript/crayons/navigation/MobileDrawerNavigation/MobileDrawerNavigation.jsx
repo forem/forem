@@ -1,5 +1,6 @@
 import { h, Fragment } from 'preact';
 import { useState } from 'preact/hooks';
+import PropTypes from 'prop-types';
 import { MobileDrawer } from '@crayons/MobileDrawer';
 import { Button } from '@crayons/Button';
 
@@ -27,15 +28,29 @@ const CheckIcon = () => (
   </svg>
 );
 
+/**
+ * Renders a page heading with a button which activates a <MobileDrawer /> with a list of the given navigation links.
+ *
+ * @param {object} props
+ * @param {number} headingLevel The level of heading to render as the page title (e.g. 1-6)
+ * @param {string} navigationTitle The title to be used for the navigation element (e.g. 'Feed timeframes')
+ * @param {Array} navigationLinks An array of navigationLink objects to display
+ *
+ * @example
+ * <MobileDrawerNavigation
+ *   headingLevel={2}
+ *   navigationTitle="Feed options"
+ *   navigationLinks={links} />
+ */
 export const MobileDrawerNavigation = ({
-  headingComponent,
+  headingLevel,
   navigationTitle,
   navigationLinks,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const currentPage = navigationLinks.find((item) => item.isCurrentPage);
 
-  const Heading = headingComponent;
+  const Heading = `h${headingLevel}`;
 
   return (
     <Fragment>
@@ -58,20 +73,20 @@ export const MobileDrawerNavigation = ({
         >
           <nav aria-label={navigationTitle} className="drawer-navigation">
             <ul className="list-none">
-              {navigationLinks.map((linkDetails) => (
-                <li
-                  key={`link-${linkDetails.url}`}
-                  className="drawer-navigation__item py-2"
-                >
-                  <a
-                    href={linkDetails.url}
-                    aria-current={linkDetails.isCurrentPage ? 'page' : null}
+              {navigationLinks.map((linkDetails) => {
+                const { url, isCurrentPage, displayName } = linkDetails;
+                return (
+                  <li
+                    key={`link-${url}`}
+                    className="drawer-navigation__item py-2"
                   >
-                    {linkDetails.displayName}
-                  </a>
-                  <CheckIcon />
-                </li>
-              ))}
+                    <a href={url} aria-current={isCurrentPage ? 'page' : null}>
+                      {displayName}
+                    </a>
+                    <CheckIcon />
+                  </li>
+                );
+              })}
             </ul>
           </nav>
           <Button
@@ -85,4 +100,16 @@ export const MobileDrawerNavigation = ({
       )}
     </Fragment>
   );
+};
+
+MobileDrawerNavigation.propTypes = {
+  headingLevel: PropTypes.oneOf([1, 2, 3, 4, 5, 6]).isRequired,
+  navigationTitle: PropTypes.string.isRequired,
+  navigationLinks: PropTypes.arrayOf(
+    PropTypes.shape({
+      url: PropTypes.string,
+      isCurrentPage: PropTypes.bool,
+      displayName: PropTypes.string,
+    }),
+  ).isRequired,
 };
