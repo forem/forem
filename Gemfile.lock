@@ -521,7 +521,7 @@ GEM
     public_suffix (4.0.6)
     puma (5.4.0)
       nio4r (~> 2.0)
-    pundit (2.1.0)
+    pundit (2.1.1)
       activesupport (>= 3.0.0)
     pundit-matchers (1.7.0)
       rspec-rails (>= 3.0.0)
