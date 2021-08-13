@@ -1,5 +1,4 @@
 import { h, Fragment } from 'preact';
-
 import { MobileDrawerNavigation } from '@crayons';
 
 export default {
@@ -7,26 +6,42 @@ export default {
 };
 
 export const Default = () => {
+  const { href, hash } = window.location;
+  const indexOfHash = href.indexOf(hash) || href.length;
+  const baseStoryUrl = href.substr(0, indexOfHash);
+
+  const links = [
+    {
+      url: baseStoryUrl,
+      displayName: 'Drawer Navigation',
+      isCurrentPage: href === baseStoryUrl,
+    },
+    {
+      url: `${baseStoryUrl}/#2`,
+      displayName: 'Example link 2',
+      isCurrentPage: `#2` === hash,
+    },
+    {
+      url: `${baseStoryUrl}/#3`,
+      displayName: 'Example link 3',
+      isCurrentPage: `#3` === hash,
+    },
+    {
+      url: `${baseStoryUrl}/#4`,
+      displayName: 'Example link 4',
+      isCurrentPage: `#4` === hash,
+    },
+  ];
+
   return (
     <Fragment>
       <MobileDrawerNavigation
         headingComponent="h2"
         navigationTitle="Example MobileDrawerNavigation"
-        navigationLinks={[
-          {
-            url: window.location.href,
-            displayName: 'Drawer Navigation',
-            isCurrentPage: true,
-          },
-          { url: '/#', displayName: 'Example link 2' },
-          { url: '/#', displayName: 'Example link 3' },
-          { url: '/#', displayName: 'Example link 4' },
-        ]}
+        navigationLinks={links}
       />
-      <p className="my-4">Click on the button to view navigation links.</p>
-      <p>
-        NB: As the component is only rendered on this page, "Drawer Navigation"
-        will always be the current page.
+      <p className="my-4">
+        Click on the button to view and select navigation links.
       </p>
     </Fragment>
   );
