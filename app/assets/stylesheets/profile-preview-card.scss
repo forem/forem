@@ -11,7 +11,7 @@
 
   &__content.crayons-dropdown:hover {
     display: block;
-    animation: hoverAppear 500ms;
+    animation: hoverAppear 1s;
 
     &.showing {
       animation: none;
@@ -20,7 +20,7 @@
 
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
     display: block;
-    animation: hoverAppear 500ms;
+    animation: hoverAppear 1s;
 
     &.showing {
       animation: none;
@@ -30,14 +30,17 @@
   @keyframes hoverAppear {
     0% {
       opacity: var(--opacity-0);
+      pointer-events: none;
     }
 
     99% {
       opacity: var(--opacity-0);
+      pointer-events: none;
     }
 
     100% {
       opacity: var(--opacity-100);
+      pointer-events: unset;
     }
   }
 }
