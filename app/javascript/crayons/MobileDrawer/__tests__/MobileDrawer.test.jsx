@@ -5,64 +5,68 @@ import { render, waitFor } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 import { MobileDrawer } from '../MobileDrawer';
 
-it('should have no a11y violations', async () => {
-  const { container } = render(
-    <MobileDrawer title="Example MobileDrawer">
-      <button>Click me</button>
-    </MobileDrawer>,
-  );
-  const results = await axe(container);
-
-  expect(results).toHaveNoViolations();
-});
-
-it('should trap focus inside the drawer by default', async () => {
-  const { getByRole } = render(
-    <div>
-      <button>Outside drawer button</button>
+describe('<MobileDrawer />', () => {
+  it('should have no a11y violations', async () => {
+    const { container } = render(
       <MobileDrawer title="Example MobileDrawer">
-        <button>Inside drawer button</button>
-        <button>Inside drawer button 2</button>
-      </MobileDrawer>
-    </div>,
-  );
+        <button>Click me</button>
+      </MobileDrawer>,
+    );
+    const results = await axe(container);
 
-  const innerDrawerButton = getByRole('button', {
-    name: 'Inside drawer button',
+    expect(results).toHaveNoViolations();
   });
-  await waitFor(() => expect(innerDrawerButton).toHaveFocus());
 
-  userEvent.tab();
-  expect(getByRole('button', { name: 'Inside drawer button 2' })).toHaveFocus();
+  it('should trap focus inside the drawer by default', async () => {
+    const { getByRole } = render(
+      <div>
+        <button>Outside drawer button</button>
+        <MobileDrawer title="Example MobileDrawer">
+          <button>Inside drawer button</button>
+          <button>Inside drawer button 2</button>
+        </MobileDrawer>
+      </div>,
+    );
 
-  userEvent.tab();
-  expect(innerDrawerButton).toHaveFocus();
-});
+    const innerDrawerButton = getByRole('button', {
+      name: 'Inside drawer button',
+    });
+    await waitFor(() => expect(innerDrawerButton).toHaveFocus());
 
-it('should close when Escape is pressed', () => {
-  const onClose = jest.fn();
-  const { container } = render(
-    <MobileDrawer title="Example MobileDrawer" onClose={onClose}>
-      <button>Inner button</button>
-    </MobileDrawer>,
-  );
+    userEvent.tab();
+    expect(
+      getByRole('button', { name: 'Inside drawer button 2' }),
+    ).toHaveFocus();
 
-  userEvent.type(container, '{esc}');
-  expect(onClose).toHaveBeenCalled();
-});
+    userEvent.tab();
+    expect(innerDrawerButton).toHaveFocus();
+  });
 
-it('should close on click outside', () => {
-  const onClose = jest.fn();
-  const { getByText } = render(
-    <div>
-      <p>Outside content</p>
+  it('should close when Escape is pressed', () => {
+    const onClose = jest.fn();
+    const { container } = render(
       <MobileDrawer title="Example MobileDrawer" onClose={onClose}>
         <button>Inner button</button>
-      </MobileDrawer>
-      ,
-    </div>,
-  );
+      </MobileDrawer>,
+    );
 
-  userEvent.click(getByText('Outside content'));
-  expect(onClose).toHaveBeenCalled();
+    userEvent.type(container, '{esc}');
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it('should close on click outside', () => {
+    const onClose = jest.fn();
+    const { getByText } = render(
+      <div>
+        <p>Outside content</p>
+        <MobileDrawer title="Example MobileDrawer" onClose={onClose}>
+          <button>Inner button</button>
+        </MobileDrawer>
+        ,
+      </div>,
+    );
+
+    userEvent.click(getByText('Outside content'));
+    expect(onClose).toHaveBeenCalled();
+  });
 });
