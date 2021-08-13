@@ -13,6 +13,12 @@ RSpec.describe NavigationLink, type: :model do
     it "validates the icon" do
       navigation_link.icon = "test.png"
       expect(navigation_link).not_to be_valid
+      
+      navigation_link.icon = "<svg foo='bar'>"
+      expect(navigation_link).to be_valid
+
+      navigation_link.icon = "<svg foo='bar'\nbaz='lol'\n\n more stuff...\n\n.  >"
+      expect(navigation_link).to be_valid
     end
 
     context "when validating the URL" do

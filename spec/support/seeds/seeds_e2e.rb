@@ -379,6 +379,57 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "series-user@forem.com") do
+  series_user = User.create!(
+    name: "Series User",
+    email: "series-user@forem.local",
+    username: "series_user",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+  series_user.profile.update(
+    summary: "Series user summary",
+    work: "Software developer at Company",
+    location: "Edinburgh",
+    education: "University of Life",
+  )
+  series_user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Series test article
+    published: true
+    cover_image: #{Faker::Company.logo}
+    series: seriestest
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  Article.create(
+    body_markdown: markdown,
+    featured: true,
+    show_comments: true,
+    user_id: User.find_by(email: "series-user@forem.local").id,
+  )
+end
+
+##############################################################################
+
 seeder.create_if_none(ListingCategory) do
   ListingCategory.create!(
     slug: "cfp",
@@ -423,6 +474,28 @@ end
 
 # Show the tag in the sidebar
 Settings::General.sidebar_tags = %i[tag1]
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Tag test article
+    published: true
+    cover_image: #{Faker::Company.logo}
+    tags: tag1
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  Article.create(
+    body_markdown: markdown,
+    featured: true,
+    show_comments: true,
+    user_id: admin_user.id,
+  )
+end
 
 ##############################################################################
 

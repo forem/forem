@@ -5,11 +5,7 @@ describe('Follow author from article sidebar', () => {
     cy.fixture('users/articleEditorV1User.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginAndVisit(user, '/').then(() => {
-        cy.findAllByRole('link', { name: 'Test article' })
-          .first()
-          .click({ force: true });
-
+      cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
         cy.get('[data-follow-clicks-initialized]');
         cy.findByRole('heading', { name: 'Test article' });
       });

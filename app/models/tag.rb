@@ -99,6 +99,7 @@ class Tag < ActsAsTaggableOn::Tag
 
   def bust_cache
     Tags::BustCacheWorker.perform_async(name)
+    Rails.cache.delete("view-helper-#{name}/tag_colors")
   end
 
   def validate_alias_for
