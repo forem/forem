@@ -104,6 +104,7 @@ export default class ConfigController extends Controller {
             ?.content,
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({}),
         credentials: 'same-origin',
       });
 
