@@ -1,9 +1,12 @@
 .profile-preview-card {
   &__content.crayons-dropdown {
+    transition: border, border-top;
+    transition-duration: 300ms;
     color: var(--base-100);
     padding-top: 0;
     top: 100%;
     left: 0;
+    font-size: var(--fs-base);
   }
 
   &__content.crayons-dropdown:hover {
