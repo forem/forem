@@ -34,7 +34,6 @@ class UserPolicy < ApplicationPolicy
     feed_url
     inbox_guidelines
     inbox_type
-    location
     mobile_comment_notifications
     mod_roundrobin_notifications
     welcome_notifications
@@ -44,10 +43,8 @@ class UserPolicy < ApplicationPolicy
     payment_pointer
     permit_adjacent_sponsors
     profile_image
-    summary
     text_color_hex
     username
-    website_url
   ].freeze
 
   def edit?
