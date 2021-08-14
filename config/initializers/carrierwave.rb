@@ -11,11 +11,7 @@ def local_storage_config
   CarrierWave.configure do |config|
     config.storage = :file
     config.enable_processing = !Rails.env.test? # disabled for test
-    config.asset_host = if Rails.env.production?
-                          "https://#{ApplicationConfig['APP_DOMAIN']}"
-                        else
-                          URL.url
-                        end
+    config.asset_host = URL.url
   end
 end
 
