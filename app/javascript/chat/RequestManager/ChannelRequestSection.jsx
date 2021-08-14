@@ -20,7 +20,7 @@ export const ChannelRequestSection = ({
         channelRequests.map((channelPendingRequest) => {
           return (
             <RequestListItem
-              key={`${channelPendingRequest.channel_name}-${channelPendingRequest.membership_id}`}
+              key={channelPendingRequest.channel_name}
               request={channelPendingRequest}
               handleRequestApproval={handleRequestApproval}
               handleRequestRejection={handleRequestRejection}

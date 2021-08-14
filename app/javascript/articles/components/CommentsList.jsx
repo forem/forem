@@ -36,12 +36,7 @@ export const CommentsList = ({ comments = [], articlePath, totalCount }) => {
     return (
       <div className="crayons-story__comments">
         {comments.slice(0, numberOfCommentsToShow).map((comment) => {
-          return (
-            <CommentListItem
-              key={`${comment.published_at_int}-${comment.name}`}
-              comment={comment}
-            />
-          );
+          return <CommentListItem key={comment.comment_id} comment={comment} />;
         })}
 
         {moreCommentsButton(comments, articlePath, totalCount)}
