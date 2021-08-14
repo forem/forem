@@ -13,6 +13,8 @@ def local_storage_config
     config.enable_processing = !Rails.env.test? # disabled for test
     config.asset_host = if Rails.env.production?
                           "https://#{ApplicationConfig['APP_DOMAIN']}"
+                        else
+                          URL.url
                         end
   end
 end
