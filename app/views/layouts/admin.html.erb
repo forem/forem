@@ -37,7 +37,9 @@
 
       <h1 class="pl-4 fs-l">
         <a href="<%= admin_path %>">Admin</a>
-        <span class="color-base-60">&raquo;</span> <span class="fw-bold"><%= controller_name.titleize %></span>
+        <span class="color-base-60">&raquo;</span> <span class="fw-bold">
+          <%= yield(:h1).presence || controller_name.titleize %>
+        </span>
       </h1>
 
       <div class="flex items-center h-100 ml-auto">

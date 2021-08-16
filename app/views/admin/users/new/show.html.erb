@@ -9,8 +9,12 @@
   }
 </style>
 
+<% content_for :h1 do %>
+Users — <%= @user.name %>
+<% end %>
+
 <header>
-  <h2 class="crayons-title">Members</h2>
+  <h2 class="crayons-title">Manage member <%= @user.name %></h2>
   <p><a href="<%= admin_users_path %>">← Go back to All members</a></p>
 </header>
 
