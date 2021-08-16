@@ -400,7 +400,6 @@ seeder.create_if_doesnt_exist(User, "email", "series-user@forem.com") do
     email: "series-user@forem.local",
     username: "series_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -413,6 +412,7 @@ seeder.create_if_doesnt_exist(User, "email", "series-user@forem.com") do
     work: "Software developer at Company",
     location: "Edinburgh",
     education: "University of Life",
+    website_url: Faker::Internet.url,
   )
   series_user.notification_setting.update(
     email_comment_notifications: false,
