@@ -399,7 +399,6 @@ seeder.create_if_doesnt_exist(User, "email", "series-user@forem.com") do
     name: "Series User",
     email: "series-user@forem.local",
     username: "series_user",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
     confirmed_at: Time.current,
