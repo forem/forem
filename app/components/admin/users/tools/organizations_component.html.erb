@@ -34,7 +34,7 @@
                        options_for_select(@memberships_for_select, "Member"),
                        id: nil,
                        class: "crayons-select",
-                       "aria-label": "Membership type" %>
+                       "aria-label": "Membership level" %>
       </div>
 
       <%= f.submit "Add",
@@ -75,7 +75,7 @@
                                  options_for_select(@memberships_for_select, membership.type_of_user),
                                  id: nil,
                                  class: "crayons-select",
-                                 "aria-label": "Membership type for #{membership.organization.name}" %>
+                                 "aria-label": "Membership level for #{membership.organization.name}" %>
                 </div>
 
                 <%= f.submit "Update Permissions",

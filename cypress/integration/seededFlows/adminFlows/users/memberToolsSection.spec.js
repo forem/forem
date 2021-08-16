@@ -114,11 +114,15 @@ describe('Tools Section', () => {
         cy.findByRole('link', { name: username }).click();
         cy.findByRole('link', { name: /Credits/ }).click();
 
-        cy.findAllByLabelText('Add credits').first().type(1).trigger('change');
-        cy.findByRole('textbox', { name: 'Add credits' }).type(
-          'Increasing credits',
-        );
-        cy.findAllByRole('button', { name: 'Add' }).first().click();
+        cy.findByRole('group', { name: 'Add credits' }).within(() => {
+          cy.findByRole('spinbutton', { name: /Number/i })
+            .type(1)
+            .trigger('change');
+          cy.findByRole('textbox', { name: /Reason/i }).type(
+            'Increasing credits',
+          );
+          cy.findAllByRole('button', { name: 'Add' }).first().click();
+        });
 
         cy.findByTestId('snackbar').should('have.text', 'Added 1 credit!');
       });
@@ -130,14 +134,15 @@ describe('Tools Section', () => {
         cy.findByRole('link', { name: username }).click();
         cy.findByRole('link', { name: /Credits/ }).click();
 
-        cy.findAllByLabelText('Remove credits')
-          .first()
-          .type(1)
-          .trigger('change');
-        cy.findByRole('textbox', { name: 'Remove credits' }).type(
-          'Decreasing credits',
-        );
-        cy.findAllByRole('button', { name: 'Remove' }).first().click();
+        cy.findByRole('group', { name: 'Remove credits' }).within(() => {
+          cy.findByRole('spinbutton', { name: /Number/i })
+            .type(1)
+            .trigger('change');
+          cy.findByRole('textbox', { name: /Reason/i }).type(
+            'Decreasing credits',
+          );
+          cy.findAllByRole('button', { name: 'Remove' }).first().click();
+        });
 
         cy.findByTestId('snackbar').should('have.text', 'Removed 1 credit!');
       });
@@ -149,14 +154,17 @@ describe('Tools Section', () => {
         cy.findByRole('link', { name: username }).click();
         cy.findByRole('link', { name: /Credits/ }).click();
 
-        cy.findAllByLabelText('Add credits to organizations')
-          .first()
-          .type(1)
-          .trigger('change');
-        cy.findByRole('textbox', { name: 'Add credits to organizations' }).type(
-          'Increasing credits',
+        cy.findByRole('group', { name: 'Add credits to organizations' }).within(
+          () => {
+            cy.findByRole('spinbutton', { name: /Number/i })
+              .type(1)
+              .trigger('change');
+            cy.findByRole('textbox', { name: /Reason/i }).type(
+              'Increasing credits',
+            );
+            cy.findAllByRole('button', { name: 'Add' }).first().click();
+          },
         );
-        cy.findAllByRole('button', { name: 'Add' }).last().click();
 
         cy.findByTestId('snackbar').should('have.text', 'Added 1 credit!');
       });
@@ -168,14 +176,17 @@ describe('Tools Section', () => {
         cy.findByRole('link', { name: username }).click();
         cy.findByRole('link', { name: /Credits/ }).click();
 
-        cy.findAllByLabelText('Remove credits from organizations')
-          .first()
-          .type(1)
-          .trigger('change');
-        cy.findByRole('textbox', {
+        cy.findByRole('group', {
           name: 'Remove credits from organizations',
-        }).type('Decreasing credits');
-        cy.findAllByRole('button', { name: 'Remove' }).last().click();
+        }).within(() => {
+          cy.findByRole('spinbutton', { name: /Number/i })
+            .type(1)
+            .trigger('change');
+          cy.findByRole('textbox', { name: /Reason/i }).type(
+            'Decreasing credits',
+          );
+          cy.findAllByRole('button', { name: 'Remove' }).first().click();
+        });
 
         cy.findByTestId('snackbar').should('have.text', 'Removed 1 credit!');
       });
@@ -196,7 +207,7 @@ describe('Tools Section', () => {
           });
 
         // Change role
-        cy.findAllByRole('combobox', { name: /Membership Level/ })
+        cy.findAllByRole('combobox', { name: /Membership level/i })
           .last()
           .select('Member');
         cy.findAllByRole('button', { name: 'Update Permissions' })

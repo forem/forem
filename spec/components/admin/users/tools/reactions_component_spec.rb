@@ -7,8 +7,14 @@ RSpec.describe Admin::Users::Tools::ReactionsComponent, type: :component do
   it "renders the header", :aggregate_failures do
     render_inline(described_class.new(user: user))
 
-    expect(rendered_component).to have_css("h3", text: "← Reactions")
+    expect(rendered_component).to have_css("h3", text: "← Tools")
     expect(rendered_component).to have_link(href: admin_user_tools_path(user))
+  end
+
+  it "renders the section title for the screen reader", :aggregate_failures do
+    render_inline(described_class.new(user: user))
+
+    expect(rendered_component).to have_css("div", id: "section-title", class: "hidden")
   end
 
   describe "View reactions" do
