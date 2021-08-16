@@ -16,11 +16,9 @@
                 class: "my-3",
                 id: :credits_add do |f| %>
     <fieldset>
-      <legend class="fs-base fw-medium mb-3"><%= pluralize(@user_unspent_credits_count, "available user credit") %></legend>
+      <legend class="fw-medium mb-3">Add credits</legend>
 
-      <div class="crayons-field wb-2">
-        <%= f.label "Add credits", class: "crayons-field__label", id: "add-credits" %>
-      </div>
+      <div class="fs-base fw-medium mb-3"><%= pluralize(@user_unspent_credits_count, "available user credit") %></div>
 
       <div class="crayons-field form-group w-50">
         <%= f.number_field "credits[count]",
@@ -28,13 +26,13 @@
                            in: 1...10_000,
                            required: true,
                            class: "crayons-textfield",
-                           "aria-labelledby": "add-credits" %>
+                           "aria-label": "Number of credits to add" %>
         <%= f.text_field "credits[note]",
                          id: nil,
                          placeholder: "Why are you adding these credits?",
                          required: true,
                          class: "crayons-textfield",
-                         "aria-labelledby": "add-credits" %>
+                         "aria-label": "Reason why you want to add credits" %>
       </div>
 
       <%= f.submit "Add", class: "crayons-btn", data: { disable_with: "Add" } %>
@@ -49,9 +47,7 @@
                   class: "my-3",
                   id: :credits_remove do |f| %>
       <fieldset>
-        <div class="crayons-field mb-2">
-          <%= f.label "Remove credits", class: "crayons-field__label", id: "remove-credits" %>
-        </div>
+        <legend class="fw-medium mb-3">Remove credits</legend>
 
         <div class="crayons-field form-group w-50">
           <%= f.number_field "credits[count]",
@@ -59,13 +55,13 @@
                              in: 1..@user_unspent_credits_count,
                              required: true,
                              class: "crayons-textfield mr-1",
-                             "aria-labelledby": "remove-credits" %>
+                             "aria-label": "Number of credits to remove" %>
           <%= f.text_field "credits[note]",
                            id: nil,
                            placeholder: "Why are you removing these credits?",
                            required: true,
                            class: "crayons-textfield mr-1",
-                           "aria-labelledby": "remove-credits" %>
+                           "aria-label": "Reason why you want to remove credits" %>
         </div>
 
         <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger", data: { disable_with: "Remove" } %>
@@ -82,9 +78,7 @@
                   id: :org_credits_add do |f| %>
 
       <fieldset>
-        <div class="crayons-field mb-1">
-          <%= f.label "Add credits to organizations", class: "crayons-field__label", id: "add-org-credits" %>
-        </div>
+        <legend class="fw-medium mb-3">Add credits to organizations</legend>
 
         <div class="crayons-field form-group w-50">
           <%= f.number_field "credits[count]",
@@ -92,16 +86,17 @@
                              in: 1...10_000,
                              required: true,
                              class: "crayons-textfield mr-1",
-                             "aria-labelledby": "add-org-credits" %>
+                             "aria-label": "Number of credits to add" %>
           <%= f.text_field "credits[note]",
                            id: nil,
                            placeholder: "Why are you adding these credits?",
                            required: true,
                            class: "crayons-textfield mr-1",
-                           "aria-labelledby": "add-org-credits" %>
-
+                           "aria-label": "Reason why you want to add credits" %>
           <%= select_tag "credits[organization_id]", orgs_with_credits(@organizations),
-                         id: "select_add_org_credits", class: "crayons-select", "aria-labelledby": "add-org-credits" %>
+                         id: "select_add_org_credits",
+                         class: "crayons-select",
+                         "aria-label": "Select organization receiving the credits" %>
         </div>
 
         <%= f.submit "Add", class: "crayons-btn", data: { disable_with: "Add" } %>
@@ -115,9 +110,7 @@
                   id: :org_credits_remove do |f| %>
 
       <fieldset>
-        <div class="crayons-field mb-1">
-          <%= f.label "Remove credits from organizations", class: "crayons-field__label", id: "remove-org-credits" %>
-        </div>
+        <legend class="fw-medium mb-3">Remove credits from organizations</legend>
 
         <div class="crayons-field form-group w-50">
           <%= f.number_field "credits[count]",
@@ -125,16 +118,17 @@
                              in: 1..10_000,
                              required: true,
                              class: "crayons-textfield mr-1",
-                             "aria-labelledby": "remove-org-credits" %>
+                             "aria-label": "Number of credits to remove" %>
           <%= f.text_field "credits[note]",
                            id: nil,
                            placeholder: "Why are you removing these credits?",
                            required: true,
                            class: "crayons-textfield mr-1",
-                           "aria-labelledby": "remove-org-credits" %>
-
+                           "aria-label": "Reason why you want to remove credits" %>
           <%= select_tag "credits[organization_id]", orgs_with_credits(@organizations),
-                         id: "select_remove_org_credits", class: "crayons-select", "aria-labelledby": "remove-org-credits" %>
+                         id: "select_remove_org_credits",
+                         class: "crayons-select",
+                         "aria-label": "Select organization whose credits are going to be withdrawn" %>
         </div>
 
         <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger", data: { disable_with: "Remove" } %>
