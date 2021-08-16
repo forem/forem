@@ -106,6 +106,28 @@ if (!document.getElementById('featured-story-marker')) {
   }, 2);
 }
 
+function initializeFeedOptionsDropdown() {
+  import('@utilities/dropdownUtils').then(({ initializeDropdown }) => {
+    const feedNavButton = document.getElementById('feed-nav-button');
+
+    if (!feedNavButton.dataset.initialized) {
+      const { closeDropdown } = initializeDropdown({
+        triggerElementId: 'feed-nav-button',
+        dropdownContentId: 'feed-nav-content',
+      });
+
+      const innerLinks = document
+        .getElementById('feed-nav-content')
+        .querySelectorAll('[href]');
+
+      innerLinks.forEach((element) =>
+        element.addEventListener('click', closeDropdown),
+      );
+      feedNavButton.dataset.initialized = true;
+    }
+  });
+}
+
 InstantClick.on('change', () => {
   if (document.body.dataset.userStatus !== 'logged-in') {
     // Nothing to do, the user is not logged on.
@@ -116,3 +138,4 @@ InstantClick.on('change', () => {
   renderSidebar();
 });
 InstantClick.init();
+initializeFeedOptionsDropdown();
