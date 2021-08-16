@@ -160,7 +160,7 @@
     "clipboard-polyfill": "^3.0.3",
     "core-js": "3",
     "file-loader": "^6.2.0",
-    "focus-trap": "^6.6.0",
+    "focus-trap": "^6.6.1",
     "focus-visible": "^5.2.0",
     "he": "^1.2.0",
     "honeybadger-js": "2.3.0",
