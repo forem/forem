@@ -39,7 +39,7 @@
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
       <header class="flex justify-between items-center p-2 px-3 m:p-0 m:px-0 m:pb-2">
-        <h1 class="crayons-subtitle-2">Posts</h1>
+        <h1 id="feed-title" class="crayons-subtitle-2"><%= feed_heading(params[:timeframe]) %></h1>
 
         <div class="relative hidden s:block">
           <button id="feed-nav-button" class="crayons-btn crayons-btn--ghost crayons-btn--icon" aria-label="Change feed view"><%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon", aria_hidden: true, title: "Change feed view") %></button>
@@ -50,39 +50,7 @@
                   <a
                     href="<%= list_path %>/"
                     <%= %w[week month year infinity latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>>
-                    Feed
-                  </a>
-                  <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
-                </li>
-                <li class="drawer-navigation__item py-2">
-                  <a
-                    href="<%= list_path %>/top/week"
-                    <%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>
-                    Week
-                  </a>
-                  <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
-                </li>
-                <li class="drawer-navigation__item py-2">
-                  <a
-                   href="<%= list_path %>/top/month"
-                   <%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
-                    Month
-                  </a>
-                  <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
-                </li>
-                <li class="drawer-navigation__item py-2">
-                  <a
-                   href="<%= list_path %>/top/year"
-                    <%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
-                    Year
-                  </a>
-                  <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
-                </li>
-                <li class="drawer-navigation__item py-2">
-                  <a
-                   href="<%= list_path %>/top/infinity"
-                   <%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
-                    Infinity
+                    Trending
                   </a>
                   <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
                 </li>
@@ -90,7 +58,39 @@
                   <a
                    href="<%= list_path %>/latest"
                    <%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>
-                    Latest
+                    Most Recent
+                  </a>
+                  <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
+                </li>
+                <li class="drawer-navigation__item py-2">
+                  <a
+                    href="<%= list_path %>/top/week"
+                    <%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>
+                    This Week
+                  </a>
+                  <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
+                </li>
+                <li class="drawer-navigation__item py-2">
+                  <a
+                   href="<%= list_path %>/top/month"
+                   <%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
+                    This Month
+                  </a>
+                  <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
+                </li>
+                <li class="drawer-navigation__item py-2">
+                  <a
+                   href="<%= list_path %>/top/year"
+                    <%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
+                    This Year
+                  </a>
+                  <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
+                </li>
+                <li class="drawer-navigation__item py-2">
+                  <a
+                   href="<%= list_path %>/top/infinity"
+                   <%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
+                    All Time
                   </a>
                   <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
                 </li>

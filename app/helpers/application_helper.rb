@@ -23,6 +23,14 @@ module ApplicationHelper
     "latest" => "Latest posts"
   }.freeze
 
+  FEED_TITLES = {
+    "week" => "This Week",
+    "month" => "This Month",
+    "year" => "This Year",
+    "infinity" => "All Time",
+    "latest" => "Most Recent"
+  }.freeze
+
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
   end
@@ -53,6 +61,14 @@ module ApplicationHelper
                     end
     content_for(:title) { derived_title }
     derived_title
+  end
+
+  def feed_heading(timeframe)
+    if timeframe.blank?
+      return "Trending"
+    end
+
+    FEED_TITLES[timeframe]
   end
 
   def title_with_timeframe(page_title:, timeframe:, content_for: false)
