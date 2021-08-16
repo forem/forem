@@ -6,15 +6,15 @@
     <span class="crayons-link crayons-subtitle-2 mt-5"><%= actor.name %></span>
   </a>
 </div>
+
+<div class="print-hidden">
+  <%= follow_button(actor, style = "", classes = "w-100") %>
+</div>
 <% if actor.tag_line.present? %>
   <div class="color-base-70">
     <%= truncate (actor.tag_line || actor.summary || "Posts in this tag"), length: 200 %>
   </div>
 <% end %>
-
-<div class="print-hidden">
-  <%= follow_button(actor, style = "", classes = "w-100") %>&nbsp;
-</div>
 
 <% if actor.class.name == "User" %>
   <div class="user-metadata-details">

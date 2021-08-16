@@ -60,7 +60,6 @@ class GithubTag
 
     def fetch_readme(repository_path, repository_url)
       readme_html = Github::OauthClient.new.readme(repository_path, accept: "application/vnd.github.html")
-      readme = Github::OauthClient.new.readme(repository_path)
       clean_relative_path!(readme_html, repository_url)
     rescue Github::Errors::NotFound
       nil

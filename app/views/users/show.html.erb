@@ -1,3 +1,4 @@
+<main id="main-content">
 <% title @user.name %>
 
 <%= render "shared/payment_pointer", user: @user %>
@@ -157,5 +158,6 @@
     </div>
   </main>
 </div>
+</main>
 
-<%= javascript_packs_with_chunks_tag "storiesList", "followButtons", defer: true %>
+<%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", defer: true %>
