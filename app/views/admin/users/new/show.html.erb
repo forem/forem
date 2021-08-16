@@ -24,11 +24,12 @@ Users — <%= @user.name %>
   data-user-tools-component-path-value="<%= admin_user_tools_path(@user.id) %>"
   data-action="user:tools@document->user#fetchAndOpenTools">
   <div class="flex flex-column" style="flex-basis: 70%;">
+    <%# This div is paramount for accessibility as it will contains the title of the partial announced via aria-live %>
+    <div class="screen-reader-only" data-user-target="activeSection" aria-live="polite"></div>
+
     <section class="crayons-card" id="profile">
       <h3 class="crayons-subtitle-2"><%= @user.name %></h3>
     </section>
-
-    <div data-user-target="replace" role="region" aria-live="polite"></div>
 
     <%= render(Admin::Users::ToolsComponent.new(user: @user)) %>
 
