@@ -59,7 +59,7 @@ class Tweet < ApplicationRecord
       status = if status.retweeted_status.present?
                  TwitterClient::Client.status(status.retweeted_status.id.to_s)
                else
-                 status
+                 status # rubocop:disable Style/RedundantSelfAssignmentBranch
                end
 
       params = { twitter_id_code: status.id.to_s }

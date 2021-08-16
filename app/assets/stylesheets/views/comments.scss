@@ -1,4 +1,5 @@
 @import '../config/import';
+@import '../components/buttons';
 
 .comment-form {
   --preview-display: none;
@@ -268,4 +269,9 @@
   a {
     color: var(--base-90);
   }
+}
+
+.personal-template-button:not(.active),
+.moderator-template-button:not(.active) {
+   @extend .crayons-btn--outlined;
 }
