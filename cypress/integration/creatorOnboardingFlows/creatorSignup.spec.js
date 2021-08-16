@@ -8,19 +8,21 @@ describe('Creator Signup Page', () => {
     cy.findByText("Let's start your Forem journey!").should('be.visible');
   });
 
-  it('should display some subtext', () => {
+  it('should display instructions', () => {
     cy.findByText('Create your admin account first.').should('be.visible');
     cy.findByText("Then we'll walk you through your Forem setup.").should(
       'be.visible',
     );
   });
 
-  it('should display a validated username hint that maps to the name', () => {
+  it('should display a validated username hint that correlates to the name entered', () => {
     cy.findByTestId('creator-signup-form').as('creatorSignupForm');
     cy.get('@creatorSignupForm')
       .findByText(/^Name$/)
       .type('1 Forem creator name! Also test a maximum length string');
 
+    // restricts the string to 20 characters, lowercased,
+    // replaces spaces and special_characters with an underscore
     cy.contains('1_forem_creator_name__also_tes');
   });
 
@@ -43,26 +45,56 @@ describe('Creator Signup Page', () => {
 
   it('should contain an email label and field', () => {
     cy.findByTestId('creator-signup-form').as('creatorSignupForm');
-    cy.get('@creatorSignupForm').findByText(/^Email/);
-    // test for email input
+    cy.get('@creatorSignupForm')
+      .findByText(/^Email/)
+      .should('be.visible');
   });
 
   it('should contain an password', () => {
     cy.findByTestId('creator-signup-form').as('creatorSignupForm');
-    cy.get('@creatorSignupForm').findByText(/^Password/);
-    // test for password input
+    cy.get('@creatorSignupForm')
+      .findByText(/^Password/)
+      .should('be.visible');
   });
 
-  //
-  // it("should toggle the password when the eye icon is clicked", () => {
-  //
-  // });
-  //
-  // it("should allow sign the user in when 'Create my account' is clicked", () => {
-  //
-  // });
+  it('should toggle the password when the eye icon is clicked', () => {
+    cy.findByTestId('creator-signup-form').as('creatorSignupForm');
+    cy.get('@creatorSignupForm')
+      .findByText(/^Password$/)
+      .type('abc123456');
 
-  // it("should catch any errors", ()=> {
-  //
-  // });
+    cy.get('input[name="user[password]"]').should(
+      'have.attr',
+      'type',
+      'password',
+    );
+    cy.get('.js-eye').should('be.visible');
+    cy.get('.js-eye-off').should('not.be.visible');
+
+    cy.get('.js-creator-password-visibility').click({ force: true });
+    cy.get('input[name="user[password]"]').should('have.attr', 'type', 'text');
+    cy.get('.js-eye-off').should('be.visible');
+    cy.get('.js-eye').should('not.be.visible');
+  });
+
+  it("should allow sign the user in when 'Create my account' is clicked", () => {
+    cy.findByTestId('creator-signup-form').as('creatorSignupForm');
+    cy.get('@creatorSignupForm').findByText(/^Name/).type('Forem Creator');
+
+    cy.get('@creatorSignupForm')
+      .findByText(/^Email/)
+      .type('forem_creator@gmail.com');
+
+    cy.get('@creatorSignupForm')
+      .findByText(/^Password/)
+      .type('abc123456');
+
+    cy.get('@creatorSignupForm')
+      .findAllByRole('button', { name: 'Create my account' })
+      .last()
+      .click();
+
+    const { baseUrl } = Cypress.config();
+    cy.url().should('equal', `${baseUrl}onboarding?referrer=${baseUrl}`);
+  });
 });

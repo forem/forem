@@ -14,7 +14,10 @@ function setDefaultUsername(event) {
 }
 
 function createUsernameHint(name) {
-  return name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_').substr(0, 30);
+  return name
+    .toLowerCase()
+    .replace(/[^a-zA-Z0-9]/g, '_')
+    .substr(0, 30);
 }
 
 function showHintRow() {
@@ -49,10 +52,9 @@ function showUsernameField() {
 
 function focusUsernameInput(usernameRow) {
   // A timer with a count of 0 will run when the thread becomes idle
-  window.setTimeout(function () {
-    usernameRow.getElementsByTagName("input")[0].focus();
+  window.setTimeout(() => {
+    usernameRow.getElementsByTagName('input')[0].focus();
   }, 0);
-
 }
 
 function hideHintRow() {
@@ -68,17 +70,15 @@ function togglePasswordMask() {
   toggleEyeIcons(visible);
 }
 
-
 function togglePasswordType(visible) {
   const passwordType = visible ? 'text' : 'password';
   passwordField.type = passwordType;
 }
 
 function toggleEyeIcons(visible) {
-  eyeOffIcon.classList.toggle("hidden", !visible);
-  eyeIcon.classList.toggle("hidden", visible);
+  eyeOffIcon.classList.toggle('hidden', !visible);
+  eyeIcon.classList.toggle('hidden', visible);
 }
-
 
 let visible = false;
 const eyeIcon = document.getElementsByClassName('js-eye')[0];
