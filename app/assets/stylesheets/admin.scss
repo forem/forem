@@ -3,6 +3,8 @@
 @import 'variables';
 @import 'scaffolds';
 
+@import 'components/admin/users';
+
 // overriding Bootstrap styles
 label {
   margin-bottom: 0 !important;

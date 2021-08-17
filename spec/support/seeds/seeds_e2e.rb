@@ -12,6 +12,8 @@ seeder = Seeder.new
 Settings::UserExperience.public = true
 Settings::General.waiting_on_first_user = false
 Settings::Authentication.allow_email_password_registration = true
+Settings::SMTP.user_name = "username"
+Settings::SMTP.password = "password"
 
 ##############################################################################
 
@@ -54,6 +56,9 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
   user.add_role(:trusted)
+
+  # Enable new Admin Members
+  FeatureFlag.enable(:new_admin_members, user)
 end
 
 admin_user = User.find_by(email: "admin@forem.local")
@@ -442,7 +447,8 @@ end
 ##############################################################################
 
 seeder.create_if_none(Listing) do
-  Credit.add_to(admin_user, rand(100))
+  Credit.add_to(admin_user, rand(1..100))
+  Credit.add_to(admin_user.organizations.first, rand(1..100))
 
   Listing.create!(
     user: admin_user,
@@ -525,4 +531,21 @@ seeder.create_if_none(Page) do
       landing_page: false,
     )
   end
+end
+
+##############################################################################
+
+seeder.create_if_none(Reaction) do
+  user = User.find_by(username: "trusted_user_1")
+  admin_user.reactions.create!(category: :vomit, reactable: user)
+end
+
+##############################################################################
+
+seeder.create_if_none(FeedbackMessage) do
+  admin_user.reporter_feedback_messages.create!(
+    feedback_type: "bug-reports",
+    message: "a bug",
+    category: :bug,
+  )
 end
