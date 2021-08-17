@@ -1424,6 +1424,11 @@
   resolved "https://registry.yarnpkg.com/@github/clipboard-copy-element/-/clipboard-copy-element-1.1.2.tgz#7a6e8042749471504d4e7cfcc47097a781db2bdb"
   integrity sha512-L6CMrcA5we0udafvoSuRCE/Ci/3xrLWKYRGup2IlhxF771bQYsQ2EB1of182pI8ZWM4oxgwzu37+igMeoZjN/A==
 
+"@github/time-elements@3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@github/time-elements/-/time-elements-3.1.2.tgz#cc36d7a34ff2033d7f0b216f1a724405b8fbc201"
+  integrity sha512-YVtZVLBikP6I7na22kfB9PKIseISwX41MFJ7lPuNz1VVH2IR5cpRRU6F1X6kcchPChljuvMUR4OiwMWHOJQ8kQ==
+
 "@honeybadger-io/webpack@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@honeybadger-io/webpack/-/webpack-1.2.0.tgz#d058f5bb87e8f69ca9c8721d4aa5cb226e8604e7"

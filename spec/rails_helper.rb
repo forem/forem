@@ -68,11 +68,11 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
-  config.include ApplicationHelper
   config.include ActionMailer::TestHelper
+  config.include ApplicationHelper
   config.include Devise::Test::ControllerHelpers, type: :view
-  config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include Devise::Test::IntegrationHelpers, type: :system
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthHelpers
   config.include RpushHelpers

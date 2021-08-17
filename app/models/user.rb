@@ -262,7 +262,6 @@ class User < ApplicationRecord
       ),
     )
   }
-
   before_validation :check_for_username_change
   before_validation :downcase_email
   # make sure usernames are not empty, to be able to use the database unique index
