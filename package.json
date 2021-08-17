@@ -152,7 +152,7 @@
     "@honeybadger-io/webpack": "^1.2.0",
     "@rails/ujs": "6.1.4",
     "@rails/webpacker": "5.4.0",
-    "@reach/combobox": "^0.16.0",
+    "@reach/combobox": "^0.16.1",
     "ahoy.js": "^0.4.0",
     "autoprefixer": "^10.3.1",
     "babel-preset-preact": "^2.0.0",
