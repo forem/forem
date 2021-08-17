@@ -51,44 +51,71 @@
           </div>
         </button>
         <% if user_signed_in? %>
-          <div class="flex-1 flex items-center justify-between">
-            <h2 class="crayons-subtitle-2">Posts</h2>
-            <nav class="crayons-tabs hidden s:flex" aria-label="View tagged posts by">
-              <ul class="crayons-tabs__list">
-                <li>
-                  <a data-text="Feed" href="<%= list_path %>/" class="crayons-tabs__item <%= "crayons-tabs__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"<%= %w[week month year infinity
-                                                                                                                                                                                                         latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>>Feed</a>
-                </li>
-                <li>
-                  <a data-text="Week" href="<%= list_path %>/top/week" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>Week</a>
-                </li>
-                <li>
-                  <a data-text="Month" href="<%= list_path %>/top/month" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>Month</a>
-                </li>
-                <li>
-                  <a data-text="Year" href="<%= list_path %>/top/year" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>Year</a>
-                </li>
-                <li>
-                  <a data-text="Infinity" href="<%= list_path %>/top/infinity" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>Infinity</a>
-                </li>
-                <li>
-                  <a data-text="Latest" href="<%= list_path %>/latest" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>Latest</a>
-                </li>
-              </ul>
-            </nav>
 
-            <select class="crayons-select s:hidden ml-2 s:ml-auto w-auto" id="feed-filter-select" aria-label="feed-filter-select">
-              <option value="<%= list_path %>/" <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %> selected<% end %>>Feed</option>
-              <option value="<%= list_path %>/top/week" <% if timeframe_check("week") %> selected<% end %>>Week</option>
-              <option value="<%= list_path %>/top/month" <% if timeframe_check("month") %> selected<% end %>>Month</option>
-              <option value="<%= list_path %>/top/year" <% if timeframe_check("year") %> selected<% end %>>Year</option>
-              <option value="<%= list_path %>/top/infinity" <% if timeframe_check("infinity") %> selected<% end %>>Infinity</option>
-              <option value="<%= list_path %>/latest" <% if timeframe_check("latest") %> selected<% end %>>Latest</option>
-            </select>
+          <div class="relative hidden s:block ml-auto">
+            <button id="feed-nav-button" class="crayons-btn crayons-btn--ghost crayons-btn--icon" aria-label="Change feed view"><%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon", aria_hidden: true, title: "Change feed view") %></button>
+            <div id="feed-nav-content" class="crayons-dropdown right-0">
+              <nav id="feed-navigation-links" aria-label="View posts by" class="drawer-navigation">
+                <ul class="list-none">
+                  <li class="drawer-navigation__item py-2">
+                    <a
+                      href="<%= list_path %>/"
+                      <%= %w[week month year infinity latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>>
+                      Trending
+                    </a>
+                    <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
+                  </li>
+                    <li class="drawer-navigation__item py-2">
+                    <a
+                      href="<%= list_path %>/latest"
+                      <%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>
+                      Most Recent
+                    </a>
+                    <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
+                  </li>
+                  <li class="drawer-navigation__item py-2">
+                    <a
+                      href="<%= list_path %>/top/week"
+                      <%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>
+                      This Week
+                    </a>
+                    <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
+                  </li>
+                  <li class="drawer-navigation__item py-2">
+                    <a
+                      href="<%= list_path %>/top/month"
+                      <%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
+                      This Month
+                    </a>
+                    <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
+                  </li>
+                  <li class="drawer-navigation__item py-2">
+                    <a
+                      href="<%= list_path %>/top/year"
+                      <%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
+                      This Year
+                    </a>
+                    <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
+                  </li>
+                  <li class="drawer-navigation__item py-2">
+                    <a
+                      href="<%= list_path %>/top/infinity"
+                      <%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
+                      All Time
+                    </a>
+                    <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+          <div id="mobile-feed-nav-container" class="s:hidden ml-auto">
+            <button id="mobile-feed-nav-button" class="crayons-btn crayons-btn--ghost crayons-btn--icon" aria-label="Change feed view"><%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon", aria_hidden: true, title: "Change feed view") %></button>
           </div>
         <% else %>
           <div class="flex-1 flex items-center justify-between">
-            <div class="crayons-notice w-100" aria-live="polite">👋 <a href="<%= sign_up_path %>">Sign in</a> for the ability sort posts by <strong>top</strong> and  <strong>latest</strong>.</div>
+            <div class="crayons-notice w-100" aria-live="polite">👋 <a href="<%= sign_up_path %>">Sign in</a> for the ability view posts by time period.</div>
           </div>
         <% end %>
 
@@ -113,5 +140,5 @@
     <%= render "stories/tagged_articles/sidebar_additional" %>
   </div>
 
-  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", defer: true %>
+  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", "feedNavigation", defer: true %>
 <% end %>
