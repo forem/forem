@@ -6,5 +6,5 @@
   <%= image_tag("twemoji/thumb-down.svg", alt: "Thumbs down emoji") %>
 </button>
 <button class="reaction-button <%= Reaction.cached_any_reactions_for?(moderatable, current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= moderatable.id %>" data-category="vomit" data-reactable-type="Article">
-  <%= image_tag("twemoji/thumb-up.svg", alt: "Nausea face emoji") %>
+  <%= image_tag("twemoji/suspicious.svg", alt: "Suspicious face emoji") %>
 </button>
