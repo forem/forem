@@ -1,11 +1,14 @@
-/* global require, module */
-const { extendDefaultPlugins } = require('svgo');
+/* global module */
 
 module.exports = {
-  plugins: extendDefaultPlugins([
+  plugins: [
     {
-      name: 'removeViewBox',
-      active: false,
+      name: 'preset-default',
+      params: {
+        overrides: {
+          removeViewBox: false,
+        },
+      },
     },
-  ]),
+  ],
 };
