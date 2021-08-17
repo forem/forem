@@ -51,8 +51,9 @@
           </div>
         </button>
         <% if user_signed_in? %>
-
-          <div class="relative hidden s:block ml-auto">
+        <div class="flex-1 flex items-center justify-between">
+          <h2 class="crayons-subtitle-2"><%= feed_heading(params[:timeframe]) %></h2>
+          <div class="relative hidden s:block">
             <button id="feed-nav-button" class="crayons-btn crayons-btn--ghost crayons-btn--icon" aria-label="Change feed view"><%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon", aria_hidden: true, title: "Change feed view") %></button>
             <div id="feed-nav-content" class="crayons-dropdown right-0">
               <nav id="feed-navigation-links" aria-label="View posts by" class="drawer-navigation">
@@ -110,9 +111,10 @@
             </div>
           </div>
 
-          <div id="mobile-feed-nav-container" class="s:hidden ml-auto">
+          <div id="mobile-feed-nav-container" class="s:hidden ">
             <button id="mobile-feed-nav-button" class="crayons-btn crayons-btn--ghost crayons-btn--icon" aria-label="Change feed view"><%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon", aria_hidden: true, title: "Change feed view") %></button>
           </div>
+        </div>
         <% else %>
           <div class="flex-1 flex items-center justify-between">
             <div class="crayons-notice w-100" aria-live="polite">👋 <a href="<%= sign_up_path %>">Sign in</a> for the ability view posts by time period.</div>
