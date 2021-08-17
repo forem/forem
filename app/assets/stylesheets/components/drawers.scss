@@ -10,6 +10,7 @@
 
   &__overlay {
     background: var(--base-100);
+    pointer-events: none;
     opacity: 0.5;
     position: fixed;
     left: 0;

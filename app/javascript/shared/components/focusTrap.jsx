@@ -49,7 +49,13 @@ export const FocusTrap = ({
 
     focusTrap.current = createFocusTrap(selector, {
       escapeDeactivates: false,
-      clickOutsideDeactivates,
+      clickOutsideDeactivates: (e) => {
+        if (clickOutsideDeactivates) {
+          // Prevent the background click event from doing anything other than closing the focus trap
+          e.preventDefault();
+        }
+        return clickOutsideDeactivates;
+      },
       onDeactivate: deactivate,
     });
 
