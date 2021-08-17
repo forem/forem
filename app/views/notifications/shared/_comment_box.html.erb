@@ -20,8 +20,7 @@
             data-category="thumbsdown"
             data-reactable-type="Comment"
             title="thumbsdown">
-            <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji", width: 24, height: 24, class: "reaction-icon not-reacted") %>
-            <%= image_tag("emoji/emoji-one-thumbs-down.png", alt: "Thumbs down emoji", width: 24, height: 24, class: "reaction-icon reacted") %>
+            <%= inline_svg_tag("twemoji/thumb-down.svg", aria: true, class: "crayons-icon crayons-icon--default reaction-icon", width: 24, height: 24, title: "Thumb down") %>
           </button>
           <button
             class="crayons-btn crayons-btn--icon crayons-btn--icon-rounded crayons-btn--ghost inline-flex crayons-btn--s reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "vomit") ? "reacted" : "" %>"
@@ -29,8 +28,7 @@
             data-category="vomit"
             data-reactable-type="Comment"
             title="vomit">
-            <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", width: 24, height: 24, class: "reaction-icon not-reacted") %>
-            <%= image_tag("emoji/emoji-one-nausea-face.png", alt: "Nausea face emoji", width: 24, height: 24, class: "reaction-icon reacted") %>
+            <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default reaction-icon", width: 24, height: 24, title: "Suspicious") %>
           </button>
         </div>
       <% end %>

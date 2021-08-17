@@ -160,6 +160,7 @@
   .reaction-icon {
     --not-reacted-display: inline-block;
     --reacted-display: none;
+    filter: grayscale(1);
     &.not-reacted {
       display: var(--not-reacted-display);
     }
@@ -170,6 +171,7 @@
 
   &.reacted {
     .reaction-icon {
+      filter: grayscale(0);
       --not-reacted-display: none;
       --reacted-display: inline-block;
     }

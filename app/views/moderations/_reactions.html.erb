@@ -1,13 +1,10 @@
 <h2>Add a reaction</h2>
 <button class="reaction-button <%= Reaction.cached_any_reactions_for?(moderatable, current_user, "like") ? "reacted" : "" %>" data-reactable-id="<%= moderatable.id %>" data-category="like" data-reactable-type="Article">
   <%= image_tag("favorite-heart-outline-button.svg", alt: "Thumbs down emoji") %>
-  <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Thumbs down emoji" />
 </button>
 <button class="reaction-button <%= Reaction.cached_any_reactions_for?(moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= moderatable.id %>" data-category="thumbsdown" data-reactable-type="Article">
-  <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
-  <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+  <%= image_tag("twemoji/thumb-down.svg", alt: "Thumbs down emoji") %>
 </button>
 <button class="reaction-button <%= Reaction.cached_any_reactions_for?(moderatable, current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= moderatable.id %>" data-category="vomit" data-reactable-type="Article">
-  <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
-  <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+  <%= image_tag("twemoji/thumb-up.svg", alt: "Nausea face emoji") %>
 </button>
