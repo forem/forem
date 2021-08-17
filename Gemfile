@@ -132,6 +132,7 @@ group :development do
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
+  gem "ruby_jard", "~> 0.3.1" # A tool for generating JRuby .jar files from .rb files
   gem "web-console", "~> 4.1" # Rails Console on the Browser
   gem "yard", "~> 0.9.26" # YARD is a documentation generation tool for the Ruby programming language
   gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
