@@ -20,36 +20,57 @@ module Badges
 
     def initialize(msg)
       @msg = msg
+      @badge_slugs_with_id = get_badge_slugs_with_id
     end
 
     def call
       REPOSITORIES.each do |repo|
-        commits = Github::OauthClient.new.commits(repo)
-        commit_authors_with_count = commits.each_with_object(Hash.new(0)) do |commit, hash|
-          hash[commit.author.id.to_s] += 1 unless commit.author.nil?
-        end
-        Identity.github.where(uid: commit_authors_with_count.keys).find_each do |identity|
-          create_badges_for_user(identity.user_id, commit_authors_with_count[identity.uid])
-        end
+        award_single_commit_contributors(repo)
+        award_multi_commit_contributors(repo)
       end
     end
 
     private
 
-    attr_reader :msg
+    attr_reader :msg, :badge_slugs_with_id
 
-    def create_badges_for_user(user_id, commits_count)
-      BADGE_SLUGS.each do |slug, milestone|
-        create_badge_achievement(user_id, slug, milestone, commits_count)
+    def award_single_commit_contributors(repo)
+      yesterday = 1.day.ago.utc.iso8601
+      commits = Github::OauthClient.new.commits(repo, since: yesterday)
+      authors_uids = commits.map { |commit| commit.author.id }
+      Identity.github.where(uid: authors_uids).find_each do |i|
+        BadgeAchievement
+          .where(user_id: i.user_id, badge_id: badge_slugs_with_id[:"dev-contributor"])
+          .first_or_create(rewarding_context_message_markdown: msg)
       end
     end
 
-    def create_badge_achievement(user_id, slug, milestone, commits_count)
-      return unless (badge_id = Badge.id_for_slug(slug))
-      return if commits_count < milestone
+    def award_multi_commit_contributors(repo)
+      contributors = Github::OauthClient.new.contributors(repo)
+      authors_uids = contributors.map(&:id)
 
-      user_id_from_badges = BadgeAchievement.where(badge_id: badge_id).pluck(:user_id)
-      BadgeAchievement.create(user_id: user_id, badge_id: badge_id) unless user_id_from_badges.include?(user_id)
+      Identity.github.where(uid: authors_uids).find_each do |identity|
+        user_contribution = contributors.detect { |contributor| contributor.id.to_s == identity.uid }
+        next if user_contribution.nil?
+
+        create_badges_for_user(identity.user_id, user_contribution.contributions)
+      end
+    end
+
+    def create_badges_for_user(user_id, commits_count)
+      badge_slugs_with_id.each do |slug, slug_id|
+        next if commits_count < BADGE_SLUGS[slug]
+
+        BadgeAchievement.create(user_id: user_id, badge_id: slug_id)
+      end
+    end
+
+    def get_badge_slugs_with_id
+      badge_slugs_with_id = {}
+      BADGE_SLUGS.each_key do |slug|
+        badge_slugs_with_id[slug] = Badge.id_for_slug(slug)
+      end
+      badge_slugs_with_id.compact
     end
   end
 end
