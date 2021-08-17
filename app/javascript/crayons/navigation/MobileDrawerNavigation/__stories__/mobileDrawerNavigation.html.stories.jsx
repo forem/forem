@@ -11,6 +11,20 @@ export default {
   parameters: { notes },
 };
 
+const CheckIcon = () => (
+  <svg
+    aria-hidden="true"
+    class="check-icon"
+    fill="currentColor"
+    height="24"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414 4.95 4.95z" />
+  </svg>
+);
+
 export const Default = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
@@ -67,18 +81,8 @@ export const Default = () => {
                     href={baseStoryUrl}
                   >
                     Link 1
+                    <CheckIcon />
                   </a>
-                  <svg
-                    aria-hidden="true"
-                    class="check-icon"
-                    fill="currentColor"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414 4.95 4.95z" />
-                  </svg>
                 </li>
                 <li class="drawer-navigation__item py-2">
                   <a
@@ -86,18 +90,8 @@ export const Default = () => {
                     aria-current={`#2` === hash ? 'page' : null}
                   >
                     Link 2
+                    <CheckIcon />
                   </a>
-                  <svg
-                    aria-hidden="true"
-                    class="check-icon"
-                    fill="currentColor"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414 4.95 4.95z" />
-                  </svg>
                 </li>
                 <li class="drawer-navigation__item py-2">
                   <a
@@ -105,18 +99,8 @@ export const Default = () => {
                     aria-current={`#3` === hash ? 'page' : null}
                   >
                     Link 3
+                    <CheckIcon />
                   </a>
-                  <svg
-                    aria-hidden="true"
-                    class="check-icon"
-                    fill="currentColor"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414 4.95 4.95z" />
-                  </svg>
                 </li>
               </ul>
             </nav>

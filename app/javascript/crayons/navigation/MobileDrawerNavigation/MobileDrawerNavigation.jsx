@@ -82,8 +82,8 @@ export const MobileDrawerNavigation = ({
                   >
                     <a href={url} aria-current={isCurrentPage ? 'page' : null}>
                       {displayName}
+                      <CheckIcon />
                     </a>
-                    <CheckIcon />
                   </li>
                 );
               })}

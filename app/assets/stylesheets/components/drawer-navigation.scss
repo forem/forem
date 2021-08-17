@@ -3,25 +3,26 @@
 .drawer-navigation {
   &__item {
     display: flex;
-    justify-content: space-between;
 
     a {
+      width: 100%;
       color: var(--body-color);
+      display: flex;
+      justify-content: space-between;
+
+      .check-icon {
+        display: none;
+      }
     }
 
     a[aria-current='page'] {
       color: var(--link-brand-color);
-    }
 
-    .check-icon {
-      fill: currentColor;
-      vertical-align: middle;
-      display: none;
-      color: var(--link-brand-color);
-    }
-
-    a[aria-current='page'] + .check-icon {
-      display: block;
+      .check-icon {
+        display: block;
+        fill: currentColor;
+        color: var(--link-brand-color);
+      }
     }
   }
 }
