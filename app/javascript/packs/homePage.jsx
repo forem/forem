@@ -128,6 +128,43 @@ function initializeFeedOptionsDropdown() {
   });
 }
 
+function initializeMobileNavigationDrawer() {
+  const mobileFeedNavButton = document.getElementById('mobile-feed-nav-button');
+
+  if (mobileFeedNavButton.dataset.initialized === 'true') {
+    return;
+  }
+
+  document
+    .getElementById('mobile-feed-nav-button')
+    .addEventListener('click', () => {
+      import('@crayons/MobileDrawer').then(({ MobileDrawer }) => {
+        // The drawer shows the same navigation links as we use in desktop mode
+        const navigationLinks = document.getElementById(
+          'feed-navigation-links',
+        );
+        const container = document.getElementById('mobile-feed-nav-container');
+
+        render(
+          <MobileDrawer
+            title="Feed options"
+            onClose={() => document.getElementById('mobile-drawer')?.remove()}
+          >
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: navigationLinks.innerHTML,
+              }}
+            />
+          </MobileDrawer>,
+          container,
+        );
+      });
+    });
+
+  mobileFeedNavButton.dataset.initialized = true;
+}
+
 InstantClick.on('change', () => {
   if (document.body.dataset.userStatus !== 'logged-in') {
     // Nothing to do, the user is not logged on.
@@ -138,4 +175,6 @@ InstantClick.on('change', () => {
   renderSidebar();
 });
 InstantClick.init();
+
 initializeFeedOptionsDropdown();
+initializeMobileNavigationDrawer();

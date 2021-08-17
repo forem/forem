@@ -44,7 +44,7 @@
         <div class="relative hidden s:block">
           <button id="feed-nav-button" class="crayons-btn crayons-btn--ghost crayons-btn--icon" aria-label="Change feed view"><%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon", aria_hidden: true, title: "Change feed view") %></button>
           <div id="feed-nav-content" class="crayons-dropdown right-0">
-             <nav aria-label="View posts by" class="drawer-navigation">
+             <nav id="feed-navigation-links" aria-label="View posts by" class="drawer-navigation">
               <ul class="list-none">
                 <li class="drawer-navigation__item py-2">
                   <a
@@ -54,10 +54,10 @@
                   </a>
                   <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
                 </li>
-                 <li class="drawer-navigation__item py-2">
+                  <li class="drawer-navigation__item py-2">
                   <a
-                   href="<%= list_path %>/latest"
-                   <%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>
+                    href="<%= list_path %>/latest"
+                    <%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>
                     Most Recent
                   </a>
                   <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
@@ -72,15 +72,15 @@
                 </li>
                 <li class="drawer-navigation__item py-2">
                   <a
-                   href="<%= list_path %>/top/month"
-                   <%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
+                    href="<%= list_path %>/top/month"
+                    <%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
                     This Month
                   </a>
                   <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
                 </li>
                 <li class="drawer-navigation__item py-2">
                   <a
-                   href="<%= list_path %>/top/year"
+                    href="<%= list_path %>/top/year"
                     <%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
                     This Year
                   </a>
@@ -88,8 +88,8 @@
                 </li>
                 <li class="drawer-navigation__item py-2">
                   <a
-                   href="<%= list_path %>/top/infinity"
-                   <%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
+                    href="<%= list_path %>/top/infinity"
+                    <%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
                     All Time
                   </a>
                   <%= inline_svg_tag("checkmark.svg", class: "check-icon", aria_hidden: true, title: "Current page") %>
@@ -99,14 +99,9 @@
           </div>
         </div>
 
-        <select class="crayons-select s:hidden ml-2 s:ml-auto w-auto" id="feed-filter-select" aria-label="feed-filter-select">
-          <option value="<%= list_path %>/" <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %> selected<% end %>>Feed</option>
-          <option value="<%= list_path %>/top/week" <% if timeframe_check("week") %> selected<% end %>>Week</option>
-          <option value="<%= list_path %>/top/month" <% if timeframe_check("month") %> selected<% end %>>Month</option>
-          <option value="<%= list_path %>/top/year" <% if timeframe_check("year") %> selected<% end %>>Year</option>
-          <option value="<%= list_path %>/top/infinity" <% if timeframe_check("infinity") %> selected<% end %>>Infinity</option>
-          <option value="<%= list_path %>/latest" <% if timeframe_check("latest") %> selected<% end %>>Latest</option>
-        </select>
+        <div id="mobile-feed-nav-container" class="s:hidden">
+          <button id="mobile-feed-nav-button" class="crayons-btn crayons-btn--ghost crayons-btn--icon" aria-label="Change feed view"><%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon", aria_hidden: true, title: "Change feed view") %></button>
+        </div>
       </header>
 
       <% if user_signed_in? %>

@@ -31,7 +31,7 @@ import { FocusTrap } from '../../shared/components/focusTrap';
  */
 export const MobileDrawer = ({ children, title, onClose = () => {} }) => {
   return (
-    <div className="crayons-mobile-drawer">
+    <div className="crayons-mobile-drawer" id="mobile-drawer">
       <div className="crayons-mobile-drawer__overlay" />
       <FocusTrap
         clickOutsideDeactivates
