@@ -26,7 +26,7 @@ export function initializeMobileNavigationDrawer() {
               <div
                 // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{
-                  __html: navigationLinks.innerHTML,
+                  __html: navigationLinks.outerHTML,
                 }}
               />
             </MobileDrawer>,
