@@ -51,18 +51,9 @@
         Website URL
       </label>
       <%= f.url_field "profile[website_url]",
-                       value: profile.website_url,
-                       placeholder: "https://yoursite.com",
-                       class: "crayons-textfield js-color-field" %>
-    </div>
-
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box "profile[display_email_on_profile]",
-                      checked: @user.setting.display_email_on_profile,
-                      class: "crayons-checkbox" %>
-      <label class="crayons-field__label" for="profile[display_email_on_profile]">
-        Display email on profile
-      </label>
+                      value: profile.website_url,
+                      placeholder: "https://yoursite.com",
+                      class: "crayons-textfield js-color-field" %>
     </div>
 
     <div class="crayons-field">
