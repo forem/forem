@@ -5,11 +5,11 @@ import { TagsFollowed } from '../leftSidebar/TagsFollowed';
 // This logic is similar to that in initScrolling.js.erb
 const frontPageFeedPathNames = new Map([
   ['/', ''],
-  ['/top/week', 'week'],
-  ['/top/month', 'month'],
-  ['/top/year', 'year'],
-  ['/top/infinity', 'infinity'],
-  ['/latest', 'latest'],
+  ['/top/this-week', 'this-week'],
+  ['/top/this-month', 'this-month'],
+  ['/top/this-year', 'this-year'],
+  ['/top/all-time', 'all-time'],
+  ['/top/most-recent', 'most-recent'],
 ]);
 
 /**
@@ -53,7 +53,7 @@ function renderSidebar() {
   if (
     sidebarContainer &&
     screen.width >= 640 &&
-    (pathname === '/' || pathname === '/latest' || pathname.includes('/top/'))
+    (pathname === '/' || pathname.includes('/top/'))
   ) {
     window
       .fetch('/sidebars/home')

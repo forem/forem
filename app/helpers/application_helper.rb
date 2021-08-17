@@ -16,11 +16,11 @@ module ApplicationHelper
   LARGE_USERBASE_THRESHOLD = 1000
 
   SUBTITLES = {
-    "week" => "Top posts this week",
-    "month" => "Top posts this month",
-    "year" => "Top posts this year",
-    "infinity" => "All posts",
-    "latest" => "Latest posts"
+    "this-week" => "Top posts this week",
+    "this-month" => "Top posts this month",
+    "this-year" => "Top posts this year",
+    "all-time" => "All posts",
+    "most-recent" => "Most recent posts"
   }.freeze
 
   FEED_TITLES = {
