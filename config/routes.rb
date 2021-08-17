@@ -396,14 +396,29 @@ Rails.application.routes.draw do
 
     get "/tag/:tag", to: "stories/tagged_articles#index"
     get "/t/:tag", to: "stories/tagged_articles#index", as: :tag
-    get "/t/:tag/top/:timeframe", to: "stories/tagged_articles#index"
     get "/t/:tag/page/:page", to: "stories/tagged_articles#index"
+
+    # Redirect previous timeframes to new routes
+    get "/t/:tag/latest", to: redirect("/t/%{tag}/top/most-recent")
+    get "/t/:tag/top/week", to: redirect("/t/%{tag}/top/this-week")
+    get "/t/:tag/top/month", to: redirect("/t/%{tag}/top/this-month")
+    get "/t/:tag/top/year", to: redirect("/t/%{tag}/top/this-year")
+    get "/t/:tag/top/infinity", to: redirect("/t/%{tag}/top/all-time")
+
+    get "/t/:tag/top/:timeframe", to: "stories/tagged_articles#index"
 
     get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
 
     get "/badge/:slug", to: "badges#show", as: :badge
+
+    # Redirect previous feed timeframes to new routes
+    get "/latest", to: redirect("/top/most-recent")
+    get "/top/week", to: redirect("/top/this-week")
+    get "/top/month", to: redirect("/top/this-month")
+    get "/top/year", to: redirect("/top/this-year")
+    get "/top/infinity", to: redirect("/top/all-time")
 
     get "/top/:timeframe", to: "stories#index"
 
