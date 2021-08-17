@@ -74,19 +74,19 @@ Rails.application.configure do
     Bullet.enable = true
     Bullet.raise = true
 
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
     # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
     # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :setting)
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :notification_setting)
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :setting)
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :notification_setting)
     # @mstruve: These occur during setting updates, not sure how since we are only dealing with single setting records
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "Users::Setting", association: :user)
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "Users::NotificationSetting", association: :user)
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "Users::Setting", association: :user)
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "Users::NotificationSetting", association: :user)
   end
 end
 # rubocop:enable Metrics/BlockLength
