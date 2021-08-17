@@ -6,18 +6,61 @@
     <span class="crayons-link crayons-subtitle-2 mt-5"><%= actor.name %></span>
   </a>
 </div>
+
+<div class="print-hidden">
+  <%= follow_button(actor, style = "", classes = "w-100") %>
+</div>
 <% if actor.tag_line.present? %>
   <div class="color-base-70">
     <%= truncate (actor.tag_line || actor.summary || "Posts in this tag"), length: 200 %>
   </div>
 <% end %>
 
-<div class="print-hidden">
-  <%= follow_button(actor, style = "", classes = "w-100") %>&nbsp;
-</div>
-
 <% if actor.class.name == "User" %>
-  <%= render "shared/user_metadata", context: context, actor: actor %>
+  <div class="user-metadata-details">
+    <ul class="user-metadata-details-inner">
+      <% if actor.setting.display_email_on_profile && context != "sidebar" %>
+        <li>
+          <div class="key">
+            Email
+          </div>
+          <div class="value">
+            <a href="mailto:<%= actor.email %>"><%= actor.email %></a>
+          </div>
+        </li>
+      <% end %>
+      <% if actor.profile.location.present? %>
+        <li>
+          <div class="key">
+            Location
+          </div>
+          <div class="value">
+            <%= actor.profile.location %>
+          </div>
+        </li>
+      <% end %>
+      <% if (header_fields = actor.profile.decorate.ui_attributes_for(area: :header)).present? %>
+        <% header_fields.sort.each do |title, value| %>
+          <li>
+            <div class="key">
+              <%= title %>
+            </div>
+            <div class="value">
+              <%= value %>
+            </div>
+          </li>
+        <% end %>
+      <% end %>
+      <li>
+        <div class="key">
+          Joined
+        </div>
+        <div class="value">
+          <%= local_date(actor.created_at) %>
+        </div>
+      </li>
+    </ul>
+  </div>
 <% elsif actor.class.name == "Organization" && actor.approved_and_filled_out_cta? %>
   <div>
     <%= sanitize_rendered_markdown(actor.cta_processed_html) %>

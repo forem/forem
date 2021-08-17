@@ -12,7 +12,7 @@ class SettingsModelGenerator < Rails::Generators::NamedBase
 
   @migrations = false
 
-  def self.next_migration_number(dirname) #:nodoc:
+  def self.next_migration_number(dirname) # :nodoc:
     if ActiveRecord::Base.timestamped_migrations
       if @migrations
         (current_migration_number(dirname) + 1)

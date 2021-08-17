@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe UserDecorator, type: :decorator do
   let(:saved_user) { create(:user) }
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
 
   context "with serialization" do
     it "serializes both the decorated object IDs and decorated methods" do
@@ -54,70 +54,54 @@ RSpec.describe UserDecorator, type: :decorator do
 
   describe "#darker_color" do
     it "returns a darker version of the assigned color if colors are blank" do
-      saved_user.assign_attributes(bg_color_hex: "", text_color_hex: "")
+      saved_user.setting.update(brand_color1: "", brand_color2: "")
       expect(saved_user.decorate.darker_color).to be_present
     end
 
-    it "returns a darker version of the color if bg_color_hex is present" do
-      saved_user.assign_attributes(bg_color_hex: "#dddddd", text_color_hex: "#ffffff")
+    it "returns a darker version of the color if brand_color1 is present" do
+      saved_user.setting.update(brand_color1: "#dddddd", brand_color2: "#ffffff")
       expect(saved_user.decorate.darker_color).to eq("#c2c2c2")
     end
 
     it "returns an adjusted darker version of the color" do
-      saved_user.assign_attributes(bg_color_hex: "#dddddd", text_color_hex: "#ffffff")
+      saved_user.setting.update(brand_color1: "#dddddd", brand_color2: "#ffffff")
       expect(saved_user.decorate.darker_color(0.3)).to eq("#424242")
     end
 
     it "returns an adjusted lighter version of the color if adjustment is over 1.0" do
-      saved_user.assign_attributes(bg_color_hex: "#dddddd", text_color_hex: "#ffffff")
+      saved_user.setting.update(brand_color1: "#dddddd", brand_color2: "#ffffff")
       expect(saved_user.decorate.darker_color(1.1)).to eq("#f3f3f3")
     end
   end
 
   describe "#enriched_colors" do
-    it "returns assigned colors if bg_color_hex is blank" do
-      saved_user.assign_attributes(bg_color_hex: "")
+    it "returns assigned colors if brand_color1 is blank" do
+      saved_user.setting.update(brand_color1: "")
       expect(saved_user.decorate.enriched_colors[:bg]).to be_present
       expect(saved_user.decorate.enriched_colors[:text]).to be_present
     end
 
-    it "returns assigned colors if text_color_hex is blank" do
-      saved_user.assign_attributes(text_color_hex: "")
+    it "returns assigned colors if brand_color2 is blank" do
+      saved_user.setting.update(brand_color2: "")
       expect(saved_user.decorate.enriched_colors[:bg]).to be_present
       expect(saved_user.decorate.enriched_colors[:text]).to be_present
     end
 
-    it "returns bg_color_hex and assigned text_color_hex if text_color_hex is blank" do
-      saved_user.assign_attributes(bg_color_hex: "#dddddd", text_color_hex: "")
+    it "returns brand_color1 and assigned brand_color2 if brand_color2 is blank" do
+      saved_user.setting.update(brand_color1: "#dddddd", brand_color2: "")
       expect(saved_user.decorate.enriched_colors[:bg]).to be_present
       expect(saved_user.decorate.enriched_colors[:text]).to be_present
     end
 
-    it "returns text_color_hex and assigned bg_color_hex if bg_color_hex is blank" do
-      saved_user.assign_attributes(bg_color_hex: "", text_color_hex: "#ffffff")
+    it "returns brand_color2 and assigned brand_color1 if brand_color1 is blank" do
+      saved_user.setting.update(brand_color1: "", brand_color2: "#ffffff")
       expect(saved_user.decorate.enriched_colors[:bg]).to be_present
       expect(saved_user.decorate.enriched_colors[:text]).to be_present
     end
 
-    it "returns bg_color_hex and text_color_hex if both are present" do
-      saved_user.assign_attributes(bg_color_hex: "#dddddd", text_color_hex: "#fffff3")
+    it "returns brand_color1 and brand_color2 if both are present" do
+      saved_user.setting.update(brand_color1: "#dddddd", brand_color2: "#fffff3")
       expect(saved_user.decorate.enriched_colors).to eq(bg: "#dddddd", text: "#fffff3")
-    end
-  end
-
-  describe "#config_font_name" do
-    it "replaces 'default' with font configured for the site in Settings::General" do
-      expect(user.config_font).to eq("default")
-      %w[sans_serif serif open_dyslexic].each do |font|
-        allow(Settings::UserExperience).to receive(:default_font).and_return(font)
-        expect(user.decorate.config_font_name).to eq(font)
-      end
-    end
-
-    it "doesn't replace the user's custom selected font" do
-      user_comic_sans = create(:user, config_font: "comic_sans")
-      allow(Settings::UserExperience).to receive(:default_font).and_return("open_dyslexic")
-      expect(user_comic_sans.decorate.config_font_name).to eq("comic_sans")
     end
   end
 
@@ -125,49 +109,49 @@ RSpec.describe UserDecorator, type: :decorator do
     it "creates proper body class with defaults" do
       expected_result = %W[
         default sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.config_navbar}-header
+        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
 
     it "creates proper body class with sans serif config" do
-      user.config_font = "sans_serif"
+      user.setting.config_font = "sans_serif"
       expected_result = %W[
         default sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.config_navbar}-header
+        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
 
     it "creates proper body class with night theme" do
-      user.config_theme = "night_theme"
+      user.setting.config_theme = "night_theme"
       expected_result = %W[
         night-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.config_navbar}-header
+        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
 
     it "creates proper body class with pink theme" do
-      user.config_theme = "pink_theme"
+      user.setting.config_theme = "pink_theme"
       expected_result = %W[
         pink-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.config_navbar}-header
+        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
 
     it "creates proper body class with minimal light theme" do
-      user.config_theme = "minimal_light_theme"
+      user.setting.config_theme = "minimal_light_theme"
       expected_result = %W[
         minimal-light-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.config_navbar}-header
+        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
 
     it "works with static navbar" do
-      user.config_navbar = "static"
+      user.setting.config_navbar = "static"
       expected_result = %W[
         default sans-serif-article-body
         trusted-status-#{user.trusted} static-header
@@ -192,17 +176,17 @@ RSpec.describe UserDecorator, type: :decorator do
 
   describe "#dark_theme?" do
     it "determines dark theme if night theme" do
-      user.config_theme = "night_theme"
+      user.setting.config_theme = "night_theme"
       expect(user.decorate.dark_theme?).to be(true)
     end
 
     it "determines dark theme if ten x hacker" do
-      user.config_theme = "ten_x_hacker_theme"
+      user.setting.config_theme = "ten_x_hacker_theme"
       expect(user.decorate.dark_theme?).to be(true)
     end
 
     it "determines not dark theme if not one of the dark themes" do
-      user.config_theme = "default"
+      user.setting.config_theme = "default"
       expect(user.decorate.dark_theme?).to be(false)
     end
   end

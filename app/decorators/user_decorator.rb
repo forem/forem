@@ -51,22 +51,18 @@ class UserDecorator < ApplicationDecorator
     end
   end
 
-  def config_font_name
-    config_font.gsub("default", Settings::UserExperience.default_font)
-  end
-
   def config_body_class
     body_class = [
-      config_theme.tr("_", "-"),
-      "#{config_font_name.tr('_', '-')}-article-body",
+      setting.config_theme.tr("_", "-"),
+      "#{setting.resolved_font_name.tr('_', '-')}-article-body",
       "trusted-status-#{trusted}",
-      "#{config_navbar.tr('_', '-')}-header",
+      "#{setting.config_navbar.tr('_', '-')}-header",
     ]
     body_class.join(" ")
   end
 
   def dark_theme?
-    config_theme == "night_theme" || config_theme == "ten_x_hacker_theme"
+    setting.config_theme == "night_theme" || setting.config_theme == "ten_x_hacker_theme"
   end
 
   def assigned_color
@@ -128,4 +124,8 @@ class UserDecorator < ApplicationDecorator
   def profile_summary
     profile.summary.presence || DEFAULT_PROFILE_SUMMARY
   end
+
+  delegate :display_sponsors, to: :setting
+
+  delegate :display_announcements, to: :setting
 end

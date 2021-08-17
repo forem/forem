@@ -6,7 +6,6 @@ RSpec.describe "UserShow", type: :request do
       :profile,
       :with_DEV_info,
       user: create(:user, :without_profile),
-      display_email_on_profile: true,
     )
   end
   let(:user) { profile.user }
@@ -19,6 +18,7 @@ RSpec.describe "UserShow", type: :request do
 
     # rubocop:disable RSpec/ExampleLength
     it "renders the proper JSON-LD for a user" do
+      user.setting.update(display_email_on_profile: true)
       get user.path
       text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
       response_json = JSON.parse(text)

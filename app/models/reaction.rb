@@ -54,7 +54,7 @@ class Reaction < ApplicationRecord
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.instance_of?(ArticleDecorator) ? "Article" : reactable.class.name
       cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-" \
-        "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
+                   "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
@@ -66,7 +66,14 @@ class Reaction < ApplicationRecord
   # - receiver is the same user as the one who reacted
   # - receive_notification is disabled
   def skip_notification_for?(_receiver)
-    points.negative? || (user_id == reactable.user_id)
+    reactor_id = case reactable
+                 when User
+                   reactable.id
+                 else
+                   reactable.user_id
+                 end
+
+    points.negative? || (user_id == reactor_id)
   end
 
   def vomit_on_user?

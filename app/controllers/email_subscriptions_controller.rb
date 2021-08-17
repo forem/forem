@@ -4,7 +4,7 @@ class EmailSubscriptionsController < ApplicationController
 
     if verified_params[:expires_at] > Time.current
       user = User.find(verified_params[:user_id])
-      user.update(verified_params[:email_type] => false)
+      user.notification_setting.update(verified_params[:email_type] => false)
       @email_type = preferred_email_name.fetch(verified_params[:email_type], "this list")
     else
       render "invalid_token"

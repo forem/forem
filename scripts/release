@@ -1,0 +1,93 @@
+#!/usr/bin/env ruby
+
+require "date"
+require "optparse"
+
+def run(command, abort_on_fail: true)
+  puts "> #{command}" if $VERBOSE
+
+  system(command, exception: abort_on_fail)
+rescue StandardError => e
+  raise "#{command.inspect} failed: #{e}"
+end
+
+channel = ENV.fetch("FOREM_RELEASE_CHANNEL", "stable")
+date = ENV.fetch("FOREM_RELEASE_DATE", Date.today.to_s).delete("-")
+hotfix = ENV.fetch("FOREM_RELEASE_HOTFIX", 0)
+remote = ENV.fetch("FOREM_RELEASE_REMOTE", "origin")
+source = ENV.fetch("FOREM_STAGING_FROM", "#{channel}-next")
+
+OptionParser.new ARGV.dup do |options|
+  options.banner = <<~USAGE
+    Usage: #{$PROGRAM_NAME} [options]
+
+    Releases are named CHANNEL.DATE.HOTFIX_COUNT. Example: #{channel}.#{date}.#{hotfix}
+
+  USAGE
+
+  options.on "-c", "--channel CHANNEL",
+             "Specify the release channel (defaults to #{channel.inspect})" do |release_channel|
+    channel = release_channel
+  end
+
+  options.on "-d", "--date DATE", "Specify the release date (defaults to today)" do |release_date|
+    date = release_date.delete("-")
+  end
+
+  options.on "-f", "--from BRANCH/COMMIT/TAG",
+             "Specify the source branch for this release (defaults to #{source.inspect})" do |from_branch|
+    source = from_branch
+  end
+
+  options.on "-h", "--hotfix HOTFIX",
+             "Specify the hotfix count for this release branch (defaults to #{hotfix.inspect})" do |hotfix_opt|
+    hotfix = hotfix_opt
+  end
+
+  options.on "-r", "--remote REMOTE", "Git remote to push to (defaults to #{remote.inspect})" do |git_remote|
+    remote = git_remote
+  end
+
+  options.on "-v", "--verbose", "Enable verbose mode" do
+    $VERBOSE = true
+  end
+end.parse!
+
+original_branch = `git branch --show-current`.strip
+
+begin
+  tag = "#{channel}.#{date}.#{hotfix}"
+  puts "Building #{tag}..."
+
+  [source, channel].each do |branch|
+    run "git checkout --quiet #{branch}"
+    run "git pull --quiet --ff-only #{remote} #{branch}"
+    puts "Pulled latest #{branch.inspect}"
+  end
+
+  run "git merge --quiet #{source} --no-ff --message 'Merge #{source} into #{channel}'"
+  puts "Merged #{source} into #{channel}"
+
+  begin
+    run "git tag #{tag}"
+    puts "Tagged #{tag}"
+  rescue StandardError
+    # If `git tag` fails, it's because the tag already exists. In this case, git
+    # will have already output an error that looks like this:
+    #
+    #     fatal: tag 'stable.20210512.0' already exists
+    #
+    warn "Should the hotfix count be set to something other than #{hotfix}?" \
+         "Or maybe you need to delete the tag locally (hint: `git tag --delete #{tag}`)"
+    exit 1
+  end
+
+  run "git push --quiet #{remote} #{channel}"
+  puts "Pushed #{channel} to #{remote}"
+
+  run "git push --quiet #{remote} #{tag}"
+  puts "Pushed #{tag} to #{remote}"
+ensure
+  # Go back to the branch we were on before running this script
+  run "git checkout --quiet #{original_branch}"
+end

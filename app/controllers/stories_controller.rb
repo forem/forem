@@ -16,8 +16,8 @@ class StoriesController < ApplicationController
 
   SIGNED_OUT_RECORD_COUNT = 60
 
-  before_action :authenticate_user!, except: %i[index search show]
-  before_action :set_cache_control_headers, only: %i[index search show]
+  before_action :authenticate_user!, except: %i[index show]
+  before_action :set_cache_control_headers, only: %i[index show]
   before_action :redirect_to_lowercase_username, only: %i[index]
 
   rescue_from ArgumentError, with: :bad_request
@@ -29,14 +29,6 @@ class StoriesController < ApplicationController
     return handle_user_or_organization_or_podcast_or_page_index if params[:username]
 
     handle_base_index
-  end
-
-  def search
-    @query = "...searching"
-    @article_index = true
-    @current_ordering = current_search_results_ordering
-    set_surrogate_key_header "articles-page-with-query"
-    render template: "articles/search"
   end
 
   def show
@@ -150,6 +142,10 @@ class StoriesController < ApplicationController
     render template: "articles/index"
   end
 
+  def pinned_article
+    @pinned_article ||= PinnedArticle.get
+  end
+
   def featured_story
     @featured_story ||= Articles::Feeds::LargeForemExperimental.find_featured_story(@stories)
   end
@@ -239,6 +235,7 @@ class StoriesController < ApplicationController
 
   def assign_feed_stories
     feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
+
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
@@ -247,7 +244,10 @@ class StoriesController < ApplicationController
       @default_home_feed = true
       @featured_story, @stories = feed.default_home_feed_and_featured_story(user_signed_in: user_signed_in?)
     end
+
+    @pinned_article = pinned_article&.decorate
     @featured_story = (featured_story || Article.new)&.decorate
+
     @stories = ArticleDecorator.decorate_collection(@stories)
   end
 
@@ -419,11 +419,5 @@ class StoriesController < ApplicationController
       @user.github_username.present? ? "https://github.com/#{@user.github_username}" : nil,
       @user.profile.website_url,
     ].reject(&:blank?)
-  end
-
-  def current_search_results_ordering
-    return :relevance unless params[:sort_by] == "published_at" && params[:sort_direction].present?
-
-    params[:sort_direction] == "desc" ? :newest : :oldest
   end
 end

@@ -24,7 +24,7 @@ creating Preact components, please ensure that you have defined your PropTypes.
 Using PropTypes can be repetitive. Some duplication is normal, like when a
 PropType is a string or a number. But for commonly-used PropTypes, like the user
 entity, you can use the provided common PropTypes, located in the
-`/app/javascript/src/components/common-prop-types`, as shown below.
+`/app/javascript/common-prop-types`, as shown below.
 
 ```javascript
 import PropTypes from 'prop-types';
@@ -56,7 +56,7 @@ import { tagPropTypes } from '../../../components/common-prop-types';
 
 const SomeComponentUsingTags = ({ tags = [] }) => (
   <ul>
-    {tags.map(tag => (
+    {tags.map((tag) => (
       <li key={tag.id}>{tag.name}</li>
     ))}
   </ul>

@@ -34,21 +34,17 @@ class UserPolicy < ApplicationPolicy
     feed_url
     inbox_guidelines
     inbox_type
-    location
     mobile_comment_notifications
     mod_roundrobin_notifications
     welcome_notifications
-    mostly_work_with
     name
     password
     password_confirmation
     payment_pointer
     permit_adjacent_sponsors
     profile_image
-    summary
     text_color_hex
     username
-    website_url
   ].freeze
 
   def edit?
@@ -60,6 +56,10 @@ class UserPolicy < ApplicationPolicy
   end
 
   def onboarding_checkbox_update?
+    true
+  end
+
+  def onboarding_notifications_checkbox_update?
     true
   end
 

@@ -1,5 +1,6 @@
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-undef */
+/* global userData */
+import { isModerationPage } from '@utilities/moderation';
+
 const user = userData();
 const { authorId: articleAuthorId, path } = document.getElementById(
   'article-show-container',
@@ -12,20 +13,16 @@ const initializeModerationsTools = async () => {
   const { initializeFlagUserModal } = await import('./flagUserModal');
 
   // article show page
-  if (
-    user?.trusted &&
-    user?.id !== articleAuthorId &&
-    !top.document.location.pathname.endsWith('/mod')
-  ) {
-    initializeActionsPanel(user, path);
-    initializeFlagUserModal(articleAuthorId);
-    // dev.to/mod
-  } else if (user?.trusted && top.document.location.pathname.endsWith('/mod')) {
-    initializeActionsPanel(user, path);
-    initializeFlagUserModal(articleAuthorId);
+  if (user?.trusted) {
+    if (user?.id !== articleAuthorId && !isModerationPage()) {
+      initializeActionsPanel(user, path);
+      initializeFlagUserModal(articleAuthorId);
+      // dev.to/mod
+    } else if (isModerationPage()) {
+      initializeActionsPanel(user, path);
+      initializeFlagUserModal(articleAuthorId);
+    }
   }
 };
 
 initializeModerationsTools();
-/* eslint-enable no-restricted-globals */
-/* eslint-enable no-undef */

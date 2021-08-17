@@ -8,6 +8,7 @@ class DiscussionLocksController < ApplicationController
 
     authorize @discussion_lock
     article = Article.find(discussion_lock_params[:article_id])
+    authorize article, :discussion_lock_confirm?
 
     if @discussion_lock.save
       bust_article_cache(article)

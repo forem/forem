@@ -82,6 +82,13 @@ Rails.application.configure do
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
     # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :setting)
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :notification_setting)
+    # NOTE: @citizen428 Let's ignore this for now, we have to revisit the user - profile relationship anyway
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "Profile", association: :user)
+    # @mstruve: These occur during setting updates, not sure how since we are only dealing with single setting records
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "Users::Setting", association: :user)
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "Users::NotificationSetting", association: :user)
   end
 end
 # rubocop:enable Metrics/BlockLength

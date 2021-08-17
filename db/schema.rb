@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_22_002941) do
+ActiveRecord::Schema.define(version: 2021_07_20_042422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -155,12 +155,12 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
-    t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
+    t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["comments_count"], name: "index_articles_on_comments_count"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
-    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
+    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true, where: "(published IS TRUE)"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
@@ -428,17 +428,6 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.index ["spent"], name: "index_credits_on_spent"
   end
 
-  create_table "custom_profile_fields", force: :cascade do |t|
-    t.string "attribute_name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.string "description"
-    t.citext "label", null: false
-    t.bigint "profile_id", null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["label", "profile_id"], name: "index_custom_profile_fields_on_label_and_profile_id", unique: true
-    t.index ["profile_id"], name: "index_custom_profile_fields_on_profile_id"
-  end
-
   create_table "data_update_scripts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "error"
@@ -699,6 +688,7 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.string "icon", null: false
     t.string "name", null: false
     t.integer "position"
+    t.integer "section", default: 0, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "url", null: false
     t.index ["url", "name"], name: "index_navigation_links_on_url_and_name", unique: true
@@ -1285,15 +1275,15 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
   create_table "users", force: :cascade do |t|
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
+    t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
+    t.string "behance_url"
+    t.string "bg_color_hex"
     t.bigint "blocked_by_count", default: 0, null: false
     t.bigint "blocking_others_count", default: 0, null: false
     t.boolean "checked_code_of_conduct", default: false
     t.boolean "checked_terms_and_conditions", default: false
     t.integer "comments_count", default: 0, null: false
-    t.string "config_font", default: "default"
-    t.string "config_navbar", default: "default", null: false
-    t.string "config_theme", default: "default"
     t.datetime "confirmation_sent_at"
     t.string "confirmation_token"
     t.datetime "confirmed_at"
@@ -1301,38 +1291,29 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.integer "credits_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.inet "current_sign_in_ip"
-    t.boolean "display_announcements", default: true
-    t.boolean "display_sponsors", default: true
-    t.string "editor_version", default: "v1"
+    t.string "currently_hacking_on"
+    t.string "currently_learning"
+    t.string "dribbble_url"
+    t.string "education"
     t.string "email"
-    t.boolean "email_badge_notifications", default: true
-    t.boolean "email_comment_notifications", default: true
-    t.boolean "email_community_mod_newsletter", default: false
-    t.boolean "email_connect_messages", default: true
-    t.boolean "email_digest_periodic", default: false, null: false
-    t.boolean "email_follower_notifications", default: true
-    t.boolean "email_membership_newsletter", default: false
-    t.boolean "email_mention_notifications", default: true
-    t.boolean "email_newsletter", default: false
-    t.boolean "email_tag_mod_newsletter", default: false
-    t.boolean "email_unread_notifications", default: true
+    t.boolean "email_public", default: false
+    t.string "employer_name"
+    t.string "employer_url"
+    t.string "employment_title"
     t.string "encrypted_password", default: "", null: false
-    t.integer "experience_level"
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
+    t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
-    t.boolean "feed_mark_canonical", default: false
-    t.boolean "feed_referential_link", default: true, null: false
-    t.string "feed_url"
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
-    t.string "inbox_guidelines"
-    t.string "inbox_type", default: "private"
+    t.string "gitlab_url"
+    t.string "instagram_url"
     t.datetime "invitation_accepted_at"
     t.datetime "invitation_created_at"
     t.integer "invitation_limit"
@@ -1351,21 +1332,22 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.datetime "latest_article_updated_at"
+    t.string "linkedin_url"
+    t.string "location"
     t.datetime "locked_at"
-    t.boolean "mobile_comment_notifications", default: true
-    t.boolean "mod_roundrobin_notifications", default: true
+    t.string "mastodon_url"
+    t.string "medium_url"
     t.integer "monthly_dues", default: 0
+    t.string "mostly_work_with"
     t.string "name"
     t.string "old_old_username"
     t.string "old_username"
     t.boolean "onboarding_package_requested", default: false
     t.datetime "organization_info_updated_at"
     t.string "payment_pointer"
-    t.boolean "permit_adjacent_sponsors", default: true
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
-    t.boolean "reaction_notifications", default: true
     t.integer "reactions_count", default: 0, null: false
     t.boolean "registered", default: true
     t.datetime "registered_at"
@@ -1374,22 +1356,27 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.float "reputation_modifier", default: 1.0
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
-    t.boolean "saw_onboarding", default: true
+    t.boolean "saw_onboarding", default: false
     t.integer "score", default: 0
     t.string "secret"
     t.integer "sign_in_count", default: 0, null: false
     t.string "signup_cta_variant"
     t.integer "spent_credits_count", default: 0, null: false
+    t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.integer "subscribed_to_user_subscriptions_count", default: 0, null: false
+    t.text "summary"
+    t.string "text_color_hex"
+    t.string "twitch_url"
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.string "unlock_token"
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "username"
-    t.boolean "welcome_notifications", default: true, null: false
+    t.string "website_url"
     t.datetime "workshop_expiration"
+    t.string "youtube_url"
     t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
     t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_users_on_username_as_tsvector", using: :gin
     t.index ["apple_username"], name: "index_users_on_apple_username"
@@ -1398,7 +1385,6 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
     t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"
-    t.index ["feed_url"], name: "index_users_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
@@ -1468,6 +1454,7 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
+    t.index ["feed_url"], name: "index_users_settings_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["user_id"], name: "index_users_settings_on_user_id", unique: true
   end
 
@@ -1519,7 +1506,6 @@ ActiveRecord::Schema.define(version: 2021_06_22_002941) do
   add_foreign_key "comments", "users", on_delete: :cascade
   add_foreign_key "credits", "organizations", on_delete: :restrict
   add_foreign_key "credits", "users", on_delete: :cascade
-  add_foreign_key "custom_profile_fields", "profiles", on_delete: :cascade
   add_foreign_key "devices", "consumer_apps"
   add_foreign_key "devices", "users"
   add_foreign_key "discussion_locks", "articles"

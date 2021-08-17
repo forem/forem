@@ -50,8 +50,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:user_id) }
 
-    it { is_expected.to validate_uniqueness_of(:canonical_url).allow_nil }
-    it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
@@ -1307,6 +1305,47 @@ RSpec.describe Article, type: :model do
 
       article.update_score
       expect { article.update_score }.not_to change { article.reload.hotness_score }
+    end
+  end
+
+  describe "#feed_source_url and canonical_url must be unique for published articles" do
+    let(:url) { "http://www.example.com" }
+
+    it "is valid when both articles are drafts" do
+      body_markdown = "---\ntitle: Title\npublished: false\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+
+      expect(another_article).to be_valid
+    end
+
+    it "is valid when first article is a draft, second is published" do
+      body_markdown = "---\ntitle: Title\npublished: false\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      body_markdown = "---\ntitle: Title\npublished: true\ncanonical_url: #{url}\n---\n\n"
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+
+      expect(another_article).to be_valid
+    end
+
+    it "is valid when first article is published, second is draft" do
+      body_markdown = "---\ntitle: Title\npublished: true\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      body_markdown = "---\ntitle: Title\npublished: false\ncanonical_url: #{url}\n---\n\n"
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+
+      expect(another_article).to be_valid
+    end
+
+    it "is not valid when both articles are published" do
+      body_markdown = "---\ntitle: Title\npublished: true\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+      error_message = "has already been taken. " \
+                      "Email #{ForemInstance.email} for further details."
+      expect(another_article).not_to be_valid
+      expect(another_article.errors.messages[:canonical_url]).to include(error_message)
+      expect(another_article.errors.messages[:feed_source_url]).to include(error_message)
     end
   end
 end

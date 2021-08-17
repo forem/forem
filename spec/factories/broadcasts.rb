@@ -8,8 +8,8 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "Welcome to DEV! 👋 I'm <a href='https://dev.to/sloan'>Sloan</a>, " \
-        "the community mascot and I'm here to help get you started. " \
-        "Let's begin by <a href='https://dev.to/settings'>setting up your profile</a>!"
+          "the community mascot and I'm here to help get you started. " \
+          "Let's begin by <a href='https://dev.to/settings'>setting up your profile</a>!"
       end
     end
 
@@ -18,7 +18,7 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "Sloan here again! 👋 DEV is a friendly community. " \
-        "Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!"
+          "Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!"
       end
     end
 
@@ -35,7 +35,7 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "You're on a roll! 🎉  Do you have a GitHub account? Consider " \
-        "<a href='/settings'>connecting it</a> so you can pin any of your repos to your profile."
+          "<a href='/settings'>connecting it</a> so you can pin any of your repos to your profile."
       end
     end
 
@@ -44,7 +44,7 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "You're on a roll! 🎉  Do you have a Facebook account? Consider " \
-        "<a href='/settings'>connecting it</a>."
+          "<a href='/settings'>connecting it</a>."
       end
     end
 
@@ -53,8 +53,8 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "You're on a roll! 🎉 Do you have a Twitter account? Consider " \
-        "<a href='/settings'>connecting it</a> so we can @mention you if we share " \
-        "your post via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>."
+          "<a href='/settings'>connecting it</a> so we can @mention you if we share " \
+          "your post via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>."
       end
     end
 
@@ -63,7 +63,7 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
-        "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!"
+          "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!"
       end
     end
 
@@ -72,8 +72,8 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "Hi, it's me again! 👋 Now that you're a part of the DEV community, " \
-        "let's focus on personalizing your content. You can start by " \
-        "<a href='/tags'>following some tags</a> to help customize your feed! 🎉"
+          "let's focus on personalizing your content. You can start by " \
+          "<a href='/tags'>following some tags</a> to help customize your feed! 🎉"
       end
     end
 
@@ -82,9 +82,9 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
-        "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. " \
-        "Starting a discussion is easy to do; just click on 'Create Post' " \
-        "in the sidebar of the tag page to get started!"
+          "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. " \
+          "Starting a discussion is easy to do; just click on 'Create Post' " \
+          "in the sidebar of the tag page to get started!"
       end
     end
 
@@ -93,8 +93,8 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
-        "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. " \
-        "Asking a question is easy to do; just click on 'Create Post' in the sidebar of the tag page to get started!"
+          "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. " \
+          "Asking a question is easy to do; just click on 'Create Post' in the sidebar of the tag page to get started!"
       end
     end
 
@@ -103,9 +103,9 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
-        "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
-        "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. " \
-        "It's easy to do both of these; just click on 'Create Post' in the sidebar of the tag page to get started!"
+          "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
+          "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. " \
+          "It's easy to do both of these; just click on 'Create Post' in the sidebar of the tag page to get started!"
       end
     end
 
@@ -114,8 +114,8 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile " \
-        "app yet? Consider <a href='https://dev.to/downloads'>downloading</a> it " \
-        "so you can access all of your favorite DEV content on the go!"
+          "app yet? Consider <a href='https://dev.to/downloads'>downloading</a> it " \
+          "so you can access all of your favorite DEV content on the go!"
       end
     end
 
@@ -128,7 +128,8 @@ FactoryBot.define do
     trait :with_tracking do
       processed_html do
         "Sloan here again! 👋 DEV is a friendly community. Why not introduce " \
-        "yourself by leaving a comment in <a href='/welcome' onclick='trackNotification(event)'>the welcome thread</a>!"
+          "yourself by leaving a comment in <a href='/welcome' onclick='trackNotification(event)'>" \
+          "the welcome thread</a>!"
       end
     end
   end

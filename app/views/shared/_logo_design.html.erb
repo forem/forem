@@ -1,13 +1,12 @@
-<% if account.respond_to?(:setting) %>
-  <% account.bg_color_hex = user_colors(account)[:bg] if account.setting.brand_color1.blank? %>
-  <% account.text_color_hex = user_colors(account)[:text] if account.setting.brand_color2.blank? %>
-<% else %>
-  <% account.bg_color_hex = user_colors(account)[:bg] if account.bg_color_hex.blank? %>
-  <% account.text_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
-<% end %>
-
 <div class="grid gap-6 m:grid-cols-2">
   <div class="grid gap-6">
+    <% if account.class.name == "User" %>
+      <% account.setting.brand_color1 = user_colors(account)[:bg] if account.setting && account.setting.brand_color1.blank? %>
+      <% account.setting.brand_color2 = user_colors(account)[:text] if account.setting && account.setting.brand_color2.blank? %>
+    <% else %>
+      <% account.bg_color_hex = user_colors(account)[:bg] if account.bg_color_hex.blank? %>
+      <% account.text_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
+    <% end %>
     <div class="crayons-field">
       <%= f.label :bg_color_hex, "Brand color 1", class: "crayons-field__label" %>
       <p class="crayons-field__description">Used for backgrounds, borders etc.</p>
@@ -21,6 +20,11 @@
     </div>
 
     <div class="crayons-field">
+      <% if account.class.name == "User" %>
+        <% account.setting.brand_color1 = user_colors(account)[:text] if account.setting && account.setting.brand_color2.blank? %>
+      <% else %>
+        <% account.bg_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
+      <% end %>
       <%= f.label :text_color_hex, "Brand color 2", class: "crayons-field__label" %>
       <p class="crayons-field__description">Used for texts (usually put on <em>Brand color 1</em>).</p>
       <div class="flex items-center">

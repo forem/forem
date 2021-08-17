@@ -52,15 +52,17 @@
       <p>Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code> Be careful! ⚠️</p>
     </div>
 
-    <div class="form-group">
-      <%= form.label :landing_page, "Use as 'Locked Screen'" %>
-      <%= form.check_box :landing_page, class: "crayons-checkbox", "aria-describedby": "lock-screen-description",
-                                        data: {
-                                          "landing-page-modal-target": "landingPageCheckbox",
-                                          action: (@landing_page.present? ? "landing-page-modal#openModal" : "")
-                                        } %>
-      <p id="lock-screen-description">Determines if this page will be used as a landing page for anonymous viewers.</p>
-    </div>
+    <% if ForemInstance.private? %>
+      <div class="form-group">
+        <%= form.label :landing_page, "Use as 'Locked Screen'" %>
+        <%= form.check_box :landing_page, class: "crayons-checkbox", "aria-describedby": "lock-screen-description",
+                                          data: {
+                                            "landing-page-modal-target": "landingPageCheckbox",
+                                            action: (@landing_page.present? ? "landing-page-modal#openModal" : "")
+                                          } %>
+        <p id="lock-screen-description">Determines if this page will be used as a landing page for anonymous viewers.</p>
+      </div>
+    <% end %>
 
     <% if @page.errors.count > 0 %>
       <div id="add-landing-page-link-modal-root">

@@ -4,11 +4,12 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "high_priority", 1
 
   describe "#perform" do
-    let(:user) { create(:user, profile: create(:profile, :with_DEV_info)) }
+    let(:user) { create(:user) }
     let(:user2) { create(:user) }
     let(:admin) { create(:user, :super_admin) }
 
     before do
+      user.profile.update!(currently_hacking_on: "text is here")
       create(:article, user_id: user.id)
       create(:article, user_id: user.id)
       create(:listing, user: user)

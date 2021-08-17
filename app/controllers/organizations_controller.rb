@@ -58,8 +58,8 @@ class OrganizationsController < ApplicationController
 
     redirect_to user_settings_path(:organization)
   rescue Pundit::NotAuthorizedError
-    flash[:error] = "Your organization was not deleted; you must be an admin, the only member in the organization,
-      and have no articles connected to the organization."
+    flash[:error] = "Your organization was not deleted; you must be an admin, the only member in the organization, " \
+                    "and have no articles connected to the organization."
     redirect_to user_settings_path(:organization, id: organization.id)
   end
 

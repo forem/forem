@@ -124,9 +124,10 @@ var instantClick
 
     if (newUrl) {
       const skipLink = document.querySelector('.skip-content-link');
-      if (skipLink) {
-        skipLink.focus();
-      }
+        if (skipLink) {
+          skipLink.focus();
+        }
+      document.getElementById('page-route-change').textContent = title;
       history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
 
       var hashIndex = newUrl.indexOf('#'),
