@@ -1,0 +1,141 @@
+<section
+  class="crayons-card p-3 js-component"
+  data-controller="users--tools--ajax"
+  data-action="ajax:success@document->users--tools--ajax#success ajax:error@document->users--tools--ajax#error">
+  <%# Used to announce to the screen reader client side which section the user is in %>
+  <div id="section-title" class="hidden">Credits section</div>
+
+  <h3>
+    <%= link_to "← Tools", admin_user_tools_path(@user),
+                remote: true,
+                data: { action: "ajax:success@document->user#replacePartial" },
+                class: "crayons-title fs-l backlink" %>
+  </h3>
+
+  <%# Add user credits %>
+  <%= form_with url: admin_user_tools_credits_path(@user),
+                method: :post,
+                remote: true,
+                class: "my-3",
+                id: :credits_add do |f| %>
+    <fieldset>
+      <legend class="fw-medium mb-3">Add credits</legend>
+
+      <div class="fs-base fw-medium mb-3"><%= pluralize(@user_unspent_credits_count, "available user credit") %></div>
+
+      <div class="crayons-field form-group w-50">
+        <%= f.number_field "credits[count]",
+                           id: nil,
+                           in: 1...10_000,
+                           required: true,
+                           class: "crayons-textfield",
+                           "aria-label": "Number of credits to add" %>
+        <%= f.text_field "credits[note]",
+                         id: nil,
+                         placeholder: "Why are you adding these credits?",
+                         required: true,
+                         class: "crayons-textfield",
+                         "aria-label": "Reason why you want to add credits" %>
+      </div>
+
+      <%= f.submit "Add", class: "crayons-btn", data: { disable_with: "Add" } %>
+    </fieldset>
+  <% end -%>
+
+  <%# Remove user credits %>
+  <% if @user_unspent_credits_count.positive? %>
+    <%= form_with url: admin_user_tools_credits_path(@user),
+                  method: :delete,
+                  remote: true,
+                  class: "my-3",
+                  id: :credits_remove do |f| %>
+      <fieldset>
+        <legend class="fw-medium mb-3">Remove credits</legend>
+
+        <div class="crayons-field form-group w-50">
+          <%= f.number_field "credits[count]",
+                             id: nil,
+                             in: 1..@user_unspent_credits_count,
+                             required: true,
+                             class: "crayons-textfield mr-1",
+                             "aria-label": "Number of credits to remove" %>
+          <%= f.text_field "credits[note]",
+                           id: nil,
+                           placeholder: "Why are you removing these credits?",
+                           required: true,
+                           class: "crayons-textfield mr-1",
+                           "aria-label": "Reason why you want to remove credits" %>
+        </div>
+
+        <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger", data: { disable_with: "Remove" } %>
+      </fieldset>
+    <% end -%>
+  <% end %>
+
+  <%# Add and remove organizations credits %>
+  <% if @organizations.any? %>
+    <%= form_with url: admin_user_tools_credits_path(@user),
+                  method: :post,
+                  remote: true,
+                  class: "my-3",
+                  id: :org_credits_add do |f| %>
+
+      <fieldset>
+        <legend class="fw-medium mb-3">Add credits to organizations</legend>
+
+        <div class="crayons-field form-group w-50">
+          <%= f.number_field "credits[count]",
+                             id: nil,
+                             in: 1...10_000,
+                             required: true,
+                             class: "crayons-textfield mr-1",
+                             "aria-label": "Number of credits to add" %>
+          <%= f.text_field "credits[note]",
+                           id: nil,
+                           placeholder: "Why are you adding these credits?",
+                           required: true,
+                           class: "crayons-textfield mr-1",
+                           "aria-label": "Reason why you want to add credits" %>
+          <%= select_tag "credits[organization_id]", orgs_with_credits(@organizations),
+                         id: "select_add_org_credits",
+                         class: "crayons-select",
+                         "aria-label": "Select organization receiving the credits" %>
+        </div>
+
+        <%= f.submit "Add", class: "crayons-btn", data: { disable_with: "Add" } %>
+      </fieldset>
+    <% end -%>
+
+    <%= form_with url: admin_user_tools_credits_path(@user),
+                  method: :delete,
+                  remote: true,
+                  class: "my-3",
+                  id: :org_credits_remove do |f| %>
+
+      <fieldset>
+        <legend class="fw-medium mb-3">Remove credits from organizations</legend>
+
+        <div class="crayons-field form-group w-50">
+          <%= f.number_field "credits[count]",
+                             id: nil,
+                             in: 1..10_000,
+                             required: true,
+                             class: "crayons-textfield mr-1",
+                             "aria-label": "Number of credits to remove" %>
+          <%= f.text_field "credits[note]",
+                           id: nil,
+                           placeholder: "Why are you removing these credits?",
+                           required: true,
+                           class: "crayons-textfield mr-1",
+                           "aria-label": "Reason why you want to remove credits" %>
+          <%= select_tag "credits[organization_id]", orgs_with_credits(@organizations),
+                         id: "select_remove_org_credits",
+                         class: "crayons-select",
+                         "aria-label": "Select organization whose credits are going to be withdrawn" %>
+        </div>
+
+        <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger", data: { disable_with: "Remove" } %>
+      </fieldset>
+    <% end -%>
+  <% end %>
+</section>

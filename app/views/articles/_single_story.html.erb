@@ -35,9 +35,46 @@
         </div>
         <div>
           <p>
-            <a href="/<%= story.cached_user.username %>" class="crayons-story__secondary fw-medium">
+            <a href="/<%= story.cached_user.username %>" class="crayons-story__secondary fw-medium m:hidden">
               <%= story.cached_user.name %>
             </a>
+            <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block">
+              <button id="story-author-preview-trigger-<%= story.id %>" aria-controls="story-author-preview-content-<%= story.id %>" class="profile-preview-card__trigger fs-s p-1 -ml-1 crayons-btn crayons-btn--ghost" aria-label="<%= story.cached_user.name %> profile details">
+                <%= story.cached_user.name %>
+              </button>
+              <div
+                id="story-author-preview-content-<%= story.id %>"
+                class="profile-preview-card__content crayons-dropdown"
+                style="border-top: var(--su-7) solid var(--card-color);"
+                data-repositioning-dropdown="true"
+                data-testid="profile-preview-card">
+                <div class="gap-4 grid">
+                  <div class="-mt-4">
+                    <a href="/<%= story.cached_user.username %>" class="flex">
+                      <span class="crayons-avatar crayons-avatar--xl mr-2 shrink-0">
+                        <img
+                          src="<%= Images::Profile.call(story.cached_user.profile_image_url, length: 90) %>"
+                          class="crayons-avatar__image"
+                          alt=""
+                          loading="lazy" />
+                      </span>
+                      <span class="crayons-link crayons-subtitle-2 mt-5"><%= story.cached_user.name %></span>
+                    </a>
+                  </div>
+                  <div class="print-hidden">
+                    <button
+                      class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
+                      data-info='{"id": <%= story.user_id %>, "className": "User", "style": "full"}'>
+                      Follow
+                    </button>
+                  </div>
+                  <div
+                    class="author-preview-metadata-container"
+                    data-author-id="<%= story.user_id %>"></div>
+                </div>
+              </div>
+            </div>
+
             <% if story.cached_organization && !@organization_article_index %>
             <span>
               <span class="crayons-story__tertiary fw-normal"> for </span>

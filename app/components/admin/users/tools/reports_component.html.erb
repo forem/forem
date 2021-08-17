@@ -1,0 +1,34 @@
+<section
+  class="crayons-card p-3 js-component"
+  data-controller="users--tools--ajax"
+  data-action="ajax:success@document->users--tools--ajax#success ajax:error@document->users--tools--ajax#error">
+  <%# Used to announce to the screen reader client side which section the user is in %>
+  <div id="section-title" class="hidden">Reports section</div>
+
+  <h3>
+    <%= link_to "← Tools", admin_user_tools_path(@user.id),
+                remote: true,
+                data: { action: "ajax:success@document->user#replacePartial" },
+                class: "crayons-title fs-l backlink" %>
+  </h3>
+
+  <% if @reports.any? %>
+  <article>
+    <ul class="list-none">
+      <% @reports.each_with_index do |report, index| %>
+        <li
+          class="py-3 pl-3 <%= index == @reports.size - 1 ? "border-b-0" : "border-b-1" %> border-l-0 border-t-0 border-r-0 border-solid border-base-50">
+          <a href="<%= admin_report_path(report) %>"
+             class="text-none color-base-60 flex justify-between"
+             rel="noopener noreferer"
+             target="_blank">
+            <span><%= report.category.capitalize %> (<%= report.status %>)</span>
+            <span><strong><%= report.user_types(@user.id).to_sentence %></strong>: <%= report.message %></span>
+            <span><local-time datetime="<%= report.created_at.iso8601 %>"><%= report.created_at.strftime("%b %d, %Y") %></local-time></span>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+  </article>
+  <% end %>
+</section>

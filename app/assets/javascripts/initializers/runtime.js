@@ -133,4 +133,27 @@ class Runtime {
       }
     });
   }
+
+  /**
+   * Returns true if the supplied KeyboardEvent includes the OS-specific
+   * modifier key. For example, the Cmd key on Apple platforms or the Ctrl key
+   * on others.
+   *
+   * @param {KeyboardEvent} The event to check for the OS-specific modifier key
+   *
+   * @returns {Boolean} true if the event was fired with the OS-specific
+   *                    modifier key, false otherwise. Also returns false if
+   *                    the event is not a KeyboardEvent.
+   */
+  static hasOSSpecificModifier(event) {
+    if (!(event instanceof KeyboardEvent)) {
+      return false;
+    }
+
+    if (navigator.userAgent.indexOf('Mac OS X') >= 0) {
+      return event.metaKey;
+    } else {
+      return event.ctrlKey;
+    }
+  }
 }

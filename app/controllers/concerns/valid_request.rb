@@ -22,7 +22,7 @@ module ValidRequest
     end
   end
 
-  def _compute_redirect_to_location(request, options) #:nodoc:
+  def _compute_redirect_to_location(request, options) # :nodoc:
     case options
     # Yet another monkeypatch required to send proper protocol out.
     # In this case we make sure the redirect ends in the app protocol.
