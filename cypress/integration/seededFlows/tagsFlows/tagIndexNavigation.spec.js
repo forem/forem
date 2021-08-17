@@ -66,7 +66,7 @@ describe('Tag index page navigation', () => {
         cy.get('@week').click();
       });
 
-      cy.url().should('contain', '/top/week');
+      cy.url().should('contain', '/top/this-week');
       cy.findByRole('heading', { name: 'This Week' });
 
       // Check that the dropdown now indicates the new page
@@ -90,7 +90,7 @@ describe('Tag index page navigation', () => {
         cy.get('@month').click();
       });
 
-      cy.url().should('contain', '/top/month');
+      cy.url().should('contain', '/top/this-month');
       cy.findByRole('heading', { name: 'This Month' });
 
       // Check that the dropdown now indicates the new page
@@ -114,7 +114,7 @@ describe('Tag index page navigation', () => {
         cy.get('@year').click();
       });
 
-      cy.url().should('contain', '/top/year');
+      cy.url().should('contain', '/top/this-year');
       cy.findByRole('heading', { name: 'This Year' });
 
       // Check that the dropdown now indicates the new page
@@ -138,7 +138,7 @@ describe('Tag index page navigation', () => {
         cy.get('@allTime').click();
       });
 
-      cy.url().should('contain', '/top/infinity');
+      cy.url().should('contain', '/top/all-time');
       cy.findByRole('heading', { name: 'All Time' });
 
       // Check that the dropdown now indicates the new page
@@ -162,7 +162,7 @@ describe('Tag index page navigation', () => {
         cy.get('@mostRecent').click();
       });
 
-      cy.url().should('contain', '/latest');
+      cy.url().should('contain', '/top/most-recent');
       cy.findByRole('heading', { name: 'Most Recent' });
 
       // Check that the dropdown now indicates the new page
@@ -251,7 +251,7 @@ describe('Tag index page navigation', () => {
         cy.get('@week').click();
       });
 
-      cy.url().should('contain', '/top/week');
+      cy.url().should('contain', '/top/this-week');
       cy.findByRole('heading', { name: 'This Week' });
 
       // Check that the dropdown now indicates the new page
@@ -275,7 +275,7 @@ describe('Tag index page navigation', () => {
         cy.get('@month').click();
       });
 
-      cy.url().should('contain', '/top/month');
+      cy.url().should('contain', '/top/this-month');
       cy.findByRole('heading', { name: 'This Month' });
 
       // Check that the dropdown now indicates the new page
@@ -299,7 +299,7 @@ describe('Tag index page navigation', () => {
         cy.get('@year').click();
       });
 
-      cy.url().should('contain', '/top/year');
+      cy.url().should('contain', '/top/this-year');
       cy.findByRole('heading', { name: 'This Year' });
 
       // Check that the dropdown now indicates the new page
@@ -323,7 +323,7 @@ describe('Tag index page navigation', () => {
         cy.get('@allTime').click();
       });
 
-      cy.url().should('contain', '/top/infinity');
+      cy.url().should('contain', '/top/all-time');
       cy.findByRole('heading', { name: 'All Time' });
 
       // Check that the dropdown now indicates the new page
@@ -347,7 +347,7 @@ describe('Tag index page navigation', () => {
         cy.get('@mostRecent').click();
       });
 
-      cy.url().should('contain', '/latest');
+      cy.url().should('contain', '/top/most-recent');
       cy.findByRole('heading', { name: 'Most Recent' });
 
       // Check that the dropdown now indicates the new page

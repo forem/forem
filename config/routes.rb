@@ -57,7 +57,7 @@ Rails.application.routes.draw do
           collection do
             get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
             get "/:username/:slug", to: "articles#show_by_slug", as: :slug
-            get "/latest", to: "articles#index", defaults: { sort: "desc" }
+            get "/top/most-recent", to: "articles#index", defaults: { sort: "desc" }
           end
         end
         resources :comments, only: %i[index show]
@@ -398,8 +398,6 @@ Rails.application.routes.draw do
     get "/t/:tag", to: "stories/tagged_articles#index", as: :tag
     get "/t/:tag/top/:timeframe", to: "stories/tagged_articles#index"
     get "/t/:tag/page/:page", to: "stories/tagged_articles#index"
-    get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
-                              constraints: { timeframe: /latest/ }
 
     get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/admin", to: "tags#admin"
@@ -408,8 +406,6 @@ Rails.application.routes.draw do
     get "/badge/:slug", to: "badges#show", as: :badge
 
     get "/top/:timeframe", to: "stories#index"
-
-    get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest/ }
 
     get "/:username/series", to: "collections#index", as: "user_series"
     get "/:username/series/:id", to: "collections#show"

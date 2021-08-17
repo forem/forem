@@ -25,7 +25,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
 
   context "when user hasn't logged in" do
     context "when viewing articles for week" do
-      before { visit "/top/week" }
+      before { visit "/top/this-week" }
 
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count(2)
@@ -38,7 +38,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     end
 
     context "when viewing articles for month" do
-      before { visit "/top/month" }
+      before { visit "/top/this-month" }
 
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count(3)
@@ -53,7 +53,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     end
 
     context "when viewing articles for year" do
-      before { visit "/top/year" }
+      before { visit "/top/this-year" }
 
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count(4)
@@ -68,8 +68,8 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
     end
 
-    context "when viewing articles for infinity" do
-      before { visit "/top/infinity" }
+    context "when viewing articles for all time" do
+      before { visit "/top/all-time" }
 
       it "shows correct articles and cta count", :aggregate_failures do
         shows_correct_articles_count(5)
@@ -86,8 +86,8 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
     end
 
-    context "when viewing articles for latest" do
-      before { visit "/latest" }
+    context "when viewing articles for most recent" do
+      before { visit "/top/most-recent" }
 
       it "shows correct articles and cta-count", :aggregate_failures do
         shows_correct_articles_count(5)
@@ -110,7 +110,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
 
     before do
       sign_in user
-      visit "/top/week"
+      visit "/top/this-week"
     end
 
     it "shows correct articles", :aggregate_failures do
@@ -124,7 +124,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     end
 
     context "when viewing articles for month" do
-      before { visit "/top/month" }
+      before { visit "/top/this-month" }
 
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count_via_xpath(2)
@@ -139,7 +139,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     end
 
     context "when viewing articles for year" do
-      before { visit "/top/year" }
+      before { visit "/top/this-year" }
 
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count_via_xpath(3)
@@ -154,8 +154,8 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
     end
 
-    context "when viewing articles for infinity" do
-      before { visit "/top/infinity" }
+    context "when viewing articles for all time" do
+      before { visit "/top/all-time" }
 
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count_via_xpath(4)
@@ -171,8 +171,8 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
     end
 
-    context "when viewing articles for latest" do
-      before { visit "/latest" }
+    context "when viewing articles for most recent" do
+      before { visit "/top/most-recent" }
 
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count_via_xpath(4)

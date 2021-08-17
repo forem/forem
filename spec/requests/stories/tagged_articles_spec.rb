@@ -56,13 +56,15 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
         end
 
         it "renders page with top/week etc." do
-          get "/t/#{tag.name}/top/week"
+          get "/t/#{tag.name}/top/this-week"
           expect(response.body).to include(tag.name)
-          get "/t/#{tag.name}/top/month"
+          get "/t/#{tag.name}/top/this-month"
           expect(response.body).to include(tag.name)
-          get "/t/#{tag.name}/top/year"
+          get "/t/#{tag.name}/top/this-year"
           expect(response.body).to include(tag.name)
-          get "/t/#{tag.name}/top/infinity"
+          get "/t/#{tag.name}/top/all-time"
+          expect(response.body).to include(tag.name)
+          get "/t/#{tag.name}/top/most-recent"
           expect(response.body).to include(tag.name)
         end
 

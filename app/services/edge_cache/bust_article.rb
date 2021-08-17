@@ -66,8 +66,8 @@ module EdgeCache
       end
 
       if article.published && article.published_at > 1.hour.ago
-        cache_bust.call("/latest")
-        cache_bust.call("/latest?i=i")
+        cache_bust.call("/top/most-recent")
+        cache_bust.call("/top/most-recent?i=i")
       end
 
       cache_bust.call("/") if Article.published.order(hotness_score: :desc).limit(4).ids.include?(article.id)
@@ -80,8 +80,8 @@ module EdgeCache
 
       article.tag_list.each do |tag|
         if article.published_at.to_i > 2.minutes.ago.to_i
-          cache_bust.call("/t/#{tag}/latest")
-          cache_bust.call("/t/#{tag}/latest?i=i")
+          cache_bust.call("/t/#{tag}/top/most-recent")
+          cache_bust.call("/t/#{tag}/top/most-recent?i=i")
         end
 
         TIMEFRAMES.each do |timestamp, interval|

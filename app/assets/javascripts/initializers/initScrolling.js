@@ -227,11 +227,11 @@ function insertArticles(articles) {
     if (
       ![
         '/',
-        '/top/week',
-        '/top/month',
-        '/top/year',
-        '/top/infinity',
-        '/latest',
+        '/top/this-week',
+        '/top/this-month',
+        '/top/this-year',
+        '/top/all-time',
+        '/top/most-recent',
       ].includes(window.location.pathname) &&
       existingEl &&
       existingEl.parentElement &&
