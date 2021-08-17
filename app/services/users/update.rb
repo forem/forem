@@ -1,6 +1,4 @@
-# TODO: This should probably become `Users::Update` as we're dealing with core
-# user attributes, profile attributes and user settings.
-module Profiles
+module Users
   # Deals with updates that affect fields on +Profile+ and/or +User+ in a transparent way.
   class Update
     using HashAnyKey
@@ -15,11 +13,11 @@ module Profiles
     #   and/or user attributes to update. The corresponding has keys are +:user+ and
     #   +:profile+ respectively.
     # @example
-    #   Profiles::Update.call(
+    #   Users::Update.call(
     #     current_user,
     #     profile: { website_url: "https://example.com" },
     #   )
-    # @return [Profiles::Update] a class instance that can be used for success checks
+    # @return [Users::Update] a class instance that can be used for success checks
     def self.call(user, updated_attributes = {})
       new(user, updated_attributes).call
     end

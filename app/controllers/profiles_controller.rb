@@ -5,7 +5,7 @@ class ProfilesController < ApplicationController
   ALLOWED_USERS_SETTING_PARAMS = %i[display_email_on_profile brand_color1 brand_color2].freeze
 
   def update
-    update_result = Profiles::Update.call(current_user, update_params)
+    update_result = Users::Update.call(current_user, update_params)
     if update_result.success?
       flash[:settings_notice] = "Your profile has been updated"
       redirect_to user_settings_path
