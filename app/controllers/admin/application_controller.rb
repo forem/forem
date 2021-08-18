@@ -1,6 +1,6 @@
 module Admin
   class ApplicationController < ApplicationController
-    before_action :authorize_admin
+    # before_action :authorize_admin
     before_action :assign_help_url
     after_action :verify_authorized
 
