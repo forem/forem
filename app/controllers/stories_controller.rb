@@ -333,6 +333,7 @@ class StoriesController < ApplicationController
   def set_user_json_ld
     # For more info on structuring data with JSON-LD,
     # please refer to this link: https://moz.com/blog/json-ld-for-beginners
+    decorated_user = @user.decorate
     @user_json_ld = {
       "@context": "http://schema.org",
       "@type": "Person",
@@ -344,9 +345,8 @@ class StoriesController < ApplicationController
       sameAs: user_same_as,
       image: Images::Profile.call(@user.profile_image_url, length: 320),
       name: @user.name,
-      email: @user.setting.display_email_on_profile ? @user.email : nil,
-      description: @user.profile.summary.presence || "404 bio not found",
-      alumniOf: @user.education.presence
+      email: decorated_user.profile_email,
+      description: decorated_user.profile_summary
     }.reject { |_, v| v.blank? }
   end
 
