@@ -38,8 +38,7 @@ RSpec.describe "UserShow", type: :request do
         "image" => Images::Profile.call(user.profile_image_url, length: 320),
         "name" => user.name,
         "email" => user.email,
-        "description" => user.summary,
-        "alumniOf" => user.education,
+        "description" => user.tag_line,
       )
     end
     # rubocop:enable RSpec/ExampleLength

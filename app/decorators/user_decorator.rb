@@ -18,6 +18,8 @@ class UserDecorator < ApplicationDecorator
     },
   ].freeze
 
+  DEFAULT_PROFILE_SUMMARY = "404 bio not found".freeze
+
   def cached_followed_tags
     follows_map = Rails.cache.fetch("user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tags",
                                     expires_in: 20.hours) do
@@ -108,6 +110,19 @@ class UserDecorator < ApplicationDecorator
     return false unless min_days.positive?
 
     created_at.after?(min_days.days.ago)
+  end
+
+  # Returns the user's public email if it is set and the display_email_on_profile
+  # settings is set to true.
+  def profile_email
+    return unless setting.display_email_on_profile?
+
+    email
+  end
+
+  # Returns the users profile summary or a placeholder text
+  def profile_summary
+    profile.summary.presence || DEFAULT_PROFILE_SUMMARY
   end
 
   delegate :display_sponsors, to: :setting

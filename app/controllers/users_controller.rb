@@ -46,9 +46,7 @@ class UsersController < ApplicationController
     set_current_tab(params["user"]["tab"])
     set_users_setting_and_notification_setting
 
-    @user.assign_attributes(permitted_attributes(@user))
-
-    if @user.save
+    if @user.update(permitted_attributes(@user))
       # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
       # explicitly requested "Feed fetch now" or simply updated any other field
       import_articles_from_feed(@user)
@@ -170,6 +168,7 @@ class UsersController < ApplicationController
 
   def onboarding_update
     authorize User
+
     user_params = { saw_onboarding: true }
 
     if params[:user]
@@ -181,7 +180,7 @@ class UsersController < ApplicationController
       user_params.merge!(params[:user].permit(ALLOWED_USER_PARAMS))
     end
 
-    update_result = Profiles::Update.call(current_user, { user: user_params, profile: profile_params })
+    update_result = Profiles::Update.call(current_user, user: user_params, profile: profile_params)
     render_update_response(update_result.success?, update_result.errors_as_sentence)
   end
 
@@ -381,7 +380,7 @@ class UsersController < ApplicationController
   end
 
   def profile_params
-    params[:profile] ? params[:profile].permit(Profile.attributes) : nil
+    params[:profile] ? params[:profile].permit(Profile.static_fields + Profile.attributes) : nil
   end
 
   def password_params
