@@ -19,7 +19,7 @@ module Admin
       tags: "https://admin.forem.com/docs/admin/tags"
     }.freeze
 
-    private
+    protected
 
     def authorization_resource
       self.class.name.sub("Admin::", "").sub("Controller", "").singularize.constantize

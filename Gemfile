@@ -15,7 +15,7 @@ gem "acts-as-taggable-on", "~> 8.1" # A tagging plugin for Rails applications th
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "ahoy_email", "~> 2.0.2" # Email analytics for Rails
-gem "ahoy_matey", "~> 3.3" # Tracking analytics for Rails
+gem "ahoy_matey", "~> 4.0" # Tracking analytics for Rails
 gem "ancestry", "~> 4.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.4.3" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
@@ -112,6 +112,7 @@ gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
+gem "view_component", "~> 2.34", require: "view_component/engine" # View components for Rails
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.4.0" # Use webpack to manage app-like JavaScript modules in Rails
 
@@ -144,7 +145,7 @@ group :development, :test do
   gem "cypress-rails", "~> 0.5.1" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.18" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 3.0.0" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 3.1.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.19", require: false # Automatic Ruby code style checking tool
