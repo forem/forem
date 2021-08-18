@@ -12,6 +12,8 @@ seeder = Seeder.new
 Settings::UserExperience.public = true
 Settings::General.waiting_on_first_user = false
 Settings::Authentication.allow_email_password_registration = true
+Settings::SMTP.user_name = "username"
+Settings::SMTP.password = "password"
 
 ##############################################################################
 
@@ -30,7 +32,6 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     email: "admin@forem.local",
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -49,11 +50,15 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     work: "Software developer at Company",
     location: "Edinburgh",
     education: "University of Life",
+    website_url: Faker::Internet.url,
   )
 
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
   user.add_role(:trusted)
+
+  # Enable new Admin Members
+  FeatureFlag.enable(:new_admin_members, user)
 end
 
 admin_user = User.find_by(email: "admin@forem.local")
@@ -66,7 +71,6 @@ seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
     email: "trusted-user-1@forem.local",
     username: "trusted_user_1",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -78,6 +82,8 @@ seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
     email_comment_notifications: false,
     email_follower_notifications: false,
   )
+
+  user.profile.update(website_url: Faker::Internet.url)
 
   user.add_role(:trusted)
 end
@@ -108,9 +114,7 @@ seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") d
     name: "Change Password User",
     email: "change-password-user@forem.com",
     username: "changepassworduser",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -122,6 +126,10 @@ seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") d
     email_comment_notifications: false,
     email_follower_notifications: false,
   )
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
+  )
   user
 end
 
@@ -132,9 +140,7 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v1-user@forem.com")
     name: "Article Editor v1 User",
     email: "article-editor-v1-user@forem.local",
     username: "article_editor_v1_user",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -147,6 +153,10 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v1-user@forem.com")
     email_comment_notifications: false,
     email_follower_notifications: false,
   )
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
+  )
   user
 end
 
@@ -157,9 +167,7 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.com")
     name: "Article Editor v2 User",
     email: "article-editor-v2-user@forem.local",
     username: "article_editor_v2_user",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -170,6 +178,10 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.com")
   user.notification_setting.update(
     email_comment_notifications: false,
     email_follower_notifications: false,
+  )
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
   )
   user
 end
@@ -181,9 +193,7 @@ chat_user_1 = seeder.create_if_doesnt_exist(User, "email", "chat-user-1@forem.lo
     name: "Chat user 1",
     email: "chat-user-1@forem.local",
     username: "chat_user_1",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -194,6 +204,10 @@ chat_user_1 = seeder.create_if_doesnt_exist(User, "email", "chat-user-1@forem.lo
   user.notification_setting.update(
     email_comment_notifications: false,
     email_follower_notifications: false,
+  )
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
   )
   user
 end
@@ -205,9 +219,7 @@ chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.lo
     name: "Chat user 2",
     email: "chat-user-2@forem.local",
     username: "chat_user_2",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -218,6 +230,10 @@ chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.lo
   user.notification_setting.update(
     email_comment_notifications: false,
     email_follower_notifications: false,
+  )
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
   )
   user
 end
@@ -228,9 +244,7 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.com") do
     name: "Notifications User",
     email: "notifications-user@forem.local",
     username: "notifications_user",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -241,6 +255,10 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.com") do
   user.notification_setting.update(
     email_comment_notifications: false,
     email_follower_notifications: false,
+  )
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
   )
 
   follow = admin_user.follows.create!(followable: user)
@@ -254,9 +272,7 @@ seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.com") do
     name: "Liquid tags User",
     email: "liquid-tags-user@forem.local",
     username: "liquid_tags_user",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -267,6 +283,10 @@ seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.com") do
   liquid_tags_user.notification_setting.update(
     email_comment_notifications: false,
     email_follower_notifications: false,
+  )
+  liquid_tags_user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
   )
 
   admin_user.follows.create!(followable: liquid_tags_user)
@@ -384,9 +404,7 @@ seeder.create_if_doesnt_exist(User, "email", "series-user@forem.com") do
     name: "Series User",
     email: "series-user@forem.local",
     username: "series_user",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
@@ -399,6 +417,7 @@ seeder.create_if_doesnt_exist(User, "email", "series-user@forem.com") do
     work: "Software developer at Company",
     location: "Edinburgh",
     education: "University of Life",
+    website_url: Faker::Internet.url,
   )
   series_user.notification_setting.update(
     email_comment_notifications: false,
@@ -442,7 +461,8 @@ end
 ##############################################################################
 
 seeder.create_if_none(Listing) do
-  Credit.add_to(admin_user, rand(100))
+  Credit.add_to(admin_user, rand(1..100))
+  Credit.add_to(admin_user.organizations.first, rand(1..100))
 
   Listing.create!(
     user: admin_user,
@@ -525,4 +545,21 @@ seeder.create_if_none(Page) do
       landing_page: false,
     )
   end
+end
+
+##############################################################################
+
+seeder.create_if_none(Reaction) do
+  user = User.find_by(username: "trusted_user_1")
+  admin_user.reactions.create!(category: :vomit, reactable: user)
+end
+
+##############################################################################
+
+seeder.create_if_none(FeedbackMessage) do
+  admin_user.reporter_feedback_messages.create!(
+    feedback_type: "bug-reports",
+    message: "a bug",
+    category: :bug,
+  )
 end

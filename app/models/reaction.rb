@@ -25,6 +25,12 @@ class Reaction < ApplicationRecord
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
   scope :article_vomits, -> { where(category: "vomit", reactable_type: "Article") }
   scope :comment_vomits, -> { where(category: "vomit", reactable_type: "Comment") }
+  scope :user_vomits, -> { where(category: "vomit", reactable_type: "User") }
+  scope :related_negative_reactions_for_user, lambda { |user|
+    article_vomits.where(reactable_id: user.article_ids)
+      .or(comment_vomits.where(reactable_id: user.comment_ids))
+      .or(user_vomits.where(user_id: user.id))
+  }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }

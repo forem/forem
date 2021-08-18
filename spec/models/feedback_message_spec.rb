@@ -59,4 +59,26 @@ RSpec.describe FeedbackMessage, type: :model do
       it { is_expected.not_to validate_presence_of(:reported_url) }
     end
   end
+
+  describe ".all_user_reports" do
+    let(:user) { create(:user) }
+
+    it "returns reported feedback messages" do
+      report = create(:feedback_message, reporter: user)
+
+      expect(described_class.all_user_reports(user).first.id).to eq(report.id)
+    end
+
+    it "returns affected feedback messages" do
+      report = create(:feedback_message, affected: user)
+
+      expect(described_class.all_user_reports(user).first.id).to eq(report.id)
+    end
+
+    it "returns offender feedback messages" do
+      report = create(:feedback_message, offender: user)
+
+      expect(described_class.all_user_reports(user).first.id).to eq(report.id)
+    end
+  end
 end

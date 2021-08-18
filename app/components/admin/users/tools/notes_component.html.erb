@@ -1,0 +1,54 @@
+<section
+  class="crayons-card p-3 js-component"
+  data-controller="users--tools--ajax"
+  data-action="ajax:success@document->users--tools--ajax#success ajax:error@document->users--tools--ajax#error">
+  <%# Used to announce to the screen reader client side which section the user is in %>
+  <div id="section-title" class="hidden">Notes section</div>
+
+  <h3>
+    <%= link_to "← Tools", admin_user_tools_path(@user.id),
+                remote: true,
+                data: { action: "ajax:success@document->user#replacePartial" },
+                class: "crayons-title fs-l backlink" %>
+  </h3>
+
+  <%# Create a new note %>
+  <%= form_with model: Note.new,
+                url: admin_user_tools_notes_path(@user),
+                method: :post,
+                remote: true,
+                class: "mt-2" do |f| %>
+    <div class="crayons-field form-group">
+      <%= f.label :content, "Add a new note", class: "crayons-field__label" %>
+      <%= f.text_area :content, required: true, class: "crayons-textfield" %>
+    </div>
+
+    <%= f.submit "Create Note", class: "crayons-btn", data: { disable_with: "Creating..." } %>
+  <% end -%>
+
+  <%# Notes history #%>
+  <% if @notes.any? %>
+    <article class="mt-5">
+      <details>
+        <summary class="fw-medium">Recent Notes (<%= @notes.size %>)</summary>
+
+        <ul class="list-none">
+          <% @notes.each_with_index do |note, index| %>
+            <li class="py-3 pl-3 <%= index == @notes.size - 1 ? "border-b-0" : "border-b-1" %> border-l-0 border-t-0 border-r-0 border-solid border-base-50">
+              <local-time datetime="<%= note.created_at.iso8601 %>">
+                <%= note.created_at.strftime("%d %B %Y %H:%M %Z") %>
+              </local-time>
+              by
+              <%= note.author&.username %>
+              —
+              <% if note.reason.present? %>
+                <strong><%= note.reason %></strong>:
+              <% end -%>
+              <%= note.content %>
+            </li>
+          <% end %>
+        </ul>
+      </details>
+    </article>
+  <% end %>
+</section>
