@@ -100,7 +100,7 @@ RSpec.describe "Stories::Feeds", type: :request do
       it "renders main_image as null" do
         # Calling the standard feed endpoint only retrieves articles without images if you're logged in.
         # We'll call use the 'latest' param to get around this
-        get timeframe_stories_feed_path(:latest)
+        get timeframe_stories_feed_path("most-recent")
         expect(response_article["main_image"]).to be_nil
       end
     end
@@ -131,11 +131,11 @@ RSpec.describe "Stories::Feeds", type: :request do
 
       it "calls the feed service for a timeframe" do
         allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(feed_service)
-        allow(feed_service).to receive(:top_articles_by_timeframe).with(timeframe: "week").and_call_original
+        allow(feed_service).to receive(:top_articles_by_timeframe).with(timeframe: "this-week").and_call_original
 
-        get timeframe_stories_feed_path(:week)
+        get timeframe_stories_feed_path("this-week")
 
-        expect(feed_service).to have_received(:top_articles_by_timeframe).with(timeframe: "week")
+        expect(feed_service).to have_received(:top_articles_by_timeframe).with(timeframe: "this-week")
       end
 
       it "calls the feed service for latest" do
@@ -199,7 +199,7 @@ RSpec.describe "Stories::Feeds", type: :request do
       let(:article) { comment.commentable }
 
       it "renders top comments for the article" do
-        get timeframe_stories_feed_path(:infinity)
+        get timeframe_stories_feed_path("all-time")
 
         expect(response_article["top_comments"]).not_to be_nil
         expect(response_article["top_comments"].first["username"]).not_to be_nil
