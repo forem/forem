@@ -307,7 +307,7 @@ function paginate(tag, params, requiresApproval) {
   var homeEl = document.getElementById('index-container');
   if (homeEl.dataset.feed === 'base-feed') {
     searchHash.class_name = 'Article';
-  } else if (homeEl.dataset.feed === 'latest') {
+  } else if (homeEl.dataset.feed === 'most-recent') {
     searchHash.class_name = 'Article';
     searchHash.sort_by = 'published_at';
   } else {

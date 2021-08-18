@@ -24,11 +24,11 @@ module ApplicationHelper
   }.freeze
 
   FEED_TITLES = {
-    "week" => "This Week",
-    "month" => "This Month",
-    "year" => "This Year",
-    "infinity" => "All Time",
-    "latest" => "Most Recent"
+    "this-week" => "This Week",
+    "this-month" => "This Month",
+    "this-year" => "This Year",
+    "all-time" => "All Time",
+    "most-recent" => "Most Recent"
   }.freeze
 
   def user_logged_in_status
