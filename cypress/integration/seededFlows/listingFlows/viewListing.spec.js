@@ -43,6 +43,30 @@ describe('View listing', () => {
     cy.get('@listingTitle').should('have.focus');
   });
 
+  it("closes opened listing when a user clicks its category's title in the modal's author block", () => {
+    cy.intercept(
+      '/search/listings?category=&listing_search=&page=0&per_page=75&tag_boolean_mode=all',
+      { fixture: 'search/listings.json' },
+    );
+
+    cy.visit('/listings');
+
+    cy.findByRole('main')
+      .findByRole('link', { name: 'Listing title' })
+      .as('listingTitle');
+    cy.get('@listingTitle').focus().click();
+
+    cy.findByTestId('listings-modal').as('listingsModal');
+    cy.get('@listingsModal')
+      .findByRole('link', { name: 'cfp' })
+      .as('listingCategory');
+
+    cy.get('@listingCategory').focus().click();
+
+    cy.findByTestId('listings-modal').should('not.exist');
+    cy.get('@listingTitle').should('be.focused');
+  });
+
   it('redirects when a logged out user contacts via connect', () => {
     cy.intercept(
       '/search/listings?category=&listing_search=&page=0&per_page=75&tag_boolean_mode=all',
