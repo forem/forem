@@ -93,31 +93,38 @@ export default class ConfigController extends Controller {
     }
   }
 
+  displaySnackbar(message) {
+    return document.dispatchEvent(
+      new CustomEvent('snackbar:add', { detail: { message } }),
+    );
+  }
+
   async activateLightConfirmation(event) {
     event.preventDefault();
     try {
-      const response = await fetch('admin/settings/general_settings/', {
+      const data = new FormData(event.target);
+      const response = await fetch('/admin/settings/general_settings', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
             ?.content,
-          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({}),
+        body: data,
         credentials: 'same-origin',
       });
 
       const outcome = await response.json();
 
-      if (outcome.ok) {
-        alert(outcome.message);
+      if (response.ok) {
+        this.displaySnackbar(outcome.message);
       } else {
-        alert(outcome.error);
+        this.displaySnackbar(outcome.error);
       }
     } catch (err) {
-      alert(`Caught Error: ${err}`);
+      this.displaySnackbar(err);
     }
+    event.target.querySelector('input[type=submit]').disabled = false;
   }
 
   // GENERAL FUNCTIONS END
