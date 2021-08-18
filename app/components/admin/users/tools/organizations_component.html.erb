@@ -1,0 +1,91 @@
+<section
+  class="crayons-card p-3 js-component"
+  data-controller="users--tools--ajax"
+  data-action="ajax:success@document->users--tools--ajax#success ajax:error@document->users--tools--ajax#error">
+  <%# Used to announce to the screen reader client side which section the user is in %>
+  <div id="section-title" class="hidden">Organizations section</div>
+
+  <h3>
+    <%= link_to "← Tools", admin_user_tools_path(@user.id),
+                remote: true,
+                data: { action: "ajax:success@document->user#replacePartial" },
+                class: "crayons-title fs-l backlink" %>
+  </h3>
+
+  <%# Add new org membership %>
+  <%= form_with model: [:admin, OrganizationMembership.new],
+                remote: true,
+                class: "my-3",
+                id: "add-membership" do |f| %>
+
+    <%= f.hidden_field :user_id, value: @user.id %>
+
+    <fieldset>
+      <legend class="fw-medium mb-3">Add <%= @user.name %> to a new organization</legend>
+
+      <div class="crayons-field form-group w-50">
+        <%= f.label :organization_id, "Organization ID", class: "crayons-field__label" %>
+        <%= f.number_field :organization_id, class: "crayons-textfield" %>
+      </div>
+
+      <div class="crayons-field form-group w-50">
+        <%= f.label :type_of_user, "Membership Level", class: "crayons-field__label", id: "membership-add" %>
+        <%= select_tag "organization_membership[type_of_user]",
+                       options_for_select(@memberships_for_select, "Member"),
+                       id: nil,
+                       class: "crayons-select",
+                       "aria-label": "Membership level" %>
+      </div>
+
+      <%= f.submit "Add",
+                   class: "crayons-btn",
+                   data: { disable_with: "Adding..." } %>
+    </fieldset>
+  <% end -%>
+
+  <%# Manage existing memberships %>
+  <% if @memberships.present? %>
+    <article class="mt-5">
+      <details>
+        <summary class="fw-medium">Manage memberships</summary>
+
+        <ul class="list-none">
+          <% @memberships.each do |membership, index| %>
+            <li class="py-3 pl-3 <%= index == @memberships.size - 1 ? "border-b-0" : "border-b-1" %> border-l-0 border-t-0 border-r-0 border-solid border-base-50">
+              <div class="flex justify-between">
+                <a href="<%= membership.organization.path %>" target="_blank" rel="noopener" class="inline-block">
+                  <h4><%= membership.organization.name %></h4>
+                </a>
+
+                <%= button_to "Remove from organization",
+                              admin_organization_membership_path(membership),
+                              method: :delete,
+                              remote: true,
+                              class: "crayons-btn crayons-btn--danger",
+                              data: { confirm: "Are you sure?" } %>
+              </div>
+
+              <%= form_with model: [:admin, membership],
+                            method: :patch,
+                            remote: true,
+                            id: "update-permissions-#{index}" do |f| %>
+                <div class="crayons-field form-group w-50">
+                  <%= f.label :type_of_user, "Membership Level", class: "crayons-field__label", id: "update-permissions-label-#{index}" %>
+                  <%= select_tag "organization_membership[type_of_user]",
+                                 options_for_select(@memberships_for_select, membership.type_of_user),
+                                 id: nil,
+                                 class: "crayons-select",
+                                 "aria-label": "Membership level for #{membership.organization.name}" %>
+                </div>
+
+                <%= f.submit "Update Permissions",
+                             class: "crayons-btn",
+                             data: { disable_with: "Updating..." } %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </details>
+    </article>
+  <% end %>
+</section>

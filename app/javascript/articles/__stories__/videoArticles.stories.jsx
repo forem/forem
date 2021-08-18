@@ -10,7 +10,6 @@ import {
 import '../../../assets/stylesheets/articles.scss';
 
 const ICONS = {
-  REACTIONS_ICON: assetPath('reactions-stack.png'),
   COMMENTS_ICON: assetPath('comments-bubble.png'),
   VIDEO_ICON: assetPath('video-camera.svg'),
 };
@@ -27,7 +26,6 @@ export default {
 export const Default = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
     commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
     videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
@@ -41,7 +39,6 @@ Default.story = { name: 'default' };
 export const VideoArticleWithFlareTag = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
     commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
     videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}

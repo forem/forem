@@ -79,10 +79,9 @@ GEM
       addressable (>= 2.3.2)
       nokogiri
       safely_block (>= 0.1.1)
-    ahoy_matey (3.3.0)
-      activesupport (>= 5)
+    ahoy_matey (4.0.0)
+      activesupport (>= 5.2)
       device_detector
-      geocoder (>= 1.4.5)
       safely_block (>= 0.2.1)
     amazing_print (1.3.0)
     ancestry (4.1.0)
@@ -310,7 +309,6 @@ GEM
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
     gemoji (4.0.0.rc3)
-    geocoder (1.6.7)
     get_process_mem (0.2.7)
       ffi (~> 1.0)
     gibbon (3.4.0)
@@ -404,7 +402,7 @@ GEM
     kaminari-core (1.2.1)
     katex (0.8.0)
       execjs (~> 2.7)
-    knapsack_pro (3.0.0)
+    knapsack_pro (3.1.0)
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
@@ -476,7 +474,7 @@ GEM
     octokit (4.21.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
-    oj (3.13.1)
+    oj (3.13.2)
     omniauth (2.0.4)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
@@ -798,6 +796,9 @@ GEM
     vault (0.16.0)
       aws-sigv4
     vcr (6.0.0)
+    view_component (2.36.0)
+      activesupport (>= 5.0.0, < 8.0)
+      method_source (~> 1.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -853,7 +854,7 @@ DEPENDENCIES
   acts_as_follower!
   addressable (~> 2.8)
   ahoy_email (~> 2.0.2)
-  ahoy_matey (~> 3.3)
+  ahoy_matey (~> 4.0)
   amazing_print (~> 1.3)
   ancestry (~> 4.1)
   better_errors (~> 2.9)
@@ -909,7 +910,7 @@ DEPENDENCIES
   jsonapi-serializer (~> 2.2)
   kaminari (~> 1.2)
   katex (~> 0.8.0)
-  knapsack_pro (~> 3.0.0)
+  knapsack_pro (~> 3.1.0)
   launchy (~> 2.5)
   liquid (~> 5.0)
   listen (~> 3.6)
@@ -989,6 +990,7 @@ DEPENDENCIES
   validate_url (~> 1.0)
   vault (~> 0.16)
   vcr (~> 6.0)
+  view_component (~> 2.34)
   wcag_color_contrast (~> 0.1)
   web-console (~> 4.1)
   webdrivers (~> 4.6)
@@ -1003,4 +1005,4 @@ RUBY VERSION
    ruby 2.7.2p137
 
 BUNDLED WITH
-   2.2.16
+   2.2.20

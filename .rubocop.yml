@@ -221,6 +221,8 @@ Lint/MissingSuper:
                   This cop checks for the presence of constructors and lifecycle callbacks
                   without calls to `super`'.
   Enabled: true
+  Exclude:
+    - 'app/components/**/*.rb'
 
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
