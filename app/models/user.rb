@@ -12,7 +12,6 @@ class User < ApplicationRecord
     bg_color_hex
     currently_hacking_on
     currently_learning
-    currently_streaming_on
     dribbble_url
     education
     email_public
@@ -58,18 +57,11 @@ class User < ApplicationRecord
       after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
 
       # Getters and setters for unmapped profile attributes
-      (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
+      PROFILE_COLUMNS.each do |column|
         next if INACTIVE_PROFILE_COLUMNS.include?(column)
+        next unless column.in?(Profile.attributes)
 
         delegate column, "#{column}=", to: :profile, allow_nil: true
-      end
-
-      # Getters and setters for mapped profile attributes
-      Profile::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
-        define_method(user_attribute) { profile&.public_send(profile_attribute) }
-        define_method("#{user_attribute}=") do |value|
-          profile&.public_send("#{profile_attribute}=", value)
-        end
       end
     end
   end
@@ -289,7 +281,7 @@ class User < ApplicationRecord
   end
 
   def tag_line
-    summary
+    profile.summary
   end
 
   def twitter_url

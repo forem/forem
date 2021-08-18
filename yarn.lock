@@ -1826,23 +1826,23 @@
     "@reach/utils" "0.16.0"
     tslib "^2.3.0"
 
-"@reach/combobox@^0.16.0":
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/@reach/combobox/-/combobox-0.16.0.tgz#b7bc564b708b9d2f9fc0b7f2c803b5d089eeb21f"
-  integrity sha512-ikZNdEwv4inB0TVqGdKW/mXNK4QlAhhaaH7u899bathMuWuVi8tgKdaqKWI76S1sQYaNfczqx+0/17g/AE/Q8Q==
+"@reach/combobox@^0.16.1":
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/@reach/combobox/-/combobox-0.16.1.tgz#5ab90db398fc30cc44fc83f6ab2dc18376884941"
+  integrity sha512-48eUtftpe2wY9sKJddkUSZQu9OcEx3P1LdsOKj6BL+InAX4DRe6i8tBKSqhChz4QaaHCo6bPXr2eeE1f++OBAw==
   dependencies:
     "@reach/auto-id" "0.16.0"
-    "@reach/descendants" "0.16.0"
+    "@reach/descendants" "0.16.1"
     "@reach/popover" "0.16.0"
     "@reach/portal" "0.16.0"
     "@reach/utils" "0.16.0"
     prop-types "^15.7.2"
     tslib "^2.3.0"
 
-"@reach/descendants@0.16.0":
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/@reach/descendants/-/descendants-0.16.0.tgz#4c2873ea14ca3669e0c0bd0cd89cd79f27c0d0ad"
-  integrity sha512-VLfAYRhU1LoDld3zP9vrvMnj3wWJIbfetQ/T+swYfGKadRKP0owrZBQ+lf3Y/HnPiac5sR4vAg97c2G6R2bqhw==
+"@reach/descendants@0.16.1":
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/@reach/descendants/-/descendants-0.16.1.tgz#fa3d89c0503565369707f32985d87eef61985d9f"
+  integrity sha512-3WZgRnD9O4EORKE31rrduJDiPFNMOjUkATx0zl192ZxMq3qITe4tUj70pS5IbJl/+v9zk78JwyQLvA1pL7XAPA==
   dependencies:
     "@reach/utils" "0.16.0"
     tslib "^2.3.0"

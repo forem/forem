@@ -1,3 +1,5 @@
+# TODO: This should probably become `Users::Update` as we're dealing with core
+# user attributes, profile attributes and user settings.
 module Profiles
   # Deals with updates that affect fields on +Profile+ and/or +User+ in a transparent way.
   class Update

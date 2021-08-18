@@ -61,13 +61,13 @@
 
         <div class="profile-header__details">
           <h1 class="crayons-title fw-heavy mb-2"><%= @user.name %></h1>
-          <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.profile.summary.presence || ["404 bio not found"].sample %></p>
+          <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.tag_line.presence || ["404 bio not found"].sample %></p>
 
           <div class="profile-header__meta">
             <% if @user.profile.location.present? %>
               <span class="profile-header__meta__item">
                 <%= inline_svg_tag("location.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: "Location") %>
-                <%= @user.location %>
+                <%= @user.profile.location %>
               </span>
             <% end %>
 
@@ -80,14 +80,14 @@
             <% if @user.setting.display_email_on_profile %>
               <a href="mailto:<%= @user.email %>" class="profile-header__meta__item">
                 <%= inline_svg_tag("email.svg", class: "crayons-icon mr-2 shrink-0", aria: true, title: "Email address") %>
-                <%= @user.email %>
+                <%= @user.setting.display_email_on_profile %>
               </a>
             <% end %>
 
             <% if @user.profile.website_url.present? %>
-              <a href="<%= @user.website_url %>" target="_blank" rel="noopener me" class="profile-header__meta__item">
+              <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener me" class="profile-header__meta__item">
                 <%= inline_svg_tag("link-external.svg", class: "crayons-icon mr-2 shrink-0", aria: true, title: "Personal website") %>
-                <%= @user.website_url %>
+                <%= @user.profile.website_url %>
               </a>
             <% end %>
 
