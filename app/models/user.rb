@@ -35,17 +35,10 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  INACTIVE_PROFILE_COLUMNS = %w[
-    bg_color_hex
-    text_color_hex
-    email_public
-  ].freeze
-
   self.ignored_columns = PROFILE_COLUMNS
 
-  # NOTE: @citizen428 This is temporary code during profile migration and will
-  # be removed.
-  concerning :ProfileMigration do
+  # NOTE: we are using an inline module to keep profile related things together.
+  concerning :Profiles do
     included do
       has_one :profile, dependent: :destroy
 
@@ -57,14 +50,6 @@ class User < ApplicationRecord
 
       # All new users should automatically have a profile
       after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
-
-      # Getters and setters for unmapped profile attributes
-      PROFILE_COLUMNS.each do |column|
-        next if INACTIVE_PROFILE_COLUMNS.include?(column)
-        next unless column.in?(Profile.attributes)
-
-        delegate column, "#{column}=", to: :profile, allow_nil: true
-      end
     end
   end
 
@@ -264,9 +249,6 @@ class User < ApplicationRecord
   before_create :create_users_settings_and_notification_settings_records
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
-
-  # NOTE: @citizen428 Temporary while migrating to generalized profiles
-  after_save { |user| user.profile&.save if user.profile&.changed? }
 
   after_create_commit :send_welcome_notification
 

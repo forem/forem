@@ -78,9 +78,6 @@
   </div>
 
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
-    <% next if group.name == "Basic" # TODO: @citizen428 Remove this after user settings work (email field) %>
-    <% next if group.name == "Links" # TODO: [@jacobherrington] Remove this when we drop social links %>
-    <% next if group.name == "Branding" # TODO: [@msarit @jacobherrington] May be further refactored later as part of Profiles work %>
     <div class="crayons-card crayons-card--content-rows">
       <h2><%= group.name %></h2>
       <% if group.description.present? %>
