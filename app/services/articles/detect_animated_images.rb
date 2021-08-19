@@ -15,6 +15,9 @@ module Articles
       ".podcastliquidtag img", # PodcastTag
     ].join(", ").freeze
 
+    # FastImage will use this number both for read and open timeout
+    TIMEOUT = 10
+
     def self.call(article)
       parsed_html = Nokogiri::HTML.fragment(article.processed_html)
 
@@ -33,7 +36,7 @@ module Articles
                 end
 
         next if image.blank?
-        next unless FastImage.animated?(image)
+        next unless FastImage.animated?(image, timeout: TIMEOUT)
 
         img["data-animated"] = true
         found = true
