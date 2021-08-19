@@ -10,7 +10,7 @@ describe('User experience Section', () => {
 
   describe('default font', () => {
     it('can change the default font', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_user_experience').as('userExperienceSectionForm');
 
@@ -21,12 +21,6 @@ describe('User experience Section', () => {
           .get('#settings_user_experience_default_font')
           // We need to use force here because the select is covered by another element.
           .select('open-dyslexic', { force: true });
-
-        cy.get('@userExperienceSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
 
         cy.get('@userExperienceSectionForm')
           .findByText('Update Settings')
