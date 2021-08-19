@@ -44,7 +44,7 @@ function processPayload(payload) {
   return neededPayload;
 }
 
-export function submitArticle(payload, clearStorage, successCb, errorCb) {
+export function submitArticle({ payload, onSuccess, onError }) {
   const method = payload.id ? 'PUT' : 'POST';
   const url = payload.id ? `/articles/${payload.id}` : '/articles';
   fetch(url, {
@@ -62,14 +62,13 @@ export function submitArticle(payload, clearStorage, successCb, errorCb) {
     .then((response) => response.json())
     .then((response) => {
       if (response.current_state_path) {
-        clearStorage();
-        successCb();
+        onSuccess();
         window.location.replace(response.current_state_path);
       } else {
-        errorCb(response);
+        onError(response);
       }
     })
-    .catch(errorCb);
+    .catch(onError);
 }
 
 function generateUploadFormdata(payload) {

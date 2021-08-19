@@ -268,12 +268,14 @@ export class ArticleForm extends Component {
       published: true,
     };
 
-    submitArticle(
+    submitArticle({
       payload,
-      this.removeLocalStorage,
-      () => this.setState({ published: true, submitting: false }),
-      this.handleArticleError,
-    );
+      onSuccess: () => {
+        this.removeLocalStorage();
+        this.setState({ published: true, submitting: false });
+      },
+      onError: this.handleArticleError,
+    });
   };
 
   onSaveDraft = (e) => {
@@ -284,12 +286,14 @@ export class ArticleForm extends Component {
       published: false,
     };
 
-    submitArticle(
+    submitArticle({
       payload,
-      this.removeLocalStorage,
-      () => this.setState({ published: false, submitting: false }),
-      this.handleArticleError,
-    );
+      onSuccess: () => {
+        this.removeLocalStorage();
+        this.setState({ published: false, submitting: false });
+      },
+      onError: this.handleArticleError,
+    });
   };
 
   onClearChanges = (e) => {
