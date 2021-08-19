@@ -10,7 +10,7 @@ describe('Community Content Section', () => {
 
   describe('community emoji setting', () => {
     it('rejects invalid input (no emoji)', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_community').as('communitySectionForm');
 
@@ -19,12 +19,6 @@ describe('Community Content Section', () => {
           .get('#settings_community_community_emoji')
           .clear()
           .type('X');
-
-        cy.get('@communitySectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
 
         cy.get('@communitySectionForm').findByText('Update Settings').click();
 
@@ -37,7 +31,7 @@ describe('Community Content Section', () => {
     });
 
     it('accepts a valid emoji', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_community').as('communitySectionForm');
 
@@ -46,12 +40,6 @@ describe('Community Content Section', () => {
           .get('#settings_community_community_emoji')
           .clear()
           .type('🌱');
-
-        cy.get('@communitySectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
 
         cy.get('@communitySectionForm').findByText('Update Settings').click();
 
