@@ -148,6 +148,23 @@ body {
     margin: 0 0 var(--content-rhythm) 0;
   }
 
+  dl {
+    margin: 0 0 var(--content-rhythm) 0;
+
+    dt,
+    dd {
+      display: block;
+    }
+
+    dt {
+      font-weight: var(--fw-medium);
+    }
+
+    dd {
+      margin-inline-start: var(--su-7);
+    }
+  }
+
   ul,
   ol {
     padding-left: var(--su-6);
