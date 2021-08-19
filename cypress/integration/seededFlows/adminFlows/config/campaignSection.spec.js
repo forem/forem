@@ -10,7 +10,7 @@ describe('Campaign Section', () => {
 
   describe('sidebar image setting', () => {
     it('rejects an invalid image URL', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_campaign').as('campaignSectionForm');
 
@@ -18,12 +18,6 @@ describe('Campaign Section', () => {
         cy.get('@campaignSectionForm')
           .findByPlaceholderText('Used at the top of the campaign sidebar')
           .type('example.com/image.png');
-
-        cy.get('@campaignSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
 
         cy.get('@campaignSectionForm').findByText('Update Settings').click();
 
@@ -36,7 +30,7 @@ describe('Campaign Section', () => {
     });
 
     it('accepts a valid image URL', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_campaign').as('campaignSectionForm');
 
@@ -44,12 +38,6 @@ describe('Campaign Section', () => {
         cy.get('@campaignSectionForm')
           .findByPlaceholderText('Used at the top of the campaign sidebar')
           .type('https://example.com/image.png');
-
-        cy.get('@campaignSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
 
         cy.get('@campaignSectionForm').findByText('Update Settings').click();
 
