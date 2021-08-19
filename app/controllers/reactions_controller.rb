@@ -90,7 +90,7 @@ class ReactionsController < ApplicationController
 
         result = "create"
 
-        if category == "readinglist" && current_user.experience_level
+        if category == "readinglist" && current_user.setting.experience_level
           rate_article(reaction)
         end
 
@@ -146,7 +146,7 @@ class ReactionsController < ApplicationController
                       group: "experience_level",
                       user_id: current_user.id,
                       context: "readinglist_reaction",
-                      rating: current_user.experience_level)
+                      rating: current_user.setting.experience_level)
   end
 
   def clear_moderator_reactions(id, type, mod, category)

@@ -268,6 +268,14 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard/analytics"
         expect(response.body).to include("Analytics")
       end
+
+      it "page always contain back to dashboard button" do
+        sign_in user
+        get "/dashboard/analytics"
+        within "nav" do
+          expect(page).to have_selector("a[href='/dashboard']")
+        end
+      end
     end
 
     context "when user is an org admin" do

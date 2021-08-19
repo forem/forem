@@ -20,7 +20,7 @@
   <div class="ltag__user__content">
     <h2><%= link_to_if user_path.present?, user.name, user_path, class: "ltag__user__link" %><%= follow_button %></h2>
     <div class="ltag__user__summary">
-      <%= link_to_if user_path.present?, user.summary, user_path, class: "ltag__user__link" %>
+      <%= link_to_if user_path.present?, user.tag_line, user_path, class: "ltag__user__link" %>
     </div>
   </div>
 </div>

@@ -59,11 +59,73 @@ Object {
                 <div>
                   <p>
                     <a
-                      class="crayons-story__secondary fw-medium"
+                      class="crayons-story__secondary fw-medium m:hidden"
                       href="/Emil99"
                     >
                       Stella Macejkovic
                     </a>
+                    <div
+                      class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block"
+                    >
+                      <button
+                        aria-controls="story-author-preview-content-62407"
+                        aria-label="Stella Macejkovic profile details"
+                        class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1"
+                        id="story-author-preview-trigger-62407"
+                      >
+                        Stella Macejkovic
+                      </button>
+                      <div
+                        class="profile-preview-card__content crayons-dropdown"
+                        data-repositioning-dropdown="true"
+                        data-testid="profile-preview-card"
+                        id="story-author-preview-content-62407"
+                        style=""
+                      >
+                        <div
+                          class="gap-4 grid"
+                        >
+                          <div
+                            class="-mt-4"
+                          >
+                            <a
+                              class="flex"
+                              href="/Emil99"
+                            >
+                              <span
+                                class="crayons-avatar crayons-avatar--xl mr-2 shrink-0"
+                              >
+                                <img
+                                  alt=""
+                                  class="crayons-avatar__image"
+                                  loading="lazy"
+                                  src="/images/10.png"
+                                />
+                              </span>
+                              <span
+                                class="crayons-link crayons-subtitle-2 mt-5"
+                              >
+                                Stella Macejkovic
+                              </span>
+                            </a>
+                          </div>
+                          <div
+                            class="print-hidden"
+                          >
+                            <button
+                              class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
+                              data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"style\\":\\"full\\"}"
+                            >
+                              Follow
+                            </button>
+                          </div>
+                          <div
+                            class="author-preview-metadata-container"
+                            data-author-id="23289"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </p>
                   <a
                     class="crayons-story__tertiary fs-xs"
@@ -245,11 +307,73 @@ Object {
               <div>
                 <p>
                   <a
-                    class="crayons-story__secondary fw-medium"
+                    class="crayons-story__secondary fw-medium m:hidden"
                     href="/Emil99"
                   >
                     Stella Macejkovic
                   </a>
+                  <div
+                    class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block"
+                  >
+                    <button
+                      aria-controls="story-author-preview-content-62407"
+                      aria-label="Stella Macejkovic profile details"
+                      class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1"
+                      id="story-author-preview-trigger-62407"
+                    >
+                      Stella Macejkovic
+                    </button>
+                    <div
+                      class="profile-preview-card__content crayons-dropdown"
+                      data-repositioning-dropdown="true"
+                      data-testid="profile-preview-card"
+                      id="story-author-preview-content-62407"
+                      style=""
+                    >
+                      <div
+                        class="gap-4 grid"
+                      >
+                        <div
+                          class="-mt-4"
+                        >
+                          <a
+                            class="flex"
+                            href="/Emil99"
+                          >
+                            <span
+                              class="crayons-avatar crayons-avatar--xl mr-2 shrink-0"
+                            >
+                              <img
+                                alt=""
+                                class="crayons-avatar__image"
+                                loading="lazy"
+                                src="/images/10.png"
+                              />
+                            </span>
+                            <span
+                              class="crayons-link crayons-subtitle-2 mt-5"
+                            >
+                              Stella Macejkovic
+                            </span>
+                          </a>
+                        </div>
+                        <div
+                          class="print-hidden"
+                        >
+                          <button
+                            class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
+                            data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"style\\":\\"full\\"}"
+                          >
+                            Follow
+                          </button>
+                        </div>
+                        <div
+                          class="author-preview-metadata-container"
+                          data-author-id="23289"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </p>
                 <a
                   class="crayons-story__tertiary fs-xs"

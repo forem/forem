@@ -1,37 +1,15 @@
 class Profile < ApplicationRecord
   belongs_to :user
 
-  validates :data, presence: true
   validates :user_id, uniqueness: true
   validates :location, :website_url, length: { maximum: 100 }
+  validates :website_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates_with ProfileValidator
-
-  has_many :custom_profile_fields, dependent: :destroy
-
-  store_attribute :data, :custom_attributes, :json, default: {}
 
   # Static fields are columns on the profiles table; they have no relationship
   # to a ProfileField record. These are columns we can safely assume exist for
   # any profile on a given Forem.
   STATIC_FIELDS = %w[summary location website_url].freeze
-
-  SPECIAL_DISPLAY_ATTRIBUTES = %w[
-    summary
-    employment_title
-    employer_name
-    employer_url
-    location
-  ].freeze
-
-  # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
-  # profile migration/generalization work.
-  MAPPED_ATTRIBUTES = {
-    brand_color1: :bg_color_hex,
-    brand_color2: :text_color_hex,
-    display_email_on_profile: :email_public,
-    education: :education,
-    skills_languages: :mostly_work_with
-  }.with_indifferent_access.freeze
 
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
@@ -43,7 +21,7 @@ class Profile < ApplicationRecord
       # TODO: [@jacobherrington] Remove this when ProfileFields for the static
       # fields are dropped from production and the associated data is removed.
       # https://github.com/forem/forem/pull/13641#discussion_r637641185
-      next if STATIC_FIELDS.any?(field.attribute_name)
+      next if field.attribute_name.in?(STATIC_FIELDS)
 
       store_attribute :data, field.attribute_name.to_sym, field.type
     end
@@ -58,16 +36,8 @@ class Profile < ApplicationRecord
     (stored_attributes[:data] || []).map(&:to_s)
   end
 
-  def self.special_attributes
-    SPECIAL_DISPLAY_ATTRIBUTES
-  end
-
   def self.static_fields
     STATIC_FIELDS
-  end
-
-  def custom_profile_attributes
-    custom_profile_fields.pluck(:attribute_name)
   end
 
   def clear!

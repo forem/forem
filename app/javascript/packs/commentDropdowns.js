@@ -1,7 +1,10 @@
 import { addSnackbarItem } from '../Snackbar';
-import { initializeDropdown } from '@utilities/dropdownUtils';
+import {
+  initializeDropdown,
+  getDropdownRepositionListener,
+} from '@utilities/dropdownUtils';
 
-/* global Runtime initializeAllFollowButts  */
+/* global Runtime   */
 
 const handleCopyPermalink = (closeDropdown) => {
   return (event) => {
@@ -26,6 +29,10 @@ const initializeArticlePageDropdowns = () => {
       continue;
     }
 
+    const isProfilePreview = dropdownTrigger.id.includes(
+      'comment-profile-preview-trigger',
+    );
+
     const dropdownContentId = dropdownTrigger.getAttribute('aria-controls');
     const dropdownElement = document.getElementById(dropdownContentId);
 
@@ -33,6 +40,16 @@ const initializeArticlePageDropdowns = () => {
       const { closeDropdown } = initializeDropdown({
         triggerElementId: dropdownTrigger.id,
         dropdownContentId,
+        onOpen: () => {
+          if (isProfilePreview) {
+            dropdownElement?.classList.add('showing');
+          }
+        },
+        onClose: () => {
+          if (isProfilePreview) {
+            dropdownElement?.classList.remove('showing');
+          }
+        },
       });
 
       // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
@@ -59,21 +76,22 @@ const initializeArticlePageDropdowns = () => {
  * @param {HTMLElement} placeholderElement The <span> placeholder element to be replaced by the preview dropdown
  */
 const fetchMissingProfilePreviewCard = async (placeholderElement) => {
+  const {
+    jsCommentUserId: commentUserId,
+    jsDropdownContentId: dropdownContentId,
+  } = placeholderElement.dataset;
   const response = await window.fetch(
-    `/profile_preview_card/show?user_id=${placeholderElement.dataset.jsCommentUserId}&preview_card_id=${placeholderElement.dataset.jsDropdownContentId}`,
+    `/profile_preview_cards/${commentUserId}`,
   );
   const htmlContent = await response.text();
 
   const generatedElement = document.createElement('div');
   generatedElement.innerHTML = htmlContent;
 
-  placeholderElement.parentNode.replaceChild(
-    generatedElement.firstElementChild,
-    placeholderElement,
-  );
+  const { firstElementChild: previewCard } = generatedElement;
+  previewCard.id = dropdownContentId;
 
-  // Make sure the button inside the dropdown is initialized
-  initializeAllFollowButts();
+  placeholderElement.parentNode.replaceChild(previewCard, placeholderElement);
 };
 
 /**
@@ -107,12 +125,18 @@ observer.observe(document.getElementById('comment-trees-container'), {
   subtree: true,
 });
 
+// Preview card dropdowns reposition on scroll
+const dropdownRepositionListener = getDropdownRepositionListener();
+document.addEventListener('scroll', dropdownRepositionListener);
+
 InstantClick.on('change', () => {
   observer.disconnect();
+  document.removeEventListener('scroll', dropdownRepositionListener);
 });
 
 window.addEventListener('beforeunload', () => {
   observer.disconnect();
+  document.removeEventListener('scroll', dropdownRepositionListener);
 });
 
 initializeArticlePageDropdowns();

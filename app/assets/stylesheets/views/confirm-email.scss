@@ -1,0 +1,26 @@
+@import '../config/import';
+
+#page-content.confirmations {
+  display: flex;
+  flex-direction: column;
+
+  #page-content-inner {
+    display: flex;
+    flex: 1;
+    background: white;
+  }
+
+  #main-content {
+    display: flex;
+    flex: 1;
+    @media (max-width: $breakpoint-m) {
+      padding: 1em 1em 0;
+    }
+  }
+
+  .forem-background {
+    @media (max-width: $breakpoint-m) {
+      display: none;
+    }
+  }
+}

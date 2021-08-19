@@ -19,7 +19,6 @@ import '../../../assets/javascripts/lib/xss';
 import '../../../assets/javascripts/utilities/timeAgo';
 
 const commonProps = {
-  reactionsIcon: assetPath('reactions-stack.png'),
   commentsIcon: assetPath('comments-bubble.png'),
   videoIcon: assetPath('video-camera.svg'),
 };
