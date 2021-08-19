@@ -32,11 +32,6 @@ describe('Authentication Section', () => {
             .check();
 
           cy.get('@authSectionForm')
-            .findByPlaceholderText('Confirmation text')
-            .type(
-              `My username is @${username} and this action is 100% safe and appropriate.`,
-            );
-          cy.get('@authSectionForm')
             .findByRole('button', { name: 'Update Settings' })
             .click();
 
@@ -81,13 +76,7 @@ describe('Authentication Section', () => {
 
         cy.get('@authSectionForm').findByText('Authentication').click();
         cy.get('#facebook-auth-btn').click();
-        cy.get('@user').then(({ username }) => {
-          cy.get('@authSectionForm')
-            .findByPlaceholderText('Confirmation text')
-            .type(
-              `My username is @${username} and this action is 100% safe and appropriate.`,
-            );
-        });
+
         cy.get('@authSectionForm').findByText('Update Settings').click();
 
         cy.get('.crayons-modal__box__body > ul > li')
@@ -107,13 +96,7 @@ describe('Authentication Section', () => {
         cy.get('#facebook-auth-btn').click();
         cy.get('#settings_authentication_facebook_key').type('randomkey');
         cy.get('#settings_authentication_facebook_secret').type('randomsecret');
-        cy.get('@user').then(({ username }) => {
-          cy.get('@authSectionForm')
-            .findByPlaceholderText('Confirmation text')
-            .type(
-              `My username is @${username} and this action is 100% safe and appropriate.`,
-            );
-        });
+
         cy.get('@authSectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/customization/config');
