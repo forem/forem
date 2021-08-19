@@ -103,7 +103,7 @@ export default class ConfigController extends Controller {
     event.preventDefault();
     try {
       const data = new FormData(event.target);
-      const response = await fetch(event.target.dataset.endpoint, {
+      const response = await fetch(event.target.action, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
