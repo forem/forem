@@ -40,7 +40,7 @@ module Admin
       end
 
       def confirmation_text_valid?
-        return true if params[:confirmation].blank?
+        return true unless params.key?(:confirmation)
 
         params.require(:confirmation) ==
           "My username is @#{current_user.username} and this action is 100% safe and appropriate."
