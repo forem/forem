@@ -10,7 +10,7 @@ describe('Mascot Section', () => {
 
   describe('mascot image setting', () => {
     it('rejects an invalid image URL', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
 
@@ -19,12 +19,6 @@ describe('Mascot Section', () => {
           .findByLabelText('Mascot Image URL')
           .clear()
           .type('notanimage');
-
-        cy.get('@mascotSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
 
         cy.get('@mascotSectionForm').findByText('Update Settings').click();
 
@@ -37,7 +31,7 @@ describe('Mascot Section', () => {
     });
 
     it('accepts a valid image URL', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
 
@@ -46,12 +40,6 @@ describe('Mascot Section', () => {
           .findByLabelText('Mascot Image URL')
           .clear()
           .type('https://example.com/image.png');
-
-        cy.get('@mascotSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
 
         cy.get('@mascotSectionForm').findByText('Update Settings').click();
 
