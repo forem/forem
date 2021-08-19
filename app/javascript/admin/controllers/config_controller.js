@@ -376,7 +376,7 @@ export default class ConfigController extends Controller {
       event.preventDefault();
       this.activateMissingKeysModal(this.enabledProvidersWithMissingKeys());
     } else {
-      event.target.submit();
+      this.activateLightConfirmation(event);
     }
   }
 
