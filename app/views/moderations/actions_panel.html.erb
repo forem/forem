@@ -1,4 +1,4 @@
-<% title "Moderating " + @moderatable.title %>
+<% title "Moderating #{@moderatable.title}" %>
 
 <% cache(release_adjusted_cache_key("mod-styling")) do %>
   <style>
@@ -78,7 +78,7 @@
         </div>
       </button>
 
-      <div id="adjust-tags-options"  class="adjust-tags-options dropdown-options hidden">
+      <div id="adjust-tags-options" class="adjust-tags-options dropdown-options hidden">
         <% if current_user.any_admin? %>
           <% if @moderatable.tag_list.size < 4 %>
             <div class="add-tag-container">
@@ -119,7 +119,7 @@
     <% end %>
 
     <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
-    <button aria-haspopup="true aria-expanded="false" aria-controls="set-experience-options" class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="Open experience level section">
+    <button aria-haspopup="true" aria-expanded="false" aria-controls="set-experience-options" class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="Open experience level section">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
           <%= inline_svg_tag("book.svg", aria: true, title: "Book") %>
@@ -136,12 +136,13 @@
 
     <div id="set-experience-options" class="set-experience-options dropdown-options hidden">
       <% rating_hash = { "Expert" => [10, 5], "Advanced" => [8, 4], "Mid-level" => [5, 3], "Beginner" => [3, 2], "Novice" => [1, 1] } %>
+      <% current_rating_value = @rating_vote.rating.round(0) if @rating_vote %>
       <% rating_hash.each do |rating_name, rating_level| %>
       <button
         value="<%= rating_level[0] %>"
         name="rating_vote_<%= rating_level[0] %>"
         id="js__rating__vote__<%= rating_level[0] %>"
-        class="level-rating-button <%= " selected" if @rating_vote&.rating == rating_level[0].to_f %>"
+        class="level-rating-button <%= " selected" if current_rating_value == rating_level[0] %>"
         data-user-id="<%= current_user.id %>"
         data-article-id="<%= @moderatable.id %>"
         data-group="experience_level">
@@ -166,8 +167,7 @@
           id="unpublish-article-btn"
           data-article-id="<%= @moderatable.id %>"
           data-article-author="<%= @moderatable.username %>"
-          data-article-slug="<%= @moderatable.slug %>"
-        >
+          data-article-slug="<%= @moderatable.slug %>">
           Unpublish Article
         </button>
       </div>
