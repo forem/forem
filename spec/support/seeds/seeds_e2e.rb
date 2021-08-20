@@ -17,15 +17,6 @@ Settings::SMTP.password = "password"
 
 ##############################################################################
 
-# NOTE: @citizen428 For the time being we want all current DEV profile fields.
-# The CSV import is idempotent by itself, since it uses find_or_create_by.
-seeder.create("Creating DEV profile fields") do
-  dev_fields_csv = Rails.root.join("lib/data/dev_profile_fields.csv")
-  ProfileFields::ImportFromCsv.call(dev_fields_csv)
-end
-
-##############################################################################
-
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
     name: "Admin McAdmin",
