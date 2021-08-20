@@ -180,7 +180,7 @@ class UsersController < ApplicationController
       user_params.merge!(params[:user].permit(ALLOWED_USER_PARAMS))
     end
 
-    update_result = Profiles::Update.call(current_user, user: user_params, profile: profile_params)
+    update_result = Users::Update.call(current_user, user: user_params, profile: profile_params)
     render_update_response(update_result.success?, update_result.errors_as_sentence)
   end
 
