@@ -64,10 +64,10 @@
             Password
             <span class="crayons-field__required crayons-tooltip"></span>
           <% end %>
-          <span class="js-creator-password-visibility">
-            <%= inline_svg_tag("eye.svg", class: "absolute bottom-2 right-2 cursor-pointer js-eye", aria: true, title: "Eye icon") %>
-            <%= inline_svg_tag("eye-off.svg", class: "absolute bottom-2 right-2 cursor-pointer hidden js-eye-off", aria: true, title: "Eye Off icon") %>
-          </span>
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s bg-transparent js-creator-password-visibility toggle-password-button absolute bottom-1 right-1 m-0 flex" aria-label="Toggle password visibility">
+            <%= inline_svg_tag("eye.svg", class: "js-eye", aria_hidden: true, title: "Show password") %>
+            <%= inline_svg_tag("eye-off.svg", class: "hidden js-eye-off", aria_hidden: true, title: "Hide password") %>
+          </button>
           <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", required: true %>
         </div>
 
