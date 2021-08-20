@@ -90,8 +90,7 @@ describe('Creator Signup Page', () => {
       .type('abc123456');
 
     cy.get('@creatorSignupForm')
-      .findAllByRole('button', { name: 'Create my account' })
-      .last()
+      .findByRole('button', { name: 'Create my account' })
       .click();
 
     const { baseUrl } = Cypress.config();

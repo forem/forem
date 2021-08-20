@@ -29,9 +29,9 @@
         <% end %>
 
         <div class="align-center">
-          <p class="pb-4 fs-3xl fw-bold">Let's start your Forem journey!</p>
-          <p class="color-base-70 fs-xl">Create your admin account first.</p>
-          <p class="color-base-70 fs-xl">Then we'll walk you through your Forem setup.</p>
+          <p class="pb-4 fs-3xl fw-bold lh-tight">Let's start your Forem journey!</p>
+          <p class="color-base-70 fs-xl lh-tight">Create your admin account first.</p>
+          <p class="color-base-70 fs-xl lh-tight">Then we'll walk you through your Forem setup.</p>
         </div>
 
         <div class="crayons-field mt-6">
@@ -41,9 +41,9 @@
           <div class="js-creator-signup-username-hint-row hidden">
             <div class="fs-xs color-base-60 flex">
               <span>Your username will be&nbsp;</span>
-              <span class="bold color-base-80 js-creator-signup-username-hint"></span>
-              <button aria-label="Edit username" class="cursor-pointer border-none bg-transparent p-0 js-creator-edit-username" role="button">
-                <%= inline_svg_tag("pencil.svg", class: "cursor-pointer", aria_hidden: true, title: "Edit username") %>
+              <button aria-label="Edit username" class="cursor-pointer border-none bg-transparent p-0 js-creator-edit-username flex color-base-90 " role="button">
+                <span class="js-creator-signup-username-hint"></span>
+                <%= inline_svg_tag("pencil.svg", class: "cursor-pointer crayons-icon opacity-75 ml-1", aria_hidden: true, title: "Edit username") %>
               </button>
             </div>
             </div>
@@ -59,16 +59,20 @@
           <%= f.email_field :email, placeholder: "john@example.com", autocomplete: "email", id: "email", class: "crayons-textfield", required: true %>
         </div>
 
-        <div class="crayons-field mt-6 relative">
+        <div class="crayons-field mt-6">
           <%= f.label :password, class: "crayons-field__label", aria: { label: "Password" } do %>
             Password
             <span class="crayons-field__required crayons-tooltip"></span>
           <% end %>
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility absolute bottom-1 right-1 m-0 flex" aria-label="Toggle password visibility">
-            <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", aria_hidden: true, title: "Show password") %>
-            <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", aria_hidden: true, title: "Hide password") %>
-          </button>
-          <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", required: true %>
+          <div class="relative">
+            <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: "••••••••", required: true %>
+            <button class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Toggle password visibility">
+              <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", aria_hidden: true, title: "Show password") %>
+              <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", aria_hidden: true, title: "Hide password") %>
+            </button>
+          </div>
+          <p class="fs-xs color-base-60 mt-1">Minimum 8 characters</p>
+
         </div>
 
         <% if ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
@@ -86,7 +90,7 @@
           <%= f.submit "Create my account", class: "crayons-btn" %>
         </div>
 
-        <%= inline_svg_tag("forem-background.svg", aria: true, class: "forem-background absolute bottom-0 right-0") %>
+        <%= inline_svg_tag("forem-background.svg", aria_hidden: true, class: "forem-background absolute bottom-0 right-0") %>
       <% end %>
 
     </div>
