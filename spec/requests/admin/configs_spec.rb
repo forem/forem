@@ -809,8 +809,8 @@ RSpec.describe "/admin/customization/config", type: :request do
         it "unsets appropriate SMTP config, and apply default value if applicable" do
           Settings::SMTP.address = "smtp.example.com"
           Settings::SMTP.port = 12_345
-          default_address = ApplicationConfig["SMTP_ADDRESS"]
-          default_port = ApplicationConfig["SMTP_PORT"].to_i
+          default_address = ApplicationConfig["SMTP_ADDRESS"].presence || nil
+          default_port = ApplicationConfig["SMTP_PORT"].presence.to_i || 25
           expected_handle = { "address" => "", "port" => "" }
 
           post admin_settings_smtp_settings_path, params: {
