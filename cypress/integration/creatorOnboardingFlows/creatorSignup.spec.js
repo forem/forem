@@ -37,7 +37,7 @@ describe('Creator Signup Page', () => {
       .findByText(/^Username/)
       .should('exist');
 
-    cy.get('input[name="user[username]"]').should(
+    cy.findByLabelText('Username').should(
       'have.value',
       'forem_creator_name',
     );
@@ -68,13 +68,15 @@ describe('Creator Signup Page', () => {
       'type',
       'password',
     );
-    cy.get('.js-eye').should('be.visible');
-    cy.get('.js-eye-off').should('not.be.visible');
+    cy.findByTestId('mask-icon').should('be.visible');
+    cy.findByTestId('unmask-icon').should('not.be.visible');
 
-    cy.findByRole('button', { name: 'Toggle password visibility' }).click();
+    cy.findByRole('button', { name: 'Show password' }).click();
+    cy.findByRole('button', { name: 'Hide password' }).should('be.visible');
+    cy.findByRole('button', { name: 'Hide password' }).should('have.attr', 'aria-pressed', 'true')
     cy.get('input[name="user[password]"]').should('have.attr', 'type', 'text');
-    cy.get('.js-eye-off').should('be.visible');
-    cy.get('.js-eye').should('not.be.visible');
+    cy.findByTestId('unmask-icon').should('be.visible');
+    cy.findByTestId('mask-icon').should('not.be.visible');
   });
 
   it("should allow sign the user in when 'Create my account' is clicked", () => {
