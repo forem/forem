@@ -138,6 +138,7 @@
   height: var(--header-height);
   transform: translate(-50%, -200%);
   transition: transform var(--transition-props);
+  opacity: var(--opacity-0);
 }
 
 .js-focus-visible .skip-content-link:focus:not(.focus-visible) {
@@ -149,6 +150,7 @@
   transform: translate(-50%, 0);
   outline: none;
   border: 2px solid var(--header-button-focus-color);
+  opacity: var(--opacity-1);
 }
 
 .pwa-nav-buttons {
