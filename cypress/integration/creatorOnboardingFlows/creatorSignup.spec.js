@@ -32,7 +32,7 @@ describe('Creator Signup Page', () => {
       .findByText(/^Name$/)
       .type('Forem creator name');
 
-    cy.get('.js-creator-edit-username').click();
+    cy.findByRole('button', { name: 'Edit username' }).click();
     cy.get('@creatorSignupForm')
       .findByText(/^Username/)
       .should('exist');
@@ -71,7 +71,7 @@ describe('Creator Signup Page', () => {
     cy.get('.js-eye').should('be.visible');
     cy.get('.js-eye-off').should('not.be.visible');
 
-    cy.get('.js-creator-password-visibility').click({ force: true });
+    cy.findByRole('button', { name: 'Toggle password visibility' }).click();
     cy.get('input[name="user[password]"]').should('have.attr', 'type', 'text');
     cy.get('.js-eye-off').should('be.visible');
     cy.get('.js-eye').should('not.be.visible');
