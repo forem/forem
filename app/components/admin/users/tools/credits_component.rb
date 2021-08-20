@@ -2,6 +2,10 @@ module Admin
   module Users
     module Tools
       class CreditsComponent < ViewComponent::Base
+        renders_one :header, lambda {
+          HeaderComponent.new(user: @user)
+        }
+
         delegate :orgs_with_credits, to: :helpers
 
         def initialize(user:)
