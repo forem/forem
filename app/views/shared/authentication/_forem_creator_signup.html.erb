@@ -8,7 +8,7 @@
         </div>
       <% end %>
 
-      <% any_errors = defined?(resource) && resource&.errors&.any? %>
+      <% any_errors = local_assigns[:resource]&.errors&.any? %>
 
       <%= form_for(@user, as: :user, data: { testid: "creator-signup-form" }, url: registration_path(:user)) do |f| %>
         <% if any_errors %>
