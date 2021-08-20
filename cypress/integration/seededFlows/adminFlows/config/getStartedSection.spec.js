@@ -10,7 +10,7 @@ describe('Get Started Section', () => {
 
   describe('Community name setting', () => {
     it('updates the community name', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
 
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');
@@ -19,12 +19,6 @@ describe('Get Started Section', () => {
           .get('#community_name')
           .clear()
           .type('Awesome community');
-
-        cy.get('@getStartedSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
 
         cy.get('@getStartedSectionForm').findByText('Update Settings').click();
 
@@ -39,7 +33,7 @@ describe('Get Started Section', () => {
     });
 
     it('updates the suggested tags', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
 
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');
@@ -49,12 +43,6 @@ describe('Get Started Section', () => {
           .clear()
           .type('much tag, so wow');
 
-        cy.get('@getStartedSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
-
         cy.get('@getStartedSectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/customization/config');
@@ -63,7 +51,7 @@ describe('Get Started Section', () => {
 
         // Page reloaded so need to get a new reference to the form.
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');
-        cy.get('#suggested_tags').should('have.value', 'much tag,so wow');
+        cy.get('#suggested_tags').should('have.value', 'much tag, so wow');
       });
     });
   });
