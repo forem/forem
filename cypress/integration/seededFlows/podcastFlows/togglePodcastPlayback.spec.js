@@ -7,7 +7,7 @@ describe('Toggle Podcast playback', () => {
     cy.visit('/pod');
     cy.contains('div', 'Example media | crow call').click();
 
-    cy.get('#record-crow-call').as('toggleButton');
+    cy.findByRole('button', { name: 'Play podcast' }).as('toggleButton');
 
     cy.get('@toggleButton')
       .invoke('attr', 'aria-pressed')
