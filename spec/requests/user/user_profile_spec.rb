@@ -99,8 +99,7 @@ RSpec.describe "UserProfiles", type: :request do
     end
 
     it "does not render special display header elements naively" do
-      user.profile.location = "hawaii"
-      user.save
+      user.profile.update(location: "hawaii")
       get "/#{user.username}"
       # Does not include the word, but does include the SVG
       expect(response.body).not_to include "<p>Location</p>"

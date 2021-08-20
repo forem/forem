@@ -56,7 +56,7 @@ import { tagPropTypes } from '../../../components/common-prop-types';
 
 const SomeComponentUsingTags = ({ tags = [] }) => (
   <ul>
-    {tags.map(tag => (
+    {tags.map((tag) => (
       <li key={tag.id}>{tag.name}</li>
     ))}
   </ul>
