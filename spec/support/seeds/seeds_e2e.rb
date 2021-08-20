@@ -549,6 +549,45 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(Podcast, "title", "Test podcast") do
+  podcast_attributes = {
+    title: "Developer on Fire",
+    description: "",
+    feed_url: "http://developeronfire.com/rss.xml",
+    itunes_url: "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326",
+    slug: "developeronfire",
+    twitter_username: "raelyard",
+    website_url: "http://developeronfire.com",
+    main_color_hex: "343d46",
+    overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
+    android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
+    image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    published: true
+  }
+  podcast = Podcast.create!(podcast_attributes)
+
+  podcast_episode_attributes = {
+    body: "<p>A real good crow call</p>",
+    guid: "<guid isPermaLink=\"true\">/media/crow-call.mp3</guid>",
+    https: false,
+    itunes_url: nil,
+    image: nil,
+    media_url: "/media/crow-call.mp3",
+    processed_html: "<p>A real good crow call</p>",
+    published_at: Date.new(2021,1,1),
+    slug: "crow-call",
+    subtitle: "Example media: Crow Call",
+    summary: "<p>6 seconds of bird song</p>",
+    title: "Example media | crow call",
+    website_url: "https://github.com/forem/",
+    tag_list: nil,
+    podcast_id: podcast.id
+  }
+  PodcastEpisode.create!(podcast_episode_attributes)
+end
+
+##############################################################################
+
 seeder.create_if_none(Reaction) do
   user = User.find_by(username: "trusted_user_1")
   admin_user.reactions.create!(category: :vomit, reactable: user)
