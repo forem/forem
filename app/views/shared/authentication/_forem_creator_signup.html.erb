@@ -66,13 +66,12 @@
           <% end %>
           <div class="relative">
             <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: "••••••••", required: true %>
-            <button class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Toggle password visibility">
+            <button class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Show password" aria-pressed="false">
               <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", aria_hidden: true, title: "Show password") %>
               <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", aria_hidden: true, title: "Hide password") %>
             </button>
           </div>
           <p class="fs-xs color-base-60 mt-1">Minimum 8 characters</p>
-
         </div>
 
         <% if ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
