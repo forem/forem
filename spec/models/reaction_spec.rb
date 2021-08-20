@@ -234,4 +234,28 @@ RSpec.describe Reaction, type: :model do
       expect(reaction).to have_received(:bust_reactable_cache_without_delay)
     end
   end
+
+  describe ".related_negative_reactions_for_user" do
+    let(:moderator) { create(:user, :trusted) }
+
+    it "returns vomit reactions on user's articles" do
+      article = create(:article, user: user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: article)
+
+      expect(described_class.related_negative_reactions_for_user(user).first.id).to eq(reaction.id)
+    end
+
+    it "returns vomit reactions on user's comments" do
+      comment = create(:comment, user: user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: comment)
+
+      expect(described_class.related_negative_reactions_for_user(user).first.id).to eq(reaction.id)
+    end
+
+    it "returns the user's vomit reactions" do
+      reaction = create(:vomit_reaction, user: moderator, reactable: user)
+
+      expect(described_class.related_negative_reactions_for_user(moderator).first.id).to eq(reaction.id)
+    end
+  end
 end

@@ -123,14 +123,14 @@ Rails.application.configure do
     Bullet.console = true
     Bullet.rails_logger = true
 
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
     # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
     # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)
 
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?

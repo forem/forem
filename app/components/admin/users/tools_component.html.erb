@@ -1,0 +1,72 @@
+<%# This is where the component loaded from the server side will insert itself %>
+<div data-user-target="replace" role="region"></div>
+
+<section class="crayons-card p-3 js-component tools-component" data-user-target="toolsComponent">
+  <%# Used to announce to the screen reader client side which section the user is in %>
+  <div id="section-title" class="hidden">Tools section</div>
+
+  <h3 class="crayons-subtitle-2">Tools</h3>
+
+  <div class="crayons-card__body grid grid-cols-2 grid-rows-3 gap-3">
+    <%= link_to admin_user_tools_emails_path(@user), remote: true,
+                                                     data: { action: "ajax:success->user#replacePartial" },
+                                                     class: "crayons-card box js-action" do %>
+      <h4 class="crayons-subtitle-3 mb-4">Emails</h4>
+
+      <span class="color-base-70">
+        <%= pluralize(@emails.total, "past email") %>
+        <% if @emails.verified %> - Verified<% end -%>
+      </span>
+    <% end %>
+
+    <%= link_to admin_user_tools_notes_path(@user), remote: true,
+                                                    data: { action: "ajax:success->user#replacePartial" },
+                                                    class: "crayons-card box js-action" do %>
+      <h4 class="crayons-subtitle-3 mb-4">Notes</h4>
+
+      <span class="color-base-70">
+        <%= pluralize(@notes.total, "note") %>
+      </span>
+    <% end %>
+
+    <%= link_to admin_user_tools_credits_path(@user), remote: true,
+                                                      data: { action: "ajax:success->user#replacePartial" },
+                                                      class: "crayons-card box js-action" do %>
+      <h4 class="crayons-subtitle-3 mb-4">Credits</h4>
+
+      <span class="color-base-70">
+        <%= pluralize(@credits.total, "credit") %>
+      </span>
+    <% end %>
+
+    <%= link_to admin_user_tools_organizations_path(@user), remote: true,
+                                                            data: { action: "ajax:success->user#replacePartial" },
+                                                            class: "crayons-card box js-action" do %>
+      <h4 class="crayons-subtitle-3 mb-4">Organizations</h4>
+
+      <span class="color-base-70">
+        <%= pluralize(@organizations.total, "organization") %>
+      </span>
+    <% end %>
+
+    <%= link_to admin_user_tools_reports_path(@user), remote: true,
+                                                      data: { action: "ajax:success->user#replacePartial" },
+                                                      class: "crayons-card box js-action" do %>
+      <h4 class="crayons-subtitle-3 mb-4">Reports</h4>
+
+      <span class="color-base-70">
+        <%= pluralize(@reports.total, "report") %>
+      </span>
+    <% end %>
+
+    <%= link_to admin_user_tools_reactions_path(@user), remote: true,
+                                                        data: { action: "ajax:success->user#replacePartial" },
+                                                        class: "crayons-card box js-action" do %>
+      <h4 class="crayons-subtitle-3 mb-4">Reactions</h4>
+
+      <span class="color-base-70">
+        <%= pluralize(@reactions.total, "reaction") %>
+      </span>
+    <% end %>
+  </div>
+</section>
