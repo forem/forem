@@ -64,7 +64,8 @@ function hideHintRow() {
   hintRow.classList.add('hidden');
 }
 
-function togglePasswordMask() {
+function togglePasswordMask(event) {
+  event.preventDefault();
   visible = !visible;
   togglePasswordType(visible);
   toggleEyeIcons(visible);
