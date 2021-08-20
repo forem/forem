@@ -574,7 +574,7 @@ seeder.create_if_doesnt_exist(Podcast, "title", "Test podcast") do
     image: nil,
     media_url: "/media/crow-call.mp3",
     processed_html: "<p>A real good crow call</p>",
-    published_at: Date.new(2021,1,1),
+    published_at: Date.new(2021, 1, 1),
     slug: "crow-call",
     subtitle: "Example media: Crow Call",
     summary: "<p>6 seconds of bird song</p>",
