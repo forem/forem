@@ -183,7 +183,6 @@ GEM
       ffi (~> 1.0)
       msgpack
     dead_end (1.1.7)
-    debug (0.2.0)
     derailed_benchmarks (2.1.1)
       benchmark-ips (~> 2)
       dead_end
@@ -866,7 +865,6 @@ DEPENDENCIES
   counter_culture (~> 2.8)
   cypress-rails (~> 0.5.2)
   ddtrace (~> 0.52.0)
-  debug (~> 0.2)
   derailed_benchmarks (~> 2.1)
   devise (~> 4.8)
   devise_invitable (~> 2.0.5)
