@@ -70,10 +70,10 @@
       <label class="crayons-field__label" for="profile[summary]">
         Bio
       </label>
-      <%= f.text_field "profile[summary]",
-                       value: profile.summary,
-                       placeholder: "A short bio...",
-                       class: "crayons-textfield js-color-field" %>
+      <%= f.text_area "profile[summary]",
+                      value: profile.summary,
+                      placeholder: "A short bio...",
+                      class: "crayons-textfield js-color-field" %>
     </div>
   </div>
 
