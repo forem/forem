@@ -262,18 +262,38 @@ export class ArticleForm extends Component {
 
   onPublish = (e) => {
     e.preventDefault();
-    this.setState({ submitting: true, published: true });
-    const { state } = this;
-    state.published = true;
-    submitArticle(state, this.removeLocalStorage, this.handleArticleError);
+    this.setState({ submitting: true });
+    const payload = {
+      ...this.state,
+      published: true,
+    };
+
+    submitArticle({
+      payload,
+      onSuccess: () => {
+        this.removeLocalStorage();
+        this.setState({ published: true, submitting: false });
+      },
+      onError: this.handleArticleError,
+    });
   };
 
   onSaveDraft = (e) => {
     e.preventDefault();
-    this.setState({ submitting: true, published: false });
-    const { state } = this;
-    state.published = false;
-    submitArticle(state, this.removeLocalStorage, this.handleArticleError);
+    this.setState({ submitting: true });
+    const payload = {
+      ...this.state,
+      published: false,
+    };
+
+    submitArticle({
+      payload,
+      onSuccess: () => {
+        this.removeLocalStorage();
+        this.setState({ published: false, submitting: false });
+      },
+      onError: this.handleArticleError,
+    });
   };
 
   onClearChanges = (e) => {
@@ -310,14 +330,11 @@ export class ArticleForm extends Component {
     });
   };
 
-  handleArticleError = (response, publishFailed = false) => {
+  handleArticleError = (response) => {
     window.scrollTo(0, 0);
-    const { published } = this.state;
     this.setState({
       errors: response,
       submitting: false,
-      // Even if it's an update that failed, published will still be set to true
-      published: published && !publishFailed,
     });
   };
 
