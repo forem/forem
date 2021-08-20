@@ -140,10 +140,10 @@ group :development, :test do
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.5.1" # For end to end tests (E2E)
+  gem "debug", "~> 0.2" # Debugging functionality for Ruby
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.18" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 3.0.0" # Help parallelize Ruby spec builds
-  gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.19", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.11", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
