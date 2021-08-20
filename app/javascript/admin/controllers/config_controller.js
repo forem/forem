@@ -102,7 +102,7 @@ export default class ConfigController extends Controller {
   async activateLightConfirmation(event) {
     event.preventDefault();
     try {
-      const data = new FormData(event.target);
+      const body = new FormData(event.target);
       const response = await fetch(event.target.action, {
         method: 'POST',
         headers: {
@@ -110,19 +110,15 @@ export default class ConfigController extends Controller {
           'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
             ?.content,
         },
-        body: data,
+        body,
         credentials: 'same-origin',
       });
 
       const outcome = await response.json();
 
-      if (response.ok) {
-        this.displaySnackbar(outcome.message);
-      } else {
-        this.displaySnackbar(outcome.error);
-      }
+      this.displaySnackbar(response.ok ? outcome.message : outcome.error);
     } catch (err) {
-      this.displaySnackbar(err);
+      this.displaySnackbar(err.message);
     }
     event.target.querySelector('input[type=submit]').disabled = false;
   }
