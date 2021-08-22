@@ -142,7 +142,7 @@ export const Options = ({
             Language
           </label>
           <p className="crayons-field__description">
-            What language the body is written in? Specify in language tag (
+            What language is the body text written in? Specify by language tag (
             <code>en-US</code>).
           </p>
           <input
