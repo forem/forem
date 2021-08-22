@@ -24,7 +24,8 @@ function loadForm() {
     window.csrfToken = csrfToken;
 
     const root = document.querySelector('main');
-    const { article, organizations, version, siteLogo } = root.dataset;
+    const { article, organizations, version, siteLogo, userLang } =
+      root.dataset;
 
     render(
       <ArticleForm
@@ -32,6 +33,7 @@ function loadForm() {
         organizations={organizations}
         version={version}
         siteLogo={siteLogo}
+        userLang={userLang}
       />,
       root,
       root.firstElementChild,

@@ -17,6 +17,7 @@ module Api
         cached_tag_list slug path canonical_url comments_count
         public_reactions_count created_at edited_at last_comment_at published
         updated_at video_thumbnail_url reading_time
+        text_lang
       ].freeze
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
@@ -29,6 +30,7 @@ module Api
         title description main_image published published_at cached_tag_list
         slug path canonical_url comments_count public_reactions_count
         page_views_count crossposted_at body_markdown updated_at reading_time
+        text_lang
       ].freeze
       private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
 

@@ -24,6 +24,10 @@ module Users
     validates :feed_referential_link, inclusion: { in: [true, false] }
     validates :feed_url, length: { maximum: 500 }, allow_nil: true
     validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
+    validates :writing_lang, format: {
+      with: /\A[0-9A-Za-z]{1,8}(?:-[0-9A-Za-z]{1,8})*\z/,
+      message: proc { I18n.t("common.invalid_langtag") }
+    }, allow_blank: true
 
     validate :validate_feed_url, if: :feed_url_changed?
 

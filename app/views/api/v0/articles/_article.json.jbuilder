@@ -13,6 +13,7 @@ json.extract!(
   :public_reactions_count,
   :collection_id,
   :published_timestamp,
+  :text_lang,
 )
 
 json.positive_reactions_count article.public_reactions_count

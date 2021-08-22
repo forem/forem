@@ -45,6 +45,7 @@ class UserPolicy < ApplicationPolicy
     profile_image
     text_color_hex
     username
+    writing_lang
   ].freeze
 
   def edit?

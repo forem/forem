@@ -84,7 +84,7 @@
         <div class="crayons-notice crayons-notice--warning mb-4" aria-live="polite">⏳ Video Transcoding In Progress ⏳</div>
       <% end %>
 
-      <article class="crayons-card crayons-article mb-4"
+      <article class="crayons-card crayons-article mb-4" lang="<%= @article.text_lang %>"
         id="article-show-container"
         data-article-id="<%= @article.id %>"
         data-author-id="<%= @article.user_id %>"

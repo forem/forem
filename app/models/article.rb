@@ -74,6 +74,10 @@ class Article < ApplicationRecord
   validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
   validates :slug, uniqueness: { scope: :user_id }
+  validates :text_lang, format: {
+    with: /\A[0-9A-Za-z]{1,8}(?:-[0-9A-Za-z]{1,8})*\z/,
+    message: "must be a chain of 1 to 8 letter alphanumeric tags connected by hyphens."
+  }, allow_blank: true
   validates :title, presence: true, length: { maximum: 128 }
   validates :user_id, presence: true
   validates :user_subscriptions_count, presence: true

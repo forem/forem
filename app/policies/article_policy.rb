@@ -43,7 +43,7 @@ class ArticlePolicy < ApplicationPolicy
     %i[title body_html body_markdown main_image published canonical_url
        description tag_list publish_under_org
        video video_code video_source_url video_thumbnail_url receive_notifications
-       archived]
+       archived text_lang]
   end
 
   def subscriptions?

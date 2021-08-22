@@ -62,15 +62,17 @@ export class ArticleForm extends Component {
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
     siteLogo: PropTypes.string.isRequired,
+    userLang: PropTypes.string,
   };
 
   static defaultProps = {
     organizations: '',
+    userLang: '',
   };
 
   constructor(props) {
     super(props);
-    const { article, version, siteLogo } = this.props;
+    const { article, version, siteLogo, userLang } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
@@ -121,6 +123,7 @@ export class ArticleForm extends Component {
       helpPosition: null,
       isModalOpen: false,
       markdownLintErrors: [],
+      textLang: this.article.text_lang || userLang,
       ...previousContentState,
     };
   }
@@ -327,6 +330,7 @@ export class ArticleForm extends Component {
       helpFor: null,
       helpPosition: 0,
       isModalOpen: false,
+      textLang: this.article.text_lang || this.userLang,
     });
   };
 

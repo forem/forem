@@ -17,6 +17,7 @@ module Users
                         feed_url
                         inbox_guidelines
                         inbox_type
+                        writing_lang
                         permit_adjacent_sponsors].freeze
 
     def update

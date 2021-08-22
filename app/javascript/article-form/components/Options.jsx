@@ -31,6 +31,7 @@ export const Options = ({
     allSeries = [],
     canonicalUrl = '',
     series = '',
+    textLang = '',
   },
   onSaveDraft,
   onConfigChange,
@@ -136,6 +137,24 @@ export const Options = ({
           />
           {existingSeries}
         </div>
+        <div className="crayons-field mb-6">
+          <label htmlFor="textLang" className="crayons-field__label">
+            Language
+          </label>
+          <p className="crayons-field__description">
+            What language the body is written in? Specify in language tag (
+            <code>en-US</code>).
+          </p>
+          <input
+            type="text"
+            value={textLang}
+            className="crayons-textfield"
+            placeholder="en-GB-oed"
+            name="textLang"
+            onKeyUp={onConfigChange}
+            id="textLang"
+          />
+        </div>
         {publishedField}
         <Button
           id="post-options-done-btn"
@@ -155,6 +174,7 @@ Options.propTypes = {
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,
     series: PropTypes.string.isRequired,
+    textLang: PropTypes.string.isRequired,
   }).isRequired,
   onSaveDraft: PropTypes.func.isRequired,
   onConfigChange: PropTypes.func.isRequired,

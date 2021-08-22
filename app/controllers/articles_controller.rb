@@ -71,6 +71,7 @@ class ArticlesController < ApplicationController
     @user = @article.user
     @organizations = @user&.organizations
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
+    @default_lang = @user.setting.writing_lang if @user
   end
 
   def manage
@@ -223,6 +224,7 @@ class ArticlesController < ApplicationController
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
+    @default_lang = @user.setting.writing_lang if @user
   end
 
   def handle_user_or_organization_feed
@@ -265,7 +267,7 @@ class ArticlesController < ApplicationController
                      else
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
-                         tag_list canonical_url series collection_id archived
+                         tag_list canonical_url series collection_id archived text_lang
                        ]
                      end
 

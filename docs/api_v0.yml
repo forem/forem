@@ -187,6 +187,7 @@ components:
         - published_timestamp
         - user
         - reading_time_minutes
+        - text_lang
       properties:
         type_of:
           type: string
@@ -263,6 +264,8 @@ components:
           $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
           $ref: "#/components/schemas/ArticleFlareTag"
+        text_lang:
+          type: string
 
     ArticleShow:
       type: object
@@ -293,6 +296,7 @@ components:
         - body_markdown
         - user
         - reading_time_minutes
+        - text_lang
       properties:
         type_of:
           type: string
@@ -373,6 +377,8 @@ components:
           $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
           $ref: "#/components/schemas/ArticleFlareTag"
+        text_lang:
+          type: string
 
     ArticleCreate:
       type: object
@@ -527,6 +533,7 @@ components:
         - body_markdown
         - user
         - reading_time_minutes
+        - text_lang
       properties:
         type_of:
           type: string
@@ -590,6 +597,8 @@ components:
           $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
           $ref: "#/components/schemas/ArticleFlareTag"
+        text_lang:
+          type: string
 
     ArticleFlareTag:
       description: Flare tag of the article
@@ -1255,6 +1264,7 @@ components:
           last_comment_at: '2019-10-25T08:12:43Z'
           published_timestamp: '2019-10-24T13:52:17Z'
           reading_time_minutes: 15
+          text_lang: en-US
           user:
             name: Ben Halpern
             username: ben
@@ -1300,6 +1310,7 @@ components:
         last_comment_at: "2019-08-06T16:48:10Z"
         published_timestamp: "2019-08-01T15:47:54Z"
         reading_time_minutes: 15
+        text_lang: en-US
         body_html: |+
           <p>Today's episode of Byte Sized is about Leonhard Euler and the creation of <a href="https://en.wikipedia.org/wiki/Graph_theory">Graph Theory</a>.</p>
 

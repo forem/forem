@@ -51,6 +51,11 @@
         <% end %>
       </div>
     </div>
+    <div class="crayons-field">
+      <%= f.label :writing_lang, "Writing Language", class: "crayons-field__label" %>
+      <%= f.text_field :writing_lang, class: "crayons-textfield", placeholder: "en-GB-oed", value: @users_setting.writing_lang %>
+    </div>
+    <p>The language you usually author an article in (used by editor as the default value). Specify in the language tag format (<code>en-US</code>).</p>
   </div>
 
   <div class="crayons-card crayons-card--content-rows">

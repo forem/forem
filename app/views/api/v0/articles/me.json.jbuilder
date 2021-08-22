@@ -5,7 +5,7 @@ json.array! @articles do |article|
     article,
     :id, :title, :description, :published, :published_at,
     :slug, :path, :url, :comments_count, :public_reactions_count, :page_views_count,
-    :published_timestamp, :body_markdown
+    :published_timestamp, :body_markdown, :text_lang
   )
 
   json.positive_reactions_count article.public_reactions_count
