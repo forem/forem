@@ -33,6 +33,7 @@ gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Un
 gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
+gem "ffi-icu", ">= 0.4"
 gem "field_test", "~> 0.4" # A/B testing
 gem "flipper", "~> 0.22.0" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.22.0" # Store Flipper flags in ActiveRecord

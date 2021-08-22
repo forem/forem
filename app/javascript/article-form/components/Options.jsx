@@ -32,12 +32,14 @@ export const Options = ({
     canonicalUrl = '',
     series = '',
     textLang = '',
+    allLangs = {},
   },
   onSaveDraft,
   onConfigChange,
 }) => {
   let publishedField = '';
   let existingSeries = '';
+  let existingLangs = '';
 
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name, index) => {
@@ -63,6 +65,94 @@ export const Options = ({
             Select...
           </option>
           {seriesNames}
+        </select>
+      </div>
+    );
+  }
+
+  if (Object.keys(allLangs).length > 0) {
+    const mapper = (sorted) => {
+      return sorted.map((a) => {
+        const [code, name] = a;
+        return (
+          <option key={`textLang-${code}`} value={code}>
+            {name} [{code}]
+          </option>
+        );
+      });
+    };
+    const sorter = (a, b) => {
+      return a[1].localeCompare(b[1], 'en-US');
+    };
+    const miscSet = {};
+    const siteSet = {};
+    const specSet = {};
+    /*
+      References:
+      https://gist.github.com/traysr/2001377
+      https://www.statista.com/statistics/262946/share-of-the-most-common-languages-on-the-internet/
+    */
+    const siteCodes = [
+      'en',
+      'en-us',
+      'en-gb',
+      'fr',
+      'de',
+      'pl',
+      'nl',
+      'fi',
+      'sv',
+      'it',
+      'es',
+      'pt',
+      'ru',
+      'pt-br',
+      'es-mx',
+      'zh-hans',
+      'zh-hant',
+      'ja',
+      'ko',
+      'ar',
+      'id',
+      'ms',
+    ];
+    const specCodes = ['mul', 'und', 'zxx'];
+    const dropCodes = [];
+    Object.entries(allLangs).forEach(([code, name]) => {
+      if (siteCodes.includes(code)) {
+        siteSet[code] = name;
+      } else if (specCodes.includes(code)) {
+        specSet[code.slice(0, 3)] = name;
+      } else if (dropCodes.includes(code)) {
+        // discard
+      } else {
+        miscSet[code] = name;
+      }
+    });
+    existingLangs = (
+      <div className="crayons-field__description">
+        List of languages:
+        {` `}
+        <select
+          value=""
+          name="textLang"
+          className="crayons-select"
+          onInput={onConfigChange}
+          required
+          aria-label="You can select a language from the list"
+        >
+          <option value="" disabled>
+            Quick select
+          </option>
+          <optgroup label="Common">
+            {mapper(Object.entries(siteSet).sort(sorter))}
+          </optgroup>
+          <optgroup label="Specials">
+            {mapper(Object.entries(specSet).sort(sorter))}
+          </optgroup>
+          <optgroup label="General">
+            {mapper(Object.entries(miscSet).sort(sorter))}
+          </optgroup>
         </select>
       </div>
     );
@@ -154,6 +244,7 @@ export const Options = ({
             onKeyUp={onConfigChange}
             id="textLang"
           />
+          {existingLangs}
         </div>
         {publishedField}
         <Button
@@ -175,6 +266,7 @@ Options.propTypes = {
     canonicalUrl: PropTypes.string.isRequired,
     series: PropTypes.string.isRequired,
     textLang: PropTypes.string.isRequired,
+    allLangs: PropTypes.object.isRequired,
   }).isRequired,
   onSaveDraft: PropTypes.func.isRequired,
   onConfigChange: PropTypes.func.isRequired,

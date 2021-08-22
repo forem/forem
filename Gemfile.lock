@@ -273,6 +273,8 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
+    ffi-icu (0.4.0)
+      ffi (~> 1.0, >= 1.0.9)
     field_test (0.4.1)
       activerecord (>= 5)
       browser (>= 2.0)
@@ -887,6 +889,7 @@ DEPENDENCIES
   fastimage (~> 2.2)
   fastly (~> 3.0)
   feedjira (~> 3.2)
+  ffi-icu (>= 0.4)
   field_test (~> 0.4)
   flipper (~> 0.22.0)
   flipper-active_record (~> 0.22.0)

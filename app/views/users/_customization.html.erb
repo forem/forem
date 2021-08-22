@@ -54,6 +54,19 @@
     <div class="crayons-field">
       <%= f.label :writing_lang, "Writing Language", class: "crayons-field__label" %>
       <%= f.text_field :writing_lang, class: "crayons-textfield", placeholder: "en-GB-oed", value: @users_setting.writing_lang %>
+      <%#
+        References:
+        https://gist.github.com/traysr/2001377
+        https://www.statista.com/statistics/262946/share-of-the-most-common-languages-on-the-internet/
+      %>
+      <% groups = { site: %i[en en-us en-gb fr de pl nl fi sv it es pt ru pt-br es-mx zh-hans zh-hant ja ko ar id ms], special: %i[mul und zxx], discard: %i[] } %>
+      <% categories = t("languages").group_by { |k, _| groups.detect { |_g, a| a.include?(k) }&.first || :others } %>
+      <% collator = ICU::Collation::Collator.new(I18n.locale.to_s) %>
+      <select class="crayons-select" data-for="users_setting_writing_lang" oninput="fillInOption(event)" aria-label="You can select a language from the list">
+        <option disabled selected>Quick select</option>
+        <% labels = { site: "Common", special: "Specials", others: "General" } %>
+        <%= grouped_options_for_select(%i[site special others].map { |gr| [labels[gr], categories[gr].sort { |a, b| collator.compare a[1], b[1] }.map { |(c, l)| ["#{l} [#{c}]", c.to_s] }] }) %>
+      </select>
     </div>
     <p>The language you usually author an article in (used by editor as the default value). Specify in the language tag format (<code>en-US</code>).</p>
   </div>
@@ -125,3 +138,10 @@
     <button class="crayons-btn" type="submit">Save</button>
   </div>
 <% end %>
+
+<script defer>
+function fillInOption(e) {
+  e.preventDefault();
+  document.getElementById(e.currentTarget.dataset.for).value = e.currentTarget.value;
+}
+</script>

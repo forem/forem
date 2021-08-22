@@ -494,6 +494,10 @@ class Article < ApplicationRecord
     followers.uniq.compact
   end
 
+  def all_langs
+    I18n.t("languages")
+  end
+
   private
 
   def search_score
