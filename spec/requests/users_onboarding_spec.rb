@@ -38,10 +38,10 @@ RSpec.describe "UsersOnboarding", type: :request do
       end
 
       it "updates the user's profile" do
-        params = { profile: { work: "Emperor at Galactic Empire" } }
+        params = { profile: { location: "Galactic Empire" } }
         expect do
           patch "/onboarding_update.json", params: params
-        end.to change(user.profile, :work).to("Emperor at Galactic Empire")
+        end.to change(user.profile, :location).to("Galactic Empire")
       end
 
       it "does not update the user's last_onboarding_page if it is empty" do
