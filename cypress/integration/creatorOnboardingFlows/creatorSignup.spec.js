@@ -65,8 +65,7 @@ describe('Creator Signup Page', () => {
     cy.findByTestId('unmask-icon').should('not.be.visible');
 
     cy.findByRole('button', { name: 'Show password' }).click();
-    cy.findByRole('button', { name: 'Hide password' }).should('be.visible');
-    cy.findByRole('button', { name: 'Hide password' }).should(
+    cy.findByRole('button', { name: 'Show password' }).should(
       'have.attr',
       'aria-pressed',
       'true',

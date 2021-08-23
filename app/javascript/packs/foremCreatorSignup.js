@@ -68,18 +68,12 @@ function togglePasswordMask(event) {
   event.preventDefault();
   visible = !visible;
   toggleAriaPressed(visible);
-  toggleAriaLabel(visible);
   togglePasswordType(visible);
   toggleEyeIcons(visible);
 }
 
 function toggleAriaPressed(visible) {
   visibility.setAttribute('aria-pressed', visible);
-}
-
-function toggleAriaLabel(visible) {
-  const action = visible ? 'Hide' : 'Show';
-  visibility.setAttribute('aria-label', `${action} password`);
 }
 
 function togglePasswordType(visible) {
