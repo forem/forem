@@ -35,12 +35,17 @@ describe('Authentication Section', () => {
             .findByRole('button', { name: 'Update Settings' })
             .click();
 
+          cy.findByTestId('snackbar').within(() => {
+            cy.findByRole('alert').should(
+              'have.text',
+              'Successfully updated settings.',
+            );
+          });
+
           cy.url().should('contains', '/admin/customization/config');
 
           // Page reloaded so need to get a new reference to the form.
           cy.findByTestId('authSectionForm').as('authSectionForm');
-
-          cy.findByText('Successfully updated settings.').should('be.visible');
 
           cy.get('@authSectionForm')
             .findByRole('heading', { name: 'Authentication' })
@@ -108,6 +113,29 @@ describe('Authentication Section', () => {
         cy.get('@authSectionForm').findByText('Authentication').click();
 
         cy.findByLabelText('Facebook enabled').should('be.visible');
+      });
+    });
+
+    it('generates error message when update fails', () => {
+      cy.intercept('POST', 'admin/settings/authentications', {
+        error: 'some error msg',
+      });
+      cy.get('@user').then(() => {
+        cy.visit('/admin/customization/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#facebook-auth-btn').click();
+        cy.get('#settings_authentication_facebook_key').type('randomkey');
+        cy.get('#settings_authentication_facebook_secret').type('randomsecret');
+
+        cy.get('@authSectionForm').findByText('Update Settings').click();
+
+        cy.url().should('contains', '/admin/customization/config');
+
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should('have.text', 'some error msg');
+        });
       });
     });
   });

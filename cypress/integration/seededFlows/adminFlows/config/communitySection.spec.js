@@ -22,11 +22,14 @@ describe('Community Content Section', () => {
 
         cy.get('@communitySectionForm').findByText('Update Settings').click();
 
-        cy.url().should('contains', '/admin/customization/config');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            '❗️❗️ Validation failed: Community emoji contains non-emoji characters or invalid emoji',
+          );
+        });
 
-        cy.findByText(
-          '😭 Validation failed: Community emoji contains non-emoji characters or invalid emoji',
-        ).should('be.visible');
+        cy.url().should('contains', '/admin/customization/config');
       });
     });
 
@@ -45,7 +48,12 @@ describe('Community Content Section', () => {
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Successfully updated settings.').should('be.visible');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            'Successfully updated settings.',
+          );
+        });
 
         // Page reloaded so need to get a new reference to the form.
         cy.get('#new_settings_community').as('communitySectionForm');

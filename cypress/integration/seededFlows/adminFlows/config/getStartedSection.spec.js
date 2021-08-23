@@ -24,7 +24,12 @@ describe('Get Started Section', () => {
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Successfully updated settings.').should('be.visible');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            'Successfully updated settings.',
+          );
+        });
 
         // Page reloaded so need to get a new reference to the form.
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');
@@ -47,11 +52,40 @@ describe('Get Started Section', () => {
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Successfully updated settings.').should('be.visible');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            'Successfully updated settings.',
+          );
+        });
 
         // Page reloaded so need to get a new reference to the form.
         cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');
         cy.get('#suggested_tags').should('have.value', 'much tag, so wow');
+      });
+    });
+
+    it('generates error message when update fails', () => {
+      cy.intercept('POST', '/admin/settings/mandatory_settings', {
+        error: 'some error msg',
+      });
+      cy.get('@user').then(() => {
+        cy.visit('/admin/customization/config');
+
+        cy.findByTestId('getStartedSectionForm').as('getStartedSectionForm');
+
+        cy.get('@getStartedSectionForm')
+          .get('#suggested_tags')
+          .clear()
+          .type('much tag, so wow');
+
+        cy.get('@getStartedSectionForm').findByText('Update Settings').click();
+
+        cy.url().should('contains', '/admin/customization/config');
+
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should('have.text', 'some error msg');
+        });
       });
     });
   });

@@ -23,9 +23,12 @@ describe('Campaign Section', () => {
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText(
-          '😭 Validation failed: Sidebar image is not a valid URL',
-        ).should('be.visible');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            '❗️❗️ Validation failed: Sidebar image is not a valid URL',
+          );
+        });
       });
     });
 
@@ -43,7 +46,12 @@ describe('Campaign Section', () => {
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Successfully updated settings.').should('be.visible');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            'Successfully updated settings.',
+          );
+        });
 
         // Page reloaded so need to get a new reference to the form.
         cy.get('#new_settings_campaign').as('campaignSectionForm');

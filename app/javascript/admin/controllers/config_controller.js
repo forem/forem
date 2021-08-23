@@ -93,10 +93,10 @@ export default class ConfigController extends Controller {
     }
   }
 
-  displaySnackbar(message, closeBtnStatus = false) {
+  displaySnackbar(message) {
     return document.dispatchEvent(
       new CustomEvent('snackbar:add', {
-        detail: { message, addCloseButton: closeBtnStatus },
+        detail: { message },
       }),
     );
   }
@@ -118,11 +118,11 @@ export default class ConfigController extends Controller {
 
       const outcome = await response.json();
 
-      response.ok
-        ? this.displaySnackbar(outcome.message)
-        : this.displaySnackbar(outcome.error, true);
+      outcome.message == null
+        ? this.displaySnackbar(outcome.error)
+        : this.displaySnackbar(outcome.message);
     } catch (err) {
-      this.displaySnackbar(err.message, true);
+      this.displaySnackbar(err.message);
     }
   }
 

@@ -28,7 +28,12 @@ describe('User experience Section', () => {
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Successfully updated settings.').should('be.visible');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            'Successfully updated settings.',
+          );
+        });
 
         // Page reloaded so need to get a new reference to the form.
         cy.get('#new_settings_user_experience').as('userExperienceSectionForm');

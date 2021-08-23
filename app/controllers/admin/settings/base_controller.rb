@@ -22,11 +22,11 @@ module Admin
         else
           respond_to do |format|
             format.html do
-              redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
+              redirect_to admin_config_path, alert: "❗️❗️ #{result.errors.to_sentence}"
             end
 
             format.json do
-              render json: { error: "😭 #{result.errors.to_sentence}" }, status: :unauthorized
+              render json: { error: "❗️❗️ #{result.errors.to_sentence}" }, status: :unauthorized
             end
           end
         end
