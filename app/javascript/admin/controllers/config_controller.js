@@ -120,7 +120,6 @@ export default class ConfigController extends Controller {
     } catch (err) {
       this.displaySnackbar(err.message);
     }
-    event.target.querySelector('input[type=submit]').disabled = false;
   }
 
   // GENERAL FUNCTIONS END

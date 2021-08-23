@@ -41,7 +41,5 @@
       <% end %>
     <% end %>
   </fieldset>
-  <% if current_user.has_role?(:super_admin) %>
-    <%= render "update_setting_button", f: f %>
-  <% end %>
+  <%= render "update_setting_button", f: f %>
 <% end %>
