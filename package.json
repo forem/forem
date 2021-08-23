@@ -14,8 +14,6 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "api-docs:lint": "spectral lint -F hint -v docs/api_v0.yml",
-    "api-docs:serve": "redoc-cli serve docs/api_v0.yml --options.pathInMiddlePanel --options.jsonSampleExpandLevel=all --options.menuToggle -t docs/api_template.hbs --watch",
     "storybook-prerequisites": "sass -q app/assets/stylesheets/themes:app/javascript/storybook-static/themes && bin/generate-css-utility-classes-docs.js",
     "prebuild-storybook": "yarn run storybook-prerequisites",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/assets -o app/javascript/storybook-static --quiet",
@@ -33,9 +31,6 @@
       "prettier --write",
       "eslint --fix -c app/assets/javascripts/.eslintrc.js"
     ],
-    "docs/api_v0.yml": [
-      "spectral lint -F hint"
-    ],
     "*.{js,jsx}": [
       "prettier --write",
       "eslint --fix",
@@ -51,9 +46,6 @@
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
     "./Gemfile": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
-    ],
-    "docs/Gemfile": [
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
     "*.rake": [
@@ -123,7 +115,6 @@
     "eslint-plugin-no-only-tests": "^2.6.0",
     "eslint-plugin-react": "^7.24.0",
     "faker": "^5.5.3",
-    "gitdocs": "^2.0.0",
     "husky": "^7.0.1",
     "jest": "26.6.3",
     "jest-axe": "^4.1.0",
@@ -179,11 +170,6 @@
     "rails-erb-loader": "^5.5.2",
     "stimulus": "^2.0.0",
     "web-share-wrapper": "^0.2.2"
-  },
-  "resolutions": {
-    "gitdocs/markdown-to-jsx": "^6.11.4",
-    "gitdocs/prismjs": "^1.23.0",
-    "gitdocs/axios": "^0.21.1"
   },
   "jest": {
     "setupFiles": [
