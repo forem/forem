@@ -63,13 +63,13 @@
         <div class="crayons-field mt-6">
           <%= f.label :password, "Password", class: "crayons-field__label" %>
           <div class="relative">
-            <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: "••••••••", required: true %>
+            <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: "••••••••", required: true, aria: { describedby: "password-helper-text" } %>
             <button class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Show password" aria-pressed="false">
               <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: "Show password") %>
               <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: "Hide password") %>
             </button>
           </div>
-          <p class="fs-xs color-base-60 mt-1">Minimum 8 characters</p>
+          <p id="password-helper-text" class="fs-xs color-base-60 mt-1">Minimum 8 characters</p>
         </div>
 
         <% needs_owner_secret_field = ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
