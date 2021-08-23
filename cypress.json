@@ -2,5 +2,6 @@
   "screenshotsFolder": "tmp/cypress_screenshots",
   "trashAssetsBeforeRuns": false,
   "video": false,
-  "retries": 3
+  "retries": 3,
+  "chromeWebSecurity": false
 }

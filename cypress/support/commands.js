@@ -117,6 +117,24 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   });
 });
 
+/**
+ * Gets an iframe with the given selector (or the first/only iframe if none is passed in),
+ * waits for its content to be loaded, and returns a wrapped reference to the iframe body
+ * that can then be chained off of.
+ *
+ * See also: https://www.cypress.io/blog/2020/02/12/working-with-iframes-in-cypress/
+ *
+ * @example
+ * cy.getIframeBody('.article-frame').findByRole('heading', { name: 'Article title' });
+ */
+Cypress.Commands.add('getIframeBody', (selector = '') =>
+  cy
+    .get(`iframe${selector}`)
+    .its('0.contentDocument.body')
+    .should('not.be.empty')
+    .then(cy.wrap),
+);
+
 const toPayload = (isEnabled) => (isEnabled ? '1' : '0');
 
 const DEFAULT_AUTH_CONFIG = {
