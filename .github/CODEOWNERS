@@ -2,7 +2,7 @@
 # see https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
 # for further details
 
-/*.md                                               @forem/oss
+**/*.md                                             @forem/oss
 /app/assets/                                        @forem/frontend
 /app/controllers/async_info_controller.rb           @forem/sre
 /app/javascript/                                    @forem/frontend
