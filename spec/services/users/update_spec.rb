@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Profiles::Update, type: :service do
+RSpec.describe Users::Update, type: :service do
   def sidekiq_assert_resave_article_worker(user, &block)
     sidekiq_assert_enqueued_with(
       job: Users::ResaveArticlesWorker,

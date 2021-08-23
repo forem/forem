@@ -33,7 +33,7 @@ module Api
         num = [per_page, 1000].min
         page = params[:page] || 1
 
-        @users = @organization.users.select(USERS_FOR_SERIALIZATION).page(page).per(num)
+        @users = @organization.users.joins(:profile).select(USERS_FOR_SERIALIZATION).page(page).per(num)
       end
 
       def listings
