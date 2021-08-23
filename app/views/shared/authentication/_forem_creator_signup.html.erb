@@ -79,7 +79,7 @@
           <% if params[:owner_secret].present? %>
             <%= f.hidden_field :owner_secret, value: params[:owner_secret] %>
           <% else %>
-            <div class="crayons-field mt-2">
+            <div class="crayons-field mt-6">
               <%= f.label :owner_secret, "New Forem Secret", class: "crayons-field__label" %>
               <%= f.password_field :owner_secret, class: "crayons-textfield", placeholder: "As provided by your Forem host" %>
             </div>
