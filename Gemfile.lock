@@ -372,7 +372,7 @@ GEM
     image_processing (1.12.1)
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
-    imgproxy (2.0.0)
+    imgproxy (2.0.1)
       anyway_config (>= 2.0.0)
     inline_svg (1.7.2)
       activesupport (>= 3.0)
