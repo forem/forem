@@ -37,10 +37,7 @@ describe('Creator Signup Page', () => {
       .findByText(/^Username/)
       .should('exist');
 
-    cy.findByLabelText('Username').should(
-      'have.value',
-      'forem_creator_name',
-    );
+    cy.findByLabelText('Username').should('have.value', 'forem_creator_name');
   });
 
   it('should contain an email label and field', () => {
@@ -63,23 +60,23 @@ describe('Creator Signup Page', () => {
       .findByText(/^Password$/)
       .type('abc123456');
 
-    cy.get('input[name="user[password]"]').should(
-      'have.attr',
-      'type',
-      'password',
-    );
+    cy.findByLabelText('Password').should('have.attr', 'type', 'password');
     cy.findByTestId('mask-icon').should('be.visible');
     cy.findByTestId('unmask-icon').should('not.be.visible');
 
     cy.findByRole('button', { name: 'Show password' }).click();
     cy.findByRole('button', { name: 'Hide password' }).should('be.visible');
-    cy.findByRole('button', { name: 'Hide password' }).should('have.attr', 'aria-pressed', 'true')
-    cy.get('input[name="user[password]"]').should('have.attr', 'type', 'text');
+    cy.findByRole('button', { name: 'Hide password' }).should(
+      'have.attr',
+      'aria-pressed',
+      'true',
+    );
+    cy.findByLabelText('Password').should('have.attr', 'type', 'text');
     cy.findByTestId('unmask-icon').should('be.visible');
     cy.findByTestId('mask-icon').should('not.be.visible');
   });
 
-  it("should allow sign the user in when 'Create my account' is clicked", () => {
+  it.skip("should allow sign the user in when 'Create my account' is clicked", () => {
     cy.findByTestId('creator-signup-form').as('creatorSignupForm');
     cy.get('@creatorSignupForm').findByText(/^Name/).type('Forem Creator');
 
