@@ -32,7 +32,6 @@ node_modules/
 /app/assets/javascripts/generated/*
 latest.dump
 .byebug_history
-.gitdocs_build/
 
 # Ignore application configuration
 /config/application.yml
@@ -63,11 +62,6 @@ package-lock.json
 
 # Development Docker storage location
 _docker-storage/
-
-# YARD generated doc (in the Gitdocs folder)
-docs/.static/ruby-doc/
-# ReDoc generated API doc (in the Gitdocs folder)
-docs/.static/api/
 
 # AWS Cloud9 specific folder for user settings
 .c9/
