@@ -29,4 +29,10 @@
       top: 0;
     }
   }
+
+  &.reverse {
+    // Flips the dropdown to drop-upwards when set
+    bottom: 100%;
+    top: unset;
+  }
 }

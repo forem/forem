@@ -39,8 +39,7 @@
           data-category="thumbsup"
           data-reactable-type="<%= @moderatable.class.name %>">
     <div class="reaction-button-circle">
-      <%= image_tag("emoji/emoji-one-thumbs-up-gray.png", alt: "Thumbs up emoji", class: "emoji-grey") %>
-      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-up.png") %>" alt="Thumbs up emoji" />
+      <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: "Thumb up") %>
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
     </div>
     <span class="vote-text">High Quality</span>
@@ -50,8 +49,7 @@
             data-category="thumbsdown"
             data-reactable-type="<%= @moderatable.class.name %>">
       <div class="reaction-button-circle">
-        <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji", class: "emoji-grey") %>
-        <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+        <%= inline_svg_tag("twemoji/thumb-down.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: "Thumb down") %>
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
       </div>
       <span class="vote-text">Low Quality</span>
@@ -61,8 +59,7 @@
             data-category="vomit"
             data-reactable-type="<%= @moderatable.class.name %>">
       <div class="reaction-button-circle">
-        <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
-        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+        <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: "Suspicious") %>
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
       </div>
       <span class="vote-text">Flag to Admins</span>
@@ -94,8 +91,7 @@
             data-category="vomit"
             data-reactable-type="<%= @moderatable.user.class.name %>">
       <div class="reaction-button-circle">
-        <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
-        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+        <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: "Suspicious") %>
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
       </div>
       <span class="vote-text">Flag User</span>

@@ -1,0 +1,74 @@
+<section
+  class="crayons-card p-3 js-component"
+  data-controller="users--tools--ajax"
+  data-action="ajax:success@document->users--tools--ajax#success ajax:error@document->users--tools--ajax#error">
+  <%# Used to announce to the screen reader client side which section the user is in %>
+  <div id="section-title" class="hidden">Emails section</div>
+
+  <h3>
+    <%= link_to "← Tools", admin_user_tools_path(@user.id),
+                remote: true,
+                data: { action: "ajax:success@document->user#replacePartial" },
+                class: "crayons-title fs-l backlink" %>
+  </h3>
+
+  <%# Email verification #%>
+  <article class="my-3 flex justify-between items-center">
+    <span>
+      <strong>To: <%= @user.name %></strong>
+      <span class="color-base-60">(<%= @user.email %><% if @verified %> · Verified on <local-time datetime="<%= @verification_date.iso8601 %>"><%= @verification_date.strftime("%b %d, %Y") %></local-time><% end -%>)</span>
+    </span>
+
+    <%= button_to "Verify Email Ownership", verify_email_ownership_admin_user_path(@user),
+                  remote: true,
+                  class: "btn btn-secondary btn-sm" %>
+  </article>
+
+  <%# Send email to user #%>
+  <article class="my-3">
+    <%= form_with url: send_email_admin_user_path(@user) do |f| %>
+      <div class="crayons-field form-group">
+        <%= f.label :email_subject, "Subject", class: "crayons-field__label" %>
+        <%= f.text_field :email_subject,
+                         required: true,
+                         placeholder: "What do you want to say in the subject line?",
+                         class: "crayons-textfield" %>
+      </div>
+
+      <div class="crayons-field form-group">
+        <%= f.label :email_body, "Body", class: "crayons-field__label" %>
+        <%= f.text_area :email_body,
+                        required: true,
+                        placeholder: "What do you want to say?",
+                        class: "crayons-textfield" %>
+      </div>
+
+      <%= f.submit "Send Email",
+                   class: "crayons-btn",
+                   data: { disable_with: "Sending..." } %>
+    <% end -%>
+  </article>
+
+  <%# Emails history #%>
+  <% if @messages.any? %>
+  <article class="mt-5">
+    <details>
+      <summary class="fw-medium">Emails history (<%= @messages.size %>)</summary>
+
+      <ul class="list-none">
+        <% @messages.each_with_index do |email, index| %>
+          <li
+            class="py-3 pl-3 <%= index == @messages.size - 1 ? "border-b-0" : "border-b-1" %> border-l-0 border-t-0 border-r-0 border-solid border-base-50">
+            <a href="<%= admin_user_email_message_path(@user, email) %>"
+               class="text-none color-base-60"
+               rel="noopener noreferer"
+               target="_blank">
+              <%= email.subject %> <em> - <%= email.sent_at&.strftime("%b %e '%y") %></em>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    </details>
+  </article>
+  <% end %>
+</section>

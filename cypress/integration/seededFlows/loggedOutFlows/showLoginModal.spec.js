@@ -86,4 +86,15 @@ describe('Show log in modal', () => {
     cy.findByRole('heading', { name: 'Admin McAdmin' });
     verifyLoginModalBehavior(() => cy.findByRole('button', { name: 'Follow' }));
   });
+
+  it('should show login modal for podcast follow button click', () => {
+    cy.visit('/developeronfire');
+    cy.get('[data-follow-clicks-initialized]');
+
+    cy.findByRole('heading', {
+      name: 'Developer on Fire Developer on Fire Follow',
+    });
+
+    verifyLoginModalBehavior(() => cy.findByRole('button', { name: 'Follow' }));
+  });
 });

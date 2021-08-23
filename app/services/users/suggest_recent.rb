@@ -52,7 +52,7 @@ module Users
     end
 
     def relation_as_array(relation, limit:)
-      relation = relation.select(attributes_to_select) if attributes_to_select.any?
+      relation = relation.joins(:profile).select(attributes_to_select) if attributes_to_select.any?
       relation.order(updated_at: :desc).limit(limit).to_a
     end
 

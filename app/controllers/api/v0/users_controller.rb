@@ -10,7 +10,7 @@ module Api
       ].freeze
 
       def show
-        relation = User.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+        relation = User.joins(:profile).select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
 
         @user = if params[:id] == "by_username"
                   relation.find_by!(username: params[:url])

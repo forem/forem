@@ -9,6 +9,7 @@ module Api
           description: Settings::Community.community_description,
           logo_image_url: Settings::General.logo_png,
           name: Settings::Community.community_name,
+          registered_users_count: User.registered.estimated_count,
           tagline: Settings::Community.tagline,
           version: "edge.#{Time.now.utc.strftime('%Y%m%d')}.0",
           visibility: visibility
