@@ -9,14 +9,19 @@ import { getInstantClick } from '../topNavigation/utilities';
  * @param {string} style The style of the button from its "info" data attribute
  */
 function addButtonFollowText(button, style) {
+  const { name, className } = JSON.parse(button.dataset.info);
+
   switch (style) {
     case 'small':
+      addAriaLabelToButton(button, name, className, 'follow');
       button.textContent = '+';
       break;
     case 'follow-back':
+      addAriaLabelToButton(button, name, className, 'follow-back');
       button.textContent = 'Follow back';
       break;
     default:
+      addAriaLabelToButton(button, name, className, 'follow');
       button.textContent = 'Follow';
   }
 }
@@ -27,12 +32,24 @@ function addButtonFollowText(button, style) {
  * @param {HTMLElement} button The Follow button to update.
  * @param {string} followType The followableType of the button.
  * @param {string} followName The name of the followable to be followed.
+ * @param {string} style The style of the button from its "info" data attribute
  */
-function addAriaLabelToButton(button, followType, followName) {
-  button.setAttribute(
-    'aria-label',
-    `Follow ${followType.toLowerCase()}: ${followName}`,
-  );
+function addAriaLabelToButton(button, followType, followName, style = '') {
+  let label = '';
+  switch (style) {
+    case 'follow':
+      label = `Follow ${followType.toLowerCase()}: ${followName}`;
+      break;
+    case 'follow-back':
+      label = `Follow ${followType.toLowerCase()} back: ${followName}`;
+      break;
+    case 'following':
+      label = `Unfollow ${followType.toLowerCase()}: ${followName}`;
+      break;
+    default:
+      label = `Follow ${followType.toLowerCase()}: ${followName}`;
+  }
+  button.setAttribute('aria-label', label);
 }
 
 /**
@@ -95,11 +112,13 @@ function optimisticallyUpdateButtonUI(button) {
  * @param {string} style Style of the follow button (e.g. 'small')
  */
 function updateFollowingButton(button, style) {
+  const { name, className } = JSON.parse(button.dataset.info);
   button.dataset.verb = 'follow';
   addButtonFollowingText(button, style);
   button.classList.remove('crayons-btn--primary');
   button.classList.remove('crayons-btn--secondary');
   button.classList.add('crayons-btn--outlined');
+  addAriaLabelToButton(button, name, className, 'following');
 }
 
 /**
@@ -268,12 +287,11 @@ function initializeAllUserFollowButtons() {
     const buttonInfo = JSON.parse(button.dataset.info);
     const { name, className } = buttonInfo;
 
-    addAriaLabelToButton(button, className, name);
-
     if (userStatus === 'logged-out') {
       const { style } = JSON.parse(button.dataset.info);
       addButtonFollowText(button, style);
     } else {
+      addAriaLabelToButton(button, className, name);
       const { id: userId } = JSON.parse(button.dataset.info);
       if (userIds[userId]) {
         userIds[userId].push(button);
