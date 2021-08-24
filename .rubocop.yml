@@ -100,7 +100,6 @@ Layout/LineLength:
   Description: 'Checks that line length does not exceed the configured limit.'
   AutoCorrect: true # this is false by default
   Exclude:
-    - docs/Gemfile
     - Gemfile
     - app/lib/constants/site_config.rb
 

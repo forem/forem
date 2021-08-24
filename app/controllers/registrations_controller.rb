@@ -14,8 +14,6 @@ class RegistrationsController < Devise::RegistrationsController
   def create
     authorize(params, policy_class: RegistrationPolicy)
 
-    resolve_profile_field_issues
-
     unless recaptcha_verified?
       flash[:notice] = "You must complete the recaptcha ✅"
       return redirect_to new_user_registration_path(state: "email_signup")
@@ -56,16 +54,6 @@ class RegistrationsController < Devise::RegistrationsController
     else
       true
     end
-  end
-
-  def resolve_profile_field_issues
-    # Run this data update script when in a state of "first user" in the event
-    # that we are in a state where this was not already run.
-    # This is likely only temporarily needed.
-    return unless Settings::General.waiting_on_first_user
-
-    csv = Rails.root.join("lib/data/dev_profile_fields.csv")
-    ProfileFields::ImportFromCsv.call(csv)
   end
 
   def check_allowed_email(resource)

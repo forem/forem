@@ -49,18 +49,18 @@
         </time>
       <% end %>
     </div>
-    <div id="record-<%= @episode.slug %>" class="record-wrapper" data-podcast="<%= @podcast.slug %>" data-episode="<%= @episode.slug %>">
+    <button id="record-<%= @episode.slug %>" class="record-wrapper" data-podcast="<%= @podcast.slug %>" data-episode="<%= @episode.slug %>" aria-pressed="false">
       <div class="record" id="record">
         <%= optimized_image_tag(@podcast.image_url,
                                 optimizer_options: { width: 420, height: 420, crop: "fill" },
                                 image_options: { class: "main-image", alt: @podcast.title }) %>
-        <img alt="Play Button" class="butt play-butt" src="<%= image_path("playbutt.png") %>" />
-        <img alt="Pause Button" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" />
+        <img alt="Play podcast" class="butt play-butt" src="<%= image_path("playbutt.png") %>" />
+        <img alt="Play podcast" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" />
         <div class="status-message" id="status-message-<%= @episode.slug %>">
           play
         </div>
       </div>
-    </div>
+    </button>
   </div>
   <%# checking both podcast_episode and podcast status for now  %>
   <% unless @episode.https? %>
