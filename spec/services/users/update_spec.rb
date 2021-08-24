@@ -11,7 +11,7 @@ RSpec.describe Users::Update, type: :service do
   end
 
   let(:profile) do
-    create(:profile, data: { education: "maybe", removed: "Bla" })
+    create(:profile, data: { test_field: "maybe", removed: "Bla" })
   end
   let(:user) { profile.user }
 
@@ -33,9 +33,9 @@ RSpec.describe Users::Update, type: :service do
   end
 
   it "updates the profile_updated_at column" do
-    ProfileField.find_or_create_by(label: "Education")
+    create(:profile_field, label: "Test field")
     expect do
-      described_class.call(user, profile: { education: "false" })
+      described_class.call(user, profile: { test_field: "false" })
     end.to change { user.reload.profile_updated_at }
   end
 
