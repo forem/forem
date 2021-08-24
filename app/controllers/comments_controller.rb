@@ -23,7 +23,7 @@ class CommentsController < ApplicationController
       @user = @podcast
       @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes
     else
-      @user = User.find_by(username: params[:username]) ||
+      @user = User.includes(:profile).find_by(username: params[:username]) ||
         Organization.find_by(slug: params[:username]) ||
         not_found
       @commentable = @root_comment&.commentable ||
@@ -58,7 +58,7 @@ class CommentsController < ApplicationController
   def create
     rate_limit!(rate_limit_to_use)
 
-    @comment = Comment.new(permitted_attributes(Comment))
+    @comment = Comment.includes(user: :profile).new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
 
     authorize @comment

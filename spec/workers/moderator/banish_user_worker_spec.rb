@@ -9,6 +9,7 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
     let(:admin) { create(:user, :super_admin) }
 
     before do
+      ProfileField.find_or_create_by(label: "Currently hacking on")
       user.profile.update!(currently_hacking_on: "text is here")
       create(:article, user_id: user.id)
       create(:article, user_id: user.id)
