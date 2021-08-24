@@ -33,6 +33,7 @@ RSpec.describe Users::Update, type: :service do
   end
 
   it "updates the profile_updated_at column" do
+    ProfileField.find_or_create_by(label: "Education")
     expect do
       described_class.call(user, profile: { education: "false" })
     end.to change { user.reload.profile_updated_at }
