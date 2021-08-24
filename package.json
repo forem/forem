@@ -130,7 +130,7 @@
     "style-loader": "^2.0.0",
     "svgo": "2.4.0",
     "webpack-bundle-analyzer": "^4.4.2",
-    "webpack-dev-server": "^4.0.0"
+    "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
     "@babel/core": "^7.15.0",
