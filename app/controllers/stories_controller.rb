@@ -34,10 +34,9 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     path = "/#{params[:username].downcase}/#{params[:slug]}"
-    relation = Article.includes(user: :profile)
-    if (@article = relation.includes(user: :profile).find_by(path: path)&.decorate)
+    if (@article = Article.includes(user: :profile).find_by(path: path)&.decorate)
       handle_article_show
-    elsif (@article = relation.find_by(slug: params[:slug])&.decorate)
+    elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
     else
       @podcast = Podcast.available.find_by!(slug: params[:username])
