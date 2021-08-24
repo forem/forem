@@ -74,7 +74,7 @@
           <%= f.hidden_field :commentable_type, value: json_data["comment"]["commentable"]["class"]["name"] %>
 
           <%= f.hidden_field :parent_id, value: json_data["comment"]["id"] %>
-          <%= f.text_area :body_markdown, id: "comment-textarea-for-#{json_data['comment']['id']}", class: "crayons-textfield mb-2 resize-y", placeholder: "Reply...", 'aria-label': "Reply to a comment...", onfocus: "handleFocus(event)" %>
+          <%= f.text_area :body_markdown, id: "comment-textarea-for-#{json_data['comment']['id']}", class: "crayons-textfield mb-2 resize-y", placeholder: "Reply...", "aria-label": "Reply to a comment...", onfocus: "handleFocus(event)" %>
           <div class="actions">
             <button type="submit" class="crayons-btn comment-action-button" onclick="validateField(event)">Submit</button>
           </div>
