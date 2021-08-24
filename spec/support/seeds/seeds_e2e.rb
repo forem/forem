@@ -482,14 +482,18 @@ end
 ##############################################################################
 
 seeder.create_if_none(Tag) do
-  tag = Tag.create!(
-    name: "tag1",
-    bg_color_hex: Faker::Color.hex_color,
-    text_color_hex: Faker::Color.hex_color,
-    supported: true,
-  )
+  tags = %w[tag1 tag2]
 
-  admin_user.add_role(:tag_moderator, tag)
+  tags.each do |tagname|
+    tag = Tag.create!(
+      name: tagname,
+      bg_color_hex: Faker::Color.hex_color,
+      text_color_hex: Faker::Color.hex_color,
+      supported: true,
+    )
+
+    admin_user.add_role(:tag_moderator, tag)
+  end
 end
 
 # Show the tag in the sidebar
