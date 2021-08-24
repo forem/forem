@@ -78,7 +78,6 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
-    "@stoplight/spectral": "5.9.2",
     "@storybook/addon-a11y": "^6.3.7",
     "@storybook/addon-actions": "^6.3.7",
     "@storybook/addon-docs": "^6.3.7",
@@ -124,7 +123,6 @@
     "lint-staged": "^11.1.2",
     "markdown-loader": "^6.0.0",
     "prettier": "^2.3.2",
-    "redoc-cli": "0.12.3",
     "sass": "1.38.0",
     "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
