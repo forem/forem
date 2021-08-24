@@ -833,11 +833,6 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.26)
-    yard-activerecord (0.0.16)
-      yard (>= 0.8.3)
-    yard-activesupport-concern (0.0.1)
-      yard (>= 0.8)
     zeitwerk (2.4.2)
     zonebie (0.6.1)
 
@@ -996,9 +991,6 @@ DEPENDENCIES
   webdrivers (~> 4.6)
   webmock (~> 3.14)
   webpacker (~> 5.4.2)
-  yard (~> 0.9.26)
-  yard-activerecord (~> 0.0.16)
-  yard-activesupport-concern (~> 0.0.1)
   zonebie (~> 0.6.1)
 
 RUBY VERSION
