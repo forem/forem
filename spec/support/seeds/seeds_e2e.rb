@@ -18,8 +18,8 @@ Settings::SMTP.password = "password"
 ##############################################################################
 
 # Some of our Cypress tests assume specific DEV profile fields to exist
-ProfileField.create!(label: "Work")
-ProfileField.create!(label: "Education")
+ProfileField.create!(label: "Work", display_area: :header)
+ProfileField.create!(label: "Education", display_area: :header)
 Profile.refresh_attributes!
 
 ##############################################################################
@@ -45,9 +45,9 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
 
   user.profile.update(
     summary: "Admin user summary",
-    work: "Software developer at Company",
+    # work: "Software developer at Company",
     location: "Edinburgh",
-    education: "University of Life",
+    # education: "University of Life",
     website_url: Faker::Internet.url,
   )
 
@@ -412,9 +412,9 @@ seeder.create_if_doesnt_exist(User, "email", "series-user@forem.com") do
   )
   series_user.profile.update(
     summary: "Series user summary",
-    work: "Software developer at Company",
+    # work: "Software developer at Company",
     location: "Edinburgh",
-    education: "University of Life",
+    # education: "University of Life",
     website_url: Faker::Internet.url,
   )
   series_user.notification_setting.update(
