@@ -7,7 +7,7 @@ describe DataUpdateScripts::BackfillForemOwnerRole do
   let!(:owner) { create(:user, :super_admin) }
   let!(:admin) { create(:user, :super_admin) }
 
-  it "Only the first super admin should backfill the forem_owner role" do
+  it "Only the first super admin should have the creator role" do
     described_class.new.run
     expect(owner.has_role?(:creator)).to be true
     expect(admin.has_role?(:creator)).to be false
