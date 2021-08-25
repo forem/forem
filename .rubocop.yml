@@ -18,7 +18,7 @@ AllCops:
   DisplayStyleGuide: true
   ExtraDetails: true
   NewCops: enable # opt-in to new cops by default
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0
 
 #################### Bundler ###########################
 
