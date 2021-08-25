@@ -1,6 +1,6 @@
 import { getInstantClick } from '../topNavigation/utilities';
 
-/* global showLoginModal  userData */
+/* global showLoginModal  userData  showModalAfterError*/
 
 /**
  * Sets the text content of the button to the correct 'Follow' state
@@ -153,7 +153,18 @@ function handleFollowButtonClick({ target }) {
     formData.append('followable_type', className);
     formData.append('followable_id', id);
     formData.append('verb', verb);
-    getCsrfToken().then(sendFetch('follow-creation', formData));
+    getCsrfToken()
+      .then(sendFetch('follow-creation', formData))
+      .then((response) => {
+        if (response.status !== 200) {
+          showModalAfterError(
+            response,
+            'followed too many users',
+            'following more users',
+            'for a day',
+          );
+        }
+      });
   }
 }
 
