@@ -15,11 +15,12 @@ class DeepLinksController < ApplicationController
     # Now restructure the array of arrays into valid AASA App ID's
     # Example: ['TEAM1.app.bundle.one', 'TEAM2.app.bundle.two']
     supported_apps = consumer_apps.map { |result| result.join(".") }
+    aasa_paths = ["/*", "NOT /users/auth/*"]
 
     render json: {
       applinks: {
         apps: [],
-        details: supported_apps.map { |app_id| { appID: app_id, paths: ["/*"] } }
+        details: supported_apps.map { |app_id| { appID: app_id, paths: aasa_paths } }
       },
       activitycontinuation: {
         apps: supported_apps
