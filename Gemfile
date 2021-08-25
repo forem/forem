@@ -35,8 +35,8 @@ gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
 gem "flipper", "~> 0.22.1" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.22.0" # Store Flipper flags in ActiveRecord
-gem "flipper-ui", "~> 0.22.0"
+gem "flipper-active_record", "~> 0.22.1" # Store Flipper flags in ActiveRecord
+gem "flipper-ui", "~> 0.22.1"
 gem "fog-aws", "~> 3.12" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
@@ -133,9 +133,6 @@ group :development do
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "web-console", "~> 4.1" # Rails Console on the Browser
-  gem "yard", "~> 0.9.26" # YARD is a documentation generation tool for the Ruby programming language
-  gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
-  gem "yard-activesupport-concern", "~> 0.0.1" # YARD extension that brings support for modules making use of ActiveSupport::Concern
 end
 
 group :development, :test do
