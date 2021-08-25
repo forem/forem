@@ -1,4 +1,6 @@
 class DeepLinksController < ApplicationController
+  AASA_PATHS = ["/*", "NOT /users/auth/*"].freeze
+
   def mobile; end
 
   # Apple Application Site Association - based on Apple docs guidelines
@@ -15,12 +17,11 @@ class DeepLinksController < ApplicationController
     # Now restructure the array of arrays into valid AASA App ID's
     # Example: ['TEAM1.app.bundle.one', 'TEAM2.app.bundle.two']
     supported_apps = consumer_apps.map { |result| result.join(".") }
-    aasa_paths = ["/*", "NOT /users/auth/*"]
 
     render json: {
       applinks: {
         apps: [],
-        details: supported_apps.map { |app_id| { appID: app_id, paths: aasa_paths } }
+        details: supported_apps.map { |app_id| { appID: app_id, paths: AASA_PATHS } }
       },
       activitycontinuation: {
         apps: supported_apps
