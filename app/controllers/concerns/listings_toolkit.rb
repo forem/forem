@@ -36,6 +36,16 @@ module ListingsToolkit
     @listing = Listing.find(params[:id])
   end
 
+  def check_limit
+    begin
+      rate_limit!(:listing_creation)
+    rescue StandardError => e
+      @listing.errors.add(:listing_creation, e.message)
+      return false
+    end
+    true
+  end
+
   def create
     @listing = Listing.new(listing_params)
     organization_id = @listing.organization_id
@@ -51,7 +61,7 @@ module ListingsToolkit
       return
     end
 
-    unless @listing.valid?
+    if !@listing.valid? || !check_limit
       @credits = current_user.credits.unspent
       process_unsuccessful_creation
       return
