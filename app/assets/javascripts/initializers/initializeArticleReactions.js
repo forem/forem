@@ -1,4 +1,4 @@
-/* global sendHapticMessage, showLoginModal */
+/* global sendHapticMessage, showLoginModal, showModalAfterError */
 
 // Set reaction count to correct number
 function setReactionCount(reactionName, newCount) {
@@ -88,10 +88,17 @@ function reactToArticle(articleId, reaction) {
         return response.json().then(() => {
           document.getElementById('reaction-butt-' + reaction).disabled = false;
         });
+      } else {
+        toggleReaction();
+        document.getElementById('reaction-butt-' + reaction).disabled = false;
+        showModalAfterError(
+          response,
+          'updated a reaction',
+          'updating again the reaction',
+          'a moment',
+        );
+        return undefined;
       }
-      toggleReaction();
-      document.getElementById('reaction-butt-' + reaction).disabled = false;
-      return undefined;
     })
     .catch((error) => {
       toggleReaction();
