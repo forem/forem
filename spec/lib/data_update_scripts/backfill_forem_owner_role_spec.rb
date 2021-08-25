@@ -9,7 +9,7 @@ describe DataUpdateScripts::BackfillForemOwnerRole do
 
   it "Only the first super admin should backfill the forem_owner role" do
     described_class.new.run
-    expect(owner.has_role?(:forem_owner)).to be true
-    expect(admin.has_role?(:forem_owner)).to be false
+    expect(owner.has_role?(:creator)).to be true
+    expect(admin.has_role?(:creator)).to be false
   end
 end
