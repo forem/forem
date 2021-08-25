@@ -30,23 +30,66 @@ function showUserAlertModal(title, text, confirm_text) {
  * Displays a user rate limit alert modal letting the user know what they did that exceeded a rate limit,
  * and gives them links to explain why they must wait
  *
- * @function showUserAlertModal
+ * @function showRateLimitModal
  * @param {string} action_text Description of the action taken by the user
  * @param {string} next_action_text Description of the next action that can be taken
  *
  * @example
  * showRateLimitModal('Made a comment', 'comment again')
  */
-function showRateLimitModal(action_text, next_action_text) {
-  let rateLimitText = buildRateLimitText(action_text, next_action_text);
+function showRateLimitModal(
+  action_text,
+  next_action_text,
+  timeframe = 'a moment',
+) {
+  let rateLimitText = buildRateLimitText(
+    action_text,
+    next_action_text,
+    timeframe,
+  );
   let rateLimitLink = '/faq';
   showUserAlertModal(
-    'Wait a moment...',
+    `Wait ${timeframe}...`,
     rateLimitText,
     'Got it',
     rateLimitLink,
     'Why do I have to wait?',
   );
+}
+/**
+ * Displays the corresponding modal after an error.
+ *
+ * @function showModalAfterError
+ * @param {Object} response The response from the API
+ * @param {string} action_text Description of the action taken by the user
+ * @param {string} next_action_text Description of the next action that can be taken
+ * @param {string} timeframe Description of the time that we need to wait
+ *
+ * @example
+ * showModalAfterError(response, 'made a comment', 'making another comment', 'a moment');
+ */
+function showModalAfterError(
+  response,
+  action_text,
+  next_action_text,
+  timeframe,
+) {
+  response
+    .json()
+    .then(function parseError(errorReponse) {
+      if (response.status === 429) {
+        showRateLimitModal(action_text, next_action_text, timeframe);
+      } else {
+        showUserAlertModal(
+          `Error ${next_action_text}`,
+          errorReponse.error,
+          'OK',
+        );
+      }
+    })
+    .catch(function parseError(error) {
+      showUserAlertModal(`Error ${next_action_text}`, 'Server error', 'OK');
+    });
 }
 
 /**
@@ -84,8 +127,8 @@ const getModalHtml = (text, confirm_text) => `
  *
  * @returns {string} Formatted body text for a rate limit modal
  */
-function buildRateLimitText(action_text, next_action_text) {
-  return `Since you recently ${action_text}, you’ll need to wait a moment before ${next_action_text}.`;
+function buildRateLimitText(action_text, next_action_text, timeframe) {
+  return `Since you recently ${action_text}, you’ll need to wait ${timeframe} before ${next_action_text}.`;
 }
 
 /**
