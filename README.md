@@ -93,15 +93,16 @@ proceed.
 
 ## Getting Started
 
-This section provides a high-level quick start guide. If you're looking for the
-[installation guide](https://docs.forem.com/installation/), you'll want to refer
-to our complete [Developer Documentation](https://docs.forem.com/).
+This section provides a high-level quick start guide. If you're looking for a
+more thorough installation guide (for example
+[with macOS](https://developers.forem.com/installation/mac), you'll want to
+refer to our complete [Developer Documentation](https://developers.forem.com/).
 
 We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
 transitioning to a [Preact](https://preactjs.com/)-first frontend.
 
 A more complete overview of our stack is available in
-[our docs](https://docs.forem.com/technical-overview/).
+[our docs](https://developers.forem.com/technical-overview/stack).
 
 ### Prerequisites
 
@@ -130,11 +131,12 @@ A more complete overview of our stack is available in
 
 ### Installation Documentation
 
-[View Full Installation Documentation](https://docs.forem.com/installation/).
+Please see our installation guides, such as the
+[one for macOS](https://developers.forem.com/installation/mac).
 
 ## Developer Documentation
 
-[Check out our dedicated docs page for more technical documentation](https://docs.forem.com).
+[Check out our dedicated docs page for more technical documentation](https://developers.forem.com).
 
 ## Core team
 
@@ -192,7 +194,7 @@ Agreement, which they generously made available to the public domain under
 Creative Commons CC0 1.0 Universal.
 
 Any questions, please refer to our
-[license FAQ](https://docs.forem.com/licensing/) doc or email yo@dev.to.
+[license FAQ](https://developers.forem.com/licensing/) doc or email yo@dev.to.
 
 <br>
 

@@ -14,7 +14,7 @@ describe('Follow tag', () => {
 
     it('Follows and unfollows a tag from the tag index page', () => {
       cy.intercept('/follows').as('followsRequest');
-      cy.findByRole('button', { name: 'Follow' }).as('followButton');
+      cy.findAllByRole('button', { name: 'Follow' }).first().as('followButton');
 
       cy.get('@followButton').click();
       cy.wait('@followsRequest');
