@@ -1,4 +1,4 @@
-<%= form_with(url: admin_settings_mandatory_settings_path, data: { action: "submit->config#activateLightConfirmation", testid: "getStartedSectionForm" }) do |f| %>
+<%= form_with(url: admin_settings_mandatory_settings_path, data: { action: "submit->config#updateConfigurationSettings", testid: "getStartedSectionForm" }) do |f| %>
   <fieldset class="grid gap-4">
 
     <% Settings::Mandatory::MAPPINGS.each do |config_key, settings_model| %>

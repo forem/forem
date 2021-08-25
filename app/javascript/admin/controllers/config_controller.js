@@ -101,7 +101,7 @@ export default class ConfigController extends Controller {
     );
   }
 
-  async activateLightConfirmation(event) {
+  async updateConfigurationSettings(event) {
     event.preventDefault();
     try {
       const body = new FormData(event.target);
@@ -118,9 +118,7 @@ export default class ConfigController extends Controller {
 
       const outcome = await response.json();
 
-      outcome.message == null
-        ? this.displaySnackbar(outcome.error)
-        : this.displaySnackbar(outcome.message);
+      this.displaySnackbar(outcome.message ?? outcome.error);
     } catch (err) {
       this.displaySnackbar(err.message);
     }
@@ -375,7 +373,7 @@ export default class ConfigController extends Controller {
       event.preventDefault();
       this.activateMissingKeysModal(this.enabledProvidersWithMissingKeys());
     } else {
-      this.activateLightConfirmation(event);
+      this.updateConfigurationSettings(event);
     }
   }
 

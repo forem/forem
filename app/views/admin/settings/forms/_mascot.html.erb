@@ -1,7 +1,7 @@
 <%= form_for(Settings::General.new,
              url: admin_settings_general_settings_path,
              html: { data: {
-               action: "submit->config#activateLightConfirmation",
+               action: "submit->config#updateConfigurationSettings",
                testid: "mascotSectionForm"
              } }) do |f| %>
   <div class="card mt-3">
