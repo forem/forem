@@ -27,7 +27,7 @@ describe('Mascot Section', () => {
         cy.findByTestId('snackbar').within(() => {
           cy.findByRole('alert').should(
             'have.text',
-            '❗️❗️ Validation failed: Mascot image url is not a valid URL',
+            'Validation failed: Mascot image url is not a valid URL',
           );
         });
       });

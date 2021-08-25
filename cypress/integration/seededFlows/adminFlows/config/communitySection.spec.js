@@ -25,7 +25,7 @@ describe('Community Content Section', () => {
         cy.findByTestId('snackbar').within(() => {
           cy.findByRole('alert').should(
             'have.text',
-            '❗️❗️ Validation failed: Community emoji contains non-emoji characters or invalid emoji',
+            'Validation failed: Community emoji contains non-emoji characters or invalid emoji',
           );
         });
 

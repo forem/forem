@@ -26,7 +26,7 @@ describe('Campaign Section', () => {
         cy.findByTestId('snackbar').within(() => {
           cy.findByRole('alert').should(
             'have.text',
-            '❗️❗️ Validation failed: Sidebar image is not a valid URL',
+            'Validation failed: Sidebar image is not a valid URL',
           );
         });
       });
