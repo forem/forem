@@ -17,6 +17,13 @@ Settings::SMTP.password = "password"
 
 ##############################################################################
 
+# Some of our Cypress tests assume specific DEV profile fields to exist
+ProfileField.create!(label: "Work")
+ProfileField.create!(label: "Education")
+Profile.refresh_attributes!
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
     name: "Admin McAdmin",
