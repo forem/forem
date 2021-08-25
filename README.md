@@ -6,7 +6,7 @@
 <br>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.7.2-green.svg" alt="ruby version">
+    <img src="https://img.shields.io/badge/Ruby-v3.0.2-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v6.0.3-brightgreen.svg" alt="rails version">
