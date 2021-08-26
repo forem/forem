@@ -13,7 +13,7 @@ module Settings
     self.abstract_class = true
 
     PROTECTED_KEYS = %w[var value].freeze
-    SEPARATOR_REGEXP = /[\n,;]+/.freeze
+    SEPARATOR_REGEXP = /[\n,;]+/
 
     after_commit :clear_cache, on: %i[create update destroy]
 
@@ -66,7 +66,9 @@ module Settings
         # Getter
         define_singleton_method(key) do
           result = __send__(:value_of, key)
-          result ||= default.is_a?(Proc) ? default.call : default
+          if result.nil? # we don't want to accidentally do this for "false"
+            result ||= default.is_a?(Proc) ? default.call : default
+          end
           result = __send__(:convert_string_to_value_type, type, result, separator: separator)
 
           result
