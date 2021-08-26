@@ -1,4 +1,6 @@
 class DeepLinksController < ApplicationController
+  AASA_PATHS = ["/*", "NOT /users/auth/*"].freeze
+
   def mobile; end
 
   # Apple Application Site Association - based on Apple docs guidelines
@@ -19,7 +21,7 @@ class DeepLinksController < ApplicationController
     render json: {
       applinks: {
         apps: [],
-        details: supported_apps.map { |app_id| { appID: app_id, paths: ["/*"] } }
+        details: supported_apps.map { |app_id| { appID: app_id, paths: AASA_PATHS } }
       },
       activitycontinuation: {
         apps: supported_apps
