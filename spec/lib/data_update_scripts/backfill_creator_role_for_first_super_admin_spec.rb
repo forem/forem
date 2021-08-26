@@ -9,7 +9,7 @@ describe DataUpdateScripts::BackfillCreatorRoleForFirstSuperAdmin do
 
   it "Only the first super admin should have the creator role" do
     described_class.new.run
-    expect(owner.has_role?(:creator)).to be true
-    expect(admin.has_role?(:creator)).to be false
+    expect(owner).to have_role(:creator)
+    expect(admin).not_to have_role(:creator)
   end
 end
