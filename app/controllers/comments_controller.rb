@@ -23,7 +23,7 @@ class CommentsController < ApplicationController
       @user = @podcast
       @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes
     else
-      @user = User.includes(:profile).find_by(username: params[:username]) ||
+      @user = User.find_by(username: params[:username]) ||
         Organization.find_by(slug: params[:username]) ||
         not_found
       @commentable = @root_comment&.commentable ||
