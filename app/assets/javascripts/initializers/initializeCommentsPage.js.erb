@@ -148,6 +148,8 @@ function initializeCommentsPage() {
             thisButt.disabled = false;
             if (response.status === 200) {
               response.json().then(successCb);
+            } else {
+              showModalAfterError(response, 'made a reaction', 'making another reaction', 'a moment');
             }
           });
       };
