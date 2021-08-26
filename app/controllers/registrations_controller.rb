@@ -40,6 +40,7 @@ class RegistrationsController < Devise::RegistrationsController
   def update_first_user_permissions(resource)
     return unless Settings::General.waiting_on_first_user
 
+    resource.add_role(:creator)
     resource.add_role(:super_admin)
     resource.add_role(:trusted)
     resource.skip_confirmation!
