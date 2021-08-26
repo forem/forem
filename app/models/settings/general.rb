@@ -8,7 +8,7 @@ module Settings
     # the cache, or call Settings::General.clear_cache
     cache_prefix { "v1" }
 
-    HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/.freeze
+    HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/
     LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
     STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
 
