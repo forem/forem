@@ -1,6 +1,6 @@
 class KotlinTag < LiquidTagBase
   PARTIAL = "liquids/kotlin".freeze
-  PARAM_REGEXP = /\A[a-zA-Z0-9]+\z/.freeze
+  PARAM_REGEXP = /\A[a-zA-Z0-9]+\z/
 
   def initialize(_tag_name, link, _parse_context)
     super

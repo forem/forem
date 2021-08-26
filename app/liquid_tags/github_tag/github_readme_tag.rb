@@ -1,7 +1,7 @@
 class GithubTag
   class GithubReadmeTag
     PARTIAL = "liquids/github_readme".freeze
-    GITHUB_DOMAIN_REGEXP = %r{.*github.com/}.freeze
+    GITHUB_DOMAIN_REGEXP = %r{.*github.com/}
     OPTION_NO_README = "no-readme".freeze
     VALID_OPTIONS = [OPTION_NO_README].freeze
 

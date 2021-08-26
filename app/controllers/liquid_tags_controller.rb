@@ -1,7 +1,7 @@
 class LiquidTagsController < ApplicationController
   before_action :authenticate_user!
 
-  FILTER_REGEX = /^(?:NullTag|Liquid::)/.freeze
+  FILTER_REGEX = /^(?:NullTag|Liquid::)/
 
   def index
     custom_tags = Liquid::Template.tags.filter_map do |name, tag|
