@@ -4,12 +4,12 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::BackfillCreatorRoleForFirstSuperAdmin do
-  let!(:owner) { create(:user, :super_admin) }
+  let!(:creator) { create(:user, :super_admin) }
   let!(:admin) { create(:user, :super_admin) }
 
   it "Only the first super admin should have the creator role" do
     described_class.new.run
-    expect(owner).to have_role(:creator)
+    expect(creator).to have_role(:creator)
     expect(admin).not_to have_role(:creator)
   end
 end
