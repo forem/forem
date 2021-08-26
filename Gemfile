@@ -21,7 +21,7 @@ gem "blazer", "~> 2.4.3" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
-gem "cloudinary", "~> 1.20" # Client library for easily using the Cloudinary service
+gem "cloudinary", "~> 1.21" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.52.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
@@ -34,10 +34,10 @@ gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given i
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
-gem "flipper", "~> 0.22.0" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.22.0" # Store Flipper flags in ActiveRecord
-gem "flipper-ui", "~> 0.22.0"
-gem "fog-aws", "~> 3.11" # 'fog' gem to support Amazon Web Services
+gem "flipper", "~> 0.22.1" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.22.1" # Store Flipper flags in ActiveRecord
+gem "flipper-ui", "~> 0.22.1"
+gem "fog-aws", "~> 3.12" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
@@ -74,6 +74,7 @@ gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 6.1.4" # Ruby on Rails
+gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 # Pinned since we have a monkey-patch against this version
 gem "rails-settings-cached", "2.6.0" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "ransack", "~> 2.4" # Searching and sorting
@@ -96,7 +97,7 @@ gem "rolify", "~> 6.0" # Very simple Roles library
 gem "rouge", "~> 3.26" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
-gem "sidekiq", "~> 6.2.1" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq", "~> 6.2.2" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 7.0.12" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
@@ -119,9 +120,6 @@ gem "webpacker", "~> 5.4.2" # Use webpack to manage app-like JavaScript modules 
 group :development do
   gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
 
-  # NOTE: [@rhymes] binding_of_caller 1.0 breaks Docker Compose, see <https://github.com/forem/forem/issues/12068>
-  gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
-
   gem "brakeman", "~> 5.1", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.8" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 2.1", require: false # A series of things you can use to benchmark a Rails or Ruby app
@@ -133,9 +131,6 @@ group :development do
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "web-console", "~> 4.1" # Rails Console on the Browser
-  gem "yard", "~> 0.9.26" # YARD is a documentation generation tool for the Ruby programming language
-  gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
-  gem "yard-activesupport-concern", "~> 0.0.1" # YARD extension that brings support for modules making use of ActiveSupport::Concern
 end
 
 group :development, :test do
@@ -144,9 +139,8 @@ group :development, :test do
   gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.5.2" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
-  gem "faker", "~> 2.18" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 3.1.0" # Help parallelize Ruby spec builds
-  gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.19", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.11", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code

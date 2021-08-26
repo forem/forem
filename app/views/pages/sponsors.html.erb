@@ -19,7 +19,7 @@
         <% Sponsorship.gold.live.includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
           <div>
             <a href="<%= sponsorship.url %>" class="sponsor__logo">
-              <img src="<%= optimized_image_url(sponsorship.organization.nav_image_url, width: 250) %>" alt="<%= sponsorship.organization.name %> logo" loading="lazy">
+              <%= render partial: "pages/sponsor_image", locals: { sponsor: sponsorship.organization } %>
             </a>
             <p>
               <%= sponsorship.blurb_html&.html_safe %>
@@ -37,7 +37,7 @@
         <% Sponsorship.where(status: "live", level: "silver").where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
           <div>
             <a href="<%= sponsorship.url %>" class="sponsor__logo">
-              <img src="<%= optimized_image_url(sponsorship.organization.nav_image_url, width: 250) %>" alt="<%= sponsorship.organization.name %> logo" loading="lazy">
+              <%= render partial: "pages/sponsor_image", locals: { sponsor: sponsorship.organization } %>
             </a>
             <p>
               <%= sponsorship.blurb_html&.html_safe %>
@@ -55,7 +55,7 @@
         <% Sponsorship.bronze.live.where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).find_each do |sponsorship| %>
           <div>
             <a href="<%= sponsorship.url %>" class="sponsor__logo">
-              <img src="<%= optimized_image_url(sponsorship.organization.nav_image_url, width: 250) %>" alt="<%= sponsorship.organization.name %> logo" loading="lazy">
+              <%= render partial: "pages/sponsor_image", locals: { sponsor: sponsorship.organization } %>
             </a>
           </div>
         <% end %>
