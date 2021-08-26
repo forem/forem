@@ -13,15 +13,30 @@ function addButtonFollowText(button, style) {
 
   switch (style) {
     case 'small':
-      addAriaLabelToButton(button, name, className, 'follow');
+      addAriaLabelToButton({
+        button,
+        followName: name,
+        followType: className,
+        style: 'follow',
+      });
       button.textContent = '+';
       break;
     case 'follow-back':
-      addAriaLabelToButton(button, name, className, 'follow-back');
+      addAriaLabelToButton({
+        button,
+        followName: name,
+        followType: className,
+        style: 'follow-back',
+      });
       button.textContent = 'Follow back';
       break;
     default:
-      addAriaLabelToButton(button, name, className, 'follow');
+      addAriaLabelToButton({
+        button,
+        followName: name,
+        followType: className,
+        style: 'follow',
+      });
       button.textContent = 'Follow';
   }
 }
@@ -34,7 +49,7 @@ function addButtonFollowText(button, style) {
  * @param {string} followName The name of the followable to be followed.
  * @param {string} style The style of the button from its "info" data attribute
  */
-function addAriaLabelToButton(button, followType, followName, style = '') {
+function addAriaLabelToButton({ button, followType, followName, style = '' }) {
   let label = '';
   switch (style) {
     case 'follow':
@@ -45,6 +60,9 @@ function addAriaLabelToButton(button, followType, followName, style = '') {
       break;
     case 'following':
       label = `Unfollow ${followType.toLowerCase()}: ${followName}`;
+      break;
+    case 'self':
+      label = `Edit profile`;
       break;
     default:
       label = `Follow ${followType.toLowerCase()}: ${followName}`;
@@ -118,7 +136,12 @@ function updateFollowingButton(button, style) {
   button.classList.remove('crayons-btn--primary');
   button.classList.remove('crayons-btn--secondary');
   button.classList.add('crayons-btn--outlined');
-  addAriaLabelToButton(button, name, className, 'following');
+  addAriaLabelToButton({
+    button,
+    followName: name,
+    followType: className,
+    style: 'following',
+  });
 }
 
 /**
@@ -129,6 +152,12 @@ function updateFollowingButton(button, style) {
 function updateUserOwnFollowButton(button) {
   button.dataset.verb = 'self';
   button.textContent = 'Edit profile';
+  addAriaLabelToButton({
+    button,
+    followName: '',
+    followType: '',
+    style: 'self',
+  });
 }
 
 /**
@@ -291,7 +320,7 @@ function initializeAllUserFollowButtons() {
       const { style } = JSON.parse(button.dataset.info);
       addButtonFollowText(button, style);
     } else {
-      addAriaLabelToButton(button, className, name);
+      addAriaLabelToButton({ button, followType: className, followName: name });
       const { id: userId } = JSON.parse(button.dataset.info);
       if (userIds[userId]) {
         userIds[userId].push(button);
@@ -354,7 +383,7 @@ function initializeNonUserFollowButtons() {
     const { info } = button.dataset;
     const buttonInfo = JSON.parse(info);
     const { className, name } = buttonInfo;
-    addAriaLabelToButton(button, className, name);
+    addAriaLabelToButton({ button, followType: className, followName: name });
     if (className === 'Tag' && user) {
       // We don't need to make a network request to 'fetch' the status of tag buttons
       button.dataset.fetched = true;
