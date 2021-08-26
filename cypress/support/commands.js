@@ -30,7 +30,7 @@ import { getInterceptsForLingeringUserRequests } from '../util/networkUtils';
  * Use this function to sign a user out without lingering network calls causing unintended side-effects.
  */
 Cypress.Commands.add('signOutUser', () => {
-  const intercepts = getInterceptsForLingeringUserRequests(false);
+  const intercepts = getInterceptsForLingeringUserRequests('/', false);
 
   return cy.request('DELETE', '/users/sign_out').then(() => {
     cy.visit('/');
@@ -58,7 +58,7 @@ Cypress.Commands.add('visitAndWaitForUserSideEffects', (url, options) => {
   if (url === `${baseUrl}/admin` || url.includes('/admin/')) {
     cy.visit(url, options);
   } else {
-    const intercepts = getInterceptsForLingeringUserRequests(true);
+    const intercepts = getInterceptsForLingeringUserRequests(url, true);
     cy.visit(url, options);
     cy.wait(intercepts);
   }
@@ -96,12 +96,44 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   const encodedEmail = encodeURIComponent(email);
   const encodedPassword = encodeURIComponent(password);
 
-  return cy.request(
-    'POST',
-    '/users/sign_in',
-    `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
-  );
+  function getLoginRequest() {
+    return cy.request(
+      'POST',
+      '/users/sign_in',
+      `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
+    );
+  }
+
+  return getLoginRequest().then((response) => {
+    if (response.status === 200) {
+      return response;
+    }
+
+    cy.log('Login failed. Attempting one more login.');
+
+    // If we have a login failure, try one more time.
+    // This is to combat some flaky tests where the login fails occasionnally.
+    return getLoginRequest();
+  });
 });
+
+/**
+ * Gets an iframe with the given selector (or the first/only iframe if none is passed in),
+ * waits for its content to be loaded, and returns a wrapped reference to the iframe body
+ * that can then be chained off of.
+ *
+ * See also: https://www.cypress.io/blog/2020/02/12/working-with-iframes-in-cypress/
+ *
+ * @example
+ * cy.getIframeBody('.article-frame').findByRole('heading', { name: 'Article title' });
+ */
+Cypress.Commands.add('getIframeBody', (selector = '') =>
+  cy
+    .get(`iframe${selector}`)
+    .its('0.contentDocument.body')
+    .should('not.be.empty')
+    .then(cy.wrap),
+);
 
 const toPayload = (isEnabled) => (isEnabled ? '1' : '0');
 

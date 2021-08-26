@@ -1,9 +1,12 @@
 import { h, render } from 'preact';
-import ahoy from 'ahoy.js';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { embedGists } from '../utilities/gist';
-import { initializeDropdown } from '@utilities/dropdownUtils';
+import {
+  initializeDropdown,
+  getDropdownRepositionListener,
+} from '../utilities/dropdownUtils';
+import { getInstantClick } from '../topNavigation/utilities';
 
 /* global Runtime */
 
@@ -50,10 +53,7 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
       .querySelectorAll('#article-show-more-dropdown [href]')
       .forEach((link) => {
         link.addEventListener('click', (event) => {
-          closeDropdown(event)
-          
-          // Temporary Ahoy Stats for usage reports
-          ahoy.track('Post Dropdown', { option: event.target.text.trim() });
+          closeDropdown(event);
         });
       });
   }
@@ -63,25 +63,19 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
 
 // Initialize the copy to clipboard functionality
 function showAnnouncer() {
-  const { activeElement } = document;
-  const input =
-    activeElement.localName === 'clipboard-copy'
-      ? activeElement.querySelector('input')
-      : document.getElementById('article-copy-link-input');
-  input.focus();
-  input.setSelectionRange(0, input.value.length);
-
   document.getElementById('article-copy-link-announcer').hidden = false;
 }
 
 function copyArticleLink() {
-  const inputValue = document.getElementById('article-copy-link-input').value;
-  Runtime.copyToClipboard(inputValue).then(() => {
+  const postUrlValue = document
+    .getElementById('copy-post-url-button')
+    .getAttribute('data-postUrl');
+  Runtime.copyToClipboard(postUrlValue).then(() => {
     showAnnouncer();
   });
 }
 document
-  .querySelector('clipboard-copy')
+  .getElementById('copy-post-url-button')
   ?.addEventListener('click', copyArticleLink);
 
 // Comment Subscription
@@ -174,10 +168,19 @@ actionsContainer.addEventListener('click', async (event) => {
 const profilePreviewTrigger = document.getElementById(
   'profile-preview-trigger',
 );
+
+const dropdownContent = document.getElementById('profile-preview-content');
+
 if (profilePreviewTrigger?.dataset.initialized !== 'true') {
   initializeDropdown({
     triggerElementId: 'profile-preview-trigger',
     dropdownContentId: 'profile-preview-content',
+    onOpen: () => {
+      dropdownContent?.classList.add('showing');
+    },
+    onClose: () => {
+      dropdownContent?.classList.remove('showing');
+    },
   });
 
   profilePreviewTrigger.dataset.initialized = 'true';
@@ -185,3 +188,18 @@ if (profilePreviewTrigger?.dataset.initialized !== 'true') {
 
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
+
+// Preview card dropdowns reposition on scroll
+const dropdownRepositionListener = getDropdownRepositionListener();
+
+document.addEventListener('scroll', dropdownRepositionListener);
+
+getInstantClick().then((ic) => {
+  ic.on('change', () => {
+    document.removeEventListener('scroll', dropdownRepositionListener);
+  });
+});
+
+window.addEventListener('beforeunload', () => {
+  document.removeEventListener('scroll', dropdownRepositionListener);
+});

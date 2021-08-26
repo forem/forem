@@ -1,7 +1,11 @@
 require "rails_helper"
 
 RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
-  let(:user) { create(:user, feed_mark_canonical: true) }
+  let(:user) do
+    u = create(:user)
+    u.setting.update(feed_mark_canonical: true)
+    u
+  end
   let(:feed_source_url) { "https://feed.source/url" }
   let(:feed) { instance_double("Feedjira::Parser::RSS", url: "https://feed.source/") }
   let(:title) { "A title" }

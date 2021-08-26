@@ -1,8 +1,10 @@
 class NavigationLink < ApplicationRecord
-  SVG_REGEXP = /<svg .*>/i.freeze
+  SVG_REGEXP = /<svg .*>/im
 
   before_validation :allow_relative_url, if: :url?
   before_save :strip_local_hostname, if: :url?
+
+  enum section: { default: 0, other: 1 }, _suffix: true
 
   validates :name, :url, :icon, presence: true
   validates :url, url: { schemes: %w[https http] }, uniqueness: { scope: :name }

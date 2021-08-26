@@ -28,7 +28,7 @@
 
 <% end %>
 
-<div class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>">
+<main id="main-content" class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>">
   <div class="hero">
     <% image_url = Images::Optimizer.call(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png", fetch_format: "jpg", crop: nil) %>
     <div class="title" style="background:#<%= @podcast.main_color_hex %> url(<%= image_url %>)">
@@ -49,18 +49,18 @@
         </time>
       <% end %>
     </div>
-    <div id="record-<%= @episode.slug %>" class="record-wrapper" data-podcast="<%= @podcast.slug %>" data-episode="<%= @episode.slug %>">
+    <button id="record-<%= @episode.slug %>" class="record-wrapper" data-podcast="<%= @podcast.slug %>" data-episode="<%= @episode.slug %>" aria-pressed="false">
       <div class="record" id="record">
         <%= optimized_image_tag(@podcast.image_url,
                                 optimizer_options: { width: 420, height: 420, crop: "fill" },
                                 image_options: { class: "main-image", alt: @podcast.title }) %>
-        <img alt="Play Button" class="butt play-butt" src="<%= image_path("playbutt.png") %>" />
-        <img alt="Pause Button" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" />
+        <img alt="Play podcast" class="butt play-butt" src="<%= image_path("playbutt.png") %>" />
+        <img alt="Play podcast" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" />
         <div class="status-message" id="status-message-<%= @episode.slug %>">
           play
         </div>
       </div>
-    </div>
+    </button>
   </div>
   <%# checking both podcast_episode and podcast status for now  %>
   <% unless @episode.https? %>
@@ -92,7 +92,8 @@
         class="comments-container text-padding"
         id="comments-container"
         data-commentable-id="<%= @episode.id %>"
-        data-commentable-type="PodcastEpisode">
+        data-commentable-type="PodcastEpisode"
+        data-follow-button-container="true">
         <%= javascript_packs_with_chunks_tag "commentDropdowns", defer: true %>
         <%= render "/comments/form",
                    commentable: @episode,
@@ -107,6 +108,7 @@
       </section>
     </div>
   </div>
-</div>
+</main>
 
 <%= render "podcast_episodes/podcast_bar", podcast: @podcast, episode: @episode %>
+<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>

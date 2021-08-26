@@ -2,7 +2,7 @@ module Admin
   class ListingsController < Admin::ApplicationController
     include ListingsToolkit
     ALLOWED_PARAMS = %i[
-      published body_markdown title category listing_category_id tag_list action
+      published body_markdown title category listing_category_id tag_list action organization_id
     ].freeze
     layout "admin"
 

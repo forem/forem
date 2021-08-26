@@ -17,7 +17,7 @@ module Api
 
       LISTINGS_FOR_SERIALIZATION = %i[
         id user_id organization_id title slug body_markdown cached_tag_list
-        classified_listing_category_id processed_html published
+        classified_listing_category_id processed_html published created_at
       ].freeze
       private_constant :LISTINGS_FOR_SERIALIZATION
 
@@ -33,7 +33,7 @@ module Api
         num = [per_page, 1000].min
         page = params[:page] || 1
 
-        @users = @organization.users.select(USERS_FOR_SERIALIZATION).page(page).per(num)
+        @users = @organization.users.joins(:profile).select(USERS_FOR_SERIALIZATION).page(page).per(num)
       end
 
       def listings

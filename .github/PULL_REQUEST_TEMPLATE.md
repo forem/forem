@@ -41,7 +41,7 @@ images for UI changes._
 
 _If your PR includes UI changes, please replace this line with details on how
 accessibility is impacted and tested. For more info, check out the
-[Forem Accessibility Docs](https://docs.forem.com/frontend/accessibility)._
+[Forem Accessibility Docs](https://developers.forem.com/frontend/accessibility)._
 
 ## Added/updated tests?
 
@@ -56,10 +56,12 @@ _Will this PR introduce a change that impacts Forem members or creators, the
 development process, or any of our internal teams? If so, please note how you
 will share this change with the people who need to know about it._
 
-- [ ] I've updated the [Developer Docs](https://docs.forem.com) and/or
+- [ ] I've updated the [Developer Docs](https://developers.forem.com) and/or
       [Admin Guide](https://admin.forem.com/), or
       [Storybook](https://storybook.forem.com/) (for Crayons components)
 - [ ] I've updated the README or added inline documentation
+- [ ] I've added an entry to
+      [`CHANGELOG.md`](https://github.com/forem/forem/tree/main/CHANGELOG.md)
 - [ ] I will share this change in a [Changelog](https://forem.dev/t/changelog)
       or in a [forem.dev](http://forem.dev) post
 - [ ] I will share this change internally with the appropriate teams

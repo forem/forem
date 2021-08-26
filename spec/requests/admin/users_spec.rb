@@ -19,9 +19,19 @@ RSpec.describe "/admin/users", type: :request do
   end
 
   describe "GET /admin/users/:id" do
-    it "renders to appropriate page" do
-      get admin_user_path(user.id)
+    it "renders to appropriate page", :aggregate_failures do
+      get admin_user_path(user)
+
       expect(response.body).to include(user.username)
+      expect(response.body).not_to include("Go back to All members")
+    end
+
+    it "renders the new admin page if the feature flag is enabled" do
+      FeatureFlag.enable(:new_admin_members, admin)
+
+      get admin_user_path(user)
+
+      expect(response.body).to include("Go back to All members")
     end
 
     context "when a user is unregistered" do
@@ -119,27 +129,194 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST /admin/users/:id/verify_email_ownership" do
-    it "allows a user to verify email ownership" do
+  describe "POST /admin/users/:id/send_email" do
+    let(:params) do
+      {
+        email_body: "Body",
+        email_subject: "subject",
+        user_id: user.id.to_s
+      }
+    end
+    let(:mailer) { double }
+    let(:message_delivery) { double }
+
+    before do
       allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
-      post verify_email_ownership_admin_user_path(user.id), params: { user_id: user.id }
+    end
 
-      path = verify_email_authorizations_path(
-        confirmation_token: user.email_authorizations.first.confirmation_token,
-        username: user.username,
-      )
-      verification_link = app_url(path)
+    context "when interacting via a browser" do
+      it "returns not found for non existing users" do
+        expect { post send_email_admin_user_path(9999), params: params }.to raise_error(ActiveRecord::RecordNotFound)
+      end
 
-      deliveries = ActionMailer::Base.deliveries
-      expect(deliveries.count).to eq(1)
-      expect(deliveries.first.subject).to eq("Verify Your #{Settings::Community.community_name} Account Ownership")
-      expect(deliveries.first.text_part.body).to include(verification_link)
+      it "fails sending the email if an error occurs", :aggregate_failures do
+        allow(NotifyMailer).to receive(:with).with(params).and_return(mailer)
+        allow(mailer).to receive(:user_contact_email).and_return(message_delivery)
+        allow(message_delivery).to receive(:deliver_now).and_return(false)
 
-      sign_in(user)
-      get verification_link
-      expect(user.email_authorizations.last.verified_at).to be_within(1.minute).of Time.now.utc
+        assert_no_emails do
+          post send_email_admin_user_path(user.id), params: params
+        end
 
-      ActionMailer::Base.deliveries.clear
+        expect(response).to redirect_to(admin_users_path)
+        expect(flash[:danger]).to include("failed")
+      end
+
+      it "sends an email to the user", :aggregate_failures do
+        assert_emails(1) do
+          post send_email_admin_user_path(user.id), params: params
+        end
+
+        expect(response).to redirect_to(admin_users_path)
+        expect(flash[:success]).to include("sent")
+
+        email = ActionMailer::Base.deliveries.last
+        expect(email.subject).to eq(params[:email_subject])
+        expect(email.text_part.body).to include(params[:email_body])
+      end
+    end
+
+    context "when interacting via ajax" do
+      it "returns not found for non existing users" do
+        expect do
+          post send_email_admin_user_path(9999), params: params, xhr: true
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "fails sending the email if an error occurs", :aggregate_failures do
+        allow(NotifyMailer).to receive(:with).with(params).and_return(mailer)
+        allow(mailer).to receive(:user_contact_email).and_return(message_delivery)
+        allow(message_delivery).to receive(:deliver_now).and_return(false)
+
+        assert_no_emails do
+          post send_email_admin_user_path(user.id), params: params, xhr: true
+        end
+
+        expect(response).to have_http_status(:service_unavailable)
+        expect(response.parsed_body["error"]).to include("failed")
+      end
+
+      it "sends an email to the user", :aggregate_failures do
+        assert_emails(1) do
+          post send_email_admin_user_path(user.id), params: params, xhr: true
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["result"]).to include("sent")
+
+        email = ActionMailer::Base.deliveries.last
+        expect(email.subject).to eq(params[:email_subject])
+        expect(email.text_part.body).to include(params[:email_body])
+      end
+    end
+  end
+
+  describe "POST /admin/users/:id/verify_email_ownership" do
+    let(:mailer) { double }
+    let(:message_delivery) { double }
+
+    before do
+      allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+    end
+
+    context "when interacting via a browser" do
+      it "returns not found for non existing users" do
+        expect do
+          post verify_email_ownership_admin_user_path(9999), params: { user_id: user.id }
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "fails sending the email if an error occurs", :aggregate_failures do
+        allow(VerificationMailer).to receive(:with).with(user_id: user.id.to_s).and_return(mailer)
+        allow(mailer).to receive(:account_ownership_verification_email).and_return(message_delivery)
+        allow(message_delivery).to receive(:deliver_now).and_return(false)
+
+        assert_no_emails do
+          post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }
+        end
+
+        expect(response).to redirect_to(admin_users_path)
+        expect(flash[:danger]).to include("failed")
+      end
+
+      it "sends an email", :aggregate_failures do
+        assert_emails(1) do
+          post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }
+        end
+
+        expect(response).to redirect_to(admin_users_path)
+        expect(flash[:success]).to include("sent")
+      end
+
+      it "allows a user to verify email ownership", :aggregate_failures do
+        post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }
+
+        path = verify_email_authorizations_path(
+          confirmation_token: user.email_authorizations.first.confirmation_token,
+          username: user.username,
+        )
+        verification_link = app_url(path)
+
+        email = ActionMailer::Base.deliveries.last
+        expect(email.subject).to eq("Verify Your #{Settings::Community.community_name} Account Ownership")
+        expect(email.text_part.body).to include(verification_link)
+
+        sign_in(user)
+        get verification_link
+        expect(user.email_authorizations.last.verified_at)
+          .to be_within(1.minute)
+          .of Time.current
+      end
+    end
+
+    context "when interacting via ajax" do
+      it "returns not found for non existing users" do
+        expect do
+          post verify_email_ownership_admin_user_path(9999), params: { user_id: user.id }, xhr: true
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "fails sending the email if an error occurs", :aggregate_failures do
+        allow(VerificationMailer).to receive(:with).with(user_id: user.id.to_s).and_return(mailer)
+        allow(mailer).to receive(:account_ownership_verification_email).and_return(message_delivery)
+        allow(message_delivery).to receive(:deliver_now).and_return(false)
+
+        assert_no_emails do
+          post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }, xhr: true
+        end
+
+        expect(response).to have_http_status(:service_unavailable)
+        expect(response.parsed_body["error"]).to include("failed")
+      end
+
+      it "sends an email", :aggregate_failures do
+        assert_emails(1) do
+          post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }, xhr: true
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["result"]).to include("sent")
+      end
+
+      it "allows a user to verify email ownership", :aggregate_failures do
+        post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }, xhr: true
+
+        path = verify_email_authorizations_path(
+          confirmation_token: user.email_authorizations.first.confirmation_token,
+          username: user.username,
+        )
+        verification_link = app_url(path)
+
+        email = ActionMailer::Base.deliveries.last
+        expect(email.subject).to eq("Verify Your #{Settings::Community.community_name} Account Ownership")
+        expect(email.text_part.body).to include(verification_link)
+
+        sign_in(user)
+        get verification_link
+        expect(user.email_authorizations.last.verified_at)
+          .to be_within(1.minute)
+          .of Time.current
+      end
     end
   end
 

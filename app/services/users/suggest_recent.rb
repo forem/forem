@@ -52,19 +52,19 @@ module Users
     end
 
     def relation_as_array(relation, limit:)
-      relation = relation.select(attributes_to_select) if attributes_to_select.any?
+      relation = relation.joins(:profile).select(attributes_to_select) if attributes_to_select.any?
       relation.order(updated_at: :desc).limit(limit).to_a
     end
 
     def established_user_article_count
       Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
-        User.where("articles_count > 0").average(:articles_count) || User.average(:articles_count)
+        User.where(articles_count: 1..).average(:articles_count) || User.average(:articles_count)
       end
     end
 
     def established_user_comment_count
       Rails.cache.fetch("established_user_comment_count", expires_in: 1.day) do
-        User.where(comments_count: 1).average(:comments_count) || User.average(:comments_count)
+        User.where(comments_count: 1..).average(:comments_count) || User.average(:comments_count)
       end
     end
 

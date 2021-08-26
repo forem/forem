@@ -12,6 +12,7 @@ json.array! @articles do |article|
   json.cover_image              cloud_cover_url(article.main_image)
   json.tag_list                 article.cached_tag_list_array
   json.canonical_url            article.processed_canonical_url
+  json.reading_time_minutes     article.reading_time
 
   json.partial! "api/v0/shared/user", user: article.user
 

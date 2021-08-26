@@ -3,6 +3,8 @@
 @import 'variables';
 @import 'scaffolds';
 
+@import 'components/admin/users';
+
 // overriding Bootstrap styles
 label {
   margin-bottom: 0 !important;
@@ -101,6 +103,11 @@ label {
     margin: 0 16px;
     cursor: pointer;
   }
+}
+
+.navigation-link-position {
+  min-width: 25px;
+  text-align: right;
 }
 
 .admin-navigation-links {

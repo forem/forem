@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import adminEmoji from '../../../../assets/images/emoji/apple-fire.png';
+import adminEmoji from '../../../../assets/images/twemoji/fire.svg';
 import { Button } from '@crayons';
 
 export const Membership = ({

@@ -30,7 +30,7 @@ RSpec.describe "Moderations", type: :request do
   let(:trusted_user) { create(:user, :trusted) }
   let(:article) { create(:article) }
   let(:comment) { create(:comment, commentable: article) }
-  let(:dev_account) { create(:user) }
+  let(:staff_account) { create(:user) }
 
   it_behaves_like "an elevated privilege required request", "/username/random-article/mod"
   it_behaves_like "an elevated privilege required request", "/username/comment/1/mod"
@@ -39,7 +39,7 @@ RSpec.describe "Moderations", type: :request do
   context "when user is trusted" do
     before do
       sign_in trusted_user
-      allow(User).to receive(:dev_account).and_return(dev_account)
+      allow(User).to receive(:staff_account).and_return(staff_account)
     end
 
     it "grants access to comment moderation" do

@@ -39,11 +39,8 @@ window.Forem = {
       return;
     }
 
-    const [
-      { MentionAutocompleteTextArea },
-      { fetchSearch },
-      { render, h },
-    ] = await window.Forem.getMentionAutoCompleteImports();
+    const [{ MentionAutocompleteTextArea }, { fetchSearch }, { render, h }] =
+      await window.Forem.getMentionAutoCompleteImports();
 
     render(
       <MentionAutocompleteTextArea
@@ -66,6 +63,7 @@ window.Forem = {
     contentSelector,
     overlay = false,
     size = 's',
+    onOpen,
   }) => {
     const [{ Modal }, { render, h }] = await window.Forem.getModalImports();
 
@@ -98,6 +96,8 @@ window.Forem = {
       </Modal>,
       currentModalContainer,
     );
+
+    onOpen?.();
   },
   closeModal: async () => {
     const currentModalContainer = document.getElementById(WINDOW_MODAL_ID);
@@ -138,7 +138,9 @@ if (memberMenu) {
 }
 
 getInstantClick().then((spa) => {
-  spa.on('change', initializeNav);
+  spa.on('change', () => {
+    initializeNav();
+  });
 });
 
 initializeNav();

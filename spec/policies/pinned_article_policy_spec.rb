@@ -12,7 +12,7 @@ RSpec.describe PinnedArticlePolicy, type: :policy do
   context "when user is signed in as a regular user" do
     let(:user) { build_stubbed(:user) }
 
-    it { is_expected.not_to permit_actions(%i[show update destroy]) }
+    it { is_expected.to forbid_actions(%i[show update destroy]) }
   end
 
   context "when user is signed in as an admin" do

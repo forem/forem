@@ -17,4 +17,22 @@
     max-width: 360px;
     width: max-content;
   }
+
+  &.side-bar {
+    bottom: 100%;
+    font-size: var(--fs-base);
+    padding: var(--su-1);
+    right: var(--su-1);
+    @media (min-width: $breakpoint-m) {
+      right: auto;
+      bottom: auto;
+      top: 0;
+    }
+  }
+
+  &.reverse {
+    // Flips the dropdown to drop-upwards when set
+    bottom: 100%;
+    top: unset;
+  }
 }
