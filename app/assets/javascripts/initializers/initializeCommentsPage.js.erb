@@ -519,6 +519,8 @@ function handleImageUpload(event, randomIdNumber) {
                 messageContainer.style.top = "5px";
               }
             );
+          } else if (response.status === 429) {
+            showModalAfterError(response, 'uploaded an image', 'uploading another image', 'a moment');
           } else {
             response.json().then(function(responseBody) {
               var errorMessage = responseBody.error || 'Invalid file!';
