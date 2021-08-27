@@ -825,7 +825,7 @@ RSpec.describe User, type: :model do
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)
       expect(user.profile).to be_present
-      expect(user.profile).to respond_to(:available_for)
+      expect(user.profile).to respond_to(:location)
     end
   end
 end
