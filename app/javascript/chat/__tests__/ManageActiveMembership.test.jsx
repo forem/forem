@@ -16,7 +16,7 @@ describe('<ManageActiveMembership />', () => {
   it('should have no a11y violations', async () => {
     const { container } = render(
       <ManageActiveMembership
-        invitationLink={'https://dummy-invitation.link'}
+        invitationLink="https://dummy-invitation.link"
         currentMembership={currentModMembership}
         activeMemberships={[]}
       />,
@@ -29,7 +29,7 @@ describe('<ManageActiveMembership />', () => {
   it('should render', () => {
     const { queryByText, queryByPlaceholderText } = render(
       <ManageActiveMembership
-        invitationLink={'https://dummy-invitation.link'}
+        invitationLink="https://dummy-invitation.link"
         currentMembership={currentModMembership}
         activeMemberships={[]}
       />,
