@@ -34,13 +34,13 @@ module Users
 
     def recent_producers(num_weeks = 1)
       relation_as_array(
-        User.where(id: tagged_article_user_ids(num_weeks)),
+        user_relation.where(id: tagged_article_user_ids(num_weeks)),
         limit: 80,
       )
     end
 
     def recent_top_producers
-      relation = User.where(
+      relation = user_relation.where(
         articles_count: established_user_article_count..,
         comments_count: established_user_comment_count..,
       )
@@ -48,7 +48,7 @@ module Users
     end
 
     def recent_commenters(num_comments = 2, limit = 8)
-      relation_as_array(User.where(comments_count: num_comments + 1..), limit: limit)
+      relation_as_array(user_relation.where(comments_count: num_comments + 1..), limit: limit)
     end
 
     def relation_as_array(relation, limit:)
@@ -58,13 +58,13 @@ module Users
 
     def established_user_article_count
       Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
-        User.where(articles_count: 1..).average(:articles_count) || User.average(:articles_count)
+        user_relation.where(articles_count: 1..).average(:articles_count) || User.average(:articles_count)
       end
     end
 
     def established_user_comment_count
       Rails.cache.fetch("established_user_comment_count", expires_in: 1.day) do
-        User.where(comments_count: 1..).average(:comments_count) || User.average(:comments_count)
+        user_relation.where(comments_count: 1..).average(:comments_count) || User.average(:comments_count)
       end
     end
 
@@ -72,6 +72,10 @@ module Users
       Rails.cache.fetch("article_score_average", expires_in: 1.day) do
         Article.where(score: 0..).average(:score) || Article.average(:score)
       end
+    end
+
+    def user_relation
+      User.includes(:profile)
     end
   end
 end
