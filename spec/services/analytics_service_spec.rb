@@ -410,14 +410,14 @@ RSpec.describe AnalyticsService, type: :service do
         expect(analytics_service.referrers[:domains]).to be_empty
       end
 
-      it "returns the domains ordered by count" do
+      it "returns the domains ordered by number of views" do
         other_url = Faker::Internet.url
         create_list(:page_view, 2, user: user, article: article, referrer: other_url)
         top_url = Faker::Internet.url
-        create_list(:page_view, 3, user: user, article: article, referrer: top_url)
+        create_list(:page_view, 3, user: user, article: article, referrer: top_url, counts_for_number_of_views: 10)
 
         expected_result = [
-          { domain: Addressable::URI.parse(top_url).domain, count: 3 },
+          { domain: Addressable::URI.parse(top_url).domain, count: 30 },
           { domain: Addressable::URI.parse(other_url).domain, count: 2 },
         ]
         expect(analytics_service.referrers[:domains]).to eq(expected_result)
