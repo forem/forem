@@ -5,38 +5,6 @@ class User < ApplicationRecord
   include CloudinaryHelper
   include Storext.model
 
-  # @citizen428 Preparing to drop profile columns from the users table
-  PROFILE_COLUMNS = %w[
-    available_for
-    behance_url
-    bg_color_hex
-    currently_hacking_on
-    currently_learning
-    dribbble_url
-    education
-    email_public
-    employer_name
-    employer_url
-    employment_title
-    facebook_url
-    gitlab_url
-    instagram_url
-    linkedin_url
-    location
-    mastodon_url
-    medium_url
-    mostly_work_with
-    stackoverflow_url
-    summary
-    text_color_hex
-    twitch_url
-    twitch_username
-    website_url
-    youtube_url
-  ].freeze
-
-  self.ignored_columns = PROFILE_COLUMNS
-
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
     included do

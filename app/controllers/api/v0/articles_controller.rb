@@ -41,7 +41,7 @@ module Api
 
       def show
         @article = Article.published
-          .includes(:user)
+          .includes(user: :profile)
           .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
           .find(params[:id])
           .decorate
