@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+# rubocop:disable Style/TopLevelMethodDefinition
 require "date"
 require "optparse"
 
@@ -62,3 +63,4 @@ ensure
   # Go back to the branch we were on before running this script
   run "git checkout --quiet #{original_branch}"
 end
+# rubocop:enable Style/TopLevelMethodDefinition
