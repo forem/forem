@@ -43,7 +43,7 @@ describe('<ArticleCoverImage />', () => {
     it('shows the uploaded image', () => {
       const { getByAltText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={jest.fn()}
         />,
       );
@@ -54,7 +54,7 @@ describe('<ArticleCoverImage />', () => {
     it('shows the change and remove buttons', () => {
       const { queryByText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={jest.fn()}
         />,
       );
@@ -66,7 +66,7 @@ describe('<ArticleCoverImage />', () => {
       const onMainImageUrlChange = jest.fn();
       const { getByText, queryByLabelText, queryByText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={onMainImageUrlChange}
         />,
       );
@@ -96,7 +96,7 @@ describe('<ArticleCoverImage />', () => {
       const onMainImageUrlChange = jest.fn();
       const { getByLabelText, queryByLabelText, queryByText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={onMainImageUrlChange}
         />,
       );
@@ -132,7 +132,7 @@ describe('<ArticleCoverImage />', () => {
     const onMainImageUrlChange = jest.fn();
     const { getByLabelText, findByText } = render(
       <ArticleCoverImage
-        mainImage={'/some-fake-image.jpg'}
+        mainImage="/some-fake-image.jpg"
         onMainImageUrlChange={onMainImageUrlChange}
       />,
     );
