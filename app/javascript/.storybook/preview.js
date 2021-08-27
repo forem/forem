@@ -62,7 +62,7 @@ const themeSwitcherDecorator = (storyFn) => {
           ))}
         </select>
       </label>
-      {storyFn()}
+      <div id="story-content">{storyFn()}</div>
     </div>
   );
 };
@@ -111,5 +111,8 @@ export const parameters = {
       fn.toString = () => '() => {}';
       return fn;
     },
+  },
+  html: {
+    root: '#story-content',
   },
 };

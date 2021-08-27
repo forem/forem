@@ -109,7 +109,7 @@ export const Message = ({
 
       <div
         id={dropdownContentId}
-        className={`messagebody__dropdownmenu report__abuse__button hidden`}
+        className="messagebody__dropdownmenu report__abuse__button hidden"
       >
         <Button
           variant="ghost-danger"

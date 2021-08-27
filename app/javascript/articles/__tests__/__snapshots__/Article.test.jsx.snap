@@ -57,7 +57,7 @@ Object {
                   </a>
                 </div>
                 <div>
-                  <p>
+                  <div>
                     <a
                       class="crayons-story__secondary fw-medium m:hidden"
                       href="/Emil99"
@@ -126,7 +126,7 @@ Object {
                         </div>
                       </div>
                     </div>
-                  </p>
+                  </div>
                   <a
                     class="crayons-story__tertiary fs-xs"
                     href="/some-post/path"
@@ -305,7 +305,7 @@ Object {
                 </a>
               </div>
               <div>
-                <p>
+                <div>
                   <a
                     class="crayons-story__secondary fw-medium m:hidden"
                     href="/Emil99"
@@ -374,7 +374,7 @@ Object {
                       </div>
                     </div>
                   </div>
-                </p>
+                </div>
                 <a
                   class="crayons-story__tertiary fs-xs"
                   href="/some-post/path"

@@ -3,7 +3,7 @@ module Settings
   class UserExperience < RailsSettings::Base
     self.table_name = :settings_user_experiences
 
-    HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/.freeze
+    HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/
 
     # The configuration is cached, change this if you want to force update
     # the cache, or call Settings::UserExperience.clear_cache

@@ -2,27 +2,31 @@
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <div class="side-bar">
     <% if @podcast_index && @podcasts %>
-      <div class="widget podcast-pic-widget">
-        <header>
-          <a href="/pod"><h4>podcasts</h4></a>
-        </header>
+      <nav aria-labelledby="podcasts-heading" class="widget podcast-pic-widget">
+        <div class="widget--header">
+          <a href="/pod"><h1 id="podcasts-heading" class="fs-base">podcasts</h1></a>
+        </div>
         <div class="widget-body">
-          <% @podcasts.each do |podcast| %>
-            <a href="/<%= podcast.slug %>">
-              <div class="podcast-pic" id="podcast-pic-<%= podcast.slug %>">
-                <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "fill", width: 100, height: 100) %>"
-                     alt="<%= podcast.title %>" />
-                <div class="podcast-name">
-                  <div class="podcast-name-inner">
-                    <%= podcast.title %>
+          <ul class="list-none p-0">
+            <% @podcasts.each do |podcast| %>
+            <li class="w-100">
+              <a href="/<%= podcast.slug %>">
+                <div class="podcast-pic" id="podcast-pic-<%= podcast.slug %>">
+                  <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "fill", width: 100, height: 100) %>"
+                      alt="<%= podcast.title %>" aria-hidden="true" />
+                  <div class="podcast-name">
+                    <div class="podcast-name-inner">
+                      <%= podcast.title %>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </a>
+              </a>
+            </li>
           <% end %>
+          </ul>
           <p><%= link_to "Suggest a Podcast", new_podcast_path, class: "suggest-podcast" %></p>
-         </div>
-      </div>
+        </div>
+      </nav>
     <% elsif @podcast %>
     <% end %>
   </div>

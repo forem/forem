@@ -17,12 +17,10 @@ Settings::SMTP.password = "password"
 
 ##############################################################################
 
-# NOTE: @citizen428 For the time being we want all current DEV profile fields.
-# The CSV import is idempotent by itself, since it uses find_or_create_by.
-seeder.create("Creating DEV profile fields") do
-  dev_fields_csv = Rails.root.join("lib/data/dev_profile_fields.csv")
-  ProfileFields::ImportFromCsv.call(dev_fields_csv)
-end
+# Some of our Cypress tests assume specific DEV profile fields to exist
+ProfileField.create!(label: "Work", display_area: :header)
+ProfileField.create!(label: "Education", display_area: :header)
+Profile.refresh_attributes!
 
 ##############################################################################
 

@@ -300,7 +300,7 @@ class UsersController < ApplicationController
   end
 
   def default_suggested_users
-    @default_suggested_users ||= User.where(username: @suggested_users)
+    @default_suggested_users ||= User.includes(:profile).where(username: @suggested_users)
   end
 
   def determine_follow_suggestions(current_user)

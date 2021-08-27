@@ -15,7 +15,7 @@ describe('<MediaQuery />', () => {
 
     const renderProp = jest.fn();
 
-    render(<MediaQuery query={'some media query'} render={renderProp} />);
+    render(<MediaQuery query="some media query" render={renderProp} />);
 
     expect(renderProp).toHaveBeenCalledTimes(1);
   });

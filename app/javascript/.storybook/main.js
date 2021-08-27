@@ -14,6 +14,7 @@ module.exports = {
     '@storybook/addon-a11y',
     '@storybook/addon-notes/register-panel',
     'storybook-addon-jsx',
+    '@whitespace/storybook-addon-html',
     {
       name: '@storybook/addon-storysource',
       loaderOptions: {
