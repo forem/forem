@@ -61,7 +61,7 @@ const themeSwitcherDecorator = (storyFn) => {
           ))}
         </select>
       </label>
-      {storyFn()}
+      <div id="story-content">{storyFn()}</div>
     </div>
   );
 };
@@ -102,5 +102,8 @@ export const parameters = {
         'Utility-First Classes',
       ],
     },
+  },
+  html: {
+    root: '#story-content',
   },
 };
