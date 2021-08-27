@@ -16,7 +16,6 @@ RSpec.describe "Conditional registration (ForemWebView)", type: :system do
   end
 
   before do
-    allow(FeatureFlag).to receive(:enabled?).with(:apple_auth).and_return(true)
     allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(false)
     allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
   end

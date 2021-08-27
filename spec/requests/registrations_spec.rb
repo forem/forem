@@ -10,7 +10,6 @@ RSpec.describe "Registrations", type: :request do
 
         Authentication::Providers.enabled.each do |provider_name|
           provider = Authentication::Providers.get!(provider_name)
-          next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth)
 
           expect(response.body).to include("Continue with #{provider.official_name}")
         end
@@ -141,8 +140,8 @@ RSpec.describe "Registrations", type: :request do
 
       it "renders the creator onboarding form" do
         get root_path
-        expect(response.body).to include("Let's create an admin account for your community.")
-        expect(response.body).to include("Create admin account")
+        expect(response.body).to include("Let's start your Forem journey!")
+        expect(response.body).to include("Create your admin account first")
       end
     end
   end

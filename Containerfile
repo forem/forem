@@ -1,4 +1,4 @@
-FROM quay.io/forem/ruby:2.7.2 as builder
+FROM quay.io/forem/ruby:3.0.2 as builder
 
 USER root
 
@@ -10,7 +10,7 @@ RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo 
     dnf -y clean all && \
     rm -rf /var/cache/yum
 
-ENV BUNDLER_VERSION=2.2.15 BUNDLE_SILENCE_ROOT_WARNING=true BUNDLE_SILENCE_DEPRECATIONS=true
+ENV BUNDLER_VERSION=2.2.22 BUNDLE_SILENCE_ROOT_WARNING=true BUNDLE_SILENCE_DEPRECATIONS=true
 RUN gem install -N bundler:"${BUNDLER_VERSION}"
 
 ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \
@@ -49,7 +49,7 @@ RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
 RUN rm -rf node_modules vendor/assets spec
 
 ## Production
-FROM quay.io/forem/ruby:2.7.2 as production
+FROM quay.io/forem/ruby:3.0.2 as production
 
 USER root
 
@@ -59,7 +59,7 @@ RUN dnf install --setopt install_weak_deps=false -y bash curl ImageMagick \
                 && dnf -y clean all \
                 && rm -rf /var/cache/yum
 
-ENV BUNDLER_VERSION=2.2.15 BUNDLE_SILENCE_ROOT_WARNING=1
+ENV BUNDLER_VERSION=2.2.22 BUNDLE_SILENCE_ROOT_WARNING=1
 RUN gem install -N bundler:"${BUNDLER_VERSION}"
 
 ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \

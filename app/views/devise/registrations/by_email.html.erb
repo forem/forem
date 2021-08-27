@@ -1,1 +1,5 @@
+<% if forem_creator_flow_enabled? && waiting_on_first_user? %>
+  <%= render "shared/authentication/forem_creator_signup" %>
+<% else %>
   <%= render "shared/authentication/email_registration_form" %>
+<% end %>

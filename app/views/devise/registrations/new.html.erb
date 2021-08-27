@@ -9,7 +9,7 @@
 <% elsif forem_creator_flow_enabled? %>
   <%= render "shared/authentication/forem_creator_signup" %>
 <% elsif waiting_on_first_user? %>
-  <%# TODO: Delete this view once forem creator onboarding is shipped %>
+  <%# TODO: [@ridhwana]: Delete this view once forem creator onboarding is shipped %>
   <%= render "shared/authentication/initial_account_wizard" %>
 <% else %>
   <%= render "devise/shared/authorization_error" %>

@@ -31,20 +31,17 @@ describe('Preview user profile from article page', () => {
     });
   });
 
-  describe.skip("Preview profile on another user's article", () => {
+  describe("Preview profile on another user's article", () => {
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/articleEditorV1User.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/').then(() => {
-          cy.findAllByRole('link', { name: 'Test article' })
-            .first()
-            .click({ force: true });
+        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug');
 
-          cy.get('[data-follow-clicks-initialized]');
-          cy.findByRole('heading', { name: 'Test article' });
-        });
+        // Wait for the page to load
+        cy.findByRole('button', { name: 'Share post options' });
+        cy.get('[data-follow-clicks-initialized]');
       });
     });
 
@@ -77,7 +74,7 @@ describe('Preview user profile from article page', () => {
 
           // Check all the expected user data sections are present
           cy.findByText('Admin user summary');
-          cy.findByText('Software developer');
+          cy.findByText('Software developer at Company');
           cy.findByText('Edinburgh');
           cy.findByText('University of Life');
 
@@ -120,7 +117,7 @@ describe('Preview user profile from article page', () => {
 
           // Check all the expected user data sections are present
           cy.findByText('Admin user summary');
-          cy.findByText('Software developer');
+          cy.findByText('Software developer at Company');
           cy.findByText('Edinburgh');
           cy.findByText('University of Life');
 
@@ -142,7 +139,8 @@ describe('Preview user profile from article page', () => {
       // Click the follow button in the author byline preview
       cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
         .first()
-        .click();
+        .as('bylinePreviewButton');
+      cy.get('@bylinePreviewButton').click();
 
       cy.findAllByTestId('profile-preview-card')
         .first()
@@ -156,6 +154,9 @@ describe('Preview user profile from article page', () => {
           }).should('not.exist');
           cy.findByRole('button', { name: 'Unfollow user: Admin McAdmin' });
         });
+
+      // Close the preview card so the next preview button can be clicked
+      cy.get('@bylinePreviewButton').click();
 
       // Check the follow button in the comment author preview card has updated
       cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
@@ -293,7 +294,7 @@ describe('Preview user profile from article page', () => {
 
         cy.findByRole('button', { name: 'Follow user: Admin McAdmin' });
         cy.findByText('Admin user summary');
-        cy.findByText('Software developer');
+        cy.findByText('Software developer at Company');
         cy.findByText('Edinburgh');
         cy.findByText('University of Life');
       });

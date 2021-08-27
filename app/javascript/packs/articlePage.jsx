@@ -1,9 +1,12 @@
 import { h, render } from 'preact';
-import ahoy from 'ahoy.js';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { embedGists } from '../utilities/gist';
-import { initializeDropdown } from '@utilities/dropdownUtils';
+import {
+  initializeDropdown,
+  getDropdownRepositionListener,
+} from '../utilities/dropdownUtils';
+import { getInstantClick } from '../topNavigation/utilities';
 
 /* global Runtime */
 
@@ -51,9 +54,6 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
       .forEach((link) => {
         link.addEventListener('click', (event) => {
           closeDropdown(event);
-
-          // Temporary Ahoy Stats for usage reports
-          ahoy.track('Post Dropdown', { option: event.target.text.trim() });
         });
       });
   }
@@ -188,3 +188,18 @@ if (profilePreviewTrigger?.dataset.initialized !== 'true') {
 
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
+
+// Preview card dropdowns reposition on scroll
+const dropdownRepositionListener = getDropdownRepositionListener();
+
+document.addEventListener('scroll', dropdownRepositionListener);
+
+getInstantClick().then((ic) => {
+  ic.on('change', () => {
+    document.removeEventListener('scroll', dropdownRepositionListener);
+  });
+});
+
+window.addEventListener('beforeunload', () => {
+  document.removeEventListener('scroll', dropdownRepositionListener);
+});

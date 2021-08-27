@@ -45,7 +45,7 @@
           <%= "color-base-60" if @root_comment.decorate.low_quality %>">
           <%= sanitize @root_comment.processed_html %>
           <button class="reaction-button reacted" disabled>
-            <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />
+            <img class="voted-heart" src="<%= asset_path("twemoji/heart.svg") %>" alt="Favorite heart button" />
             <span class="reactions-count"><%= @root_comment.reactions_count %></span>
           </button>
         </div>

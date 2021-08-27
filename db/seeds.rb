@@ -52,15 +52,6 @@ end
 
 ##############################################################################
 
-# NOTE: @citizen428 For the time being we want all current DEV profile fields.
-# The CSV import is idempotent by itself, since it uses find_or_create_by.
-seeder.create("Creating DEV profile fields") do
-  dev_fields_csv = Rails.root.join("lib/data/dev_profile_fields.csv")
-  ProfileFields::ImportFromCsv.call(dev_fields_csv)
-end
-
-##############################################################################
-
 num_users = 10 * SEEDS_MULTIPLIER
 
 users_in_random_order = seeder.create_if_none(User, num_users) do
@@ -71,9 +62,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
     user = User.create!(
       name: name,
-      summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
       profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-      website_url: Faker::Internet.url,
       twitter_username: Faker::Internet.username(specifier: name),
       # Emails limited to 50 characters
       email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
@@ -82,6 +71,11 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       registered: true,
       password: "password",
       password_confirmation: "password",
+    )
+
+    user.profile.update(
+      summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+      website_url: Faker::Internet.url,
     )
 
     if i.zero?
@@ -137,12 +131,15 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     name: "Admin McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
+  )
+
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
   )
 
   user.add_role(:super_admin)

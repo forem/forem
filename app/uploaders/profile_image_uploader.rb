@@ -4,7 +4,7 @@ class ProfileImageUploader < BaseUploader
   end
 
   def size_range
-    1..2.megabytes
+    1..(2.megabytes)
   end
 
   protected
