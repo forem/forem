@@ -83,7 +83,8 @@
   hr {
     opacity: 0.2;
   }
-  header {
+  header,
+  .widget--header {
     position: relative;
     font-size: 0.9em;
     font-weight: bold;
