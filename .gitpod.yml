@@ -18,8 +18,12 @@ tasks:
     init: >
       cp .env_sample .env &&
       gem install solargraph &&
+      gem install foreman &&
       bin/setup
     command: >
+      APP_DOMAIN=$(gp url 3000 | cut -f 3 -d / )
+      echo "APP_DOMAIN=\"$(gp url 3000 | cut -f 3 -d /)\"" >> .env
+      echo 'APP_PROTOCOL="https://"' >> .env
       bin/startup
   - command: >
       gp await-port 3000 &&
