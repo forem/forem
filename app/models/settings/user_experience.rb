@@ -3,7 +3,7 @@ module Settings
   class UserExperience < Base
     self.table_name = :settings_user_experiences
 
-    HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/.freeze
+    HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/
 
     # The default font for all users that have not chosen a custom font yet
     setting :default_font, type: :string, default: "sans_serif"
