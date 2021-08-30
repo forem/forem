@@ -30,7 +30,7 @@ module ConsumerApps
 
     def recreate_ios_app!
       # If the ConsumerApp doesn't have credentials there's no need to create it
-      return if consumer_app.auth_credentials.present?
+      return if consumer_app.auth_credentials.blank?
 
       app = Rpush::Apns2::App.new
       app.name = app_bundle
@@ -45,7 +45,7 @@ module ConsumerApps
 
     def recreate_android_app!
       # If the ConsumerApp doesn't have credentials there's no need to create it
-      return if consumer_app.auth_credentials.present?
+      return if consumer_app.auth_credentials.blank?
 
       app = Rpush::Gcm::App.new
       app.name = app_bundle
