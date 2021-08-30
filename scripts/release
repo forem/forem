@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-# rubocop:disable Style/TopLevelMethodDefinition
 require "date"
 require "optparse"
 
@@ -13,7 +12,7 @@ rescue StandardError => e
 end
 
 channel = ENV.fetch("FOREM_RELEASE_CHANNEL", "stable")
-date = ENV.fetch("FOREM_RELEASE_DATE", Time.zone.today.to_s).delete("-")
+date = ENV.fetch("FOREM_RELEASE_DATE", Date.today.to_s).delete("-")
 hotfix = ENV.fetch("FOREM_RELEASE_HOTFIX", 0)
 remote = ENV.fetch("FOREM_RELEASE_REMOTE", "origin")
 source = ENV.fetch("FOREM_STAGING_FROM", "#{channel}-next")
@@ -92,4 +91,3 @@ ensure
   # Go back to the branch we were on before running this script
   run "git checkout --quiet #{original_branch}"
 end
-# rubocop:enable Style/TopLevelMethodDefinition
