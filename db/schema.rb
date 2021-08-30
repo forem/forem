@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_30_043852) do
+ActiveRecord::Schema.define(version: 2021_08_30_062129) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -877,7 +877,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_043852) do
     t.text "body"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
-    t.integer "duration_in_seconds"
     t.string "guid", null: false
     t.boolean "https", default: true
     t.string "image"
