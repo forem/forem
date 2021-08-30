@@ -78,6 +78,8 @@ RSpec.configure do |config|
   config.include RpushHelpers
   config.include SidekiqTestHelpers
 
+  config.extend WithModel
+
   config.after(:each, type: :system) do
     Warden::Manager._on_request.clear
   end

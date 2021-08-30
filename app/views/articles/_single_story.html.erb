@@ -34,7 +34,7 @@
           </a>
         </div>
         <div>
-          <p>
+          <div>
             <a href="/<%= story.cached_user.username %>" class="crayons-story__secondary fw-medium m:hidden">
               <%= story.cached_user.name %>
             </a>
@@ -81,7 +81,7 @@
               <a href="/<%= story.cached_organization.slug %>" class="crayons-story__secondary fw-medium"><%= story.cached_organization.name %></a>
             </span>
             <% end %>
-          </p>
+          </div>
           <a href="<%= story.path %>" class="crayons-story__tertiary fs-xs"><time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span></a>
         </div>
       </div>

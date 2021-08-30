@@ -22,7 +22,7 @@ gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cloudinary", "~> 1.21" # Client library for easily using the Cloudinary service
-gem "counter_culture", "~> 2.8" # counter_culture provides turbo-charged counter caches that are kept up-to-date
+gem "counter_culture", "~> 2.9" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.52.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.5" # Allows invitations to be sent for joining
@@ -74,15 +74,13 @@ gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 6.1.4" # Ruby on Rails
-gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
-# Pinned since we have a monkey-patch against this version
-gem "rails-settings-cached", "2.6.0" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "ransack", "~> 2.4" # Searching and sorting
 gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.4.0" # Redis ruby client
 gem "rpush", "~> 6.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
+gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 
 # NOTE: [@rhymes]: sign in doesn't work with the redis-rack 2.1.0+ or with redis-actionpack 5.2.0+
 # We need to investigate why exactly, in the meantime we are hardcoding these two transitive dependencies
@@ -168,5 +166,6 @@ group :test do
   gem "vcr", "~> 6.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 4.6" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.14", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
+  gem "with_model", "~> 2.1.5" # Dynamically build a model within an RSpec context
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

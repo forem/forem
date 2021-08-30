@@ -53,6 +53,7 @@
       border-top-right-radius: 5px;
       border-bottom-right-radius: 5px;
       img {
+        visibility: visible;
         width: 23px;
         height: 23px;
         border-radius: 100px;
@@ -83,7 +84,8 @@
   hr {
     opacity: 0.2;
   }
-  header {
+  header,
+  .widget--header {
     position: relative;
     font-size: 0.9em;
     font-weight: bold;
