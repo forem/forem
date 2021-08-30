@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_30_062129) do
+ActiveRecord::Schema.define(version: 2021_08_30_062627) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -441,7 +441,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062129) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.string "app_bundle"
     t.bigint "consumer_app_id"
     t.datetime "created_at", precision: 6, null: false
     t.string "platform", null: false
