@@ -5,7 +5,7 @@ class Comment < ApplicationRecord
   include PgSearch::Model
   include Reactable
 
-  BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
+  BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
@@ -18,7 +18,7 @@ class Comment < ApplicationRecord
     .+?             # host
     (?::\d+)?       # optional port
     \z
-  }x.freeze
+  }x
 
   # The date that we began limiting the number of user mentions in a comment.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
