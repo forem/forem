@@ -140,38 +140,40 @@ class CommentsController < ApplicationController
   def update
     authorize @comment
 
-    if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
-      Mention.create_all(@comment)
+    Comment.transaction do
+      if @comment.edited(permitted_attributes(@comment).merge(edited_at: Time.zone.now), by: current_user)
+        Mention.create_all(@comment)
 
-      # The following sets variables used in the index view. We render the
-      # index view directly to avoid having to redirect.
-      #
-      # Redirects lead to a race condition where we redirect to a cached view
-      # after updating data and we don't bust the cache fast enough before
-      # hitting the view, therefore stale content ends up being served from
-      # cache.
-      #
-      # https://github.com/forem/forem/issues/10338#issuecomment-693401481
-      @on_comments_page = true
-      @root_comment = @comment
-      @commentable = @comment.commentable
-      @commentable_type = @comment.commentable_type
+        # The following sets variables used in the index view. We render the
+        # index view directly to avoid having to redirect.
+        #
+        # Redirects lead to a race condition where we redirect to a cached view
+        # after updating data and we don't bust the cache fast enough before
+        # hitting the view, therefore stale content ends up being served from
+        # cache.
+        #
+        # https://github.com/forem/forem/issues/10338#issuecomment-693401481
+        @on_comments_page = true
+        @root_comment = @comment
+        @commentable = @comment.commentable
+        @commentable_type = @comment.commentable_type
 
-      case @commentable_type
-      when "PodcastEpisode"
-        @user = @commentable&.podcast
-      when "Article"
-        # user could be a user or an organization
-        @user = @commentable&.user
-        @article = @commentable
+        case @commentable_type
+        when "PodcastEpisode"
+          @user = @commentable&.podcast
+        when "Article"
+          # user could be a user or an organization
+          @user = @commentable&.user
+          @article = @commentable
+        else
+          @user = @commentable&.user
+        end
+
+        render :index
       else
-        @user = @commentable&.user
+        @commentable = @comment.commentable
+        render :edit
       end
-
-      render :index
-    else
-      @commentable = @comment.commentable
-      render :edit
     end
   rescue StandardError => e
     @commentable = @comment.commentable

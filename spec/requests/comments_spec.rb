@@ -272,6 +272,21 @@ RSpec.describe "Comments", type: :request do
       expect(flash[:error]).not_to be_nil
     end
 
+    it "creates a CommentEdit instance" do
+      comment = create(:comment, body_markdown: "hello world!", commentable: article, user: user)
+
+      put "/comments/#{comment.id}",
+          params: {
+            comment: {
+              body_markdown: "updated hello world!"
+            }
+          }
+
+      last_edit = comment.edits.reload.last
+      expect(last_edit.modifications.dig(:body_markdown, :from)).to eq "hello world!"
+      expect(last_edit.modifications.dig(:body_markdown, :to)).to eq "updated hello world!"
+    end
+
     context "when the article is deleted" do
       it "updates body markdown" do
         article = create(:article, user: user)

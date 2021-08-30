@@ -32,6 +32,7 @@ class Comment < ApplicationRecord
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :edits, class_name: "CommentEdit", dependent: :nullify
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
   before_save :synchronous_spam_score_check
@@ -161,6 +162,37 @@ class Comment < ApplicationRecord
 
   def root_exists?
     ancestry && Comment.exists?(id: ancestry)
+  end
+
+  def edited(new_attributes, by:)
+    self.class.transaction do
+      old_attributes = attributes
+      updated = update(new_attributes)
+
+      if updated
+        changes = new_attributes.to_h.each_with_object({}) do |(attribute, new_value), hash|
+          # new_attributes can be string or symbol keys, but old_attributes will
+          # definitely have string keys, so we coerce to a string key here.
+          old_value = old_attributes.fetch(attribute.to_s)
+
+          # Only track changed values
+          next unless old_value != new_value
+
+          hash[attribute] = {
+            from: old_value,
+            to: new_value
+          }
+        end
+
+        if changes.any?
+          # Couldn't name this attribute `changes` because that method is provided
+          # by ActiveRecord, so it's called `modifications` here.
+          edits.create!(modifications: changes, editor: by)
+        end
+      end
+
+      updated
+    end
   end
 
   private

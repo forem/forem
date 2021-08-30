@@ -570,4 +570,26 @@ RSpec.describe Comment, type: :model do
       expect(comment.reload.root_exists?).to eq(false)
     end
   end
+
+  describe "#edited" do
+    it "adds a CommentEdit with the old and new attribute values" do
+      comment = create :comment, body_markdown: "old text"
+
+      result = comment.edited({ body_markdown: "new text" }, by: user)
+
+      expect(result).to be_truthy
+      edit = comment.edits.reload.last
+      expect(edit.modifications.dig(:body_markdown, :from)).to eq "old text"
+      expect(edit.modifications.dig(:body_markdown, :to)).to eq "new text"
+    end
+
+    it "does not add a CommentEdit if attributes have not changed" do
+      comment = create :comment, body_markdown: "old text"
+
+      result = comment.edited({}, by: user)
+
+      expect(result).to be_truthy
+      expect(comment.edits.reload).to be_empty
+    end
+  end
 end
