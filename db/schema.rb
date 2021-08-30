@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_30_150030) do
+ActiveRecord::Schema.define(version: 2021_08_30_195704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -375,6 +375,8 @@ ActiveRecord::Schema.define(version: 2021_08_30_150030) do
     t.bigint "editor_id"
     t.jsonb "modifications"
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["comment_id"], name: "index_comment_edits_on_comment_id"
+    t.index ["editor_id"], name: "index_comment_edits_on_editor_id"
   end
 
   create_table "comments", force: :cascade do |t|
