@@ -1,6 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '../../crayons/Button';
+import { locale } from '../../utilities/locale';
+
 
 export const CommentsCount = ({ count, articlePath }) => {
   const commentsSVG = () => (
@@ -28,7 +30,7 @@ export const CommentsCount = ({ count, articlePath }) => {
           {count}
           <span className="hidden s:inline">
             &nbsp;
-            {`${count > 1 ? 'comments' : 'comment'}`}
+            {`${count > 1 ? `${locale('comment')}s` : locale('comment') }`}
           </span>
         </span>
       </Button>

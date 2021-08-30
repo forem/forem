@@ -26,5 +26,7 @@ module Settings
     # a public forem could have more fine-grained authentication (listings ar private etc.) in future
     field :public, type: :boolean, default: 0
     field :tag_feed_minimum_score, type: :integer, default: 0
+
+    field :default_locale, type: :string, default: "en"
   end
 end

@@ -5,6 +5,9 @@ module Constants
         default_font: {
           description: "Determines the default reading font (registered users can change this in their UX settings)"
         },
+        default_locale: {
+          description: "Determines the default language and lozalization for the Forem (currently in experimental beta)"
+        },
         feed_strategy: {
           description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental " \
                        "(which should only be used for 10k+ member communities)",

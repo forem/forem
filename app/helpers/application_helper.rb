@@ -125,7 +125,7 @@ module ApplicationHelper
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
 
     tag.button(
-      "Follow",
+      I18n.t("follow"),
       name: :button,
       type: :button,
       data: {

@@ -30,7 +30,33 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  create_account: "Create account"
+  create_post: "Create Post"
+  log_in: "Log in"
+  see_all: "See all"
+  feed: "Feed"
+  week: "Week"
+  month: "Month"
+  year: "Year"
+  infinity: "Infinity"
+  latest: "Latest"
+  listings: "Listings"
+  search: "Search"
+  follow: "Follow"
+  following: "Following"
+  follow_back: "Follow back"
+  read_next: "Read next"
+  discussion: "Discussion"
+  view: "View"
+  full: "Full"
+  post: "Post"
+  comment: "Comment"
+  reaction: "Reaction"
+  reply: "Reply"
+  like: "Like"
+  more_from: "More from"
+  trending_on: "Trending on"
+  my_tags: "My Tags"
   errors: &errors
     messages:
        bad_uri: is an invalid url
@@ -41,9 +67,6 @@ en:
   activerecord:
     errors:
       <<: *errors
-  administrate:
-    actions:
-      new: 'New'
   podcasts:
     statuses:
       unreachable: Podcast's feed_url is not reachable
