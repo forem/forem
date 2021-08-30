@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_20_042422) do
+ActiveRecord::Schema.define(version: 2021_08_30_043852) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -786,7 +786,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.string "type_of_user", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.string "user_title"
     t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
   end
 
