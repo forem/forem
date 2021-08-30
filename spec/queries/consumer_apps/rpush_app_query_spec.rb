@@ -18,9 +18,10 @@ RSpec.describe ConsumerApps::RpushAppQuery, type: :query do
 
     it "returns nil if ConsumerApp is not operational" do
       bad_consumer_app = create(:consumer_app, auth_key: nil)
-      rpush_app = described_class.call(app_bundle: bad_consumer_app.app_bundle, platform: bad_consumer_app.platform)
 
       mock_rpush(bad_consumer_app)
+
+      rpush_app = described_class.call(app_bundle: bad_consumer_app.app_bundle, platform: bad_consumer_app.platform)
 
       expect(bad_consumer_app.operational?).to be false
       expect(rpush_app).to be_nil
