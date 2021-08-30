@@ -2,8 +2,6 @@ module Settings
   class General < Base
     self.table_name = "site_configs"
 
-    HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/
-
     LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
     STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
 
