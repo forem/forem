@@ -757,7 +757,7 @@ GEM
       stripe (> 5, < 6)
     strong_migrations (0.7.8)
       activerecord (>= 5)
-    test-prof (1.0.6)
+    test-prof (1.0.7)
     thor (1.1.0)
     thread_safe (0.3.6)
     tilt (2.0.10)
