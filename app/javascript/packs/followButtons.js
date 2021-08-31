@@ -9,8 +9,6 @@ import { getInstantClick } from '../topNavigation/utilities';
  * @param {string} style The style of the button from its "info" data attribute
  */
 
-const localeLanguage = document.getElementById('locale-language');
-
 
 function addButtonFollowText(button, style) {
   switch (style) {
@@ -18,10 +16,10 @@ function addButtonFollowText(button, style) {
       button.textContent = '+';
       break;
     case 'follow-back':
-      button.textContent = localeLanguage.dataset.followBack;
+      button.textContent = I18n.t('core.follow_back');
       break;
     default:
-      button.textContent = localeLanguage.dataset.follow;
+      button.textContent = I18n.t('core.follow');
   }
 }
 
@@ -32,7 +30,7 @@ function addButtonFollowText(button, style) {
  * @param {string} style The style of the button from its "info" data attribute
  */
 function addButtonFollowingText(button, style) {
-  button.textContent = style === 'small' ? '✓' : localeLanguage.dataset.following;
+  button.textContent = style === 'small' ? '✓' : I18n.t('core.following');
 }
 
 /**

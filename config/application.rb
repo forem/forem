@@ -51,6 +51,8 @@ module PracticalDeveloper
       require_dependency(file)
     end
 
+    config.middleware.use I18n::JS::Middleware
+
     config.active_job.queue_adapter = :sidekiq
 
     config.middleware.use Rack::Deflater

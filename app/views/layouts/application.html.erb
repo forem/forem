@@ -49,6 +49,7 @@
       <body
         data-user-status="<%= user_logged_in_status %>"
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
+        data-locale="<%= I18n.locale %>"
         data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
         data-app-domain="<%= ChatChannel.urlsafe_encoded_app_domain %>"
         data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
@@ -120,15 +121,6 @@
       }
     </script>
   <% end %>
-  <div id="locale-language"
-  data-follow="<%= t("follow") %>"
-  data-following="<%= t("following") %>"
-  data-follow-back="<%= t("follow_back") %>"
-  data-search="<%= t("search") %>"
-  data-comment="<%= t("comment") %>"
-  data-reaction="<%= t("reaction") %>"
-  >
-  </div>
   </body>
   </html>
 <% end %>

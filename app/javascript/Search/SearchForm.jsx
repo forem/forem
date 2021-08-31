@@ -33,7 +33,7 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch }, ref) => (
           className="crayons-header--search-input crayons-textfield"
           type="text"
           name="q"
-          placeholder={`${locale('search')}...`}
+          placeholder={`${locale('core.search')}...`}
           autoComplete="off"
           aria-label="Search term"
           value={searchTerm}

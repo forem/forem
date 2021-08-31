@@ -33,7 +33,7 @@ export const ReactionsCount = ({ article }) => {
         {totalReactions}
         <span className="hidden s:inline">
           &nbsp;
-          {`${totalReactions == 1 ? locale('reaction') : `${locale('reaction')}s`}`}
+          {`${totalReactions == 1 ? locale('core.reaction') : `${locale('core.reaction')}s`}`}
         </span>
       </span>
     </Button>

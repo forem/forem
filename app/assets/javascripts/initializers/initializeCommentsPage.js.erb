@@ -54,9 +54,9 @@ function initializeCommentsPage() {
                     if (publicReactionCounts[i].count > 0) {
 
                       if (publicReactionCounts[i].count > 1) {
-                        reactionsLabelWrapper.innerHTML = "&nbsp;likes";
+                        reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}s`;
                       } else {
-                        reactionsLabelWrapper.innerHTML = "&nbsp;like";
+                        reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}`;
                       }
 
                       reactionsCountWrapper.id = 'reactions-count-' + publicReactionCounts[i].id;

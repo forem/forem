@@ -414,9 +414,11 @@ class Article < ApplicationRecord
   def readable_publish_date
     relevant_date = displayable_published_at
     if relevant_date && relevant_date.year == Time.current.year
-      relevant_date&.strftime("%b %-e")
+      I18n.l(relevant_date, format: "%b %-e")
+      # relevant_date&.strftime("%b %-e")
     else
-      relevant_date&.strftime("%b %-e '%y")
+      I18n.l(relevant_date, format: "%b %-e '%y")
+      # relevant_date&.strftime("%b %-e '%y")
     end
   end
 
