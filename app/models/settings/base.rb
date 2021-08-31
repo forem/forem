@@ -129,7 +129,7 @@ module Settings
       end
 
       def value_of(var_name)
-        unless Database.table_available?(table_name)
+        unless table_exists?
           # Fallback to default value if table was not ready (before migrate)
           Rails.logger.warn("'#{table_name}' does not exist, '#{name}.#{var_name}' will return the default value.")
           return
