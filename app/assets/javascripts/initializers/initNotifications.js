@@ -95,12 +95,12 @@ function initReactions() {
               if (response.status === 200) {
                 response.json().then(successCb);
               } else {
-                showModalAfterError(
+                showModalAfterError({
                   response,
-                  'updated a reaction',
-                  'updating again the reaction',
-                  'a moment',
-                );
+                  element: 'reaction',
+                  action_ing: 'updating',
+                  action_past: 'updated',
+                });
               }
             });
         };

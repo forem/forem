@@ -91,12 +91,12 @@ function reactToArticle(articleId, reaction) {
       } else {
         toggleReaction();
         document.getElementById('reaction-butt-' + reaction).disabled = false;
-        showModalAfterError(
+        showModalAfterError({
           response,
-          'updated a reaction',
-          'updating again the reaction',
-          'a moment',
-        );
+          element: 'reaction',
+          action_ing: 'updating',
+          action_past: 'updated',
+        });
         return undefined;
       }
     })

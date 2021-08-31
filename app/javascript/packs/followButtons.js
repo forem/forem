@@ -157,12 +157,13 @@ function handleFollowButtonClick({ target }) {
       .then(sendFetch('follow-creation', formData))
       .then((response) => {
         if (response.status !== 200) {
-          showModalAfterError(
+          showModalAfterError({
             response,
-            'followed too many users',
-            'following more users',
-            'for a day',
-          );
+            element: 'user',
+            action_ing: 'following',
+            action_past: 'followed',
+            timeframe: 'for a day',
+          });
         }
       });
   }

@@ -149,7 +149,12 @@ function initializeCommentsPage() {
             if (response.status === 200) {
               response.json().then(successCb);
             } else {
-              showModalAfterError(response, 'made a reaction', 'making another reaction', 'a moment');
+              showModalAfterError({
+                response,
+                element: 'reaction',
+                action_ing: 'making',
+                action_past: 'made',
+              });
             }
           });
       };
@@ -299,7 +304,12 @@ function handleCommentSubmit(event) {
         })
       } else {
         form.classList.remove('submitting');
-        showModalAfterError(response, 'made a comment', 'making another comment', 'a moment');
+        showModalAfterError({
+          response,
+          element: 'comment',
+          action_ing: 'posting',
+          action_past: 'posted',
+        });
         return false;
       }
       return false;
@@ -522,7 +532,12 @@ function handleImageUpload(event, randomIdNumber) {
               }
             );
           } else if (response.status === 429) {
-            showModalAfterError(response, 'uploaded an image', 'uploading another image', 'a moment');
+            showRateLimitModal({
+              response,
+              element: 'image',
+              action_ing: 'uploading',
+              action_past: 'uploaded',
+            });
           } else {
             response.json().then(function(responseBody) {
               var errorMessage = responseBody.error || 'Invalid file!';
