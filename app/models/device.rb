@@ -1,7 +1,4 @@
 class Device < ApplicationRecord
-  # @fdoxyz to remove app_bundle from Device soon
-  self.ignored_columns = ["app_bundle"]
-
   belongs_to :consumer_app
   belongs_to :user
 
