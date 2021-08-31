@@ -147,7 +147,6 @@ Please see our installation guides, such as the
 - [@zhao-andy](https://dev.to/andy)
 - [@lightalloy](https://dev.to/lightalloy)
 - [@rhymes](https://dev.to/rhymes)
-- [@mstruve](https://dev.to/molly_struve)
 - [@atsmith813](https://dev.to/atsmith813)
 - [@citizen428](https://dev.to/citizen428)
 - [@nickytonline](https://dev.to/nickytonline)
