@@ -12,6 +12,11 @@ class Device < ApplicationRecord
   validates :token, uniqueness: { scope: %i[user_id platform consumer_app_id] }
 
   def create_notification(title, body, payload)
+    # There's no need to create notifications for Consumer Apps that aren't
+    # operational. This happens when credentials aren't configured or delivery
+    # errors have been raised (i.e. expired authentication certificates)
+    return unless consumer_app.operational?
+
     if android?
       android_notification(title, body, payload)
     elsif ios?
