@@ -10,7 +10,7 @@ module Admin
           Audit::Logger.log(:internal, current_user, params.dup)
           render json: { message: "Successfully updated settings." }, status: :ok
         else
-          render json: { error: result.errors.to_sentence }, status: :unauthorized
+          render json: { error: result.errors.to_sentence }, status: :unprocessable_entity
         end
       end
 
