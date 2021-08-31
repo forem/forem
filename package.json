@@ -129,7 +129,7 @@
     "style-loader": "^2.0.0",
     "svgo": "2.4.0",
     "webpack-bundle-analyzer": "^4.4.2",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^4.0.0"
   },
   "dependencies": {
     "@babel/core": "^7.15.0",
@@ -168,7 +168,8 @@
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",
     "stimulus": "^2.0.0",
-    "web-share-wrapper": "^0.2.2"
+    "web-share-wrapper": "^0.2.2",
+    "webpack-cli": "^4.7.0"
   },
   "jest": {
     "setupFiles": [

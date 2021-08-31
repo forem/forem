@@ -7,6 +7,7 @@ const config = environment.toWebpackConfig();
 
 // For more information, see https://webpack.js.org/configuration/devtool/#devtool
 config.devtool = 'eval-source-map';
+config.output.filename = 'js/[name]-[hash].js';
 
 // Inject the preact/devtools import into all the webpacker pack files (webpack entry points) that reference at least one Preact component
 // so that Preact compoonents can be debugged with the Preact DevTools.
