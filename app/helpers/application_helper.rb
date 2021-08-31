@@ -123,7 +123,12 @@ module ApplicationHelper
     return if followable == DELETED_USER
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
-    followable_type = followable.decorated? ? followable.object.class.name.downcase : followable.class.name.downcase
+    followable_type = if followable.respond_to?(:decorated?) && followable.decorated?
+                        followable.object.class.name.downcase
+                      else
+                        followable.class.name.downcase
+                      end
+
     followable_name = followable.name
 
     tag.button(

@@ -187,7 +187,7 @@ function buildArticleHTML(article) {
             </a>
           </div>
           <div class="print-hidden">
-            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full"}'>Follow</button>
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full", "name": ${article.user.name}}'>Follow</button>
           </div>
           <div class="author-preview-metadata-container" data-author-id="${article.user_id}"></div>
         </div>
@@ -196,7 +196,7 @@ function buildArticleHTML(article) {
 
     var meta = `
       <div class="crayons-story__meta">
-        <div class="crayons-story__author-pic"> 
+        <div class="crayons-story__author-pic">
           ${organizationLogo}
           <a href="/${profileUsername}" class="crayons-avatar ${organizationClasses}">
             <img src="${picUrl}" alt="${profileUsername} profile" class="crayons-avatar__image" loading="lazy" />
@@ -266,9 +266,11 @@ function buildArticleHTML(article) {
         '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s bookmark-button article-engagement-count engage-button follow-action-button follow-user"\
                        data-info=\'{"id":' +
         article.id +
-        ',"className":"User"}\' data-follow-action-button>\
+        ',"className":"User", "name": ' +
+        article.user.name +
+        "}' data-follow-action-button>\
                        &nbsp;\
-                    </button>';
+                    </button>";
     }
 
     var videoHTML = '';
