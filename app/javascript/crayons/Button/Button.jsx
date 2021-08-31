@@ -45,8 +45,8 @@ export const Button = (props) => {
     variant = 'primary',
     tagName,
     inverted,
-    contentType = 'text',
-    size = 'default',
+    contentType,
+    size,
     className,
     icon,
     url,
@@ -122,6 +122,8 @@ Button.defaultProps = {
   tabIndex: undefined,
   title: undefined,
   tagName: 'button',
+  size: 'default',
+  contentType: 'text',
 };
 
 Button.propTypes = {
