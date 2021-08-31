@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_20_042422) do
+ActiveRecord::Schema.define(version: 2021_08_30_062627) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -441,7 +441,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.string "app_bundle"
     t.bigint "consumer_app_id"
     t.datetime "created_at", precision: 6, null: false
     t.string "platform", null: false
@@ -786,7 +785,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.string "type_of_user", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.string "user_title"
     t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
   end
 
@@ -878,7 +876,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.text "body"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
-    t.integer "duration_in_seconds"
     t.string "guid", null: false
     t.boolean "https", default: true
     t.string "image"
