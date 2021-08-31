@@ -91,11 +91,10 @@ RSpec.describe PushNotifications::Send, type: :service do
 
   context "when associated to operational vs non-operational ConsumerApp" do
     it "doesn't create any new (RPush) Push Notifications if non-operational" do
-      user3 = create(:user)
       bad_consumer_app = create(:consumer_app, auth_key: nil)
-      create(:device, user: user3, consumer_app: bad_consumer_app)
+      create(:device, user: user, consumer_app: bad_consumer_app)
       bad_params = {
-        user_ids: [user3.id],
+        user_ids: [user.id],
         title: "Alert 3",
         body: "some other alert!",
         payload: ""
