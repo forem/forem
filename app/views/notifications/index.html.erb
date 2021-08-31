@@ -16,7 +16,7 @@
   <meta name="twitter:title" content="Notifications - <%= community_name %>">
   <meta name="twitter:description" content="Notifications inbox for <%= community_name %>">
 
-   <%= javascript_packs_with_chunks_tag "notificationPage", defer: true %>
+   <%= javascript_pack_tag "notificationPage", defer: true %>
 <% end %>
 
 <script>
@@ -68,7 +68,7 @@
     </div>
     <%= render "articles/fitvids" %>
   </main>
-  <%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
+  <%= javascript_pack_tag "followButtons", defer: true %>
 <% else %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>

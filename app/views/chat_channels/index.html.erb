@@ -6,7 +6,7 @@
 <%= csrf_meta_tags %>
 
 <% if user_signed_in? %>
-  <%= javascript_packs_with_chunks_tag "Chat", defer: true %>
+  <%= javascript_pack_tag "Chat", defer: true %>
   <main class="chat-page-wrapper" id="main-content">
     <div
       id="chat"

@@ -2,7 +2,7 @@
 <% proper_email = params[:email] || (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
 <main id="main-content">
   <% if FeatureFlag.enabled?(:creator_onboarding) %>
-    <%= javascript_packs_with_chunks_tag "confirmationEmail", defer: true %>
+    <%= javascript_pack_tag "confirmationEmail", defer: true %>
     <div class="crayons-layout crayons-layout--limited-l" id="email-confirmation">
       <div class="flex flex-col items-center justify-center">
         <%= render "devise/shared/error_messages", resource: resource %>
