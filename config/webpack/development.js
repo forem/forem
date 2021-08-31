@@ -13,7 +13,11 @@ config.devtool = 'eval-source-map';
 config.entry = Object.entries(config.entry).reduce(
   (previous, [entryPointName, entryPointFileName]) => {
     if (/\.jsx$/.test(entryPointFileName)) {
-      previous[entryPointName] = ['preact/devtools', entryPointFileName];
+      previous[entryPointName] = [
+        'preact/devtools',
+        'preact/debug',
+        entryPointFileName,
+      ];
     } else {
       previous[entryPointName] = entryPointFileName;
     }
