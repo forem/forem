@@ -43,7 +43,7 @@ export const Button = (props) => {
   const {
     children,
     variant = 'primary',
-    tagName = 'button',
+    tagName,
     inverted,
     contentType = 'text',
     size = 'default',
@@ -121,10 +121,11 @@ Button.defaultProps = {
   onBlur: undefined,
   tabIndex: undefined,
   title: undefined,
+  tagName: 'button',
 };
 
 Button.propTypes = {
-  children: defaultChildrenPropTypes.isRequired,
+  children: defaultChildrenPropTypes,
   variant: PropTypes.oneOf([
     'primary',
     'secondary',
@@ -146,7 +147,7 @@ Button.propTypes = {
   inverted: PropTypes.bool,
   tagName: PropTypes.oneOf(['a', 'button']).isRequired,
   className: PropTypes.string,
-  icon: PropTypes.node,
+  icon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   url: PropTypes.string,
   buttonType: PropTypes.string,
   disabled: PropTypes.bool,
