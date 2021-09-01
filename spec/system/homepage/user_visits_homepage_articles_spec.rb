@@ -25,7 +25,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).not_to have_text("0 #{I18n.t('core.comment').downcase}s")
         article.update_column(:comments_count, 50)
         visit "/"
-        expect(page).to have_text(/50\s*comments/)
+        expect(page).to have_text(/50\s*#{I18n.t("comment").downcase}s/)
       end
 
       it "shows the main article readable date and time", js: true do

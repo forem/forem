@@ -10,7 +10,7 @@ RSpec.describe "User visits a homepage", type: :system do
       visit "/"
       within "#sidebar-wrapper-left" do
         expect(page).to have_text("Log in")
-        expect(page).to have_text("Create new account")
+        expect(page).to have_text(I18n.t("create_account"))
       end
     end
 
