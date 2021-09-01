@@ -13,7 +13,7 @@ class Profile < ApplicationRecord
   # any profile on a given Forem.
   STATIC_FIELDS = %w[summary location website_url].freeze
 
-  # Update the Rails cache with the currently available attributes
+  # Update the Rails cache with the currently available attributes.
   def self.refresh_attributes!
     Rails.cache.delete(CACHE_KEY)
     attributes
@@ -36,16 +36,16 @@ class Profile < ApplicationRecord
   # Lazily add accessors for profile fields on first use
   def method_missing(method_name, *args, **kwargs, &block)
     match = method_name.match(ATTRIBUTE_NAME_REGEX)
-    super unless match[:attribute_name].in?(self.class.attributes)
-
     field = ProfileField.find_by(attribute_name: match[:attribute_name])
+    super unless field
+
     self.class.instance_eval do
       store_attribute :data, field.attribute_name.to_sym, field.type
     end
     public_send(method_name, *args, **kwargs, &block)
   end
 
-  # Defining his is not only a good practice in general, it's also necessary
+  # Defining this is not only a good practice in general, it's also necessary
   # for `update` to work since the `_assign_attribute` helper it uses performs
   # an explicit `responds_to?` check.
   def respond_to_missing?(method_name, include_private = false)
