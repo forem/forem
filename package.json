@@ -92,6 +92,7 @@
     "@testing-library/preact": "^2.0.1",
     "@testing-library/preact-hooks": "^1.1.0",
     "@testing-library/user-event": "^13.2.1",
+    "@webpack-cli/serve": "^1.5.2",
     "@whitespace/storybook-addon-html": "^5.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
@@ -129,7 +130,7 @@
     "style-loader": "^2.0.0",
     "svgo": "2.4.0",
     "webpack-bundle-analyzer": "^4.4.2",
-    "webpack-dev-server": "^4.0.0"
+    "webpack-dev-server": "^4.1.0"
   },
   "dependencies": {
     "@babel/core": "^7.15.0",
@@ -141,7 +142,7 @@
     "@github/time-elements": "3.1.2",
     "@honeybadger-io/webpack": "^1.2.0",
     "@rails/ujs": "6.1.4",
-    "@rails/webpacker": "6.0.0-rc.5",
+    "@rails/webpacker": "^6.0.0-rc.5",
     "@reach/combobox": "^0.16.1",
     "ahoy.js": "^0.4.0",
     "autoprefixer": "^10.3.2",
@@ -169,11 +170,17 @@
     "rails-erb-loader": "^5.5.2",
     "stimulus": "^2.0.0",
     "web-share-wrapper": "^0.2.2",
-    "webpack-cli": "^4.7.0"
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0"
   },
   "jest": {
     "setupFiles": [
       "jest-localstorage-mock"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "./node_modules/@rails/webpacker/package/babel/preset.js"
     ]
   }
 }

@@ -21,3 +21,6 @@ Rails.application.config.assets.paths << Rails.root.join("app/assets/xml")
 # folder are already added.
 Rails.application.config.assets.precompile += %w[markdown-it.min.js markdownlint-browser.min.js]
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
+
+# Add node_modules folder to the asset load path.
+Rails.application.config.assets.paths << Rails.root.join("node_modules")

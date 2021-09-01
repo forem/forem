@@ -20,6 +20,9 @@ FileUtils.chdir APP_ROOT do
   system! "bundle config --local ignore_messages.rpush true"
   system("bundle check") || system!("bundle install")
 
+  # Install JavaScript dependencies
+  system! "bin/yarn"
+
   system! "gem list \"^foreman$\" -v 0.87.1 -i --silent || gem install foreman"
 
   # Install JavaScript dependencies if using Yarn
