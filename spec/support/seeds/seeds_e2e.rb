@@ -17,12 +17,10 @@ Settings::SMTP.password = "password"
 
 ##############################################################################
 
-# NOTE: @citizen428 For the time being we want all current DEV profile fields.
-# The CSV import is idempotent by itself, since it uses find_or_create_by.
-seeder.create("Creating DEV profile fields") do
-  dev_fields_csv = Rails.root.join("lib/data/dev_profile_fields.csv")
-  ProfileFields::ImportFromCsv.call(dev_fields_csv)
-end
+# Some of our Cypress tests assume specific DEV profile fields to exist
+ProfileField.create!(label: "Work", display_area: :header)
+ProfileField.create!(label: "Education", display_area: :header)
+Profile.refresh_attributes!
 
 ##############################################################################
 
@@ -482,14 +480,18 @@ end
 ##############################################################################
 
 seeder.create_if_none(Tag) do
-  tag = Tag.create!(
-    name: "tag1",
-    bg_color_hex: Faker::Color.hex_color,
-    text_color_hex: Faker::Color.hex_color,
-    supported: true,
-  )
+  tags = %w[tag1 tag2]
 
-  admin_user.add_role(:tag_moderator, tag)
+  tags.each do |tagname|
+    tag = Tag.create!(
+      name: tagname,
+      bg_color_hex: Faker::Color.hex_color,
+      text_color_hex: Faker::Color.hex_color,
+      supported: true,
+    )
+
+    admin_user.add_role(:tag_moderator, tag)
+  end
 end
 
 # Show the tag in the sidebar
@@ -545,6 +547,45 @@ seeder.create_if_none(Page) do
       landing_page: false,
     )
   end
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Podcast, "title", "Test podcast") do
+  podcast_attributes = {
+    title: "Developer on Fire",
+    description: "",
+    feed_url: "http://developeronfire.com/rss.xml",
+    itunes_url: "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326",
+    slug: "developeronfire",
+    twitter_username: "raelyard",
+    website_url: "http://developeronfire.com",
+    main_color_hex: "343d46",
+    overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
+    android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
+    image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    published: true
+  }
+  podcast = Podcast.create!(podcast_attributes)
+
+  podcast_episode_attributes = {
+    body: "<p>A real good crow call</p>",
+    guid: "<guid isPermaLink=\"true\">/media/crow-call.mp3</guid>",
+    https: false,
+    itunes_url: nil,
+    image: nil,
+    media_url: "/media/crow-call.mp3",
+    processed_html: "<p>A real good crow call</p>",
+    published_at: Date.new(2021, 1, 1),
+    slug: "crow-call",
+    subtitle: "Example media: Crow Call",
+    summary: "<p>6 seconds of bird song</p>",
+    title: "Example media | crow call",
+    website_url: "https://github.com/forem/",
+    tag_list: nil,
+    podcast_id: podcast.id
+  }
+  PodcastEpisode.create!(podcast_episode_attributes)
 end
 
 ##############################################################################

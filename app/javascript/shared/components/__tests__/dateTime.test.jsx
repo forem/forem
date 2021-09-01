@@ -18,7 +18,7 @@ describe('<DateTime />', () => {
 
     const { container } = render(
       <DateTime
-        className={'date-time'}
+        className="date-time"
         dateTime={new Date('2019-09-20T17:26:20.531Z')}
       />,
     );
@@ -30,7 +30,7 @@ describe('<DateTime />', () => {
   it('should render given datetime', () => {
     const { getByText } = render(
       <DateTime
-        className={'date-time'}
+        className="date-time"
         dateTime={new Date('2019-09-10T17:26:20.531Z')}
       />,
     );

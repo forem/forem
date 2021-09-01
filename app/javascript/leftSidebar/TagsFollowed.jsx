@@ -1,6 +1,5 @@
 import { h, Fragment } from 'preact';
 import PropTypes from 'prop-types';
-import { tagPropTypes } from '../common-prop-types';
 
 export const TagsFollowed = ({ tags = [] }) => {
   return (
@@ -25,6 +24,13 @@ export const TagsFollowed = ({ tags = [] }) => {
 };
 
 TagsFollowed.displayName = 'TagsFollowed';
-TagsFollowed.propTypes = {
-  tags: PropTypes.arrayOf(tagPropTypes).isRequired,
-};
+TagsFollowed.propTypes = PropTypes.arrayOf(
+  PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    hotness_score: PropTypes.number.isRequired,
+    points: PropTypes.number.isRequired,
+    bg_color_hex: PropTypes.string.isRequired,
+    text_color_hex: PropTypes.string.isRequired,
+  }),
+);

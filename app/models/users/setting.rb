@@ -2,7 +2,7 @@ module Users
   class Setting < ApplicationRecord
     self.table_name_prefix = "users_"
 
-    HEX_COLOR_REGEXP = /\A#?(?:\h{6}|\h{3})\z/.freeze
+    HEX_COLOR_REGEXP = /\A#?(?:\h{6}|\h{3})\z/
 
     belongs_to :user, touch: true
     scope :with_feed, -> { where.not(feed_url: [nil, ""]) }

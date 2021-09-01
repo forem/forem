@@ -14,15 +14,9 @@ class Profile < ApplicationRecord
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
     return if ENV["ENV_AVAILABLE"] == "false"
-    return unless Database.table_available?("profiles")
+    return unless table_exists?
 
     ProfileField.find_each do |field|
-      # Don't generate accessors for static fields stored on the table.
-      # TODO: [@jacobherrington] Remove this when ProfileFields for the static
-      # fields are dropped from production and the associated data is removed.
-      # https://github.com/forem/forem/pull/13641#discussion_r637641185
-      next if field.attribute_name.in?(STATIC_FIELDS)
-
       store_attribute :data, field.attribute_name.to_sym, field.type
     end
   end

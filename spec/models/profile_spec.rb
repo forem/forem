@@ -32,16 +32,20 @@ RSpec.describe Profile, type: :model do
     end
 
     describe "validating text areas" do
+      before do
+        create(:profile_field, label: "Test Text Area", input_type: :text_area)
+      end
+
       it "is valid if the text is short enough" do
-        profile.skills_languages = "Ruby"
+        profile.test_text_area = "Ruby"
         expect(profile).to be_valid
       end
 
       it "is invalid if the text is too long" do
-        profile.skills_languages = "x" * ProfileValidator::MAX_TEXT_AREA_LENGTH.next
+        profile.test_text_area = "x" * ProfileValidator::MAX_TEXT_AREA_LENGTH.next
         expect(profile).not_to be_valid
         expect(profile.errors_as_sentence)
-          .to eq "Skills languages is too long (maximum is 200 characters)"
+          .to eq "Test text area is too long (maximum is 200 characters)"
       end
     end
 

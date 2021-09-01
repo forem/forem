@@ -4,7 +4,9 @@
       <%= flash[:notice] %>
     </div>
   <% end %>
+
   <%= form_for(@user, as: :user, data: { testid: "registration-form" }, url: registration_path(:user)) do |f| %>
+
     <% if defined?(resource) && resource&.errors&.any? %>
       <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
         <div class="crayons-card__header">
@@ -20,15 +22,10 @@
           </ul>
         </div>
       </div>
-    <% elsif forem_creator_flow_enabled? %>
-      <%# TODO: Extract this into its own form %>
-      <div class="align-center">
-        <p class="pb-4 fw-bold">Almost there!</p>
-        <p class="registration__description">Let's create an admin account for your community.</p>
-      </div>
     <% else %>
       <p class="pb-4 fw-bold">Create your account</p>
     <% end %>
+
     <% if Settings::Authentication.display_email_domain_allow_list_publicly &&
       Settings::Authentication.allowed_registration_email_domains.any? %>
       <div class="crayons-notice crayons-notice--info" aria-live="polite">
@@ -46,6 +43,7 @@
         <% end %>
       </div>
     <% end %>
+
     <div class="crayons-field mt-3">
       <%= f.label :profile_image, class: "crayons-field__label" %>
       <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
@@ -108,15 +106,8 @@
       </div>
     <% end %>
 
-    <% if forem_creator_flow_enabled? %>
-      <%# TODO: Extract this into its own form %>
-      <div class="flex flex-col pt-3">
-        <%= f.submit "Create admin account", class: "crayons-btn" %>
-      </div>
-    <% else %>
-      <div class="actions pt-3">
-        <%= f.submit "Sign up", class: "crayons-btn" %>
-      </div>
-    <% end %>
+    <div class="actions pt-3">
+      <%= f.submit "Sign up", class: "crayons-btn" %>
+    </div>
   <% end %>
 </div>

@@ -46,7 +46,7 @@ class ArticleApiIndexService
             DEFAULT_PER_PAGE
           end
 
-    if (user = User.find_by(username: username))
+    if (user = User.includes(:profile).find_by(username: username))
       user.articles.published
         .includes(:organization)
         .order(published_at: :desc)
@@ -54,7 +54,7 @@ class ArticleApiIndexService
         .per(per_page || num)
     elsif (organization = Organization.find_by(slug: username))
       organization.articles.published
-        .includes(:user)
+        .includes(user: :profile)
         .order(published_at: :desc)
         .page(page)
         .per(per_page || num)
@@ -64,7 +64,7 @@ class ArticleApiIndexService
   end
 
   def tag_articles
-    articles = Article.published.cached_tagged_with(tag).includes(:user, :organization)
+    articles = published_articles_with_users_and_organizations.cached_tagged_with(tag)
 
     articles = if Tag.find_by(name: tag)&.requires_approval
                  articles.where(approved: true).order(featured_number: :desc)
@@ -79,7 +79,7 @@ class ArticleApiIndexService
   end
 
   def tagged_articles
-    articles = Article.published.includes(:user, :organization)
+    articles = published_articles_with_users_and_organizations
     articles = articles.tagged_with(tags, any: true).unscope(:select) if tags
     articles = articles.tagged_with(tags_exclude, exclude: true) if tags_exclude
 
@@ -89,14 +89,14 @@ class ArticleApiIndexService
   end
 
   def top_articles
-    Article.published.includes(:user, :organization)
+    published_articles_with_users_and_organizations
       .where("published_at > ?", top.to_i.days.ago)
       .order(public_reactions_count: :desc)
       .page(page).per(per_page || DEFAULT_PER_PAGE)
   end
 
   def state_articles(state)
-    articles = Article.published.includes(:user, :organization)
+    articles = published_articles_with_users_and_organizations
 
     articles = case state
                when "fresh"
@@ -118,9 +118,8 @@ class ArticleApiIndexService
   end
 
   def collection_articles(collection_id)
-    Article.published
+    published_articles_with_users_and_organizations
       .where(collection_id: collection_id)
-      .includes(:user, :organization)
       .order(:published_at)
       .page(page)
       .per(per_page || DEFAULT_PER_PAGE)
@@ -129,8 +128,7 @@ class ArticleApiIndexService
   def sorted_articles(sort)
     # This could be expanded to allow additional sorting options
     if sort == "desc"
-      Article.published
-        .includes(:user, :organization)
+      published_articles_with_users_and_organizations
         .order(published_at: :desc)
         .page(page)
         .per(per_page || DEFAULT_PER_PAGE)
@@ -140,11 +138,14 @@ class ArticleApiIndexService
   end
 
   def base_articles
-    Article.published
+    published_articles_with_users_and_organizations
       .where(featured: true)
-      .includes(:user, :organization)
       .order(hotness_score: :desc)
       .page(page)
       .per(per_page || DEFAULT_PER_PAGE)
+  end
+
+  def published_articles_with_users_and_organizations
+    Article.published.includes([{ user: :profile }, :organization])
   end
 end

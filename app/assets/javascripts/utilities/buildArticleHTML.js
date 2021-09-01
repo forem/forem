@@ -203,7 +203,7 @@ function buildArticleHTML(article) {
           </a>
         </div>
         <div>
-          <p>
+          <div>
             <a href="/${profileUsername}" class="crayons-story__secondary fw-medium ${
       isArticle ? 'm:hidden' : ''
     }">${filterXSS(article.user.name)}</a>
@@ -213,7 +213,7 @@ function buildArticleHTML(article) {
         : ''
     }
             ${forOrganization}
-          </p>
+          </div>
           <a href="${
             article.path
           }" class="crayons-story__tertiary fs-xs">${publishDate}</a>

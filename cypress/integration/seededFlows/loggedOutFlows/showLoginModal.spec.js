@@ -71,7 +71,9 @@ describe('Show log in modal', () => {
     cy.findByRole('heading', { name: 'Top tags' });
     cy.get('[data-follow-clicks-initialized]');
 
-    verifyLoginModalBehavior(() => cy.findByRole('button', { name: 'Follow' }));
+    verifyLoginModalBehavior(() =>
+      cy.findAllByRole('button', { name: 'Follow' }).first(),
+    );
 
     cy.visit('/t/tag1');
     cy.findByRole('heading', { name: '# tag1' });
@@ -84,6 +86,17 @@ describe('Show log in modal', () => {
     cy.get('[data-follow-clicks-initialized]');
 
     cy.findByRole('heading', { name: 'Admin McAdmin' });
+    verifyLoginModalBehavior(() => cy.findByRole('button', { name: 'Follow' }));
+  });
+
+  it('should show login modal for podcast follow button click', () => {
+    cy.visit('/developeronfire');
+    cy.get('[data-follow-clicks-initialized]');
+
+    cy.findByRole('heading', {
+      name: 'Developer on Fire Developer on Fire Follow',
+    });
+
     verifyLoginModalBehavior(() => cy.findByRole('button', { name: 'Follow' }));
   });
 });
