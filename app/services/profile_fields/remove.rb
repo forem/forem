@@ -16,8 +16,9 @@ module ProfileFields
     def call
       @profile_field = ProfileField.find(@id)
       if @profile_field.destroy
-        accessor = profile_field.attribute_name.to_s
-        Profile.undef_method(accessor) if accessor.in?(Profile.attributes)
+        accessor = @profile_field.attribute_name.to_s
+        Profile.undef_method(accessor) if profile_field.respond_to?(accessor)
+        Profile.refresh_attributes!
         @success = true
       else
         @error_message = @profile_field.errors_as_sentence
