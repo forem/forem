@@ -36,10 +36,12 @@ export const ListingFilters = ({
 };
 
 ListingFilters.propTypes = {
-  categories: PropTypes.shape({
-    slug: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  }).isRequired,
+  categories: PropTypes.arrayOf(
+    PropTypes.shape({
+      slug: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   category: PropTypes.string.isRequired,
   onSelectCategory: PropTypes.func.isRequired,
   message: PropTypes.isRequired,
