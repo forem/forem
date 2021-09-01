@@ -1,9 +1,9 @@
 class Organization < ApplicationRecord
   include CloudinaryHelper
 
-  COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
-  INTEGER_REGEXP = /\A\d+\z/.freeze
-  SLUG_REGEXP = /\A[a-zA-Z0-9\-_]+\z/.freeze
+  COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  INTEGER_REGEXP = /\A\d+\z/
+  SLUG_REGEXP = /\A[a-zA-Z0-9\-_]+\z/
   MESSAGES = {
     integer_only: "Integer only. No sign allowed.",
     reserved_word: "%<value>s is a reserved word. Contact site admins for help registering your organization."

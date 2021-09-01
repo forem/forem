@@ -18,7 +18,7 @@ AllCops:
   DisplayStyleGuide: true
   ExtraDetails: true
   NewCops: enable # opt-in to new cops by default
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0
 
 #################### Bundler ###########################
 
@@ -100,7 +100,6 @@ Layout/LineLength:
   Description: 'Checks that line length does not exceed the configured limit.'
   AutoCorrect: true # this is false by default
   Exclude:
-    - docs/Gemfile
     - Gemfile
     - app/lib/constants/site_config.rb
 

@@ -10,7 +10,7 @@ RSpec.describe Role, type: :model do
       expected_roles = %w[
         admin chatroom_beta_tester codeland_admin comment_suspended mod_relations_admin podcast_admin
         restricted_liquid_tag single_resource_admin super_admin support_admin suspended tag_moderator tech_admin
-        trusted warned workshop_pass
+        trusted warned workshop_pass creator
       ]
       expect(described_class::ROLES).to eq(expected_roles)
     end

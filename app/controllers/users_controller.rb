@@ -180,7 +180,7 @@ class UsersController < ApplicationController
       user_params.merge!(params[:user].permit(ALLOWED_USER_PARAMS))
     end
 
-    update_result = Profiles::Update.call(current_user, user: user_params, profile: profile_params)
+    update_result = Users::Update.call(current_user, user: user_params, profile: profile_params)
     render_update_response(update_result.success?, update_result.errors_as_sentence)
   end
 
@@ -300,7 +300,7 @@ class UsersController < ApplicationController
   end
 
   def default_suggested_users
-    @default_suggested_users ||= User.where(username: @suggested_users)
+    @default_suggested_users ||= User.includes(:profile).where(username: @suggested_users)
   end
 
   def determine_follow_suggestions(current_user)

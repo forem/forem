@@ -274,7 +274,6 @@ Rails.application.routes.draw do
     get "/social_previews/comment/:id", to: "social_previews#comment", as: :comment_social_preview
 
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
-    get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     # Settings
     post "users/join_org", to: "users#join_org"
@@ -296,7 +295,7 @@ Rails.application.routes.draw do
 
     # You can have the root of your site routed with "root
     get "/robots.:format", to: "pages#robots"
-    get "/api", to: redirect("https://docs.forem.com/api")
+    get "/api", to: redirect("https://developers.forem.com/api")
     get "/privacy", to: "pages#privacy"
     get "/terms", to: "pages#terms"
     get "/contact", to: "pages#contact"

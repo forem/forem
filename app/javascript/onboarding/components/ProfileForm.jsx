@@ -96,7 +96,7 @@ export class ProfileForm extends Component {
     const field = e.target;
     const { name, value } = field;
 
-    let sibling = field.nextElementSibling
+    const sibling = field.nextElementSibling
       ? field.nextElementSibling
       : field.previousElementSibling;
     sibling.value = value;
@@ -152,12 +152,8 @@ export class ProfileForm extends Component {
   }
 
   render() {
-    const {
-      prev,
-      slidesCount,
-      currentSlideIndex,
-      communityConfig,
-    } = this.props;
+    const { prev, slidesCount, currentSlideIndex, communityConfig } =
+      this.props;
     const { profile_image_90, username, name } = this.user;
     const { canSkip, groups = [], error, errorMessage } = this.state;
 
@@ -236,6 +232,18 @@ export class ProfileForm extends Component {
                 onFieldChange={this.handleFieldChange}
               />
             </div>
+            <div className="onboarding-profile-sub-section">
+              <TextArea
+                field={{
+                  attribute_name: 'summary',
+                  label: 'Bio',
+                  placeholder_text: 'Tell us a little about yourself',
+                  required: false,
+                }}
+                onFieldChange={this.handleFieldChange}
+              />
+            </div>
+
             {sections}
           </div>
         </div>

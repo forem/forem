@@ -25,7 +25,7 @@ module Api
       def index
         @listings = Listing.published
           .select(ATTRIBUTES_FOR_SERIALIZATION)
-          .includes(:user, :organization, :taggings, :listing_category)
+          .includes([{ user: :profile }, :organization, :taggings, :listing_category])
 
         if params[:category].present?
           @listings = @listings.in_category(params[:category])
