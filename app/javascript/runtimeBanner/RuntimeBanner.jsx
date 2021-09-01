@@ -82,16 +82,13 @@ export const RuntimeBanner = () => {
   }
 
   const targetPath = `https://${window.location.host}/r/mobile?deep_link=${window.location.pathname}`;
-  const targetURL = `https://udl.forem.com/?r=${encodeURIComponent(
-    targetPath,
-  )}`;
+  const targetURL = `https://udl.forem.com/${encodeURIComponent(targetPath)}`;
 
   return (
     <div class="runtime-banner">
       <a
         href={targetURL}
         class="flex items-center flex-1"
-        target="_blank"
         rel="noopener noreferrer"
       >
         <svg
