@@ -45,10 +45,9 @@ class Profile < ApplicationRecord
     public_send(method_name, *args, **kwargs, &block)
   end
 
-  # Lazily add accessors for profile fields on first use. This is not only a
-  # good practice in general, it's also necessary for update to work since the
-  # _assign_attribute helper it uses which performs an explicit responds_to
-  # check.
+  # Defining his is not only a good practice in general, it's also necessary
+  # for `update` to work since the `_assign_attribute` helper it uses performs
+  # an explicit `responds_to?` check.
   def respond_to_missing?(method_name, include_private = false)
     match = method_name.match(ATTRIBUTE_NAME_REGEX)
     return true if match[:attribute_name].in?(self.class.attributes)
