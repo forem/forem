@@ -983,7 +983,7 @@ DEPENDENCIES
   web-console (~> 4.1)
   webdrivers (~> 4.6)
   webmock (~> 3.14)
-  webpacker (~> 6.0.0.rc.5)
+  webpacker (= 6.0.0.rc.5)
   with_model (~> 2.1.5)
   zonebie (~> 0.6.1)
 
