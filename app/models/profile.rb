@@ -46,7 +46,7 @@ class Profile < ApplicationRecord
   end
 
   # Lazily add accessors for profile fields on first use. This is not only a
-  # good practice in genearl, it's also necessary for update to work since the
+  # good practice in general, it's also necessary for update to work since the
   # _assign_attribute helper it uses which performs an explicit responds_to
   # check.
   def respond_to_missing?(method_name, include_private = false)
