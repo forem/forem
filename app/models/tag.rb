@@ -9,7 +9,7 @@ class Tag < ActsAsTaggableOn::Tag
   include PgSearch::Model
 
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
-  HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
+  HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
 
   belongs_to :badge, optional: true
   belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true

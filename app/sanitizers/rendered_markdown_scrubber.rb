@@ -1,5 +1,5 @@
 class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
-  LIQUID_TAG_SYNTAX_REGEX = /\{%|%\}/.freeze
+  LIQUID_TAG_SYNTAX_REGEX = /\{%|%\}/
   def initialize
     super
 

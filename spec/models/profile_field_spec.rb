@@ -11,7 +11,13 @@ RSpec.describe ProfileField, type: :model do
       it { is_expected.to validate_presence_of(:display_area) }
       it { is_expected.to validate_presence_of(:input_type) }
       it { is_expected.to validate_presence_of(:label) }
-      it { is_expected.to validate_uniqueness_of(:label).case_insensitive }
+    end
+
+    it "ensures the label is case-insensitively unique" do
+      create(:profile_field, label: "Test")
+      expect do
+        described_class.create!(label: "tEsT")
+      end.to raise_error(ActiveRecord::RecordInvalid, /Label has already been taken/)
     end
 
     describe "#maximum_header_field_count" do
@@ -29,7 +35,7 @@ RSpec.describe ProfileField, type: :model do
 
       it "limits the number of header fields on update", :aggregate_errors do
         expect(described_class.header.count).to be >= 3
-        profile_field = described_class.left_sidebar.first
+        profile_field = create(:profile_field, display_area: :left_sidebar)
 
         expect { profile_field.header! }
           .to raise_error(ActiveRecord::RecordInvalid, expected_message)

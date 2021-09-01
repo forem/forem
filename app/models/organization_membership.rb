@@ -1,7 +1,4 @@
 class OrganizationMembership < ApplicationRecord
-  # TODO: [@rhymes]  remove this column, it is unused
-  self.ignored_columns = [:user_title]
-
   belongs_to :user
   belongs_to :organization
 

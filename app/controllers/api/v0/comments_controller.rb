@@ -12,7 +12,7 @@ module Api
         commentable = params[:a_id] ? Article.find(params[:a_id]) : PodcastEpisode.find(params[:p_id])
 
         @comments = commentable.comments
-          .includes(:user)
+          .includes(user: :profile)
           .select(ATTRIBUTES_FOR_SERIALIZATION)
           .arrange
 
@@ -21,7 +21,7 @@ module Api
 
       def show
         tree_with_root_comment = Comment.subtree_of(params[:id].to_i(26))
-          .includes(:user)
+          .includes(user: :profile)
           .select(ATTRIBUTES_FOR_SERIALIZATION)
           .arrange
 

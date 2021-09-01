@@ -136,9 +136,9 @@ export default class DataUpdateScriptController extends Controller {
   }
 
   setErrorBanner(runAtColumn, statusColumn, error, bannerClass) {
-    const classList = document.getElementsByClassName(
+    const { classList } = document.getElementsByClassName(
       'data-update-script__alert',
-    )[0].classList;
+    )[0];
 
     classList.add(bannerClass);
     classList.remove('hidden');
