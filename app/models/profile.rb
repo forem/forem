@@ -6,7 +6,7 @@ class Profile < ApplicationRecord
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates_with ProfileValidator
 
-  ATTRIBUTE_NAME_REGEX = /(?<attribute_name>\w+)\??/
+  ATTRIBUTE_NAME_REGEX = /(?<attribute_name>\w+)=?/
   CACHE_KEY = "profile/attributes".freeze
   # Static fields are columns on the profiles table; they have no relationship
   # to a ProfileField record. These are columns we can safely assume exist for
