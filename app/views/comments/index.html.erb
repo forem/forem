@@ -95,7 +95,6 @@
       </h1>
       <div class="flex">
         <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %>"><%= t("core.view") %> <%= t("core.post").downcase %></a>
-        <a class="view-discussion crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments"><%= t("core.view") %> <%= t("core.discussion").downcase %></a>
       </div>
     </header>
   <% end %>

@@ -97,7 +97,7 @@ function updateFollowingButton(button, style) {
  */
 function updateUserOwnFollowButton(button) {
   button.dataset.verb = 'self';
-  button.textContent = 'Edit profile';
+  button.textContent = I18n.t('core.edit_profile');
 }
 
 /**
