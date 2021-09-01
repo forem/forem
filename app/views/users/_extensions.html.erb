@@ -15,7 +15,7 @@
       <div class="crayons-field">
         <%= f.label :inbox_guidelines, "Open inbox guidelines/instructions", class: "crayons-field__label" %>
         <p class="crayons-field__description">
-          Optional
+        Optional
         </p>
 
         <%= f.text_area :inbox_guidelines, maxlength: 200, class: "crayons-textfield", rows: 3, placeholder: "Please allow a few days for a response." %>
@@ -38,7 +38,7 @@
       <span class="ml-2 crayons-indicator crayons-indicator--accent">beta</span>
     </h2>
     <p class="color-base-70">
-      Receive micropayments for time spent reading your posts directy. <a href="https://dev.to/hacksultan/web-monetization-like-i-m-5-1418">Learn more</a>
+    Receive micropayments for time spent reading your posts directy. <a href="https://dev.to/hacksultan/web-monetization-like-i-m-5-1418">Learn more</a>
     </p>
   </header>
   <%= form_for(@user, html: { id: nil, class: "grid gap-4" }) do |f| %>
