@@ -10,7 +10,7 @@ describe('Email digest frequency Section', () => {
 
   describe('email digest frequency settings', () => {
     it('can change the frequency', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.findByTestId('emailDigestSectionForm').as('emailDigestSectionForm');
 
@@ -22,12 +22,6 @@ describe('Email digest frequency Section', () => {
           .get('#settings_general_periodic_email_digest')
           .clear()
           .type('42');
-
-        cy.get('@emailDigestSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
 
         cy.get('@emailDigestSectionForm').findByText('Update Settings').click();
 
