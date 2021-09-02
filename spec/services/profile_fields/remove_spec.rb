@@ -9,6 +9,7 @@ RSpec.describe ProfileFields::Remove, type: :service do
       expect { described_class.call(profile_field.id) }
         .to change(ProfileField, :count).by(-1)
         .and change { profile.respond_to?(:removed_field) }.from(true).to(false)
+        .and change { profile.respond_to?(:removed_field=) }.from(true).to(false)
     end
 
     it "returns the correct response object", :aggregate_failures do
