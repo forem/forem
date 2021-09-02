@@ -21,7 +21,7 @@
               <% end %>
             </h1>
             <% if @tag_model %>
-              <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'><%= t("follow") %></button>
+              <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'><%= t("core.follow") %></button>
             <% end %>
           </div>
           <% if @tag_model && @tag_model.short_summary.present? %>
