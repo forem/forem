@@ -24,7 +24,7 @@
   <a href="<%= app_url(tag_moderation_url) %>">tag moderation</a> page.</strong>
 </p>
 
-<% if FeatureFlag.enabled(:connect) %>
+<% if FeatureFlag.enabled?(:connect) %>
   <p>
     To aid in communication, we’ve added you to the following <%= community_name %> Connect channels:
   </p>
