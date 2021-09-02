@@ -108,7 +108,7 @@ RSpec.configure do |config|
     # Enable the Connect feature flag for tests
     # Doing this via a stub gets rid of the following error:
     # "Please stub a default value first if message might be received with other args as well."
-    allow(FeatureFlag).to receive(:enable?).with(:connect).and_return(true)
+    allow(FeatureFlag).to receive(:enabled?).with(:connect).and_return(true)
   end
 
   config.before do
