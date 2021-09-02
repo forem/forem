@@ -105,6 +105,8 @@ RSpec.configure do |config|
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
     ENV["TZ"] = Time.zone.tzinfo.name
+    # Enable the Connect feature flag for tests
+    FeatureFlag.enable(:connect)
   end
 
   config.before do
