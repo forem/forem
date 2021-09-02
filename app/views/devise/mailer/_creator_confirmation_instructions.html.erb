@@ -2,6 +2,6 @@
 
 <h1>Confirm Your Email Address</h1>
 
-<p>Hello! Once you've confirmed your email address, you'll be able to set up your Forem instance.</p>clear
-<%= link_to "Confirm Email", confirmation_url(@user, confirmation_token: @token) %>
+<p>Hello! Once you've confirmed your email address, you'll be able to set up your Forem instance.</p>
+<p><%= link_to "Confirm Email", confirmation_url(@user, confirmation_token: @token) %></p>
 <p>If you didn't request this email, there's nothing to worry about — you can safely ignore it.</p>
