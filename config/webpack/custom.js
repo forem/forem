@@ -20,11 +20,11 @@ webpackConfig.splitChunks((config) => {
       ...config.resolve,
       alias: {
         ...(config.resolve ? config.resolve.alias : {}),
-        '@crayons': path.resolve(__dirname, '../../app/javascript/crayons'),
-        '@utilities': path.resolve(__dirname, '../../app/javascript/utilities'),
+        '@crayons': path.resolve(__dirname, '../../app/packs/crayons'),
+        '@utilities': path.resolve(__dirname, '../../app/packs/utilities'),
         '@components': path.resolve(
           __dirname,
-          '../../app/javascript/shared/components',
+          '../../app/packs/shared/components',
         ),
         react: 'preact/compat',
         'react-dom': 'preact/compat',
@@ -32,9 +32,6 @@ webpackConfig.splitChunks((config) => {
     },
   };
 });
-
-// We don't want babel-loader running on the node_modules folder.
-webpackConfig.loaders.delete('nodeModules');
 
 webpackConfig.loaders.append('erb', erb);
 
