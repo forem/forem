@@ -93,6 +93,37 @@ export default class ConfigController extends Controller {
     }
   }
 
+  displaySnackbar(message) {
+    return document.dispatchEvent(
+      new CustomEvent('snackbar:add', {
+        detail: { message },
+      }),
+    );
+  }
+
+  async updateConfigurationSettings(event) {
+    event.preventDefault();
+    try {
+      const body = new FormData(event.target);
+      const response = await fetch(event.target.action, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
+            ?.content,
+        },
+        body,
+        credentials: 'same-origin',
+      });
+
+      const outcome = await response.json();
+
+      this.displaySnackbar(outcome.message ?? outcome.error);
+    } catch (err) {
+      this.displaySnackbar(err.message);
+    }
+  }
+
   // GENERAL FUNCTIONS END
 
   // EMAIL AUTH FUNCTIONS START
@@ -158,7 +189,7 @@ export default class ConfigController extends Controller {
 
   enableOrEditAuthProvider(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     const enabledIndicator = document.getElementById(
       `${providerName}-enabled-indicator`,
     );
@@ -177,7 +208,7 @@ export default class ConfigController extends Controller {
 
   disableAuthProvider(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     const enabledIndicator = document.getElementById(
       `${providerName}-enabled-indicator`,
     );
@@ -200,8 +231,8 @@ export default class ConfigController extends Controller {
 
   activateAuthProviderModal(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
-    const {providerOfficialName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
+    const { providerOfficialName } = event.target.dataset;
     this.configModalAnchorTarget.innerHTML = adminModal({
       title: this.authProviderModalTitle(providerOfficialName),
       body: this.authProviderModalBody(providerOfficialName),
@@ -218,7 +249,7 @@ export default class ConfigController extends Controller {
 
   disableAuthProviderFromModal(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     const authEnableButton = document.getElementById(
       `${providerName}-auth-btn`,
     );
@@ -254,7 +285,7 @@ export default class ConfigController extends Controller {
 
   hideAuthProviderSettings(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     document
       .getElementById(`${providerName}-auth-settings`)
       .classList.add('hidden');
@@ -342,7 +373,7 @@ export default class ConfigController extends Controller {
       event.preventDefault();
       this.activateMissingKeysModal(this.enabledProvidersWithMissingKeys());
     } else {
-      event.target.submit();
+      this.updateConfigurationSettings(event);
     }
   }
 
