@@ -168,9 +168,9 @@
   --button-ghost-dimmed-inverted-color-hover: var(--base-100);
 
   // Forms
-  --form-bg: var(--base-0);
+  --form-bg: var(--base-inverted);
   --form-bg-focus: var(--base-inverted);
-  --form-border: var(--base-30);
+  --form-border: var(--base-20);
   --form-border-hover: var(--base-40);
   --form-border-focus: var(--accent-brand);
   --form-placeholder-color: var(--base-60);
@@ -185,7 +185,6 @@
 
   // Snackbars
   --snackbar-bg: var(--base-90);
-  --snackbar-border: var(--base-100);
   --snackbar-color: var(--body-color-inverted);
 
   // Indicators
