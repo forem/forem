@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_30_062627) do
+ActiveRecord::Schema.define(version: 2021_07_20_042422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
+  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -440,6 +441,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
   end
 
   create_table "devices", force: :cascade do |t|
+    t.string "app_bundle"
     t.bigint "consumer_app_id"
     t.datetime "created_at", precision: 6, null: false
     t.string "platform", null: false
@@ -784,6 +786,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.string "type_of_user", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.string "user_title"
     t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
   end
 
@@ -875,6 +878,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.text "body"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
+    t.integer "duration_in_seconds"
     t.string "guid", null: false
     t.boolean "https", default: true
     t.string "image"
@@ -1308,7 +1312,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
-    t.datetime "last_moderation_notification", default: "2016-12-31 23:00:00"
+    t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
     t.datetime "last_reacted_at"
