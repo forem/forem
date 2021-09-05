@@ -1,0 +1,4 @@
+cluster.name: "forem"
+# bind to all network interfaces
+network.host: 0.0.0.0
+

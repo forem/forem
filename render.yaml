@@ -1,0 +1,159 @@
+services:
+  - type: pserv
+    name: redis
+    env: docker
+    autoDeploy: false
+    repo: https://github.com/render-examples/redis.git
+    disk:
+      name: data
+      mountPath: /var/lib/redis
+      sizeGB: 10
+
+  - type: pserv
+    name: elasticsearch
+    dockerfilePath: ./elasticsearch/Dockerfile
+    dockerContext: ./elasticsearch
+    env: docker
+    plan: standard
+    disk:
+      name: esdata
+      mountPath: /usr/share/elasticsearch/data
+      sizeGB: 10
+    autoDeploy: false # so ES does not restart on a push to this repository.
+    envVars:
+    - key: ES_JAVA_OPTS
+      value: "-Xms512m -Xmx512m"
+    - key: discovery.type
+      value: single-node
+    - key: xpack.security.enabled
+      value: false
+    - key: xpack.monitoring.enabled
+      value: false
+    - key: xpack.graph.enabled
+      value: false
+    - key: xpack.watcher.enabled
+      value: false
+    - key: bootstrap.memory_lock
+      value: true
+
+  - type: worker
+    name: sidekiq
+    env: docker
+    dockerfilePath: ./forem/Dockerfile
+    dockerContext: ./forem
+    dockerCommand: ./scripts/sidekiq.sh
+    plan: starter plus
+    envVars:
+      - fromGroup: rails
+      - key: REDIS_HOST
+        fromService:
+          name: redis
+          type: pserv
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: redis
+          type: pserv
+          property: port
+
+      - key: ELASTICSEARCH_HOST
+        fromService:
+          name: elasticsearch
+          type: pserv
+          property: host
+      - key: ELASTICSEARCH_PORT
+        value: 9200
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: forem
+          property: connectionString
+
+  - type: web
+    name: forem
+    env: docker
+    dockerfilePath: ./forem/Dockerfile
+    dockerContext: ./forem
+    dockerCommand: ./scripts/rails.sh
+    plan: starter plus
+    disk:
+      name: data
+      mountPath: /opt/apps/forem/public/uploads
+      sizeGB: 10
+    envVars:
+      - fromGroup: rails
+      - key: REDIS_HOST
+        fromService:
+          name: redis
+          type: pserv
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: redis
+          type: pserv
+          property: port
+
+      - key: ELASTICSEARCH_HOST
+        fromService:
+          name: elasticsearch
+          type: pserv
+          property: host
+      - key: ELASTICSEARCH_PORT
+        value: 9200
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: forem
+          property: connectionString
+
+databases:
+  - name: forem
+    plan: starter
+
+envVarGroups:
+  - name: rails
+    envVars:
+      - key: APP_PROTOCOL
+        value: "https://"
+      - key: RAILS_ENV
+        value: production
+      - key: NODE_ENV
+        value: production
+      - key: RAILS_LOG_TO_STDOUT
+        value: 1
+      - key: RAILS_SERVE_STATIC_FILES
+        value: 1
+      - key: RAILS_MAX_THREADS
+        value: 1
+      - key: WEB_CONCURRENCY
+        value: 2
+      - key: RACK_TIMEOUT_WAIT_TIMEOUT
+        value: 100_000
+      - key: RACK_TIMEOUT_SERVICE_TIMEOUT
+        value: 100_000
+
+      - key: FOREM_OWNER_SECRET
+        generateValue: true
+
+      - key: SECRET_KEY_BASE
+        generateValue: true
+
+      - key: COMMUNITY_NAME
+        value: Forem on Render
+
+      - key: CLOUDINARY_API_KEY
+        value: configure_cloudinary_to_enable_uploaded_images
+      - key: CLOUDINARY_API_SECRET
+        value: configure_cloudinary_to_enable_uploaded_images
+      - key: CLOUDINARY_CLOUD_NAME
+        value: configure_cloudinary_to_enable_uploaded_images
+
+      - key: SENDGRID_API_KEY
+        sync: false # set to your Sendgrid SMTP Relay API key
+
+      - key: DEFAULT_EMAIL
+        sync: false # set to the email configured with Sendgrid
+
+      - key: APP_DOMAIN
+        sync: false # set this to your custom domain or the rails service .onrender domain
+
