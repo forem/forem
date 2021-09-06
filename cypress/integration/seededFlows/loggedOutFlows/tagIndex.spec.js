@@ -25,7 +25,7 @@ describe('Logged out - tag index page', () => {
         cy.findByText('Edinburgh');
         cy.findByText('University of Life');
 
-        cy.findByRole('button', { name: 'Follow' }).click();
+        cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).click();
       });
 
     // Clicking a follow button while logged out should always trigger the log in to continue modal

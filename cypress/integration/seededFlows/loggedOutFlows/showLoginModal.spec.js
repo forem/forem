@@ -101,6 +101,8 @@ describe('Show log in modal', () => {
       name: 'Developer on Fire Developer on Fire Follow',
     });
 
-    verifyLoginModalBehavior(() => cy.findByRole('button', { name: 'Follow' }));
+    verifyLoginModalBehavior(() =>
+      cy.findByRole('button', { name: 'Follow podcast: Developer on Fire' }),
+    );
   });
 });

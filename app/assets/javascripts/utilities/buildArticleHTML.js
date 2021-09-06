@@ -187,7 +187,7 @@ function buildArticleHTML(article) {
             </a>
           </div>
           <div class="print-hidden">
-            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full", "name": ${article.user.name}}'>Follow</button>
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full", "name": "${article.user.name}"}'>Follow</button>
           </div>
           <div class="author-preview-metadata-container" data-author-id="${article.user_id}"></div>
         </div>
@@ -262,15 +262,13 @@ function buildArticleHTML(article) {
                       <span class="bm-success">Saved</span>\
                     </button>';
     } else if (article.class_name === 'User') {
-      saveButton =
-        '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s bookmark-button article-engagement-count engage-button follow-action-button follow-user"\
-                       data-info=\'{"id":' +
-        article.id +
-        ',"className":"User", "name": ' +
-        article.user.name +
-        "}' data-follow-action-button>\
-                       &nbsp;\
-                    </button>";
+      saveButton = `
+        <button type="button"
+          class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s bookmark-button article-engagement-count engage-button follow-action-button follow-user"
+          data-info='{"id": ${article.id},"className":"User", "name": "${article.user.name}"}'
+        data-follow-action-button>
+          &nbsp;
+        </button>`;
     }
 
     var videoHTML = '';
