@@ -77,12 +77,18 @@ en:
               blank: "can't be blank"
               exclusion: "is reserved"
               invalid: "is invalid"
+              too_short: "is too short"
             email:
               taken: "has already been taken"
         listing_category:
           attributes:
             social_preview_color:
               invalid: "is invalid"
+        listing:
+          attributes:
+            body:
+              body_markdown:
+                blank: "can't be blank"
       <<: *errors
   podcasts:
     statuses:
@@ -90,3 +96,4 @@ en:
       unparsable: Podcast's rss couldn't be parsed
       unplayable: This podcast may not be playable in the browser
       ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
+# en.activerecord.errors.models.listing.attributes.body_markdown.blank

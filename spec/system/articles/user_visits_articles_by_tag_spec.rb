@@ -23,7 +23,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       end
 
       it "shows the follow button", js: true do
-        within("header.tag-header") { expect(page).to have_button(I18n.t("core.following")) }
+        within("header.tag-header") { expect(page).to have_button(I18n.t("core.follow")) }
       end
 
       # Regression test for https://github.com/forem/forem/pull/12724
