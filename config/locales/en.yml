@@ -70,6 +70,19 @@ en:
       <<: *errors
   activerecord:
     errors:
+      models:
+        user:
+          attributes:
+            username:
+              blank: "can't be blank"
+              exclusion: "is reserved"
+              invalid: "is invalid"
+            email:
+              taken: "has already been taken"
+        listing_category:
+          attributes:
+            social_preview_color:
+              invalid: "is invalid"
       <<: *errors
   podcasts:
     statuses:
