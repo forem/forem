@@ -1,4 +1,5 @@
 import { getInstantClick } from '../topNavigation/utilities';
+import { locale } from '@utilities/locale';
 
 /* global showLoginModal  userData */
 
@@ -16,10 +17,10 @@ function addButtonFollowText(button, style) {
       button.textContent = '+';
       break;
     case 'follow-back':
-      button.textContent = I18n.t('core.follow_back');
+      button.textContent = locale('core.follow_back');
       break;
     default:
-      button.textContent = I18n.t('core.follow');
+      button.textContent = locale('core.follow');
   }
 }
 
@@ -30,7 +31,7 @@ function addButtonFollowText(button, style) {
  * @param {string} style The style of the button from its "info" data attribute
  */
 function addButtonFollowingText(button, style) {
-  button.textContent = style === 'small' ? '✓' : I18n.t('core.following');
+  button.textContent = style === 'small' ? '✓' : locale('core.following');
 }
 
 /**
@@ -97,7 +98,7 @@ function updateFollowingButton(button, style) {
  */
 function updateUserOwnFollowButton(button) {
   button.dataset.verb = 'self';
-  button.textContent = I18n.t('core.edit_profile');
+  button.textContent = locale('core.edit_profile');
 }
 
 /**

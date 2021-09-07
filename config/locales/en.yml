@@ -31,40 +31,40 @@
 
 en:
   core:
+    comment: "Comment"
+    copy_link: "Copy link"
     create_account: "Create account"
     create_post: "Create Post"
-    log_in: "Log in"
-    see_all: "See all"
-    feed: "Feed"
+    discussion: "Discussion"
     edit_profile: "Edit profile"
-    week: "Week"
-    month: "Month"
-    year: "Year"
+    feed: "Feed"
+    follow: "Follow"
+    follow_back: "Follow back"
+    following: "Following"
+    full: "Full"
     infinity: "Infinity"
     latest: "Latest"
-    listings: "Listings"
-    search: "Search"
-    follow: "Follow"
-    following: "Following"
-    follow_back: "Follow back"
-    read_next: "Read next"
-    discussion: "Discussion"
-    view: "View"
-    full: "Full"
-    post: "Post"
-    comment: "Comment"
-    reaction: "Reaction"
-    reply: "Reply"
     like: "Like"
+    listings: "Listings"
+    log_in: "Log in"
+    month: "Month"
     more_from: "More from"
-    trending_on: "Trending on"
     my_tags: "My Tags"
+    post: "Post"
+    reaction: "Reaction"
+    read_next: "Read next"
+    reply: "Reply"
     report_abuse: "Report abuse"
-    copy_link: "Copy link"
+    search: "Search"
+    see_all: "See all"
+    trending_on: "Trending on"
+    view: "View"
+    week: "Week"
+    year: "Year"
   errors: &errors
-    messages:
-       bad_uri: is an invalid url
-       bad_protocol: must start with %{protocols}
+  messages:
+      bad_uri: is an invalid url
+      bad_protocol: must start with %{protocols}
   activemodel:
     errors:
       <<: *errors
