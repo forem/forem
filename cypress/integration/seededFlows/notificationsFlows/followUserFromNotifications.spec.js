@@ -10,7 +10,6 @@ describe('Follow user from notifications', () => {
 
   it('Follows and unfollows a user from a follow notification', () => {
     cy.findByRole('heading', { name: 'Notifications' });
-    // cy.intercept('/follows').as('followsRequest');
 
     cy.findByRole('button', { name: 'Follow user back: User' }).as(
       'followButton',
