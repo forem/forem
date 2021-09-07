@@ -13,7 +13,9 @@ describe('Follow podcast', () => {
     cy.findByRole('heading', {
       name: 'Developer on Fire Developer on Fire Follow',
     });
-    cy.findByRole('button', { name: 'Follow' }).as('followButton');
+    cy.findByRole('button', { name: 'Follow podcast: Developer on Fire' }).as(
+      'followButton',
+    );
 
     cy.get('@followButton').click();
     // Inner text should now be following
@@ -21,7 +23,9 @@ describe('Follow podcast', () => {
 
     // Check that state is persisted on refresh
     cy.visitAndWaitForUserSideEffects('/developeronfire');
-    cy.findByRole('button', { name: 'Following' }).as('followButton');
+    cy.findByRole('button', { name: 'Unfollow podcast: Developer on Fire' }).as(
+      'followButton',
+    );
 
     // Check it reverts back to Follow on click
     cy.get('@followButton').click();
@@ -29,6 +33,8 @@ describe('Follow podcast', () => {
 
     // Check that state is persisted on refresh
     cy.visitAndWaitForUserSideEffects('/developeronfire');
-    cy.findByRole('button', { name: 'Follow' }).as('followButton');
+    cy.findByRole('button', { name: 'Follow podcast: Developer on Fire' }).as(
+      'followButton',
+    );
   });
 });

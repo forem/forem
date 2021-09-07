@@ -16,10 +16,11 @@ describe('Follow author from article sidebar', () => {
     cy.intercept('/follows').as('followRequest');
 
     cy.findByRole('complementary', { name: 'Author details' }).within(() => {
-      cy.findByRole('button', { name: 'Follow' }).as('followButton');
+      cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).as(
+        'followButton',
+      );
       cy.get('@followButton').click();
 
-      cy.wait('@followRequest');
       cy.get('@followButton').should('have.text', 'Following');
 
       cy.get('@followButton').click();

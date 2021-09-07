@@ -178,25 +178,22 @@ const DEFAULT_AUTH_CONFIG = {
  */
 Cypress.Commands.add(
   'updateAdminAuthConfig',
-  (
-    username = 'admin_mcadmin',
-    {
-      inviteOnlyMode = false,
-      emailRegistration = true,
-      allowedEmailDomains,
-      publicEmailDomainList = false,
-      requireRecaptcha = false,
-      recaptchaSiteKey,
-      recaptchaSecretKey,
-      authProvidersToEnable,
-      facebookKey,
-      facebookSecret,
-      githubKey,
-      githubSecret,
-      twitterKey,
-      twitterSecret,
-    } = DEFAULT_AUTH_CONFIG,
-  ) => {
+  ({
+    inviteOnlyMode = false,
+    emailRegistration = true,
+    allowedEmailDomains = '',
+    publicEmailDomainList = false,
+    requireRecaptcha = false,
+    recaptchaSiteKey = '',
+    recaptchaSecretKey = '',
+    authProvidersToEnable,
+    facebookKey = '',
+    facebookSecret = '',
+    githubKey = '',
+    githubSecret = '',
+    twitterKey = '',
+    twitterSecret = '',
+  } = DEFAULT_AUTH_CONFIG) => {
     return cy.request(
       'POST',
       '/admin/settings/authentications',
@@ -208,7 +205,7 @@ Cypress.Commands.add(
         publicEmailDomainList,
       )}&settings_authentication%5Brequire_captcha_for_email_password_registration%5D=${toPayload(
         requireRecaptcha,
-      )}&settings_authentication%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&settings_authentication%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&settings_authentication%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&settings_authentication%5Bfacebook_key%5D=${facebookKey}&settings_authentication%5Bfacebook_secret%5D=${facebookSecret}&settings_authentication%5Bgithub_key%5D=${githubKey}&settings_authentication%5Bgithub_secret%5D=${githubSecret}&settings_authentication%5Btwitter_key%5D=${twitterKey}&settings_authentication%5Btwitter_secret%5D=${twitterSecret}&confirmation=My+username+is+%40${username}+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Settings`,
+      )}&settings_authentication%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&settings_authentication%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&settings_authentication%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&settings_authentication%5Bfacebook_key%5D=${facebookKey}&settings_authentication%5Bfacebook_secret%5D=${facebookSecret}&settings_authentication%5Bgithub_key%5D=${githubKey}&settings_authentication%5Bgithub_secret%5D=${githubSecret}&settings_authentication%5Btwitter_key%5D=${twitterKey}&settings_authentication%5Btwitter_secret%5D=${twitterSecret}&commit=Update+Settings`,
     );
   },
 );

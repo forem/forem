@@ -7,7 +7,12 @@
     <div class="tag-or-query-header-container">
       <h1><img class="record main-image" src="<%= Images::Optimizer.call(@podcast.image_url, crop: "fill", width: 420, height: 420) %>"
                alt="<%= @podcast.title %>" /> <%= @podcast.title %>
-               <button id="user-follow-butt" class="crayons-btn follow-action-button user-profile-follow-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
+               <button
+                id="user-follow-butt"
+                class="crayons-btn follow-action-button user-profile-follow-button"
+                data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>", "name": "<%= @podcast.name %>"}'>
+                  &nbsp;
+              </button>
 </h1>
     </div>
   </div>

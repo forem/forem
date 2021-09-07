@@ -36,7 +36,12 @@
         <a href="/<%= @podcast.slug %>">
           <img aria-hidden="true" alt="<%= @podcast.title %>" src="<%= optimized_image_url(@podcast.image_url, width: 60, quality: 80) %>" /><%= @podcast.title %>
         </a>
-        <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
+        <button
+          id="user-follow-butt"
+          class="crayons-btn follow-action-button"
+          data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>", "name": "<%= @podcast.name %>"}'>
+          &nbsp;
+        </button>
       </h2>
       <% if @episode.title.size > 60 %>
         <h1 class="smaller"><%= @episode.title %></h1>
