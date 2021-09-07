@@ -14,7 +14,7 @@ describe('Follow tag', () => {
 
     it('Follows and unfollows a tag from the tag index page', () => {
       cy.intercept('/follows').as('followsRequest');
-      cy.findAllByRole('button', { name: 'Follow' }).first().as('followButton');
+      cy.findByRole('button', { name: 'Follow tag: tag1' }).as('followButton');
 
       cy.get('@followButton').click();
       cy.wait('@followsRequest');
@@ -43,7 +43,7 @@ describe('Follow tag', () => {
 
     it('Follows and unfollows a tag from the tag feed page', () => {
       cy.intercept('/follows').as('followsRequest');
-      cy.findByRole('button', { name: 'Follow' }).as('followButton');
+      cy.findByRole('button', { name: 'Follow tag: tag1' }).as('followButton');
 
       cy.get('@followButton').click();
       cy.wait('@followsRequest');

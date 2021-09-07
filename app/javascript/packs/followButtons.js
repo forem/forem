@@ -9,16 +9,65 @@ import { getInstantClick } from '../topNavigation/utilities';
  * @param {string} style The style of the button from its "info" data attribute
  */
 function addButtonFollowText(button, style) {
+  const { name, className } = JSON.parse(button.dataset.info);
+
   switch (style) {
     case 'small':
+      addAriaLabelToButton({
+        button,
+        followName: name,
+        followType: className,
+        style: 'follow',
+      });
       button.textContent = '+';
       break;
     case 'follow-back':
+      addAriaLabelToButton({
+        button,
+        followName: name,
+        followType: className,
+        style: 'follow-back',
+      });
       button.textContent = 'Follow back';
       break;
     default:
+      addAriaLabelToButton({
+        button,
+        followName: name,
+        followType: className,
+        style: 'follow',
+      });
       button.textContent = 'Follow';
   }
+}
+
+/**
+ * Sets the aria-label of the button
+ *
+ * @param {HTMLElement} button The Follow button to update.
+ * @param {string} followType The followableType of the button.
+ * @param {string} followName The name of the followable to be followed.
+ * @param {string} style The style of the button from its "info" data attribute
+ */
+function addAriaLabelToButton({ button, followType, followName, style = '' }) {
+  let label = '';
+  switch (style) {
+    case 'follow':
+      label = `Follow ${followType.toLowerCase()}: ${followName}`;
+      break;
+    case 'follow-back':
+      label = `Follow ${followType.toLowerCase()} back: ${followName}`;
+      break;
+    case 'following':
+      label = `Unfollow ${followType.toLowerCase()}: ${followName}`;
+      break;
+    case 'self':
+      label = `Edit profile`;
+      break;
+    default:
+      label = `Follow ${followType.toLowerCase()}: ${followName}`;
+  }
+  button.setAttribute('aria-label', label);
 }
 
 /**
@@ -81,11 +130,18 @@ function optimisticallyUpdateButtonUI(button) {
  * @param {string} style Style of the follow button (e.g. 'small')
  */
 function updateFollowingButton(button, style) {
+  const { name, className } = JSON.parse(button.dataset.info);
   button.dataset.verb = 'follow';
   addButtonFollowingText(button, style);
   button.classList.remove('crayons-btn--primary');
   button.classList.remove('crayons-btn--secondary');
   button.classList.add('crayons-btn--outlined');
+  addAriaLabelToButton({
+    button,
+    followName: name,
+    followType: className,
+    style: 'following',
+  });
 }
 
 /**
@@ -96,6 +152,12 @@ function updateFollowingButton(button, style) {
 function updateUserOwnFollowButton(button) {
   button.dataset.verb = 'self';
   button.textContent = 'Edit profile';
+  addAriaLabelToButton({
+    button,
+    followName: '',
+    followType: '',
+    style: 'self',
+  });
 }
 
 /**
@@ -251,11 +313,14 @@ function initializeAllUserFollowButtons() {
   Array.from(buttons, (button) => {
     button.dataset.fetched = 'fetched';
     const { userStatus } = document.body.dataset;
+    const buttonInfo = JSON.parse(button.dataset.info);
+    const { name, className } = buttonInfo;
 
     if (userStatus === 'logged-out') {
       const { style } = JSON.parse(button.dataset.info);
       addButtonFollowText(button, style);
     } else {
+      addAriaLabelToButton({ button, followType: className, followName: name });
       const { id: userId } = JSON.parse(button.dataset.info);
       if (userIds[userId]) {
         userIds[userId].push(button);
@@ -317,7 +382,9 @@ function initializeNonUserFollowButtons() {
   nonUserFollowButtons.forEach((button) => {
     const { info } = button.dataset;
     const buttonInfo = JSON.parse(info);
-    if (buttonInfo.className === 'Tag' && user) {
+    const { className, name } = buttonInfo;
+    addAriaLabelToButton({ button, followType: className, followName: name });
+    if (className === 'Tag' && user) {
       // We don't need to make a network request to 'fetch' the status of tag buttons
       button.dataset.fetched = true;
       const initialButtonFollowState = followedTagIds.has(buttonInfo.id)

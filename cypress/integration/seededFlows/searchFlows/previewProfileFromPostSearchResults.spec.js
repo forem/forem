@@ -28,11 +28,13 @@ describe('Preview profile from post search results', () => {
         cy.findByText('Edinburgh');
         cy.findByText('University of Life');
 
-        cy.findByRole('button', { name: 'Follow' }).click();
+        cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).click();
 
         // Check that following status has been updated
-        cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-        cy.findByRole('button', { name: 'Following' });
+        cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).should(
+          'not.exist',
+        );
+        cy.findByRole('button', { name: 'Unfollow user: Admin McAdmin' });
       });
   });
 });
