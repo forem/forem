@@ -29,9 +29,6 @@ RSpec.describe "User index", type: :system do
       def shows_header
         within("h1") { expect(page).to have_content(user.name) }
         within(".profile-header__actions") do
-          p I18n.t("core.follow")
-          p I18n.t("core.follow")
-          p I18n.t("core.follow")
           expect(page).to have_button(I18n.t("core.follow"))
         end
       end
