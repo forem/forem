@@ -3,7 +3,7 @@ import {
   initializeDropdown,
   getDropdownRepositionListener,
 } from '@utilities/dropdownUtils';
-import { locale } from '@utilities/locale';
+import { locale } from '@utilities/locale.js.erb';
 
 /* global Runtime   */
 

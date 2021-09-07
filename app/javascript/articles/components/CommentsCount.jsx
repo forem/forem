@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '../../crayons/Button';
-import { locale } from '../../utilities/locale';
+import { locale } from '../../utilities/locale.js.erb';
 
 
 export const CommentsCount = ({ count, articlePath }) => {

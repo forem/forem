@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 import { forwardRef } from 'preact/compat';
-import { locale } from '../utilities/locale';
+import { locale } from '../utilities/locale.js.erb';
 import { Button } from '@crayons';
 
 
