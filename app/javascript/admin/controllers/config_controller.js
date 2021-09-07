@@ -157,6 +157,8 @@ export default class ConfigController extends Controller {
     event.preventDefault();
     this.configModalAnchorTarget.innerHTML = adminModal({
       title: emailAuthModalTitle,
+      controllerName: 'config',
+      closeModalFunction: 'closeAdminModal',
       body: emailAuthModalBody,
       leftBtnText: 'Confirm disable',
       leftBtnAction: 'disableEmailAuthFromModal',
@@ -235,6 +237,8 @@ export default class ConfigController extends Controller {
     const { providerOfficialName } = event.target.dataset;
     this.configModalAnchorTarget.innerHTML = adminModal({
       title: this.authProviderModalTitle(providerOfficialName),
+      controllerName: 'config',
+      closeModalFunction: 'closeAdminModal',
       body: this.authProviderModalBody(providerOfficialName),
       leftBtnText: 'Confirm disable',
       leftBtnAction: 'disableAuthProviderFromModal',
@@ -359,6 +363,8 @@ export default class ConfigController extends Controller {
   activateMissingKeysModal(providers) {
     this.configModalAnchorTarget.innerHTML = adminModal({
       title: 'Setup not complete',
+      controllerName: 'config',
+      closeModalFunction: 'closeAdminModal',
       body: this.missingAuthKeysModalBody(providers),
       leftBtnText: 'Continue editing',
       leftBtnAction: 'closeAdminModal',
