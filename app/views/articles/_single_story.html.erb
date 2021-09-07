@@ -64,7 +64,7 @@
                   <div class="print-hidden">
                     <button
                       class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
-                      data-info='{"id": <%= story.user_id %>, "className": "User", "style": "full"}'>
+                      data-info='{"id": <%= story.user_id %>, "className": "User", "style": "full", "name": "<%= story.cached_user.name %>"}'>
                       Follow
                     </button>
                   </div>

@@ -33,7 +33,7 @@
                 <button class="chat-action-button crayons-btn crayons-btn--outlined hidden" id="modal-opener">Chat</button>
               </a>
             <% end %>
-            <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button user-profile-follow-button follow-user" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>Follow</button>
+            <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button user-profile-follow-button follow-user" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'>Follow</button>
             <div class="profile-dropdown ml-2 relative hidden" data-username="<%= @user.username %>">
               <button id="user-profile-dropdown" aria-expanded="false" aria-controls="user-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
                 <%= inline_svg_tag("overflow-horizontal.svg", class: "dropdown-icon crayons-icon", aria: true, title: "User actions") %>

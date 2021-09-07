@@ -16,7 +16,9 @@ describe('View article discussion', () => {
     cy.findByRole('button', { name: 'Admin McAdmin profile details' }).click();
 
     cy.findByTestId('profile-preview-card').within(() => {
-      cy.findByRole('button', { name: 'Follow' }).as('userFollowButton');
+      cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).as(
+        'userFollowButton',
+      );
       cy.get('@userFollowButton').click();
 
       // Confirm the follow button has been updated

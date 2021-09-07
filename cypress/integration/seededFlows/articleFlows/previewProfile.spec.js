@@ -78,11 +78,15 @@ describe('Preview user profile from article page', () => {
           cy.findByText('Edinburgh');
           cy.findByText('University of Life');
 
-          cy.findByRole('button', { name: 'Follow' }).click();
+          cy.findByRole('button', {
+            name: 'Follow user: Admin McAdmin',
+          }).click();
 
           // Wait for Follow button to disappear and Following button to be initialized
-          cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-          cy.findByRole('button', { name: 'Following' });
+          cy.findByRole('button', {
+            name: 'Follow user: Admin McAdmin',
+          }).should('not.exist');
+          cy.findByRole('button', { name: 'Unfollow user: Admin McAdmin' });
         });
 
       // Check we can close the preview dropdown
@@ -117,11 +121,15 @@ describe('Preview user profile from article page', () => {
           cy.findByText('Edinburgh');
           cy.findByText('University of Life');
 
-          cy.findByRole('button', { name: 'Follow' }).click();
+          cy.findByRole('button', {
+            name: 'Follow user: Admin McAdmin',
+          }).click();
 
           // Wait for Follow button to disappear and Following button to be initialized
-          cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-          cy.findByRole('button', { name: 'Following' });
+          cy.findByRole('button', {
+            name: 'Follow user: Admin McAdmin',
+          }).should('not.exist');
+          cy.findByRole('button', { name: 'Unfollow user: Admin McAdmin' });
         });
       });
     });
@@ -137,10 +145,14 @@ describe('Preview user profile from article page', () => {
       cy.findAllByTestId('profile-preview-card')
         .first()
         .within(() => {
-          cy.findByRole('button', { name: 'Follow' }).click();
+          cy.findByRole('button', {
+            name: 'Follow user: Admin McAdmin',
+          }).click();
           // Confirm the follow button has been updated
-          cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-          cy.findByRole('button', { name: 'Following' });
+          cy.findByRole('button', {
+            name: 'Follow user: Admin McAdmin',
+          }).should('not.exist');
+          cy.findByRole('button', { name: 'Unfollow user: Admin McAdmin' });
         });
 
       // Close the preview card so the next preview button can be clicked
@@ -153,7 +165,7 @@ describe('Preview user profile from article page', () => {
 
       cy.findAllByTestId('profile-preview-card')
         .last()
-        .findByRole('button', { name: 'Following' });
+        .findByRole('button', { name: 'Unfollow user: Admin McAdmin' });
     });
 
     it('should detach listeners on preview card close', () => {
@@ -280,7 +292,7 @@ describe('Preview user profile from article page', () => {
           name: 'Admin McAdmin',
         }).should('have.focus');
 
-        cy.findByRole('button', { name: 'Follow' });
+        cy.findByRole('button', { name: 'Follow user: Admin McAdmin' });
         cy.findByText('Admin user summary');
         cy.findByText('Software developer at Company');
         cy.findByText('Edinburgh');
