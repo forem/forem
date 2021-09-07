@@ -17,7 +17,7 @@
   </div>
 </div>
 
-<table class="crayons-table" width="100%">
+<table class="crayons-table" width="100%" data-controller="confirmation-modal">
   <thead>
     <tr>
       <th scope="col">User ID</th>
@@ -36,7 +36,8 @@
         <td class="justify-content-center">
           <img class="mx-auto mt-3" width="40" height="40" src="<%= badge_achievement.badge.badge_image %>" alt="badge image" loading="lazy" />
         </td>
-        <td><%= link_to "Remove", admin_badge_achievement_path(badge_achievement), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %></td>
+        <!-- <td><%= link_to "Remove", admin_badge_achievement_path(badge_achievement), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %></td> -->
+        <td><%= link_to "Remove", "#", class: "crayons-btn crayons-btn--danger", data: { action: "click->confirmation-modal#test" } %></td>
       </h5>
     </tr>
     <% end %>
