@@ -160,6 +160,8 @@ function buildModalDiv(text, confirm_text) {
   if (!modalDiv) {
     modalDiv = getModal(text, confirm_text);
     document.body.appendChild(modalDiv);
+  } else {
+    modalDiv.outerHTML = getModal(text, confirm_text).outerHTML;
   }
   return modalDiv;
 }
