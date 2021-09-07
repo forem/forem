@@ -5,49 +5,11 @@ class User < ApplicationRecord
   include CloudinaryHelper
   include Storext.model
 
-  # @citizen428 Preparing to drop profile columns from the users table
-  PROFILE_COLUMNS = %w[
-    available_for
-    behance_url
-    bg_color_hex
-    currently_hacking_on
-    currently_learning
-    currently_streaming_on
-    dribbble_url
-    education
-    email_public
-    employer_name
-    employer_url
-    employment_title
-    facebook_url
-    gitlab_url
-    instagram_url
-    linkedin_url
-    location
-    mastodon_url
-    medium_url
-    mostly_work_with
-    stackoverflow_url
-    summary
-    text_color_hex
-    twitch_url
-    twitch_username
-    website_url
-    youtube_url
-  ].freeze
-
-  INACTIVE_PROFILE_COLUMNS = %w[
-    bg_color_hex
-    text_color_hex
-    email_public
-  ].freeze
-
-  self.ignored_columns = PROFILE_COLUMNS
-
-  # NOTE: @citizen428 This is temporary code during profile migration and will
-  # be removed.
-  concerning :ProfileMigration do
+  # NOTE: we are using an inline module to keep profile related things together.
+  concerning :Profiles do
     included do
+      has_one :profile, dependent: :destroy
+
       # NOTE: There are rare cases were we want to skip this callback, primarily
       # in tests. `skip_callback` modifies global state, which is not thread-safe
       # and can cause hard to track down bugs. We use an instance-level attribute
@@ -56,27 +18,12 @@ class User < ApplicationRecord
 
       # All new users should automatically have a profile
       after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
-
-      # Getters and setters for unmapped profile attributes
-      (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
-        next if INACTIVE_PROFILE_COLUMNS.include?(column)
-
-        delegate column, "#{column}=", to: :profile, allow_nil: true
-      end
-
-      # Getters and setters for mapped profile attributes
-      Profile::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
-        define_method(user_attribute) { profile&.public_send(profile_attribute) }
-        define_method("#{user_attribute}=") do |value|
-          profile&.public_send("#{profile_attribute}=", value)
-        end
-      end
     end
   end
 
   ANY_ADMIN_ROLES = %i[admin super_admin].freeze
   USERNAME_MAX_LENGTH = 30
-  USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
+  USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
   MESSAGES = {
     reserved_username: "username is reserved"
   }.freeze
@@ -87,7 +34,7 @@ class User < ApplicationRecord
     ([a-zA-Z0-9\-.])+ # matches the hostname (ex ilp.uphold.com)
     (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
     \z
-  }x.freeze
+  }x
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -96,7 +43,6 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_one :profile, dependent: :destroy
   has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :destroy
   has_one :setting, class_name: "Users::Setting", dependent: :destroy
 
@@ -262,7 +208,6 @@ class User < ApplicationRecord
       ),
     )
   }
-
   before_validation :check_for_username_change
   before_validation :downcase_email
   # make sure usernames are not empty, to be able to use the database unique index
@@ -272,9 +217,6 @@ class User < ApplicationRecord
   before_create :create_users_settings_and_notification_settings_records
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
-
-  # NOTE: @citizen428 Temporary while migrating to generalized profiles
-  after_save { |user| user.profile&.save if user.profile&.changed? }
 
   after_create_commit :send_welcome_notification
 
@@ -290,7 +232,7 @@ class User < ApplicationRecord
   end
 
   def tag_line
-    summary
+    profile.summary
   end
 
   def twitter_url
@@ -371,9 +313,7 @@ class User < ApplicationRecord
   end
 
   def suspended?
-    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
-    # and data scripts have successfully removed the banned role, we can remove `has_role?(:banned)`
-    has_role?(:suspended) || has_role?(:banned)
+    has_role?(:suspended)
   end
 
   def warned
@@ -412,10 +352,7 @@ class User < ApplicationRecord
   end
 
   def comment_suspended?
-    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
-    # and data scripts have successfully removed the comment_banned role,
-    # we can remove `has_role?(:comment_banned)`
-    has_role?(:comment_suspended) || has_role?(:comment_banned)
+    has_role?(:comment_suspended)
   end
 
   def workshop_eligible?

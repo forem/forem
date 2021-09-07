@@ -12,20 +12,24 @@ describe('Follow user from profile page', () => {
   it('follows and unfollows a user', () => {
     cy.intercept('/follows').as('followsRequest');
 
-    cy.findByRole('button', { name: 'Follow' }).click();
+    cy.findByRole('button', {
+      name: 'Follow user: Article Editor v1 User',
+    }).click();
     cy.wait('@followsRequest');
-    cy.findByRole('button', { name: 'Following' });
+    cy.findByRole('button', { name: 'Unfollow user: Article Editor v1 User' });
 
     // Check that the update persists after reload
     cy.visitAndWaitForUserSideEffects('/article_editor_v1_user');
 
-    cy.findByRole('button', { name: 'Following' }).click();
+    cy.findByRole('button', {
+      name: 'Unfollow user: Article Editor v1 User',
+    }).click();
     cy.wait('@followsRequest');
 
-    cy.findByRole('button', { name: 'Follow' });
+    cy.findByRole('button', { name: 'Follow user: Article Editor v1 User' });
 
     // Check that the update persists after reload
     cy.visitAndWaitForUserSideEffects('/article_editor_v1_user');
-    cy.findByRole('button', { name: 'Follow' });
+    cy.findByRole('button', { name: 'Follow user: Article Editor v1 User' });
   });
 });

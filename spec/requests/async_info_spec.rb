@@ -30,11 +30,4 @@ RSpec.describe "AsyncInfo", type: :request do
       end
     end
   end
-
-  describe "GET /async_info/shell_version" do
-    it "returns shell_version" do
-      get "/async_info/shell_version"
-      expect(response.body).to include("version")
-    end
-  end
 end

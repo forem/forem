@@ -57,7 +57,7 @@ Object {
                   </a>
                 </div>
                 <div>
-                  <p>
+                  <div>
                     <a
                       class="crayons-story__secondary fw-medium m:hidden"
                       href="/Emil99"
@@ -114,7 +114,7 @@ Object {
                           >
                             <button
                               class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
-                              data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"style\\":\\"full\\"}"
+                              data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"name\\":\\"Stella Macejkovic\\",\\"style\\":\\"full\\"}"
                             >
                               Follow
                             </button>
@@ -126,7 +126,7 @@ Object {
                         </div>
                       </div>
                     </div>
-                  </p>
+                  </div>
                   <a
                     class="crayons-story__tertiary fs-xs"
                     href="/some-post/path"
@@ -305,7 +305,7 @@ Object {
                 </a>
               </div>
               <div>
-                <p>
+                <div>
                   <a
                     class="crayons-story__secondary fw-medium m:hidden"
                     href="/Emil99"
@@ -362,7 +362,7 @@ Object {
                         >
                           <button
                             class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
-                            data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"style\\":\\"full\\"}"
+                            data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"name\\":\\"Stella Macejkovic\\",\\"style\\":\\"full\\"}"
                           >
                             Follow
                           </button>
@@ -374,7 +374,7 @@ Object {
                       </div>
                     </div>
                   </div>
-                </p>
+                </div>
                 <a
                   class="crayons-story__tertiary fs-xs"
                   href="/some-post/path"

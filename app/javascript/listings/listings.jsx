@@ -119,7 +119,12 @@ export class Listings extends Component {
   selectCategory = (e, cat = '') => {
     e.preventDefault();
     const { query, tags } = this.state;
-    this.setState({ category: cat, page: 0 });
+    this.setState((prevState) => {
+      if (prevState.isModalOpen) {
+        return { category: cat, page: 0, isModalOpen: false };
+      }
+      return { category: cat, page: 0 };
+    });
     this.listingSearch(query, tags, cat, null);
   };
 

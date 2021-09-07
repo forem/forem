@@ -413,7 +413,7 @@ RSpec.describe User, type: :model do
         user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)
 
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
-          user.update(website_url: "http://example.com")
+          user.update(credits_count: 100)
         end
       end
     end
@@ -825,16 +825,7 @@ RSpec.describe User, type: :model do
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)
       expect(user.profile).to be_present
-      expect(user.profile).to respond_to(:available_for)
-    end
-
-    it "propagates changes of unmapped attributes to the profile model", :aggregate_failures do
-      expect do
-        user.update(available_for: "profile migrations")
-      end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
-
-      # Changes were also persisted in the users table
-      expect(user.reload.available_for).to eq "profile migrations"
+      expect(user.profile).to respond_to(:location)
     end
   end
 end

@@ -74,23 +74,25 @@
       <%= render partial: "landing_page_modal", locals: { page: @landing_page } %>
     <% end %>
 
-    <div class="form-group">
-      <p>
-        <b><%= link_to "Feature Flag", "/admin/feature_flags" %></b>
-        <span class="badge badge-<%= FeatureFlag.exist?(@page.feature_flag_name) ? "success" : "warning" %>">
-          <%= FeatureFlag.exist?(@page.feature_flag_name) ? "Present" : "Not Present" %>
-        </span>
-        <br>
-        <% if FeatureFlag.exist?(@page.feature_flag_name) %>
-          Access to this page is being guarded by the feature flag <code><%= @page.feature_flag_name %></code>.
-          <%= link_to "Modify flag here", "/admin/feature_flags/features/#{@page.feature_flag_name}" %>
-        <% else %>
-          Everyone has access. Optionally guard access to this page by creating feature <code><%= @page.feature_flag_name %></code>
-          <%= link_to "here", "/admin/feature_flags/features" %>
-        <% end %>
-        <br>
-      </p>
-    </div>
+    <% if current_user.has_role?(:tech_admin) %>
+      <div class="form-group">
+        <p>
+          <b><%= link_to "Feature Flag", "/admin/feature_flags" %></b>
+          <span class="badge badge-<%= FeatureFlag.exist?(@page.feature_flag_name) ? "success" : "warning" %>">
+            <%= FeatureFlag.exist?(@page.feature_flag_name) ? "Present" : "Not Present" %>
+          </span>
+          <br>
+          <% if FeatureFlag.exist?(@page.feature_flag_name) %>
+            Access to this page is being guarded by the feature flag <code><%= @page.feature_flag_name %></code>.
+            <%= link_to "Modify flag here", "/admin/feature_flags/features/#{@page.feature_flag_name}" %>
+          <% else %>
+            Everyone has access. Optionally guard access to this page by creating feature <code><%= @page.feature_flag_name %></code>
+            <%= link_to "here", "/admin/feature_flags/features" %>
+          <% end %>
+          <br>
+        </p>
+      </div>
+    <% end %>
     <%= form.submit class: "crayons-btn" %>
   <% end %>
 

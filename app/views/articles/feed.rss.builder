@@ -7,7 +7,7 @@ xml.rss version: "2.0" do
   xml.channel do
     xml.title user ? user.name : community_name
     xml.author user ? user.name : community_name
-    xml.description user ? user.summary : Settings::Community.community_description
+    xml.description user ? user.tag_line : Settings::Community.community_description
     xml.link user ? app_url(user.path) : app_url
     xml.language "en"
     if user
