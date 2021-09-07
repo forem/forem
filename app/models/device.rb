@@ -40,7 +40,8 @@ class Device < ApplicationRecord
           subtitle: title,
           body: body
         },
-        "thread-id": Settings::Community.community_name
+        "thread-id": Settings::Community.community_name,
+        sound: "default"
       },
       data: payload
     }

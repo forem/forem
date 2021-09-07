@@ -40,8 +40,9 @@ module Notifications
 
         PushNotifications::Send.call(
           user_ids: targets,
-          title: "@#{comment.user.username}",
-          body: "Re: #{comment.parent_or_root_article.title.strip}",
+          title: "💬 New Comment",
+          body: "#{comment.user.username} commented on " \
+                "#{comment.commentable.title.strip}:\n#{comment.body_markdown.strip}",
           payload: {
             url: URL.url(comment.path),
             type: "new comment"
