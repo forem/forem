@@ -1,6 +1,7 @@
 ---
 fr:
   core:
+    add_comment: Ajouter un commentaire
     comment: Commentaire
     copy_link: Copier le lien
     create_account: Créer un profil

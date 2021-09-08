@@ -1,5 +1,5 @@
 import { getInstantClick } from '../topNavigation/utilities';
-import { locale } from '@utilities/locale.js.erb';
+import { locale } from '@utilities/locale';
 
 /* global showLoginModal  userData */
 

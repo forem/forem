@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { h, Component, createRef } from 'preact';
 import { listingPropTypes } from './listingPropTypes';
 import { Button, Dropdown } from '@crayons';
-import { locale } from '@utilities/locale.js.erb';
+import { locale } from '@utilities/locale';
 
 const Icon = () => (
   <svg

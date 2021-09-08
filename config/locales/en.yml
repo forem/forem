@@ -31,6 +31,7 @@
 
 en:
   core:
+    add_comment: "Add comment"
     comment: "Comment"
     copy_link: "Copy link"
     create_account: "Create account"

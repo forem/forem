@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { articlePropTypes } from '../../common-prop-types';
 import { Button } from '../../crayons/Button';
-import { locale } from '../../utilities/locale.js.erb';
+import { locale } from '../../utilities/locale';
 
 export const ReactionsCount = ({ article }) => {
   const totalReactions = article.public_reactions_count || 0;

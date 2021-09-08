@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '../../crayons/Button';
-import { locale } from '../../utilities/locale.js.erb';
+import { locale } from '../../utilities/locale';
 
 
 export const CommentsCount = ({ count, articlePath }) => {
@@ -48,7 +48,7 @@ export const CommentsCount = ({ count, articlePath }) => {
         data-testid="add-a-comment"
       >
         <span className="inline s:hidden">0</span>
-        <span className="hidden s:inline">Add comment</span>
+        <span className="hidden s:inline">{locale('core.add_comment')}</span>
       </Button>
     );
   }
