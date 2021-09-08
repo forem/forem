@@ -1,6 +1,7 @@
 /* global jQuery */
 import { Controller } from 'stimulus';
 import { adminModal } from '../adminModal';
+import { displaySnackbar } from '../displaySnackbar';
 
 const recaptchaFields = document.getElementById('recaptchaContainer');
 const emailRegistrationCheckbox = document.getElementById(
@@ -10,11 +11,10 @@ const emailAuthSettingsSection = document.getElementById(
   'email-auth-settings-section',
 );
 const emailAuthModalTitle = 'Disable Email address registration';
-// TODO: Remove the "You mut confirm..." warning once we build more robust flow for Admin/Config
+
 const emailAuthModalBody = `
   <p>If you disable Email address as a registration option, people cannot create an account with their email address.</p>
-  <p>However, people who have already created an account using their email address can continue to login.</p>
-  <p><strong>You must confirm and update the settings below to complete this action.</strong></p>`;
+  <p>However, people who have already created an account using their email address can continue to login.</p>`;
 
 export default class ConfigController extends Controller {
   static targets = [
@@ -93,14 +93,6 @@ export default class ConfigController extends Controller {
     }
   }
 
-  displaySnackbar(message) {
-    return document.dispatchEvent(
-      new CustomEvent('snackbar:add', {
-        detail: { message },
-      }),
-    );
-  }
-
   async updateConfigurationSettings(event) {
     event.preventDefault();
     try {
@@ -118,9 +110,9 @@ export default class ConfigController extends Controller {
 
       const outcome = await response.json();
 
-      this.displaySnackbar(outcome.message ?? outcome.error);
+      displaySnackbar(outcome.message ?? outcome.error);
     } catch (err) {
-      this.displaySnackbar(err.message);
+      displaySnackbar(err.message);
     }
   }
 

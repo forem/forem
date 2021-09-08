@@ -1,5 +1,6 @@
 import { Controller } from 'stimulus';
 import { adminModal } from '../adminModal';
+import { displaySnackbar } from '../displaySnackbar';
 
 const confirmationText = (username) =>
   `My username is @${username} and this action is 100% safe and appropriate.`;
@@ -17,9 +18,13 @@ export default class ConfirmationModalController extends Controller {
     document.body.style.overflowY = 'inherit';
   }
 
+  removeBadgeAchievement(id) {
+    return document.querySelector(`[data-row-id="${id}"]`).remove();
+  }
+
   async sendToEndpoint({ itemId, endpoint }) {
     try {
-      await fetch(`${endpoint}/${itemId}`, {
+      const response = await fetch(`${endpoint}/${itemId}`, {
         method: 'DELETE',
         headers: {
           Accept: 'application/json',
@@ -30,9 +35,19 @@ export default class ConfirmationModalController extends Controller {
         body: JSON.stringify({ id: itemId }),
         credentials: 'same-origin',
       });
+
+      const outcome = await response.json();
+
+      if (response.ok) {
+        this.removeBadgeAchievement(itemId);
+        displaySnackbar(outcome.message);
+      } else {
+        displaySnackbar(outcome.error);
+      }
+
+      this.closeConfirmationModal();
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err.message);
+      displaySnackbar(err.message);
     }
   }
 
