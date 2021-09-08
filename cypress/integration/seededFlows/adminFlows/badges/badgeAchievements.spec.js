@@ -21,6 +21,10 @@ describe('Badge Achievements', () => {
         cy.get('.crayons-modal__box > header > p')
           .contains('Confirm changes')
           .should('be.visible');
+
+        cy.get('[data-confirmation-modal-target="confirmationTextField"]').type(
+          `My username is @${user.username} and this action is 100% safe and appropriate.`,
+        );
       });
     });
   });
