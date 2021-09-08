@@ -5,7 +5,11 @@ const confirmationText = (username) =>
   `My username is @${username} and this action is 100% safe and appropriate.`;
 
 export default class ConfirmationModalController extends Controller {
-  static targets = ['confirmationModalAnchor', 'confirmationTextField'];
+  static targets = [
+    'confirmationModalAnchor',
+    'confirmationTextField',
+    'confirmationTextWarning',
+  ];
 
   closeConfirmationModal() {
     this.confirmationModalAnchorTarget.innerHTML = '';
@@ -13,27 +17,19 @@ export default class ConfirmationModalController extends Controller {
     document.body.style.overflowY = 'inherit';
   }
 
-  async sendToEndpoint({ itemId }) {
+  async sendToEndpoint({ itemId, endpoint }) {
     try {
-      const body = { id: itemId };
-      const response = await fetch(
-        `/admin/content_manager/badge_achievements/${itemId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Accept: 'application/json',
-            'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
-              ?.content,
-          },
-          body,
-          credentials: 'same-origin',
+      await fetch(`${endpoint}/${itemId}`, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
+            ?.content,
         },
-      );
-
-      const outcome = await response.json();
-
-      // eslint-disable-next-line no-console
-      console.log(outcome);
+        body: JSON.stringify({ id: itemId }),
+        credentials: 'same-origin',
+      });
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err.message);
@@ -43,11 +39,9 @@ export default class ConfirmationModalController extends Controller {
   checkConfirmationText(event) {
     const { itemId, endpoint, username } = event.target.dataset;
 
-    if (this.confirmationTextFieldTarget.value != confirmationText(username)) {
-      alert('The confirmation text does not match; please try again.');
-      return;
-    }
-    this.sendToEndpoint({ itemId, endpoint });
+    this.confirmationTextFieldTarget.value != confirmationText(username)
+      ? this.confirmationTextWarningTarget.classList.remove('hidden')
+      : this.sendToEndpoint({ itemId, endpoint });
   }
 
   confirmationModalBody(username) {
@@ -55,6 +49,9 @@ export default class ConfirmationModalController extends Controller {
       <div class="crayons-field">
         <p>To confirm this update, type in the sentence: <br />
         <strong>${confirmationText(username)}</strong></p>
+        <div data-confirmation-modal-target="confirmationTextWarning" class="crayons-notice crayons-notice--warning hidden" aria-live="polite">
+          The confirmation text does not match.
+        </div>
         <input
           type="text"
           data-confirmation-modal-target="confirmationTextField"
