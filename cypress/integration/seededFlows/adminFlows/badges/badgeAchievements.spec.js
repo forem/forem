@@ -1,18 +1,27 @@
 describe('Badge Achievements', () => {
   beforeEach(() => {
     cy.testSetup();
-    cy.fixture('users/adminUser.json').as('user');
+    // cy.fixture('users/adminUser.json').as('user');
 
-    cy.get('@user').then((user) => {
-      cy.loginAndVisit(user, '/admin/content_manager/badge_achievements');
-    });
+    // cy.get('@user').then((user) => {
+    //   cy.loginAndVisit(user, '/admin/content_manager/badge_achievements');
+    // });
   });
 
-  it('delete a badge achievement', () => {
-    cy.findByText('Remove').as('removeBadgeButton');
+  describe('delete a badge achievement', () => {
+    it('should display confirmation modal', () => {
+      cy.fixture('users/adminUser.json').as('user');
+      cy.get('@user').then((user) => {
+        cy.loginAndVisit(user, '/admin/content_manager/badge_achievements');
 
-    cy.get('@removeBadgeButton').click();
+        cy.findByRole('table').within(() => {
+          cy.findByRole('button', { name: 'Remove' }).click();
+        });
 
-    cy.get('@removeBadgeButton').should('not.exist');
+        cy.get('.crayons-modal__box > header > p')
+          .contains('Confirm changes')
+          .should('be.visible');
+      });
+    });
   });
 });
