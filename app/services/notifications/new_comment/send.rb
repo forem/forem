@@ -3,6 +3,8 @@
 module Notifications
   module NewComment
     class Send
+      include ActionView::Helpers::TextHelper
+
       def initialize(comment)
         @comment = comment
       end
@@ -42,7 +44,8 @@ module Notifications
           user_ids: targets,
           title: "💬 New Comment",
           body: "#{comment.user.username} commented on " \
-                "#{comment.commentable.title.strip}:\n#{comment.body_markdown.strip}",
+                "#{comment.commentable.title.strip}:\n" \
+                "#{strip_tags(comment.processed_html).strip}",
           payload: {
             url: URL.url(comment.path),
             type: "new comment"
