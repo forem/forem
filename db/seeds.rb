@@ -512,7 +512,7 @@ seeder.create_if_none(Listing) do
       Listing.create!(
         user: user,
         title: Faker::Lorem.sentence,
-        body_markdown: Faker::Markdown.random,
+        body_markdown: Faker::Markdown.random(:sandwich, :random),
         location: Faker::Address.city,
         organization_id: user.organizations.first&.id,
         listing_category_id: category_id,
