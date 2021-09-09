@@ -13,11 +13,12 @@ module Authentication
   # 3. return the current user if a user is given (already logged in scenario)
   class Authenticator
     # auth_payload is the payload schema, see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema
-    def initialize(auth_payload, current_user: nil, cta_variant: nil)
+    def initialize(auth_payload, current_user: nil, cta_variant: nil, access_token: nil)
       @provider = load_authentication_provider(auth_payload)
 
       @current_user = current_user
       @cta_variant = cta_variant
+      @access_token = access_token
     end
 
     def self.call(...)
@@ -25,7 +26,12 @@ module Authentication
     end
 
     def call
-      identity = Identity.build_from_omniauth(provider)
+      identity = if @access_token.present?
+                   build_identity_from_access_token!
+                 else
+                   Identity.build_from_omniauth(provider)
+                 end
+
       return current_user if current_user_identity_exists?
 
       # These variables need to be set outside of the scope of the
@@ -166,6 +172,16 @@ module Authentication
 
     def flag_spam_user(user)
       Slack::Messengers::PotentialSpammer.call(user: user)
+    end
+
+    def build_identity_from_access_token!
+      response = HTTParty.get("https://graph.facebook.com/me?access_token=#{@access_token}")
+      expected_uid = provider.payload.extra.raw_info.id
+      result_uid = JSON.parse(response.body)["id"].to_s
+      validation_successful = response.code == 200 && expected_uid == result_uid
+      raise "Authentication error: Access Token validation failed" unless validation_successful
+
+      Identity.build_from_access_token(provider)
     end
   end
 end

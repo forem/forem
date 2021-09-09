@@ -1,5 +1,6 @@
 class AsyncInfoController < ApplicationController
   # No pundit policy. All actions are unrestricted.
+  skip_before_action :verify_authenticity_token, only: :access_token
 
   def base_data
     flash.discard(:notice)
@@ -21,6 +22,24 @@ class AsyncInfoController < ApplicationController
           user: user_data
         }
       end
+    end
+  end
+
+  def access_token
+    info = Struct.new({ name: params[:name], email: params[:email], image: params[:image] })
+    extra = Struct.new({ raw_info: Struct.new({ id: params[:uid] }) })
+    auth_payload = Struct.new({ provider: "facebook", info: info, extra: extra })
+    @user = Authentication::Authenticator.call(
+      auth_payload,
+      current_user: current_user,
+      cta_variant: params[:cta_variant],
+      access_token: params[:access_token],
+    )
+
+    if @user.persisted? && @user.valid?
+      render json: { redirect: "/" }
+    else
+      render json: { error: "Authentication error" }
     end
   end
 

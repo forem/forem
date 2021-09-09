@@ -41,6 +41,22 @@ class Identity < ApplicationRecord
     identity
   end
 
+  # Builds an identity from a direct access_token request
+  def self.build_from_access_token(provider)
+    payload = provider.payload
+
+    identity = find_or_initialize_by(
+      provider: provider.name,
+      uid: payload.extra.raw_info.id,
+    )
+
+    identity.assign_attributes(
+      auth_data_dump: payload,
+    )
+
+    identity
+  end
+
   def email
     auth_data_dump&.info&.email || format(NO_EMAIL_MSG, provider: provider)
   end
