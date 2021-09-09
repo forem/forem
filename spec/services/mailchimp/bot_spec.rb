@@ -90,6 +90,17 @@ RSpec.describe Mailchimp::Bot, type: :service do
 
       expect(mailchimp_bot).to have_received(:resubscribe_to_newsletter)
     end
+
+    it "does not try to resubscribe on other errors" do
+      mailchimp_bot = described_class.new(user)
+      gibbon_error =
+        Gibbon::GibbonError.new("You must set an api_key prior to making a call")
+      allow(mailchimp_bot.gibbon).to receive(:upsert).and_raise(gibbon_error)
+      allow(mailchimp_bot).to receive(:resubscribe_to_newsletter)
+      mailchimp_bot.upsert_to_newsletter
+
+      expect(mailchimp_bot).not_to have_received(:resubscribe_to_newsletter)
+    end
   end
 
   describe "manage community moderator list" do
