@@ -1,5 +1,0 @@
-translations:
-  - file: "public/javascripts/en.js"
-    only: "en.core.*"
-  - file: "public/javascripts/fr.js"
-    only: "fr.core.*"
