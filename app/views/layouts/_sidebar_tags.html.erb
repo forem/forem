@@ -2,7 +2,7 @@
   <% if user_signed_in? %>
     <header class="p-2 pr-0 flex items-center justify-between">
       <h3 class="crayons-subtitle-3">My Tags</h3>
-      <a href="/dashboard/following_tags" class="crayons-btn crayons-btn--icon crayons-btn--ghost-dimmed" aria-label="Customize tag priority" title="Customize tag priority">
+      <a id="tag-priority-link" href="/dashboard/following_tags" class="crayons-btn crayons-btn--icon crayons-btn--ghost-dimmed" aria-label="Customize tag priority" title="Customize tag priority">
         <%= inline_svg_tag("cog.svg", class: "crayons-icon") %>
       </a>
     </header>
