@@ -792,7 +792,7 @@ GEM
     vault (0.16.0)
       aws-sigv4
     vcr (6.0.0)
-    view_component (2.39.0)
+    view_component (2.40.0)
       activesupport (>= 5.0.0, < 8.0)
       method_source (~> 1.0)
     virtus (1.0.5)
@@ -982,7 +982,7 @@ DEPENDENCIES
   validate_url (~> 1.0)
   vault (~> 0.16)
   vcr (~> 6.0)
-  view_component (~> 2.39)
+  view_component (~> 2.40)
   wcag_color_contrast (~> 0.1)
   web-console (~> 4.1)
   webdrivers (~> 4.6)
