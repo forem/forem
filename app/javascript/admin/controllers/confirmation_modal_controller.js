@@ -99,7 +99,7 @@ export default class ConfirmationModalController extends Controller {
       rightBtnText: 'Discard changes',
       rightBtnAction: 'closeConfirmationModal',
       rightBtnClasses: 'crayons-btn--secondary',
-      leftCustomDataAttr: `data-item-id="${itemId}" data-endpoint="${endpoint}" data-username="${username}"`,
+      leftCustomDataAttr: `data-item-id="${itemId}" data-endpoint="${endpoint}" data-username="${username}" data-testid="confirmChangesBtn"`,
     });
   }
 }
