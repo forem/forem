@@ -32,7 +32,6 @@ export default class ConfirmationModalController extends Controller {
           'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
             ?.content,
         },
-        body: JSON.stringify({ id: itemId }),
         credentials: 'same-origin',
       });
 
@@ -54,9 +53,12 @@ export default class ConfirmationModalController extends Controller {
   checkConfirmationText(event) {
     const { itemId, endpoint, username } = event.target.dataset;
 
-    this.confirmationTextFieldTarget.value != confirmationText(username)
-      ? this.confirmationTextWarningTarget.classList.remove('hidden')
-      : this.sendToEndpoint({ itemId, endpoint });
+    if (this.confirmationTextFieldTarget.value == confirmationText(username)) {
+      this.closeConfirmationModal();
+      this.sendToEndpoint({ itemId, endpoint });
+    } else {
+      this.confirmationTextWarningTarget.classList.remove('hidden');
+    }
   }
 
   confirmationModalBody(username) {
