@@ -19,7 +19,7 @@ export default class ConfirmationModalController extends Controller {
 
   async sendToEndpoint({ itemId, endpoint }) {
     try {
-      await fetch(`${endpoint}/${itemId}`, {
+      const result = await fetch(`${endpoint}/${itemId}`, {
         method: 'DELETE',
         headers: {
           Accept: 'application/json',
@@ -27,9 +27,11 @@ export default class ConfirmationModalController extends Controller {
           'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
             ?.content,
         },
-        body: JSON.stringify({ id: itemId }),
         credentials: 'same-origin',
       });
+      if (result.ok) {
+        location.reload();
+      }
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err.message);
@@ -39,9 +41,12 @@ export default class ConfirmationModalController extends Controller {
   checkConfirmationText(event) {
     const { itemId, endpoint, username } = event.target.dataset;
 
-    this.confirmationTextFieldTarget.value != confirmationText(username)
-      ? this.confirmationTextWarningTarget.classList.remove('hidden')
-      : this.sendToEndpoint({ itemId, endpoint });
+    if (this.confirmationTextFieldTarget.value == confirmationText(username)) {
+      this.closeConfirmationModal();
+      this.sendToEndpoint({ itemId, endpoint });
+    } else {
+      this.confirmationTextWarningTarget.classList.remove('hidden');
+    }
   }
 
   confirmationModalBody(username) {

@@ -19,7 +19,7 @@ module Admin
       else
         flash[:danger] = @badge_achievement.errors_as_sentence
       end
-      redirect_to admin_badge_achievements_path
+      head :ok
     end
 
     def award
