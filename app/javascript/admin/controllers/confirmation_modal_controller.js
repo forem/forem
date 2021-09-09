@@ -5,12 +5,20 @@ import { displaySnackbar } from '../displaySnackbar';
 const confirmationText = (username) =>
   `My username is @${username} and this action is 100% safe and appropriate.`;
 
+const errorAlert = (errMsg) =>
+  `<div class="crayons-notice crayons-notice--danger mb-3">${errMsg}</div>`;
+
 export default class ConfirmationModalController extends Controller {
   static targets = [
     'confirmationModalAnchor',
     'confirmationTextField',
     'confirmationTextWarning',
+    'errorAlertAnchor',
   ];
+
+  displayErrorAlert(errMsg) {
+    this.errorAlertAnchorTarget.innerHTML = errorAlert(errMsg);
+  }
 
   closeConfirmationModal() {
     this.confirmationModalAnchorTarget.innerHTML = '';
@@ -41,12 +49,12 @@ export default class ConfirmationModalController extends Controller {
         this.removeBadgeAchievement(itemId);
         displaySnackbar(outcome.message);
       } else {
-        displaySnackbar(outcome.error);
+        this.displayErrorAlert(outcome.error);
       }
 
       this.closeConfirmationModal();
     } catch (err) {
-      displaySnackbar(err.message);
+      this.displayErrorAlert(err.message);
     }
   }
 
