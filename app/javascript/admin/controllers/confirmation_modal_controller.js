@@ -1,24 +1,20 @@
 import { Controller } from 'stimulus';
 import { adminModal } from '../adminModal';
 import { displaySnackbar } from '../displaySnackbar';
+import { displayErrorAlert } from '../displayErrorAlert';
 
 const confirmationText = (username) =>
   `My username is @${username} and this action is 100% safe and appropriate.`;
 
-const errorAlert = (errMsg) =>
-  `<div class="crayons-notice crayons-notice--danger mb-3">${errMsg}</div>`;
+// const errorAlert = (errMsg) =>
+//   `<div class="crayons-notice crayons-notice--danger mb-3">${errMsg}</div>`;
 
 export default class ConfirmationModalController extends Controller {
   static targets = [
     'confirmationModalAnchor',
     'confirmationTextField',
     'confirmationTextWarning',
-    'errorAlertAnchor',
   ];
-
-  displayErrorAlert(errMsg) {
-    this.errorAlertAnchorTarget.innerHTML = errorAlert(errMsg);
-  }
 
   closeConfirmationModal() {
     this.confirmationModalAnchorTarget.innerHTML = '';
@@ -49,12 +45,12 @@ export default class ConfirmationModalController extends Controller {
         this.removeBadgeAchievement(itemId);
         displaySnackbar(outcome.message);
       } else {
-        this.displayErrorAlert(outcome.error);
+        displayErrorAlert(outcome.error);
       }
 
       this.closeConfirmationModal();
     } catch (err) {
-      this.displayErrorAlert(err.message);
+      displayErrorAlert(err.message);
     }
   }
 
