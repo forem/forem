@@ -24,7 +24,9 @@ describe('Follow user from search results', () => {
 
     cy.intercept('/follows').as('followsRequest');
 
-    cy.findAllByRole('button', { name: 'Follow' }).first().as('followButton');
+    cy.findByRole('button', { name: 'Follow user: article_editor_v1_user' }).as(
+      'followButton',
+    );
     cy.get('@followButton').click();
 
     cy.wait('@followsRequest');

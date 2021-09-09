@@ -17,7 +17,12 @@
         </span>
 
         <div class="profile-header__actions">
-          <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button user-profile-follow-button" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>Follow</button>
+          <button
+            id="user-follow-butt"
+            class="crayons-btn whitespace-nowrap follow-action-button user-profile-follow-button"
+            data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'>
+            Follow
+          </button>
         </div>
       </div>
 
