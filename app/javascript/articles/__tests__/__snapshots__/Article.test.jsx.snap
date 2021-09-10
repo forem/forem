@@ -70,7 +70,7 @@ Object {
                       <button
                         aria-controls="story-author-preview-content-62407"
                         aria-label="Stella Macejkovic profile details"
-                        class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1"
+                        class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1 -my-2"
                         id="story-author-preview-trigger-62407"
                       >
                         Stella Macejkovic
@@ -318,7 +318,7 @@ Object {
                     <button
                       aria-controls="story-author-preview-content-62407"
                       aria-label="Stella Macejkovic profile details"
-                      class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1"
+                      class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1 -my-2"
                       id="story-author-preview-trigger-62407"
                     >
                       Stella Macejkovic
