@@ -6,9 +6,6 @@ import { displayErrorAlert } from '../displayErrorAlert';
 const confirmationText = (username) =>
   `My username is @${username} and this action is 100% safe and appropriate.`;
 
-// const errorAlert = (errMsg) =>
-//   `<div class="crayons-notice crayons-notice--danger mb-3">${errMsg}</div>`;
-
 export default class ConfirmationModalController extends Controller {
   static targets = [
     'confirmationModalAnchor',
@@ -95,7 +92,7 @@ export default class ConfirmationModalController extends Controller {
       rightBtnText: 'Discard changes',
       rightBtnAction: 'closeConfirmationModal',
       rightBtnClasses: 'crayons-btn--secondary',
-      leftCustomDataAttr: `data-item-id="${itemId}" data-endpoint="${endpoint}" data-username="${username}" data-testid="confirmChangesBtn"`,
+      leftCustomDataAttr: `data-item-id="${itemId}" data-endpoint="${endpoint}" data-username="${username}"`,
     });
   }
 }

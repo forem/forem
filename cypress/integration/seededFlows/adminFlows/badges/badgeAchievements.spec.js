@@ -24,7 +24,7 @@ describe('Badge Achievements', () => {
         'Text that does not match.',
       );
 
-      cy.findByTestId('confirmChangesBtn').click();
+      cy.findByRole('button', { name: 'Confirm changes' });
 
       cy.get('.crayons-notice')
         .contains('The confirmation text does not match.')
@@ -43,7 +43,7 @@ describe('Badge Achievements', () => {
           `My username is @${user.username} and this action is 100% safe and appropriate.`,
         );
 
-        cy.findByTestId('confirmChangesBtn').click();
+        cy.findByRole('button', { name: 'Confirm changes' });
 
         cy.findByTestId('snackbar').within(() => {
           cy.findByRole('alert').should(
@@ -71,7 +71,7 @@ describe('Badge Achievements', () => {
           `My username is @${user.username} and this action is 100% safe and appropriate.`,
         );
 
-        cy.findByTestId('confirmChangesBtn').click();
+        cy.findByRole('button', { name: 'Confirm changes' });
 
         cy.get('.crayons-notice.crayons-notice--danger').should(
           'have.text',
