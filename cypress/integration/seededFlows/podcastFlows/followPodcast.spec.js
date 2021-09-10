@@ -20,6 +20,7 @@ describe('Follow podcast', () => {
     cy.get('@followButton').click();
     // Inner text should now be following
     cy.get('@followButton').should('have.text', 'Following');
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
     // Check that state is persisted on refresh
     cy.visitAndWaitForUserSideEffects('/developeronfire');
@@ -30,6 +31,7 @@ describe('Follow podcast', () => {
     // Check it reverts back to Follow on click
     cy.get('@followButton').click();
     cy.get('@followButton').should('have.text', 'Follow');
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
 
     // Check that state is persisted on refresh
     cy.visitAndWaitForUserSideEffects('/developeronfire');

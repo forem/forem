@@ -59,7 +59,7 @@ function addAriaLabelToButton({ button, followType, followName, style = '' }) {
       break;
     case 'follow-back':
       label = `Follow ${followType.toLowerCase()} back: ${followName}`;
-      pressed = 'true';
+      pressed = 'false';
       break;
     case 'following':
       label = `Unfollow ${followType.toLowerCase()}: ${followName}`;
@@ -67,14 +67,15 @@ function addAriaLabelToButton({ button, followType, followName, style = '' }) {
       break;
     case 'self':
       label = `Edit profile`;
-      pressed = 'false';
       break;
     default:
       label = `Follow ${followType.toLowerCase()}: ${followName}`;
       pressed = 'false';
   }
   button.setAttribute('aria-label', label);
-  button.setAttribute('aria-pressed', pressed);
+  pressed.length === 0
+    ? button.removeAttribute('aria-pressed')
+    : button.setAttribute('aria-pressed', pressed);
 }
 
 /**

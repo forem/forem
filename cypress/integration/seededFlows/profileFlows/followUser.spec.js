@@ -16,20 +16,31 @@ describe('Follow user from profile page', () => {
       name: 'Follow user: Article Editor v1 User',
     }).click();
     cy.wait('@followsRequest');
-    cy.findByRole('button', { name: 'Unfollow user: Article Editor v1 User' });
-
-    // Check that the update persists after reload
-    cy.visitAndWaitForUserSideEffects('/article_editor_v1_user');
-
     cy.findByRole('button', {
       name: 'Unfollow user: Article Editor v1 User',
-    }).click();
-    cy.wait('@followsRequest');
+    }).as('unFollowButton');
 
-    cy.findByRole('button', { name: 'Follow user: Article Editor v1 User' });
+    cy.get('@unFollowButton').should('have.text', 'Following');
+    cy.get('@unFollowButton').should('have.attr', 'aria-pressed', 'true');
 
     // Check that the update persists after reload
     cy.visitAndWaitForUserSideEffects('/article_editor_v1_user');
-    cy.findByRole('button', { name: 'Follow user: Article Editor v1 User' });
+
+    cy.get('@unFollowButton').click();
+
+    cy.wait('@followsRequest');
+    cy.get('@unFollowButton').should('not.exist');
+
+    cy.findByRole('button', { name: 'Follow user: Article Editor v1 User' }).as(
+      'followButton',
+    );
+
+    cy.get('@followButton').should('have.text', 'Follow');
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
+
+    // Check that the update persists after reload
+    cy.visitAndWaitForUserSideEffects('/article_editor_v1_user');
+    cy.get('@followButton').should('have.text', 'Follow');
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
   });
 });

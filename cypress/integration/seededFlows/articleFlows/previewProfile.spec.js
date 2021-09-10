@@ -78,15 +78,27 @@ describe('Preview user profile from article page', () => {
           cy.findByText('Edinburgh');
           cy.findByText('University of Life');
 
-          cy.findByRole('button', {
-            name: 'Follow user: Admin McAdmin',
-          }).click();
+          cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).as(
+            'followUserButton',
+          );
+
+          cy.get('@followUserButton').should(
+            'have.attr',
+            'aria-pressed',
+            'false',
+          );
+          cy.get('@followUserButton').click();
 
           // Wait for Follow button to disappear and Following button to be initialized
-          cy.findByRole('button', {
-            name: 'Follow user: Admin McAdmin',
-          }).should('not.exist');
-          cy.findByRole('button', { name: 'Unfollow user: Admin McAdmin' });
+          cy.get('@followUserButton').should('not.exist');
+          cy.findByRole('button', { name: 'Unfollow user: Admin McAdmin' }).as(
+            'unfollowUserButton',
+          );
+          cy.get('@unfollowUserButton').should(
+            'have.attr',
+            'aria-pressed',
+            'true',
+          );
         });
 
       // Check we can close the preview dropdown
