@@ -21,7 +21,7 @@
 <!-- Actual FB SDK logic that wraps around  -->
 <script async defer type="text/javascript">
   var form = document.querySelector('form.provider-facebook');
-  form.action = "/async_info/access_token"
+  form.action = "/users/access_token/facebook"
   form.onsubmit = function(e) {
     // When the button is clicked it will prevent the default form submit
     e.preventDefault();

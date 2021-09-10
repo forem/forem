@@ -8,10 +8,13 @@
       -->
       <% next if provider.provider_name == :apple %>
       <% unless @user.authenticated_through?(provider.provider_name) %>
-        <%= form_with url: provider.sign_in_path(state: "profile"), class: "flex w-100", local: true do |f| %>
+        <%= form_with url: provider.sign_in_path(state: "profile"), class: "flex w-100 provider-#{provider.provider_name}", local: true do |f| %>
           <%= f.button type: :submit, class: "crayons-btn crayons-btn--icon-left crayons-btn--brand-#{provider.provider_name} m-1" do %>
             <%= inline_svg_tag("#{provider.provider_name}.svg", aria: true, class: "crayons-icon", title: provider.provider_name) %>
             Connect <%= provider.official_name %> Account
+          <% end %>
+          <% if provider.provider_name == :facebook %>
+            <%= render "shared/authentication/facebook_sdk_wrapper", form: f %>
           <% end %>
         <% end %>
       <% end %>

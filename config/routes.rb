@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     passwords: "passwords",
     confirmations: "confirmations"
   }
-  post "/async_info/access_token", to: "async_info#access_token"
+  post "/users/access_token/facebook", to: "users/access_token#facebook"
 
   devise_scope :user do
     get "/enter", to: "registrations#new", as: :sign_up
