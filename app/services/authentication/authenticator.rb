@@ -175,12 +175,18 @@ module Authentication
     end
 
     def build_identity_from_access_token!
+      # Anyone could figure out a user's 'uid' and impersonate a request to
+      # authenticate in their behalf. The access_token is what we use to
+      # validate the owner of the account actually made the request
       response = HTTParty.get("https://graph.facebook.com/me?access_token=#{@access_token}")
       expected_uid = provider.payload.extra.raw_info.id
       result_uid = JSON.parse(response.body)["id"].to_s
+
       validation_successful = response.code == 200 && expected_uid == result_uid
       raise "Authentication error: Access Token validation failed" unless validation_successful
 
+      # Only after validating that the access_token is valid and belongs to the
+      # 'uid' passed in the request is when we can actually build the identity
       Identity.build_from_access_token(provider)
     end
   end
