@@ -3,7 +3,6 @@ module Authentication
     # Authentication provider
     class Provider
       delegate :email, to: :info, prefix: :user
-      delegate :id, to: :info, prefix: :u
       delegate :user_username_field, to: :class
 
       def initialize(auth_payload)
