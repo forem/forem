@@ -13,6 +13,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # Each available authentication method needs a related action that will be called
   # as a callback on successful redirect from the upstream OAuth provider
   Authentication::Providers.available.each do |provider_name|
+    # Skip OAuth callback for Facebook (no longer in use)
+    # See: https://github.com/forem/forem/issues/14681
+    next if provider_name == "facebook"
+
     define_method(provider_name) do
       callback_for(provider_name)
     end

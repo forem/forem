@@ -6,7 +6,7 @@ module Authentication
       SETTINGS_URL = "https://www.facebook.com/settings?tab=applications".freeze
 
       def new_user_data
-        image_url = @info.image.gsub("http://", "https://")
+        image_url = @info.image.to_s.gsub("http://", "https://")
         {
           name: @info.name,
           email: @info.email || "",

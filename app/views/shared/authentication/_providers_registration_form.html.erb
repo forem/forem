@@ -6,60 +6,10 @@
         <%= inline_svg_tag("#{provider.provider_name}.svg", aria_hidden: true, class: "crayons-icon", title: provider.provider_name) %>
         <%= params[:state] == "new-user" ? "Sign up" : "Continue" %> with <%= provider.official_name %>
       <% end %>
-    <% end %>
 
-    <% if provider.provider_name == :facebook %>
-      <script>
-        window.fbAsyncInit = function() {
-          FB.init({
-            appId            : <%= Settings::Authentication.facebook_key %>,
-            autoLogAppEvents : false,
-            version          : 'v11.0'
-          });
-        };
-      </script>
-      <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
-      <script type="text/javascript">
-        // Example POST method implementation:
-        async function postData(url = '', data = {}) {
-          const response = await fetch(url, {
-            method: 'POST',
-            cache: 'no-cache',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
-          return response.json(); // parses JSON response into native JavaScript objects
-        }
-
-        var form = document.querySelector('form.provider-facebook');
-        form.onsubmit = function(e) {
-          e.preventDefault();
-          console.log(e);
-          FB.login(function(response) {
-            if (response.authResponse) {
-              var access_token = response.authResponse.accessToken;
-              FB.api('/me', function(response) {
-                postData('/async_info/access_token', {
-                  uid: response.id,
-                  name: response.name,
-                  access_token: access_token,
-                  provider: 'facebook'
-                })
-                .then(function(response) {
-                  console.log(response); // JSON data parsed by `data.json()` call
-                  if (response.redirect) {
-
-                  } else {
-
-                  }
-                });
-              });
-            } else {
-              console.log('User cancelled login or did not fully authorize.');
-            }
-          }, { scope: 'public_profile,email' });
-        }
-      </script>
+      <% if provider.provider_name == :facebook %>
+        <%= render "shared/authentication/facebook_sdk_wrapper", form: f %>
+      <% end %>
     <% end %>
   <% end %>
   <% if params[:state] == "new-user" && Settings::Authentication.allow_email_password_registration && !ForemInstance.invitation_only? %>

@@ -1,0 +1,48 @@
+<!-- Add hidden fields to the Facebook OAuth button (it's a form) so we can hijack it after SDK Login -->
+<%= form.hidden_field :uid, value: "" %>
+<%= form.hidden_field :name, value: "" %>
+<%= form.hidden_field :email, value: "" %>
+<%= form.hidden_field :image, value: "" %>
+<%= form.hidden_field :access_token, value: "" %>
+<%= form.hidden_field :provider, value: "facebook" %>
+
+<!-- Facebook's SDK initialize -->
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId: <%= Settings::Authentication.facebook_key %>,
+      autoLogAppEvents: false,
+      version: 'v11.0'
+    });
+  };
+</script>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+<!-- Actual FB SDK logic that wraps around  -->
+<script async defer type="text/javascript">
+  var form = document.querySelector('form.provider-facebook');
+  form.action = "/async_info/access_token"
+  form.onsubmit = function(e) {
+    // When the button is clicked it will prevent the default form submit
+    e.preventDefault();
+
+    // Instead use the FB SDK to trigger authentication process
+    FB.login(function(response) {
+      if (response.authResponse) {
+        var access_token = response.authResponse.accessToken;
+        FB.api('/me', { fields: "id, name, email, picture" }, function(response) {
+          // Fetch the `/me` endpoint to fill up the hidden_field's with the
+          // authenticated user data
+          document.querySelector('input[name="uid"]').value = response.id;
+          document.querySelector('input[name="name"]').value = response.name;
+          document.querySelector('input[name="email"]').value = response.email;
+          document.querySelector('input[name="image"]').value = response.picture.data.url;
+          document.querySelector('input[name="access_token"]').value = access_token;
+
+          // Now submit the form with a POST navigation request
+          form.submit();
+        });
+      }
+    }, { scope: 'public_profile,email' });
+  }
+</script>
