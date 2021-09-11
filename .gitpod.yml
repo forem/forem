@@ -14,7 +14,7 @@ ports:
 tasks:
   - name: Forem Server
     before: redis-server &
-    init: gitpod-init.sh
+    init: ./gitpod-init.sh
     command: bin/startup
   - name: Open Site
     command: >
