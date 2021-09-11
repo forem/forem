@@ -20,7 +20,7 @@ tasks:
     command: >
       gp await-port 3000 &&
       printf "Waiting for Forem server ..." &&
-      until $(curl -sNL $(gp url 3000) | grep -q "Forem"); do printf '.'; sleep 5; done && echo "" &&
+      while :; do printf '.'; sleep 5; done &
       gp preview $(gp url 3000)
 
 github:
