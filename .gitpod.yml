@@ -19,8 +19,7 @@ tasks:
   - name: Open Site
     command: >
       gp await-port 3000 &&
-      printf "Waiting for Forem server ..." &&
-      while :; do printf '.'; sleep 5; done &
+      printf "Waiting for Forem instance to load in the browser..." &&
       gp preview $(gp url 3000)
 
 github:
