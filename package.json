@@ -12,6 +12,7 @@
     "lib": "lib",
     "test": "test"
   },
+  "resolutions": { "glob-parent": "^6.0.1" },
   "scripts": {
     "prepare": "husky install",
     "generate-storybook-themes": "sass -q app/assets/stylesheets/themes:app/javascript/storybook-static/themes && bin/generate-css-utility-classes-docs.js",

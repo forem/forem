@@ -38,9 +38,10 @@ class Device < ApplicationRecord
         alert: {
           title: Settings::Community.community_name,
           subtitle: title,
-          body: body
+          body: body.truncate(512)
         },
-        "thread-id": Settings::Community.community_name
+        "thread-id": Settings::Community.community_name,
+        sound: "default"
       },
       data: payload
     }

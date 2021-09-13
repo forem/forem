@@ -45,10 +45,12 @@
           </a>
         </span>
 
-        <a href="<%= connect_path %>" id="connect-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Connect">
-          <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Connect") %>
-          <span class="crayons-indicator crayons-indicator--accent hidden" id="connect-number"></span>
-        </a>
+        <% if FeatureFlag.enabled?(:connect) %>
+          <a href="<%= connect_path %>" id="connect-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Connect">
+            <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Connect") %>
+            <span class="crayons-indicator crayons-indicator--accent hidden" id="connect-number"></span>
+          </a>
+        <% end %>
 
         <a href="<%= notifications_path %>" id="notifications-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Notifications">
           <%= inline_svg_tag("bell.svg", aria: true, class: "crayons-icon", title: "Notifications") %>

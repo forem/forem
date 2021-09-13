@@ -10,6 +10,7 @@ As a tag moderator, you are able to:
 
 For details on all available features and how to access them, visit our tag moderation page.
 
+<% if FeatureFlag.enabled?(:connect) %>
 To aid in communication, we’ve added you to the following <%= community_name %> Connect channels:
 
 - Tag Moderators <%= app_url("/connect/tag-moderators") %>
@@ -17,6 +18,7 @@ To aid in communication, we’ve added you to the following <%= community_name %
 
 You can use these channels to meet other tag moderators across the site and co-moderators within your tag while coordinating with the <%= community_name %> team.
 When in doubt about how to exercise your new privileges, please ask! If these Connect channels become too distracting, you can mute or leave any channel as you wish.
+<% end %>
 
 Tag moderation is something we're continuously iterating on, so you can expect adjustments and expanding features over time as we receive feedback.
 We regularly send out a biweekly Mod Newsletter to keep mods up to date on these changes, so look out for it!
