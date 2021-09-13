@@ -31,11 +31,6 @@ describe('Logged out - tag index page', () => {
         cy.get('@userFollowButton').click();
 
         // Confirm the follow button has been updated
-        cy.get('@userFollowButton').should('have.text', 'Following');
-        cy.get('@userFollowButton').should('have.attr', 'aria-pressed', 'true');
-
-        // Repeat and check the button changes back to 'Follow'
-        cy.get('@userFollowButton').click();
         cy.get('@userFollowButton').should('have.text', 'Follow');
         cy.get('@userFollowButton').should(
           'have.attr',
