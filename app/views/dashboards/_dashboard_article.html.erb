@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= sanitize_and_decode article.title %></h2></a>
+  <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= article.title %></h2></a>
   <div class="dashboard-meta-details">
     <% if article.published %>
       <span>
