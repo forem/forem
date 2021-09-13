@@ -597,6 +597,11 @@ end
 
 ##############################################################################
 
+# Enable Connect feature flag for tests
+FeatureFlag.enable(:connect)
+
+##############################################################################
+
 seeder.create_if_none(FeedbackMessage) do
   admin_user.reporter_feedback_messages.create!(
     feedback_type: "bug-reports",
