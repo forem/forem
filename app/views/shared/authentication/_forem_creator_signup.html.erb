@@ -11,8 +11,8 @@
     background: white;
   }
 </style>
-<main id="main-content" class="flex flex-1 justify-center flex-col crayons-layout">
-  <div class="relative z-elevate p-4 mx-auto">
+<main id="main-content" class="flex flex-1 justify-center flex-col crayons-layout crayons-layout--limited-xs">
+  <div class="relative z-elevate p-4">
     <% if flash[:notice] %>
       <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
         <%= flash[:notice] %>
@@ -40,9 +40,9 @@
       <% end %>
 
       <div class="align-center">
-        <p class="pb-4 fs-3xl fw-bold lh-tight">Let's start your Forem journey!</p>
-        <p class="color-base-70 fs-xl lh-tight">Create your admin account first.</p>
-        <p class="color-base-70 fs-xl lh-tight">Then we'll walk you through your Forem setup.</p>
+        <p class="pb-4 fs-2xl m:fs-3xl lh-tight fw-bold">Let's start your Forem journey!</p>
+        <p class="color-base-70 fs-l m:fs-xl">Create your admin account first.</p>
+        <p class="color-base-70 fs-l m:fs-xl">Then we'll walk you through your Forem setup.</p>
       </div>
 
       <div class="crayons-field mt-6">
