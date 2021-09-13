@@ -56,9 +56,9 @@ _Will this PR introduce a change that impacts Forem members or creators, the
 development process, or any of our internal teams? If so, please note how you
 will share this change with the people who need to know about it._
 
-- [ ] I've updated the [Developer Docs](https://developers.forem.com) and/or
-      [Admin Guide](https://admin.forem.com/), or
+- [ ] I've updated the [Developer Docs](https://developers.forem.com) or
       [Storybook](https://storybook.forem.com/) (for Crayons components)
+- [ ] This PR changes the Forem platform and our documentation needs to be updated. I have filled out the [Changes Requested](https://github.com/forem/admin-docs/issues/new?assignees=&labels=&template=changes_requested.md) issue template so Community Success can help update the Admin Docs appropriately.
 - [ ] I've updated the README or added inline documentation
 - [ ] I've added an entry to
       [`CHANGELOG.md`](https://github.com/forem/forem/tree/main/CHANGELOG.md)
