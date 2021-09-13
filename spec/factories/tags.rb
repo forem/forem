@@ -1,5 +1,5 @@
 FactoryBot.define do
-  sequence(:name) { |n| "tag你好#{n}" }
+  sequence(:name) { |n| "tag#{n}" }
 
   factory :tag do
     name { generate :name }
