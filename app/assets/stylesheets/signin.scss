@@ -8,13 +8,6 @@
     padding: var(--su-6);
     margin: var(--su-3);
 
-    @include generate-box(
-      $level: 1,
-      $bg: #f5f6fe,
-      $border: var(--accent-brand),
-      $color: var(--card-color)
-    );
-
     @media (min-width: $breakpoint-s) {
       padding: var(--su-7);
       margin: 0 0 var(--su-3) 0;
