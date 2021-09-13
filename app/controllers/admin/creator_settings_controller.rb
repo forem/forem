@@ -1,13 +1,15 @@
 module Admin
   class CreatorSettingsController < Admin::ApplicationController
-    # before_action :extra_authorization, only: [:create]
+    before_action :extra_authorization, only: [:create]
 
     # def success?
     #   errors.none?
     # end
 
+    def new; end
+
     def create
-      errors = []
+      # errors = []
       # binding.pry
       ::Settings::Community.community_name = settings_params[:community_name]
       ::Settings::General.logo_svg = settings_params[:logo_svg]
@@ -15,8 +17,8 @@ module Admin
       ::Settings::Authentication.invite_only_mode = settings_params[:invite_only]
       ::Settings::UserExperience.public = settings_params[:public]
 
-    # rescue ActiveRecord::RecordInvalid => e
-    #   errors << e.message
+      # rescue ActiveRecord::RecordInvalid => e
+      #   errors << e.message
     end
 
     private

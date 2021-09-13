@@ -14,8 +14,8 @@ namespace :admin do
   resources :organization_memberships, only: %i[update destroy create]
   resources :permissions, only: %i[index]
   resources :reactions, only: %i[update]
-  resources :creator_settings, only: %i[create]
-  get "/creator_settings", to: redirect("/setup")
+  resources :creator_settings, only: %i[create new]
+  # get "/creator_settings", to: redirect("/setup")
   namespace :settings do
     resources :authentications, only: [:create]
     resources :campaigns, only: [:create]

@@ -1,0 +1,3 @@
+<% if forem_creator_flow_enabled? && User.with_role(:super_admin).first.present? %>
+  <%= render "shared/authentication/forem_creator_setup" %>
+<% end %>
