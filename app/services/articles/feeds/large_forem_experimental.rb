@@ -1,7 +1,6 @@
 module Articles
   module Feeds
     class LargeForemExperimental
-      include FieldTest::Helpers
       MINIMUM_SCORE_LATEST_FEED = -20
 
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil)
