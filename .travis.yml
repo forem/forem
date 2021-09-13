@@ -26,7 +26,6 @@ addons:
 env:
   global:
     - RAILS_ENV=test
-    - RUBY_THREAD_VM_STACK_SIZE=5242880
     - DATABASE_URL=postgres://travis@localhost:5433/Forem_prod_test
     - DATABASE_NAME=Forem_prod_test
     - DATABASE_URL_TEST=postgres://travis@localhost:5433/Forem_test
