@@ -142,11 +142,14 @@ class ReactionsController < ApplicationController
   end
 
   def rate_article(reaction)
+    user_experience_level = current_user.setting.experience_level
+    return unless user_experience_level
+
     RatingVote.create(article_id: reaction.reactable_id,
                       group: "experience_level",
                       user_id: current_user.id,
                       context: "readinglist_reaction",
-                      rating: current_user.setting.experience_level)
+                      rating: user_experience_level)
   end
 
   def clear_moderator_reactions(id, type, mod, category)

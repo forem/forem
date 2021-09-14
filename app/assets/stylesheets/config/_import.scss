@@ -37,11 +37,13 @@ $colors: (
 // List of breakpoints for our responsiveness.
 
 // If you modify these breakpoints, ensure you update them in @components/useMediaQuery.js
+$breakpoint-xs: 480px;
 $breakpoint-s: 640px;
 $breakpoint-m: 768px;
 $breakpoint-l: 1024px;
 
 $breakpoints: (
+  'xs': $breakpoint-xs,
   's': $breakpoint-s,
   'm': $breakpoint-m,
   'l': $breakpoint-l,

@@ -116,6 +116,11 @@ RSpec.configure do |config|
     allow_any_instance_of(CarrierWave::Downloader::Base)
       .to receive(:skip_ssrf_protection?).and_return(true)
     # rubocop:enable RSpec/AnyInstance
+    # Enable the Connect feature flag for tests
+    # Doing this via a stub gets rid of the following error:
+    # "Please stub a default value first if message might be received with other args as well."
+    allow(FeatureFlag).to receive(:enabled?).and_call_original
+    allow(FeatureFlag).to receive(:enabled?).with(:connect).and_return(true)
   end
 
   config.around(:each, :flaky) do |ex|
