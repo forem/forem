@@ -18,7 +18,8 @@ class AsyncInfoController < ApplicationController
           broadcast: broadcast_data,
           param: request_forgery_protection_token,
           token: form_authenticity_token,
-          user: user_data
+          user: user_data,
+          forem_creator: check_user_role
         }
       end
     end
@@ -60,6 +61,10 @@ class AsyncInfoController < ApplicationController
         admin: @user.any_admin?
       }
     end.to_json
+  end
+
+  def check_user_role
+    @user.creator?
   end
 
   def user_cache_key
