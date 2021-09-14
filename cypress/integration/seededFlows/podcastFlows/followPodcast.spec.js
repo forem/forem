@@ -24,9 +24,6 @@ describe('Follow podcast', () => {
 
     // Check that state is persisted on refresh
     cy.visitAndWaitForUserSideEffects('/developeronfire');
-    cy.findByRole('button', { name: 'Unfollow podcast: Developer on Fire' }).as(
-      'followButton',
-    );
 
     // Check it reverts back to Follow on click
     cy.get('@followButton').click();

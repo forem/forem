@@ -38,20 +38,8 @@ describe('Preview profile from the tag index page', () => {
         );
         cy.get('@userFollowButton').click();
 
-        // Check that the follow button has updated as expected
         cy.get('@userFollowButton').should('have.text', 'Following');
         cy.get('@userFollowButton').should('have.attr', 'aria-pressed', 'true');
-        cy.get('@userFollowButton').should('not.exist');
-
-        cy.findByRole('button', { name: 'Unfollow user: Series User' }).as(
-          'userUnfollowButton',
-        );
-        cy.get('@userUnfollowButton').should('have.text', 'Follow');
-        cy.get('@userUnfollowButton').should(
-          'have.attr',
-          'aria-pressed',
-          'false',
-        );
       });
   });
 });
