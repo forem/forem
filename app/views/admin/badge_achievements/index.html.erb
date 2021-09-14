@@ -1,4 +1,9 @@
-<div data-controller="confirmation-modal">
+<div
+  data-controller="confirmation-modal"
+  data-confirmation-modal-root-selector-value="#confirmation-modal-root"
+  data-confirmation-modal-content-selector-value="#confirmation-modal"
+  data-confirmation-modal-title-value="Confirm changes"
+  data-confirmation-modal-size-value="m">
   <div class="alert alert-warning">
     <strong>Note: If you remove a badge that is automatically rewarded it will simply be re-awarded despite being removed.</strong>
   </div>
@@ -43,12 +48,42 @@
               data-item-id="<%= badge_achievement.id %>"
               data-endpoint="/admin/content_manager/badge_achievements"
               data-username="<%= current_user.username %>"
-              data-action="click->confirmation-modal#activateConfirmationModal">Remove</button>
+              data-action="click->confirmation-modal#openModal">Remove</button>
           </td>
         </h5>
       </tr>
       <% end %>
     </tbody>
   </table>
-  <div data-confirmation-modal-target="confirmationModalAnchor"></div>
+  <div
+    id="confirmation-modal-root"
+    data-confirmation-modal-target="itemId"
+    data-confirmation-modal-target="endpoint"
+    data-confirmation-modal-target="username"></div>
+
+  <div id="confirmation-modal" class="hidden">
+    <div class="crayons-field mb-3">
+      <p>To confirm this update, type in the sentence: <br />
+      <strong>My username is @<%= current_user.username %> and this action is 100% safe and appropriate.</strong></p>
+      <div id="mismatch-warning" class="crayons-notice crayons-notice--warning hidden" aria-live="polite">
+        The confirmation text did not match.
+      </div>
+      <input
+        type="text"
+        id="confirmation-text-field"
+        class="crayons-textfield flex-1 mr-2"
+        placeholder="Confirmation text" />
+    </div>
+
+    <button
+      class="crayons-btn mr-1 mb-2"
+      data-action="click->confirmation-modal#checkConfirmationText">
+      Confirm changes
+    </button>
+    <button
+      class="crayons-btn crayons-btn--secondary"
+      data-action="click->confirmation-modal#closeModal">
+      Discard changes
+    </button>
+  </div>
 </div>

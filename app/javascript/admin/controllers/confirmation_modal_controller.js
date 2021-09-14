@@ -1,23 +1,12 @@
-import { Controller } from 'stimulus';
-import { adminModal } from '../adminModal';
+import ModalController from '../controllers/modal_controller';
 import { displaySnackbar } from '../displaySnackbar';
 import { displayErrorAlert } from '../displayErrorAlert';
 
 const confirmationText = (username) =>
   `My username is @${username} and this action is 100% safe and appropriate.`;
 
-export default class ConfirmationModalController extends Controller {
-  static targets = [
-    'confirmationModalAnchor',
-    'confirmationTextField',
-    'confirmationTextWarning',
-  ];
-
-  closeConfirmationModal() {
-    this.confirmationModalAnchorTarget.innerHTML = '';
-    document.body.style.height = 'inherit';
-    document.body.style.overflowY = 'inherit';
-  }
+export default class ConfirmationModalController extends ModalController {
+  static targets = ['itemId', 'username', 'endpoint'];
 
   removeBadgeAchievement(id) {
     return document.querySelector(`[data-row-id="${id}"]`).remove();
@@ -45,54 +34,39 @@ export default class ConfirmationModalController extends Controller {
         displayErrorAlert(outcome.error);
       }
 
-      this.closeConfirmationModal();
+      this.closeModal();
     } catch (err) {
       displayErrorAlert(err.message);
     }
   }
 
-  checkConfirmationText(event) {
-    const { itemId, endpoint, username } = event.target.dataset;
+  checkConfirmationText() {
+    const confirmationMismatchWarning = document.querySelector(
+      '#confirmation-modal-root #mismatch-warning',
+    );
 
-    if (this.confirmationTextFieldTarget.value == confirmationText(username)) {
-      this.closeConfirmationModal();
-      this.sendToEndpoint({ itemId, endpoint });
+    const confirmationTextEntry = document.querySelector(
+      '#confirmation-modal-root #confirmation-text-field',
+    ).value;
+
+    if (confirmationTextEntry == confirmationText(this.usernameValue)) {
+      this.closeModal();
+      this.sendToEndpoint({
+        itemId: this.itemIdValue,
+        endpoint: this.endpointValue,
+      });
     } else {
-      this.confirmationTextWarningTarget.classList.remove('hidden');
+      confirmationMismatchWarning.classList.remove('hidden');
     }
   }
 
-  confirmationModalBody(username) {
-    return `
-      <div class="crayons-field">
-        <p>To confirm this update, type in the sentence: <br />
-        <strong>${confirmationText(username)}</strong></p>
-        <div data-confirmation-modal-target="confirmationTextWarning" class="crayons-notice crayons-notice--warning hidden" aria-live="polite">
-          The confirmation text does not match.
-        </div>
-        <input
-          type="text"
-          data-confirmation-modal-target="confirmationTextField"
-          class="crayons-textfield flex-1 mr-2"
-          placeholder: "Confirmation text">
-      </div>
-    `;
-  }
-
-  activateConfirmationModal(event) {
+  openModal(event) {
     const { itemId, endpoint, username } = event.target.dataset;
 
-    this.confirmationModalAnchorTarget.innerHTML = adminModal({
-      title: 'Confirm changes',
-      controllerName: 'confirmation-modal',
-      closeModalFunction: 'closeConfirmationModal',
-      body: this.confirmationModalBody(username),
-      leftBtnText: 'Confirm changes',
-      leftBtnAction: 'checkConfirmationText',
-      rightBtnText: 'Discard changes',
-      rightBtnAction: 'closeConfirmationModal',
-      rightBtnClasses: 'crayons-btn--secondary',
-      leftCustomDataAttr: `data-item-id="${itemId}" data-endpoint="${endpoint}" data-username="${username}"`,
-    });
+    this.itemIdValue = itemId;
+    this.usernameValue = username;
+    this.endpointValue = endpoint;
+
+    this.toggleModal();
   }
 }
