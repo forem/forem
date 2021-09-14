@@ -16,7 +16,7 @@ describe('Confirm Email page', () => {
 
   it('should display the correct subtext', () => {
     cy.contains("We've sent an email to user@forem.com").should('be.visible');
-    cy.findByText('Click the button inside to confirm your email').should(
+    cy.findByText(/Click the button inside to confirm your email/).should(
       'be.visible',
     );
   });

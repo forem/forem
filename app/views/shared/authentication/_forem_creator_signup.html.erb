@@ -1,97 +1,106 @@
 <%= javascript_packs_with_chunks_tag "foremCreatorSignup", defer: true %>
-<main id="main-content">
-  <div class="mx-auto mt-8 mb-10 p-4 fs-2xl lh-base align-center" style="width:96%;max-width:1300px;">
-    <div id="sign-in-password-form" class="mt-8 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:580px;">
-      <% if flash[:notice] %>
-        <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
-          <%= flash[:notice] %>
+<style>
+  #page-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #page-content-inner {
+    display: flex;
+    flex: 1;
+    background: white;
+  }
+</style>
+<main id="main-content" class="flex flex-1 justify-center flex-col crayons-layout crayons-layout--limited-xs">
+  <div class="relative z-elevate p-4">
+    <% if flash[:notice] %>
+      <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
+        <%= flash[:notice] %>
+      </div>
+    <% end %>
+
+    <% any_errors = local_assigns[:resource]&.errors&.any? %>
+
+    <%= form_for(@user, as: :user, data: { testid: "creator-signup-form" }, url: registration_path(:user)) do |f| %>
+      <% if any_errors %>
+        <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger my-8" role="alert" data-testid="signup-errors">
+          <div class="crayons-card__header">
+            <h3 class="crayons-card__headline">
+              Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
+            </h3>
+          </div>
+          <div class="crayons-card__body">
+            <ul>
+              <% resource.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
         </div>
       <% end %>
 
-      <% any_errors = local_assigns[:resource]&.errors&.any? %>
+      <div class="align-center">
+        <p class="pb-4 fs-2xl m:fs-3xl lh-tight fw-bold">Let's start your Forem journey!</p>
+        <p class="color-base-70 fs-l m:fs-xl">Create your admin account first.</p>
+        <p class="color-base-70 fs-l m:fs-xl">Then we'll walk you through your Forem setup.</p>
+      </div>
 
-      <%= form_for(@user, as: :user, data: { testid: "creator-signup-form" }, url: registration_path(:user)) do |f| %>
-        <% if any_errors %>
-          <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger my-8" role="alert" data-testid="signup-errors">
-            <div class="crayons-card__header">
-              <h3 class="crayons-card__headline">
-                Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
-              </h3>
-            </div>
-            <div class="crayons-card__body">
-              <ul>
-                <% resource.errors.full_messages.each do |message| %>
-                  <li><%= message %></li>
-                <% end %>
-              </ul>
-            </div>
-          </div>
-        <% end %>
+      <div class="crayons-field mt-6">
+        <%= f.label :name, "Name", for: "name", class: "crayons-field__label" %>
+        <%= f.text_field :name, id: "name", placeholder: "John Doe", class: "crayons-textfield js-creator-signup-name", required: true %>
 
-        <div class="align-center">
-          <p class="pb-4 fs-3xl fw-bold lh-tight">Let's start your Forem journey!</p>
-          <p class="color-base-70 fs-xl lh-tight">Create your admin account first.</p>
-          <p class="color-base-70 fs-xl lh-tight">Then we'll walk you through your Forem setup.</p>
-        </div>
-
-        <div class="crayons-field mt-6">
-          <%= f.label :name, "Name", for: "name", class: "crayons-field__label" %>
-          <%= f.text_field :name, id: "name", placeholder: "John Doe", class: "crayons-textfield js-creator-signup-name", required: true %>
-
-          <div class="js-creator-signup-username-hint-row hidden">
-            <div class="fs-xs color-base-60 flex">
-              <span>Your username will be&nbsp;</span>
-              <button aria-label="Edit username" class="cursor-pointer border-none bg-transparent p-0 js-creator-edit-username flex color-base-90 " role="button">
-                <span class="js-creator-signup-username-hint"></span>
-                <%= inline_svg_tag("pencil.svg", class: "cursor-pointer crayons-icon opacity-75 ml-1", aria_hidden: true, title: "Edit username") %>
-              </button>
-            </div>
-            </div>
-        </div>
-
-        <div class="crayons-field mt-6 <%= "hidden" unless any_errors %> js-creator-signup-username-row">
-          <%= f.label :username, "Username", for: "username", class: "crayons-field__label" %>
-          <%= f.text_field :username, pattern: "[A-Za-z0-9_]+", maxlength: "30", title: "A username can only contain letters, numbers and underscores. The maximum username length can be 30 characters.", id: "username", class: "js-creator-signup-username crayons-textfield",
-                                      aria: { describedby: "username-helper-text" } %>
-          <p id="username-helper-text" class="fs-xs color-base-60 mt-1">It can only contain letters, numbers and underscores. The maximum username length can be 30 characters.</p>
-        </div>
-
-        <div class="crayons-field mt-6">
-          <%= f.label :email, "Email", for: "email", class: "crayons-field__label" %>
-          <%= f.email_field :email, placeholder: "john@example.com", autocomplete: "email", id: "email", class: "crayons-textfield", required: true %>
-        </div>
-
-        <div class="crayons-field mt-6">
-          <%= f.label :password, "Password", class: "crayons-field__label" %>
-          <div class="relative">
-            <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: "••••••••", required: true, aria: { describedby: "password-helper-text" } %>
-            <button class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Show password" aria-pressed="false">
-              <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: "Show password") %>
-              <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: "Hide password") %>
+        <div class="js-creator-signup-username-hint-row hidden">
+          <div class="fs-xs color-base-60 flex">
+            <span>Your username will be&nbsp;</span>
+            <button aria-label="Edit username" class="cursor-pointer border-none bg-transparent p-0 js-creator-edit-username flex color-base-90 " role="button">
+              <span class="js-creator-signup-username-hint"></span>
+              <%= inline_svg_tag("pencil.svg", class: "cursor-pointer crayons-icon opacity-75 ml-1", aria_hidden: true, title: "Edit username") %>
             </button>
           </div>
-          <p id="password-helper-text" class="fs-xs color-base-60 mt-1">Minimum 8 characters</p>
-        </div>
+          </div>
+      </div>
 
-        <% needs_owner_secret_field = ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
-        <% if needs_owner_secret_field %>
-          <% if params[:owner_secret].present? %>
-            <%= f.hidden_field :owner_secret, value: params[:owner_secret] %>
-          <% else %>
-            <div class="crayons-field mt-6">
-              <%= f.label :owner_secret, "New Forem Secret", class: "crayons-field__label" %>
-              <%= f.password_field :owner_secret, class: "crayons-textfield", required: needs_owner_secret_field, placeholder: "As provided by your Forem host" %>
-            </div>
-          <% end %>
+      <div class="crayons-field mt-6 <%= "hidden" unless any_errors %> js-creator-signup-username-row">
+        <%= f.label :username, "Username", for: "username", class: "crayons-field__label" %>
+        <%= f.text_field :username, pattern: "[A-Za-z0-9_]+", maxlength: "30", title: "A username can only contain letters, numbers and underscores. The maximum username length can be 30 characters.", id: "username", class: "js-creator-signup-username crayons-textfield",
+                                    aria: { describedby: "username-helper-text" } %>
+        <p id="username-helper-text" class="fs-xs color-base-60 mt-1">It can only contain letters, numbers and underscores. The maximum username length can be 30 characters.</p>
+      </div>
+
+      <div class="crayons-field mt-6">
+        <%= f.label :email, "Email", for: "email", class: "crayons-field__label" %>
+        <%= f.email_field :email, placeholder: "john@example.com", autocomplete: "email", id: "email", class: "crayons-textfield", required: true %>
+      </div>
+
+      <div class="crayons-field mt-6">
+        <%= f.label :password, "Password", class: "crayons-field__label" %>
+        <div class="relative">
+          <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: "••••••••", required: true, aria: { describedby: "password-helper-text" } %>
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Show password" aria-pressed="false">
+            <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: "Show password") %>
+            <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: "Hide password") %>
+          </button>
+        </div>
+        <p id="password-helper-text" class="fs-xs color-base-60 mt-1">Minimum 8 characters</p>
+      </div>
+
+      <% needs_owner_secret_field = ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
+      <% if needs_owner_secret_field %>
+        <% if params[:owner_secret].present? %>
+          <%= f.hidden_field :owner_secret, value: params[:owner_secret] %>
+        <% else %>
+          <div class="crayons-field mt-6">
+            <%= f.label :owner_secret, "New Forem Secret", class: "crayons-field__label" %>
+            <%= f.password_field :owner_secret, class: "crayons-textfield", required: needs_owner_secret_field, placeholder: "As provided by your Forem host" %>
+          </div>
         <% end %>
-
-        <div class="flex flex-col pt-6">
-          <%= f.submit "Create my account", class: "crayons-btn" %>
-        </div>
-
-        <%= inline_svg_tag("forem-background.svg", aria_hidden: true, class: "forem-background absolute bottom-0 right-0") %>
       <% end %>
 
-    </div>
+      <div class="flex flex-col pt-6">
+        <%= f.submit "Create my account", class: "crayons-btn" %>
+      </div>
+
+    <% end %>
   </div>
+  <%= inline_svg_tag("forem-background.svg", aria: true, title: "forem background", class: "absolute bottom-0 right-0 hidden m:block") %>
 </main>
