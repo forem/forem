@@ -5,6 +5,7 @@ module Api
 
       def show
         render json: {
+          context: ApplicationConfig["FOREM_CONTEXT"],
           cover_image_url: Settings::General.main_social_image,
           description: Settings::Community.community_description,
           logo_image_url: Settings::General.logo_png,
