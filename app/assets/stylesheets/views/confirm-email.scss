@@ -9,18 +9,4 @@
     flex: 1;
     background: white;
   }
-
-  #main-content {
-    display: flex;
-    flex: 1;
-    @media (max-width: $breakpoint-m) {
-      padding: 1em 1em 0;
-    }
-  }
-}
-
-.forem-background {
-  @media (max-width: $breakpoint-l) {
-    display: none;
-  }
 }
