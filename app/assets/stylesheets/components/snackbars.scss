@@ -19,12 +19,11 @@
   }
 
   &__item {
-    @include generate-box(
-      $level: 1,
-      $bg: var(--snackbar-bg),
-      $border: var(--snackbar-border),
-      $color: var(--snackbar-color)
-    );
+    border-radius: var(--radius);
+    background: var(--snackbar-bg);
+    color: var(--snackbar-color);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
     display: none;
     align-items: center;
     justify-content: space-between;

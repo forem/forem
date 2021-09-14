@@ -1493,9 +1493,25 @@ export class Chat extends Component {
     const channelName = state.activeChannel
       ? state.activeChannel.channel_name
       : ' ';
+    const connectAnnouncement = (
+      <div className="bg-base-90 color-base-0 p-3 align-center fs-s m:fs-base lh-tight" aria-live="polite">
+        We have made the decision to deprecate Connect as core functionality
+        from the application. &nbsp;
+        <a
+          href="https://forem.dev/foremteam/deprecating-connect-chat-2kgi"
+          className="text-underline color-base-10 fw-bold"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Read the announcement to learn more &raquo;
+        </a>
+        .
+      </div>
+    );
     return (
       <div className="activechatchannel">
         <div className="activechatchannel__conversation">
+          {connectAnnouncement}
           {channelHeader}
           <DragAndDropZone
             onDragOver={this.handleDragOver}

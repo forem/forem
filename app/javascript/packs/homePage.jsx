@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import ahoy from 'ahoy.js';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
 
 /* global userData */
@@ -43,6 +44,16 @@ function renderTagsFollowed(user = userData()) {
   });
 
   render(<TagsFollowed tags={followedTags} />, tagsFollowedContainer);
+  trackTagCogIconClicks();
+}
+
+// Temporary Ahoy Stats for usage reports
+function trackTagCogIconClicks() {
+  document
+    .getElementById('tag-priority-link')
+    ?.addEventListener('click', () => {
+      ahoy.track('Tag settings cog icon click');
+    });
 }
 
 function renderSidebar() {

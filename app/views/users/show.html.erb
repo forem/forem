@@ -29,9 +29,11 @@
 
           <div class="profile-header__actions">
             <% if user_signed_in? %>
-              <a href="/connect/@<%= @user.username %>" class="hidden mr-2" id="user-connect-redirect">
-                <button class="chat-action-button crayons-btn crayons-btn--outlined hidden" id="modal-opener">Chat</button>
-              </a>
+              <% if FeatureFlag.enabled?(:connect) %>
+                <a href="/connect/@<%= @user.username %>" class="hidden mr-2" id="user-connect-redirect">
+                  <button class="chat-action-button crayons-btn crayons-btn--outlined hidden" id="modal-opener">Chat</button>
+                </a>
+              <% end %>
             <% end %>
             <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button user-profile-follow-button follow-user" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'>Follow</button>
             <div class="profile-dropdown ml-2 relative hidden" data-username="<%= @user.username %>">
