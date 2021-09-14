@@ -131,11 +131,11 @@ RSpec.describe "Stories::Feeds", type: :request do
 
       it "calls the feed service for a timeframe" do
         allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(feed_service)
-        allow(Articles::Feeds::Timeframe).to receive(:call).with("week").and_call_original
+        allow(Articles::Feeds::Timeframe).to receive(:call).and_call_original
 
         get timeframe_stories_feed_path(:week)
 
-        expect(Articles::Feeds::Timeframe).to have_received(:call).with("week")
+        expect(Articles::Feeds::Timeframe).to have_received(:call).with("week", page: nil, tag: nil)
       end
 
       it "calls the feed service for latest" do
