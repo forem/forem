@@ -44,9 +44,7 @@ module Stories
     end
 
     def set_stories
-      @stories = Articles::FindPublishedByTag.call(
-        @tag, number_of_articles: @number_of_articles, page: @page
-      )
+      @stories = Articles::Feeds::Tag.call(@tag, number_of_articles: @number_of_articles, page: @page)
 
       @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 

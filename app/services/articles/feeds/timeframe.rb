@@ -2,7 +2,7 @@ module Articles
   module Feeds
     module Timeframe
       def self.call(timeframe, tag: nil, number_of_articles: 50, page: 1)
-        articles = ::Articles::FindPublishedByTag.call(tag)
+        articles = ::Articles::Feeds::Tag.call(tag)
 
         articles
           .where("published_at > ?", ::Timeframe.datetime(timeframe))

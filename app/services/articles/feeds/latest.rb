@@ -4,7 +4,7 @@ module Articles
 
     module Latest
       def self.call(tag: nil, number_of_articles: 50, page: 1)
-        Articles::FindPublishedByTag.call(tag)
+        Articles::Feeds::Tag.call(tag)
           .order(published_at: :desc)
           .where("score > ?", MINIMUM_SCORE)
           .page(page)
