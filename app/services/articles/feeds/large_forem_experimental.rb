@@ -26,23 +26,6 @@ module Articles
         self.class.find_featured_story(stories)
       end
 
-      def published_articles_by_tag
-        articles =
-          if @tag.present?
-            if FeatureFlag.enabled?(:optimize_article_tag_query)
-              Article.cached_tagged_with_any(@tag)
-            else
-              Tag.find_by(name: @tag).articles
-            end
-          else
-            Article.all
-          end
-
-        articles.published.limited_column_select
-          .includes(top_comments: :user)
-          .page(@page).per(@number_of_articles)
-      end
-
       # Timeframe values from Timeframe::DATETIMES
       def top_articles_by_timeframe(timeframe:)
         published_articles_by_tag.where("published_at > ?", Timeframe.datetime(timeframe))

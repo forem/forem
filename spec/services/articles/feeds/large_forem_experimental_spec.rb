@@ -12,24 +12,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   let!(:low_scoring_article) { create(:article, score: -1000) }
   let!(:month_old_story) { create(:article, published_at: 1.month.ago) }
 
-  describe "#published_articles_by_tag" do
-    let(:unpublished_article) { create(:article, published: false) }
-    let(:tag) { "foo" }
-    let!(:tagged_article) { create(:article, tags: tag) }
-
-    it "returns published articles" do
-      result = feed.published_articles_by_tag
-      expect(result).to include article
-      expect(result).not_to include unpublished_article
-    end
-
-    context "with tag" do
-      it "returns articles with the specified tag" do
-        expect(described_class.new(tag: tag).published_articles_by_tag).to include tagged_article
-      end
-    end
-  end
-
   describe "#top_articles_by_timeframe" do
     let!(:moderately_high_scoring_article) { create(:article, score: 20) }
     let(:result) { feed.top_articles_by_timeframe(timeframe: "week").to_a }
