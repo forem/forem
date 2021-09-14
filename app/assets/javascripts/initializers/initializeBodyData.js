@@ -41,9 +41,9 @@ function fetchBaseData() {
       // Assigning User
       if (checkUserLoggedIn()) {
         document.body.dataset.user = json.user;
-        document.body.dataset.foremCreator = json.forem_creator;
+        document.body.dataset.creator = json.creator;
         browserStoreCache('set', json.user);
-        browserStoreCache('set', json.foremCreator);
+        browserStoreCache('set', json.creator);
         setTimeout(() => {
           if (typeof ga === 'function') {
             ga('set', 'userId', JSON.parse(json.user).id);
@@ -52,7 +52,7 @@ function fetchBaseData() {
       } else {
         // Ensure user data is not exposed if no one is logged in
         delete document.body.dataset.user;
-        delete document.body.dataset.foremCreator;
+        delete document.body.dataset.creator;
         browserStoreCache('remove');
       }
     }

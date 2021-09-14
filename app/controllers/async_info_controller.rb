@@ -19,7 +19,7 @@ class AsyncInfoController < ApplicationController
           param: request_forgery_protection_token,
           token: form_authenticity_token,
           user: user_data,
-          forem_creator: check_user_role
+          creator: check_user_role
         }
       end
     end

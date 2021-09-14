@@ -28,7 +28,7 @@ function onboardingSkippable(currentUser) {
 
 function creatorSetup(currentUser) {
   return (
-    document.body.dataset.foremCreator === 'true' && !currentUser.saw_onboarding
+    document.body.dataset.creator === 'true' && !currentUser.saw_onboarding
   );
 }
 
