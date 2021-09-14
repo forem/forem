@@ -2,23 +2,21 @@ module Admin
   class CreatorSettingsController < Admin::ApplicationController
     before_action :extra_authorization, only: [:create]
 
-    # def success?
-    #   errors.none?
-    # end
+    ALLOWED_PARAMS = %i[community_name logo_svg primary_brand_color_hex invite_only_mode public].freeze
 
     def new; end
 
     def create
-      # errors = []
-      # binding.pry
+      current_user.saw_onboarding = true
+      current_user.save!
       ::Settings::Community.community_name = settings_params[:community_name]
       ::Settings::General.logo_svg = settings_params[:logo_svg]
       ::Settings::UserExperience.primary_brand_color_hex = settings_params[:primary_brand_color_hex]
       ::Settings::Authentication.invite_only_mode = settings_params[:invite_only]
       ::Settings::UserExperience.public = settings_params[:public]
-
-      # rescue ActiveRecord::RecordInvalid => e
-      #   errors << e.message
+    rescue StandardError => e
+      flash[:notice] = e.message
+      redirect_to new_admin_creator_setting_path
     end
 
     private
@@ -28,12 +26,7 @@ module Admin
     end
 
     def settings_params
-      allowed_params = { community_name: ::Settings::Community.community_name,
-                         logo_svg: ::Settings::General.logo_svg,
-                         primary_brand_color_hex: ::Settings::UserExperience.primary_brand_color_hex,
-                         invite_only_mode: ::Settings::Authentication.invite_only_mode,
-                         public: ::Settings::UserExperience.public }
-      params.permit(allowed_params.keys)
+      params.permit(ALLOWED_PARAMS)
     end
   end
 end
