@@ -5,9 +5,6 @@ module Constants
         default_font: {
           description: "Determines the default reading font (registered users can change this in their UX settings)"
         },
-        display_in_directory: {
-          description: "Determines if this Forem shows up in the Forem Directory (https://discover.forem.com)"
-        },
         feed_strategy: {
           description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental " \
                        "(which should only be used for 10k+ member communities)",
