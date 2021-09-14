@@ -57,6 +57,12 @@ window.InstantClick.on('change', () => {
       if (
         redirectableLocation() &&
         localStorage.getItem('shouldRedirectToOnboarding') === null &&
+        creatorSetup(currentUser)
+      ) {
+        window.location = `${window.location.origin}/admin/creator_settings/new?referrer=${window.location}`;
+      } else if (
+        redirectableLocation() &&
+        localStorage.getItem('shouldRedirectToOnboarding') === null &&
         !onboardingSkippable(currentUser)
       ) {
         window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
