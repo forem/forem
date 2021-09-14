@@ -28,7 +28,7 @@ describe('Preview profile from the tag index page', () => {
         cy.findByText('Edinburgh');
         cy.findByText('University of Life');
 
-        cy.findByRole('button', { name: 'Follow user: Series User' }).as(
+        cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).as(
           'userFollowButton',
         );
         cy.get('@userFollowButton').should(
