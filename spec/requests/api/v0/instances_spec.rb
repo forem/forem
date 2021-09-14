@@ -6,6 +6,7 @@ RSpec.describe "Api::V0::Instances", type: :request do
       create(:user)
       get api_instance_path
 
+      expect(response.parsed_body["context"]).to eq ApplicationConfig["FOREM_CONTEXT"]
       expect(response.parsed_body["cover_image_url"]).to eq Settings::General.main_social_image
       expect(response.parsed_body["description"]).to eq Settings::Community.community_description
       expect(response.parsed_body["logo_image_url"]).to eq Settings::General.logo_png
