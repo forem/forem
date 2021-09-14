@@ -40,7 +40,7 @@
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
     "scripts/{release,stage_release}": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct --except Style/TopLevelMethodDefinition,Rails/Date"
+      "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
     "app/views/**/*.jbuilder": [
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
