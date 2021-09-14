@@ -1,8 +1,6 @@
 module Articles
   module Feeds
     class LargeForemExperimental
-      MINIMUM_SCORE_LATEST_FEED = -20
-
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil)
         @user = user
         @number_of_articles = number_of_articles
@@ -26,21 +24,9 @@ module Articles
         self.class.find_featured_story(stories)
       end
 
-      # Timeframe values from Timeframe::DATETIMES
-      def top_articles_by_timeframe(timeframe:)
-        published_articles_by_tag.where("published_at > ?", Timeframe.datetime(timeframe))
-          .order(score: :desc).page(@page).per(@number_of_articles)
-      end
-
       def default_home_feed(user_signed_in: false)
         _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in, ranking: true)
         stories
-      end
-
-      def latest_feed
-        published_articles_by_tag.order(published_at: :desc)
-          .where("score > ?", MINIMUM_SCORE_LATEST_FEED)
-          .page(@page).per(@number_of_articles)
       end
 
       def default_home_feed_and_featured_story(user_signed_in: false, ranking: true)

@@ -1,0 +1,15 @@
+module Articles
+  module Feeds
+    MINIMUM_SCORE = -20
+
+    module Latest
+      def self.call(tag: nil, number_of_articles: 50, page: 1)
+        Articles::FindPublishedByTag.call(tag)
+          .order(published_at: :desc)
+          .where("score > ?", MINIMUM_SCORE)
+          .page(page)
+          .per(number_of_articles)
+      end
+    end
+  end
+end

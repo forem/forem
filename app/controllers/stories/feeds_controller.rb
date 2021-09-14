@@ -52,13 +52,11 @@ module Stories
     end
 
     def timeframe_feed
-      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-      feed.top_articles_by_timeframe(timeframe: params[:timeframe])
+      Articles::Feeds::Timeframe.call(params[:timeframe], tag: params[:tag], page: @page)
     end
 
     def latest_feed
-      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-      feed.latest_feed
+      Articles::Feeds::Latest.call(tag: params[:tag], page: @page)
     end
   end
 end
