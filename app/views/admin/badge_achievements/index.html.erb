@@ -63,12 +63,14 @@
 
   <div id="confirmation-modal" class="hidden">
     <div class="crayons-field mb-3">
-      <p>To confirm this update, type in the sentence: <br />
+      <p id="confirmation-text-instructions">To confirm this update, type in the sentence: <br />
       <strong>My username is @<%= current_user.username %> and this action is 100% safe and appropriate.</strong></p>
       <div id="mismatch-warning" class="crayons-notice crayons-notice--warning hidden" aria-live="polite">
         The confirmation text did not match.
       </div>
       <input
+        aria-label="Type the sentence above to confirm this update"
+        aria-describedby="confirmation-text-instructions"
         type="text"
         id="confirmation-text-field"
         class="crayons-textfield flex-1 mr-2"

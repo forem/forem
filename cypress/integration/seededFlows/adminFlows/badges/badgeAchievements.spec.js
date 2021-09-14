@@ -14,23 +14,20 @@ describe('Badge Achievements', () => {
 
   describe('delete a badge achievement', () => {
     it('should display confirmation modal', () => {
-      cy.get('.crayons-modal__box > header > p')
-        .contains('Confirm changes')
-        .should('be.visible');
+      cy.findByRole('dialog').contains('Confirm changes').should('be.visible');
     });
 
     it('should display warning text if confirmation text does not match', () => {
-      cy.get('[data-confirmation-modal-target="confirmationTextField"]').type(
-        'Text that does not match.',
-      );
+      cy.findByRole('dialog').within(() => {
+        cy.get('input').type('Text that does not match.');
+        cy.findByRole('button', { name: 'Confirm changes' }).click();
 
-      cy.findByRole('button', { name: 'Confirm changes' });
+        cy.get('.crayons-notice')
+          .contains('The confirmation text did not match.')
+          .should('be.visible');
 
-      cy.get('.crayons-notice')
-        .contains('The confirmation text does not match.')
-        .should('be.visible');
-
-      cy.get('.crayons-modal__box__header > .crayons-btn').click();
+        cy.get('button[aria-label="Close"]').click();
+      });
 
       cy.findByRole('table').within(() => {
         cy.findByRole('button', { name: 'Remove' }).should('be.visible');
@@ -39,11 +36,12 @@ describe('Badge Achievements', () => {
 
     it('should remove badge achievement if confirmation text matches', () => {
       cy.get('@user').then((user) => {
-        cy.get('[data-confirmation-modal-target="confirmationTextField"]').type(
-          `My username is @${user.username} and this action is 100% safe and appropriate.`,
-        );
-
-        cy.findByRole('button', { name: 'Confirm changes' });
+        cy.findByRole('dialog').within(() => {
+          cy.get('input').type(
+            `My username is @${user.username} and this action is 100% safe and appropriate.`,
+          );
+          cy.findByRole('button', { name: 'Confirm changes' }).click();
+        });
 
         cy.findByTestId('snackbar').within(() => {
           cy.findByRole('alert').should(
@@ -67,16 +65,18 @@ describe('Badge Achievements', () => {
       });
 
       cy.get('@user').then((user) => {
-        cy.get('[data-confirmation-modal-target="confirmationTextField"]').type(
-          `My username is @${user.username} and this action is 100% safe and appropriate.`,
-        );
+        cy.findByRole('dialog').within(() => {
+          cy.get('input').type(
+            `My username is @${user.username} and this action is 100% safe and appropriate.`,
+          );
+          cy.findByRole('button', { name: 'Confirm changes' }).click();
+        });
 
-        cy.findByRole('button', { name: 'Confirm changes' });
-
-        cy.get('.crayons-notice.crayons-notice--danger').should(
-          'have.text',
-          'Something went wrong.',
-        );
+        cy.findByTestId('errorzone').within(() => {
+          cy.findByRole('alert')
+            .contains('Something went wrong.')
+            .should('be.visible');
+        });
 
         cy.findByRole('table').within(() => {
           cy.findByRole('button', { name: 'Remove' }).should('be.visible');
