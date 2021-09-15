@@ -1,6 +1,5 @@
 import { Controller } from 'stimulus';
 
-// Wraps the Preact Snackbar component into a Stimulus controller
 export default class ErrorController extends Controller {
   static targets = ['errorZone'];
 
