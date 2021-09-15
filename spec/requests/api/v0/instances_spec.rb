@@ -9,6 +9,7 @@ RSpec.describe "Api::V0::Instances", type: :request do
       expect(response.parsed_body["context"]).to eq ApplicationConfig["FOREM_CONTEXT"]
       expect(response.parsed_body["cover_image_url"]).to eq Settings::General.main_social_image
       expect(response.parsed_body["description"]).to eq Settings::Community.community_description
+      expect(response.parsed_body["display_in_directory"]).to eq Settings::UserExperience.display_in_directory
       expect(response.parsed_body["logo_image_url"]).to eq Settings::General.logo_png
       expect(response.parsed_body["name"]).to eq Settings::Community.community_name
       expect(response.parsed_body["registered_users_count"]).to eq User.registered.estimated_count
