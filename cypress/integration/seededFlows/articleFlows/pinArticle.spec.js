@@ -1,19 +1,19 @@
-describe('Pin an article - Anonymous user', () => {
+describe('Admin button on article - Anonymous user', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.visit('/');
   });
 
-  it('should not see the Pin Post button', () => {
+  it('should not see the Admin button', () => {
     cy.findAllByRole('heading', { name: 'Test article' }).first().click();
 
     cy.findByRole('main')
-      .findByRole('button', { name: 'Pin Post' })
+      .findByRole('button', { name: 'Admin' })
       .should('not.exist');
   });
 });
 
-describe('Pin an article - Non admin user', () => {
+describe('Admin button on article - Non admin user', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
@@ -51,14 +51,14 @@ describe('Pin an article - Non admin user', () => {
     });
   });
 
-  it('should not see the Pin Post button', () => {
+  it('should not see the Admin button', () => {
     cy.findByRole('main')
-      .findByRole('button', { name: 'Pin Post' })
+      .findByRole('button', { name: 'Admin' })
       .should('not.exist');
   });
 });
 
-describe('Pin an article - Admin User', () => {
+describe('Admin User viewing article', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
@@ -77,148 +77,12 @@ describe('Pin an article - Admin User', () => {
     });
   });
 
-  it('should pin a post', () => {
+  it('should see the admin button', () => {
     cy.findByRole('main').within(() => {
-      cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
-
-      // check the button has changed to "Unpin Post"
-      cy.findAllByRole('button', { name: 'Unpin Post' }).first();
-    });
-
-    cy.visitAndWaitForUserSideEffects('/');
-
-    cy.findByRole('main').findByTestId('pinned-article').should('be.visible');
-  });
-
-  it('should unpin a post', () => {
-    cy.findByRole('main').within(() => {
-      cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
-      cy.findAllByRole('button', { name: 'Unpin Post' }).first().click();
-      cy.findAllByRole('button', { name: 'Pin Post' }).first();
-    });
-
-    cy.visitAndWaitForUserSideEffects('/');
-
-    cy.findByRole('main').findByTestId('pinned-article').should('not.exist');
-  });
-
-  it('should not add the "Pin Post" button to a draft article', () => {
-    cy.findByRole('main')
-      .findAllByRole('button', { name: 'Pin Post' })
-      .first()
-      .click();
-
-    cy.createArticle({
-      title: 'Test Article 2',
-      tags: ['beginner', 'ruby', 'go'],
-      content: `This is a test article's contents.`,
-      published: false,
-    }).then((response) => {
-      cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
-
-      cy.findByRole('heading', { name: 'Test Article 2' });
-      cy.findByRole('main')
-        .findByRole('button', { name: 'Pin Post' })
-        .should('not.exist');
-    });
-  });
-
-  it('should not add the "Pin Post" button to the non currently pinned article', () => {
-    cy.findByRole('main')
-      .findAllByRole('button', { name: 'Pin Post' })
-      .first()
-      .click();
-
-    cy.createArticle({
-      title: 'Test Article 2',
-      tags: ['beginner', 'ruby', 'go'],
-      content: `This is a test article's contents.`,
-      published: true,
-    }).then((response) => {
-      cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
-      cy.findByRole('heading', { name: 'Test Article 2' });
-
-      cy.findByRole('main')
-        .findByRole('button', { name: 'Pin Post' })
-        .should('not.exist');
-    });
-  });
-
-  it('should allow to pin another post after the current pinned post is deleted', () => {
-    cy.findByRole('main').within(() => {
-      cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
-      cy.findAllByRole('link', { name: 'Manage' }).first().click();
-    });
-
-    cy.findByRole('heading', { name: 'Tools:' });
-    cy.findByRole('main')
-      .findAllByRole('link', { name: 'Delete' })
-      .first()
-      .click();
-
-    cy.findByRole('heading', {
-      name: 'Are you sure you want to delete this article?',
-    });
-    cy.findByRole('main')
-      .findAllByRole('button', { name: 'Delete' })
-      .first()
-      .click();
-
-    cy.createArticle({
-      title: 'Another Article',
-      tags: ['beginner', 'ruby', 'go'],
-      content: `This is a test article's contents.`,
-      published: true,
-    }).then((response) => {
-      cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
-      cy.findByRole('heading', { name: 'Another Article' });
-      cy.findByRole('main')
-        .findAllByRole('button', { name: 'Pin Post' })
+      cy.findAllByRole('link', { name: 'Admin' })
         .first()
-        .should('exist');
+        .should('have.attr', 'href')
+        .and('contains', '/admin/content_manager/articles');
     });
-  });
-
-  it('should allow to pin another post after the current pinned post is unpublished', () => {
-    cy.findByRole('main').within(() => {
-      cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
-      cy.findAllByRole('link', { name: 'Edit' }).first().click();
-    });
-
-    cy.findByRole('form', { name: 'Edit post' });
-    cy.findByRole('main').within(() => {
-      cy.findAllByTitle(/^Post options$/i)
-        .first()
-        .click();
-      cy.findAllByRole('button', { name: 'Unpublish post' }).first().click();
-    });
-
-    cy.findByRole('heading', { name: 'Test Article' });
-    cy.createArticle({
-      title: 'Another Article',
-      tags: ['beginner', 'ruby', 'go'],
-      content: `This is a test article's contents.`,
-      published: true,
-    }).then((response) => {
-      cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
-      cy.findByRole('heading', { name: 'Another Article' });
-      cy.findByRole('main')
-        .findAllByRole('button', { name: 'Pin Post' })
-        .first()
-        .should('exist');
-    });
-  });
-
-  it('should show the pinned post to a logged out user', () => {
-    cy.findByRole('main').within(() => {
-      cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
-
-      // check the button has changed to "Unpin Post"
-      cy.findAllByRole('button', { name: 'Unpin Post' }).first();
-    });
-
-    cy.signOutUser();
-
-    cy.findByRole('main').findByTestId('pinned-article').should('be.visible');
   });
 });
