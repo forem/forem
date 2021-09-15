@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-  before_action :authenticate_user!, only: %i[tags chat_channels reactions usernames]
+  before_action :authenticate_user!, only: %i[tags reactions usernames]
   before_action :format_integer_params
   before_action :sanitize_params, only: %i[listings reactions feed_content]
 
@@ -61,23 +61,6 @@ class SearchController < ApplicationController
 
   def tags
     result = Search::Tag.search_documents(params[:name])
-
-    render json: { result: result }
-  end
-
-  def chat_channels
-    user_ids =
-      if chat_channel_params[:user_id].present?
-        [current_user.id, Settings::General.mascot_user_id, chat_channel_params[:user_id]].reject(&:blank?)
-      else
-        [current_user.id]
-      end
-
-    result = Search::ChatChannelMembership.search_documents(
-      user_ids: user_ids,
-      page: chat_channel_params[:page],
-      per_page: chat_channel_params[:per_page],
-    )
 
     render json: { result: result }
   end
