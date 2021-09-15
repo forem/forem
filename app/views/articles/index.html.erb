@@ -40,7 +40,7 @@
 
       <header class="p-2 px-3 m:p-0 m:px-0 m:mb-2 fs-l">
         <h1 class="screen-reader-only">Posts</h1>
-        <nav class="-mx-3 m:mx-0 s:flex items-center justify-between">
+        <nav class="-mx-3 m:mx-0 s:flex items-center justify-between" aria-label="View posts by">
           <ul class="crayons-navigation crayons-navigation--horizontal">
             <li>
               <a data-text="Feed" href="<%= list_path %>/" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"<%= %w[week month year infinity
