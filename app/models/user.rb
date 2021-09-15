@@ -83,7 +83,6 @@ class User < ApplicationRecord
   has_many :identities_enabled, -> { enabled }, class_name: "Identity", inverse_of: false
   has_many :listings, dependent: :destroy
   has_many :mentions, dependent: :destroy
-  has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy
   has_many :notification_subscriptions, dependent: :destroy
   has_many :notifications, dependent: :destroy
