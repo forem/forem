@@ -20,8 +20,9 @@
 <% end %>
 
 <main id="main-content" class="crayons-layout crayons-layout--1-col">
-  <header class="px-2 m:px-0">
+  <header class="px-2 m:px-0 flex items-center justify-between">
     <h1>Top tags</h1>
+    <%= link_to "Following tags", dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
   </header>
 
   <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0" data-follow-button-container="true">
