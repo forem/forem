@@ -15,7 +15,6 @@ module Admin
       users: "https://admin.forem.com/docs/admin/users/README",
       html_variants: "https://admin.forem.com/docs/admin/html-variants",
       display_ads: "https://admin.forem.com/docs/admin/display-ads",
-      chat_channels: "https://admin.forem.com/docs/admin/chat-channels",
       tags: "https://admin.forem.com/docs/admin/tags"
     }.freeze
 

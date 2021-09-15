@@ -18,7 +18,6 @@ module Moderator
       handle_identities
       merge_content
       merge_follows
-      merge_chat_mentions
       merge_profile
       update_social
       Users::DeleteWorker.new.perform(@delete_user.id, true)
@@ -66,12 +65,6 @@ module Moderator
       end
 
       @keep_user.update_columns(created_at: @delete_user.created_at) if @delete_user.created_at < @keep_user.created_at
-    end
-
-    def merge_chat_mentions
-      any_memberships = @delete_user.chat_channel_memberships.any?
-      @delete_user.chat_channel_memberships.update_all(user_id: @keep_user.id) if any_memberships
-      @delete_user.mentions.update_all(user_id: @keep_user.id) if @delete_user.mentions.any?
     end
 
     def merge_follows

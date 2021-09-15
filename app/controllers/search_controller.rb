@@ -3,15 +3,6 @@ class SearchController < ApplicationController
   before_action :format_integer_params
   before_action :sanitize_params, only: %i[listings reactions feed_content]
 
-  CHAT_CHANNEL_PARAMS = %i[
-    channel_status
-    channel_type
-    page
-    per_page
-    status
-    user_id
-  ].freeze
-
   LISTINGS_PARAMS = [
     :category,
     :listing_search,
@@ -174,10 +165,6 @@ class SearchController < ApplicationController
       page: feed_params[:page],
       per_page: feed_params[:per_page],
     )
-  end
-
-  def chat_channel_params
-    params.permit(CHAT_CHANNEL_PARAMS)
   end
 
   def listing_params

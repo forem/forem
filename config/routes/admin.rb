@@ -140,13 +140,6 @@ namespace :admin do
   end
 
   scope :apps do
-    constraints(->(_request) { FeatureFlag.enabled?(:connect) }) do
-      resources :chat_channels, only: %i[index create update destroy] do
-        member do
-          delete :remove_user
-        end
-      end
-    end
     resources :consumer_apps, only: %i[index new create edit update destroy]
     resources :events, only: %i[index create update new edit]
     resources :listings, only: %i[index edit update destroy]

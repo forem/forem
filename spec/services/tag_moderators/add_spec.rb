@@ -6,12 +6,6 @@ RSpec.describe TagModerators::Add, type: :service do
   let(:mod_relator) { create(:user) }
   let(:tag_one) { create(:tag) }
   let(:tag_two) { create(:tag, supported: false) }
-  let!(:channel) do
-    create(:chat_channel,
-           slug: "tag-moderators",
-           channel_name: "Tag Moderators",
-           channel_type: "invite_only")
-  end
 
   def add_tag_moderators
     mod_relator.add_role(:mod_relations_admin)
@@ -40,20 +34,6 @@ RSpec.describe TagModerators::Add, type: :service do
 
     it "adds user to tag moderator channel" do
       expect(channel.users.count).to eq(2)
-    end
-
-    it "creates channel and adds user to channel when tag doesn't already have channel" do
-      tag_channel = ChatChannel.find_by(channel_name: "##{tag_one.name} mods")
-      expect(tag_one.reload.mod_chat_channel_id).to eq(tag_channel.id)
-      expect(user_one.chat_channels).to include(tag_channel)
-      expect(mod_relator.chat_channels).to include(tag_channel)
-    end
-
-    it "adds user to channel when tag already has channel" do
-      user_three = create(:user)
-      described_class.call([user_three.id], [tag_one.id])
-      channel = ChatChannel.find_by(channel_name: "##{tag_one.name} mods")
-      expect(channel.active_users).to include(user_three)
     end
   end
 

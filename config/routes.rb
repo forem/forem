@@ -117,8 +117,6 @@ Rails.application.routes.draw do
     end
 
     resources :messages, only: [:create]
-    resources :chat_channels, only: %i[index show create update]
-    resources :chat_channel_memberships, only: %i[index create edit update destroy]
     resources :articles, only: %i[update create destroy] do
       patch "/admin_unpublish", to: "articles#admin_unpublish"
     end
@@ -188,7 +186,6 @@ Rails.application.routes.draw do
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
     resources :podcasts, only: %i[new create]
     resources :article_approvals, only: %i[create]
-    resources :video_chats, only: %i[show]
     resources :sidebars, only: %i[show]
     resources :profile_preview_cards, only: %i[show]
     resources :user_subscriptions, only: %i[create] do
@@ -213,12 +210,10 @@ Rails.application.routes.draw do
 
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags", to: "search#tags"
-    get "/search/chat_channels", to: "search#chat_channels"
     get "/search/listings", to: "search#listings"
     get "/search/usernames", to: "search#usernames"
     get "/search/feed_content", to: "search#feed_content"
     get "/search/reactions", to: "search#reactions"
-    get "/chat_channel_memberships/find_by_chat_channel_id", to: "chat_channel_memberships#find_by_chat_channel_id"
     get "/listings/dashboard", to: "listings#dashboard"
     get "/listings/:category", to: "listings#index", as: :listing_category
     get "/listings/:category/:slug", to: "listings#index", as: :listing_slug
@@ -235,8 +230,6 @@ Rails.application.routes.draw do
     patch "/onboarding_notifications_checkbox_update",
           to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
-    post "/chat_channels/:id/moderate", to: "chat_channels#moderate"
-    post "/chat_channels/:id/open", to: "chat_channels#open"
 
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")

@@ -55,7 +55,7 @@ end
 num_users = 10 * SEEDS_MULTIPLIER
 
 users_in_random_order = seeder.create_if_none(User, num_users) do
-  roles = %i[trusted chatroom_beta_tester workshop_pass]
+  roles = %i[trusted workshop_pass]
 
   num_users.times do |i|
     name = Faker::Name.unique.name
@@ -344,32 +344,6 @@ seeder.create_if_none(Broadcast) do
   Article.create!(
     body_markdown: welcome_thread_content,
     user: User.staff_account || User.first,
-  )
-end
-
-##############################################################################
-
-seeder.create_if_none(ChatChannel) do
-  %w[Workshop Meta General].each do |chan|
-    ChatChannel.create!(
-      channel_name: chan,
-      channel_type: "open",
-      slug: chan,
-    )
-  end
-
-  # This channel is hard-coded in a few places
-  ChatChannel.create!(
-    channel_name: "Tag Moderators",
-    channel_type: "open",
-    slug: "tag-moderators",
-  )
-
-  direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
-  Message.create!(
-    chat_channel: direct_channel,
-    user: User.last,
-    message_markdown: "This is **awesome**",
   )
 end
 
