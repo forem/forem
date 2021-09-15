@@ -62,7 +62,7 @@ will share this change with the people who need to know about it._
       updated. I have filled out the
       [Changes Requested](https://github.com/forem/admin-docs/issues/new?assignees=&labels=&template=changes_requested.md)
       issue template so Community Success can help update the Admin Docs
-      appropriately.
+      appropriately..
 - [ ] I've updated the README or added inline documentation
 - [ ] I've added an entry to
       [`CHANGELOG.md`](https://github.com/forem/forem/tree/main/CHANGELOG.md)
