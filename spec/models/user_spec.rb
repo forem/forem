@@ -64,7 +64,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:identities_enabled) }
       it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:mentions).dependent(:destroy) }
-      it { is_expected.to have_many(:messages).dependent(:destroy) }
       it { is_expected.to have_many(:notes).dependent(:destroy) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:notifications).dependent(:destroy) }

@@ -319,20 +319,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     end
   end
 
-  describe "#new_message_email" do
-    let(:email) { described_class.with(message: direct_message).new_message_email }
-
-    include_examples "#renders_proper_email_headers"
-
-    it "renders proper subject" do
-      expect(email.subject).to eq("#{user.name} just messaged you")
-    end
-
-    it "renders proper receiver" do
-      expect(email.to).to eq([direct_message.direct_receiver.email])
-    end
-  end
-
   describe "#account_deleted_email" do
     let(:email) { described_class.with(name: user.name, email: user.email).account_deleted_email }
 

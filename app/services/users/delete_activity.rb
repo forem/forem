@@ -39,7 +39,6 @@ module Users
       user.reactions.delete_all
       user.follows.delete_all
       Follow.followable_user(user.id).delete_all
-      user.messages.delete_all
       user.mentions.delete_all
       user.badge_achievements.delete_all
       user.collections.delete_all
