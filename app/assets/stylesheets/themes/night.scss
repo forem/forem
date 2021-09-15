@@ -10,17 +10,7 @@
 
   // Base
   --base: #f9f9f9;
-
-  --base-a90: #{rgba(#f9f9f9, 0.9)};
-  --base-a80: #{rgba(#f9f9f9, 0.8)};
-  --base-a70: #{rgba(#f9f9f9, 0.7)};
-  --base-a60: #{rgba(#f9f9f9, 0.6)};
-  --base-a50: #{rgba(#f9f9f9, 0.5)};
-  --base-a40: #{rgba(#f9f9f9, 0.4)};
-  --base-a30: #{rgba(#f9f9f9, 0.3)};
-  --base-a20: #{rgba(#f9f9f9, 0.2)};
-  --base-a10: #{rgba(#f9f9f9, 0.1)};
-  --base-a5: #{rgba(#f9f9f9, 0.05)};
+  --base-inverted: #000;
 
   --base-100: var(--base);
   --base-90: #efefef;
@@ -33,7 +23,28 @@
   --base-20: #3d3d3d;
   --base-10: #242424;
   --base-0: #090909;
-  --base-inverted: #000;
+
+  --base-a90: #{rgba(#f9f9f9, 0.9)};
+  --base-a80: #{rgba(#f9f9f9, 0.8)};
+  --base-a70: #{rgba(#f9f9f9, 0.7)};
+  --base-a60: #{rgba(#f9f9f9, 0.6)};
+  --base-a50: #{rgba(#f9f9f9, 0.5)};
+  --base-a40: #{rgba(#f9f9f9, 0.4)};
+  --base-a30: #{rgba(#f9f9f9, 0.3)};
+  --base-a20: #{rgba(#f9f9f9, 0.2)};
+  --base-a10: #{rgba(#f9f9f9, 0.1)};
+  --base-a5: #{rgba(#f9f9f9, 0.05)};
+
+  --base-inverted-a90: #{rgba(#000, 0.9)};
+  --base-inverted-a80: #{rgba(#000, 0.8)};
+  --base-inverted-a70: #{rgba(#000, 0.7)};
+  --base-inverted-a60: #{rgba(#000, 0.6)};
+  --base-inverted-a50: #{rgba(#000, 0.5)};
+  --base-inverted-a40: #{rgba(#000, 0.4)};
+  --base-inverted-a30: #{rgba(#000, 0.3)};
+  --base-inverted-a20: #{rgba(#000, 0.2)};
+  --base-inverted-a10: #{rgba(#000, 0.1)};
+  --base-inverted-a5: #{rgba(#000, 0.05)};
 
   // Accent colors
   --accent-brand: #7b78ff;
