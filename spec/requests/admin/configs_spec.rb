@@ -807,19 +807,12 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "updates display_in_directory to false" do
-          display_in_directory = false
-          post admin_settings_user_experiences_path, params: {
-            settings_user_experience: { display_in_directory: display_in_directory }
-          }
-          expect(Settings::UserExperience.display_in_directory).to eq(display_in_directory)
-        end
-
-        it "updates display_in_directory to true" do
-          display_in_directory = true
-          post admin_settings_user_experiences_path, params: {
-            settings_user_experience: { display_in_directory: display_in_directory }
-          }
-          expect(Settings::UserExperience.display_in_directory).to eq(display_in_directory)
+          default_value = Settings::UserExperience.get_default(:display_in_directory)
+          expect do
+            post admin_settings_user_experiences_path, params: {
+              settings_user_experience: { display_in_directory: false }
+            }
+          end.to change(Settings::UserExperience, :display_in_directory).from(default_value).to(false)
         end
       end
 
