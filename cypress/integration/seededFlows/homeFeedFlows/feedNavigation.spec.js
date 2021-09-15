@@ -14,43 +14,43 @@ describe('Home Feed Navigation', () => {
   it('should show Feed by default', () => {
     cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
       cy.findByRole('link', { name: 'Feed' }).as('feed');
-      cy.findByRole('link', { name: 'Week' }).as('week');
-      cy.findByRole('link', { name: 'Month' }).as('month');
-      cy.findByRole('link', { name: 'Year' }).as('year');
-      cy.findByRole('link', { name: 'Infinity' }).as('infinity');
+      cy.findByRole('link', { name: 'Top' }).as('top');
+      cy.findByRole('link', { name: 'Latest' }).as('latest');
 
-      cy.findByRole('link', { name: 'Feed' }).should(
-        'have.attr',
-        'aria-current',
-        'page',
-      );
+      cy.get('@feed').should('have.attr', 'aria-current', 'page');
 
-      cy.get('@week').should('not.have.attr', 'aria-current');
-      cy.get('@month').should('not.have.attr', 'aria-current');
-      cy.get('@year').should('not.have.attr', 'aria-current');
-      cy.get('@infinity').should('not.have.attr', 'aria-current');
+      cy.get('@top').should('not.have.attr', 'aria-current');
+      cy.get('@latest').should('not.have.attr', 'aria-current');
     });
   });
 
-  it('should navigate to Week view', () => {
+  it('should navigate to Week view by default for Top', () => {
     cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
-      cy.findByRole('link', { name: 'Week' }).as('week');
-      cy.get('@week').should('not.have.attr', 'aria-current');
-      cy.get('@week').click();
+      cy.findByRole('link', { name: 'Top' }).as('top');
+      cy.get('@top').click();
     });
 
     cy.url().should('contain', '/top/week');
     // Get a fresh handle to elements, as we've navigated to a new page
     cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
-      cy.findByRole('link', { name: 'Week' }).should(
-        'have.attr',
-        'aria-current',
-        'page',
-      );
+      cy.findByRole('link', { name: 'Week' }).as('week');
+
+      cy.get('@week').should('have.attr', 'aria-current', 'page');
+
+      cy.get('@week').click(); // should not change the page
+      cy.url().should('contain', '/top/week'); // so the url stays the same
     });
   });
 
   it('should navigate to Month view', () => {
+    cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
+      cy.findByRole('link', { name: 'Top' }).as('top');
+      cy.get('@top').click();
+    });
+
+    // this url check serves to wait for the page transition
+    cy.url().should('contain', '/top/week');
+
     cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
       cy.findByRole('link', { name: 'Month' }).as('month');
       cy.get('@month').should('not.have.attr', 'aria-current');
@@ -70,6 +70,14 @@ describe('Home Feed Navigation', () => {
 
   it('should navigate to Year view', () => {
     cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
+      cy.findByRole('link', { name: 'Top' }).as('top');
+      cy.get('@top').click();
+    });
+
+    // this url check serves to wait for the page transition
+    cy.url().should('contain', '/top/week');
+
+    cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
       cy.findByRole('link', { name: 'Year' }).as('year');
       cy.get('@year').should('not.have.attr', 'aria-current');
       cy.get('@year').click();
@@ -87,6 +95,14 @@ describe('Home Feed Navigation', () => {
   });
 
   it('should navigate to Infinity view', () => {
+    cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
+      cy.findByRole('link', { name: 'Top' }).as('top');
+      cy.get('@top').click();
+    });
+
+    // this url check serves to wait for the page transition
+    cy.url().should('contain', '/top/week');
+
     cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
       cy.findByRole('link', { name: 'Infinity' }).as('infinity');
       cy.get('@infinity').should('not.have.attr', 'aria-current');
@@ -108,6 +124,14 @@ describe('Home Feed Navigation', () => {
     // Default Feed view
     cy.findByRole('heading', { name: '#tag1' });
     cy.findByRole('heading', { name: 'Listings' });
+
+    cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
+      cy.findByRole('link', { name: 'Top' }).as('top');
+      cy.get('@top').click();
+    });
+
+    // this url check serves to wait for the page transition
+    cy.url().should('contain', '/top/week');
 
     // Week view
     cy.findByRole('link', { name: 'Week' }).click();
