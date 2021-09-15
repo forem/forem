@@ -15,7 +15,7 @@ module Admin
       ::Settings::Authentication.invite_only_mode = settings_params[:invite_only]
       ::Settings::UserExperience.public = settings_params[:public]
     rescue StandardError => e
-      flash[:notice] = e.message
+      flash[:error] = e.message
       redirect_to new_admin_creator_setting_path
     end
 
