@@ -43,9 +43,12 @@
 
 <% if user_signed_in? %>
   <main id="main-content">
-    <header class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4 flex items-center justify-between">
+    <header class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-3 flex items-center justify-between">
       <h1 class="crayons-title">Notifications</h1>
-      <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost">Settings</a>
+      <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost hidden m:inline-block">Settings</a>
+      <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost crayons-btn--icon inline-block m:hidden">
+        <%= inline_svg_tag("cog.svg", class: "crayons-icon") %>
+      </a>
     </header>
 
     <div class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols pt-0" id="notifications-container">

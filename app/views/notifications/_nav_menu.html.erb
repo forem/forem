@@ -1,36 +1,6 @@
-<nav class="hidden m:block pt-4" aria-label="Notifications">
-  <div>
-    <% if @organizations.present? %>
-      <h3 class="crayons-subtitle-3 mb-4 pl-2"><%= @user.name %></h3>
-    <% end %>
-    <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].blank? %>" href="/notifications">
-      All
-    </a>
-    <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">
-      Comments
-    </a>
-    <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
-      Posts
-    </a>
-  </div>
+<nav class="px-3 s:px-0" aria-label="Notifications">
   <% if @organizations.present? %>
-    <% @organizations.each do |org| %>
-      <div class="pt-6">
-        <h3 class="crayons-subtitle-3 mb-4 pl-2"><%= org.name %></h3>
-        <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
-          All
-        </a>
-        <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
-          Comments
-        </a>
-      </div>
-    <% end %>
-  <% end %>
-</nav>
-
-<nav class="block m:hidden px-4" aria-label="Notifications">
-  <% if @organizations.present? %>
-    <select id="notifications-filter__select" class="crayons-select mb-2">
+    <select id="notifications-filter__select" class="crayons-select mb-4" aria-label="Filter by account...">
       <option value="/notifications"><%= @user.name %></option>
       <% @organizations.each do |org| %>
         <option value="/notifications/org/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %></option>
@@ -38,35 +8,35 @@
     </select>
   <% end %>
 
-  <div class="crayons-tabs <%= "hidden" if params[:org_id].present? %>">
-    <ul class="crayons-tabs__list">
-      <li>
-        <a data-text="All" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].blank? %>" href="/notifications" aria-current="<%= "page" if params[:filter].blank? %>">
-          All
-        </a>
-      </li>
-      <li>
-        <a data-text="Comments" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments" aria-current="<%= "page" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>">
-          Comments
-        </a>
-      </li>
-      <li>
-        <a data-text="Posts" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts" aria-current="<%= "page" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>">
-          Posts
-        </a>
-      </li>
-    </ul>
-  </div>
+  <ul class="crayons-navigation <%= "hidden" if params[:org_id].present? %>">
+    <li>
+      <a data-text="All" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:filter].blank? %>" href="/notifications" aria-current="<%= "page" if params[:filter].blank? %>">
+        All
+      </a>
+    </li>
+    <li>
+      <a data-text="Comments" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>"
+        href="/notifications/comments" aria-current="<%= "page" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>">
+        Comments
+      </a>
+    </li>
+    <li>
+      <a data-text="Posts" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>"
+        href="/notifications/posts" aria-current="<%= "page" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>">
+        Posts
+      </a>
+    </li>
+  </ul>
   <% if @organizations.present? %>
     <% @organizations.each do |org| %>
-      <div class="crayons-tabs <%= "hidden" unless params[:org_id].to_i == org.id %>">
-        <a data-text="All" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
+      <ul class="crayons-navigation <%= "hidden" unless params[:org_id].to_i == org.id %>">
+        <li><a data-text="All" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
           All
-        </a>
-        <a data-text="Comments" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
+        </a></li>
+        <li><a data-text="Comments" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
           Comments
-        </a>
-      </div>
+        </a></li>
+      </ul>
     <% end %>
   <% end %>
 </nav>
