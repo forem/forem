@@ -33,10 +33,11 @@ requires a custom partial
     <p class="crayons-field__description">
       <%= Constants::Settings::Authentication::DETAILS[:apple_pem][:description] %>
     <p>
-    <%= f.text_field :apple_pem,
-                     class: "crayons-textfield",
-                     value: Settings::Authentication.apple_pem,
-                     placeholder: Constants::Settings::Authentication::DETAILS[:apple_pem][:placeholder] %>
+    <%= f.text_area :apple_pem,
+                    class: "crayons-textfield",
+                    value: Settings::Authentication.apple_pem,
+                    placeholder: Constants::Settings::Authentication::DETAILS[:apple_pem][:placeholder],
+                    style: "height: 175px;"%>
   </div>
   <div class="crayons-field">
     <%= admin_config_label :apple_team_id %>
