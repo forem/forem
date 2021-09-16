@@ -1,6 +1,5 @@
 import ModalController from '../controllers/modal_controller';
-import { displaySnackbar } from '../displaySnackbar';
-import { displayErrorAlert } from '../displayErrorAlert';
+import { displayErrorAlert, displaySnackbar } from '../messageUtilities';
 
 const confirmationText = (username) =>
   `My username is @${username} and this action is 100% safe and appropriate.`;

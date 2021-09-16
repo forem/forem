@@ -1,7 +1,7 @@
 /* global jQuery */
 import { Controller } from 'stimulus';
 import { adminModal } from '../adminModal';
-import { displaySnackbar } from '../displaySnackbar';
+import { displaySnackbar } from '../messageUtilities';
 
 const recaptchaFields = document.getElementById('recaptchaContainer');
 const emailRegistrationCheckbox = document.getElementById(
