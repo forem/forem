@@ -43,6 +43,7 @@
 
 // Content fonts
 body {
+  -webkit-font-smoothing: antialiased;
   &.serif-article-body {
     --content-font-family: var(--ff-serif);
   }
