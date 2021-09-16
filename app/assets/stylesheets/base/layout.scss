@@ -73,7 +73,7 @@
   }
 
   &--limited-xs {
-    --site-width: 480px;
+    --site-width: #{$breakpoint-xs};
   }
 
   &--limited-inner-l {

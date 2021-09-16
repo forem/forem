@@ -10,7 +10,7 @@
             <img class="crayons-logo__image align-top" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24" loading="lazy" />
           </span>
         <% end %>
-        <%= sanitize_and_decode article.title %>
+        <%= article.title %>
       </a>
     </h3>
     <% if article.published %>

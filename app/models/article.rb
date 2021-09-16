@@ -494,7 +494,7 @@ class Article < ApplicationRecord
 
   def search_score
     comments_score = (comments_count * 3).to_i
-    partial_score = (comments_score + public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
+    partial_score = (comments_score + (public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i))
     calculated_score = hotness_score.to_i + partial_score
     calculated_score.to_i
   end
