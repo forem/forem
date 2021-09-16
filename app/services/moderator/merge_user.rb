@@ -18,6 +18,7 @@ module Moderator
       handle_identities
       merge_content
       merge_follows
+      merge_mentions
       merge_profile
       update_social
       Users::DeleteWorker.new.perform(@delete_user.id, true)
@@ -71,6 +72,10 @@ module Moderator
       @delete_user.follows&.update_all(follower_id: @keep_user.id) if @delete_user.follows.any?
       @delete_user_followers = Follow.followable_user(@delete_user.id)
       @delete_user_followers.update_all(followable_id: @keep_user.id) if @delete_user_followers.any?
+    end
+
+    def merge_mentions
+      @delete_user.mentions.update_all(user_id: @keep_user.id) if @delete_user.mentions.any?
     end
 
     def merge_content
