@@ -55,7 +55,7 @@
       <header class="crayons-article__header">
         <% if @commentable.respond_to?(:main_image) && @commentable.main_image.present? %>
           <div class="crayons-article__cover">
-            <img src="<%= cloud_cover_url(@commentable.main_image) %>" width="1000" height="420" style="background-color:<%= @commentable.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= sanitize_and_decode @commentable.title %>">
+            <img src="<%= cloud_cover_url(@commentable.main_image) %>" width="1000" height="420" style="background-color:<%= @commentable.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= @commentable.title %>">
           </div>
         <% end %>
 
