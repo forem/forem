@@ -9,6 +9,12 @@
 }
 
 .crayons-article {
+  border-radius: 0;
+
+  @media (min-width: $breakpoint-s) {
+    border-radius: var(--radius-large);
+  }
+
   &__cover {
     position: relative;
     width: 100%;
@@ -52,12 +58,10 @@
     &:empty {
       display: none;
     }
-
-    margin-top: var(--su-4);
     background: var(--accent-warning-a10);
     border: 1px solid var(--accent-warning-a10);
     border-radius: var(--radius);
-    padding: var(--su-2);
+    padding: var(--su-1);
   }
 
   &__subheader {

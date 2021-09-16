@@ -1,6 +1,5 @@
 <% @actor = @article.organization || @article.user %>
 <div class="crayons-article-sticky grid gap-4 break-word" id="article-show-primary-sticky-nav">
-
   <div class="crayons-card crayons-card--secondary branded-7 p-4 pt-0 gap-4 grid" style="border-top-color: <%= Color::CompareHex.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %>;">
     <%= render "shared/profile_card_content", actor: @actor, context: "sidebar" %>
   </div>

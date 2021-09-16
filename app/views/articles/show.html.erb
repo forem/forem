@@ -103,41 +103,47 @@
           <% end %>
 
           <div class="crayons-article__header__meta">
-            <% if @organization %>
-              <a href="<%= @organization.path %>" class="flex items-center mb-4 fs-l fw-medium crayons-link">
-                <span class="crayons-logo crayons-logo--l mr-3">
-                  <img src="<%= Images::Profile.call(@organization.profile_image_url, length: 50) %>" class="crayons-logo__image" alt="<%= @organization.name %> profile image">
-                </span>
-                <%= @organization.name %>
-              </a>
-            <% end %>
-
-            <div class="flex mb-5">
-              <a href="/<%= @user.username %>"><img class="radius-full align-middle" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" width="40" height="40" alt="<%= @user.name %>" /></a>
-              <div class="pl-2">
-                <a href="/<%= @user.username %>" class="crayons-link fw-bold"><%= @user.name %></a>
-                <p class="fs-xs color-base-60">
-                  <% if @article.published_timestamp.present? %>
-                    Posted on
-                    <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
+            <div class="flex s:items-start flex-col s:flex-row">
+              <div id="action-space" class="crayons-article__actions mb-4 s:mb-0 s:order-last"></div>
+              <div class="flex flex-1 mb-5 items-start">
+                <div class="relative">
+                  <% if @organization %>
+                    <a href="<%= @organization.path %>"><img src="<%= Images::Profile.call(@organization.profile_image_url, length: 50) %>" class="radius-default align-middle" width="40" height="40" alt="<%= @organization.name %> profile image"></a>
+                    <a href="/<%= @user.username %>" class="absolute -right-2 -bottom-2 radius-full border border-solid border-2 border-base-inverted inline-flex">
+                      <img class="radius-full align-middle" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" width="24" height="24" alt="<%= @user.name %>" />
+                    </a>
+                  <% else %>
+                    <a href="/<%= @user.username %>"><img class="radius-full align-middle" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" width="40" height="40" alt="<%= @user.name %>" /></a>
                   <% end %>
-                  <% if @article.co_author_ids.present? %>
-                    <em>with <%= @article.co_author_name_and_path.html_safe %></em>
+                </div>
+                <div class="pl-3 flex-1">
+                  <a href="/<%= @user.username %>" class="crayons-link fw-bold"><%= @user.name %></a>
+                  <% if @organization %>
+                    <span class="color-base-60">for</span> <a href="<%= @organization.path %>" class="crayons-link"><%= @organization.name %></a>
                   <% end %>
-
-                  <% if should_show_updated_on?(@article) %>
-                    &bull; Updated on <%= local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year) %>
-                  <% end %>
-
-                  <% if should_show_crossposted_on?(@article) %>
-                    &bull; Originally published at
-                    <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
-                    <% if @article.crossposted_at %>
-                      on
-                      <%= local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year) %>
+                  <p class="fs-xs color-base-60">
+                    <% if @article.published_timestamp.present? %>
+                      Posted on
+                      <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
                     <% end %>
-                  <% end %>
-                </p>
+                    <% if @article.co_author_ids.present? %>
+                      with <%= @article.co_author_name_and_path.html_safe %>
+                    <% end %>
+
+                    <% if should_show_updated_on?(@article) %>
+                      &bull; Updated on <%= local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year) %>
+                    <% end %>
+
+                    <% if should_show_crossposted_on?(@article) %>
+                      &bull; Originally published at
+                      <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
+                      <% if @article.crossposted_at %>
+                        on
+                        <%= local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year) %>
+                      <% end %>
+                    <% end %>
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -176,8 +182,6 @@
                        collection: @collection,
                        articles: @collection_articles %>
           <% end %>
-
-          <div id="action-space" class="crayons-article__actions"></div>
         </div>
         <%= render "articles/full_comment_area" %>
 
