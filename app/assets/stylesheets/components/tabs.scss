@@ -179,22 +179,27 @@
   display: flex;
   overflow-x: auto;
   flex-wrap: nowrap;
+  // !important here because reset.scss is screwed up a little for ul,ol elements... gotta fix it one day...
+  padding: var(--su-1) 0 !important; // padding to improve tapable
+  margin: calc(-1 * var(--su-1)) 0 !important;
 
   @media (min-width: $breakpoint-s) {
     display: block;
+    overflow-x: unset;
   }
 
   &__item {
     display: inline-flex;
     white-space: nowrap;
     padding: var(--tab-vertical-padding) var(--tab-horizontal-padding);
-    color: var(--base-60);
+    color: var(--base-70);
     position: relative;
     border-radius: var(--radius);
 
     @media (min-width: $breakpoint-s) {
       display: flex;
       color: var(--base-90);
+      white-space: unset;
       padding: var(--tab-vertical-padding) var(--tab-vertical-padding);
 
       &:hover {
@@ -225,7 +230,7 @@
   .crayons-navigation__item {
     @media (min-width: $breakpoint-s) {
       display: inline-flex;
-      color: var(--base-60);
+      color: var(--base-70);
       padding: var(--tab-vertical-padding) var(--tab-horizontal-padding);
     }
 
