@@ -1,7 +1,7 @@
 <% default_nav_links = NavigationLink.default_section.ordered.to_a %>
 <% other_nav_links = NavigationLink.other_section.ordered.to_a %>
 
-<nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" aria-labelledby="default-nav-heading">
+<nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" aria-label="<%= community_name %>">
   <ul class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
     <li>
       <a href="<%= root_path %>" class="crayons-link crayons-link--block">
