@@ -209,7 +209,7 @@ function buildArticleHTML(article) {
     }">${filterXSS(article.user.name)}</a>
     ${
       isArticle
-        ? `<div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block"><button id="story-author-preview-trigger-${article.id}" aria-controls="story-author-preview-content-${article.id}" class="profile-preview-card__trigger fs-s crayons-btn crayons-btn--ghost p-1 -ml-1" aria-label="${article.user.name} profile details">${article.user.name}</button>${previewCardContent}</div>`
+        ? `<div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block"><button id="story-author-preview-trigger-${article.id}" aria-controls="story-author-preview-content-${article.id}" class="profile-preview-card__trigger fs-s crayons-btn crayons-btn--ghost p-1 -ml-1 -my-2" aria-label="${article.user.name} profile details">${article.user.name}</button>${previewCardContent}</div>`
         : ''
     }
             ${forOrganization}

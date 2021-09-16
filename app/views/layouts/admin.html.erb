@@ -84,6 +84,13 @@
         </div>
       <% end %>
 
+      <div
+        data-controller="error"
+        data-action="error:generate@document->error#generateErrorAlert"
+        data-testid="errorzone">
+          <div data-error-target="errorZone" role="alert"></div>
+      </div>
+
       <% if request.path.split("/")[-3] == "admin" %>
         <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu.nested_menu_items_from_request(request) %>
       <% end %>

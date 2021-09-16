@@ -48,7 +48,7 @@ gem "honeycomb-beeline", "~> 2.7.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "i18n-js", "~> 3.9.0" # Helps with internationalization in Rails.
-gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web services dead easy
+gem "httparty", "~> 0.19" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "imgproxy", "~> 2.0" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
@@ -113,9 +113,9 @@ gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
-gem "view_component", "~> 2.39", require: "view_component/engine" # View components for Rails
+gem "view_component", "~> 2.40", require: "view_component/engine" # View components for Rails
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
-gem "webpacker", "~> 5.4.2" # Use webpack to manage app-like JavaScript modules in Rails
+gem "webpacker", "~> 5.4.3" # Use webpack to manage app-like JavaScript modules in Rails
 
 group :development do
   gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
@@ -140,13 +140,13 @@ group :development, :test do
   gem "cypress-rails", "~> 0.5.2" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 3.1.0" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 3.1.1" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.20", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.21", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.11", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rails", "~> 2.11", require: false # Automatic Rails code style checking tool
+  gem "rubocop-rails", "~> 2.12", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.4", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
