@@ -3,7 +3,7 @@
 .crayons-dropdown {
   position: absolute;
   display: none; // initially hidden
-  padding: var(--su-4);
+  padding: var(--su-2);
   min-width: 250px;
   z-index: var(--z-dropdown);
   background: var(--card-bg);
@@ -15,18 +15,6 @@
   @media (min-width: $breakpoint-s) {
     max-width: 360px;
     width: max-content;
-  }
-
-  &.side-bar {
-    bottom: 100%;
-    font-size: var(--fs-base);
-    padding: var(--su-2);
-    right: var(--su-1);
-    @media (min-width: $breakpoint-m) {
-      right: auto;
-      bottom: auto;
-      top: 0;
-    }
   }
 
   &.reverse {
