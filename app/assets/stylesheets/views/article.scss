@@ -9,12 +9,6 @@
 }
 
 .crayons-article {
-  border-radius: 0;
-
-  @media (min-width: $breakpoint-s) {
-    border-radius: var(--radius-large);
-  }
-
   &__cover {
     position: relative;
     width: 100%;
