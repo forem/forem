@@ -46,7 +46,7 @@
     <header class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-3 flex items-center justify-between">
       <h1 class="crayons-title">Notifications</h1>
       <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost hidden m:inline-block">Settings</a>
-      <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost crayons-btn--icon inline-block m:hidden">
+      <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost crayons-btn--icon inline-block m:hidden" aria-label="Notification settings">
         <%= inline_svg_tag("cog.svg", class: "crayons-icon") %>
       </a>
     </header>
