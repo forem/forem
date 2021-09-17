@@ -84,14 +84,13 @@
         <p id="password-helper-text" class="fs-xs color-base-60 mt-1">Minimum 8 characters</p>
       </div>
 
-      <% needs_owner_secret_field = ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user %>
-      <% if needs_owner_secret_field %>
-        <% if params[:owner_secret].present? %>
-          <%= f.hidden_field :owner_secret, value: params[:owner_secret] %>
+      <% if ForemInstance.needs_owner_secret? %>
+        <% if params[:forem_owner_secret].present? %>
+          <%= f.hidden_field :forem_owner_secret, value: params[:forem_owner_secret] %>
         <% else %>
           <div class="crayons-field mt-6">
-            <%= f.label :owner_secret, "New Forem Secret", class: "crayons-field__label" %>
-            <%= f.password_field :owner_secret, class: "crayons-textfield", required: needs_owner_secret_field, placeholder: "As provided by your Forem host" %>
+            <%= f.label :forem_owner_secret, "New Forem Secret", class: "crayons-field__label" %>
+            <%= f.password_field :forem_owner_secret, class: "crayons-textfield", required: ForemInstance.needs_owner_secret?, placeholder: "As provided by your Forem host" %>
           </div>
         <% end %>
       <% end %>

@@ -35,4 +35,8 @@ class ForemInstance
   def self.private?
     !Settings::UserExperience.public?
   end
+
+  def self.needs_owner_secret?
+    ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user
+  end
 end

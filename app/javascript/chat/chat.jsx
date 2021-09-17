@@ -1494,7 +1494,10 @@ export class Chat extends Component {
       ? state.activeChannel.channel_name
       : ' ';
     const connectAnnouncement = (
-      <div className="bg-base-90 color-base-0 p-3 align-center fs-s m:fs-base lh-tight" aria-live="polite">
+      <div
+        className="bg-base-90 color-base-0 p-3 align-center fs-s m:fs-base lh-tight"
+        aria-live="polite"
+      >
         We have made the decision to deprecate Connect as core functionality
         from the application. &nbsp;
         <a
