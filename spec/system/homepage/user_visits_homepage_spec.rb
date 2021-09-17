@@ -61,7 +61,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows expected number of links when signed out" do
-        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+        within("#main-navigation", match: :first) do
           expect(page).to have_selector(".sidebar-navigation-link", count: 1)
         end
 
@@ -82,7 +82,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "hides link when display_only_when_signed_in is true" do
-        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+        within("#main-navigation", match: :first) do
           expect(page).to have_selector(".default-navigation-links .sidebar-navigation-link", count: 1)
         end
       end
@@ -95,7 +95,7 @@ RSpec.describe "User visits a homepage", type: :system do
                position: 3)
         visit "/"
 
-        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+        within("#main-navigation", match: :first) do
           expect(page).to have_selector(".default-navigation-links li:nth-child(3)", text: "Shop")
           expect(page).to have_selector(".default-navigation-links li:nth-child(4)", text: "Mock")
         end
@@ -190,7 +190,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the correct navigation_links" do
-        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+        within("#main-navigation", match: :first) do
           expect(page).to have_text(navigation_link_1.name)
           expect(page).to have_text(navigation_link_3.name)
         end
@@ -201,7 +201,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the correct urls" do
-        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+        within("#main-navigation", match: :first) do
           expect(page).to have_link(href: navigation_link_1.url)
           expect(page).to have_link(href: navigation_link_3.url)
         end
@@ -212,13 +212,13 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows expected # of links when signed in" do
-        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+        within("#main-navigation", match: :first) do
           expect(page).to have_selector(".sidebar-navigation-link", count: 2) # it's count: 1 when signed out
         end
       end
 
       it "shows link when display_only_when_signed_in is true" do
-        within("nav[aria-labelledby='default-nav-heading']", match: :first) do
+        within("#main-navigation", match: :first) do
           expect(page).to have_selector(".default-navigation-links li:nth-child(4)", text: "Beauty")
         end
       end
