@@ -123,47 +123,6 @@ getCsrfToken().then(async () => {
   }
 });
 
-// Pin/Unpin article
-// these element are added by initializeBaseUserData.js:addRelevantButtonsToArticle
-const toggleArticlePin = async (button) => {
-  const isPinButton = button.id === 'js-pin-article';
-  const { articleId, path } = button.dataset;
-  const method = isPinButton ? 'PUT' : 'DELETE';
-  const body = method === 'PUT' ? JSON.stringify({ id: articleId }) : null;
-
-  const response = await fetch(path, {
-    method,
-    body,
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    credentials: 'same-origin',
-  });
-
-  // response could potentially fail if the article is draft but we don't show
-  // the buttons in those cases, so I think there's no need to handle that scenario client side
-  if (response.ok) {
-    // replace id and label
-    button.id = isPinButton ? 'js-unpin-article' : 'js-pin-article';
-    button.innerHTML = `${isPinButton ? 'Unpin' : 'Pin'} Post`;
-
-    const message = isPinButton
-      ? 'The post has been succesfully pinned'
-      : 'The post has been succesfully unpinned';
-    addSnackbarItem({ message });
-  }
-};
-
-const actionsContainer = document.getElementById('action-space');
-const pinTargets = ['js-pin-article', 'js-unpin-article'];
-actionsContainer.addEventListener('click', async (event) => {
-  if (pinTargets.includes(event.target.id)) {
-    toggleArticlePin(event.target);
-  }
-});
-
 // Initialize the profile preview functionality
 const profilePreviewTrigger = document.getElementById(
   'profile-preview-trigger',
