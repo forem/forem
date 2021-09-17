@@ -42,11 +42,7 @@ function addRelevantButtonsToArticle(user) {
     // if there's already a pinned post different from the current one
     if (user.admin) {
       actions.push(
-        `<a
-            href="/admin/content_manager/articles/${articleId}"
-            class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1">
-          Admin
-        </a>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="/admin/content_manager/articles/${articleId}" data-no-instant>Admin</a>`,
       );
     }
 
