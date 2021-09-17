@@ -14,14 +14,7 @@ function titleArea({
   let tags = '';
   if (tagArray.length > 0 && tagArray[0].length > 0) {
     tags = tagArray.map((tag) => {
-      return (
-        tag.length > 0 && (
-          <span className="crayons-tag mr-2">
-            <span className="crayons-tag__prefix">#</span>
-            {tag}
-          </span>
-        )
-      );
+      return tag.length > 0 && `${tag}, `;
     });
   }
 
@@ -60,11 +53,11 @@ function titleArea({
         {!errors && markdownLintErrors?.length > 0 && (
           <AccessibilitySuggestions markdownLintErrors={markdownLintErrors} />
         )}
-        <h1 className="fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
+        <h1 className="fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-2 spec-article__title">
           {previewTitle}
         </h1>
 
-        <div className="spec-article__tags">{tags}</div>
+        <div className="spec-article__tags color-base-60">{tags}</div>
       </div>
     </header>
   );
