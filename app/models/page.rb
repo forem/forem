@@ -10,10 +10,16 @@ class Page < ApplicationRecord
 
   before_validation :set_default_template
   before_save :evaluate_markdown
-  after_save :bust_cache
+
+  after_commit :ensure_uniqueness_of_landinge_page
+  after_commit :bust_cache
 
   mount_uploader :social_image, ProfileImageUploader
   resourcify
+
+  def self.landing_page
+    find_by(landing_page: true)
+  end
 
   def path
     is_top_level_path ? "/#{slug}" : "/page/#{slug}"
@@ -54,6 +60,15 @@ class Page < ApplicationRecord
     return unless slug_exists
 
     errors.add(:slug, "is taken.")
+  end
+
+  # As there can only be one global landing page, we want to ensure that
+  # data integrity is preserved by setting `landing_page` to `false` for all
+  # other pages if the current one was transformed into a landing page
+  def ensure_uniqueness_of_landinge_page
+    return unless previous_changes["landing_page"] == [false, true]
+
+    Page.where.not(id: id).update_all(landing_page: false)
   end
 
   def bust_cache

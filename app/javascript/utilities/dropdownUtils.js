@@ -1,3 +1,55 @@
+import { isInViewport } from '@utilities/viewport';
+import { debounceAction } from '@utilities/debounceAction';
+
+/**
+ * Helper function designed to be used on scroll to detect when dropdowns should switch from dropping downwards/upwards.
+ * The action is debounced since scroll events are usually fired several at a time.
+ *
+ * @returns {Function} a debounced function that handles the repositioning of dropdowns
+ * @example
+ *
+ * document.addEventListener('scroll', getDropdownRepositionListener());
+ */
+export const getDropdownRepositionListener = () =>
+  debounceAction(handleDropdownRepositions);
+
+/**
+ * Checks for all dropdowns on the page which have the attribute 'data-repositioning-dropdown', signalling
+ * they should dynamically change between dropping downwards or upwards, depending on viewport position.
+ *
+ * Any dropdowns not fully in view when dropping down will be switched to dropping upwards.
+ */
+const handleDropdownRepositions = () => {
+  // Select all of the dropdowns which should reposition
+  const allRepositioningDropdowns = document.querySelectorAll(
+    '[data-repositioning-dropdown]',
+  );
+
+  for (const element of allRepositioningDropdowns) {
+    // Default to dropping downwards
+    element.classList.remove('reverse');
+
+    const isDropdownCurrentlyOpen = element.style.display === 'block';
+
+    if (!isDropdownCurrentlyOpen) {
+      // We can't determine position on an element with display:none, so we "show" the dropdown with 0 opacity very temporarily
+      element.style.opacity = 0;
+      element.style.display = 'block';
+    }
+
+    if (!isInViewport({ element })) {
+      // If the element isn't fully visible when dropping down, reverse the direction
+      element.classList.add('reverse');
+    }
+
+    if (!isDropdownCurrentlyOpen) {
+      // Revert the temporary changes to determine position
+      element.style.removeProperty('display');
+      element.style.removeProperty('opacity');
+    }
+  }
+};
+
 /**
  * Helper query string to identify interactive/focusable HTML elements
  */
@@ -5,92 +57,13 @@ const INTERACTIVE_ELEMENTS_QUERY =
   'button, [href], input:not([type="hidden"]), select, textarea, [tabindex="0"]';
 
 /**
- * Used to close the given dropdown if:
- * - Escape is pressed
- * - Tab is pressed and the newly focused element doesn't exist inside the dropdown
- *
- * @param {Object} args
- * @param {string} args.triggerElementId The id of the button which activates the dropdown
- * @param {string} args.dropdownContentId The id of the dropdown content element
- * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
- */
-const keyUpListener = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose = () => {},
-}) => {
-  return ({ key }) => {
-    if (key === 'Escape') {
-      // Close the dropdown and return focus to the trigger button to prevent focus being lost
-      const triggerElement = document.getElementById(triggerElementId);
-      const isCurrentlyOpen =
-        triggerElement.getAttribute('aria-expanded') === 'true';
-      if (isCurrentlyOpen) {
-        closeDropdown({ triggerElementId, dropdownContentId, onClose });
-        triggerElement.focus();
-      }
-    } else if (key === 'Tab') {
-      // Close the dropdown if the user has tabbed away from it
-      const isInsideDropdown = document
-        .getElementById(dropdownContentId)
-        ?.contains(document.activeElement);
-      if (!isInsideDropdown) {
-        closeDropdown({ triggerElementId, dropdownContentId, onClose });
-      }
-    }
-  };
-};
-
-/**
- * Used to listen for a click outside of a dropdown while it's open.
- * Closes the dropdown and refocuses the trigger button, if another interactive item has not been clicked.
- *
- * @param {Object} args
- * @param {string} args.triggerElementId The id of the button which activates the dropdown
- * @param {string} args.dropdownContentId The id of the dropdown content element
- * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
- */
-const clickOutsideListener = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose = () => {},
-}) => {
-  return ({ target }) => {
-    const triggerElement = document.getElementById(triggerElementId);
-    const dropdownContent = document.getElementById(dropdownContentId);
-    if (!dropdownContent) {
-      // User may have navigated away from the page
-      return;
-    }
-
-    if (
-      target !== triggerElement &&
-      !dropdownContent.contains(target) &&
-      !triggerElement.contains(target)
-    ) {
-      closeDropdown({ triggerElementId, dropdownContentId, onClose });
-
-      //   If the user did not click on another interactive item, return focus to the trigger
-      if (!target.matches(INTERACTIVE_ELEMENTS_QUERY)) {
-        triggerElement.focus();
-      }
-    }
-  };
-};
-
-/**
- * Open the given dropdown, updating aria attributes, attaching listeners and focus the first interactive element
+ * Open the given dropdown, updating aria attributes, and focusing the first interactive element
  *
  * @param {Object} args
  * @param {string} args.triggerElementId The id of the button which activates the dropdown
  * @param {string} args.dropdownContent The id of the dropdown content element
- * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
  */
-const openDropdown = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose = () => {},
-}) => {
+const openDropdown = ({ triggerElementId, dropdownContentId }) => {
   const dropdownContent = document.getElementById(dropdownContentId);
   const triggerElement = document.getElementById(triggerElementId);
 
@@ -101,49 +74,32 @@ const openDropdown = ({
 
   // Send focus to the first suitable element
   dropdownContent.querySelector(INTERACTIVE_ELEMENTS_QUERY)?.focus();
-
-  document.addEventListener(
-    'keyup',
-    keyUpListener({ triggerElementId, dropdownContentId, onClose }),
-  );
-
-  document.addEventListener(
-    'click',
-    clickOutsideListener({ triggerElementId, dropdownContentId, onClose }),
-  );
 };
 
 /**
- * Close the given dropdown, updating aria attributes and removing event listeners
+ * Close the given dropdown, updating aria attributes
  *
  * @param {Object} args
  * @param {string} args.triggerElementId The id of the button which activates the dropdown
  * @param {string} args.dropdownContent The id of the dropdown content element
  * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
  */
-const closeDropdown = ({
-  triggerElementId,
-  dropdownContentId,
-  onClose = () => {},
-}) => {
+const closeDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
   const dropdownContent = document.getElementById(dropdownContentId);
+
+  if (!dropdownContent) {
+    // Component may have unmounted
+    return;
+  }
 
   document
     .getElementById(triggerElementId)
     ?.setAttribute('aria-expanded', 'false');
 
-  dropdownContent.style.display = 'none';
+  // Remove the inline style added when we opened the dropdown
+  dropdownContent.style.removeProperty('display');
 
-  document.removeEventListener(
-    'keyup',
-    keyUpListener({ triggerElementId, dropdownContentId, onClose }),
-  );
-
-  document.removeEventListener(
-    'click',
-    clickOutsideListener({ triggerElementId, dropdownContentId, onClose }),
-  );
-  onClose();
+  onClose?.();
 };
 
 /**
@@ -153,14 +109,18 @@ const closeDropdown = ({
  * @param {Object} args
  * @param {string} args.triggerButtonElementId The ID of the button which triggers the dropdown open/close behavior
  * @param {string} args.dropdownContentId The ID of the dropdown content which should open/close on trigger button press
+ * @param {string} args.dropdownContentCloseButtonId Optional ID of any button within the dropdown content which should close the dropdown
  * @param {Function} args.onClose An optional callback for when the dropdown is closed. This can be passed to execute any side-effects required when the dropdown closes.
+ * @param {Function} args.onOpen An optional callback for when the dropdown is opened. This can be passed to execute any side-effects required when the dropdown opens.
  *
  * @returns {{closeDropdown: Function}} Object with callback to close the initialized dropdown
  */
 export const initializeDropdown = ({
   triggerElementId,
   dropdownContentId,
-  onClose = () => {},
+  dropdownContentCloseButtonId,
+  onClose,
+  onOpen,
 }) => {
   const triggerButton = document.getElementById(triggerElementId);
   const dropdownContent = document.getElementById(dropdownContentId);
@@ -175,6 +135,62 @@ export const initializeDropdown = ({
   triggerButton.setAttribute('aria-controls', dropdownContentId);
   triggerButton.setAttribute('aria-haspopup', 'true');
 
+  const keyUpListener = ({ key }) => {
+    if (key === 'Escape') {
+      // Close the dropdown and return focus to the trigger button to prevent focus being lost
+      const isCurrentlyOpen =
+        triggerButton.getAttribute('aria-expanded') === 'true';
+      if (isCurrentlyOpen) {
+        closeDropdown({
+          triggerElementId,
+          dropdownContentId,
+          onClose: onCloseCleanupActions,
+        });
+        triggerButton.focus();
+      }
+    } else if (key === 'Tab') {
+      // Close the dropdown if the user has tabbed away from it
+      const isInsideDropdown = dropdownContent?.contains(
+        document.activeElement,
+      );
+      if (!isInsideDropdown) {
+        closeDropdown({
+          triggerElementId,
+          dropdownContentId,
+          onClose: onCloseCleanupActions,
+        });
+      }
+    }
+  };
+
+  // Close the dropdown if user has clicked outside
+  const clickOutsideListener = ({ target }) => {
+    if (
+      target !== triggerButton &&
+      !dropdownContent.contains(target) &&
+      !triggerButton.contains(target)
+    ) {
+      closeDropdown({
+        triggerElementId,
+        dropdownContentId,
+        onClose: onCloseCleanupActions,
+      });
+
+      // If the user did not click on another interactive item, return focus to the trigger
+      if (!target.matches(INTERACTIVE_ELEMENTS_QUERY)) {
+        triggerButton.focus();
+      }
+    }
+  };
+
+  // Any necessary side effects required on dropdown close
+  const onCloseCleanupActions = () => {
+    onClose?.();
+    document.removeEventListener('keyup', keyUpListener);
+    document.removeEventListener('click', clickOutsideListener);
+  };
+
+  // Add the main trigger button toggle funcationality
   triggerButton.addEventListener('click', () => {
     if (
       document
@@ -184,23 +200,42 @@ export const initializeDropdown = ({
       closeDropdown({
         triggerElementId,
         dropdownContentId,
-        onClose,
+        onClose: onCloseCleanupActions,
       });
     } else {
       openDropdown({
         triggerElementId,
         dropdownContentId,
-        onClose,
       });
+      onOpen?.();
+
+      document.addEventListener('keyup', keyUpListener);
+      document.addEventListener('click', clickOutsideListener);
     }
   });
 
+  if (dropdownContentCloseButtonId) {
+    // The dropdown content has a 'close' button inside that we also need to handle
+    document
+      .getElementById(dropdownContentCloseButtonId)
+      ?.addEventListener('click', () => {
+        closeDropdown({
+          triggerElementId,
+          dropdownContentId,
+          onClose: onCloseCleanupActions,
+        });
+
+        document.getElementById(triggerElementId)?.focus();
+      });
+  }
+
   return {
-    closeDropdown: () =>
+    closeDropdown: () => {
       closeDropdown({
         triggerElementId,
         dropdownContentId,
-        onClose,
-      }),
+        onClose: onCloseCleanupActions,
+      });
+    },
   };
 };

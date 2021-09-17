@@ -10,46 +10,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   end
   let!(:old_story) { create(:article, published_at: 3.days.ago) }
   let!(:low_scoring_article) { create(:article, score: -1000) }
-  let!(:month_old_story) { create(:article, published_at: 1.month.ago) }
-
-  describe "#published_articles_by_tag" do
-    let(:unpublished_article) { create(:article, published: false) }
-    let(:tag) { "foo" }
-    let!(:tagged_article) { create(:article, tags: tag) }
-
-    it "returns published articles" do
-      result = feed.published_articles_by_tag
-      expect(result).to include article
-      expect(result).not_to include unpublished_article
-    end
-
-    context "with tag" do
-      it "returns articles with the specified tag" do
-        expect(described_class.new(tag: tag).published_articles_by_tag).to include tagged_article
-      end
-    end
-  end
-
-  describe "#top_articles_by_timeframe" do
-    let!(:moderately_high_scoring_article) { create(:article, score: 20) }
-    let(:result) { feed.top_articles_by_timeframe(timeframe: "week").to_a }
-
-    it "returns correct articles ordered by score" do
-      expect(result.slice(0, 2)).to eq [hot_story, moderately_high_scoring_article]
-      expect(result.last).to eq low_scoring_article
-      expect(result).not_to include(month_old_story)
-    end
-  end
-
-  describe "#latest_feed" do
-    it "only returns articles with scores above -40" do
-      expect(feed.latest_feed).not_to include(low_scoring_article)
-    end
-
-    it "returns articles ordered by publishing date descending" do
-      expect(feed.latest_feed.last).to eq month_old_story
-    end
-  end
 
   describe "#default_home_feed_and_featured_story" do
     let(:default_feed) { feed.default_home_feed_and_featured_story }
@@ -282,7 +242,11 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     let(:article) { create(:article, experience_level_rating: 7) }
 
     context "when user has a further experience level" do
-      let(:user) { create(:user, experience_level: 1) }
+      let(:user) { create(:user) }
+
+      before do
+        user.setting.update(experience_level: 1)
+      end
 
       it "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
         expect(feed.score_experience_level(article)).to eq(-3)
@@ -295,7 +259,11 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     end
 
     context "when user has a closer experience level" do
-      let(:user) { create(:user, experience_level: 9) }
+      let(:user) { create(:user) }
+
+      before do
+        user.setting.update(experience_level: 9)
+      end
 
       it "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
         expect(feed.score_experience_level(article)).to eq(-1)
@@ -303,7 +271,11 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     end
 
     context "when the user does not have an experience level set" do
-      let(:user) { create(:user, experience_level: nil) }
+      let(:user) { create(:user) }
+
+      before do
+        user.setting.update(experience_level: nil)
+      end
 
       it "uses a value of 5 for user experience level" do
         expect(feed.score_experience_level(article)).to eq(-1)

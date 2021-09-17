@@ -44,9 +44,19 @@ RSpec.describe "StoriesIndex", type: :request do
 
     it "renders registration page if the Forem instance is private" do
       allow(Settings::UserExperience).to receive(:public).and_return(false)
+      allow(Authentication::Providers).to receive(:enabled).and_return(%i[github twitter])
 
       get root_path
-      expect(response.body).to include("Continue with")
+      expect(response.body).to include("Continue with GitHub")
+      expect(response.body).to include("Continue with Twitter")
+    end
+
+    it "renders a landing page if one is active and if the site config is set to private" do
+      allow(Settings::UserExperience).to receive(:public).and_return(false)
+      create(:page, title: "This is a landing page!", landing_page: true)
+
+      get root_path
+      expect(response.body).to include("This is a landing page!")
     end
 
     it "renders all display_ads when published and approved" do
@@ -257,13 +267,6 @@ RSpec.describe "StoriesIndex", type: :request do
         get "/"
         expect(response.body).not_to include('<a href="https://campaign-lander.com"')
       end
-    end
-  end
-
-  describe "GET query page" do
-    it "renders page with proper header" do
-      get "/search?q=hello"
-      expect(response.body).to include("=> Search Results")
     end
   end
 

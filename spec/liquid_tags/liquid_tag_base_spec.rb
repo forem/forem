@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe LiquidTagBase, type: :liquid_tag do
   # #new and #initialize are both private methods in Liquid::Tag, which is what
   # LiquidTagBase inherits from, so we treat this class as a liquid tag itself.
-  setup { Liquid::Template.register_tag("liquid_tag_base", described_class) }
+  before { Liquid::Template.register_tag("liquid_tag_base", described_class) }
 
   context "when VALID_CONTEXTS are defined" do
     before { stub_const("#{described_class}::VALID_CONTEXTS", %w[Article]) }

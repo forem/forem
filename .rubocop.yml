@@ -18,7 +18,7 @@ AllCops:
   DisplayStyleGuide: true
   ExtraDetails: true
   NewCops: enable # opt-in to new cops by default
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0
 
 #################### Bundler ###########################
 
@@ -100,7 +100,6 @@ Layout/LineLength:
   Description: 'Checks that line length does not exceed the configured limit.'
   AutoCorrect: true # this is false by default
   Exclude:
-    - docs/Gemfile
     - Gemfile
     - app/lib/constants/site_config.rb
 
@@ -221,6 +220,8 @@ Lint/MissingSuper:
                   This cop checks for the presence of constructors and lifecycle callbacks
                   without calls to `super`'.
   Enabled: true
+  Exclude:
+    - 'app/components/**/*.rb'
 
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
@@ -340,6 +341,10 @@ Metrics/PerceivedComplexity:
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.
   StyleGuide: '#accessor_mutator_method_names'
+  Enabled: false
+
+Naming/InclusiveLanguage:
+  Description: 'Recommend the use of inclusive language instead of problematic terms.'
   Enabled: false
 
 Naming/PredicateName:
@@ -666,6 +671,9 @@ Style/SwapValues:
 Style/TopLevelMethodDefinition:
   Description: 'This cop looks for top-level method definitions.'
   Enabled: true
+  Exclude:
+    - scripts/release
+    - scripts/stage_release
 
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
@@ -773,14 +781,35 @@ Rails/ActiveRecordCallbacksOrder:
   StyleGuide: 'https://rails.rubystyle.guide/#callbacks-order'
   Enabled: true
 
+Rails/AddColumnIndex:
+  Description: >-
+    Rails migrations don't make use of a given `index` key, but also
+    doesn't given an error when it's used, so it makes it seem like an
+    index might be used.
+  Enabled: true
+
+Rails/Date:
+  Exclude:
+    - scripts/release
+    - scripts/stage_release
+
 Rails/DefaultScope:
   Description: 'Avoid use of `default_scope`.'
   StyleGuide: 'https://rails.rubystyle.guide#avoid-default-scope'
   Enabled: true
 
+Rails/EagerEvaluationLogMessage:
+  Description: 'Checks that blocks are used for interpolated strings passed to `Rails.logger.debug`.'
+  Reference: 'https://guides.rubyonrails.org/debugging_rails_applications.html#impact-of-logs-on-performance'
+  Enabled: true
+
 Rails/EnvironmentVariableAccess:
   Description: 'Do not access `ENV` directly after initialization.'
   Enabled: false
+
+Rails/ExpandedDateRange:
+  Description: 'Checks for expanded date range.'
+  Enabled: true
 
 Rails/FilePath:
   EnforcedStyle: slashes
@@ -790,6 +819,10 @@ Rails/FindById:
                 Favor the use of `find` over `where.take!`, `find_by!`, and `find_by_id!` when you
                 need to retrieve a single record by primary key when you expect it to be found.
   StyleGuide: 'https://rails.rubystyle.guide/#find'
+  Enabled: true
+
+Rails/I18nLocaleAssignment:
+  Description: 'Prefer the usage of `I18n.with_locale` instead of manually updating `I18n.locale` value.'
   Enabled: true
 
 Rails/Inquiry:
@@ -868,6 +901,10 @@ Rails/TimeZoneAssignment:
   Reference: 'https://thoughtbot.com/blog/its-about-time-zones'
   Enabled: true
 
+Rails/UnusedIgnoredColumns:
+  Description: 'Remove a column that does not exist from `ignored_columns`.'
+  Enabled: true
+
 Rails/WhereExists:
   Description: 'Prefer `exists?(...)` over `where(...).exists?`.'
   Enabled: true
@@ -894,6 +931,11 @@ RSpec/ExampleLength:
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
 
+RSpec/IdenticalEqualityAssertion:
+  Description: Checks for equality assertions with identical expressions on both sides.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/IdenticalEqualityAssertion
+
 RSpec/MessageExpectation:
   Description: Checks for consistent message expectation style.
   Enabled: true
@@ -909,3 +951,8 @@ RSpec/MultipleExpectations:
   Enabled: true
   Max: 8
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleExpectations
+
+RSpec/Rails/AvoidSetupHook:
+  Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook

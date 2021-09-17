@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= sanitize_and_decode article.title %></h2></a>
+  <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= article.title %></h2></a>
   <div class="dashboard-meta-details">
     <% if article.published %>
       <span>
@@ -66,6 +66,12 @@
     <% end %>
 
     <a href="<%= article.path %>/stats" data-no-instant class="crayons-btn">Stats</a>
+
+    <% if discussion_lock %>
+      <a href="<%= article.path %>/discussion_unlock_confirm" data-no-instant class="crayons-btn">Unlock discussion</a>
+    <% else %>
+      <a href="<%= article.path %>/discussion_lock_confirm" data-no-instant class="crayons-btn">Lock discussion</a>
+    <% end %>
 
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="crayons-btn dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">

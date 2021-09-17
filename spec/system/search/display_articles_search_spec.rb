@@ -28,7 +28,6 @@ RSpec.describe "Display articles search spec", type: :system, js: true do
     expect(page).to have_selector("button[data-reactable-id=\"#{found_article_one.id}\"]")
     expect(page).to have_content("5 min read")
     expect(find_link("#ruby")["href"]).to include("/t/ruby")
-    expect(find_link(found_article_one.user.name)["href"]).to include(found_article_one.username)
     expect(page).to have_content("3 reactions")
     expect(page).to have_content("2 comments")
   end

@@ -29,5 +29,5 @@ export const LoadingArticle = ({ version }) => {
   );
 };
 LoadingArticle.propTypes = {
-  version: PropTypes.string.isRequired,
+  version: PropTypes.string,
 };

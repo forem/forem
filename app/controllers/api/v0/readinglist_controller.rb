@@ -30,6 +30,7 @@ module Api
           .decorate
 
         @users_by_id = User
+          .joins(:profile)
           .select(UsersController::SHOW_ATTRIBUTES_FOR_SERIALIZATION)
           .find(articles.map(&:user_id))
           .index_by(&:id)

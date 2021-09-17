@@ -35,7 +35,7 @@ RSpec.describe Mailchimp::Bot, type: :service do
           ARTICLES: user.articles.size,
           COMMENTS: user.comments.size,
           ONBOARD_PK: user.onboarding_package_requested.to_s,
-          EXPERIENCE: user.experience_level || 666
+          EXPERIENCE: user.setting.experience_level || 666
         }
       }
     }
@@ -50,20 +50,21 @@ RSpec.describe Mailchimp::Bot, type: :service do
 
   describe "#upsert_to_newsletter" do
     it "sends proper information" do
+      user.notification_setting.update(email_newsletter: true)
       described_class.new(user).upsert_to_newsletter
       expect(my_gibbon_client).to have_received(:upsert).with(matcher)
     end
 
     it "unsubscribes properly" do
-      user.update(email_newsletter: false)
+      user.notification_setting.update(email_newsletter: false)
       described_class.new(user).upsert_to_newsletter
       expect(my_gibbon_client).to have_received(:upsert)
         .with(hash_including(body: hash_including(status: "unsubscribed")))
     end
 
     it "subscribes properly" do
-      user.update(email_newsletter: false)
-      user.update(email_newsletter: true)
+      user.notification_setting.update(email_newsletter: false)
+      user.notification_setting.update(email_newsletter: true)
       described_class.new(user).upsert_to_newsletter
       expect(my_gibbon_client).to have_received(:upsert)
         .with(hash_including(body: hash_including(status: "subscribed")))
@@ -78,7 +79,7 @@ RSpec.describe Mailchimp::Bot, type: :service do
     end
 
     it "tries to resubscribe the user if the user has previously been subscribed" do
-      user.update(email_newsletter: false)
+      user.notification_setting.update(email_newsletter: false)
       mailchimp_bot = described_class.new(user)
       mc_error =
         Gibbon::MailChimpError.new("Error", status_code: 400, title: "Member In Compliance State")
@@ -88,6 +89,15 @@ RSpec.describe Mailchimp::Bot, type: :service do
       mailchimp_bot.upsert_to_newsletter
 
       expect(mailchimp_bot).to have_received(:resubscribe_to_newsletter)
+    end
+
+    it "handles GibbonError" do
+      mailchimp_bot = described_class.new(user)
+      gibbon_error =
+        Gibbon::GibbonError.new("You must set an api_key prior to making a call")
+      allow(mailchimp_bot.gibbon).to receive(:upsert).and_raise(gibbon_error)
+
+      expect { mailchimp_bot.upsert_to_newsletter }.not_to raise_error
     end
   end
 
@@ -101,7 +111,7 @@ RSpec.describe Mailchimp::Bot, type: :service do
     end
 
     it "sends proper information" do
-      user.update(email_community_mod_newsletter: true)
+      user.notification_setting.update(email_community_mod_newsletter: true)
       user.add_role(:trusted)
       Settings::General.mailchimp_community_moderators_id = "something"
       described_class.new(user).manage_community_moderator_list
@@ -124,7 +134,7 @@ RSpec.describe Mailchimp::Bot, type: :service do
     end
 
     it "sends proper information" do
-      user.update(email_tag_mod_newsletter: true)
+      user.notification_setting.update(email_tag_mod_newsletter: true)
       user.add_role(:tag_moderator, tag)
       described_class.new(user).manage_tag_moderator_list
       expect(my_gibbon_client).to have_received(:upsert)

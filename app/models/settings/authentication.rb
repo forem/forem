@@ -1,14 +1,10 @@
 module Settings
-  class Authentication < RailsSettings::Base
+  class Authentication < Base
     self.table_name = :settings_authentications
 
-    # The configuration is cached, change this if you want to force update
-    # the cache, or call Settings::Authentication.clear_cache
-    cache_prefix { "v1" }
-
-    field :allow_email_password_login, type: :boolean, default: true
-    field :allow_email_password_registration, type: :boolean, default: false
-    field :allowed_registration_email_domains, type: :array, default: %w[], validates: {
+    setting :allow_email_password_login, type: :boolean, default: true
+    setting :allow_email_password_registration, type: :boolean, default: false
+    setting :allowed_registration_email_domains, type: :array, default: %w[], validates: {
       valid_domain_csv: true
     }
     field :apple_client_id, type: :string
@@ -29,8 +25,8 @@ module Settings
     field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
 
     # Google ReCATPCHA keys
-    field :recaptcha_site_key, type: :string, default: ApplicationConfig["RECAPTCHA_SITE"]
-    field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
+    setting :recaptcha_site_key, type: :string, default: ApplicationConfig["RECAPTCHA_SITE"]
+    setting :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
     # Apple uses different keys than the usual `PROVIDER_NAME_key` or
     # `PROVIDER_NAME_secret` so these will help the generalized authentication

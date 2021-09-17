@@ -8,7 +8,7 @@ module MarkdownProcessor
     # For example
     # METHODS = %i[add_quotes_to_tile add_quotes_to_description]
     class Base
-      FRONT_MATTER_DETECTOR = /-{3}.*?-{3}/m.freeze
+      FRONT_MATTER_DETECTOR = /-{3}.*?-{3}/m
 
       def self.call(markdown)
         return unless markdown
@@ -62,7 +62,7 @@ module MarkdownProcessor
       end
 
       # Match @_username_ that is not preceded by backtick
-      USERNAME_WITH_UNDERSCORE_REGEXP = /(?<!`)@_\w+_/.freeze
+      USERNAME_WITH_UNDERSCORE_REGEXP = /(?<!`)@_\w+_/
 
       # Escapes underscored username that is not in code
       def self.escape_underscored_username_in_line!(line)

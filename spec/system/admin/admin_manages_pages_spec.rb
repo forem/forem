@@ -9,7 +9,8 @@ RSpec.describe "Admin manages pages", type: :system do
            body_html: "<div>hello there</div>",
            title: "Test Page",
            description: "A test page",
-           is_top_level_path: true)
+           is_top_level_path: true,
+           landing_page: false)
     sign_in admin
     visit admin_pages_path
   end
@@ -108,6 +109,53 @@ RSpec.describe "Admin manages pages", type: :system do
         expect(page).to have_content("Terms of Use")
         expect(page).to have_content("Code of Conduct")
         expect(page).to have_content("Privacy Policy")
+      end
+    end
+  end
+
+  describe "when there is a landing page" do
+    let(:current_landing_page) { create(:page, landing_page: true) }
+    let(:new_landing_page) { create(:page, landing_page: true) }
+
+    context "when a Forem is private" do
+      before do
+        allow(ForemInstance).to receive(:private?).and_return(true)
+      end
+
+      it "allows a landing page to be updated", :aggregate_failures do
+        visit edit_admin_page_path(current_landing_page.id)
+        expect(page).to have_content("Use as 'Locked Screen'")
+        uncheck "Use as 'Locked Screen'"
+        click_on("Update Page")
+        expect(page).to have_current_path(admin_pages_path)
+      end
+
+      it "allows an Admin to click through to the current landing page via the modal", :aggregate_failures do
+        visit edit_admin_page_path(new_landing_page.id)
+        expect(page).to have_content("Use as 'Locked Screen'")
+        check "Use as 'Locked Screen'"
+        expect(page).to have_link("Current Locked Screen: #{new_landing_page.title}")
+        click_on("Current Locked Screen")
+        expect(page).to have_current_path(new_landing_page.path)
+        expect(page).to have_content(new_landing_page.title)
+      end
+
+      it "allows an Admin to overwrite the current landing page via the checkbox and modal", :aggregate_failures do
+        visit edit_admin_page_path(new_landing_page.id)
+        expect(page).to have_content("Use as 'Locked Screen'")
+        check "Use as 'Locked Screen'"
+        expect(page).to have_link("Current Locked Screen: #{new_landing_page.title}")
+        click_on("Overwrite current locked screen")
+        click_on("Update Page")
+        expect(page).to have_current_path(admin_pages_path)
+      end
+    end
+
+    context "when a Forem is public" do
+      it "does not give admins the option to set a lock screen" do
+        allow(ForemInstance).to receive(:private).and_return(false)
+        visit edit_admin_page_path(new_landing_page.id)
+        expect(page).not_to have_content("Use as 'Locked Screen'")
       end
     end
   end

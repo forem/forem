@@ -1,7 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "UsersOnboarding", type: :request do
-  let(:user) { create(:user, saw_onboarding: false, location: "Llama Town") }
+  let!(:user) do
+    create(:user,
+           saw_onboarding: false,
+           _skip_creating_profile: true,
+           profile: create(:profile, location: "Llama Town"))
+  end
 
   describe "PATCH /onboarding_update" do
     context "when signed in" do
@@ -33,10 +38,10 @@ RSpec.describe "UsersOnboarding", type: :request do
       end
 
       it "updates the user's profile" do
-        params = { profile: { employer_name: "Galatic Empire" } }
+        params = { profile: { location: "Galactic Empire" } }
         expect do
           patch "/onboarding_update.json", params: params
-        end.to change(user.profile, :employer_name).to("Galatic Empire")
+        end.to change(user.profile, :location).to("Galactic Empire")
       end
 
       it "does not update the user's last_onboarding_page if it is empty" do

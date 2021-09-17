@@ -28,7 +28,9 @@ module ConsumerApps
     end
 
     def forem_consumer_app
-      relation.create_or_find_by(app_bundle: ConsumerApp::FOREM_BUNDLE)
+      # iOS Forem Consumer App requires a team_id value but Android (future) doesn't
+      team_id = platform == :ios ? ConsumerApp::FOREM_TEAM_ID : nil
+      relation.create_or_find_by(app_bundle: ConsumerApp::FOREM_BUNDLE, team_id: team_id)
     end
   end
 end

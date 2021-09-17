@@ -14,6 +14,7 @@ module Users
           EdgeCache::BustUser.call(comment.user)
           comment.delete
         end
+        article.discussion_lock&.delete
         article.delete
         article.purge
       end

@@ -34,20 +34,65 @@
           </a>
         </div>
         <div>
-          <p>
-            <a href="/<%= story.cached_user.username %>" class="crayons-story__secondary fw-medium">
+          <div>
+            <a href="/<%= story.cached_user.username %>" class="crayons-story__secondary fw-medium m:hidden">
               <%= story.cached_user.name %>
             </a>
+            <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block">
+              <button id="story-author-preview-trigger-<%= story.id %>" aria-controls="story-author-preview-content-<%= story.id %>" class="profile-preview-card__trigger fs-s p-1 -ml-1 -my-2 crayons-btn crayons-btn--ghost" aria-label="<%= story.cached_user.name %> profile details">
+                <%= story.cached_user.name %>
+              </button>
+              <div
+                id="story-author-preview-content-<%= story.id %>"
+                class="profile-preview-card__content crayons-dropdown"
+                style="border-top: var(--su-7) solid var(--card-color);"
+                data-repositioning-dropdown="true"
+                data-testid="profile-preview-card">
+                <div class="gap-4 grid">
+                  <div class="-mt-4">
+                    <a href="/<%= story.cached_user.username %>" class="flex">
+                      <span class="crayons-avatar crayons-avatar--xl mr-2 shrink-0">
+                        <img
+                          src="<%= Images::Profile.call(story.cached_user.profile_image_url, length: 90) %>"
+                          class="crayons-avatar__image"
+                          alt=""
+                          loading="lazy" />
+                      </span>
+                      <span class="crayons-link crayons-subtitle-2 mt-5"><%= story.cached_user.name %></span>
+                    </a>
+                  </div>
+                  <div class="print-hidden">
+                    <button
+                      class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
+                      data-info='{"id": <%= story.user_id %>, "className": "User", "style": "full", "name": "<%= story.cached_user.name %>"}'>
+                      Follow
+                    </button>
+                  </div>
+                  <div
+                    class="author-preview-metadata-container"
+                    data-author-id="<%= story.user_id %>"></div>
+                </div>
+              </div>
+            </div>
+
             <% if story.cached_organization && !@organization_article_index %>
             <span>
               <span class="crayons-story__tertiary fw-normal"> for </span>
               <a href="/<%= story.cached_organization.slug %>" class="crayons-story__secondary fw-medium"><%= story.cached_organization.name %></a>
             </span>
             <% end %>
-          </p>
+          </div>
           <a href="<%= story.path %>" class="crayons-story__tertiary fs-xs"><time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span></a>
         </div>
       </div>
+
+      <% if local_assigns[:pinned] == true %>
+        <div
+          class="pinned color-accent-brand fw-bold"
+          data-testid="pinned-article">
+          <%= inline_svg_tag("pin.svg", alt: "", aria_hidden: true, class: "mr-1 align-text-bottom color-accent-brand") %>Pinned <span class="hidden s:inline">post</span>
+        </div>
+      <% end %>
     </div>
 
     <div class="crayons-story__indention">

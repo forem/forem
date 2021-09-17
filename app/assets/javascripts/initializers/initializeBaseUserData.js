@@ -7,7 +7,11 @@ function initializeProfileImage(user) {
 
 function addRelevantButtonsToArticle(user) {
   var articleContainer = document.getElementById('article-show-container');
-  if (articleContainer) {
+
+  if (
+    articleContainer &&
+    articleContainer.dataset.buttonsInitialized !== 'true'
+  ) {
     let actions = [];
     const published = JSON.parse(articleContainer.dataset.published);
 
@@ -56,6 +60,7 @@ function addRelevantButtonsToArticle(user) {
     }
 
     document.getElementById('action-space').innerHTML = actions.join('');
+    articleContainer.dataset.buttonsInitialized = 'true';
   }
 }
 

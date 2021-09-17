@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { tagPropTypes } from '../../common-prop-types';
+import PropTypes from 'prop-types';
 
 export const TagList = ({ tags = [], flare_tag }) => {
   let tagsToDisplay = tags;
@@ -22,7 +22,7 @@ export const TagList = ({ tags = [], flare_tag }) => {
         </a>
       )}
       {tagsToDisplay.map((tag) => (
-        <a className="crayons-tag" href={`/t/${tag}`}>
+        <a key={`tag-${tag}`} className="crayons-tag" href={`/t/${tag}`}>
           <span className="crayons-tag__prefix">#</span>
           {tag}
         </a>
@@ -32,7 +32,7 @@ export const TagList = ({ tags = [], flare_tag }) => {
 };
 
 TagList.propTypes = {
-  tags: tagPropTypes.isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 TagList.displayName = 'TagList';

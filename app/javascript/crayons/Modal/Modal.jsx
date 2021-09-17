@@ -64,7 +64,7 @@ const CloseIcon = () => (
  */
 export const Modal = ({
   children,
-  size = 'default',
+  size,
   className,
   title,
   overlay = true,
@@ -119,6 +119,10 @@ export const Modal = ({
 };
 
 Modal.displayName = 'Modal';
+
+Modal.defaultProps = {
+  size: 'default',
+};
 
 Modal.propTypes = {
   children: defaultChildrenPropTypes.isRequired,

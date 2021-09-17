@@ -8,6 +8,7 @@ RSpec.describe "Admin Email Tools within User management", type: :system do
 
   context "when looking at a user with recorded emails in the admin panel" do
     before do
+      allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
       sign_in admin
       visit admin_user_path(user)
 

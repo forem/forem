@@ -16,8 +16,8 @@ class StoriesController < ApplicationController
 
   SIGNED_OUT_RECORD_COUNT = 60
 
-  before_action :authenticate_user!, except: %i[index search show]
-  before_action :set_cache_control_headers, only: %i[index search show]
+  before_action :authenticate_user!, except: %i[index show]
+  before_action :set_cache_control_headers, only: %i[index show]
   before_action :redirect_to_lowercase_username, only: %i[index]
 
   rescue_from ArgumentError, with: :bad_request
@@ -31,17 +31,10 @@ class StoriesController < ApplicationController
     handle_base_index
   end
 
-  def search
-    @query = "...searching"
-    @article_index = true
-    @current_ordering = current_search_results_ordering
-    set_surrogate_key_header "articles-page-with-query"
-    render template: "articles/search"
-  end
-
   def show
     @story_show = true
-    if (@article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate)
+    path = "/#{params[:username].downcase}/#{params[:slug]}"
+    if (@article = Article.includes(user: :profile).find_by(path: path)&.decorate)
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
@@ -150,6 +143,10 @@ class StoriesController < ApplicationController
     render template: "articles/index"
   end
 
+  def pinned_article
+    @pinned_article ||= PinnedArticle.get
+  end
+
   def featured_story
     @featured_story ||= Articles::Feeds::LargeForemExperimental.find_featured_story(@stories)
   end
@@ -238,16 +235,19 @@ class StoriesController < ApplicationController
   end
 
   def assign_feed_stories
-    feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
-      @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
+      @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-      @stories = feed.latest_feed
+      @stories = Articles::Feeds::Latest.call
     else
       @default_home_feed = true
+      feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
       @featured_story, @stories = feed.default_home_feed_and_featured_story(user_signed_in: user_signed_in?)
     end
+
+    @pinned_article = pinned_article&.decorate
     @featured_story = (featured_story || Article.new)&.decorate
+
     @stories = ArticleDecorator.decorate_collection(@stories)
   end
 
@@ -259,6 +259,7 @@ class StoriesController < ApplicationController
 
     @article_show = true
 
+    @discussion_lock = @article.discussion_lock
     @user = @article.user
     @organization = @article.organization
 
@@ -332,6 +333,7 @@ class StoriesController < ApplicationController
   def set_user_json_ld
     # For more info on structuring data with JSON-LD,
     # please refer to this link: https://moz.com/blog/json-ld-for-beginners
+    decorated_user = @user.decorate
     @user_json_ld = {
       "@context": "http://schema.org",
       "@type": "Person",
@@ -343,11 +345,8 @@ class StoriesController < ApplicationController
       sameAs: user_same_as,
       image: Images::Profile.call(@user.profile_image_url, length: 320),
       name: @user.name,
-      email: @user.email_public ? @user.email : nil,
-      jobTitle: @user.employment_title.presence,
-      description: @user.summary.presence || "404 bio not found",
-      worksFor: [user_works_for].compact,
-      alumniOf: @user.education.presence
+      email: decorated_user.profile_email,
+      description: decorated_user.profile_summary
     }.reject { |_, v| v.blank? }
   end
 
@@ -412,31 +411,13 @@ class StoriesController < ApplicationController
     }
   end
 
-  def user_works_for
-    # For further examples of the worksFor properties, please refer to this
-    # link: https://jsonld.com/person/
-    return unless @user.employer_name.presence || @user.employer_url.presence
-
-    {
-      "@type": "Organization",
-      name: @user.employer_name,
-      url: @user.employer_url
-    }.reject { |_, v| v.blank? }
-  end
-
   def user_same_as
     # For further information on the sameAs property, please refer to this link:
     # https://schema.org/sameAs
     [
       @user.twitter_username.present? ? "https://twitter.com/#{@user.twitter_username}" : nil,
       @user.github_username.present? ? "https://github.com/#{@user.github_username}" : nil,
-      @user.website_url,
+      @user.profile.website_url,
     ].reject(&:blank?)
-  end
-
-  def current_search_results_ordering
-    return :relevance unless params[:sort_by] == "published_at" && params[:sort_direction].present?
-
-    params[:sort_direction] == "desc" ? :newest : :oldest
   end
 end

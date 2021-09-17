@@ -17,7 +17,7 @@
   &-focus {
     background-color: var(--form-bg-focus);
     border-color: var(--form-border-focus);
-    box-shadow: 1px 1px 0 var(--form-border-focus);
+    box-shadow: 0 0 0 1px var(--form-border-focus);
   }
 
   &-disabled {

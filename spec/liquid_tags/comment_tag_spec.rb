@@ -7,7 +7,7 @@ RSpec.describe CommentTag, type: :liquid_tag do
     create(:comment, commentable: article, user: user, body_markdown: "TheComment")
   end
 
-  setup { Liquid::Template.register_tag("comment", described_class) }
+  before { Liquid::Template.register_tag("comment", described_class) }
 
   def generate_comment_tag(id_code)
     Liquid::Template.parse("{% comment #{id_code} %}")

@@ -58,7 +58,7 @@ class CommentsController < ApplicationController
   def create
     rate_limit!(rate_limit_to_use)
 
-    @comment = Comment.new(permitted_attributes(Comment))
+    @comment = Comment.includes(user: :profile).new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
 
     authorize @comment
