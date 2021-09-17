@@ -4,7 +4,7 @@
 <div id="query-wrapper"></div>
 
 <main id="main-content">
-  <div class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4">
+  <div class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-3 pb-0 s:pb-3">
     <div class="block m:hidden" id="mobile-search-container">
       <form accept-charset="UTF-8" method="get" action="/search" role="search">
         <div class="crayons-fields crayons-fields--horizontal">
@@ -18,19 +18,19 @@
       </form>
     </div>
 
-    <div class="block s:flex items-center space-between">
-      <h1 class="crayons-title">Search results</h1>
+    <div class="block s:flex items-center justify-between">
+      <h1 class="crayons-title hidden s:block pl-2">Search results</h1>
 
-      <nav id="sorting-option-tabs" class="crayons-tabs crayons-tabs--wrapped ml-auto" aria-label="Search result sort options">
-        <ul class="crayons-tabs__list">
+      <nav id="sorting-option-tabs" aria-label="Search result sort options" class="-mx-3 m:mx-0">
+        <ul class="crayons-navigation crayons-navigation--horizontal">
           <li>
-            <a data-text="Most Relevant" href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>" aria-current="page">Most Relevant</a>
+            <a data-text="Most Relevant" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :relevance %>" aria-current="page">Most Relevant</a>
           </li>
           <li>
-            <a data-text="Newest" href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
+            <a data-text="Newest" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
           </li>
           <li>
-            <a data-text="Oldest" href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
+            <a data-text="Oldest" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
           </li>
         </ul>
       </nav>
@@ -43,8 +43,7 @@
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
 
-    <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
-      <div class="sidebar-bg" id="sidebar-bg-left"></div>
+    <div class="crayons-layout__sidebar-left search-nav">
       <%= render "stories/articles_search/nav_menu" %>
     </div>
 

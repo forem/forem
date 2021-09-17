@@ -38,41 +38,42 @@
     <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
-      <header class="flex justify-between items-center p-2 px-3 m:p-0 m:px-0 m:pb-2">
-        <h1 class="crayons-subtitle-2">Posts</h1>
-
-        <nav class="crayons-tabs hidden s:flex" aria-label="View posts by">
-          <ul class="crayons-tabs__list">
+      <header class="p-2 px-3 m:p-0 m:px-0 m:mb-2 fs-l">
+        <h1 class="screen-reader-only">Posts</h1>
+        <nav class="-mx-3 m:mx-0 s:flex items-center justify-between" aria-label="View posts by">
+          <ul class="crayons-navigation crayons-navigation--horizontal">
             <li>
-              <a data-text="Feed" href="<%= list_path %>/" class="crayons-tabs__item <%= "crayons-tabs__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"<%= %w[week month year infinity
-                                                                                                                                                                                                     latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>>Feed</a>
+              <a data-text="Feed" href="<%= list_path %>/" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"<%= %w[week month year infinity
+                                                                                                                                                                                                                 latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>>Feed</a>
             </li>
             <li>
-              <a data-text="Week" href="<%= list_path %>/top/week" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>Week</a>
+              <a data-text="Latest" href="<%= list_path %>/latest" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>Latest</a>
             </li>
             <li>
-              <a data-text="Month" href="<%= list_path %>/top/month" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>Month</a>
-            </li>
-            <li>
-              <a data-text="Year" href="<%= list_path %>/top/year" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>Year</a>
-            </li>
-            <li>
-              <a data-text="Infinity" href="<%= list_path %>/top/infinity" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>Infinity</a>
-            </li>
-            <li>
-              <a data-text="Latest" href="<%= list_path %>/latest" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>Latest</a>
+              <a data-text="Top" href="<%= list_path %>/top/week"
+                class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>"
+                <%= timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
+                  Top
+              </a>
             </li>
           </ul>
+          <% if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>
+            <ul class="crayons-navigation crayons-navigation--horizontal fs-base">
+              <li>
+                <a data-text="Week" href="<%= list_path %>/top/week" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>Week</a>
+              </li>
+              <li>
+                <a data-text="Month" href="<%= list_path %>/top/month" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>Month</a>
+              </li>
+              <li>
+                <a data-text="Year" href="<%= list_path %>/top/year" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>Year</a>
+              </li>
+              <li>
+                <a data-text="Infinity" href="<%= list_path %>/top/infinity" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>Infinity</a>
+              </li>
+            </ul>
+          <% end %>
         </nav>
-
-        <select class="crayons-select s:hidden ml-2 s:ml-auto w-auto" id="feed-filter-select" aria-label="feed-filter-select">
-          <option value="<%= list_path %>/" <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %> selected<% end %>>Feed</option>
-          <option value="<%= list_path %>/top/week" <% if timeframe_check("week") %> selected<% end %>>Week</option>
-          <option value="<%= list_path %>/top/month" <% if timeframe_check("month") %> selected<% end %>>Month</option>
-          <option value="<%= list_path %>/top/year" <% if timeframe_check("year") %> selected<% end %>>Year</option>
-          <option value="<%= list_path %>/top/infinity" <% if timeframe_check("infinity") %> selected<% end %>>Infinity</option>
-          <option value="<%= list_path %>/latest" <% if timeframe_check("latest") %> selected<% end %>>Latest</option>
-        </select>
       </header>
 
       <% if user_signed_in? %>

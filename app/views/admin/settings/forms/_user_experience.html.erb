@@ -72,6 +72,15 @@
             </p>
           </div>
         </div>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :display_in_directory, checked: Settings::UserExperience.display_in_directory, class: "crayons-checkbox" %>
+          <div class="mt-0">
+            <%= admin_config_label :display_in_directory, model: Settings::UserExperience %>
+            <p class="crayons-field__description">
+              Do you want this Forem to be displayed in the <a href="https://discover.forem.com" target="_blank">Forem Directory</a>?
+            </p>
+          </div>
+        </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>
