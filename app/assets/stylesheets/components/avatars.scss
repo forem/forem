@@ -20,6 +20,7 @@
     width: var(--su-6);
     height: var(--su-6);
     overflow: hidden;
+    vertical-align: middle;
 
     &__image {
       border-radius: $radius;
