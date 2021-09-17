@@ -6,27 +6,27 @@ module OmniAuth
       option :name, :forem
 
       option :client_options, {
-        :site => "http://localhost:3001",
-        :authorize_url => "/oauth/authorize"
+        site: ApplicationConfig["PASSPORT_OAUTH_URL"] || "https://passport.forem.com".freeze,
+        authorize_url: "/oauth/authorize"
       }
 
       uid { raw_info["id"] }
 
       info do
         {
-          :email => raw_info["email"],
-          :name => raw_info["name"],
-          :user_nickname => raw_info["username"]
-          
+          email: raw_info["email"],
+          name: raw_info["name"],
+          user_nickname: raw_info["username"]
+
         }
       end
 
       extra do
-        skip_info? ? {} : { :raw_info => raw_info }
+        skip_info? ? {} : { raw_info: raw_info }
       end
 
       def raw_info
-        @raw_info ||= access_token.get('/api/v0/me').parsed
+        @raw_info ||= access_token.get("/api/v0/me").parsed
       end
 
       def callback_url
