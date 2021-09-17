@@ -77,7 +77,10 @@
     padding-bottom: 42%;
     background-size: cover;
     background-position: center center;
-    border-radius: var(--radius) var(--radius) 0 0;
+
+    @media (min-width: $breakpoint-s) {
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
   }
 
   &__body {
