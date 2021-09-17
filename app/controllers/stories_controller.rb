@@ -235,14 +235,13 @@ class StoriesController < ApplicationController
   end
 
   def assign_feed_stories
-    feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
-
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
-      @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
+      @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-      @stories = feed.latest_feed
+      @stories = Articles::Feeds::Latest.call
     else
       @default_home_feed = true
+      feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
       @featured_story, @stories = feed.default_home_feed_and_featured_story(user_signed_in: user_signed_in?)
     end
 
