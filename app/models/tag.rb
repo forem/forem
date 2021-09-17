@@ -1,4 +1,6 @@
 class Tag < ActsAsTaggableOn::Tag
+  self.ignored_columns = %w[mod_chat_channel_id].freeze
+
   attr_accessor :points, :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
