@@ -1,6 +1,6 @@
-<div class="crayons-dropdown left-2 right-2 s:right-4 s:left-auto p-0 crayons-header__menu__dropdown inline-block m:-mr-2 top-100 -mt-1">
-  <ul class="p-0" id="crayons-header__menu__dropdown__list">
-    <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-2 mb-2">
+<div class="crayons-dropdown left-2 right-2 s:right-4 s:left-auto crayons-header__menu__dropdown inline-block m:-mr-2 top-100 -mt-1">
+  <ul class="m-0" id="crayons-header__menu__dropdown__list">
+    <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 pb-2 mb-2">
       <a id="first-nav-link" class="crayons-link crayons-link--block">
         <div>
           <span class="fw-medium block">...</span>
@@ -9,18 +9,18 @@
       </a>
     </li>
 
-    <li class="px-2 js-header-menu-admin-link hidden">
+    <li class="js-header-menu-admin-link hidden">
       <a href="<%= admin_path %>" class="crayons-link crayons-link--block" data-no-instant>Admin</a>
     </li>
-    <li class="px-2"><a href="<%= dashboard_path %>" class="crayons-link crayons-link--block">Dashboard</a></li>
-    <li class="px-2"><a href="<%= mod_path %>" class="crayons-link crayons-link--block trusted-visible-block">Moderator Center</a></li>
-    <li class="px-2"><a href="<%= new_path %>" class="crayons-link crayons-link--block">Create Post</a></li>
-    <li class="px-2"><a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading list</a></li>
-    <li class="border-0 border-b-1 border-solid border-base-20 px-2 pb-2">
+    <li><a href="<%= dashboard_path %>" class="crayons-link crayons-link--block">Dashboard</a></li>
+    <li><a href="<%= mod_path %>" class="crayons-link crayons-link--block trusted-visible-block">Moderator Center</a></li>
+    <li><a href="<%= new_path %>" class="crayons-link crayons-link--block">Create Post</a></li>
+    <li><a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading list</a></li>
+    <li class="border-0 border-b-1 border-solid border-base-20 pb-2">
       <a href="<%= user_settings_path %>" class="crayons-link crayons-link--block" id="second-last-nav-link">Settings</a>
     </li>
 
-    <li class="px-2 py-2">
+    <li class="pt-2">
       <a href="<%= signout_confirm_path %>" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
     </li>
   </ul>

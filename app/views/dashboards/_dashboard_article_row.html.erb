@@ -98,7 +98,7 @@
         <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More options for post: #{article.title}") %>
       </button>
 
-      <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 align-left js-ellipsis-menu-dropdown p-1">
+      <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 align-left js-ellipsis-menu-dropdown">
         <% if article.user_subscriptions_count > 0 %>
           <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="crayons-link crayons-link--block w-100"><%= "Subscriptions (#{article.user_subscriptions_count})" %></a>
         <% end %>
