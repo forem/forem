@@ -1,4 +1,4 @@
-Dir.glob(Rails.root.join("lib/strategies/*.rb")).sort.each do |filename|
+Dir.glob(Rails.root.join("lib/strategies/*.rb")).each do |filename|
   require_dependency filename
 end
 
@@ -321,9 +321,9 @@ Devise.setup do |config|
   # Fun fact, unless Twitter is last, it doesn't work for some reason.
   config.omniauth :facebook, setup: FACEBOOK_OMNIAUTH_SETUP
   config.omniauth :github, setup: GITHUB_OMNIUATH_SETUP
-  # config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
   config.omniauth :apple, setup: APPLE_OMNIAUTH_SETUP
   config.omniauth :forem, setup: FOREM_OMNIAUTH_SETUP, strategy_class: OmniAuth::Strategies::Forem
+  config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
