@@ -1,6 +1,7 @@
 module Users
   class NotificationSetting < ApplicationRecord
     self.table_name_prefix = "users_"
+    self.ignored_columns = %w[email_connect_messages]
 
     belongs_to :user, touch: true
 
