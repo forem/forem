@@ -1,7 +1,7 @@
 describe('Admin button on article - Anonymous user', () => {
   beforeEach(() => {
     cy.testSetup();
-    cy.visit('/');
+    cy.visit('/admin_mcadmin/test-article-slug');
   });
 
   it('should not see the Admin button', () => {
@@ -37,16 +37,7 @@ describe('Admin button on article - Non admin user', () => {
 
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
-        cy.createArticle({
-          title: 'Test Article',
-          tags: ['beginner', 'ruby', 'go'],
-          content: `This is a test article's contents.`,
-          published: true,
-        }).then((response) => {
-          cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
-          // Wait for page to load
-          cy.findByRole('heading', { name: 'Test Article' });
-        });
+        cy.visit('/admin_mcadmin/test-article-slug');
       });
     });
   });
@@ -65,14 +56,7 @@ describe('Admin User viewing article', () => {
 
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
-        cy.createArticle({
-          title: 'Test Article',
-          tags: ['beginner', 'ruby', 'go'],
-          content: `This is a test article's contents.`,
-          published: true,
-        }).then((response) => {
-          cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
-        });
+        cy.visit('/admin_mcadmin/test-article-slug');
       });
     });
   });
