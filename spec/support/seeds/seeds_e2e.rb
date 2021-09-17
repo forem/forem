@@ -401,7 +401,6 @@ seeder.create_if_none(Listing) do
     location: Faker::Address.city,
     organization_id: admin_user.organizations.first&.id,
     listing_category_id: ListingCategory.first.id,
-    contact_via_connect: true,
     published: true,
     originally_published_at: Time.current,
     bumped_at: Time.current,
