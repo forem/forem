@@ -8,7 +8,16 @@ class TagsController < ApplicationController
   def index
     skip_authorization
     @tags_index = true
-    @tags = Tag.includes(:sponsorship).order(hotness_score: :desc).limit(100)
+    tags = Tag.order(hotness_score: :desc).limit(100)
+
+    respond_to do |format|
+      format.html do
+        @tags = tags.includes(:sponsorship)
+        render "index"
+      end
+
+      format.json { render json: tags.pluck(:name) }
+    end
   end
 
   def edit
