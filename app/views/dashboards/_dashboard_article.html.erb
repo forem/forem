@@ -13,7 +13,7 @@
       <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More...") %>
     </button>
 
-    <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 z-10 align-left js-ellipsis-menu-dropdown p-1">
+    <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 z-10 align-left js-ellipsis-menu-dropdown">
       <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "p-0 js-archive-toggle" }) do |f| %>
         <%= f.hidden_field :archived, value: !article.archived %>
 

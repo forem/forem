@@ -34,6 +34,8 @@
     right: 0;
     top: var(--su-7);
     position: absolute;
+    left: 0;
+    justify-content: flex-end;
     padding: var(--padding) var(--padding) 0 0;
 
     @media (min-width: $breakpoint-m) {

@@ -94,4 +94,13 @@ describe('Pin an article from the admin area', () => {
       .first()
       .should('not.be.checked');
   });
+
+  it('should show the pinned post to a logged out user', () => {
+    cy.findAllByRole('checkbox', { name: 'Pinned' }).first().check();
+    cy.findAllByRole('button', { name: 'Submit' }).first().click();
+
+    cy.signOutUser();
+
+    cy.findByRole('main').findByTestId('pinned-article').should('be.visible');
+  });
 });

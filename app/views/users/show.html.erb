@@ -36,12 +36,12 @@
               <% end %>
             <% end %>
             <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button user-profile-follow-button follow-user" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'>Follow</button>
-            <div class="profile-dropdown ml-2 relative hidden" data-username="<%= @user.username %>">
+            <div class="profile-dropdown ml-2 s:relative hidden" data-username="<%= @user.username %>">
               <button id="user-profile-dropdown" aria-expanded="false" aria-controls="user-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
                 <%= inline_svg_tag("overflow-horizontal.svg", class: "dropdown-icon crayons-icon", aria: true, title: "User actions") %>
               </button>
 
-              <div id="user-profile-dropdownmenu" class="crayons-dropdown top-100 right-0 p-1">
+              <div id="user-profile-dropdownmenu" class="crayons-dropdown left-2 right-2 s:right-0 s:left-auto top-100 mt-1">
                 <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>
                 <% if user_signed_in? %>
                   <a href="javascript:void(0);" id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="border-none crayons-link crayons-link--block">Block @<%= @user.username %></a>
