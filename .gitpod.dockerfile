@@ -7,6 +7,7 @@ ENV RUBY_VERSION=3.0.2
 # See https://community.gitpod.io/t/persisting-home-gitpod/1296/2 and
 # https://github.com/gitpod-io/gitpod/issues/905#issuecomment-578747772
 ENV GEM_HOME=/workspace/.rvm
+ENV GEM_PATH=/workspace/.rvm/gems
 
 RUN rm /home/gitpod/.rvmrc && touch /home/gitpod/.rvmrc && echo "rvm_gems_path=/home/gitpod/.rvm" > /home/gitpod/.rvmrc
 RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default"
