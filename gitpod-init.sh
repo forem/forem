@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 gp env GEM_HOME=/workspace/.rvm
-gp env GEM_PATH=/workspace/.rvm/gems
+gp env GEM_PATH=/workspace/.rvm
+gp env BUNDLE_PATH=/workspace/.rvm
 eval $(gp env -e)
 
 cp .env_sample .env
