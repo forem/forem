@@ -16,8 +16,8 @@ function titleArea({
     tags = tagArray.map((tag) => {
       return (
         tag.length > 0 && (
-          <span className="mr-1">
-            <span className="opacity-50">#</span>
+          <span className="crayons-tag">
+            <span className="crayons-tag__prefix">#</span>
             {tag}
           </span>
         )
