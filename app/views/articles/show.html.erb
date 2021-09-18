@@ -157,7 +157,7 @@
             <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
               <div class="spec__tags color-base-60">
                 <% @article.cached_tag_list_array.each do |tag| %>
-                  <a href="/t/<%= tag %>" class="crayons-link crayons-link--secondary"><%= tag %></a><%= "," unless tag == @article.cached_tag_list_array.last %>
+                  <a href="/t/<%= tag %>" class="crayons-link crayons-link--secondary mr-1"><span class="opacity-50">#</span><%= tag %></a>
                 <% end %>
               </div>
             <% end %>

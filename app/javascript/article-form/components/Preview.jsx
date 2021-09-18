@@ -14,7 +14,7 @@ function titleArea({
   let tags = '';
   if (tagArray.length > 0 && tagArray[0].length > 0) {
     tags = tagArray.map((tag) => {
-      return tag.length > 0 && `${tag}, `;
+      return tag.length > 0 && `#${tag} `;
     });
   }
 
