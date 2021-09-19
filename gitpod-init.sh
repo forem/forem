@@ -5,6 +5,9 @@ gp env GEM_PATH=/workspace/.rvm
 gp env BUNDLE_PATH=/workspace/.rvm
 eval $(gp env -e)
 
+echo "Installing the GitHub CLI"
+brew install gh
+
 cp .env_sample .env
 echo "APP_DOMAIN=\"$(gp url 3000 | cut -f 3 -d /)\"" >> .env
 echo 'APP_PROTOCOL="https://"' >> .env

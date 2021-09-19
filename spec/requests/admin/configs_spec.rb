@@ -805,6 +805,15 @@ RSpec.describe "/admin/customization/config", type: :request do
           }
           expect(Settings::UserExperience.public).to eq(is_public)
         end
+
+        it "updates display_in_directory to false" do
+          default_value = Settings::UserExperience.get_default(:display_in_directory)
+          expect do
+            post admin_settings_user_experiences_path, params: {
+              settings_user_experience: { display_in_directory: false }
+            }
+          end.to change(Settings::UserExperience, :display_in_directory).from(default_value).to(false)
+        end
       end
 
       describe "Credits" do

@@ -671,6 +671,9 @@ Style/SwapValues:
 Style/TopLevelMethodDefinition:
   Description: 'This cop looks for top-level method definitions.'
   Enabled: true
+  Exclude:
+    - scripts/release
+    - scripts/stage_release
 
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
@@ -784,6 +787,11 @@ Rails/AddColumnIndex:
     doesn't given an error when it's used, so it makes it seem like an
     index might be used.
   Enabled: true
+
+Rails/Date:
+  Exclude:
+    - scripts/release
+    - scripts/stage_release
 
 Rails/DefaultScope:
   Description: 'Avoid use of `default_scope`.'

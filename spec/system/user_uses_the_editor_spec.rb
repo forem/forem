@@ -98,11 +98,14 @@ RSpec.describe "Using the editor", type: :system do
   describe "using v2 editor", js: true do
     it "fill out form with rich content and click publish" do
       visit "/new"
-      fill_in "article-form-title", with: "This is a test"
+      fill_in "article-form-title", with: "This is a <span> test"
       fill_in "tag-input", with: "What, Yo"
       fill_in "article_body_markdown", with: "Hello"
       find("button", text: /\APublish\z/).click
+
+      expect(page).to have_xpath("//div[@class='crayons-article__header__meta']//h1")
       expect(page).to have_text("Hello")
+      expect(page).not_to have_text("</span>")
       expect(page).to have_link("#what", href: "/t/what")
     end
   end

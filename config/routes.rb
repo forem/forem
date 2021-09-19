@@ -237,34 +237,40 @@ Rails.application.routes.draw do
     get "email_subscriptions/unsubscribe"
     post "/chat_channels/:id/moderate", to: "chat_channels#moderate"
     post "/chat_channels/:id/open", to: "chat_channels#open"
-    get "/connect", to: "chat_channels#index"
-    get "/connect/:slug", to: "chat_channels#index"
-    get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
-    post "/chat_channels/create_chat", to: "chat_channels#create_chat"
-    post "/chat_channels/block_chat", to: "chat_channels#block_chat"
-    post "/chat_channel_memberships/remove_membership", to: "chat_channel_memberships#remove_membership"
-    post "/chat_channel_memberships/add_membership", to: "chat_channel_memberships#add_membership"
-    post "/join_chat_channel", to: "chat_channel_memberships#join_channel"
-    delete "/messages/:id", to: "messages#destroy"
-    patch "/messages/:id", to: "messages#update"
+
+    constraints(->(_request) { FeatureFlag.enabled?(:connect) }) do
+      get "/connect", to: "chat_channels#index"
+      get "/connect/:slug", to: "chat_channels#index"
+      get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
+      post "/chat_channels/create_chat", to: "chat_channels#create_chat"
+      post "/chat_channels/block_chat", to: "chat_channels#block_chat"
+      post "/chat_channel_memberships/remove_membership", to: "chat_channel_memberships#remove_membership"
+      post "/chat_channel_memberships/add_membership", to: "chat_channel_memberships#add_membership"
+      post "/join_chat_channel", to: "chat_channel_memberships#join_channel"
+      delete "/messages/:id", to: "messages#destroy"
+      patch "/messages/:id", to: "messages#update"
+
+      # Chat channel
+      patch "/chat_channels/update_channel/:id", to: "chat_channels#update_channel"
+      post "/create_channel", to: "chat_channels#create_channel"
+
+      # Chat Channel Membership json response
+      get "/chat_channel_memberships/chat_channel_info/:id", to: "chat_channel_memberships#chat_channel_info"
+      post "/chat_channel_memberships/create_membership_request",
+           to: "chat_channel_memberships#create_membership_request"
+      patch "/chat_channel_memberships/leave_membership/:id", to: "chat_channel_memberships#leave_membership"
+      patch "/chat_channel_memberships/update_membership/:id", to: "chat_channel_memberships#update_membership"
+      get "/channel_request_info/", to: "chat_channel_memberships#request_details"
+      patch "/chat_channel_memberships/update_membership_role/:id",
+            to: "chat_channel_memberships#update_membership_role"
+      get "/join_channel_invitation/:channel_slug", to: "chat_channel_memberships#join_channel_invitation"
+      post "/joining_invitation_response", to: "chat_channel_memberships#joining_invitation_response"
+    end
+
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
 
     post "/pusher/auth", to: "pusher#auth"
-
-    # Chat channel
-    patch "/chat_channels/update_channel/:id", to: "chat_channels#update_channel"
-    post "/create_channel", to: "chat_channels#create_channel"
-
-    # Chat Channel Membership json response
-    get "/chat_channel_memberships/chat_channel_info/:id", to: "chat_channel_memberships#chat_channel_info"
-    post "/chat_channel_memberships/create_membership_request", to: "chat_channel_memberships#create_membership_request"
-    patch "/chat_channel_memberships/leave_membership/:id", to: "chat_channel_memberships#leave_membership"
-    patch "/chat_channel_memberships/update_membership/:id", to: "chat_channel_memberships#update_membership"
-    get "/channel_request_info/", to: "chat_channel_memberships#request_details"
-    patch "/chat_channel_memberships/update_membership_role/:id", to: "chat_channel_memberships#update_membership_role"
-    get "/join_channel_invitation/:channel_slug", to: "chat_channel_memberships#join_channel_invitation"
-    post "/joining_invitation_response", to: "chat_channel_memberships#joining_invitation_response"
 
     get "/social_previews/article/:id", to: "social_previews#article", as: :article_social_preview
     get "/social_previews/user/:id", to: "social_previews#user", as: :user_social_preview

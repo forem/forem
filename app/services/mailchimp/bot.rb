@@ -41,6 +41,8 @@ module Mailchimp
         )
 
         success = true
+      rescue Gibbon::GibbonError => e
+        report_error(e)
       rescue Gibbon::MailChimpError => e
         # If user was previously subscribed, set their status to "pending"
         return resubscribe_to_newsletter if previously_subcribed?(e)
