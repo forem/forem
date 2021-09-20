@@ -20,7 +20,7 @@ export const MinimalProfilePreviewCard = ({
 
     <div
       id={contentId}
-      class="profile-preview-card__content crayons-dropdown"
+      class="profile-preview-card__content crayons-dropdown p-4"
       style="border-top: var(--su-7) solid var(--card-color);"
       data-repositioning-dropdown="true"
       data-testid="profile-preview-card"
