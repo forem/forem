@@ -176,7 +176,7 @@ function buildArticleHTML(article) {
     var isArticle = article.class_name === 'Article';
 
     var previewCardContent = `
-      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown" data-repositioning-dropdown="true" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
+      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4" data-repositioning-dropdown="true" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
           <div class="-mt-4">
             <a href="/${profileUsername}" class="flex">
