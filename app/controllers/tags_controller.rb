@@ -4,6 +4,7 @@ class TagsController < ApplicationController
   after_action :verify_authorized
 
   ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
+  INDEX_API_ATTRIBUTES = %i[name rules_html].freeze
 
   def index
     skip_authorization
@@ -16,7 +17,9 @@ class TagsController < ApplicationController
         render "index"
       end
 
-      format.json { render json: tags.pluck(:name) }
+      format.json do
+        render json: tags.select(INDEX_API_ATTRIBUTES).as_json(only: INDEX_API_ATTRIBUTES)
+      end
     end
   end
 
