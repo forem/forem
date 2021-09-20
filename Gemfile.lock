@@ -117,7 +117,7 @@ GEM
       chartkick (>= 3.2)
       railties (>= 5)
       safely_block (>= 0.1.1)
-    bootsnap (1.8.1)
+    bootsnap (1.9.0)
       msgpack (~> 1.0)
     brakeman (5.1.1)
     browser (5.3.1)
