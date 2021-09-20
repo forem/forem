@@ -50,6 +50,11 @@ body {
   }
 }
 
+.no-header {
+  padding-top: 0;
+  min-height: 100vh;
+}
+
 .wrapper {
   flex: 1 auto;
   visibility: visible;
