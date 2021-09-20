@@ -32,6 +32,7 @@ RSpec.describe Device, type: :model do
         expect(mocked_objects[:rpush_notification].data[:aps][:alert][:body]).to eq("Body")
         expect(mocked_objects[:rpush_notification].data[:aps][:"thread-id"]).to eq(Settings::Community.community_name)
         expect(mocked_objects[:rpush_notification].data[:aps][:sound]).to eq("default")
+        expect(mocked_objects[:rpush_notification].data[:aps][:"mutable-content"]).to eq(1)
         expect(mocked_objects[:rpush_notification].data[:data]).to eq(data_hash)
       end
     end

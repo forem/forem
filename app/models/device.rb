@@ -41,7 +41,8 @@ class Device < ApplicationRecord
           body: body.truncate(512)
         },
         "thread-id": Settings::Community.community_name,
-        sound: "default"
+        sound: "default",
+        "mutable-content": 1
       },
       data: payload
     }
