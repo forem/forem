@@ -509,7 +509,7 @@ GEM
       omniauth-oauth (~> 1.1)
       rack
     orm_adapter (0.5.0)
-    parallel (1.20.1)
+    parallel (1.21.0)
     parser (3.0.2.0)
       ast (~> 2.4.1)
     patron (0.13.3)
@@ -928,7 +928,7 @@ DEPENDENCIES
   omniauth-github (~> 2.0)
   omniauth-rails_csrf_protection (~> 1.0)
   omniauth-twitter (~> 1.4)
-  parallel (~> 1.20)
+  parallel (~> 1.21)
   patron (~> 0.13.3)
   pg (~> 1.2)
   pg_search (~> 2.3.5)
