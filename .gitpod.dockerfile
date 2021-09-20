@@ -2,6 +2,7 @@ FROM gitpod/workspace-postgres
 
 # Install Ruby
 ENV RUBY_VERSION=3.0.2
+RUN sudo mkdir -p /workspace/.rvm && chown -R gitpod:gitpod /workspace/.rvm
 RUN rm /home/gitpod/.rvmrc && touch /home/gitpod/.rvmrc && echo "rvm_gems_path=/workspace/.rvm" > /home/gitpod/.rvmrc
 RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default"
 
