@@ -23,6 +23,7 @@ describe('Follow user from profile page', () => {
 
     // Check that the update persists after reload
     cy.visitAndWaitForUserSideEffects('/article_editor_v1_user');
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
     cy.get('@followButton').click();
 

@@ -10,6 +10,10 @@ describe('Follow podcast', () => {
   it('Follows and unfollows a podcast', () => {
     cy.get('[data-follow-clicks-initialized]');
 
+    cy.findByRole('heading', {
+      name: 'Developer on Fire Developer on Fire Follow',
+    });
+
     cy.findByRole('button', { name: 'Follow podcast: Developer on Fire' }).as(
       'followButton',
     );
@@ -21,6 +25,7 @@ describe('Follow podcast', () => {
 
     // Check that state is persisted on refresh
     cy.visitAndWaitForUserSideEffects('/developeronfire');
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
     // Check it reverts back to Follow on click
     cy.get('@followButton').click();
