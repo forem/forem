@@ -25,6 +25,9 @@ describe('Follow podcast', () => {
 
     // Check that state is persisted on refresh
     cy.visitAndWaitForUserSideEffects('/developeronfire');
+    cy.findByRole('button', { name: 'Follow podcast: Developer on Fire' }).as(
+      'followButton',
+    );
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
     // Check it reverts back to Follow on click
