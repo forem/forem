@@ -23,6 +23,14 @@ export const TagsFollowed = ({ tags = [] }) => {
             href={`/t/${tag.name}`}
           >
             {`#${tag.name}`}
+            {tag.points < 1 && (
+              <span
+                class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined"
+                title="This tag has negative follow weight"
+              >
+                Anti-follow
+              </span>
+            )}
           </a>
         </div>
       ))}
