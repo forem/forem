@@ -516,6 +516,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
     featured: true,
     show_comments: true,
     user_id: admin_user.id,
+    slug: "tag-test-article",
   )
 end
 
