@@ -9,6 +9,19 @@ RSpec.describe "Authenticating with Forem" do
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
+  describe "FeatureFlag hides the Forem Passport auth" do
+    it "shows Forem auth when enabled" do
+      visit sign_up_path
+      expect(page).to have_text(sign_in_link)
+    end
+
+    it "doesn't show the Forem auth when disabled" do
+      allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(false)
+      visit sign_up_path
+      expect(page).not_to have_text(sign_in_link)
+    end
+  end
+
   context "when a user is new" do
     context "when using valid credentials" do
       it "creates a new user" do

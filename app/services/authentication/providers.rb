@@ -31,12 +31,9 @@ module Authentication
     end
 
     def self.available
-      providers = Authentication::Providers::Provider.subclasses.map do |subclass|
+      Authentication::Providers::Provider.subclasses.map do |subclass|
         subclass.name.demodulize.downcase.to_sym
       end.sort
-
-      # TODO: Remove reject clause when Forem Passport FeatureFlag is no longer needed
-      providers.reject { |name| name == :forem && !FeatureFlag.enabled?(:forem_passport) }
     end
 
     def self.available?(provider_name)
