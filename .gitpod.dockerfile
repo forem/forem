@@ -3,6 +3,9 @@ FROM gitpod/workspace-postgres
 # Install Ruby
 ENV RUBY_VERSION=3.0.2
 
+# Install the GitHub CLI
+RUN brew install gh
+
 # Taken from https://www.gitpod.io/docs/languages/ruby
 RUN echo "rvm_gems_path=/home/gitpod/.rvm" > ~/.rvmrc
 RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default"
