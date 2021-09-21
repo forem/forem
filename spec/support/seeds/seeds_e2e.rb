@@ -465,7 +465,7 @@ seeder.create_if_none(Listing) do
   Listing.create!(
     user: admin_user,
     title: "Listing title",
-    body_markdown: Faker::Markdown.random,
+    body_markdown: Faker::Markdown.random.lines.take(10).join,
     location: Faker::Address.city,
     organization_id: admin_user.organizations.first&.id,
     listing_category_id: ListingCategory.first.id,
