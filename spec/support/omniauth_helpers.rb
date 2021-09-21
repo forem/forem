@@ -68,16 +68,15 @@ module OmniauthHelpers
     },
   ).freeze
 
-  # TODO: Adapt this mock payload
   OMNIAUTH_PAYLOAD_FOREM = OmniAuth::AuthHash::InfoHash.new(
     {
       provider: "forem",
       uid: SecureRandom.hex,
       info: {
-        email: "markz@thefacebook.com",
-        name: "fname lname",
+        email: "sloan@dev.to",
+        name: "Sloan",
         image: "https://dummyimage.com/400x400.jpg",
-        urls: { "Facebook" => "https://example.com" }
+        user_nickname: "sloan"
       },
       credentials: {
         token: SecureRandom.hex,
@@ -87,9 +86,10 @@ module OmniauthHelpers
       },
       extra: {
         raw_info: {
-          email: "markz@thefacebook.com",
-          id: "123455677",
-          name: "fname lname"
+          email: "slaon@dev.to",
+          id: "31047",
+          name: "Sloan",
+          remote_profile_image_url: "https://dummyimage.com/400x400.jpg"
         }
       }
     },

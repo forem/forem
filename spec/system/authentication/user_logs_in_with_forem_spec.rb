@@ -21,7 +21,6 @@ RSpec.describe "Authenticating with Forem" do
       it "logs in and redirects to the onboarding" do
         visit sign_up_path
         click_on(sign_in_link, match: :first)
-
         expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
       end

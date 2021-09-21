@@ -392,8 +392,6 @@ class User < ApplicationRecord
   end
 
   def unique_including_orgs_and_podcasts
-    p "((((("
-    p username
     username_taken = (
       Organization.exists?(slug: username) ||
       Podcast.exists?(slug: username) ||
