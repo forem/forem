@@ -8,11 +8,11 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     end
   end
 
-  describe "GET /tags/autocomplete" do
+  describe "GET /tags/suggest" do
     it "returns a JSON representation of the top tags", :aggregate_failures do
       tag = create(:tag)
 
-      get autocomplete_tags_path
+      get suggest_tags_path
 
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to match(%r{application/json; charset=utf-8}i)

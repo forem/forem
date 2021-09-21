@@ -44,7 +44,7 @@ class TagsController < ApplicationController
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
   end
 
-  def autocomplete
+  def suggest
     skip_authorization
     tags = Tag.order(hotness_score: :desc).limit(100).select(INDEX_API_ATTRIBUTES)
     render json: tags.as_json(only: INDEX_API_ATTRIBUTES)

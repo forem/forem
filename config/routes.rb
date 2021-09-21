@@ -157,8 +157,8 @@ Rails.application.routes.draw do
     resources :notifications, only: [:index]
     resources :tags, only: [:index] do
       collection do
-        get "/autocomplete", to: "tags#autocomplete", defaults: { format: :json }
         get "/onboarding", to: "tags#onboarding"
+        get "/suggest", to: "tags#suggest", defaults: { format: :json }
       end
     end
     resources :stripe_active_cards, only: %i[create update destroy]
