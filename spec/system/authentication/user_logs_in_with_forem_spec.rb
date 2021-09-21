@@ -220,15 +220,6 @@ RSpec.describe "Authenticating with Forem" do
 
         expect(page).to have_current_path("/?signin=true")
       end
-
-      it "renders the forem icon on the profile" do
-        sign_in user
-        visit user_forem_omniauth_authorize_path
-
-        visit user_profile_path(user.username)
-
-        expect(page).to have_css("svg.crayons-icon.shrink-0", text: "forem website")
-      end
     end
   end
 
