@@ -9,18 +9,7 @@ class TagsController < ApplicationController
   def index
     skip_authorization
     @tags_index = true
-    tags = Tag.order(hotness_score: :desc).limit(100)
-
-    respond_to do |format|
-      format.html do
-        @tags = tags.includes(:sponsorship)
-        render "index"
-      end
-
-      format.json do
-        render json: tags.select(INDEX_API_ATTRIBUTES).as_json(only: INDEX_API_ATTRIBUTES)
-      end
-    end
+    @tags = Tag.includes(:sponsorship).order(hotness_score: :desc).limit(100)
   end
 
   def edit
@@ -53,6 +42,12 @@ class TagsController < ApplicationController
       .select(ATTRIBUTES_FOR_SERIALIZATION)
 
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
+  end
+
+  def autocomplete
+    skip_authorization
+    tags = Tag.order(hotness_score: :desc).limit(100).select(INDEX_API_ATTRIBUTES)
+    render json: tags.as_json(only: INDEX_API_ATTRIBUTES)
   end
 
   private
