@@ -2,8 +2,11 @@ FROM gitpod/workspace-postgres
 
 # Install Ruby
 ENV RUBY_VERSION=3.0.2
-RUN rm /home/gitpod/.rvmrc && touch /home/gitpod/.rvmrc && echo "rvm_gems_path=/home/gitpod/.rvm" > /home/gitpod/.rvmrc
+
+# Taken from https://www.gitpod.io/docs/languages/ruby
+RUN echo "rvm_gems_path=/home/gitpod/.rvm" > ~/.rvmrc
 RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default"
+RUN echo "rvm_gems_path=/workspace/.rvm" > ~/.rvmrc
 
 # Install Node and Yarn
 ENV NODE_VERSION=14.17.6
@@ -15,6 +18,6 @@ ENV PATH=/home/gitpod/.nvm/versions/node/v${NODE_VERSION}/bin:$PATH
 
 # Install Redis.
 RUN sudo apt-get update \
-  && sudo apt-get install -y \
-  redis-server \
-  && sudo rm -rf /var/lib/apt/lists/*
+        && sudo apt-get install -y \
+        redis-server \
+        && sudo rm -rf /var/lib/apt/lists/*
