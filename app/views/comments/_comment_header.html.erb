@@ -1,4 +1,4 @@
-<div class="comment__header m:pl-1">
+<div class="comment__header">
   <a href="<%= URL.user(comment.user) %>" class="crayons-link crayons-link--secondary flex items-center fw-medium m:hidden">
     <span class="js-comment-username"><%= comment.user.name %></span>
     <% if commentable_author_is_op?(commentable, comment) %>
@@ -8,7 +8,7 @@
     <% end %>
   </a>
   <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
-    <button id="comment-profile-preview-trigger-<%= comment.id %>" aria-controls="comment-profile-preview-content-<%= comment.id %>" class="profile-preview-card__trigger px-2 crayons-btn crayons-btn--ghost" aria-label="<%= comment.user.name %> profile details">
+    <button id="comment-profile-preview-trigger-<%= comment.id %>" aria-controls="comment-profile-preview-content-<%= comment.id %>" class="profile-preview-card__trigger p-1 -my-1 -ml-1 crayons-btn crayons-btn--ghost" aria-label="<%= comment.user.name %> profile details">
       <%= comment.user.name %>
     </button>
     <%= render "/shared/profile_preview_card", actor: comment.user, id: "comment-profile-preview-content-#{comment.id}" %>
@@ -25,18 +25,20 @@
     <button id="comment-dropdown-trigger-<%= comment.id %>" aria-controls="comment-dropdown-<%= comment.id %>" aria-expanded="false" class="dropbtn comment__dropdown-trigger crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon" aria-label="Toggle dropdown menu" aria-haspopup="true">
       <%= inline_svg_tag("small-overflow-horizontal.svg", aria: true, class: "crayons-icon pointer-events-none", title: "Dropdown menu") %>
     </button>
-    <ul id="comment-dropdown-<%= comment.id %>" class="crayons-dropdown p-1 right-1 s:right-0 s:left-auto fs-base dropdown">
-      <li><a href="<%= URL.comment(comment) %>" class="crayons-link crayons-link--block permalink-copybtn" aria-label="Copy link to <%= comment.user.name %>'s comment" data-no-instant>Copy link</a></li>
-      <li class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= URL.comment(comment) %>/settings" aria-label="Go to <%= comment.user.name %>'s comment settings"></li>
-      <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
-      <li class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>">
-        <a href="#" class="crayons-link crayons-link--block hide-comment" data-hide-type="<%= action.downcase %>" data-comment-id="<%= comment.id %>" aria-label="<%= action %> <%= comment.user.name %>'s comment">
-          <%= action %>
-        </a>
-      </li>
-      <li class="mod-actions hidden mod-actions-comment-button" data-path="<%= URL.comment(comment) %>/mod" aria-label="Moderate <%= comment.user.name %>'s comment"></li>
-      <li class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= URL.comment(comment) %>" aria-label="Report <%= comment.user.name %>'s comment as abusive or violating our code of conduct and/or terms and conditions"></li>
-      <li class="current-user-actions"></li>
-    </ul>
+    <div id="comment-dropdown-<%= comment.id %>" class="crayons-dropdown right-1 s:right-0 s:left-auto fs-base dropdown">
+      <ul class="m-0">
+        <li><a href="<%= URL.comment(comment) %>" class="crayons-link crayons-link--block permalink-copybtn" aria-label="Copy link to <%= comment.user.name %>'s comment" data-no-instant>Copy link</a></li>
+        <li class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= URL.comment(comment) %>/settings" aria-label="Go to <%= comment.user.name %>'s comment settings"></li>
+        <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
+        <li class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>">
+          <a href="#" class="crayons-link crayons-link--block hide-comment" data-hide-type="<%= action.downcase %>" data-comment-id="<%= comment.id %>" aria-label="<%= action %> <%= comment.user.name %>'s comment">
+            <%= action %>
+          </a>
+        </li>
+        <li class="mod-actions hidden mod-actions-comment-button" data-path="<%= URL.comment(comment) %>/mod" aria-label="Moderate <%= comment.user.name %>'s comment"></li>
+        <li class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= URL.comment(comment) %>" aria-label="Report <%= comment.user.name %>'s comment as abusive or violating our code of conduct and/or terms and conditions"></li>
+        <li class="current-user-actions"></li>
+      </ul>
+    </div>
   </div>
 </div>
