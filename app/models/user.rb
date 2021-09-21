@@ -307,6 +307,20 @@ class User < ApplicationRecord
         id: Follow.where(
           follower_id: id,
           followable_type: "ActsAsTaggableOn::Tag",
+          points: 1..,
+        ).select(:followable_id),
+      ).pluck(:name)
+    end
+  end
+
+  def cached_antifollowed_tag_names
+    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+      Tag.where(
+        id: Follow.where(
+          follower_id: id,
+          followable_type: "ActsAsTaggableOn::Tag",
+          points: ..0,
         ).select(:followable_id),
       ).pluck(:name)
     end
