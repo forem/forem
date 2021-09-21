@@ -620,7 +620,7 @@ GEM
       nokogiri
     rexml (3.2.5)
     rolify (6.0.0)
-    rouge (3.26.0)
+    rouge (3.26.1)
     rpush (6.0.0)
       activesupport (>= 5.2)
       jwt (>= 1.5.6)
