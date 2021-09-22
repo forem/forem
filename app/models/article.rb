@@ -227,6 +227,10 @@ class Article < ApplicationRecord
     end
   }
 
+  scope :not_cached_tagged_with_any, lambda { |tags|
+    where(cached_tagged_with_any(tags).arel.constraints.reduce(:or).not)
+  }
+
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
 
