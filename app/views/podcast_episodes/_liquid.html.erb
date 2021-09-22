@@ -1,5 +1,3 @@
-<% image_url = Images::Optimizer.call(podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png", crop: nil, fetch_format: "jpg") %>
-
 <div class="podcastliquidtag" style="background: #<%= podcast.main_color_hex %>" data-meta="<%= episode.decorate.mobile_player_metadata.to_json %>">
   <div class="podcastliquidtag__info">
     <a href="/<%= podcast.slug %>/<%= episode.slug %>">
