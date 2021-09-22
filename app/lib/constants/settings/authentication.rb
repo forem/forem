@@ -40,13 +40,11 @@ module Constants
           placeholder: ""
         },
         forem_key: {
-          description:
-          "Forem key",
+          description: "Forem key",
           placeholder: ""
         },
         forem_secret: {
-          description:
-          "Forem secret",
+          description: "Forem secret",
           placeholder: ""
         },
         github_key: {
