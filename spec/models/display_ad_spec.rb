@@ -34,7 +34,7 @@ RSpec.describe DisplayAd, type: :model do
 
   context "when callbacks are triggered before save" do
     it "generates #processed_html from #body_markdown" do
-      expect(display_ad.processed_html).to eq("<p>Hello <em>hey</em> Hey hey</p>")
+      expect(display_ad.processed_html).to start_with("<p>Hello <em>hey</em> Hey hey")
     end
 
     it "does not render disallowed tags" do
@@ -44,7 +44,7 @@ RSpec.describe DisplayAd, type: :model do
 
     it "does not render disallowed attributes" do
       display_ad.update(body_markdown: "<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>")
-      expect(display_ad.processed_html).to eq("<p>Hello <em>hey</em> Hey hey</p>")
+      expect(display_ad.processed_html).to start_with("<p>Hello <em>hey</em> Hey hey</p>")
     end
   end
 

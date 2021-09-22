@@ -85,14 +85,12 @@ RSpec.describe "StoriesIndex", type: :request do
 
     it "renders only one display ad of placement" do
       org = create(:organization)
-      left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left",
-                       organization: org)
-      second_left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left",
-                              organization: org)
+      left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left", organization: org)
+      second_left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left", organization: org)
 
       get "/"
-      expect(response.body).to include(left_ad.processed_html)
-      expect(response.body).not_to include(second_left_ad.processed_html)
+      expect(response.body).to include(left_ad.processed_html).or(include(second_left_ad.processed_html))
+      expect(response.body).to include("crayons-sponsorship-widget").once
     end
 
     it "displays correct sponsors", :aggregate_failures do

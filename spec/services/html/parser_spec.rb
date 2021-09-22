@@ -73,7 +73,7 @@ RSpec.describe Html::Parser, type: :service do
 
       it "detects height and width" do
         html = "<img src='https://image.com/image.jpg'>"
-        parsed_html = described_class.new(html).prefix_all_images.html
+        parsed_html = described_class.new(html).prefix_all_images(350, synchronous_detail_detection: true).html
         expect(parsed_html).to include("height=")
       end
     end
