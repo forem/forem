@@ -62,14 +62,13 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
     end
 
     context "when using tags" do
-      it "takes antifollowed tags into account", :aggregate_failures do
+      it "takes 'antifollowed' tags into account" do
         articles = create_list(:article, 3, public_reactions_count: 40, score: 40)
         tag = articles.first.tags.first
         create(:follow, followable: tag, follower: user, explicit_points: -999)
 
         digest = described_class.new(user).articles_to_send
         expect(digest).to be_empty
-        expect(digest.size).to eq 0
       end
     end
   end

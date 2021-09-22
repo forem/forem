@@ -258,9 +258,13 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article
+    relation = Article
+    if cached_antifollowed_tag_names.any?
+      relation = relation.not_cached_tagged_with_any(cached_antifollowed_tag_names)
+    end
+
+    relation
       .cached_tagged_with_any(cached_followed_tag_names)
-      .not_cached_tagged_with_any(cached_antifollowed_tag_names)
       .unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
   end
