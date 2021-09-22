@@ -99,7 +99,7 @@ module Broadcasts
       end
 
       def user_following_tags?
-        user.cached_followed_tag_names > 1
+        user.cached_followed_tag_names.count > 1
       end
 
       def welcome_broadcast
