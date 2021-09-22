@@ -42,7 +42,7 @@ function addButtonFollowText(button, style) {
 }
 
 /**
- * Sets the aria-label of the button
+ * Sets the aria-label and aria-pressed value of the button
  *
  * @param {HTMLElement} button The Follow button to update.
  * @param {string} followType The followableType of the button.
@@ -51,23 +51,31 @@ function addButtonFollowText(button, style) {
  */
 function addAriaLabelToButton({ button, followType, followName, style = '' }) {
   let label = '';
+  let pressed = '';
   switch (style) {
     case 'follow':
       label = `Follow ${followType.toLowerCase()}: ${followName}`;
+      pressed = 'false';
       break;
     case 'follow-back':
       label = `Follow ${followType.toLowerCase()} back: ${followName}`;
+      pressed = 'false';
       break;
     case 'following':
-      label = `Unfollow ${followType.toLowerCase()}: ${followName}`;
+      label = `Follow ${followType.toLowerCase()}: ${followName}`;
+      pressed = 'true';
       break;
     case 'self':
       label = `Edit profile`;
       break;
     default:
       label = `Follow ${followType.toLowerCase()}: ${followName}`;
+      pressed = 'false';
   }
   button.setAttribute('aria-label', label);
+  pressed.length === 0
+    ? button.removeAttribute('aria-pressed')
+    : button.setAttribute('aria-pressed', pressed);
 }
 
 /**

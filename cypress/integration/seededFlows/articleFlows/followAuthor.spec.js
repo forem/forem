@@ -22,10 +22,12 @@ describe('Follow author from article sidebar', () => {
       cy.get('@followButton').click();
 
       cy.get('@followButton').should('have.text', 'Following');
+      cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
       cy.get('@followButton').click();
       cy.wait('@followRequest');
       cy.get('@followButton').should('have.text', 'Follow');
+      cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
     });
   });
 });
