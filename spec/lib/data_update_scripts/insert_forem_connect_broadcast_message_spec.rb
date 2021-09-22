@@ -14,6 +14,6 @@ describe DataUpdateScripts::InsertForemConnectBroadcastMessage do
     create(:forem_connect_broadcast)
     expect do
       described_class.new.run
-    end.to change(Broadcast, :count).by(0)
+    end.not_to change(Broadcast, :count)
   end
 end
