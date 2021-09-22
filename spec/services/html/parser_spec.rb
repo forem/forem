@@ -70,6 +70,12 @@ RSpec.describe Html::Parser, type: :service do
         parsed_html = described_class.new(html).prefix_all_images.html
         expect(parsed_html).to include("https://res.cloudinary.com")
       end
+
+      it "detects height and width" do
+        html = "<img src='https://image.com/image.jpg'>"
+        parsed_html = described_class.new(html).prefix_all_images.html
+        expect(parsed_html).to include("height=")
+      end
     end
   end
 

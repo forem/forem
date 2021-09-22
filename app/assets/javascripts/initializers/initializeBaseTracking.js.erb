@@ -72,7 +72,7 @@ function trackCustomImpressions() {
     var ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
     var tokenMeta = document.querySelector("meta[name='csrf-token']")
     var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
-    var windowBigEnough =  window.innerWidth > 1250
+    var windowBigEnough =  window.innerWidth > 1023
 
     // Sidebar HTML variant tracking
     var stickyNav = document.getElementById('article-show-primary-sticky-nav');
@@ -136,16 +136,19 @@ function trackCustomImpressions() {
     }
 
     // display add
-    var adBox = document.getElementById('sponsorship-arbitrary-display-widget')
-    if (adBox
+    var rotatingDisplayUnits = document.querySelectorAll('[data-rotating-display-unit]');
+    if (rotatingDisplayUnits.length > 0
       && tokenMeta
       && !isBot
       && windowBigEnough
       && checkUserLoggedIn()) {
         var csrfToken = tokenMeta.getAttribute('content');
-        trackAdImpression(csrfToken, adBox)
-        adBox.removeEventListener('click', trackAdClick, false );
-        adBox.addEventListener('click', function() { trackAdClick(csrfToken, adBox) });
+        [].forEach.call(rotatingDisplayUnits, function(unit) {
+          // do whatever
+          trackAdImpression(csrfToken, unit);
+          unit.removeEventListener('click', trackAdClick, false );
+          unit.addEventListener('click', function(e) { trackAdClick(csrfToken, e) });
+        });
       }
   }, 1800)
 }
@@ -220,6 +223,7 @@ function trackAdImpression(token, adBox) {
 }
 
 function trackAdClick(token, adBox) {
+  console.log(adBox);
   if (!adClicked) {
     var dataBody = {
       display_ad_event: {
