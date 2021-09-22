@@ -35,11 +35,13 @@ module Authentication
 
       ActiveRecord::Base.transaction do
         user = proper_user(identity)
+
         user = if user.nil?
                  find_or_create_user!
                else
                  update_user(user)
                end
+
         identity.user = user if identity.user_id.blank?
         new_identity = identity.new_record?
         successful_save = identity.save!
@@ -106,6 +108,7 @@ module Authentication
       User.new.tap do |user|
         user.assign_attributes(provider.new_user_data)
         user.assign_attributes(default_user_fields)
+
         user.set_remember_fields
 
         # The user must be saved in the database before

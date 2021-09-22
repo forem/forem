@@ -1,6 +1,5 @@
 module Authentication
   module Providers
-    # GitHub authentication provider, uses omniauth-github as backend
     class Forem < Provider
       OFFICIAL_NAME = "Forem".freeze
       DOMAIN_URL = ApplicationConfig["PASSPORT_OAUTH_URL"] || "https://forem-passport.herokuapp.com".freeze
