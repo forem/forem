@@ -46,10 +46,7 @@ module Authentication
     def self.enabled
       return [] if ForemInstance.invitation_only?
 
-      providers = Settings::Authentication.providers.map(&:to_sym).sort
-
-      # TODO: Remove reject clause when Forem Passport FeatureFlag is no longer needed
-      providers.reject { |name| name == :forem && !FeatureFlag.enabled?(:forem_passport) }
+      Settings::Authentication.providers.map(&:to_sym).sort
     end
 
     def self.enabled_for_user(user)
