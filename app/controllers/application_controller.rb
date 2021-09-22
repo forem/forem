@@ -211,8 +211,7 @@ class ApplicationController < ActionController::Base
   end
 
   def creator_onboarding_mode
-    Settings::General.waiting_on_first_user ||
-      (current_user&.creator? && current_user&.saw_onboarding == false)
+    Settings::General.waiting_on_first_user || (current_user&.creator? && !current_user.saw_onboarding?)
   end
   helper_method :creator_onboarding_mode
 
