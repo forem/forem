@@ -45,8 +45,8 @@ module Html
 
         if synchronous_detail_detection
           height_width = image_height_width(img)
-          img["height"] = height_width[0]
-          img["width"] = height_width[1]
+          img["width"] = height_width[0]
+          img["height"] = height_width[1]
         end
 
         img["loading"] = "lazy"
@@ -66,7 +66,7 @@ module Html
       src = img.attr("src")
       return unless src
 
-      FastImage.size(src, timeout: TIMEOUT)
+      FastImage.size(src, timeout: TIMEOUT) # outputs as [width, height]
     end
 
     def wrap_all_images_in_links
