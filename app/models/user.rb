@@ -320,7 +320,7 @@ class User < ApplicationRecord
         id: Follow.where(
           follower_id: id,
           followable_type: "ActsAsTaggableOn::Tag",
-          points: ..0,
+          points: ...1,
         ).select(:followable_id),
       ).pluck(:name)
     end
