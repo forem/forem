@@ -42,6 +42,8 @@ module Authentication
 
       protected
 
+      # Remove sensible data from the payload: None in this case so return as-is
+      # For more details see Authentication::Providers::Provider#cleanup_payload
       def cleanup_payload(auth_payload)
         auth_payload
       end
