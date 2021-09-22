@@ -31,10 +31,27 @@ describe('Follow from article liquid tag', () => {
             'followUserButton',
           );
           cy.get('@followUserButton').should('have.text', 'Follow');
+          cy.get('@followUserButton').should(
+            'have.attr',
+            'aria-pressed',
+            'false',
+          );
+
           cy.get('@followUserButton').click();
           cy.get('@followUserButton').should('have.text', 'Following');
+          cy.get('@followUserButton').should(
+            'have.attr',
+            'aria-pressed',
+            'true',
+          );
+
           cy.get('@followUserButton').click();
           cy.get('@followUserButton').should('have.text', 'Follow');
+          cy.get('@followUserButton').should(
+            'have.attr',
+            'aria-pressed',
+            'false',
+          );
         });
       });
     });

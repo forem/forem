@@ -27,13 +27,18 @@ describe('Home feed profile preview cards', () => {
         cy.findByText('Edinburgh');
         cy.findByText('University of Life');
 
-        cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).click();
-
-        // Check that following status has been updated
-        cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).should(
-          'not.exist',
+        cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).as(
+          'userFollowButton',
         );
-        cy.findByRole('button', { name: 'Unfollow user: Admin McAdmin' });
+        cy.get('@userFollowButton').should(
+          'have.attr',
+          'aria-pressed',
+          'false',
+        );
+        cy.get('@userFollowButton').click();
+
+        cy.get('@userFollowButton').should('have.text', 'Following');
+        cy.get('@userFollowButton').should('have.attr', 'aria-pressed', 'true');
       });
   });
 });

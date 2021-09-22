@@ -20,11 +20,13 @@ describe('Follow tag', () => {
       cy.wait('@followsRequest');
 
       cy.get('@followButton').should('have.text', 'Following');
+      cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
       cy.get('@followButton').click();
       cy.wait('@followsRequest');
 
       cy.get('@followButton').should('have.text', 'Follow');
+      cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
     });
   });
 
