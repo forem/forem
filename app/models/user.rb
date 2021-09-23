@@ -257,6 +257,9 @@ class User < ApplicationRecord
     "/#{username}"
   end
 
+  # NOTE: This method is only used in the EmailDigestArticleCollector and does
+  # not perform particularly well. It should most likely not be used in other
+  # parts of the app.
   def followed_articles
     relation = Article
     if cached_antifollowed_tag_names.any?
