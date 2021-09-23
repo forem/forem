@@ -479,7 +479,7 @@ describe('Comment on articles', () => {
       cy.findByRole('button', { name: /Close/ }).should('have.focus');
       cy.findByRole('heading', { name: 'Wait a moment...' }).should('exist');
       cy.findByText(
-        'Since you recently made a comment, you’ll need to wait a moment before making another comment.',
+        'Since you recently posted a comment, you’ll need to wait a moment before posting another comment.',
       );
       cy.findByRole('button', { name: 'Got it' }).click();
     });

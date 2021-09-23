@@ -1,4 +1,4 @@
-/* global checkUserLoggedIn, instantClick, InstantClick, sendHapticMessage */
+/* global checkUserLoggedIn, instantClick, InstantClick, sendHapticMessage, showModalAfterError */
 
 function initNotifications() {
   fetchNotificationsCount();
@@ -94,6 +94,13 @@ function initReactions() {
             .then(function (response) {
               if (response.status === 200) {
                 response.json().then(successCb);
+              } else {
+                showModalAfterError({
+                  response,
+                  element: 'reaction',
+                  action_ing: 'updating',
+                  action_past: 'updated',
+                });
               }
             });
         };
