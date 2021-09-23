@@ -79,6 +79,9 @@
     a {
       color: rgb(97, 97, 97);
     }
+    .crayons-btn--outlined {
+      background: white;
+    }
     .profile-pic-wrapper {
       float: left;
       width: calc(14.5vw + 60px);
@@ -253,77 +256,5 @@
     z-index: 5;
     display: inline-block;
     margin-left: 5px;
-  }
-  .user-profile-follow-button {
-    background: $green;
-    border: 0;
-    font-size: 17px;
-    border-radius: 3px;
-    vertical-align: 3px;
-    padding: 2px 6px;
-    cursor: pointer;
-    min-width: 120px;
-    opacity: 0.7;
-    &.showing {
-      opacity: 1;
-    }
-    @media screen and (min-width: 430px) {
-      font-size: 18px;
-      padding: 3px 8px;
-      vertical-align: 7px;
-      border-radius: 5px;
-      min-width: 140px;
-    }
-    @media screen and (min-width: 950px) {
-      font-size: 22px;
-      padding: 4px 8px;
-      vertical-align: 12px;
-      border-radius: 5px;
-      min-width: 140px;
-    }
-  }
-
-  // same as above, just add class to above style
-  .user-profile-chat-button-wrapper {
-    position: relative;
-    z-index: 5;
-    display: inline-block;
-    margin-left: 5px;
-  }
-
-  .user-profile-chat-button {
-    background: $green;
-    color: white;
-    border: 0;
-    font-size: 17px;
-    border-radius: 3px;
-    vertical-align: 3px;
-    padding: 2px 6px;
-    cursor: pointer;
-    min-width: 60px;
-    font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
-      'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
-      'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
-      'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
-      'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
-    -webkit-appearance: none;
-    font-stretch: condensed;
-    &.showing {
-      opacity: 1;
-    }
-    @media screen and (min-width: 430px) {
-      font-size: 18px;
-      padding: 3px 8px;
-      vertical-align: 7px;
-      border-radius: 5px;
-      min-width: 80px;
-    }
-    @media screen and (min-width: 950px) {
-      font-size: 22px;
-      padding: 4px 8px;
-      vertical-align: 12px;
-      border-radius: 5px;
-      min-width: 80px;
-    }
   }
 }

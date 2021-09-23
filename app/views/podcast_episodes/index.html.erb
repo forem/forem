@@ -2,18 +2,20 @@
   <%= render "podcast_episodes/meta" %>
 <% end %>
 <% if @podcast %>
-  <% image = Images::Optimizer.call(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png", fetch_format: "jpg", crop: nil) %>
-  <div class="user-profile-header podcast-header" style="background:#<%= @podcast.main_color_hex %> url(<%= image %>);">
+  <div class="user-profile-header podcast-header" style="background:#<%= @podcast.main_color_hex %>;">
     <div class="tag-or-query-header-container">
       <h1><img class="record main-image" src="<%= Images::Optimizer.call(@podcast.image_url, crop: "fill", width: 420, height: 420) %>"
                alt="<%= @podcast.title %>" /> <%= @podcast.title %>
-               <button
-                id="user-follow-butt"
-                class="crayons-btn follow-action-button user-profile-follow-button"
-                data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>", "name": "<%= @podcast.name %>"}'>
-                  &nbsp;
-              </button>
-</h1>
+      </h1>
+      <h2>
+        <button
+          id="user-follow-butt"
+          class="crayons-btn follow-action-button"
+          style="min-width: 100px;"
+          data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>", "name": "<%= @podcast.name %>"}'>
+            &nbsp;
+        </button>
+      </h2>
     </div>
   </div>
 <% end %>
