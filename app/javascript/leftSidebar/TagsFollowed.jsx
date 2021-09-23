@@ -10,30 +10,24 @@ export const TagsFollowed = ({ tags = [] }) => {
 
   return (
     <Fragment>
-      {tags.map((tag) => (
-        <div
-          key={tag.id}
-          className="sidebar-nav-element"
-          id={`sidebar-element-${tag.name}`}
-        >
-          <a
-            title={`${tag.name} tag`}
-            onClick={trackSidebarTagClick}
-            className="crayons-link crayons-link--block"
-            href={`/t/${tag.name}`}
+      {tags.map((tag) =>
+        tag.points >= 1 ? (
+          <div
+            key={tag.id}
+            className="sidebar-nav-element"
+            id={`sidebar-element-${tag.name}`}
           >
-            {`#${tag.name}`}
-            {tag.points < 1 && (
-              <span
-                class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined"
-                title="This tag has negative follow weight"
-              >
-                Anti-follow
-              </span>
-            )}
-          </a>
-        </div>
-      ))}
+            <a
+              title={`${tag.name} tag`}
+              onClick={trackSidebarTagClick}
+              className="crayons-link crayons-link--block"
+              href={`/t/${tag.name}`}
+            >
+              {`#${tag.name}`}
+            </a>
+          </div>
+        ) : null,
+      )}
     </Fragment>
   );
 };
