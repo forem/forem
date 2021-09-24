@@ -497,8 +497,7 @@ class Article < ApplicationRecord
     !published ||
       (score < Settings::UserExperience.home_feed_minimum_score &&
        user.comments_count < 1 &&
-       !featured &&
-       processed_html.exclude?("<code>")) ||
+       !featured) ||
       featured_number.to_i < 1_500_000_000 ||
       score < -1
   end
