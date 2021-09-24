@@ -44,6 +44,14 @@
                              placeholder: Constants::Settings::UserExperience::DETAILS[:home_feed_minimum_score][:placeholder] %>
         </div>
         <div class="crayons-field">
+          <%= admin_config_label :index_minimum_score, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience::DETAILS[:index_minimum_score][:description] %>
+          <%= f.number_field :index_minimum_score,
+                             class: "crayons-textfield",
+                             value: Settings::UserExperience.index_minimum_score,
+                             placeholder: Constants::Settings::UserExperience::DETAILS[:index_minimum_score][:placeholder] %>
+        </div>
+        <div class="crayons-field">
           <%= admin_config_label :default_font, model: Settings::UserExperience %>
           <%= admin_config_description Constants::Settings::UserExperience::DETAILS[:default_font][:description] %>
           <%= select_tag "settings_user_experience[default_font]",
