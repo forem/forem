@@ -491,9 +491,11 @@ class Article < ApplicationRecord
   end
 
   def skip_indexing?
-    # should the article be indexed by crawlers?
+    # should the article be skipped indexed by crawlers?
+    # true if unpublished, or spammy,
+    # or low score, not featured, and from a user with no comments
     !published ||
-      (score < 5 &&
+      (score < Settings::UserExperience.home_feed_minimum_score &&
        user.comments_count < 1 &&
        !featured &&
        processed_html.exclude?("<code>")) ||
