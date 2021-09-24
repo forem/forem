@@ -495,7 +495,7 @@ class Article < ApplicationRecord
     # true if unpublished, or spammy,
     # or low score, not featured, and from a user with no comments
     !published ||
-      (score < Settings::UserExperience.home_feed_minimum_score &&
+      (score < Settings::UserExperience.index_minimum_score &&
        user.comments_count < 1 &&
        !featured) ||
       featured_number.to_i < 1_500_000_000 ||
