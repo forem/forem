@@ -42,6 +42,18 @@ For further actions, you may consider blocking this person and/or reporting abus
       });
   }
 
+  function showHideCommentsModal(commentId) {
+    const form = document.getElementById("hide-comments-modal__form");
+    form.action = `/comments/${commentId}/hide`;
+    // const comment_id_input = form.getElementsByClassName("hide_comment_id")[0];
+    // comment_id_input.value = commentId;
+    window.Forem.showModal({
+      title: 'Are you sure you want to hide this comment?',
+      contentSelector: '#hide-comments-modal',
+      overlay: true,
+    });
+  }
+
   const hideLinks = Array.from(document.getElementsByClassName('hide-comment'));
 
   hideLinks.forEach((link) => {
@@ -49,7 +61,8 @@ For further actions, you may consider blocking this person and/or reporting abus
 
     if (hideType === 'hide') {
       link.addEventListener('click', () => {
-        hide(commentId);
+        showHideCommentsModal(commentId);
+        // hide(commentId);
       });
     } else if (hideType === 'unhide') {
       link.addEventListener('click', () => {
