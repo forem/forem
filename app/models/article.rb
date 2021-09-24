@@ -490,6 +490,17 @@ class Article < ApplicationRecord
     followers.uniq.compact
   end
 
+  def skip_indexing?
+    # should the article be indexed by crawlers?
+    !published ||
+      (score < 5 &&
+       user.comments_count < 1 &&
+       !featured &&
+       processed_html.exclude?("<code>")) ||
+      featured_number.to_i < 1_500_000_000 ||
+      score < -1
+  end
+
   private
 
   def search_score
