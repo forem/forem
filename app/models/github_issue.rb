@@ -39,6 +39,8 @@ class GithubIssue < ApplicationRecord
         issue.category = "issue"
       end
 
+      raise StandardError, "Linked github issue #{url} must have a body" if issue.issue_serialized[:body].blank?
+
       # despite the counter intuitive name `.markdown` returns HTML rendered
       # from the original markdown
       issue.processed_html = Github::OauthClient.new.markdown(issue.issue_serialized[:body])
