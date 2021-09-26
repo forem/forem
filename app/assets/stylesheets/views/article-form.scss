@@ -233,12 +233,11 @@
 
 .crayons-article-form {
   &__tagsoptions {
-    @include generate-box(
-      $level: 2,
-      $bg: var(--card-bg),
-      $border: var(--card-color),
-      $color: var(--card-color)
-    );
+    background: var(--card-bg);
+    color: var(--card-color);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius);
 
     position: absolute;
     left: 0;

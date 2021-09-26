@@ -12,7 +12,7 @@ export const MinimalProfilePreviewCard = ({
     <button
       id={triggerId}
       aria-controls={contentId}
-      class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1"
+      class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1 -my-2"
       aria-label={`${name} profile details`}
     >
       {name}
@@ -20,7 +20,7 @@ export const MinimalProfilePreviewCard = ({
 
     <div
       id={contentId}
-      class="profile-preview-card__content crayons-dropdown"
+      class="profile-preview-card__content crayons-dropdown p-4"
       style="border-top: var(--su-7) solid var(--card-color);"
       data-repositioning-dropdown="true"
       data-testid="profile-preview-card"
@@ -45,6 +45,7 @@ export const MinimalProfilePreviewCard = ({
             data-info={JSON.stringify({
               id: userId,
               className: 'User',
+              name,
               style: 'full',
             })}
           >

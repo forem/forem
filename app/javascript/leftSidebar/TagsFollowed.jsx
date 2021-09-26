@@ -1,7 +1,13 @@
 import { h, Fragment } from 'preact';
+import ahoy from 'ahoy.js';
 import PropTypes from 'prop-types';
 
 export const TagsFollowed = ({ tags = [] }) => {
+  const trackSidebarTagClick = (event) => {
+    // Temporary Ahoy Stats for usage reports
+    ahoy.track('Tag sidebar click', { option: event.target.href });
+  };
+
   return (
     <Fragment>
       {tags.map((tag) => (
@@ -12,6 +18,7 @@ export const TagsFollowed = ({ tags = [] }) => {
         >
           <a
             title={`${tag.name} tag`}
+            onClick={trackSidebarTagClick}
             className="crayons-link crayons-link--block"
             href={`/t/${tag.name}`}
           >

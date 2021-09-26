@@ -4,6 +4,7 @@ class TagsController < ApplicationController
   after_action :verify_authorized
 
   ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
+  INDEX_API_ATTRIBUTES = %i[name rules_html].freeze
 
   def index
     skip_authorization
@@ -21,7 +22,7 @@ class TagsController < ApplicationController
     authorize @tag
     if @tag.errors.messages.blank? && @tag.update(tag_params)
       flash[:success] = "Tag successfully updated! 👍 "
-      redirect_to "/t/#{URI.parse(@tag.name).path}/edit"
+      redirect_to "#{URL.tag_path(@tag)}/edit"
     else
       flash[:error] = @tag.errors.full_messages
       render :edit
@@ -41,6 +42,12 @@ class TagsController < ApplicationController
       .select(ATTRIBUTES_FOR_SERIALIZATION)
 
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
+  end
+
+  def suggest
+    skip_authorization
+    tags = Tag.order(hotness_score: :desc).limit(100).select(INDEX_API_ATTRIBUTES)
+    render json: tags.as_json(only: INDEX_API_ATTRIBUTES)
   end
 
   private

@@ -32,11 +32,14 @@ describe('Preview profile from series', () => {
       cy.findByText('Edinburgh');
       cy.findByText('University of Life');
 
-      cy.findByRole('button', { name: 'Follow' }).click();
+      cy.findByRole('button', { name: 'Follow user: Series User' }).as(
+        'userFollowButton',
+      );
+      cy.get('@userFollowButton').should('have.attr', 'aria-pressed', 'false');
+      cy.get('@userFollowButton').click();
 
-      // Check that the follow button has updated as expected
-      cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-      cy.findByRole('button', { name: 'Following' });
+      cy.get('@userFollowButton').should('have.text', 'Following');
+      cy.get('@userFollowButton').should('have.attr', 'aria-pressed', 'true');
     });
   });
 });

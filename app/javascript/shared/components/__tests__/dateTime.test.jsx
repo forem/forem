@@ -10,12 +10,12 @@ import '../../../../assets/javascripts/utilities/localDateTime';
 /* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
 
 describe('<DateTime />', () => {
-  it('should have no a11y violations', async () => {
-    afterAll(() => {
-      delete globalThis.timestampToLocalDateTimeLong;
-      delete globalThis.timestampToLocalDateTimeShort;
-    });
+  afterAll(() => {
+    delete globalThis.timestampToLocalDateTimeLong;
+    delete globalThis.timestampToLocalDateTimeShort;
+  });
 
+  it('should have no a11y violations', async () => {
     const { container } = render(
       <DateTime
         className="date-time"

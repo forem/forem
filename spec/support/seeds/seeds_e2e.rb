@@ -465,7 +465,7 @@ seeder.create_if_none(Listing) do
   Listing.create!(
     user: admin_user,
     title: "Listing title",
-    body_markdown: Faker::Markdown.random,
+    body_markdown: Faker::Markdown.random.lines.take(10).join,
     location: Faker::Address.city,
     organization_id: admin_user.organizations.first&.id,
     listing_category_id: ListingCategory.first.id,
@@ -516,6 +516,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
     featured: true,
     show_comments: true,
     user_id: admin_user.id,
+    slug: "tag-test-article",
   )
 end
 
@@ -594,6 +595,11 @@ seeder.create_if_none(Reaction) do
   user = User.find_by(username: "trusted_user_1")
   admin_user.reactions.create!(category: :vomit, reactable: user)
 end
+
+##############################################################################
+
+# Enable Connect feature flag for tests
+FeatureFlag.enable(:connect)
 
 ##############################################################################
 

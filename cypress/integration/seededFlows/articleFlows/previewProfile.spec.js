@@ -78,11 +78,22 @@ describe('Preview user profile from article page', () => {
           cy.findByText('Edinburgh');
           cy.findByText('University of Life');
 
-          cy.findByRole('button', { name: 'Follow' }).click();
+          cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).as(
+            'followUserButton',
+          );
 
-          // Wait for Follow button to disappear and Following button to be initialized
-          cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-          cy.findByRole('button', { name: 'Following' });
+          cy.get('@followUserButton').should(
+            'have.attr',
+            'aria-pressed',
+            'false',
+          );
+          cy.get('@followUserButton').click();
+
+          cy.get('@followUserButton').should(
+            'have.attr',
+            'aria-pressed',
+            'true',
+          );
         });
 
       // Check we can close the preview dropdown
@@ -117,11 +128,16 @@ describe('Preview user profile from article page', () => {
           cy.findByText('Edinburgh');
           cy.findByText('University of Life');
 
-          cy.findByRole('button', { name: 'Follow' }).click();
+          cy.findByRole('button', {
+            name: 'Follow user: Admin McAdmin',
+          }).as('userFollowButton');
 
-          // Wait for Follow button to disappear and Following button to be initialized
-          cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-          cy.findByRole('button', { name: 'Following' });
+          cy.get('@userFollowButton').click();
+          cy.get('@userFollowButton').should(
+            'have.attr',
+            'aria-pressed',
+            'true',
+          );
         });
       });
     });
@@ -137,10 +153,16 @@ describe('Preview user profile from article page', () => {
       cy.findAllByTestId('profile-preview-card')
         .first()
         .within(() => {
-          cy.findByRole('button', { name: 'Follow' }).click();
-          // Confirm the follow button has been updated
-          cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-          cy.findByRole('button', { name: 'Following' });
+          cy.findByRole('button', {
+            name: 'Follow user: Admin McAdmin',
+          }).as('userFollowButton');
+
+          cy.get('@userFollowButton').click();
+          cy.get('@userFollowButton').should(
+            'have.attr',
+            'aria-pressed',
+            'true',
+          );
         });
 
       // Close the preview card so the next preview button can be clicked
@@ -153,7 +175,8 @@ describe('Preview user profile from article page', () => {
 
       cy.findAllByTestId('profile-preview-card')
         .last()
-        .findByRole('button', { name: 'Following' });
+        .findByRole('button', { name: 'Follow user: Admin McAdmin' })
+        .should('have.attr', 'aria-pressed', 'true');
     });
 
     it('should detach listeners on preview card close', () => {
@@ -280,7 +303,7 @@ describe('Preview user profile from article page', () => {
           name: 'Admin McAdmin',
         }).should('have.focus');
 
-        cy.findByRole('button', { name: 'Follow' });
+        cy.findByRole('button', { name: 'Follow user: Admin McAdmin' });
         cy.findByText('Admin user summary');
         cy.findByText('Software developer at Company');
         cy.findByText('Edinburgh');

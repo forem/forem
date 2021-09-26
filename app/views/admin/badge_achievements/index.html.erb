@@ -1,44 +1,91 @@
-<div class="alert alert-warning">
-  <strong>Note: If you remove a badge that is automatically rewarded it will simply be re-awarded despite being removed.</strong>
-</div>
-
-<div class="flex">
-  <div>
-    <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>
+<div
+  data-controller="confirmation-modal"
+  data-confirmation-modal-root-selector-value="#confirmation-modal-root"
+  data-confirmation-modal-content-selector-value="#confirmation-modal"
+  data-confirmation-modal-title-value="Confirm changes"
+  data-confirmation-modal-size-value="m">
+  <div class="alert alert-warning">
+    <strong>Note: If you remove a badge that is automatically rewarded it will simply be re-awarded despite being removed.</strong>
   </div>
-  <div class="ml-auto">
-    <%= search_form_for @q, url: admin_badge_achievements_path, class: "form-inline justify-content-end" do |f| %>
 
-      <%= f.label :user_id_eq, "User ID", class: "sr-only" %>
-      <%= f.search_field :user_id_eq, placeholder: "User ID", class: "form-control mx-3" %>
+  <div class="flex">
+    <div>
+      <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>
+    </div>
+    <div class="ml-auto">
+      <%= search_form_for @q, url: admin_badge_achievements_path, class: "form-inline justify-content-end" do |f| %>
 
-      <%= f.submit "Search", class: "btn btn-secondary" %>
-    <% end %>
+        <%= f.label :user_id_eq, "User ID", class: "sr-only" %>
+        <%= f.search_field :user_id_eq, placeholder: "User ID", class: "form-control mx-3" %>
+
+        <%= f.submit "Search", class: "btn btn-secondary" %>
+      <% end %>
+    </div>
+  </div>
+
+  <table class="crayons-table" width="100%">
+    <thead>
+      <tr>
+        <th scope="col">User ID</th>
+        <th scope="col">User</th>
+        <th scope="col">Badge</th>
+        <th scope="col">Badge Image</th>
+      </tr>
+    </thead>
+    <tbody class="crayons-card">
+    <% @badge_achievements.each do |badge_achievement| %>
+      <tr data-row-id="<%= badge_achievement.id %>">
+        <td class="whitespace-nowrap"><%= badge_achievement.user.id %></td>
+        <td><%= badge_achievement.user.username %></td>
+        <td><%= badge_achievement.badge.title %></td>
+        <h5>
+          <td class="justify-content-center">
+            <img class="mx-auto mt-3" width="40" height="40" src="<%= badge_achievement.badge.badge_image %>" alt="badge image" loading="lazy" />
+          </td>
+          <td>
+            <button
+              class="crayons-btn crayons-btn--danger"
+              data-item-id="<%= badge_achievement.id %>"
+              data-endpoint="/admin/content_manager/badge_achievements"
+              data-username="<%= current_user.username %>"
+              data-action="click->confirmation-modal#openModal">Remove</button>
+          </td>
+        </h5>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div
+    id="confirmation-modal-root"
+    data-confirmation-modal-target="itemId"
+    data-confirmation-modal-target="endpoint"
+    data-confirmation-modal-target="username"></div>
+
+  <div id="confirmation-modal" class="hidden">
+    <div class="crayons-field mb-3">
+      <p id="confirmation-text-instructions">To confirm this update, type in the sentence: <br />
+      <strong>My username is @<%= current_user.username %> and this action is 100% safe and appropriate.</strong></p>
+      <div id="mismatch-warning" class="crayons-notice crayons-notice--warning hidden" aria-live="polite">
+        The confirmation text did not match.
+      </div>
+      <input
+        aria-label="Type the sentence above to confirm this update"
+        aria-describedby="confirmation-text-instructions"
+        type="text"
+        id="confirmation-text-field"
+        class="crayons-textfield flex-1 mr-2"
+        placeholder="Confirmation text" />
+    </div>
+
+    <button
+      class="crayons-btn mr-1 mb-2"
+      data-action="click->confirmation-modal#checkConfirmationText">
+      Confirm changes
+    </button>
+    <button
+      class="crayons-btn crayons-btn--secondary"
+      data-action="click->confirmation-modal#closeModal">
+      Discard changes
+    </button>
   </div>
 </div>
-
-<table class="crayons-table" width="100%">
-  <thead>
-    <tr>
-      <th scope="col">User ID</th>
-      <th scope="col">User</th>
-      <th scope="col">Badge</th>
-      <th scope="col">Badge Image</th>
-    </tr>
-  </thead>
-  <tbody class="crayons-card">
-   <% @badge_achievements.each do |badge_achievement| %>
-    <tr>
-      <td class="whitespace-nowrap"><%= badge_achievement.user.id %></td>
-      <td><%= badge_achievement.user.username %></td>
-      <td><%= badge_achievement.badge.title %></td>
-      <h5>
-        <td class="justify-content-center">
-          <img class="mx-auto mt-3" width="40" height="40" src="<%= badge_achievement.badge.badge_image %>" alt="badge image" loading="lazy" />
-        </td>
-        <td><%= link_to "Remove", admin_badge_achievement_path(badge_achievement), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %></td>
-      </h5>
-    </tr>
-    <% end %>
-  </tbody>
-</table>
