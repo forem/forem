@@ -19,7 +19,9 @@
     </div>
 
     <div class="block s:flex items-center space-between">
-      <h1 class="crayons-title">Search results</h1>
+      <h1 class="crayons-title">
+        Search results <%= "for #{params[:q]}" unless params[:q].empty? %>
+      </h1>
 
       <nav id="sorting-option-tabs" class="crayons-tabs crayons-tabs--wrapped ml-auto" aria-label="Search result sort options">
         <ul class="crayons-tabs__list">
