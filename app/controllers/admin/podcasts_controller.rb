@@ -3,7 +3,7 @@ module Admin
     layout "admin"
 
     before_action :find_podcast, only: %i[edit update fetch add_owner]
-    PODCASR_ALLOWED_PARAMS = %i[
+    PODCAST_ALLOWED_PARAMS = %i[
       title
       feed_url
       description
@@ -73,7 +73,7 @@ module Admin
     end
 
     def podcast_params
-      params.require(:podcast).permit(PODCASR_ALLOWED_PARAMS)
+      params.require(:podcast).permit(PODCAST_ALLOWED_PARAMS)
     end
   end
 end
