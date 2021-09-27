@@ -30,8 +30,7 @@
 
 <main id="main-content" class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>">
   <div class="hero">
-    <% image_url = Images::Optimizer.call(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png", fetch_format: "jpg", crop: nil) %>
-    <div class="title" style="background:#<%= @podcast.main_color_hex %> url(<%= image_url %>)">
+    <div class="title" style="background:#<%= @podcast.main_color_hex %>">
       <h2>
         <a href="/<%= @podcast.slug %>">
           <img aria-hidden="true" alt="<%= @podcast.title %>" src="<%= optimized_image_url(@podcast.image_url, width: 60, quality: 80) %>" /><%= @podcast.title %>

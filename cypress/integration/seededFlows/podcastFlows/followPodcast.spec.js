@@ -11,7 +11,7 @@ describe('Follow podcast', () => {
     cy.get('[data-follow-clicks-initialized]');
 
     cy.findByRole('heading', {
-      name: 'Developer on Fire Developer on Fire Follow',
+      name: 'Developer on Fire Developer on Fire',
     });
 
     cy.findByRole('button', { name: 'Follow podcast: Developer on Fire' }).as(

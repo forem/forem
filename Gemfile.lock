@@ -212,7 +212,7 @@ GEM
     dogstatsd-ruby (4.8.3)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    doorkeeper (5.5.2)
+    doorkeeper (5.5.3)
       railties (>= 5)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
@@ -278,7 +278,7 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    field_test (0.5.0)
+    field_test (0.5.1)
       activerecord (>= 5.2)
       browser (>= 2.0)
       railties (>= 5.2)
