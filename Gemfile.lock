@@ -112,7 +112,7 @@ GEM
       parser (>= 2.4)
       smart_properties
     bindex (0.8.1)
-    blazer (2.4.6)
+    blazer (2.4.7)
       activerecord (>= 5)
       chartkick (>= 3.2)
       railties (>= 5)
@@ -860,7 +860,7 @@ DEPENDENCIES
   amazing_print (~> 1.3)
   ancestry (~> 4.1)
   better_errors (~> 2.9)
-  blazer (~> 2.4.6)
+  blazer (~> 2.4.7)
   bootsnap (>= 1.1.0)
   brakeman (~> 5.1)
   bullet (~> 6.1)
