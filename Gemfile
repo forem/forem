@@ -14,10 +14,10 @@ gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to
 gem "acts-as-taggable-on", "~> 8.1" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
-gem "ahoy_email", "~> 2.0.2" # Email analytics for Rails
+gem "ahoy_email", "~> 2.1.0" # Email analytics for Rails
 gem "ahoy_matey", "~> 4.0" # Tracking analytics for Rails
 gem "ancestry", "~> 4.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "blazer", "~> 2.4.6" # Allows admins to query data
+gem "blazer", "~> 2.4.7" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
@@ -33,7 +33,7 @@ gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Un
 gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
-gem "field_test", "~> 0.4" # A/B testing
+gem "field_test", "~> 0.5" # A/B testing
 gem "flipper", "~> 0.22.1" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.22.1" # Store Flipper flags in ActiveRecord
 gem "flipper-active_support_cache_store", "~> 0.22.1" # Cache feature flags for a short time
@@ -104,7 +104,7 @@ gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
-gem "store_attribute", "~> 0.9.0" # ActiveRecord extension which adds typecasting to store accessors.
+gem "store_attribute", "~> 0.9.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
 gem "stripe", "~> 5.38" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
@@ -147,7 +147,7 @@ group :development, :test do
   gem "rubocop", "~> 1.21", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.11", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.12", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 2.4", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 2.5", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
