@@ -1,4 +1,13 @@
-<main class="row">
+<div
+  class="row"
+  data-controller="article-pinned-modal"
+  data-article-pinned-modal-root-selector-value="#article-pin-modal-root"
+  data-article-pinned-modal-content-selector-value="#article-pin-modal"
+  data-article-pinned-modal-title-value="There's another article pinned..."
+  data-article-pinned-modal-size-value="m"
+  data-article-pinned-modal-cancel-button-id-value="article-pin-modal-cancel"
+  data-article-pinned-modal-ok-button-id-value="article-pin-modal-ok"
+  data-action="article-pinned-modal:open@document->article-pinned-modal#openModal">
   <div class="col-12">
     <ul class="nav nav-tabs nav-fill">
       <li class="nav-item">
@@ -21,17 +30,28 @@
       </h1>
     <% end %>
   </div>
+
+  <div class="col-12">
+    <% if @pinned_article.present? %>
+      <h2><%= image_tag("pin.svg", alt: "") %> Pinned Article</h2>
+      <%= render partial: "individual_article", locals: { article: @pinned_article } %>
+    <% end %>
+  </div>
+
   <div class="col-12">
     <% if @featured_articles.present? %>
       <h2>Manually Featured Articles</h2>
       <%= render partial: "individual_article", collection: @featured_articles, as: :article %>
     <% end %>
   </div>
+
   <div class="col-12">
     <%= paginate @articles %>
     <%= render partial: "individual_article", collection: @articles, as: :article %>
     <%= paginate @articles %>
   </div>
-</main>
 
-<%= render "image_upload_script" %>
+  <%= render partial: "pinned_article_modal" %>
+</div>
+
+<%= render partial: "image_upload_script" %>

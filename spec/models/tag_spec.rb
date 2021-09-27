@@ -69,19 +69,24 @@ RSpec.describe Tag, type: :model do
         expect(tag).not_to be_valid
       end
 
-      it "fails validations if name uses non-ASCII characters" do
+      it "validates name is alphanumeric characters" do
+        # arabic is allowed
         tag.name = "مرحبا"
-        expect(tag).not_to be_valid
+        expect(tag).to be_valid
 
+        # chinese is allowed
         tag.name = "你好"
-        expect(tag).not_to be_valid
+        expect(tag).to be_valid
 
+        # Polish characters are allowed
         tag.name = "Cześć"
-        expect(tag).not_to be_valid
+        expect(tag).to be_valid
 
+        # musical notes are not :alnum:
         tag.name = "♩ ♪ ♫ ♬ ♭ ♮ ♯"
         expect(tag).not_to be_valid
 
+        # ™ is not :alnum:
         tag.name = "Test™"
         expect(tag).not_to be_valid
       end
@@ -120,6 +125,12 @@ RSpec.describe Tag, type: :model do
     sidekiq_assert_enqueued_with(job: Tags::BustCacheWorker, args: [tag.name]) do
       tag.save
     end
+  end
+
+  it "delete tag-colors server cache on save" do
+    allow(Rails.cache).to receive(:delete)
+    tag.save
+    expect(Rails.cache).to have_received(:delete).with("view-helper-#{tag.name}/tag_colors")
   end
 
   it "finds mod chat channel" do

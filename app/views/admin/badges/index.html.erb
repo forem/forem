@@ -19,7 +19,7 @@
         <td><%= link_to badge.title, edit_admin_badge_path(badge.id) %></td>
         <td class="justify-content-center"><%= badge.slug %></td>
         <td class="justify-content-center">
-          <img class="mx-auto mt-3" width="40" height="40" src="<%= badge.badge_image %>" alt="badge image">
+          <img class="mx-auto mt-3" width="40" height="40" src="<%= badge.badge_image %>" alt="badge image" loading="lazy" />
         </td>
       </tr>
     <% end %>

@@ -1,14 +1,11 @@
 module EdgeCache
   class BustArticle
-    # rubocop:disable Rails/RelativeDateConstant
     TIMEFRAMES = [
       [-> { 1.week.ago }, "week"],
       [-> { 1.month.ago }, "month"],
       [-> { 1.year.ago }, "year"],
       [-> { 5.years.ago }, "infinity"],
     ].freeze
-    # rubocop:enable Rails/RelativeDateConstant
-
     def self.call(article)
       return unless article
 

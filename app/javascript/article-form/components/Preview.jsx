@@ -2,8 +2,14 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useEffect } from 'preact/hooks';
 import { ErrorList } from './ErrorList';
+import { AccessibilitySuggestions } from './AccessibilitySuggestions';
 
-function titleArea(previewResponse, articleState, errors) {
+function titleArea({
+  previewResponse,
+  articleState,
+  errors,
+  markdownLintErrors,
+}) {
   const tagArray = previewResponse.tags || articleState.tagList.split(', ');
   let tags = '';
   if (tagArray.length > 0 && tagArray[0].length > 0) {
@@ -51,6 +57,9 @@ function titleArea(previewResponse, articleState, errors) {
       )}
       <div className="crayons-article__header__meta">
         {errors && <ErrorList errors={errors} />}
+        {!errors && markdownLintErrors?.length > 0 && (
+          <AccessibilitySuggestions markdownLintErrors={markdownLintErrors} />
+        )}
         <h1 className="fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
           {previewTitle}
         </h1>
@@ -68,7 +77,12 @@ const previewResponsePropTypes = PropTypes.shape({
   cover_image: PropTypes.string,
 });
 
-export const Preview = ({ previewResponse, articleState, errors }) => {
+export const Preview = ({
+  previewResponse,
+  articleState,
+  errors,
+  markdownLintErrors,
+}) => {
   useEffect(() => {
     if (previewResponse.processed_html.includes('twitter-timeline')) {
       attachTwitterTimelineScript();
@@ -78,7 +92,12 @@ export const Preview = ({ previewResponse, articleState, errors }) => {
   return (
     <div className="crayons-article-form__content crayons-card">
       <article className="crayons-article">
-        {titleArea(previewResponse, articleState, errors)}
+        {titleArea({
+          previewResponse,
+          articleState,
+          errors,
+          markdownLintErrors,
+        })}
         <div className="crayons-article__main">
           <div
             className="crayons-article__body text-styles"
@@ -104,6 +123,7 @@ function attachTwitterTimelineScript() {
 Preview.propTypes = {
   previewResponse: previewResponsePropTypes.isRequired,
   errors: PropTypes.string.isRequired,
+  markdownLintErrors: PropTypes.arrayOf(PropTypes.object),
   articleState: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,

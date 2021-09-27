@@ -116,7 +116,7 @@ it('should render with additional class names', async () => {
   const { getByTestId } = render(
     <Modal
       title="This is a modal title"
-      className={'some-additional-class-name'}
+      className="some-additional-class-name"
       onClose={jest.fn()}
     >
       This is the modal body content
@@ -147,7 +147,7 @@ it('should render with a different size modal', async () => {
     <Modal
       title="This is a modal title"
       size="large"
-      className={'some-additional-class-name'}
+      className="some-additional-class-name"
       onClose={jest.fn()}
     >
       This is the modal body content

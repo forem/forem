@@ -1,3 +1,5 @@
+import { getInterceptsForLingeringUserRequests } from '../util/networkUtils';
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -23,6 +25,44 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+/**
+ * Use this function to sign a user out without lingering network calls causing unintended side-effects.
+ */
+Cypress.Commands.add('signOutUser', () => {
+  const intercepts = getInterceptsForLingeringUserRequests('/', false);
+
+  return cy.request('DELETE', '/users/sign_out').then(() => {
+    cy.visit('/');
+    cy.wait(intercepts);
+  });
+});
+
+/**
+ * Logins in a user and visits the given URL, waiting for all user-related network requests triggered by the login to complete.
+ * This ensures that no user side effects bleed into subsequent tests.
+ */
+Cypress.Commands.add('loginAndVisit', (user, url) => {
+  cy.loginUser(user).then(() => {
+    cy.visitAndWaitForUserSideEffects(url);
+  });
+});
+
+/**
+ * Visits the given URL, waiting for all user-related network requests to complete.
+ * This ensures that no user side effects bleed into subsequent tests.
+ */
+Cypress.Commands.add('visitAndWaitForUserSideEffects', (url, options) => {
+  // If navigating directly to an admin route, no relevant network requests to intercept
+  const { baseUrl } = Cypress.config().baseUrl;
+  if (url === `${baseUrl}/admin` || url.includes('/admin/')) {
+    cy.visit(url, options);
+  } else {
+    const intercepts = getInterceptsForLingeringUserRequests(url, true);
+    cy.visit(url, options);
+    cy.wait(intercepts);
+  }
+});
 
 /**
  * Runs necessary test setup to run a clean test.
@@ -56,12 +96,44 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   const encodedEmail = encodeURIComponent(email);
   const encodedPassword = encodeURIComponent(password);
 
-  return cy.request(
-    'POST',
-    '/users/sign_in',
-    `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
-  );
+  function getLoginRequest() {
+    return cy.request(
+      'POST',
+      '/users/sign_in',
+      `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
+    );
+  }
+
+  return getLoginRequest().then((response) => {
+    if (response.status === 200) {
+      return response;
+    }
+
+    cy.log('Login failed. Attempting one more login.');
+
+    // If we have a login failure, try one more time.
+    // This is to combat some flaky tests where the login fails occasionnally.
+    return getLoginRequest();
+  });
 });
+
+/**
+ * Gets an iframe with the given selector (or the first/only iframe if none is passed in),
+ * waits for its content to be loaded, and returns a wrapped reference to the iframe body
+ * that can then be chained off of.
+ *
+ * See also: https://www.cypress.io/blog/2020/02/12/working-with-iframes-in-cypress/
+ *
+ * @example
+ * cy.getIframeBody('.article-frame').findByRole('heading', { name: 'Article title' });
+ */
+Cypress.Commands.add('getIframeBody', (selector = '') =>
+  cy
+    .get(`iframe${selector}`)
+    .its('0.contentDocument.body')
+    .should('not.be.empty')
+    .then(cy.wrap),
+);
 
 const toPayload = (isEnabled) => (isEnabled ? '1' : '0');
 
@@ -106,25 +178,22 @@ const DEFAULT_AUTH_CONFIG = {
  */
 Cypress.Commands.add(
   'updateAdminAuthConfig',
-  (
-    username = 'admin_mcadmin',
-    {
-      inviteOnlyMode = false,
-      emailRegistration = true,
-      allowedEmailDomains,
-      publicEmailDomainList = false,
-      requireRecaptcha = false,
-      recaptchaSiteKey,
-      recaptchaSecretKey,
-      authProvidersToEnable,
-      facebookKey,
-      facebookSecret,
-      githubKey,
-      githubSecret,
-      twitterKey,
-      twitterSecret,
-    } = DEFAULT_AUTH_CONFIG,
-  ) => {
+  ({
+    inviteOnlyMode = false,
+    emailRegistration = true,
+    allowedEmailDomains = '',
+    publicEmailDomainList = false,
+    requireRecaptcha = false,
+    recaptchaSiteKey = '',
+    recaptchaSecretKey = '',
+    authProvidersToEnable,
+    facebookKey = '',
+    facebookSecret = '',
+    githubKey = '',
+    githubSecret = '',
+    twitterKey = '',
+    twitterSecret = '',
+  } = DEFAULT_AUTH_CONFIG) => {
     return cy.request(
       'POST',
       '/admin/settings/authentications',
@@ -136,7 +205,7 @@ Cypress.Commands.add(
         publicEmailDomainList,
       )}&settings_authentication%5Brequire_captcha_for_email_password_registration%5D=${toPayload(
         requireRecaptcha,
-      )}&settings_authentication%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&settings_authentication%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&settings_authentication%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&settings_authentication%5Bfacebook_key%5D=${facebookKey}&settings_authentication%5Bfacebook_secret%5D=${facebookSecret}&settings_authentication%5Bgithub_key%5D=${githubKey}&settings_authentication%5Bgithub_secret%5D=${githubSecret}&settings_authentication%5Btwitter_key%5D=${twitterKey}&settings_authentication%5Btwitter_secret%5D=${twitterSecret}&confirmation=My+username+is+%40${username}+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Settings`,
+      )}&settings_authentication%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&settings_authentication%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&settings_authentication%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&settings_authentication%5Bfacebook_key%5D=${facebookKey}&settings_authentication%5Bfacebook_secret%5D=${facebookSecret}&settings_authentication%5Bgithub_key%5D=${githubKey}&settings_authentication%5Bgithub_secret%5D=${githubSecret}&settings_authentication%5Btwitter_key%5D=${twitterKey}&settings_authentication%5Btwitter_secret%5D=${twitterSecret}&commit=Update+Settings`,
     );
   },
 );

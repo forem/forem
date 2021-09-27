@@ -11,7 +11,7 @@
       <div class="flex py-2 items-center">
         <%= event.title %>
         <% if event.cover_image_url.present? %>
-          <img class="mx-auto mt-3" width="40" height="40" src="<%= event.cover_image_url %>" alt="event cover image">
+          <img class="mx-auto mt-3" width="40" height="40" src="<%= event.cover_image_url %>" alt="event cover image" loading="lazy" />
         <% end %>
         <%= link_to "Edit", edit_admin_event_path(event.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
       </div>
@@ -28,7 +28,7 @@
       <div class="flex py-2 items-center">
         <%= event.title %>
         <% if event.cover_image_url.present? %>
-          <img class="mx-auto mt-3 justify-content-center" width="40" height="40" src="<%= event.cover_image_url %>" alt="event cover image">
+          <img class="mx-auto mt-3 justify-content-center" width="40" height="40" src="<%= event.cover_image_url %>" alt="event cover image" loading="lazy" />
         <% end %>
         <%= link_to "Edit", edit_admin_event_path(event.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
       </div>

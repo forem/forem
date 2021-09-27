@@ -1,19 +1,19 @@
 require "rails_helper"
 
-def expect_broadcast_data(page)
-  within ".broadcast-wrapper" do
-    expect(page).to have_selector(".broadcast-data")
-    expect(page).to have_text("Hello, World!")
-  end
-end
-
-def expect_no_broadcast_data(page)
-  expect(page).not_to have_css(".broadcast-wrapper")
-  expect(page).not_to have_selector(".broadcast-data")
-  expect(page).not_to have_text("Hello, World!")
-end
-
 RSpec.describe "User visits a homepage", type: :system do
+  def expect_broadcast_data(page)
+    within ".broadcast-wrapper" do
+      expect(page).to have_selector(".broadcast-data")
+      expect(page).to have_text("Hello, World!")
+    end
+  end
+
+  def expect_no_broadcast_data(page)
+    expect(page).not_to have_css(".broadcast-wrapper")
+    expect(page).not_to have_selector(".broadcast-data")
+    expect(page).not_to have_text("Hello, World!")
+  end
+
   context "when user hasn't logged in" do
     context "with an active announcement" do
       before do
@@ -89,7 +89,7 @@ RSpec.describe "User visits a homepage", type: :system do
 
     context "when opting-out of announcements" do
       before do
-        user.update!(display_announcements: false)
+        user.setting.update!(display_announcements: false)
         create(:announcement_broadcast, active: true)
         get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
         visit "/"

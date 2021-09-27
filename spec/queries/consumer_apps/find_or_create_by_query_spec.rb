@@ -11,6 +11,7 @@ RSpec.describe ConsumerApps::FindOrCreateByQuery, type: :query do
           platform: :ios,
         )
         expect(app).to be_instance_of(ConsumerApp)
+        expect(app.team_id).to eq(ConsumerApp::FOREM_TEAM_ID)
       end.to change(ConsumerApp, :count).by(1)
     end
   end

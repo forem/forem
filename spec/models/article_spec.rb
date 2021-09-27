@@ -18,6 +18,8 @@ RSpec.describe Article, type: :model do
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:user) }
 
+    it { is_expected.to have_one(:discussion_lock).dependent(:destroy) }
+
     it { is_expected.to have_many(:comments).dependent(:nullify) }
     it { is_expected.to have_many(:mentions).dependent(:destroy) }
     it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
@@ -48,8 +50,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:user_id) }
 
-    it { is_expected.to validate_uniqueness_of(:canonical_url).allow_nil }
-    it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
@@ -973,6 +973,25 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  context "when callbacks are triggered after create" do
+    describe "detect animated images" do
+      it "does not enqueue Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is disabled" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
+
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
+          build(:article).save
+        end
+      end
+
+      it "enqueues Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is enabled" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
+        sidekiq_assert_enqueued_jobs(1, only: Articles::DetectAnimatedImagesWorker) do
+          build(:article).save
+        end
+      end
+    end
+  end
+
   context "when callbacks are triggered after save" do
     describe "article path sanitizing" do
       it "returns a downcased username when user has uppercase characters" do
@@ -1089,6 +1108,32 @@ RSpec.describe Article, type: :model do
             article.update_columns(published: false)
             article.update(published: true, published_at: Time.current)
           end
+        end
+      end
+    end
+
+    describe "detect animated images" do
+      it "does not enqueue Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is disabled" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
+
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
+          article.update(body_markdown: "a body")
+        end
+      end
+
+      it "enqueues Articles::DetectAnimatedImagesWorker if the HTML has changed" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
+
+        sidekiq_assert_enqueued_with(job: Articles::DetectAnimatedImagesWorker, args: [article.id]) do
+          article.update(body_markdown: "a body")
+        end
+      end
+
+      it "does not Articles::DetectAnimatedImagesWorker if the HTML does not change" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
+
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
+          article.update(tag_list: %w[fsharp go])
         end
       end
     end
@@ -1260,6 +1305,47 @@ RSpec.describe Article, type: :model do
 
       article.update_score
       expect { article.update_score }.not_to change { article.reload.hotness_score }
+    end
+  end
+
+  describe "#feed_source_url and canonical_url must be unique for published articles" do
+    let(:url) { "http://www.example.com" }
+
+    it "is valid when both articles are drafts" do
+      body_markdown = "---\ntitle: Title\npublished: false\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+
+      expect(another_article).to be_valid
+    end
+
+    it "is valid when first article is a draft, second is published" do
+      body_markdown = "---\ntitle: Title\npublished: false\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      body_markdown = "---\ntitle: Title\npublished: true\ncanonical_url: #{url}\n---\n\n"
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+
+      expect(another_article).to be_valid
+    end
+
+    it "is valid when first article is published, second is draft" do
+      body_markdown = "---\ntitle: Title\npublished: true\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      body_markdown = "---\ntitle: Title\npublished: false\ncanonical_url: #{url}\n---\n\n"
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+
+      expect(another_article).to be_valid
+    end
+
+    it "is not valid when both articles are published" do
+      body_markdown = "---\ntitle: Title\npublished: true\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+      error_message = "has already been taken. " \
+                      "Email #{ForemInstance.email} for further details."
+      expect(another_article).not_to be_valid
+      expect(another_article.errors.messages[:canonical_url]).to include(error_message)
+      expect(another_article.errors.messages[:feed_source_url]).to include(error_message)
     end
   end
 end

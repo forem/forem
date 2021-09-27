@@ -83,7 +83,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /api" do
     it "redirects to the API docs" do
       get "/api"
-      expect(response.body).to redirect_to("https://docs.forem.com/api")
+      expect(response.body).to redirect_to("https://developers.forem.com/api")
     end
   end
 

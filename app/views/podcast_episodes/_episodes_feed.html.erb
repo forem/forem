@@ -4,7 +4,7 @@
       <div class="small-pic">
         <%= optimized_image_tag(episode.image_url || episode.podcast.image_url,
                                 optimizer_options: { crop: "imagga_scale", width: 240, height: 240 },
-                                image_options: { alt: episode.title }) %>
+                                image_options: { alt: episode.title, loading: "lazy"}) %>
       </div>
       <div class="content">
         <h3><span class="tag-identifier">podcast</span><%= episode.title %></h3>

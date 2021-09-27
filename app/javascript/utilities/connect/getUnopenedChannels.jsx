@@ -34,11 +34,13 @@ class UnopenedChannelNotice extends Component {
     });
     this.fetchUnopenedChannel(this.updateMessageNotification);
 
-    document.getElementById('connect-link').onclick = () => {
-      // Hack, should probably be its own component in future
-      document.getElementById('connect-number').classList.add('hidden');
-      this.setState({ visible: false });
-    };
+    if(document.getElementById('connect-link')) {
+      document.getElementById('connect-link').onclick = () => {
+        // Hack, should probably be its own component in future
+        document.getElementById('connect-number').classList.add('hidden');
+        this.setState({ visible: false });
+      };
+    }
   }
 
   updateMessageNotification = (unopenedChannels) => {
@@ -172,7 +174,7 @@ class UnopenedChannelNotice extends Component {
       const message = unopenedChannels.map((channel) => {
         if (channel.notified) return null;
         return (
-          <div>
+          <div key={channel.id}>
             {channel.request_type === 'mentioned'
               ? 'You got mentioned in'
               : 'New Message from'}{' '}

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin visits the overview page", type: :system, js: true do
+RSpec.describe "Admin visits overview page", type: :system, js: true do
   let(:super_admin) { create(:user, :super_admin) }
 
   before do
@@ -9,6 +9,6 @@ RSpec.describe "Admin visits the overview page", type: :system, js: true do
   end
 
   it "tracks link clicks" do
-    expect { click_link("Invite people") }.to change { Ahoy::Event.count }.by 1
+    expect { click_link("Forem Admin Documentation") }.to change { Ahoy::Event.count }.by 1
   end
 end

@@ -22,9 +22,27 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
   end
 
+  it "does not allow button tag" do
+    button = "<button>no</button>"
+    expect(generate_and_parse_markdown(button)).not_to include("button")
+  end
+
   it "does not render the escaped dashes when using a `raw` Liquid tag in codeblocks with syntax highlighting" do
     code_block = "```js\n{% raw %}some text{% endraw %}\n```"
     expect(generate_and_parse_markdown(code_block)).not_to include("----")
+  end
+
+  it "escapes some triple backticks within a codeblock when using tildes" do
+    code_block = "​~~~\nhello\n// ```\nwhatever\n// ```\n~~~"
+    number_of_triple_backticks = generate_and_parse_markdown(code_block).scan("```").count
+    expect(number_of_triple_backticks).to eq(2)
+  end
+
+  # TODO: @zhao-andy this should fail if this issue is solved: https://github.com/forem/forem/issues/13823
+  it "escapes triple backticks within a codeblock when using tildes" do
+    code_block = "~~~\nhello\n```\nwhatever\n```\n~~~"
+    number_of_triple_backticks = generate_and_parse_markdown(code_block).scan("```").count
+    expect(number_of_triple_backticks).to eq(0)
   end
 
   it "does not remove the non-'raw tag related' four dashes" do
@@ -43,11 +61,19 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
   end
 
   it "escapes codeblocks in numbered lists" do
-    code_block = "1. Define your hooks in config file `lefthook.yml`\n
-    ```yaml
-     pre-push:\n        parallel: true\n        commands:\n        rubocop:
-     run: bundle exec rspec --fail-fast\n
-    ```"
+    code_block = <<~CODE_BLOCK
+      1. Define your hooks in config file `lefthook.yml`
+
+        ```yaml
+         pre-push:
+            parallel: true
+            commands:
+            rubocop:
+         run: bundle exec rspec --fail-fast
+
+        ```
+    CODE_BLOCK
+
     escaped_codeblock = generate_and_parse_markdown(code_block)
     expect(escaped_codeblock).not_to include("```")
     expect(escaped_codeblock).not_to include("`")
@@ -195,9 +221,11 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       DOC
       result = generate_and_parse_markdown(mention)
 
+      # rubocop:disable Layout/LineLength
       expected_result = "<p><code>@#{user.username}</code> one two, <a class=\"mentioned-user\" " \
-        "href=\"#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}\">" \
-        "@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n"
+                        "href=\"#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}\">" \
+                        "@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n"
+      # rubocop:enable Layout/LineLength
       expect(result).to eq(expected_result)
     end
 

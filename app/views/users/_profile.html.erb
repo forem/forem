@@ -2,19 +2,6 @@
 
 <%= render "users/additional_authentication" %>
 
-<% if ForemInstance.dev_to? %>
-  <%# @forem/oss Temporary disabling of overly DEV-specialized link. %>
-  <%# We should create a generalized version of the badge page, including a permanent proxied path for the badge image for hotlinking. %>
-  <div class="crayons-card crayons-card--content-rows">
-    <div class="flex items-center">
-      <a href="<%= user_url(current_user) || "#" %>" aria-label="Go to your profile page" class="mr-2">
-        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= community_name %> badge" height="32" width="32" class="dev-badge crayons-icon" />
-      </a>
-      <p>Add the <%= community_name %> badge to your personal site. <a href="/p/badges">Click here for the code</a>.</p>
-    </div>
-  </div>
-<% end %>
-
 <%= form_with(url: profile_path(@user.profile_id), method: "put", html: { class: "sticky-footer-form" }) do |f| %>
 
   <div class="crayons-card crayons-card--content-rows">
@@ -30,6 +17,11 @@
       <%= f.text_field "user[email]", class: "crayons-textfield", placeholder: "john.doe@example.com", value: @user.email %>
     </div>
 
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box "users_setting[display_email_on_profile]", class: "crayons-checkbox", checked: @user.setting.display_email_on_profile %>
+      <%= f.label :display_email_on_profile, for: "users_setting[display_email_on_profile]", class: "crayons-field__label" %>
+    </div>
+
     <div class="crayons-field">
       <%= f.label :username, for: "user[username]", class: "crayons-field__label" %>
       <%= f.text_field "user[username]", maxlength: 30, class: "crayons-textfield", placeholder: "johndoe", value: @user.username %>
@@ -40,15 +32,52 @@
 
       <div class="flex items-center">
         <% if @user.profile_image_url.present? %>
-          <span class="crayons-avatar crayons-avatar--xl mr-2"><img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" /></span>
+          <span class="crayons-avatar crayons-avatar--xl mr-2">
+            <img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" loading="lazy" />
+          </span>
         <% end %>
         <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
     </div>
   </div>
 
+  <% profile = @user.profile %>
+
+  <div class="crayons-card crayons-card--content-rows">
+    <h2>Basic</h2>
+
+    <div class="crayons-field">
+      <label class="crayons-field__label" for="profile[website_url]">
+        Website URL
+      </label>
+      <%= f.url_field "profile[website_url]",
+                      value: profile.website_url,
+                      placeholder: "https://yoursite.com",
+                      class: "crayons-textfield js-color-field" %>
+    </div>
+
+    <div class="crayons-field">
+      <label class="crayons-field__label" for="profile[location]">
+        Location
+      </label>
+      <%= f.text_field "profile[location]",
+                       value: profile.location,
+                       placeholder: "Halifax, Nova Scotia",
+                       class: "crayons-textfield js-color-field" %>
+    </div>
+
+    <div class="crayons-field">
+      <label class="crayons-field__label" for="profile[summary]">
+        Bio
+      </label>
+      <%= f.text_area "profile[summary]",
+                      value: profile.summary,
+                      placeholder: "A short bio...",
+                      class: "crayons-textfield js-color-field" %>
+    </div>
+  </div>
+
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
-    <% next if group.name == "Links" # TODO: [@jacobherrington] Remove this when we drop social links %>
     <div class="crayons-card crayons-card--content-rows">
       <h2><%= group.name %></h2>
       <% if group.description.present? %>
@@ -56,25 +85,25 @@
       <% end %>
 
       <% group.profile_fields.each do |field| %>
+        <% next if field.attribute_name == "display_email_on_profile" %>
         <div class="crayons-field <%= "crayons-field--checkbox" if field.input_type == "check_box" %>">
           <% if field["input_type"] == "check_box" %>
-            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", checked: @user.profile.data[field.attribute_name], class: "crayons-checkbox") %>
+            <%= f.public_send(field["input_type"],
+                              "profile[#{field.attribute_name}]",
+                              checked: profile.public_send(field.attribute_name),
+                              class: "crayons-checkbox") %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
-          <% elsif field["input_type"] == "color_field" %>
-            <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
-              <%= field.label %>
-            </label>
-            <div class="flex items-center w-100 m:w-50">
-              <%= f.public_send("text_field", "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], placeholder: field["placeholder_text"], class: "crayons-textfield js-color-field") %>
-              <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], class: "crayons-color-selector js-color-field ml-2") %>
-            </div>
           <% else %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
-            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], placeholder: field["placeholder_text"], class: "crayons-textfield") %>
+            <%= f.public_send(field["input_type"],
+                              "profile[#{field.attribute_name}]",
+                              value: profile.public_send(field.attribute_name),
+                              placeholder: field["placeholder_text"],
+                              class: "crayons-textfield") %>
           <% end %>
           <% if field.description.present? %>
             <p class="crayons-field__description"><%= field.description %></p>
@@ -83,6 +112,44 @@
       <% end %>
     </div>
   <% end %>
+
+  <% users_setting = @user.setting %>
+  <div class="crayons-card crayons-card--content-rows">
+    <h2>Branding</h2>
+    <div class="crayons-field ">
+      <label class="crayons-field__label" for="users_setting[brand_color1]">
+        Brand color 1
+      </label>
+      <div class="flex items-center w-100 m:w-50">
+        <%= f.public_send("text_field", "users_setting[brand_color1]",
+                          value: users_setting.public_send("brand_color1"),
+                          placeholder: "#000000",
+                          class: "crayons-textfield js-color-field") %>
+        <%= f.public_send("color_field",
+                          "users_setting[brand_color1]",
+                          value: users_setting.public_send("brand_color1"),
+                          class: "crayons-color-selector js-color-field ml-2") %>
+      </div>
+      <p class="crayons-field__description">Used for backgrounds, borders etc.</p>
+    </div>
+
+    <div class="crayons-field ">
+      <label class="crayons-field__label" for="users_setting[brand_color1]">
+        Brand color 2
+      </label>
+      <div class="flex items-center w-100 m:w-50">
+        <%= f.public_send("text_field", "users_setting[brand_color2]",
+                          value: users_setting.public_send("brand_color2"),
+                          placeholder: "#000000",
+                          class: "crayons-textfield js-color-field") %>
+        <%= f.public_send("color_field",
+                          "users_setting[brand_color2]",
+                          value: users_setting.public_send("brand_color2"),
+                          class: "crayons-color-selector js-color-field ml-2") %>
+      </div>
+      <p class="crayons-field__description">Used for texts (usually put on Brand color 1).</p>
+    </div>
+  </div>
 
   <div class="save-footer crayons-card crayons-card--content-rows">
     <button type="submit" class="crayons-btn">Save Profile Information</button>

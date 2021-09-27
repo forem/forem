@@ -1,0 +1,3 @@
+<% if current_user.has_role?(:super_admin) %>
+  <%= f.submit "Update Settings", class: "crayons-btn mt-4", data: { disable_with: false } %>
+<% end %>

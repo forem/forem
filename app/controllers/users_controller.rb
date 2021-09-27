@@ -11,6 +11,7 @@ class UsersController < ApplicationController
   before_action :initialize_stripe, only: %i[edit]
 
   ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
+  ALLOWED_ONBOARDING_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
   REMOVE_IDENTITY_ERROR = "An error occurred. Please try again or send an email to: %<email>s".freeze
@@ -35,6 +36,7 @@ class UsersController < ApplicationController
       return redirect_to sign_up_path
     end
     set_user
+    set_users_setting_and_notification_setting
     set_current_tab(params["tab"] || "profile")
     handle_settings_tab
   end
@@ -42,23 +44,21 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/:id.:format
   def update
     set_current_tab(params["user"]["tab"])
+    set_users_setting_and_notification_setting
 
-    @user.assign_attributes(permitted_attributes(@user))
-
-    if @user.save
+    if @user.update(permitted_attributes(@user))
       # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
       # explicitly requested "Feed fetch now" or simply updated any other field
       import_articles_from_feed(@user)
 
       notice = "Your profile was successfully updated."
-      if config_changed?
-        notice = "Your config has been updated. Refresh to see all changes."
-      end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
         ExportContentWorker.perform_async(@user.id, @user.email)
       end
-      cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
+      if @user.setting.experience_level.present?
+        cookies.permanent[:user_experience_level] = @user.setting.experience_level.to_s
+      end
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
@@ -134,7 +134,7 @@ class UsersController < ApplicationController
   def remove_identity
     set_current_tab("account")
 
-    error_message = format(REMOVE_IDENTITY_ERROR, email: Settings::General.email_addresses[:contact])
+    error_message = format(REMOVE_IDENTITY_ERROR, email: ForemInstance.email)
     unless Authentication::Providers.enabled?(params[:provider])
       flash[:error] = error_message
       redirect_to user_settings_path(@tab)
@@ -168,6 +168,7 @@ class UsersController < ApplicationController
 
   def onboarding_update
     authorize User
+
     user_params = { saw_onboarding: true }
 
     if params[:user]
@@ -179,16 +180,13 @@ class UsersController < ApplicationController
       user_params.merge!(params[:user].permit(ALLOWED_USER_PARAMS))
     end
 
-    update_result = Profiles::Update.call(current_user, { user: user_params, profile: profile_params })
+    update_result = Users::Update.call(current_user, user: user_params, profile: profile_params)
     render_update_response(update_result.success?, update_result.errors_as_sentence)
   end
 
   def onboarding_checkbox_update
     if params[:user]
-      permitted_params = %i[
-        checked_code_of_conduct checked_terms_and_conditions email_newsletter email_digest_periodic
-      ]
-      current_user.assign_attributes(params[:user].permit(permitted_params))
+      current_user.assign_attributes(params[:user].permit(ALLOWED_ONBOARDING_PARAMS))
     end
 
     current_user.saw_onboarding = true
@@ -302,7 +300,7 @@ class UsersController < ApplicationController
   end
 
   def default_suggested_users
-    @default_suggested_users ||= User.where(username: @suggested_users)
+    @default_suggested_users ||= User.includes(:profile).where(username: @suggested_users)
   end
 
   def determine_follow_suggestions(current_user)
@@ -326,7 +324,7 @@ class UsersController < ApplicationController
 
   def handle_organization_tab
     @organizations = @current_user.organizations.order(name: :asc)
-    if params[:org_id] == "new" || params[:org_id].blank? && @organizations.size.zero?
+    if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.size.zero?)
       @organization = Organization.new
     elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
       @organization = Organization.find_by(id: params[:org_id]) || @organizations.first
@@ -360,12 +358,15 @@ class UsersController < ApplicationController
     authorize @user
   end
 
-  def set_current_tab(current_tab = "profile")
-    @tab = current_tab
+  def set_users_setting_and_notification_setting
+    return unless @user
+
+    @users_setting = @user.setting
+    @users_notification_setting = @user.notification_setting
   end
 
-  def config_changed?
-    params[:user].include?(:config_theme)
+  def set_current_tab(current_tab = "profile")
+    @tab = current_tab
   end
 
   def destroy_request_in_progress?
@@ -373,13 +374,13 @@ class UsersController < ApplicationController
   end
 
   def import_articles_from_feed(user)
-    return if user.feed_url.blank?
+    return if user.setting.feed_url.blank?
 
-    Feeds::ImportArticlesWorker.perform_async(nil, user.id)
+    Feeds::ImportArticlesWorker.perform_async(user.id)
   end
 
   def profile_params
-    params[:profile] ? params[:profile].permit(Profile.attributes) : nil
+    params[:profile] ? params[:profile].permit(Profile.static_fields + Profile.attributes) : nil
   end
 
   def password_params

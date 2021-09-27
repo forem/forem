@@ -1,0 +1,112 @@
+<% cache "tag-sidebar-#{@tag}-#{@tag_model&.updated_at}-#{@tag_model&.taggings_count}-#{user_signed_in?}-#{@page}", expires_in: 5.hours do %>
+  <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+    <div class="sidebar-bg" id="sidebar-bg-left"></div>
+    <div class="side-bar">
+      <% if @tag_model && @tag_model.rules_html.present? %>
+        <div class="widget">
+          <header>
+            <h4>submission guidelines</h4>
+          </header>
+          <div class="widget-body">
+            <%= sanitize @tag_model.rules_html %>
+            <a class="crayons-btn crayons-btn--s" href="/new/<%= @tag %>">
+              Create Post
+            </a>
+          </div>
+        </div>
+      <% end %>
+      <% if @tag_model && @tag_model.wiki_body_html.present? %>
+        <div class="widget">
+          <header>
+            <h4>about #<%= @tag %></h4>
+          </header>
+          <div class="widget-body">
+            <%= sanitize @tag_model.wiki_body_html %>
+          </div>
+        </div>
+      <% end %>
+      <% if @tag_model.sponsorship && @tag_model.sponsorship.status == "live" && @tag_model.sponsorship.expires_at > Time.current %>
+        <div class="widget">
+          <header>
+            <h4><%= @tag %> is sponsored by</h4>
+          </header>
+          <div class="widget-body">
+            <%= render "articles/single_sponsor", sponsorship: @tag_model.sponsorship %>
+          </div>
+        </div>
+      <% end %>
+      <% if @moderators.present? %>
+        <div class="widget">
+          <header>
+            <h4>tag moderators</h4>
+          </header>
+          <div class="widget-body">
+            <% @moderators.each do |user| %>
+              <div class="widget-user-pic">
+                <a href="/<%= user.username %>" title="<%= user.username %>">
+                  <img src="<%= Images::Profile.call(user.profile_image_url, length: 90) %>" alt="<%= user.username %> profile image">
+                </a>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      <div class="sidebar-data">
+        <div>
+          <%= pluralize @num_published_articles, "Post" %> Published
+        </div>
+        <% if user_signed_in? %>
+          <div class="crayons-btn-group mt-3">
+            <a style="display:none;"
+                id="tag-edit-button"
+                data-tag="<%= @tag_model.name %>"
+                class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
+                href="<%= tag_url(@tag_model, @page) %>/edit"
+                style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+              Edit
+            </a>
+            <a style="display:none;"
+               id="tag-admin-button"
+               data-tag="<%= @tag_model.name %>"
+               class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
+               href="<%= edit_admin_tag_path(@tag_model.id) %>"
+               style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>"
+               data-no-instant>
+              Admin
+            </a>
+            <a style="display:none;"
+               id="tag-mod-button"
+               data-tag="<%= @tag_model.name %>"
+               class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
+               href="/mod/<%= @tag_model.name %>"
+               style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+              Moderate
+            </a>
+          </div>
+        <% else %>
+          <% number_of_pages = @num_published_articles / @number_of_articles %>
+          <% range = number_of_pages < 10 || @page < 4 ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>
+          <% if number_of_pages > 1 %>
+            <hr />
+            <div class="olderposts-header">Older #<%= @tag %> posts</div>
+            <div class="olderposts-links">
+              <% range.each do |n| %>
+                <% if @page == n %>
+                    <span class="olderposts-pagenumber"><%= n %></span>
+                <% else %>
+                    <a href="<%= tag_url(@tag_model, n) %>" class="olderposts-pagenumber"><%= n %></a>
+                <% end %>
+              <% end %>
+              <% if @page == 1 && number_of_pages > 100 %>
+                <div>
+                  …<a href="<%= tag_url(@tag_model, 75) %>" class="olderposts-pagenumber">75</a>
+                  …<a href="<%= tag_url(@tag_model, number_of_pages) %>" class="olderposts-pagenumber"><%= number_of_pages %></a>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -18,7 +18,7 @@
             <% @organization.users.find_each do |user| %>
               <div class="widget-user-pic">
                 <a href="/<%= user.username %>">
-                  <img src="<%= Images::Profile.call(user.profile_image_url, length: 90) %>" alt="<%= user.username %> profile image">
+                  <img src="<%= Images::Profile.call(user.profile_image_url, length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
                 </a>
               </div>
             <% end %>

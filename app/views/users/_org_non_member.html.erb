@@ -1,7 +1,7 @@
 <%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", defer: true %>
 
 <div class="crayons-card crayons-card--content-rows">
-  <h3>Join An Organization</h3>
+  <h2>Join An Organization</h2>
   <%= form_tag "/users/join_org" do %>
     <div class="crayons-field mb-6">
       <%= label_tag :org_secret, "Secret code", class: "crayons-field__label" %>
@@ -17,7 +17,7 @@
 
 <div class="crayons-card crayons-card--content-rows">
   <header>
-    <h3 class="mb-2">Create An Organization</h3>
+    <h2 class="mb-2">Create An Organization</h2>
     <p>Starred fields are required</p>
   </header>
 
@@ -66,6 +66,6 @@
       <p class="crayons-field__description">You must have your organization's permission to submit this form. Dishonesty may result in a permanent suspension.</p>
     </div>
 
-    <div><button class="crayons-btn" type="submit">Create Organization</button></div>
+    <button class="crayons-btn w-max" type="submit">Create Organization</button>
   <% end %>
 </div>

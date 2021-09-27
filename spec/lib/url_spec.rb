@@ -105,11 +105,11 @@ RSpec.describe URL, type: :lib do
 
   describe ".deep_link" do
     it "returns the correct URL for the root path" do
-      expect(described_class.deep_link("/")).to eq("https://forem-udl-server.herokuapp.com/?r=https%3A%2F%2Fdev.to%2Fr%2Fmobile%3Fdeep_link%3D%2F")
+      expect(described_class.deep_link("/")).to eq("https://udl.forem.com/?r=https%3A%2F%2Fdev.to%2Fr%2Fmobile%3Fdeep_link%3D%2F")
     end
 
     it "returns the correct URL for an explicit path" do
-      expect(described_class.deep_link("/sloan")).to eq("https://forem-udl-server.herokuapp.com/?r=https%3A%2F%2Fdev.to%2Fr%2Fmobile%3Fdeep_link%3D%2Fsloan")
+      expect(described_class.deep_link("/sloan")).to eq("https://udl.forem.com/?r=https%3A%2F%2Fdev.to%2Fr%2Fmobile%3Fdeep_link%3D%2Fsloan")
     end
   end
 

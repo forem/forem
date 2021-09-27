@@ -11,6 +11,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
   const [bookmarkedFeedItems, setBookmarkedFeedItems] = useState(
     new Set(reading_list_ids),
   );
+  const [pinnedArticle, setPinnedArticle] = useState(null);
   const [feedItems, setFeedItems] = useState([]);
   const [podcastEpisodes, setPodcastEpisodes] = useState([]);
   const [onError, setOnError] = useState(false);
@@ -26,6 +27,10 @@ export const Feed = ({ timeFrame, renderFeed }) => {
 
         const feedItems = await getFeedItems(timeFrame);
 
+        // Here we extract from the feed two special items: pinned and featured
+
+        const pinnedArticle = feedItems.find((story) => story.pinned === true);
+
         // Ensure first article is one with a main_image
         // This is important because the featuredStory will
         // appear at the top of the feed, with a larger
@@ -33,6 +38,21 @@ export const Feed = ({ timeFrame, renderFeed }) => {
         const featuredStory = feedItems.find(
           (story) => story.main_image !== null,
         );
+
+        // If pinned and featured article aren't the same,
+        // (either because featuredStory is missing or because they represent two different articles),
+        // we set the pinnedArticle and remove it from feedItems.
+        // If pinned and featured are the same, we just remove it from feedItems without setting it as state.
+        if (pinnedArticle) {
+          const index = feedItems.findIndex(
+            (item) => item.id === pinnedArticle.id,
+          );
+          feedItems.splice(index, 1);
+
+          if (pinnedArticle.id !== featuredStory?.id) {
+            setPinnedArticle(pinnedArticle);
+          }
+        }
 
         // Remove that first story from the array to
         // prevent it from rendering twice in the feed.
@@ -91,7 +111,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
   }
 
   /**
-   * Dispatches a click event to bookmark/unbook,ard an article.
+   * Dispatches a click event to bookmark/unbookmark an article.
    *
    * @param {Event} event
    */
@@ -161,6 +181,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
         </div>
       ) : (
         renderFeed({
+          pinnedArticle,
           feedItems,
           podcastEpisodes,
           bookmarkedFeedItems,

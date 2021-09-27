@@ -43,6 +43,7 @@ function initializeCommentsPage() {
                   var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
                   if (buttForComment) {
                     buttForComment.classList.add('reacted');
+                    buttForComment.setAttribute('aria-pressed', 'true')
                   }
                 }
                 for (var i = 0; i < publicReactionCounts.length; i++) {
@@ -51,7 +52,7 @@ function initializeCommentsPage() {
                     var reactionsCountWrapper = buttForComment.querySelector('.reactions-count');
                     var reactionsLabelWrapper = buttForComment.querySelector('.reactions-label');
                     if (publicReactionCounts[i].count > 0) {
-                      
+
                       if (publicReactionCounts[i].count > 1) {
                         reactionsLabelWrapper.innerHTML = "&nbsp;likes";
                       } else {
@@ -64,6 +65,10 @@ function initializeCommentsPage() {
                     } else {
                       reactionsCountWrapper.classList.add("hidden");
                       reactionsCountWrapper.innerHTML = '0';
+                    }
+
+                    if (!buttForComment.classList.contains("reacted")) {
+                      buttForComment.setAttribute('aria-pressed', 'false')
                     }
                   }
                 }
@@ -112,6 +117,7 @@ function initializeCommentsPage() {
           var reactionLabel = thisButt.querySelector('.reactions-label');
           if (response.result === 'create') {
             thisButt.classList.add('reacted');
+            thisButt.setAttribute('aria-pressed', 'true');
             if (reactionCount) {
               reactionCount.innerHTML = parseInt(reactionCount.innerHTML) + 1;
               reactionCount.classList.remove("hidden");
@@ -123,6 +129,7 @@ function initializeCommentsPage() {
             }
           } else {
             thisButt.classList.remove('reacted');
+            thisButt.setAttribute('aria-pressed', 'false');
             if (reactionCount) {
               reactionCount.innerHTML = parseInt(reactionCount.innerHTML) - 1;
               if(parseInt(reactionCount.innerHTML) == 0) {
@@ -141,6 +148,13 @@ function initializeCommentsPage() {
             thisButt.disabled = false;
             if (response.status === 200) {
               response.json().then(successCb);
+            } else {
+              showModalAfterError({
+                response,
+                element: 'reaction',
+                action_ing: 'making',
+                action_past: 'made',
+              });
             }
           });
       };
@@ -286,18 +300,15 @@ function handleCommentSubmit(event) {
           updateCommentsCount();
           initializeCommentsPage();
           initializeCommentDate();
-          initializeCommentDropdown();
           activateRunkitTags();
         })
       } else {
         form.classList.remove('submitting');
-        var responseStatus = response.status;
-        response.json().then(function parseError(errorReponse) {
-          if (responseStatus === 429) {
-            showRateLimitModal('made a comment', 'making another comment')
-          } else {
-            showUserAlertModal('Error posting comment', 'Your comment could not be posted due to an error: ' + errorReponse.error, 'OK')
-          }
+        showModalAfterError({
+          response,
+          element: 'comment',
+          action_ing: 'posting',
+          action_past: 'posted',
         });
         return false;
       }
@@ -409,7 +420,7 @@ var KEY_CODE_K = 75;
 var ENTER_KEY_CODE = 13;
 
 function handleKeyDown(event) {
-  if (event.ctrlKey || event.metaKey) {
+  if (Runtime.hasOSSpecificModifier(event)) {
     switch (event.keyCode) {
       case KEY_CODE_B:
         event.preventDefault();
@@ -520,6 +531,13 @@ function handleImageUpload(event, randomIdNumber) {
                 messageContainer.style.top = "5px";
               }
             );
+          } else if (response.status === 429) {
+            showRateLimitModal({
+              response,
+              element: 'image',
+              action_ing: 'uploading',
+              action_past: 'uploaded',
+            });
           } else {
             response.json().then(function(responseBody) {
               var errorMessage = responseBody.error || 'Invalid file!';

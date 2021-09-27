@@ -4,9 +4,20 @@ module Stories
 
     def show
       @stories = assign_feed_stories
+
+      add_pinned_article
     end
 
     private
+
+    def add_pinned_article
+      return if params[:timeframe].present?
+
+      pinned_article = PinnedArticle.get
+      return if pinned_article.nil? || @stories.detect { |story| story.id == pinned_article.id }
+
+      @stories.prepend(pinned_article.decorate)
+    end
 
     def assign_feed_stories
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
@@ -18,6 +29,7 @@ module Stories
                 else
                   signed_out_base_feed
                 end
+
       ArticleDecorator.decorate_collection(stories)
     end
 
@@ -25,7 +37,8 @@ module Stories
       if Settings::UserExperience.feed_strategy == "basic"
         Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag]).feed
       else
-        optimized_signed_in_feed
+        feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+        feed.more_comments_minimal_weight_randomized_at_end
       end
     end
 
@@ -34,23 +47,16 @@ module Stories
         Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag]).feed
       else
         Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-          .default_home_feed(user_signed_in: user_signed_in?)
+          .default_home_feed(user_signed_in: false)
       end
     end
 
     def timeframe_feed
-      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-      feed.top_articles_by_timeframe(timeframe: params[:timeframe])
+      Articles::Feeds::Timeframe.call(params[:timeframe], tag: params[:tag], page: @page)
     end
 
     def latest_feed
-      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-      feed.latest_feed
-    end
-
-    def optimized_signed_in_feed
-      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-      feed.more_comments_minimal_weight_randomized_at_end
+      Articles::Feeds::Latest.call(tag: params[:tag], page: @page)
     end
   end
 end

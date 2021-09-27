@@ -1,6 +1,5 @@
 class AsyncInfoController < ApplicationController
   # No pundit policy. All actions are unrestricted.
-  before_action :set_cache_control_headers, only: %i[shell_version]
 
   def base_data
     flash.discard(:notice)
@@ -23,16 +22,6 @@ class AsyncInfoController < ApplicationController
         }
       end
     end
-  end
-
-  # TODO: Remove these "shell_version", because they are for service worker functionality we no longer need.
-  # We are keeping these around mid-March 2021 because previously-installed service workers may still expect them.
-  def shell_version
-    set_surrogate_key_header "shell-version-endpoint"
-    # shell_version will change on every deploy.
-    # *Technically* could be only on changes to assets and shell, but this is more fool-proof.
-    shell_version = ForemInstance.deployed_at.to_s + Settings::General.admin_action_taken_at.to_s
-    render json: { version: shell_version }.to_json
   end
 
   def broadcast_data

@@ -46,7 +46,11 @@ module URL
   #
   # @param tag [Tag] the tag to create the URL for
   def self.tag(tag, page = 1)
-    url(["/t/#{CGI.escape(tag.name)}", ("/page/#{page}" if page > 1)].join)
+    url([tag_path(tag), ("/page/#{page}" if page > 1)].join)
+  end
+
+  def self.tag_path(tag)
+    "/t/#{CGI.escape(tag.name)}"
   end
 
   # Creates a user URL
@@ -74,7 +78,7 @@ module URL
   # @param path [String] the target path to deep link
   def self.deep_link(path)
     target_path = CGI.escape(url("/r/mobile?deep_link=#{path}"))
-    "https://forem-udl-server.herokuapp.com/?r=#{target_path}"
+    "https://udl.forem.com/?r=#{target_path}"
   end
 
   def self.organization(organization)

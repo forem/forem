@@ -3,6 +3,10 @@ require "rails_helper"
 RSpec.describe "feedback_messages", type: :request do
   let(:user) { create(:user) }
 
+  before do
+    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+  end
+
   describe "POST /feedback_messages" do
     def mock_recaptcha_verification
       # rubocop:disable RSpec/AnyInstance
@@ -104,8 +108,8 @@ RSpec.describe "feedback_messages", type: :request do
         allow(RateLimitChecker).to receive(:new) { limiter }
         allow(limiter).to receive(:limit_by_action).and_return(true)
 
-        post "/feedback_messages", params: valid_abuse_report_params, headers: headers
-        expect(response.status).to eq(429)
+        post "/feedback_messages.json", params: valid_abuse_report_params, headers: headers
+        expect(response.parsed_body["status"]).to eq("bad_request")
       end
     end
 

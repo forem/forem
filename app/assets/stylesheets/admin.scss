@@ -3,6 +3,8 @@
 @import 'variables';
 @import 'scaffolds';
 
+@import 'components/admin/users';
+
 // overriding Bootstrap styles
 label {
   margin-bottom: 0 !important;
@@ -27,6 +29,11 @@ label {
 .bg-approved {
   background: #92e8ae;
   border: 12px solid #ff9900;
+}
+
+.bg-pinned {
+  background: $light-sky-blue;
+  border: 12px solid $sky-blue;
 }
 
 .bg-highlighted {
@@ -96,6 +103,11 @@ label {
     margin: 0 16px;
     cursor: pointer;
   }
+}
+
+.navigation-link-position {
+  min-width: 25px;
+  text-align: right;
 }
 
 .admin-navigation-links {

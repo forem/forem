@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import ahoy from 'ahoy.js';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
 
 /* global userData */
@@ -43,16 +44,27 @@ function renderTagsFollowed(user = userData()) {
   });
 
   render(<TagsFollowed tags={followedTags} />, tagsFollowedContainer);
+  trackTagCogIconClicks();
+}
+
+// Temporary Ahoy Stats for usage reports
+function trackTagCogIconClicks() {
+  document
+    .getElementById('tag-priority-link')
+    ?.addEventListener('click', () => {
+      ahoy.track('Tag settings cog icon click');
+    });
 }
 
 function renderSidebar() {
   const sidebarContainer = document.getElementById('sidebar-wrapper-right');
+  const { pathname } = window.location;
 
   // If the screen's width is less than 640 we don't need this extra data.
   if (
     sidebarContainer &&
     screen.width >= 640 &&
-    window.location.pathname === '/'
+    (pathname === '/' || pathname === '/latest' || pathname.includes('/top/'))
   ) {
     window
       .fetch('/sidebars/home')

@@ -70,14 +70,12 @@ Rails.application.configure do
   # config.i18n.raise_on_missing_translations = true
 
   # Annotate rendered view with file names.
-  # config.action_view.annotate_rendered_view_with_filenames = true
+  config.action_view.annotate_rendered_view_with_filenames = true
 
   # Adds additional error checking when serving assets at runtime.
   # Checks for improperly declared sprockets dependencies.
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
-
-  config.action_mailer.perform_caching = false
 
   config.hosts << ENV["APP_DOMAIN"] unless ENV["APP_DOMAIN"].nil?
   if (gitpod_workspace_url = ENV["GITPOD_WORKSPACE_URL"])
@@ -125,19 +123,20 @@ Rails.application.configure do
     Bullet.console = true
     Bullet.rails_logger = true
 
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
     # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :collection)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
     # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)
 
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?
       message = "Data update scripts need to be run before you can start the application. " \
-        "Please run 'rails data_updates:run'"
+                "Please run 'rails data_updates:run'"
       raise message
     end
   end

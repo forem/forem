@@ -43,19 +43,33 @@
   align-items: center;
   background-color: var(--base-inverted);
   color: var(--base-100);
-  display: grid;
-  grid-column-gap: var(--su-2);
-  grid-template-columns: 1fr;
-  grid-template-rows: auto;
-  grid-row-gap: var(--su-1);
-  padding: var(--su-4);
   text-align: left;
   width: 100%;
 
-  @media (min-width: $breakpoint-m) {
-    grid-template-columns: 4fr 2fr 1fr;
-    grid-row-gap: 0;
-    grid-template-rows: 1fr;
+  > summary {
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::marker {
+      content: '';
+    }
+
+    .article-details-container {
+      cursor: pointer;
+      display: grid;
+      grid-column-gap: var(--su-2);
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      grid-row-gap: var(--su-1);
+      padding: var(--su-4);
+
+      @media (min-width: $breakpoint-m) {
+        grid-template-columns: 4fr 2fr 1fr;
+        grid-row-gap: 0;
+        grid-template-rows: 1fr;
+      }
+    }
   }
 
   &:hover {
@@ -105,6 +119,7 @@
     grid-column-end: 4;
     width: 100%;
     display: flex;
+    flex-direction: column;
 
     &.opened {
       margin-top: var(--su-4);
@@ -116,14 +131,25 @@
       border: none;
     }
 
-    .article-iframe {
+    .article-referrer-heading {
+      padding: var(--su-4);
       width: 100%;
-      height: 650px; // height is arbitrary, will be removed for modal-esque view
     }
 
-    .actions-panel-iframe {
-      width: 60%;
-      height: 650px; // height is arbitrary, will be removed for modal-esque view
+    .iframes-container {
+      display: flex;
+      height: 650px;
+      width: 100%;
+
+      .article-iframe {
+        width: 100%;
+        height: 650px; // height is arbitrary, will be removed for modal-esque view
+      }
+
+      .actions-panel-iframe {
+        width: 60%;
+        height: 650px; // height is arbitrary, will be removed for modal-esque view
+      }
     }
   }
 }

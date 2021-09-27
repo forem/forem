@@ -3,7 +3,7 @@
     Congratulations, <%= @user.name %>! You received the <b><%= @badge.title %></b> badge!
   </p>
   <p style="text-align:center;padding:20px 0px">
-    <img src="<%= @badge.badge_image_url %>" style="height:200px" alt="<%= @badge.title %> badge">
+    <img src="<%= @badge.badge_image_url %>" style="height:200px" alt="<%= @badge.title %> badge" loading="lazy" />
   </p>
   <p>
     <%= @badge.description %>

@@ -20,11 +20,12 @@
 <% end %>
 
 <main id="main-content" class="crayons-layout crayons-layout--1-col">
-  <header class="px-2 m:px-0">
+  <header class="px-2 m:px-0 flex items-center justify-between">
     <h1>Top tags</h1>
+    <%= link_to "Following tags", dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
   </header>
 
-  <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
+  <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0" data-follow-button-container="true">
     <% @tags.each do |tag| %>
       <% color = Color::CompareHex.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
       <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative" style="border-top-color: <%= color %>; ">
@@ -47,16 +48,17 @@
           <div class="mt-auto">
             <button
               class="crayons-btn crayons-btn--secondary follow-action-button"
-              data-info='{"id":<%= tag.id %>,"className":"Tag", "followStyle":"secondary"}'>
+              data-info='{"id":<%= tag.id %>,"className":"Tag", "followStyle":"secondary", "name": "<%= tag.name %>"}'>
               Follow
             </button>
           </div>
         <% end %>
 
         <% if tag.badge_id && tag.badge %>
-          <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 64px; height: 64px; transform: rotate(<%= -25 + (tag.id.digits.first * 5) %>deg);" class="right-1 bottom-1 absolute" alt="" />
+          <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 64px; height: 64px; transform: rotate(<%= -25 + (tag.id.digits.first * 5) %>deg);" class="right-1 bottom-1 absolute" alt="" loading="lazy" />
         <% end %>
       </div>
     <% end %>
   </div>
 </main>
+<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>

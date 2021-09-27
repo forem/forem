@@ -187,10 +187,12 @@ RSpec.describe "StoriesShow", type: :request do
     end
 
     it "handles invalid slug characters" do
-      allow(Article).to receive(:find_by).and_raise(ArgumentError)
+      # rubocop:disable RSpec/MessageChain
+      allow(Article).to receive_message_chain(:includes, :find_by).and_raise(ArgumentError)
+      # rubocop:enable RSpec/MessageChain
       get article.path
 
-      expect(response.status).to be(400)
+      expect(response.status).to eq(400)
     end
 
     it "has noindex if article has low score" do

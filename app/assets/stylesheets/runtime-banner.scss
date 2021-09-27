@@ -1,5 +1,6 @@
 @import 'variables';
 @import '_mixins';
+@import 'config/import';
 
 .runtime-banner {
   display: flex;
@@ -7,19 +8,55 @@
   left: var(--su-4);
   right: var(--su-4);
   position: fixed;
-  bottom: calc(var(--su-9) + env(safe-area-inset-bottom));
+  bottom: calc(var(--su-2) + env(safe-area-inset-bottom));
   flex-flow: row nowrap;
   align-items: center;
-  padding: var(--su-1);
-  max-width: calc(100% - var(--su-4) * 2);
+  padding: var(--su-3);
+  max-width: calc(min(100% - var(--su-4) * 2, 750px));
   z-index: var(--z-popover);
   border-radius: var(--radius);
-  background: var(--snackbar-bg);
+  background: #012026;
   color: var(--snackbar-color);
   font-size: var(--fs-s);
 
   :any-link {
     color: inherit;
+  }
+
+  a {
+    svg {
+      border: 1px solid #ffffff;
+      box-sizing: border-box;
+      border-radius: 3px;
+    }
+
+    div > span:first-child {
+      font-size: 16px;
+      line-height: 16px;
+      color: #ffffff;
+      margin-bottom: var(--su-1);
+    }
+
+    div > span:last-child {
+      font-size: 14px;
+      line-height: 14px;
+      color: #ffffff;
+      opacity: 0.65;
+    }
+  }
+
+  // Close button
+  button > svg {
+    color: #ffffff;
+  }
+}
+
+// Larger devices (i.e. iPad) display the reactions to the left instead of the
+// bottom of the screen. Because of this we only need to move the banner higher
+// up to avoid blocking the reaction buttons when size is <= $breakpoint-m
+@media (max-width: $breakpoint-m) {
+  div[data-current-page='stories-show'] .runtime-banner {
+    bottom: calc(var(--su-9) + env(safe-area-inset-bottom));
   }
 }
 

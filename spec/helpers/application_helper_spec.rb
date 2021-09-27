@@ -14,7 +14,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(user.darker_color).to eq Color::CompareHex.new(described_class::USER_COLORS).brightness
       expect(user.username).to eq "[deleted user]"
       expect(user.name).to eq "[Deleted User]"
-      expect(user.summary).to be_nil
+      expect(user.tag_line).to be_nil
       expect(user.twitter_username).to be_nil
       expect(user.github_username).to be_nil
     end
@@ -158,18 +158,10 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe "#email_link" do
-    let(:contact_email) { "contact@dev.to" }
+    let(:default_email) { "hi@dev.to" }
 
     before do
-      allow(Settings::General).to receive(:email_addresses).and_return(
-        {
-          default: "hi@dev.to",
-          contact: contact_email,
-          business: "business@dev.to",
-          privacy: "privacy@dev.to",
-          members: "members@dev.to"
-        },
-      )
+      allow(ForemInstance).to receive(:email).and_return(default_email)
     end
 
     it "returns an 'a' tag" do
@@ -177,17 +169,12 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "sets the correct href" do
-      expect(helper.email_link).to have_link(href: "mailto:#{contact_email}")
-      expect(helper.email_link(:business)).to have_link(href: "mailto:business@dev.to")
+      expect(helper.email_link).to have_link(href: "mailto:#{default_email}")
     end
 
     it "has the correct text in the a tag" do
       expect(helper.email_link(text: "Link Name")).to have_text("Link Name")
-      expect(helper.email_link).to have_text(contact_email)
-    end
-
-    it "returns the default email if it doesn't understand the type parameter" do
-      expect(helper.email_link(:nonsense)).to have_link(href: "mailto:#{contact_email}")
+      expect(helper.email_link).to have_text(default_email)
     end
 
     it "returns an href with additional_info parameters" do
@@ -196,8 +183,8 @@ RSpec.describe ApplicationHelper, type: :helper do
         body: "This is a longer body with a question mark ? \n and a newline"
       }
 
-      link = "<a href=\"mailto:#{contact_email}?body=This%20is%20a%20longer%20body%20with%20a%20" \
-        "question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>"
+      link = "<a href=\"mailto:#{default_email}?body=This%20is%20a%20longer%20body%20with%20a%20" \
+             "question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>"
       expect(email_link(text: "text", additional_info: additional_info)).to eq(link)
     end
   end
@@ -209,13 +196,6 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     it "returns the pluralized community_member_label" do
       expect(community_members_label).to eq("hobbyists")
-    end
-  end
-
-  describe "#sanitize_and_decode" do
-    it "sanitize and decode string" do
-      expect(helper.sanitize_and_decode("<script>alert('alert')</script>")).to eq("alert('alert')")
-      expect(helper.sanitize_and_decode("&lt; hello")).to eq("< hello")
     end
   end
 

@@ -1,7 +1,7 @@
 class GithubTag
   class GithubReadmeTag
     PARTIAL = "liquids/github_readme".freeze
-    GITHUB_DOMAIN_REGEXP = %r{.*github.com/}.freeze
+    GITHUB_DOMAIN_REGEXP = %r{.*github.com/}
     OPTION_NO_README = "no-readme".freeze
     VALID_OPTIONS = [OPTION_NO_README].freeze
 
@@ -13,7 +13,7 @@ class GithubTag
       content = Github::OauthClient.new.repository(repository_path)
 
       if show_readme?
-        readme_html = fetch_readme(repository_path)
+        readme_html = fetch_readme(repository_path, content.html_url)
       end
 
       ApplicationController.render(
@@ -58,10 +58,9 @@ class GithubTag
       options.none?(OPTION_NO_README)
     end
 
-    def fetch_readme(repository_path)
+    def fetch_readme(repository_path, repository_url)
       readme_html = Github::OauthClient.new.readme(repository_path, accept: "application/vnd.github.html")
-      readme = Github::OauthClient.new.readme(repository_path)
-      clean_relative_path!(readme_html, readme.download_url)
+      clean_relative_path!(readme_html, repository_url)
     rescue Github::Errors::NotFound
       nil
     end
@@ -86,7 +85,7 @@ class GithubTag
         element["src"] = "" if attribute == "src" && element.attributes[attribute].blank?
 
         path = element.attributes[attribute].value
-        element.attributes[attribute].value = "#{url.gsub(%r{/README.md}, '')}/#{path}" if path[0, 4] != "http"
+        element.attributes[attribute].value = "#{url}#{path}" if path[0, 4] != "http"
       end
 
       readme.to_html

@@ -24,13 +24,13 @@ export class EmailPreferencesForm extends Component {
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
 
-    fetch('/onboarding_checkbox_update', {
+    fetch('/onboarding_notifications_checkbox_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: this.state }),
+      body: JSON.stringify({ notifications: this.state }),
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {

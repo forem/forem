@@ -1,7 +1,7 @@
 class SitemapsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show]
 
-  SITEMAP_REGEX = /\Asitemap-(?<date_string>[A-Z][a-z][a-z]-\d{4})\.xml\z/.freeze
+  SITEMAP_REGEX = /\Asitemap-(?<date_string>[A-Z][a-z][a-z]-\d{4})\.xml\z/
 
   def show
     match = params[:sitemap].match(SITEMAP_REGEX)

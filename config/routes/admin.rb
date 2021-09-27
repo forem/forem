@@ -18,15 +18,33 @@ namespace :admin do
     resources :authentications, only: [:create]
     resources :campaigns, only: [:create]
     resources :communities, only: [:create]
+    resources :general_settings, only: [:create]
     resources :mandatory_settings, only: [:create]
     resources :rate_limits, only: [:create]
+    resources :smtp_settings, only: [:create]
     resources :user_experiences, only: [:create]
   end
+
   namespace :users do
     resources :gdpr_delete_requests, only: %i[index destroy]
   end
+
   resources :users, only: %i[index show edit update destroy] do
+    scope module: "users" do
+      resource :tools, only: :show
+
+      namespace :tools do
+        resource :credits, only: %i[show create destroy]
+        resource :emails, only: :show
+        resource :notes, only: %i[show create]
+        resource :organizations, only: %i[show]
+        resource :reports, only: %i[show]
+        resource :reactions, only: %i[show]
+      end
+    end
+
     resources :email_messages, only: :show
+
     member do
       post "banish"
       post "export_data"
@@ -41,7 +59,12 @@ namespace :admin do
   end
 
   scope :content_manager do
-    resources :articles, only: %i[index show update]
+    resources :articles, only: %i[index show update] do
+      member do
+        delete :unpin
+      end
+    end
+
     resources :badges, only: %i[index edit update new create]
     resources :badge_achievements, only: %i[index destroy]
     get "/badge_achievements/award_badges", to: "badge_achievements#award"
@@ -64,7 +87,8 @@ namespace :admin do
   end
 
   scope :customization do
-    resource :config
+    # We renamed the controller but don't want to change the route (yet)
+    resource :config, controller: "settings"
     resources :display_ads, only: %i[index edit update new create destroy]
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]
@@ -116,9 +140,11 @@ namespace :admin do
   end
 
   scope :apps do
-    resources :chat_channels, only: %i[index create update destroy] do
-      member do
-        delete :remove_user
+    constraints(->(_request) { FeatureFlag.enabled?(:connect) }) do
+      resources :chat_channels, only: %i[index create update destroy] do
+        member do
+          delete :remove_user
+        end
       end
     end
     resources :consumer_apps, only: %i[index new create edit update destroy]

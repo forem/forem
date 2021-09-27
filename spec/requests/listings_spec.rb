@@ -359,8 +359,7 @@ RSpec.describe "/listings", type: :request do
       it "returns a 429 status when rate limit is reached" do
         allow(rate_limiter).to receive(:limit_by_action).and_return(true)
         post "/listings", params: listing_params
-
-        expect(response.status).to eq(429)
+        expect(response.body).to include("Rate limit reached")
       end
     end
   end

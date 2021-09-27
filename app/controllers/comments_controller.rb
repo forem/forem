@@ -58,7 +58,7 @@ class CommentsController < ApplicationController
   def create
     rate_limit!(rate_limit_to_use)
 
-    @comment = Comment.new(permitted_attributes(Comment))
+    @comment = Comment.includes(user: :profile).new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
 
     authorize @comment
@@ -83,7 +83,7 @@ class CommentsController < ApplicationController
 
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,
-      commentable_id: @comment.commentable.id,
+      commentable_id: @comment.commentable_id,
       ancestry: @comment.ancestry,
     )[1])
 
@@ -139,6 +139,7 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1.json
   def update
     authorize @comment
+
     if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
 

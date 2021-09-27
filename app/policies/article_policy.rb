@@ -19,6 +19,14 @@ class ArticlePolicy < ApplicationPolicy
     update?
   end
 
+  def discussion_lock_confirm?
+    update?
+  end
+
+  def discussion_unlock_confirm?
+    update?
+  end
+
   def destroy?
     update?
   end
@@ -28,7 +36,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def stats?
-    user_author? || user_admin?
+    user_author? || user_admin? || user_org_admin?
   end
 
   def permitted_attributes

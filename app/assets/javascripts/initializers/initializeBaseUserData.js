@@ -7,25 +7,47 @@ function initializeProfileImage(user) {
 
 function addRelevantButtonsToArticle(user) {
   var articleContainer = document.getElementById('article-show-container');
-  if (articleContainer) {
+
+  if (
+    articleContainer &&
+    articleContainer.dataset.buttonsInitialized !== 'true'
+  ) {
+    let actions = [];
+    const published = JSON.parse(articleContainer.dataset.published);
+
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
-      let actions = [
+      actions.push(
         `<a class="crayons-btn crayons-btn--s crayons-btn--secondary" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
-      ];
+      );
+
       let clickToEditButton = document.getElementById('author-click-to-edit');
       if (clickToEditButton) {
         clickToEditButton.style.display = 'inline-block';
       }
-      if (JSON.parse(articleContainer.dataset.published) === true) {
+
+      if (published === true) {
         actions.push(
           `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
         );
       }
+
       actions.push(
         `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
       );
-      document.getElementById('action-space').innerHTML = actions.join('');
     }
+
+    const { articleId, pinnedArticleId } = articleContainer.dataset;
+
+    // we hide the buttons for draft articles, for non admins and
+    // if there's already a pinned post different from the current one
+    if (user.admin) {
+      actions.push(
+        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="/admin/content_manager/articles/${articleId}" data-no-instant>Admin</a>`,
+      );
+    }
+
+    document.getElementById('action-space').innerHTML = actions.join('');
+    articleContainer.dataset.buttonsInitialized = 'true';
   }
 }
 

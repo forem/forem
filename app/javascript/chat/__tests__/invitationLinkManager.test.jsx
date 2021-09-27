@@ -40,7 +40,7 @@ describe('<InviationLinkManager />', () => {
   it('should have no a11y violations', async () => {
     const { container } = render(
       <InviationLinkManager
-        invitationLink={'https://dummy-invitation.link'}
+        invitationLink="https://dummy-invitation.link"
         currentMembership={currentModMembership}
       />,
     );
@@ -52,7 +52,7 @@ describe('<InviationLinkManager />', () => {
   it('should render', () => {
     const { queryByText } = render(
       <InviationLinkManager
-        invitationLink={'https://dummy-invitation.link'}
+        invitationLink="https://dummy-invitation.link"
         currentMembership={currentModMembership}
       />,
     );
@@ -64,7 +64,7 @@ describe('<InviationLinkManager />', () => {
   it('should not render', () => {
     const { rerender } = render(
       <InviationLinkManager
-        invitationLink={'https://dummy-invitation.link'}
+        invitationLink="https://dummy-invitation.link"
         currentMembership={currentMemberMembership}
       />,
     );

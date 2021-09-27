@@ -1,15 +1,10 @@
 module Admin
   module Settings
-    class AuthenticationsController < Admin::ApplicationController
-      def create
-        result = ::Authentication::SettingsUpsert.call(settings_params)
+    class AuthenticationsController < Admin::Settings::BaseController
+      private
 
-        if result.success?
-          Audit::Logger.log(:internal, current_user, params.dup)
-          redirect_to admin_config_path, notice: "Successfully updated settings."
-        else
-          redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
-        end
+      def upsert_config(settings)
+        ::Settings::Authentication::Upsert.call(settings)
       end
 
       def settings_params

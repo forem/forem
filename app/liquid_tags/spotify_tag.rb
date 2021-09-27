@@ -1,7 +1,7 @@
 class SpotifyTag < LiquidTagBase
   PARTIAL = "liquids/spotify".freeze
-  URI_REGEXP = /spotify:(track|artist|playlist|album|episode|show):\w{22}/.freeze
-  URI_PLAYLIST_REGEXP = /spotify:(user):([a-zA-Z0-9]+):playlist:\w{22}/.freeze # legacy support
+  URI_REGEXP = /spotify:(track|artist|playlist|album|episode|show):\w{22}/
+  URI_PLAYLIST_REGEXP = /spotify:(user):([a-zA-Z0-9]+):playlist:\w{22}/ # legacy support
   TYPE_HEIGHT = {
     track: 80,
     user: 380,
@@ -42,7 +42,7 @@ class SpotifyTag < LiquidTagBase
 
   def raise_error
     msg = "Invalid Spotify Link - Be sure you're using the uri of a specific track, " \
-      "album, artist, playlist, or podcast episode."
+          "album, artist, playlist, or podcast episode."
     raise StandardError, msg
   end
 end

@@ -1,0 +1,28 @@
+<div id="article-pin-modal" class="hidden">
+  Only <strong>one</strong> article at a time can be pinned. If you proceed,
+  this article will no longer be pinned:
+
+  <div class="pinned-article bg-base-0 my-3 p-3 radius-default">
+    <a
+      href="#"
+      target="_blank"
+      rel="noopener"
+      data-article-pinned-modal-target="title">
+    </a>
+
+    <p class="color-base-50 my-1 fs-s">
+      Pinned on <time data-article-pinned-modal-target="pinnedAt"></time>
+    </p>
+  </div>
+
+  <button id="article-pin-modal-ok" class="crayons-btn" data-action="click->article-pinned-modal#pinAndCloseModal">
+    Pin new article
+  </button>
+  <button
+    id="article-pin-modal-cancel"
+    class="crayons-btn crayons-btn--secondary"
+    data-action="click->article-pinned-modal#unPinAndCloseModal">
+    Dismiss
+  </button>
+</div>
+<div id="article-pin-modal-root"></div>

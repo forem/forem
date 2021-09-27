@@ -5,11 +5,15 @@
       <div class="dashboard-manage-nav">
         <a href="/dashboard">Dashboard</a> 👉 Manage Your Post
       </div>
-      <% if flash[:pins_error] %>
-        <h3 class="manage-page-error">Uh Oh! <%= flash[:pins_error] %> 😬</h3>
+      <% if flash[:error] %>
+        <div role="alert">
+          <h3 class="manage-page-error">Uh Oh! <%= flash[:error] %> 😬</h3>
+        </div>
       <% end %>
-      <% if flash[:pins_success] %>
-        <h3 class="manage-page-success"><%= flash[:pins_success] %></h3>
+      <% if flash[:success] %>
+        <div role="alert">
+          <h3 class="manage-page-success"><%= flash[:success] %></h3>
+        </div>
       <% end %>
       <h2>Tools:</h2>
       <p><strong>Experience Level of Post:</strong> Is your post written more for a beginner or an advanced audience?  Adjust this level as a <em>gentle</em> indicator which will help show the post to the people who will benefit the most.
@@ -29,7 +33,7 @@
   </div>
 
   <div class="dashboard-container crayons-layout">
-    <%= render "dashboards/dashboard_article", article: @article, organization: @article.organization, org_admin: @user.org_admin?(@article.organization), manage_view: true %>
+    <%= render "dashboards/dashboard_article", article: @article, discussion_lock: @discussion_lock, organization: @article.organization, org_admin: @user.org_admin?(@article.organization), manage_view: true %>
     <div class="single-article single-article-manage-form-wrapper">
       <%= form_for(RatingVote.new) do |f| %>
         <h2>Experience Level of Post</h2>

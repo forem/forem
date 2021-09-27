@@ -664,11 +664,11 @@ export class Chat extends Component {
       });
     }
     if (messageIsEmpty) {
-      const messagesByCurrentUser = messages[activeChannelId].filter(
+      const messagesByCurrentUser = messages[activeChannelId]?.filter(
         (message) => message.user_id === currentUserId,
       );
       const lastMessage =
-        messagesByCurrentUser[messagesByCurrentUser.length - 1];
+        messagesByCurrentUser?.[messagesByCurrentUser.length - 1];
 
       if (lastMessage) {
         if (upArrowPressed) {
@@ -778,9 +778,8 @@ export class Chat extends Component {
     }
   };
   hideChannelList = () => {
-    const chatContainer = document.getElementsByClassName(
-      'chat__activechat',
-    )[0];
+    const chatContainer =
+      document.getElementsByClassName('chat__activechat')[0];
     chatContainer.classList.remove('chat__activechat--hidden');
   };
   handleSwitchChannel = (e) => {
@@ -1371,9 +1370,8 @@ export class Chat extends Component {
   };
 
   navigateToChannelsList = () => {
-    const chatContainer = document.getElementsByClassName(
-      'chat__activechat',
-    )[0];
+    const chatContainer =
+      document.getElementsByClassName('chat__activechat')[0];
 
     chatContainer.classList.add('chat__activechat--hidden');
   };
@@ -1390,12 +1388,8 @@ export class Chat extends Component {
   };
 
   handleMessageScroll = () => {
-    const {
-      allMessagesLoaded,
-      messages,
-      activeChannelId,
-      messageOffset,
-    } = this.state;
+    const { allMessagesLoaded, messages, activeChannelId, messageOffset } =
+      this.state;
 
     if (!messages[activeChannelId]) {
       return;
@@ -1499,9 +1493,28 @@ export class Chat extends Component {
     const channelName = state.activeChannel
       ? state.activeChannel.channel_name
       : ' ';
+    const connectAnnouncement = (
+      <div
+        className="bg-base-90 color-base-0 p-3 align-center fs-s m:fs-base lh-tight"
+        aria-live="polite"
+      >
+        We have made the decision to deprecate Connect as core functionality
+        from the application. &nbsp;
+        <a
+          href="https://forem.dev/foremteam/deprecating-connect-chat-2kgi"
+          className="text-underline color-base-10 fw-bold"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Read the announcement to learn more &raquo;
+        </a>
+        .
+      </div>
+    );
     return (
       <div className="activechatchannel">
         <div className="activechatchannel__conversation">
+          {connectAnnouncement}
           {channelHeader}
           <DragAndDropZone
             onDragOver={this.handleDragOver}
@@ -1608,7 +1621,7 @@ export class Chat extends Component {
     const enterPressed = e.keyCode === 13;
     if (enterPressed && showMemberlist)
       this.setState({ showMemberlist: false });
-    if (activeChannel.channel_type !== 'direct') {
+    if (activeChannel?.channel_type !== 'direct') {
       if (startEditing) {
         this.setState({ markdownEdited: true });
       }
@@ -1705,12 +1718,8 @@ export class Chat extends Component {
   };
 
   renderChannelMembersList = () => {
-    const {
-      showMemberlist,
-      activeChannelId,
-      channelUsers,
-      memberFilterQuery,
-    } = this.state;
+    const { showMemberlist, activeChannelId, channelUsers, memberFilterQuery } =
+      this.state;
 
     const filterRegx = new RegExp(memberFilterQuery, 'gi');
 

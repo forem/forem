@@ -11,7 +11,7 @@ RSpec.describe "", type: :system do
 
   it "let's the user fix a broken draft without publishing", js: true, aggregate_failures: true do
     # Create a new blog post and add content that validates correctly
-    sign_in create(:user, editor_version: "v2")
+    sign_in create(:user)
     visit new_path
     fill_in "article-form-title", with: "Regression spec"
     fill_in "article_body_markdown", with: correct_liquid_tag

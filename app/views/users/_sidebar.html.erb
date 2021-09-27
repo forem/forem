@@ -11,7 +11,7 @@
           <% @user.organizations.each do |organization| %>
             <a href="/<%= organization.slug %>" class="flex items-center crayons-link crayons-link--contentful">
               <span class="crayons-logo crayons-logo--l mr-2 shrink-0">
-                <img src="<%= Images::Profile.call(organization.profile_image_url, length: 90) %>" alt="<%= organization.name %> profile image" class="crayons-logo__image">
+                <img src="<%= Images::Profile.call(organization.profile_image_url, length: 90) %>" alt="<%= organization.name %> profile image" class="crayons-logo__image" loading="lazy" />
               </span>
               <h4 class="fs-base fw-medium"><%= organization.name %></h4>
             </a>

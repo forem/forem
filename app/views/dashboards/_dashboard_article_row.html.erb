@@ -6,9 +6,11 @@
       <% end %>
       <a href="<%= article.current_state_path %>" class="inline-flex items-center">
         <% if article.organization_id %>
-          <span class="crayons-logo crayons-logo--s mr-2 shrink-0"><img class="crayons-logo__image align-top" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24"></span>
+          <span class="crayons-logo crayons-logo--s mr-2 shrink-0">
+            <img class="crayons-logo__image align-top" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24" loading="lazy" />
+          </span>
         <% end %>
-        <%= sanitize_and_decode article.title %>
+        <%= article.title %>
       </a>
     </h3>
     <% if article.published %>
@@ -92,11 +94,11 @@
     <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Edit post: <%= article.title %>">Edit</a>
 
     <div class="js-ellipsis-menu relative inline-block">
-      <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon js-ellipsis-menu-trigger">
+      <button id="ellipsis-menu-trigger-<%= article.id %>" aria-controls="ellipsis-menu-dropdown-<%= article.id %>" aria-expanded="false" aria-haspopup="true" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon">
         <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More options for post: #{article.title}") %>
       </button>
 
-      <div class="crayons-dropdown top-100 right-0 align-left js-ellipsis-menu-dropdown p-1">
+      <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 align-left js-ellipsis-menu-dropdown">
         <% if article.user_subscriptions_count > 0 %>
           <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="crayons-link crayons-link--block w-100"><%= "Subscriptions (#{article.user_subscriptions_count})" %></a>
         <% end %>

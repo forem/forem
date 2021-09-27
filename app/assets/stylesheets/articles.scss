@@ -110,7 +110,7 @@
 
 @keyframes fade-in {
   0% {
-    opacity: 0;
+    opacity: var(--opacity-0);
   }
   100% {
     opacity: 1;
@@ -289,10 +289,6 @@
     position: relative;
     @include dev-card;
 
-    &.active {
-      // TODO: what is this .active thingy?
-      opacity: 0.66;
-    }
     &.single-article-small-pic {
       vertical-align: top;
       overflow: hidden;

@@ -1,23 +1,38 @@
 <div class="grid gap-6 m:grid-cols-2">
   <div class="grid gap-6">
-    <% account.bg_color_hex = user_colors(account)[:bg] if account.bg_color_hex.blank? %>
-    <% account.text_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
+    <% if account.class.name == "User" %>
+      <% account.setting.brand_color1 = user_colors(account)[:bg] if account.setting && account.setting.brand_color1.blank? %>
+      <% account.setting.brand_color2 = user_colors(account)[:text] if account.setting && account.setting.brand_color2.blank? %>
+    <% else %>
+      <% account.bg_color_hex = user_colors(account)[:bg] if account.bg_color_hex.blank? %>
+      <% account.text_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
+    <% end %>
     <div class="crayons-field">
       <%= f.label :bg_color_hex, "Brand color 1", class: "crayons-field__label" %>
       <p class="crayons-field__description">Used for backgrounds, borders etc.</p>
       <div class="flex items-center">
         <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "crayons-textfield mr-2", id: "bg-color-textfield" %>
-        <input id="bg-color-colorfield" type="color" class="crayons-color-selector">
+        <label class="hidden" for="bg-color-colorfield">
+          Brand color 1 color select
+        </label>
+        <input id="bg-color-colorfield" type="color" class="crayons-color-selector" aria-label="Brand color 1 color selector">
       </div>
     </div>
 
     <div class="crayons-field">
-      <% account.bg_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
+      <% if account.class.name == "User" %>
+        <% account.setting.brand_color1 = user_colors(account)[:text] if account.setting && account.setting.brand_color2.blank? %>
+      <% else %>
+        <% account.bg_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
+      <% end %>
       <%= f.label :text_color_hex, "Brand color 2", class: "crayons-field__label" %>
       <p class="crayons-field__description">Used for texts (usually put on <em>Brand color 1</em>).</p>
       <div class="flex items-center">
-          <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "crayons-textfield mr-2", id: "text-color-textfield" %>
-          <input id="text-color-colorfield" type="color" class="crayons-color-selector">
+        <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "crayons-textfield mr-2", id: "text-color-textfield" %>
+        <label class="hidden" for="text-color-colorfield">
+          Brand color 2 color select
+        </label>
+        <input id="text-color-colorfield" type="color" class="crayons-color-selector" aria-label="Brand color 2 color selector">
       </div>
     </div>
   </div>

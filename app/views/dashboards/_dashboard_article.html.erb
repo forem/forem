@@ -9,11 +9,11 @@
   </div>
 
   <div class="js-ellipsis-menu relative inline-block float-right">
-    <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon js-ellipsis-menu-trigger">
+    <button id="ellipsis-menu-trigger-<%= article.id %>" aria-controls="ellipsis-menu-dropdown-<%= article.id %>" aria-expanded="false" aria-haspopup="true" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon">
       <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More...") %>
     </button>
 
-    <div class="crayons-dropdown top-100 right-0 z-10 align-left js-ellipsis-menu-dropdown p-1">
+    <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 z-10 align-left js-ellipsis-menu-dropdown">
       <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "p-0 js-archive-toggle" }) do |f| %>
         <%= f.hidden_field :archived, value: !article.archived %>
 
@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= sanitize_and_decode article.title %></h2></a>
+  <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= article.title %></h2></a>
   <div class="dashboard-meta-details">
     <% if article.published %>
       <span>
@@ -67,6 +67,12 @@
 
     <a href="<%= article.path %>/stats" data-no-instant class="crayons-btn">Stats</a>
 
+    <% if discussion_lock %>
+      <a href="<%= article.path %>/discussion_unlock_confirm" data-no-instant class="crayons-btn">Unlock discussion</a>
+    <% else %>
+      <a href="<%= article.path %>/discussion_lock_confirm" data-no-instant class="crayons-btn">Lock discussion</a>
+    <% end %>
+
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="crayons-btn dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="page-views-count">
@@ -104,3 +110,4 @@
     <% end %>
   <% end %>
 </div>
+<%= javascript_packs_with_chunks_tag "dashboardDropdowns", defer: true %>

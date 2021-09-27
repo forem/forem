@@ -18,7 +18,7 @@
     font-weight: var(--fw-normal);
     line-height: var(--lh-tight);
     transform: translateY(var(--su-1));
-    opacity: 0;
+    opacity: var(--opacity-0);
     transition: all var(--transition-props);
     text-align: left;
     transition-delay: 250ms;

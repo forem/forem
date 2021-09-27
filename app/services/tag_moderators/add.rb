@@ -15,7 +15,7 @@ module TagModerators
         tag = Tag.find(tag_ids[index])
         add_tag_mod_role(user, tag)
         ::TagModerators::AddTrustedRole.call(user)
-        add_to_chat_channels(user, tag)
+        add_to_chat_channels(user, tag) if FeatureFlag.enabled?(:connect)
         tag.update(supported: true) unless tag.supported?
 
         NotifyMailer
@@ -49,7 +49,9 @@ module TagModerators
     end
 
     def add_tag_mod_role(user, tag)
-      user.update(email_tag_mod_newsletter: true) unless user.email_tag_mod_newsletter?
+      unless user.notification_setting.email_tag_mod_newsletter?
+        user.notification_setting.update(email_tag_mod_newsletter: true)
+      end
       user.add_role(:tag_moderator, tag)
       Rails.cache.delete("user-#{user.id}/tag_moderators_list")
       return unless tag_mod_newsletter_enabled?

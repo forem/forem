@@ -272,7 +272,7 @@ RSpec.describe Notification, type: :model do
       it "does not send a notification to the author of an article if the reaction owner is deleted" do
         user4 = create(:user)
         reaction = create(:reaction, reactable: article, user: user4)
-        user4.delete
+        user4.destroy
 
         expect do
           sidekiq_perform_enqueued_jobs do

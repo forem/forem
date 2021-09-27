@@ -9,11 +9,11 @@
         <a href="<%= badge_path(achievement.badge_slug) %>"
            title="<%= achievement.badge_title %>"
            class="js-profile-badge <% if i >= limit %>hidden<% end %>">
-
           <img src="<%= optimized_image_url(achievement.badge_image_url, width: 180) %>"
                alt="<%= achievement.badge_title %>"
                class="mx-auto max-w-75 h-auto align-middle"
-               style="transform: rotate(<%= rand(-10..10) %>deg);" />
+               style="transform: rotate(<%= rand(-10..10) %>deg);"
+               loading="lazy" />
         </a>
       <% end %>
     </div>

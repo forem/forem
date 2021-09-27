@@ -1,3 +1,10 @@
+# Doorkeeper uses ActiveSupport::LazyLoadHooks to lazily load its models.
+# See: https://apirubyonrails.org/classes/ActiveSupport/LazyLoadHooks.html.
+# For this to work ActiveRecord::Base needs to be required. Previously this
+# happened as a side-effect of the rails-setting-cached gem but we removed this
+# so need to explicitly require it.
+require "active_record/base"
+
 Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (requires ORM extensions installed).
   # Check the list of supported ORMs here: https://github.com/doorkeeper-gem/doorkeeper#orms

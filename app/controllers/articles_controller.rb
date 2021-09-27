@@ -28,7 +28,7 @@ class ArticlesController < ApplicationController
                   handle_tag_feed
                 elsif request.path == latest_feed_path
                   @articles
-                    .where("score > ?", Articles::Feeds::LargeForemExperimental::MINIMUM_SCORE_LATEST_FEED)
+                    .where("score > ?", Articles::Feeds::Latest::MINIMUM_SCORE)
                     .includes(:user)
                 else
                   @articles
@@ -77,6 +77,7 @@ class ArticlesController < ApplicationController
     authorize @article
 
     @article = @article.decorate
+    @discussion_lock = @article.discussion_lock
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @organizations = @user&.organizations
@@ -195,11 +196,29 @@ class ArticlesController < ApplicationController
     end
   end
 
+  def discussion_lock_confirm
+    # This allows admins to also use this action vs searching only in the current_user.articles scope
+    @article = Article.find_by(slug: params[:slug])
+    not_found unless @article
+    authorize @article
+
+    @discussion_lock = DiscussionLock.new
+  end
+
+  def discussion_unlock_confirm
+    # This allows admins to also use this action vs searching only in the current_user.articles scope
+    @article = Article.find_by(slug: params[:slug])
+    not_found unless @article
+    authorize @article
+
+    @discussion_lock = @article.discussion_lock
+  end
+
   private
 
   def base_editor_assigments
     @user = current_user
-    @version = @user.editor_version if @user
+    @version = @user.setting.editor_version if @user
     @organizations = @user&.organizations
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")

@@ -108,4 +108,10 @@ class ArticleDecorator < ApplicationDecorator
     cached_tag_list_array.include?("discuss") &&
       featured_number.to_i > 35.hours.ago.to_i
   end
+
+  def pinned?
+    return false unless persisted?
+
+    id == PinnedArticle.id
+  end
 end

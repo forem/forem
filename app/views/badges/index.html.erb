@@ -11,7 +11,8 @@
         class="badge-image <%= "unearned" unless badge.id.in?(@earned_badge_achievements) %>"
         src="<%= optimized_image_url(badge.badge_image_url, width: 375) %>"
         alt="<%= badge.title %> badge"
-        title="<%= badge.title %>">
+        title="<%= badge.title %>"
+        loading="lazy" />
     </a>
     <% end %>
   </div>
