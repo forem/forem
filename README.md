@@ -132,7 +132,7 @@ A more complete overview of our stack is available in
 ### Installation Documentation
 
 Please see our installation guides, such as the
-[one for macOS](https://developers.forem.com/installation/mac).
+[one for macOS](https://developers.forem.com/getting-started/installation/mac).
 
 ## Developer Documentation
 
