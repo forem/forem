@@ -15,7 +15,7 @@ namespace :admin do
   resources :permissions, only: %i[index]
   resources :reactions, only: %i[update]
   resources :creator_settings, only: %i[create new]
-  get "/creator_settings/new", as: "setup"
+
   namespace :settings do
     resources :authentications, only: [:create]
     resources :campaigns, only: [:create]
