@@ -186,7 +186,7 @@ export class Tags extends Component {
         document.getElementById('tag-input').focus();
       }, 10);
     } else if (e.key === KEYS.COMMA && !this.isSearchResultSelected) {
-      this.resetSearchResults();
+      this.fetchTopTagSuggestions();
       this.clearSelectedSearchResult();
     } else if (e.key === KEYS.DELETE) {
       if (
@@ -300,18 +300,33 @@ export class Tags extends Component {
       input.value.slice(range[1], input.value.length);
     /* eslint-disable-next-line react/destructuring-assignment */
     this.props.onInput(newInput);
-    this.resetSearchResults();
+    this.fetchTopTagSuggestions();
     this.clearSelectedSearchResult();
+  }
+
+  fetchTopTagSuggestions() {
+    const { topTags = [] } = this.state;
+    if (topTags.length > 0) {
+      return Promise.resolve().then(() =>
+        this.setState({
+          searchResults: topTags.filter((t) => !this.selected.includes(t.name)),
+        }),
+      );
+    }
+    return window
+      .fetch('/tags/suggest')
+      .then((res) => res.json())
+      .then((tags) => {
+        this.setState({
+          topTags: tags,
+          searchResults: tags.filter((t) => !this.selected.includes(t.name)),
+        });
+      });
   }
 
   search(query) {
     if (query === '') {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          this.resetSearchResults();
-          resolve();
-        }, 5);
-      });
+      return this.fetchTopTagSuggestions();
     }
     const { listing } = this.props;
 
@@ -339,12 +354,6 @@ export class Tags extends Component {
           (t) => !this.selected.includes(t.name),
         ),
       });
-    });
-  }
-
-  resetSearchResults() {
-    this.setState({
-      searchResults: [],
     });
   }
 
@@ -381,6 +390,7 @@ export class Tags extends Component {
     const { activeElement } = document;
     const searchResultsRows = searchResults.map((tag, index) => (
       <div
+        key={`option-${tag.name}`}
         tabIndex="-1"
         role="button"
         className={`${classPrefix}__tagoptionrow ${classPrefix}__tagoptionrow--${
@@ -455,7 +465,10 @@ export class Tags extends Component {
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
-          onFocus={onFocus}
+          onFocus={(e) => {
+            this.fetchTopTagSuggestions();
+            onFocus(e);
+          }}
           pattern={pattern}
         />
         {searchResultsHTML}
