@@ -74,7 +74,7 @@ GEM
       activerecord (>= 5.0, < 6.2)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    ahoy_email (2.0.3)
+    ahoy_email (2.1.0)
       actionmailer (>= 5)
       addressable (>= 2.3.2)
       nokogiri
@@ -438,7 +438,7 @@ GEM
     mime-types-data (3.2021.0901)
     mini_histogram (0.3.1)
     mini_magick (4.11.0)
-    mini_mime (1.1.0)
+    mini_mime (1.1.1)
     mini_portile2 (2.6.1)
     minitest (5.14.4)
     modis (4.0.0)
@@ -855,7 +855,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 8.1)
   acts_as_follower!
   addressable (~> 2.8)
-  ahoy_email (~> 2.0.2)
+  ahoy_email (~> 2.1.0)
   ahoy_matey (~> 4.0)
   amazing_print (~> 1.3)
   ancestry (~> 4.1)
