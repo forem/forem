@@ -4,9 +4,7 @@ module Admin
       state: :trusted
     }.with_indifferent_access.freeze
 
-    # TODO: [@jacobherrington] Once all Forems have been deployed and the data update scripts have
-    # succesfully completed, we can remove banned and comment_banned roles from the codebase
-    VALID_ROLES = %i[banned comment_banned comment_suspended suspended trusted warned].freeze
+    VALID_ROLES = %i[comment_suspended suspended trusted warned].freeze
 
     def self.call(relation: User.all, options: {})
       options = DEFAULT_OPTIONS.merge(options)

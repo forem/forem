@@ -1,4 +1,6 @@
-<%= form_for(Settings::General.new, url: admin_settings_general_settings_path) do |f| %>
+<%= form_for(Settings::General.new,
+             url: admin_settings_general_settings_path,
+             html: { data: { action: "submit->config#updateConfigurationSettings" } }) do |f| %>
   <div class="card mt-3">
     <%= render partial: "admin/shared/card_header",
                locals: {
@@ -18,9 +20,8 @@
                            placeholder: Constants::Settings::General::DETAILS[:sidebar_tags][:placeholder],
                            pattern: "[a-z0-9,]+" %>
         </div>
-
-        <%= render "form_submission", f: f %>
       </fieldset>
+      <%= render "update_setting_button", f: f %>
     </div>
   </div>
 <% end %>

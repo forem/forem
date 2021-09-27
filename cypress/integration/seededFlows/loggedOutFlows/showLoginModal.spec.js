@@ -62,7 +62,7 @@ describe('Show log in modal', () => {
     verifyLoginModalBehavior(() =>
       cy
         .findByRole('complementary', { name: 'Author details' })
-        .findByRole('button', { name: 'Follow' }),
+        .findByRole('button', { name: 'Follow user: Admin McAdmin' }),
     );
   });
 
@@ -71,12 +71,16 @@ describe('Show log in modal', () => {
     cy.findByRole('heading', { name: 'Top tags' });
     cy.get('[data-follow-clicks-initialized]');
 
-    verifyLoginModalBehavior(() => cy.findByRole('button', { name: 'Follow' }));
+    verifyLoginModalBehavior(() =>
+      cy.findByRole('button', { name: 'Follow tag: tag1' }),
+    );
 
     cy.visit('/t/tag1');
     cy.findByRole('heading', { name: '# tag1' });
 
-    verifyLoginModalBehavior(() => cy.findByRole('button', { name: 'Follow' }));
+    verifyLoginModalBehavior(() =>
+      cy.findByRole('button', { name: 'Follow tag: tag1' }),
+    );
   });
 
   it('should show login modal for user profile follow button click', () => {
@@ -84,7 +88,9 @@ describe('Show log in modal', () => {
     cy.get('[data-follow-clicks-initialized]');
 
     cy.findByRole('heading', { name: 'Admin McAdmin' });
-    verifyLoginModalBehavior(() => cy.findByRole('button', { name: 'Follow' }));
+    verifyLoginModalBehavior(() =>
+      cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }),
+    );
   });
 
   it('should show login modal for podcast follow button click', () => {
@@ -92,9 +98,11 @@ describe('Show log in modal', () => {
     cy.get('[data-follow-clicks-initialized]');
 
     cy.findByRole('heading', {
-      name: 'Developer on Fire Developer on Fire Follow',
+      name: 'Developer on Fire Developer on Fire',
     });
 
-    verifyLoginModalBehavior(() => cy.findByRole('button', { name: 'Follow' }));
+    verifyLoginModalBehavior(() =>
+      cy.findByRole('button', { name: 'Follow podcast: Developer on Fire' }),
+    );
   });
 });

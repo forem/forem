@@ -17,12 +17,10 @@ Settings::SMTP.password = "password"
 
 ##############################################################################
 
-# NOTE: @citizen428 For the time being we want all current DEV profile fields.
-# The CSV import is idempotent by itself, since it uses find_or_create_by.
-seeder.create("Creating DEV profile fields") do
-  dev_fields_csv = Rails.root.join("lib/data/dev_profile_fields.csv")
-  ProfileFields::ImportFromCsv.call(dev_fields_csv)
-end
+# Some of our Cypress tests assume specific DEV profile fields to exist
+ProfileField.create!(label: "Work", display_area: :header)
+ProfileField.create!(label: "Education", display_area: :header)
+Profile.refresh_attributes!
 
 ##############################################################################
 
@@ -467,7 +465,7 @@ seeder.create_if_none(Listing) do
   Listing.create!(
     user: admin_user,
     title: "Listing title",
-    body_markdown: Faker::Markdown.random,
+    body_markdown: Faker::Markdown.random.lines.take(10).join,
     location: Faker::Address.city,
     organization_id: admin_user.organizations.first&.id,
     listing_category_id: ListingCategory.first.id,
@@ -482,14 +480,18 @@ end
 ##############################################################################
 
 seeder.create_if_none(Tag) do
-  tag = Tag.create!(
-    name: "tag1",
-    bg_color_hex: Faker::Color.hex_color,
-    text_color_hex: Faker::Color.hex_color,
-    supported: true,
-  )
+  tags = %w[tag1 tag2]
 
-  admin_user.add_role(:tag_moderator, tag)
+  tags.each do |tagname|
+    tag = Tag.create!(
+      name: tagname,
+      bg_color_hex: Faker::Color.hex_color,
+      text_color_hex: Faker::Color.hex_color,
+      supported: true,
+    )
+
+    admin_user.add_role(:tag_moderator, tag)
+  end
 end
 
 # Show the tag in the sidebar
@@ -514,6 +516,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
     featured: true,
     show_comments: true,
     user_id: admin_user.id,
+    slug: "tag-test-article",
   )
 end
 
@@ -592,6 +595,11 @@ seeder.create_if_none(Reaction) do
   user = User.find_by(username: "trusted_user_1")
   admin_user.reactions.create!(category: :vomit, reactable: user)
 end
+
+##############################################################################
+
+# Enable Connect feature flag for tests
+FeatureFlag.enable(:connect)
 
 ##############################################################################
 

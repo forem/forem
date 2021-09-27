@@ -30,7 +30,7 @@ export default class SvgIconUploadController extends Controller {
     reader.readAsText(icon);
 
     reader.onload = (content) => {
-      const result = content.target.result;
+      const { result } = content.target;
       this.svgIconContentTarget.value = result;
       this.setSvgIconPreview(result);
     };

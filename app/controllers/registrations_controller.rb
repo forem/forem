@@ -40,6 +40,7 @@ class RegistrationsController < Devise::RegistrationsController
   def update_first_user_permissions(resource)
     return unless Settings::General.waiting_on_first_user
 
+    resource.add_role(:creator)
     resource.add_role(:super_admin)
     resource.add_role(:trusted)
     resource.skip_confirmation!
@@ -70,6 +71,9 @@ class RegistrationsController < Devise::RegistrationsController
     resource.registered_at = Time.current
     resource.build_setting(editor_version: "v2")
     resource.remote_profile_image_url = Users::ProfileImageGenerator.call if resource.remote_profile_image_url.blank?
+    if FeatureFlag.enabled?(:creator_onboarding)
+      resource.password_confirmation = resource.password
+    end
     check_allowed_email(resource) if resource.email.present?
     resource.save if resource.email.present?
   end

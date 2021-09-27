@@ -23,7 +23,7 @@ class DashboardsController < ApplicationController
     @reactions_count = @articles.sum(&:public_reactions_count)
     @page_views_count = @articles.sum(&:page_views_count)
 
-    @articles = @articles.sorting(params[:sort]).decorate
+    @articles = @articles.includes(:collection).sorting(params[:sort]).decorate
     @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(50)
   end
 

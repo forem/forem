@@ -31,12 +31,12 @@ require "webmock/rspec"
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 
-Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/mailers/shared_examples/**/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/mailers/shared_examples/**/*.rb")].each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -78,6 +78,8 @@ RSpec.configure do |config|
   config.include RpushHelpers
   config.include SidekiqTestHelpers
 
+  config.extend WithModel
+
   config.after(:each, type: :system) do
     Warden::Manager._on_request.clear
   end
@@ -103,12 +105,6 @@ RSpec.configure do |config|
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
     ENV["TZ"] = Time.zone.tzinfo.name
-
-    # NOTE: @citizen428 needed while we delegate from User to Profile to keep
-    # spec changes limited for the time being.
-    csv = Rails.root.join("lib/data/dev_profile_fields.csv")
-    ProfileFields::ImportFromCsv.call(csv)
-    Profile.refresh_attributes!
   end
 
   config.before do
@@ -120,6 +116,11 @@ RSpec.configure do |config|
     allow_any_instance_of(CarrierWave::Downloader::Base)
       .to receive(:skip_ssrf_protection?).and_return(true)
     # rubocop:enable RSpec/AnyInstance
+    # Enable the Connect feature flag for tests
+    # Doing this via a stub gets rid of the following error:
+    # "Please stub a default value first if message might be received with other args as well."
+    allow(FeatureFlag).to receive(:enabled?).and_call_original
+    allow(FeatureFlag).to receive(:enabled?).with(:connect).and_return(true)
   end
 
   config.around(:each, :flaky) do |ex|

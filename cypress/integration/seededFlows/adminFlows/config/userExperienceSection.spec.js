@@ -10,7 +10,7 @@ describe('User experience Section', () => {
 
   describe('default font', () => {
     it('can change the default font', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_user_experience').as('userExperienceSectionForm');
 
@@ -23,18 +23,17 @@ describe('User experience Section', () => {
           .select('open-dyslexic', { force: true });
 
         cy.get('@userExperienceSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
-
-        cy.get('@userExperienceSectionForm')
           .findByText('Update Settings')
           .click();
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Successfully updated settings.').should('be.visible');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            'Successfully updated settings.',
+          );
+        });
 
         // Page reloaded so need to get a new reference to the form.
         cy.get('#new_settings_user_experience').as('userExperienceSectionForm');

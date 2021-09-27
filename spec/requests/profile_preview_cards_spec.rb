@@ -44,6 +44,11 @@ RSpec.describe "ProfilePreviewCards", type: :request do
   end
 
   describe "GET /:id as JSON" do
+    before do
+      create(:profile_field, label: "Education", display_area: :header)
+      create(:profile_field, label: "Work", display_area: :header)
+    end
+
     let(:profile) { user.profile }
 
     context "when signed out" do

@@ -27,14 +27,31 @@ describe('Follow from article liquid tag', () => {
 
       it('Follows a user from an article liquid tag', () => {
         cy.findByRole('main').within(() => {
-          cy.findAllByRole('button', { name: 'Follow' })
-            .first()
-            .as('followUserButton');
+          cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).as(
+            'followUserButton',
+          );
           cy.get('@followUserButton').should('have.text', 'Follow');
+          cy.get('@followUserButton').should(
+            'have.attr',
+            'aria-pressed',
+            'false',
+          );
+
           cy.get('@followUserButton').click();
           cy.get('@followUserButton').should('have.text', 'Following');
+          cy.get('@followUserButton').should(
+            'have.attr',
+            'aria-pressed',
+            'true',
+          );
+
           cy.get('@followUserButton').click();
           cy.get('@followUserButton').should('have.text', 'Follow');
+          cy.get('@followUserButton').should(
+            'have.attr',
+            'aria-pressed',
+            'false',
+          );
         });
       });
     });
@@ -66,10 +83,10 @@ describe('Follow from article liquid tag', () => {
 
       it('Follows a user from an article liquid tag', () => {
         cy.findByRole('main').within(() => {
-          cy.findAllByRole('button', { name: 'Follow back' })
-            .first()
-            .as('followUserButton');
-          cy.get('@followUserButton').should('have.text', 'Follow back');
+          cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).as(
+            'followUserButton',
+          );
+          cy.get('@followUserButton').should('have.text', 'Follow');
           cy.get('@followUserButton').click();
           cy.get('@followUserButton').should('have.text', 'Following');
           cy.get('@followUserButton').click();
@@ -104,9 +121,9 @@ describe('Follow from article liquid tag', () => {
 
     it('Follows a tag from an article liquid tag', () => {
       cy.findByRole('main').within(() => {
-        cy.findAllByRole('button', { name: 'Follow' })
-          .last()
-          .as('followTagButton');
+        cy.findByRole('button', { name: 'Follow tag: tag1' }).as(
+          'followTagButton',
+        );
         cy.get('@followTagButton').should('have.text', 'Follow');
         cy.get('@followTagButton').click();
         cy.get('@followTagButton').should('have.text', 'Following');

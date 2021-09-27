@@ -1,7 +1,4 @@
 class OrganizationMembership < ApplicationRecord
-  # TODO: [@rhymes]  remove this column, it is unused
-  self.ignored_columns = [:user_title]
-
   belongs_to :user
   belongs_to :organization
 
@@ -34,6 +31,8 @@ class OrganizationMembership < ApplicationRecord
   end
 
   def add_chat_channel_membership(user, channel, role)
+    return unless FeatureFlag.enabled?(:connect)
+
     membership = ChatChannelMembership.find_or_initialize_by(user_id: user.id, chat_channel_id: channel.id)
     membership.role = role
     membership.save

@@ -300,7 +300,7 @@ class UsersController < ApplicationController
   end
 
   def default_suggested_users
-    @default_suggested_users ||= User.where(username: @suggested_users)
+    @default_suggested_users ||= User.includes(:profile).where(username: @suggested_users)
   end
 
   def determine_follow_suggestions(current_user)
@@ -324,7 +324,7 @@ class UsersController < ApplicationController
 
   def handle_organization_tab
     @organizations = @current_user.organizations.order(name: :asc)
-    if params[:org_id] == "new" || params[:org_id].blank? && @organizations.size.zero?
+    if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.size.zero?)
       @organization = Organization.new
     elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
       @organization = Organization.find_by(id: params[:org_id]) || @organizations.first

@@ -2,15 +2,8 @@
   class="crayons-card p-3 js-component"
   data-controller="users--tools--ajax"
   data-action="ajax:success@document->users--tools--ajax#success ajax:error@document->users--tools--ajax#error">
-  <%# Used to announce to the screen reader client side which section the user is in %>
-  <div id="section-title" class="hidden">Organizations section</div>
 
-  <h3>
-    <%= link_to "← Tools", admin_user_tools_path(@user.id),
-                remote: true,
-                data: { action: "ajax:success@document->user#replacePartial" },
-                class: "crayons-title fs-l backlink" %>
-  </h3>
+  <%= render Admin::Users::Tools::HeaderComponent.new(title: "Organizations", user: @user) %>
 
   <%# Add new org membership %>
   <%= form_with model: [:admin, OrganizationMembership.new],
