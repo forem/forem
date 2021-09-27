@@ -30,6 +30,11 @@ RSpec.describe DisplayAd, type: :model do
       display_ad.placement_area = "tsdsdsdds"
       expect(display_ad).not_to be_valid
     end
+
+    it "returns human readable name" do
+      display_ad.placement_area = "sidebar_left_2"
+      expect(display_ad.human_readable_placement_area).to eq("Sidebar Left (Second Position)")
+    end
   end
 
   context "when callbacks are triggered before save" do

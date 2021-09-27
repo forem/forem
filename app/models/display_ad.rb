@@ -2,6 +2,9 @@ class DisplayAd < ApplicationRecord
   resourcify
 
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right].freeze
+  ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
+                                            "Sidebar Left (Second Position)",
+                                            "Sidebar Right"].freeze
 
   belongs_to :organization
   has_many :display_ad_events, dependent: :destroy
@@ -28,6 +31,10 @@ class DisplayAd < ApplicationRecord
     else
       relation.limit(rand(1..15)).sample
     end
+  end
+
+  def human_readable_placement_area
+    ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE[ALLOWED_PLACEMENT_AREAS.find_index(placement_area)]
   end
 
   private

@@ -44,7 +44,7 @@ module Html
         next if allowed_image_host?(src)
 
         if synchronous_detail_detection
-          width, height = image_height_width(img)
+          width, height = image_width_height(img)
           img["width"] = width
           img["height"] = height
         end
@@ -62,11 +62,11 @@ module Html
       self
     end
 
-    def image_height_width(img)
+    def image_width_height(img)
       src = img.attr("src")
       return unless src
 
-      FastImage.size(src, timeout: TIMEOUT) # outputs as [width, height]
+      FastImage.size(src, timeout: TIMEOUT)
     end
 
     def wrap_all_images_in_links

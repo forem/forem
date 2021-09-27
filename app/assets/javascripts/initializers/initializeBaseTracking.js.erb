@@ -136,15 +136,14 @@ function trackCustomImpressions() {
     }
 
     // display add
-    var rotatingDisplayUnits = document.querySelectorAll('[data-rotating-display-unit]');
+    var displayAds = document.querySelectorAll('[data-display-unit]');
     if (rotatingDisplayUnits.length > 0
       && tokenMeta
       && !isBot
       && windowBigEnough
       && checkUserLoggedIn()) {
         var csrfToken = tokenMeta.getAttribute('content');
-        [].forEach.call(rotatingDisplayUnits, function(unit) {
-          // do whatever
+        [].forEach.call(displayAds, function(unit) {
           trackAdImpression(csrfToken, unit);
           unit.removeEventListener('click', trackAdClick, false );
           unit.addEventListener('click', function(e) { trackAdClick(csrfToken, e) });
