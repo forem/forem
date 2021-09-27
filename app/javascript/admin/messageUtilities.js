@@ -1,15 +1,31 @@
 /**
  * A function to generate an error alert within the /admin/ space.
  *
- * @function errorAlert
+ * @function displayErrorAlert
  * @param {Object} modalProps Properties of the Error Alert
- * @param {string} modalProps.errMsg The error message displayed within the alert.
+ * @param {string} modalProps.alertMsg The message displayed within the alert.
  */
 
-export const displayErrorAlert = function (errMsg) {
+export const displayErrorAlert = function (alertMsg) {
   return document.dispatchEvent(
     new CustomEvent('error:generate', {
-      detail: { errMsg },
+      detail: { alertMsg },
+    }),
+  );
+};
+
+/**
+ * A function to generate a success alert within the /admin/ space.
+ *
+ * @function displaySuccessAlert
+ * @param {Object} modalProps Properties of the Success Alert
+ * @param {string} modalProps.alertMsg The message displayed within the alert.
+ */
+
+export const displaySuccessAlert = function (alertMsg) {
+  return document.dispatchEvent(
+    new CustomEvent('success:generate', {
+      detail: { alertMsg },
     }),
   );
 };

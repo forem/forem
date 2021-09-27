@@ -1,5 +1,9 @@
 import ModalController from '../controllers/modal_controller';
-import { displayErrorAlert, displaySnackbar } from '../messageUtilities';
+import {
+  displaySuccessAlert,
+  displayErrorAlert,
+  displaySnackbar,
+} from '../messageUtilities';
 
 const confirmationText = (username) =>
   `My username is @${username} and this action is 100% safe and appropriate.`;
@@ -7,8 +11,17 @@ const confirmationText = (username) =>
 export default class ConfirmationModalController extends ModalController {
   static targets = ['itemId', 'username', 'endpoint'];
 
-  removeBadgeAchievement(id) {
-    return document.querySelector(`[data-row-id="${id}"]`).remove();
+  handleRecord({ endpoint, id, outcome }) {
+    switch (endpoint) {
+      case '/admin/content_manager/badge_achievements':
+        document.querySelector(`[data-row-id="${id}"]`).remove();
+        displaySnackbar(outcome.message);
+        break;
+      case '/admin/advanced/broadcasts':
+        window.location.replace(endpoint);
+        displaySuccessAlert(outcome.message);
+        break;
+    }
   }
 
   async sendToEndpoint({ itemId, endpoint }) {
@@ -27,8 +40,11 @@ export default class ConfirmationModalController extends ModalController {
       const outcome = await response.json();
 
       if (response.ok) {
-        this.removeBadgeAchievement(itemId);
-        displaySnackbar(outcome.message);
+        this.handleRecord({
+          endpoint,
+          id: itemId,
+          outcome,
+        });
       } else {
         displayErrorAlert(outcome.error);
       }
