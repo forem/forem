@@ -33,7 +33,7 @@ gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Un
 gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
-gem "field_test", "~> 0.4" # A/B testing
+gem "field_test", "~> 0.5" # A/B testing
 gem "flipper", "~> 0.22.1" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.22.1" # Store Flipper flags in ActiveRecord
 gem "flipper-active_support_cache_store", "~> 0.22.1" # Cache feature flags for a short time
@@ -144,7 +144,7 @@ group :development, :test do
   gem "rubocop", "~> 1.21", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.11", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.12", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 2.4", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 2.5", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
