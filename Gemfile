@@ -17,7 +17,7 @@ gem "addressable", "~> 2.8" # A replacement for the URI implementation that is p
 gem "ahoy_email", "~> 2.0.2" # Email analytics for Rails
 gem "ahoy_matey", "~> 4.0" # Tracking analytics for Rails
 gem "ancestry", "~> 4.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "blazer", "~> 2.4.5" # Allows admins to query data
+gem "blazer", "~> 2.4.6" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
@@ -33,7 +33,7 @@ gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Un
 gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
-gem "field_test", "~> 0.4" # A/B testing
+gem "field_test", "~> 0.5" # A/B testing
 gem "flipper", "~> 0.22.1" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.22.1" # Store Flipper flags in ActiveRecord
 gem "flipper-active_support_cache_store", "~> 0.22.1" # Cache feature flags for a short time
@@ -64,11 +64,11 @@ gem "omniauth-facebook", "~> 8.0" # OmniAuth strategy for Facebook
 gem "omniauth-github", "~> 2.0" # OmniAuth strategy for GitHub
 gem "omniauth-rails_csrf_protection", "~> 1.0" # Provides CSRF protection on OmniAuth request endpoint on Rails application.
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
-gem "parallel", "~> 1.20" # Run any kind of code in parallel processes
+gem "parallel", "~> 1.21" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with GitHub OAuth client
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_search", "~> 2.3.5" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
-gem "puma", "~> 5.4.0" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 5.5.0" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 2.0" # Ruby library for Pusher Channels HTTP API
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
@@ -134,7 +134,7 @@ group :development, :test do
   gem "amazing_print", "~> 1.3" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
-  gem "cypress-rails", "~> 0.5.2" # For end to end tests (E2E)
+  gem "cypress-rails", "~> 0.5.3" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 3.1.1" # Help parallelize Ruby spec builds
@@ -144,7 +144,7 @@ group :development, :test do
   gem "rubocop", "~> 1.21", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.11", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.12", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 2.4", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 2.5", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
