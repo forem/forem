@@ -29,7 +29,7 @@ describe('Add tags to article', () => {
 
   it('automatically suggests top tags again after tag insertion', () => {
     cy.intercept('/tags/suggest', exampleTopTags);
-    cy.findByRole('textbox', { name: 'Post Tags' }).clear().type('something');
+    cy.findByRole('textbox', { name: 'Post Tags' }).clear().type('something,');
 
     // Search is in progress, top tags which don't match shouldn't be shown
     cy.findByRole('button', { name: 'tagone' }).should('not.exist');
@@ -37,8 +37,8 @@ describe('Add tags to article', () => {
       name: 'tagtwo Here are some rules link here',
     }).should('not.exist');
 
-    // Users initiates fresh search by typing comma
-    cy.findByRole('textbox', { name: 'Post Tags' }).type(',');
+    // Users initiating fresh search after comma
+    cy.findByRole('textbox', { name: 'Post Tags' }).focus();
     cy.findByRole('button', { name: 'tagone' }).should('exist');
     cy.findByRole('button', {
       name: 'tagtwo Here are some rules link here',
