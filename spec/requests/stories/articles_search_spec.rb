@@ -8,14 +8,14 @@ RSpec.describe "Stories::ArticlesSearchController", type: :request do
     end
 
     context "with non-empty query" do
-      it "renders page with default page title" do
+      it "renders search term in page title" do
         get "/search?q=hello"
         expect(response.body).to include("Search results for hello")
       end
     end
 
     context "with empty query" do
-      it "renders page with query in page title" do
+      it "renders default page title" do
         get "/search?q="
         expect(response.body).to include("Search results\s")
       end
