@@ -44,9 +44,9 @@ module Html
         next if allowed_image_host?(src)
 
         if synchronous_detail_detection && img
-          width, height = image_width_height(img)
-          img["width"] = width
-          img["height"] = height
+          attribute_width, attribute_height = image_width_height(img)
+          img["width"] = attribute_width
+          img["height"] = attribute_height
         end
 
         img["loading"] = "lazy"
