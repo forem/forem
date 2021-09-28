@@ -15,22 +15,6 @@ export const displayErrorAlert = function (alertMsg) {
 };
 
 /**
- * A function to generate a success alert within the /admin/ space.
- *
- * @function displaySuccessAlert
- * @param {Object} modalProps Properties of the Success Alert
- * @param {string} modalProps.alertMsg The message displayed within the alert.
- */
-
-export const displaySuccessAlert = function (alertMsg) {
-  return document.dispatchEvent(
-    new CustomEvent('success:generate', {
-      detail: { alertMsg },
-    }),
-  );
-};
-
-/**
  * A function to generate a snackbar within the /admin/ space.
  *
  * @function displaySnackbar
