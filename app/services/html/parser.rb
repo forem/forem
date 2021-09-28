@@ -16,6 +16,7 @@ module Html
     RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
     RAW_TAG = "{----% raw %----}".freeze
     END_RAW_TAG = "{----% endraw %----}".freeze
+    TIMEOUT = 10
 
     attr_accessor :html
     private :html=
@@ -32,7 +33,7 @@ module Html
       self
     end
 
-    def prefix_all_images(width = 880)
+    def prefix_all_images(width = 880, synchronous_detail_detection: false)
       # wrap with Cloudinary or allow if from giphy or githubusercontent.com
       doc = Nokogiri::HTML.fragment(@html)
 
@@ -41,6 +42,12 @@ module Html
         next unless src
         # allow image to render as-is
         next if allowed_image_host?(src)
+
+        if synchronous_detail_detection && img
+          width, height = image_width_height(img)
+          img["width"] = width
+          img["height"] = height
+        end
 
         img["loading"] = "lazy"
         img["src"] = if Giphy::Image.valid_url?(src)
@@ -53,6 +60,13 @@ module Html
       @html = doc.to_html
 
       self
+    end
+
+    def image_width_height(img)
+      src = img.attr("src")
+      return unless src
+
+      FastImage.size(src, timeout: TIMEOUT)
     end
 
     def wrap_all_images_in_links

@@ -100,3 +100,6 @@ config/definitions.rb
 
 # ignore redis backup
 dump.rdb
+
+# pry configuration file
+.pryrc

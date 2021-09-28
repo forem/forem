@@ -1,14 +1,14 @@
 <nav class="mb-6" aria-label="Secondary sidebar nav">
   <% if user_signed_in? %>
     <header class="p-2 pr-0 flex items-center justify-between">
-      <h3 class="crayons-subtitle-3">My Tags</h3>
+      <h3 class="crayons-subtitle-3"><%= t("core.my_tags") %></h3>
       <a id="tag-priority-link" href="/dashboard/following_tags" class="crayons-btn crayons-btn--icon crayons-btn--ghost-dimmed" aria-label="Customize tag priority" title="Customize tag priority">
         <%= inline_svg_tag("cog.svg", class: "crayons-icon") %>
       </a>
     </header>
     <div id="sidebar-nav-followed-tags" class="overflow-y-auto mb-2 sidebar-nav-followed-tags" style="max-height: 42vh;"></div>
   <% else %>
-    <h3 class="crayons-subtitle-3 p-2">Popular Tags</h3>
+    <h3 class="crayons-subtitle-3 p-2"><%= t("core.popular_tags") %></h3>
     <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="max-height: 42vh">
       <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
         <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
@@ -18,7 +18,7 @@
           <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s"
             href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
             data-info='{"id":<%= tag_array.first %>,"className":"Tag", "name": "<%= tag_array.second %>"}'>
-            Follow
+            <%= t("core.follow") %>
           </a>
         </div>
       <% end %>

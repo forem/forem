@@ -39,10 +39,13 @@ class GithubIssue < ApplicationRecord
         issue.category = "issue"
       end
 
-      # despite the counter intuitive name `.markdown` returns HTML rendered
-      # from the original markdown
-      issue.processed_html = Github::OauthClient.new.markdown(issue.issue_serialized[:body])
-
+      issue.processed_html = if issue.issue_serialized[:body].present?
+                               # despite the counter intuitive name `.markdown` returns HTML rendered
+                               # from the original markdown
+                               Github::OauthClient.new.markdown(issue.issue_serialized[:body])
+                             else
+                               ""
+                             end
       issue.save!
 
       issue

@@ -55,6 +55,17 @@
                          class: "selectpicker" %>
         </div>
         <div class="crayons-field">
+          <%= admin_config_label :default_locale, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience::DETAILS[:default_locale][:description] %>
+          <%= select_tag "settings_user_experience[default_locale]",
+                         options_for_select(
+                           [%w[English en], %w[Français fr]],
+                           Settings::UserExperience.default_locale,
+                         ),
+                         multiple: false,
+                         class: "selectpicker" %>
+        </div>
+        <div class="crayons-field">
           <%= admin_config_label :primary_brand_color_hex, model: Settings::UserExperience %>
           <%= admin_config_description Constants::Settings::UserExperience::DETAILS[:primary_brand_color_hex][:description] %>
           <%= f.color_field :primary_brand_color_hex,

@@ -10,7 +10,7 @@
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
-            More from <a href="<%= @actor.path %>"><%= @actor.name %></a>
+            <%= t("core.more_from") %> <a href="<%= @actor.path %>"><%= @actor.name %></a>
           </h3>
         </header>
         <div>
@@ -30,7 +30,7 @@
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
-            Trending on <a href="<%= app_url %>"><%= community_name %></a>
+            <%= t("core.trending_on") %> <a href="<%= app_url %>"><%= community_name %></a>
             <%= inline_svg_tag("twemoji/fire.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Hot") %>
           </h3>
         </header>

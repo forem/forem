@@ -1,6 +1,6 @@
 <% if articles && articles.any? %>
   <section class="crayons-card crayons-card--secondary text-padding mb-4 print-hidden" id="bottom-content-read-next">
-    <h2 class="crayons-subtitle-1">Read next</h2>
+    <h2 class="crayons-subtitle-1"><%= t("core.read_next") %></h2>
     <% articles.each do |article| %>
       <a href="<%= article.path %>" data-preload-image="<%= cloud_cover_url(article.main_image) %>" class="crayons-link mt-6 block">
         <div class="flex items-center">

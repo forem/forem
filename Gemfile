@@ -14,10 +14,10 @@ gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to
 gem "acts-as-taggable-on", "~> 8.1" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
-gem "ahoy_email", "~> 2.0.2" # Email analytics for Rails
+gem "ahoy_email", "~> 2.1.0" # Email analytics for Rails
 gem "ahoy_matey", "~> 4.0" # Tracking analytics for Rails
 gem "ancestry", "~> 4.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "blazer", "~> 2.4.6" # Allows admins to query data
+gem "blazer", "~> 2.4.7" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
@@ -47,6 +47,7 @@ gem "honeybadger", "~> 4.9" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.7.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
+gem "i18n-js", "~> 3.9.0" # Helps with internationalization in Rails.
 gem "httparty", "~> 0.19" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "imgproxy", "~> 2.0" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
@@ -103,7 +104,7 @@ gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
-gem "store_attribute", "~> 0.9.0" # ActiveRecord extension which adds typecasting to store accessors.
+gem "store_attribute", "~> 0.9.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
 gem "stripe", "~> 5.38" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
@@ -122,9 +123,11 @@ group :development do
   gem "brakeman", "~> 5.1", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.9" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 2.1", require: false # A series of things you can use to benchmark a Rails or Ruby app
+  gem "easy_translate", "~> 0.5.1" # Google translate tie-in to be used with i18n tasks
   gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
   gem "guard", "~> 2.18", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
+  gem "i18n-tasks", "~> 0.9.34" # Helpers to find and manage missing and unused translations
   gem "listen", "~> 3.7", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "web-console", "~> 4.1" # Rails Console on the Browser
