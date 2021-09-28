@@ -10,7 +10,7 @@
 
 <div class="form-group">
   <%= label_tag :placement_area, "Placement Area:" %>
-  <%= select_tag :placement_area, options_for_select(%w[sidebar_left sidebar_right], selected: @display_ad.placement_area), include_blank: true %>
+  <%= select_tag :placement_area, options_for_select(display_ads_placement_area_options_array, selected: @display_ad.placement_area), include_blank: true %>
 </div>
 
 <div class="form-group">
