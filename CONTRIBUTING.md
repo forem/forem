@@ -5,17 +5,17 @@ We expect contributors to abide by our underlying
 discussions on GitHub (issues, pull requests) and across
 [dev.to](https://dev.to) must be respectful and harassment-free.
 
-If you feel another member of the community has violated our Code of Conduct,
+If you feel that a member of the community has violated our Code of Conduct,
 you may anonymously contact the team with our
 [abuse report form](https://dev.to/report-abuse).
 
-Remember that communication is the lifeblood of any Open Source project. We are
-all working on this together, and we are all benefiting from this software. It's
+Remember that communication is the lifeblood of any Open Source project. We're
+all working on this together to make this software the best version of itself, so that everyone can benefit from it. It's
 very easy to misunderstand one another over asynchronous, text-based
-conversations: When in doubt, assume everyone within this project has the best
+conversations: So when in doubt, assume everyone within this project has the best
 intentions.
 
-We are all humans trying to work together to improve the community. Always be
+We're all humans trying to work together to improve the community. Always be
 kind and appreciate the need for trade-offs. ❤️
 
 Before making your first pull request or issue, give our full
