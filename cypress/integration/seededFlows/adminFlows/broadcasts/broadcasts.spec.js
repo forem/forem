@@ -45,6 +45,9 @@ describe('Broadcasts', () => {
           cy.findByRole('button', { name: 'Confirm changes' }).click();
         });
 
+        // testing the redirect after broadcast destroy
+        cy.url().should('include', '/admin/advanced/broadcasts?redirected');
+
         cy.findByTestId('snackbar').within(() => {
           cy.findByRole('alert').should(
             'have.text',
@@ -58,7 +61,7 @@ describe('Broadcasts', () => {
       });
     });
 
-    it('generates error message when destroy action fails', () => {
+    it.skip('generates error message when destroy action fails', () => {
       cy.intercept('DELETE', '/admin/advanced/broadcasts/**', {
         statusCode: 422,
         body: {
@@ -79,6 +82,8 @@ describe('Broadcasts', () => {
             .contains('Something went wrong with deleting the broadcast.')
             .should('be.visible');
         });
+
+        cy.url().should('not.include', '?redirected');
 
         cy.findByRole('heading', { level: 2, name: 'Mock Broadcast' }).should(
           'be.visible',
