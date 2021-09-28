@@ -2,6 +2,7 @@ import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '../utilities/dropdownUtils';
+import { embedGists } from '../utilities/gist';
 
 /* global Runtime */
 
@@ -117,3 +118,6 @@ getCsrfToken().then(async () => {
       '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
   }
 });
+
+const targetNode = document.querySelector('#comments');
+targetNode && embedGists(targetNode);
