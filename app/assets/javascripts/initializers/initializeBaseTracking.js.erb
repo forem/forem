@@ -143,10 +143,10 @@ function trackCustomImpressions() {
       && windowBigEnough
       && checkUserLoggedIn()) {
         var csrfToken = tokenMeta.getAttribute('content');
-        [].forEach.call(displayAds, function(unit) {
+        displayAds.forEach(unit => {
           trackAdImpression(csrfToken, unit);
           unit.removeEventListener('click', trackAdClick, false );
-          unit.addEventListener('click', function(e) { trackAdClick(csrfToken, e) });
+          unit.addEventListener('click', function(e) { trackAdClick(csrfToken, e.target) });
         });
       }
   }, 1800)
@@ -221,7 +221,8 @@ function trackAdImpression(token, adBox) {
   })
 }
 
-function trackAdClick(token, adBox) {
+function trackAdClick(token, clickedElement) {
+  var adBox = clickedElement.closest('[data-display-unit]');
   if (!adClicked) {
     var dataBody = {
       display_ad_event: {
