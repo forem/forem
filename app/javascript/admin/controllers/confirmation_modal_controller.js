@@ -7,11 +7,9 @@ const confirmationText = (username) =>
 window.addEventListener('load', () => {
   const params = new URLSearchParams(window.location.search);
 
-  if (params.has('outcome')) {
-    displaySnackbar(params.get('outcome'));
-    setTimeout(() => {
-      window.location.search = '';
-    }, 3000);
+  if (params.has('redirected') && localStorage.getItem('outcome') !== null) {
+    displaySnackbar(localStorage.getItem('outcome'));
+    localStorage.removeItem('outcome');
   }
 });
 
@@ -25,7 +23,8 @@ export default class ConfirmationModalController extends ModalController {
         displaySnackbar(outcome.message);
         break;
       case '/admin/advanced/broadcasts':
-        window.location.replace(`${endpoint}?outcome=${outcome.message}`);
+        localStorage.setItem('outcome', outcome.message);
+        window.location.replace(`${endpoint}?redirected`);
         break;
     }
   }
