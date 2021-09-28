@@ -21,6 +21,10 @@ module Constants
           description: "Minimum score needed for a post to show up on the unauthenticated home page.",
           placeholder: "0"
         },
+        index_minimum_score: {
+          description: "Minimum score needed for a post to be indexed by search engines.",
+          placeholder: "0"
+        },
         primary_brand_color_hex: {
           description: "Determines background/border of buttons etc. Must be dark enough to contrast with white text.",
           placeholder: "#0a0a0a"
