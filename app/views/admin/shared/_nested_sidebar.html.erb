@@ -21,10 +21,11 @@
         <%= inline_svg_tag(group[:svg], aria_hidden: true, class: "dropdown-icon crayons-icon") %>
         <%= display_name(group_name) %>
       </button>
+      <% first_child = group[:children].detect { |child| child[:visible] } %>
       <ul id="<%= group_name %>"
           data-sidebar-target="submenu"
           class="js-menu-activator <%= deduced_scope(request) == group_name.to_s ? "collapse show" : "collapse" %>"
-          data-target-href="/admin/<%= group_name %>/<%= group[:children][0][:controller] %>">
+          data-target-href="/admin/<%= group_name %>/<%= first_child[:controller] %>">
         <% group[:children].each do |item| %>
           <% if item[:visible] %>
             <li>
