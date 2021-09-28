@@ -74,6 +74,7 @@ export class Tags extends Component {
       cursorIdx: 0,
       prevLen: 0,
       showingRulesForTag: null,
+      showingTopTags: false,
       ...listingState,
     };
   }
@@ -160,6 +161,7 @@ export class Tags extends Component {
 
   handleKeyDown = (e) => {
     const component = this;
+    const { searchResults } = this.state;
     const { maxTags } = this.props;
     if (component.selected.length === maxTags && e.key === KEYS.COMMA) {
       e.preventDefault();
@@ -169,7 +171,7 @@ export class Tags extends Component {
     if (
       (e.key === KEYS.DOWN || e.key === KEYS.TAB) &&
       !this.isBottomOfSearchResults &&
-      component.props.defaultValue !== ''
+      searchResults.length > 0
     ) {
       e.preventDefault();
       this.moveDownInSearchResults();
@@ -305,6 +307,7 @@ export class Tags extends Component {
   }
 
   fetchTopTagSuggestions() {
+    this.setState({ showingTopTags: true });
     const { topTags = [] } = this.state;
     if (topTags.length > 0) {
       return Promise.resolve().then(() =>
@@ -328,6 +331,8 @@ export class Tags extends Component {
     if (query === '') {
       return this.fetchTopTagSuggestions();
     }
+    this.setState({ showingTopTags: false });
+
     const { listing } = this.props;
 
     const dataHash = { name: query };
@@ -377,7 +382,8 @@ export class Tags extends Component {
 
   render() {
     let searchResultsHTML = '';
-    const { searchResults, selectedIndex, showingRulesForTag } = this.state;
+    const { searchResults, selectedIndex, showingRulesForTag, showingTopTags } =
+      this.state;
     const {
       classPrefix,
       defaultValue,
@@ -432,6 +438,9 @@ export class Tags extends Component {
     ) {
       searchResultsHTML = (
         <div className={`${classPrefix}__tagsoptions`}>
+          {showingTopTags ? (
+            <h2 className={`${classPrefix}__tagsoptionsheading`}>Top tags</h2>
+          ) : null}
           {searchResultsRows}
           <div className={`${classPrefix}__tagsoptionsbottomrow`}>
             Some tags have rules and guidelines determined by community
