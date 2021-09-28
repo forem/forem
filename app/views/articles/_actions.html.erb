@@ -39,7 +39,7 @@
             id="copy-post-url-button"
             class="flex justify-between crayons-link crayons-link--block w-100 bg-transparent border-0"
             data-postUrl="<%= article_url(@article) %>">
-            <span class="fw-bold">Copy Post URL</span>
+            <span class="fw-bold"><%= t("core.copy_link") %></span>
             <%= inline_svg_tag("copy.svg", aria_hidden: true, id: "article-copy-icon", class: "crayons-icon mx-2 shrink-0", title: "Copy article link to the clipboard") %>
           </button>
           <div id="article-copy-link-announcer" aria-live="polite" class="crayons-notice crayons-notice--success my-2 p-1" aria-live="polite" hidden>Copied to Clipboard</div>
@@ -89,7 +89,7 @@
           <a href="#" class="dropdown-link-row crayons-link crayons-link--block">Share Post via...</a>
         </template>
 
-        <a href="/report-abuse" class="crayons-link crayons-link--block">Report Abuse</a>
+        <a href="/report-abuse" class="crayons-link crayons-link--block"><%= t("core.report_abuse") %></a>
       </div>
     </div>
   </div>

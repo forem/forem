@@ -50,8 +50,8 @@ RSpec.describe "Notifications page", type: :system, js: true do
     Notification.send_new_follower_notification_without_delay(follow, is_read: true)
     visit "/notifications"
     expect(page).to have_css("div.spec-notification")
-    click_button("Follow back")
-    expect(page).to have_text("Following")
+    click_button(I18n.t("core.follow_back"))
+    expect(page).to have_text(I18n.t("core.following"))
   end
 
   context "when user is trusted" do

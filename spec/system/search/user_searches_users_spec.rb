@@ -16,9 +16,9 @@ RSpec.describe "User searches users", type: :system do
   it "shows the correct follow buttons", js: true do
     visit "/search?q=&filters=class_name:User"
 
-    expect(JSON.parse(find_button("Edit profile")["data-info"])["id"]).to eq(current_user.id)
-    expect(JSON.parse(find_button("Following")["data-info"])["id"]).to eq(followed_user.id)
-    expect(JSON.parse(find_button("Follow")["data-info"])["id"]).to eq(not_followed_user.id)
-    expect(JSON.parse(find_button("Follow back")["data-info"])["id"]).to eq(follow_back_user.id)
+    expect(JSON.parse(find_button(I18n.t("core.edit_profile"))["data-info"])["id"]).to eq(current_user.id)
+    expect(JSON.parse(find_button(I18n.t("core.following"))["data-info"])["id"]).to eq(followed_user.id)
+    expect(JSON.parse(find_button(I18n.t("core.follow"))["data-info"])["id"]).to eq(not_followed_user.id)
+    expect(JSON.parse(find_button(I18n.t("core.follow_back"))["data-info"])["id"]).to eq(follow_back_user.id)
   end
 end

@@ -68,9 +68,9 @@ function buildCommentHTML(comment) {
       </button>
       <div id="comment-dropdown-${comment.id}" class="crayons-dropdown right-1 s:right-0 s:left-auto fs-base dropdown">
         <ul class="m-0">
-          <li><a href="${ comment.url }" class="crayons-link crayons-link--block permalink-copybtn" aria-label="Copy link to ${ comment.user.name }'s comment" data-no-instant>Copy link</a></li>
+          <li><a href="${ comment.url }" class="crayons-link crayons-link--block permalink-copybtn" aria-label="Copy link to ${ comment.user.name }'s comment" data-no-instant>${ I18n.t('core.copy_link') }</a></li>
           <li><a href="${ comment.url }/settings" class="crayons-link crayons-link--block" aria-label="Go to ${ comment.user.name }'s comment settings">Settings</a></li>
-          <li><a href="/report-abuse?url=${ comment.url }" class="crayons-link crayons-link--block" aria-label="Report ${ comment.user.name }'s comment as abusive or violating our code of conduct and/or terms and conditions">Report abuse</a></li>
+          <li><a href="/report-abuse?url=${ comment.url }" class="crayons-link crayons-link--block" aria-label="Report ${ comment.user.name }'s comment as abusive or violating our code of conduct and/or terms and conditions">${ I18n.t('core.report_abuse') }</a></li>
           <li class="${ comment.newly_created ? '' : 'hidden' }"><a href="${ comment.url }/edit" class="crayons-link crayons-link--block" rel="nofollow" aria-label="Edit this comment">Edit</a></li>
           <li class="${ comment.newly_created ? '' : 'hidden' }"><a data-no-instant="" href="${ comment.url }/delete_confirm" class="crayons-link crayons-link--block" rel="nofollow" aria-label="Delete this comment">Delete</a></li>
         </ul>

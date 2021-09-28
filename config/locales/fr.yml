@@ -1,0 +1,89 @@
+---
+fr:
+  core:
+    add_comment: Ajouter un commentaire
+    comment: Commentaire
+    copy_link: Copier le lien
+    create_account: Créer un profil
+    create_post: Créer Publication
+    discussion: Discussion
+    edit_profile: Editer le profil
+    feed: Fil
+    follow: Suivre
+    follow_back: Suivre aussi
+    following: Abonné
+    full: Complet
+    infinity: Infini
+    latest: Récent
+    like: Aime
+    listings: Annonces
+    log_in: Entrer
+    month: Mois
+    more_from: Plus de
+    my_tags: Mes Sujets
+    popular_tags: Sujets Populaire
+    post: Publication
+    reaction: Réaction
+    read_next: Lire ensuite
+    reply: Répondre
+    report_abuse: Signaler un abus
+    search: Recherche
+    see_all: Voir tout
+    trending_on: Populaire sur
+    view: Vue
+    week: Semain
+    year: Anée
+  date:
+    abbr_month_names:
+    - Janv
+    - Fevr
+    - Mars
+    - Avril
+    - Mai
+    - Juin
+    - Juil
+    - Aout
+    - Sept
+    - Oct
+    - Nov
+    - Dec
+  errors:
+    messages:
+      accepted: doit être accepté
+      bad_protocol: doit commencer par
+      bad_uri: est une URL invalide
+      blank: ne peut pas être vide
+      confirmation: ne correspond pas à
+      empty: ne peut pas être vide
+      equal_to: doit être égal à
+      even: doit être pair
+      exclusion: est réservé
+      greater_than: doit être supérieur à
+      greater_than_or_equal_to: doit être supérieur ou égal à
+      inclusion: n'est pas inclus dans la liste
+      invalid: est invalide
+      less_than: doit être inférieur à
+      less_than_or_equal_to: doit être inférieur ou égal à
+      model_invalid: 'Échec de la validation :'
+      not_a_number: n'est pas un nombre
+      not_an_integer: Doit être un entier
+      odd: doit être étrange
+      other_than: doit être différent de
+      present: doit être vide
+      required: doit exister
+      taken: a déjà été pris
+      too_long:
+        one: est trop long (le maximum est de 1 caractère)
+        other: est trop long (le maximum est de caractères)
+      too_short:
+        one: est trop court (au moins 1 caractère)
+        other: est trop court (le minimum est de caractères)
+      wrong_length:
+        one: est la mauvaise longueur (devrait être 1 caractère)
+        other: est la mauvaise longueur (devrait être %{count} caractères)
+  podcasts:
+    statuses:
+      ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast
+      unparsable: Le rss du podcast n'a pas pu être analysé
+      unplayable: Ce podcast peut ne pas être lisible dans le navigateur
+      unreachable: Le feed_url du podcast n'est pas accessible
