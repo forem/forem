@@ -1,12 +1,19 @@
 import ModalController from '../controllers/modal_controller';
-import {
-  displaySuccessAlert,
-  displayErrorAlert,
-  displaySnackbar,
-} from '../messageUtilities';
+import { displayErrorAlert, displaySnackbar } from '../messageUtilities';
 
 const confirmationText = (username) =>
   `My username is @${username} and this action is 100% safe and appropriate.`;
+
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.has('outcome')) {
+    displaySnackbar(params.get('outcome'));
+    setTimeout(() => {
+      window.location.search = '';
+    }, 3000);
+  }
+});
 
 export default class ConfirmationModalController extends ModalController {
   static targets = ['itemId', 'username', 'endpoint'];
@@ -18,8 +25,7 @@ export default class ConfirmationModalController extends ModalController {
         displaySnackbar(outcome.message);
         break;
       case '/admin/advanced/broadcasts':
-        window.location.replace(endpoint);
-        displaySuccessAlert(outcome.message);
+        window.location.replace(`${endpoint}?outcome=${outcome.message}`);
         break;
     }
   }
