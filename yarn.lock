@@ -1575,7 +1575,7 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@jest/types@^27.1.0", "@jest/types@^27.1.1":
+"@jest/types@^27.1.1":
   version "27.1.1"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-27.1.1.tgz#77a3fc014f906c65752d12123a0134359707c0ad"
   integrity sha512-yqJPDDseb0mXgKqmNqypCsb85C22K1aY5+LUxh7syIM9n/b0AsaltxNy+o6tt29VcfGDpYEve175bm3uOhcehA==
@@ -2722,10 +2722,10 @@
     lz-string "^1.4.4"
     pretty-format "^26.6.2"
 
-"@testing-library/dom@^8.2.0":
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.2.0.tgz#ac46a1b9d7c81f0d341ae38fb5424b64c27d151e"
-  integrity sha512-U8cTWENQPHO3QHvxBdfltJ+wC78ytMdg69ASvIdkGdQ/XRg4M9H2vvM3mHddxl+w/fM6NNqzGMwpQoh82v9VIA==
+"@testing-library/dom@^8.6.0":
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.6.0.tgz#c92ba5b714882eabfd7f25d8f5c59d4a4b0bfcac"
+  integrity sha512-EDBMEWK8IVpNF7B7C1knb0lLB4Si9RWte/YTEi6CqmqUK5CYCoecwOOG9pEijU/H6s3u0drUxH5sKT07FCgFIg==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.12.5"
@@ -12414,27 +12414,7 @@ pretty-format@^26.6.2:
     ansi-styles "^4.0.0"
     react-is "^17.0.1"
 
-pretty-format@^27.0.0, pretty-format@^27.1.1:
-  version "27.1.1"
-  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-27.1.1.tgz#cbaf9ec6cd7cfc3141478b6f6293c0ccdbe968e0"
-  integrity sha512-zdBi/xlstKJL42UH7goQti5Hip/B415w1Mfj+WWWYMBylAYtKESnXGUtVVcMVid9ReVjypCotUV6CEevYPHv2g==
-  dependencies:
-    "@jest/types" "^27.1.1"
-    ansi-regex "^5.0.0"
-    ansi-styles "^5.0.0"
-    react-is "^17.0.1"
-
-pretty-format@^27.0.2:
-  version "27.1.0"
-  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-27.1.0.tgz#022f3fdb19121e0a2612f3cff8d724431461b9ca"
-  integrity sha512-4aGaud3w3rxAO6OXmK3fwBFQ0bctIOG3/if+jYEFGNGIs0EvuidQm3bZ9mlP2/t9epLNC/12czabfy7TZNSwVA==
-  dependencies:
-    "@jest/types" "^27.1.0"
-    ansi-regex "^5.0.0"
-    ansi-styles "^5.0.0"
-    react-is "^17.0.1"
-
-pretty-format@^27.2.0:
+pretty-format@^27.0.0, pretty-format@^27.0.2, pretty-format@^27.1.1, pretty-format@^27.2.0:
   version "27.2.0"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-27.2.0.tgz#ee37a94ce2a79765791a8649ae374d468c18ef19"
   integrity sha512-KyJdmgBkMscLqo8A7K77omgLx5PWPiXJswtTtFV7XgVZv2+qPk6UivpXXO+5k6ZEbWIbLoKdx1pZ6ldINzbwTA==
