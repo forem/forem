@@ -280,6 +280,38 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).not_to include('<a href="https://campaign-lander.com"')
       end
     end
+
+    context "with default_locale configured to fr" do
+      before do
+        allow(Settings::UserExperience).to receive(:default_locale).and_return("fr")
+        get "/"
+      end
+
+      it "names proper locale" do
+        expect(I18n.locale).to eq(:fr)
+      end
+
+      it "has proper locale content on page" do
+        expect(response.body).to include("Recherche")
+      end
+    end
+  end
+
+  describe "GET locale index" do
+    it "names proper locale" do
+      get "/locale/fr"
+      expect(I18n.locale).to eq(:fr)
+    end
+
+    it "has proper locale content on page" do
+      get "/locale/fr"
+      expect(response.body).to include("Recherche")
+    end
+
+    it "uses fallback locale if invalid locale passed" do
+      get "/locale/fake"
+      expect(I18n.locale).to eq(:en)
+    end
   end
 
   describe "GET podcast index" do

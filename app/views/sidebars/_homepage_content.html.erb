@@ -12,9 +12,9 @@
     <% if params[:timeframe].blank? && @listings.any? %>
       <section class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
-          <h3 class="crayons-subtitle-2">Listings</h3>
+          <h3 class="crayons-subtitle-2"><%= t("core.listings") %></h3>
           <div class="crayons-card__actions">
-            <a href="/listings" class="crayons-link--branded fw-medium fs-s">See all</a>
+            <a href="/listings" class="crayons-link--branded fw-medium fs-s"><%= t("core.see_all") %></a>
           </div>
         </header>
 

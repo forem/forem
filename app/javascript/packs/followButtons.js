@@ -1,4 +1,5 @@
 import { getInstantClick } from '../topNavigation/utilities';
+import { locale } from '@utilities/locale';
 
 /* global showLoginModal  userData  showModalAfterError*/
 
@@ -8,6 +9,8 @@ import { getInstantClick } from '../topNavigation/utilities';
  * @param {HTMLElement} button The Follow button to update
  * @param {string} style The style of the button from its "info" data attribute
  */
+
+
 function addButtonFollowText(button, style) {
   const { name, className } = JSON.parse(button.dataset.info);
 
@@ -28,7 +31,7 @@ function addButtonFollowText(button, style) {
         followType: className,
         style: 'follow-back',
       });
-      button.textContent = 'Follow back';
+      button.textContent = locale('core.follow_back');
       break;
     default:
       addAriaLabelToButton({
@@ -37,7 +40,7 @@ function addButtonFollowText(button, style) {
         followType: className,
         style: 'follow',
       });
-      button.textContent = 'Follow';
+      button.textContent = locale('core.follow');
   }
 }
 
@@ -85,7 +88,7 @@ function addAriaLabelToButton({ button, followType, followName, style = '' }) {
  * @param {string} style The style of the button from its "info" data attribute
  */
 function addButtonFollowingText(button, style) {
-  button.textContent = style === 'small' ? '✓' : 'Following';
+  button.textContent = style === 'small' ? '✓' : locale('core.following');
 }
 
 /**
@@ -159,7 +162,7 @@ function updateFollowingButton(button, style) {
  */
 function updateUserOwnFollowButton(button) {
   button.dataset.verb = 'self';
-  button.textContent = 'Edit profile';
+  button.textContent = locale('core.edit_profile');
   addAriaLabelToButton({
     button,
     followName: '',
