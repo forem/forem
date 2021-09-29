@@ -20,7 +20,7 @@
 
     <div class="block s:flex items-center justify-between">
       <h1 class="crayons-title hidden s:block pl-2">
-        Search results <%= "for #{params[:q]}" unless params[:q].empty? %>
+        Search results <%= "for #{params[:q]}" unless params[:q].blank? %>
       </h1>
 
       <nav id="sorting-option-tabs" aria-label="Search result sort options" class="-mx-3 m:mx-0">
