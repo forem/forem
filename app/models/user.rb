@@ -220,6 +220,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
+  after_save :create_conditional_autovomits
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
 
@@ -249,8 +250,9 @@ class User < ApplicationRecord
   end
 
   def calculate_score
-    score = (articles.where(featured: true).size * 100) + comments.sum(:score)
-    update_column(:score, score)
+    user_reaction_points = Reaction.user_vomits.where(reactable_id: id).sum(:points)
+    calculated_score = (badge_achievements_count * 10) + user_reaction_points
+    update_column(:score, calculated_score)
   end
 
   def path
@@ -571,6 +573,22 @@ class User < ApplicationRecord
 
   def bust_cache
     Users::BustCacheWorker.perform_async(id)
+  end
+
+  def create_conditional_autovomits
+    # Check if name contains banned spam words
+    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
+      Regexp.new(term.downcase).match?(name.downcase)
+    end
+
+    Reaction.create!(
+      user_id: Settings::General.mascot_user_id,
+      reactable_id: id,
+      reactable_type: "User",
+      category: "vomit",
+    )
+
+    puts "did it work?"
   end
 
   # TODO: @citizen428 I don't want to completely remove this method yet, as we
