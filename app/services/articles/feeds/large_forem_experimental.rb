@@ -11,19 +11,6 @@ module Articles
         @experience_level_weight = 1 # default weight for user experience level
       end
 
-      def self.find_featured_story(stories)
-        featured_story =  if stories.is_a?(ActiveRecord::Relation)
-                            stories.where.not(main_image: nil).first
-                          else
-                            stories.detect { |story| story.main_image.present? }
-                          end
-        featured_story || Article.new
-      end
-
-      def find_featured_story(stories)
-        self.class.find_featured_story(stories)
-      end
-
       def default_home_feed(user_signed_in: false)
         _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in, ranking: true)
         stories
