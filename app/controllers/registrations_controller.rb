@@ -46,6 +46,7 @@ class RegistrationsController < Devise::RegistrationsController
     resource.skip_confirmation!
     Settings::General.waiting_on_first_user = false
     Users::CreateMascotAccount.call
+    Discover::RegisterWorker.perform_async # Register Forem instance on https://discover.forem.com
   end
 
   def recaptcha_verified?
