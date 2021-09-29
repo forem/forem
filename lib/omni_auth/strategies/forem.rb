@@ -10,13 +10,13 @@ module OmniAuth
         authorize_url: "/oauth/authorize"
       }
 
-      uid { raw_info["id"] }
+      uid { raw_info[:id] }
 
       info do
         {
-          email: raw_info["email"],
-          name: raw_info["name"],
-          user_nickname: raw_info["username"]
+          email: raw_info[:email],
+          name: raw_info[:name],
+          user_nickname: raw_info[:username]
         }
       end
 
@@ -25,7 +25,7 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= access_token.get("/api/v0/me").parsed
+        @raw_info ||= access_token.get("/api/v0/me").parsed.with_indifferent_access
       end
 
       def callback_url
