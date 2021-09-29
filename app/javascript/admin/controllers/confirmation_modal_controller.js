@@ -19,6 +19,7 @@ export default class ConfirmationModalController extends ModalController {
   handleRecord({ endpoint, id, outcome }) {
     switch (endpoint) {
       case '/admin/content_manager/badge_achievements':
+      case '/admin/customization/display_ads':
         document.querySelector(`[data-row-id="${id}"]`).remove();
         displaySnackbar(outcome.message);
         break;
