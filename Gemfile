@@ -140,7 +140,7 @@ group :development, :test do
   gem "cypress-rails", "~> 0.5.3" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 3.1.1" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 3.1.2" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
