@@ -40,13 +40,25 @@ const markdownSyntaxFormatters = {
   },
   unorderedList: {
     label: 'Unordered list',
-    insertSyntax: (selection) => {
-      // TODO: if the list doesn't start on a new line, we'll need to handle that
-      return `- ${selection}`.replace(/\n/g, '\n- ');
-    },
+    insertSyntax: (selection) => `- ${selection}`.replace(/\n/g, '\n- '),
     getCursorOffsetStart: (selection) => (selection.length === 0 ? 1 : 0),
     getCursorOffsetEnd: (selection) =>
       `- ${selection}`.replace(/\n/g, '\n- ').length - selection.length,
+    insertOnNewLine: true,
+  },
+  orderedList: {
+    label: 'Ordered list',
+    insertSyntax: (selection) =>
+      selection
+        .split('\n')
+        .map((textChunk, index) => `${index + 1}. ${textChunk}`)
+        .join('\n'),
+    getCursorOffsetStart: (selection) => (selection.length === 0 ? 1 : 0),
+    getCursorOffsetEnd: (selection) =>
+      selection
+        .split('\n')
+        .map((textChunk, index) => `${index + 1}. ${textChunk}`)
+        .join('\n').length - selection.length,
     insertOnNewLine: true,
   },
 };
