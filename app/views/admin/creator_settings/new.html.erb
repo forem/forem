@@ -1,4 +1,10 @@
 <% if FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? %>
+<style>
+  #page-content {
+    display: flex;
+    flex-direction: column;
+  }
+</style>
 <div id="creator-setup-form" class="mt-8 mb-6 p-7 align-left mx-auto" style="max-width:580px;">
   <% if flash[:error] %>
     <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
