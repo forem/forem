@@ -1,9 +1,41 @@
 import { h } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
 
-export const MarkdownToolbar = ({ textAreaId }) => {
-  const controls = ['bold', 'italic'];
+const isStringStartAUrl = (string) => {
+  const startingText = string.substring(0, 8);
+  return startingText === 'https://' || startingText.startsWith('http://');
+};
 
+const markdownSyntaxFormatters = {
+  bold: {
+    label: 'Bold',
+    insertSyntax: (selection) => `**${selection}**`,
+    cursorOffset: 2,
+  },
+  italic: {
+    label: 'Italic',
+    insertSyntax: (selection) => `_${selection}_`,
+    getCursorOffset: () => 1,
+  },
+  underline: {
+    label: 'Underline',
+    insertSyntax: (selection) => `<u>${selection}</u>`,
+    getCursorOffset: () => 3,
+  },
+  strikethrough: {
+    label: 'Strikethrough',
+    insertSyntax: (selection) => `~~${selection}~~`,
+    getCursorOffset: () => 2,
+  },
+  link: {
+    label: 'Link',
+    insertSyntax: (selection) =>
+      isStringStartAUrl(selection) ? `[](${selection})` : `[${selection}](url)`,
+    getCursorOffset: (selection) => (isStringStartAUrl(selection) ? 3 : 1),
+  },
+};
+
+export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
 
   useLayoutEffect(() => {
@@ -61,7 +93,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     };
   };
 
-  const insertBold = () => {
+  const insertSyntax = (syntaxName) => {
     const {
       textBeforeInsertion,
       textAfterInsertion,
@@ -69,28 +101,20 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       selectionStart,
       selectionEnd,
     } = getSelectionData();
-    const newTextContent = `${textBeforeInsertion}**${selectedText}**${textAfterInsertion}`;
+    const { insertSyntax, getCursorOffset } =
+      markdownSyntaxFormatters[syntaxName];
+    const cursorOffset = getCursorOffset(selectedText);
 
-    textArea.value = newTextContent;
-
-    textArea.focus();
-    textArea.setSelectionRange(selectionStart + 2, selectionEnd + 2);
-  };
-
-  const insertItalic = () => {
-    const {
-      textBeforeInsertion,
-      textAfterInsertion,
+    const newTextContent = `${textBeforeInsertion}${insertSyntax(
       selectedText,
-      selectionStart,
-      selectionEnd,
-    } = getSelectionData();
-    const newTextContent = `${textBeforeInsertion}_${selectedText}_${textAfterInsertion}`;
-
+    )}${textAfterInsertion}`;
     textArea.value = newTextContent;
 
     textArea.focus();
-    textArea.setSelectionRange(selectionStart + 1, selectionEnd + 1);
+    textArea.setSelectionRange(
+      selectionStart + cursorOffset,
+      selectionEnd + cursorOffset,
+    );
   };
 
   return (
@@ -99,26 +123,19 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       role="toolbar"
       aria-controls={textAreaId}
     >
-      {/* First button maintains its tabindex to get us into the toolbar */}
-      <button
-        className="crayons-btn crayons-btn--secondary toolbar-btn"
-        id={controls[0]}
-        tabindex="0"
-        onClick={insertBold}
-        onKeyUp={handleToolbarButtonKeyPress}
-      >
-        Bold
-      </button>
-
-      <button
-        className="crayons-btn crayons-btn--secondary toolbar-btn"
-        id={controls[1]}
-        tabindex="-1"
-        onClick={insertItalic}
-        onKeyUp={handleToolbarButtonKeyPress}
-      >
-        Italic
-      </button>
+      {Object.keys(markdownSyntaxFormatters).map((controlName, index) => {
+        return (
+          <button
+            key={`${controlName}-btn`}
+            className="crayons-btn crayons-btn--secondary toolbar-btn"
+            tabindex={index === 0 ? '0' : '-1'}
+            onClick={() => insertSyntax(controlName)}
+            onKeyUp={handleToolbarButtonKeyPress}
+          >
+            {controlName}
+          </button>
+        );
+      })}
     </div>
   );
 };
