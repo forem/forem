@@ -576,7 +576,6 @@ class User < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    # Check if name contains banned spam words
     return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
       Regexp.new(term.downcase).match?(name.downcase)
     end
@@ -587,8 +586,6 @@ class User < ApplicationRecord
       reactable_type: "User",
       category: "vomit",
     )
-
-    puts "did it work?"
   end
 
   # TODO: @citizen428 I don't want to completely remove this method yet, as we
