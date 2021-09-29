@@ -2,6 +2,10 @@ class ConfirmationsController < Devise::ConfirmationsController
   FLASH_MESSAGE = "Email sent! Please contact support at %<email>s if you are "\
                   "having trouble receiving your confirmation instructions.".freeze
 
+  def show
+    super { sign_in(resource) if resource.errors.empty? && resource.creator? }
+  end
+
   def create
     self.resource = resource_class.send_confirmation_instructions(resource_params)
     resource.errors.clear # Don't leak user information, like paranoid mode.
