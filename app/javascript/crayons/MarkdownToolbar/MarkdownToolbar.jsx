@@ -10,28 +10,44 @@ const markdownSyntaxFormatters = {
   bold: {
     label: 'Bold',
     insertSyntax: (selection) => `**${selection}**`,
-    cursorOffset: 2,
+    getCursorOffsetStart: () => 2,
+    getCursorOffsetEnd: () => 2,
   },
   italic: {
     label: 'Italic',
     insertSyntax: (selection) => `_${selection}_`,
-    getCursorOffset: () => 1,
+    getCursorOffsetStart: () => 1,
+    getCursorOffsetEnd: () => 1,
   },
   underline: {
     label: 'Underline',
     insertSyntax: (selection) => `<u>${selection}</u>`,
-    getCursorOffset: () => 3,
+    getCursorOffsetStart: () => 3,
+    getCursorOffsetEnd: () => 3,
   },
   strikethrough: {
     label: 'Strikethrough',
     insertSyntax: (selection) => `~~${selection}~~`,
-    getCursorOffset: () => 2,
+    getCursorOffsetStart: () => 2,
+    getCursorOffsetEnd: () => 2,
   },
   link: {
     label: 'Link',
     insertSyntax: (selection) =>
       isStringStartAUrl(selection) ? `[](${selection})` : `[${selection}](url)`,
-    getCursorOffset: (selection) => (isStringStartAUrl(selection) ? 3 : 1),
+    getCursorOffsetStart: (selection) => (isStringStartAUrl(selection) ? 3 : 1),
+    getCursorOffsetEnd: (selection) => (isStringStartAUrl(selection) ? 3 : 1),
+  },
+  unorderedList: {
+    label: 'Unordered list',
+    insertSyntax: (selection) => {
+      // TODO: if the list doesn't start on a new line, we'll need to handle that
+      return `- ${selection}`.replace(/\n/g, '\n- ');
+    },
+    getCursorOffsetStart: (selection) => (selection.length === 0 ? 1 : 0),
+    getCursorOffsetEnd: (selection) =>
+      `- ${selection}`.replace(/\n/g, '\n- ').length - selection.length,
+    insertOnNewLine: true,
   },
 };
 
@@ -101,19 +117,29 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       selectionStart,
       selectionEnd,
     } = getSelectionData();
-    const { insertSyntax, getCursorOffset } =
-      markdownSyntaxFormatters[syntaxName];
-    const cursorOffset = getCursorOffset(selectedText);
+    const {
+      insertSyntax,
+      getCursorOffsetStart,
+      getCursorOffsetEnd,
+      insertOnNewLine,
+    } = markdownSyntaxFormatters[syntaxName];
 
-    const newTextContent = `${textBeforeInsertion}${insertSyntax(
-      selectedText,
-    )}${textAfterInsertion}`;
+    const requiresANewLine = selectionStart !== 0 && insertOnNewLine;
+
+    const syntaxCursorOffsetStart = getCursorOffsetStart(selectedText);
+    const syntaxCursorOffsetEnd = getCursorOffsetEnd(selectedText);
+
+    const newLineOffset = requiresANewLine ? 1 : 0;
+
+    const newTextContent = `${textBeforeInsertion}${
+      requiresANewLine ? '\n' : ''
+    }${insertSyntax(selectedText)}${textAfterInsertion}`;
+
     textArea.value = newTextContent;
-
     textArea.focus();
     textArea.setSelectionRange(
-      selectionStart + cursorOffset,
-      selectionEnd + cursorOffset,
+      selectionStart + syntaxCursorOffsetStart + newLineOffset,
+      selectionEnd + syntaxCursorOffsetEnd + newLineOffset,
     );
   };
 
