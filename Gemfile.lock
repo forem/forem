@@ -226,7 +226,7 @@ GEM
       http_parser.rb (~> 0.6.0)
     email_validator (2.2.3)
       activemodel
-    emoji_regex (3.2.2)
+    emoji_regex (3.2.3)
     equalizer (0.0.11)
     erb_lint (0.0.37)
       activesupport
