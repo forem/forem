@@ -43,9 +43,7 @@ class RegistrationsController < Devise::RegistrationsController
     resource.add_role(:creator)
     resource.add_role(:super_admin)
     resource.add_role(:trusted)
-    unless ForemInstance.smtp_enabled?
-      resource.skip_confirmation!
-    end
+    resource.skip_confirmation!
     Settings::General.waiting_on_first_user = false
     Users::CreateMascotAccount.call
   end
