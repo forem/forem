@@ -10,7 +10,6 @@ RSpec.describe "/creator_settings/new", type: :request do
       public: true,
       invite_only: false }
   end
-  # let(:post_resource) { post new_admin_creator_setting_path, params: params }
 
   before do
     allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
@@ -51,7 +50,7 @@ RSpec.describe "/creator_settings/new", type: :request do
         get new_admin_creator_setting_path
       end
 
-      it "allows a creator to successfully fill out the creator setup form", :aggregate_failures do
+      it "allows a super admin to successfully fill out the creator setup form", :aggregate_failures do
         post admin_creator_settings_path, params: params
         expect(super_admin.saw_onboarding).to eq(true)
         expect(response).to redirect_to(root_path)
