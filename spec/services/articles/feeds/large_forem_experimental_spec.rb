@@ -99,7 +99,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     context "when user logged in" do
       let(:stories) { feed.default_home_feed(user_signed_in: true) }
 
-      it "includes stories " do
+      it "includes stories" do
         expect(stories).to include(old_story)
         expect(stories).to include(new_story)
       end
@@ -252,7 +252,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
         expect(feed.score_experience_level(article)).to eq(-3)
       end
 
-      it "returns  proper negative when fractional" do
+      it "returns proper negative when fractional" do
         article.experience_level_rating = 8
         expect(feed.score_experience_level(article)).to eq(-3.5)
       end
@@ -387,43 +387,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       it "still returns articles" do
         expect(globally_hot_articles).not_to be_empty
       end
-    end
-  end
-
-  describe ".find_featured_story" do
-    let(:featured_story) { described_class.find_featured_story(stories) }
-
-    context "when passed an ActiveRecord collection" do
-      let(:stories) { Article.all }
-
-      it "returns first article with a main image" do
-        expect(featured_story.main_image).not_to be_nil
-      end
-    end
-
-    context "when passed an array" do
-      let(:stories) { Article.all.to_a }
-
-      it "returns first article with a main image" do
-        expect(featured_story.main_image).not_to be_nil
-      end
-    end
-
-    context "when passed collection without any articles" do
-      let(:stories) { [] }
-
-      it "returns an new, empty Article object" do
-        expect(featured_story.main_image).to be_nil
-        expect(featured_story.id).to be_nil
-      end
-    end
-  end
-
-  describe "#find_featured_story" do
-    it "calls the class method" do
-      allow(described_class).to receive(:find_featured_story)
-      feed.find_featured_story([])
-      expect(described_class).to have_received(:find_featured_story)
     end
   end
 end
