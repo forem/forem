@@ -18,7 +18,7 @@
   <%= auto_discovery_link_tag(:rss, app_url("/feed/#{@user.username}"), title: "#{community_name} RSS Feed") %>
 <% end %>
 
-<% if @user.score < 0 @user.suspended? %>
+<% if @user.score < 0 || @user.suspended? %>
   <meta name="robots" content="noindex">
   <meta name="robots" content="nofollow">
 <% end %>
