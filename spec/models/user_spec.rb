@@ -687,10 +687,10 @@ RSpec.describe User, type: :model do
 
   describe "#calculate_score" do
     it "calculates a score" do
-      create(:article, featured: true, user: user)
+      user.update_column(:badge_achievements_count, 3)
 
       user.calculate_score
-      expect(user.score).to be_positive
+      expect(user.score).to eq(30)
     end
   end
 
