@@ -4,11 +4,29 @@ import { displayErrorAlert, displaySnackbar } from '../messageUtilities';
 const confirmationText = (username) =>
   `My username is @${username} and this action is 100% safe and appropriate.`;
 
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.has('redirected') && localStorage.getItem('outcome') !== null) {
+    displaySnackbar(localStorage.getItem('outcome'));
+    localStorage.removeItem('outcome');
+  }
+});
+
 export default class ConfirmationModalController extends ModalController {
   static targets = ['itemId', 'username', 'endpoint'];
 
-  removeBadgeAchievement(id) {
-    return document.querySelector(`[data-row-id="${id}"]`).remove();
+  handleRecord({ endpoint, id, outcome }) {
+    switch (endpoint) {
+      case '/admin/content_manager/badge_achievements':
+        document.querySelector(`[data-row-id="${id}"]`).remove();
+        displaySnackbar(outcome.message);
+        break;
+      case '/admin/advanced/broadcasts':
+        localStorage.setItem('outcome', outcome.message);
+        window.location.replace(`${endpoint}?redirected`);
+        break;
+    }
   }
 
   async sendToEndpoint({ itemId, endpoint }) {
@@ -27,8 +45,11 @@ export default class ConfirmationModalController extends ModalController {
       const outcome = await response.json();
 
       if (response.ok) {
-        this.removeBadgeAchievement(itemId);
-        displaySnackbar(outcome.message);
+        this.handleRecord({
+          endpoint,
+          id: itemId,
+          outcome,
+        });
       } else {
         displayErrorAlert(outcome.error);
       }

@@ -55,37 +55,5 @@
       <% end %>
     </tbody>
   </table>
-  <div
-    id="confirmation-modal-root"
-    data-confirmation-modal-target="itemId"
-    data-confirmation-modal-target="endpoint"
-    data-confirmation-modal-target="username"></div>
-
-  <div id="confirmation-modal" class="hidden">
-    <div class="crayons-field mb-3">
-      <p id="confirmation-text-instructions">To confirm this update, type in the sentence: <br />
-      <strong>My username is @<%= current_user.username %> and this action is 100% safe and appropriate.</strong></p>
-      <div id="mismatch-warning" class="crayons-notice crayons-notice--warning hidden" aria-live="polite">
-        The confirmation text did not match.
-      </div>
-      <input
-        aria-label="Type the sentence above to confirm this update"
-        aria-describedby="confirmation-text-instructions"
-        type="text"
-        id="confirmation-text-field"
-        class="crayons-textfield flex-1 mr-2"
-        placeholder="Confirmation text" />
-    </div>
-
-    <button
-      class="crayons-btn mr-1 mb-2"
-      data-action="click->confirmation-modal#checkConfirmationText">
-      Confirm changes
-    </button>
-    <button
-      class="crayons-btn crayons-btn--secondary"
-      data-action="click->confirmation-modal#closeModal">
-      Discard changes
-    </button>
-  </div>
+  <%= render partial: "admin/shared/destroy_confirmation_modal" %>
 </div>

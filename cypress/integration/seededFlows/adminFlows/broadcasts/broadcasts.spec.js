@@ -1,18 +1,20 @@
-describe('Badge Achievements', () => {
+describe('Broadcasts', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginAndVisit(user, '/admin/content_manager/badge_achievements');
+      cy.loginAndVisit(user, '/admin/advanced/broadcasts');
 
       cy.findByRole('table').within(() => {
-        cy.findByRole('button', { name: 'Remove' }).click();
+        cy.findByRole('link', { name: 'Mock Broadcast' }).click();
       });
+
+      cy.findByRole('button', { name: /Destroy/i }).click();
     });
   });
 
-  describe('delete a badge achievement', () => {
+  describe('delete a broadcast', () => {
     it('should display confirmation modal', () => {
       cy.findByRole('dialog').contains('Confirm changes').should('be.visible');
     });
@@ -29,12 +31,12 @@ describe('Badge Achievements', () => {
         cy.get('button[aria-label="Close"]').click();
       });
 
-      cy.findByRole('table').within(() => {
-        cy.findByRole('button', { name: 'Remove' }).should('be.visible');
-      });
+      cy.findByRole('heading', { level: 2, name: 'Mock Broadcast' }).should(
+        'be.visible',
+      );
     });
 
-    it('should remove badge achievement if confirmation text matches', () => {
+    it('should delete the broadcast if confirmation text matches', () => {
       cy.get('@user').then((user) => {
         cy.findByRole('dialog').within(() => {
           cy.get('input').type(
@@ -43,24 +45,27 @@ describe('Badge Achievements', () => {
           cy.findByRole('button', { name: 'Confirm changes' }).click();
         });
 
+        // testing the redirect after broadcast destroy
+        cy.url().should('include', '/admin/advanced/broadcasts?redirected');
+
         cy.findByTestId('snackbar').within(() => {
           cy.findByRole('alert').should(
             'have.text',
-            'Badge achievement has been deleted!',
+            'Broadcast has been deleted!',
           );
         });
 
         cy.findByRole('table').within(() => {
-          cy.findByRole('button', { name: 'Remove' }).should('not.exist');
+          cy.findByRole('link', { name: 'Mock Broadcast' }).should('not.exist');
         });
       });
     });
 
-    it('generates error message when remove action fails', () => {
-      cy.intercept('DELETE', '/admin/content_manager/badge_achievements/**', {
+    it.skip('generates error message when destroy action fails', () => {
+      cy.intercept('DELETE', '/admin/advanced/broadcasts/**', {
         statusCode: 422,
         body: {
-          error: 'Something went wrong.',
+          error: 'Something went wrong with deleting the broadcast.',
         },
       });
 
@@ -74,13 +79,15 @@ describe('Badge Achievements', () => {
 
         cy.findByTestId('alertzone').within(() => {
           cy.findByRole('alert')
-            .contains('Something went wrong.')
+            .contains('Something went wrong with deleting the broadcast.')
             .should('be.visible');
         });
 
-        cy.findByRole('table').within(() => {
-          cy.findByRole('button', { name: 'Remove' }).should('be.visible');
-        });
+        cy.url().should('not.include', '?redirected');
+
+        cy.findByRole('heading', { level: 2, name: 'Mock Broadcast' }).should(
+          'be.visible',
+        );
       });
     });
   });
