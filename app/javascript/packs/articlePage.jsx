@@ -1,12 +1,8 @@
 import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
+import { initializeDropdown } from '../utilities/dropdownUtils';
 import { embedGists } from '../utilities/gist';
-import {
-  initializeDropdown,
-  getDropdownRepositionListener,
-} from '../utilities/dropdownUtils';
-import { getInstantClick } from '../topNavigation/utilities';
 
 /* global Runtime */
 
@@ -123,42 +119,5 @@ getCsrfToken().then(async () => {
   }
 });
 
-// Initialize the profile preview functionality
-const profilePreviewTrigger = document.getElementById(
-  'profile-preview-trigger',
-);
-
-const dropdownContent = document.getElementById('profile-preview-content');
-
-if (profilePreviewTrigger?.dataset.initialized !== 'true') {
-  initializeDropdown({
-    triggerElementId: 'profile-preview-trigger',
-    dropdownContentId: 'profile-preview-content',
-    onOpen: () => {
-      dropdownContent?.classList.add('showing');
-    },
-    onClose: () => {
-      dropdownContent?.classList.remove('showing');
-    },
-  });
-
-  profilePreviewTrigger.dataset.initialized = 'true';
-}
-
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
-
-// Preview card dropdowns reposition on scroll
-const dropdownRepositionListener = getDropdownRepositionListener();
-
-document.addEventListener('scroll', dropdownRepositionListener);
-
-getInstantClick().then((ic) => {
-  ic.on('change', () => {
-    document.removeEventListener('scroll', dropdownRepositionListener);
-  });
-});
-
-window.addEventListener('beforeunload', () => {
-  document.removeEventListener('scroll', dropdownRepositionListener);
-});

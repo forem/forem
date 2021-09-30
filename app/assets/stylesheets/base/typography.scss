@@ -43,6 +43,9 @@
 
 // Content fonts
 body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   &.serif-article-body {
     --content-font-family: var(--ff-serif);
   }

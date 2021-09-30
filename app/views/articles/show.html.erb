@@ -97,15 +97,51 @@
           <% end %>
 
           <div class="crayons-article__header__meta">
-            <% if @organization %>
-              <a href="<%= @organization.path %>" class="flex items-center mb-4 fs-l fw-medium crayons-link">
-                <span class="crayons-logo crayons-logo--l mr-3">
-                  <img src="<%= Images::Profile.call(@organization.profile_image_url, length: 50) %>" class="crayons-logo__image" alt="<%= @organization.name %> profile image">
-                </span>
-                <%= @organization.name %>
-              </a>
-            <% end %>
-            <h1 class="fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 <%= @article.title_length_classification %>">
+            <div class="flex s:items-start flex-col s:flex-row">
+              <div id="action-space" class="crayons-article__actions mb-4 s:mb-0 s:order-last"></div>
+              <div class="flex flex-1 mb-5 items-start">
+                <div class="relative">
+                  <% if @organization %>
+                    <a href="<%= @organization.path %>"><img src="<%= Images::Profile.call(@organization.profile_image_url, length: 50) %>" class="radius-default align-middle" width="40" height="40" alt="<%= @organization.name %> profile image"></a>
+                    <a href="/<%= @user.username %>" class="absolute -right-2 -bottom-2 radius-full border border-solid border-2 border-base-inverted inline-flex">
+                      <img class="radius-full align-middle" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" width="24" height="24" alt="<%= @user.name %>" />
+                    </a>
+                  <% else %>
+                    <a href="/<%= @user.username %>"><img class="radius-full align-middle" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" width="40" height="40" alt="<%= @user.name %>" /></a>
+                  <% end %>
+                </div>
+                <div class="pl-3 flex-1">
+                  <a href="/<%= @user.username %>" class="crayons-link fw-bold"><%= @user.name %></a>
+                  <% if @organization %>
+                    <span class="color-base-60">for</span> <a href="<%= @organization.path %>" class="crayons-link"><%= @organization.name %></a>
+                  <% end %>
+                  <p class="fs-xs color-base-60">
+                    <% if @article.published_timestamp.present? %>
+                      Posted on
+                      <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
+                    <% end %>
+                    <% if @article.co_author_ids.present? %>
+                      with <%= @article.co_author_name_and_path.html_safe %>
+                    <% end %>
+
+                    <% if should_show_updated_on?(@article) %>
+                      &bull; Updated on <%= local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year) %>
+                    <% end %>
+
+                    <% if should_show_crossposted_on?(@article) %>
+                      &bull; Originally published at
+                      <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
+                      <% if @article.crossposted_at %>
+                        on
+                        <%= local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year) %>
+                      <% end %>
+                    <% end %>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <h1 class="fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-2 <%= @article.title_length_classification %>">
               <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
                 <span class="fs-xl color-base-70 block"><%= @article.search_optimized_title_preamble %></span>
               <% end %>
@@ -113,57 +149,12 @@
             </h1>
 
             <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
-              <div class="mb-4 spec__tags">
+              <div class="spec__tags">
                 <% @article.cached_tag_list_array.each do |tag| %>
-                  <% tag_hash = tag_colors(tag) %>
-                  <% styles = "" %>
-                  <% if tag_hash[:background] %>
-                    <% styles = "background-color:#{tag_hash[:background]};" %>
-                  <% end %>
-                  <% if tag_hash[:color] %>
-                    <% styles = "#{styles}color:#{tag_hash[:color]};" %>
-                  <% end %>
-                  <a class="crayons-tag mr-1" href="/t/<%= tag %>" style="<%= styles %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+                  <a class="crayons-tag" href="/t/<%= tag %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
                 <% end %>
               </div>
             <% end %>
-
-            <div class="crayons-article__subheader">
-              <a href="/<%= @user.username %>" class="flex items-center mr-2 m:mr-1 mb-4 s:mb-0 fw-medium crayons-link">
-                <span class="crayons-avatar crayons-avatar--l mr-2 m:mr-1"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="" /></span>
-                <span class="block m:hidden"><%= @user.name %></span>
-              </a>
-              <div class="profile-preview-card relative mr-2 mb-4 s:mb-0 fw-medium">
-                <button id="profile-preview-trigger" class="profile-preview-card__trigger crayons-btn crayons-btn--ghost px-2 hidden m:block" aria-label="<%= @user.name %> profile details"><%= @user.name %></button>
-                <%= render "/shared/profile_preview_card", actor: @user, id: "profile-preview-content" %>
-              </div>
-
-              <span class="fs-s mb-4 s:mb-0">
-                <% if @article.published_timestamp.present? %>
-                  <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
-                <% end %>
-                <% if @article.co_author_ids.present? %>
-                  <em>with <%= @article.co_author_name_and_path.html_safe %></em>
-                <% end %>
-
-                <% if should_show_crossposted_on?(@article) %>
-                  <em>
-                    Originally published at
-                    <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
-                    <% if @article.crossposted_at %>
-                      on
-                      <%= local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year) %>
-                    <% end %>
-                  </em>
-                <% end %>
-                <% if should_show_updated_on?(@article) %>
-                  ・<em>Updated on <%= local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year) %></em>
-                <% end %>
-
-                <span class="mr-4">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
-              </span>
-              <span id="action-space" class="mb-4 s:mb-0"></span>
-            </div>
           </div>
         </header>
 
