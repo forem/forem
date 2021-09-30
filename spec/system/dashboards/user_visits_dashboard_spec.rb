@@ -22,7 +22,7 @@ RSpec.describe "Dashboard", type: :system, js: true do
 
       visit dashboard_path
 
-      within "div#page-content-inner > header" do
+      within "div#page-content-inner > section" do
         expect(page).to have_text("1\nCredits available")
       end
     end
