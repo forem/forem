@@ -55,7 +55,7 @@ RSpec.describe "Sitemaps", type: :request do
       expect(response.body).to include(Article.order("published_at DESC").last.path)
     end
 
-    it "renders first page if /sitemap-posts-randomn0tnumber" do
+    it "renders first page if /sitemap-posts-randomn0tnumber", :aggregate_failures do
       create_list(:article, 8)
       get "/sitemap-posts-randomn0tnumber.xml"
       expect(response.body).to include(Article.order("published_at DESC").first.path)
