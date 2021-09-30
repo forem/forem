@@ -48,7 +48,7 @@ RSpec.describe "Sitemaps", type: :request do
       expect(response.body).not_to include(Article.order("published_at DESC").last.path)
     end
 
-    it "renders second page if /sitemap-posts-1" do
+    it "renders second page if /sitemap-posts-1", :aggregate_failures do
       create_list(:article, 8)
       get "/sitemap-posts-1.xml"
       expect(response.body).not_to include(Article.order("published_at DESC").first.path)
