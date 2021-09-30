@@ -12,6 +12,12 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
         let(:user) { create(:user) }
         let(:tag) { create(:tag) }
         let(:org) { create(:organization) }
+        let(:article) { create(:article, tags: tag.name, score: 5) }
+
+        before do
+          stub_const("Stories::TaggedArticlesController::SIGNED_OUT_RECORD_COUNT", 10)
+          create(:article, tags: tag.name, score: 5)
+        end
 
         def create_live_sponsor(org, tag)
           create(
@@ -54,6 +60,18 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
             expect(response.headers["X-Accel-Expires"]).to eq("600")
           end
         end
+
+        it "returns not found if no published posts and tag not supported" do
+          Article.destroy_all
+          tag.update_column(:supported, false)
+          expect { get "/t/#{tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+
+        it "renders normal page if no articles but tag is supported" do
+          Article.destroy_all
+          expect { get "/t/#{tag.name}" }.not_to raise_error(ActiveRecord::RecordNotFound)
+        end
+
 
         it "renders page with top/week etc." do
           get "/t/#{tag.name}/top/week"
@@ -147,7 +165,6 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           let(:tag) { create(:tag) }
 
           it "renders tag index properly with many posts", :aggregate_failures do
-            stub_const("Stories::TaggedArticlesController::SIGNED_OUT_RECORD_COUNT", 10)
             create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
             get "/t/#{tag.name}"
 
