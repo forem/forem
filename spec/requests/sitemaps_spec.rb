@@ -62,7 +62,7 @@ RSpec.describe "Sitemaps", type: :request do
       expect(response.body).not_to include(Article.order("published_at DESC").last.path)
     end
 
-    it "renders empty if /sitemap-posts-2" do
+    it "renders empty if /sitemap-posts-2", :aggregate_failures do
       # no posts this far down.
       create_list(:article, 8)
       get "/sitemap-posts-2.xml"
