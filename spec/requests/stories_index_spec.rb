@@ -62,7 +62,8 @@ RSpec.describe "StoriesIndex", type: :request do
     it "renders all display_ads of different placements when published and approved" do
       org = create(:organization)
       ad = create(:display_ad, published: true, approved: true, organization: org, placement_area: "sidebar_left")
-      second_left_ad = create(:display_ad, published: true, approved: true, organization: org, placement_area: "sidebar_left_2")
+      second_left_ad = create(:display_ad, published: true, approved: true, organization: org,
+                                           placement_area: "sidebar_left_2")
       right_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right",
                                      organization: org)
 
@@ -86,7 +87,8 @@ RSpec.describe "StoriesIndex", type: :request do
     it "renders only one display ad of placement" do
       org = create(:organization)
       left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left", organization: org)
-      second_left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left", organization: org)
+      second_left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left",
+                                           organization: org)
 
       get "/"
       expect(response.body).to include(left_ad.processed_html).or(include(second_left_ad.processed_html))
