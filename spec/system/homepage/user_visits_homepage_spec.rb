@@ -18,7 +18,7 @@ RSpec.describe "User visits a homepage", type: :system do
     it "shows the tags block" do
       visit "/"
       within("#sidebar-nav-default-tags") do
-        Tag.where(supported: true).limit(30).each do |tag|
+        Tag.supported.limit(30).each do |tag|
           expect(page).to have_link("##{tag.name}", href: "/t/#{tag.name}")
         end
       end
