@@ -15,6 +15,7 @@ AllCops:
     - node_modules/**/*
     - tmp/**/*
     - vendor/**/*
+    - .pryrc
   DisplayStyleGuide: true
   ExtraDetails: true
   NewCops: enable # opt-in to new cops by default
