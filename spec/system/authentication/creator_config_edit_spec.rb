@@ -7,6 +7,7 @@ RSpec.describe "Creator config edit", type: :system, js: true do
     before do
       sign_in admin
       allow(ForemInstance).to receive(:private?).and_return(false)
+      allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true)
     end
 
     it "presents all available OAuth providers" do

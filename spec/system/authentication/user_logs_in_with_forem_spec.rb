@@ -1,11 +1,25 @@
 require "rails_helper"
 
-RSpec.describe "Authenticating with Facebook" do
-  let(:sign_in_link) { "Continue with Facebook" }
+RSpec.describe "Authenticating with Forem" do
+  let(:sign_in_link) { "Continue with Forem" }
 
   before do
-    omniauth_mock_facebook_payload
+    allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true)
+    omniauth_mock_forem_payload
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
+  end
+
+  describe "FeatureFlag hides the Forem Passport auth" do
+    it "shows Forem auth when enabled" do
+      visit sign_up_path
+      expect(page).to have_text(sign_in_link)
+    end
+
+    it "doesn't show the Forem auth when disabled" do
+      allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(false)
+      visit sign_up_path
+      expect(page).not_to have_text(sign_in_link)
+    end
   end
 
   context "when a user is new" do
@@ -20,7 +34,6 @@ RSpec.describe "Authenticating with Facebook" do
       it "logs in and redirects to the onboarding" do
         visit sign_up_path
         click_on(sign_in_link, match: :first)
-
         expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
       end
@@ -38,8 +51,8 @@ RSpec.describe "Authenticating with Facebook" do
 
     context "when using valid credentials but witholding email address" do
       before do
-        OmniAuth.config.mock_auth[:facebook][:info].delete(:email)
-        OmniAuth.config.mock_auth[:facebook][:extra][:raw_info].delete(:email)
+        OmniAuth.config.mock_auth[:forem][:info].delete(:email)
+        OmniAuth.config.mock_auth[:forem][:extra][:raw_info].delete(:email)
       end
 
       it "creates a new user" do
@@ -70,8 +83,8 @@ RSpec.describe "Authenticating with Facebook" do
 
     context "when trying to register with an already existing username" do
       it "creates a new user with a temporary username" do
-        # see Authentication::Providers::Facebook#new_user_data
-        username = OmniAuth.config.mock_auth[:facebook].info.name.downcase.sub(" ", "_")
+        # see Authentication::Providers::Forem#new_user_data
+        username = OmniAuth.config.mock_auth[:forem].info.name.downcase.sub(" ", "_")
         user = create(:user, username: username)
 
         expect do
@@ -86,11 +99,11 @@ RSpec.describe "Authenticating with Facebook" do
 
     context "when using invalid credentials" do
       let(:params) do
-        '{"callback_url"=>"http://localhost:3000/users/auth/facebook/callback", "state"=>"navbar_basic"}'
+        '{"callback_url"=>"http://localhost:3000/users/auth/forem/callback", "state"=>"navbar_basic"}'
       end
 
       before do
-        omniauth_setup_invalid_credentials(:facebook)
+        omniauth_setup_invalid_credentials(:forem)
 
         allow(ForemStatsClient).to receive(:increment)
       end
@@ -124,7 +137,7 @@ RSpec.describe "Authenticating with Facebook" do
         visit sign_up_path
         click_on(sign_in_link, match: :first)
 
-        args = omniauth_failure_args(error, "facebook", params)
+        args = omniauth_failure_args(error, "forem", params)
         expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -140,7 +153,7 @@ RSpec.describe "Authenticating with Facebook" do
         visit sign_up_path
         click_on(sign_in_link, match: :first)
 
-        args = omniauth_failure_args(error, "facebook", params)
+        args = omniauth_failure_args(error, "forem", params)
         expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -153,7 +166,7 @@ RSpec.describe "Authenticating with Facebook" do
         visit sign_up_path
         click_on(sign_in_link, match: :first)
 
-        args = omniauth_failure_args(error, "facebook", params)
+        args = omniauth_failure_args(error, "forem", params)
         expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -163,7 +176,7 @@ RSpec.describe "Authenticating with Facebook" do
     context "when a validation failure occurrs" do
       before do
         # A User is invalid if their name is more than 100 chars long
-        OmniAuth.config.mock_auth[:facebook].info.name = "X" * 101
+        OmniAuth.config.mock_auth[:forem].info.name = "X" * 101
       end
 
       it "does not create a new user" do
@@ -192,8 +205,8 @@ RSpec.describe "Authenticating with Facebook" do
   end
 
   context "when a user already exists" do
-    let!(:auth_payload) { OmniAuth.config.mock_auth[:facebook] }
-    let(:user) { create(:user, :with_identity, identities: [:facebook]) }
+    let!(:auth_payload) { OmniAuth.config.mock_auth[:forem] }
+    let(:user) { create(:user, :with_identity, identities: [:forem]) }
 
     before do
       auth_payload.info.name = user.name
@@ -216,7 +229,7 @@ RSpec.describe "Authenticating with Facebook" do
     context "when already signed in" do
       it "redirects to the dashboard" do
         sign_in user
-        visit user_facebook_omniauth_authorize_path
+        visit user_forem_omniauth_authorize_path
 
         expect(page).to have_current_path("/?signin=true")
       end

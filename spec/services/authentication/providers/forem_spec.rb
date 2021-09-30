@@ -1,9 +1,11 @@
 require "rails_helper"
 
-RSpec.describe Authentication::Providers::Github, type: :service do
+RSpec.describe Authentication::Providers::Forem, type: :service do
+  before { allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true) }
+
   describe ".authentication_path" do
     it "returns the correct authentication path" do
-      expected_path = Rails.application.routes.url_helpers.user_github_omniauth_authorize_path
+      expected_path = Rails.application.routes.url_helpers.user_forem_omniauth_authorize_path
       expect(described_class.authentication_path).to eq(expected_path)
     end
 
@@ -15,8 +17,8 @@ RSpec.describe Authentication::Providers::Github, type: :service do
 
   describe ".sign_in_path" do
     let(:expected_path) do
-      expected_callback_url = CGI.escape(URL.url("/users/auth/github/callback"))
-      "/users/auth/github?callback_url=#{expected_callback_url}"
+      expected_callback_url = CGI.escape(URL.url("/users/auth/forem/callback"))
+      "/users/auth/forem?callback_url=#{expected_callback_url}"
     end
 
     it "returns the correct sign in path" do
