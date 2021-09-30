@@ -42,7 +42,7 @@ RSpec.describe "User visits a homepage", type: :system do
         visit "/"
       end
 
-      it "shows correct articles " do
+      it "shows correct articles" do
         expect(page).to have_selector(".crayons-story", count: 2)
         expect(page).to have_text(article.title)
         expect(page).to have_text(article2.title)
