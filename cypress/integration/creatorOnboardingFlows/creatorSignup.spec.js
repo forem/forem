@@ -75,7 +75,7 @@ describe('Creator Signup Page', () => {
     cy.findByTestId('mask-icon').should('not.be.visible');
   });
 
-  it.skip("should allow sign the user in when 'Create my account' is clicked", () => {
+  it.skip("should sign the user in when 'Create my account' is clicked", () => {
     cy.findByTestId('creator-signup-form').as('creatorSignupForm');
     cy.get('@creatorSignupForm').findByText(/^Name/).type('Forem Creator');
 
