@@ -14,7 +14,7 @@ RSpec.describe Notifications::MentionWorker, type: :worker do
       expect(service).to have_received(:call).with(mention).once
     end
 
-    it "does nothing for non-existent mention " do
+    it "does nothing for non-existent mention" do
       worker.perform(nil)
       expect(service).not_to have_received(:call)
     end
