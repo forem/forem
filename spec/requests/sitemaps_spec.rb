@@ -40,5 +40,39 @@ RSpec.describe "Sitemaps", type: :request do
       expect(response.body).not_to include(articles.last.path)
       expect(response.media_type).to eq("application/xml")
     end
+
+    it "renders most recent posts if /sitemap-posts", :aggregate_failures do
+      create_list(:article, 8)
+      get "/sitemap-posts.xml"
+      expect(response.body).to include(Article.order("published_at DESC").first.path)
+      expect(response.body).not_to include(Article.order("published_at DESC").last.path)
+    end
+
+    it "renders second page if /sitemap-posts-1", :aggregate_failures do
+      create_list(:article, 8)
+      get "/sitemap-posts-1.xml"
+      expect(response.body).not_to include(Article.order("published_at DESC").first.path)
+      expect(response.body).to include(Article.order("published_at DESC").last.path)
+    end
+
+    it "renders first page if /sitemap-posts-randomn0tnumber", :aggregate_failures do
+      create_list(:article, 8)
+      get "/sitemap-posts-randomn0tnumber.xml"
+      expect(response.body).to include(Article.order("published_at DESC").first.path)
+      expect(response.body).not_to include(Article.order("published_at DESC").last.path)
+    end
+
+    it "renders empty if /sitemap-posts-2", :aggregate_failures do
+      # no posts this far down.
+      create_list(:article, 8)
+      get "/sitemap-posts-2.xml"
+      expect(response.body).not_to include(Article.order("published_at DESC").first.path)
+      expect(response.body).not_to include(Article.order("published_at DESC").last.path)
+    end
+
+    it "renders 'recent' version of surrogate control" do
+      get "/sitemap-posts-2.xml"
+      expect(response.header["Surrogate-Control"]).to include("8640")
+    end
   end
 end
