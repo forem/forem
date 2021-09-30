@@ -7,9 +7,9 @@ RSpec.describe Discover::RegisterWorker, type: :woker do
     let(:worker) { subject }
 
     it "registers the Forem with the app_domain" do
-      allow(Discover::Register).to receive(:call).with(domain: Settings::General.app_domain)
+      allow(Discover::Register).to receive(:call)
       worker.perform
-      expect(Discover::Register).to have_received(:call).with(domain: Settings::General.app_domain)
+      expect(Discover::Register).to have_received(:call)
     end
   end
 end
