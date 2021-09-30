@@ -942,6 +942,22 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe ".not_cached_tagged_with_any" do
+    it "can exclude multiple tags when given an array of strings" do
+      included = create(:article, tags: "includeme")
+      excluded1 = create(:article, tags: "includeme, lol")
+      excluded2 = create(:article, tags: "includeme, omg")
+
+      articles = described_class
+        .cached_tagged_with_any("includeme")
+        .not_cached_tagged_with_any(%w[lol omg])
+
+      expect(articles).to include included
+      expect(articles).not_to include excluded1
+      expect(articles).not_to include excluded2
+    end
+  end
+
   context "when callbacks are triggered before save" do
     it "assigns path on save" do
       expect(article.path).to eq("/#{article.username}/#{article.slug}")

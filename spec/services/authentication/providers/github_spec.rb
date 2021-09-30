@@ -15,7 +15,8 @@ RSpec.describe Authentication::Providers::Github, type: :service do
 
   describe ".sign_in_path" do
     let(:expected_path) do
-      "/users/auth/github?callback_url=http%3A%2F%2Flocalhost%3A3000%2Fusers%2Fauth%2Fgithub%2Fcallback"
+      expected_callback_url = CGI.escape(URL.url("/users/auth/github/callback"))
+      "/users/auth/github?callback_url=#{expected_callback_url}"
     end
 
     it "returns the correct sign in path" do

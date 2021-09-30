@@ -23,7 +23,7 @@
       <form accept-charset="UTF-8" method="get" action="<%= search_path %>" role="search">
         <div class="crayons-fields crayons-fields--horizontal">
           <div class="crayons-field flex-1 relative">
-            <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="Search..." autocomplete="off" />
+            <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="<%= t("core.search") %>..." autocomplete="off" />
             <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
               <%= inline_svg_tag("search.svg", aria_hidden: true, width: 24, height: 24, class: "crayons-icon", title: "Search") %>
             </button>
@@ -37,7 +37,7 @@
         <%= inline_svg_tag("search.svg", aria: true, class: "crayons-icon", title: "Search") %>
       </a>
       <% if user_signed_in? %>
-        <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto">Create Post</a>
+        <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto"><%= t("core.create_post") %></a>
 
         <span class="trusted-visible-block">
           <a id="moderation-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded m:flex hidden" aria-label="Moderation" href="<%= mod_path %>">
@@ -65,11 +65,11 @@
         </div>
       <% else %>
         <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand mr-2 hidden m:block whitespace-nowrap ml-auto" data-no-instant>
-          Log in
+          <%= t("core.log_in") %>
         </a>
 
         <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn mr-2 whitespace-nowrap fs-s s:fs-base" data-no-instant>
-          Create account
+          <%= t("core.create_account") %>
         </a>
       <% end %>
     </div>

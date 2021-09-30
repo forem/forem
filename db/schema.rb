@@ -1296,6 +1296,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
+    t.string "forem_username"
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.datetime "invitation_accepted_at"

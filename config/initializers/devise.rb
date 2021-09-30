@@ -1,3 +1,12 @@
+Dir.glob(Rails.root.join("lib/omni_auth/strategies/*.rb")).each do |filename|
+  require_dependency filename
+end
+
+FOREM_OMNIAUTH_SETUP = lambda do |env|
+  env["omniauth.strategy"].options[:client_id] = Settings::Authentication.forem_key
+  env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.forem_secret
+end
+
 TWITTER_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:consumer_key] = Settings::Authentication.twitter_key
   env["omniauth.strategy"].options[:consumer_secret] = Settings::Authentication.twitter_secret
@@ -312,8 +321,9 @@ Devise.setup do |config|
   # Fun fact, unless Twitter is last, it doesn't work for some reason.
   config.omniauth :facebook, setup: FACEBOOK_OMNIAUTH_SETUP
   config.omniauth :github, setup: GITHUB_OMNIUATH_SETUP
-  config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
   config.omniauth :apple, setup: APPLE_OMNIAUTH_SETUP
+  config.omniauth :forem, setup: FOREM_OMNIAUTH_SETUP, strategy_class: OmniAuth::Strategies::Forem
+  config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

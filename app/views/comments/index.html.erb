@@ -94,8 +94,7 @@
         <%= @commentable.title %>
       </h1>
       <div class="flex">
-        <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %>">View post</a>
-        <a class="view-discussion crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments">Full discussion</a>
+        <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %>"><%= t("core.view") %> <%= t("core.post").downcase %></a>
       </div>
     </header>
   <% end %>

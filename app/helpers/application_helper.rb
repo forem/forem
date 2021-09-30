@@ -132,7 +132,7 @@ module ApplicationHelper
     followable_name = followable.name
 
     tag.button(
-      "Follow",
+      I18n.t("core.follow"),
       name: :button,
       type: :button,
       data: {

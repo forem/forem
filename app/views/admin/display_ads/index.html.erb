@@ -17,7 +17,6 @@
       <th scope="col">ID</th>
       <th scope="col">Organization</th>
       <th scope="col">Placement Area</th>
-      <th scope="col">Body Markdown</th>
       <th scope="col">Published</th>
       <th scope="col">Approved</th>
       <th scope="col">Success Rate</th>
@@ -28,8 +27,7 @@
         <tr>
           <td><%= link_to display_ad.id, edit_admin_display_ad_path(display_ad) %></td>
           <td><%= link_to display_ad.organization.name, admin_organization_path(display_ad.organization) %></td>
-          <td><%= display_ad.placement_area %></td>
-          <td><%= display_ad.body_markdown.truncate(30) %></td>
+          <td><%= display_ad.human_readable_placement_area %></td>
           <td><%= display_ad.published %></td>
           <td><%= display_ad.approved %></td>
           <td><%= display_ad.success_rate %></td>
