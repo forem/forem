@@ -227,6 +227,16 @@ class Article < ApplicationRecord
     end
   }
 
+  # NOTE: @citizen428
+  # I'd usually avoid using Arel directly like this. However, none of the more
+  # straight-forward ways of negating the above scope worked:
+  # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
+  # 2. where.not(cached_tagged_with_any(tags).where_values_hash) doesn't work because where_values_hash
+  #    only works for simple conditions and returns an empty hash in this case.
+  scope :not_cached_tagged_with_any, lambda { |tags|
+    where(cached_tagged_with_any(tags).arel.constraints.reduce(:or).not)
+  }
+
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
 
