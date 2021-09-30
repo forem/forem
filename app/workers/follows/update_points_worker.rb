@@ -9,7 +9,8 @@ module Follows
       return unless article && user
 
       adjust_other_tag_follows_of_user(user.id)
-      followed_tag_names = user.cached_followed_tag_names
+      followed_tag_names =
+        user.cached_followed_tag_names + user.cached_antifollowed_tag_names
       article.decorate.cached_tag_list_array.each do |tag_name|
         if followed_tag_names.include?(tag_name)
           recalculate_tag_follow_points(tag_name, user)

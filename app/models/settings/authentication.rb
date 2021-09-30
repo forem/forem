@@ -14,6 +14,8 @@ module Settings
     setting :display_email_domain_allow_list_publicly, type: :boolean, default: false
     setting :facebook_key, type: :string
     setting :facebook_secret, type: :string
+    setting :forem_key, type: :string
+    setting :forem_secret, type: :string
     setting :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
     setting :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
     setting :invite_only_mode, type: :boolean, default: false

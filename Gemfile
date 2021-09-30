@@ -48,7 +48,7 @@ gem "honeycomb-beeline", "~> 2.7.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "i18n-js", "~> 3.9.0" # Helps with internationalization in Rails.
-gem "httparty", "~> 0.19" # Makes http fun! Also, makes consuming restful web services dead easy
+gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "imgproxy", "~> 2.0" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
@@ -140,7 +140,7 @@ group :development, :test do
   gem "cypress-rails", "~> 0.5.3" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 3.1.1" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 3.1.2" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+

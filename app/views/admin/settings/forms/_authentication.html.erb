@@ -161,6 +161,7 @@
                              readonly: true %>
           </div>
           <% authentication_available_providers.each do |provider| %>
+            <% next if provider.provider_name == :forem && !FeatureFlag.enabled?(:forem_passport) %>
             <section class="config-authentication__item mb-0">
               <figure class="config-authentication__item--icon">
                 <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
