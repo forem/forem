@@ -11,8 +11,11 @@ RSpec.describe User, type: :model do
   end
 
   def mock_username(provider_name, username)
-    if provider_name == :apple
+    case provider_name
+    when :apple
       OmniAuth.config.mock_auth[provider_name].info.first_name = username
+    when :forem
+      OmniAuth.config.mock_auth[provider_name].info.user_nickname = username
     else
       OmniAuth.config.mock_auth[provider_name].info.nickname = username
     end
@@ -422,7 +425,10 @@ RSpec.describe User, type: :model do
   describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
     let(:user) { create(:user) }
 
-    before { omniauth_mock_providers_payload }
+    before do
+      allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true)
+      omniauth_mock_providers_payload
+    end
 
     Authentication::Providers.available.each do |provider_name|
       it "finds user by email and assigns identity to that if exists for #{provider_name}" do

@@ -17,6 +17,10 @@
   --brand-facebook-color: #fff;
   --brand-facebook-bg-hover: #476fbf;
 
+  --brand-forem-bg: #0a3e4a;
+  --brand-forem-color: #fff;
+  --brand-forem-bg-hover: #05313b;
+
   --brand-email-bg: #24292e;
   --brand-email-color: #fff;
   --brand-email-bg-hover: #000;
@@ -289,6 +293,17 @@
   --bg-inverted-hover: var(--brand-facebook-bg-hover);
   --color-inverted: var(--brand-facebook-color);
   --color-inverted-hover: var(--brand-facebook-color);
+}
+
+.crayons-btn--brand-forem {
+  --bg: var(--brand-forem-bg);
+  --bg-hover: var(--brand-forem-bg-hover);
+  --color: var(--brand-forem-color);
+  --color-hover: var(--brand-forem-color);
+  --bg-inverted: var(--brand-forem-bg);
+  --bg-inverted-hover: var(--brand-forem-bg-hover);
+  --color-inverted: var(--brand-forem-color);
+  --color-inverted-hover: var(--brand-forem-color);
 }
 
 .crayons-btn--brand-email {
