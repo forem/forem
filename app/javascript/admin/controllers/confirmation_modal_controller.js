@@ -36,11 +36,15 @@ export default class ConfirmationModalController extends ModalController {
   handleRecord({ endpoint, id, outcome }) {
     if (nonRedirectEndpoints.includes(endpoint)) {
       this.removeRecordAsync({ id, outcome });
+      return;
     }
 
     if (redirectEndpoints.includes(endpoint)) {
       this.redirectAfterDestroy({ endpoint, outcome });
+      return;
     }
+
+    displayErrorAlert('Something went wrong.');
   }
 
   async sendToEndpoint({ itemId, endpoint }) {
