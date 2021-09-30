@@ -51,13 +51,7 @@
       <meta property="og:image" content="<%= article_social_image_url(@article) %>" />
       <meta name="twitter:image:src" content="<%= article_social_image_url(@article) %>">
     <% end %>
-    <% if !@article.published ||
-      (@article.score < 5 &&
-        @article.user.comments_count < 1 &&
-        !@article.featured &&
-        @article.processed_html.exclude?("<code>")) ||
-      @article.featured_number.to_i < 1500000000 ||
-      @article.score < -1 %>
+    <% if @article.skip_indexing? %>
       <meta name="robots" content="noindex">
       <meta name="robots" content="nofollow">
     <% end %>

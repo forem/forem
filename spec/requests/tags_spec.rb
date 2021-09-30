@@ -156,7 +156,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       expect(response_tag["name"]).to eq(tag.name)
       expect(response_tag["bg_color_hex"]).to eq(tag.bg_color_hex)
       expect(response_tag["text_color_hex"]).to eq(tag.text_color_hex)
-      expect(response_tag["following"]).to be_nil
+      expect(response_tag[I18n.t("core.following")]).to be_nil
     end
 
     it "returns only suggested tags" do

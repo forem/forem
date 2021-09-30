@@ -4,8 +4,12 @@
 //= require initializePage
 //= require utilities/getImageForLink
 //= require honeybadger-js/dist/honeybadger.js
+//= require i18n
 //= require ahoy.js/dist/ahoy.js
 
+I18n.defaultLocale = 'en';
+I18n.locale = document.body.dataset.locale;
+I18n.translations = JSON.parse(document.getElementById('i18n-translations').dataset.translations);
 var instantClick
   , InstantClick = instantClick = function(document, location, $userAgent) {
   // Internal variables

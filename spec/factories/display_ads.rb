@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :display_ad do
     placement_area { "sidebar_left" }
-    body_markdown { "Hello _hey_ Hey hey" }
+    sequence(:body_markdown) { |n| "Hello _hey_ Hey hey #{n}" }
     organization
   end
 end

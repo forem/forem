@@ -148,7 +148,7 @@ class StoriesController < ApplicationController
   end
 
   def featured_story
-    @featured_story ||= Articles::Feeds::LargeForemExperimental.find_featured_story(@stories)
+    @featured_story ||= Articles::Feeds::FindFeaturedStory.call(@stories)
   end
 
   def handle_podcast_index

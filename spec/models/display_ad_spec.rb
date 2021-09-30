@@ -30,11 +30,26 @@ RSpec.describe DisplayAd, type: :model do
       display_ad.placement_area = "tsdsdsdds"
       expect(display_ad).not_to be_valid
     end
+
+    it "returns human readable name" do
+      display_ad.placement_area = "sidebar_left_2"
+      expect(display_ad.human_readable_placement_area).to eq("Sidebar Left (Second Position)")
+    end
   end
 
   context "when callbacks are triggered before save" do
     it "generates #processed_html from #body_markdown" do
-      expect(display_ad.processed_html).to eq("<p>Hello <em>hey</em> Hey hey</p>")
+      expect(display_ad.processed_html).to start_with("<p>Hello <em>hey</em> Hey hey")
+    end
+
+    it "does not render disallowed tags" do
+      display_ad.update(body_markdown: "<style>body { color: black}</style> Hey hey")
+      expect(display_ad.processed_html).to eq("<p>body { color: black} Hey hey</p>")
+    end
+
+    it "does not render disallowed attributes" do
+      display_ad.update(body_markdown: "<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>")
+      expect(display_ad.processed_html).to start_with("<p>Hello <em>hey</em> Hey hey</p>")
     end
   end
 

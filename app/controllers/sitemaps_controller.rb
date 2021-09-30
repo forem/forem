@@ -13,7 +13,8 @@ class SitemapsController < ApplicationController
     end
 
     @articles = Article.published
-      .where("published_at > ? AND published_at < ? AND score > ?", date, date.end_of_month, 3)
+      .where("published_at > ? AND published_at < ? AND score > ?",
+             date, date.end_of_month, Settings::UserExperience.index_minimum_score)
       .pluck(:path, :last_comment_at)
 
     set_surrogate_controls(date)

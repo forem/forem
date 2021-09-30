@@ -27,7 +27,7 @@
     </button>
     <div id="comment-dropdown-<%= comment.id %>" class="crayons-dropdown right-1 s:right-0 s:left-auto fs-base dropdown">
       <ul class="m-0">
-        <li><a href="<%= URL.comment(comment) %>" class="crayons-link crayons-link--block permalink-copybtn" aria-label="Copy link to <%= comment.user.name %>'s comment" data-no-instant>Copy link</a></li>
+        <li><a href="<%= URL.comment(comment) %>" class="crayons-link crayons-link--block permalink-copybtn" aria-label="Copy link to <%= comment.user.name %>'s comment" data-no-instant><%= t("core.copy_link") %></a></li>
         <li class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= URL.comment(comment) %>/settings" aria-label="Go to <%= comment.user.name %>'s comment settings"></li>
         <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
         <li class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>">
