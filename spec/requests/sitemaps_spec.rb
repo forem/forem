@@ -41,7 +41,7 @@ RSpec.describe "Sitemaps", type: :request do
       expect(response.media_type).to eq("application/xml")
     end
 
-    it "renders most recent posts if /sitemap-posts" do
+    it "renders most recent posts if /sitemap-posts", :aggregate_failures do
       create_list(:article, 8)
       get "/sitemap-posts.xml"
       expect(response.body).to include(Article.order("published_at DESC").first.path)
