@@ -134,7 +134,7 @@ RSpec.describe "StoriesShow", type: :request do
       user2 = create(:user)
       article.update(co_author_ids: [user2.id])
       get article.path
-      expect(response.body).to include "<em>with <b><a href=\"#{user2.path}\">"
+      expect(response.body).to include %(with <a href="#{user2.path}" class="crayons-link">)
     end
 
     it "renders articles of long length without breaking" do
