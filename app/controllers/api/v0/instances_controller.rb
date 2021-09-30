@@ -27,17 +27,17 @@ module Api
       end
 
       def release_version
-        File.read("#{Rails.root}/.release-version")
+        File.read(Rails.root.join(".release-version"))
 
       # Accommodate the .release-version file not existing in the case where
       # this deployment is deployed from a checkout/snapshot of the code.
-      rescue => e
+      rescue StandardError
         # Get the latest modified file in the app. We don't use git in case it's
         # being run from a snapshot of the code outside a git repo (for example:
         # https://github.com/forem/forem/archive/refs/heads/main.zip), but
         # instead we use the latest modified time ("mtime") from application
         # code.
-        latest_mtime = Dir["#{Rails.root}/{app,config,db,lib}/**/*"]
+        latest_mtime = Dir[Rails.root.join("{app,config,db,lib}/**/*")]
           .max_by { |filename| File.mtime(filename) }
           .then { |filename| File.mtime(filename) }
 
