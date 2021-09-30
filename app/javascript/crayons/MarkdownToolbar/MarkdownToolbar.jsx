@@ -1,70 +1,31 @@
 import { h } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
+import {
+  coreSyntaxFormatters,
+  secondarySyntaxFormatters,
+} from './markdownSyntaxFormatters';
+import { Button } from '@crayons';
 
-const isStringStartAUrl = (string) => {
-  const startingText = string.substring(0, 8);
-  return startingText === 'https://' || startingText.startsWith('http://');
-};
+const getIndexOfLineStart = (text, cursorStart) => {
+  const currentCharacter = text.charAt(cursorStart);
+  if (currentCharacter === '\n') {
+    return cursorStart;
+  }
 
-const markdownSyntaxFormatters = {
-  bold: {
-    label: 'Bold',
-    insertSyntax: (selection) => `**${selection}**`,
-    getCursorOffsetStart: () => 2,
-    getCursorOffsetEnd: () => 2,
-  },
-  italic: {
-    label: 'Italic',
-    insertSyntax: (selection) => `_${selection}_`,
-    getCursorOffsetStart: () => 1,
-    getCursorOffsetEnd: () => 1,
-  },
-  underline: {
-    label: 'Underline',
-    insertSyntax: (selection) => `<u>${selection}</u>`,
-    getCursorOffsetStart: () => 3,
-    getCursorOffsetEnd: () => 3,
-  },
-  strikethrough: {
-    label: 'Strikethrough',
-    insertSyntax: (selection) => `~~${selection}~~`,
-    getCursorOffsetStart: () => 2,
-    getCursorOffsetEnd: () => 2,
-  },
-  link: {
-    label: 'Link',
-    insertSyntax: (selection) =>
-      isStringStartAUrl(selection) ? `[](${selection})` : `[${selection}](url)`,
-    getCursorOffsetStart: (selection) => (isStringStartAUrl(selection) ? 3 : 1),
-    getCursorOffsetEnd: (selection) => (isStringStartAUrl(selection) ? 3 : 1),
-  },
-  unorderedList: {
-    label: 'Unordered list',
-    insertSyntax: (selection) => `- ${selection}`.replace(/\n/g, '\n- '),
-    getCursorOffsetStart: (selection) => (selection.length === 0 ? 1 : 0),
-    getCursorOffsetEnd: (selection) =>
-      `- ${selection}`.replace(/\n/g, '\n- ').length - selection.length,
-    insertOnNewLine: true,
-  },
-  orderedList: {
-    label: 'Ordered list',
-    insertSyntax: (selection) =>
-      selection
-        .split('\n')
-        .map((textChunk, index) => `${index + 1}. ${textChunk}`)
-        .join('\n'),
-    getCursorOffsetStart: (selection) => (selection.length === 0 ? 1 : 0),
-    getCursorOffsetEnd: (selection) =>
-      selection
-        .split('\n')
-        .map((textChunk, index) => `${index + 1}. ${textChunk}`)
-        .join('\n').length - selection.length,
-    insertOnNewLine: true,
-  },
+  if (cursorStart !== 0) {
+    return getIndexOfLineStart(text, cursorStart - 1);
+  }
+
+  return 0;
 };
 
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
+
+  const markdownSyntaxFormatters = {
+    ...coreSyntaxFormatters,
+    ...secondarySyntaxFormatters,
+  };
 
   useLayoutEffect(() => {
     setTextArea(document.getElementById(textAreaId));
@@ -105,8 +66,27 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     }
   };
 
-  const getSelectionData = () => {
-    const { selectionStart, selectionEnd, value } = textArea;
+  const getSelectionData = (syntaxName) => {
+    const {
+      selectionStart: initialSelectionStart,
+      selectionEnd,
+      value,
+    } = textArea;
+
+    let selectionStart = initialSelectionStart;
+
+    // The 'heading' formatter can edit a previously inserted syntax,
+    // so we check if we need adjust the selection to the start of the line
+    if (syntaxName === 'heading') {
+      const startOfLine = getIndexOfLineStart(
+        textArea.value,
+        initialSelectionStart,
+      );
+
+      if (textArea.value.charAt(startOfLine + 1) === '#') {
+        selectionStart = startOfLine + 1;
+      }
+    }
 
     const textBeforeInsertion = value.substring(0, selectionStart);
     const textAfterInsertion = value.substring(selectionEnd, value.length);
@@ -128,50 +108,53 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       selectedText,
       selectionStart,
       selectionEnd,
-    } = getSelectionData();
+    } = getSelectionData(syntaxName);
+
     const {
-      insertSyntax,
-      getCursorOffsetStart,
-      getCursorOffsetEnd,
+      formattedText,
+      cursorOffsetStart,
+      cursorOffsetEnd,
       insertOnNewLine,
-    } = markdownSyntaxFormatters[syntaxName];
+    } = markdownSyntaxFormatters[syntaxName].getFormatting(selectedText);
 
     const requiresANewLine = selectionStart !== 0 && insertOnNewLine;
-
-    const syntaxCursorOffsetStart = getCursorOffsetStart(selectedText);
-    const syntaxCursorOffsetEnd = getCursorOffsetEnd(selectedText);
-
     const newLineOffset = requiresANewLine ? 1 : 0;
 
     const newTextContent = `${textBeforeInsertion}${
       requiresANewLine ? '\n' : ''
-    }${insertSyntax(selectedText)}${textAfterInsertion}`;
+    }${formattedText}${textAfterInsertion}`;
 
     textArea.value = newTextContent;
     textArea.focus();
     textArea.setSelectionRange(
-      selectionStart + syntaxCursorOffsetStart + newLineOffset,
-      selectionEnd + syntaxCursorOffsetEnd + newLineOffset,
+      selectionStart + cursorOffsetStart + newLineOffset,
+      selectionEnd + cursorOffsetEnd + newLineOffset,
     );
   };
 
   return (
     <div
+      className="editor-toolbar"
       aria-label="Markdown formatting toolbar"
       role="toolbar"
       aria-controls={textAreaId}
     >
-      {Object.keys(markdownSyntaxFormatters).map((controlName, index) => {
+      {Object.keys(coreSyntaxFormatters).map((controlName, index) => {
+        const { icon, label } = coreSyntaxFormatters[controlName];
         return (
-          <button
+          <Button
             key={`${controlName}-btn`}
-            className="crayons-btn crayons-btn--secondary toolbar-btn"
+            variant="ghost"
+            contentType="icon"
+            icon={icon}
+            className="toolbar-btn"
             tabindex={index === 0 ? '0' : '-1'}
             onClick={() => insertSyntax(controlName)}
             onKeyUp={handleToolbarButtonKeyPress}
+            aria-label={label}
           >
-            {controlName}
-          </button>
+            {icon}
+          </Button>
         );
       })}
     </div>

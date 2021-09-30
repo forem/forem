@@ -1,0 +1,12 @@
+.editor-toolbar {
+  background: var(--base-0);
+  padding: var(--su-2) var(--content-padding-x);
+
+  .toolbar-btn {
+    width: 50px;
+
+    svg {
+      vertical-align: middle;
+    }
+  }
+}
