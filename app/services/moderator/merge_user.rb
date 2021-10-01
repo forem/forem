@@ -47,12 +47,9 @@ module Moderator
       raise DUPLICATE_IDENTITIES_ERROR_MSG if
         (@delete_user.identities.pluck(:provider) & @keep_user.identities.pluck(:provider)).any?
 
-      return true if
-        @keep_user.identities.count.positive? ||
-          @delete_user.identities.none? ||
-          @keep_user.identities.last.provider == @delete_user.identities.last.provider
+      return true if @delete_user.identities.none?
 
-      @delete_user.identities.first.update_columns(user_id: @keep_user.id)
+      @delete_user.identities.update_all(user_id: @keep_user.id)
     end
 
     def update_social

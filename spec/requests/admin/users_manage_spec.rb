@@ -110,6 +110,15 @@ RSpec.describe "Admin::Users", type: :request do
 
       expect(user.reload.twitter_username).to eq("Twitter")
     end
+
+    it "merges an identity on a single account into the other" do
+      create(:identity, user: user, provider: "twitter")
+      create(:identity, user: user2)
+
+      post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
+
+      expect(user.identities.count).to eq 2
+    end
   end
 
   context "when managing activity and roles" do
