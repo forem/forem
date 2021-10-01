@@ -369,6 +369,31 @@ RSpec.describe "Comments", type: :request do
         expect(Notification.exists?(id: notification.id)).to eq(false)
       end
     end
+
+    context "with hiding child comments" do
+      let(:commentable_author) { create(:user) }
+      let(:article) { create(:article, user: commentable_author) }
+      let(:parent_comment) { create(:comment, commentable: article, user: commentable_author) }
+      let!(:child_comment) { create(:comment, commentable: article, parent: parent_comment) }
+
+      before do
+        sign_in commentable_author
+      end
+
+      it "hides child comment when hide_children is passed" do
+        patch "/comments/#{parent_comment.id}/hide", params: { hide_children: "1" },
+                                                     headers: { HTTP_ACCEPT: "application/json" }
+        child_comment.reload
+        expect(child_comment.hidden_by_commentable_user).to be true
+      end
+
+      it "hides child comment when hide_children is not passed" do
+        patch "/comments/#{parent_comment.id}/hide", params: { hide_children: "0" },
+                                                     headers: { HTTP_ACCEPT: "application/json" }
+        child_comment.reload
+        expect(child_comment.hidden_by_commentable_user).to be false
+      end
+    end
   end
 
   describe "PATCH /comments/:comment_id/unhide" do
