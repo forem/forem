@@ -1,3 +1,5 @@
+/* global Runtime */
+
 import {
   Bold,
   Italic,
@@ -13,6 +15,8 @@ import {
   Divider,
 } from './icons';
 
+const modifierText = Runtime.currentOS() === 'macOS' ? 'CMD' : 'CTRL';
+
 const isStringStartAUrl = (string) => {
   const startingText = string.substring(0, 8);
   return startingText === 'https://' || startingText.startsWith('http://');
@@ -23,7 +27,7 @@ export const coreSyntaxFormatters = {
     icon: Bold,
     label: 'Bold',
     keyboardShortcut: 'ctrl+b',
-    keyboardShortcutLabel: 'CMD + B',
+    keyboardShortcutLabel: `${modifierText} + B`,
     getFormatting: (selection) => ({
       formattedText: `**${selection}**`,
       cursorOffsetStart: 2,
@@ -34,7 +38,7 @@ export const coreSyntaxFormatters = {
     icon: Italic,
     label: 'Italic',
     keyboardShortcut: 'ctrl+i',
-    keyboardShortcutLabel: 'CMD + I',
+    keyboardShortcutLabel: `${modifierText} + I`,
     getFormatting: (selection) => ({
       formattedText: `_${selection}_`,
       cursorOffsetStart: 1,
@@ -45,7 +49,7 @@ export const coreSyntaxFormatters = {
     icon: Link,
     label: 'Link',
     keyboardShortcut: 'ctrl+k',
-    keyboardShortcutLabel: 'CMD + K',
+    keyboardShortcutLabel: `${modifierText} + K`,
     getFormatting: (selection) => {
       const isUrl = isStringStartAUrl(selection);
       return {
@@ -151,7 +155,7 @@ export const secondarySyntaxFormatters = {
     icon: Underline,
     label: 'Underline',
     keyboardShortcut: 'ctrl+u',
-    keyboardShortcutLabel: 'CMD + U',
+    keyboardShortcutLabel: `${modifierText} + U`,
     getFormatting: (selection) => ({
       formattedText: `<u>${selection}</u>`,
       cursorOffsetStart: 3,
@@ -162,7 +166,7 @@ export const secondarySyntaxFormatters = {
     icon: Strikethrough,
     label: 'Strikethrough',
     keyboardShortcut: 'ctrl+shift+x',
-    keyboardShortcutLabel: 'CMD + SHIFT + X',
+    keyboardShortcutLabel: `${modifierText} + SHIFT + X`,
     getFormatting: (selection) => ({
       formattedText: `~~${selection}~~`,
       cursorOffsetStart: 2,
