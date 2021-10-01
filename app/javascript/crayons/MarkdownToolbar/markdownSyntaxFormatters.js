@@ -8,6 +8,9 @@ import {
   Quote,
   Code,
   CodeBlock,
+  Underline,
+  Strikethrough,
+  Divider,
 } from './icons';
 
 const isStringStartAUrl = (string) => {
@@ -139,7 +142,7 @@ export const coreSyntaxFormatters = {
 
 export const secondarySyntaxFormatters = {
   underline: {
-    icon: 'underline',
+    icon: Underline,
     label: 'Underline',
     getFormatting: (selection) => ({
       formattedText: `<u>${selection}</u>`,
@@ -148,12 +151,21 @@ export const secondarySyntaxFormatters = {
     }),
   },
   strikethrough: {
-    icon: 'strikethrough',
+    icon: Strikethrough,
     label: 'Strikethrough',
     getFormatting: (selection) => ({
       formattedText: `~~${selection}~~`,
       cursorOffsetStart: 2,
       cursorOffsetEnd: 2,
+    }),
+  },
+  divider: {
+    icon: Divider,
+    label: 'Line divider',
+    getFormatting: (selection) => ({
+      formattedText: `${selection}\n---\n`,
+      cursorOffsetStart: selection.length + 5,
+      cursorOffsetEnd: selection.length + 5,
     }),
   },
 };

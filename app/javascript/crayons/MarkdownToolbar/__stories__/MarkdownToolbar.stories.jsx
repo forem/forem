@@ -11,6 +11,7 @@ export const Default = () => {
       <MarkdownToolbar textAreaId="text-area" />
       <textarea
         id="text-area"
+        aria-label="Editor"
         className="crayons-textfield min-h-full border-0"
         style={{ borderRadius: 0 }}
       />

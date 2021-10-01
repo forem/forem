@@ -1,6 +1,14 @@
 .editor-toolbar {
+  display: flex;
   background: var(--base-0);
   padding: var(--su-2) var(--content-padding-x);
+
+  &#overflow-menu {
+    position: asbolute;
+    background: revert;
+    right: var(--content-padding-x);
+    min-width: auto;
+  }
 
   .toolbar-btn {
     width: 50px;

@@ -4,6 +4,7 @@ import {
   coreSyntaxFormatters,
   secondarySyntaxFormatters,
 } from './markdownSyntaxFormatters';
+import { Overflow, Help } from './icons';
 import { Button } from '@crayons';
 
 const getIndexOfLineStart = (text, cursorStart) => {
@@ -21,6 +22,7 @@ const getIndexOfLineStart = (text, cursorStart) => {
 
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
+  const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
 
   const markdownSyntaxFormatters = {
     ...coreSyntaxFormatters,
@@ -31,7 +33,48 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     setTextArea(document.getElementById(textAreaId));
   }, [textAreaId]);
 
-  const handleToolbarButtonKeyPress = (event) => {
+  useLayoutEffect(() => {
+    //   TODO: maybe tidy this up with an extracted version of dropdownUtils
+    const clickOutsideHandler = ({ target }) => {
+      if (
+        target.id !== 'overflow-menu-button' &&
+        !document.getElementById('overflow-menu').contains(target)
+      ) {
+        setOverflowMenuOpen(false);
+      }
+    };
+    const escapePressHandler = ({ key }) => {
+      if (key === 'Escape') {
+        setOverflowMenuOpen(false);
+        document.getElementById('overflow-menu-button').focus();
+      }
+      if (key === 'Tab') {
+        // User tabbing away from toolbar, close without changing focus
+        setOverflowMenuOpen(false);
+      }
+    };
+
+    if (overflowMenuOpen) {
+      // send focus to the first option
+      document
+        .getElementById('overflow-menu')
+        .getElementsByClassName('overflow-menu-btn')[0]
+        .focus();
+
+      document.addEventListener('keyup', escapePressHandler);
+      document.addEventListener('click', clickOutsideHandler);
+    } else {
+      document.removeEventListener('keyup', escapePressHandler);
+      document.removeEventListener('click', clickOutsideHandler);
+    }
+
+    return () => {
+      document.removeEventListener('keyup', escapePressHandler);
+      document.removeEventListener('click', clickOutsideHandler);
+    };
+  }, [overflowMenuOpen]);
+
+  const handleToolbarButtonKeyPress = (event, className) => {
     const { key, target } = event;
     const {
       nextElementSibling: nextButton,
@@ -46,7 +89,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           nextButton.setAttribute('tabindex', 0);
           nextButton.focus();
         } else {
-          const firstButton = document.querySelector('.toolbar-btn');
+          const firstButton = document.querySelector(`.${className}`);
           firstButton.setAttribute('tabindex', '0');
           firstButton.focus();
         }
@@ -58,11 +101,18 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           previousButton.setAttribute('tabindex', 0);
           previousButton.focus();
         } else {
-          const allButtons = document.getElementsByClassName('toolbar-btn');
+          const allButtons = document.getElementsByClassName(className);
           const lastButton = allButtons[allButtons.length - 1];
           lastButton.setAttribute('tabindex', '0');
           lastButton.focus();
         }
+        break;
+      case 'ArrowDown':
+        if (target.id === 'overflow-menu-button') {
+          event.preventDefault();
+          setOverflowMenuOpen(true);
+        }
+        break;
     }
   };
 
@@ -102,6 +152,8 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   };
 
   const insertSyntax = (syntaxName) => {
+    setOverflowMenuOpen(false);
+
     const {
       textBeforeInsertion,
       textAfterInsertion,
@@ -134,7 +186,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
 
   return (
     <div
-      className="editor-toolbar"
+      className="editor-toolbar relative"
       aria-label="Markdown formatting toolbar"
       role="toolbar"
       aria-controls={textAreaId}
@@ -150,13 +202,68 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             className="toolbar-btn"
             tabindex={index === 0 ? '0' : '-1'}
             onClick={() => insertSyntax(controlName)}
-            onKeyUp={handleToolbarButtonKeyPress}
+            onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
             aria-label={label}
           >
             {icon}
           </Button>
         );
       })}
+
+      <Button
+        id="overflow-menu-button"
+        onClick={() => setOverflowMenuOpen(!overflowMenuOpen)}
+        onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
+        aria-expanded={overflowMenuOpen ? 'true' : 'false'}
+        aria-haspopup="true"
+        variant="ghost"
+        contentType="icon"
+        icon={Overflow}
+        className="toolbar-btn ml-auto"
+        tabindex="-1"
+        aria-label="More options"
+      />
+      {overflowMenuOpen && (
+        <div
+          id="overflow-menu"
+          role="menu"
+          className="absolute editor-toolbar crayons-dropdown p-2 right-0 top-100"
+        >
+          {Object.keys(secondarySyntaxFormatters).map((controlName, index) => {
+            const { icon, label } = secondarySyntaxFormatters[controlName];
+            return (
+              <Button
+                key={`${controlName}-btn`}
+                role="menuitem"
+                variant="ghost"
+                contentType="icon"
+                icon={icon}
+                className="overflow-menu-btn"
+                tabindex={index === 0 ? '0' : '-1'}
+                onClick={() => insertSyntax(controlName)}
+                onKeyUp={(e) =>
+                  handleToolbarButtonKeyPress(e, 'overflow-menu-btn')
+                }
+                aria-label={label}
+              >
+                {icon}
+              </Button>
+            );
+          })}
+          <Button
+            tagName="a"
+            role="menuitem"
+            url="/p/editor_guide"
+            variant="ghost"
+            contentType="icon"
+            icon={Help}
+            className="overflow-menu-btn"
+            tabindex="-1"
+            aria-label="Help"
+            onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'overflow-menu-btn')}
+          />
+        </div>
+      )}
     </div>
   );
 };
