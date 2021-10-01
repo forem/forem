@@ -6,6 +6,7 @@ import {
 } from './markdownSyntaxFormatters';
 import { Overflow, Help } from './icons';
 import { Button } from '@crayons';
+import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 
 const getIndexOfLineStart = (text, cursorStart) => {
   const currentCharacter = text.charAt(cursorStart);
@@ -28,6 +29,17 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     ...coreSyntaxFormatters,
     ...secondarySyntaxFormatters,
   };
+
+  const keyboardShortcuts = Object.fromEntries(
+    Object.keys(markdownSyntaxFormatters)
+      .filter(
+        (syntaxName) => !!markdownSyntaxFormatters[syntaxName].keyboardShortcut,
+      )
+      .map((syntaxName) => {
+        const { keyboardShortcut } = markdownSyntaxFormatters[syntaxName];
+        return [keyboardShortcut, () => insertSyntax(syntaxName)];
+      }),
+  );
 
   useLayoutEffect(() => {
     setTextArea(document.getElementById(textAreaId));
@@ -192,12 +204,13 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       aria-controls={textAreaId}
     >
       {Object.keys(coreSyntaxFormatters).map((controlName, index) => {
-        const { icon, label } = coreSyntaxFormatters[controlName];
+        const { icon, label, keyboardShortcutLabel } =
+          coreSyntaxFormatters[controlName];
         return (
           <Button
             key={`${controlName}-btn`}
             variant="ghost"
-            contentType="icon"
+            contentType="icon-left"
             icon={icon}
             className="toolbar-btn"
             tabindex={index === 0 ? '0' : '-1'}
@@ -205,7 +218,15 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
             aria-label={label}
           >
-            {icon}
+            <span aria-hidden="true" className="toolbar-btn__tooltip">
+              {label}
+              {keyboardShortcutLabel ? (
+                <span className="toolbar-btn__tooltip-shortcut">
+                  {' '}
+                  {keyboardShortcutLabel}
+                </span>
+              ) : null}
+            </span>
           </Button>
         );
       })}
@@ -230,13 +251,14 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           className="absolute editor-toolbar crayons-dropdown p-2 right-0 top-100"
         >
           {Object.keys(secondarySyntaxFormatters).map((controlName, index) => {
-            const { icon, label } = secondarySyntaxFormatters[controlName];
+            const { icon, label, keyboardShortcutLabel } =
+              secondarySyntaxFormatters[controlName];
             return (
               <Button
                 key={`${controlName}-btn`}
                 role="menuitem"
                 variant="ghost"
-                contentType="icon"
+                contentType="icon-left"
                 icon={icon}
                 className="overflow-menu-btn"
                 tabindex={index === 0 ? '0' : '-1'}
@@ -246,7 +268,15 @@ export const MarkdownToolbar = ({ textAreaId }) => {
                 }
                 aria-label={label}
               >
-                {icon}
+                <span aria-hidden="true" className="toolbar-btn__tooltip">
+                  {label}
+                  {keyboardShortcutLabel ? (
+                    <span className="toolbar-btn__tooltip-shortcut">
+                      {' '}
+                      {keyboardShortcutLabel}
+                    </span>
+                  ) : null}
+                </span>
               </Button>
             );
           })}
@@ -263,6 +293,12 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'overflow-menu-btn')}
           />
         </div>
+      )}
+      {textArea && (
+        <KeyboardShortcuts
+          shortcuts={keyboardShortcuts}
+          eventTarget={textArea}
+        />
       )}
     </div>
   );

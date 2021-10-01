@@ -10,11 +10,40 @@
     min-width: auto;
   }
 
-  .toolbar-btn {
+  .toolbar-btn,
+  .overflow-menu-btn {
     width: 50px;
 
     svg {
       vertical-align: middle;
+    }
+
+    &__tooltip {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--syntax-background-color);
+      color: var(--base-0);
+      font-size: var(--fs-s);
+      padding: var(--su-1) var(--su-2);
+      border-radius: var(--radius);
+      width: max-content;
+    }
+
+    &__tooltip-shortcut {
+      color: var(--base-30);
+    }
+  }
+
+  //   TODO: tidy up these classes
+  .toolbar-btn:hover,
+  .toolbar-btn:focus,
+  .overflow-menu-btn:hover,
+  .overflow-menu-btn:focus {
+    .toolbar-btn__tooltip {
+      display: block;
     }
   }
 }

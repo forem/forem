@@ -22,6 +22,8 @@ export const coreSyntaxFormatters = {
   bold: {
     icon: Bold,
     label: 'Bold',
+    keyboardShortcut: 'ctrl+b',
+    keyboardShortcutLabel: 'CMD + B',
     getFormatting: (selection) => ({
       formattedText: `**${selection}**`,
       cursorOffsetStart: 2,
@@ -31,6 +33,8 @@ export const coreSyntaxFormatters = {
   italic: {
     icon: Italic,
     label: 'Italic',
+    keyboardShortcut: 'ctrl+i',
+    keyboardShortcutLabel: 'CMD + I',
     getFormatting: (selection) => ({
       formattedText: `_${selection}_`,
       cursorOffsetStart: 1,
@@ -40,6 +44,8 @@ export const coreSyntaxFormatters = {
   link: {
     icon: Link,
     label: 'Link',
+    keyboardShortcut: 'ctrl+k',
+    keyboardShortcutLabel: 'CMD + K',
     getFormatting: (selection) => {
       const isUrl = isStringStartAUrl(selection);
       return {
@@ -144,6 +150,8 @@ export const secondarySyntaxFormatters = {
   underline: {
     icon: Underline,
     label: 'Underline',
+    keyboardShortcut: 'ctrl+u',
+    keyboardShortcutLabel: 'CMD + U',
     getFormatting: (selection) => ({
       formattedText: `<u>${selection}</u>`,
       cursorOffsetStart: 3,
@@ -153,6 +161,8 @@ export const secondarySyntaxFormatters = {
   strikethrough: {
     icon: Strikethrough,
     label: 'Strikethrough',
+    keyboardShortcut: 'ctrl+shift+x',
+    keyboardShortcutLabel: 'CMD + SHIFT + X',
     getFormatting: (selection) => ({
       formattedText: `~~${selection}~~`,
       cursorOffsetStart: 2,
