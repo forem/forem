@@ -210,7 +210,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           <Button
             key={`${controlName}-btn`}
             variant="ghost"
-            contentType="icon-left"
+            contentType="icon"
             icon={icon}
             className="toolbar-btn formatter-btn"
             tabindex={index === 0 ? '0' : '-1'}
@@ -221,10 +221,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             <span aria-hidden="true" className="formatter-btn__tooltip">
               {label}
               {keyboardShortcutLabel ? (
-                <span className="formatter-btn__tooltip-shortcut">
-                  {' '}
-                  {keyboardShortcutLabel}
-                </span>
+                <span className="opacity-75"> {keyboardShortcutLabel}</span>
               ) : null}
             </span>
           </Button>
@@ -240,7 +237,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         variant="ghost"
         contentType="icon"
         icon={Overflow}
-        className="toolbar-btn ml-auto"
+        className="toolbar-btn ml-auto formatter-btn"
         tabindex="-1"
         aria-label="More options"
       />
@@ -258,7 +255,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
                 key={`${controlName}-btn`}
                 role="menuitem"
                 variant="ghost"
-                contentType="icon-left"
+                contentType="icon"
                 icon={icon}
                 className="overflow-menu-btn formatter-btn"
                 tabindex={index === 0 ? '0' : '-1'}
@@ -271,10 +268,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
                 <span aria-hidden="true" className="formatter-btn__tooltip">
                   {label}
                   {keyboardShortcutLabel ? (
-                    <span className="formatter-btn__tooltip-shortcut">
-                      {' '}
-                      {keyboardShortcutLabel}
-                    </span>
+                    <span className="opacity-75"> {keyboardShortcutLabel}</span>
                   ) : null}
                 </span>
               </Button>

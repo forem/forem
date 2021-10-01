@@ -2,6 +2,7 @@ import { h } from 'preact';
 
 export const Bold = () => (
   <svg
+    className="crayons-icon"
     width="12"
     height="16"
     viewBox="0 0 12 16"
@@ -17,6 +18,7 @@ export const Bold = () => (
 
 export const Italic = () => (
   <svg
+    className="crayons-icon"
     width="10"
     height="16"
     viewBox="0 0 10 16"
@@ -32,6 +34,7 @@ export const Italic = () => (
 
 export const Link = () => (
   <svg
+    className="crayons-icon"
     width="20"
     height="20"
     viewBox="0 0 20 20"
@@ -47,6 +50,7 @@ export const Link = () => (
 
 export const OrderedList = () => (
   <svg
+    className="crayons-icon"
     width="18"
     height="18"
     viewBox="0 0 18 18"
@@ -62,6 +66,7 @@ export const OrderedList = () => (
 
 export const UnorderedList = () => (
   <svg
+    className="crayons-icon"
     width="18"
     height="18"
     viewBox="0 0 18 18"
@@ -77,6 +82,7 @@ export const UnorderedList = () => (
 
 export const Heading = () => (
   <svg
+    className="crayons-icon"
     width="14"
     height="17"
     viewBox="0 0 14 17"
@@ -89,8 +95,9 @@ export const Heading = () => (
 
 export const Quote = () => (
   <svg
+    className="crayons-icon"
     width="18"
-    height="15"
+    height="18"
     viewBox="0 0 18 15"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -104,6 +111,7 @@ export const Quote = () => (
 
 export const Code = () => (
   <svg
+    className="crayons-icon"
     width="22"
     height="16"
     viewBox="0 0 22 16"
@@ -119,6 +127,7 @@ export const Code = () => (
 
 export const CodeBlock = () => (
   <svg
+    className="crayons-icon"
     width="20"
     height="18"
     viewBox="0 0 20 18"
@@ -134,6 +143,7 @@ export const CodeBlock = () => (
 
 export const Overflow = () => (
   <svg
+    className="crayons-icon"
     width="4"
     height="18"
     viewBox="0 0 4 18"
@@ -151,6 +161,7 @@ export const Overflow = () => (
 
 export const Underline = () => (
   <svg
+    className="crayons-icon"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -166,9 +177,10 @@ export const Underline = () => (
 
 export const Strikethrough = () => (
   <svg
+    className="crayons-icon"
     width="18"
-    height="16"
-    viewBox="0 0 18 16"
+    height="18"
+    viewBox="0 0 18 18"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -181,6 +193,7 @@ export const Strikethrough = () => (
 
 export const Divider = () => (
   <svg
+    className="crayons-icon"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -197,6 +210,7 @@ export const Divider = () => (
 
 export const Help = () => (
   <svg
+    className="crayons-icon"
     width="24"
     height="24"
     viewBox="0 0 24 24"

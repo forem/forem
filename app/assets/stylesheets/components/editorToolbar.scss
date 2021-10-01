@@ -5,34 +5,34 @@
 
   &#overflow-menu {
     position: asbolute;
-    background: revert;
+    background: var(--card-bg);
     right: var(--content-padding-x);
     min-width: auto;
   }
 
   .formatter-btn {
-    width: 50px;
-
-    svg {
-      vertical-align: middle;
-    }
-
+    min-width: 50px;
     &__tooltip {
+      // TODO: rework tooltips.scss so we can use here too
       display: none;
       position: absolute;
       top: 100%;
+      bottom: unset;
       left: 50%;
       transform: translateX(-50%);
-      background-color: var(--syntax-background-color);
-      color: var(--base-0);
+      background: var(--base-a90);
+      color: var(--base-inverted);
       font-size: var(--fs-s);
-      padding: var(--su-1) var(--su-2);
+      font-family: var(--ff-sans-serif);
+      font-weight: var(--fw-normal);
+      line-height: var(--lh-tight);
+      padding: var(--su-2) var(--su-3);
+      transition: all var(--transition-props);
+      transition-delay: 250ms;
+      z-index: var(--z-popover);
       border-radius: var(--radius);
       width: max-content;
-    }
-
-    &__tooltip-shortcut {
-      color: var(--base-30);
+      opacity: var(--opacity-0);
     }
   }
 
@@ -40,6 +40,7 @@
   .formatter-btn:focus-visible {
     .formatter-btn__tooltip {
       display: block;
+      opacity: 1;
     }
   }
 }
