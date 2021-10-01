@@ -347,6 +347,10 @@ class User < ApplicationRecord
     has_role?(:super_admin)
   end
 
+  def creator?
+    has_role?(:creator)
+  end
+
   def any_admin?
     @any_admin ||= roles.where(name: ANY_ADMIN_ROLES).any?
   end
