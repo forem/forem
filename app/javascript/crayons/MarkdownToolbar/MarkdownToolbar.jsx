@@ -212,16 +212,16 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             variant="ghost"
             contentType="icon-left"
             icon={icon}
-            className="toolbar-btn"
+            className="toolbar-btn formatter-btn"
             tabindex={index === 0 ? '0' : '-1'}
             onClick={() => insertSyntax(controlName)}
             onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
             aria-label={label}
           >
-            <span aria-hidden="true" className="toolbar-btn__tooltip">
+            <span aria-hidden="true" className="formatter-btn__tooltip">
               {label}
               {keyboardShortcutLabel ? (
-                <span className="toolbar-btn__tooltip-shortcut">
+                <span className="formatter-btn__tooltip-shortcut">
                   {' '}
                   {keyboardShortcutLabel}
                 </span>
@@ -260,7 +260,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
                 variant="ghost"
                 contentType="icon-left"
                 icon={icon}
-                className="overflow-menu-btn"
+                className="overflow-menu-btn formatter-btn"
                 tabindex={index === 0 ? '0' : '-1'}
                 onClick={() => insertSyntax(controlName)}
                 onKeyUp={(e) =>
@@ -268,10 +268,10 @@ export const MarkdownToolbar = ({ textAreaId }) => {
                 }
                 aria-label={label}
               >
-                <span aria-hidden="true" className="toolbar-btn__tooltip">
+                <span aria-hidden="true" className="formatter-btn__tooltip">
                   {label}
                   {keyboardShortcutLabel ? (
-                    <span className="toolbar-btn__tooltip-shortcut">
+                    <span className="formatter-btn__tooltip-shortcut">
                       {' '}
                       {keyboardShortcutLabel}
                     </span>

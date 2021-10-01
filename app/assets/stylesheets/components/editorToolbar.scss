@@ -10,8 +10,7 @@
     min-width: auto;
   }
 
-  .toolbar-btn,
-  .overflow-menu-btn {
+  .formatter-btn {
     width: 50px;
 
     svg {
@@ -37,12 +36,9 @@
     }
   }
 
-  //   TODO: tidy up these classes
-  .toolbar-btn:hover,
-  .toolbar-btn:focus,
-  .overflow-menu-btn:hover,
-  .overflow-menu-btn:focus {
-    .toolbar-btn__tooltip {
+  .formatter-btn:hover,
+  .formatter-btn:focus-visible {
+    .formatter-btn__tooltip {
       display: block;
     }
   }
