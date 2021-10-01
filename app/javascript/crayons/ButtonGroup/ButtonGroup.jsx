@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { defaultChildrenPropTypes } from '../../common-prop-types/default-children-prop-types';
+import PropTypes from 'prop-types';
 
 export const ButtonGroup = ({ children }) => (
   <div role="presentation" className="crayons-btn-group">
@@ -10,5 +10,7 @@ export const ButtonGroup = ({ children }) => (
 ButtonGroup.displayName = 'ButtonGroup';
 
 ButtonGroup.propTypes = {
-  children: defaultChildrenPropTypes,
+  children: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  ).isRequired,
 };
