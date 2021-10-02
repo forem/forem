@@ -9,7 +9,7 @@
 
   <% if @article.any_comments_hidden %>
     <p class="fs-s color-base-60 mb-4">
-      Some comments have been hidden by the post's author - <a href="/faq">find out more</a>
+      <%= t("core.comments.hidden_msg") %> - <a href="/faq"><%= t("core.comments.find_more") %></a>
     </p>
   <% end %>
 
