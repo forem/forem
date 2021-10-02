@@ -32,8 +32,24 @@ fr:
     see_all: Tout voir
     trending_on: Populaire sur
     view: Vue
-    week: Semaine
-    year: Année
+    week: Semain
+    year: Anée
+    share: "Partegar sur"
+    copy_article: "Copier le lien de l'article dans le presse-papiers"
+    copied: "Copié dans le presse-papier"
+    code_of_conduct: "Code de conduite"
+    preview: "Aperçu"
+    edit: "Éditer"
+    admin: "Administrateur"
+    dashboard: "Tableau de bord"
+    moderator_center: "Centre de modération"
+    reading_list: "Liste de lecture"
+    settings: "Paramètres"
+    sign_out: "Se déconnecter"
+    comments:
+      hidden_msg: "Certains commentaires ont été masqués par l'auteur de la publication"
+      find_more: "en savoir plus"
+      add_to_discussion: "Ajouter à la discussion"
   date:
     abbr_month_names:
     - Janv
