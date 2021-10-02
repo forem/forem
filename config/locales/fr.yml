@@ -6,7 +6,7 @@ fr:
     comment: Commentaire
     copy_link: Copier le lien
     create_account: Créer un profil
-    create_post: Créer Publication
+    create_post: Créer une publication
     discussion: Discussion
     edit_profile: Editer le profil
     feed: Fil
@@ -21,8 +21,8 @@ fr:
     log_in: Entrer
     month: Mois
     more_from: Plus de
-    my_tags: Mes Sujets
-    popular_tags: Sujets Populaire
+    my_tags: Mes sujets
+    popular_tags: Sujets populaire
     post: Publication
     reaction: Réaction
     read_next: Lire ensuite
@@ -32,8 +32,8 @@ fr:
     see_all: Voir tout
     trending_on: Populaire sur
     view: Vue
-    week: Semain
-    year: Anée
+    week: Semaine
+    year: Année
   date:
     abbr_month_names:
     - Janv
