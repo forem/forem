@@ -3,15 +3,18 @@ fr:
   core:
     add_comment: Ajouter un commentaire
     all: Tout
+    analytics: Analytique
     comment: Commentaire
     copy_link: Copier le lien
     create_account: Créer un profil
     create_post: Créer Publication
+    dashboard: Tableau de bord
     discussion: Discussion
     edit_profile: Editer le profil
     feed: Fil
     follow: Suivre
     follow_back: Suivre aussi
+    follower: Suiveur
     following: Abonné
     full: Complet
     infinity: Infini
@@ -30,10 +33,16 @@ fr:
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Voir tout
+    series: Séries
     trending_on: Populaire sur
     view: Vue
     week: Semain
     year: Anée
+  dashboard:
+    empty_follower: Vous n'avez pas encore d'abonnés...
+    empty_post: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit
+    upload_a_video: Upload a video
+    write_new_post: Écrivez votre premier message maintenant
   date:
     abbr_month_names:
     - Janv

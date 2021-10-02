@@ -33,15 +33,18 @@ en:
   core:
     add_comment: "Add comment"
     all: "All"
+    analytics: "Analytics"
     comment: "Comment"
     copy_link: "Copy link"
     create_account: "Create account"
     create_post: "Create Post"
+    dashboard: "Dashboard"
     discussion: "Discussion"
     edit_profile: "Edit profile"
     feed: "Feed"
     follow: "Follow"
     follow_back: "Follow back"
+    follower: "Follower"
     following: "Following"
     full: "Full"
     infinity: "Infinity"
@@ -59,10 +62,16 @@ en:
     report_abuse: "Report abuse"
     search: "Search"
     see_all: "See all"
+    series: "Series"
     trending_on: "Trending on"
     view: "View"
     week: "Week"
     year: "Year"
+  dashboard:
+      empty_follower: You don't have any followers yet...
+      empty_post: This is where you can manage your posts, but you haven't written anything yet.
+      upload_a_video: Upload a video
+      write_new_post: Write your first post now
   errors:
     messages:
       accepted: must be accepted
