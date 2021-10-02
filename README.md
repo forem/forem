@@ -50,8 +50,8 @@ communities.
 
 ## What is Forem?
 
-Forem is open source software for building communities. Communities for your
-peers, customers, fanbases, families, friends, and any other time and space
+Forem is an open source software for building communities. Communities for your
+peers, customers, fanbases, families, friends, and for any other time and space
 where people need to come together to be part of a collective.
 [See our announcement post](https://dev.to/devteam/for-empowering-community-2k6h)
 for a high-level overview of what Forem is.
@@ -60,7 +60,7 @@ for a high-level overview of what Forem is.
 software developers who write articles, take part in discussions, and build
 their professional profiles. We value supportive and constructive dialogue in
 the pursuit of great code and career growth for all members. The ecosystem spans
-from beginner to advanced developers, and all are welcome to find their place
+from beginner to advanced developers, and all are welcomed to find their place
 within our community. ❤️
 
 ## Table of Contents
@@ -81,7 +81,7 @@ within our community. ❤️
 
 ## Community
 
-For a place to have open discussions on features, voice your ideas, or get help
+For a place to have open discussions on features, voice your ideas, or to get help
 with general questions please visit our community at
 [forem.dev](https://forem.dev/).
 
@@ -96,7 +96,7 @@ proceed.
 This section provides a high-level quick start guide. If you're looking for a
 more thorough installation guide (for example
 [with macOS](https://developers.forem.com/getting-started/installation/mac), you'll want to
-refer to our complete [Developer Documentation](https://developers.forem.com/).
+refer to our complete [Developer Documentation](https://developers.forem.com/)).
 
 We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
 transitioning to a [Preact](https://preactjs.com/)-first frontend.
