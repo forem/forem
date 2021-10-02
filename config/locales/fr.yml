@@ -34,11 +34,26 @@ fr:
     view: Vue
     week: Semaine
     year: Année
-  dashboard:
-    following_users: Utilisateurs suivis
-    loading: Chargement en cours...
-    not_following_any_users: Vous ne suivez aucun utilisateur...
-    page_title: Tableau de bord
+    share: "Partegar sur"
+    copy_article: "Copier le lien de l'article dans le presse-papiers"
+    copied: "Copié dans le presse-papier"
+    code_of_conduct: "Code de conduite"
+    preview: "Aperçu"
+    edit: "Éditer"
+    admin: "Administrateur"
+    moderator_center: "Centre de modération"
+    reading_list: "Liste de lecture"
+    settings: "Paramètres"
+    sign_out: "Se déconnecter"
+    comments:
+      hidden_msg: "Certains commentaires ont été masqués par l'auteur de la publication"
+      find_more: "en savoir plus"
+      add_to_discussion: "Ajouter à la discussion"
+    dashboard:
+      following_users: Utilisateurs suivis
+      loading: Chargement en cours...
+      not_following_any_users: Vous ne suivez aucun utilisateur...
+      page_title: Tableau de bord
   date:
     abbr_month_names:
     -

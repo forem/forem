@@ -1,44 +1,59 @@
 ---
 en:
   core:
-    add_comment: Add comment
-    all: All
-    comment: Comment
-    copy_link: Copy link
-    create_account: Create account
-    create_post: Create Post
-    discussion: Discussion
-    edit_profile: Edit profile
-    feed: Feed
-    follow: Follow
-    follow_back: Follow back
-    following: Following
-    full: Full
-    infinity: Infinity
-    latest: Latest
-    like: Like
-    listings: Listings
-    log_in: Log in
-    month: Month
-    more_from: More from
-    my_tags: My Tags
-    popular_tags: Popular Tags
-    post: Post
-    reaction: Reaction
-    read_next: Read next
-    reply: Reply
-    report_abuse: Report abuse
-    search: Search
-    see_all: See all
-    trending_on: Trending on
-    view: View
-    week: Week
-    year: Year
-  dashboard:
-    following_users: Following users
-    loading: loading...
-    not_following_any_users: You don't follow any users...
-    page_title: Dashboard
+    add_comment: "Add comment"
+    all: "All"
+    comment: "Comment"
+    copy_link: "Copy link"
+    create_account: "Create account"
+    create_post: "Create Post"
+    discussion: "Discussion"
+    edit_profile: "Edit profile"
+    feed: "Feed"
+    follow: "Follow"
+    follow_back: "Follow back"
+    following: "Following"
+    full: "Full"
+    infinity: "Infinity"
+    latest: "Latest"
+    like: "Like"
+    listings: "Listings"
+    log_in: "Log in"
+    month: "Month"
+    more_from: "More from"
+    my_tags: "My Tags"
+    post: "Post"
+    reaction: "Reaction"
+    read_next: "Read next"
+    reply: "Reply"
+    report_abuse: "Report abuse"
+    search: "Search"
+    see_all: "See all"
+    trending_on: "Trending on"
+    view: "View"
+    week: "Week"
+    year: "Year"
+    share: "Share to"
+    copy_article: "Copy article link to the clipboard"
+    copied: "Copied to Clipboard"
+    code_of_conduct: "Code of Conduct"
+    subscribe: "S'abonner"
+    preview: "Preview"
+    edit: "Edit"
+    admin: "Admin"
+    moderator_center: "Moderator Center"
+    reading_list: "Reading list"
+    settings: "Settings"
+    sign_out: "Sign Out"
+    comments:
+      hidden_msg: "Some comments have been hidden by the post's author"
+      find_more: "find out more"
+      add_to_discussion: "Add to the discussion"
+    dashboard:
+      following_users: Following users
+      loading: loading...
+      not_following_any_users: You don't follow any users...
+      page_title: Dashboard
   errors:
     messages:
       accepted: must be accepted
