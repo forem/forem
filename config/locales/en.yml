@@ -64,7 +64,7 @@ en:
     week: "Week"
     year: "Year"
     share: "Share to"
-    copy_article: "Copy article link to the clipboard"
+    copy_to_clipboard: "Copy to clipboard"
     copied: "Copied to Clipboard"
     code_of_conduct: "Code of Conduct"
     subscribe: "S'abonner"

@@ -35,7 +35,7 @@ fr:
     week: Semain
     year: Anée
     share: "Partegar sur"
-    copy_article: "Copier le lien de l'article dans le presse-papiers"
+    copy_to_clipboard: "Copier dans le presse-papier"
     copied: "Copié dans le presse-papier"
     code_of_conduct: "Code de conduite"
     preview: "Aperçu"

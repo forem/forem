@@ -40,7 +40,7 @@
             class="flex justify-between crayons-link crayons-link--block w-100 bg-transparent border-0"
             data-postUrl="<%= article_url(@article) %>">
             <span class="fw-bold"><%= t("core.copy_link") %></span>
-            <%= inline_svg_tag("copy.svg", aria_hidden: true, id: "article-copy-icon", class: "crayons-icon mx-2 shrink-0", title: t("core.copy_article")) %>
+            <%= inline_svg_tag("copy.svg", aria_hidden: true, id: "article-copy-icon", class: "crayons-icon mx-2 shrink-0", title: t("core.copy_to_clipboard")) %>
           </button>
           <div id="article-copy-link-announcer" aria-live="polite" class="crayons-notice crayons-notice--success my-2 p-1" aria-live="polite" hidden><%= t("core.copied") %></div>
         </div>
