@@ -94,7 +94,7 @@ class Comment < ApplicationRecord
     commentable.comments
       .includes(user: %i[setting profile])
       .arrange(order: "score DESC")
-      .to_a[0...limit]
+      .to_a[0..limit - 1]
       .to_h
   end
 
