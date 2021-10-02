@@ -1,0 +1,38 @@
+---
+gr:
+  core:
+    add_comment: Πρόσθεσε σχόλιου
+    all: Όλα
+    comment: Σχόλιο
+    create_account: Δημιουργία Λογαριασμού 
+    create_post: Δημιουργία ανάρτησης
+    discussion: Συζήτηση
+    edit_profile: Επεξεργασία προφίλ
+    follow: Ακολουθήστε
+    infinity: Άπειρο
+    latest: Νεότερο
+    log_in: Σύνδεση
+    month: Μήνας
+    post: Ανάρτηση
+    reaction: Αντίδραση
+    reply: Απάντηση
+    report_abuse: Αναφορά κατάχρησης
+    search: Αναζήτηση
+    see_all: Προβολή όλων
+    week: Εβδομάδα
+    year: Έτος
+  date:
+    abbr_month_names:
+    - Ιαν
+    - Φεβ
+    - Μάρ
+    - Απρ
+    - Μάι
+    - Ιούν
+    - Ιούλ
+    - Αύγ
+    - Σεπ
+    - Οκτ
+    - Νοέ
+    - Δεκ
+  
