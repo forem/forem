@@ -103,3 +103,8 @@ en:
       unparsable: Podcast's rss couldn't be parsed
       unplayable: This podcast may not be playable in the browser
       ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
+  dashboard:
+    page_title: Dashboard
+    following_users: Following users
+    loading: loading...
+    not_following_any_users: You don't follow any users...
