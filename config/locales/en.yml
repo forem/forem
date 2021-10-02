@@ -63,6 +63,23 @@ en:
     view: "View"
     week: "Week"
     year: "Year"
+    share: "Share to"
+    copy_article: "Copy article link to the clipboard"
+    copied: "Copied to Clipboard"
+    code_of_conduct: "Code of Conduct"
+    subscribe: "S'abonner"
+    preview: "Preview"
+    edit: "Edit"
+    admin: "Admin"
+    dashboard: "Dashboard"
+    moderator_center: "Moderator Center"
+    reading_list: "Reading list"
+    settings: "Settings"
+    sign_out: "Sign Out"
+    comments:
+      hidden_msg: "Some comments have been hidden by the post's author"
+      find_more: "find out more"
+      add_to_discussion: "Add to the discussion"
   errors:
     messages:
       accepted: must be accepted
