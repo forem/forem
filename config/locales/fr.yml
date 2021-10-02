@@ -4,6 +4,7 @@ fr:
     add_comment: Ajouter un commentaire
     all: Tout
     comment: Commentaire
+    community_name_is_great: "%{community_name}"
     copy_link: Copier le lien
     create_account: Créer un profil
     create_post: Créer Publication
@@ -13,6 +14,7 @@ fr:
     follow: Suivre
     follow_back: Suivre aussi
     following: Abonné
+    following_tags: Sujets
     full: Complet
     infinity: Infini
     latest: Récent
@@ -30,6 +32,9 @@ fr:
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Voir tout
+    tags_title: Sujets %{community_name%}
+    tags_to_follow: Sujets
+    top_tags: Sujets
     trending_on: Populaire sur
     view: Vue
     week: Semain
