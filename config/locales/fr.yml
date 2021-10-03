@@ -41,7 +41,7 @@ fr:
   dashboard:
     empty_follower: Vous n'avez pas encore d'abonnés...
     empty_post: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit
-    upload_a_video: Upload a video
+    upload_a_video: Charger une vidéo
     write_new_post: Écrivez votre premier message maintenant
   date:
     abbr_month_names:
