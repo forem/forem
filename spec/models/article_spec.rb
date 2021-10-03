@@ -234,6 +234,18 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "title validation" do
+      let(:title) { "U+202D" }
+
+      let!(:test_article) { build(:article, title: title) }
+
+      before { test_article.validate }
+
+      it "produces a proper title" do
+        expect(test_article.title).to eq(title)
+      end
+    end
+
     describe "tag validation" do
       let(:article) { build(:article, user: user) }
 
