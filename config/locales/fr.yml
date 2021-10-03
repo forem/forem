@@ -14,6 +14,7 @@ fr:
     follow_back: Suivre aussi
     following: Abonné
     full: Complet
+    heart: Coeur
     infinity: Infini
     latest: Récent
     like: Aime
@@ -28,9 +29,12 @@ fr:
     read_next: Lire ensuite
     reply: Répondre
     report_abuse: Signaler un abus
+    save: Sauver
     search: Recherche
     see_all: Voir tout
+    share_to: Partager sur %{media}
     trending_on: Populaire sur
+    unicorn: Licorne
     view: Vue
     week: Semain
     year: Anée

@@ -44,6 +44,7 @@ en:
     follow_back: "Follow back"
     following: "Following"
     full: "Full"
+    heart: Heart
     infinity: "Infinity"
     latest: "Latest"
     like: "Like"
@@ -57,9 +58,12 @@ en:
     read_next: "Read next"
     reply: "Reply"
     report_abuse: "Report abuse"
+    save: Save
     search: "Search"
     see_all: "See all"
+    share_to: Share to %{media}
     trending_on: "Trending on"
+    unicorn: Unicorn
     view: "View"
     week: "Week"
     year: "Year"
