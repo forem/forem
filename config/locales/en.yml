@@ -70,6 +70,7 @@ en:
       bad_protocol: must start with %{protocols}
       blank: can't be blank
       confirmation: doesn't match %{attribute}
+      contains_prohibited_characters: contains non-alphanumeric or prohibited unicode characters
       empty: can't be empty
       equal_to: must be equal to %{count}
       even: must be even
