@@ -2,11 +2,13 @@
 fr:
   core:
     add_comment: Ajouter un commentaire
+    admin: "Admin"
     all: Tout
     comment: Commentaire
     copy_link: Copier le lien
     create_account: Créer un profil
     create_post: Créer Publication
+    dashboard: "Tableau de Bord"
     discussion: Discussion
     edit_profile: Editer le profil
     feed: Fil
@@ -19,17 +21,21 @@ fr:
     like: Aime
     listings: Annonces
     log_in: Entrer
+    mod_center: "Centre de Modération"
     month: Mois
     more_from: Plus de
     my_tags: Mes Sujets
     popular_tags: Sujets Populaire
     post: Publication
     reaction: Réaction
+    reading_list: "Liste de Lecture"
     read_next: Lire ensuite
     reply: Répondre
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Voir tout
+    settings: "Paramètres"
+    sign_out: "Se Déconnecter"
     trending_on: Populaire sur
     view: Vue
     week: Semain
