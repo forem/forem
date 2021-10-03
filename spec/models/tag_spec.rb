@@ -90,6 +90,11 @@ RSpec.describe Tag, type: :model do
         tag.name = "Test™"
         expect(tag).not_to be_valid
       end
+
+      it "fails validations if name is a prohibited (whitespace) unicode character" do
+        tag.name = "U+202D"
+        expect(tag).not_to be_valid
+      end
     end
 
     describe "alias_for" do
