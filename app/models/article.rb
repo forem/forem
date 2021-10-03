@@ -29,6 +29,7 @@ class Article < ApplicationRecord
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
   UNIQUE_URL_ERROR = "has already been taken. " \
                      "Email #{ForemInstance.email} for further details.".freeze
+  PROHIBITED_UNICODE_CHARACTERS_REGEX = /~\s+~u/
 
   has_one :discussion_lock, dependent: :destroy
 
@@ -87,6 +88,7 @@ class Article < ApplicationRecord
   validate :canonical_url_must_not_have_spaces
   validate :past_or_present_date
   validate :validate_collection_permission
+  validate :validate_title
   validate :validate_tag
   validate :validate_video
   validate :user_mentions_in_markdown
@@ -652,6 +654,10 @@ class Article < ApplicationRecord
     end
   end
 
+  def validate_title
+    remove_prohibitted_unicode_characters(str: title) if contains_prohibitted_unicode_characters?(str: title)
+  end
+
   def remove_tag_adjustments_from_tag_list
     tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal",
                                          status: "committed").pluck(:tag_name)
@@ -854,5 +860,13 @@ class Article < ApplicationRecord
     return unless saved_change_to_attribute?(:processed_html)
 
     ::Articles::DetectAnimatedImagesWorker.perform_async(id)
+  end
+
+  def contains_prohibitted_unicode_characters?(str:)
+    str == PROHIBITED_UNICODE_CHARACTERS_REGEX
+  end
+
+  def remove_prohibitted_unicode_characters(str:, replacement: "")
+    str.gsub(PROHIBITED_UNICODE_CHARACTERS_REGEX, replacement)
   end
 end
