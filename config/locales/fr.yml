@@ -1,5 +1,13 @@
 ---
 fr:
+  settings_menu:
+    profile: Profil
+    customization: Personnalisation
+    notifications: Notifications
+    account: Compte
+    billing: Facturation
+    organization: Organisation
+    extensions: Extensions
   core:
     add_comment: Ajouter un commentaire
     all: Tout

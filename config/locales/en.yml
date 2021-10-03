@@ -30,6 +30,14 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  settings_menu:
+    profile: Profile
+    customization: Customization
+    notifications: Notifications
+    account: Account
+    billing: Billing
+    organization: Organization
+    extensions: Extensions
   core:
     add_comment: "Add comment"
     all: "All"
