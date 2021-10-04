@@ -44,7 +44,9 @@ export const MessageModal = ({
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html:
-            (isCurrentUserOnListing && i18next.t('listings.message.relevant')) +
+            (isCurrentUserOnListing
+              ? i18next.t('listings.message.relevant')
+              : '') +
             i18next.t('listings.message.notice', {
               code: `<a href="/code-of-conduct" className="crayons-link crayons-link--brand">${i18next.t(
                 'listings.message.code',
