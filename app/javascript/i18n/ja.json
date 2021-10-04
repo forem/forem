@@ -275,14 +275,14 @@
     },
     "new_title": "New post title here...",
     "options": {
-      "aria_label": "Select one of the existing series",
-      "done": "Done",
-      "existing": "Existing series: ",
-      "heading": "Post options",
-      "select": "Select...",
+      "done": "完了",
+      "heading": "記事の設定",
       "series": {
-        "desc": "Will this post be part of a series? Give the series a unique name. (Series visible once it has multiple posts)",
-        "label": "Series"
+        "aria_label": "既存の連載の中から一つ選んでください",
+        "desc": "この記事は連載の一部ですか？新しい連載名をつけてください（2 つめの記事ができると連載として表示されます）",
+        "existing": "既存の連載: ",
+        "label": "連載",
+        "select": "選択…"
       },
       "title": "Post options",
       "unpublish": "Unpublish post",

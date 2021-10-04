@@ -278,14 +278,14 @@
     },
     "new_title": "New post title here...",
     "options": {
-      "aria_label": "Select one of the existing series",
       "done": "Done",
-      "existing": "Existing series: ",
       "heading": "Post options",
-      "select": "Select...",
       "series": {
+        "aria_label": "Select one of the existing series",
         "desc": "Will this post be part of a series? Give the series a unique name. (Series visible once it has multiple posts)",
-        "label": "Series"
+        "existing": "Existing series: ",
+        "label": "Series",
+        "select": "Select..."
       },
       "title": "Post options",
       "unpublish": "Unpublish post",

@@ -49,17 +49,17 @@ export const Options = ({
     });
     existingSeries = (
       <div className="crayons-field__description">
-        {i18next.t('editor.options.existing')}
+        {i18next.t('editor.options.series.existing')}
         <select
           value=""
           name="series"
           className="crayons-select"
           onInput={onConfigChange}
           required
-          aria-label={i18next.t('editor.options.aria_label')}
+          aria-label={i18next.t('editor.options.series.aria_label')}
         >
           <option value="" disabled>
-            {i18next.t('editor.options.select')}
+            {i18next.t('editor.options.series.select')}
           </option>
           {seriesNames}
         </select>
