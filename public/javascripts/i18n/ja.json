@@ -69,6 +69,7 @@
         "text": "Settings"
       }
     },
+    "num_likes": "%{- likes}%{- num}",
     "read": {
       "code": "code of conduct",
       "text": "I've read the %{- code}"
