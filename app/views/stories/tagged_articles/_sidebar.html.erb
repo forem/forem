@@ -1,7 +1,7 @@
 <% cache "tag-sidebar-#{@tag}-#{@tag_model&.updated_at}-#{@tag_model&.taggings_count}-#{user_signed_in?}-#{@page}", expires_in: 5.hours do %>
   <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
-    <div class="side-bar">
+    <aside class="side-bar">
       <% if @tag_model && @tag_model.rules_html.present? %>
         <div class="widget">
           <header>
@@ -107,6 +107,6 @@
           <% end %>
         <% end %>
       </div>
-    </div>
+    </aside>
   </div>
 <% end %>
