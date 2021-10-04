@@ -2,7 +2,7 @@
   <% if @comments_to_show_count && @article.comments_count > @comments_to_show_count %>
     <div class="mb-4">
       <a class="crayons-btn crayons-btn--secondary w-100" href="<%= @article.path %>/comments">
-        View full discussion (<%= @article.comments_count %> comments)
+        <%= t("core.view") %> <%= t("core.full") %> <%= t("core.discussion") %> (<%= @article.comments_count %> comments)
       </a>
     </div>
   <% end %>

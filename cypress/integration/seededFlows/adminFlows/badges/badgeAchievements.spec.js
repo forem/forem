@@ -72,7 +72,7 @@ describe('Badge Achievements', () => {
           cy.findByRole('button', { name: 'Confirm changes' }).click();
         });
 
-        cy.findByTestId('errorzone').within(() => {
+        cy.findByTestId('alertzone').within(() => {
           cy.findByRole('alert')
             .contains('Something went wrong.')
             .should('be.visible');

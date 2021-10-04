@@ -257,9 +257,18 @@ class User < ApplicationRecord
     "/#{username}"
   end
 
+  # NOTE: This method is only used in the EmailDigestArticleCollector and does
+  # not perform particularly well. It should most likely not be used in other
+  # parts of the app.
   def followed_articles
-    Article
-      .cached_tagged_with_any(cached_followed_tag_names).unscope(:select)
+    relation = Article
+    if cached_antifollowed_tag_names.any?
+      relation = relation.not_cached_tagged_with_any(cached_antifollowed_tag_names)
+    end
+
+    relation
+      .cached_tagged_with_any(cached_followed_tag_names)
+      .unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
   end
 
@@ -307,6 +316,20 @@ class User < ApplicationRecord
         id: Follow.where(
           follower_id: id,
           followable_type: "ActsAsTaggableOn::Tag",
+          points: 1..,
+        ).select(:followable_id),
+      ).pluck(:name)
+    end
+  end
+
+  def cached_antifollowed_tag_names
+    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+      Tag.where(
+        id: Follow.where(
+          follower_id: id,
+          followable_type: "ActsAsTaggableOn::Tag",
+          points: ...1,
         ).select(:followable_id),
       ).pluck(:name)
     end

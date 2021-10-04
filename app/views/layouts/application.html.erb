@@ -49,6 +49,7 @@
       <body
         data-user-status="<%= user_logged_in_status %>"
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
+        data-locale="<%= I18n.locale %>"
         data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
         data-app-domain="<%= ChatChannel.urlsafe_encoded_app_domain %>"
         data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
@@ -120,6 +121,7 @@
       }
     </script>
   <% end %>
+  <div id="i18n-translations" data-translations="<%= { I18n.locale.to_sym => { core: I18n::JS.translations[I18n.locale.to_sym][:core] } }.to_json %>"></div>
   </body>
   </html>
 <% end %>

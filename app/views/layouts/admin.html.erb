@@ -85,10 +85,10 @@
       <% end %>
 
       <div
-        data-controller="error"
-        data-action="error:generate@document->error#generateErrorAlert"
-        data-testid="errorzone">
-          <div data-error-target="errorZone" role="alert"></div>
+        data-controller="alert"
+        data-action="error:generate@document->alert#generateErrorAlert"
+        data-testid="alertzone">
+          <div data-alert-target="alertZone" role="alert"></div>
       </div>
 
       <% if request.path.split("/")[-3] == "admin" %>

@@ -7,6 +7,9 @@
     Email authentication is not enabled for this Forem.
   </div>
 <% elsif forem_creator_flow_enabled? %>
+  <style>
+    <%= Rails.application.assets["setup-mode.css"].to_s.html_safe %>
+  </style>
   <%= render "shared/authentication/forem_creator_signup" %>
 <% elsif waiting_on_first_user? %>
   <%# TODO: [@ridhwana]: Delete this view once forem creator onboarding is shipped %>

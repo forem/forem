@@ -39,6 +39,14 @@ module Constants
           "The \"App Secret\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
           placeholder: ""
         },
+        forem_key: {
+          description: "Forem key",
+          placeholder: ""
+        },
+        forem_secret: {
+          description: "Forem secret",
+          placeholder: ""
+        },
         github_key: {
           description: "The \"Client ID\" portion of the GitHub Oauth Apps portal",
           placeholder: ""

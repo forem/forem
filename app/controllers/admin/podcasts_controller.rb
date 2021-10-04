@@ -3,6 +3,23 @@ module Admin
     layout "admin"
 
     before_action :find_podcast, only: %i[edit update fetch add_owner]
+    PODCAST_ALLOWED_PARAMS = %i[
+      title
+      feed_url
+      description
+      itunes_url
+      overcast_url
+      android_url
+      soundcloud_url
+      website_url
+      twitter_username
+      pattern_image
+      main_color_hex
+      slug
+      image
+      reachable
+      published
+    ].freeze
 
     def index
       @podcasts = Podcast.left_outer_joins(:podcast_episodes)
@@ -56,24 +73,7 @@ module Admin
     end
 
     def podcast_params
-      allowed_params = %i[
-        title
-        feed_url
-        description
-        itunes_url
-        overcast_url
-        android_url
-        soundcloud_url
-        website_url
-        twitter_username
-        pattern_image
-        main_color_hex
-        slug
-        image
-        reachable
-        published
-      ]
-      params.require(:podcast).permit(allowed_params)
+      params.require(:podcast).permit(PODCAST_ALLOWED_PARAMS)
     end
   end
 end

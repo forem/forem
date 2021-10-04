@@ -44,10 +44,10 @@
           <ul class="crayons-navigation crayons-navigation--horizontal">
             <li>
               <a data-text="Feed" href="<%= list_path %>/" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"<%= %w[week month year infinity
-                                                                                                                                                                                                                 latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>>Feed</a>
+                                                                                                                                                                                                                 latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>><%= t("core.feed") %></a>
             </li>
             <li>
-              <a data-text="Latest" href="<%= list_path %>/latest" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>Latest</a>
+              <a data-text="Latest" href="<%= list_path %>/latest" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>><%= t("core.latest") %></a>
             </li>
             <li>
               <a data-text="Top" href="<%= list_path %>/top/week"
@@ -60,16 +60,16 @@
           <% if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>
             <ul class="crayons-navigation crayons-navigation--horizontal fs-base">
               <li>
-                <a data-text="Week" href="<%= list_path %>/top/week" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>Week</a>
+                <a data-text="Week" href="<%= list_path %>/top/week" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>><%= t("core.week") %></a>
               </li>
               <li>
-                <a data-text="Month" href="<%= list_path %>/top/month" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>Month</a>
+                <a data-text="Month" href="<%= list_path %>/top/month" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>><%= t("core.month") %></a>
               </li>
               <li>
-                <a data-text="Year" href="<%= list_path %>/top/year" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>Year</a>
+                <a data-text="Year" href="<%= list_path %>/top/year" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>><%= t("core.year") %></a>
               </li>
               <li>
-                <a data-text="Infinity" href="<%= list_path %>/top/infinity" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>Infinity</a>
+                <a data-text="Infinity" href="<%= list_path %>/top/infinity" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>><%= t("core.infinity") %></a>
               </li>
             </ul>
           <% end %>

@@ -1,31 +1,24 @@
 <div id="global-signup-modal" class="authentication-modal hidden">
-<div class="authentication-modal__container">
-  <figure class="authentication-modal__image-container">
-    <img class="authentication-modal__image" src="<%= optimized_image_url(Settings::General.logo_png, width: 190) %>"
-      alt="<%= community_name %>" loading="lazy" />
-  </figure>
-  <div class="authentication-modal__content">
-    <p class="authentication-modal__description">
-      <% if Settings::Community.tagline.present? %>
-        <%= Settings::Community.tagline %>
-      <% else %>
-        We’d love for you to be a part of this community.
-      <% end %>
-    </p>
-  </div>
-  <div class="authentication-modal__actions">
-    <a href="<%= sign_up_path %>" class="crayons-btn" aria-label="Log in" data-no-instant>
-      Log in
-    </a>
-    <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn crayons-btn--ghost-brand" aria-label="Create new account" data-no-instant>
-      Create new account
-    </a>
-  </div>
-  <footer class="authentication-modal__footer">
-    <p class="authentication-modal__footer-label">
-      We strive for transparency and don't collect excess data.
-    </p>
-  </footer>
+  <div class="authentication-modal__container">
+    <figure class="authentication-modal__image-container">
+      <img class="authentication-modal__image" src="<%= optimized_image_url(Settings::General.logo_png, width: 190) %>"
+        alt="<%= community_name %>" loading="lazy" />
+    </figure>
+    <div class="authentication-modal__content">
+      <p class="authentication-modal__description">
+        <% if Settings::Community.tagline.present? %>
+          <%= Settings::Community.tagline %>
+        <% end %>
+      </p>
+    </div>
+    <div class="authentication-modal__actions">
+      <a href="<%= sign_up_path %>" class="crayons-btn" aria-label="Log in" data-no-instant>
+        <%= t("core.log_in") %>
+      </a>
+      <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn crayons-btn--ghost-brand" aria-label="Create new account" data-no-instant>
+        <%= t("core.create_account") %>
+      </a>
+    </div>
   </div>
 </div>
 

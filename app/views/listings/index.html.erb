@@ -1,5 +1,5 @@
 <%= content_for :page_meta do %>
-  <% title "Listings" %>
+  <% title "#{t('core.listings')}" %>
 
   <link rel="canonical" href="<%= app_url(request.path) %>" />
   <meta name="description" content="<%= Settings::Community.community_description %>">
@@ -30,7 +30,7 @@
 <main id="main-content">
 
   <div class="crayons-layout flex items-center justify-between p-2 l:p-4 l:pb-0">
-    <h1 class="crayons-title">Listings</h1>
+    <h1 class="crayons-title"><%= t("core.listings") %></h1>
 
     <nav class="flex items-center" aria-label="Listings">
       <ul class="list-none flex">
