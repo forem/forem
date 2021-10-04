@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../common-prop-types/article-prop-types';
+import { i18next } from '../i18n/l10n';
 import {
   ArticleCoverImage,
   CommentsCount,
@@ -101,7 +102,7 @@ export const Article = ({
                 {
                   i18next.t(
                     'articles.pinned.before',
-                  ) /* TODO: decent react i18n interpolation */
+                  ) /* TODO: decent react i18n interpolation, copy from yml when ready */
                 }
                 <span class="hidden s:inline">
                   {i18next.t('articles.pinned.post')}

@@ -9,8 +9,8 @@
     "pin": "Pin Post",
     "pinned": {
       "after": "",
-      "before": "Pinned",
-      "post": "\u00A0post"
+      "before": "要注目",
+      "post": "投稿"
     },
     "reading_time": "%{count} 分で読める",
     "report": "通報する",
