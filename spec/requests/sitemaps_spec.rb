@@ -42,7 +42,7 @@ RSpec.describe "Sitemaps", type: :request do
     end
 
     context "with index in param" do
-      it "renders basic index" do
+      it "renders basic index", :aggregate_failures do
         get "/sitemap-index.xml"
         expect(response.body).to include("<sitemapindex xmlns=")
         expect(response.body).to include("sitemap-posts.xml")
@@ -50,7 +50,7 @@ RSpec.describe "Sitemaps", type: :request do
         expect(response.body).to include("sitemap-tags.xml")
       end
 
-      it "renders multiple posts pages if enough posts" do
+      it "renders multiple posts pages if enough posts", :aggregate_failures do
         create_list(:article, 13, score: 10)
         get "/sitemap-index.xml"
         expect(response.body).not_to include("sitemap-posts.xml")
