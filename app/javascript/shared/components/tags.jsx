@@ -472,7 +472,7 @@ export class Tags extends Component {
           }}
           className={`${`${fieldClassName} ${classPrefix}`}__tags`}
           name="listing[tag_list]"
-          placeholder={i18next.t('tags.placeholder', { count: maxTags })}
+          placeholder={i18next.t('tags.placeholder', { count: +maxTags })}
           autoComplete="off"
           value={defaultValue}
           onInput={this.handleInput}
