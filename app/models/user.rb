@@ -577,7 +577,7 @@ class User < ApplicationRecord
 
   def create_conditional_autovomits
     return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
-      Regexp.new(term.downcase).match?(name.downcase)
+      name.match?(/#{term}/i)
     end
 
     Reaction.create!(
