@@ -83,7 +83,7 @@ const NativeIosImageUpload = ({
         icon={ImageIcon}
         {...extraProps}
       >
-        Upload image
+        {i18next.t('editor.image.text')}
       </Button>
     )}
     <input
@@ -99,7 +99,7 @@ const StandardImageUpload = ({ handleInsertionImageUpload, uploadingImage }) =>
   uploadingImage ? null : (
     <Fragment>
       <label className="cursor-pointer crayons-btn crayons-btn--ghost">
-        <ImageIcon /> Upload image
+        <ImageIcon /> {i18next.t('editor.image.text')}
         <input
           type="file"
           id="image-upload-field"

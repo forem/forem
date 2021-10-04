@@ -263,9 +263,9 @@
     },
     "image": {
       "aria_label": "Upload an image",
-      "icon": "Upload image",
-      "text": "Upload image",
-      "uploading": "Uploading..."
+      "icon": "画像をアップロード",
+      "text": "画像をアップロード",
+      "uploading": "アップロード中…"
     },
     "leave": {
       "no": "No, keep editing",

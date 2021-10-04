@@ -57,12 +57,8 @@ function buildHTML(response, typeOf) {
                 <p>${obj.content}</p>
               </div>
               <div class="flex flex-nowrap pl-2">
-                <button class="crayons-btn crayons-btn--s crayons-btn--secondary moderator-submit-button m-1" type="submit" data-response-template-id="${
-                  obj.id
-                }">${i18next.t('templates.mod')}</button>
-                <button class="crayons-btn crayons-btn--s crayons-btn--outlined insert-template-button m-1" type="button" data-content="${
-                  obj.content
-                }">${i18next.t('templates.insert')}</button>
+                <button class="crayons-btn crayons-btn--s crayons-btn--secondary moderator-submit-button m-1" type="submit" data-response-template-id="${obj.id}">${i18next.t('templates.mod')}</button>
+                <button class="crayons-btn crayons-btn--s crayons-btn--outlined insert-template-button m-1" type="button" data-content="${obj.content}">${i18next.t('templates.insert')}</button>
               </div>
             </div>
           `;

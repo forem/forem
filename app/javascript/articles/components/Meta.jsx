@@ -5,6 +5,7 @@ import {
 } from '../../common-prop-types';
 import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
 import { i18next } from '../../i18n/l10n';
+import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
 import { PublishDate } from './PublishDate';
 
 export const Meta = ({ article, organization }) => {
