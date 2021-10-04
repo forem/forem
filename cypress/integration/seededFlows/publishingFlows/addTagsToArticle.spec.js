@@ -23,7 +23,7 @@ describe('Add tags to article', () => {
 
     cy.findByRole('button', { name: 'tagone' }).should('exist');
     cy.findByRole('button', {
-      name: 'tagtwo Here are some rules link here',
+      name: 'tagtwo',
     }).should('exist');
   });
 
@@ -34,14 +34,14 @@ describe('Add tags to article', () => {
     // Search is in progress, top tags which don't match shouldn't be shown
     cy.findByRole('button', { name: 'tagone' }).should('not.exist');
     cy.findByRole('button', {
-      name: 'tagtwo Here are some rules link here',
+      name: 'tagtwo',
     }).should('not.exist');
 
     // Users initiating fresh search after comma
     cy.findByRole('textbox', { name: 'Post Tags' }).focus();
     cy.findByRole('button', { name: 'tagone' }).should('exist');
     cy.findByRole('button', {
-      name: 'tagtwo Here are some rules link here',
+      name: 'tagtwo',
     }).should('exist');
   });
 
@@ -52,7 +52,7 @@ describe('Add tags to article', () => {
 
     cy.findByRole('button', { name: 'tagone' }).should('not.exist');
     cy.findByRole('button', {
-      name: 'tagtwo Here are some rules link here',
+      name: 'tagtwo',
     }).should('exist');
   });
 });

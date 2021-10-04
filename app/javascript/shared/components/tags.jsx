@@ -419,13 +419,15 @@ export class Tags extends Component {
         ) : (
           ''
         )}
-        <div
-          className={`${classPrefix}__tagrules--${
-            showingRulesForTag === tag.name ? 'active' : 'inactive'
-          }`}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: tag.rules_html }}
-        />
+        {!showingTopTags && (
+          <div
+            className={`${classPrefix}__tagrules--${
+              showingRulesForTag === tag.name ? 'active' : 'inactive'
+            }`}
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: tag.rules_html }}
+          />
+        )}
       </div>
     ));
     if (

@@ -16,7 +16,7 @@ function titleArea({
     tags = tagArray.map((tag) => {
       return (
         tag.length > 0 && (
-          <span className="crayons-tag mr-2">
+          <span className="crayons-tag">
             <span className="crayons-tag__prefix">#</span>
             {tag}
           </span>
@@ -26,7 +26,7 @@ function titleArea({
   }
 
   // The v2 editor stores its cover image in articleState.mainImage, while the v1 editor
-  // stores it as previewRespose.cover_image. When previewing, we handle both by
+  // stores it as previewResponse.cover_image. When previewing, we handle both by
   // defaulting to setting the cover image to the mainImage on the article (v2),
   //  and only using the cover image from the previewResponse if it exists (v1).
   let coverImage = articleState.mainImage || '';
@@ -60,11 +60,11 @@ function titleArea({
         {!errors && markdownLintErrors?.length > 0 && (
           <AccessibilitySuggestions markdownLintErrors={markdownLintErrors} />
         )}
-        <h1 className="fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
+        <h1 className="fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-2 spec-article__title">
           {previewTitle}
         </h1>
 
-        <div className="spec-article__tags">{tags}</div>
+        <div className="spec-article__tags color-base-60">{tags}</div>
       </div>
     </header>
   );

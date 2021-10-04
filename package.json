@@ -37,19 +37,19 @@
       "jest --findRelatedTests"
     ],
     "{app,spec,config,lib}/**/*.rb": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
+      "bundle exec rubocop --require rubocop-rspec --auto-correct --enable-pending-cops"
     ],
     "scripts/{release,stage_release}": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
+      "bundle exec rubocop --require rubocop-rspec --auto-correct --enable-pending-cops"
     ],
     "app/views/**/*.jbuilder": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
+      "bundle exec rubocop --require rubocop-rspec --auto-correct --enable-pending-cops"
     ],
     "./Gemfile": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
+      "bundle exec rubocop --require rubocop-rspec --auto-correct --enable-pending-cops"
     ],
     "*.rake": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
+      "bundle exec rubocop --require rubocop-rspec --auto-correct --enable-pending-cops"
     ],
     "app/**/*.html.erb": [
       "bundle exec erblint --autocorrect"
@@ -78,7 +78,7 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
-    "@storybook/addon-a11y": "^6.3.7",
+    "@storybook/addon-a11y": "^6.3.9",
     "@storybook/addon-actions": "^6.3.7",
     "@storybook/addon-docs": "^6.3.7",
     "@storybook/addon-knobs": "^6.2.9",
@@ -145,7 +145,7 @@
     "@rails/webpacker": "5.4.2",
     "@reach/combobox": "^0.16.1",
     "ahoy.js": "^0.4.0",
-    "autoprefixer": "^10.3.3",
+    "autoprefixer": "^10.3.6",
     "babel-preset-preact": "^2.0.0",
     "canvas": "^2.8.0",
     "chart.js": "^3.5.1",

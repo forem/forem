@@ -106,7 +106,7 @@ RSpec.describe CodesandboxTag, type: :liquid_tag do
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with special_characters of / . @ % _ " do
+    it "accepts a vaild id with special_characters of / . @ % _" do
       liquid = generate_tag(valid_id_with_special_characters)
       expect(liquid.render).to include("<iframe")
     end
