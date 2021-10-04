@@ -72,7 +72,7 @@
     },
     "join": {
       "accept": " Accept",
-      "empty": "You have no pending invitations.",
+      "empty": "You have no pending invitations",
       "got": "You got invitation to join <b>%{channel}</b>.",
       "heading": "Request Center <span role=\"img\" aria-label=\"handshake\">🤝</span>",
       "join": "<b>%{name}</b> requested to join <b>%{channel}</b>",
@@ -111,9 +111,9 @@
       "contact": "Contact site admins",
       "description": "Description",
       "discoverable": "Channel Discoverable",
-      "join": "Joining Request",
       "invitation": "Invitation Link",
       "invite": "Usernames to invite",
+      "join": "Joining Request",
       "leave": "Are you absolutely sure you want to leave this channel? This action is permanent.",
       "leave_channel": "Leave Channel",
       "members": "Members",
@@ -146,7 +146,7 @@
     "copied": "Copied!",
     "copy": "Copy...",
     "copy_markdown": "Copy Markdown for image",
-    "message": "Copied to clipboard"
+    "message": "Copied to Clipboard"
   },
   "comments": {
     "all": "See all %{count} comments",
@@ -174,9 +174,9 @@
       "top_desc": "You’ll receive notifications only for all new top-level comments.",
       "type": {
         "all_comments": "all comments",
-        "top_level_comments": "top level comments",
+        "not_subscribed": "not subscribed",
         "only_author_comments": "only author comments",
-        "not_subscribed": "not subscribed"
+        "top_level_comments": "top level comments"
       },
       "unsubscribe": "Unsubscribe",
       "unsubscribed": "You have been unsubscribed from comments for this post"
@@ -184,9 +184,9 @@
   },
   "common": {
     "close": "×",
+    "cog_icon": "Preferences",
     "danger": "Danger Zone",
-    "etc": "...",
-    "cog_icon": "Preferences"
+    "etc": "..."
   },
   "editor": {
     "a11y": {
@@ -221,7 +221,6 @@
         "ux": "UX settings"
       },
       "basics": {
-        "heading": "Editor Basics",
         "code_block": "code block",
         "desc1": "Use ",
         "desc2": " to write and format posts.",
@@ -233,6 +232,7 @@
         "h1": "H1 Header",
         "h6": "H6 Header",
         "header": "Header",
+        "heading": "Editor Basics",
         "inline_code": "inline code",
         "inline_code_mono": "`inline code`",
         "link": "Link",
@@ -251,17 +251,17 @@
       "liquid": "🌊 Liquid Tags",
       "markdown": "✍️ Markdown",
       "tag": {
-        "heading": "Tagging Guidelines",
         "desc1": "Tags help people find your post.",
         "desc2": "Think of tags as the topics or categories that best describe your post.",
         "desc3": "Add up to four comma-separated tags per post. Combine tags to reach the appropriate subcommunities.",
         "desc4": "Use existing tags whenever possible.",
-        "desc5": "Some tags, such as “help” or “healthydebate”, have special posting guidelines."
+        "desc5": "Some tags, such as “help” or “healthydebate”, have special posting guidelines.",
+        "heading": "Tagging Guidelines"
       },
       "title": {
-        "heading": "Writing a Great Post Title",
         "desc1": "Think of your post title as a super short (but compelling!) description — like an overview of the actual post in one short sentence.",
-        "desc2": "Use keywords where appropriate to help ensure people can find your post by search."
+        "desc2": "Use keywords where appropriate to help ensure people can find your post by search.",
+        "heading": "Writing a Great Post Title"
       }
     },
     "image": {
@@ -324,11 +324,11 @@
     "instantClick": "Unable to resolve InstantClick",
     "occurred": "An error occurred: %{error}",
     "sad": "Error 😞",
-    "subscription": "An error occurred, please try again",
     "submit": "There was a problem submitting this comment: %{error}",
+    "subscription": "An error occurred, please try again",
     "update": "Failed to update article.",
-    "whoops": "Whoops, something went wrong:",
     "went": "Something went wrong: ${error}",
+    "whoops": "Whoops, something went wrong:",
     "wrong": "Something went wrong: ${error}. -- Please refresh the page to try again."
   },
   "feed": {
@@ -366,13 +366,13 @@
     "select": "Select"
   },
   "listings": {
-    "all": "All listings",
     "actions": {
       "delete": "Delete",
       "edit": "Edit",
       "report": "Report Abuse",
       "view": "View draft"
     },
+    "all": "All listings",
     "available": "Credits Available: ",
     "bumped": "Recently Bumped",
     "buy": "Buy Credits",
@@ -390,8 +390,8 @@
     },
     "form": {
       "body_markdown": {
-        "label": "Body Markdown",
-        "desc": "400 characters max, 12 line break max, no images allowed, *markdown is encouraged*"
+        "desc": "400 characters max, 12 line break max, no images allowed, *markdown is encouraged*",
+        "label": "Body Markdown"
       },
       "category": {
         "label": "Category",
@@ -427,8 +427,8 @@
     "more": "Load more...",
     "options": "Listing options",
     "org": {
-      "label": "Post under an organization",
-      "desc": "Posting on behalf of an organization spends the organization's credits."
+      "desc": "Posting on behalf of an organization spends the organization's credits.",
+      "label": "Post under an organization"
     },
     "personal": "Personal"
   },
@@ -457,9 +457,9 @@
   },
   "modActions": {
     "adjust": {
-      "text": "The #%{name} tag was #{actioned}.",
       "added": "added",
-      "removed": "removed"
+      "removed": "removed",
+      "text": "The #%{name} tag was #{actioned}."
     },
     "clear": "This will clear your current \"Add a tag\" input. Do you want to continue?",
     "desktop": "The Mod Center is best viewed on desktop.",
@@ -483,8 +483,8 @@
       "legend": "Email preferences",
       "newsletter": "I want to receive weekly newsletter emails.",
       "periodic": "I want to receive a periodic digest of top posts from my tags.",
-      "title": "Almost there!",
-      "subtitle": "Review your email preferences before we continue."
+      "subtitle": "Review your email preferences before we continue.",
+      "title": "Almost there!"
     },
     "finish": "Finish",
     "intro": {
@@ -498,18 +498,18 @@
     },
     "profile": {
       "error": "Unable to continue, please try again.",
-      "title": "Build your profile",
-      "subtitle": "Tell us a little bit about yourself — this is how others will see you on %{community}. You’ll always be able to edit this later in your Settings."
+      "subtitle": "Tell us a little bit about yourself — this is how others will see you on %{community}. You’ll always be able to edit this later in your Settings.",
+      "title": "Build your profile"
     },
     "skip": "Skip for now",
     "tag": {
       "aria_label": "Follow %{tag}",
       "follow": "Follow",
       "following": "Following",
-      "title": "What are you interested in?",
       "status": "%{count} tag selected",
       "status_plural": "%{count} tags selected",
-      "subtitle": "Follow tags to customize your feed"
+      "subtitle": "Follow tags to customize your feed",
+      "title": "What are you interested in?"
     },
     "user": {
       "aria_label": "Follow %{user}",
@@ -522,8 +522,8 @@
       "status_all": "You're following %{count} people (everyone) -",
       "status_no": "You're not following anyone",
       "status_plural": "You're following %{count} people -",
-      "title": "Suggested people to follow",
-      "subtitle": "Let's review a few things first"
+      "subtitle": "Let's review a few things first",
+      "title": "Suggested people to follow"
     }
   },
   "org": {
@@ -549,11 +549,11 @@
   },
   "readingList": {
     "all": "all tags",
-    "aria_label": "Filter reading list by text",
-    "aria_archive": "Archive item",
-    "aria_tag": "Filter by tag",
     "archive": "Archive",
     "archiving": "Archiving...",
+    "aria_archive": "Archive item",
+    "aria_label": "Filter reading list by text",
+    "aria_tag": "Filter by tag",
     "click1": "Click the ",
     "click2": "bookmark reaction",
     "click3": "when viewing a post to add it to your reading list.",
@@ -564,9 +564,9 @@
     "more": "Load more",
     "nothing": "Nothing with this filter 🤔",
     "placeholder": "Enter some text to filter on...",
-    "total": " (%{total})",
     "to_archive": "Archive",
     "to_unarchive": "Unarchive",
+    "total": " (%{total})",
     "unarchiving": "Unarchiving...",
     "view_archive": "View archive",
     "view_list": "View reading list"
@@ -607,8 +607,8 @@
   },
   "templates": {
     "insert": "Insert",
-    "mod": "Send as Mod",
     "mascot": "\nAre you sure you want to submit this comment as Sloan?\n\nIt will be sent immediately and users will be notified.\n\nMake sure this is the appropriate comment for the situation.\n\nThis action is not reversible.",
+    "mod": "Send as Mod",
     "no_yet": "🤔... It looks like you don't have any templates yet.",
     "replace": "Are you sure you want to replace your current comment draft?"
   }

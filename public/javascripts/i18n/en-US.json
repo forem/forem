@@ -11,11 +11,12 @@
       "podcast": "podcast"
     },
     "for_org": "%{- start} for %{- end}%{- org}",
+    "reading_time": "%{count} min read",
     "reading_time_plural": "%{count} min read",
     "save": {
       "initial": "Save",
-      "success": "Saved",
-      "remove": "Unsave"
+      "remove": "Unsave",
+      "success": "Saved"
     }
   },
   "campaign": {
@@ -61,30 +62,31 @@
         "aria_label": "Edit this comment",
         "text": "Edit"
       },
-      "settings": {
-        "aria_label": "Go to %{user}'s comment settings",
-        "text": "Settings"
-      },
       "report": {
         "aria_label": "Report %{user}'s comment as abusive or violating our code of conduct and/or terms and conditions",
         "text": "Report abuse"
+      },
+      "settings": {
+        "aria_label": "Go to %{user}'s comment settings",
+        "text": "Settings"
       }
     },
+    "read": {
+      "code": "code of conduct",
+      "text": "I've read the %{- code}"
+    },
+    "replies": " + %{count} replies",
     "replies_plural": " + %{count} replies",
     "sent": {
       "check": "Check it out",
       "text": "Reply sent — %{- check}"
     },
-    "read": {
-      "text": "I've read the %{- code}",
-      "code": "code of conduct"
+    "summary": {
+      "count": "%{count}%{- start}\u00A0comment%{- end}",
+      "count_plural": "%{count}%{- start}\u00A0comments%{- end}",
+      "empty": "Add\u00A0Comment"
     },
     "thread": "Thread",
-    "summary": {
-      "count": "%{count}%{- start}&nbsp;comment%{- end}",
-      "count_plural": "%{count}%{- start}&nbsp;comments%{- end}",
-      "empty": "Add&nbsp;Comment"
-    },
     "uploaded": "Uploaded! Paste into editor",
     "uploading": "Uploading..."
   },
@@ -135,8 +137,8 @@
       "aria_remove": "Remove from reading list"
     },
     "summary": {
-      "count": "%{count}%{- start}&nbsp;reaction%{- end}",
-      "count_plural": "%{count}%{- start}&nbsp;reactions%{- end}"
+      "count": "%{count}%{- start}\u00A0reaction%{- end}",
+      "count_plural": "%{count}%{- start}\u00A0reactions%{- end}"
     },
     "unicorn": {
       "aria_label": "React with unicorn",
@@ -146,8 +148,8 @@
   "tags": {
     "following": {
       "anti": {
-        "title": "This tag has negative follow weight",
-        "text": "Anti-follow"
+        "text": "Anti-follow",
+        "title": "This tag has negative follow weight"
       },
       "weight": {
         "aria_label": "%{name} tag weight"
@@ -155,29 +157,29 @@
     }
   },
   "unitAgo": {
+    "day": "1 day ago",
+    "day_plural": "%{count} days ago",
+    "hour": "1 hour ago",
+    "hour_plural": "%{count} hours ago",
+    "min": "1 min ago",
+    "min_plural": "%{count} mins ago",
+    "month": "1 month ago",
+    "month_plural": "%{count} months ago",
     "now": "just now",
     "second": "1 second ago",
     "second_plural": "%{count} seconds ago",
-    "min": "1 min ago",
-    "min_plural": "%{count} mins ago",
-    "hour": "1 hour ago",
-    "hour_plural": "%{count} hours ago",
-    "day": "1 day ago",
-    "day_plural": "%{count} days ago",
     "week": "1 week ago",
     "week_plural": "%{count} weeks ago",
-    "month": "1 month ago",
-    "month_plural": "%{count} months ago",
     "year": "1 year ago",
     "year_plural": "%{count} years ago"
   },
   "userAlertModal": {
     "comment": {
       "action": "made a comment",
+      "confirm": "OK",
       "next": "making another comment",
-      "title": "Error posting comment",
       "text": "Your comment could not be posted due to an error: %{error}",
-      "confirm": "OK"
+      "title": "Error posting comment"
     },
     "gotit": "Got it",
     "rateLimit": "Since you recently %{action}, you’ll need to wait a moment before %{next}.",
