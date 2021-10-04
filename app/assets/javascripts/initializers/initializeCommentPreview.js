@@ -46,7 +46,7 @@ function handleCommentPreview(event) {
   if (editor.value !== '') {
     if (form.classList.contains('preview-open')) {
       form.classList.toggle('preview-open');
-      trigger.innerHTML = i18next.t('editor.continue');
+      trigger.innerHTML = i18next.t('editor.preview');
     } else {
       getAndShowPreview(preview, editor);
       const editorHeight = editor.offsetHeight + 43; // not ideal but prevents jumping screen

@@ -45,7 +45,7 @@
     },
     "invalid": "Invalid file!",
     "like": "Like",
-    "likes": "&nbsp;likes",
+    "likes_0": "&nbsp;likes",
     "menu": {
       "aria_label": "Toggle dropdown menu",
       "copy": {
@@ -73,7 +73,7 @@
       "code": "code of conduct",
       "text": "I've read the %{- code}"
     },
-    "replies": " + %{count} replies",
+    "replies_0": " + %{count} replies",
     "sent": {
       "check": "Check it out",
       "text": "Reply sent — %{- check}"
@@ -156,6 +156,7 @@
       "confirm": "OK",
       "next": "making another comment",
       "text": "Your comment could not be posted due to an error: %{error}",
+      "text_server": "Your comment could not be posted due to a server error",
       "title": "Error posting comment"
     },
     "gotit": "Got it",

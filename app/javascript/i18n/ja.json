@@ -84,7 +84,7 @@
     },
     "loading": "Loading user",
     "messages": {
-      "direct": "You and <a href=\"/%{slug}\">{slug}</a> are connected because you both follow each other. All interactions <em><b>must</b></em> abide by the <a href=\"/code-of-conduct\">code of conduct</a>.",
+      "direct": "You and <a href=\"/%{slug}\">%{slug}</a> are connected because you both follow each other. All interactions <em><b>must</b></em> abide by the <a href=\"/code-of-conduct\">code of conduct</a>.",
       "mentioned": "You got mentioned in %{- channel}",
       "new": "New Message from %{- channel}",
       "no_data": "Couldn't find user data on page.",
@@ -191,7 +191,7 @@
       "heading": "Improve the accessibility of your post",
       "headings": "headings",
       "images": "images",
-      "text": "Learn more"
+      "learn": "Learn more"
     },
     "aria_label": "Edit post",
     "aria_new": "Post Title",

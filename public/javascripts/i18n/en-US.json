@@ -161,6 +161,7 @@
       "confirm": "OK",
       "next": "making another comment",
       "text": "Your comment could not be posted due to an error: %{error}",
+      "text_server": "Your comment could not be posted due to a server error",
       "title": "Error posting comment"
     },
     "gotit": "Got it",

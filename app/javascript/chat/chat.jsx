@@ -1145,6 +1145,7 @@ export class Chat extends Component {
               dangerouslySetInnerHTML={{
                 __html: i18next.t('chat.messages.direct', {
                   slug: activeChannel.channel_modified_slug,
+                  interpolation: { escapeValue: false },
                 }),
               }}
             />
