@@ -5,10 +5,10 @@
     "pinned": {
       "after": "",
       "before": "Pinned",
-      "post": "\u00A0post"
+      "post": " post"
     },
-    "reading_time": "%{count} min read",
-    "reading_time_plural": "%{count} min read",
+    "reading_time_one": "%{count} words/chars",
+    "reading_time_other": "%{count} words/chars",
     "report": "Report abuse",
     "save": {
       "save": "Save",
@@ -18,7 +18,7 @@
     "timeAgo": " (%{ago})"
   },
   "chat": {
-    "announcement": "We have made the decision to deprecate Connect as core functionality from the application. \u00A0<0>Read the announcement to learn more »</0>.",
+    "announcement": "We have made the decision to deprecate Connect as core functionality from the application.  <0>Read the announcement to learn more »</0>.",
     "bottom": "Scroll to Bottom",
     "compose": {
       "aria_label": "Compose a message",
@@ -144,8 +144,8 @@
     "message": "Copied to Clipboard"
   },
   "comments": {
-    "all": "See all %{count} comments",
-    "all_plural": "See all %{count} comments",
+    "all_one": "See all %{count} comments",
+    "all_other": "See all %{count} comments",
     "blocked": "[blocked content]",
     "count": "%{count}%{- start}\u00A0comment%{- end}",
     "count_plural": "%{count}%{- start}\u00A0comments%{- end}",
@@ -495,10 +495,10 @@
     },
     "finish": "Finish",
     "intro": {
-      "coc1": "You agree to uphold our\u00A0",
+      "coc1": "You agree to uphold our ",
       "coc2": "Code of Conduct",
       "coc3": ".",
-      "terms1": "You agree to our\u00A0",
+      "terms1": "You agree to our ",
       "terms2": "Terms and Conditions",
       "terms3": ".",
       "title": "%{user} — welcome to %{community}!"
@@ -513,8 +513,8 @@
       "aria_label": "Follow %{tag}",
       "follow": "Follow",
       "following": "Following",
-      "status": "%{count} tag selected",
-      "status_plural": "%{count} tags selected",
+      "status_one": "%{count} tag selected",
+      "status_other": "%{count} tags selected",
       "subtitle": "Follow tags to customize your feed",
       "title": "What are you interested in?"
     },
@@ -523,12 +523,12 @@
       "deselect": "Deselect all",
       "follow": "Follow",
       "following": "Following",
-      "select": "Select %{count} person",
-      "select_plural": "Select all %{count} people",
-      "status": "You're following %{count} person",
-      "status_all": "You're following %{count} people (everyone) -",
+      "select_one": "Select %{count} person",
+      "select_other": "Select all %{count} people",
+      "status_all_other": "You're following %{count} people (everyone) -",
       "status_no": "You're not following anyone",
-      "status_plural": "You're following %{count} people -",
+      "status_one": "You're following %{count} person",
+      "status_other": "You're following %{count} people -",
       "subtitle": "Let's review a few things first",
       "title": "Suggested people to follow"
     }
@@ -608,8 +608,8 @@
     "aria_label": "Post Tags",
     "hide": "Hide Rules",
     "label": "Tags",
-    "placeholder": "Add up to %{count} tags...",
-    "placeholder_plural": "Add up to %{count} tags...",
+    "placeholder_one": "Add up to %{count} tags...",
+    "placeholder_other": "Add up to %{count} tags...",
     "rules": "Some tags have rules and guidelines determined by community moderators",
     "view": "View Rules"
   },

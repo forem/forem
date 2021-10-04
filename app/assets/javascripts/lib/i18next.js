@@ -478,6 +478,36 @@
     window.navigator &&
     window.navigator.userAgent &&
     window.navigator.userAgent.indexOf('MSIE') > -1;
+  var chars = [' ', ',', '?', '!', ';'];
+  function looksLikeObjectPath(key, nsSeparator, keySeparator) {
+    nsSeparator = nsSeparator || '';
+    keySeparator = keySeparator || '';
+    var possibleChars = chars.filter(function (c) {
+      return nsSeparator.indexOf(c) < 0 && keySeparator.indexOf(c) < 0;
+    });
+    if (possibleChars.length === 0) return true;
+    var r = new RegExp(
+      '('.concat(
+        possibleChars
+          .map(function (c) {
+            return c === '?' ? '\\?' : c;
+          })
+          .join('|'),
+        ')',
+      ),
+    );
+    var matched = !r.test(key);
+
+    if (!matched) {
+      var ki = key.indexOf(keySeparator);
+
+      if (ki > 0 && !r.test(key.substring(0, ki))) {
+        matched = true;
+      }
+    }
+
+    return matched;
+  }
 
   function deepFind(obj, path) {
     var keySeparator =
@@ -488,6 +518,8 @@
     var current = obj;
 
     for (var i = 0; i < paths.length; ++i) {
+      if (!current) return undefined;
+
       if (typeof current[paths[i]] === 'string' && i + 1 < paths.length) {
         return undefined;
       }
@@ -722,6 +754,16 @@
         },
       },
       {
+        key: 'hasLanguageSomeTranslations',
+        value: function hasLanguageSomeTranslations(lng) {
+          var data = this.getDataByLanguage(lng);
+          var n = (data && Object.keys(data)) || [];
+          return !!n.find(function (v) {
+            return data[v] && Object.keys(data[v]).length > 0;
+          });
+        },
+      },
+      {
         key: 'toJSON',
         value: function toJSON() {
           return this.data;
@@ -816,6 +858,11 @@
                 : {
                     interpolation: {},
                   };
+
+            if (key === undefined || key === null) {
+              return false;
+            }
+
             var resolved = this.resolve(key, options);
             return resolved && resolved.res !== undefined;
           },
@@ -833,8 +880,15 @@
                 ? options.keySeparator
                 : this.options.keySeparator;
             var namespaces = options.ns || this.options.defaultNS;
+            var wouldCheckForNsInKey =
+              nsSeparator && key.indexOf(nsSeparator) > -1;
+            var seemsNaturalLanguage = !looksLikeObjectPath(
+              key,
+              nsSeparator,
+              keySeparator,
+            );
 
-            if (nsSeparator && key.indexOf(nsSeparator) > -1) {
+            if (wouldCheckForNsInKey && !seemsNaturalLanguage) {
               var m = key.match(this.interpolator.nestingRegexp);
 
               if (m && m.length > 0) {
@@ -996,7 +1050,7 @@
                 typeof options.count !== 'string';
               var hasDefaultValue = Translator.hasDefaultValue(options);
               var defaultValueSuffix = needsPluralHandling
-                ? this.pluralResolver.getSuffix(lng, options.count)
+                ? this.pluralResolver.getSuffix(lng, options.count, options)
                 : '';
               var defaultValue =
                 options['defaultValue'.concat(defaultValueSuffix)] ||
@@ -1012,6 +1066,11 @@
                 res = key;
               }
 
+              var missingKeyNoValueFallbackToKey =
+                options.missingKeyNoValueFallbackToKey ||
+                this.options.missingKeyNoValueFallbackToKey;
+              var resForMissing =
+                missingKeyNoValueFallbackToKey && usedKey ? undefined : res;
               var updateMissing =
                 hasDefaultValue &&
                 defaultValue !== res &&
@@ -1067,7 +1126,7 @@
                       l,
                       namespace,
                       k,
-                      updateMissing ? fallbackValue : res,
+                      updateMissing ? fallbackValue : resForMissing,
                       updateMissing,
                       options,
                     );
@@ -1079,7 +1138,7 @@
                       l,
                       namespace,
                       k,
-                      updateMissing ? fallbackValue : res,
+                      updateMissing ? fallbackValue : resForMissing,
                       updateMissing,
                       options,
                     );
@@ -1121,7 +1180,10 @@
                 this.options.appendNamespaceToMissingKey
               )
                 res = ''.concat(namespace, ':').concat(key);
-              if (usedKey && this.options.parseMissingKeyHandler)
+              if (
+                (usedKey || usedDefault) &&
+                this.options.parseMissingKeyHandler
+              )
                 res = this.options.parseMissingKeyHandler(res);
             }
 
@@ -1339,6 +1401,7 @@
                       pluralSuffix = _this4.pluralResolver.getSuffix(
                         code,
                         options.count,
+                        options,
                       );
                     if (needsPluralHandling && needsContextHandling)
                       finalKeys.push(finalKey + pluralSuffix);
@@ -1434,7 +1497,6 @@
       _classCallCheck(this, LanguageUtil);
 
       this.options = options;
-      this.whitelist = this.options.supportedLngs || false;
       this.supportedLngs = this.options.supportedLngs || false;
       this.logger = baseLogger.create('languageUtils');
     }
@@ -1500,16 +1562,6 @@
           return this.options.cleanCode || this.options.lowerCaseLng
             ? code.toLowerCase()
             : code;
-        },
-      },
-      {
-        key: 'isWhitelisted',
-        value: function isWhitelisted(code) {
-          this.logger.deprecate(
-            'languageUtils.isWhitelisted',
-            'function "isWhitelisted" will be renamed to "isSupportedCode" in the next major - please make sure to rename it\'s usage asap.',
-          );
-          return this.isSupportedCode(code);
         },
       },
       {
@@ -1978,6 +2030,15 @@
       );
     },
   };
+  var deprecatedJsonVersions = ['v1', 'v2', 'v3'];
+  var suffixesOrder = {
+    zero: 0,
+    one: 1,
+    two: 2,
+    few: 3,
+    many: 4,
+    other: 5,
+  };
 
   function createRules() {
     var rules = {};
@@ -2015,6 +2076,21 @@
       {
         key: 'getRule',
         value: function getRule(code) {
+          var options =
+            arguments.length > 1 && arguments[1] !== undefined
+              ? arguments[1]
+              : {};
+
+          if (this.shouldUseIntlApi()) {
+            try {
+              return new Intl.PluralRules(code, {
+                type: options.ordinal ? 'ordinal' : 'cardinal',
+              });
+            } catch (_unused) {
+              return;
+            }
+          }
+
           return (
             this.rules[code] ||
             this.rules[this.languageUtils.getLanguagePartFromCode(code)]
@@ -2024,15 +2100,28 @@
       {
         key: 'needsPlural',
         value: function needsPlural(code) {
-          var rule = this.getRule(code);
+          var options =
+            arguments.length > 1 && arguments[1] !== undefined
+              ? arguments[1]
+              : {};
+          var rule = this.getRule(code, options);
+
+          if (this.shouldUseIntlApi()) {
+            return rule && rule.resolvedOptions().pluralCategories.length > 1;
+          }
+
           return rule && rule.numbers.length > 1;
         },
       },
       {
         key: 'getPluralFormsOfKey',
         value: function getPluralFormsOfKey(code, key) {
-          return this.getSuffixes(code).map(function (suffix) {
-            return key + suffix;
+          var options =
+            arguments.length > 2 && arguments[2] !== undefined
+              ? arguments[2]
+              : {};
+          return this.getSuffixes(code, options).map(function (suffix) {
+            return ''.concat(key).concat(suffix);
           });
         },
       },
@@ -2041,70 +2130,113 @@
         value: function getSuffixes(code) {
           var _this = this;
 
-          var rule = this.getRule(code);
+          var options =
+            arguments.length > 1 && arguments[1] !== undefined
+              ? arguments[1]
+              : {};
+          var rule = this.getRule(code, options);
 
           if (!rule) {
             return [];
           }
 
+          if (this.shouldUseIntlApi()) {
+            return rule
+              .resolvedOptions()
+              .pluralCategories.sort(function (
+                pluralCategory1,
+                pluralCategory2,
+              ) {
+                return (
+                  suffixesOrder[pluralCategory1] -
+                  suffixesOrder[pluralCategory2]
+                );
+              })
+              .map(function (pluralCategory) {
+                return ''.concat(_this.options.prepend).concat(pluralCategory);
+              });
+          }
+
           return rule.numbers.map(function (number) {
-            return _this.getSuffix(code, number);
+            return _this.getSuffix(code, number, options);
           });
         },
       },
       {
         key: 'getSuffix',
         value: function getSuffix(code, count) {
-          var _this2 = this;
-
-          var rule = this.getRule(code);
+          var options =
+            arguments.length > 2 && arguments[2] !== undefined
+              ? arguments[2]
+              : {};
+          var rule = this.getRule(code, options);
 
           if (rule) {
-            var idx = rule.noAbs
-              ? rule.plurals(count)
-              : rule.plurals(Math.abs(count));
-            var suffix = rule.numbers[idx];
-
-            if (
-              this.options.simplifyPluralSuffix &&
-              rule.numbers.length === 2 &&
-              rule.numbers[0] === 1
-            ) {
-              if (suffix === 2) {
-                suffix = 'plural';
-              } else if (suffix === 1) {
-                suffix = '';
-              }
+            if (this.shouldUseIntlApi()) {
+              return ''.concat(this.options.prepend).concat(rule.select(count));
             }
 
-            var returnSuffix = function returnSuffix() {
-              return _this2.options.prepend && suffix.toString()
-                ? _this2.options.prepend + suffix.toString()
-                : suffix.toString();
-            };
-
-            if (this.options.compatibilityJSON === 'v1') {
-              if (suffix === 1) return '';
-              if (typeof suffix === 'number')
-                return '_plural_'.concat(suffix.toString());
-              return returnSuffix();
-            } else if (this.options.compatibilityJSON === 'v2') {
-              return returnSuffix();
-            } else if (
-              this.options.simplifyPluralSuffix &&
-              rule.numbers.length === 2 &&
-              rule.numbers[0] === 1
-            ) {
-              return returnSuffix();
-            }
-
-            return this.options.prepend && idx.toString()
-              ? this.options.prepend + idx.toString()
-              : idx.toString();
+            return this.getSuffixRetroCompatible(rule, count);
           }
 
           this.logger.warn('no plural rule found for: '.concat(code));
           return '';
+        },
+      },
+      {
+        key: 'getSuffixRetroCompatible',
+        value: function getSuffixRetroCompatible(rule, count) {
+          var _this2 = this;
+
+          var idx = rule.noAbs
+            ? rule.plurals(count)
+            : rule.plurals(Math.abs(count));
+          var suffix = rule.numbers[idx];
+
+          if (
+            this.options.simplifyPluralSuffix &&
+            rule.numbers.length === 2 &&
+            rule.numbers[0] === 1
+          ) {
+            if (suffix === 2) {
+              suffix = 'plural';
+            } else if (suffix === 1) {
+              suffix = '';
+            }
+          }
+
+          var returnSuffix = function returnSuffix() {
+            return _this2.options.prepend && suffix.toString()
+              ? _this2.options.prepend + suffix.toString()
+              : suffix.toString();
+          };
+
+          if (this.options.compatibilityJSON === 'v1') {
+            if (suffix === 1) return '';
+            if (typeof suffix === 'number')
+              return '_plural_'.concat(suffix.toString());
+            return returnSuffix();
+          } else if (this.options.compatibilityJSON === 'v2') {
+            return returnSuffix();
+          } else if (
+            this.options.simplifyPluralSuffix &&
+            rule.numbers.length === 2 &&
+            rule.numbers[0] === 1
+          ) {
+            return returnSuffix();
+          }
+
+          return this.options.prepend && idx.toString()
+            ? this.options.prepend + idx.toString()
+            : idx.toString();
+        },
+      },
+      {
+        key: 'shouldUseIntlApi',
+        value: function shouldUseIntlApi() {
+          return !deprecatedJsonVersions.includes(
+            this.options.compatibilityJSON,
+          );
         },
       },
     ]);
@@ -2753,8 +2885,6 @@
       defaultNS: ['translation'],
       fallbackLng: ['dev'],
       fallbackNS: false,
-      whitelist: false,
-      nonExplicitWhitelist: false,
       supportedLngs: false,
       nonExplicitSupportedLngs: false,
       load: 'all',
@@ -2809,7 +2939,7 @@
         nestingSuffix: ')',
         nestingOptionsSeparator: ',',
         maxReplaces: 1000,
-        skipOnVariables: false,
+        skipOnVariables: true,
       },
     };
   }
@@ -2819,18 +2949,6 @@
       options.fallbackLng = [options.fallbackLng];
     if (typeof options.fallbackNS === 'string')
       options.fallbackNS = [options.fallbackNS];
-
-    if (options.whitelist) {
-      if (options.whitelist && options.whitelist.indexOf('cimode') < 0) {
-        options.whitelist = options.whitelist.concat(['cimode']);
-      }
-
-      options.supportedLngs = options.whitelist;
-    }
-
-    if (options.nonExplicitWhitelist) {
-      options.nonExplicitSupportedLngs = options.nonExplicitWhitelist;
-    }
 
     if (options.supportedLngs && options.supportedLngs.indexOf('cimode') < 0) {
       options.supportedLngs = options.supportedLngs.concat(['cimode']);
@@ -2904,21 +3022,12 @@
             options = {};
           }
 
-          if (options.whitelist && !options.supportedLngs) {
-            this.logger.deprecate(
-              'whitelist',
-              'option "whitelist" will be renamed to "supportedLngs" in the next major - please make sure to rename this option asap.',
-            );
-          }
-
-          if (
-            options.nonExplicitWhitelist &&
-            !options.nonExplicitSupportedLngs
-          ) {
-            this.logger.deprecate(
-              'whitelist',
-              'options "nonExplicitWhitelist" will be renamed to "nonExplicitSupportedLngs" in the next major - please make sure to rename this option asap.',
-            );
+          if (!options.defaultNS && options.ns) {
+            if (typeof options.ns === 'string') {
+              options.defaultNS = options.ns;
+            } else if (options.ns.indexOf('translation') < 0) {
+              options.defaultNS = options.ns[0];
+            }
           }
 
           this.options = _objectSpread(
@@ -3071,7 +3180,7 @@
 
           var load = function load() {
             var finish = function finish(err, t) {
-              if (_this2.isInitialized)
+              if (_this2.isInitialized && !_this2.initializedStoreOnce)
                 _this2.logger.warn(
                   'init: i18next is already initialized. You should call init just once!',
                 );
@@ -3224,11 +3333,27 @@
           var deferred = defer();
           this.emit('languageChanging', lng);
 
+          var setLngProps = function setLngProps(l) {
+            _this4.language = l;
+            _this4.languages =
+              _this4.services.languageUtils.toResolveHierarchy(l);
+            _this4.resolvedLanguage = undefined;
+            if (['cimode', 'dev'].indexOf(l) > -1) return;
+
+            for (var li = 0; li < _this4.languages.length; li++) {
+              var lngInLngs = _this4.languages[li];
+              if (['cimode', 'dev'].indexOf(lngInLngs) > -1) continue;
+
+              if (_this4.store.hasLanguageSomeTranslations(lngInLngs)) {
+                _this4.resolvedLanguage = lngInLngs;
+                break;
+              }
+            }
+          };
+
           var done = function done(err, l) {
             if (l) {
-              _this4.language = l;
-              _this4.languages =
-                _this4.services.languageUtils.toResolveHierarchy(l);
+              setLngProps(l);
 
               _this4.translator.changeLanguage(l);
 
@@ -3259,9 +3384,7 @@
 
             if (l) {
               if (!_this4.language) {
-                _this4.language = l;
-                _this4.languages =
-                  _this4.services.languageUtils.toResolveHierarchy(l);
+                setLngProps(l);
               }
 
               if (!_this4.translator.language)
@@ -3296,7 +3419,7 @@
       },
       {
         key: 'getFixedT',
-        value: function getFixedT(lng, ns) {
+        value: function getFixedT(lng, ns, keyPrefix) {
           var _this5 = this;
 
           var fixedT = function fixedT(key, opts) {
@@ -3323,7 +3446,11 @@
             options.lng = options.lng || fixedT.lng;
             options.lngs = options.lngs || fixedT.lngs;
             options.ns = options.ns || fixedT.ns;
-            return _this5.t(key, options);
+            var keySeparator = _this5.options.keySeparator || '.';
+            var resultKey = keyPrefix
+              ? ''.concat(keyPrefix).concat(keySeparator).concat(key)
+              : key;
+            return _this5.t(resultKey, options);
           };
 
           if (typeof lng === 'string') {
@@ -3333,6 +3460,7 @@
           }
 
           fixedT.ns = ns;
+          fixedT.keyPrefix = keyPrefix;
           return fixedT;
         },
       },
@@ -3396,7 +3524,7 @@
             return false;
           }
 
-          var lng = this.languages[0];
+          var lng = this.resolvedLanguage || this.languages[0];
           var fallbackLng = this.options ? this.options.fallbackLng : false;
           var lastLng = this.languages[this.languages.length - 1];
           if (lng.toLowerCase() === 'cimode') return true;
@@ -3476,9 +3604,10 @@
         value: function dir(lng) {
           if (!lng)
             lng =
-              this.languages && this.languages.length > 0
+              this.resolvedLanguage ||
+              (this.languages && this.languages.length > 0
                 ? this.languages[0]
-                : this.language;
+                : this.language);
           if (!lng) return 'rtl';
           var rtlLngs = [
             'ar',
@@ -3542,6 +3671,7 @@
             'prs',
             'dv',
             'sam',
+            'ckb',
           ];
           return rtlLngs.indexOf(
             this.services.languageUtils.getLanguagePartFromCode(lng),
@@ -3618,6 +3748,7 @@
             store: this.store,
             language: this.language,
             languages: this.languages,
+            resolvedLanguage: this.resolvedLanguage,
           };
         },
       },

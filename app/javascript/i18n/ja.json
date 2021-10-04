@@ -7,7 +7,7 @@
       "before": "要注目",
       "post": "投稿"
     },
-    "reading_time": "%{count} 分で読める",
+    "reading_time_other": "%{count} 分で読める",
     "report": "通報する",
     "save": {
       "save": "保存",
@@ -143,7 +143,7 @@
     "message": "コピーしました"
   },
   "comments": {
-    "all": "See all %{count} comments",
+    "all_other": "%{count} 件のコメントをすべて見る",
     "blocked": "[blocked content]",
     "count": "%{count}%{- start}\u202F×\u202Fコメント%{- end}",
     "delete": "Are you SURE you want to delete this comment?",
@@ -507,27 +507,24 @@
     },
     "skip": "Skip for now",
     "tag": {
-      "aria_label": "Follow %{tag}",
-      "follow": "Follow",
-      "following": "Following",
-      "status": "%{count} tag selected",
-      "status_plural": "%{count} tags selected",
-      "subtitle": "Follow tags to customize your feed",
-      "title": "What are you interested in?"
+      "aria_label": "%{tag} をフォロー",
+      "follow": "フォロー",
+      "following": "フォロー中",
+      "status_other": "選択したタグ %{count} 個",
+      "subtitle": "フォローしたタグに合わせて記事をおすすめします。",
+      "title": "興味のある話題はなんですか？"
     },
     "user": {
-      "aria_label": "Follow %{user}",
-      "deselect": "Deselect all",
-      "follow": "Follow",
-      "following": "Following",
-      "select": "Select %{count} person",
-      "select_plural": "Select all %{count} people",
-      "status": "You're following %{count} person",
-      "status_all": "You're following %{count} people (everyone) -",
-      "status_no": "You're not following anyone",
-      "status_plural": "You're following %{count} people -",
-      "subtitle": "Let's review a few things first",
-      "title": "Suggested people to follow"
+      "aria_label": "%{user} をフォロー",
+      "deselect": "すべて解除",
+      "follow": "フォロー",
+      "following": "フォロー中",
+      "select_other": "%{count} 人を選択",
+      "status_all_other": "現在 %{count} 人全員をフォロー中",
+      "status_no": "誰もフォローしていません",
+      "status_other": "現在 %{count} 人をフォロー中",
+      "subtitle": "いくつかの設定をしていきましょう。",
+      "title": "おすすめのユーザーをフォロー"
     }
   },
   "org": {
@@ -604,7 +601,7 @@
     "aria_label": "Post Tags",
     "hide": "Hide Rules",
     "label": "Tags",
-    "placeholder": "Add up to %{count} tags...",
+    "placeholder_other": "タグを最大 %{count} つまで",
     "rules": "Some tags have rules and guidelines determined by community moderators",
     "view": "View Rules"
   },

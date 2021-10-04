@@ -11,8 +11,8 @@
       "podcast": "podcast"
     },
     "for_org": "%{- start} for %{- end}%{- org}",
-    "reading_time": "%{count} min read",
-    "reading_time_plural": "%{count} min read",
+    "reading_time_one": "%{count} min read",
+    "reading_time_other": "%{count} min read",
     "save": {
       "initial": "Save",
       "remove": "Unsave",
@@ -46,8 +46,8 @@
     },
     "invalid": "Invalid file!",
     "like": "Like",
-    "likes": "&nbsp;like",
-    "likes_plural": "&nbsp;likes",
+    "likes_one": "&nbsp;like",
+    "likes_other": "&nbsp;likes",
     "menu": {
       "aria_label": "Toggle dropdown menu",
       "copy": {
@@ -76,8 +76,8 @@
       "code": "code of conduct",
       "text": "I've read the %{- code}"
     },
-    "replies": " + %{count} replies",
-    "replies_plural": " + %{count} replies",
+    "replies_one": " + %{count} replies",
+    "replies_other": " + %{count} replies",
     "sent": {
       "check": "Check it out",
       "text": "Reply sent — %{- check}"
@@ -139,21 +139,21 @@
     }
   },
   "unitAgo": {
-    "day": "1 day ago",
-    "day_plural": "%{count} days ago",
-    "hour": "1 hour ago",
-    "hour_plural": "%{count} hours ago",
-    "min": "1 min ago",
-    "min_plural": "%{count} mins ago",
-    "month": "1 month ago",
-    "month_plural": "%{count} months ago",
+    "day_one": "1 day ago",
+    "day_other": "%{count} days ago",
+    "hour_one": "1 hour ago",
+    "hour_other": "%{count} hours ago",
+    "min_one": "1 min ago",
+    "min_other": "%{count} mins ago",
+    "month_one": "1 month ago",
+    "month_other": "%{count} months ago",
     "now": "just now",
-    "second": "1 second ago",
-    "second_plural": "%{count} seconds ago",
-    "week": "1 week ago",
-    "week_plural": "%{count} weeks ago",
-    "year": "1 year ago",
-    "year_plural": "%{count} years ago"
+    "second_one": "1 second ago",
+    "second_other": "%{count} seconds ago",
+    "week_one": "1 week ago",
+    "week_other": "%{count} weeks ago",
+    "year_one": "1 year ago",
+    "year_other": "%{count} years ago"
   },
   "userAlertModal": {
     "comment": {

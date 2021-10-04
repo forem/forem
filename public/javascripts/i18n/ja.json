@@ -11,7 +11,7 @@
       "podcast": "podcast"
     },
     "for_org": "%{- start} が %{- end}%{- org}%{- start} へ執筆%{- end}",
-    "reading_time": "%{count} 分で読める",
+    "reading_time_other": "%{count} 分で読める",
     "save": {
       "initial": "保存",
       "remove": "Unsave",
@@ -43,9 +43,9 @@
       "upload": "Upload image",
       "use": "Use a response template"
     },
-    "invalid": "Invalid file!",
-    "like": "Like",
-    "likes_0": "&nbsp;likes",
+    "invalid": "無効なファイルです！",
+    "like": "いいね",
+    "likes_other": "いいね&nbsp;",
     "menu": {
       "aria_label": "Toggle dropdown menu",
       "copy": {
@@ -74,7 +74,7 @@
       "code": "code of conduct",
       "text": "I've read the %{- code}"
     },
-    "replies_0": " + %{count} replies",
+    "replies_other": " ほか %{count} 件の返信",
     "sent": {
       "check": "Check it out",
       "text": "Reply sent — %{- check}"
@@ -134,21 +134,14 @@
     }
   },
   "unitAgo": {
-    "day": "1 day ago",
-    "day_plural": "%{count} days ago",
-    "hour": "1 hour ago",
-    "hour_plural": "%{count} hours ago",
-    "min": "1 min ago",
-    "min_plural": "%{count} mins ago",
-    "month": "1 month ago",
-    "month_plural": "%{count} months ago",
-    "now": "just now",
-    "second": "1 second ago",
-    "second_plural": "%{count} seconds ago",
-    "week": "1 week ago",
-    "week_plural": "%{count} weeks ago",
-    "year": "1 year ago",
-    "year_plural": "%{count} years ago"
+    "day_other": "%{count}日前",
+    "hour_other": "%{count}時間前",
+    "min_other": "%{count}分前",
+    "month_other": "%{count}ヶ月前",
+    "now": "たった今",
+    "second_other": "%{count}秒前",
+    "week_other": "%{count}週間前",
+    "year_other": "%{count}年前"
   },
   "userAlertModal": {
     "comment": {
