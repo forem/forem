@@ -24,11 +24,11 @@ function toggleArchivedPosts(e) {
   e.preventDefault();
   var link = e.target;
 
-  if (link.innerHTML.match(/Show/)) {
-    link.innerHTML = 'Hide archived';
+  if (link.innerHTML.match(i18next.t('archivedPosts.show_regexp'))) {
+    link.innerHTML = i18next.t('archivedPosts.hide');
     showArchivedPosts();
   } else {
-    link.innerHTML = 'Show archived';
+    link.innerHTML = i18next.t('archivedPosts.show');
     hideArchivedPosts();
   }
 }

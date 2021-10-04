@@ -53,11 +53,11 @@ function showRateLimitModal({
   });
   let rateLimitLink = '/faq';
   showUserAlertModal(
-    `Wait ${timeframe}...`,
+    i18next.t('userAlertModal.wait'),
     rateLimitText,
-    'Got it',
+    i18next.t('userAlertModal.gotit'),
     rateLimitLink,
-    'Why do I have to wait?',
+    i18next.t('userAlertModal.why'),
   );
 }
 /**
@@ -140,8 +140,11 @@ const getModalHtml = (text, confirm_text) => `
  *
  * @returns {string} Formatted body text for a rate limit modal
  */
-function buildRateLimitText({ element, action_ing, action_past, timeframe }) {
-  return `Since you recently ${action_past} a ${element}, you’ll need to wait ${timeframe} before ${action_ing} another ${element}.`;
+function buildRateLimitText(action_text, next_action_text) {
+  return i18next.t('userAlertModal.rateLimit', {
+    action: action_text,
+    next: next_action_text,
+  });
 }
 
 /**

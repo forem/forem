@@ -44,14 +44,22 @@ function buildArticleHTML(article) {
         '</a>';
     }
     if (article.class_name === 'PodcastEpisode') {
-      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>";
+      flareTag =
+        "<span class='crayons-story__flare-tag'>" +
+        i18next.t('articles.flare.podcast') +
+        '</span>';
     }
     if (article.class_name === 'Comment') {
-      flareTag = "<span class='crayons-story__flare-tag'>comment</span>";
+      flareTag =
+        "<span class='crayons-story__flare-tag'>" +
+        i18next.t('articles.flare.comment') +
+        '</span>';
     }
     if (article.class_name === 'User') {
       flareTag =
-        "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>";
+        "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>" +
+        i18next.t('articles.flare.person') +
+        '</span>';
     }
 
     var tagString = '';
@@ -101,7 +109,6 @@ function buildArticleHTML(article) {
 
     var reactionsCount = article.public_reactions_count;
     var reactionsDisplay = '';
-    var reactionsText = reactionsCount === 1 ? 'reaction' : 'reactions';
 
     if (article.class_name !== 'User' && reactionsCount > 0) {
       reactionsDisplay =
@@ -260,10 +267,10 @@ function buildArticleHTML(article) {
       // we have ` ... || null` for the case article.reading_time is undefined
       readingTimeHTML =
         '<small class="crayons-story__tertiary fs-xs mr-2">' +
-        ((article.reading_time || null) < 1
-          ? '1 min'
-          : article.reading_time + ' min') +
-        ' read</small>';
+        i18next.t('articles.reading_time', {
+          count: (article.reading_time || null) < 1 ? 1 : article.reading_time,
+        }) +
+        '</small>';
     }
 
     var saveButton = '';

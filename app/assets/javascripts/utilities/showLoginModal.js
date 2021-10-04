@@ -1,6 +1,6 @@
 function showLoginModal() {
   window.Forem.showModal({
-    title: 'Log in to continue',
+    title: i18next.t('loginModal.title'),
     contentSelector: '#global-signup-modal',
     overlay: true,
   });

@@ -17,7 +17,9 @@ function addRelevantButtonsToArticle(user) {
 
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
       actions.push(
-        `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary" href="${
+          articleContainer.dataset.path
+        }/edit" rel="nofollow">${i18next.t('dashboard.article.edit')}</a>`,
       );
 
       let clickToEditButton = document.getElementById('author-click-to-edit');
@@ -27,12 +29,18 @@ function addRelevantButtonsToArticle(user) {
 
       if (published === true) {
         actions.push(
-          `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
+          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${
+            articleContainer.dataset.path
+          }/manage" rel="nofollow">${i18next.t(
+            'dashboard.article.manage',
+          )}</a>`,
         );
       }
 
       actions.push(
-        `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${
+          articleContainer.dataset.path
+        }/stats" rel="nofollow">${i18next.t('dashboard.article.stats')}</a>`,
       );
     }
 
@@ -42,7 +50,15 @@ function addRelevantButtonsToArticle(user) {
     // if there's already a pinned post different from the current one
     if (user.admin) {
       actions.push(
-        `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="/admin/content_manager/articles/${articleId}" data-no-instant>Admin</a>`,
+        `<button
+            id="js-${isArticlePinned ? 'unpin' : 'pin'}-article"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1"
+            data-path="${pinPath}"
+            data-article-id="${articleId}">${
+          isArticlePinned
+            ? i18next.t('dashboard.article.unpin')
+            : i18next.t('dashboard.article.pin')
+        }</button>`,
       );
     }
 
@@ -63,7 +79,9 @@ function addRelevantButtonsToComments(user) {
         butt.innerHTML =
           '<a href="' +
           butt.dataset.path +
-          '" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>Settings</a>';
+          '" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>' +
+          i18next.t('dashboard.comments.settings') +
+          '</a>';
         butt.classList.remove('hidden');
         butt.classList.add('block');
       }
@@ -85,7 +103,9 @@ function addRelevantButtonsToComments(user) {
           butt.innerHTML =
             '<a href="' +
             butt.dataset.path +
-            '" rel="nofollow" class="crayons-link crayons-link--block">Moderate</a>';
+            '" rel="nofollow" class="crayons-link crayons-link--block">' +
+            i18next.t('dashboard.comments.moderate') +
+            '</a>';
         }
         butt.className = 'mod-actions';
         butt.classList.remove('hidden');

@@ -105,10 +105,16 @@ function buildTagsHTML(tag) {
   var antifollow = '';
   if (tag.points < 0) {
     antifollow =
-      '<span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>';
+      '<span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="' +
+      i18next.t('tags.following.anti.title') +
+      '">' +
+      i18next.t('tags.following.anti.text') +
+      '</span>';
   }
 
-  return `<div class="crayons-card p-4 m:p-6 flex flex-col single-article" id="follows-${tag.id}" style="border: 1px solid ${tag.color}; box-shadow: 3px 3px 0 ${tag.color}">
+  return `<div class="crayons-card p-4 m:p-6 flex flex-col single-article" id="follows-${
+    tag.id
+  }" style="border: 1px solid ${tag.color}; box-shadow: 3px 3px 0 ${tag.color}">
     <h3 class="s:mb-1 p-0 fw-medium">
       <a href="/t/${tag.name}" class="crayons-tag crayons-tag--l">
         <span class="crayons-tag__prefix">#</span>${tag.name}
@@ -116,8 +122,14 @@ function buildTagsHTML(tag) {
       ${antifollow}
     </h3>
     <p class="grid-cell__summary truncate-at-3"></p>
-    <input name="follows[][id]" id="follow_id_${tag.name}" type="hidden" form="follows_update_form" value="${tag.id}">
-    <input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="${tag.points}" name="follows[][explicit_points]" id="follow_points_${tag.name}" aria-label="${tag.name} tag weight">
+    <input name="follows[][id]" id="follow_id_${
+      tag.name
+    }" type="hidden" form="follows_update_form" value="${tag.id}">
+    <input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="${
+      tag.points
+    }" name="follows[][explicit_points]" id="follow_points_${
+    tag.name
+  }" aria-label="${i18next.t('tags.following.number.aria_label')}">
   </div>`;
 }
 

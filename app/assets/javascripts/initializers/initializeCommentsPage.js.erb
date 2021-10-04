@@ -52,12 +52,7 @@ function initializeCommentsPage() {
                     var reactionsCountWrapper = buttForComment.querySelector('.reactions-count');
                     var reactionsLabelWrapper = buttForComment.querySelector('.reactions-label');
                     if (publicReactionCounts[i].count > 0) {
-
-                      if (publicReactionCounts[i].count > 1) {
-                        reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}s`;
-                      } else {
-                        reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}`;
-                      }
+                      reactionsLabelWrapper.innerHTML = i18next.t('comments.likes', { count: publicReactionCounts[i].count });
 
                       reactionsCountWrapper.id = 'reactions-count-' + publicReactionCounts[i].id;
                       reactionsCountWrapper.innerHTML = publicReactionCounts[i].count;
@@ -80,8 +75,8 @@ function initializeCommentsPage() {
                     var userActionsEl = allNodes[i].querySelector('.current-user-actions');
                     var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
                     if (userActionsEl && buttEl) {
-                      userActionsEl.innerHTML = `<li><a href="${ path }/edit" class="crayons-link crayons-link--block" aria-label="Edit this comment">Edit</a></li>
-                                                <li><a data-no-instant href="${ path }/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="Delete this comment">Delete</a></li>`
+                      userActionsEl.innerHTML = `<li><a href="${ path }/edit" class="crayons-link crayons-link--block" aria-label="${i18next.t('comments.menu.edit.aria_label')}">${i18next.t('comments.menu.edit.text')}</a></li>
+                                                <li><a data-no-instant href="${ path }/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="${i18next.t('comments.menu.delete.aria_label')}">${i18next.t('comments.menu.delete.text')}</a></li>`
                       userActionsEl.classList.remove('hidden');
                     }
                   }
@@ -121,10 +116,8 @@ function initializeCommentsPage() {
             if (reactionCount) {
               reactionCount.innerHTML = parseInt(reactionCount.innerHTML) + 1;
               reactionCount.classList.remove("hidden");
-              if(parseInt(reactionCount.innerHTML) == 1) {
-                reactionLabel.innerHTML = "&nbsp;like"
-              } else if(parseInt(reactionCount.innerHTML) > 1) {
-                reactionLabel.innerHTML = "&nbsp;likes"
+              if(parseInt(reactionCount.innerHTML) > 0) {
+                reactionLabel.innerHTML = i18next.t('comments.likes', { count: parseInt(reactionCount.innerHTML) });
               }
             }
           } else {
@@ -134,7 +127,7 @@ function initializeCommentsPage() {
               reactionCount.innerHTML = parseInt(reactionCount.innerHTML) - 1;
               if(parseInt(reactionCount.innerHTML) == 0) {
                 reactionCount.classList.add("hidden");
-                reactionLabel.innerHTML = "Like"
+                reactionLabel.innerHTML = i18next.t('comments.like');
               }
             }
           }
@@ -208,7 +201,7 @@ function toggleCodeOfConduct() {
   var checkboxWrapper = document.getElementById('toggle-code-of-conduct-checkbox');
   if (checkboxWrapper && !codeOfConduct) {
     checkboxWrapper.innerHTML = '<input type="checkbox" name="checked_code_of_conduct" class="checkbox" required/>\
-                                  <label for="checked_code_of_conduct">I\'ve read the <a href="/code-of-conduct">code of conduct</a></label>'
+                                  <label for="checked_code_of_conduct">' + i18next.t('comments.read.text', { code: `<a href="/code-of-conduct">${i18next.t('comments.read.code')}</a>` }) + '</label>'
   }
 }
 
@@ -258,7 +251,7 @@ function handleCommentSubmit(event) {
             handleFormClose(event);
             if (newComment.depth > 3) {
               var replyTrigger = parentComment.getElementsByClassName("toggle-reply-form")[0];
-              var threadIndicator = `<span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">${ iconSmallThread }Thread</span>`;
+              var threadIndicator = `<span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">${ iconSmallThread }${i18next.t('comments.thread')}</span>`;
               replyTrigger.classList.replace("inline-flex", "hidden");
               replyTrigger.parentNode.innerHTML += threadIndicator;
             }
@@ -285,13 +278,13 @@ function handleCommentSubmit(event) {
             const preview = document.getElementById("preview-div");
             const togglePreview = document.querySelector('.preview-toggle');
             preview.innerHTML = "";
-            togglePreview.innerHTML = "Preview";
+            togglePreview.innerHTML = i18next.t('comments.form.preview');
             const container = document.getElementById("comment-trees-container");
             container.insertBefore(newNode, container.firstChild);
           }
           else if (document.getElementById("notifications-container")) {
             var newDiv = document.createElement("span")
-            newDiv.innerHTML = '<div class="crayons-notice align-center p-2 m-2 crayons-notice--success reply-sent-notice reply-sent-notice" aria-live="polite">Reply sent — <a href="' + newComment.url + '">Check it out</a></div>'
+            newDiv.innerHTML = '<div class="crayons-notice align-center p-2 m-2 crayons-notice--success reply-sent-notice reply-sent-notice" aria-live="polite">' + i18next.t('comments.sent.text', { check: `<a href="${newComment.url}">${i18next.t('comments.sent.check')}</a>` }) + '</div>'
             form.replaceWith(newDiv);
           }
           else {
@@ -304,11 +297,13 @@ function handleCommentSubmit(event) {
         })
       } else {
         form.classList.remove('submitting');
-        showModalAfterError({
-          response,
-          element: 'comment',
-          action_ing: 'posting',
-          action_past: 'posted',
+        var responseStatus = response.status;
+        response.json().then(function parseError(errorReponse) {
+          if (responseStatus === 429) {
+            showRateLimitModal(i18next.t('userAlertModal.comment.action'), i18next.t('userAlertModal.comment.next'))
+          } else {
+            showUserAlertModal(i18next.t('userAlertModal.comment.title'), i18next.t('userAlertModal.comment.text', { error: errorReponse.error }), i18next.t('userAlertModal.comment.confirm'))
+          }
         });
         return false;
       }
@@ -497,7 +492,7 @@ function handleImageUpload(event, randomIdNumber) {
     var image = document.getElementById('image-upload-' + randomIdNumber).files;
     if (image.length > 0) {
       document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#888888';
-      document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = "Uploading...";
+      document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = i18next.t('comments.uploading');
       document.getElementById("image-upload-submit-" + randomIdNumber).value = "uploading";
       setTimeout(function () {
         document.getElementById("image-upload-submit-" + randomIdNumber).click(function () { });
@@ -524,7 +519,7 @@ function handleImageUpload(event, randomIdNumber) {
                 address.classList.remove("hidden");;
                 address.select();
 
-                var uploadedMessage = 'Uploaded! Paste into editor';
+                var uploadedMessage = i18next.t('comments.uploaded');
                 messageContainer.innerHTML = uploadedMessage;
                 messageContainer.style.color = '#00c673';
                 messageContainer.style.position = "relative";
@@ -540,7 +535,7 @@ function handleImageUpload(event, randomIdNumber) {
             });
           } else {
             response.json().then(function(responseBody) {
-              var errorMessage = responseBody.error || 'Invalid file!';
+              var errorMessage = responseBody.error || i18next.t('comments.invalid');
               document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = errorMessage;
               document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#e05252';
               document.getElementById("image-upload-submit-" + randomIdNumber).style.display = 'none';
@@ -563,7 +558,7 @@ function listenForDetailsToggle() {
       var usernames = item.getElementsByClassName("js-comment-username");
       var number = "";
       if (usernames.length > 1) {
-        number = " + " + (usernames.length - 1) + " replies"
+        number = i18next.t('comments.replies', { count: (usernames.length - 1) })
       }
       var itemUsername = usernames[0].textContent + number
       if (item.open) {

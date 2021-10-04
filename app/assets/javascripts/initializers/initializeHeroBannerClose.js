@@ -8,7 +8,7 @@ function initializeHeroBannerClose() {
   // In the future this could be extracted so the implementer doesn't need to worry about it.
 
   if (bannerWrapper && closeIcon) {
-    closeIcon.setAttribute('aria-label', 'Close campaign banner');
+    closeIcon.setAttribute('aria-label', i18next.t('campaign.close'));
     closeIcon.addEventListener('click', () => {
       localStorage.setItem('exited_hero', bannerWrapper.dataset.name);
       bannerWrapper.style.display = 'none';

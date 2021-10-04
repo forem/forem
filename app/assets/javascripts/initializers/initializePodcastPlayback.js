@@ -209,11 +209,11 @@ function initializePodcastPlayback() {
     var speed = parseFloat(el.getAttribute('data-speed'));
     if (speed === 2) {
       el.setAttribute('data-speed', 0.5);
-      el.innerHTML = '0.5x';
+      el.innerHTML = i18next.t('podcasts.rate', { speed: 0.5 });
       currentState.playbackRate = 0.5;
     } else {
       el.setAttribute('data-speed', speed + 0.5);
-      el.innerHTML = speed + 0.5 + 'x';
+      el.innerHTML = i18next.t('podcasts.rate', { speed: speed + 0.5 });
       currentState.playbackRate = speed + 0.5;
     }
     saveMediaState(currentState);
@@ -238,7 +238,7 @@ function initializePodcastPlayback() {
         statusBox.classList.remove('showing');
       }
     } else if (
-      message === 'initializing...' &&
+      message === i18next.t('podcasts.time') &&
       getByClass('status-message')[0]
     ) {
       getByClass('status-message')[0].innerHTML = message;
@@ -319,7 +319,7 @@ function initializePodcastPlayback() {
       .catch(function (error) {
         playAudio(audio);
         setTimeout(function () {
-          spinPodcastRecord('initializing...');
+          spinPodcastRecord(i18next.t('podcasts.time'));
           startPodcastBar();
         }, 5);
       });
@@ -353,7 +353,7 @@ function initializePodcastPlayback() {
     var currentState = currentAudioState();
     if (!currentState.playing) {
       ahoyMessage('play');
-      changeStatusMessage('initializing...');
+      changeStatusMessage(i18next.t('podcasts.time'));
       startAudioPlayback(audio);
     } else {
       ahoyMessage('pause');
@@ -490,7 +490,7 @@ function initializePodcastPlayback() {
     var currentState = currentAudioState();
     switch (message.action) {
       case 'init':
-        getById('time').innerHTML = 'initializing...';
+        getById('time').innerHTML = i18next.t('podcasts.time');
         currentState.currentTime = 0;
         break;
       case 'tick':

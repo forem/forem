@@ -1,20 +1,190 @@
 {
+  "archivedPosts": {
+    "hide": "Hide archived",
+    "show": "Show archived",
+    "show_regexp": "Show"
+  },
   "articles": {
+    "flare": {
+      "comment": "comment",
+      "person": "person",
+      "podcast": "podcast"
+    },
     "for_org": "%{- start} が %{- end}%{- org}%{- start} へ執筆%{- end}",
+    "reading_time": "%{count} min read",
+    "reading_time_plural": "%{count} min read",
     "save": {
       "initial": "保存",
-      "success": "保存済"
+      "success": "保存済",
+      "remove": "Unsave"
     }
   },
+  "campaign": {
+    "close": "Close campaign banner"
+  },
   "comments": {
+    "form": {
+      "cancel": "Dismiss",
+      "guide": "Markdown Guide",
+      "preview": "Preview",
+      "reply": {
+        "aria_label": "Reply to a comment...",
+        "placeholder": "Reply...",
+        "text": "Reply"
+      },
+      "submit": "Submit",
+      "submit_upload": "Upload",
+      "template": {
+        "create": "Create template",
+        "desc": "Templates let you quickly answer FAQs or store snippets for re-use.",
+        "moderator": "Moderator",
+        "personal": "Personal"
+      },
+      "templates": "Templates",
+      "upload": "Upload image",
+      "use": "Use a response template"
+    },
+    "invalid": "Invalid file!",
+    "like": "Like",
+    "likes": "&nbsp;like",
+    "likes_plural": "&nbsp;likes",
+    "menu": {
+      "aria_label": "Toggle dropdown menu",
+      "copy": {
+        "aria_label": "Copy link to %{user}'s comment",
+        "text": "Copy link"
+      },
+      "delete": {
+        "aria_label": "Delete this comment",
+        "text": "Delete"
+      },
+      "edit": {
+        "aria_label": "Edit this comment",
+        "text": "Edit"
+      },
+      "settings": {
+        "aria_label": "Go to %{user}'s comment settings",
+        "text": "Settings"
+      },
+      "report": {
+        "aria_label": "Report %{user}'s comment as abusive or violating our code of conduct and/or terms and conditions",
+        "text": "Report abuse"
+      }
+    },
+    "replies": " + %{count} replies",
+    "replies_plural": " + %{count} replies",
+    "sent": {
+      "check": "Check it out",
+      "text": "Reply sent — %{- check}"
+    },
+    "read": {
+      "text": "I've read the %{- code}",
+      "code": "code of conduct"
+    },
+    "thread": "Thread",
     "summary": {
       "count": "%{count}%{- start}\u202F×\u202Fコメント%{- end}",
       "empty": "コメントを寄せる"
+    },
+    "uploaded": "Uploaded! Paste into editor",
+    "uploading": "Uploading..."
+  },
+  "csrf": {
+    "error": "Could not locate CSRF meta tag on the page.",
+    "notify": "Could not locate CSRF metatag %{user}"
+  },
+  "dashboard": {
+    "article": {
+      "edit": "Edit",
+      "manage": "Manage",
+      "pin": "Pin Post",
+      "stats": "Stats",
+      "unpin": "Unpin Post"
+    },
+    "comments": {
+      "moderate": "Moderate",
+      "settings": "Settings"
     }
   },
+  "editor": {
+    "continue": "Continue editing",
+    "preview": "Preview"
+  },
+  "followButts": {
+    "edit": "Edit profile",
+    "follow": "Follow",
+    "follow_small": "+",
+    "followback": "Follow back",
+    "following": "Following",
+    "following_small": "✓"
+  },
+  "loginModal": {
+    "title": "Log in to continue"
+  },
+  "podcasts": {
+    "rate": "%{speed}x",
+    "time": "initializing..."
+  },
   "reactions": {
+    "like": {
+      "aria_label": "Like",
+      "aria_remove": "Unlike",
+      "text": "Like"
+    },
+    "readingList": {
+      "aria_label": "Add to reading list",
+      "aria_remove": "Remove from reading list"
+    },
     "summary": {
       "count": "%{count}%{- start}\u202F×\u202F反響%{- end}"
+    },
+    "unicorn": {
+      "aria_label": "React with unicorn",
+      "aria_remove": "Remove unicorn reaction"
     }
+  },
+  "tags": {
+    "following": {
+      "anti": {
+        "title": "This tag has negative follow weight",
+        "text": "Anti-follow"
+      },
+      "weight": {
+        "aria_label": "%{name} tag weight"
+      }
+    }
+  },
+  "unitAgo": {
+    "now": "just now",
+    "second": "1 second ago",
+    "second_plural": "%{count} seconds ago",
+    "min": "1 min ago",
+    "min_plural": "%{count} mins ago",
+    "hour": "1 hour ago",
+    "hour_plural": "%{count} hours ago",
+    "day": "1 day ago",
+    "day_plural": "%{count} days ago",
+    "week": "1 week ago",
+    "week_plural": "%{count} weeks ago",
+    "month": "1 month ago",
+    "month_plural": "%{count} months ago",
+    "year": "1 year ago",
+    "year_plural": "%{count} years ago"
+  },
+  "userAlertModal": {
+    "comment": {
+      "action": "made a comment",
+      "next": "making another comment",
+      "title": "Error posting comment",
+      "text": "Your comment could not be posted due to an error: %{error}",
+      "confirm": "OK"
+    },
+    "gotit": "Got it",
+    "rateLimit": "Since you recently %{action}, you’ll need to wait a moment before %{next}.",
+    "wait": "Wait a moment...",
+    "why": "Why do I have to wait?"
+  },
+  "users": {
+    "details": "%{user} profile details"
   }
 }

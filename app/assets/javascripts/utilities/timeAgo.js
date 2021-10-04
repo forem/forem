@@ -1,5 +1,22 @@
 'use strict';
 
+// workaround for webpack tests
+if (typeof i18next === 'undefined') {
+  const timeAgoLocale = typeof locale === 'undefined' ? 'en-US' : locale;
+  // eslint-disable-next-line no-undef
+  var i18next = require('../lib/i18next');
+  i18next.init({
+    lng: timeAgoLocale,
+    resources: {
+      [timeAgoLocale]: {
+        // eslint-disable-next-line no-undef
+        translation: require(`../../../../public/javascripts/i18n/${timeAgoLocale}.json`),
+      },
+    },
+    interpolation: { prefix: '%{', suffix: '}' },
+  });
+}
+
 function secondsToHumanUnitAgo(seconds) {
   const times = [
     ['second', 1],
@@ -11,7 +28,7 @@ function secondsToHumanUnitAgo(seconds) {
     ['year', 60 * 60 * 24 * 365],
   ];
 
-  if (seconds < times[0][1]) return 'just now';
+  if (seconds < times[0][1]) return i18next.t('unitAgo.now');
 
   let scale = 0;
   // If the amount of seconds is more than a minute, we change the scale to minutes
@@ -20,9 +37,8 @@ function secondsToHumanUnitAgo(seconds) {
   while (scale + 1 < times.length && seconds >= times[scale + 1][1]) scale += 1;
 
   const wholeUnits = Math.floor(seconds / times[scale][1]);
-  const unitName = times[scale][0] + (wholeUnits === 1 ? '' : 's');
 
-  return wholeUnits + ' ' + unitName + ' ago';
+  return i18next.t('unitAgo.' + times[scale][0], { count: wholeUnits });
 }
 
 /**
