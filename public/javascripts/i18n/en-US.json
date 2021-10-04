@@ -111,14 +111,6 @@
     "continue": "Continue editing",
     "preview": "Preview"
   },
-  "followButts": {
-    "edit": "Edit profile",
-    "follow": "Follow",
-    "follow_small": "+",
-    "followback": "Follow back",
-    "following": "Following",
-    "following_small": "✓"
-  },
   "loginModal": {
     "title": "Log in to continue"
   },
@@ -128,21 +120,11 @@
   },
   "reactions": {
     "like": {
-      "aria_label": "Like",
-      "aria_remove": "Unlike",
       "text": "Like"
-    },
-    "readingList": {
-      "aria_label": "Add to reading list",
-      "aria_remove": "Remove from reading list"
     },
     "summary": {
       "count": "%{count}%{- start}\u00A0reaction%{- end}",
       "count_plural": "%{count}%{- start}\u00A0reactions%{- end}"
-    },
-    "unicorn": {
-      "aria_label": "React with unicorn",
-      "aria_remove": "Remove unicorn reaction"
     }
   },
   "tags": {

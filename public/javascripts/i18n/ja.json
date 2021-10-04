@@ -107,14 +107,6 @@
     "continue": "Continue editing",
     "preview": "Preview"
   },
-  "followButts": {
-    "edit": "Edit profile",
-    "follow": "Follow",
-    "follow_small": "+",
-    "followback": "Follow back",
-    "following": "Following",
-    "following_small": "✓"
-  },
   "loginModal": {
     "title": "Log in to continue"
   },
@@ -124,20 +116,10 @@
   },
   "reactions": {
     "like": {
-      "aria_label": "いいね",
-      "aria_remove": "Unlike",
       "text": "Like"
-    },
-    "readingList": {
-      "aria_label": "切り抜き帳に追加",
-      "aria_remove": "Remove from reading list"
     },
     "summary": {
       "count": "%{count}%{- start}\u202F×\u202F反響%{- end}"
-    },
-    "unicorn": {
-      "aria_label": "React with unicorn",
-      "aria_remove": "Remove unicorn reaction"
     }
   },
   "tags": {

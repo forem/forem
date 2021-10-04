@@ -1,3 +1,4 @@
+import { i18next } from '../i18n/l10n';
 /* global checkUserLoggedIn, showLoginModal, userData, buildArticleHTML, initializeReadingListIcons */
 /* eslint no-undef: "error" */
 
@@ -194,8 +195,11 @@ function search(query, filters, sortBy, sortDirection) {
         .getElementById('substories')
         .classList.add('search-results-loaded');
       if (content.result.length === 0) {
-        document.getElementById('substories').innerHTML =
-          '<div class="p-9 align-center crayons-card">No results match that query</div>';
+        document.getElementById(
+          'substories',
+        ).innerHTML = `<div class="p-9 align-center crayons-card">${i18next.t(
+          'search.empty',
+        )}</div>`;
       }
     });
 }

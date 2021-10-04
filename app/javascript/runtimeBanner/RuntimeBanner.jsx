@@ -1,6 +1,7 @@
 /* global Runtime */
 
 import { h } from 'preact';
+import { i18next } from '../i18n/l10n';
 
 const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
 
@@ -113,8 +114,8 @@ export const RuntimeBanner = () => {
           />
         </svg>
         <div class="flex flex-col pl-3">
-          <span>Forem</span>
-          <span>Open with the Forem app</span>
+          <span>{i18next.t('main.forem')}</span>
+          <span>{i18next.t('main.forem_app')}</span>
         </div>
       </a>
       <button
@@ -124,7 +125,7 @@ export const RuntimeBanner = () => {
       >
         <svg
           class="crayons-icon"
-          title="Dismiss banner: Open with the Forem app"
+          title={i18next.t('main.forem_icon')}
           aria="true"
           width="24"
           height="24"

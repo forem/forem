@@ -360,6 +360,14 @@
     "vomit": "Make all posts by this author less visible",
     "vomit_desc": "This author consistently posts content that violates DEV's code of conduct because it is harassing, offensive or spammy."
   },
+  "followButts": {
+    "edit": "Edit profile",
+    "follow": "Follow",
+    "follow_small": "+",
+    "followback": "Follow back",
+    "following": "Following",
+    "following_small": "✓"
+  },
   "gitHub": {
     "loading": "Loading GitHub repositories",
     "remove": "Remove",
@@ -434,6 +442,9 @@
   },
   "main": {
     "close_bar": "Dismiss",
+    "forem": "Forem",
+    "forem_app": "Open with the Forem app",
+    "forem_icon": "Dismiss banner: Open with the Forem app",
     "tag": "%{tag} tag",
     "who": "who to follow"
   },
@@ -574,6 +585,7 @@
   "search": {
     "aria_label": "search",
     "aria_term": "Search term",
+    "empty": "No results match that query",
     "placeholder": "Search..."
   },
   "stats": {

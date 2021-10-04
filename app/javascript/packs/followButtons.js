@@ -1,5 +1,5 @@
 import { getInstantClick } from '../topNavigation/utilities';
-import { locale } from '@utilities/locale';
+import { i18next } from '../i18n/l10n';
 
 /* global showLoginModal  userData  showModalAfterError*/
 
@@ -16,64 +16,13 @@ function addButtonFollowText(button, style) {
 
   switch (style) {
     case 'small':
-      addAriaLabelToButton({
-        button,
-        followName: name,
-        followType: className,
-        style: 'follow',
-      });
-      button.textContent = '+';
+      button.textContent = i18next.t('followButts.follow_small');
       break;
     case 'follow-back':
-      addAriaLabelToButton({
-        button,
-        followName: name,
-        followType: className,
-        style: 'follow-back',
-      });
-      button.textContent = locale('core.follow_back');
+      button.textContent = i18next.t('followButts.followback');
       break;
     default:
-      addAriaLabelToButton({
-        button,
-        followName: name,
-        followType: className,
-        style: 'follow',
-      });
-      button.textContent = locale('core.follow');
-  }
-}
-
-/**
- * Sets the aria-label and aria-pressed value of the button
- *
- * @param {HTMLElement} button The Follow button to update.
- * @param {string} followType The followableType of the button.
- * @param {string} followName The name of the followable to be followed.
- * @param {string} style The style of the button from its "info" data attribute
- */
-function addAriaLabelToButton({ button, followType, followName, style = '' }) {
-  let label = '';
-  let pressed = '';
-  switch (style) {
-    case 'follow':
-      label = `Follow ${followType.toLowerCase()}: ${followName}`;
-      pressed = 'false';
-      break;
-    case 'follow-back':
-      label = `Follow ${followType.toLowerCase()} back: ${followName}`;
-      pressed = 'false';
-      break;
-    case 'following':
-      label = `Follow ${followType.toLowerCase()}: ${followName}`;
-      pressed = 'true';
-      break;
-    case 'self':
-      label = `Edit profile`;
-      break;
-    default:
-      label = `Follow ${followType.toLowerCase()}: ${followName}`;
-      pressed = 'false';
+      button.textContent = i18next.t('followButts.follow');
   }
   button.setAttribute('aria-label', label);
   pressed.length === 0
@@ -88,7 +37,10 @@ function addAriaLabelToButton({ button, followType, followName, style = '' }) {
  * @param {string} style The style of the button from its "info" data attribute
  */
 function addButtonFollowingText(button, style) {
-  button.textContent = style === 'small' ? '✓' : locale('core.following');
+  button.textContent =
+    style === 'small'
+      ? i18next.t('followButts.following_small')
+      : i18next.t('followButts.following');
 }
 
 /**
