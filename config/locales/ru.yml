@@ -1,0 +1,74 @@
+en:
+  core:
+    add_comment: "Добавить комментарий"
+    all: "Все"
+    comment: "Комментарий"
+    copy_link: "Скопировать ссылку"
+    create_account: "Создать аккаунт"
+    create_post: "Создать запись"
+    discussion: "Дискуссия"
+    edit_profile: "Редактировать профиль"
+    feed: "Лента"
+    follow: "Подписаться"
+    follow_back: "Подписаться вслед"
+    following: "Подписка"
+    full: "Полный"
+    infinity: "Бесконечные"
+    latest: "Последние"
+    like: "Лайк"
+    listings: "Списки"
+    log_in: "Войти"
+    month: "Месяц"
+    more_from: "Больше от"
+    my_tags: "Мои тэги"
+    post: "Запись"
+    reaction: "Реакция"
+    read_next: "Читать дальше"
+    reply: "Ответить"
+    report_abuse: "Пожаловаться"
+    search: "Искать"
+    see_all: "Смотреть все"
+    trending_on: "Популярное"
+    view: "Вид"
+    week: "Неделя"
+    year: "Год"
+  errors:
+    messages:
+      accepted: должен быть подтвержден
+      bad_uri: неправильная ссылка
+      bad_protocol: должен начинаться с %{protocols}
+      blank: не может быть пустым
+      confirmation: не совпадает с %{attribute}
+      empty: не может быть пустым
+      equal_to: должно быть равным %{count}
+      even: должно быть четным
+      exclusion: зарезервировано
+      greater_than: должно быть больше, чем %{count}
+      greater_than_or_equal_to: должно быть больше или равно %{count}
+      inclusion: невключено в список
+      invalid: неправильно
+      less_than: должно быть меньше, чем %{count}
+      less_than_or_equal_to: должно быть меньше или равно %{count}
+      model_invalid: 'Не прошло проверку: %{errors}'
+      not_a_number: не числа
+      not_an_integer: должно быть целое число
+      odd: должно быть нечетное
+      other_than: должно быть другое, чем %{count}
+      present: должно быть пустым
+      required: должно существовать
+      taken: уже зарегистрирован
+      too_long:
+        one: слишком длинный (максимум 1 символ)
+        other: слишком длинный (максимум %{count} символов)
+      too_short:
+        one: слишком короткий (минимум 1 символов)
+        other: слишком короткий (минимум %{count} символов)
+      wrong_length:
+        one: неправильная длинна (должно быть 1 символ)
+        other: неправильная длинна (должно быть %{count} символов)
+  podcasts:
+    statuses:
+      unreachable: feed_url подкаста недоступен
+      unparsable: RSS подкаста не может быть спарсен
+      unplayable: Этот подкаст возможно не будет проигрываться в браузере
+      ssl_failed: SSL-сертификат не прошел проверку во время загрузки feed_url
