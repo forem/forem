@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { CommentListItem } from './CommentListItem';
 import { Button } from '@crayons';
 
@@ -23,7 +24,7 @@ function moreCommentsButton(comments, articlePath, totalCount) {
           url={linkToCommentsSection(articlePath)}
           data-testid="see-all-comments"
         >
-          See all {totalCount} comments
+          {i18next.t('comments.all')}
         </Button>
       </div>
     );
@@ -36,6 +37,7 @@ export const CommentsList = ({ comments = [], articlePath, totalCount }) => {
     return (
       <div className="crayons-story__comments">
         {comments.slice(0, numberOfCommentsToShow).map((comment) => {
+          // eslint-disable-next-line react/jsx-key
           return <CommentListItem comment={comment} />;
         })}
 

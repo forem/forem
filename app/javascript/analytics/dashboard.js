@@ -1,3 +1,4 @@
+import { i18next } from '../i18n/l10n';
 import { callHistoricalAPI, callReferrersAPI } from './client';
 
 const activeCharts = {};
@@ -38,10 +39,22 @@ function writeCards(data, timeRangeLabel) {
   const followerCard = document.getElementById('followers-card');
   const readerCard = document.getElementById('readers-card');
 
-  readerCard.innerHTML = cardHTML(readers, `Readers ${timeRangeLabel}`);
-  commentCard.innerHTML = cardHTML(comments, `Comments ${timeRangeLabel}`);
-  reactionCard.innerHTML = cardHTML(reactions, `Reactions ${timeRangeLabel}`);
-  followerCard.innerHTML = cardHTML(follows, `Followers ${timeRangeLabel}`);
+  readerCard.innerHTML = cardHTML(
+    readers,
+    i18next.t('stats.readers', { time: timeRangeLabel }),
+  );
+  commentCard.innerHTML = cardHTML(
+    comments,
+    i18next.t('stats.comments', { time: timeRangeLabel }),
+  );
+  reactionCard.innerHTML = cardHTML(
+    reactions,
+    i18next.t('stats.reactions', { time: timeRangeLabel }),
+  );
+  followerCard.innerHTML = cardHTML(
+    follows,
+    i18next.t('stats.followers', { time: timeRangeLabel }),
+  );
 }
 
 function drawChart({ id, title, labels, datasets }) {
@@ -118,11 +131,11 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'reactions-chart',
-    title: `Reactions ${timeRangeLabel}`,
+    title: i18next.t('stats.reactions', { time: timeRangeLabel }),
     labels,
     datasets: [
       {
-        label: 'Total',
+        label: i18next.t('stats.charts.total'),
         data: reactions,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
@@ -130,7 +143,7 @@ function drawCharts(data, timeRangeLabel) {
         lineTension: 0.1,
       },
       {
-        label: 'Likes',
+        label: i18next.t('stats.charts.likes'),
         data: likes,
         fill: false,
         borderColor: 'rgb(229, 100, 100)',
@@ -138,7 +151,7 @@ function drawCharts(data, timeRangeLabel) {
         lineTension: 0.1,
       },
       {
-        label: 'Unicorns',
+        label: i18next.t('stats.charts.unicorns'),
         data: unicorns,
         fill: false,
         borderColor: 'rgb(157, 57, 233)',
@@ -146,7 +159,7 @@ function drawCharts(data, timeRangeLabel) {
         lineTension: 0.1,
       },
       {
-        label: 'Bookmarks',
+        label: i18next.t('stats.charts.bookmarks'),
         data: readingList,
         fill: false,
         borderColor: 'rgb(10, 133, 255)',
@@ -158,11 +171,11 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'comments-chart',
-    title: `Comments ${timeRangeLabel}`,
+    title: i18next.t('stats.comments', { time: timeRangeLabel }),
     labels,
     datasets: [
       {
-        label: 'Comments',
+        label: i18next.t('stats.charts.comments'),
         data: comments,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
@@ -174,11 +187,11 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'followers-chart',
-    title: `New Followers ${timeRangeLabel}`,
+    title: i18next.t('stats.new_followers', { time: timeRangeLabel }),
     labels,
     datasets: [
       {
-        label: 'Followers',
+        label: i18next.t('stats.charts.followers'),
         data: followers,
         fill: false,
         borderColor: 'rgb(10, 133, 255)',
@@ -190,11 +203,11 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'readers-chart',
-    title: `Reads ${timeRangeLabel}`,
+    title: i18next.t('stats.reads', { time: timeRangeLabel }),
     labels,
     datasets: [
       {
-        label: 'Reads',
+        label: i18next.t('stats.charts.reads'),
         data: readers,
         fill: false,
         borderColor: 'rgb(157, 57, 233)',
@@ -225,7 +238,7 @@ function renderReferrers(data) {
   if (emptyDomainReferrer) {
     tableBody.push(`
       <tr>
-        <td class="align-left">All other external referrers</td>
+        <td class="align-left">${i18next.t('stats.external')}</td>
         <td class="align-right">${emptyDomainReferrer.count}</td>
       </tr>
     `);
@@ -249,14 +262,20 @@ function drawWeekCharts({ organizationId, articleId }) {
   resetActive(document.getElementById('week-button'));
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  callAnalyticsAPI(oneWeekAgo, 'this Week', { organizationId, articleId });
+  callAnalyticsAPI(oneWeekAgo, i18next.t('stats.this_week'), {
+    organizationId,
+    articleId,
+  });
 }
 
 function drawMonthCharts({ organizationId, articleId }) {
   resetActive(document.getElementById('month-button'));
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  callAnalyticsAPI(oneMonthAgo, 'this Month', { organizationId, articleId });
+  callAnalyticsAPI(oneMonthAgo, i18next.t('stats.this_month'), {
+    organizationId,
+    articleId,
+  });
 }
 
 function drawInfinityCharts({ organizationId, articleId }) {

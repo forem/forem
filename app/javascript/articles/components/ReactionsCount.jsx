@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { articlePropTypes } from '../../common-prop-types';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '../../crayons/Button';
-import { locale } from '../../utilities/locale';
 
 export const ReactionsCount = ({ article }) => {
   const totalReactions = article.public_reactions_count || 0;
@@ -29,13 +29,17 @@ export const ReactionsCount = ({ article }) => {
       icon={reactionsSVG}
       tagName="a"
     >
-      <span title="Number of reactions">
-        {totalReactions}
-        <span className="hidden s:inline">
-          &nbsp;
-          {`${totalReactions == 1 ? locale('core.reaction') : `${locale('core.reaction')}s`}`}
-        </span>
-      </span>
+      <span
+        title={i18next.t('reactions.number')}
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: i18next.t('reactions.count', {
+            count: totalReactions,
+            start: '<span className="hidden s:inline">',
+            end: '</span>',
+          }),
+        }}
+      />
     </Button>
   );
 };

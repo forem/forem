@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { Options } from './Options';
 import { Button } from '@crayons';
 
@@ -21,9 +22,13 @@ export const EditorActions = ({
     return (
       <div className="crayons-article-form__footer">
         <Button className="mr-2 whitespace-nowrap" onClick={onPublish} disabled>
-          {published && isVersion2
-            ? 'Publishing...'
-            : `Saving ${isVersion2 ? 'draft' : ''}...`}
+          {i18next.t(
+            published && isVersion2
+              ? 'editor.publishing'
+              : isVersion2
+              ? 'editor.saving_draft'
+              : 'editor.saving',
+          )}
         </Button>
       </div>
     );
@@ -32,7 +37,7 @@ export const EditorActions = ({
   return (
     <div className="crayons-article-form__footer">
       <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
-        {published || isVersion1 ? 'Save changes' : 'Publish'}
+        {i18next.t(published || isVersion1 ? 'editor.save' : 'editor.publish')}
       </Button>
 
       {!(published || isVersion1) && (
@@ -40,9 +45,13 @@ export const EditorActions = ({
           variant="secondary"
           className="mr-2 whitespace-nowrap"
           onClick={onSaveDraft}
-        >
-          Save <span className="hidden s:inline">draft</span>
-        </Button>
+          dangerouslySetInnerHTML={{
+            __html: i18next.t('editor.save_draft', {
+              start: '<span className="hidden s:inline">',
+              end: '</span>',
+            }),
+          }}
+        />
       )}
 
       {isVersion2 && (
@@ -59,9 +68,13 @@ export const EditorActions = ({
           onClick={onClearChanges}
           className="whitespace-nowrap fw-normal"
           size="s"
-        >
-          Revert <span className="hidden s:inline">new changes</span>
-        </Button>
+          dangerouslySetInnerHTML={{
+            __html: i18next.t('editor.revert_button', {
+              start: '<span className="hidden s:inline">',
+              end: '</span>',
+            }),
+          }}
+        />
       )}
     </div>
   );

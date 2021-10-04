@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { i18next } from '../../../i18n/l10n';
 import { ArticleFormTitle } from './ArticleFormTitle';
 import { TagInput } from './TagInput';
 import { BasicEditor } from './BasicEditor';
@@ -49,11 +50,8 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
     });
   };
 
-  const {
-    liquidShowing,
-    markdownShowing,
-    frontmatterShowing,
-  } = helpSectionVisibility;
+  const { liquidShowing, markdownShowing, frontmatterShowing } =
+    helpSectionVisibility;
 
   return (
     <div className="crayons-article-form__aside">
@@ -76,20 +74,20 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
       {liquidShowing &&
         renderModal(
           () => closeModal('liquidShowing'),
-          '🌊 Liquid Tags',
+          i18next.t('editor.help.liquid'),
           'editor-liquid-help',
         )}
 
       {markdownShowing &&
         renderModal(
           () => closeModal('markdownShowing'),
-          '✍️ Markdown',
+          i18next.t('editor.help.markdown'),
           'editor-markdown-help',
         )}
       {frontmatterShowing &&
         renderModal(
           () => closeModal('frontmatterShowing'),
-          'Jekyll Front Matter',
+          i18next.t('editor.help.jekyll'),
           'editor-frontmatter-help',
         )}
     </div>

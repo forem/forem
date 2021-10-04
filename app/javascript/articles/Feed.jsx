@@ -3,6 +3,7 @@ import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useListNavigation } from '../shared/components/useListNavigation';
 import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { i18next } from '../i18n/l10n';
 
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
@@ -177,7 +178,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     <div id="rendered-article-feed">
       {onError ? (
         <div class="crayons-notice crayons-notice--danger">
-          There was a problem fetching your feed.
+          {i18next.t('errors.feed')}
         </div>
       ) : (
         renderFeed({

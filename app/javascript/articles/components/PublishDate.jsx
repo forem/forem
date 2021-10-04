@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 /* global timeAgo */
 
@@ -16,7 +17,7 @@ export const PublishDate = ({
 
   const timeAgoText = () => {
     if (timeAgoIndicator) {
-      return ` (${timeAgoIndicator})`;
+      return i18next.t('articles.timeAgo', { ago: timeAgoIndicator });
     }
     return '';
   };

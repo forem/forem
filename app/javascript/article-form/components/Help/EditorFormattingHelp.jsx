@@ -1,105 +1,122 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../../i18n/l10n';
 
 export const EditorFormattingHelp = ({ openModal }) => (
   <div
     data-testid="format-help"
     className="crayons-article-form__help crayons-article-form__help--body"
   >
-    <h4 className="mb-2 fs-l">Editor Basics</h4>
+    <h4 className="mb-2 fs-l">{i18next.t('editor.help.basics.heading')}</h4>
     <ul className="list-disc pl-6 color-base-70">
       <li>
-        Use{' '}
+        {i18next.t('editor.help.basics.desc_1')}
         <a href="#markdown" onClick={() => openModal('markdownShowing')}>
-          Markdown
-        </a>{' '}
-        to write and format posts.
+          {i18next.t('editor.help.basics.markdown')}
+        </a>
+        {i18next.t('editor.help.basics.desc_2')}
         <details className="fs-s my-1">
-          <summary class="cursor-pointer">Commonly used syntax</summary>
+          <summary class="cursor-pointer">
+            {i18next.t('editor.help.basics.syntax')}
+          </summary>
           <table className="crayons-card crayons-card--secondary crayons-table crayons-table--compact w-100 mt-2 mb-4 lh-tight">
             <tbody>
               <tr>
                 <td className="ff-monospace">
-                  # Header
+                  # {i18next.t('editor.help.basics.header')}
                   <br />
-                  ...
+                  {i18next.t('common.etc')}
                   <br />
-                  ###### Header
+                  ###### {i18next.t('editor.help.basics.header')}
                 </td>
                 <td>
-                  H1 Header
+                  {i18next.t('editor.help.basics.h1')}
                   <br />
-                  ...
+                  {i18next.t('common.etc')}
                   <br />
-                  H6 Header
-                </td>
-              </tr>
-              <tr>
-                <td className="ff-monospace">*italics* or _italics_</td>
-                <td>
-                  <em>italics</em>
-                </td>
-              </tr>
-              <tr>
-                <td className="ff-monospace">**bold**</td>
-                <td>
-                  <strong>bold</strong>
-                </td>
-              </tr>
-              <tr>
-                <td className="ff-monospace">[Link](https://...)</td>
-                <td>
-                  <a href="https://forem.com">Link</a>
+                  {i18next.t('editor.help.basics.h6')}
                 </td>
               </tr>
               <tr>
                 <td className="ff-monospace">
-                  * item 1<br />* item 2
+                  {i18next.t('editor.help.basics.em_mono')}
+                </td>
+                <td>
+                  <em>{i18next.t('editor.help.basics.em')}</em>
+                </td>
+              </tr>
+              <tr>
+                <td className="ff-monospace">
+                  {i18next.t('editor.help.basics.strong_mono')}
+                </td>
+                <td>
+                  <strong>{i18next.t('editor.help.basics.strong')}</strong>
+                </td>
+              </tr>
+              <tr>
+                <td className="ff-monospace">
+                  [{i18next.t('editor.help.basics.link')}](https://...)
+                </td>
+                <td>
+                  <a href="https://forem.com">
+                    {i18next.t('editor.help.basics.link')}
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td className="ff-monospace">
+                  * {i18next.t('editor.help.basics.ul_1')}
+                  <br />* {i18next.t('editor.help.basics.ul_2')}
                 </td>
                 <td>
                   <ul class="list-disc ml-5">
-                    <li>item 1</li>
-                    <li>item 2</li>
+                    <li>{i18next.t('editor.help.basics.ul_1')}</li>
+                    <li>{i18next.t('editor.help.basics.ul_2')}</li>
                   </ul>
                 </td>
               </tr>
               <tr>
                 <td className="ff-monospace">
-                  1. item 1<br />
-                  2. item 2
+                  1. {i18next.t('editor.help.basics.ol_1')}
+                  <br />
+                  2. {i18next.t('editor.help.basics.ol_2')}
                 </td>
                 <td>
-                  <ul class="list-decimal ml-5">
-                    <li>item 1</li>
-                    <li>item 2</li>
-                  </ul>
+                  <ol class="list-decimal ml-5">
+                    <li>{i18next.t('editor.help.basics.ol_1')}</li>
+                    <li>{i18next.t('editor.help.basics.ol_2')}</li>
+                  </ol>
                 </td>
               </tr>
               <tr>
-                <td className="ff-monospace">&gt; quoted text</td>
+                <td className="ff-monospace">
+                  &gt; {i18next.t('editor.help.basics.quote')}
+                </td>
                 <td>
                   <span className="pl-2 border-0 border-solid border-l-4 border-base-50">
-                    quoted text
+                    {i18next.t('editor.help.basics.quote')}
                   </span>
                 </td>
               </tr>
               <tr>
-                <td className="ff-monospace">`inline code`</td>
+                <td className="ff-monospace">
+                  {i18next.t('editor.help.basics.inline_code_mono')}
+                </td>
                 <td>
-                  <code>inline code</code>
+                  <code>{i18next.t('editor.help.basics.inline_code')}</code>
                 </td>
               </tr>
               <tr>
                 <td className="ff-monospace">
                   <span class="fs-xs">```</span>
                   <br />
-                  code block
+                  {i18next.t('editor.help.basics.code_block')}
                   <br />
                   <span class="fs-xs">```</span>
                 </td>
                 <td>
                   <div class="highlight p-2 overflow-hidden">
-                    <code>code block</code>
+                    <code>{i18next.t('editor.help.basics.code_block')}</code>
                   </div>
                 </td>
               </tr>
@@ -108,16 +125,13 @@ export const EditorFormattingHelp = ({ openModal }) => (
         </details>
       </li>
       <li>
-        You can use{' '}
+        {i18next.t('editor.help.basics.desc_3')}
         <a href="#liquid" onClick={() => openModal('liquidShowing')}>
-          Liquid tags
-        </a>{' '}
-        to add rich content such as Tweets, YouTube videos, etc.
+          {i18next.t('editor.help.basics.liquid')}
+        </a>
+        {i18next.t('editor.help.basics.desc_4')}
       </li>
-      <li>
-        In addition to images for the post's content, you can also drag and drop
-        a cover image
-      </li>
+      <li>{i18next.t('editor.help.basics.desc_5')}</li>
     </ul>
   </div>
 );

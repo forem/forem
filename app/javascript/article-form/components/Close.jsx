@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons';
 
 export const Close = ({ displayModal = () => {} }) => {
@@ -12,7 +13,9 @@ export const Close = ({ displayModal = () => {} }) => {
       role="img"
       aria-labelledby="as1mn15llu5e032u2pgzlc6yhvss2myk"
     >
-      <title id="as1mn15llu5e032u2pgzlc6yhvss2myk">Close the editor</title>
+      <title id="as1mn15llu5e032u2pgzlc6yhvss2myk">
+        {i18next.t('editor.close')}
+      </title>
       <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
     </svg>
   );

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { addSnackbarItem } from '../../Snackbar';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
+import { i18next } from '../../i18n/l10n';
 import { onDragOver, onDragExit } from './dragAndDropHelpers';
 import { Button } from '@crayons';
 import { Spinner } from '@crayons/Spinner/Spinner';
@@ -144,7 +145,7 @@ export class ArticleCoverImage extends Component {
 
     if (event.dataTransfer.files.length > 1) {
       addSnackbarItem({
-        message: 'Only one image can be dropped at a time.',
+        message: i18next.t('editor.cover.number'),
         addCloseButton: true,
       });
       return;
@@ -156,7 +157,9 @@ export class ArticleCoverImage extends Component {
   render() {
     const { mainImage } = this.props;
     const { uploadError, uploadErrorMessage, uploadingImage } = this.state;
-    const uploadLabel = mainImage ? 'Change' : 'Add a cover image';
+    const uploadLabel = i18next.t(
+      mainImage ? 'editor.cover.change' : 'editor.cover.add',
+    );
 
     // When the component is rendered in an environment that supports a native
     // image picker for image upload we want to add the aria-label attr and the
@@ -165,7 +168,7 @@ export class ArticleCoverImage extends Component {
     const extraProps = this.useNativeUpload()
       ? {
           onClick: this.initNativeImagePicker,
-          'aria-label': 'Upload cover image',
+          'aria-label': i18next.t('editor.cover.aria_label'),
         }
       : {};
 
@@ -188,7 +191,7 @@ export class ArticleCoverImage extends Component {
           <div className="flex items-center">
             {uploadingImage && (
               <span class="lh-base pl-1 border-0 py-2 inline-block">
-                <Spinner /> Uploading...
+                <Spinner /> {i18next.t('editor.cover.uploading')}
               </span>
             )}
 

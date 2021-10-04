@@ -223,7 +223,7 @@ Object {
                     <span
                       class="hidden s:inline"
                     >
-                      [missing "en.core.add_comment" translation]
+                      Add Comment
                     </span>
                   </a>
                 </div>
@@ -471,7 +471,7 @@ Object {
                   <span
                     class="hidden s:inline"
                   >
-                    [missing "en.core.add_comment" translation]
+                    Add Comment
                   </span>
                 </a>
               </div>

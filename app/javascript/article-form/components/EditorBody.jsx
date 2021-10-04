@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useLayoutEffect, useRef } from 'preact/hooks';
+import { i18next } from '../../i18n/l10n';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
 import {
@@ -82,11 +83,11 @@ export const EditorBody = ({
         autoResize
         onChange={onChange}
         onFocus={switchHelpContext}
-        aria-label="Post Content"
+        aria-label={i18next.t('editor.content.aria_label')}
         name="body_markdown"
         id="article_body_markdown"
         defaultValue={defaultValue}
-        placeholder="Write your post content here..."
+        placeholder={i18next.t('editor.content.placeholder')}
         className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100"
       />
     </div>

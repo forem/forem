@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../i18n/l10n';
 
 export const LoadingArticle = ({ version }) => {
   const cover = version === 'featured' && (
@@ -11,7 +12,7 @@ export const LoadingArticle = ({ version }) => {
     </div>
   );
   return (
-    <div className="crayons-story" title="Loading posts...">
+    <div className="crayons-story" title={i18next.t('feed.loading')}>
       {cover}
       <div className="crayons-story__body">
         <div className="crayons-story__top mb-3">

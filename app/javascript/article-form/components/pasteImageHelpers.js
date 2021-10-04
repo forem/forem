@@ -1,5 +1,6 @@
 import { addSnackbarItem } from '../../Snackbar';
 import { processImageUpload } from '../actions';
+import { i18next } from '../../i18n/l10n';
 
 /**
  * Determines if at least one type of drag and drop datum type matches the data transfer type to match.
@@ -31,7 +32,7 @@ export function handleImagePasted(handleImageSuccess, handleImageFailure) {
 
     if (files.length > 1) {
       addSnackbarItem({
-        message: 'Only one image can be pasted at a time.',
+        message: i18next.t('editor.cover.number'),
         addCloseButton: true,
       });
       return;

@@ -5,6 +5,7 @@ import { useReducer } from 'preact/hooks';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { addSnackbarItem } from '../../Snackbar';
+import { i18next } from '../../i18n/l10n';
 import { ClipboardButton } from './ClipboardButton';
 import { Button, Spinner } from '@crayons';
 
@@ -18,7 +19,9 @@ const ImageIcon = () => (
     role="img"
     aria-hidden="true"
   >
-    <title id="a17qec5pfhrwzk9w4kg0tp62v27qqu9t">Upload image</title>
+    <title id="a17qec5pfhrwzk9w4kg0tp62v27qqu9t">
+      {i18next.t('editor.image.icon')}
+    </title>
     <path d="M20 5H4v14l9.292-9.294a1 1 0 011.414 0L20 15.01V5zM2 3.993A1 1 0 012.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 01-.992.993H2.992A.993.993 0 012 20.007V3.993zM8 11a2 2 0 110-4 2 2 0 010 4z" />
   </svg>
 );
@@ -213,14 +216,17 @@ export const ImageUploader = () => {
   // The props are unwrapped (using spread operator) in the button below
   const useNativeUpload = Runtime.isNativeIOS('imageUpload');
   const extraProps = useNativeUpload
-    ? { onClick: initNativeImagePicker, 'aria-label': 'Upload an image' }
+    ? {
+        onClick: initNativeImagePicker,
+        'aria-label': i18next.t('editor.image.aria_label'),
+      }
     : { tabIndex: -1 };
 
   return (
     <div className="flex items-center">
       {uploadingImage && (
         <span class="lh-base pl-3 border-0 py-2 inline-block">
-          <Spinner /> Uploading...
+          <Spinner /> {i18next.t('editor.image.uploading')}
         </span>
       )}
 

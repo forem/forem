@@ -1,9 +1,12 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons';
 
 function linksToMarkdownForm(imageLinks) {
-  return imageLinks.map((imageLink) => `![Alt Text](${imageLink})`).join('\n');
+  return imageLinks
+    .map((imageLink) => `![${i18next.t('clipboard.alt_text')}](${imageLink})`)
+    .join('\n');
 }
 
 const CopyIcon = () => (
@@ -16,7 +19,9 @@ const CopyIcon = () => (
     role="img"
     aria-labelledby="fc5f15add1e114844f5e"
   >
-    <title id="fc5f15add1e114844f5e">Copy Markdown for image</title>
+    <title id="fc5f15add1e114844f5e">
+      {i18next.t('clipboard.copy_markdown')}
+    </title>
     <path d="M7 6V3a1 1 0 011-1h12a1 1 0 011 1v14a1 1 0 01-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1 1 0 013 21l.003-14c0-.552.45-1 1.007-1H7zm2 0h8v10h2V4H9v2zm-2 5v2h6v-2H7zm0 4v2h6v-2H7z" />
   </svg>
 );
@@ -49,7 +54,7 @@ export const ClipboardButton = ({
       contentType="icon-left"
       icon={CopyIcon}
     >
-      {showCopyMessage ? 'Copied!' : 'Copy...'}
+      {i18next.t(showCopyMessage ? 'clipboard.copied' : 'clipboard.copy')}
     </Button>
   </clipboard-copy>
 );

@@ -4,6 +4,7 @@ import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { embedGists } from '../utilities/gist';
+import { i18next } from '../i18n/l10n';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
@@ -299,9 +300,7 @@ export class ArticleForm extends Component {
   onClearChanges = (e) => {
     e.preventDefault();
     // eslint-disable-next-line no-alert
-    const revert = window.confirm(
-      'Are you sure you want to revert to the previous save?',
-    );
+    const revert = window.confirm(i18next.t('editor.revert'));
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
 
     this.setState({
@@ -398,7 +397,7 @@ export class ArticleForm extends Component {
         className="crayons-article-form"
         onSubmit={this.onSubmit}
         onInput={this.toggleEdit}
-        aria-label="Edit post"
+        aria-label={i18next.t('editor.aria_label')}
       >
         <Header
           onPreview={this.fetchPreview}
@@ -444,19 +443,16 @@ export class ArticleForm extends Component {
         {this.state.isModalOpen && (
           <Modal
             size="s"
-            title="You have unsaved changes"
+            title={i18next.t('editor.leave.title')}
             onClose={() => this.showModal(false)}
           >
-            <p>
-              You've made changes to your post. Do you want to navigate to leave
-              this page?
-            </p>
+            <p>{i18next.t('editor.leave.text')}</p>
             <div className="pt-4">
               <Button className="mr-2" variant="danger" url="/" tagName="a">
-                Yes, leave the page
+                {i18next.t('editor.leave.yes')}
               </Button>
               <Button variant="secondary" onClick={() => this.showModal(false)}>
-                No, keep editing
+                {i18next.t('editor.leave.no')}
               </Button>
             </div>
           </Modal>

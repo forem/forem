@@ -50,7 +50,7 @@ export class SaveButton extends Component {
           onMouseout={mouseOut}
           onBlur={mouseOut}
         >
-          {i18next.t(`button.save.${buttonText}`)}
+          {i18next.t(`articles.save.${buttonText}`)}
         </button>
       );
     }

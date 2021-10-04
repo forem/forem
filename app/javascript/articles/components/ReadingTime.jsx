@@ -1,11 +1,14 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export const ReadingTime = ({ readingTime }) => {
   // we have ` ... || null` for the case article.reading_time is undefined
   return (
     <small className="crayons-story__tertiary mr-2">
-      {`${readingTime < 1 ? 1 : readingTime} min read`}
+      {i18next.t('articles.reading_time', {
+        count: readingTime < 1 ? 1 : readingTime,
+      })}
     </small>
   );
 };

@@ -1,11 +1,12 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export const Tabs = ({ onPreview, previewShowing }) => {
   return (
     <nav
       className="crayons-article-form__tabs crayons-tabs ml-auto"
-      aria-label="View post modes"
+      aria-label={i18next.t('editor.tabs.aria_label')}
     >
       <ul className="crayons-tabs__list">
         <li>
@@ -20,7 +21,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
             type="button"
             aria-current={previewShowing ? null : 'page'}
           >
-            Edit
+            {i18next.t('editor.tabs.edit')}
           </button>
         </li>
         <li>
@@ -35,7 +36,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
             type="button"
             aria-current={previewShowing ? 'page' : null}
           >
-            Preview
+            {i18next.t('editor.tabs.preview')}
           </button>
         </li>
       </ul>

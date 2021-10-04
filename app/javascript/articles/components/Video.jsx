@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { articlePropTypes } from '../../common-prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export const Video = ({ article }) => {
   return (
@@ -8,7 +9,10 @@ export const Video = ({ article }) => {
       className="crayons-story__video"
       style={`background-image:url(${article.cloudinary_video_url})`}
     >
-      <span title="Video duration" className="crayons-story__video__time">
+      <span
+        title={i18next.t('articles.duration')}
+        className="crayons-story__video__time"
+      >
         {article.video_duration_in_minutes}
       </span>
     </a>

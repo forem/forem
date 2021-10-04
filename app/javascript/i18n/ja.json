@@ -1,9 +1,209 @@
 {
-  "button": {
+  "articles": {
+    "duration": "Video duration",
+    "for_org": "%{- start} for %{- end}%{- org}",
+    "pinned": {
+      "after": "",
+      "before": "Pinned",
+      "post": "\u00A0post"
+    },
+    "reading_time": "%{count} min read",
+    "reading_time_plural": "%{count} min read",
     "save": {
       "save": "保存",
       "saved": "保存済",
       "unsave": "解除"
+    },
+    "timeAgo": " (%{ago})"
+  },
+  "clipboard": {
+    "alt_text": "Alt Text",
+    "copied": "Copied!",
+    "copy": "Copy...",
+    "copy_markdown": "Copy Markdown for image"
+  },
+  "comments": {
+    "all": "See all %{count} comments",
+    "all_plural": "See all %{count} comments",
+    "count": "%{count}%{- start}\u00A0comment%{- end}",
+    "count_plural": "%{count}%{- start}\u00A0comments%{- end}",
+    "empty": "Add\u00A0Comment",
+    "number": "Number of comments"
+  },
+  "common": {
+    "danger": "Danger Zone",
+    "etc": "..."
+  },
+  "editor": {
+    "a11y": {
+      "aria_label": "Learn more about accessible %{contents}",
+      "heading": "Improve the accessibility of your post",
+      "headings": "headings",
+      "images": "images",
+      "text": "Learn more"
+    },
+    "aria_label": "Edit post",
+    "aria_new": "Post Title",
+    "close": "Close the editor",
+    "content": {
+      "aria_label": "Post Content",
+      "placeholder": "Write your post content here..."
+    },
+    "cover": {
+      "add": "Add a cover image",
+      "aria_label": "Upload cover image",
+      "change": "Change",
+      "number": "Only one image can be dropped at a time.",
+      "uploading": "Uploading..."
+    },
+    "help": {
+      "basic": {
+        "desc_1": "You are currently using the basic markdown editor that uses ",
+        "desc_2": ". You can also use the ",
+        "desc_3": " editor you can find in ",
+        "desc_4": ".",
+        "jekyll": "Jekyll front matter",
+        "rich": "rich+markdown",
+        "ux": "UX settings"
+      },
+      "basics": {
+        "heading": "Editor Basics",
+        "code_block": "code block",
+        "desc_1": "Use ",
+        "desc_2": " to write and format posts.",
+        "desc_3": "You can use ",
+        "desc_4": "to add rich content such as Tweets, YouTube videos, etc.",
+        "desc_5": "In addition to images for the post's content, you can also drag and drop a cover image",
+        "em": "italics",
+        "em_mono": "*italics* or _italics_",
+        "h1": "H1 Header",
+        "h6": "H6 Header",
+        "header": "Header",
+        "inline_code": "inline code",
+        "inline_code_mono": "`inline code`",
+        "link": "Link",
+        "liquid": "Liquid tags",
+        "markdown": "Markdown",
+        "ol_1": "item 1",
+        "ol_2": "item 2",
+        "quote": "quoted text",
+        "strong": "bold",
+        "strong_mono": "**bold**",
+        "syntax": "Commonly used syntax",
+        "ul_1": "item 1",
+        "ul_2": "item 2"
+      },
+      "jekyll": "Jekyll Front Matter",
+      "liquid": "🌊 Liquid Tags",
+      "markdown": "✍️ Markdown",
+      "tag": {
+        "heading": "Tagging Guidelines",
+        "desc_1": "Tags help people find your post.",
+        "desc_2": "Think of tags as the topics or categories that best describe your post.",
+        "desc_3": "Add up to four comma-separated tags per post. Combine tags to reach the appropriate subcommunities.",
+        "desc_4": "Use existing tags whenever possible.",
+        "desc_5": "Some tags, such as “help” or “healthydebate”, have special posting guidelines."
+      },
+      "title": {
+        "heading": "Writing a Great Post Title",
+        "desc_1": "Think of your post title as a super short (but compelling!) description — like an overview of the actual post in one short sentence.",
+        "desc_2": "Use keywords where appropriate to help ensure people can find your post by search."
+      }
+    },
+    "image": {
+      "aria_label": "Upload an image",
+      "icon": "Upload image",
+      "text": "Upload image",
+      "uploading": "Uploading..."
+    },
+    "leave": {
+      "no": "No, keep editing",
+      "text": "You've made changes to your post. Do you want to navigate to leave this page?",
+      "title": "You have unsaved changes",
+      "yes": "Yes, leave the page"
+    },
+    "new_title": "New post title here...",
+    "options": {
+      "aria_label": "Select one of the existing series",
+      "done": "Done",
+      "existing": "Existing series: ",
+      "heading": "Post options",
+      "select": "Select...",
+      "series": {
+        "desc": "Will this post be part of a series? Give the series a unique name. (Series visible once it has multiple posts)",
+        "label": "Series"
+      },
+      "title": "Post options",
+      "unpublish": "Unpublish post",
+      "url": {
+        "desc": "Change meta tag <code>canonical_url</code> if this post was first published elsewhere (like your own blog).",
+        "label": "Canonical URL"
+      }
+    },
+    "personal": "Personal",
+    "publish": "Publish",
+    "publishing": "Publishing...",
+    "revert": "Are you sure you want to revert to the previous save?",
+    "revert_button": "Revert %{- start}new changes%{- end}",
+    "save": "Save changes",
+    "save_draft": "Save %{- start}draft%{- end}",
+    "saving": "Saving...",
+    "saving_draft": "Saving draft...",
+    "tabs": {
+      "aria_label": "View post modes",
+      "edit": "Edit",
+      "preview": "Preview"
     }
+  },
+  "errors": {
+    "error": "Error: %{error}",
+    "feed": "There was a problem fetching your feed.",
+    "occurred": "An error occurred: %{error}",
+    "whoops": "Whoops, something went wrong:"
+  },
+  "feed": {
+    "loading": "Loading posts..."
+  },
+  "modActions": {
+    "adjust": {
+      "text": "The #%{name} tag was #{actioned}.",
+      "added": "added",
+      "removed": "removed"
+    },
+    "clear": "This will clear your current \"Add a tag\" input. Do you want to continue?",
+    "destroy": "Your quality rating was removed.",
+    "thumbsdown": "This post will be less visible.",
+    "thumbsup": "This post will be more visible.",
+    "title": "Moderation panel actions",
+    "unpublish": "You are unpublishing this article; are you sure?",
+    "vomit": "You've flagged this post as abusive or spam."
+  },
+  "podcasts": {
+    "tag": "podcast"
+  },
+  "reactions": {
+    "count": "%{count}%{- start}\u00A0reaction%{- end}",
+    "count_plural": "%{count}%{- start}\u00A0reactions%{- end}",
+    "number": "Number of reactions"
+  },
+  "stats": {
+    "charts": {
+      "bookmarks": "Bookmarks",
+      "comments": "Comments",
+      "followers": "Followers",
+      "likes": "Likes",
+      "reads": "Reads",
+      "total": "Total",
+      "unicorns": "Unicorns"
+    },
+    "comments": "Comments %{time}",
+    "external": "All other external referrers",
+    "followers": "Followers %{time}",
+    "new_followers": "New Followers %{time}",
+    "reactions": "Reactions %{time}",
+    "readers": "Readers %{time}",
+    "reads": "Reads %{time}",
+    "this_month": "this Month",
+    "this_week": "this Week"
   }
 }

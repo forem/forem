@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 // Limit the number of suggestions shown so that the UI isn't overwhelmed
 const MAX_SUGGESTIONS = 3;
@@ -69,9 +70,7 @@ export const AccessibilitySuggestions = ({ markdownLintErrors }) => {
       className="crayons-notice crayons-notice--info mb-6"
       aria-live="polite"
     >
-      <h2 className="fs-l mb-2 fw-bold">
-        Improve the accessibility of your post
-      </h2>
+      <h2 className="fs-l mb-2 fw-bold">{i18next.t('editor.a11y.heading')}</h2>
       <ul>
         {extractRelevantErrors(markdownLintErrors).map((lintError, index) => {
           return (
@@ -81,13 +80,17 @@ export const AccessibilitySuggestions = ({ markdownLintErrors }) => {
                 {' '}
                 <a
                   href={lintError.errorDetail}
-                  aria-label={`Learn more about accessible ${
-                    lintError.errorType === 'image' ? 'images' : 'headings'
-                  }`}
+                  aria-label={i18next.t('editor.a11y.aria_label', {
+                    contents: i18next.t(
+                      lintError.errorType === 'image'
+                        ? 'editor.a11y.images'
+                        : 'editor.a11y.headings',
+                    ),
+                  })}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Learn more <ExternalUrlSVG />
+                  {i18next.t('editor.a11y.learn')} <ExternalUrlSVG />
                 </a>
               </span>
             </li>

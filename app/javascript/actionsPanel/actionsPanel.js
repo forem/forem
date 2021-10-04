@@ -1,4 +1,5 @@
 import { toggleFlagUserModal } from '../packs/flagUserModal';
+import { i18next } from '../i18n/l10n';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {
@@ -78,21 +79,21 @@ export function addReactionButtonListeners() {
         let message;
         /* eslint-disable no-restricted-globals */
         if (outcome.result === 'create' && outcome.category === 'thumbsup') {
-          message = 'This post will be more visible.';
+          message = i18next.t('modActions.thumbsup');
         } else if (
           outcome.result === 'create' &&
           outcome.category === 'thumbsdown'
         ) {
-          message = 'This post will be less visible.';
+          message = i18next.t('modActions.thumbsdown');
         } else if (
           outcome.result === 'create' &&
           outcome.category === 'vomit'
         ) {
-          message = "You've flagged this post as abusive or spam.";
+          message = i18next.t('modActions.vomit');
         } else if (outcome.result === 'destroy') {
-          message = 'Your quality rating was removed.';
+          message = i18next.t('modActions.destroy');
         } else if (outcome.error) {
-          message = `Error: ${outcome.error}`;
+          message = i18next.t('errors.error', { error: outcome.error });
         }
         top.addSnackbarItem({
           message,
@@ -167,13 +168,13 @@ const adminUnpublishArticle = async (id, username, slug) => {
       window.top.location.assign(`${window.location.origin}${outcome.path}`);
     } else {
       top.addSnackbarItem({
-        message: `Error: ${outcome.message}`,
+        message: i18next.t('errors.error', { error: outcome.message }),
         addCloseButton: true,
       });
     }
   } catch (error) {
     top.addSnackbarItem({
-      message: `Error: ${error}`,
+      message: i18next.t('errors.error', { error }),
       addCloseButton: true,
     });
   }
@@ -258,15 +259,20 @@ async function adjustTag(el) {
 
       // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
-        message: `The #${adjustedTagName} tag was ${
-          outcome.result === 'addition' ? 'added' : 'removed'
-        }.`,
+        message: i18next.t('modActions.adjust.message', {
+          name: adjustedTagName,
+          actioned: i18next.t(
+            outcome.result === 'addition'
+              ? 'modActions.adjust.added'
+              : 'modActions.adjust.removed',
+          ),
+        }),
         addCloseButton: true,
       });
     } else {
       // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
-        message: `An error occurred: ${outcome.error}`,
+        message: i18next.t('errors.occurred', { error: outcome.error }),
         addCloseButton: true,
       });
     }
@@ -286,9 +292,7 @@ export function handleAdjustTagBtn(btn) {
   if (
     adminTagInput &&
     adminTagInput.value !== '' &&
-    confirm(
-      'This will clear your current "Add a tag" input. Do you want to continue?',
-    )
+    confirm(i18next.t('modActions.clear'))
   ) {
     /* eslint-enable no-restricted-globals */
     /* eslint-enable no-alert */
@@ -410,7 +414,7 @@ export function addBottomActionsListeners() {
         articleSlug: slug,
       } = unpublishArticleBtn.dataset;
 
-      if (confirm('You are unpublishing this article; are you sure?')) {
+      if (confirm(i18next.t('modActions.unpublish'))) {
         adminUnpublishArticle(id, username, slug);
       }
     });

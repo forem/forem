@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { Dropdown, Button } from '@crayons';
 
 const Icon = () => (
@@ -12,7 +13,7 @@ const Icon = () => (
     role="img"
     aria-labelledby="75abcb76478519ca4eb9"
   >
-    <title id="75abcb76478519ca4eb9">Post options</title>
+    <title id="75abcb76478519ca4eb9">{i18next.t('editor.options.title')}</title>
     <path d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z" />
   </svg>
 );
@@ -48,18 +49,17 @@ export const Options = ({
     });
     existingSeries = (
       <div className="crayons-field__description">
-        Existing series:
-        {` `}
+        {i18next.t('editor.options.existing')}
         <select
           value=""
           name="series"
           className="crayons-select"
           onInput={onConfigChange}
           required
-          aria-label="Select one of the existing series"
+          aria-label={i18next.t('editor.options.aria_label')}
         >
           <option value="" disabled>
-            Select...
+            {i18next.t('editor.options.select')}
           </option>
           {seriesNames}
         </select>
@@ -71,10 +71,10 @@ export const Options = ({
     publishedField = (
       <div data-testid="options__danger-zone" className="crayons-field mb-6">
         <div className="crayons-field__label color-accent-danger">
-          Danger Zone
+          {i18next.t('common.danger')}
         </div>
         <Button variant="danger" onClick={onSaveDraft}>
-          Unpublish post
+          {i18next.t('editor.options.unpublish')}
         </Button>
       </div>
     );
@@ -86,7 +86,7 @@ export const Options = ({
         variant="ghost"
         contentType="icon"
         icon={Icon}
-        title="Post options"
+        title={i18next.t('editor.options.title')}
       />
 
       <Dropdown
@@ -95,18 +95,20 @@ export const Options = ({
         dropdownContentCloseButtonId="post-options-done-btn"
         className="bottom-2 s:bottom-100 left-2 s:left-0 right-2 s:left-auto"
       >
-        <h3 className="mb-6">Post options</h3>
+        <h3 className="mb-6">{i18next.t('editor.options.heading')}</h3>
         <div className="crayons-field mb-6">
           <label htmlFor="canonicalUrl" className="crayons-field__label">
-            Canonical URL
+            {i18next.t('editor.options.url.label')}
           </label>
-          <p className="crayons-field__description">
-            Change meta tag
-            {` `}
-            <code>canonical_url</code>
-            {` `}
-            if this post was first published elsewhere (like your own blog).
-          </p>
+          <p
+            className="crayons-field__description"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              __html: i18next.t('editor.options.url.desc', {
+                interpolation: { escapeValue: false },
+              }),
+            }}
+          />
           <input
             type="text"
             value={canonicalUrl}
@@ -119,11 +121,10 @@ export const Options = ({
         </div>
         <div className="crayons-field mb-6">
           <label htmlFor="series" className="crayons-field__label">
-            Series
+            {i18next.t('editor.options.series.label')}
           </label>
           <p className="crayons-field__description">
-            Will this post be part of a series? Give the series a unique name.
-            (Series visible once it has multiple posts)
+            {i18next.t('editor.options.series.desc')}
           </p>
           <input
             type="text"
@@ -132,7 +133,7 @@ export const Options = ({
             name="series"
             onKeyUp={onConfigChange}
             id="series"
-            placeholder="..."
+            placeholder={i18next.t('common.etc')}
           />
           {existingSeries}
         </div>
@@ -142,7 +143,7 @@ export const Options = ({
           className="w-100"
           data-content="exit"
         >
-          Done
+          {i18next.t('editor.options.done')}
         </Button>
       </Dropdown>
     </div>

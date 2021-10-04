@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { articlePropTypes } from '../common-prop-types/article-prop-types';
+import { i18next } from '../i18n/l10n';
 
 export const PodcastArticle = ({ article }) => {
   return (
@@ -16,7 +17,7 @@ export const PodcastArticle = ({ article }) => {
       >
         <div className="content">
           <h3>
-            <span className="tag-identifier">podcast</span>
+            <span className="tag-identifier">{i18next.t('podcasts.tag')}</span>
             {article.title}
           </h3>
         </div>

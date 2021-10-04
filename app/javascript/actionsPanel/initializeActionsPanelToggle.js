@@ -1,9 +1,11 @@
+import { i18next } from '../i18n/l10n';
 import { isModerationPage } from '@utilities/moderation';
-
 /** This initializes the mod actions button on the article show page (app/views/articles/show.html.erb). */
 export function initializeActionsPanel(user, path) {
   const modActionsMenuHTML = `
-    <iframe id="mod-container" src=${path}/actions_panel title="Moderation panel actions">
+    <iframe id="mod-container" src=${path}/actions_panel title="${i18next.t(
+    'modActions.title',
+  )}">
     </iframe>
   `;
 

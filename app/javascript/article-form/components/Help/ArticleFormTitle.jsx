@@ -1,20 +1,15 @@
 import { h } from 'preact';
+import { i18next } from '../../../i18n/l10n';
 
 export const ArticleFormTitle = () => (
   <div
     data-testid="title-help"
     className="crayons-article-form__help crayons-article-form__help--title"
   >
-    <h4 className="mb-2 fs-l">Writing a Great Post Title</h4>
+    <h4 className="mb-2 fs-l">{i18next.t('editor.help.title.heading')}</h4>
     <ul className="list-disc pl-6 color-base-70">
-      <li>
-        Think of your post title as a super short (but compelling!) description
-        — like an overview of the actual post in one short sentence.
-      </li>
-      <li>
-        Use keywords where appropriate to help ensure people can find your post
-        by search.
-      </li>
+      <li>{i18next.t('editor.help.title.desc_1')}</li>
+      <li>{i18next.t('editor.help.title.desc_2')}</li>
     </ul>
   </div>
 );

@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { OrganizationPicker } from '../../organization/OrganizationPicker';
+import { i18next } from '../../i18n/l10n';
 
 export const PageTitle = ({ organizations, organizationId, onToggle }) => {
   return (
@@ -17,7 +18,7 @@ export const PageTitle = ({ organizations, organizationId, onToggle }) => {
             organizations={organizations}
             organizationId={organizationId}
             onToggle={onToggle}
-            emptyLabel="Personal"
+            emptyLabel={i18next.t('editor.personal')}
           />
         </div>
       )}
