@@ -1,41 +1,56 @@
-<nav class="flex mb-4" aria-label="Display Ads navigation">
-  <%= form_tag(admin_display_ads_path, method: "get") do %>
-    <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search by Org name") %>
-  <% end %>
-  <div class="ml-auto">
-    <div class="justify-content-end">
-      <%= link_to "Make A New Display Ad", new_admin_display_ad_path, class: "crayons-btn" %>
-    </div>
-  </div>
-</nav>
-
-<%= paginate @display_ads %>
-
-<table class="crayons-table" width="100%">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Organization</th>
-      <th scope="col">Placement Area</th>
-      <th scope="col">Published</th>
-      <th scope="col">Approved</th>
-      <th scope="col">Success Rate</th>
-    </tr>
-  </thead>
-  <tbody class="crayons-card">
-    <% @display_ads.each do |display_ad| %>
-        <tr>
-          <td><%= link_to display_ad.id, edit_admin_display_ad_path(display_ad) %></td>
-          <td><%= link_to display_ad.organization.name, admin_organization_path(display_ad.organization) %></td>
-          <td><%= display_ad.human_readable_placement_area %></td>
-          <td><%= display_ad.published %></td>
-          <td><%= display_ad.approved %></td>
-          <td><%= display_ad.success_rate %></td>
-          <td><%= link_to "Edit", edit_admin_display_ad_path(display_ad), class: "crayons-btn" %></td>
-          <td><%= link_to "Destroy", admin_display_ad_path(display_ad), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %></td>
-        </tr>
+<div
+  data-controller="confirmation-modal"
+  data-confirmation-modal-root-selector-value="#confirmation-modal-root"
+  data-confirmation-modal-content-selector-value="#confirmation-modal"
+  data-confirmation-modal-title-value="Confirm changes"
+  data-confirmation-modal-size-value="m">
+  <nav class="flex mb-4" aria-label="Display Ads navigation">
+    <%= form_tag(admin_display_ads_path, method: "get") do %>
+      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search by Org name") %>
     <% end %>
-  </tbody>
-</table>
+    <div class="ml-auto">
+      <div class="justify-content-end">
+        <%= link_to "Make A New Display Ad", new_admin_display_ad_path, class: "crayons-btn" %>
+      </div>
+    </div>
+  </nav>
 
-<%= paginate @display_ads %>
+  <%= paginate @display_ads %>
+
+  <table class="crayons-table" width="100%">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Organization</th>
+        <th scope="col">Placement Area</th>
+        <th scope="col">Published</th>
+        <th scope="col">Approved</th>
+        <th scope="col">Success Rate</th>
+      </tr>
+    </thead>
+    <tbody class="crayons-card">
+      <% @display_ads.each do |display_ad| %>
+          <tr data-row-id="<%= display_ad.id %>">
+            <td><%= link_to display_ad.id, edit_admin_display_ad_path(display_ad) %></td>
+            <td><%= link_to display_ad.organization.name, admin_organization_path(display_ad.organization) %></td>
+            <td><%= display_ad.human_readable_placement_area %></td>
+            <td><%= display_ad.published %></td>
+            <td><%= display_ad.approved %></td>
+            <td><%= display_ad.success_rate %></td>
+            <td><%= link_to "Edit", edit_admin_display_ad_path(display_ad), class: "crayons-btn" %></td>
+            <td>
+              <button
+                class="crayons-btn crayons-btn--danger"
+                data-item-id="<%= display_ad.id %>"
+                data-endpoint="/admin/customization/display_ads"
+                data-username="<%= current_user.username %>"
+                data-action="click->confirmation-modal#openModal">Destroy</button>
+            </td>
+          </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= render partial: "admin/shared/destroy_confirmation_modal" %>
+
+  <%= paginate @display_ads %>
+</div>

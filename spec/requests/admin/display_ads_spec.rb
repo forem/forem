@@ -77,7 +77,6 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
         expect do
           delete admin_display_ad_path(display_ad.id)
         end.to change { DisplayAd.all.count }.by(-1)
-        expect(response.body).to redirect_to admin_display_ads_path
       end
     end
   end
@@ -121,7 +120,6 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
         expect do
           delete admin_display_ad_path(display_ad.id)
         end.to change { DisplayAd.all.count }.by(-1)
-        expect(response.body).to redirect_to admin_display_ads_path
       end
     end
   end
