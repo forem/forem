@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { i18next } from '../i18n/l10n';
 
 export const MinimalProfilePreviewCard = ({
   triggerId,
@@ -13,7 +14,7 @@ export const MinimalProfilePreviewCard = ({
       id={triggerId}
       aria-controls={contentId}
       class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1 -my-2"
-      aria-label={`${name} profile details`}
+      aria-label={i18next.t('users.details', { user: name })}
     >
       {name}
     </button>
@@ -49,7 +50,7 @@ export const MinimalProfilePreviewCard = ({
               style: 'full',
             })}
           >
-            Follow
+            {i18next.t('users.follow')}
           </button>
         </div>
         <div
