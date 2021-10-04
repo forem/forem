@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { OrganizationPicker } from '../../organization/OrganizationPicker';
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 export const PageTitle = ({ organizations, organizationId, onToggle }) => {
   return (

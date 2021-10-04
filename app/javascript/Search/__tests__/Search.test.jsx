@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 
 import { axe } from 'jest-axe';
 import { Search } from '../Search';
-import { locale } from '../../utilities/locale';
 
 describe('<Search />', () => {
   beforeEach(() => {
@@ -41,7 +40,7 @@ describe('<Search />', () => {
     const searchInput = getByRole('textbox', { name: /search/i });
 
     expect(searchInput.value).toEqual('fish');
-    expect(searchInput.getAttribute('placeholder')).toEqual(`${locale('core.search')}...`);
+    expect(searchInput.getAttribute('placeholder')).toEqual('Search...');
     expect(searchInput.getAttribute('autocomplete')).toEqual('off');
   });
 

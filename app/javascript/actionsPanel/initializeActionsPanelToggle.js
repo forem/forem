@@ -1,4 +1,4 @@
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 import { isModerationPage } from '@utilities/moderation';
 /** This initializes the mod actions button on the article show page (app/views/articles/show.html.erb). */
 export function initializeActionsPanel(user, path) {

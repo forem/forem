@@ -1,4 +1,4 @@
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 export function notifyUser() {
   modifyTitle();
 }

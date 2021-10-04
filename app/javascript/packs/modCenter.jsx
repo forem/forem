@@ -1,7 +1,7 @@
 import { h, render } from 'preact';
 import { ModerationArticles } from '../modCenter/moderationArticles';
 import { addSnackbarItem, Snackbar } from '../Snackbar';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 let elementLoaded = false;
 

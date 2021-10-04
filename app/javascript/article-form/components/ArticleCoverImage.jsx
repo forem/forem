@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 import { addSnackbarItem } from '../../Snackbar';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
-import { i18next } from '../../i18n/l10n';
 import { onDragOver, onDragExit } from './dragAndDropHelpers';
 import { Button } from '@crayons';
 import { Spinner } from '@crayons/Spinner/Spinner';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
+import { i18next } from '@utilities/locale';
 
 const NativeIosImageUpload = ({
   extraProps,

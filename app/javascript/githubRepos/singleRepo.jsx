@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 import { Button } from '@crayons';
 
 export class SingleRepo extends Component {

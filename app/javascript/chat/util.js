@@ -1,5 +1,5 @@
 import { fetchSearch } from '../utilities/search';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 import 'intersection-observer';
 

@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Trans } from 'react-i18next';
-import { i18next } from '../i18n/l10n';
 import { ChannelButton } from './components/ChannelButton';
 import { ConfigMenu } from './configMenu';
 import { channelSorter } from './util';
+import { i18next } from '@utilities/locale';
 
 export const Channels = ({
   activeChannelId,

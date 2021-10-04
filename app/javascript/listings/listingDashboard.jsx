@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
-import { i18next } from '../i18n/l10n';
 import { ListingRow } from './dashboard/listingRow';
+import { i18next } from '@utilities/locale';
 
 export class ListingDashboard extends Component {
   state = {

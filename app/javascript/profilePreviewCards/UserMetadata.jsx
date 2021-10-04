@@ -1,6 +1,6 @@
 import { h, Fragment } from 'preact';
 import { memo } from 'preact/compat';
-import { i18next, locale } from '../i18n/l10n';
+import { i18next, locale } from '@utilities/locale';
 
 /**
  * Component which renders the user metadata detail in a profile preview card.

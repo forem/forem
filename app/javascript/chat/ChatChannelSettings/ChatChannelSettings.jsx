@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { i18next } from '../../i18n/l10n';
 
 import {
   getChannelDetails,
@@ -16,6 +15,7 @@ import {
 import { addSnackbarItem } from '../../Snackbar';
 import { ManageActiveMembership } from './MembershipManager/ManageActiveMembership';
 import { ChatChannelSettingsSection } from './ChatChannelSettingsSection';
+import { i18next } from '@utilities/locale';
 
 export class ChatChannelSettings extends Component {
   static propTypes = {

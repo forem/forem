@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 export const ExpireDate = ({ onChange, defaultValue }) => {
   let tomorrow = new Date();

@@ -2,7 +2,6 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { userData, updateOnboarding } from '../utilities';
-import { i18next } from '../../i18n/l10n';
 
 import { Navigation } from './Navigation';
 import { ColorPicker } from './ProfileForm/ColorPicker';
@@ -11,6 +10,7 @@ import { TextInput } from './ProfileForm/TextInput';
 import { CheckBox } from './ProfileForm/CheckBox';
 
 import { request } from '@utilities/http';
+import { i18next } from '@utilities/locale';
 
 /* eslint-disable camelcase */
 export class ProfileForm extends Component {

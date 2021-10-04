@@ -1,7 +1,7 @@
 /* global userData */
 /* eslint-disable no-alert, import/order */
 import { request } from '@utilities/http';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 import { getUserDataAndCsrfToken } from '../chat/util';
 
 function addFlagUserBehavior(flagButton) {

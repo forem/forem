@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { i18next } from '../../i18n/l10n';
 import { CategoryLinks } from './CategoryLinks';
 import { CategoryLinksMobile } from './CategoryLinksMobile';
+import { i18next } from '@utilities/locale';
 
 export const ListingFiltersCategories = ({ categories, category, onClick }) => (
   <div className="listing-filters px-2 m:px-0" id="listing-filters">

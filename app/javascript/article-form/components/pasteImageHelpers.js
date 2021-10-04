@@ -1,6 +1,6 @@
 import { addSnackbarItem } from '../../Snackbar';
 import { processImageUpload } from '../actions';
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 /**
  * Determines if at least one type of drag and drop datum type matches the data transfer type to match.

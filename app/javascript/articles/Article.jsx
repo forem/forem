@@ -1,7 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../common-prop-types/article-prop-types';
-import { i18next } from '../i18n/l10n';
 import {
   ArticleCoverImage,
   CommentsCount,
@@ -16,6 +15,7 @@ import {
   Video,
 } from './components';
 import { PodcastArticle } from './PodcastArticle';
+import { i18next } from '@utilities/locale';
 
 export const Article = ({
   article,

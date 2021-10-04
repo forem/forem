@@ -1,4 +1,4 @@
-import { locale } from '../../i18n/l10n';
+import { locale } from '@utilities/locale';
 
 const timeOptions = {
   hour: 'numeric',

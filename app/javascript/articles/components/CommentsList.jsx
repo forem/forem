@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { i18next } from '../../i18n/l10n';
 import { CommentListItem } from './CommentListItem';
 import { Button } from '@crayons';
+import { i18next } from '@utilities/locale';
 
 const numberOfCommentsToShow = 2;
 

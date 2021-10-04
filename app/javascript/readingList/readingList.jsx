@@ -9,7 +9,6 @@ import {
   selectTag,
   clearSelectedTags,
 } from '../searchableItemList/searchableItemList';
-import { i18next } from '../i18n/l10n';
 import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
 import { TagList } from './components/TagList';
@@ -18,6 +17,7 @@ import { BREAKPOINTS } from '@components/useMediaQuery';
 import { debounceAction } from '@utilities/debounceAction';
 import { Button } from '@crayons';
 import { request } from '@utilities/http';
+import { i18next } from '@utilities/locale';
 
 const NO_RESULTS_WITH_FILTER_MESSAGE = i18next.t('readingList.nothing');
 const STATUS_VIEW_VALID = 'valid,confirmed';

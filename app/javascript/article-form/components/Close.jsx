@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 import { Button } from '@crayons';
 
 export const Close = ({ displayModal = () => {} }) => {

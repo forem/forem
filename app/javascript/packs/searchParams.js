@@ -1,4 +1,4 @@
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 /* global checkUserLoggedIn, showLoginModal, userData, buildArticleHTML, initializeReadingListIcons */
 /* eslint no-undef: "error" */
 

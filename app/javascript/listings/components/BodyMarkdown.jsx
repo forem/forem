@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 export const BodyMarkdown = ({ onChange, defaultValue }) => (
   <div className="crayons-field">

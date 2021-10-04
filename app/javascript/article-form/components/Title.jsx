@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useRef, useLayoutEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 // We use this hook for the title field to automatically grow the height of the textarea.
 // It helps keep the entire layout the way it is without having unnecessary scrolling and white spaces.
 // Keep in mind this is what happens only here - in the Preact component.

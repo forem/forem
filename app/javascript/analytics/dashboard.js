@@ -1,5 +1,5 @@
-import { i18next } from '../i18n/l10n';
 import { callHistoricalAPI, callReferrersAPI } from './client';
+import { i18next } from '@utilities/locale';
 
 const activeCharts = {};
 

@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Trans } from 'react-i18next';
-import { i18next } from '../../i18n/l10n';
 import { Options } from './Options';
 import { Button } from '@crayons';
+import { i18next } from '@utilities/locale';
 
 export const EditorActions = ({
   onSaveDraft,

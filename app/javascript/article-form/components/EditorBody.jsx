@@ -1,7 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useLayoutEffect, useRef } from 'preact/hooks';
-import { i18next } from '../../i18n/l10n';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
 import {
@@ -14,6 +13,7 @@ import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
 import { MentionAutocompleteTextArea } from '@crayons/MentionAutocompleteTextArea';
+import { i18next } from '@utilities/locale';
 
 function handleImageSuccess(textAreaRef) {
   return function (response) {

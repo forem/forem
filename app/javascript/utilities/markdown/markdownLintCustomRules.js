@@ -1,4 +1,4 @@
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 /**
  * Helper function for the image markdown lint rules.
  *

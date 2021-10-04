@@ -5,9 +5,9 @@ import { useReducer } from 'preact/hooks';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { addSnackbarItem } from '../../Snackbar';
-import { i18next } from '../../i18n/l10n';
 import { ClipboardButton } from './ClipboardButton';
 import { Button, Spinner } from '@crayons';
+import { i18next } from '@utilities/locale';
 
 const ImageIcon = () => (
   <svg

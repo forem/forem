@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { defaultMembershipPropType } from '../../common-prop-types/membership-prop-type';
-import { i18next } from '../../i18n/l10n';
 
 import { Membership } from './Membership';
+import { i18next } from '@utilities/locale';
 
 export const RequestedMembershipSection = ({
   requestedMemberships,

@@ -4,11 +4,11 @@ import linkState from 'linkstate';
 import { Tags } from '../shared/components/tags';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
 import { DEFAULT_TAG_FORMAT } from '../article-form/components/TagsField';
-import { i18next } from '../i18n/l10n';
 import { Title } from './components/Title';
 import { BodyMarkdown } from './components/BodyMarkdown';
 import { Categories } from './components/Categories';
 import { ExpireDate } from './components/ExpireDate';
+import { i18next } from '@utilities/locale';
 
 export class ListingForm extends Component {
   constructor(props) {

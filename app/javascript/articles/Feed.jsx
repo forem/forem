@@ -3,7 +3,7 @@ import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useListNavigation } from '../shared/components/useListNavigation';
 import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 

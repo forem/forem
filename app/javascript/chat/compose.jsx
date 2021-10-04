@@ -7,7 +7,7 @@ import {
   useLayoutEffect,
 } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 import { useTextAreaAutoResize } from '@utilities/textAreaUtils';
 
 export const Compose = ({

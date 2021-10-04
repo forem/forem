@@ -8,10 +8,10 @@ import {
   acceptJoiningRequest,
   rejectJoiningRequest,
 } from '../actions/requestActions';
-import { i18next } from '../../i18n/l10n';
 import { HeaderSection } from './HeaderSection';
 import { ChannelRequestSection } from './ChannelRequestSection';
 import { PersonalInvitationSection } from './PersonalInvitationSection';
+import { i18next } from '@utilities/locale';
 
 export class RequestManager extends Component {
   static propTypes = {

@@ -4,7 +4,7 @@ import { useState } from 'preact/hooks';
 import { Trans } from 'react-i18next';
 import { reportAbuse, blockUser } from '../actions/requestActions';
 import { addSnackbarItem } from '../../Snackbar';
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 import { Button, FormField, RadioButton } from '@crayons';
 
 /**

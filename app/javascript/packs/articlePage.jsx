@@ -3,7 +3,7 @@ import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '../utilities/dropdownUtils';
 import { embedGists } from '../utilities/gist';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 /* global Runtime */
 

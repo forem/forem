@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 // Limit the number of suggestions shown so that the UI isn't overwhelmed
 const MAX_SUGGESTIONS = 3;

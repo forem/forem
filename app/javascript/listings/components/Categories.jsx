@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { h, Component } from 'preact';
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 export class Categories extends Component {
   options = () => {

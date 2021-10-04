@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { articlePropTypes } from '../../common-prop-types';
-import { i18next } from '../../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 export const Video = ({ article }) => {
   return (

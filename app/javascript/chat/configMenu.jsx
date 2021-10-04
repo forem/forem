@@ -1,7 +1,7 @@
 import { h, Component, createRef } from 'preact';
 // eslint-disable-next-line import/no-unresolved
 import ConfigImage from 'images/overflow-horizontal.svg';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 export class ConfigMenu extends Component {
   constructor() {

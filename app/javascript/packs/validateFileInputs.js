@@ -1,4 +1,4 @@
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 /**
  * @file Manages logic to validate file uploads client-side. In general, the
  * validations work by looping over input form fields with a type of file and

@@ -6,7 +6,7 @@ import { notifyUser } from '../utilities/connect/newMessageNotify';
 import { debounceAction } from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
 import { processImageUpload } from '../article-form/actions';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 import {
   conductModeration,
   getAllMessages,

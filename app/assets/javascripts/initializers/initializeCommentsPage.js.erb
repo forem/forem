@@ -144,9 +144,9 @@ function initializeCommentsPage() {
             } else {
               showModalAfterError({
                 response,
-                element: 'reaction',
-                action_ing: 'making',
-                action_past: 'made',
+                element: i18next.t('userAlertModal.element.reaction'),
+                action_ing: i18next.t('userAlertModal.action_ing.make'),
+                action_past: i18next.t('userAlertModal.action_past.make'),
               });
             }
           });
@@ -297,13 +297,11 @@ function handleCommentSubmit(event) {
         })
       } else {
         form.classList.remove('submitting');
-        var responseStatus = response.status;
-        response.json().then(function parseError(errorReponse) {
-          if (responseStatus === 429) {
-            showRateLimitModal(i18next.t('userAlertModal.comment.action'), i18next.t('userAlertModal.comment.next'))
-          } else {
-            showUserAlertModal(i18next.t('userAlertModal.comment.title'), i18next.t('userAlertModal.comment.text', { error: errorReponse.error }), i18next.t('userAlertModal.comment.confirm'))
-          }
+        showModalAfterError({
+          response,
+          element: i18next.t('userAlertModal.element.comment'),
+          action_ing: i18next.t('userAlertModal.action_ing.post'),
+          action_past: i18next.t('userAlertModal.action_past.posted'),
         });
         return false;
       }
@@ -529,9 +527,9 @@ function handleImageUpload(event, randomIdNumber) {
           } else if (response.status === 429) {
             showRateLimitModal({
               response,
-              element: 'image',
-              action_ing: 'uploading',
-              action_past: 'uploaded',
+              element: i18next.t('userAlertModal.element.image'),
+              action_ing: i18next.t('userAlertModal.action_ing.upload'),
+              action_past: i18next.t('userAlertModal.action_past.upload'),
             });
           } else {
             response.json().then(function(responseBody) {

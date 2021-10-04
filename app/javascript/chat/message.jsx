@@ -3,11 +3,11 @@ import { useState, useRef, useLayoutEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/overflow-horizontal.svg';
-import { i18next } from '../i18n/l10n';
 import { adjustTimestamp } from './util';
 import { ErrorMessage } from './messages/errorMessage';
 import { Button } from '@crayons';
 import { initializeDropdown } from '@utilities/dropdownUtils';
+import { i18next } from '@utilities/locale';
 
 export const Message = ({
   currentUserId,

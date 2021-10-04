@@ -2,7 +2,7 @@ import { h, render } from 'preact';
 import { useState, useRef } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { request } from '../utilities/http';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 import { Button } from '@crayons/Button/Button';
 
 async function confirmFlagUser({ reactableType, category, reactableId }) {

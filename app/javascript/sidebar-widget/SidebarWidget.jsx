@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { sendFollowUser } from '../utilities/sendFollowUser';
-import { i18next } from '../i18n/l10n';
 import { SidebarUser } from './sidebarUser';
+import { i18next } from '@utilities/locale';
 
 export const SidebarWidget = () => {
   const [suggestedUsers, setSuggestedUsers] = useState([]);

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { organizationPropType } from '../common-prop-types';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 const orgOptions = (organizations, organizationId, emptyLabel) => {
   const orgs = organizations.map((organization) => {

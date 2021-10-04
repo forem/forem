@@ -1,7 +1,7 @@
 /* global Runtime */
 
 import { h } from 'preact';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
 

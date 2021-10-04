@@ -43,7 +43,7 @@ function showRateLimitModal({
   element,
   action_ing,
   action_past,
-  timeframe = 'a moment',
+  timeframe = i18next.t('userAlertModal.timeframe.a_moment'),
 }) {
   let rateLimitText = buildRateLimitText({
     element,
@@ -53,7 +53,7 @@ function showRateLimitModal({
   });
   let rateLimitLink = '/faq';
   showUserAlertModal(
-    i18next.t('userAlertModal.wait'),
+    i18next.t('userAlertModal.wait', { timeframe }),
     rateLimitText,
     i18next.t('userAlertModal.gotit'),
     rateLimitLink,
@@ -78,7 +78,7 @@ function showModalAfterError({
   element,
   action_ing,
   action_past,
-  timeframe = 'a moment',
+  timeframe = i18next.t('userAlertModal.timeframe.a_moment'),
 }) {
   response
     .json()
@@ -87,18 +87,17 @@ function showModalAfterError({
         showRateLimitModal({ element, action_ing, action_past, timeframe });
       } else {
         showUserAlertModal(
-          `Error ${action_ing} ${element}`,
-          `Your ${element} could not be ${action_past} due to an error: ` +
-            errorReponse.error,
-          'OK',
+          i18next.t('userAlertModal.title', {action_ing, element}),
+          i18next.t('userAlertModal.error_text', {element, action_past, error: errorReponse.error}),
+          i18next.t('userAlertModal.confirm'),
         );
       }
     })
     .catch(function parseError(error) {
       showUserAlertModal(
-        `Error ${action_ing} ${element}`,
-        `Your ${element} could not be ${action_past} due to a server error`,
-        'OK',
+        i18next.t('userAlertModal.title', {action_ing, element}),
+        i18next.t('userAlertModal.server_error_text', {element, action_past}),
+        i18next.t('userAlertModal.confirm'),
       );
     });
 }
@@ -140,11 +139,8 @@ const getModalHtml = (text, confirm_text) => `
  *
  * @returns {string} Formatted body text for a rate limit modal
  */
-function buildRateLimitText(action_text, next_action_text) {
-  return i18next.t('userAlertModal.rateLimit', {
-    action: action_text,
-    next: next_action_text,
-  });
+function buildRateLimitText({ element, action_ing, action_past, timeframe }) {
+  return i18next.t('userAlertModal.rateLimit', { element, action_ing, action_past, timeframe });
 }
 
 /**

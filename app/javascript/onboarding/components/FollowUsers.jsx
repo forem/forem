@@ -2,8 +2,8 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import he from 'he';
 import { getContentOfToken } from '../utilities';
-import { i18next } from '../../i18n/l10n';
 import { Navigation } from './Navigation';
+import { i18next } from '@utilities/locale';
 
 export class FollowUsers extends Component {
   constructor(props) {

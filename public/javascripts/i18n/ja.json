@@ -144,18 +144,38 @@
     "year_other": "%{count}年前"
   },
   "userAlertModal": {
-    "comment": {
-      "action": "made a comment",
-      "confirm": "OK",
-      "next": "making another comment",
-      "text": "Your comment could not be posted due to an error: %{error}",
-      "text_server": "Your comment could not be posted due to a server error",
-      "title": "Error posting comment"
+    "action_ing": {
+      "follow": "following",
+      "make": "making",
+      "post": "posting",
+      "update": "updating",
+      "upload": "uploading"
     },
-    "gotit": "Got it",
-    "rateLimit": "Since you recently %{action}, you’ll need to wait a moment before %{next}.",
-    "wait": "Wait a moment...",
-    "why": "Why do I have to wait?"
+    "action_past": {
+      "follow": "followed",
+      "make": "made",
+      "post": "posted",
+      "update": "updating",
+      "upload": "uploaded"
+    },
+    "confirm": "OK",
+    "element": {
+      "comment": "comment",
+      "image": "image",
+      "reaction": "reaction",
+      "user": "user"
+    },
+    "gotit": "了解",
+    "rateLimit": "Since you recently %{action_past} a %{element}, you’ll need to wait %{timeframe} before %{action_ing} another %{element}.",
+    "timeframe": {
+      "a_moment": "しばらく",
+      "for_a_day": "for a day"
+    },
+    "error_text": "Your %{element} could not be %{action_past} due to an error: %{error}",
+    "server_error_text": "Your %{element} could not be %{action_past} due to a server error",
+    "title": "Error %{action_ing} %{element}",
+    "wait": "%{timeframe}お待ちください",
+    "why": "待機時間の理由"
   },
   "users": {
     "details": "%{user} profile details"

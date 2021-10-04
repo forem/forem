@@ -1,6 +1,6 @@
 import { initBlock } from '../profileDropdown/blockButton';
 import { initFlag } from '../profileDropdown/flagButton';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 /* global userData */

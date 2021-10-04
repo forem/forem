@@ -4,7 +4,6 @@ import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { embedGists } from '../utilities/gist';
-import { i18next } from '../i18n/l10n';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
@@ -14,6 +13,7 @@ import {
   noLevelOneHeadingsRule,
   headingIncrement,
 } from '@utilities/markdown/markdownLintCustomRules';
+import { i18next } from '@utilities/locale';
 
 /* global activateRunkitTags */
 

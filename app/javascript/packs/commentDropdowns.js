@@ -1,9 +1,9 @@
 import { addSnackbarItem } from '../Snackbar';
-import { i18next } from '../i18n/l10n';
 import {
   initializeDropdown,
   getDropdownRepositionListener,
 } from '@utilities/dropdownUtils';
+import { i18next } from '@utilities/locale';
 
 /* global Runtime   */
 

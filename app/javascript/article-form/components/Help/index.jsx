@@ -1,12 +1,12 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import { i18next } from '../../../i18n/l10n';
 import { ArticleFormTitle } from './ArticleFormTitle';
 import { TagInput } from './TagInput';
 import { BasicEditor } from './BasicEditor';
 import { EditorFormattingHelp } from './EditorFormattingHelp';
 import { Modal } from '@crayons';
+import { i18next } from '@utilities/locale';
 
 const renderModal = (onClose, title, selector) => {
   const helpHtml = document.getElementById(selector)?.innerHTML;

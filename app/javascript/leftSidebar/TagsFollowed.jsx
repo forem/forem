@@ -1,7 +1,7 @@
 import { h, Fragment } from 'preact';
 import ahoy from 'ahoy.js';
 import PropTypes from 'prop-types';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 export const TagsFollowed = ({ tags = [] }) => {
   const trackSidebarTagClick = (event) => {

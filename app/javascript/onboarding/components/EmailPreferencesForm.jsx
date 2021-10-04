@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { getContentOfToken, updateOnboarding } from '../utilities';
-import { i18next } from '../../i18n/l10n';
 import { Navigation } from './Navigation';
+import { i18next } from '@utilities/locale';
 
 /* eslint-disable camelcase */
 export class EmailPreferencesForm extends Component {

@@ -97,9 +97,9 @@ function initReactions() {
               } else {
                 showModalAfterError({
                   response,
-                  element: 'reaction',
-                  action_ing: 'updating',
-                  action_past: 'updated',
+                  element: i18next.t('userAlertModal.element.reaction'),
+                  action_ing: i18next.t('userAlertModal.action_ing.update'),
+                  action_past: i18next.t('userAlertModal.action_past.update'),
                 });
               }
             });

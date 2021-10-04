@@ -1,10 +1,22 @@
-import I18n from "i18n-js"
-const translationsDiv = document.getElementById('i18n-translations')
-if (translationsDiv) {
-  I18n.translations = JSON.parse(translationsDiv.dataset.translations);
-}
-I18n.defaultLocale = 'en';
-I18n.locale = document.body.dataset.locale;
-export function locale(term) {
-  return I18n.t(term);
-}
+import i18next from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+const {locale} = document.body.dataset;
+const dictionary = require(`../i18n/${locale}.json`);
+
+i18next
+  .use(initReactI18next)
+  .init({
+    lng: locale,
+    resources: {
+      [locale]: {
+        translation: dictionary,
+      },
+    },
+    interpolation: { prefix: '%{', suffix: '}' },
+    react: {
+      transKeepBasicHtmlNodesFor: ['br', 'strong', 'b', 'em', 'i', 'p']
+    }
+  });
+
+export { i18next, locale };

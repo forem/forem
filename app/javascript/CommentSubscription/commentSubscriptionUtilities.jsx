@@ -1,5 +1,5 @@
 import { request } from '../utilities/http/request';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 /**
  * Gets the comment subscription status for a given article.

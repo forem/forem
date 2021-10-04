@@ -1,5 +1,5 @@
 import { updateExperienceLevel } from '../actionsPanel/actionsPanel';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");

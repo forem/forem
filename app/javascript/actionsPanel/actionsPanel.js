@@ -1,5 +1,5 @@
 import { toggleFlagUserModal } from '../packs/flagUserModal';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {

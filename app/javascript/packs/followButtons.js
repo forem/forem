@@ -1,5 +1,5 @@
 import { getInstantClick } from '../topNavigation/utilities';
-import { i18next } from '../i18n/l10n';
+import { i18next } from '@utilities/locale';
 
 /* global showLoginModal  userData  showModalAfterError*/
 
@@ -41,6 +41,39 @@ function addButtonFollowText(button, style) {
         style: 'follow',
       });
       button.textContent = i18next.t('followButts.follow');
+  }
+}
+
+/**
+ * Sets the aria-label and aria-pressed value of the button
+ *
+ * @param {HTMLElement} button The Follow button to update.
+ * @param {string} followType The followableType of the button.
+ * @param {string} followName The name of the followable to be followed.
+ * @param {string} style The style of the button from its "info" data attribute
+ */
+ function addAriaLabelToButton({ button, followType, followName, style = '' }) {
+  let label = '';
+  let pressed = '';
+  switch (style) {
+    case 'follow':
+      label = `Follow ${followType.toLowerCase()}: ${followName}`;
+      pressed = 'false';
+      break;
+    case 'follow-back':
+      label = `Follow ${followType.toLowerCase()} back: ${followName}`;
+      pressed = 'false';
+      break;
+    case 'following':
+      label = `Follow ${followType.toLowerCase()}: ${followName}`;
+      pressed = 'true';
+      break;
+    case 'self':
+      label = `Edit profile`;
+      break;
+    default:
+      label = `Follow ${followType.toLowerCase()}: ${followName}`;
+      pressed = 'false';
   }
   button.setAttribute('aria-label', label);
   pressed.length === 0
@@ -132,7 +165,7 @@ function updateFollowingButton(button, style) {
  */
 function updateUserOwnFollowButton(button) {
   button.dataset.verb = 'self';
-  button.textContent = locale('core.edit_profile');
+  button.textContent = i18next.t('followButts.edit');
   addAriaLabelToButton({
     button,
     followName: '',
@@ -202,10 +235,10 @@ function handleFollowButtonClick({ target }) {
         if (response.status !== 200) {
           showModalAfterError({
             response,
-            element: 'user',
-            action_ing: 'following',
-            action_past: 'followed',
-            timeframe: 'for a day',
+            element: i18next.t('userAlertModal.element.user'),
+            action_ing: i18next.t('userAlertModal.action_ing.follow'),
+            action_past: i18next.t('userAlertModal.action_past.follow'),
+            timeframe: i18next.t('userAlertModal.timeframe.for_a_day'),
           });
         }
       });
