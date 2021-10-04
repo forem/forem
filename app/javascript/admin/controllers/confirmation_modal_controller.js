@@ -13,20 +13,38 @@ window.addEventListener('load', () => {
   }
 });
 
+const nonRedirectEndpoints = [
+  '/admin/content_manager/badge_achievements',
+  '/admin/customization/display_ads',
+];
+
+const redirectEndpoints = ['/admin/advanced/broadcasts'];
+
 export default class ConfirmationModalController extends ModalController {
   static targets = ['itemId', 'username', 'endpoint'];
 
+  removeRecordAsync({ id, outcome }) {
+    document.querySelector(`[data-row-id="${id}"]`).remove();
+    displaySnackbar(outcome.message);
+  }
+
+  redirectAfterDestroy({ endpoint, outcome }) {
+    localStorage.setItem('outcome', outcome.message);
+    window.location.replace(`${endpoint}?redirected`);
+  }
+
   handleRecord({ endpoint, id, outcome }) {
-    switch (endpoint) {
-      case '/admin/content_manager/badge_achievements':
-        document.querySelector(`[data-row-id="${id}"]`).remove();
-        displaySnackbar(outcome.message);
-        break;
-      case '/admin/advanced/broadcasts':
-        localStorage.setItem('outcome', outcome.message);
-        window.location.replace(`${endpoint}?redirected`);
-        break;
+    if (nonRedirectEndpoints.includes(endpoint)) {
+      this.removeRecordAsync({ id, outcome });
+      return;
     }
+
+    if (redirectEndpoints.includes(endpoint)) {
+      this.redirectAfterDestroy({ endpoint, outcome });
+      return;
+    }
+
+    displayErrorAlert('Something went wrong.');
   }
 
   async sendToEndpoint({ itemId, endpoint }) {
