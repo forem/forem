@@ -1,24 +1,45 @@
-<div class="form-group">
-  <%= label_tag :organization_id, "Organization ID:" %>
-  <%= text_field_tag :organization_id, @display_ad.organization_id, class: "form-control" %>
-</div>
+<div class="grid l:grid-cols-2">
+  <div class="p-2">
+    <div class="form-group">
+      <%= label_tag :organization_id, "Organization ID:" %>
+      <%= text_field_tag :organization_id, @display_ad.organization_id, class: "form-control" %>
+    </div>
 
-<div class="form-group">
-  <%= label_tag :body_markdown, "Body Markdown:" %>
-  <%= text_area_tag :body_markdown, @display_ad.body_markdown, size: "100x10", class: "form-control" %>
-</div>
+    <div class="form-group">
+      <%= label_tag :body_markdown, "Body Markdown:" %>
+      <%= text_area_tag :body_markdown, @display_ad.body_markdown, size: "100x10", class: "form-control" %>
+    </div>
 
-<div class="form-group">
-  <%= label_tag :placement_area, "Placement Area:" %>
-  <%= select_tag :placement_area, options_for_select(display_ads_placement_area_options_array, selected: @display_ad.placement_area), include_blank: true %>
-</div>
+    <div class="form-group">
+      <%= label_tag :placement_area, "Placement Area:" %>
+      <%= select_tag :placement_area, options_for_select(display_ads_placement_area_options_array, selected: @display_ad.placement_area), include_blank: true %>
+    </div>
 
-<div class="form-group">
-  <%= label_tag :published, "Published:" %>
-  <%= select_tag :published, options_for_select([false, true], selected: @display_ad.published) %>
-</div>
+    <div class="form-group">
+      <%= label_tag :published, "Published:" %>
+      <%= select_tag :published, options_for_select([false, true], selected: @display_ad.published) %>
+    </div>
 
-<div class="form-group">
-  <%= label_tag :approved, "Approved:" %>
-  <%= select_tag :approved, options_for_select([false, true], selected: @display_ad.approved) %>
+    <div class="form-group">
+      <%= label_tag :approved, "Approved:" %>
+      <%= select_tag :approved, options_for_select([false, true], selected: @display_ad.approved) %>
+    </div>
+  </div>
+  <div class="p-2">
+    <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget">
+      <% if @display_ad.persisted? %>
+        <%= @display_ad.processed_html.html_safe %>
+      <% else %>
+        <p>
+          Display ads will show up in the designated placement area <strong>once published and approved</strong>. You can safely preview them here before publishing.
+        </p>
+        <p class="mt-3">
+          Multiple ads that share the same placement area will be swapped every few minutes. <strong>The units with the most engagement will show up the most often</strong>.
+        </p>
+        <p class="mt-3">
+          Organization ID is optional. Use it if you want to attribute an ad to a specific organization.
+        </p>
+      <% end %>
+    </div>
+  </div>
 </div>

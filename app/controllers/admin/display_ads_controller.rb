@@ -6,13 +6,13 @@ module Admin
 
     def index
       @display_ads = DisplayAd.order(id: :desc)
-        .joins(:organization)
-        .includes([:organization])
         .page(params[:page]).per(50)
 
       return if params[:search].blank?
 
-      @display_ads = @display_ads.where("organizations.name ILIKE :search", search: "%#{params[:search]}%")
+      @display_ads = @display_ads.
+        where("processed_html ILIKE :search OR placement_area ILIKE :search OR organizations.name ILIKE :search",
+              search: "%#{params[:search]}%")
     end
 
     def new
@@ -28,7 +28,7 @@ module Admin
 
       if @display_ad.save
         flash[:success] = "Display Ad has been created!"
-        redirect_to admin_display_ads_path
+        redirect_to edit_admin_display_ad_path(@display_ad.id)
       else
         flash[:danger] = @display_ad.errors_as_sentence
         render :new
@@ -40,7 +40,7 @@ module Admin
 
       if @display_ad.update(display_ad_params)
         flash[:success] = "Display Ad has been updated!"
-        redirect_to admin_display_ads_path
+        redirect_to edit_admin_display_ad_path(params[:id])
       else
         flash[:danger] = @display_ad.errors_as_sentence
         render :edit
