@@ -250,6 +250,16 @@ class User < ApplicationRecord
   end
 
   def calculate_score
+    # User score is used to mitigate spam by reducing visibility of flagged users
+    # It can generally be used as a baseline for affecting certain functionality which
+    # relies on trust gray area.
+
+    # Current main use: If score is below zero, the user's profile page will render noindex
+    # meta tag. This is a subtle anti-spam mechanism.
+
+    # It can be changed as frequently as needed to do a better job reflecting its purpose
+    # Changes should generally keep the score within the same order of magnitude so that
+    # mass re-calculation is needed.
     user_reaction_points = Reaction.user_vomits.where(reactable_id: id).sum(:points)
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
     update_column(:score, calculated_score)
