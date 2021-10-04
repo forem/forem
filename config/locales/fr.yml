@@ -34,7 +34,7 @@ fr:
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Voir tout
-    share_to: Partager sur %{media}
+    share_to: "Partager sur %{media}"
     trending_on: Populaire sur
     view: Vue
     week: Semain
