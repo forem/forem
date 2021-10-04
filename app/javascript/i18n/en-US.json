@@ -2,11 +2,6 @@
   "articles": {
     "duration": "Video duration",
     "for_org": "%{- start} for %{- end}%{- org}",
-    "messages": {
-      "pinned": "The post has been succesfully pinned",
-      "unpinned": "The post has been succesfully unpinned"
-    },
-    "pin": "Pin Post",
     "pinned": {
       "after": "",
       "before": "Pinned",
@@ -20,8 +15,7 @@
       "saved": "Saved",
       "unsave": "Unsave"
     },
-    "timeAgo": " (%{ago})",
-    "unpin": "Unpin Post"
+    "timeAgo": " (%{ago})"
   },
   "chat": {
     "bottom": "Scroll to Bottom",
@@ -399,7 +393,7 @@
     },
     "form": {
       "body_markdown": {
-        "desc": "400 characters max, 12 line break max, no images allowed, *markdown is encouraged*",
+        "desc": "400 characters max, 12 line break max, no images allowed, *markdown is encouraged*. Please include a contact method if necessary.",
         "label": "Body Markdown"
       },
       "category": {

@@ -2,11 +2,6 @@
   "articles": {
     "duration": "Video duration",
     "for_org": "%{- start} が %{- end}%{- org}%{- start} へ執筆%{- end}",
-    "messages": {
-      "pinned": "The post has been succesfully pinned",
-      "unpinned": "The post has been succesfully unpinned"
-    },
-    "pin": "Pin Post",
     "pinned": {
       "after": "",
       "before": "要注目",
@@ -19,8 +14,7 @@
       "saved": "保存済",
       "unsave": "解除"
     },
-    "timeAgo": " (%{ago})",
-    "unpin": "Unpin Post"
+    "timeAgo": "（%{ago}）"
   },
   "chat": {
     "bottom": "Scroll to Bottom",
@@ -396,7 +390,7 @@
     },
     "form": {
       "body_markdown": {
-        "desc": "400 characters max, 12 line break max, no images allowed, *markdown is encouraged*",
+        "desc": "400 characters max, 12 line break max, no images allowed, *markdown is encouraged*. Please include a contact method if necessary.",
         "label": "Body Markdown"
       },
       "category": {

@@ -97,11 +97,10 @@
   },
   "dashboard": {
     "article": {
+      "admin": "Admin",
       "edit": "Edit",
       "manage": "Manage",
-      "pin": "Pin Post",
-      "stats": "Stats",
-      "unpin": "Unpin Post"
+      "stats": "Stats"
     },
     "comments": {
       "moderate": "Moderate",

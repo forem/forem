@@ -16,12 +16,30 @@ function addButtonFollowText(button, style) {
 
   switch (style) {
     case 'small':
+      addAriaLabelToButton({
+        button,
+        followName: name,
+        followType: className,
+        style: 'follow',
+      });
       button.textContent = i18next.t('followButts.follow_small');
       break;
     case 'follow-back':
+      addAriaLabelToButton({
+        button,
+        followName: name,
+        followType: className,
+        style: 'follow-back',
+      });
       button.textContent = i18next.t('followButts.followback');
       break;
     default:
+      addAriaLabelToButton({
+        button,
+        followName: name,
+        followType: className,
+        style: 'follow',
+      });
       button.textContent = i18next.t('followButts.follow');
   }
   button.setAttribute('aria-label', label);

@@ -50,15 +50,9 @@ function addRelevantButtonsToArticle(user) {
     // if there's already a pinned post different from the current one
     if (user.admin) {
       actions.push(
-        `<button
-            id="js-${isArticlePinned ? 'unpin' : 'pin'}-article"
-            class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1"
-            data-path="${pinPath}"
-            data-article-id="${articleId}">${
-          isArticlePinned
-            ? i18next.t('dashboard.article.unpin')
-            : i18next.t('dashboard.article.pin')
-        }</button>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="/admin/content_manager/articles/${articleId}" data-no-instant>${i18next.t(
+          'dashboard.article.admin',
+        )}</a>`,
       );
     }
 
