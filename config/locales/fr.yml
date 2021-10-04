@@ -14,7 +14,7 @@ fr:
     follow: Suivre
     follow_back: Suivre aussi
     following: Abonné
-    following_tags: Sujets
+    following_tags: Sujets suivis
     full: Complet
     infinity: Infini
     latest: Récent
@@ -33,8 +33,8 @@ fr:
     search: Recherche
     see_all: Voir tout
     tag: Sujet
-    tags_to_follow: Sujets
-    top_tags: Sujets
+    tags_to_follow: Sujets dans %{community_name}
+    top_tags: Sujets les plus utilisées
     trending_on: Populaire sur
     view: Vue
     week: Semain
