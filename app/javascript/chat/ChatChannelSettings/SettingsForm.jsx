@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons';
 
 export const SettingsForm = ({
@@ -14,13 +15,13 @@ export const SettingsForm = ({
       data-testid="settings-form"
       className="crayons-card p-4 grid gap-2 mb-4 settings-section"
     >
-      <h3>Channel Settings</h3>
+      <h3>{i18next.t('chat.settings.channel')}</h3>
       <div className="crayons-field">
         <label
           className="crayons-field__label"
           htmlFor="chat_channel_description"
         >
-          Description
+          {i18next.t('chat.settings.description')}
         </label>
         <textarea
           className="crayons-textfield"
@@ -39,12 +40,12 @@ export const SettingsForm = ({
           onChange={handleChannelDiscoverableStatus}
         />
         <label htmlFor="c2" className="crayons-field__label">
-          Channel Discoverable
+          {i18next.t('chat.settings.discoverable')}
         </label>
       </div>
       <div>
         <Button type="submit" onClick={handleChannelDescriptionChanges}>
-          Submit
+          {i18next.t('chat.settings.update')}
         </Button>
       </div>
     </div>

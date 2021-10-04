@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export const ModFaqSection = ({ currentMembershipRole }) => {
   if (currentMembershipRole === 'member') {
@@ -9,14 +10,14 @@ export const ModFaqSection = ({ currentMembershipRole }) => {
   return (
     <div className="crayons-card grid gap-2 p-4 faq-section">
       <p className="contact-details">
-        Questions about Connect moderation?
+        {i18next.t('chat.settings.questions')}
         <a
           href="/contact"
           target="_blank"
           rel="noopener noreferrer"
           className="mx-2 url-link"
         >
-          Contact site admins
+          {i18next.t('chat.settings.contact')}
         </a>
       </p>
     </div>

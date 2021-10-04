@@ -1,13 +1,9 @@
+import i18next from 'i18next';
+
 /* eslint-disable no-alert */
 export function initHiddenComments() {
   function hide(commentId) {
-    const confirmMsg = `
-Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.
-
-All child comments in this thread will also be hidden.
-
-For further actions, you may consider blocking this person and/or reporting abuse.
-    `;
+    const confirmMsg = i18next.t('comments.hide');
     const confirmHide = window.confirm(confirmMsg);
     if (confirmHide) {
       fetch(`/comments/${commentId}/hide`, {

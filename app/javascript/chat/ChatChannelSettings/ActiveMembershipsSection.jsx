@@ -2,6 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 import { defaultMembershipPropType } from '../../common-prop-types/membership-prop-type';
+import { i18next } from '../../i18n/l10n';
 import { Membership } from './Membership';
 import { Button } from '@crayons';
 
@@ -19,8 +20,11 @@ export const ActiveMembershipsSection = ({
       className="p-4 grid gap-2 crayons-card mb-4"
       data-active-count={activeMemberships ? activeMemberships.length : 0}
     >
-      <h3 className="mb-2 active_members">Members</h3>
+      <h3 className="mb-2 active_members">
+        {i18next.t('chat.settings.members')}
+      </h3>
       {activeMembershipList.map((activeMembership) => (
+        // eslint-disable-next-line react/jsx-key
         <Membership
           membership={activeMembership}
           removeMembership={removeMembership}
@@ -36,7 +40,7 @@ export const ActiveMembershipsSection = ({
           onClick={toggleScreens}
           type="button"
         >
-          View All
+          {i18next.t('chat.settings.all')}
         </Button>
       </div>
     </div>

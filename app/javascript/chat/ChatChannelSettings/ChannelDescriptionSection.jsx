@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export const ChannelDescriptionSection = ({
   channelName,
@@ -10,7 +11,9 @@ export const ChannelDescriptionSection = ({
     <div className="p-4 grid gap-2 crayons-card mb-4 channel_details">
       <h2 className="mb-1 channel_title">{channelName}</h2>
       <p>{channelDescription}</p>
-      <p className="fw-bold">You are a channel {currentMembershipRole}</p>
+      <p className="fw-bold">
+        {i18next.t('chat.settings.role', { role: currentMembershipRole })}
+      </p>
     </div>
   );
 };

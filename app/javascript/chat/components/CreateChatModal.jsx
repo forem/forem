@@ -43,27 +43,31 @@ export function CreateChatModal({
   };
 
   return (
-    <Modal title="Create A Channel" size="s" onClose={toggleModalCreateChannel}>
+    <Modal
+      title={i18next.t('chat.create.title')}
+      size="s"
+      onClose={toggleModalCreateChannel}
+    >
       <div className="crayons-field">
         <label htmlFor="t1" className="crayons-field__label">
-          Channel Name
+          {i18next.t('chat.create.name')}
         </label>
         <input
           type="text"
           id="t1"
           className="crayons-textfield"
-          placeholder="Enter name here..."
+          placeholder={i18next.t('chat.create.enter')}
           value={channelName}
           onInput={(e) => setchannelName(e.target.value)}
         />
         <label htmlFor="t2" className="crayons-field__label">
-          Invite Users
+          {i18next.t('chat.create.invite')}
         </label>
         <input
           type="text"
           id="t2"
           className="crayons-textfield"
-          placeholder="Separate username with comma"
+          placeholder={i18next.t('chat.create.users')}
           value={userNames}
           onInput={(e) => setUserNames(e.target.value)}
         />
@@ -74,7 +78,7 @@ export function CreateChatModal({
           style="margin-top:20px"
           disabled={!channelName}
         >
-          Create
+          {i18next.t('chat.create.submit')}
         </Button>
       </div>
     </Modal>

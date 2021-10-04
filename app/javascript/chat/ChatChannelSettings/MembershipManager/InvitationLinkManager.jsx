@@ -2,6 +2,7 @@
 
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../../i18n/l10n';
 
 import { Button } from '@crayons';
 
@@ -47,11 +48,8 @@ export class InvitationLinkManager extends Component {
   };
 
   render() {
-    const {
-      showImageCopiedMessage,
-      invitationLink,
-      currentMembership,
-    } = this.state;
+    const { showImageCopiedMessage, invitationLink, currentMembership } =
+      this.state;
 
     if (currentMembership.role !== 'mod') {
       return null;
@@ -59,7 +57,9 @@ export class InvitationLinkManager extends Component {
 
     return (
       <div className="p-4 grid gap-2 crayons-card my-4 invitation-section">
-        <h3 className="text-center title">Invitation Link</h3>
+        <h3 className="text-center title">
+          {i18next.t('chat.settings.invitation')}
+        </h3>
         <clipboard-copy
           onClick={this.copyText}
           for="chat-channel-unviation-url"
@@ -73,7 +73,7 @@ export class InvitationLinkManager extends Component {
             id="chat-channel-unviation-url"
             readOnly="true"
             value={invitationLink}
-            aria-label="invitation-link"
+            aria-label={i18next.t('chat.settings.aria_invite')}
           />
           <Button
             className="spec__image-markdown-copy"
@@ -86,7 +86,7 @@ export class InvitationLinkManager extends Component {
             role="alert"
             className={`fs-s ${showImageCopiedMessage ? '' : 'opacity-0'}`}
           >
-            Copied!
+            {i18next.t('clipboard.copied')}
           </span>
         </clipboard-copy>
       </div>

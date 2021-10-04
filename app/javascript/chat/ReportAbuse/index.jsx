@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'preact/hooks';
 import { reportAbuse, blockUser } from '../actions/requestActions';
 import { addSnackbarItem } from '../../Snackbar';
+import { i18next } from '../../i18n/l10n';
 import { Button, FormField, RadioButton } from '@crayons';
 
 /**
@@ -38,23 +39,15 @@ export function ReportAbuse({ data, closeReportAbuseForm }) {
     );
     const { success, message } = response;
     if (success) {
-      const confirmBlock = window.confirm(
-        `The message will be reported.\n\nWould you like to block this person as well?\n\nThis will:
-      - prevent them from commenting on your posts
-      - block all notifications from them
-      - prevent them from messaging you via chat`,
-      );
+      const confirmBlock = window.confirm(i18next.t('feedback.block'));
 
       if (confirmBlock) {
         const response = await blockUser(data.user_id);
         if (response.result === 'blocked') {
-          addSnackbarItem({
-            message:
-              'Your report has been submitted and the user has been blocked',
-          });
+          addSnackbarItem({ message: i18next.t('feedback.blocked') });
         }
       } else {
-        addSnackbarItem({ message: 'Your report has been submitted.' });
+        addSnackbarItem({ message: i18next.t('feedback.submitted') });
       }
       closeReportAbuseForm();
     } else {
@@ -65,15 +58,13 @@ export function ReportAbuse({ data, closeReportAbuseForm }) {
   return (
     <Fragment>
       <section className="mt-7 p-4 grid gap-2 crayons-card mb-4">
-        <h1 className="lh-tight mb-4 mt-0">Report Abuse</h1>
-        <p>
-          Thank you for reporting any abuse that violates our{' '}
-          <a href="/code-of-conduct">code of conduct</a> or{' '}
-          <a href="/terms">terms and conditions</a>. We continue to try to make
-          this environment a great one for everybody.
-        </p>
+        <h1 className="lh-tight mb-4 mt-0">{i18next.t('feedback.heading')}</h1>
+        <p
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: i18next.t('feedback.desc') }}
+        />
         <fieldset className="report__abuse-options p-4 justify-between">
-          <legend>Why is this content inappropriate?</legend>
+          <legend>{i18next.t('feedback.why')}</legend>
           <FormField variant="radio">
             <RadioButton
               id="rude_or_vulgar"
@@ -83,7 +74,7 @@ export function ReportAbuse({ data, closeReportAbuseForm }) {
               onClick={handleChange}
             />
             <label htmlFor="rude_or_vulgar" className="crayons-field__label">
-              Rude or vulgar
+              {i18next.t('feedback.rude_or_vulgar')}
             </label>
           </FormField>
           <FormField variant="radio">
@@ -95,7 +86,7 @@ export function ReportAbuse({ data, closeReportAbuseForm }) {
               onClick={handleChange}
             />
             <label htmlFor="harassment" className="crayons-field__label">
-              Harassment or hate speech
+              {i18next.t('feedback.harassment')}
             </label>
           </FormField>
           <FormField variant="radio">
@@ -107,7 +98,7 @@ export function ReportAbuse({ data, closeReportAbuseForm }) {
               onClick={handleChange}
             />
             <label htmlFor="spam" className="crayons-field__label">
-              Spam or copyright issue
+              {i18next.t('feedback.spam')}
             </label>
           </FormField>
           <FormField variant="radio">
@@ -119,17 +110,17 @@ export function ReportAbuse({ data, closeReportAbuseForm }) {
               onClick={handleChange}
             />
             <label htmlFor="listings" className="crayons-field__label">
-              Inappropriate listings message/category
+              {i18next.t('feedback.listings')}
             </label>
           </FormField>
-          <h2>Message to Report</h2>
+          <h2>{i18next.t('feedback.message')}</h2>
           <div
             className="reported__message p-2 mt-2 mb-3"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: data.message }}
           />
           <Button disabled={category === null} size="s" onClick={handleSubmit}>
-            Report Message
+            {i18next.t('feedback.report_message')}
           </Button>
         </fieldset>
       </section>

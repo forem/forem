@@ -16,6 +16,120 @@
     },
     "timeAgo": " (%{ago})"
   },
+  "chat": {
+    "bottom": "Scroll to Bottom",
+    "compose": {
+      "aria_label": "Compose a message",
+      "close": "Close",
+      "lets": "Let's connect",
+      "placeholder": "Write message to %{channel}",
+      "save": "Save",
+      "send": "Send"
+    },
+    "config": {
+      "delete": "Delete",
+      "edit": "Edit",
+      "menu": "configuration menu",
+      "nav": "configuration navigation menu",
+      "report": "Report Abuse",
+      "settings": "Settings",
+      "view": "View User Profile"
+    },
+    "create": {
+      "enter": "Enter name here...",
+      "invite": "Invite Users",
+      "name": "Channel Name",
+      "submit": "Create",
+      "title": "Create A Channel",
+      "users": "Separate username with comma"
+    },
+    "delete": {
+      "aria_label": "delete confirmation",
+      "cancel": "Cancel",
+      "heading": "Are you sure, you want to delete this message?",
+      "submit": "Delete"
+    },
+    "draw": {
+      "clear": "Clear",
+      "clear_title": "Clear the canvas.",
+      "color": "Change color to %{color}",
+      "heading": "Connect Draw",
+      "send": "Send",
+      "send_title": "Send the canvas."
+    },
+    "edited": " (edited)",
+    "filter": {
+      "all": "all",
+      "direct": "direct",
+      "group": "group"
+    },
+    "join": {
+      "accept": " Accept",
+      "empty": "You have no pending invitations.",
+      "got": "You got invitation to join <b>%{channel}</b>.",
+      "heading": "Request Center <span role=\"img\" aria-label=\"handshake\">🤝</span>",
+      "join": "<b>%{name}</b> requested to join <b>%{channel}</b>",
+      "message_1": "Hey %{user} !",
+      "message_2": "You are not a member of this group yet. Send a request to join.",
+      "reject": " Reject",
+      "request": " Join %{channel} ",
+      "requested": " Requested Already ",
+      "toggle": "Toggle request manager"
+    },
+    "loading": "Loading user",
+    "messages": {
+      "direct": "You and <a href=\"/%{slug}\">{slug}</a> are connected because you both follow each other. All interactions <em><b>must</b></em> abide by the <a href=\"/code-of-conduct\">code of conduct</a>.",
+      "no_data": "Couldn't find user data on page.",
+      "open": "You have joined %{channel}! All interactions <em><b>must</b></em> abide by the <a href=\"/code-of-conduct\">code of conduct</a>.",
+      "sorry": "Sorry <span className=\"chatmessagebody__currentuser\">@%{user}</span> %{message}"
+    },
+    "manager": {},
+    "more": "More new messages below",
+    "notifications": {
+      "off": "Notifications Off",
+      "on": "Notifications On"
+    },
+    "removed": "<message removed>",
+    "search": "Global Channel Search",
+    "settings": {
+      "add": "+",
+      "all": "View All",
+      "aria_invite": "invitation-link",
+      "aria_member": "search memberships",
+      "channel": "Channel Settings",
+      "contact": "Contact site admins",
+      "description": "Description",
+      "discoverable": "Channel Discoverable",
+      "join": "Joining Request",
+      "invitation": "Invitation Link",
+      "invite": "Usernames to invite",
+      "leave": "Are you absolutely sure you want to leave this channel? This action is permanent.",
+      "leave_channel": "Leave Channel",
+      "members": "Members",
+      "membership": "Chat Channel Membership manager",
+      "mod": "MOD",
+      "no_member": "No membership",
+      "notifications": "Notifications",
+      "pending": "Pending Invitations",
+      "personal": "Personal Settings",
+      "promote": "Promote to Mod",
+      "questions": "Questions about Connect moderation?",
+      "receive": "Receive Notifications for New Messages",
+      "remove": "x",
+      "role": "You are a channel %{role}",
+      "search": "Search Member...",
+      "submit": "Submit",
+      "unmod": "Remove Mod",
+      "update": "Submit"
+    },
+    "users": {
+      "all": {
+        "name": "To notify everyone here",
+        "username": "all"
+      }
+    },
+    "welcome": "<span role=\"img\" aria-label=\"emoji\">👋</span> Welcome to <b> Connect</b>! You may message anyone you mutually follow."
+  },
   "clipboard": {
     "alt_text": "Alt Text",
     "copied": "Copied!",
@@ -25,14 +139,36 @@
   "comments": {
     "all": "See all %{count} comments",
     "all_plural": "See all %{count} comments",
+    "blocked": "[blocked content]",
     "count": "%{count}%{- start}\u00A0comment%{- end}",
     "count_plural": "%{count}%{- start}\u00A0comments%{- end}",
     "empty": "Add\u00A0Comment",
-    "number": "Number of comments"
+    "hide": "Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.\n\nAll child comments in this thread will also be hidden.\n\nFor further actions, you may consider blocking this person and/or reporting abuse.",
+    "number": "Number of comments",
+    "subscription": {
+      "all": "All comments",
+      "all_desc": "You’ll receive notifications for all new comments.",
+      "author": "Post author comments",
+      "author_desc": "You’ll receive notifications only if post author sends a new comment.",
+      "done": "Done",
+      "subscribe": "Subscribe",
+      "subscribed": "You have been subscribed to %{type}",
+      "top": "Top-level comments",
+      "top_desc": "You’ll receive notifications only for all new top-level comments.",
+      "type": {
+        "all_comments": "all comments",
+        "top_level_comments": "top level comments",
+        "only_author_comments": "only author comments",
+        "not_subscribed": "not subscribed"
+      },
+      "unsubscribe": "Unsubscribe",
+      "unsubscribed": "You have been unsubscribed from comments for this post"
+    }
   },
   "common": {
     "danger": "Danger Zone",
-    "etc": "..."
+    "etc": "...",
+    "cog_icon": "Preferences"
   },
   "editor": {
     "a11y": {
@@ -72,7 +208,7 @@
         "desc_1": "Use ",
         "desc_2": " to write and format posts.",
         "desc_3": "You can use ",
-        "desc_4": "to add rich content such as Tweets, YouTube videos, etc.",
+        "desc_4": " to add rich content such as Tweets, YouTube videos, etc.",
         "desc_5": "In addition to images for the post's content, you can also drag and drop a cover image",
         "em": "italics",
         "em_mono": "*italics* or _italics_",
@@ -159,10 +295,33 @@
     "error": "Error: %{error}",
     "feed": "There was a problem fetching your feed.",
     "occurred": "An error occurred: %{error}",
+    "subscription": "An error occurred, please try again",
     "whoops": "Whoops, something went wrong:"
   },
   "feed": {
     "loading": "Loading posts..."
+  },
+  "feedback": {
+    "block": "The message will be reported.\n\nWould you like to block this person as well?\n\nThis will:\n- prevent them from commenting on your posts\n- block all notifications from them\n- prevent them from messaging you via chat",
+    "blocked": "Your report has been submitted and the user has been blocked",
+    "desc": "Thank you for reporting any abuse that violates our <a href=\"/code-of-conduct\">code of conduct</a> or <a href=\"/terms\">terms and conditions</a>. We continue to try to make this environment a great one for everybody.",
+    "harassment": "Harassment or hate speech",
+    "heading": "Report Abuse",
+    "listings": "Inappropriate listings message/category",
+    "message": "Message to Report",
+    "report_message": "Report Message",
+    "rude_or_vulgar": "Rude or vulgar",
+    "spam": "Spam or copyright issue",
+    "submitted": "Your report has been submitted.",
+    "why": "Why is this content inappropriate?"
+  },
+  "gitHub": {
+    "loading": "Loading GitHub repositories",
+    "remove": "Remove",
+    "select": "Select"
+  },
+  "main": {
+    "tag": "%{tag} tag"
   },
   "modActions": {
     "adjust": {

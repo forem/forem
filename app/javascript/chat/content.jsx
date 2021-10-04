@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../i18n/l10n';
 import { Article } from './article';
 import { ChannelRequest } from './channelRequest';
 import { RequestManager } from './RequestManager/RequestManager';
@@ -92,7 +93,7 @@ export class Content extends Component {
 function Display({ resource, closeReportAbuseForm }) {
   switch (resource.type_of) {
     case 'loading-user':
-      return <div className="loading-user" title="Loading user" />;
+      return <div className="loading-user" title={i18next.t('chat.loading')} />;
     case 'article':
       return <Article resource={resource} />;
     case 'draw':

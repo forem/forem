@@ -5,6 +5,7 @@ import { notifyUser } from '../utilities/connect/newMessageNotify';
 import { debounceAction } from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
 import { processImageUpload } from '../article-form/actions';
+import { i18next } from '../i18n/l10n';
 import {
   conductModeration,
   getAllMessages,
@@ -389,7 +390,10 @@ export class Chat extends Component {
       this.setState({
         channelUsers: {
           [activeChannelId]: {
-            all: { username: 'all', name: 'To notify everyone here' },
+            all: {
+              username: i18next.t('chat.users.all.username'),
+              name: i18next.t('chat.users.all.name'),
+            },
             ...leftUser,
           },
         },
@@ -1135,30 +1139,30 @@ export class Chat extends Component {
       if (activeChannel.channel_type === 'direct') {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
-            <div className="chatmessage__body">
-              You and{' '}
-              <a href={`/${activeChannel.channel_modified_slug}`}>
-                {activeChannel.channel_modified_slug}
-              </a>{' '}
-              are connected because you both follow each other. All interactions{' '}
-              <em>
-                <b>must</b>
-              </em>{' '}
-              abide by the <a href="/code-of-conduct">code of conduct</a>.
-            </div>
+            <div
+              // eslint-disable-next-line react/no-danger
+              className="chatmessage__body"
+              dangerouslySetInnerHTML={{
+                __html: i18next.t('chat.messages.direct', {
+                  slug: activeChannel.channel_modified_slug,
+                }),
+              }}
+            />
           </div>
         );
       }
       if (activeChannel.channel_type === 'open') {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
-            <div className="chatmessage__body">
-              You have joined {activeChannel.channel_name}! All interactions{' '}
-              <em>
-                <b>must</b>
-              </em>{' '}
-              abide by the <a href="/code-of-conduct">code of conduct</a>.
-            </div>
+            <div
+              // eslint-disable-next-line react/no-danger
+              className="chatmessage__body"
+              dangerouslySetInnerHTML={{
+                __html: i18next.t('chat.messages.open', {
+                  channel: activeChannel.channel_name,
+                }),
+              }}
+            />
           </div>
         );
       }
@@ -1255,13 +1259,13 @@ export class Chat extends Component {
       if (notificationsPermission === 'granted') {
         notificationsState = (
           <div className="chat_chatconfig chat_chatconfig--on">
-            Notifications On
+            {i18next.t('chat.notifications.on')}
           </div>
         );
       } else if (notificationsPermission === 'denied') {
         notificationsState = (
           <div className="chat_chatconfig chat_chatconfig--off">
-            Notifications Off
+            {i18next.t('chat.notifications.off')}
           </div>
         );
       }
@@ -1275,25 +1279,25 @@ export class Chat extends Component {
           <div className="chat__channeltypefilter">
             <ChannelFilterButton
               type="all"
-              name="all"
+              name={i18next.t('chat.filter.all')}
               active={state.channelTypeFilter === 'all'}
               onClick={this.triggerChannelTypeFilter}
             />
             <ChannelFilterButton
               type="direct"
-              name="direct"
+              name={i18next.t('chat.filter.direct')}
               active={state.channelTypeFilter === 'direct'}
               onClick={this.triggerChannelTypeFilter}
             />
             <ChannelFilterButton
               type="invite_only"
-              name="group"
+              name={i18next.t('chat.filter.group')}
               active={state.channelTypeFilter === 'invite_only'}
               onClick={this.triggerChannelTypeFilter}
             />
             <Button
               className="chat__channelssearchtoggle crayons-btn--ghost-dimmed p-2"
-              aria-label="Toggle request manager"
+              aria-label={i18next.t('chat.join.toggle')}
               onClick={this.triggerActiveContent}
               data-content="sidecar-joining-request-manager"
             >
@@ -1314,7 +1318,7 @@ export class Chat extends Component {
             {this.state.isTagModerator ? (
               <Button
                 className="chat__channelssearchtoggle crayons-btn--ghost-dimmed p-2"
-                aria-label="Toggle request manager"
+                aria-label={i18next.t('chat.join.toggle')}
                 onClick={this.toggleModalCreateChannel}
                 data-content="sidecar-joining-request-manager"
               >
@@ -1548,7 +1552,7 @@ export class Chat extends Component {
                 if (e.keyCode === 13) this.jumpBacktoBottom();
               }}
             >
-              Scroll to Bottom
+              {i18next.t('chat.bottom')}
             </Button>
           </div>
           {this.renderDeleteModal()}
@@ -1786,12 +1790,12 @@ export class Chat extends Component {
           !showDeleteModal && 'hidden'
         }`}
         aria-hidden={showDeleteModal}
-        aria-label="delete confirmation"
+        aria-label={i18next.t('chat.delete.aria_label')}
         role="dialog"
       >
         <div className="crayons-modal__box">
           <div className="crayons-modal__box__body">
-            <h3>Are you sure, you want to delete this message?</h3>
+            <h3>{i18next.t('chat.delete.heading')}</h3>
             <div className="delete-actions__container">
               <Button
                 className="crayons-btn crayons-btn--danger message__delete__button"
@@ -1801,7 +1805,7 @@ export class Chat extends Component {
                   if (e.keyCode === 13) this.handleMessageDelete();
                 }}
               >
-                Delete
+                {i18next.t('chat.delete.submit')}
               </Button>
               <Button
                 className="crayons-btn crayons-btn--secondary message__cancel__button"
@@ -1811,7 +1815,7 @@ export class Chat extends Component {
                   if (e.keyCode === 13) this.handleCloseDeleteModal();
                 }}
               >
-                Cancel
+                {i18next.t('chat.delete.cancel')}
               </Button>
             </div>
           </div>

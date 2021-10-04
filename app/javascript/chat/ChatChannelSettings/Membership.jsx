@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { defaultMembershipPropType } from '../../common-prop-types/membership-prop-type';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons';
 
 export const Membership = ({
@@ -35,7 +36,7 @@ export const Membership = ({
           onClick={chatChannelAcceptMembership}
           data-membership-id={membership.membership_id}
         >
-          +
+          {i18next.t('chat.settings.add')}
         </Button>
       ) : null}
       {membership.role !== 'mod' && currentMembershipRole === 'mod' ? (
@@ -46,7 +47,7 @@ export const Membership = ({
           data-membership-id={membership.membership_id}
           data-membership-status={membership.status}
         >
-          x
+          {i18next.t('chat.settings.remove')}
         </Button>
       ) : null}
     </div>

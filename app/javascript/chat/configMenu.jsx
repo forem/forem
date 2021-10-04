@@ -1,6 +1,7 @@
 import { h, Component, createRef } from 'preact';
 // eslint-disable-next-line import/no-unresolved
 import ConfigImage from 'images/overflow-horizontal.svg';
+import { i18next } from '../i18n/l10n';
 
 export class ConfigMenu extends Component {
   constructor() {
@@ -29,20 +30,20 @@ export class ConfigMenu extends Component {
         <button
           onClick={this.handleClick}
           aria-expanded={visible}
-          aria-label="configuration navigation menu"
+          aria-label={i18next.t('chat.config.nav')}
           style={{ backgroundImage: `url(${ConfigImage})` }}
           ref={this.configMenuButton}
         />
         {visible && (
-          <nav aria-label="configuration menu">
+          <nav aria-label={i18next.t('chat.config.menu')}>
             <ul className="chatchannels__configmenu">
               <li>
                 <a href="/settings" ref={this.firstNavLink}>
-                  Settings
+                  {i18next.t('chat.config.settings')}
                 </a>
               </li>
               <li>
-                <a href="/report-abuse">Report Abuse</a>
+                <a href="/report-abuse">{i18next.t('chat.config.report')}</a>
               </li>
             </ul>
           </nav>

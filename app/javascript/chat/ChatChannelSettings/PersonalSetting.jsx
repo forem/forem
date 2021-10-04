@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons';
 
 export const PersonalSettings = ({
@@ -9,8 +10,8 @@ export const PersonalSettings = ({
 }) => {
   return (
     <div className="crayons-card p-4 grid gap-2 mb-4 personl-settings">
-      <h3>Personal Settings</h3>
-      <h4>Notifications</h4>
+      <h3>{i18next.t('chat.settings.personal')}</h3>
+      <h4>{i18next.t('chat.settings.notifications')}</h4>
       <div className="crayons-field crayons-field--checkbox">
         <input
           type="checkbox"
@@ -20,7 +21,7 @@ export const PersonalSettings = ({
           onChange={handlePersonChannelSetting}
         />
         <label htmlFor="c3" className="crayons-field__label">
-          Receive Notifications for New Messages
+          {i18next.t('chat.settings.receive')}
         </label>
       </div>
       <div>
@@ -28,7 +29,7 @@ export const PersonalSettings = ({
           type="submit"
           onClick={updateCurrentMembershipNotificationSettings}
         >
-          Submit
+          {i18next.t('chat.settings.update')}
         </Button>
       </div>
     </div>

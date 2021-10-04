@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../../i18n/l10n';
 
 import { MembershipSection } from './MembershipSection';
 import { InvitationLinkManager } from './InvitationLinkManager';
@@ -86,17 +87,20 @@ export class ManageActiveMembership extends Component {
     return (
       <div className="pt-3">
         <div className="p-4 grid gap-2 crayons-card my-4 mx-auto membership-manager">
-          <h2 className="text-title">Chat Channel Membership manager</h2>
+          <h2 className="text-title">
+            {i18next.t('chat.settings.membership')}
+          </h2>
         </div>
         <div className="p-4 grid gap-2 crayons-card my-4">
           <input
             type="text"
             className="crayons-textfield"
-            placeholder="Search Member..."
+            placeholder={i18next.t('chat.settings.search')}
             value={searchMembers}
             name="search-members"
+            // eslint-disable-next-line react/jsx-no-bind
             onKeyUp={this.searchTheMembershipUser.bind(this)}
-            aria-label="search memberships"
+            aria-label={i18next.t('chat.settings.aria_member')}
           />
           <div
             data-spy="scroll"

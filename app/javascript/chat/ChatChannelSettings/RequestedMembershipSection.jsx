@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { defaultMembershipPropType } from '../../common-prop-types/membership-prop-type';
+import { i18next } from '../../i18n/l10n';
 
 import { Membership } from './Membership';
 
@@ -22,9 +23,12 @@ export const RequestedMembershipSection = ({
         requestedMemberships ? requestedMemberships.length : 0
       }
     >
-      <h3 className="mb-2 requested_memberships">Joining Request</h3>
+      <h3 className="mb-2 requested_memberships">
+        {i18next.t('chat.settings.join')}
+      </h3>
       {requestedMemberships && requestedMemberships.length > 0
         ? requestedMemberships.map((pendingMembership) => (
+            // eslint-disable-next-line react/jsx-key
             <Membership
               membership={pendingMembership}
               removeMembership={removeMembership}

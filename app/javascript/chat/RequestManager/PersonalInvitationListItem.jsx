@@ -1,14 +1,21 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 import { Button } from '@crayons';
 
 export const PendingInvitationListItem = ({ request, updateMembership }) => (
   <div className="crayons-card mb-6">
     <div className="crayons-card__body channel-request-card">
-      <div className="request-message d-flex flex-wrap">
-        You got invitation to join <b>{request.chat_channel_name}</b>.
-      </div>
+      <div
+        className="request-message d-flex flex-wrap"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: i18next.t('chat.join.got', {
+            channel: request.chat_channel_name,
+          }),
+        }}
+      />
       <div className="request-actions">
         <Button
           className="m-2"
@@ -20,8 +27,7 @@ export const PendingInvitationListItem = ({ request, updateMembership }) => (
           data-channel-slug={request.slug}
           data-user-action="reject"
         >
-          {' '}
-          Reject
+          {i18next.t('chat.join.reject')}
         </Button>
         <Button
           className="m-2"
@@ -32,8 +38,7 @@ export const PendingInvitationListItem = ({ request, updateMembership }) => (
           data-channel-slug={request.slug}
           data-user-action="accept"
         >
-          {' '}
-          Accept
+          {i18next.t('chat.join.accept')}
         </Button>
       </div>
     </div>

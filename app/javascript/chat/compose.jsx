@@ -7,6 +7,7 @@ import {
   useLayoutEffect,
 } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { i18next } from '../i18n/l10n';
 import { useTextAreaAutoResize } from '@utilities/textAreaUtils';
 
 export const Compose = ({
@@ -53,15 +54,17 @@ export const Compose = ({
 
   const placeholder = useMemo(
     () =>
-      startEditing ? "Let's connect" : `Write message to ${activeChannelName}`,
+      startEditing
+        ? i18next.t('chat.compose.lets')
+        : i18next.t('chat.compose.placeholder', { channel: activeChannelName }),
     [startEditing, activeChannelName],
   );
   const label = useMemo(
-    () => (startEditing ? "Let's connect" : 'Compose a message'),
+    () => i18next.t(`chat.compose.${startEditing ? 'lets' : 'aria_label'}`),
     [startEditing],
   );
   const saveButtonText = useMemo(
-    () => (startEditing ? 'Save' : 'Send'),
+    () => i18next.t(`chat.compose.${startEditing ? 'save' : 'send'}`),
     [startEditing],
   );
 
@@ -118,7 +121,7 @@ export const Compose = ({
                 setValue('');
               }}
             >
-              Close
+              {i18next.t('chat.compose.close')}
             </button>
           )}
         </div>

@@ -8,6 +8,7 @@ import {
   acceptJoiningRequest,
   rejectJoiningRequest,
 } from '../actions/requestActions';
+import { i18next } from '../../i18n/l10n';
 import { HeaderSection } from './HeaderSection';
 import { ChannelRequestSection } from './ChannelRequestSection';
 import { PersonalInvitationSection } from './PersonalInvitationSection';
@@ -48,12 +49,8 @@ export class RequestManager extends Component {
   }
 
   handleIUpdateMembership = async (e) => {
-    const {
-      membershipId,
-      userAction,
-      channelSlug,
-      channelId,
-    } = e.target.dataset;
+    const { membershipId, userAction, channelSlug, channelId } =
+      e.target.dataset;
     const response = await updateMembership(membershipId, userAction);
     const { success, membership, message } = response;
     const { updateRequestCount } = this.state;
@@ -86,10 +83,11 @@ export class RequestManager extends Component {
 
     if (success) {
       this.setState((prevState) => {
-        const formattedChannelJoiningRequests = prevState.channelJoiningRequests.filter(
-          (channelJoiningRequest) =>
-            channelJoiningRequest.membership_id !== membership.membership_id,
-        );
+        const formattedChannelJoiningRequests =
+          prevState.channelJoiningRequests.filter(
+            (channelJoiningRequest) =>
+              channelJoiningRequest.membership_id !== membership.membership_id,
+          );
         return {
           channelJoiningRequests: formattedChannelJoiningRequests,
         };
@@ -110,10 +108,11 @@ export class RequestManager extends Component {
 
     if (success) {
       this.setState((prevState) => {
-        const formattedChannelJoiningRequests = prevState.channelJoiningRequests.filter(
-          (channelJoiningRequest) =>
-            channelJoiningRequest.membership_id !== Number(membershipId),
-        );
+        const formattedChannelJoiningRequests =
+          prevState.channelJoiningRequests.filter(
+            (channelJoiningRequest) =>
+              channelJoiningRequest.membership_id !== Number(membershipId),
+          );
         return {
           channelJoiningRequests: formattedChannelJoiningRequests,
         };
@@ -134,7 +133,7 @@ export class RequestManager extends Component {
         <div className="p-4">
           <HeaderSection />
           {channelJoiningRequests.length <= 0 && userInvitations.length <= 0 ? (
-            <p>You have no pending invitations.</p>
+            <p>{i18next.t('chat.join.empty')}</p>
           ) : null}
           <ChannelRequestSection
             channelRequests={channelJoiningRequests}

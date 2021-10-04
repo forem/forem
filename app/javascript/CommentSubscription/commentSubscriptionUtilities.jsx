@@ -1,4 +1,5 @@
 import { request } from '../utilities/http/request';
+import { i18next } from '../i18n/l10n';
 
 /**
  * Gets the comment subscription status for a given article.
@@ -17,7 +18,7 @@ export async function getCommentSubscriptionStatus(articleId) {
 
     return subscriptionStatus;
   } catch (error) {
-    return new Error('An error occurred, please try again');
+    return new Error(i18next.t('errors.subscription'));
   }
 }
 
@@ -48,21 +49,20 @@ export async function setCommentSubscriptionStatus(
     const subscribed = await response.json();
 
     if (typeof subscribed !== 'boolean') {
-      message = 'An error occurred, please try again';
+      message = i18next.t('errors.subscription');
 
       return message;
     }
 
-    message = 'You have been unsubscribed from comments for this post';
+    message = i18next.t('comments.subscription.unsubscribed');
 
     if (subscribed) {
-      message = `You have been subscribed to ${subscriptionType.replace(
-        /_/g,
-        ' ',
-      )}`;
+      message = i18next.t('comments.subscription.subscribed', {
+        type: i18next.t(`comments.subscription.type.${subscriptionType}`),
+      });
     }
   } catch (error) {
-    message = 'An error occurred, please try again';
+    message = i18next.t('errors.subscription');
   }
 
   return message;

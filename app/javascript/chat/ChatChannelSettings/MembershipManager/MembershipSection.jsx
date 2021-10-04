@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../../i18n/l10n';
 import { Membership } from './Membership';
 
 export const MembershipSection = ({
@@ -10,12 +11,13 @@ export const MembershipSection = ({
   membershipCount,
 }) => {
   if (!memberships || memberships.length === 0) {
-    return <p className="lh-base">No membership</p>;
+    return <p className="lh-base">{i18next.t('chat.settings.no_member')}</p>;
   }
 
   return (
     <div className="membership-section">
       {memberships.map((activeMembership) => (
+        // eslint-disable-next-line react/jsx-key
         <Membership
           membership={activeMembership}
           membershipType="active"

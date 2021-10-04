@@ -1,3 +1,4 @@
+import { i18next } from '../i18n/l10n';
 /* global userData */
 
 export function hideBlockedContent() {
@@ -19,7 +20,7 @@ export function hideBlockedContent() {
       const divInnerComment = div.getElementsByClassName('inner-comment')[0];
       divInnerComment.innerHTML = `
         <div class="body " style="padding-bottom:32px;opacity:0.3;user-select:none;cursor:default">
-          [blocked content]
+          ${i18next.t('comments.subscription.blocked')}
         </div>
       `;
     }

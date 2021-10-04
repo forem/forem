@@ -3,6 +3,7 @@ import { useState, useRef, useLayoutEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/overflow-horizontal.svg';
+import { i18next } from '../i18n/l10n';
 import { adjustTimestamp } from './util';
 import { ErrorMessage } from './messages/errorMessage';
 import { Button } from '@crayons';
@@ -79,7 +80,7 @@ export const Message = ({
               variant="ghost"
               onClick={(_) => onEditMessageTrigger(id)}
             >
-              Edit
+              {i18next.t('chat.config.edit')}
             </Button>
           </li>
           <li>
@@ -87,7 +88,7 @@ export const Message = ({
               variant="ghost-danger"
               onClick={(_) => onDeleteMessageTrigger(id)}
             >
-              Delete
+              {i18next.t('chat.config.delete')}
             </Button>
           </li>
         </ul>
@@ -115,7 +116,7 @@ export const Message = ({
           variant="ghost-danger"
           onClick={(_) => onReportMessageTrigger(id)}
         >
-          Report Abuse
+          {i18next.t('chat.config.report')}
         </Button>
       </div>
     </div>
@@ -130,7 +131,7 @@ export const Message = ({
           rel="noopener noreferrer"
           data-content="sidecar-user"
           onClick={onContentTrigger}
-          aria-label="View User Profile"
+          aria-label={i18next.t('chat.config.view')}
         >
           <img
             className="chatmessagebody__profileimage"
@@ -165,7 +166,7 @@ export const Message = ({
             {editedAt ? (
               <span className="chatmessage__timestamp edited_message">
                 {`${adjustTimestamp(editedAt)}`}
-                <i> (edited)</i>
+                <i>{i18next.t('chat.edited')}</i>
               </span>
             ) : (
               ' '

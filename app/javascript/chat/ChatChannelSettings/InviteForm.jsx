@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons';
 
 export const InviteForm = ({
@@ -14,7 +15,7 @@ export const InviteForm = ({
           className="crayons-field__label invitation_form_title"
           htmlFor="chat_channel_membership_invitation_usernames"
         >
-          Usernames to invite
+          {i18next.t('chat.settings.invite')}
         </label>
         <input
           placeholder="Comma separated"
@@ -28,7 +29,7 @@ export const InviteForm = ({
       </div>
       <div>
         <Button type="submit" onClick={handleChannelInvitations}>
-          Submit
+          {i18next.t('chat.settings.submit')}
         </Button>
       </div>
     </div>

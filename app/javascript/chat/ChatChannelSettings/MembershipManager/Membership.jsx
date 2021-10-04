@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import adminEmoji from '../../../../assets/images/twemoji/fire.svg';
+import { i18next } from '../../../i18n/l10n';
 import { Button } from '@crayons';
 
 export const Membership = ({
@@ -19,7 +20,7 @@ export const Membership = ({
         data-membership-id={membership.membership_id}
         data-role="mod"
       >
-        Promote to Mod
+        {i18next.t('chat.settings.promote')}
       </Button>
     ) : null;
 
@@ -32,7 +33,7 @@ export const Membership = ({
         data-membership-id={membership.membership_id}
         data-role="member"
       >
-        Remove Mod
+        {i18next.t('chat.settings.unmod')}
       </Button>
     ) : null;
 
@@ -99,7 +100,7 @@ export const Membership = ({
                 alt="admin emoji"
                 data-content="admin emoji"
                 className="admin-emoji"
-                title="MOD"
+                title={i18next.t('chat.settings.mod')}
               />
             ) : null}
           </span>

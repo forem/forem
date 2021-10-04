@@ -2,6 +2,7 @@
 
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../i18n/l10n';
 import {
   Button,
   ButtonGroup,
@@ -95,7 +96,9 @@ export class CommentSubscription extends Component {
         aria-labelledby="ai2ols8ka2ohfp0z568lj68ic2du21s"
         className="crayons-icon"
       >
-        <title id="ai2ols8ka2ohfp0z568lj68ic2du21s">Preferences</title>
+        <title id="ai2ols8ka2ohfp0z568lj68ic2du21s">
+          {i18next.t('common.cog_icon')}
+        </title>
         <path d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z" />
       </svg>
     );
@@ -126,7 +129,9 @@ export class CommentSubscription extends Component {
               }
             }}
           >
-            {subscribed ? 'Unsubscribe' : 'Subscribe'}
+            {subscribed
+              ? i18next.t('comments.subscription.unsubscribe')
+              : i18next.t('comments.subscription.subscribe')}
           </Button>
           {subscribed && (
             <Button
@@ -163,9 +168,9 @@ export class CommentSubscription extends Component {
                   onClick={this.commentSubscriptionClick}
                 />
                 <label htmlFor="subscribe-all" className="crayons-field__label">
-                  All comments
+                  {i18next.t('comments.subscription.all')}
                   <p className="crayons-field__description">
-                    You’ll receive notifications for all new comments.
+                    {i18next.t('comments.subscription.all_desc')}
                   </p>
                 </label>
               </FormField>
@@ -182,10 +187,9 @@ export class CommentSubscription extends Component {
                   htmlFor="subscribe-toplevel"
                   className="crayons-field__label"
                 >
-                  Top-level comments
+                  {i18next.t('comments.subscription.top')}
                   <p className="crayons-field__description">
-                    You’ll receive notifications only for all new top-level
-                    comments.
+                    {i18next.t('comments.subscription.top_desc')}
                   </p>
                 </label>
               </FormField>
@@ -204,10 +208,9 @@ export class CommentSubscription extends Component {
                   htmlFor="subscribe-author"
                   className="crayons-field__label"
                 >
-                  Post author comments
+                  {i18next.t('comments.subscription.author')}
                   <p className="crayons-field__description">
-                    You’ll receive notifications only if post author sends a new
-                    comment.
+                    {i18next.t('comments.subscription.author_desc')}
                   </p>
                 </label>
               </FormField>
@@ -220,7 +223,7 @@ export class CommentSubscription extends Component {
                 onSubscribe(this.state.subscriptionType);
               }}
             >
-              Done
+              {i18next.t('comments.subscription.done')}
             </Button>
           </Dropdown>
         )}

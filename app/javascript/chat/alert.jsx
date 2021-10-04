@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../i18n/l10n';
 
 export const Alert = ({ showAlert }) => {
   const otherClassname = showAlert ? '' : 'chatalert__default--hidden';
@@ -10,7 +11,7 @@ export const Alert = ({ showAlert }) => {
       aria-hidden={!showAlert}
       className={`chatalert__default ${otherClassname}`}
     >
-      More new messages below
+      {i18next.t('chat.more')}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { fetchSearch } from '../utilities/search';
+import { i18next } from '../i18n/l10n';
 
 import 'intersection-observer';
 
@@ -13,7 +14,7 @@ const getWaitOnUserDataHandler = ({ resolve, reject, waitTime = 20 }) => {
 
   return function waitingOnUserData() {
     if (totalTimeWaiting === 3000) {
-      reject(new Error("Couldn't find user data on page."));
+      reject(new Error(i18next.t('chat.messages.no_data')));
       return;
     }
 
@@ -73,7 +74,7 @@ export function hideMessages(messages, userId) {
       const newMessages = messages[channelId].map((message) => {
         if (message.user_id === userId) {
           const messageClone = Object.assign({ type: 'hidden' }, message);
-          messageClone.message = '<message removed>';
+          messageClone.message = i18next.t('chat.removed');
           messageClone.messageColor = 'lightgray';
           return messageClone;
         }
@@ -94,7 +95,7 @@ export function adjustTimestamp(timestamp) {
     hour: 'numeric',
     minute: 'numeric',
   };
-  time = new Intl.DateTimeFormat('en-US', options).format(time);
+  time = new Intl.DateTimeFormat(locale, options).format(time);
   return time;
 }
 

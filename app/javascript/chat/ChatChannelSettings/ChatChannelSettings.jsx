@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 import {
   getChannelDetails,
@@ -208,10 +209,11 @@ export class ChatChannelSettings extends Component {
     const { message } = response;
     if (response.success) {
       this.setState((prevState) => {
-        const filteredRequestedMemberships = prevState.requestedMemberships.filter(
-          (requestedMembership) =>
-            requestedMembership.membership_id !== Number(membershipId),
-        );
+        const filteredRequestedMemberships =
+          prevState.requestedMemberships.filter(
+            (requestedMembership) =>
+              requestedMembership.membership_id !== Number(membershipId),
+          );
         const updatedActiveMembership = [
           ...prevState.activeMemberships,
           response.membership,
@@ -302,9 +304,7 @@ export class ChatChannelSettings extends Component {
 
   handleleaveChannelMembership = async () => {
     // eslint-disable-next-line no-restricted-globals
-    const actionStatus = confirm(
-      'Are you absolutely sure you want to leave this channel? This action is permanent.',
-    );
+    const actionStatus = confirm(i18next.t('chat.settings.leave'));
     const { currentMembership } = this.state;
     if (actionStatus) {
       const response = await leaveChatChannelMembership(currentMembership.id);

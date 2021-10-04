@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { useRef, useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { chatDrawPalettes } from '../../utilities/Constants';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons';
 
 /**
@@ -122,14 +123,14 @@ export function Draw({ sendCanvasImage }) {
   return (
     <div className="p-4 grid gap-2 crayons-card mb-4 connect-draw">
       <div className="mb-1 draw-title">
-        <h2>Connect Draw</h2>
+        <h2>{i18next.t('chat.draw.heading')}</h2>
         <div className="connect-draw__colors">
           {chatDrawPalettes.map((color) => (
             <button
               className="connect-draw__color"
               onClick={handleChangeColor}
               style={`background-color: ${color}`}
-              title={`Change color to ${color}`}
+              title={i18next.t('chat.draw.color', { color })}
               key={color}
             />
           ))}
@@ -154,19 +155,19 @@ export function Draw({ sendCanvasImage }) {
         <div className="connect-draw__actions">
           <Button
             onClick={handleClearCanvas}
-            title="Clear the canvas."
+            title={i18next.t('chat.draw.clear_title')}
             type="button"
             size="s"
             variant="secondary"
           >
-            Clear
+            {i18next.t('chat.draw.clear')}
           </Button>
           <Button
             onClick={handleCanvasSend}
-            title="Send the canvas."
+            title={i18next.t('chat.draw.send_title')}
             disabled={sendButtonDisabled}
           >
-            Send
+            {i18next.t('chat.draw.send')}
           </Button>
         </div>
       </div>

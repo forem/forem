@@ -1,12 +1,13 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../i18n/l10n';
 import { Button } from '@crayons';
 
 export const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
   <div>
     <div className="joining-message">
-      <h2>Hey {data.user.name} !</h2>
-      <h3>You are not a member of this group yet. Send a request to join.</h3>
+      <h2>{i18next.t('chat.join.message_1', { user: data.user.name })}</h2>
+      <h3>{i18next.t('chat.join.message_2')}</h3>
     </div>
     <div className="user-picture">
       <div className="chatmessage__profilepic">
@@ -29,11 +30,10 @@ export const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
           onClick={handleJoiningRequest}
           data-channel-id={data.channel.id}
         >
-          {' '}
-          Join {data.channel.name}{' '}
+          {i18next.t('chat.join.request', { channel: data.channel.name })}
         </Button>
       ) : (
-        <Button variant="secondary"> Requested Already </Button>
+        <Button variant="secondary">{i18next.t('chat.join.requested')}</Button>
       )}
     </div>
   </div>

@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { i18next } from '../i18n/l10n';
 import { SingleRepo } from './singleRepo';
 import { request } from '@utilities/http';
 
@@ -57,7 +58,7 @@ export class GithubRepos extends Component {
     }
     return (
       <div
-        title="Loading GitHub repositories"
+        title={i18next.t('gitHub.loading')}
         className="github-repos loading-repos"
       />
     );

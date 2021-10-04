@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../i18n/l10n';
 import { Button } from '@crayons';
 
 export class SingleRepo extends Component {
@@ -77,7 +78,7 @@ export class SingleRepo extends Component {
             id={`github-repo-button-${githubIdCode}`}
             onClick={this.submitRepo}
           >
-            {featured ? 'Remove' : 'Select'}
+            {featured ? i18next.t('gitHub.remove') : i18next.t('gitHub.select')}
           </Button>
         </div>
       </div>

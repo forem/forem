@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../i18n/l10n';
 import { ChannelButton } from './components/ChannelButton';
 import { ConfigMenu } from './configMenu';
 import { channelSorter } from './util';
@@ -63,20 +64,21 @@ export const Channels = ({
     (channels.length === 0 || channels[0].messages_count === 0)
   ) {
     topNotice = (
-      <div className="chatchannels__channelslistheader" role="alert">
-        <span role="img" aria-label="emoji">
-          👋
-        </span>{' '}
-        Welcome to
-        <b> Connect</b>! You may message anyone you mutually follow.
-      </div>
+      // eslint-disable-next-line react/no-danger
+      <div
+        className="chatchannels__channelslistheader"
+        role="alert"
+        dangerouslySetInnerHTML={{ __html: i18next.t('chat.welcome') }}
+      />
     );
   }
 
   let channelsListFooter = '';
   if (channels.length === 30) {
     channelsListFooter = (
-      <div className="chatchannels__channelslistfooter">...</div>
+      <div className="chatchannels__channelslistfooter">
+        {i18next.t('common.etc')}
+      </div>
     );
   }
   return (
@@ -91,7 +93,7 @@ export const Channels = ({
         {discoverableChannels.length > 0 && filterQuery.length > 0 ? (
           <div>
             <span className="crayons-indicator crayons-indicator--">
-              Global Channel Search
+              {i18next.t('chat.search')}
             </span>
             {discoverableChannels}
           </div>
