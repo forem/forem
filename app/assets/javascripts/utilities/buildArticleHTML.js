@@ -86,11 +86,16 @@ function buildArticleHTML(article) {
         '#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left "><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>';
       if (commentsCount > 0) {
         commentsDisplay +=
-          commentsCount +
-          '<span class="hidden s:inline">&nbsp;comments</span></a>';
+          i18next.t('comments.summary.count', {
+            count: commentsCount,
+            start: '<span class="hidden s:inline">',
+            end: '</span>',
+          }) + '</a>';
       } else {
         commentsDisplay +=
-          '<span class="hidden s:inline">Add&nbsp;Comment</span></a>';
+          '<span class="hidden s:inline">' +
+          i18next.t('comments.summary.empty') +
+          '</span></a>';
       }
     }
 
@@ -103,8 +108,12 @@ function buildArticleHTML(article) {
         '<a href="' +
         article.path +
         '" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left"><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"/></svg>' +
-        reactionsCount +
-        `<span class="hidden s:inline">&nbsp;${reactionsText}</span></a>`;
+        i18next.t('reactions.summary.count', {
+          count: reactionsCount,
+          start: '<span class="hidden s:inline">',
+          end: '</span>',
+        }) +
+        '</a>';
     }
 
     var picUrl;
@@ -137,11 +146,18 @@ function buildArticleHTML(article) {
         article.organization.profile_image_90 +
         '" class="crayons-logo__image" loading="lazy"/></a>';
       forOrganization =
-        '<span><span class="crayons-story__tertiary fw-normal"> for </span><a href="/' +
-        article.organization.slug +
-        '" class="crayons-story__secondary fw-medium">' +
-        article.organization.name +
-        '</a></span>';
+        '<span>' +
+        i18next.t('articles.for_org', {
+          start: '<span class="crayons-story__tertiary fw-normal">',
+          end: '</span>',
+          org:
+            '<a href="/' +
+            article.organization.slug +
+            '" class="crayons-story__secondary fw-medium">' +
+            article.organization.name +
+            '</a>',
+        }) +
+        '</span>';
       organizationClasses =
         'crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted';
     }
@@ -258,8 +274,12 @@ function buildArticleHTML(article) {
         '" class="crayons-btn crayons-btn--secondary crayons-btn--s bookmark-button" data-reactable-id="' +
         article.id +
         '">\
-                      <span class="bm-initial">Save</span>\
-                      <span class="bm-success">Saved</span>\
+                      <span class="bm-initial">' +
+        i18next.t('articles.save.initial') +
+        '</span>\
+                      <span class="bm-success">' +
+        i18next.t('articles.save.success') +
+        '</span>\
                     </button>';
     } else if (article.class_name === 'User') {
       saveButton = `

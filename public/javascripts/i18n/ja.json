@@ -1,0 +1,20 @@
+{
+  "articles": {
+    "for_org": "%{- start} が %{- end}%{- org}%{- start} へ執筆%{- end}",
+    "save": {
+      "initial": "保存",
+      "success": "保存済"
+    }
+  },
+  "comments": {
+    "summary": {
+      "count": "%{count}%{- start}\u202F×\u202Fコメント%{- end}",
+      "empty": "コメントを寄せる"
+    }
+  },
+  "reactions": {
+    "summary": {
+      "count": "%{count}%{- start}\u202F×\u202F反響%{- end}"
+    }
+  }
+}

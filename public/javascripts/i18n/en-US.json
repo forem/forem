@@ -1,0 +1,22 @@
+{
+  "article": {
+    "for_org": "%{- start} for %{- end}%{- org}",
+    "save": {
+      "initial": "Save",
+      "success": "Saved"
+    }
+  },
+  "comments": {
+    "summary": {
+      "count": "%{count}%{- start}&nbsp;comment%{- end}",
+      "count_plural": "%{count}%{- start}&nbsp;comments%{- end}",
+      "empty": "Add&nbsp;Comment"
+    }
+  },
+  "reactions": {
+    "summary": {
+      "count": "%{count}%{- start}&nbsp;reaction%{- end}",
+      "count_plural": "%{count}%{- start}&nbsp;reactions%{- end}"
+    }
+  }
+}
