@@ -621,6 +621,13 @@
     "replace": "Are you sure you want to replace your current comment draft?"
   },
   "users": {
+    "card": {
+      "created_at": "登録日",
+      "education": "Education",
+      "email": "メール",
+      "location": "場所",
+      "work": "Work"
+    },
     "details": "%{user} のプロフィール詳細",
     "follow": "フォロー"
   }

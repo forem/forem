@@ -626,6 +626,13 @@
     "replace": "Are you sure you want to replace your current comment draft?"
   },
   "users": {
+    "card": {
+      "created_at": "Joined",
+      "education": "Education",
+      "email": "Email",
+      "location": "Location",
+      "work": "Work"
+    },
     "details": "%{user} profile details",
     "follow": "Follow"
   }
