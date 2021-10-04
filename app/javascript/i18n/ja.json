@@ -71,7 +71,7 @@
     },
     "join": {
       "accept": " Accept",
-      "empty": "You have no pending invitations",
+      "empty": "You have no pending invitations.",
       "got": "You got invitation to join <b>%{channel}</b>.",
       "heading": "Request Center <span role=\"img\" aria-label=\"handshake\">🤝</span>",
       "join": "<b>%{name}</b> requested to join <b>%{channel}</b>",
