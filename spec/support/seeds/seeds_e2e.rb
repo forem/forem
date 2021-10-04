@@ -622,3 +622,15 @@ seeder.create_if_none(Broadcast) do
     active: true,
   )
 end
+
+##############################################################################
+
+seeder.create_if_none(DisplayAd) do
+  DisplayAd.create!(
+    organization_id: 1,
+    body_markdown: "<h1>This is an add</h1>",
+    placement_area: "sidebar_left",
+    published: true,
+    approved: true,
+  )
+end

@@ -42,6 +42,7 @@ env:
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
+    - DISABLE_SPRING=true
 before_install:
   - >-
     sudo sed -i
