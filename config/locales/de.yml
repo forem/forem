@@ -1,0 +1,75 @@
+---
+de:
+  core:
+    add_comment: "Kommentar hinzufügen"
+    all: "Alle"
+    comment: "Kommentar"
+    copy_link: "Link kopieren"
+    create_account: "Account erstellen"
+    create_post: "Beitrag erstellen"
+    discussion: "Diskussion"
+    edit_profile: "Profil bearbeiten"
+    feed: "Feed"
+    follow: "Folgen"
+    follow_back: "Zurück folgen"
+    following: "Folgend"
+    full: "Voll"
+    infinity: "Unendlichkeit"
+    latest: "Neuestes"
+    like: "Gefällt mir"
+    listings: "Inserate"
+    log_in: "Anmelden"
+    month: "Monat"
+    more_from: "Mehr von"
+    my_tags: "Meine Tags"
+    post: "Beitrag"
+    reaction: "Reaktion"
+    read_next: "Als nächstes lesen"
+    reply: "Antworten"
+    report_abuse: "Missbrauch melden"
+    search: "Suchen"
+    see_all: "Alle ansehen"
+    trending_on: "Beliebt auf"
+    view: "Anzeigen"
+    week: "Woche"
+    year: "Jahr"
+  errors:
+    messages:
+      accepted: muss akzeptiert werden
+      bad_uri: ist eine ungültige URL
+      bad_protocol: muss mit %{protocols} beginnen
+      blank: darf nicht leer sein
+      confirmation: entspricht nicht %{attribute}
+      empty: darf nicht leer sein
+      equal_to: muss gleich %{count} sein
+      even: muss gerade sein
+      exclusion: ist reserviert
+      greater_than: muss größer als %{count} sein
+      greater_than_or_equal_to: muss größer oder gleich %{count} sein
+      inclusion: ist nicht in der Liste enthalten
+      invalid: ist ungültig
+      less_than: muss weniger als %{count} sein
+      less_than_or_equal_to: muss weniger oder gleich %{count} sein
+      model_invalid: 'Validierung fehlgeschlagen: %{errors}'
+      not_a_number: ist keine Zahl
+      not_an_integer: muss eine Nummer sein
+      odd: muss ungerade sein
+      other_than: muss etwas anderes als %{count} sein
+      present: muss leer sein
+      required: muss existieren
+      taken: ist bereits vergeben
+      too_long:
+        one: ist zu lang (Maximum ist 1 Zeichen)
+        other: ist zu lang (Maximum ist %{count} Zeichen)
+      too_short:
+        one: ist zu kurz (Minimum ist 1 Zeichen)
+        other: ist zu kurz (Minimum ist %{count} Zeichen)
+      wrong_length:
+        one: hat die falsche Länge (sollte 1 Zeichen sein)
+        other: hat die falsche Länge (sollte %{count} Zeichen sein)
+  podcasts:
+    statuses:
+      unreachable: Podcast's feed_url ist nicht erreichbar
+      unparsable: Podcast's rss konnte nicht geparst werden
+      unplayable: Dieses Podcast kann im Browser nicht wiedergegeben werden
+      ssl_failed: SSL Zertifikatsprüfung fehlgeschlagen beim Abruf des Podcast's feed_url
