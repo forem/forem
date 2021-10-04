@@ -8,8 +8,8 @@ export const ArticleFormTitle = () => (
   >
     <h4 className="mb-2 fs-l">{i18next.t('editor.help.title.heading')}</h4>
     <ul className="list-disc pl-6 color-base-70">
-      <li>{i18next.t('editor.help.title.desc_1')}</li>
-      <li>{i18next.t('editor.help.title.desc_2')}</li>
+      <li>{i18next.t('editor.help.title.desc1')}</li>
+      <li>{i18next.t('editor.help.title.desc2')}</li>
     </ul>
   </div>
 );

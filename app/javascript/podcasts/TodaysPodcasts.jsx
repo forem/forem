@@ -1,11 +1,12 @@
 import { h } from 'preact';
 import { defaultChildrenPropTypes } from '../common-prop-types';
+import { i18next } from '../i18n/l10n';
 
 export const TodaysPodcasts = ({ children }) => (
   <div className="crayons-story">
     <div className="crayons-story__body">
       <h3 className="crayons-story__headline">
-        <a href="/pod">Today&apos;s Podcasts</a>
+        <a href="/pod">{i18next.t('podcasts.today')}</a>
       </h3>
       {children}
     </div>

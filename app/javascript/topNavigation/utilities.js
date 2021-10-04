@@ -1,3 +1,5 @@
+import { i18next } from '../i18n/l10n';
+
 function closeHeaderMenu(memberMenu, menuNavButton) {
   menuNavButton.setAttribute('aria-expanded', 'false');
   memberMenu.classList.remove('desktop', 'showing');
@@ -149,7 +151,7 @@ export async function getInstantClick(waitTime = 2000) {
   return new Promise((resolve, reject) => {
     const failTimer = setTimeout(() => {
       clearInterval(timer);
-      reject(new Error('Unable to resolve InstantClick'));
+      reject(new Error(i18next.t('errors.instantClick')));
     }, waitTime);
 
     const timer = setInterval(() => {

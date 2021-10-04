@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { sendFollowUser } from '../utilities/sendFollowUser';
+import { i18next } from '../i18n/l10n';
 import { SidebarUser } from './sidebarUser';
 
 export const SidebarWidget = () => {
@@ -37,7 +38,9 @@ export const SidebarWidget = () => {
     const followBtn = document.getElementById(
       `widget-list-item__follow-button-${updatedUser.username}`,
     );
-    followBtn.innerText = updatedUser.following ? 'Follow' : 'Following';
+    followBtn.innerText = i18next.t(
+      `onboarding.user.${updatedUser.following ? 'follow' : 'following'}`,
+    );
 
     const toggleFollowState = (newFollowState) => {
       updatedUser.following = newFollowState === 'followed';
@@ -55,7 +58,7 @@ export const SidebarWidget = () => {
     <div className="widget" id="widget-00001">
       <div className="widget-suggested-follows-container">
         <header>
-          <h4>who to follow</h4>
+          <h4>{i18next.t('main.who')}</h4>
         </header>
         <div className="widget-body">
           {suggestedUsers.map((user) => (

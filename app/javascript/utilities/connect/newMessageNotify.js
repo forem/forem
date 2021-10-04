@@ -1,3 +1,4 @@
+import { i18next } from '../../i18n/l10n';
 export function notifyUser() {
   modifyTitle();
 }
@@ -5,7 +6,8 @@ export function notifyUser() {
 const modifyTitle = () => {
   const oldTitle = document.title;
   const titleAlert = setInterval(() => {
-    if (document.title === oldTitle) document.title = 'New Message 👋';
+    if (document.title === oldTitle)
+      document.title = i18next.t('chat.meta.title_new');
     else document.title = oldTitle;
   }, 2000);
 

@@ -3,6 +3,7 @@
 */
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export class CategoryLinksMobile extends Component {
   componentDidMount() {
@@ -20,11 +21,12 @@ export class CategoryLinksMobile extends Component {
           aria-label="Listings"
         >
           <option value="/listings" selected={selectedCategory === ''}>
-            All listings
+            {i18next.t('listings.all')}
           </option>
 
           {categories.map((category) => {
             return (
+              // eslint-disable-next-line react/jsx-key
               <option
                 value={`/listings/${category.slug}`}
                 selected={category.slug === selectedCategory}

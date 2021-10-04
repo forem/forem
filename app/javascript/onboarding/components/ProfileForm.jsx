@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { userData, updateOnboarding } from '../utilities';
+import { i18next } from '../../i18n/l10n';
 
 import { Navigation } from './Navigation';
 import { ColorPicker } from './ProfileForm/ColorPicker';
@@ -65,7 +66,7 @@ export class ProfileForm extends Component {
       next();
     } catch (error) {
       Honeybadger.notify(error.statusText);
-      let errorMessage = 'Unable to continue, please try again.';
+      let errorMessage = i18next.t('onboarding.profile.error');
       if (error.status === 422) {
         // parse validation error messages from UsersController#onboarding_update
         const errorData = await error.json();
@@ -193,22 +194,22 @@ export class ProfileForm extends Component {
           />
           {error && (
             <div role="alert" class="crayons-notice crayons-notice--danger m-2">
-              An error occurred: {errorMessage}
+              {i18next.t('errors.occurred', { error: errorMessage })}
             </div>
           )}
           <div className="onboarding-content about">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
-                Build your profile
+                {i18next.t('onboarding.profile.title')}
               </h1>
               <h2
                 id="subtitle"
                 data-testid="onboarding-profile-subtitle"
                 className="subtitle"
               >
-                Tell us a little bit about yourself — this is how others will
-                see you on {communityConfig.communityName}. You’ll always be
-                able to edit this later in your Settings.
+                {i18next.t('onboarding.profile.subtitle', {
+                  community: communityConfig.communityName,
+                })}
               </h2>
             </header>
             <div className="current-user-info">

@@ -1,3 +1,5 @@
+import { locale } from '../../i18n/l10n';
+
 const timeOptions = {
   hour: 'numeric',
   minute: 'numeric',
@@ -8,9 +10,7 @@ const dateOptions = {
   day: 'numeric',
 };
 
-const currentLocale = window.navigator.languages
-  ? window.navigator.languages[0]
-  : window.navigator.userLanguage || window.navigator.language;
+const currentLocale = locale;
 
 export const formatDate = (timestamp) => {
   const dateToday = new Date();

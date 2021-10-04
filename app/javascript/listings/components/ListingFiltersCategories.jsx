@@ -1,11 +1,12 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { CategoryLinks } from './CategoryLinks';
 import { CategoryLinksMobile } from './CategoryLinksMobile';
 
 export const ListingFiltersCategories = ({ categories, category, onClick }) => (
   <div className="listing-filters px-2 m:px-0" id="listing-filters">
-    <nav className="hidden m:block" aria-label="Listings by category">
+    <nav className="hidden m:block" aria-label={i18next.t('listings.category')}>
       <a
         id="listings-link"
         href="/listings"
@@ -16,7 +17,7 @@ export const ListingFiltersCategories = ({ categories, category, onClick }) => (
         onClick={onClick}
         data-no-instant
       >
-        All listings
+        {i18next.t('listings.all')}
       </a>
       <CategoryLinks
         categories={categories}

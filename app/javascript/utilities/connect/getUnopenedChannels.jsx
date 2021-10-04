@@ -1,5 +1,6 @@
 import { h, render, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { setupPusher } from './pusher';
 
 /* global userData */
@@ -174,25 +175,34 @@ class UnopenedChannelNotice extends Component {
       const message = unopenedChannels.map((channel) => {
         if (channel.notified) return null;
         return (
-          <div key={channel.id}>
-            {channel.request_type === 'mentioned'
-              ? 'You got mentioned in'
-              : 'New Message from'}{' '}
+          // eslint-disable-next-line react/jsx-key
+          <div
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              __html: i18next.t(
+                `chat.messages.${
+                  channel.request_type === 'mentioned' ? 'mentioned' : 'new'
+                }`,
+                {
+                  channel: `
             <a
-              href={`/connect/${channel.adjusted_slug}`}
-              style={{
-                background: '#66e2d5',
-                color: 'black',
-                border: '1px solid black',
-                padding: '2px 7px',
-                display: 'inline-block',
-                margin: '3px 6px',
-                borderRadius: '3px',
-              }}
+              href="/connect/${channel.adjusted_slug}"
+              style="
+                background: '#66e2d5';
+                color: 'black';
+                border: '1px solid black';
+                padding: '2px 7px';
+                display: 'inline-block';
+                margin: '3px 6px';
+                borderRadius: '3px';
+              "
             >
-              {channel.adjusted_slug}
-            </a>
-          </div>
+              ${channel.adjusted_slug}
+            </a>`,
+                },
+              ),
+            }}
+          />
         );
       });
 

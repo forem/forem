@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import he from 'he';
 import { getContentOfToken } from '../utilities';
+import { i18next } from '../../i18n/l10n';
 import { Navigation } from './Navigation';
 
 export class FollowUsers extends Component {
@@ -96,13 +97,15 @@ export class FollowUsers extends Component {
     const { users, selectedUsers } = this.state;
     let followingStatus;
     if (selectedUsers.length === 0) {
-      followingStatus = "You're not following anyone";
-    } else if (selectedUsers.length === 1) {
-      followingStatus = "You're following 1 person";
+      followingStatus = i18next.t('onboarding.user.status_no');
     } else if (selectedUsers.length === users.length) {
-      followingStatus = `You're following ${selectedUsers.length} people (everyone) -`;
+      followingStatus = i18next.t('onboarding.user.status_all', {
+        count: selectedUsers.length,
+      });
     } else {
-      followingStatus = `You're following ${selectedUsers.length} people -`;
+      followingStatus = i18next.t('onboarding.user.status', {
+        count: selectedUsers.length,
+      });
     }
     const klassName =
       selectedUsers.length > 0
@@ -117,13 +120,9 @@ export class FollowUsers extends Component {
     let followText = '';
 
     if (selectedUsers.length !== users.length) {
-      if (users.length === 1) {
-        followText = `Select ${users.length} person`;
-      } else {
-        followText = `Select all ${users.length} people`;
-      }
+      followText = i18next.t('onboarding.user.select', { count: users.length });
     } else {
-      followText = 'Deselect all';
+      followText = i18next.t('onboarding.user.deselect');
     }
 
     return (
@@ -163,10 +162,10 @@ export class FollowUsers extends Component {
           <div className="onboarding-content toggle-bottom">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
-                Suggested people to follow
+                {i18next.t('onboarding.user.title')}
               </h1>
               <h2 id="subtitle" className="subtitle">
-                Let&apos;s review a few things first
+                {i18next.t('onboarding.user.subtitle')}
               </h2>
               <div className="onboarding-selection-status">
                 {this.renderFollowCount()}
@@ -179,6 +178,7 @@ export class FollowUsers extends Component {
                 const selected = selectedUsers.includes(user);
 
                 return (
+                  // eslint-disable-next-line react/jsx-key
                   <div
                     data-testid="onboarding-user-button"
                     className={`user content-row ${
@@ -207,14 +207,18 @@ export class FollowUsers extends Component {
                       }`}
                     >
                       <input
-                        aria-label={`Follow ${user.name}`}
+                        aria-label={i18next.t('onboarding.user.aria_label', {
+                          user: user.name,
+                        })}
                         type="checkbox"
                         checked={selected}
                         className="absolute opacity-0 absolute top-0 bottom-0 right-0 left-0"
                         onClick={() => this.handleClick(user)}
                         data-testid="onboarding-user-following-status"
                       />
-                      {selected ? 'Following' : 'Follow'}
+                      {i18next.t(
+                        `onboarding.user.${selected ? 'following' : 'follow'}`,
+                      )}
                     </label>
                   </div>
                 );

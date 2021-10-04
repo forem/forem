@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { h, Fragment } from 'preact';
 import { DateTime } from '../../shared/components/dateTime';
+import { i18next } from '../../i18n/l10n';
 import { ListingDate } from './rowElements/listingDate';
 import { Tags } from './rowElements/tags';
 import { Location } from './rowElements/location';
@@ -30,7 +31,9 @@ export const ListingRow = ({ listing }) => {
         <span className="listing-org">{listing.author.name}</span>
       )}
       <a href={listingUrl}>
-        <h2>{listing.title + (isExpired ? ' (expired)' : '')}</h2>
+        <h2>
+          {listing.title + (isExpired ? i18next.t('listings.expired') : '')}
+        </h2>
       </a>
       <ListingDate
         bumpedAt={listing.bumped_at}
@@ -38,7 +41,7 @@ export const ListingRow = ({ listing }) => {
       />
       {expiryDate && (
         <Fragment>
-          {' | Expires on: '}
+          {i18next.t('listings.expires')}
           <DateTime dateTime={expiryDate} />
         </Fragment>
       )}

@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { fetchSearch } from '../../utilities/search';
+import { i18next } from '../../i18n/l10n';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -414,7 +415,9 @@ export class Tags extends Component {
             onClick={this.handleRulesClick}
             data-content={tag.name}
           >
-            {showingRulesForTag === tag.name ? 'Hide Rules' : 'View Rules'}
+            {i18next.t(
+              `tags.${showingRulesForTag === tag.name ? 'hide' : 'view'}`,
+            )}
           </button>
         ) : (
           ''
@@ -445,8 +448,7 @@ export class Tags extends Component {
           ) : null}
           {searchResultsRows}
           <div className={`${classPrefix}__tagsoptionsbottomrow`}>
-            Some tags have rules and guidelines determined by community
-            moderators
+            {i18next.t('tags.rules')}
           </div>
         </div>
       );
@@ -456,12 +458,12 @@ export class Tags extends Component {
       <div className={`${classPrefix}__tagswrapper crayons-field`}>
         {listing && (
           <label htmlFor="Tags" class="crayons-field__label">
-            Tags
+            {i18next.t('tags.label')}
           </label>
         )}
         <input
           data-testid="tag-input"
-          aria-label="Post Tags"
+          aria-label={i18next.t('tags.aria_label')}
           id="tag-input"
           type="text"
           ref={(t) => {
@@ -470,7 +472,7 @@ export class Tags extends Component {
           }}
           className={`${`${fieldClassName} ${classPrefix}`}__tags`}
           name="listing[tag_list]"
-          placeholder={`Add up to ${maxTags} tags...`}
+          placeholder={i18next.t('tags.placeholder', { count: maxTags })}
           autoComplete="off"
           value={defaultValue}
           onInput={this.handleInput}

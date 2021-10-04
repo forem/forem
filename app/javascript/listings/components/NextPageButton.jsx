@@ -1,11 +1,12 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons';
 
 export const NextPageButton = ({ onClick }) => (
   <div className="flex justify-center">
     <Button variant="secondary" onClick={onClick} type="button">
-      Load more...
+      {i18next.t('listings.more')}
     </Button>
   </div>
 );

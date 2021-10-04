@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { getContentOfToken, updateOnboarding } from '../utilities';
+import { i18next } from '../../i18n/l10n';
 import { Navigation } from './Navigation';
 
 /* eslint-disable camelcase */
@@ -71,16 +72,16 @@ export class EmailPreferencesForm extends Component {
           <div className="onboarding-content terms-and-conditions-wrapper">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
-                Almost there!
+                {i18next.t('onboarding.email.title')}
               </h1>
               <h2 id="subtitle" className="subtitle">
-                Review your email preferences before we continue.
+                {i18next.t('onboarding.email.subtitle')}
               </h2>
             </header>
 
             <form>
               <fieldset>
-                <legend>Email preferences</legend>
+                <legend>{i18next.t('onboarding.email.legend')}</legend>
                 <ul>
                   <li className="checkbox-item">
                     <label htmlFor="email_newsletter">
@@ -91,7 +92,7 @@ export class EmailPreferencesForm extends Component {
                         checked={email_newsletter}
                         onChange={this.handleChange}
                       />
-                      I want to receive weekly newsletter emails.
+                      {i18next.t('onboarding.email.newsletter')}
                     </label>
                   </li>
                   <li className="checkbox-item">
@@ -103,8 +104,7 @@ export class EmailPreferencesForm extends Component {
                         checked={email_digest_periodic}
                         onChange={this.handleChange}
                       />
-                      I want to receive a periodic digest of top posts from my
-                      tags.
+                      {i18next.t('onboarding.email.periodic')}
                     </label>
                   </li>
                 </ul>

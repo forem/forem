@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { h, Component } from 'preact';
+import { i18next } from '../../i18n/l10n';
 
 export class Categories extends Component {
   options = () => {
@@ -13,6 +14,7 @@ export class Categories extends Component {
           </option>
         );
       }
+      // eslint-disable-next-line react/jsx-key
       return <option value={value}>{text}</option>;
     });
   };
@@ -25,12 +27,13 @@ export class Categories extends Component {
           <strong>{category.name}:</strong> {category.rules}
         </li>
       );
+      // eslint-disable-next-line react/jsx-key
       return <ul>{paragraphText}</ul>;
     });
 
     return (
       <details>
-        <summary>Category details/rules</summary>
+        <summary>{i18next.t('listings.form.category.summary')}</summary>
         {rules}
       </details>
     );
@@ -42,7 +45,7 @@ export class Categories extends Component {
       <div>
         <div className="crayons-field mb-4">
           <label className="crayons-field__label" htmlFor="category">
-            Category
+            {i18next.t('listings.form.category.label')}
           </label>
           <select
             id="category"

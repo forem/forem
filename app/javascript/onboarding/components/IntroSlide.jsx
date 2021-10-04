@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { getContentOfToken, userData, updateOnboarding } from '../utilities';
+import { i18next } from '../../i18n/l10n';
 import { Navigation } from './Navigation';
 
 /* eslint-disable camelcase */
@@ -57,26 +58,17 @@ export class IntroSlide extends Component {
   }
 
   isButtonDisabled() {
-    const {
-      checked_code_of_conduct,
-      checked_terms_and_conditions,
-    } = this.state;
+    const { checked_code_of_conduct, checked_terms_and_conditions } =
+      this.state;
 
     return !checked_code_of_conduct || !checked_terms_and_conditions;
   }
 
   render() {
-    const {
-      slidesCount,
-      currentSlideIndex,
-      prev,
-      communityConfig,
-    } = this.props;
-    const {
-      checked_code_of_conduct,
-      checked_terms_and_conditions,
-      text,
-    } = this.state;
+    const { slidesCount, currentSlideIndex, prev, communityConfig } =
+      this.props;
+    const { checked_code_of_conduct, checked_terms_and_conditions, text } =
+      this.state;
 
     if (text) {
       return (
@@ -125,8 +117,10 @@ export class IntroSlide extends Component {
               data-testid="onboarding-introduction-title"
               className="introduction-title"
             >
-              {this.user.name}
-              &mdash; welcome to {communityConfig.communityName}!
+              {i18next.t('onboarding.intro.title', {
+                user: this.user.name,
+                community: communityConfig.communityName,
+              })}
             </h1>
             <h2 id="subtitle" className="introduction-subtitle">
               {communityConfig.communityDescription}
@@ -149,16 +143,17 @@ export class IntroSlide extends Component {
                         name="checked_code_of_conduct"
                         checked={checked_code_of_conduct}
                         onChange={this.handleChange}
+                        // TODO yheuhtozr: correct i18n interpolation!
                       />
-                      You agree to uphold our&nbsp;
+                      {i18next.t('onboarding.intro.coc1')}
                       <a
                         href="/code-of-conduct"
                         data-no-instant
                         onClick={(e) => this.handleShowText(e, 'coc')}
                       >
-                        Code of Conduct
+                        {i18next.t('onboarding.intro.coc2')}
                       </a>
-                      .
+                      {i18next.t('onboarding.intro.coc3')}
                     </label>
                   </li>
 
@@ -174,16 +169,17 @@ export class IntroSlide extends Component {
                         name="checked_terms_and_conditions"
                         checked={checked_terms_and_conditions}
                         onChange={this.handleChange}
+                        // TODO yheuhtozr: correct i18n interpolation!
                       />
-                      You agree to our&nbsp;
+                      {i18next.t('onboarding.intro.terms1')}
                       <a
                         href="/terms"
                         data-no-instant
                         onClick={(e) => this.handleShowText(e, 'terms')}
                       >
-                        Terms and Conditions
+                        {i18next.t('onboarding.intro.terms2')}
                       </a>
-                      .
+                      {i18next.t('onboarding.intro.terms3')}
                     </label>
                   </li>
                 </ul>

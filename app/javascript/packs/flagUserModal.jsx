@@ -2,6 +2,7 @@ import { h, render } from 'preact';
 import { useState, useRef } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { request } from '../utilities/http';
+import { i18next } from '../i18n/l10n';
 import { Button } from '@crayons/Button/Button';
 
 async function confirmFlagUser({ reactableType, category, reactableId }) {
@@ -21,18 +22,19 @@ async function confirmFlagUser({ reactableType, category, reactableId }) {
 
     if (outcome.result === 'create') {
       top.addSnackbarItem({
-        message: 'All posts by this author will be less visible.',
+        message: i18next.t('flagUser.less'),
         addCloseButton: true,
       });
     } else if (outcome.result === null) {
       top.addSnackbarItem({
-        message:
-          "It seems you've already reduced the visibility of this author's posts.",
+        message: i18next.t('flagUser.already'),
         addCloseButton: true,
       });
     } else {
       top.addSnackbarItem({
-        message: `Response from server: ${JSON.stringify(outcome)}`,
+        message: i18next.t('flagUser.response', {
+          outcome: JSON.stringify(outcome),
+        }),
         addCloseButton: true,
       });
     }
@@ -102,7 +104,9 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
     >
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header flag-user-modal-header">
-          <h2 class="crayons-modal__box__header__title">Flag User</h2>
+          <h2 class="crayons-modal__box__header__title">
+            {i18next.t('flagUser.heading')}
+          </h2>
           <button
             type="button"
             class="crayons-btn crayons-btn--icon crayons-btn--ghost modal-header-close-icon"
@@ -121,10 +125,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
         </header>
         <div class="crayons-modal__box__body">
           <div class="grid gap-4">
-            <p>
-              Thanks for keeping DEV safe. Here is what you can do to flag this
-              user:
-            </p>
+            <p>{i18next.t('flagUser.desc')}</p>
             <div class="crayons-field crayons-field--radio">
               <input
                 type="radio"
@@ -143,10 +144,9 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
                 }}
               />
               <label htmlFor="vomit-all" class="crayons-field__label">
-                Make all posts by this author less visible
+                {i18next.t('flagUser.vomit')}
                 <p class="crayons-field__description">
-                  This author consistently posts content that violates DEV's
-                  code of conduct because it is harassing, offensive or spammy.
+                  {i18next.t('flagUser.vomit_desc')}
                 </p>
               </label>
             </div>
@@ -159,7 +159,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
                 }`}
                 className="crayons-link crayons-link--brand"
               >
-                Report other inappropriate conduct
+                {i18next.t('flagUser.other')}
               </a>
             </p>
             <div>
@@ -176,14 +176,14 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
                 }}
                 disabled={!isConfirmButtonEnabled}
               >
-                Confirm action
+                {i18next.t('flagUser.confirm')}
               </Button>
               <Button
                 class="crayons-btn crayons-btn--secondary"
                 id="cancel-flag-user-action"
                 onClick={toggleFlagUserModal}
               >
-                Cancel
+                {i18next.t('flagUser.cancel')}
               </Button>
             </div>
           </div>

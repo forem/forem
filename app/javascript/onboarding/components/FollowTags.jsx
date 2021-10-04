@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { getContentOfToken } from '../utilities';
+import { i18next } from '../../i18n/l10n';
 import { Navigation } from './Navigation';
 
 export class FollowTags extends Component {
@@ -82,12 +83,9 @@ export class FollowTags extends Component {
 
   renderFollowCount() {
     const { selectedTags } = this.state;
-    let followingStatus;
-    if (selectedTags.length === 1) {
-      followingStatus = `${selectedTags.length} tag selected`;
-    } else {
-      followingStatus = `${selectedTags.length} tags selected`;
-    }
+    const followingStatus = i18next.t('onboarding.tag.status', {
+      count: selectedTags.length,
+    });
 
     const classStyle =
       selectedTags.length > 0
@@ -122,10 +120,10 @@ export class FollowTags extends Component {
           <div className="onboarding-content toggle-bottom">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
-                What are you interested in?
+                {i18next.t('onboarding.tag.title')}
               </h1>
               <h2 id="subtitle" className="subtitle">
-                Follow tags to customize your feed
+                {i18next.t('onboarding.tag.subtitle')}
               </h2>
               {this.renderFollowCount()}
             </header>
@@ -155,7 +153,9 @@ export class FollowTags extends Component {
                           'onboarding-tags__button--selected crayons-btn--icon-left'
                         }`}
                         aria-pressed={selected}
-                        aria-label={`Follow ${tag.name}`}
+                        aria-label={i18next.t('onboarding.tag.aria_label', {
+                          tag: tag.name,
+                        })}
                         style={{
                           backgroundColor: selected
                             ? tag.text_color_hex
@@ -175,7 +175,9 @@ export class FollowTags extends Component {
                             <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
                           </svg>
                         )}
-                        {selected ? 'Following' : 'Follow'}
+                        {i18next.t(
+                          `onboarding.tag.${selected ? 'following' : 'follow'}`,
+                        )}
                       </button>
                     </div>
                   </div>

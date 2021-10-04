@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../i18n/l10n';
 
 export const PodcastFeed = ({ podcastItems }) => {
   const podcastItemDivs = podcastItems.map((ep) => (
@@ -18,7 +19,7 @@ export const PodcastFeed = ({ podcastItems }) => {
   return (
     <div className="single-article single-article-podcast-div">
       <h3>
-        <a href="/pod">Today&apos;s Podcasts</a>
+        <a href="/pod">{i18next.t('podcasts.today')}</a>
       </h3>
       {podcastItemDivs}
     </div>

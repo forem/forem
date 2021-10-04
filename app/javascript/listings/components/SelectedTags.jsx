@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { selectedTagsPropTypes } from '../../common-prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export const SelectedTags = ({ tags, onRemoveTag, onKeyPress }) => {
   return (
@@ -26,7 +27,7 @@ export const SelectedTags = ({ tags, onRemoveTag, onKeyPress }) => {
               onClick={(e) => onRemoveTag(e, tag)}
               onKeyPress={(e) => onKeyPress(e, tag)}
             >
-              ×
+              {i18next.t('common.close')}
             </span>
           </a>
         </span>

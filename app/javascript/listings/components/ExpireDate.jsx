@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
+import { i18next } from '../../i18n/l10n';
 
 export const ExpireDate = ({ onChange, defaultValue }) => {
   let tomorrow = new Date();
@@ -12,9 +13,9 @@ export const ExpireDate = ({ onChange, defaultValue }) => {
   return (
     <div className="crayons-field">
       <label className="crayons-field__label" htmlFor="expires_at">
-        Custom Expire Date
+        {i18next.t('listings.form.expiry.label')}
         <p class="crayons-field__description">
-          If applicable for time sensitive events, deadlines, etc.
+          {i18next.t('listings.form.expiry.desc')}
         </p>
       </label>
       <input

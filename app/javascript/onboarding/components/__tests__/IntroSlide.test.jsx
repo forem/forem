@@ -51,7 +51,7 @@ describe('IntroSlide', () => {
     const { getByTestId, getByText, getByAltText } = renderIntroSlide();
 
     expect(getByTestId('onboarding-introduction-title')).toHaveTextContent(
-      /firstname lastname— welcome to Community Name!/i,
+      /firstname lastname — welcome to Community Name!/i,
     );
     getByText('Some community description');
     expect(getByAltText('Community Name').getAttribute('src')).toEqual(

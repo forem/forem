@@ -6,8 +6,8 @@ import { Button } from '@crayons';
 export const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
   <div>
     <div className="joining-message">
-      <h2>{i18next.t('chat.join.message_1', { user: data.user.name })}</h2>
-      <h3>{i18next.t('chat.join.message_2')}</h3>
+      <h2>{i18next.t('chat.join.message1', { user: data.user.name })}</h2>
+      <h3>{i18next.t('chat.join.message2')}</h3>
     </div>
     <div className="user-picture">
       <div className="chatmessage__profilepic">

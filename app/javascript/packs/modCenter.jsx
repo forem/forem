@@ -1,6 +1,7 @@
 import { h, render } from 'preact';
 import { ModerationArticles } from '../modCenter/moderationArticles';
 import { addSnackbarItem, Snackbar } from '../Snackbar';
+import { i18next } from '../i18n/l10n';
 
 let elementLoaded = false;
 
@@ -19,7 +20,7 @@ function loadElement() {
 
   if (isMobileDevice) {
     addSnackbarItem({
-      message: 'The Mod Center is best viewed on desktop.',
+      message: i18next.t('modActions.desktop'),
       addCloseButton: true,
     });
   }

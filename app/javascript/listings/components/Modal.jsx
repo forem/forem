@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { SingleListing } from '../singleListing/SingleListing';
+import { i18next } from '../../i18n/l10n';
 import { MessageModal } from './MessageModal';
 import { Modal as CrayonsModal } from '@crayons';
 
@@ -22,7 +23,7 @@ export const Modal = ({
       <CrayonsModal
         onClose={onClick}
         closeOnClickOutside={true}
-        title="Listing"
+        title={i18next.t('listings.modal')}
       >
         <div className="p-3 m:p-6 l:p-8">
           <SingleListing

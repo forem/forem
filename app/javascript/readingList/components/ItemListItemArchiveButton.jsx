@@ -7,12 +7,13 @@
 // handler or `e.stopPropagation` are just ignored
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons';
 
 export const ItemListItemArchiveButton = ({ text, onClick }) => (
   <Button
     onClick={onClick}
-    aria-label="Archive item"
+    aria-label={i18next.t('readingList.aria_archive')}
     role="button"
     variant="ghost"
     size="s"

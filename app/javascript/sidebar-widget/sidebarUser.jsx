@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { userPropTypes } from '../common-prop-types';
+import { i18next } from '../i18n/l10n';
 
 export const SidebarUser = ({ followUser, user }) => {
   const onClick = () => {
@@ -31,7 +32,9 @@ export const SidebarUser = ({ followUser, user }) => {
           onClick={onClick}
           id={`widget-list-item__follow-button-${user.username}`}
         >
-          {user.following ? 'Following' : 'Follow'}
+          {i18next.t(
+            `onboarding.user.${user.following ? 'following' : 'follow'}`,
+          )}
         </button>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { i18next } from '../../i18n/l10n';
 /**
  * Helper function for the image markdown lint rules.
  *
@@ -28,7 +29,7 @@ const getImageTextString = (contentLine) => {
  */
 export const noDefaultAltTextRule = {
   names: ['no-default-alt-text'],
-  description: 'Images should not have the default alt text',
+  description: i18next.t('markdownLint.defaultAlt.description'),
   tags: ['images'],
   function: (params, onError) => {
     params.tokens
@@ -42,9 +43,9 @@ export const noDefaultAltTextRule = {
             onError({
               lineNumber: contentChild.lineNumber,
               detail: '/p/editor_guide#alt-text-for-images',
-              context: `Consider replacing the 'alt text' in square brackets at ${getImageTextString(
-                contentChild.line,
-              )} with a description of the image`,
+              context: i18next.t('markdownLint.defaultAlt.context', {
+                place: getImageTextString(contentChild.line),
+              }),
             });
           }
         });
@@ -57,7 +58,7 @@ export const noDefaultAltTextRule = {
  */
 export const noEmptyAltTextRule = {
   names: ['no-empty-alt-text'],
-  description: 'Images should not have empty alt text',
+  description: i18next.t('markdownLint.emptyAlt.description'),
   tags: ['images'],
   function: (params, onError) => {
     params.tokens
@@ -71,9 +72,9 @@ export const noEmptyAltTextRule = {
             onError({
               lineNumber: inlineToken.lineNumber,
               detail: '/p/editor_guide#alt-text-for-images',
-              context: `Consider adding an image description in the square brackets at ${getImageTextString(
-                contentChild.line,
-              )}`,
+              context: i18next.t('markdownLint.emptyAlt.context', {
+                place: getImageTextString(contentChild.line),
+              }),
             });
           }
         });
@@ -86,7 +87,7 @@ export const noEmptyAltTextRule = {
  */
 export const noLevelOneHeadingsRule = {
   names: ['no-level-one-heading'],
-  description: 'Heading level one should not be used in posts',
+  description: i18next.t('markdownLint.levelOne.description'),
   tags: ['headings'],
   function: (params, onError) => {
     const levelOneHeadings = [];
@@ -102,7 +103,9 @@ export const noLevelOneHeadingsRule = {
     levelOneHeadings.forEach((heading) => {
       onError({
         lineNumber: heading.lineNumber,
-        context: `Consider changing "${heading.line}" to a level two heading by using "##"`,
+        context: i18next.t('markdownLint.levelOne.context', {
+          place: heading.line,
+        }),
         detail: '/p/editor_guide#accessible-headings',
       });
     });
@@ -114,7 +117,7 @@ export const noLevelOneHeadingsRule = {
  */
 export const headingIncrement = {
   names: ['custom-heading-increment'],
-  description: 'Heading levels should only increment by one level at a time',
+  description: i18next.t('markdownLint.headingIncr.description'),
   tags: ['headings', 'headers'],
   function: (params, onError) => {
     let prevLevel = 0;
@@ -136,7 +139,11 @@ export const headingIncrement = {
           onError({
             detail: '/p/editor_guide#accessible-headings',
             lineNumber: heading.lineNumber,
-            context: `Consider changing the heading "${heading.line}" to a level ${suggestedHeadingLevel} heading by using "${suggestedHeadingStart}"`,
+            context: i18next.t('markdownLint.headingIncr.context', {
+              place: heading.line,
+              level: suggestedHeadingLevel,
+              start: suggestedHeadingStart,
+            }),
           });
         }
       }

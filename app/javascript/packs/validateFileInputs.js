@@ -1,3 +1,4 @@
+import { i18next } from '../i18n/l10n';
 /**
  * @file Manages logic to validate file uploads client-side. In general, the
  * validations work by looping over input form fields with a type of file and
@@ -90,12 +91,12 @@ function handleFileSizeError(
   if (fileSizeErrorHandler) {
     fileSizeErrorHandler();
   } else {
-    let errorMessage = `File size too large (${fileSizeMb} MB).`;
+    let errorMessage = i18next.t('errors.file.too_large', { mb: fileSizeMb });
 
     // If a user uploads a file type that we haven't defined a max size limit for then maxFileSizeMb
     // could be NaN
     if (maxFileSizeMb >= 0) {
-      errorMessage += ` The limit is ${maxFileSizeMb} MB.`;
+      errorMessage += i18next.t('errors.file.limit', { mb: maxFileSizeMb });
     }
 
     addErrorMessage(fileInput, errorMessage);
@@ -122,9 +123,10 @@ function handleFileTypeError(
   if (fileTypeErrorHandler) {
     fileTypeErrorHandler();
   } else {
-    const errorMessage = `Invalid file format (${fileType}). Only ${permittedFileTypes.join(
-      ', ',
-    )} files are permitted.`;
+    const errorMessage = i18next.t('errors.file.format', {
+      type: fileType,
+      list: permittedFileTypes.join(i18next.t('errors.file.format_sep')),
+    });
     addErrorMessage(fileInput, errorMessage);
   }
 }
@@ -147,7 +149,9 @@ function handleFileNameLengthError(
   if (fileNameLengthErrorHandler) {
     fileNameLengthErrorHandler();
   } else {
-    const errorMessage = `File name is too long. It can't be longer than ${maxFileNameLength} characters.`;
+    const errorMessage = i18next.t('errors.file.too_long', {
+      len: maxFileNameLength,
+    });
     addErrorMessage(fileInput, errorMessage);
   }
 }

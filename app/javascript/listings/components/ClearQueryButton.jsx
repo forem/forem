@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons/Button/Button';
 
 export const ClearQueryButton = ({ onClick }) => (
@@ -10,7 +11,7 @@ export const ClearQueryButton = ({ onClick }) => (
     onClick={onClick}
     id="clear-query-button"
   >
-    ×
+    {i18next.t('common.close')}
   </Button>
 );
 

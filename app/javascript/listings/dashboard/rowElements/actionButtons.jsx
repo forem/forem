@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
+import { i18next } from '../../../i18n/l10n';
 import { Button } from '@crayons';
 
 export const ActionButtons = ({ isDraft, editUrl, deleteConfirmUrl }) => {
@@ -7,14 +8,14 @@ export const ActionButtons = ({ isDraft, editUrl, deleteConfirmUrl }) => {
     <div className="listing-row-actions crayons-btn-actions">
       {isDraft && (
         <Button tagName="a" url={editUrl}>
-          View draft
+          {i18next.t('listings.actions.delete')}
         </Button>
       )}
       <Button tagName="a" url={editUrl}>
-        Edit
+        {i18next.t('listings.actions.edit')}
       </Button>
       <Button variant="danger" tagName="a" url={deleteConfirmUrl}>
-        Delete
+        {i18next.t('listings.actions.delete')}
       </Button>
     </div>
   );

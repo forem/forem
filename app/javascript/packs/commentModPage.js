@@ -1,4 +1,5 @@
 import { updateExperienceLevel } from '../actionsPanel/actionsPanel';
+import { i18next } from '../i18n/l10n';
 
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
@@ -39,13 +40,13 @@ async function updateMainReactions(reactableType, category, reactableId) {
       clickedBtn.classList.remove('reacted');
     } else {
       // eslint-disable-next-line no-alert
-      alert(`Error: ${outcome.error}`);
+      alert(i18next.t('errors.error', { error: outcome.error }));
       // eslint-disable-next-line no-console
-      console.error(`Error: ${outcome.error}`);
+      console.error(i18next.t('errors.error', { error: outcome.error }));
     }
   } catch (error) {
     // eslint-disable-next-line no-alert
-    alert(`Error: ${error}`);
+    alert(i18next.t('errors.error', { error }));
   }
 }
 
@@ -79,7 +80,7 @@ document
 const form = document.getElementsByClassName('button_to')[0];
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  if (confirm('Are you SURE you want to delete this comment?')) {
+  if (confirm(i18next.t('comments.delete'))) {
     form.submit();
   }
 });

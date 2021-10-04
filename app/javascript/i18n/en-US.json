@@ -2,6 +2,11 @@
   "articles": {
     "duration": "Video duration",
     "for_org": "%{- start} for %{- end}%{- org}",
+    "messages": {
+      "pinned": "The post has been succesfully pinned",
+      "unpinned": "The post has been succesfully unpinned"
+    },
+    "pin": "Pin Post",
     "pinned": {
       "after": "",
       "before": "Pinned",
@@ -9,12 +14,14 @@
     },
     "reading_time": "%{count} min read",
     "reading_time_plural": "%{count} min read",
+    "report": "Report abuse",
     "save": {
       "save": "Save",
       "saved": "Saved",
       "unsave": "Unsave"
     },
-    "timeAgo": " (%{ago})"
+    "timeAgo": " (%{ago})",
+    "unpin": "Unpin Post"
   },
   "chat": {
     "bottom": "Scroll to Bottom",
@@ -69,8 +76,8 @@
       "got": "You got invitation to join <b>%{channel}</b>.",
       "heading": "Request Center <span role=\"img\" aria-label=\"handshake\">🤝</span>",
       "join": "<b>%{name}</b> requested to join <b>%{channel}</b>",
-      "message_1": "Hey %{user} !",
-      "message_2": "You are not a member of this group yet. Send a request to join.",
+      "message1": "Hey %{user} !",
+      "message2": "You are not a member of this group yet. Send a request to join.",
       "reject": " Reject",
       "request": " Join %{channel} ",
       "requested": " Requested Already ",
@@ -79,11 +86,15 @@
     "loading": "Loading user",
     "messages": {
       "direct": "You and <a href=\"/%{slug}\">{slug}</a> are connected because you both follow each other. All interactions <em><b>must</b></em> abide by the <a href=\"/code-of-conduct\">code of conduct</a>.",
+      "mentioned": "You got mentioned in %{- channel}",
+      "new": "New Message from %{- channel}",
       "no_data": "Couldn't find user data on page.",
       "open": "You have joined %{channel}! All interactions <em><b>must</b></em> abide by the <a href=\"/code-of-conduct\">code of conduct</a>.",
       "sorry": "Sorry <span className=\"chatmessagebody__currentuser\">@%{user}</span> %{message}"
     },
-    "manager": {},
+    "meta": {
+      "title_new": "New Message 👋"
+    },
     "more": "More new messages below",
     "notifications": {
       "off": "Notifications Off",
@@ -134,7 +145,8 @@
     "alt_text": "Alt Text",
     "copied": "Copied!",
     "copy": "Copy...",
-    "copy_markdown": "Copy Markdown for image"
+    "copy_markdown": "Copy Markdown for image",
+    "message": "Copied to clipboard"
   },
   "comments": {
     "all": "See all %{count} comments",
@@ -142,8 +154,13 @@
     "blocked": "[blocked content]",
     "count": "%{count}%{- start}\u00A0comment%{- end}",
     "count_plural": "%{count}%{- start}\u00A0comments%{- end}",
+    "delete": "Are you SURE you want to delete this comment?",
     "empty": "Add\u00A0Comment",
     "hide": "Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.\n\nAll child comments in this thread will also be hidden.\n\nFor further actions, you may consider blocking this person and/or reporting abuse.",
+    "messages": {
+      "failure": "comment already exists",
+      "success": "created"
+    },
     "number": "Number of comments",
     "subscription": {
       "all": "All comments",
@@ -166,6 +183,7 @@
     }
   },
   "common": {
+    "close": "×",
     "danger": "Danger Zone",
     "etc": "...",
     "cog_icon": "Preferences"
@@ -194,10 +212,10 @@
     },
     "help": {
       "basic": {
-        "desc_1": "You are currently using the basic markdown editor that uses ",
-        "desc_2": ". You can also use the ",
-        "desc_3": " editor you can find in ",
-        "desc_4": ".",
+        "desc1": "You are currently using the basic markdown editor that uses ",
+        "desc2": ". You can also use the ",
+        "desc3": " editor you can find in ",
+        "desc4": ".",
         "jekyll": "Jekyll front matter",
         "rich": "rich+markdown",
         "ux": "UX settings"
@@ -205,11 +223,11 @@
       "basics": {
         "heading": "Editor Basics",
         "code_block": "code block",
-        "desc_1": "Use ",
-        "desc_2": " to write and format posts.",
-        "desc_3": "You can use ",
-        "desc_4": " to add rich content such as Tweets, YouTube videos, etc.",
-        "desc_5": "In addition to images for the post's content, you can also drag and drop a cover image",
+        "desc1": "Use ",
+        "desc2": " to write and format posts.",
+        "desc3": "You can use ",
+        "desc4": " to add rich content such as Tweets, YouTube videos, etc.",
+        "desc5": "In addition to images for the post's content, you can also drag and drop a cover image",
         "em": "italics",
         "em_mono": "*italics* or _italics_",
         "h1": "H1 Header",
@@ -220,30 +238,30 @@
         "link": "Link",
         "liquid": "Liquid tags",
         "markdown": "Markdown",
-        "ol_1": "item 1",
-        "ol_2": "item 2",
+        "ol1": "item 1",
+        "ol2": "item 2",
         "quote": "quoted text",
         "strong": "bold",
         "strong_mono": "**bold**",
         "syntax": "Commonly used syntax",
-        "ul_1": "item 1",
-        "ul_2": "item 2"
+        "ul1": "item 1",
+        "ul2": "item 2"
       },
       "jekyll": "Jekyll Front Matter",
       "liquid": "🌊 Liquid Tags",
       "markdown": "✍️ Markdown",
       "tag": {
         "heading": "Tagging Guidelines",
-        "desc_1": "Tags help people find your post.",
-        "desc_2": "Think of tags as the topics or categories that best describe your post.",
-        "desc_3": "Add up to four comma-separated tags per post. Combine tags to reach the appropriate subcommunities.",
-        "desc_4": "Use existing tags whenever possible.",
-        "desc_5": "Some tags, such as “help” or “healthydebate”, have special posting guidelines."
+        "desc1": "Tags help people find your post.",
+        "desc2": "Think of tags as the topics or categories that best describe your post.",
+        "desc3": "Add up to four comma-separated tags per post. Combine tags to reach the appropriate subcommunities.",
+        "desc4": "Use existing tags whenever possible.",
+        "desc5": "Some tags, such as “help” or “healthydebate”, have special posting guidelines."
       },
       "title": {
         "heading": "Writing a Great Post Title",
-        "desc_1": "Think of your post title as a super short (but compelling!) description — like an overview of the actual post in one short sentence.",
-        "desc_2": "Use keywords where appropriate to help ensure people can find your post by search."
+        "desc1": "Think of your post title as a super short (but compelling!) description — like an overview of the actual post in one short sentence.",
+        "desc2": "Use keywords where appropriate to help ensure people can find your post by search."
       }
     },
     "image": {
@@ -292,11 +310,26 @@
     }
   },
   "errors": {
+    "comment": "This comment already exists.",
+    "comment_sub": "Unable to load Comment Subscription component.<br />Try refreshing the page.",
     "error": "Error: %{error}",
     "feed": "There was a problem fetching your feed.",
+    "file": {
+      "format": "Invalid file format (%{type}). Only %{list} files are permitted.",
+      "format_sep": ", ",
+      "limit": " The limit is %{mb} MB.",
+      "too_large": "File size too large (%{mb} MB).",
+      "too_long": "File name is too long. It can't be longer than %{len} characters."
+    },
+    "instantClick": "Unable to resolve InstantClick",
     "occurred": "An error occurred: %{error}",
+    "sad": "Error 😞",
     "subscription": "An error occurred, please try again",
-    "whoops": "Whoops, something went wrong:"
+    "submit": "There was a problem submitting this comment: %{error}",
+    "update": "Failed to update article.",
+    "whoops": "Whoops, something went wrong:",
+    "went": "Something went wrong: ${error}",
+    "wrong": "Something went wrong: ${error}. -- Please refresh the page to try again."
   },
   "feed": {
     "loading": "Loading posts..."
@@ -315,13 +348,112 @@
     "submitted": "Your report has been submitted.",
     "why": "Why is this content inappropriate?"
   },
+  "flagUser": {
+    "already": "It seems you've already reduced the visibility of this author's posts.",
+    "cancel": "Cancel",
+    "confirm": "Confirm action",
+    "desc": "Thanks for keeping DEV safe. Here is what you can do to flag this user:",
+    "heading": "Flag User",
+    "less": "All posts by this author will be less visible.",
+    "other": "Report other inappropriate conduct",
+    "response": "Response from server: %{outcome}",
+    "vomit": "Make all posts by this author less visible",
+    "vomit_desc": "This author consistently posts content that violates DEV's code of conduct because it is harassing, offensive or spammy."
+  },
   "gitHub": {
     "loading": "Loading GitHub repositories",
     "remove": "Remove",
     "select": "Select"
   },
+  "listings": {
+    "all": "All listings",
+    "actions": {
+      "delete": "Delete",
+      "edit": "Edit",
+      "report": "Report Abuse",
+      "view": "View draft"
+    },
+    "available": "Credits Available: ",
+    "bumped": "Recently Bumped",
+    "buy": "Buy Credits",
+    "category": "Listings by category",
+    "create": "Create a Listing",
+    "created": "Recently Created",
+    "credits": "Credits",
+    "expired": " (expired)",
+    "expires": " | Expires on: ",
+    "filter": {
+      "Active": "Active",
+      "All": "All",
+      "Draft": "Draft",
+      "Expired": "Expired"
+    },
+    "form": {
+      "body_markdown": {
+        "label": "Body Markdown",
+        "desc": "400 characters max, 12 line break max, no images allowed, *markdown is encouraged*"
+      },
+      "category": {
+        "label": "Category",
+        "summary": "Category details/rules"
+      },
+      "connect": {
+        "desc": "Allow Users to message me via Connect.",
+        "subtitle": "Connect messaging"
+      },
+      "expiry": {
+        "desc": "If applicable for time sensitive events, deadlines, etc.",
+        "label": "Custom Expire Date"
+      },
+      "title": {
+        "label": "Title",
+        "placeholder": "128 characters max, plain text"
+      }
+    },
+    "heading": "Listings",
+    "made": "Listings Made: ",
+    "message": {
+      "aria_label": "Message",
+      "code": "code of conduct",
+      "desc1": "This is your active listing. Any member can contact you via this form.",
+      "desc2": "Message  %{name} ",
+      "heading": "Interested?",
+      "notice": "All private interactions <b>must</b> abide by the %{- code}.",
+      "placeholder": "Enter your message here...",
+      "relevant": "Message must be relevant and on-topic with the listing. ",
+      "submit": "Send"
+    },
+    "modal": "Listing",
+    "more": "Load more...",
+    "options": "Listing options",
+    "org": {
+      "label": "Post under an organization",
+      "desc": "Posting on behalf of an organization spends the organization's credits."
+    },
+    "personal": "Personal"
+  },
   "main": {
-    "tag": "%{tag} tag"
+    "close_bar": "Dismiss",
+    "tag": "%{tag} tag",
+    "who": "who to follow"
+  },
+  "markdownLint": {
+    "defaultAlt": {
+      "context": "Consider replacing the 'alt text' in square brackets at %{place} with a description of the image",
+      "description": "Images should not have the default alt text"
+    },
+    "emptyAlt": {
+      "context": "Consider adding an image description in the square brackets at %{place}",
+      "description": "Images should not have empty alt text"
+    },
+    "headingIncr": {
+      "context": "Consider changing the heading \"%{place}\" to a level %{level} heading by using \"%{start}\"",
+      "description": "Heading levels should only increment by one level at a time"
+    },
+    "levelOne": {
+      "context": "Consider changing \"%{place}\" to a level two heading by using \"##\"",
+      "description": "Heading level one should not be used in posts"
+    }
   },
   "modActions": {
     "adjust": {
@@ -330,6 +462,7 @@
       "removed": "removed"
     },
     "clear": "This will clear your current \"Add a tag\" input. Do you want to continue?",
+    "desktop": "The Mod Center is best viewed on desktop.",
     "destroy": "Your quality rating was removed.",
     "thumbsdown": "This post will be less visible.",
     "thumbsup": "This post will be more visible.",
@@ -337,13 +470,111 @@
     "unpublish": "You are unpublishing this article; are you sure?",
     "vomit": "You've flagged this post as abusive or spam."
   },
+  "notifications": {
+    "mute": "Mute Notifications",
+    "muted": "Notifications Muted",
+    "receive": "Receive Notifications",
+    "restored": "Notifications Restored"
+  },
+  "onboarding": {
+    "aria_label": "Back to previous onboarding step",
+    "continue": "Continue",
+    "email": {
+      "legend": "Email preferences",
+      "newsletter": "I want to receive weekly newsletter emails.",
+      "periodic": "I want to receive a periodic digest of top posts from my tags.",
+      "title": "Almost there!",
+      "subtitle": "Review your email preferences before we continue."
+    },
+    "finish": "Finish",
+    "intro": {
+      "coc1": "You agree to uphold our\u00A0",
+      "coc2": "Code of Conduct",
+      "coc3": ".",
+      "terms1": "You agree to our\u00A0",
+      "terms2": "Terms and Conditions",
+      "terms3": ".",
+      "title": "%{user} — welcome to %{community}!"
+    },
+    "profile": {
+      "error": "Unable to continue, please try again.",
+      "title": "Build your profile",
+      "subtitle": "Tell us a little bit about yourself — this is how others will see you on %{community}. You’ll always be able to edit this later in your Settings."
+    },
+    "skip": "Skip for now",
+    "tag": {
+      "aria_label": "Follow %{tag}",
+      "follow": "Follow",
+      "following": "Following",
+      "title": "What are you interested in?",
+      "status": "%{count} tag selected",
+      "status_plural": "%{count} tags selected",
+      "subtitle": "Follow tags to customize your feed"
+    },
+    "user": {
+      "aria_label": "Follow %{user}",
+      "deselect": "Deselect all",
+      "follow": "Follow",
+      "following": "Following",
+      "select": "Select %{count} person",
+      "select_plural": "Select all %{count} people",
+      "status": "You're following %{count} person",
+      "status_all": "You're following %{count} people (everyone) -",
+      "status_no": "You're not following anyone",
+      "status_plural": "You're following %{count} people -",
+      "title": "Suggested people to follow",
+      "subtitle": "Let's review a few things first"
+    }
+  },
+  "org": {
+    "aria_label": "Select an organization",
+    "empty": "None"
+  },
   "podcasts": {
-    "tag": "podcast"
+    "tag": "podcast",
+    "today": "Today's Podcasts"
+  },
+  "profile": {
+    "block": "Are you sure you want to block this person? This will:\n- prevent them from commenting on your posts\n- block all notifications from them\n- prevent them from messaging you via Connect\n- hide their posts from your feed",
+    "flag": "Flag %{user}",
+    "report": "Report Abuse",
+    "to_flag": "Are you sure you want to flag this person? This will make all of their posts less visible.",
+    "to_unflag": "Are you sure you want to unflag this person? This will make all of their posts visible again.",
+    "unflag": "Unflag %{user}"
   },
   "reactions": {
     "count": "%{count}%{- start}\u00A0reaction%{- end}",
     "count_plural": "%{count}%{- start}\u00A0reactions%{- end}",
     "number": "Number of reactions"
+  },
+  "readingList": {
+    "all": "all tags",
+    "aria_label": "Filter reading list by text",
+    "aria_archive": "Archive item",
+    "aria_tag": "Filter by tag",
+    "archive": "Archive",
+    "archiving": "Archiving...",
+    "click1": "Click the ",
+    "click2": "bookmark reaction",
+    "click3": "when viewing a post to add it to your reading list.",
+    "empty": "Your reading list is empty",
+    "empty_archive": "Your Archive is empty...",
+    "filter": "Filter",
+    "heading": "Reading list",
+    "more": "Load more",
+    "nothing": "Nothing with this filter 🤔",
+    "placeholder": "Enter some text to filter on...",
+    "total": " (%{total})",
+    "to_archive": "Archive",
+    "to_unarchive": "Unarchive",
+    "unarchiving": "Unarchiving...",
+    "view_archive": "View archive",
+    "view_list": "View reading list"
+  },
+  "search": {
+    "aria_label": "search",
+    "aria_term": "Search term",
+    "placeholder": "Search..."
   },
   "stats": {
     "charts": {
@@ -364,5 +595,21 @@
     "reads": "Reads %{time}",
     "this_month": "this Month",
     "this_week": "this Week"
+  },
+  "tags": {
+    "aria_label": "Post Tags",
+    "hide": "Hide Rules",
+    "label": "Tags",
+    "placeholder": "Add up to %{count} tags...",
+    "placeholder_plural": "Add up to %{count} tags...",
+    "rules": "Some tags have rules and guidelines determined by community moderators",
+    "view": "View Rules"
+  },
+  "templates": {
+    "insert": "Insert",
+    "mod": "Send as Mod",
+    "mascot": "\nAre you sure you want to submit this comment as Sloan?\n\nIt will be sent immediately and users will be notified.\n\nMake sure this is the appropriate comment for the situation.\n\nThis action is not reversible.",
+    "no_yet": "🤔... It looks like you don't have any templates yet.",
+    "replace": "Are you sure you want to replace your current comment draft?"
   }
 }

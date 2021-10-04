@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
+import { i18next } from '../../i18n/l10n';
 
 const domId = 1;
 
 export const Title = ({ onChange, defaultValue }) => (
   <div className="crayons-field">
     <label className="crayons-field__label" htmlFor={domId}>
-      Title
+      {i18next.t('listings.form.title.label')}
     </label>
     <input
       type="text"
@@ -15,7 +16,7 @@ export const Title = ({ onChange, defaultValue }) => (
       name="listing[title]"
       maxLength="128"
       size="128"
-      placeholder="128 characters max, plain text"
+      placeholder={i18next.t('listings.form.title.placeholder')}
       autoComplete="off"
       value={defaultValue}
       onInput={onChange}

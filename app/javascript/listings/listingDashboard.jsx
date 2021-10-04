@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { i18next } from '../i18n/l10n';
 import { ListingRow } from './dashboard/listingRow';
 
 export class ListingDashboard extends Component {
@@ -118,7 +119,7 @@ export class ListingDashboard extends Component {
         }
         tabIndex="0"
       >
-        {f}
+        {i18next.t(`listings.filter.${f}`)}
       </span>
     ));
 
@@ -135,9 +136,9 @@ export class ListingDashboard extends Component {
           }}
         >
           <option value="created_at" selected="selected">
-            Recently Created
+            {i18next.t('listings.created')}
           </option>
-          <option value="bumped_at">Recently Bumped</option>
+          <option value="bumped_at">{i18next.t('listings.bumped')}</option>
         </select>
       </div>
     );
@@ -160,12 +161,12 @@ export class ListingDashboard extends Component {
     const listingLength = (selected, userListings, organizationListings) => {
       return selected === 'user' ? (
         <h4>
-          Listings Made:
+          {i18next.t('listings.made')}
           {userListings.length}
         </h4>
       ) : (
         <h4>
-          Listings Made:{' '}
+          {i18next.t('listings.made')}
           {
             organizationListings.filter(
               (listing) => listing.organization_id === selected,
@@ -178,12 +179,12 @@ export class ListingDashboard extends Component {
     const creditCount = (selected, userCreds, organizations) => {
       return selected === 'user' ? (
         <h4>
-          Credits Available:
+          {i18next.t('listings.available')}
           {userCreds}
         </h4>
       ) : (
         <h4>
-          Credits Available:{' '}
+          {i18next.t('listings.available')}
           {
             organizations.find((org) => org.id === selected)
               .unspent_credits_count
@@ -205,20 +206,20 @@ export class ListingDashboard extends Component {
             setStateOnKeyPress(event, { selectedListings: 'user' })
           }
         >
-          Personal
+          {i18next.t('listings.personal')}
         </span>
         {orgButtons}
         <div className="dashboard-listings-header-wrapper">
           <div className="dashboard-listings-header">
-            <h3>Listings</h3>
+            <h3>{i18next.t('listings.heading')}</h3>
             {listingLength(selectedListings, listings, orgListings)}
-            <a href="/listings/new">Create a Listing</a>
+            <a href="/listings/new">{i18next.t('listings.create')}</a>
           </div>
           <div className="dashboard-listings-header">
-            <h3>Credits</h3>
+            <h3>{i18next.t('listings.credits')}</h3>
             {creditCount(selectedListings, userCredits, orgs)}
             <a href="/credits/purchase" data-no-instant>
-              Buy Credits
+              {i18next.t('listings.buy')}
             </a>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { organizationPropType } from '../common-prop-types';
+import { i18next } from '../i18n/l10n';
 
 const orgOptions = (organizations, organizationId, emptyLabel) => {
   const orgs = organizations.map((organization) => {
@@ -39,7 +40,7 @@ export const OrganizationPicker = ({
   emptyLabel,
 }) => (
   <select
-    aria-label="Select an organization"
+    aria-label={i18next.t('org.aria_label')}
     name={name}
     id={id}
     className={className}
@@ -50,7 +51,7 @@ export const OrganizationPicker = ({
 );
 
 OrganizationPicker.defaultProps = {
-  emptyLabel: 'None',
+  emptyLabel: i18next.t('org.empty'),
 };
 
 OrganizationPicker.propTypes = {

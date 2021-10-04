@@ -1,3 +1,4 @@
+import { i18next } from '../i18n/l10n';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 const ARTICLE_ID_REGEX = /\/(\d+)$/;
@@ -34,10 +35,10 @@ function toggleArchived(article, needsArchived) {
 }
 
 function toggleNotifications(submit, action) {
-  if (action === 'Mute Notifications') {
-    submit.setAttribute('value', 'Receive Notifications');
+  if (action === i18next.t('notifications.mute')) {
+    submit.setAttribute('value', i18next.t('notifications.receive'));
   } else {
-    submit.setAttribute('value', 'Mute Notifications');
+    submit.setAttribute('value', i18next.t('notifications.mute'));
   }
 }
 
@@ -77,16 +78,19 @@ const handleFormSubmit = (e) => {
 
     if (xhr.status === 200) {
       onXhrSuccess(form, article, values);
-      const message =
-        values.commit === 'Mute Notifications'
-          ? 'Notifications Muted'
-          : 'Notifications Restored';
+      const message = i18next.t(
+        `notifications.${
+          values.commit === i18next.t('notifications.mute')
+            ? 'muted'
+            : 'restored'
+        }`,
+      );
 
       if (messageContainer) {
         messageContainer.innerHTML = message;
       }
     } else if (messageContainer) {
-      messageContainer.innerHTML = 'Failed to update article.';
+      messageContainer.innerHTML = i18next.t('errors.update');
     }
   };
 };

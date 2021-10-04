@@ -1,6 +1,7 @@
 /* global userData */
 /* eslint-disable no-alert, import/order */
 import { request } from '@utilities/http';
+import { i18next } from '../i18n/l10n';
 import { getUserDataAndCsrfToken } from '../chat/util';
 
 function addFlagUserBehavior(flagButton) {
@@ -11,8 +12,8 @@ function addFlagUserBehavior(flagButton) {
   function flag() {
     const confirmFlag = window.confirm(
       isUserFlagged
-        ? 'Are you sure you want to unflag this person? This will make all of their posts visible again.'
-        : 'Are you sure you want to flag this person? This will make all of their posts less visible.',
+        ? i18next.t('profile.to_unflag')
+        : i18next.t('profile.to_flag'),
     );
 
     if (confirmFlag) {
@@ -28,10 +29,14 @@ function addFlagUserBehavior(flagButton) {
         .then((response) => {
           if (response.result === 'create') {
             isUserFlagged = true;
-            flagButton.innerHTML = `Unflag ${profileUserName}`;
+            flagButton.innerHTML = i18next.t('profile.unflag', {
+              name: profileUserName,
+            });
           } else {
             isUserFlagged = false;
-            flagButton.innerHTML = `Flag ${profileUserName}`;
+            flagButton.innerHTML = i18next.t('profile.flag', {
+              name: profileUserName,
+            });
           }
         })
         .catch((e) => {
@@ -39,7 +44,7 @@ function addFlagUserBehavior(flagButton) {
             isUserFlagged ? 'Unable to unflag user' : 'Unable to flag user',
             profileUserId,
           );
-          window.alert(`Something went wrong: ${e}`);
+          window.alert(i18next.t('errors.went', { error: e }));
         });
     }
   }

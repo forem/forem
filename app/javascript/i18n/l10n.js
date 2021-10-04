@@ -13,4 +13,4 @@ i18next.init({
   interpolation: { prefix: '%{', suffix: '}' },
 });
 
-export { i18next };
+export { i18next, locale };

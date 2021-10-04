@@ -10,11 +10,11 @@ export const EditorFormattingHelp = ({ openModal }) => (
     <h4 className="mb-2 fs-l">{i18next.t('editor.help.basics.heading')}</h4>
     <ul className="list-disc pl-6 color-base-70">
       <li>
-        {i18next.t('editor.help.basics.desc_1')}
+        {i18next.t('editor.help.basics.desc1')}
         <a href="#markdown" onClick={() => openModal('markdownShowing')}>
           {i18next.t('editor.help.basics.markdown')}
         </a>
-        {i18next.t('editor.help.basics.desc_2')}
+        {i18next.t('editor.help.basics.desc2')}
         <details className="fs-s my-1">
           <summary class="cursor-pointer">
             {i18next.t('editor.help.basics.syntax')}
@@ -65,26 +65,26 @@ export const EditorFormattingHelp = ({ openModal }) => (
               </tr>
               <tr>
                 <td className="ff-monospace">
-                  * {i18next.t('editor.help.basics.ul_1')}
-                  <br />* {i18next.t('editor.help.basics.ul_2')}
+                  * {i18next.t('editor.help.basics.ul1')}
+                  <br />* {i18next.t('editor.help.basics.ul2')}
                 </td>
                 <td>
                   <ul class="list-disc ml-5">
-                    <li>{i18next.t('editor.help.basics.ul_1')}</li>
-                    <li>{i18next.t('editor.help.basics.ul_2')}</li>
+                    <li>{i18next.t('editor.help.basics.ul1')}</li>
+                    <li>{i18next.t('editor.help.basics.ul2')}</li>
                   </ul>
                 </td>
               </tr>
               <tr>
                 <td className="ff-monospace">
-                  1. {i18next.t('editor.help.basics.ol_1')}
+                  1. {i18next.t('editor.help.basics.ol1')}
                   <br />
-                  2. {i18next.t('editor.help.basics.ol_2')}
+                  2. {i18next.t('editor.help.basics.ol2')}
                 </td>
                 <td>
                   <ol class="list-decimal ml-5">
-                    <li>{i18next.t('editor.help.basics.ol_1')}</li>
-                    <li>{i18next.t('editor.help.basics.ol_2')}</li>
+                    <li>{i18next.t('editor.help.basics.ol1')}</li>
+                    <li>{i18next.t('editor.help.basics.ol2')}</li>
                   </ol>
                 </td>
               </tr>
@@ -125,13 +125,13 @@ export const EditorFormattingHelp = ({ openModal }) => (
         </details>
       </li>
       <li>
-        {i18next.t('editor.help.basics.desc_3')}
+        {i18next.t('editor.help.basics.desc3')}
         <a href="#liquid" onClick={() => openModal('liquidShowing')}>
           {i18next.t('editor.help.basics.liquid')}
         </a>
-        {i18next.t('editor.help.basics.desc_4')}
+        {i18next.t('editor.help.basics.desc4')}
       </li>
-      <li>{i18next.t('editor.help.basics.desc_5')}</li>
+      <li>{i18next.t('editor.help.basics.desc5')}</li>
     </ul>
   </div>
 );

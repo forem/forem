@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../i18n/l10n';
 import { SnackbarItem } from './SnackbarItem';
 
 let snackbarItems = [];
@@ -78,7 +79,7 @@ export class Snackbar extends Component {
           if (snack.addCloseButton) {
             // Adds an optional close button if addDefaultACtion is true.
             snack.actions.push({
-              text: 'Dismiss',
+              text: i18next.t('main.close_bar'),
               handler: () => {
                 this.setState((prevState) => {
                   return {

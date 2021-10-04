@@ -1,3 +1,4 @@
+import { i18next } from '../i18n/l10n';
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
 /* global showLoginModal */
@@ -19,7 +20,7 @@ function toggleTemplateTypeButton(form, e) {
 
 const noResponsesHTML = `
 <div class="mod-response-wrapper mod-response-wrapper-empty">
-  <p>🤔... It looks like you don't have any templates yet.</p>
+  <p>${i18next.t('templates.no_yet')}</p>
 </div>
 `;
 
@@ -37,7 +38,9 @@ function buildHTML(response, typeOf) {
               <p>${obj.content}</p>
             </div>
             <div class="pl-2">
-              <button class="crayons-btn crayons-btn--secondary crayons-btn--s insert-template-button" type="button" data-content="${obj.content}">Insert</button>
+              <button class="crayons-btn crayons-btn--secondary crayons-btn--s insert-template-button" type="button" data-content="${
+                obj.content
+              }">${i18next.t('templates.insert')}</button>
             </div>
           </div>
         `;
@@ -54,15 +57,19 @@ function buildHTML(response, typeOf) {
                 <p>${obj.content}</p>
               </div>
               <div class="flex flex-nowrap pl-2">
-                <button class="crayons-btn crayons-btn--s crayons-btn--secondary moderator-submit-button m-1" type="submit" data-response-template-id="${obj.id}">Send as Mod</button>
-                <button class="crayons-btn crayons-btn--s crayons-btn--outlined insert-template-button m-1" type="button" data-content="${obj.content}">Insert</button>
+                <button class="crayons-btn crayons-btn--s crayons-btn--secondary moderator-submit-button m-1" type="submit" data-response-template-id="${
+                  obj.id
+                }">${i18next.t('templates.mod')}</button>
+                <button class="crayons-btn crayons-btn--s crayons-btn--outlined insert-template-button m-1" type="button" data-content="${
+                  obj.content
+                }">${i18next.t('templates.insert')}</button>
               </div>
             </div>
           `;
       })
       .join('');
   }
-  return `Error 😞`;
+  return i18next.t('errors.sad');
 }
 
 function submitAsModerator(responseTemplateId, parentId) {
@@ -89,26 +96,17 @@ function submitAsModerator(responseTemplateId, parentId) {
   })
     .then((response) => response.json())
     .then((response) => {
-      if (response.status === 'created') {
+      if (response.status === i18next.t('comments.messages.success')) {
         window.location.pathname = response.path;
-      } else if (response.status === 'comment already exists') {
-        alert('This comment already exists.');
+      } else if (response.status === i18next.t('comments.messages.failure')) {
+        alert(i18next.t('errors.comment'));
       } else if (response.error === 'error') {
-        alert(
-          `There was a problem submitting this comment: ${response.status}`,
-        );
+        alert(`${response.status}`);
       }
     });
 }
 
-const confirmMsg = `
-Are you sure you want to submit this comment as Sloan?
-
-It will be sent immediately and users will be notified.
-
-Make sure this is the appropriate comment for the situation.
-
-This action is not reversible.`;
+const confirmMsg = i18next.t('templates.mascot');
 
 function addClickListeners(form) {
   const responsesContainer = form.getElementsByClassName(
@@ -133,7 +131,7 @@ function addClickListeners(form) {
       const textAreaReplaceable =
         textArea.value === null ||
         textArea.value === '' ||
-        confirm('Are you sure you want to replace your current comment draft?');
+        confirm(i18next.t('templates.replace'));
 
       if (textAreaReplaceable) {
         textArea.value = content;

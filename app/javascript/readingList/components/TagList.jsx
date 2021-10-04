@@ -1,9 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
   return (
-    <nav aria-label="Filter by tag">
+    <nav aria-label={i18next.t('readingList.aria_tag')}>
       <ul className="list-none grid grid-cols-1 gap-2">
         <li>
           <a
@@ -14,10 +15,11 @@ function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
             onClick={onSelectTag}
             href="/t"
           >
-            all tags
+            {i18next.t('readingList.all')}
           </a>
         </li>
         {availableTags.map((tag) => (
+          // eslint-disable-next-line react/jsx-key
           <li>
             <a
               className={`crayons-link crayons-link--block${
@@ -55,11 +57,12 @@ export function TagList({
   return isMobile ? (
     <select
       class="crayons-select"
-      aria-label="Filter by tag"
+      aria-label={i18next.t('readingList.aria_tag')}
       onChange={onSelectTag}
     >
-      <option>all tags</option>
+      <option>{i18next.t('readingList.all')}</option>
       {availableTags.map((tag) => (
+        // eslint-disable-next-line react/jsx-key
         <option
           selected={tag === selectedTag}
           className={`crayons-link crayons-link--block ${

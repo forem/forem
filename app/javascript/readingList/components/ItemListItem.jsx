@@ -1,6 +1,7 @@
 // Item list item
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export const ItemListItem = ({ item, children }) => {
   const adaptedItem = {
@@ -47,12 +48,15 @@ export const ItemListItem = ({ item, children }) => {
           <span className="color-base-60">
             {adaptedItem.publishedDate}
             <span class="color-base-30"> • </span>
-            {`${adaptedItem.readingTime} min read`}
+            {i18next.t('articles.reading_time', {
+              count: adaptedItem.readingTime,
+            })}
           </span>
           {adaptedItem.tags.length > 0 ? (
             <span datatestid="item-tags">
               <span class="color-base-30"> • </span>
               {adaptedItem.tags.map((tag) => (
+                // eslint-disable-next-line react/jsx-key
                 <a className="crayons-tag" href={`/t/${tag.name}`}>
                   {`#${tag.name}`}
                 </a>

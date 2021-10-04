@@ -1,3 +1,4 @@
+import { i18next } from '../i18n/l10n';
 /* eslint-disable no-alert */
 
 export function initBlock() {
@@ -31,26 +32,16 @@ export function initBlock() {
           /* eslint-disable-next-line no-use-before-define */
           blockButton.addEventListener('click', block, { once: true });
         } else if (response.status === 422) {
-          window.alert(
-            `Something went wrong: ${response.error} -- Please refresh the page to try again.`,
-          );
+          window.alert(i18next.t('errors.wrong', { error: response.error }));
         }
       })
       .catch((e) => {
-        window.alert(
-          `Something went wrong: ${e}. -- Please refresh the page to try again.`,
-        );
+        window.alert(i18next.t('errors.wrong', { error: e }));
       });
   }
 
   function block() {
-    const confirmBlock = window.confirm(
-      `Are you sure you want to block this person? This will:
-      - prevent them from commenting on your posts
-      - block all notifications from them
-      - prevent them from messaging you via Connect
-      - hide their posts from your feed`,
-    );
+    const confirmBlock = window.confirm(i18next.t('profile.block'));
     if (confirmBlock) {
       fetch(`/user_blocks`, {
         method: 'POST',
@@ -71,15 +62,11 @@ export function initBlock() {
             blockButton.innerText = 'Unblock';
             blockButton.addEventListener('click', unblock, { once: true });
           } else if (response.status === 422) {
-            window.alert(
-              `Something went wrong: ${response.error}. -- Please refresh the page to try again.`,
-            );
+            window.alert(i18next.t('errors.wrong', { error: response.error }));
           }
         })
         .catch((e) => {
-          window.alert(
-            `Something went wrong: ${e}. -- Please refresh the page to try again.`,
-          );
+          window.alert(i18next.t('errors.wrong', { error: e }));
         });
     } else {
       blockButton.addEventListener('click', block, { once: true });

@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export const ContactViaConnect = ({ onChange, checked }) => (
   <div className="crayons-field crayons-field--checkbox">
@@ -17,9 +18,9 @@ export const ContactViaConnect = ({ onChange, checked }) => (
       className="crayons-field__label"
       htmlFor="contact_via_connect"
     >
-      Connect messaging
+      {i18next.t('listings.form.connect.subtitle')}
       <p className="crayons-field__description">
-        Allow Users to message me via Connect.
+        {i18next.t('listings.form.connect.desc')}
       </p>
     </label>
   </div>

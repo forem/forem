@@ -4,6 +4,7 @@ import linkState from 'linkstate';
 import { Tags } from '../shared/components/tags';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
 import { DEFAULT_TAG_FORMAT } from '../article-form/components/TagsField';
+import { i18next } from '../i18n/l10n';
 import { Title } from './components/Title';
 import { BodyMarkdown } from './components/BodyMarkdown';
 import { Categories } from './components/Categories';
@@ -63,7 +64,7 @@ export class ListingForm extends Component {
       organizations && organizations.length > 0 ? (
         <div className="crayons-field">
           <label htmlFor="organizationId" className="crayons-field__label">
-            Post under an organization
+            {i18next.t('listings.org.label')}
           </label>
           <OrganizationPicker
             name="listing[organization_id]"
@@ -74,8 +75,7 @@ export class ListingForm extends Component {
             onToggle={this.handleOrgIdChange}
           />
           <p className="crayons-field__description">
-            Posting on behalf of an organization spends the organization's
-            credits.
+            {i18next.t('listings.org.desc')}
           </p>
         </div>
       ) : null;

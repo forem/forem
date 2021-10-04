@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export class Navigation extends Component {
   /**
@@ -42,25 +43,18 @@ export class Navigation extends Component {
   buttonText() {
     const { canSkip, currentSlideIndex, slidesCount } = this.props;
     if (slidesCount - 1 === currentSlideIndex) {
-      return 'Finish';
+      return i18next.t('onboarding.finish');
     }
     if (canSkip) {
-      return 'Skip for now';
+      return i18next.t('onboarding.skip');
     }
 
-    return 'Continue';
+    return i18next.t('onboarding.continue');
   }
 
   render() {
-    const {
-      next,
-      prev,
-      hideNext,
-      hidePrev,
-      disabled,
-      canSkip,
-      className,
-    } = this.props;
+    const { next, prev, hideNext, hidePrev, disabled, canSkip, className } =
+      this.props;
     return (
       <nav
         class={`onboarding-navigation${
@@ -79,7 +73,7 @@ export class Navigation extends Component {
                 data-testid="back-button"
                 class="back-button"
                 type="button"
-                aria-label="Back to previous onboarding step"
+                aria-label={i18next.t('onboarding.aria_label')}
               >
                 <svg
                   width="24"

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 import { forwardRef } from 'preact/compat';
-import { locale } from '../utilities/locale';
+import { i18next } from '../i18n/l10n';
 import { Button } from '@crayons';
 
 
@@ -33,9 +33,9 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch }, ref) => (
           className="crayons-header--search-input crayons-textfield"
           type="text"
           name="q"
-          placeholder={`${locale('core.search')}...`}
+          placeholder={i18next.t('search.placeholder')}
           autoComplete="off"
-          aria-label="Search term"
+          aria-label={i18next.t('search.aria_term')}
           value={searchTerm}
         />
         <Button
@@ -45,7 +45,7 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch }, ref) => (
           icon={SearchIcon}
           size="s"
           className="absolute right-2 bottom-0 top-0 m-1"
-          aria-label="Search"
+          aria-label={i18next.t('search.aria_label')}
         />
       </div>
     </div>

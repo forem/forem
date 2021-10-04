@@ -9,6 +9,7 @@ import {
   selectTag,
   clearSelectedTags,
 } from '../searchableItemList/searchableItemList';
+import { i18next } from '../i18n/l10n';
 import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
 import { TagList } from './components/TagList';
@@ -18,7 +19,7 @@ import { debounceAction } from '@utilities/debounceAction';
 import { Button } from '@crayons';
 import { request } from '@utilities/http';
 
-const NO_RESULTS_WITH_FILTER_MESSAGE = 'Nothing with this filter 🤔';
+const NO_RESULTS_WITH_FILTER_MESSAGE = i18next.t('readingList.nothing');
 const STATUS_VIEW_VALID = 'valid,confirmed';
 const STATUS_VIEW_ARCHIVED = 'archived';
 const READING_LIST_ARCHIVE_PATH = '/readinglist/archive';
@@ -140,13 +141,15 @@ export class ReadingList extends Component {
         <section className="align-center p-9 py-10 color-base-80">
           <h2 className="fw-bold fs-l">
             {showMessage
-              ? 'Your reading list is empty'
+              ? i18next.t('readingList.empty')
               : NO_RESULTS_WITH_FILTER_MESSAGE}
           </h2>
-          <p class="color-base-60 pt-2">
-            Click the{' '}
+          <p
+            class="color-base-60 pt-2" /* TODO yheuhtozr: i18n interpolation */
+          >
+            {i18next.t('readingList.click1')}
             <span class="fw-bold">
-              bookmark reaction
+              {i18next.t('readingList.click2')}
               <svg
                 width="24"
                 height="24"
@@ -158,7 +161,7 @@ export class ReadingList extends Component {
                 <path d="M5 2h14a1 1 0 011 1v19.143a.5.5 0 01-.766.424L12 18.03l-7.234 4.536A.5.5 0 014 22.143V3a1 1 0 011-1zm13 2H6v15.432l6-3.761 6 3.761V4z" />
               </svg>
             </span>
-            when viewing a post to add it to your reading list.
+            {i18next.t('readingList.click3')}
           </p>
         </section>
       );
@@ -167,7 +170,7 @@ export class ReadingList extends Component {
     return (
       <h2 className="align-center p-9 py-10 color-base-80 fw-bold fs-l">
         {showMessage
-          ? 'Your Archive is empty...'
+          ? i18next.t('readingList.empty_archive')
           : NO_RESULTS_WITH_FILTER_MESSAGE}
       </h2>
     );
@@ -185,11 +188,15 @@ export class ReadingList extends Component {
     } = this.state;
 
     const isStatusViewValid = this.statusViewValid();
-    const archiveButtonLabel = isStatusViewValid ? 'Archive' : 'Unarchive';
+    const archiveButtonLabel = i18next.t(
+      `readingList.${isStatusViewValid ? 'to_archive' : 'to_unarchive'}`,
+    );
 
     const snackBar = archiving ? (
       <div className="snackbar">
-        {isStatusViewValid ? 'Archiving...' : 'Unarchiving...'}
+        {i18next.t(
+          `readingList.${isStatusViewValid ? 'archiving' : 'unarchiving'}`,
+        )}
       </div>
     ) : (
       ''
@@ -198,11 +205,15 @@ export class ReadingList extends Component {
       <main id="main-content">
         <header className="crayons-layout l:grid-cols-2 pb-0">
           <h1 class="crayons-title">
-            {isStatusViewValid ? 'Reading list' : 'Archive'}
-            {` (${itemsTotal})`}
+            {i18next.t(
+              `readingList.${isStatusViewValid ? 'heading' : 'archive'}`,
+            )}
+            {i18next.t('readingList.total', { total: itemsTotal })}
           </h1>
           <fieldset className="grid gap-2 m:flex m:justify-end m:items-center l:mb-0 mb-2 px-2 m:px-0">
-            <legend className="hidden">Filter</legend>
+            <legend className="hidden">
+              {i18next.t('readingList.filter')}
+            </legend>
             <Button
               onClick={(e) => this.toggleStatusView(e)}
               className="whitespace-nowrap l:mr-2"
@@ -211,12 +222,16 @@ export class ReadingList extends Component {
               tagName="a"
               data-no-instant
             >
-              {isStatusViewValid ? 'View archive' : 'View reading list'}
+              {i18next.t(
+                `readingList.${
+                  isStatusViewValid ? 'view_archive' : 'view_list'
+                }`,
+              )}
             </Button>
             <input
-              aria-label="Filter reading list by text"
+              aria-label={i18next.t('readingList.aria_label')}
               onKeyUp={this.onSearchBoxType}
-              placeholder="Enter some text to filter on..."
+              placeholder={i18next.t('readingList.placeholder')}
               className="crayons-textfield"
             />
             <MediaQuery
@@ -265,7 +280,7 @@ export class ReadingList extends Component {
                             variant="secondary"
                             className="w-max"
                           >
-                            Load more
+                            {i18next.t('readingList.more')}
                           </Button>
                         </div>
                       )}

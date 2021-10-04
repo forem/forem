@@ -1,5 +1,6 @@
 import { initBlock } from '../profileDropdown/blockButton';
 import { initFlag } from '../profileDropdown/flagButton';
+import { i18next } from '../i18n/l10n';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 /* global userData */
@@ -37,7 +38,11 @@ function initDropdown() {
   const reportAbuseLink = profileDropdownDiv.querySelector(
     '.report-abuse-link-wrapper',
   );
-  reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
+  reportAbuseLink.innerHTML = `<a href="${
+    reportAbuseLink.dataset.path
+  }" class="crayons-link crayons-link--block">${i18next.t(
+    'profile.report',
+  )}</a>`;
 
   initButtons();
   profileDropdownDiv.dataset.dropdownInitialized = true;
