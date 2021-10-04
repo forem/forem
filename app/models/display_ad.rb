@@ -20,7 +20,8 @@ class DisplayAd < ApplicationRecord
   ALLOWED_TAGS = %w[
     a abbr add b blockquote br center cite code col colgroup dd del dl dt em figcaption
     h1 h2 h3 h4 h5 h6 hr img kbd li mark ol p pre q rp rt ruby small source span strong sub sup table
-    tbody td tfoot th thead time tr u ul video].freeze
+    tbody td tfoot th thead time tr u ul video
+  ].freeze
   ALLOWED_ATTRIBUTES = %w[href src alt height width].freeze
 
   def self.for_display(area)

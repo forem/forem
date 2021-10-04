@@ -105,8 +105,7 @@ RSpec.describe "Using the editor", type: :system do
 
       expect(page).to have_xpath("//div[@class='crayons-article__header__meta']//h1")
       expect(page).to have_text("Hello")
-      expect(page).not_to have_text("</span>")
-      expect(page).to have_link("#what", href: "/t/what")
+      expect(page).to have_link("what", href: "/t/what")
     end
   end
 end

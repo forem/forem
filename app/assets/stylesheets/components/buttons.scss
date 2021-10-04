@@ -42,7 +42,6 @@
   padding: calc(var(--vertical-padding) - var(--border-width))
     calc(var(--horizontal-padding) - var(--border-width));
   border-radius: var(--radius);
-  outline: none;
   font-family: inherit;
   font-size: var(--font-size);
   line-height: var(--su-6); // intentionally not using $lh-* variable.
