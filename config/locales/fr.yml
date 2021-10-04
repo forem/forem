@@ -4,7 +4,7 @@ fr:
     add_comment: Ajouter un commentaire
     all: Tout
     comment: Commentaire
-    community_name_is_great: "%{community_name}"
+    community_name_is_great: "%{community_name} est super"
     copy_link: Copier le lien
     create_account: Créer un profil
     create_post: Créer Publication
