@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../../common-prop-types';
+import { i18next } from '../../i18n/l10n';
 
 export class SaveButton extends Component {
   constructor(props) {
@@ -9,7 +10,7 @@ export class SaveButton extends Component {
     const { isBookmarked } = props;
 
     this.state = {
-      buttonText: isBookmarked ? 'Saved' : 'Save',
+      buttonText: isBookmarked ? 'saved' : 'save',
     };
   }
 
@@ -18,17 +19,17 @@ export class SaveButton extends Component {
     const { article, isBookmarked, onClick } = this.props;
 
     const mouseMove = (_e) => {
-      this.setState({ buttonText: isBookmarked ? 'Unsave' : 'Save' });
+      this.setState({ buttonText: isBookmarked ? 'unsave' : 'save' });
     };
 
     const mouseOut = (_e) => {
-      this.setState({ buttonText: isBookmarked ? 'Saved' : 'Save' });
+      this.setState({ buttonText: isBookmarked ? 'saved' : 'save' });
     };
 
     const handleClick = (_e) => {
       onClick(_e);
       this.setState({
-        buttonText: isBookmarked ? 'Save' : 'Saved',
+        buttonText: isBookmarked ? 'save' : 'saved',
         isBookmarked: !isBookmarked,
       });
     };
@@ -49,7 +50,7 @@ export class SaveButton extends Component {
           onMouseout={mouseOut}
           onBlur={mouseOut}
         >
-          {buttonText}
+          {i18next.t(`button.save.${buttonText}`)}
         </button>
       );
     }

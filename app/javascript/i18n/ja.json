@@ -1,0 +1,9 @@
+{
+  "button": {
+    "save": {
+      "save": "保存",
+      "saved": "保存済",
+      "unsave": "解除"
+    }
+  }
+}

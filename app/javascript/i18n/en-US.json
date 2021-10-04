@@ -1,0 +1,9 @@
+{
+  "button": {
+    "save": {
+      "save": "Save",
+      "saved": "Saved",
+      "unsave": "Unsave"
+    }
+  }
+}
