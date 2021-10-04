@@ -26,7 +26,7 @@ describe('Display Ads', () => {
           .contains('The confirmation text did not match.')
           .should('be.visible');
 
-        cy.get('button[aria-label="Close"]').click();
+        cy.findByRole('button', { name: 'Close' }).click();
       });
 
       cy.findByRole('table').within(() => {
