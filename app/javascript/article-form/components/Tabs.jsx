@@ -6,11 +6,10 @@ export const Tabs = ({ onPreview, previewShowing }) => {
   return (
     <nav
       className="crayons-article-form__tabs crayons-tabs ml-auto"
-      style="flex-grow: 0.4;" /* makeshift i18n width patch */
       aria-label={i18next.t('editor.tabs.aria_label')}
     >
       <ul className="crayons-tabs__list">
-        <li className="align-right" /* makeshift i18n width patch */>
+        <li>
           <button
             data-text="Edit"
             className={`crayons-tabs__item ${
@@ -25,7 +24,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
             {i18next.t('editor.tabs.edit')}
           </button>
         </li>
-        <li className="align-right" /* makeshift i18n width patch */>
+        <li>
           <button
             data-text="Preview"
             className={`crayons-tabs__item ${
