@@ -5,7 +5,7 @@
       <%= render partial: "articles/reaction_button",
                  locals: {
                    category: :like,
-                   description: t("core.heart"),
+                   description: t("core.reactions.heart"),
                    image_path: "heart.svg",
                    image_active_path: "heart-filled.svg",
                    aria_label: "Like"
@@ -13,7 +13,7 @@
       <%= render partial: "articles/reaction_button",
                  locals: {
                    category: :unicorn,
-                   description: t("core.unicorn"),
+                   description: t("core.reactions.unicorn"),
                    image_path: "unicorn.svg",
                    image_active_path: "unicorn-filled.svg",
                    aria_label: "React with unicorn"
@@ -21,7 +21,7 @@
       <%= render partial: "articles/reaction_button",
                  locals: {
                    category: :readinglist,
-                   description: t("core.save"),
+                   description: t("core.reactions.save"),
                    image_path: "save.svg",
                    image_active_path: "save-filled.svg",
                    aria_label: "Add to reading list"
