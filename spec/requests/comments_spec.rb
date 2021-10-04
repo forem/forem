@@ -368,6 +368,17 @@ RSpec.describe "Comments", type: :request do
         patch "/comments/#{comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
         expect(Notification.exists?(id: notification.id)).to eq(false)
       end
+
+      it "deletes children notification when comment is hidden" do
+        child_comment = create(:comment, commentable: article, user: user2, parent: comment)
+        Notification.send_new_comment_notifications_without_delay(child_comment)
+        notification = child_comment.notifications.last
+        patch "/comments/#{comment.id}/hide", params: { hide_children: "1" },
+                                              headers: { HTTP_ACCEPT: "application/json" }
+        child_comment.reload
+        expect(child_comment.hidden_by_commentable_user).to be true
+        expect(Notification.exists?(id: notification.id)).to eq(false)
+      end
     end
 
     context "with hiding child comments" do
