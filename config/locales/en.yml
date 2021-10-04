@@ -61,7 +61,7 @@ en:
     report_abuse: "Report abuse"
     search: "Search"
     see_all: "See all"
-    tags_title: "Tags on %{community_name}"
+    tag: "Tag"
     tags_to_follow: "Tags to follow on %{community_name}"
     top_tags: "Top tags"
     trending_on: "Trending on"

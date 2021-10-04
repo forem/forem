@@ -32,7 +32,7 @@ fr:
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Voir tout
-    tags_title: Sujets %{community_name%}
+    tag: Sujet
     tags_to_follow: Sujets
     top_tags: Sujets
     trending_on: Populaire sur
