@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Trans } from 'react-i18next';
 import { i18next } from '../i18n/l10n';
 import { ChannelButton } from './components/ChannelButton';
 import { ConfigMenu } from './configMenu';
@@ -67,9 +68,11 @@ export const Channels = ({
       // eslint-disable-next-line react/no-danger
       <div
         className="chatchannels__channelslistheader"
-        role="alert"
-        dangerouslySetInnerHTML={{ __html: i18next.t('chat.welcome') }}
-      />
+        role="alert">
+          <Trans i18nKey="chat.welcome"
+            // eslint-disable-next-line react/jsx-key
+            components={[<span role="img" aria-label="emoji" />]} />
+      </div>
     );
   }
 

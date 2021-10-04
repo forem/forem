@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Trans } from 'react-i18next';
 import { i18next } from '../../i18n/l10n';
 import { Dropdown, Button } from '@crayons';
 
@@ -100,15 +101,12 @@ export const Options = ({
           <label htmlFor="canonicalUrl" className="crayons-field__label">
             {i18next.t('editor.options.url.label')}
           </label>
-          <p
-            className="crayons-field__description"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{
-              __html: i18next.t('editor.options.url.desc', {
-                interpolation: { escapeValue: false },
-              }),
-            }}
-          />
+          <p className="crayons-field__description">
+            <Trans i18nKey="editor.options.url.desc"
+              // eslint-disable-next-line react/jsx-key
+              components={[<code />]}
+            />
+          </p>
           <input
             type="text"
             value={canonicalUrl}

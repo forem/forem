@@ -64,7 +64,7 @@ describe('<ImageUploader />', () => {
       ).toHaveBeenCalledTimes(1);
     });
 
-    it('handles a native bridge message correctly', async () => {
+    it('handles a native bridge message correctly', () => {
       const { container, findByTitle } = render(<ImageUploader />);
       const nativeInput = container.querySelector(
         '#native-image-upload-message',
@@ -74,7 +74,7 @@ describe('<ImageUploader />', () => {
       const fakeSuccessMessage = `{ "action": "success", "link": "/some-fake-image.jpg" }`;
       fireEvent.change(nativeInput, { target: { value: fakeSuccessMessage } });
 
-      expect(await findByTitle(/copy markdown for image/i)).toBeDefined();
+      expect(findByTitle(/copy markdown for image/i)).toBeDefined();
     });
   });
 

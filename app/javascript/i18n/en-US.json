@@ -1,7 +1,7 @@
 {
   "articles": {
     "duration": "Video duration",
-    "for_org": "%{- start} for %{- end}%{- org}",
+    "for_org": "<0> for </0><1>%{org}</1>",
     "pinned": {
       "after": "",
       "before": "Pinned",
@@ -18,6 +18,7 @@
     "timeAgo": " (%{ago})"
   },
   "chat": {
+    "announcement": "We have made the decision to deprecate Connect as core functionality from the application. \u00A0<0>Read the announcement to learn more »</0>.",
     "bottom": "Scroll to Bottom",
     "compose": {
       "aria_label": "Compose a message",
@@ -68,7 +69,7 @@
       "accept": " Accept",
       "empty": "You have no pending invitations.",
       "got": "You got invitation to join <b>%{channel}</b>.",
-      "heading": "Request Center <span role=\"img\" aria-label=\"handshake\">🤝</span>",
+      "heading": "Request Center <0>🤝</0>",
       "join": "<b>%{name}</b> requested to join <b>%{channel}</b>",
       "message1": "Hey %{user} !",
       "message2": "You are not a member of this group yet. Send a request to join.",
@@ -79,12 +80,12 @@
     },
     "loading": "Loading user",
     "messages": {
-      "direct": "You and <a href=\"/%{slug}\">%{slug}</a> are connected because you both follow each other. All interactions <em><b>must</b></em> abide by the <a href=\"/code-of-conduct\">code of conduct</a>.",
-      "mentioned": "You got mentioned in %{- channel}",
-      "new": "New Message from %{- channel}",
+      "direct": "You and <0>%{slug}</0> are connected because you both follow each other. All interactions <1>must</1> abide by the <2>code of conduct</2>.",
+      "mentioned": "You got mentioned in <0>%{channel}</0>",
+      "new": "New Message from <0>%{channel}</0>",
       "no_data": "Couldn't find user data on page.",
-      "open": "You have joined %{channel}! All interactions <em><b>must</b></em> abide by the <a href=\"/code-of-conduct\">code of conduct</a>.",
-      "sorry": "Sorry <span className=\"chatmessagebody__currentuser\">@%{user}</span> %{message}"
+      "open": "You have joined %{channel}! All interactions <0>must</0> abide by the <1>code of conduct</1>.",
+      "sorry": "Sorry <0>@%{user}</0> %{message}"
     },
     "meta": {
       "title_new": "New Message 👋"
@@ -133,7 +134,7 @@
         "username": "all"
       }
     },
-    "welcome": "<span role=\"img\" aria-label=\"emoji\">👋</span> Welcome to <b> Connect</b>! You may message anyone you mutually follow."
+    "welcome": "<0>👋</0> Welcome to <b> Connect</b>! You may message anyone you mutually follow."
   },
   "clipboard": {
     "alt_text": "Alt Text",
@@ -285,7 +286,7 @@
       "title": "Post options",
       "unpublish": "Unpublish post",
       "url": {
-        "desc": "Change meta tag <code>canonical_url</code> if this post was first published elsewhere (like your own blog).",
+        "desc": "Change meta tag <0>canonical_url</0> if this post was first published elsewhere (like your own blog).",
         "label": "Canonical URL"
       }
     },
@@ -293,9 +294,9 @@
     "publish": "Publish",
     "publishing": "Publishing...",
     "revert": "Are you sure you want to revert to the previous save?",
-    "revert_button": "Revert %{- start}new changes%{- end}",
+    "revert_button": "Revert <0>new changes</0>",
     "save": "Save changes",
-    "save_draft": "Save %{- start}draft%{- end}",
+    "save_draft": "Save <0>draft</0>",
     "saving": "Saving...",
     "saving_draft": "Saving draft...",
     "tabs": {
@@ -332,7 +333,7 @@
   "feedback": {
     "block": "The message will be reported.\n\nWould you like to block this person as well?\n\nThis will:\n- prevent them from commenting on your posts\n- block all notifications from them\n- prevent them from messaging you via chat",
     "blocked": "Your report has been submitted and the user has been blocked",
-    "desc": "Thank you for reporting any abuse that violates our <a href=\"/code-of-conduct\">code of conduct</a> or <a href=\"/terms\">terms and conditions</a>. We continue to try to make this environment a great one for everybody.",
+    "desc": "Thank you for reporting any abuse that violates our <0>code of conduct</0> or <1>terms and conditions</1>. We continue to try to make this environment a great one for everybody.",
     "harassment": "Harassment or hate speech",
     "heading": "Report Abuse",
     "listings": "Inappropriate listings message/category",
@@ -421,7 +422,7 @@
       "desc1": "This is your active listing. Any member can contact you via this form.",
       "desc2": "Message  %{name} ",
       "heading": "Interested?",
-      "notice": "All private interactions <b>must</b> abide by the %{- code}.",
+      "notice": "All private interactions <b>must</b> abide by the <0>%{code}</0>.",
       "placeholder": "Enter your message here...",
       "relevant": "Message must be relevant and on-topic with the listing. ",
       "submit": "Send"

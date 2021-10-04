@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Trans } from 'react-i18next';
 import { i18next } from '../../i18n/l10n';
 import { Button } from '@crayons';
 
@@ -39,22 +40,13 @@ export const MessageModal = ({
         placeholder={i18next.t('listings.message.placeholder')}
         aria-label={i18next.t('listings.message.aria_label')}
       />
-      <p
-        className="mb-4 fs-s color-base-60"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html:
-            (isCurrentUserOnListing
-              ? i18next.t('listings.message.relevant')
-              : '') +
-            i18next.t('listings.message.notice', {
-              code: `<a href="/code-of-conduct" className="crayons-link crayons-link--brand">${i18next.t(
-                'listings.message.code',
-              )}</a>`,
-              interpolation: { escapeValue: false },
-            }),
-        }}
-      />
+      <p className="mb-4 fs-s color-base-60">
+        {isCurrentUserOnListing && i18next.t('listings.message.relevant')}
+        {/* eslint-disable react/jsx-key, jsx-a11y/anchor-has-content */}
+        <Trans i18nKey="listings.message.notice" values={{code: i18next.t('listings.message.code')}}
+          components={[<a href="/code-of-conduct" className="crayons-link crayons-link--brand" />]} />
+        {/* eslint-enable react/jsx-key, jsx-a11y/anchor-has-content */}
+      </p>
       <div className="flex">
         <Button
           variant="primary"

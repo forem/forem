@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
 import { notifyUser } from '../utilities/connect/newMessageNotify';
@@ -1139,31 +1140,30 @@ export class Chat extends Component {
       if (activeChannel.channel_type === 'direct') {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
-            <div
-              // eslint-disable-next-line react/no-danger
-              className="chatmessage__body"
-              dangerouslySetInnerHTML={{
-                __html: i18next.t('chat.messages.direct', {
-                  slug: activeChannel.channel_modified_slug,
-                  interpolation: { escapeValue: false },
-                }),
-              }}
-            />
+            <div className="chatmessage__body">
+              {/* eslint-disable react/jsx-key, jsx-a11y/anchor-has-content */}
+              <Trans
+                i18nKey="chat.messages.direct"
+                values={{slug: activeChannel.channel_modified_slug}}
+                components={[<a href={`/${activeChannel.channel_modified_slug}`} />, <em><b /></em>, <a href="/code-of-conduct" />]}
+              />
+              {/* eslint-enable react/jsx-key, jsx-a11y/anchor-has-content */}
+            </div>
           </div>
         );
       }
       if (activeChannel.channel_type === 'open') {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
-            <div
-              // eslint-disable-next-line react/no-danger
-              className="chatmessage__body"
-              dangerouslySetInnerHTML={{
-                __html: i18next.t('chat.messages.open', {
-                  channel: activeChannel.channel_name,
-                }),
-              }}
-            />
+            <div className="chatmessage__body">
+              {/* eslint-disable react/jsx-key, jsx-a11y/anchor-has-content */}
+              <Trans
+                i18nKey="chat.messages.open"
+                values={{channel: activeChannel.channel_name}}
+                components={[<em><b /></em>, <a href="/code-of-conduct" />]}
+              />
+              {/* eslint-enable react/jsx-key, jsx-a11y/anchor-has-content */}
+            </div>
           </div>
         );
       }
@@ -1503,17 +1503,19 @@ export class Chat extends Component {
         className="bg-base-90 color-base-0 p-3 align-center fs-s m:fs-base lh-tight"
         aria-live="polite"
       >
-        We have made the decision to deprecate Connect as core functionality
-        from the application. &nbsp;
-        <a
-          href="https://forem.dev/foremteam/deprecating-connect-chat-2kgi"
-          className="text-underline color-base-10 fw-bold"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Read the announcement to learn more &raquo;
-        </a>
-        .
+        {/* eslint-disable react/jsx-key, jsx-a11y/anchor-has-content */}
+        <Trans
+          i18nKey="chat.announcement"
+          components={[
+            <a
+              href="https://forem.dev/foremteam/deprecating-connect-chat-2kgi"
+              className="text-underline color-base-10 fw-bold"
+              target="_blank"
+              rel="noreferrer"
+            />
+          ]}
+        />
+        {/* eslint-enable react/jsx-key, jsx-a11y/anchor-has-content */}
       </div>
     );
     return (

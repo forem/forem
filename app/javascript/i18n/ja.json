@@ -1,7 +1,7 @@
 {
   "articles": {
     "duration": "Video duration",
-    "for_org": "%{- start} が %{- end}%{- org}%{- start} へ執筆%{- end}",
+    "for_org": "<0> が </0><1>%{org}</1><0> へ執筆</0>",
     "pinned": {
       "after": "",
       "before": "要注目",
@@ -17,6 +17,7 @@
     "timeAgo": "（%{ago}）"
   },
   "chat": {
+    "announcement": "Connect はアプリケーションのコア機能から除外されることになりました。\u00A0<0>詳細はこちらのお知らせより »</0>",
     "bottom": "Scroll to Bottom",
     "compose": {
       "aria_label": "Compose a message",
@@ -64,26 +65,26 @@
       "group": "group"
     },
     "join": {
-      "accept": " Accept",
-      "empty": "You have no pending invitations.",
-      "got": "You got invitation to join <b>%{channel}</b>.",
-      "heading": "Request Center <span role=\"img\" aria-label=\"handshake\">🤝</span>",
-      "join": "<b>%{name}</b> requested to join <b>%{channel}</b>",
-      "message1": "Hey %{user} !",
-      "message2": "You are not a member of this group yet. Send a request to join.",
-      "reject": " Reject",
-      "request": " Join %{channel} ",
-      "requested": " Requested Already ",
+      "accept": " 承認",
+      "empty": "承認待ちの招待はありません。",
+      "got": "<b>%{channel}</b> への参加を招待されています。",
+      "heading": "申請一覧 <0>🤝</0>",
+      "join": "<b>%{name}</b> が <b>%{channel}</b> へ参加を申請しました",
+      "message1": "%{user} さん、はじめまして",
+      "message2": "あなたはこのグループのメンバーではありません。参加するには申請してください。",
+      "reject": " 拒否",
+      "request": " %{channel} に参加 ",
+      "requested": " 参加を申請しました ",
       "toggle": "Toggle request manager"
     },
     "loading": "Loading user",
     "messages": {
-      "direct": "You and <a href=\"/%{slug}\">%{slug}</a> are connected because you both follow each other. All interactions <em><b>must</b></em> abide by the <a href=\"/code-of-conduct\">code of conduct</a>.",
-      "mentioned": "You got mentioned in %{- channel}",
-      "new": "New Message from %{- channel}",
+      "direct": "あなたと <0>%{slug}</0> は相互フォローしているため、連絡相手になりました。通信内容は<strong>すべて</strong><2>code of conduct</2>を守ってください。",
+      "mentioned": "あなたが <0>%{channel}</0> で呼ばれました",
+      "new": "<0>%{channel}</0> の新着メッセージ",
       "no_data": "Couldn't find user data on page.",
-      "open": "You have joined %{channel}! All interactions <em><b>must</b></em> abide by the <a href=\"/code-of-conduct\">code of conduct</a>.",
-      "sorry": "Sorry <span className=\"chatmessagebody__currentuser\">@%{user}</span> %{message}"
+      "open": "%{channel} に参加しました！通信内容は<strong>すべて</strong><1>code of conduct</1>を守ってください。",
+      "sorry": "<0>@%{user}</0> さん、ごめんなさい！%{message}"
     },
     "meta": {
       "title_new": "New Message 👋"
@@ -132,7 +133,7 @@
         "username": "all"
       }
     },
-    "welcome": "<span role=\"img\" aria-label=\"emoji\">👋</span> Welcome to <b> Connect</b>! You may message anyone you mutually follow."
+    "welcome": "<0>👋</0> Welcome to <b> Connect</b>! You may message anyone you mutually follow."
   },
   "clipboard": {
     "alt_text": "Alt Text",
@@ -257,7 +258,7 @@
       }
     },
     "image": {
-      "aria_label": "Upload an image",
+      "aria_label": "画像をアップロードする",
       "icon": "画像をアップロード",
       "text": "画像をアップロード",
       "uploading": "アップロード中…"
@@ -282,19 +283,19 @@
       "title": "Post options",
       "unpublish": "Unpublish post",
       "url": {
-        "desc": "Change meta tag <code>canonical_url</code> if this post was first published elsewhere (like your own blog).",
-        "label": "Canonical URL"
+        "desc": "この記事が別の場所（自分のブログなど）で公開されている場合、メタタグの <0>canonical_url</0> を変更します。",
+        "label": "正規 URL"
       }
     },
     "personal": "Personal",
-    "publish": "Publish",
-    "publishing": "Publishing...",
-    "revert": "Are you sure you want to revert to the previous save?",
-    "revert_button": "Revert %{- start}new changes%{- end}",
-    "save": "Save changes",
-    "save_draft": "Save %{- start}draft%{- end}",
-    "saving": "Saving...",
-    "saving_draft": "Saving draft...",
+    "publish": "公開",
+    "publishing": "公開実行中…",
+    "revert": "前回保存した状態に戻します。よろしいですか？",
+    "revert_button": "<0>変更を</0>元に戻す",
+    "save": "変更を保存",
+    "save_draft": "<0>下書きを</0>保存",
+    "saving": "保存中…",
+    "saving_draft": "下書きを保存中…",
     "tabs": {
       "aria_label": "View post modes",
       "edit": "Edit",
@@ -329,8 +330,8 @@
   "feedback": {
     "block": "The message will be reported.\n\nWould you like to block this person as well?\n\nThis will:\n- prevent them from commenting on your posts\n- block all notifications from them\n- prevent them from messaging you via chat",
     "blocked": "Your report has been submitted and the user has been blocked",
-    "desc": "Thank you for reporting any abuse that violates our <a href=\"/code-of-conduct\">code of conduct</a> or <a href=\"/terms\">terms and conditions</a>. We continue to try to make this environment a great one for everybody.",
-    "harassment": "Harassment or hate speech",
+    "desc": "Thank you for reporting any abuse that violates our <0>code of conduct</0> or <1>terms and conditions</1>. We continue to try to make this environment a great one for everybody.",
+    "harassment": "嫌がらせ・誹謗中傷",
     "heading": "Report Abuse",
     "listings": "Inappropriate listings message/category",
     "message": "Message to Report",
@@ -418,7 +419,7 @@
       "desc1": "This is your active listing. Any member can contact you via this form.",
       "desc2": "Message  %{name} ",
       "heading": "Interested?",
-      "notice": "All private interactions <b>must</b> abide by the %{- code}.",
+      "notice": "All private interactions <b>must</b> abide by the <0>%{code}</0>.",
       "placeholder": "Enter your message here...",
       "relevant": "Message must be relevant and on-topic with the listing. ",
       "submit": "Send"
@@ -539,11 +540,11 @@
   },
   "profile": {
     "block": "Are you sure you want to block this person? This will:\n- prevent them from commenting on your posts\n- block all notifications from them\n- prevent them from messaging you via Connect\n- hide their posts from your feed",
-    "flag": "Flag %{user}",
+    "flag": "%{user} を警戒",
     "report": "Report Abuse",
     "to_flag": "Are you sure you want to flag this person? This will make all of their posts less visible.",
     "to_unflag": "Are you sure you want to unflag this person? This will make all of their posts visible again.",
-    "unflag": "Unflag %{user}"
+    "unflag": "%{user} を警戒解除"
   },
   "reactions": {
     "count": "%{count}%{- start}\u202F×\u202F反響%{- end}",

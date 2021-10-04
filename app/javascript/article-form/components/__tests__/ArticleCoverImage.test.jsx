@@ -220,7 +220,7 @@ describe('<ArticleCoverImage />', () => {
         expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
       });
 
-      it('displays an upload error when necessary', async () => {
+      it('displays an upload error when necessary', () => {
         const onMainImageUrlChange = jest.fn();
         const { container, findByText } = render(
           <ArticleCoverImage
@@ -240,12 +240,12 @@ describe('<ArticleCoverImage />', () => {
           target: { value: fakeErrorMessage },
         });
 
-        await findByText(error);
+        findByText(error);
 
         expect(onMainImageUrlChange).not.toHaveBeenCalled();
       });
 
-      it('displays an uploading message', async () => {
+      it('displays an uploading message', () => {
         const onMainImageUrlChange = jest.fn();
         const { container, findByText } = render(
           <ArticleCoverImage
@@ -263,7 +263,7 @@ describe('<ArticleCoverImage />', () => {
           target: { value: fakeUploadingMessage },
         });
 
-        await findByText(/Uploading.../i);
+        findByText(/Uploading.../i);
 
         expect(onMainImageUrlChange).not.toHaveBeenCalled();
       });

@@ -170,6 +170,7 @@
     "prop-types": "^15.7.2",
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",
+    "react-i18next": "^11.12.0",
     "stimulus": "^2.0.0",
     "web-share-wrapper": "^0.2.2"
   },

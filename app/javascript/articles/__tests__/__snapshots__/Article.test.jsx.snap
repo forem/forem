@@ -131,9 +131,7 @@ Object {
                     class="crayons-story__tertiary fs-xs"
                     href="/some-post/path"
                   >
-                    <time
-                      datetime=""
-                    >
+                    <time>
                       February 18
                        (just now)
                     </time>
@@ -379,9 +377,7 @@ Object {
                   class="crayons-story__tertiary fs-xs"
                   href="/some-post/path"
                 >
-                  <time
-                    datetime=""
-                  >
+                  <time>
                     February 18
                      (just now)
                   </time>

@@ -1,6 +1,7 @@
 import { h, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { useState } from 'preact/hooks';
+import { Trans } from 'react-i18next';
 import { reportAbuse, blockUser } from '../actions/requestActions';
 import { addSnackbarItem } from '../../Snackbar';
 import { i18next } from '../../i18n/l10n';
@@ -59,10 +60,11 @@ export function ReportAbuse({ data, closeReportAbuseForm }) {
     <Fragment>
       <section className="mt-7 p-4 grid gap-2 crayons-card mb-4">
         <h1 className="lh-tight mb-4 mt-0">{i18next.t('feedback.heading')}</h1>
-        <p
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: i18next.t('feedback.desc') }}
-        />
+        <p>
+          <Trans i18nKey="feedback.desc"
+            // eslint-disable-next-line react/jsx-key, jsx-a11y/anchor-has-content
+            components={[<a href="/code-of-conduct" />, <a href="/terms" />]} />
+        </p>
         <fieldset className="report__abuse-options p-4 justify-between">
           <legend>{i18next.t('feedback.why')}</legend>
           <FormField variant="radio">

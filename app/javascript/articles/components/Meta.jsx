@@ -1,10 +1,9 @@
 import { h } from 'preact';
+import { Trans } from 'react-i18next';
 import {
   articlePropTypes,
   organizationPropType,
 } from '../../common-prop-types';
-import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
-import { i18next } from '../../i18n/l10n';
 import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
 import { PublishDate } from './PublishDate';
 
@@ -68,17 +67,14 @@ export const Meta = ({ article, organization }) => {
           />
           {organization &&
             !document.getElementById('organization-article-index') && (
-              <span
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{
-                  __html: i18next.t('articles.for_org', {
-                    start:
-                      '<span className="crayons-story__tertiary fw-normal">',
-                    end: '</span>',
-                    org: `<a href="/${organization.slug}" class="crayons-story__secondary fw-medium">${organization.name}</a>`,
-                  }),
-                }}
-              />
+              <span>
+                {/* eslint-disable react/jsx-key, jsx-a11y/anchor-has-content */}
+                <Trans i18nKey="articles.for_org" values={{org: organization.name}}
+                  // 
+                  components={[<span className="crayons-story__tertiary fw-normal" />, <a href="/${organization.slug}" class="crayons-story__secondary fw-medium" />]}
+                />
+                {/* eslint-enable react/jsx-key, jsx-a11y/anchor-has-content */}
+              </span>
             )}
         </div>
         <a href={article.path} className="crayons-story__tertiary fs-xs">

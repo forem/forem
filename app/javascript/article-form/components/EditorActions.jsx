@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Trans } from 'react-i18next';
 import { i18next } from '../../i18n/l10n';
 import { Options } from './Options';
 import { Button } from '@crayons';
@@ -45,13 +46,13 @@ export const EditorActions = ({
           variant="secondary"
           className="mr-2 whitespace-nowrap"
           onClick={onSaveDraft}
-          dangerouslySetInnerHTML={{
-            __html: i18next.t('editor.save_draft', {
-              start: '<span className="hidden s:inline">',
-              end: '</span>',
-            }),
-          }}
-        />
+        >
+          <Trans
+            i18nKey="editor.save_draft" 
+            // eslint-disable-next-line react/jsx-key, jsx-a11y/anchor-has-content
+            components={[<span className="hidden s:inline" />]}
+          />
+        </Button>
       )}
 
       {isVersion2 && (
@@ -68,13 +69,13 @@ export const EditorActions = ({
           onClick={onClearChanges}
           className="whitespace-nowrap fw-normal"
           size="s"
-          dangerouslySetInnerHTML={{
-            __html: i18next.t('editor.revert_button', {
-              start: '<span className="hidden s:inline">',
-              end: '</span>',
-            }),
-          }}
-        />
+        >
+          <Trans
+            i18nKey="editor.revert_button" 
+            // eslint-disable-next-line react/jsx-key, jsx-a11y/anchor-has-content
+            components={[<span className="hidden s:inline" />]}
+          />
+        </Button>
       )}
     </div>
   );
