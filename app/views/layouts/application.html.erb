@@ -77,15 +77,11 @@
         <%= render "layouts/top_bar" %>
         <div id="active-broadcast" class="broadcast-wrapper"></div>
         <div id="message-notice"></div>
-        <div class="app-shell-loader">
-          loading...
-        </div>
     <% end %>
   <% end %>
 <% if Settings::General.payment_pointer.present? %>
   <div id="base-payment-pointer" data-payment-pointer="<%= Settings::General.payment_pointer %>"></div>
 <% end %>
-<style>.app-shell-loader {display: none;}</style>
 <div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>">
   <% if flash[:global_notice] %>
     <div class="crayons-banner" aria-live="polite">
@@ -113,13 +109,6 @@
   <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{Settings::General.admin_action_taken_at&.rfc3339}", expires_in: 24.hours) do %>
     <%= render "layouts/footer" %>
     <%= render "layouts/signup_modal" unless user_signed_in? %>
-  <% end %>
-  <% if @shell %>
-    <script>
-      if (!document.title) {
-        document.title = document.getElementsByTagName("TITLE")[1].textContent
-      }
-    </script>
   <% end %>
   <div id="i18n-translations" data-translations="<%= { I18n.locale.to_sym => { core: I18n::JS.translations[I18n.locale.to_sym][:core] } }.to_json %>"></div>
   </body>
