@@ -56,13 +56,14 @@
       <li>Navigate to
         <a href="<%= app_url(user_settings_path(:organization)) %>"><%= app_url(user_settings_path(:organization)) %></a>
       </li>
-      <li>Paste the secret code below and click <b>Join Organization</b></li>
+      <li>Paste the secret code below and click <b>Join fuck Organization</b></li>
     </ol>
     <p>
       Your secret code is:
-      <clipboard-copy for="settings-org-secret" onclick="nextElementSibling.hidden = false">
+      <clipboard-copy for="settings-org-secret" onclick="nextElementSibling.hidden = false" data-controller="copy-clipboard">
         <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="Organization secret (to be rotated regularly)">
         <%= inline_svg_tag("copy.svg", aria: true, class: "crayons-icon", title: "Copy to clipboard") %>
+        <button data-action="click->copy-clipboard#handleCopyClick">
       </clipboard-copy>
       <span class="copy-text-announcer" id="copy-text-announcer" role="alert" hidden>Copied to clipboard!</span>
   </div>
