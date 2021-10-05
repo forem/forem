@@ -307,9 +307,9 @@
     js-tokens "^4.0.0"
 
 "@babel/parser@^7.1.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.7", "@babel/parser@^7.13.12", "@babel/parser@^7.15.4", "@babel/parser@^7.15.5", "@babel/parser@^7.7.0", "@babel/parser@^7.7.2":
-  version "7.15.7"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.15.7.tgz#0c3ed4a2eb07b165dfa85b3cc45c727334c4edae"
-  integrity sha512-rycZXvQ+xS9QyIcJ9HXeDWf1uxqlbVFAUq0Rq0dbc50Zb/+wUe/ehyfzGfm9KZZF0kBejYgxltBXocP+gKdL2g==
+  version "7.15.6"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.15.6.tgz#043b9aa3c303c0722e5377fef9197f4cf1796549"
+  integrity sha512-S/TSCcsRuCkmpUuoWijua0Snt+f3ewU/8spLo+4AXJCZfT0bVCzLD5MuOKdrx0mlAptbKzn5AdgEIIKXxXkz9Q==
 
 "@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining@^7.15.4":
   version "7.15.4"
@@ -1861,7 +1861,7 @@
     util-deprecate "^1.0.2"
     uuid-browser "^3.1.0"
 
-"@storybook/addon-docs@^6.3.7":
+"@storybook/addon-docs@^6.3.9":
   version "6.3.9"
   resolved "https://registry.yarnpkg.com/@storybook/addon-docs/-/addon-docs-6.3.9.tgz#34b87eb5c5059bb98bf09700b60470c8d35fbb58"
   integrity sha512-UgujxJei5xejFpAfW40TdoDJnnfeKUPrp6QWMjMRcMG3+uW69VWviw4p3qzS9phO5vQJsINpRT8Bu0aGz2TpJw==
