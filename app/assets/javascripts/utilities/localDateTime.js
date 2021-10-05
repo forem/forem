@@ -12,7 +12,7 @@
   see <https://developer.mozilla.org//docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat>
   for more information.
 */
-var localDateTimeLocale = typeof locale === 'undefined' ? 'en-US' : locale; // for webpack tests where no asset pipeline variable supplied
+var localDateTimeLocale = typeof locale === 'undefined' ? 'en' : locale; // for webpack tests where no asset pipeline variable supplied
 
 function timestampToLocalDateTime(timestamp, locale, options) {
   if (!timestamp) {

@@ -2,11 +2,7 @@
   "articles": {
     "duration": "Video duration",
     "for_org": "<0> for </0><1>%{org}</1>",
-    "pinned": {
-      "after": "",
-      "before": "Pinned",
-      "post": " post"
-    },
+    "pinned": "Pinned<0>\u00A0post</0>",
     "reading_time_one": "%{count} min read",
     "reading_time_other": "%{count} min read",
     "report": "Report abuse",
@@ -148,8 +144,8 @@
     "all_one": "See all %{count} comments",
     "all_other": "See all %{count} comments",
     "blocked": "[blocked content]",
-    "counts_one": "%{count} <0>\u0080comment</0>",
-    "counts_other": "%{count} <0>\u0080comments</0>",
+    "counts_one": "%{count}<0>\u00A0comment</0>",
+    "counts_other": "%{count}<0>\u00A0comments</0>",
     "delete": "Are you SURE you want to delete this comment?",
     "hide": "Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.\n\nAll child comments in this thread will also be hidden.\n\nFor further actions, you may consider blocking this person and/or reporting abuse.",
     "messages": {
@@ -550,8 +546,8 @@
     "unflag": "Unflag %{user}"
   },
   "reactions": {
-    "counts_one": "%{count} <0>\u0080reaction</0>",
-    "counts_other": "%{count} <0>\u0080reactions</0>",
+    "counts_one": "%{count}<0>\u00A0reaction</0>",
+    "counts_other": "%{count}<0>\u00A0reactions</0>",
     "number": "Number of reactions"
   },
   "readingList": {

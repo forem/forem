@@ -28,11 +28,9 @@ export const CommentsCount = ({ count, articlePath }) => {
         tagName="a"
       >
         <span title={i18next.t('comments.number')}>
-          <span className="crayons-reaction__count">
           <Trans i18nKey="comments.counts" values={{count}}
             // eslint-disable-next-line react/jsx-key
             components={[<span className="hidden s:inline" />]} />
-          </span>
         </span>
       </Button>
     );

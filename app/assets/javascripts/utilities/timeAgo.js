@@ -2,7 +2,7 @@
 
 // workaround for webpack tests
 if (typeof i18next === 'undefined') {
-  const timeAgoLocale = typeof locale === 'undefined' ? 'en-US' : locale;
+  const timeAgoLocale = typeof locale === 'undefined' ? 'en' : locale;
   // eslint-disable-next-line no-undef
   var i18next = require('../lib/i18next');
   i18next.init({

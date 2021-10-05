@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../common-prop-types/article-prop-types';
 import {
@@ -15,7 +16,6 @@ import {
   Video,
 } from './components';
 import { PodcastArticle } from './PodcastArticle';
-import { i18next } from '@utilities/locale';
 
 export const Article = ({
   article,
@@ -99,15 +99,9 @@ export const Article = ({
                 >
                   <path d="M22.314 10.172l-1.415 1.414-.707-.707-4.242 4.242-.707 3.536-1.415 1.414-4.242-4.243-4.95 4.95-1.414-1.414 4.95-4.95-4.243-4.242 1.414-1.415L8.88 8.05l4.242-4.242-.707-.707 1.414-1.415z" />
                 </svg>
-                {
-                  i18next.t(
-                    'articles.pinned.before',
-                  ) /* TODO: decent react i18n interpolation, copy from yml when ready */
-                }
-                <span class="hidden s:inline">
-                  {i18next.t('articles.pinned.post')}
-                </span>
-                {i18next.t('articles.pinned.after')}
+                <Trans i18nKey="articles.pinned"
+                  // eslint-disable-next-line react/jsx-key
+                  components={[<span class="hidden s:inline" />]} />
               </div>
             )}
           </div>

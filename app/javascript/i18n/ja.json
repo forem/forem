@@ -2,11 +2,7 @@
   "articles": {
     "duration": "Video duration",
     "for_org": "<0> が </0><1>%{org}</1><0> へ執筆</0>",
-    "pinned": {
-      "after": "",
-      "before": "要注目",
-      "post": "投稿"
-    },
+    "pinned": "要注目<0>投稿</0>",
     "reading_time_other": "%{count} 分で読める",
     "report": "通報する",
     "save": {
