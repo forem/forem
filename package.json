@@ -80,7 +80,7 @@
   "devDependencies": {
     "@storybook/addon-a11y": "^6.3.9",
     "@storybook/addon-actions": "^6.3.7",
-    "@storybook/addon-docs": "^6.3.7",
+    "@storybook/addon-docs": "^6.3.9",
     "@storybook/addon-knobs": "^6.2.9",
     "@storybook/addon-links": "^6.3.9",
     "@storybook/addon-notes": "^5.3.21",
