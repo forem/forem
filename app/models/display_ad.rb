@@ -6,10 +6,9 @@ class DisplayAd < ApplicationRecord
                                             "Sidebar Left (Second Position)",
                                             "Sidebar Right"].freeze
 
-  belongs_to :organization
+  belongs_to :organization, optional: true
   has_many :display_ad_events, dependent: :destroy
 
-  validates :organization_id, presence: true
   validates :placement_area, presence: true,
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
