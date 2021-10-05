@@ -8,10 +8,9 @@ RSpec.describe DisplayAd, type: :model do
     describe "builtin validations" do
       subject { display_ad }
 
-      it { is_expected.to belong_to(:organization) }
+      it { is_expected.to belong_to(:organization).optional }
       it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
 
-      it { is_expected.to validate_presence_of(:organization_id) }
       it { is_expected.to validate_presence_of(:placement_area) }
       it { is_expected.to validate_presence_of(:body_markdown) }
     end

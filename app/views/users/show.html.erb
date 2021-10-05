@@ -5,6 +5,10 @@
 
 <%= content_for :page_meta do %>
   <%= render "users/meta" %>
+  <% if @user.score.negative? || @user.suspended? %>
+    <meta name="robots" content="noindex">
+    <meta name="robots" content="nofollow">
+  <% end %>
 <% end %>
 
 <% unless internal_navigation? || user_signed_in? %>

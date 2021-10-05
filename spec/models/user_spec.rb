@@ -541,6 +541,40 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "spam" do
+    before do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
+      allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(
+        ["yahoomagoo gogo", "testtestetest", "magoo.+magee"],
+      )
+    end
+
+    it "creates vomit reaction if possible spam" do
+      user.name = "Hi my name is Yahoomagoo gogo"
+      user.save
+      expect(Reaction.last.category).to eq("vomit")
+      expect(Reaction.last.reactable_id).to eq(user.id)
+    end
+
+    it "creates vomit reaction if possible spam based on pattern" do
+      user.name = "Hi my name is magoo to the magee"
+      user.save
+      expect(Reaction.last.category).to eq("vomit")
+      expect(Reaction.last.reactable_id).to eq(user.id)
+    end
+
+    it "does not create vomit reaction if does not have matching title" do
+      user.save
+      expect(Reaction.last).to be nil
+    end
+
+    it "does not create vomit reaction if does not have pattern match" do
+      user.name = "Hi my name is magoo to"
+      user.save
+      expect(Reaction.last).to be nil
+    end
+  end
+
   describe "#suspended?" do
     subject { user.suspended? }
 
@@ -659,10 +693,10 @@ RSpec.describe User, type: :model do
 
   describe "#calculate_score" do
     it "calculates a score" do
-      create(:article, featured: true, user: user)
+      user.update_column(:badge_achievements_count, 3)
 
       user.calculate_score
-      expect(user.score).to be_positive
+      expect(user.score).to eq(30)
     end
   end
 

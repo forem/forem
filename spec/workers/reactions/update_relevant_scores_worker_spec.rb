@@ -33,6 +33,13 @@ RSpec.describe Reactions::UpdateRelevantScoresWorker, type: :worker, throttled_c
       end
     end
 
+    it "recalculates score if reactable is User" do
+      user = create(:user)
+      reaction.update_columns(category: "vomit", reactable_id: user.id, reactable_type: "User", points: -50)
+      worker.perform(reaction.id)
+      expect(user.reload.score).to be < -1
+    end
+
     it "updates the reactable Comment" do
       updated_at = 1.day.ago
       comment.update_columns(updated_at: updated_at)

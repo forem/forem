@@ -1,6 +1,8 @@
 class PollSkipsController < ApplicationController
   before_action :authenticate_user!, only: %i[create]
 
+  POLL_SKIPS_PERMITTED_PARAMS = %i[poll_id].freeze
+
   def create
     poll = Poll.find(poll_skips_params[:poll_id])
     poll.poll_skips.create_or_find_by(user_id: current_user.id)
@@ -16,7 +18,6 @@ class PollSkipsController < ApplicationController
   private
 
   def poll_skips_params
-    accessible = %i[poll_id]
-    params.require(:poll_skip).permit(accessible)
+    params.require(:poll_skip).permit(POLL_SKIPS_PERMITTED_PARAMS)
   end
 end
