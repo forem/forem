@@ -51,11 +51,9 @@ module Admin
       @display_ad = DisplayAd.find(params[:id])
 
       if @display_ad.destroy
-        flash[:success] = "Display Ad has been deleted!"
-        redirect_to admin_display_ads_path
+        render json: { message: "Display Ad has been deleted!" }, status: :ok
       else
-        flash[:danger] = "Something went wrong with deleting the Display Ad."
-        render :edit
+        render json: { error: "Something went wrong with deleting the Display Ad." }, status: :unprocessable_entity
       end
     end
 
