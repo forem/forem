@@ -41,19 +41,19 @@ fr:
     page_title: Tableau de bord
   date:
     abbr_month_names:
-      -
-      - Janv
-      - Fevr
-      - Mars
-      - Avril
-      - Mai
-      - Juin
-      - Juil
-      - Aout
-      - Sept
-      - Oct
-      - Nov
-      - Dec
+    -
+    - Janv
+    - Fevr
+    - Mars
+    - Avril
+    - Mai
+    - Juin
+    - Juil
+    - Aout
+    - Sept
+    - Oct
+    - Nov
+    - Dec
   errors:
     messages:
       accepted: doit être accepté
