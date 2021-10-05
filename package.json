@@ -12,7 +12,9 @@
     "lib": "lib",
     "test": "test"
   },
-  "resolutions": { "glob-parent": "^6.0.1" },
+  "resolutions": {
+    "glob-parent": "^6.0.1"
+  },
   "scripts": {
     "prepare": "husky install",
     "generate-storybook-themes": "sass -q app/assets/stylesheets/themes:app/javascript/storybook-static/themes && bin/generate-css-utility-classes-docs.js",
@@ -141,6 +143,8 @@
     "@github/clipboard-copy-element": "^1.1.2",
     "@github/time-elements": "3.1.2",
     "@honeybadger-io/webpack": "^1.2.0",
+    "@hotwired/stimulus": "3.0.0",
+    "@hotwired/stimulus-webpack-helpers": "1.0.1",
     "@rails/ujs": "6.1.4",
     "@rails/webpacker": "5.4.3",
     "@reach/combobox": "^0.16.1",
@@ -169,7 +173,6 @@
     "prop-types": "^15.7.2",
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",
-    "stimulus": "^2.0.0",
     "web-share-wrapper": "^0.2.2"
   },
   "jest": {
