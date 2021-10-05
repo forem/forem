@@ -85,8 +85,6 @@
   <% end %>
 
   <% if policy(:video).new? && policy(:video).enabled? %>
-    <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant>
-    </a>
     <li>
       <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant> <%= t("dashboard.upload_a_video") %></a>
     </li>
