@@ -163,6 +163,7 @@ Please see our installation guides, such as the
 - [@jgaskins](https://dev.to/jgaskins)
 - [@djuber](https://dev.to/djuber)
 - [@rt4914](https://dev.to/rt4914)
+- [@jeremyf](https://dev.to/jeremyf)
 
 ## Vulnerability disclosure
 
