@@ -34,6 +34,11 @@ fr:
     view: Vue
     week: Semaine
     year: Année
+  dashboard:
+    following_users: Utilisateurs suivis
+    loading: Chargement en cours...
+    not_following_any_users: Vous ne suivez aucun utilisateur...
+    page_title: Tableau de bord
   date:
     abbr_month_names:
     -
@@ -97,8 +102,3 @@ fr:
       unparsable: Le rss du podcast n'a pas pu être analysé
       unplayable: Ce podcast peut ne pas être lisible dans le navigateur
       unreachable: Le feed_url du podcast n'est pas accessible
-  dashboard:
-    page_title: Tableau de bord
-    following_users: Utilisateurs suivis
-    loading: Chargement en cours...
-    not_following_any_users: Vous ne suivez aucun utilisateur...
