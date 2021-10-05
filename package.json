@@ -119,7 +119,7 @@
     "jest": "27.2.4",
     "jest-axe": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
-    "jest-watch-typeahead": "^0.6.3",
+    "jest-watch-typeahead": "^1.0.0",
     "jsdom": "^16.7.0",
     "lint-staged": "^11.2.0",
     "markdown-loader": "^6.0.0",
