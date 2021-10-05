@@ -33,7 +33,8 @@ export const TagsFollowed = ({ tags = [] }) => {
 };
 
 TagsFollowed.displayName = 'TagsFollowed';
-const tagPropShap = PropTypes.shape({
+
+const tagPropShape = PropTypes.shape({
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   hotness_score: PropTypes.number.isRequired,
@@ -43,7 +44,7 @@ const tagPropShap = PropTypes.shape({
 });
 
 TagsFollowed.propTypes = {
-  testTagsFollowedProps (props, tags, TagsFollowed) {
+  testTagsFollowedProps(props, tags, TagsFollowed) {
     const tagsProp = props[tags];
 
     if (tagsProp) {
@@ -52,7 +53,7 @@ TagsFollowed.propTypes = {
 
       tagsProp.forEach((elem) =>
         PropTypes.checkPropTypes(
-          tagPropShap,
+          tagPropShape,
           elem,
           'prop',
           `${TagsFollowed}.${tags}`,
