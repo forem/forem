@@ -88,6 +88,11 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include(*titles)
       end
 
+      it "includes contact us on RSS page properly" do
+        get user_settings_path(:extensions)
+        expect(response.body).to include('<a href="/contact">')
+      end
+
       it "renders heads up dupe account message with proper param" do
         get "/settings?state=previous-registration"
 
