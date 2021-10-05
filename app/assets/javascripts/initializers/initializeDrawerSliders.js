@@ -1,4 +1,4 @@
-/* global InstantClick, slideSidebar */
+/* global InstantClick, slideSidebar, makeRightSidebarStickyBottom */
 
 function initializeDrawerSliders() {
   if (document.getElementById('on-page-nav-controls')) {
@@ -40,4 +40,6 @@ function initializeDrawerSliders() {
       InstantClick.display(url);
     });
   }
+
+  makeRightSidebarStickyBottom();
 }

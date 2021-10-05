@@ -235,19 +235,14 @@
     left: 0;
   }
 }
-.crayons-layout__sidebar-right-articles {
-  overflow-y: auto;
-}
 
 .crayons-layout__sidebar-right {
   &.swiped-in {
     right: 0;
   }
 
-  position: sticky;
-  position: -webkit-sticky;
-  height: 90vh;
-  top: calc(var(--header-height) + var(--layout-padding));
+  height: 80vh;
+  scroll-behavior: smooth;
 }
 
 // Zen Mode
