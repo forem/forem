@@ -5,4 +5,5 @@ export const defaultChildrenPropTypes = PropTypes.oneOfType([
   PropTypes.arrayOf(PropTypes.node),
   PropTypes.node,
   PropTypes.object,
+  PropTypes.arrayOf(PropTypes.object),
 ]);

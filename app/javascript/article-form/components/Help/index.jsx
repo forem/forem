@@ -49,11 +49,8 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
     });
   };
 
-  const {
-    liquidShowing,
-    markdownShowing,
-    frontmatterShowing,
-  } = helpSectionVisibility;
+  const { liquidShowing, markdownShowing, frontmatterShowing } =
+    helpSectionVisibility;
 
   return (
     <div className="crayons-article-form__aside">
@@ -96,10 +93,15 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
   );
 };
 
+Help.defaultProps = {
+  helpFor: '',
+  helpPosition: '',
+};
+
 Help.propTypes = {
   previewShowing: PropTypes.bool.isRequired,
-  helpFor: PropTypes.string.isRequired,
-  helpPosition: PropTypes.string.isRequired,
+  helpFor: PropTypes.string,
+  helpPosition: PropTypes.number,
   version: PropTypes.string.isRequired,
 };
 

@@ -74,7 +74,8 @@ EditorActions.propTypes = {
   edited: PropTypes.bool.isRequired,
   version: PropTypes.string.isRequired,
   onClearChanges: PropTypes.func.isRequired,
-  passedData: PropTypes.string.isRequired,
+  passedData: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
+    .isRequired,
   onConfigChange: PropTypes.func.isRequired,
   submitting: PropTypes.bool.isRequired,
 };
