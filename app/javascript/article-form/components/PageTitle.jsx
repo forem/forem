@@ -28,9 +28,9 @@ export const PageTitle = ({ organizations, organizationId, onToggle }) => {
 PageTitle.defaultProps = {
   organizationId: '',
 };
+
 PageTitle.propTypes = {
-  organizations: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
-    .isRequired,
+  organizations: PropTypes.oneOfType([PropTypes.array]).isRequired,
   organizationId: PropTypes.string,
   onToggle: PropTypes.func.isRequired,
 };

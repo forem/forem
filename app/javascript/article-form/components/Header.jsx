@@ -32,14 +32,14 @@ export const Header = ({
 };
 
 Header.defaultProps = {
-  organisationId: '',
+  organizationId: '',
 };
+
 Header.propTypes = {
   displayModal: PropTypes.func.isRequired,
   onPreview: PropTypes.func.isRequired,
   previewShowing: PropTypes.bool.isRequired,
-  organizations: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
-    .isRequired,
+  organizations: PropTypes.oneOfType([PropTypes.array]).isRequired,
   organizationId: PropTypes.string,
   onToggle: PropTypes.func.isRequired,
   siteLogo: PropTypes.string.isRequired,

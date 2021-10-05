@@ -24,9 +24,7 @@ export const ErrorList = ({ errors }) => {
 };
 
 ErrorList.propTypes = {
-  errors: PropTypes.objectOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  ).isRequired,
+  errors: PropTypes.oneOfType([PropTypes.object]).isRequired,
 };
 
 ErrorList.displayName = 'ErrorList';

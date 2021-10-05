@@ -124,7 +124,7 @@ Button.defaultProps = {
   tagName: 'button',
   size: 'default',
   contentType: 'text',
-  variant: undefined,
+  variant: 'primary',
 };
 
 Button.propTypes = {

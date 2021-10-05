@@ -492,6 +492,7 @@ Tags.defaultProps = {
   listing: '',
   category: '',
 };
+
 Tags.propTypes = {
   defaultValue: PropTypes.string.isRequired,
   onInput: PropTypes.func.isRequired,
