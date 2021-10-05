@@ -97,6 +97,10 @@ fr:
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
+  videos:
+    new:
+      title: 🎥 Télécharger un fichier vidéo 🙌
+      beta_info_html: <strong>Vidéo est en bêta:</strong> E-mail %{email_link} si vous rencontrez des difficultés.
   podcasts:
     statuses:
       ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast
