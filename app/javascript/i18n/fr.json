@@ -1,23 +1,24 @@
 {
   "articles": {
     "duration": "Video duration",
-    "for_org": "<0> が </0><1>%{org}</1><0> へ執筆</0>",
+    "for_org": "<0> for </0><1>%{org}</1>",
     "pinned": {
       "after": "",
-      "before": "要注目",
-      "post": "投稿"
+      "before": "Pinned",
+      "post": " post"
     },
-    "reading_time_other": "%{count} 分で読める",
-    "report": "通報する",
+    "reading_time_one": "%{count} min read",
+    "reading_time_other": "%{count} min read",
+    "report": "Report abuse",
     "save": {
-      "save": "保存",
-      "saved": "保存済",
-      "unsave": "解除"
+      "save": "Save",
+      "saved": "Saved",
+      "unsave": "Unsave"
     },
-    "timeAgo": "（%{ago}）"
+    "timeAgo": " (%{ago})"
   },
   "chat": {
-    "announcement": "Connect はアプリケーションのコア機能から除外されることになりました。\u00A0<0>詳細はこちらのお知らせより »</0>",
+    "announcement": "We have made the decision to deprecate Connect as core functionality from the application.  <0>Read the announcement to learn more »</0>.",
     "bottom": "Scroll to Bottom",
     "compose": {
       "aria_label": "Compose a message",
@@ -65,26 +66,26 @@
       "group": "group"
     },
     "join": {
-      "accept": " 承認",
-      "empty": "承認待ちの招待はありません。",
-      "got": "<b>%{channel}</b> への参加を招待されています。",
-      "heading": "申請一覧 <0>🤝</0>",
-      "join": "<b>%{name}</b> が <b>%{channel}</b> へ参加を申請しました",
-      "message1": "%{user} さん、はじめまして",
-      "message2": "あなたはこのグループのメンバーではありません。参加するには申請してください。",
-      "reject": " 拒否",
-      "request": " %{channel} に参加 ",
-      "requested": " 参加を申請しました ",
+      "accept": " Accept",
+      "empty": "You have no pending invitations.",
+      "got": "You got invitation to join <b>%{channel}</b>.",
+      "heading": "Request Center <0>🤝</0>",
+      "join": "<b>%{name}</b> requested to join <b>%{channel}</b>",
+      "message1": "Hey %{user} !",
+      "message2": "You are not a member of this group yet. Send a request to join.",
+      "reject": " Reject",
+      "request": " Join %{channel} ",
+      "requested": " Requested Already ",
       "toggle": "Toggle request manager"
     },
     "loading": "Loading user",
     "messages": {
-      "direct": "あなたと <0>%{slug}</0> は相互フォローしているため、連絡相手になりました。通信内容は<strong>すべて</strong><2>code of conduct</2>を守ってください。",
-      "mentioned": "あなたが <0>%{channel}</0> で呼ばれました",
-      "new": "<0>%{channel}</0> の新着メッセージ",
+      "direct": "You and <0>%{slug}</0> are connected because you both follow each other. All interactions <1>must</1> abide by the <2>code of conduct</2>.",
+      "mentioned": "You got mentioned in <0>%{channel}</0>",
+      "new": "New Message from <0>%{channel}</0>",
       "no_data": "Couldn't find user data on page.",
-      "open": "%{channel} に参加しました！通信内容は<strong>すべて</strong><1>code of conduct</1>を守ってください。",
-      "sorry": "<0>@%{user}</0> さん、ごめんなさい！%{message}"
+      "open": "You have joined %{channel}! All interactions <0>must</0> abide by the <1>code of conduct</1>.",
+      "sorry": "Sorry <0>@%{user}</0> %{message}"
     },
     "meta": {
       "title_new": "New Message 👋"
@@ -140,14 +141,16 @@
     "copied": "Copied!",
     "copy": "Copy...",
     "copy_markdown": "Copy Markdown for image",
-    "message": "コピーしました"
+    "message": "Copied to Clipboard"
   },
   "comments": {
-    "add": "コメントを寄せる",
-    "all_other": "%{count} 件のコメントをすべて見る",
+    "add": "Add comment",
+    "all_one": "See all %{count} comments",
+    "all_other": "See all %{count} comments",
     "blocked": "[blocked content]",
-    "counts_other": "<0>コメント</0> %{count} <0>件</0>",
-    "delete": "本当にこのコメントを削除してもよろしいですか？",
+    "counts_one": "%{count} <0>\u0080comment</0>",
+    "counts_other": "%{count} <0>\u0080comments</0>",
+    "delete": "Are you SURE you want to delete this comment?",
     "hide": "Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.\n\nAll child comments in this thread will also be hidden.\n\nFor further actions, you may consider blocking this person and/or reporting abuse.",
     "messages": {
       "failure": "comment already exists",
@@ -202,7 +205,7 @@
       "number": "Only one image can be dropped at a time.",
       "uploading": "Uploading..."
     },
-    "create": "記事を作成",
+    "create": "Create Post",
     "help": {
       "basic": {
         "desc1": "You are currently using the basic markdown editor that uses ",
@@ -258,10 +261,10 @@
       }
     },
     "image": {
-      "aria_label": "画像をアップロードする",
-      "icon": "画像をアップロード",
-      "text": "画像をアップロード",
-      "uploading": "アップロード中…"
+      "aria_label": "Upload an image",
+      "icon": "Upload image",
+      "text": "Upload image",
+      "uploading": "Uploading..."
     },
     "leave": {
       "no": "No, keep editing",
@@ -271,31 +274,31 @@
     },
     "new_title": "New post title here...",
     "options": {
-      "done": "完了",
-      "heading": "記事の設定",
+      "done": "Done",
+      "heading": "Post options",
       "series": {
-        "aria_label": "既存の連載の中から一つ選んでください",
-        "desc": "この記事は連載の一部ですか？新しい連載名をつけてください（2 つめの記事ができると連載として表示されます）",
-        "existing": "既存の連載: ",
-        "label": "連載",
-        "select": "選択…"
+        "aria_label": "Select one of the existing series",
+        "desc": "Will this post be part of a series? Give the series a unique name. (Series visible once it has multiple posts)",
+        "existing": "Existing series: ",
+        "label": "Series",
+        "select": "Select..."
       },
       "title": "Post options",
       "unpublish": "Unpublish post",
       "url": {
-        "desc": "この記事が別の場所（自分のブログなど）で公開されている場合、メタタグの <0>canonical_url</0> を変更します。",
-        "label": "正規 URL"
+        "desc": "Change meta tag <0>canonical_url</0> if this post was first published elsewhere (like your own blog).",
+        "label": "Canonical URL"
       }
     },
     "personal": "Personal",
-    "publish": "公開",
-    "publishing": "公開実行中…",
-    "revert": "前回保存した状態に戻します。よろしいですか？",
-    "revert_button": "<0>変更を</0>元に戻す",
-    "save": "変更を保存",
-    "save_draft": "<0>下書きを</0>保存",
-    "saving": "保存中…",
-    "saving_draft": "下書きを保存中…",
+    "publish": "Publish",
+    "publishing": "Publishing...",
+    "revert": "Are you sure you want to revert to the previous save?",
+    "revert_button": "Revert <0>new changes</0>",
+    "save": "Save changes",
+    "save_draft": "Save <0>draft</0>",
+    "saving": "Saving...",
+    "saving_draft": "Saving draft...",
     "tabs": {
       "aria_label": "View post modes",
       "edit": "Edit",
@@ -331,7 +334,7 @@
     "block": "The message will be reported.\n\nWould you like to block this person as well?\n\nThis will:\n- prevent them from commenting on your posts\n- block all notifications from them\n- prevent them from messaging you via chat",
     "blocked": "Your report has been submitted and the user has been blocked",
     "desc": "Thank you for reporting any abuse that violates our <0>code of conduct</0> or <1>terms and conditions</1>. We continue to try to make this environment a great one for everybody.",
-    "harassment": "嫌がらせ・誹謗中傷",
+    "harassment": "Harassment or hate speech",
     "heading": "Report Abuse",
     "listings": "Inappropriate listings message/category",
     "message": "Message to Report",
@@ -492,10 +495,10 @@
     },
     "finish": "Finish",
     "intro": {
-      "coc1": "You agree to uphold our\u00A0",
+      "coc1": "You agree to uphold our ",
       "coc2": "Code of Conduct",
       "coc3": ".",
-      "terms1": "You agree to our\u00A0",
+      "terms1": "You agree to our ",
       "terms2": "Terms and Conditions",
       "terms3": ".",
       "title": "%{user} — welcome to %{community}!"
@@ -507,24 +510,27 @@
     },
     "skip": "Skip for now",
     "tag": {
-      "aria_label": "%{tag} をフォロー",
-      "follow": "フォロー",
-      "following": "フォロー中",
-      "status_other": "選択したタグ %{count} 個",
-      "subtitle": "フォローしたタグに合わせて記事をおすすめします。",
-      "title": "興味のある話題はなんですか？"
+      "aria_label": "Follow %{tag}",
+      "follow": "Follow",
+      "following": "Following",
+      "status_one": "%{count} tag selected",
+      "status_other": "%{count} tags selected",
+      "subtitle": "Follow tags to customize your feed",
+      "title": "What are you interested in?"
     },
     "user": {
-      "aria_label": "%{user} をフォロー",
-      "deselect": "すべて解除",
-      "follow": "フォロー",
-      "following": "フォロー中",
-      "select_other": "%{count} 人を選択",
-      "status_all_other": "現在 %{count} 人全員をフォロー中",
-      "status_no": "誰もフォローしていません",
-      "status_other": "現在 %{count} 人をフォロー中",
-      "subtitle": "いくつかの設定をしていきましょう。",
-      "title": "おすすめのユーザーをフォロー"
+      "aria_label": "Follow %{user}",
+      "deselect": "Deselect all",
+      "follow": "Follow",
+      "following": "Following",
+      "select_one": "Select %{count} person",
+      "select_other": "Select all %{count} people",
+      "status_all_other": "You're following %{count} people (everyone) -",
+      "status_no": "You're not following anyone",
+      "status_one": "You're following %{count} person",
+      "status_other": "You're following %{count} people -",
+      "subtitle": "Let's review a few things first",
+      "title": "Suggested people to follow"
     }
   },
   "org": {
@@ -537,14 +543,15 @@
   },
   "profile": {
     "block": "Are you sure you want to block this person? This will:\n- prevent them from commenting on your posts\n- block all notifications from them\n- prevent them from messaging you via Connect\n- hide their posts from your feed",
-    "flag": "%{user} を警戒",
+    "flag": "Flag %{user}",
     "report": "Report Abuse",
     "to_flag": "Are you sure you want to flag this person? This will make all of their posts less visible.",
     "to_unflag": "Are you sure you want to unflag this person? This will make all of their posts visible again.",
-    "unflag": "%{user} を警戒解除"
+    "unflag": "Unflag %{user}"
   },
   "reactions": {
-    "counts_other": "<0>反響</0> %{count} <0>件</0>",
+    "counts_one": "%{count} <0>\u0080reaction</0>",
+    "counts_other": "%{count} <0>\u0080reactions</0>",
     "number": "Number of reactions"
   },
   "readingList": {
@@ -574,7 +581,7 @@
   "search": {
     "aria_label": "search",
     "aria_term": "Search term",
-    "empty": "一致する結果がありません",
+    "empty": "No results match that query",
     "placeholder": "Search..."
   },
   "stats": {
@@ -601,7 +608,8 @@
     "aria_label": "Post Tags",
     "hide": "Hide Rules",
     "label": "Tags",
-    "placeholder_other": "タグを最大 %{count} つまで",
+    "placeholder_one": "Add up to %{count} tags...",
+    "placeholder_other": "Add up to %{count} tags...",
     "rules": "Some tags have rules and guidelines determined by community moderators",
     "view": "View Rules"
   },
@@ -614,13 +622,13 @@
   },
   "users": {
     "card": {
-      "created_at": "登録日",
+      "created_at": "Joined",
       "education": "Education",
-      "email": "メール",
-      "location": "場所",
+      "email": "Email",
+      "location": "Location",
       "work": "Work"
     },
-    "details": "%{user} のプロフィール詳細",
-    "follow": "フォロー"
+    "details": "%{user} profile details",
+    "follow": "Follow"
   }
 }

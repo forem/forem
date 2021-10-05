@@ -4,7 +4,7 @@ exports[`<Article /> component should render a rich feed 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body
-    data-locale="en-US"
+    data-locale="en"
   >
     <div>
       <article
@@ -37,116 +37,6 @@ Object {
           <div
             class="crayons-story__body"
           >
-            <div
-              class="crayons-story__indention"
-            >
-              <div
-                class="crayons-story__middle"
-              >
-                <h3
-                  class="crayons-story__title with-content-font"
-                >
-                  <a
-                    href="/some-post/path"
-                    id="article-link-62407"
-                  >
-                    <span>
-                      Unbranded Home Loan Account
-                    </span>
-                  </a>
-                </h3>
-                <div
-                  class="crayons-story__auxiliary"
-                >
-                  <div
-                    class="crayons-story__tags"
-                  >
-                    <a
-                      class="crayons-tag"
-                      href="/t/javascript"
-                      style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
-                    >
-                      <span
-                        class="crayons-tag__prefix"
-                      >
-                        #
-                      </span>
-                      javascript
-                    </a>
-                    <a
-                      class="crayons-tag"
-                      href="/t/ruby"
-                    >
-                      <span
-                        class="crayons-tag__prefix"
-                      >
-                        #
-                      </span>
-                      ruby
-                    </a>
-                    <a
-                      class="crayons-tag"
-                      href="/t/go"
-                    >
-                      <span
-                        class="crayons-tag__prefix"
-                      >
-                        #
-                      </span>
-                      go
-                    </a>
-                  </div>
-                  <small
-                    class="crayons-story__tertiary fs-xs mr-2 mb-2"
-                  >
-                    <span
-                      class="whitespace-nowrap"
-                    >
-                       • 
-                    </span>
-                    <span
-                      class="whitespace-nowrap"
-                    >
-                      100 words/chars
-                    </span>
-                  </small>
-                </div>
-              </div>
-              <div
-                class="crayons-story__bottom"
-              >
-                <div
-                  class="crayons-story__details"
-                >
-                  <a
-                    class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--story crayons-reaction"
-                    data-testid="add-a-comment"
-                    href="/some-post/path#comments"
-                  >
-                    <svg
-                      class="crayons-icon"
-                      height="24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"
-                      />
-                    </svg>
-                    <span
-                      class="inline s:hidden"
-                    >
-                      0
-                    </span>
-                    <span
-                      class="hidden s:inline"
-                    >
-                      Add comment
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
             <div
               class="crayons-story__top"
             >
@@ -269,38 +159,10 @@ Object {
               <div
                 class="crayons-story__tags"
               >
-                <div
-                  class="crayons-story__details"
-                >
-                  <a
-                    class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
-                    data-testid="add-a-comment"
-                    href="/some-post/path#comments"
-                  >
-                    <svg
-                      class="crayons-icon"
-                      height="24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"
-                      />
-                    </svg>
-                    <span
-                      class="inline s:hidden"
-                    >
-                      0
-                    </span>
-                    <span
-                      class="hidden s:inline"
-                    >
-                      [missing "en.core.add_comment" translation]
-                    </span>
-                  </a>
-                </div>
-                <div
-                  class="crayons-story__save"
+                <a
+                  class="crayons-tag"
+                  href="/t/javascript"
+                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
                 >
                   <span
                     class="crayons-tag__prefix"
@@ -361,7 +223,7 @@ Object {
                     <span
                       class="hidden s:inline"
                     >
-                      Add Comment
+                      Add comment
                     </span>
                   </a>
                 </div>
@@ -421,116 +283,6 @@ Object {
         <div
           class="crayons-story__body"
         >
-          <div
-            class="crayons-story__indention"
-          >
-            <div
-              class="crayons-story__middle"
-            >
-              <h3
-                class="crayons-story__title with-content-font"
-              >
-                <a
-                  href="/some-post/path"
-                  id="article-link-62407"
-                >
-                  <span>
-                    Unbranded Home Loan Account
-                  </span>
-                </a>
-              </h3>
-              <div
-                class="crayons-story__auxiliary"
-              >
-                <div
-                  class="crayons-story__tags"
-                >
-                  <a
-                    class="crayons-tag"
-                    href="/t/javascript"
-                    style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
-                  >
-                    <span
-                      class="crayons-tag__prefix"
-                    >
-                      #
-                    </span>
-                    javascript
-                  </a>
-                  <a
-                    class="crayons-tag"
-                    href="/t/ruby"
-                  >
-                    <span
-                      class="crayons-tag__prefix"
-                    >
-                      #
-                    </span>
-                    ruby
-                  </a>
-                  <a
-                    class="crayons-tag"
-                    href="/t/go"
-                  >
-                    <span
-                      class="crayons-tag__prefix"
-                    >
-                      #
-                    </span>
-                    go
-                  </a>
-                </div>
-                <small
-                  class="crayons-story__tertiary fs-xs mr-2 mb-2"
-                >
-                  <span
-                    class="whitespace-nowrap"
-                  >
-                     • 
-                  </span>
-                  <span
-                    class="whitespace-nowrap"
-                  >
-                    100 words/chars
-                  </span>
-                </small>
-              </div>
-            </div>
-            <div
-              class="crayons-story__bottom"
-            >
-              <div
-                class="crayons-story__details"
-              >
-                <a
-                  class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--story crayons-reaction"
-                  data-testid="add-a-comment"
-                  href="/some-post/path#comments"
-                >
-                  <svg
-                    class="crayons-icon"
-                    height="24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"
-                    />
-                  </svg>
-                  <span
-                    class="inline s:hidden"
-                  >
-                    0
-                  </span>
-                  <span
-                    class="hidden s:inline"
-                  >
-                    Add comment
-                  </span>
-                </a>
-              </div>
-            </div>
-          </div>
           <div
             class="crayons-story__top"
           >
@@ -717,73 +469,7 @@ Object {
                   <span
                     class="hidden s:inline"
                   >
-                    Add Comment
-                  </span>
-                </a>
-              </div>
-              <div
-                class="crayons-story__save"
-              >
-                <span
-                  class="crayons-tag__prefix"
-                >
-                  #
-                </span>
-                javascript
-              </a>
-              <a
-                class="crayons-tag"
-                href="/t/ruby"
-              >
-                <span
-                  class="crayons-tag__prefix"
-                >
-                  #
-                </span>
-                ruby
-              </a>
-              <a
-                class="crayons-tag"
-                href="/t/go"
-              >
-                <span
-                  class="crayons-tag__prefix"
-                >
-                  #
-                </span>
-                go
-              </a>
-            </div>
-            <div
-              class="crayons-story__bottom"
-            >
-              <div
-                class="crayons-story__details"
-              >
-                <a
-                  class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
-                  data-testid="add-a-comment"
-                  href="/some-post/path#comments"
-                >
-                  <svg
-                    class="crayons-icon"
-                    height="24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"
-                    />
-                  </svg>
-                  <span
-                    class="inline s:hidden"
-                  >
-                    0
-                  </span>
-                  <span
-                    class="hidden s:inline"
-                  >
-                    [missing "en.core.add_comment" translation]
+                    Add comment
                   </span>
                 </a>
               </div>

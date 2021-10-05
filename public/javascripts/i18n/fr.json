@@ -10,12 +10,13 @@
       "person": "person",
       "podcast": "podcast"
     },
-    "for_org": "%{- start} が %{- end}%{- org}%{- start} へ執筆%{- end}",
-    "reading_time_other": "%{count} 分で読める",
+    "for_org": "%{- start} for %{- end}%{- org}",
+    "reading_time_one": "%{count} min read",
+    "reading_time_other": "%{count} min read",
     "save": {
-      "initial": "保存",
+      "initial": "Save",
       "remove": "Unsave",
-      "success": "保存済"
+      "success": "Saved"
     }
   },
   "campaign": {
@@ -43,9 +44,10 @@
       "upload": "Upload image",
       "use": "Use a response template"
     },
-    "invalid": "無効なファイルです！",
-    "like": "いいね",
-    "likes_other": "いいね&nbsp;",
+    "invalid": "Invalid file!",
+    "like": "Like",
+    "likes_one": "&nbsp;like",
+    "likes_other": "&nbsp;likes",
     "menu": {
       "aria_label": "Toggle dropdown menu",
       "copy": {
@@ -69,19 +71,21 @@
         "text": "Settings"
       }
     },
-    "num_likes": "%{- likes}%{- num}",
+    "num_likes": "%{- num}%{- likes}",
     "read": {
       "code": "code of conduct",
       "text": "I've read the %{- code}"
     },
-    "replies_other": " ほか %{count} 件の返信",
+    "replies_one": " + %{count} replies",
+    "replies_other": " + %{count} replies",
     "sent": {
       "check": "Check it out",
       "text": "Reply sent — %{- check}"
     },
     "summary": {
-      "count": "%{- start}コメント%{- end} %{count} %{- start}件%{- end}",
-      "empty": "コメントを寄せる"
+      "count": "%{count}%{- start}\u00A0comment%{- end}",
+      "count_plural": "%{count}%{- start}\u00A0comments%{- end}",
+      "empty": "Add\u00A0Comment"
     },
     "thread": "Thread",
     "uploaded": "Uploaded! Paste into editor",
@@ -93,10 +97,10 @@
   },
   "dashboard": {
     "article": {
-      "admin": "管理画面",
-      "edit": "編集",
-      "manage": "状態管理",
-      "stats": "統計"
+      "admin": "Admin",
+      "edit": "Edit",
+      "manage": "Manage",
+      "stats": "Stats"
     },
     "comments": {
       "moderate": "Moderate",
@@ -119,7 +123,8 @@
       "text": "Like"
     },
     "summary": {
-      "count": "%{- start}反響%{- end} %{count} %{- start}件%{- end}"
+      "count": "%{count}%{- start}\u00A0reaction%{- end}",
+      "count_plural": "%{count}%{- start}\u00A0reactions%{- end}"
     }
   },
   "tags": {
@@ -134,14 +139,21 @@
     }
   },
   "unitAgo": {
-    "day_other": "%{count}日前",
-    "hour_other": "%{count}時間前",
-    "min_other": "%{count}分前",
-    "month_other": "%{count}ヶ月前",
-    "now": "たった今",
-    "second_other": "%{count}秒前",
-    "week_other": "%{count}週間前",
-    "year_other": "%{count}年前"
+    "day_one": "1 day ago",
+    "day_other": "%{count} days ago",
+    "hour_one": "1 hour ago",
+    "hour_other": "%{count} hours ago",
+    "min_one": "1 min ago",
+    "min_other": "%{count} mins ago",
+    "month_one": "1 month ago",
+    "month_other": "%{count} months ago",
+    "now": "just now",
+    "second_one": "1 second ago",
+    "second_other": "%{count} seconds ago",
+    "week_one": "1 week ago",
+    "week_other": "%{count} weeks ago",
+    "year_one": "1 year ago",
+    "year_other": "%{count} years ago"
   },
   "userAlertModal": {
     "action_ing": {
@@ -165,17 +177,17 @@
       "reaction": "reaction",
       "user": "user"
     },
-    "gotit": "了解",
+    "gotit": "Got it",
     "rateLimit": "Since you recently %{action_past} a %{element}, you’ll need to wait %{timeframe} before %{action_ing} another %{element}.",
     "timeframe": {
-      "a_moment": "しばらく",
+      "a_moment": "a moment",
       "for_a_day": "for a day"
     },
     "error_text": "Your %{element} could not be %{action_past} due to an error: %{error}",
     "server_error_text": "Your %{element} could not be %{action_past} due to a server error",
     "title": "Error %{action_ing} %{element}",
-    "wait": "%{timeframe}お待ちください",
-    "why": "待機時間の理由"
+    "wait": "Wait %{timeframe}...",
+    "why": "Why do I have to wait?"
   },
   "users": {
     "details": "%{user} profile details"
