@@ -18,6 +18,7 @@ fr:
     latest: Récent
     like: Aime
     listings: Annonces
+    loading: Chargement en cours...
     log_in: Se connecter
     month: Mois
     more_from: Plus de la part de
@@ -37,7 +38,6 @@ fr:
     year: Année
   dashboard:
     following_users: Utilisateurs suivis
-    loading: Chargement en cours...
     not_following_any_users: Vous ne suivez aucun utilisateur...
     page_title: Tableau de bord
   date:
