@@ -122,6 +122,11 @@ export const EditorFormattingHelp = ({ openModal }) => (
   </div>
 );
 
+EditorFormattingHelp.defaultProps = {
+  toggleModal: () => {
+    /* Do nothing */
+  },
+};
 EditorFormattingHelp.propTypes = {
-  toggleModal: PropTypes.func.isRequired,
+  toggleModal: PropTypes.func,
 };

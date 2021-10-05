@@ -33,12 +33,16 @@ export const Meta = ({
   );
 };
 
+Meta.defaultProps = {
+  mainImage: '',
+};
+
 Meta.propTypes = {
   titleDefaultValue: PropTypes.string.isRequired,
   titleOnChange: PropTypes.func.isRequired,
   tagsDefaultValue: PropTypes.string.isRequired,
   tagsOnInput: PropTypes.func.isRequired,
-  mainImage: PropTypes.string.isRequired,
+  mainImage: PropTypes.string,
   onMainImageUrlChange: PropTypes.func.isRequired,
   switchHelpContext: PropTypes.func.isRequired,
 };

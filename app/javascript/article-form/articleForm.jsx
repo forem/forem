@@ -60,12 +60,12 @@ export class ArticleForm extends Component {
   static propTypes = {
     version: PropTypes.string.isRequired,
     article: PropTypes.string.isRequired,
-    organizations: PropTypes.string,
+    organizations: PropTypes.oneOfType([PropTypes.array]),
     siteLogo: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
-    organizations: '',
+    organizations: [],
   };
 
   constructor(props) {

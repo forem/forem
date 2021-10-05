@@ -124,6 +124,7 @@ Button.defaultProps = {
   tagName: 'button',
   size: 'default',
   contentType: 'text',
+  variant: 'primary',
 };
 
 Button.propTypes = {
@@ -138,7 +139,7 @@ Button.propTypes = {
     'ghost-success',
     'ghost-warning',
     'ghost-danger',
-  ]).isRequired,
+  ]),
   contentType: PropTypes.oneOf([
     'text',
     'icon-left',

@@ -419,13 +419,15 @@ export class Tags extends Component {
         ) : (
           ''
         )}
-        <div
-          className={`${classPrefix}__tagrules--${
-            showingRulesForTag === tag.name ? 'active' : 'inactive'
-          }`}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: tag.rules_html }}
-        />
+        {!showingTopTags && (
+          <div
+            className={`${classPrefix}__tagrules--${
+              showingRulesForTag === tag.name ? 'active' : 'inactive'
+            }`}
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: tag.rules_html }}
+          />
+        )}
       </div>
     ));
     if (
@@ -486,14 +488,19 @@ export class Tags extends Component {
   }
 }
 
+Tags.defaultProps = {
+  listing: '',
+  category: '',
+};
+
 Tags.propTypes = {
   defaultValue: PropTypes.string.isRequired,
   onInput: PropTypes.func.isRequired,
   maxTags: PropTypes.number.isRequired,
   classPrefix: PropTypes.string.isRequired,
   fieldClassName: PropTypes.string.isRequired,
-  listing: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
+  listing: PropTypes.string,
+  category: PropTypes.string,
   onFocus: PropTypes.func.isRequired,
   pattern: PropTypes.string.isRequired,
 };
