@@ -1,73 +1,49 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t 'hello'
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t('hello') %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# The following keys must be escaped otherwise they will not be retrieved by
-# the default I18n backend:
-#
-# true, false, on, off, yes, no
-#
-# Instead, surround them with single quotes.
-#
-# en:
-#   'true': 'foo'
-#
-# To learn more, please read the Rails Internationalization guide
-# available at https://guides.rubyonrails.org/i18n.html.
-
+---
 en:
   core:
-    add_comment: "Add comment"
-    all: "All"
-    comment: "Comment"
-    copy_link: "Copy link"
-    create_account: "Create account"
-    create_post: "Create Post"
-    discussion: "Discussion"
-    edit_profile: "Edit profile"
-    feed: "Feed"
-    follow: "Follow"
-    follow_back: "Follow back"
-    following: "Following"
-    full: "Full"
-    infinity: "Infinity"
-    latest: "Latest"
-    like: "Like"
-    listings: "Listings"
-    log_in: "Log in"
-    month: "Month"
-    more_from: "More from"
-    my_tags: "My Tags"
-    post: "Post"
-    reaction: "Reaction"
-    read_next: "Read next"
-    reply: "Reply"
-    report_abuse: "Report abuse"
-    search: "Search"
-    see_all: "See all"
-    trending_on: "Trending on"
-    view: "View"
-    week: "Week"
-    year: "Year"
+    add_comment: Add comment
+    all: All
+    comment: Comment
+    copy_link: Copy link
+    create_account: Create account
+    create_post: Create Post
+    discussion: Discussion
+    edit_profile: Edit profile
+    feed: Feed
+    follow: Follow
+    follow_back: Follow back
+    following: Following
+    full: Full
+    infinity: Infinity
+    latest: Latest
+    like: Like
+    listings: Listings
+    log_in: Log in
+    month: Month
+    more_from: More from
+    my_tags: My Tags
+    popular_tags: Popular Tags
+    post: Post
+    reaction: Reaction
+    read_next: Read next
+    reply: Reply
+    report_abuse: Report abuse
+    search: Search
+    see_all: See all
+    trending_on: Trending on
+    view: View
+    week: Week
+    year: Year
+  dashboard:
+    following_users: Following users
+    loading: loading...
+    not_following_any_users: You don't follow any users...
+    page_title: Dashboard
   errors:
     messages:
       accepted: must be accepted
-      bad_uri: is an invalid url
       bad_protocol: must start with %{protocols}
+      bad_uri: is an invalid url
       blank: can't be blank
       confirmation: doesn't match %{attribute}
       empty: can't be empty
@@ -99,12 +75,7 @@ en:
         other: is the wrong length (should be %{count} characters)
   podcasts:
     statuses:
-      unreachable: Podcast's feed_url is not reachable
+      ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
       unparsable: Podcast's rss couldn't be parsed
       unplayable: This podcast may not be playable in the browser
-      ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
-  dashboard:
-    page_title: Dashboard
-    following_users: Following users
-    loading: loading...
-    not_following_any_users: You don't follow any users...
+      unreachable: Podcast's feed_url is not reachable

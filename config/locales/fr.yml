@@ -34,8 +34,14 @@ fr:
     view: Vue
     week: Semaine
     year: Année
+  dashboard:
+    following_users: Utilisateurs suivis
+    loading: Chargement en cours...
+    not_following_any_users: Vous ne suivez aucun utilisateur...
+    page_title: Tableau de bord
   date:
     abbr_month_names:
+    -
     - Janv
     - Fevr
     - Mars
@@ -51,34 +57,42 @@ fr:
   errors:
     messages:
       accepted: doit être accepté
-      bad_protocol: doit commencer par
+      already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
+      bad_protocol: doit commencer par %{protocols}
       bad_uri: est une URL invalide
       blank: ne peut pas être vide
-      confirmation: ne correspond pas à
+      confirmation: ne correspond pas à %{attribute}
+      confirmation_period_expired: doit être confirmé dans %{period}, veuillez en demander un nouveau
       empty: ne peut pas être vide
-      equal_to: doit être égal à
+      equal_to: doit être égal à %{count}
       even: doit être pair
       exclusion: est réservé
-      greater_than: doit être supérieur à
-      greater_than_or_equal_to: doit être supérieur ou égal à
+      expired: a expiré, veuillez en demander un nouveau
+      greater_than: doit être supérieur à %{count}
+      greater_than_or_equal_to: doit être supérieur ou égal à %{count}
       inclusion: n'est pas inclus dans la liste
       invalid: est invalide
-      less_than: doit être inférieur à
-      less_than_or_equal_to: doit être inférieur ou égal à
-      model_invalid: 'Échec de la validation :'
+      less_than: doit être inférieur à %{count}
+      less_than_or_equal_to: doit être inférieur ou égal à %{count}
+      model_invalid: 'Échec de la validation: %{errors}'
       not_a_number: n'est pas un nombre
       not_an_integer: Doit être un entier
+      not_found: pas trouvé
+      not_locked: n'était pas verrouillé
+      not_saved:
+        one: 1 erreur a interdit l'enregistrement de cette %{resource}
+        other: "%{count} erreurs ont interdit l'enregistrement de cette %{resource}:"
       odd: doit être étrange
-      other_than: doit être différent de
+      other_than: doit être différent de %{count}
       present: doit être vide
       required: doit exister
       taken: a déjà été pris
       too_long:
         one: est trop long (le maximum est de 1 caractère)
-        other: est trop long (le maximum est de caractères)
+        other: est trop long (le maximum est de %{count} caractères)
       too_short:
         one: est trop court (au moins 1 caractère)
-        other: est trop court (le minimum est de caractères)
+        other: est trop court (le minimum est de %{count} caractères)
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
@@ -88,8 +102,3 @@ fr:
       unparsable: Le rss du podcast n'a pas pu être analysé
       unplayable: Ce podcast peut ne pas être lisible dans le navigateur
       unreachable: Le feed_url du podcast n'est pas accessible
-  dashboard:
-    page_title: Tableau de bord
-    following_users: Utilisateurs suivis
-    loading: Chargement en cours...
-    not_following_any_users: Vous ne suivez aucun utilisateur...
