@@ -2,6 +2,7 @@
 fr:
   core:
     add_comment: Ajouter un commentaire
+    add_tags_to_article: "Ajouter jusqu'à %{maxTags} sujets..."
     all: Tout
     comment: Commentaire
     copy_link: Copier le lien
@@ -25,6 +26,7 @@ fr:
     new_post_title_placeholder: Nouvelle titre de la publication...
     popular_tags: Sujets populaires
     post: Publication
+    post_tags: Sujets de publication
     post_title: Titre de la publication
     reaction: Réaction
     read_next: Lire ensuite
@@ -32,6 +34,7 @@ fr:
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Tout voir
+    tags: Sujets
     trending_on: Populaire sur
     view: Vue
     week: Semaine

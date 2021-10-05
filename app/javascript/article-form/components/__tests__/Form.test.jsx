@@ -65,7 +65,7 @@ describe('<Form />', () => {
     });
 
     it('renders the v1 form', () => {
-      const { queryByTestId, queryByLabelText, queryByAltText } = render(
+      const { queryByTestId, queryByAltText } = render(
         <Form
           titleDefaultValue="Test Title v1"
           titleOnChange={null}
@@ -86,7 +86,7 @@ describe('<Form />', () => {
 
       expect(queryByAltText(/post cover/i)).toBeNull();
       expect(queryByTestId('article-form__title')).toBeNull();
-      expect(queryByLabelText('Post Tags')).toBeNull();
+      expect(queryByTestId('tag-input')).toBeNull();
     });
   });
 
@@ -142,7 +142,7 @@ describe('<Form />', () => {
 
       getByAltText(/post cover/i);
       queryByTestId('article-form__title');
-      getByLabelText('Post Tags');
+      queryByTestId('tag-input');
       queryByTestId('article-form__body');
 
       const coverImageInput = getByLabelText('Change');

@@ -32,6 +32,7 @@
 en:
   core:
     add_comment: "Add comment"
+    add_tags_to_article: "Add up to %{maxTags} tags..."
     all: "All"
     comment: "Comment"
     copy_link: "Copy link"
@@ -54,6 +55,7 @@ en:
     my_tags: "My Tags"
     new_post_title_placeholder: "New post title here..."
     post: "Post"
+    post_tags: "Post Tags"
     post_title: "Post Title"
     reaction: "Reaction"
     read_next: "Read next"
@@ -62,6 +64,7 @@ en:
     search: "Search"
     see_all: "See all"
     trending_on: "Trending on"
+    tags: "Tags"
     view: "View"
     week: "Week"
     year: "Year"

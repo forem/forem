@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { fetchSearch } from '../../utilities/search';
+import { locale } from '../../utilities/locale';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -455,13 +456,13 @@ export class Tags extends Component {
     return (
       <div className={`${classPrefix}__tagswrapper crayons-field`}>
         {listing && (
-          <label htmlFor="Tags" class="crayons-field__label">
-            Tags
+          <label htmlFor={locale('core.tags')} class="crayons-field__label">
+            {locale('core.tags')}
           </label>
         )}
         <input
           data-testid="tag-input"
-          aria-label="Post Tags"
+          aria-label={locale('core.post_tags')}
           id="tag-input"
           type="text"
           ref={(t) => {
@@ -470,7 +471,7 @@ export class Tags extends Component {
           }}
           className={`${`${fieldClassName} ${classPrefix}`}__tags`}
           name="listing[tag_list]"
-          placeholder={`Add up to ${maxTags} tags...`}
+          placeholder={locale('core.add_tags_to_article', { maxTags })}
           autoComplete="off"
           value={defaultValue}
           onInput={this.handleInput}
