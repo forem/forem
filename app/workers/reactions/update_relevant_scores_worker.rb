@@ -6,14 +6,19 @@ module Reactions
 
     def perform(reaction_id)
       reaction = Reaction.find_by(id: reaction_id)
-      return unless reaction&.reactable
+      reactable = reaction&.reactable
+      return unless reactable
 
-      reaction.reactable.touch_by_reaction if reaction.reactable.respond_to?(:touch_by_reaction)
+
+      reactable.touch_by_reaction if reactable.respond_to?(:touch_by_reaction)
       if reaction.reactable.respond_to?(:sync_reactions_count)
         ThrottledCall.perform(:sync_reactions_count, throttle_for: 15.minutes) do
-          reaction.reactable.sync_reactions_count
+          reactable.sync_reactions_count
         end
       end
+
+      reactable.calculate_score if reaction.reactable_type == "User"
+
       return unless reaction.reactable_type == "Article" && Reaction::PUBLIC_CATEGORIES.include?(reaction.category)
 
       Follows::UpdatePointsWorker.perform_async(reaction.reactable_id, reaction.user_id)
