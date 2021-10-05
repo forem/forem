@@ -22,8 +22,10 @@ fr:
     month: Mois
     more_from: Plus de la part de
     my_tags: Mes sujets
+    new_post_title_placeholder: Nouvelle titre de la publication...
     popular_tags: Sujets populaires
     post: Publication
+    post_title: Titre de la publication
     reaction: Réaction
     read_next: Lire ensuite
     reply: Répondre
