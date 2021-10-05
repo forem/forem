@@ -106,6 +106,13 @@ RSpec.describe "Api::V0::Listings", type: :request do
       get api_listings_path
       expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
     end
+
+    # Regression test for https://github.com/forem/forem/issues/14436
+    it "includes the created at timestamp for listings" do
+      get api_listings_path
+      listing = response.parsed_body.first
+      expect(listing["created_at"]).to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
+    end
   end
 
   describe "GET /api/listings/category/:category" do

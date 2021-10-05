@@ -238,14 +238,9 @@ RSpec.describe "UserSettings", type: :request do
   describe "PUT /update/:id" do
     before { sign_in user }
 
-    it "updates summary" do
-      put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
-      expect(user.summary).to eq("Hello new summary")
-    end
-
     it "updates profile_updated_at" do
       user.update_column(:profile_updated_at, 2.weeks.ago)
-      put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
+      put "/users/#{user.id}", params: { user: { tab: "profile", username: "new_username" } }
       expect(user.reload.profile_updated_at).to be > 2.minutes.ago
     end
 

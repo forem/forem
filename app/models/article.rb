@@ -227,6 +227,16 @@ class Article < ApplicationRecord
     end
   }
 
+  # NOTE: @citizen428
+  # I'd usually avoid using Arel directly like this. However, none of the more
+  # straight-forward ways of negating the above scope worked:
+  # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
+  # 2. where.not(cached_tagged_with_any(tags).where_values_hash) doesn't work because where_values_hash
+  #    only works for simple conditions and returns an empty hash in this case.
+  scope :not_cached_tagged_with_any, lambda { |tags|
+    where(cached_tagged_with_any(tags).arel.constraints.reduce(:or).not)
+  }
+
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
 
@@ -490,11 +500,23 @@ class Article < ApplicationRecord
     followers.uniq.compact
   end
 
+  def skip_indexing?
+    # should the article be skipped indexed by crawlers?
+    # true if unpublished, or spammy,
+    # or low score, not featured, and from a user with no comments
+    !published ||
+      (score < Settings::UserExperience.index_minimum_score &&
+       user.comments_count < 1 &&
+       !featured) ||
+      featured_number.to_i < 1_500_000_000 ||
+      score < -1
+  end
+
   private
 
   def search_score
     comments_score = (comments_count * 3).to_i
-    partial_score = (comments_score + public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
+    partial_score = (comments_score + (public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i))
     calculated_score = hotness_score.to_i + partial_score
     calculated_score.to_i
   end

@@ -10,46 +10,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   end
   let!(:old_story) { create(:article, published_at: 3.days.ago) }
   let!(:low_scoring_article) { create(:article, score: -1000) }
-  let!(:month_old_story) { create(:article, published_at: 1.month.ago) }
-
-  describe "#published_articles_by_tag" do
-    let(:unpublished_article) { create(:article, published: false) }
-    let(:tag) { "foo" }
-    let!(:tagged_article) { create(:article, tags: tag) }
-
-    it "returns published articles" do
-      result = feed.published_articles_by_tag
-      expect(result).to include article
-      expect(result).not_to include unpublished_article
-    end
-
-    context "with tag" do
-      it "returns articles with the specified tag" do
-        expect(described_class.new(tag: tag).published_articles_by_tag).to include tagged_article
-      end
-    end
-  end
-
-  describe "#top_articles_by_timeframe" do
-    let!(:moderately_high_scoring_article) { create(:article, score: 20) }
-    let(:result) { feed.top_articles_by_timeframe(timeframe: "week").to_a }
-
-    it "returns correct articles ordered by score" do
-      expect(result.slice(0, 2)).to eq [hot_story, moderately_high_scoring_article]
-      expect(result.last).to eq low_scoring_article
-      expect(result).not_to include(month_old_story)
-    end
-  end
-
-  describe "#latest_feed" do
-    it "only returns articles with scores above -40" do
-      expect(feed.latest_feed).not_to include(low_scoring_article)
-    end
-
-    it "returns articles ordered by publishing date descending" do
-      expect(feed.latest_feed.last).to eq month_old_story
-    end
-  end
 
   describe "#default_home_feed_and_featured_story" do
     let(:default_feed) { feed.default_home_feed_and_featured_story }
@@ -139,7 +99,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     context "when user logged in" do
       let(:stories) { feed.default_home_feed(user_signed_in: true) }
 
-      it "includes stories " do
+      it "includes stories" do
         expect(stories).to include(old_story)
         expect(stories).to include(new_story)
       end
@@ -292,7 +252,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
         expect(feed.score_experience_level(article)).to eq(-3)
       end
 
-      it "returns  proper negative when fractional" do
+      it "returns proper negative when fractional" do
         article.experience_level_rating = 8
         expect(feed.score_experience_level(article)).to eq(-3.5)
       end
@@ -427,43 +387,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       it "still returns articles" do
         expect(globally_hot_articles).not_to be_empty
       end
-    end
-  end
-
-  describe ".find_featured_story" do
-    let(:featured_story) { described_class.find_featured_story(stories) }
-
-    context "when passed an ActiveRecord collection" do
-      let(:stories) { Article.all }
-
-      it "returns first article with a main image" do
-        expect(featured_story.main_image).not_to be_nil
-      end
-    end
-
-    context "when passed an array" do
-      let(:stories) { Article.all.to_a }
-
-      it "returns first article with a main image" do
-        expect(featured_story.main_image).not_to be_nil
-      end
-    end
-
-    context "when passed collection without any articles" do
-      let(:stories) { [] }
-
-      it "returns an new, empty Article object" do
-        expect(featured_story.main_image).to be_nil
-        expect(featured_story.id).to be_nil
-      end
-    end
-  end
-
-  describe "#find_featured_story" do
-    it "calls the class method" do
-      allow(described_class).to receive(:find_featured_story)
-      feed.find_featured_story([])
-      expect(described_class).to have_received(:find_featured_story)
     end
   end
 end

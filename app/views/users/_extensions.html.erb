@@ -1,31 +1,33 @@
 <%= render partial: "response_templates" %>
 
-<div class="crayons-card crayons-card--content-rows">
-  <h2 class="crayons-subtitle-1">
-    Connect settings
-  </h2>
-  <%= form_for(@users_setting, url: users_settings_path, html: { id: nil, class: "grid gap-6" }) do |f| %>
-    <div class="crayons-field">
-      <%= f.label :inbox_type, "Inbox privacy", class: "crayons-field__label" %>
-      <p class="crayons-field__description">Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows.</p>
-      <%= f.select :inbox_type, [%w[Open open], %w[Private private]], {}, { class: "crayons-select" } %>
-    </div>
+<% if FeatureFlag.enabled?(:connect) %>
+  <div class="crayons-card crayons-card--content-rows">
+    <h2 class="crayons-subtitle-1">
+      Connect settings
+    </h2>
+    <%= form_for(@users_setting, url: users_settings_path, html: { id: nil, class: "grid gap-6" }) do |f| %>
+      <div class="crayons-field">
+        <%= f.label :inbox_type, "Inbox privacy", class: "crayons-field__label" %>
+        <p class="crayons-field__description">Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows.</p>
+        <%= f.select :inbox_type, [%w[Open open], %w[Private private]], {}, { class: "crayons-select" } %>
+      </div>
 
-    <div class="crayons-field">
-      <%= f.label :inbox_guidelines, "Open inbox guidelines/instructions", class: "crayons-field__label" %>
-      <p class="crayons-field__description">
+      <div class="crayons-field">
+        <%= f.label :inbox_guidelines, "Open inbox guidelines/instructions", class: "crayons-field__label" %>
+        <p class="crayons-field__description">
         Optional
-      </p>
+        </p>
 
-      <%= f.text_area :inbox_guidelines, maxlength: 200, class: "crayons-textfield", rows: 3, placeholder: "Please allow a few days for a response." %>
-    </div>
+        <%= f.text_area :inbox_guidelines, maxlength: 200, class: "crayons-textfield", rows: 3, placeholder: "Please allow a few days for a response." %>
+      </div>
 
-    <%= f.hidden_field :tab, value: @tab, id: nil %>
-    <button type="submit" class="crayons-btn w-max">
-      Save Connect Settings
-    </button>
-  <% end %>
-</div>
+      <%= f.hidden_field :tab, value: @tab, id: nil %>
+      <button type="submit" class="crayons-btn w-max">
+        Save Connect Settings
+      </button>
+    <% end %>
+  </div>
+<% end %>
 
 <%= render partial: "publishing_from_rss" %>
 
@@ -36,7 +38,7 @@
       <span class="ml-2 crayons-indicator crayons-indicator--accent">beta</span>
     </h2>
     <p class="color-base-70">
-      Receive micropayments for time spent reading your posts directy. <a href="https://dev.to/hacksultan/web-monetization-like-i-m-5-1418">Learn more</a>
+    Receive micropayments for time spent reading your posts directy. <a href="https://dev.to/hacksultan/web-monetization-like-i-m-5-1418">Learn more</a>
     </p>
   </header>
   <%= form_for(@user, html: { id: nil, class: "grid gap-4" }) do |f| %>

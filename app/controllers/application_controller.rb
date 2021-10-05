@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
   before_action :remember_cookie_sync
   before_action :forward_to_app_config_domain
+  before_action :determine_locale
 
   include SessionCurrentUser
   include ValidRequest
@@ -39,8 +40,7 @@ class ApplicationController < ActionController::Base
                           omniauth_callbacks
                           passwords
                           registrations
-                          service_worker
-                          shell].freeze
+                          service_worker].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   CONTENT_CHANGE_PATHS = [
@@ -178,6 +178,14 @@ class ApplicationController < ActionController::Base
     Stripe.log_level = Stripe::LEVEL_INFO
   end
 
+  def determine_locale
+    I18n.locale = if %w[en fr].include?(params[:locale])
+                    params[:locale]
+                  else
+                    Settings::UserExperience.default_locale
+                  end
+  end
+
   def remember_cookie_sync
     # Set remember cookie token in case not properly set.
     if user_signed_in? &&
@@ -204,7 +212,13 @@ class ApplicationController < ActionController::Base
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
   end
 
-  protected
+  # To ensure that components are sent back as HTML, we wrap their rendering in
+  # this helper method
+  def render_component(component_class, *args, **kwargs)
+    render component_class.new(*args, **kwargs), content_type: "text/html"
+  end
+
+  private
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])

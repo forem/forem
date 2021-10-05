@@ -190,7 +190,7 @@ RSpec.describe "Articles", type: :request do
     let!(:last_article) { create(:article, featured: true) }
     let!(:not_featured_article) { create(:article, featured: false) }
     let!(:article_with_low_score) do
-      create(:article, score: Articles::Feeds::LargeForemExperimental::MINIMUM_SCORE_LATEST_FEED)
+      create(:article, score: Articles::Feeds::Latest::MINIMUM_SCORE)
     end
 
     before { get "/feed/latest" }

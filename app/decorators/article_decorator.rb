@@ -99,7 +99,7 @@ class ArticleDecorator < ApplicationDecorator
 
   def co_author_name_and_path
     co_authors.map do |user|
-      "<b><a href=\"#{user.path}\">#{user.name}</a></b>"
+      %(<a href="#{user.path}" class="crayons-link">#{user.name}</a>)
     end.to_sentence
   end
 

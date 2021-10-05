@@ -1,9 +1,6 @@
 module Articles
   module Feeds
     class LargeForemExperimental
-      include FieldTest::Helpers
-      MINIMUM_SCORE_LATEST_FEED = -20
-
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil)
         @user = user
         @number_of_articles = number_of_articles
@@ -14,41 +11,9 @@ module Articles
         @experience_level_weight = 1 # default weight for user experience level
       end
 
-      def self.find_featured_story(stories)
-        featured_story =  if stories.is_a?(ActiveRecord::Relation)
-                            stories.where.not(main_image: nil).first
-                          else
-                            stories.detect { |story| story.main_image.present? }
-                          end
-        featured_story || Article.new
-      end
-
-      def find_featured_story(stories)
-        self.class.find_featured_story(stories)
-      end
-
-      def published_articles_by_tag
-        articles = @tag.present? ? Tag.find_by(name: @tag).articles : Article
-        articles.published.limited_column_select
-          .includes(top_comments: :user)
-          .page(@page).per(@number_of_articles)
-      end
-
-      # Timeframe values from Timeframe::DATETIMES
-      def top_articles_by_timeframe(timeframe:)
-        published_articles_by_tag.where("published_at > ?", Timeframe.datetime(timeframe))
-          .order(score: :desc).page(@page).per(@number_of_articles)
-      end
-
       def default_home_feed(user_signed_in: false)
         _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in, ranking: true)
         stories
-      end
-
-      def latest_feed
-        published_articles_by_tag.order(published_at: :desc)
-          .where("score > ?", MINIMUM_SCORE_LATEST_FEED)
-          .page(@page).per(@number_of_articles)
       end
 
       def default_home_feed_and_featured_story(user_signed_in: false, ranking: true)

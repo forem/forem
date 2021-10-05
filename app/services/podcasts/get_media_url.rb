@@ -6,6 +6,7 @@ module Podcasts
       SocketError,
       SystemCallError,
       URI::InvalidURIError,
+      OpenSSL::SSL::SSLError,
     ].freeze
 
     def initialize(enclosure_url)

@@ -14,7 +14,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(user.darker_color).to eq Color::CompareHex.new(described_class::USER_COLORS).brightness
       expect(user.username).to eq "[deleted user]"
       expect(user.name).to eq "[Deleted User]"
-      expect(user.summary).to be_nil
+      expect(user.tag_line).to be_nil
       expect(user.twitter_username).to be_nil
       expect(user.github_username).to be_nil
     end
@@ -196,13 +196,6 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     it "returns the pluralized community_member_label" do
       expect(community_members_label).to eq("hobbyists")
-    end
-  end
-
-  describe "#sanitize_and_decode" do
-    it "sanitize and decode string" do
-      expect(helper.sanitize_and_decode("<script>alert('alert')</script>")).to eq("alert('alert')")
-      expect(helper.sanitize_and_decode("&lt; hello")).to eq("< hello")
     end
   end
 

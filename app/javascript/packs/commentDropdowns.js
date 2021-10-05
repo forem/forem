@@ -1,5 +1,9 @@
 import { addSnackbarItem } from '../Snackbar';
-import { initializeDropdown } from '@utilities/dropdownUtils';
+import {
+  initializeDropdown,
+  getDropdownRepositionListener,
+} from '@utilities/dropdownUtils';
+import { locale } from '@utilities/locale';
 
 /* global Runtime   */
 
@@ -54,7 +58,7 @@ const initializeArticlePageDropdowns = () => {
         '.report-abuse-link-wrapper',
       );
       if (reportAbuseWrapper) {
-        reportAbuseWrapper.innerHTML = `<a href="${reportAbuseWrapper.dataset.path}" class="crayons-link crayons-link--block">Report abuse</a>`;
+        reportAbuseWrapper.innerHTML = `<a href="${reportAbuseWrapper.dataset.path}" class="crayons-link crayons-link--block">${locale('core.report_abuse')}</a>`;
       }
 
       // Initialize the "Copy link" functionality
@@ -122,12 +126,18 @@ observer.observe(document.getElementById('comment-trees-container'), {
   subtree: true,
 });
 
+// Preview card dropdowns reposition on scroll
+const dropdownRepositionListener = getDropdownRepositionListener();
+document.addEventListener('scroll', dropdownRepositionListener);
+
 InstantClick.on('change', () => {
   observer.disconnect();
+  document.removeEventListener('scroll', dropdownRepositionListener);
 });
 
 window.addEventListener('beforeunload', () => {
   observer.disconnect();
+  document.removeEventListener('scroll', dropdownRepositionListener);
 });
 
 initializeArticlePageDropdowns();

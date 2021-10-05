@@ -136,9 +136,7 @@ describe Rack::Attack, type: :request, throttle: true do
       allow_any_instance_of(Stories::TaggedArticlesController).to receive(:tagged_count).and_return(0)
       allow_any_instance_of(Stories::TaggedArticlesController).to receive(:stories_by_timeframe)
         .and_return(Article.none)
-      allow_any_instance_of(Articles::Feeds::LargeForemExperimental).to receive(
-        :published_articles_by_tag,
-      ).and_return(Article.none)
+      allow(Articles::Feeds::Tag).to receive(:call).and_return(Article.none)
       tag_path = "/t/#{create(:tag).name}"
 
       get tag_path, headers: headers # warm up the slow endpoint

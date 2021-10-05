@@ -125,6 +125,21 @@ RSpec.describe Reaction, type: :model do
         expect(reaction.skip_notification_for?(user)).to be(true)
       end
     end
+
+    context "when reactable is a user" do
+      let(:user) { create(:user) }
+      let(:reaction) { build(:reaction, reactable: user, user: nil) }
+
+      it "returns true if the reactable is the user that reacted" do
+        reaction.user_id = user.id
+        expect(reaction.skip_notification_for?(receiver)).to be(true)
+      end
+
+      it "returns false if the reactable is not the user that reacted" do
+        reaction.user_id = create(:user).id
+        expect(reaction.skip_notification_for?(receiver)).to be(false)
+      end
+    end
   end
 
   describe ".count_for_article" do
@@ -217,6 +232,30 @@ RSpec.describe Reaction, type: :model do
       allow(reaction).to receive(:bust_reactable_cache_without_delay)
       reaction.destroy
       expect(reaction).to have_received(:bust_reactable_cache_without_delay)
+    end
+  end
+
+  describe ".related_negative_reactions_for_user" do
+    let(:moderator) { create(:user, :trusted) }
+
+    it "returns vomit reactions on user's articles" do
+      article = create(:article, user: user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: article)
+
+      expect(described_class.related_negative_reactions_for_user(user).first.id).to eq(reaction.id)
+    end
+
+    it "returns vomit reactions on user's comments" do
+      comment = create(:comment, user: user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: comment)
+
+      expect(described_class.related_negative_reactions_for_user(user).first.id).to eq(reaction.id)
+    end
+
+    it "returns the user's vomit reactions" do
+      reaction = create(:vomit_reaction, user: moderator, reactable: user)
+
+      expect(described_class.related_negative_reactions_for_user(moderator).first.id).to eq(reaction.id)
     end
   end
 end

@@ -15,8 +15,8 @@ RSpec.describe Authentication::Providers::Twitter, type: :service do
 
   describe ".sign_in_path" do
     let(:expected_path) do
-      "/users/auth/twitter?callback_url=" \
-        "http%3A%2F%2Flocalhost%3A3000%2Fusers%2Fauth%2Ftwitter%2Fcallback&secure_image_url=true"
+      expected_callback_url = CGI.escape(URL.url("/users/auth/twitter/callback"))
+      "/users/auth/twitter?callback_url=#{expected_callback_url}&secure_image_url=true"
     end
 
     it "returns the correct sign in path" do

@@ -1,7 +1,7 @@
 class GithubTag
   class GithubReadmeTag
     PARTIAL = "liquids/github_readme".freeze
-    GITHUB_DOMAIN_REGEXP = %r{.*github.com/}.freeze
+    GITHUB_DOMAIN_REGEXP = %r{.*github.com/}
     OPTION_NO_README = "no-readme".freeze
     VALID_OPTIONS = [OPTION_NO_README].freeze
 
@@ -60,7 +60,6 @@ class GithubTag
 
     def fetch_readme(repository_path, repository_url)
       readme_html = Github::OauthClient.new.readme(repository_path, accept: "application/vnd.github.html")
-      readme = Github::OauthClient.new.readme(repository_path)
       clean_relative_path!(readme_html, repository_url)
     rescue Github::Errors::NotFound
       nil

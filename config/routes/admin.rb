@@ -24,11 +24,27 @@ namespace :admin do
     resources :smtp_settings, only: [:create]
     resources :user_experiences, only: [:create]
   end
+
   namespace :users do
     resources :gdpr_delete_requests, only: %i[index destroy]
   end
+
   resources :users, only: %i[index show edit update destroy] do
+    scope module: "users" do
+      resource :tools, only: :show
+
+      namespace :tools do
+        resource :credits, only: %i[show create destroy]
+        resource :emails, only: :show
+        resource :notes, only: %i[show create]
+        resource :organizations, only: %i[show]
+        resource :reports, only: %i[show]
+        resource :reactions, only: %i[show]
+      end
+    end
+
     resources :email_messages, only: :show
+
     member do
       post "banish"
       post "export_data"
@@ -124,9 +140,11 @@ namespace :admin do
   end
 
   scope :apps do
-    resources :chat_channels, only: %i[index create update destroy] do
-      member do
-        delete :remove_user
+    constraints(->(_request) { FeatureFlag.enabled?(:connect) }) do
+      resources :chat_channels, only: %i[index create update destroy] do
+        member do
+          delete :remove_user
+        end
       end
     end
     resources :consumer_apps, only: %i[index new create edit update destroy]

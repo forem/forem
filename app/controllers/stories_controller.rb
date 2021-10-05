@@ -33,7 +33,8 @@ class StoriesController < ApplicationController
 
   def show
     @story_show = true
-    if (@article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate)
+    path = "/#{params[:username].downcase}/#{params[:slug]}"
+    if (@article = Article.includes(:user).find_by(path: path)&.decorate)
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
@@ -147,7 +148,7 @@ class StoriesController < ApplicationController
   end
 
   def featured_story
-    @featured_story ||= Articles::Feeds::LargeForemExperimental.find_featured_story(@stories)
+    @featured_story ||= Articles::Feeds::FindFeaturedStory.call(@stories)
   end
 
   def handle_podcast_index
@@ -234,14 +235,13 @@ class StoriesController < ApplicationController
   end
 
   def assign_feed_stories
-    feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
-
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
-      @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
+      @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-      @stories = feed.latest_feed
+      @stories = Articles::Feeds::Latest.call
     else
       @default_home_feed = true
+      feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
       @featured_story, @stories = feed.default_home_feed_and_featured_story(user_signed_in: user_signed_in?)
     end
 
@@ -333,6 +333,7 @@ class StoriesController < ApplicationController
   def set_user_json_ld
     # For more info on structuring data with JSON-LD,
     # please refer to this link: https://moz.com/blog/json-ld-for-beginners
+    decorated_user = @user.decorate
     @user_json_ld = {
       "@context": "http://schema.org",
       "@type": "Person",
@@ -344,9 +345,8 @@ class StoriesController < ApplicationController
       sameAs: user_same_as,
       image: Images::Profile.call(@user.profile_image_url, length: 320),
       name: @user.name,
-      email: @user.setting.display_email_on_profile ? @user.email : nil,
-      description: @user.profile.summary.presence || "404 bio not found",
-      alumniOf: @user.education.presence
+      email: decorated_user.profile_email,
+      description: decorated_user.profile_summary
     }.reject { |_, v| v.blank? }
   end
 

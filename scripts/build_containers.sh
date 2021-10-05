@@ -139,7 +139,7 @@ function create_release_containers {
 
   # If the env var for the git tag doesn't exist or is an empty string, then we
   # won't build a container image for a cut release.
-  if [ -v BUILDKITE_TAG || ! -z "${BUILDKITE_TAG}" ]; then
+  if [ -v BUILDKITE_TAG ] || [ ! -z "${BUILDKITE_TAG}" ]; then
     docker build --target production \
                  --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                  --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
@@ -161,10 +161,13 @@ function prune_containers {
 
 trap prune_containers ERR INT EXIT
 
-echo "Branch: $BUILDKITE_BRANCH"
-echo "PR    : $BUILDKITE_PULL_REQUEST"
-echo "Commit: $BUILDKITE_COMMIT"
-echo "Tag   : $BUILDKITE_TAG"
+if [ -v BUILDKITE ]
+then
+    echo "Branch: $BUILDKITE_BRANCH"
+    echo "PR    : $BUILDKITE_PULL_REQUEST"
+    echo "Commit: $BUILDKITE_COMMIT"
+    echo "Tag   : $BUILDKITE_TAG"
+fi
 
 if [ ! -v BUILDKITE_BRANCH ]; then
 

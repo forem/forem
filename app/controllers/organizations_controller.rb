@@ -1,6 +1,31 @@
 class OrganizationsController < ApplicationController
   after_action :verify_authorized
 
+  ORGANIZATIONS_PERMITTED_PARAMS = %i[
+    id
+    name
+    summary
+    tag_line
+    slug
+    url
+    proof
+    profile_image
+    nav_image
+    dark_nav_image
+    location
+    company_size
+    tech_stack
+    email
+    story
+    bg_color_hex
+    text_color_hex
+    twitter_username
+    github_username
+    cta_button_text
+    cta_button_url
+    cta_body_markdown
+  ].freeze
+
   def create
     rate_limit!(:organization_creation)
 
@@ -74,30 +99,7 @@ class OrganizationsController < ApplicationController
   private
 
   def permitted_params
-    %i[
-      id
-      name
-      summary
-      tag_line
-      slug
-      url
-      proof
-      profile_image
-      nav_image
-      dark_nav_image
-      location
-      company_size
-      tech_stack
-      email
-      story
-      bg_color_hex
-      text_color_hex
-      twitter_username
-      github_username
-      cta_button_text
-      cta_button_url
-      cta_body_markdown
-    ]
+    ORGANIZATIONS_PERMITTED_PARAMS
   end
 
   def organization_params

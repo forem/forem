@@ -1,7 +1,7 @@
 /* eslint-disable jest/expect-expect */
 import { h, Fragment } from 'preact';
 import { axe } from 'jest-axe';
-import { render, getNodeText } from '@testing-library/preact';
+import { render, getNodeText, waitFor } from '@testing-library/preact';
 import { SingleArticle } from '../index';
 
 const getTestArticle = () => ({
@@ -63,7 +63,7 @@ describe('<SingleArticle />', () => {
       </Fragment>,
     );
     const text = getNodeText(
-      container.getElementsByClassName('article-title-link')[0],
+      container.getElementsByClassName('article-title-heading')[0],
     );
     expect(text).toContain(getTestArticle().title);
   });
@@ -197,9 +197,10 @@ describe('<SingleArticle />', () => {
       </Fragment>,
     );
 
-    const button = getByTestId(`mod-article-${article.id}`);
-    button.click();
+    const detailsElement = getByTestId(`mod-article-${article.id}`);
+    const summarySection = detailsElement.getElementsByTagName('summary')[0];
+    summarySection.click();
 
-    expect(toggleArticle).toHaveBeenCalledTimes(1);
+    waitFor(() => expect(toggleArticle).toHaveBeenCalledTimes(1));
   });
 });

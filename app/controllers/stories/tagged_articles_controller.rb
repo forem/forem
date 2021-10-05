@@ -20,6 +20,7 @@ module Stories
 
       set_number_of_articles
       set_stories
+      not_found_if_not_established
 
       set_surrogate_key_header "articles-#{@tag}"
       set_cache_control_headers(600,
@@ -44,9 +45,7 @@ module Stories
     end
 
     def set_stories
-      @stories = Articles::Feeds::LargeForemExperimental
-        .new(number_of_articles: @number_of_articles, tag: @tag, page: @page)
-        .published_articles_by_tag
+      @stories = Articles::Feeds::Tag.call(@tag, number_of_articles: @number_of_articles, page: @page)
 
       @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
@@ -56,6 +55,10 @@ module Stories
 
     def tagged_count
       @tag_model.articles.published.where("score >= ?", Settings::UserExperience.tag_feed_minimum_score).count
+    end
+
+    def not_found_if_not_established
+      not_found if @stories.none? && !@tag_model.supported
     end
 
     def stories_by_timeframe

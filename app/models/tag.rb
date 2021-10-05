@@ -9,7 +9,7 @@ class Tag < ActsAsTaggableOn::Tag
   include PgSearch::Model
 
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
-  HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
+  HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
 
   belongs_to :badge, optional: true
   belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true
@@ -41,6 +41,7 @@ class Tag < ActsAsTaggableOn::Tag
                   using: { tsearch: { prefix: true } }
 
   scope :eager_load_serialized_data, -> {}
+  scope :supported, -> { where(supported: true) }
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
@@ -75,7 +76,7 @@ class Tag < ActsAsTaggableOn::Tag
     # [:alnum:] is not used here because it supports diacritical characters.
     # If we decide to allow diacritics in the future, we should replace the
     # following regex with [:alnum:].
-    errors.add(:name, "contains non-ASCII characters") unless name.match?(/\A[[a-z0-9]]+\z/i)
+    errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/i)
   end
 
   def errors_as_sentence
@@ -99,6 +100,7 @@ class Tag < ActsAsTaggableOn::Tag
 
   def bust_cache
     Tags::BustCacheWorker.perform_async(name)
+    Rails.cache.delete("view-helper-#{name}/tag_colors")
   end
 
   def validate_alias_for

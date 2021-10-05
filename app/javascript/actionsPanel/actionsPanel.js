@@ -190,16 +190,8 @@ function clearAdjustmentReason() {
 }
 
 function renderTagOnArticle(tagName, colors) {
-  /* eslint-disable no-restricted-globals */
-  let articleTagsContainer;
-  if (top.document.location.pathname.endsWith('/mod')) {
-    [articleTagsContainer] = top.document
-      .getElementById('quick-mod-article')
-      .contentDocument.getElementsByClassName('tags');
-  } else {
-    [articleTagsContainer] = top.document.getElementsByClassName('spec__tags');
-  }
-  /* eslint-enable no-restricted-globals */
+  const articleTagsContainer =
+    getArticleContainer().getElementsByClassName('spec__tags')[0];
 
   const newTag = document.createElement('a');
   newTag.innerText = `#${tagName}`;
@@ -210,9 +202,19 @@ function renderTagOnArticle(tagName, colors) {
   articleTagsContainer.appendChild(newTag);
 }
 
+function getArticleContainer() {
+  const articleIframe =
+    window.parent.document?.getElementsByClassName('article-iframe')[0];
+
+  return articleIframe
+    ? articleIframe.contentWindow.document
+    : window.parent.document.getElementById('main-content');
+}
+
 async function adjustTag(el) {
-  const reasonForAdjustment = document.getElementById('tag-adjustment-reason')
-    .value;
+  const reasonForAdjustment = document.getElementById(
+    'tag-adjustment-reason',
+  ).value;
   const body = {
     tag_adjustment: {
       // TODO: change to tag ID
@@ -249,11 +251,9 @@ async function adjustTag(el) {
       if (outcome.result === 'addition') {
         renderTagOnArticle(adjustedTagName, outcome.colors);
       } else {
-        // eslint-disable-next-line no-restricted-globals
-        const tagOnArticle = top.document.querySelector(
-          `.crayons-tag[href="/t/${adjustedTagName}"]`,
-        );
-        tagOnArticle.remove();
+        getArticleContainer()
+          .querySelector(`.crayons-tag[href="/t/${adjustedTagName}"]`)
+          .remove();
       }
 
       // eslint-disable-next-line no-restricted-globals
