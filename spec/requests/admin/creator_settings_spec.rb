@@ -27,7 +27,7 @@ RSpec.describe "/creator_settings/new", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      xit "renders the correct page" do
+      it "renders the correct page" do
         expect(response.body).to include("Lovely! Let's set up your Forem.")
       end
     end
