@@ -2007,18 +2007,18 @@
     prop-types "^15.7.2"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-storysource@^6.3.8":
-  version "6.3.8"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-6.3.8.tgz#250eb8e50beeb757d8eb2390bc6476f6f9fb2b49"
-  integrity sha512-Yw07zGWWCOUQcvWwtEsasHJ4LqRhx7fcHBkbI5jXNb4SjB6LYDpStPDDD+Oa5uW+CO0gOuSv5U/e/xqC17Tl3w==
+"@storybook/addon-storysource@^6.3.9":
+  version "6.3.9"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-6.3.9.tgz#88f5dd4e3b30ee961d99cb88eaced1c5bde6597d"
+  integrity sha512-zWtaWSROwFAcwtjeteVW2VZWeNfQqDBim1mI224t143kxa3q4DLSqTSqrwastsgktfZgxVMCG5c0xys+dUAauA==
   dependencies:
-    "@storybook/addons" "6.3.8"
-    "@storybook/api" "6.3.8"
-    "@storybook/client-logger" "6.3.8"
-    "@storybook/components" "6.3.8"
-    "@storybook/router" "6.3.8"
-    "@storybook/source-loader" "6.3.8"
-    "@storybook/theming" "6.3.8"
+    "@storybook/addons" "6.3.9"
+    "@storybook/api" "6.3.9"
+    "@storybook/client-logger" "6.3.9"
+    "@storybook/components" "6.3.9"
+    "@storybook/router" "6.3.9"
+    "@storybook/source-loader" "6.3.9"
+    "@storybook/theming" "6.3.9"
     core-js "^3.8.2"
     estraverse "^5.2.0"
     loader-utils "^2.0.0"
@@ -2747,6 +2747,22 @@
   dependencies:
     "@storybook/addons" "6.3.8"
     "@storybook/client-logger" "6.3.8"
+    "@storybook/csf" "0.0.1"
+    core-js "^3.8.2"
+    estraverse "^5.2.0"
+    global "^4.4.0"
+    loader-utils "^2.0.0"
+    lodash "^4.17.20"
+    prettier "~2.2.1"
+    regenerator-runtime "^0.13.7"
+
+"@storybook/source-loader@6.3.9":
+  version "6.3.9"
+  resolved "https://registry.yarnpkg.com/@storybook/source-loader/-/source-loader-6.3.9.tgz#439879baf86a1cf5d46d9e7aec1edcf64b0e1f5d"
+  integrity sha512-H0W4DK3EyXLLdzx5ThoXkC9mPKBAJUb8qoDL3jcTA1sQUDSOsxdosQIrJ97Ljcu21eQJs6egnxh3yPa1CWXTGA==
+  dependencies:
+    "@storybook/addons" "6.3.9"
+    "@storybook/client-logger" "6.3.9"
     "@storybook/csf" "0.0.1"
     core-js "^3.8.2"
     estraverse "^5.2.0"
