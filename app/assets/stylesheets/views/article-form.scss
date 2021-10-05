@@ -257,6 +257,12 @@
     }
   }
 
+  &__tagsoptionsheading {
+    padding: var(--su-3);
+    font-size: var(--fs-l);
+    border-bottom: 1px solid var(--base-20);
+  }
+
   &__tagname {
     color: var(--base-90);
     font-weight: var(--fw-medium);

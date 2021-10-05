@@ -17,7 +17,7 @@ function addRelevantButtonsToArticle(user) {
 
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
       actions.push(
-        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
       );
 
       let clickToEditButton = document.getElementById('author-click-to-edit');
@@ -27,12 +27,12 @@ function addRelevantButtonsToArticle(user) {
 
       if (published === true) {
         actions.push(
-          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
+          `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
         );
       }
 
       actions.push(
-        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
       );
     }
 
@@ -42,7 +42,7 @@ function addRelevantButtonsToArticle(user) {
     // if there's already a pinned post different from the current one
     if (user.admin) {
       actions.push(
-        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="/admin/content_manager/articles/${articleId}" data-no-instant>Admin</a>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="/admin/content_manager/articles/${articleId}" data-no-instant>Admin</a>`,
       );
     }
 

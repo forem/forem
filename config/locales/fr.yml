@@ -2,10 +2,11 @@
 fr:
   core:
     add_comment: Ajouter un commentaire
+    all: Tout
     comment: Commentaire
     copy_link: Copier le lien
     create_account: Créer un profil
-    create_post: Créer Publication
+    create_post: Créer une publication
     discussion: Discussion
     edit_profile: Editer le profil
     feed: Fil
@@ -17,22 +18,22 @@ fr:
     latest: Récent
     like: Aime
     listings: Annonces
-    log_in: Entrer
+    log_in: Se connecter
     month: Mois
-    more_from: Plus de
-    my_tags: Mes Sujets
-    popular_tags: Sujets Populaire
+    more_from: Plus de la part de
+    my_tags: Mes sujets
+    popular_tags: Sujets populaires
     post: Publication
     reaction: Réaction
     read_next: Lire ensuite
     reply: Répondre
     report_abuse: Signaler un abus
     search: Recherche
-    see_all: Voir tout
+    see_all: Tout voir
     trending_on: Populaire sur
     view: Vue
-    week: Semain
-    year: Anée
+    week: Semaine
+    year: Année
   date:
     abbr_month_names:
     - Janv
@@ -87,3 +88,8 @@ fr:
       unparsable: Le rss du podcast n'a pas pu être analysé
       unplayable: Ce podcast peut ne pas être lisible dans le navigateur
       unreachable: Le feed_url du podcast n'est pas accessible
+  dashboard:
+    page_title: Tableau de bord
+    following_users: Utilisateurs suivis
+    loading: Chargement en cours...
+    not_following_any_users: Vous ne suivez aucun utilisateur...

@@ -52,7 +52,7 @@
       <div class="crayons-layout__sidebar-left">
         <%= render "notifications/nav_menu" %>
       </div>
-      <main class="crayons-layout__content" data-follow-button-container="true">
+      <div class="crayons-layout__content" data-follow-button-container="true">
         <div id="articles-list">
           <%= render "notifications_list", params: params %>
         </div>
@@ -64,7 +64,7 @@
             Load More
           </button>
         <% end %>
-      </main>
+      </div>
     </div>
     <%= render "articles/fitvids" %>
   </main>

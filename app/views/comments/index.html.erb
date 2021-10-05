@@ -124,7 +124,7 @@
     <div class="comments" id="comment-trees-container">
       <% if @root_comment.present? %>
         <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
-          <%= tree_for(@root_comment, @root_comment.subtree.includes(:user).arrange[@root_comment], @commentable) %>
+          <%= tree_for(@root_comment, @root_comment.subtree.includes(user: %i[setting profile]).arrange[@root_comment], @commentable) %>
         <% end %>
       <% else %>
         <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>

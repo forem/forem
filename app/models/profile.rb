@@ -40,7 +40,7 @@ class Profile < ApplicationRecord
     super unless field
 
     self.class.instance_eval do
-      store_attribute :data, field.attribute_name.to_sym, field.type
+      store_attribute :data, field.attribute_name.to_sym, :string
     end
     public_send(method_name, *args, **kwargs, &block)
   end

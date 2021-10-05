@@ -91,7 +91,11 @@ class Comment < ApplicationRecord
   alias touch_by_reaction save
 
   def self.tree_for(commentable, limit = 0)
-    commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+    commentable.comments
+      .includes(user: %i[setting profile])
+      .arrange(order: "score DESC")
+      .to_a[0..limit - 1]
+      .to_h
   end
 
   def search_id
