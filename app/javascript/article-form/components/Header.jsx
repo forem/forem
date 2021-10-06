@@ -31,6 +31,10 @@ export const Header = ({
   );
 };
 
+Header.defaultProps = {
+  organizationId: '',
+};
+
 Header.propTypes = {
   displayModal: PropTypes.func.isRequired,
   onPreview: PropTypes.func.isRequired,

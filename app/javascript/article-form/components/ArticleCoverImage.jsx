@@ -227,6 +227,10 @@ export class ArticleCoverImage extends Component {
   }
 }
 
+ArticleCoverImage.defaultProps = {
+  mainImage: '',
+};
+
 ArticleCoverImage.propTypes = {
   mainImage: PropTypes.string,
   onMainImageUrlChange: PropTypes.func.isRequired,
