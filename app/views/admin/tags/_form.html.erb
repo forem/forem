@@ -17,10 +17,6 @@
     <%= f.select(:badge_id, options_for_select(badges_for_options, tag.badge_id), { include_blank: true }, { class: "crayons-select" }) %>
   </div>
   <div class="crayons-field mt-3">
-    <%= f.label :category, class: "crayons-field__label" %>
-    <%= f.select(:category, options_for_select(Tag.valid_categories, tag.category), {}, { class: "crayons-select" }) %>
-  </div>
-  <div class="crayons-field mt-3">
     <%= f.label :social_preview_template, class: "crayons-field__label" %>
     <%= f.select(:social_preview_template, Tag.social_preview_templates, {}, { class: "crayons-select" }) %>
   </div>
