@@ -3,6 +3,12 @@ module Admin
     layout "admin"
     include ApplicationHelper
 
+    EVENTS_ALLOWED_PARAMS = %i[
+      title category event_date starts_at ends_at
+      location_name cover_image location_url description_markdown published
+      host_name profile_image live_now
+    ].freeze
+
     def index
       @events = Event.order(starts_at: :desc).page(params[:page]).per(20)
     end
@@ -44,12 +50,7 @@ module Admin
     private
 
     def event_params
-      allowed_params = %i[
-        title category event_date starts_at ends_at
-        location_name cover_image location_url description_markdown published
-        host_name profile_image live_now
-      ]
-      params.require(:event).permit(allowed_params)
+      params.require(:event).permit(EVENTS_ALLOWED_PARAMS)
     end
   end
 end

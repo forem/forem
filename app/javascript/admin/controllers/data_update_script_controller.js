@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 export default class DataUpdateScriptController extends Controller {
   static values = { url: String };

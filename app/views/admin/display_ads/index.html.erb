@@ -6,7 +6,7 @@
   data-confirmation-modal-size-value="m">
   <nav class="flex mb-4" aria-label="Display Ads navigation">
     <%= form_tag(admin_display_ads_path, method: "get") do %>
-      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search by Org name") %>
+     <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search") %>
     <% end %>
     <div class="ml-auto">
       <div class="justify-content-end">
@@ -21,7 +21,6 @@
     <thead>
       <tr>
         <th scope="col">ID</th>
-        <th scope="col">Organization</th>
         <th scope="col">Placement Area</th>
         <th scope="col">Published</th>
         <th scope="col">Approved</th>
@@ -32,7 +31,6 @@
       <% @display_ads.each do |display_ad| %>
           <tr data-row-id="<%= display_ad.id %>">
             <td><%= link_to display_ad.id, edit_admin_display_ad_path(display_ad) %></td>
-            <td><%= link_to display_ad.organization.name, admin_organization_path(display_ad.organization) %></td>
             <td><%= display_ad.human_readable_placement_area %></td>
             <td><%= display_ad.published %></td>
             <td><%= display_ad.approved %></td>
@@ -51,6 +49,5 @@
     </tbody>
   </table>
   <%= render partial: "admin/shared/destroy_confirmation_modal" %>
-
   <%= paginate @display_ads %>
 </div>
