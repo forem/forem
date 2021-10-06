@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { i18next } from '@utilities/locale';
 
@@ -10,11 +11,13 @@ export const EditorFormattingHelp = ({ openModal }) => (
     <h4 className="mb-2 fs-l">{i18next.t('editor.help.basics.heading')}</h4>
     <ul className="list-disc pl-6 color-base-70">
       <li>
-        {i18next.t('editor.help.basics.desc1')}
-        <a href="#markdown" onClick={() => openModal('markdownShowing')}>
-          {i18next.t('editor.help.basics.markdown')}
-        </a>
-        {i18next.t('editor.help.basics.desc2')}
+        <Trans i18nKey="editor.help.basics.use_markdown">
+          Use{' '}
+          <a href="#markdown" onClick={() => openModal('markdownShowing')}>
+            Markdown
+          </a>{' '}
+          to write and format posts.
+        </Trans>
         <details className="fs-s my-1">
           <summary class="cursor-pointer">
             {i18next.t('editor.help.basics.syntax')}
@@ -125,11 +128,13 @@ export const EditorFormattingHelp = ({ openModal }) => (
         </details>
       </li>
       <li>
-        {i18next.t('editor.help.basics.desc3')}
-        <a href="#liquid" onClick={() => openModal('liquidShowing')}>
-          {i18next.t('editor.help.basics.liquid')}
-        </a>
-        {i18next.t('editor.help.basics.desc4')}
+        <Trans i18nKey="editor.help.basics.use_liquid">
+          You can use{' '}
+          <a href="#liquid" onClick={() => openModal('liquidShowing')}>
+            Liquid tags
+          </a>{' '}
+          to add rich content such as Tweets, YouTube videos, etc.
+        </Trans>
       </li>
       <li>{i18next.t('editor.help.basics.desc5')}</li>
     </ul>

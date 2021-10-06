@@ -69,9 +69,16 @@ export const Meta = ({ article, organization }) => {
             !document.getElementById('organization-article-index') && (
               <span>
                 {/* eslint-disable react/jsx-key, jsx-a11y/anchor-has-content */}
-                <Trans i18nKey="articles.for_org" values={{org: organization.name}}
-                  // 
-                  components={[<span className="crayons-story__tertiary fw-normal" />, <a href="/${organization.slug}" class="crayons-story__secondary fw-medium" />]}
+                <Trans
+                  i18nKey="articles.for_org"
+                  values={{ org: organization.name }}
+                  components={[
+                    <span className="crayons-story__tertiary fw-normal" />,
+                    <a
+                      href="/${organization.slug}"
+                      class="crayons-story__secondary fw-medium"
+                    />,
+                  ]}
                 />
                 {/* eslint-enable react/jsx-key, jsx-a11y/anchor-has-content */}
               </span>

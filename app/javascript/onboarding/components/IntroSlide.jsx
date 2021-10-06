@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { Trans } from 'react-i18next';
 
 import { getContentOfToken, userData, updateOnboarding } from '../utilities';
 import { Navigation } from './Navigation';
@@ -143,17 +144,18 @@ export class IntroSlide extends Component {
                         name="checked_code_of_conduct"
                         checked={checked_code_of_conduct}
                         onChange={this.handleChange}
-                        // TODO yheuhtozr: correct i18n interpolation!
                       />
-                      {i18next.t('onboarding.intro.coc1')}
-                      <a
-                        href="/code-of-conduct"
-                        data-no-instant
-                        onClick={(e) => this.handleShowText(e, 'coc')}
-                      >
-                        {i18next.t('onboarding.intro.coc2')}
-                      </a>
-                      {i18next.t('onboarding.intro.coc3')}
+                      <Trans i18nKey="onboarding.intro.coc">
+                        You agree to uphold our&nbsp;
+                        <a
+                          href="/code-of-conduct"
+                          data-no-instant
+                          onClick={(e) => this.handleShowText(e, 'coc')}
+                        >
+                          Code of Conduct
+                        </a>
+                        .
+                      </Trans>
                     </label>
                   </li>
 
@@ -169,17 +171,18 @@ export class IntroSlide extends Component {
                         name="checked_terms_and_conditions"
                         checked={checked_terms_and_conditions}
                         onChange={this.handleChange}
-                        // TODO yheuhtozr: correct i18n interpolation!
                       />
-                      {i18next.t('onboarding.intro.terms1')}
-                      <a
-                        href="/terms"
-                        data-no-instant
-                        onClick={(e) => this.handleShowText(e, 'terms')}
-                      >
-                        {i18next.t('onboarding.intro.terms2')}
-                      </a>
-                      {i18next.t('onboarding.intro.terms3')}
+                      <Trans i18nKey="onboarding.intro.terms">
+                        You agree to our&nbsp;
+                        <a
+                          href="/terms"
+                          data-no-instant
+                          onClick={(e) => this.handleShowText(e, 'terms')}
+                        >
+                          Terms and Conditions
+                        </a>
+                        .
+                      </Trans>
                     </label>
                   </li>
                 </ul>

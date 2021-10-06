@@ -142,7 +142,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.text "slug"
     t.string "social_image"
     t.integer "spaminess_rating", default: 0
-    t.string "text_lang"
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
@@ -1429,7 +1428,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.string "writing_lang"
     t.index ["feed_url"], name: "index_users_settings_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["user_id"], name: "index_users_settings_on_user_id", unique: true
   end

@@ -17,7 +17,7 @@ function addRelevantButtonsToArticle(user) {
 
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
       actions.push(
-        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary px-2" href="${
+        `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="${
           articleContainer.dataset.path
         }/edit" rel="nofollow">${i18next.t('dashboard.article.edit')}</a>`,
       );

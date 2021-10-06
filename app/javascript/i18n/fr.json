@@ -204,20 +204,10 @@
     "create": "Create Post",
     "help": {
       "basic": {
-        "desc1": "You are currently using the basic markdown editor that uses ",
-        "desc2": ". You can also use the ",
-        "desc3": " editor you can find in ",
-        "desc4": ".",
-        "jekyll": "Jekyll front matter",
-        "rich": "rich+markdown",
-        "ux": "UX settings"
+        "desc": "You are currently using the basic markdown editor that uses <1>Jekyll front matter</1>. You can also use the <3>rich+markdown</3> editor you can find in <5>UX settings</5>."
       },
       "basics": {
         "code_block": "code block",
-        "desc1": "Use ",
-        "desc2": " to write and format posts.",
-        "desc3": "You can use ",
-        "desc4": " to add rich content such as Tweets, YouTube videos, etc.",
         "desc5": "In addition to images for the post's content, you can also drag and drop a cover image",
         "em": "italics",
         "em_mono": "*italics* or _italics_",
@@ -228,8 +218,6 @@
         "inline_code": "inline code",
         "inline_code_mono": "`inline code`",
         "link": "Link",
-        "liquid": "Liquid tags",
-        "markdown": "Markdown",
         "ol1": "item 1",
         "ol2": "item 2",
         "quote": "quoted text",
@@ -237,7 +225,9 @@
         "strong_mono": "**bold**",
         "syntax": "Commonly used syntax",
         "ul1": "item 1",
-        "ul2": "item 2"
+        "ul2": "item 2",
+        "use_liquid": "You can use <1>Liquid tags</1> to add rich content such as Tweets, YouTube videos, etc.",
+        "use_markdown": "Use <1>Markdown</1> to write and format posts."
       },
       "jekyll": "Jekyll Front Matter",
       "liquid": "🌊 Liquid Tags",
@@ -491,12 +481,8 @@
     },
     "finish": "Finish",
     "intro": {
-      "coc1": "You agree to uphold our ",
-      "coc2": "Code of Conduct",
-      "coc3": ".",
-      "terms1": "You agree to our ",
-      "terms2": "Terms and Conditions",
-      "terms3": ".",
+      "coc": "You agree to uphold our\u00A0<1>Code of Conduct</1>.",
+      "terms": "You agree to our\u00A0<1>Terms and Conditions</1>.",
       "title": "%{user} — welcome to %{community}!"
     },
     "profile": {
