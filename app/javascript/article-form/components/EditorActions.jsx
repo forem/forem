@@ -16,7 +16,6 @@ export const EditorActions = ({
 }) => {
   const isVersion1 = version === 'v1';
   const isVersion2 = version === 'v2';
-
   if (submitting) {
     return (
       <div className="crayons-article-form__footer">
@@ -74,7 +73,7 @@ EditorActions.propTypes = {
   edited: PropTypes.bool.isRequired,
   version: PropTypes.string.isRequired,
   onClearChanges: PropTypes.func.isRequired,
-  passedData: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  passedData: PropTypes.object.isRequired,
   onConfigChange: PropTypes.func.isRequired,
   submitting: PropTypes.bool.isRequired,
 };

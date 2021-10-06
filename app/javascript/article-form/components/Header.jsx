@@ -31,15 +31,11 @@ export const Header = ({
   );
 };
 
-Header.defaultProps = {
-  organizationId: '',
-};
-
 Header.propTypes = {
   displayModal: PropTypes.func.isRequired,
   onPreview: PropTypes.func.isRequired,
   previewShowing: PropTypes.bool.isRequired,
-  organizations: PropTypes.oneOfType([PropTypes.array]).isRequired,
+  organizations: PropTypes.arrayOf(PropTypes.object).isRequired,
   organizationId: PropTypes.string,
   onToggle: PropTypes.func.isRequired,
   siteLogo: PropTypes.string.isRequired,

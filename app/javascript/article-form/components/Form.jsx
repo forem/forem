@@ -45,11 +45,6 @@ export const Form = ({
   );
 };
 
-Form.defaultProps = {
-  mainImage: '',
-  errors: {},
-};
-
 Form.propTypes = {
   titleDefaultValue: PropTypes.string.isRequired,
   titleOnChange: PropTypes.func.isRequired,

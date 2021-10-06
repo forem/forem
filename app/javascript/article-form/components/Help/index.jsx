@@ -22,10 +22,10 @@ const renderModal = (onClose, title, selector) => {
 
 /**
  * Renders help component for given section
- *
+ * @param {object} props Component props
  * @param {boolean} props.previewShowing Boolean to decide if to show the preview
  * @param {string} props.helpFor Section for which help is shown
- * @param {string} props.helpPosition Offset from the top of the help component
+ * @param {number} props.helpPosition Offset from the top of the help component
  * @param {string} props.version Version of the editor used for article
  *
  * @returns Help component for the given section
@@ -95,7 +95,7 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
 
 Help.defaultProps = {
   helpFor: '',
-  helpPosition: '',
+  helpPosition: 0,
 };
 
 Help.propTypes = {
