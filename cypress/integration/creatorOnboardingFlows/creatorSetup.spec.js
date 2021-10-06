@@ -1,7 +1,9 @@
 describe('Creator Setup Page', () => {
   beforeEach(() => {
     cy.testSetup();
-    cy.visit('/admin/creator_settings/new');
+    const { baseUrl } = Cypress.config();
+
+    cy.visit(`${baseUrl}admin/creator_settings/new?referrer=${baseUrl}`);
   });
 
   it('should display a welcome message', () => {
@@ -85,10 +87,6 @@ describe('Creator Setup Page', () => {
       .findByRole('button', { name: 'Finish' })
       .click();
 
-    const { baseUrl } = Cypress.config();
-    cy.url().should(
-      'equal',
-      `${baseUrl}/admin/creator_settings/new?referrer=${baseUrl}`,
-    );
+    cy.url().should('equal', '/');
   });
 });
