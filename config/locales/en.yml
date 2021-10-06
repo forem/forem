@@ -79,3 +79,11 @@ en:
       unparsable: Podcast's rss couldn't be parsed
       unplayable: This podcast may not be playable in the browser
       unreachable: Podcast's feed_url is not reachable
+  settings_menu:
+    profile: "Profile"
+    customization: "Customization"
+    notifications: "Notifications"
+    account: "Account"
+    billing: "Billing"
+    organization: "Organization"
+    extensions: "Extensions"

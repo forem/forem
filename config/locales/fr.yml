@@ -102,3 +102,11 @@ fr:
       unparsable: Le rss du podcast n'a pas pu être analysé
       unplayable: Ce podcast peut ne pas être lisible dans le navigateur
       unreachable: Le feed_url du podcast n'est pas accessible
+  settings_menu:
+    profile: Profil
+    customization: Personnalisation
+    notifications: Notifications
+    account: Compte
+    billing: Facturation
+    organization: Organisation
+    extensions: Extensions
