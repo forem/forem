@@ -128,7 +128,7 @@ export class CommentSubscription extends Component {
           >
             {subscribed ? 'Unsubscribe' : 'Subscribe'}
           </Button>
-          {subscribed && (
+          {subscribed ? (
             <Button
               id="subscription-settings-btn"
               data-testid="subscription-settings"
@@ -136,7 +136,7 @@ export class CommentSubscription extends Component {
               icon={CogIcon}
               contentType="icon"
             />
-          )}
+          ) : null}
         </ButtonGroup>
         {subscribed && (
           <Dropdown
@@ -144,7 +144,7 @@ export class CommentSubscription extends Component {
             dropdownContentId="subscription-settings-dropdown"
             dropdownContentCloseButtonId="subscription-settings-done-btn"
             data-testid="subscriptions-panel"
-            className={`right-4 left-4 s:right-0 s:left-auto${
+            className={`right-4 left-4 s:right-0 p-4 s:left-auto${
               positionType === 'relative' ? ' w-full' : ''
             }`}
             ref={(element) => {

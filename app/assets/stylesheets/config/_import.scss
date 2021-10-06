@@ -37,11 +37,13 @@ $colors: (
 // List of breakpoints for our responsiveness.
 
 // If you modify these breakpoints, ensure you update them in @components/useMediaQuery.js
+$breakpoint-xs: 480px;
 $breakpoint-s: 640px;
 $breakpoint-m: 768px;
 $breakpoint-l: 1024px;
 
 $breakpoints: (
+  'xs': $breakpoint-xs,
   's': $breakpoint-s,
   'm': $breakpoint-m,
   'l': $breakpoint-l,
@@ -204,31 +206,4 @@ $z-indexes: (
       }
     }
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-
-// generate-box() - generating classes for different style
-//
-// This mixin automates process of generating styles for different
-// types of boxes used across Crayons.
-//
-// @param {integer} $level    Visual elevation level: 0-4
-// @param {color} $bg         Background color
-// @param {color} $border     Border and shadow colors
-// @param {color} $color      Content color
-
-@mixin generate-box(
-  $level: 1,
-  $bg: var(--card-bg),
-  $border: var(--base-100),
-  $color: var(--card-color)
-) {
-  background: $bg;
-  border: 2px solid $border;
-  @if $level > 0 {
-    box-shadow: #{pow(2, $level) + px} #{pow(2, $level) + px} 0 $border;
-  }
-  color: $color;
-  border-radius: var(--radius);
 }

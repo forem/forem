@@ -267,7 +267,7 @@ class UsersController < ApplicationController
       handle_integrations_tab
       handle_response_templates_tab
     else
-      not_found unless @tab.in?(Constants::Settings::TAB_LIST.map { |t| t.downcase.tr(" ", "-") })
+      not_found unless @tab.in?(Settings.tab_list.map { |t| t.downcase.tr(" ", "-") })
     end
   end
 
@@ -324,7 +324,7 @@ class UsersController < ApplicationController
 
   def handle_organization_tab
     @organizations = @current_user.organizations.order(name: :asc)
-    if params[:org_id] == "new" || params[:org_id].blank? && @organizations.size.zero?
+    if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.size.zero?)
       @organization = Organization.new
     elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
       @organization = Organization.find_by(id: params[:org_id]) || @organizations.first

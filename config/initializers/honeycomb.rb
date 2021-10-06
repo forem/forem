@@ -8,6 +8,7 @@ else
 
   # Honeycomb automatic Rails integration
   notification_events = %w[
+    cache_read.active_support
     sql.active_record
     render_template.action_view
     render_partial.action_view

@@ -465,7 +465,7 @@ seeder.create_if_none(Listing) do
   Listing.create!(
     user: admin_user,
     title: "Listing title",
-    body_markdown: Faker::Markdown.random,
+    body_markdown: Faker::Markdown.random.lines.take(10).join,
     location: Faker::Address.city,
     organization_id: admin_user.organizations.first&.id,
     listing_category_id: ListingCategory.first.id,
@@ -516,6 +516,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
     featured: true,
     show_comments: true,
     user_id: admin_user.id,
+    slug: "tag-test-article",
   )
 end
 
@@ -597,10 +598,39 @@ end
 
 ##############################################################################
 
+# Enable Connect feature flag for tests
+FeatureFlag.enable(:connect)
+
+##############################################################################
+
 seeder.create_if_none(FeedbackMessage) do
   admin_user.reporter_feedback_messages.create!(
     feedback_type: "bug-reports",
     message: "a bug",
     category: :bug,
+  )
+end
+
+##############################################################################
+
+seeder.create_if_none(Broadcast) do
+  Broadcast.create!(
+    title: "Mock Broadcast",
+    processed_html: "<p>#{Faker::Hipster.paragraph(sentence_count: 2)}</p>",
+    type_of: "Welcome",
+    banner_style: "default",
+    active: true,
+  )
+end
+
+##############################################################################
+
+seeder.create_if_none(DisplayAd) do
+  DisplayAd.create!(
+    organization_id: 1,
+    body_markdown: "<h1>This is an add</h1>",
+    placement_area: "sidebar_left",
+    published: true,
+    approved: true,
   )
 end

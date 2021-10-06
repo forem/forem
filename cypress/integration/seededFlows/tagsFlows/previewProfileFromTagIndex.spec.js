@@ -28,11 +28,18 @@ describe('Preview profile from the tag index page', () => {
         cy.findByText('Edinburgh');
         cy.findByText('University of Life');
 
-        cy.findByRole('button', { name: 'Follow' }).click();
+        cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).as(
+          'userFollowButton',
+        );
+        cy.get('@userFollowButton').should(
+          'have.attr',
+          'aria-pressed',
+          'false',
+        );
+        cy.get('@userFollowButton').click();
 
-        // Check that following status has been updated
-        cy.findByRole('button', { name: 'Follow' }).should('not.exist');
-        cy.findByRole('button', { name: 'Following' });
+        cy.get('@userFollowButton').should('have.text', 'Following');
+        cy.get('@userFollowButton').should('have.attr', 'aria-pressed', 'true');
       });
   });
 });

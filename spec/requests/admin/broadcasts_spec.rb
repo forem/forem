@@ -69,7 +69,6 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
         expect do
           delete admin_broadcast_path(broadcast.id)
         end.to change { Broadcast.all.count }.by(-1)
-        expect(response.body).to redirect_to admin_broadcasts_path
       end
     end
   end
@@ -101,7 +100,6 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
         expect do
           delete admin_broadcast_path(broadcast.id)
         end.to change { Broadcast.all.count }.by(-1)
-        expect(response.body).to redirect_to admin_broadcasts_path
       end
     end
   end

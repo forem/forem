@@ -44,7 +44,7 @@
   <div class="crayons-layout crayons-layout--2-cols crayons-layout--limited-l pt-0">
     <div class="crayons-layout__left-sidebar">
       <nav class="hidden m:block" aria-label="Settings">
-        <% Constants::Settings::TAB_LIST.each do |possible_tab| %>
+        <% Settings.tab_list.each do |possible_tab| %>
           <a class="crayons-link crayons-link--block <% if @tab == possible_tab.downcase.tr(' ', '-') %>crayons-link--current<% end %>" href="/settings/<%= possible_tab.downcase.tr(" ", "-") %>">
             <%= inline_svg_tag("twemoji/#{possible_tab.downcase.tr(' ', '-')}", aria: true, class: "crayons-icon crayons-icon--default", title: possible_tab) %>
             <%= possible_tab %>
@@ -53,7 +53,7 @@
       </nav>
       <div class="m:hidden p-2 pt-0">
         <select id="mobile-page-selector" class="crayons-select">
-          <% Constants::Settings::TAB_LIST.each do |possible_tab| %>
+          <% Settings.tab_list.each do |possible_tab| %>
             <option value="/settings/<%= possible_tab.downcase.tr(" ", "-") %>" <% if @tab == possible_tab.downcase.tr(' ', '-') %> selected <% end %>>
               <%= possible_tab %>
             </option>

@@ -15,7 +15,7 @@ RSpec.describe "UserSettings", type: :request do
       before { sign_in user }
 
       it "renders various settings tabs properly" do
-        Constants::Settings::TAB_LIST.each do |tab|
+        Settings.tab_list.each do |tab|
           get user_settings_path(tab.downcase.tr(" ", "-"))
 
           expect(response.body).to include("Settings for")

@@ -2,12 +2,10 @@
 
 .ltag__user-subscription-tag {
   &__container {
-    @include generate-box(
-      $level: 1,
-      $bg: var(--card-bg),
-      $border: var(--card-color),
-      $color: var(--card-color)
-    );
+    background: var(--card-bg);
+    color: var(--card-color);
+    border-radius: var(--radius);
+    border: 1px solid var(--card-color);
 
     box-sizing: border-box;
     display: flex;

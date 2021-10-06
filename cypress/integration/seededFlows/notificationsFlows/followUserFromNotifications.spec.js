@@ -10,16 +10,18 @@ describe('Follow user from notifications', () => {
 
   it('Follows and unfollows a user from a follow notification', () => {
     cy.findByRole('heading', { name: 'Notifications' });
-    cy.intercept('/follows').as('followsRequest');
 
-    cy.findByRole('button', { name: 'Follow back' }).as('followButton');
+    cy.findByRole('button', { name: 'Follow user back: User' }).as(
+      'followButton',
+    );
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
     cy.get('@followButton').click();
-    cy.wait('@followsRequest');
 
     cy.get('@followButton').should('have.text', 'Following');
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
     cy.get('@followButton').click();
-    cy.wait('@followsRequest');
     cy.get('@followButton').should('have.text', 'Follow back');
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
   });
 });

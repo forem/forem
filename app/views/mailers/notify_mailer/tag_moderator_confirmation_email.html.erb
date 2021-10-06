@@ -24,23 +24,25 @@
   <a href="<%= app_url(tag_moderation_url) %>">tag moderation</a> page.</strong>
 </p>
 
-<p>
-  To aid in communication, we’ve added you to the following <%= community_name %> Connect channels:
-</p>
-<ul>
-  <li>
-     <a href="<%= app_url("/connect/tag-moderators") %>">Tag Moderators</a>
-  </li>
-  <% if @channel_slug %>
+<% if FeatureFlag.enabled?(:connect) %>
+  <p>
+    To aid in communication, we’ve added you to the following <%= community_name %> Connect channels:
+  </p>
+  <ul>
     <li>
-      <a href="<%= app_url("/connect/#{@channel_slug}") %>">#<%= @tag.name %></a>
+      <a href="<%= app_url("/connect/tag-moderators") %>">Tag Moderators</a>
     </li>
-  <% end %>
-</ul>
+    <% if @channel_slug %>
+      <li>
+        <a href="<%= app_url("/connect/#{@channel_slug}") %>">#<%= @tag.name %></a>
+      </li>
+    <% end %>
+  </ul>
 
-<p>
-  You can use these channels to meet other tag moderators across the site and co-moderators within your tag while coordinating with the <%= community_name %> team. When in doubt about how to exercise your new privileges, please ask! If these Connect channels become too distracting, you can mute or leave any channel as you wish.
-</p>
+  <p>
+    You can use these channels to meet other tag moderators across the site and co-moderators within your tag while coordinating with the <%= community_name %> team. When in doubt about how to exercise your new privileges, please ask! If these Connect channels become too distracting, you can mute or leave any channel as you wish.
+  </p>
+<% end %>
 
 <p>
   Tag moderation is something we're continuously iterating on, so you can expect adjustments and expanding features over time as we receive feedback. We regularly send out a biweekly Mod Newsletter to keep mods up to date on these changes, so look out for it!

@@ -70,13 +70,13 @@ Object {
                       <button
                         aria-controls="story-author-preview-content-62407"
                         aria-label="Stella Macejkovic profile details"
-                        class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1"
+                        class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1 -my-2"
                         id="story-author-preview-trigger-62407"
                       >
                         Stella Macejkovic
                       </button>
                       <div
-                        class="profile-preview-card__content crayons-dropdown"
+                        class="profile-preview-card__content crayons-dropdown p-4"
                         data-repositioning-dropdown="true"
                         data-testid="profile-preview-card"
                         id="story-author-preview-content-62407"
@@ -114,7 +114,7 @@ Object {
                           >
                             <button
                               class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
-                              data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"style\\":\\"full\\"}"
+                              data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"name\\":\\"Stella Macejkovic\\",\\"style\\":\\"full\\"}"
                             >
                               Follow
                             </button>
@@ -223,7 +223,7 @@ Object {
                     <span
                       class="hidden s:inline"
                     >
-                      Add comment
+                      [missing "en.core.add_comment" translation]
                     </span>
                   </a>
                 </div>
@@ -318,13 +318,13 @@ Object {
                     <button
                       aria-controls="story-author-preview-content-62407"
                       aria-label="Stella Macejkovic profile details"
-                      class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1"
+                      class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1 -my-2"
                       id="story-author-preview-trigger-62407"
                     >
                       Stella Macejkovic
                     </button>
                     <div
-                      class="profile-preview-card__content crayons-dropdown"
+                      class="profile-preview-card__content crayons-dropdown p-4"
                       data-repositioning-dropdown="true"
                       data-testid="profile-preview-card"
                       id="story-author-preview-content-62407"
@@ -362,7 +362,7 @@ Object {
                         >
                           <button
                             class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
-                            data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"style\\":\\"full\\"}"
+                            data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"name\\":\\"Stella Macejkovic\\",\\"style\\":\\"full\\"}"
                           >
                             Follow
                           </button>
@@ -471,7 +471,7 @@ Object {
                   <span
                     class="hidden s:inline"
                   >
-                    Add comment
+                    [missing "en.core.add_comment" translation]
                   </span>
                 </a>
               </div>

@@ -123,19 +123,28 @@ module ApplicationHelper
     return if followable == DELETED_USER
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
+    followable_type = if followable.respond_to?(:decorated?) && followable.decorated?
+                        followable.object.class.name.downcase
+                      else
+                        followable.class.name.downcase
+                      end
+
+    followable_name = followable.name
 
     tag.button(
-      "Follow",
+      I18n.t("core.follow"),
       name: :button,
       type: :button,
       data: {
         info: {
           id: followable.id,
-          className: followable.class.name,
+          className: followable_type,
+          name: followable_name,
           style: style
         }
       },
       class: "crayons-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
+      aria: { label: "Follow #{followable_type}: #{followable_name}", pressed: "false" },
     )
   end
 
@@ -258,11 +267,6 @@ module ApplicationHelper
 
   def organization_url(organization)
     URL.organization(organization)
-  end
-
-  def sanitize_and_decode(str)
-    # using to_str instead of to_s to prevent removal of html entity code
-    HTMLEntities.new.decode(sanitize(str).to_str)
   end
 
   def estimated_user_count

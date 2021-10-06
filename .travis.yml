@@ -26,7 +26,6 @@ addons:
 env:
   global:
     - RAILS_ENV=test
-    - RUBY_THREAD_VM_STACK_SIZE=5242880
     - DATABASE_URL=postgres://travis@localhost:5433/Forem_prod_test
     - DATABASE_NAME=Forem_prod_test
     - DATABASE_URL_TEST=postgres://travis@localhost:5433/Forem_test
@@ -43,6 +42,7 @@ env:
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
+    - DISABLE_SPRING=true
 before_install:
   - >-
     sudo sed -i

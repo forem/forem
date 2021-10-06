@@ -161,6 +161,7 @@
                              readonly: true %>
           </div>
           <% authentication_available_providers.each do |provider| %>
+            <% next if provider.provider_name == :forem && !FeatureFlag.enabled?(:forem_passport) %>
             <section class="config-authentication__item mb-0">
               <figure class="config-authentication__item--icon">
                 <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
@@ -206,9 +207,6 @@
           <% end %>
         </section>
       </section>
-      <div class="crayons-notice crayons-notice--info mb-4" aria-live="polite">
-        Changing authentication keys will not take effect until this Forem instance is restarted.
-      </div>
 
       <%= render "update_setting_button", f: f %>
     </div>

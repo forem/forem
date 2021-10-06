@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 export default class ArticleController extends Controller {
   static classes = ['bgHighlighted', 'borderHighlighted'];

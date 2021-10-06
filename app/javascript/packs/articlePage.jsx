@@ -1,12 +1,8 @@
 import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
+import { initializeDropdown } from '../utilities/dropdownUtils';
 import { embedGists } from '../utilities/gist';
-import {
-  initializeDropdown,
-  getDropdownRepositionListener,
-} from '../utilities/dropdownUtils';
-import { getInstantClick } from '../topNavigation/utilities';
 
 /* global Runtime */
 
@@ -21,7 +17,7 @@ if (fullscreenActionElements) {
 // The Snackbar for the article page
 const snackZone = document.getElementById('snack-zone');
 if (snackZone) {
-  render(<Snackbar lifespan="3" />, snackZone);
+  render(<Snackbar lifespan={3} />, snackZone);
 }
 
 // eslint-disable-next-line no-restricted-globals
@@ -123,83 +119,5 @@ getCsrfToken().then(async () => {
   }
 });
 
-// Pin/Unpin article
-// these element are added by initializeBaseUserData.js:addRelevantButtonsToArticle
-const toggleArticlePin = async (button) => {
-  const isPinButton = button.id === 'js-pin-article';
-  const { articleId, path } = button.dataset;
-  const method = isPinButton ? 'PUT' : 'DELETE';
-  const body = method === 'PUT' ? JSON.stringify({ id: articleId }) : null;
-
-  const response = await fetch(path, {
-    method,
-    body,
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    credentials: 'same-origin',
-  });
-
-  // response could potentially fail if the article is draft but we don't show
-  // the buttons in those cases, so I think there's no need to handle that scenario client side
-  if (response.ok) {
-    // replace id and label
-    button.id = isPinButton ? 'js-unpin-article' : 'js-pin-article';
-    button.innerHTML = `${isPinButton ? 'Unpin' : 'Pin'} Post`;
-
-    const message = isPinButton
-      ? 'The post has been succesfully pinned'
-      : 'The post has been succesfully unpinned';
-    addSnackbarItem({ message });
-  }
-};
-
-const actionsContainer = document.getElementById('action-space');
-const pinTargets = ['js-pin-article', 'js-unpin-article'];
-actionsContainer.addEventListener('click', async (event) => {
-  if (pinTargets.includes(event.target.id)) {
-    toggleArticlePin(event.target);
-  }
-});
-
-// Initialize the profile preview functionality
-const profilePreviewTrigger = document.getElementById(
-  'profile-preview-trigger',
-);
-
-const dropdownContent = document.getElementById('profile-preview-content');
-
-if (profilePreviewTrigger?.dataset.initialized !== 'true') {
-  initializeDropdown({
-    triggerElementId: 'profile-preview-trigger',
-    dropdownContentId: 'profile-preview-content',
-    onOpen: () => {
-      dropdownContent?.classList.add('showing');
-    },
-    onClose: () => {
-      dropdownContent?.classList.remove('showing');
-    },
-  });
-
-  profilePreviewTrigger.dataset.initialized = 'true';
-}
-
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
-
-// Preview card dropdowns reposition on scroll
-const dropdownRepositionListener = getDropdownRepositionListener();
-
-document.addEventListener('scroll', dropdownRepositionListener);
-
-getInstantClick().then((ic) => {
-  ic.on('change', () => {
-    document.removeEventListener('scroll', dropdownRepositionListener);
-  });
-});
-
-window.addEventListener('beforeunload', () => {
-  document.removeEventListener('scroll', dropdownRepositionListener);
-});

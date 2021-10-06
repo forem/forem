@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 import { forwardRef } from 'preact/compat';
+import { locale } from '../utilities/locale';
 import { Button } from '@crayons';
+
 
 const SearchIcon = () => (
   <svg
@@ -31,7 +33,7 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch }, ref) => (
           className="crayons-header--search-input crayons-textfield"
           type="text"
           name="q"
-          placeholder="Search..."
+          placeholder={`${locale('core.search')}...`}
           autoComplete="off"
           aria-label="Search term"
           value={searchTerm}
