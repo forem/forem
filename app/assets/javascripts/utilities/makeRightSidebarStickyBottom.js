@@ -1,46 +1,61 @@
 function makeRightSidebarStickyBottom() {
-  const rightSidebar = document.getElementById(
-    'article-show-primary-sticky-nav',
-  );
-  const profileCard = document.getElementById('profile-card');
-  const lastChild = getLastSuggestedArticleElement(rightSidebar);
-  const sidebarShowsEntirelyInViewport = elementInViewport(rightSidebar);
-  const isMobileDevice = window.orientation !== 'undefined';
+  const sidebar = document.getElementById('article-show-primary-sticky-nav');
+  const isMobileDevice = screen.width <= 480;
+  const sidebarShowsEntirelyInViewport = elementInViewport(sidebar);
+  const lastChild = getLastSuggestedArticleElement(sidebar);
+  const sidebarWidth = lastChild.getBoundingClientRect().width;
+
+  let lastScrollPositionTop = 0;
+  let sidebarPositionTop = 0;
+  let sidebarIsPositionFixed = false;
 
   if (!sidebarShowsEntirelyInViewport && !isMobileDevice) {
-    let lastScrollTop = 0;
-    let rightSidebarTop = 0;
-    let fixedElements = false;
-    let sidebarWidth = lastChild.getBoundingClientRect().width;
-    console.debug('Adding scroll event listener'); // eslint-disable-line no-console
-    window.addEventListener('scroll', () => {
-      var st = window.scrollY;
-      const scrollingDown = st > lastScrollTop;
+    sidebar.classList.remove('crayons-article-sticky');
+    window.addEventListener('scroll', throttle(handleScroll));
+  }
 
-      if (scrollingDown) {
-        if (elementInViewport(lastChild)) {
-          rightSidebarTop = rightSidebar.getBoundingClientRect().top;
-          if (!fixedElements) {
-            rightSidebar.style.top = `${rightSidebarTop}px`;
-            rightSidebar.style.position = 'fixed';
-            rightSidebar.style.width = `${sidebarWidth}px`;
-            fixedElements = true;
-          }
-        }
-      } else {
-        if (fixedElements) {
-          const distanceMoved = st - lastScrollTop;
-          rightSidebarTop -= distanceMoved;
-          rightSidebar.style.top = `${rightSidebarTop}px`;
+  function handleScroll() {
+    console.debug('Handling scroll'); // eslint-disable-line no-console
+    var st = window.scrollY;
+    const scrollingDown = st > lastScrollPositionTop;
 
-          if (elementInViewport(profileCard)) {
-            fixedElements = false;
+    if (scrollingDown) {
+      if (!sidebarIsPositionFixed) {
+        const reachedBottomOfSidebar =
+          window.innerHeight - lastChild.getBoundingClientRect().bottom > 8;
+
+        if (reachedBottomOfSidebar) {
+          sidebarPositionTop = sidebar.getBoundingClientRect().top;
+          if (!sidebarIsPositionFixed) {
+            sidebar.style.top = `${sidebarPositionTop}px`;
+            sidebar.style.position = 'fixed';
+            sidebar.style.width = `${sidebarWidth}px`;
+            sidebarIsPositionFixed = true;
           }
         }
       }
+    } else {
+      if (sidebarIsPositionFixed) {
+        const distanceMoved = st - lastScrollPositionTop;
+        sidebarPositionTop -= distanceMoved;
+        sidebar.style.top = `${sidebarPositionTop}px`;
 
-      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-    });
+        // this ensures that the right sidebar will not be moving beyond the top of the article
+        const headerHeight = 56;
+        const layoutPadding = 24;
+        const sidebarStickyTopVal = headerHeight + layoutPadding;
+        const reachedTopOfArticle =
+          Math.abs(sidebarPositionTop) <= sidebarStickyTopVal;
+
+        if (reachedTopOfArticle) {
+          sidebar.style.removeProperty('position');
+          sidebar.style.removeProperty('top');
+          sidebarIsPositionFixed = false;
+        }
+      }
+    }
+
+    lastScrollPositionTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
   }
 }
 
@@ -69,9 +84,22 @@ function elementInViewport(el) {
 
   const bottomPadding = 10;
   return (
-    top >= window.pageYOffset &&
-    left >= window.pageXOffset &&
-    top + height + bottomPadding <= window.pageYOffset + window.innerHeight &&
-    left + width <= window.pageXOffset + window.innerWidth
+    top >= window.scrollY &&
+    left >= window.scrollX &&
+    top + height + bottomPadding <= window.scrollY + window.innerHeight &&
+    left + width <= window.scrollX + window.innerWidth
   );
+}
+
+function throttle(callback, limit = 1) {
+  var wait = false;
+  return function () {
+    if (!wait) {
+      callback.call();
+      wait = true;
+      setTimeout(function () {
+        wait = false;
+      }, limit);
+    }
+  };
 }
