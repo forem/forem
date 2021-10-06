@@ -90,7 +90,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "includes contact us on RSS page properly" do
         get user_settings_path(:extensions)
-        expect(response.body).to include('<a href="/contact">')
+        expect(response.body).to include(I18n.t("contact_prompts.if_any_questions_html"))
       end
 
       it "renders heads up dupe account message with proper param" do
