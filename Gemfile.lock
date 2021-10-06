@@ -212,7 +212,7 @@ GEM
     dogstatsd-ruby (4.8.3)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    doorkeeper (5.5.3)
+    doorkeeper (5.5.4)
       railties (>= 5)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
@@ -673,7 +673,7 @@ GEM
     rspec-support (3.10.2)
     rss (0.2.9)
       rexml
-    rubocop (1.22.0)
+    rubocop (1.22.1)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)

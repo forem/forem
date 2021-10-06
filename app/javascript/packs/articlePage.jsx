@@ -17,7 +17,7 @@ if (fullscreenActionElements) {
 // The Snackbar for the article page
 const snackZone = document.getElementById('snack-zone');
 if (snackZone) {
-  render(<Snackbar lifespan="3" />, snackZone);
+  render(<Snackbar lifespan={3} />, snackZone);
 }
 
 // eslint-disable-next-line no-restricted-globals

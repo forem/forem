@@ -95,19 +95,6 @@ body.trusted-status-true .trusted-visible-block {
   display: flex !important;
 }
 
-.app-shell-loader {
-  position: absolute;
-  top: 200px;
-  text-align: center;
-  left: 0;
-  right: 0;
-  opacity: var(--opacity-0);
-  animation: loading-fadein 1.5s;
-  animation-delay: 0.6s;
-  font-size: 1.2em;
-  z-index: var(--z-negative);
-}
-
 @keyframes loading-fadein {
   from {
     opacity: var(--opacity-0);
