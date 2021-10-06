@@ -14,7 +14,12 @@ module Admin
         ::Settings::Authentication.invite_only_mode = settings_params[:invite_only]
         ::Settings::UserExperience.public = settings_params[:public]
       end
-      current_user.update!(saw_onboarding: true)
+      # For this feature to work as expected for the time being, we must set the COC and TOS to true.
+      # However, this is not a viable solution, as Forem Creators are required to see and check the
+      # COC and TOS. Bypassing them in this manner will not do and we will need to rethink this solution.
+      # TODO: Replace the current solution of setting the COC and TOS to true with a better, more
+      # long-term solution for Forem Creators.
+      current_user.update!(saw_onboarding: true, checked_code_of_conduct: true, checked_terms_and_conditions: true)
       redirect_to root_path
     rescue StandardError => e
       flash.now[:error] = e.message
