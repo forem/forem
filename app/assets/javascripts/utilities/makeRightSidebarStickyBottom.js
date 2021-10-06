@@ -4,41 +4,44 @@ function makeRightSidebarStickyBottom() {
   );
   const profileCard = document.getElementById('profile-card');
   const lastChild = getLastSuggestedArticleElement(rightSidebar);
+  const sidebarShowsEntirelyInViewport = elementInViewport(rightSidebar);
+  const isMobileDevice = window.orientation !== 'undefined';
 
-  let lastScrollTop = 0;
-  let rightSidebarTop = 0;
-  let fixedElements = false;
-  let sidebarWidth = lastChild.getBoundingClientRect().width;
-  window.addEventListener('scroll', () => {
-    var st = window.scrollY;
-    const scrollingDown = st > lastScrollTop;
+  if (!sidebarShowsEntirelyInViewport && !isMobileDevice) {
+    let lastScrollTop = 0;
+    let rightSidebarTop = 0;
+    let fixedElements = false;
+    let sidebarWidth = lastChild.getBoundingClientRect().width;
+    console.debug('Adding scroll event listener'); // eslint-disable-line no-console
+    window.addEventListener('scroll', () => {
+      var st = window.scrollY;
+      const scrollingDown = st > lastScrollTop;
 
-    if (scrollingDown) {
-      if (elementInViewport(lastChild)) {
-        rightSidebarTop = rightSidebar.getBoundingClientRect().top;
-        if (!fixedElements) {
+      if (scrollingDown) {
+        if (elementInViewport(lastChild)) {
+          rightSidebarTop = rightSidebar.getBoundingClientRect().top;
+          if (!fixedElements) {
+            rightSidebar.style.top = `${rightSidebarTop}px`;
+            rightSidebar.style.position = 'fixed';
+            rightSidebar.style.width = `${sidebarWidth}px`;
+            fixedElements = true;
+          }
+        }
+      } else {
+        if (fixedElements) {
+          const distanceMoved = st - lastScrollTop;
+          rightSidebarTop -= distanceMoved;
           rightSidebar.style.top = `${rightSidebarTop}px`;
-          rightSidebar.style.position = 'fixed';
-          rightSidebar.style.width = `${sidebarWidth}px`;
-          fixedElements = true;
+
+          if (elementInViewport(profileCard)) {
+            fixedElements = false;
+          }
         }
       }
-    } else {
-      if (fixedElements) {
-        const distanceMoved = st - lastScrollTop;
-        rightSidebarTop -= distanceMoved;
-        rightSidebar.style.top = `${rightSidebarTop}px`;
 
-        if (elementInViewport(profileCard)) {
-          rightSidebar.style.removeProperty('position');
-          rightSidebar.style.removeProperty('top');
-          fixedElements = false;
-        }
-      }
-    }
-
-    lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-  });
+      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+    });
+  }
 }
 
 function getLastSuggestedArticleElement(rightSidebar) {
