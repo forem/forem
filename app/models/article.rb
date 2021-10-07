@@ -226,7 +226,7 @@ class Article < ApplicationRecord
     end
   }
 
-    # NOTE: @citizen428
+  # NOTE: @citizen428
   # I'd usually avoid using Arel directly like this. However, none of the more
   # straight-forward ways of negating the above scope worked:
   # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
