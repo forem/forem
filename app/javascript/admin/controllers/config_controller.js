@@ -1,5 +1,5 @@
 /* global jQuery */
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 import { adminModal } from '../adminModal';
 import { displaySnackbar } from '../messageUtilities';
 

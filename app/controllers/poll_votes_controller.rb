@@ -1,6 +1,8 @@
 class PollVotesController < ApplicationController
   before_action :authenticate_user!, only: %i[create]
 
+  POLL_VOTES_PERMITTED_PARMS = %i[poll_option_id].freeze
+
   def show
     @poll = Poll.find(params[:id]) # Querying the poll instead of the poll vote
     @poll_vote = @poll.poll_votes.where(user_id: current_user).first
@@ -25,7 +27,6 @@ class PollVotesController < ApplicationController
   private
 
   def poll_vote_params
-    accessible = %i[poll_option_id]
-    params.require(:poll_vote).permit(accessible)
+    params.require(:poll_vote).permit(POLL_VOTES_PERMITTED_PARMS)
   end
 end

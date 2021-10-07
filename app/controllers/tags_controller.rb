@@ -5,11 +5,19 @@ class TagsController < ApplicationController
 
   ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
   INDEX_API_ATTRIBUTES = %i[name rules_html].freeze
+  TAGS_ALLOWED_PARAMS = %i[
+    wiki_body_markdown
+    rules_markdown
+    short_summary
+    pretty_name
+    bg_color_hex
+    text_color_hex
+  ].freeze
 
   def index
     skip_authorization
     @tags_index = true
-    @tags = Tag.includes(:sponsorship).order(hotness_score: :desc).limit(100)
+    @tags = Tag.where(alias_for: nil).includes(:sponsorship).order(hotness_score: :desc).limit(100)
   end
 
   def edit
@@ -59,16 +67,8 @@ class TagsController < ApplicationController
   end
 
   def tag_params
-    accessible = %i[
-      wiki_body_markdown
-      rules_markdown
-      short_summary
-      pretty_name
-      bg_color_hex
-      text_color_hex
-    ]
     convert_empty_string_to_nil
-    params.require(:tag).permit(accessible)
+    params.require(:tag).permit(TAGS_ALLOWED_PARAMS)
   end
 
   private_constant :ATTRIBUTES_FOR_SERIALIZATION
