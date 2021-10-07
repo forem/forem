@@ -25,11 +25,16 @@ en:
     popular_tags: Popular Tags
     post: Post
     reaction: Reaction
+    reactions:
+      heart: Heart
+      save: Save
+      unicorn: Unicorn
     read_next: Read next
     reply: Reply
     report_abuse: Report abuse
     search: Search
     see_all: See all
+    share_to: Share to %{media}
     trending_on: Trending on
     view: View
     week: Week

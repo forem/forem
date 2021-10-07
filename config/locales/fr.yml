@@ -25,11 +25,16 @@ fr:
     popular_tags: Sujets populaires
     post: Publication
     reaction: Réaction
+    reactions:
+      heart: Coeur
+      save: Sauver
+      unicorn: Licorne
     read_next: Lire ensuite
     reply: Répondre
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Tout voir
+    share_to: Partager sur %{media}
     trending_on: Populaire sur
     view: Vue
     week: Semaine

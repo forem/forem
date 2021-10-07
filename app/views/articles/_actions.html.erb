@@ -5,7 +5,7 @@
       <%= render partial: "articles/reaction_button",
                  locals: {
                    category: :like,
-                   description: "Heart",
+                   description: t("core.reactions.heart"),
                    image_path: "heart.svg",
                    image_active_path: "heart-filled.svg",
                    aria_label: "Like"
@@ -13,7 +13,7 @@
       <%= render partial: "articles/reaction_button",
                  locals: {
                    category: :unicorn,
-                   description: "Unicorn",
+                   description: t("core.reactions.unicorn"),
                    image_path: "unicorn.svg",
                    image_active_path: "unicorn-filled.svg",
                    aria_label: "React with unicorn"
@@ -21,7 +21,7 @@
       <%= render partial: "articles/reaction_button",
                  locals: {
                    category: :readinglist,
-                   description: "Save",
+                   description: t("core.reactions.save"),
                    image_path: "save.svg",
                    image_active_path: "save-filled.svg",
                    aria_label: "Add to reading list"
@@ -51,35 +51,35 @@
             class="crayons-link crayons-link--block"
             rel="noopener"
             href='https://twitter.com/intent/tweet?text=<%= u "\"#{@article.title.strip}\" by " %><%= u @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name %><%= u " #{Settings::General.twitter_hashtag} " %><%= u " #{article_url(@article)}" %>'>
-            Share to Twitter
+            <%= t("core.share_to", media: "Twitter") %>
           </a>
           <a
             target="_blank"
             class="crayons-link crayons-link--block"
             rel="noopener"
             href="https://www.linkedin.com/shareArticle?mini=true&url=<%= u article_url(@article) %>&title=<%= u @article.title %>&summary=<%= u @article.description %>&source=<%= u community_name %>">
-            Share to LinkedIn
+            <%= t("core.share_to", media: "LinkedIn") %>
           </a>
           <a
             target="_blank"
             class="crayons-link crayons-link--block"
             rel="noopener"
             href="https://www.reddit.com/submit?url=<%= u article_url(@article) %>&title=<%= u @article.title %>">
-            Share to Reddit
+            <%= t("core.share_to", media: "Reddit") %>
           </a>
           <a
             target="_blank"
             class="crayons-link crayons-link--block"
             rel="noopener"
             href="https://news.ycombinator.com/submitlink?u=<%= u article_url(@article) %>&t=<%= u @article.title %>">
-            Share to Hacker News
+            <%= t("core.share_to", media: "Hacker News") %>
           </a>
           <a
             target="_blank"
             class="crayons-link crayons-link--block"
             rel="noopener"
             href="https://www.facebook.com/sharer.php?u=<%= u article_url(@article) %>">
-            Share to Facebook
+            <%= t("core.share_to", media: "Facebook") %>
           </a>
         </div>
 
