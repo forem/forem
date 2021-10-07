@@ -95,8 +95,9 @@ proceed.
 
 This section provides a high-level quick start guide. If you're looking for a
 more thorough installation guide (for example
-[with macOS](https://developers.forem.com/getting-started/installation/mac), you'll want to
-refer to our complete [Developer Documentation](https://developers.forem.com/).
+[with macOS](https://developers.forem.com/getting-started/installation/mac),
+you'll want to refer to our complete
+[Developer Documentation](https://developers.forem.com/).
 
 We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
 transitioning to a [Preact](https://preactjs.com/)-first frontend.

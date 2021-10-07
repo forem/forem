@@ -1,7 +1,10 @@
+$dropdownhoverdelay: 590ms;
+$dropdowntransition: 300ms;
+
 .profile-preview-card {
   &__content.crayons-dropdown {
     transition: border, border-top;
-    transition-duration: 300ms;
+    transition-duration: $dropdowntransition;
     color: var(--base-100);
     padding-top: 0;
     top: 100%;
@@ -12,7 +15,7 @@
 
   &__content.crayons-dropdown:hover {
     display: block;
-    animation: hoverAppear 1s;
+    animation: hoverAppear $dropdownhoverdelay;
 
     &.showing {
       animation: none;
@@ -21,7 +24,7 @@
 
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
     display: block;
-    animation: hoverAppear 1s;
+    animation: hoverAppear $dropdownhoverdelay;
 
     &.showing {
       animation: none;
