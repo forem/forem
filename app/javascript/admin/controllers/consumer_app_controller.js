@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 export default class ConsumerAppController extends Controller {
   static targets = ['platform', 'teamId'];

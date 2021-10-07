@@ -6,6 +6,14 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       get tags_path
       expect(response.body).to include("Top tags")
     end
+
+    it "does not include tags with alias" do
+      create(:tag, name: "ruby")
+      create(:tag, name: "aliastag", alias_for: "ruby")
+
+      get tags_path
+      expect(response.body).not_to include("aliastag")
+    end
   end
 
   describe "GET /tags/suggest" do

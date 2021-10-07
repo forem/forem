@@ -407,6 +407,18 @@ RSpec.describe "Registrations", type: :request do
           expect(User.first).to be nil
         end.to raise_error Pundit::NotAuthorizedError
       end
+
+      it "enqueues Discover::RegisterWorker" do
+        sidekiq_assert_enqueued_with(job: Discover::RegisterWorker) do
+          post "/users", params:
+            { user: { name: "test #{rand(10)}",
+                      username: "haha_#{rand(10)}",
+                      email: "yoooo#{rand(100)}@yo.co",
+                      password: "PaSSw0rd_yo000",
+                      forem_owner_secret: "test",
+                      password_confirmation: "PaSSw0rd_yo000" } }
+        end
+      end
     end
 
     context "with the creator_onboarding feature flag" do

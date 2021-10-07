@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <% if @articles_count > @page_limit %>
+    <% (0..(@articles_count/@page_limit)).each do |n| %>
+      <sitemap>
+          <loc><%= app_url("sitemap-posts-#{n}.xml") %></loc>
+      </sitemap>
+    <% end %>
+  <% else %>
+      <sitemap>
+        <loc><%= app_url("sitemap-posts.xml") %></loc>
+    </sitemap>
+  <% end %>
+  <sitemap>
+      <loc><%= app_url("sitemap-users.xml") %></loc>
+  </sitemap>
+  <sitemap>
+      <loc><%= app_url("sitemap-tags.xml") %></loc>
+  </sitemap>
+</sitemapindex>

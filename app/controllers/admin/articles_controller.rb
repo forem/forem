@@ -7,17 +7,17 @@ module Admin
     end
 
     ARTICLES_ALLOWED_PARAMS = %i[featured
-                              social_image
-                              body_markdown
-                              approved
-                              email_digest_eligible
-                              boosted_additional_articles
-                              boosted_dev_digest_email
-                              main_image_background_hex_color
-                              featured_number
-                              user_id
-                              co_author_ids_list
-                              published_at].freeze
+                                 social_image
+                                 body_markdown
+                                 approved
+                                 email_digest_eligible
+                                 boosted_additional_articles
+                                 boosted_dev_digest_email
+                                 main_image_background_hex_color
+                                 featured_number
+                                 user_id
+                                 co_author_ids_list
+                                 published_at].freeze
 
     def index
       @pinned_article = PinnedArticle.get

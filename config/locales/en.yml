@@ -28,12 +28,17 @@ en:
     popular_tags: Popular Tags
     post: Post
     reaction: Reaction
+    reactions:
+      heart: Heart
+      save: Save
+      unicorn: Unicorn
     read_next: Read next
     reply: Reply
     report_abuse: Report abuse
     search: Search
     see_all: See all
     series: Series
+    share_to: Share to %{media}
     trending_on: Trending on
     view: View
     week: Week
@@ -87,3 +92,11 @@ en:
       unparsable: Podcast's rss couldn't be parsed
       unplayable: This podcast may not be playable in the browser
       unreachable: Podcast's feed_url is not reachable
+  settings_menu:
+    profile: "Profile"
+    customization: "Customization"
+    notifications: "Notifications"
+    account: "Account"
+    billing: "Billing"
+    organization: "Organization"
+    extensions: "Extensions"
