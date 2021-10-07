@@ -12,35 +12,5 @@
 
   .formatter-btn {
     min-width: 50px;
-    &__tooltip {
-      // TODO: rework tooltips.scss so we can use here too
-      display: none;
-      position: absolute;
-      top: 100%;
-      bottom: unset;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--base-a90);
-      color: var(--base-inverted);
-      font-size: var(--fs-s);
-      font-family: var(--ff-sans-serif);
-      font-weight: var(--fw-normal);
-      line-height: var(--lh-tight);
-      padding: var(--su-2) var(--su-3);
-      transition: all var(--transition-props);
-      transition-delay: 250ms;
-      z-index: var(--z-popover);
-      border-radius: var(--radius);
-      width: max-content;
-      opacity: var(--opacity-0);
-    }
-  }
-
-  .formatter-btn:hover,
-  .formatter-btn:focus-visible {
-    .formatter-btn__tooltip {
-      display: block;
-      opacity: 1;
-    }
   }
 }

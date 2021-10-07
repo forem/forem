@@ -217,14 +217,15 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             onClick={() => insertSyntax(controlName)}
             onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
             aria-label={label}
-          >
-            <span aria-hidden="true" className="formatter-btn__tooltip">
-              {label}
-              {keyboardShortcutLabel ? (
-                <span className="opacity-75"> {keyboardShortcutLabel}</span>
-              ) : null}
-            </span>
-          </Button>
+            tooltip={
+              <span aria-hidden="true">
+                {label}
+                {keyboardShortcutLabel ? (
+                  <span className="opacity-75"> {keyboardShortcutLabel}</span>
+                ) : null}
+              </span>
+            }
+          />
         );
       })}
 
