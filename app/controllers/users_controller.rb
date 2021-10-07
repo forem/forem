@@ -267,7 +267,7 @@ class UsersController < ApplicationController
       handle_integrations_tab
       handle_response_templates_tab
     else
-      not_found unless @tab.in?(Constants::Settings::TAB_LIST.map { |t| t.downcase.tr(" ", "-") })
+      not_found unless @tab.in?(Settings.tab_list.map { |t| t.downcase.tr(" ", "-") })
     end
   end
 
