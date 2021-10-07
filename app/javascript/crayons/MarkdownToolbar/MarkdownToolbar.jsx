@@ -1,3 +1,4 @@
+/* global Runtime */
 import { h } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
 import {
@@ -24,6 +25,9 @@ const getIndexOfLineStart = (text, cursorStart) => {
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
+
+  const keyboardShortcutModifierText =
+    Runtime.currentOS() === 'macOS' ? 'CMD' : 'CTRL';
 
   const markdownSyntaxFormatters = {
     ...coreSyntaxFormatters,
@@ -204,7 +208,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       aria-controls={textAreaId}
     >
       {Object.keys(coreSyntaxFormatters).map((controlName, index) => {
-        const { icon, label, keyboardShortcutLabel } =
+        const { icon, label, keyboardShortcutKeys } =
           coreSyntaxFormatters[controlName];
         return (
           <Button
@@ -220,8 +224,10 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             tooltip={
               <span aria-hidden="true">
                 {label}
-                {keyboardShortcutLabel ? (
-                  <span className="opacity-75"> {keyboardShortcutLabel}</span>
+                {keyboardShortcutKeys ? (
+                  <span className="opacity-75">
+                    {` ${keyboardShortcutModifierText} + ${keyboardShortcutKeys}`}
+                  </span>
                 ) : null}
               </span>
             }
@@ -249,7 +255,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           className="absolute editor-toolbar crayons-dropdown p-2 right-0 top-100"
         >
           {Object.keys(secondarySyntaxFormatters).map((controlName, index) => {
-            const { icon, label, keyboardShortcutLabel } =
+            const { icon, label, keyboardShortcutKeys } =
               secondarySyntaxFormatters[controlName];
             return (
               <Button
@@ -268,10 +274,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
                 tooltip={
                   <span aria-hidden="true" className="formatter-btn__tooltip">
                     {label}
-                    {keyboardShortcutLabel ? (
+                    {keyboardShortcutKeys ? (
                       <span className="opacity-75">
-                        {' '}
-                        {keyboardShortcutLabel}
+                        {` ${keyboardShortcutModifierText} + ${keyboardShortcutKeys}`}
                       </span>
                     ) : null}
                   </span>

@@ -5,6 +5,12 @@ import '@testing-library/jest-dom';
 import { MarkdownToolbar } from '../MarkdownToolbar';
 
 describe('<MarkdownToolbar />', () => {
+  beforeEach(() => {
+    global.Runtime = {
+      currentOS: jest.fn(() => 'macOS'),
+    };
+  });
+
   it('should have no a11y violations when rendered', async () => {
     const { container } = render(<MarkdownToolbar />);
     const results = await axe(container);
