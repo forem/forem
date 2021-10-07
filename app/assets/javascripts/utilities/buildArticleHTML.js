@@ -81,7 +81,7 @@ function buildArticleHTML(article) {
     }
 
     var commentsAriaLabelText =
-      ' aria-label="Comments for articale ' +
+      ' aria-label="Comments for post ' +
       article.title +
       ' (' +
       commentsCount +
