@@ -265,14 +265,18 @@ export const MarkdownToolbar = ({ textAreaId }) => {
                   handleToolbarButtonKeyPress(e, 'overflow-menu-btn')
                 }
                 aria-label={label}
-              >
-                <span aria-hidden="true" className="formatter-btn__tooltip">
-                  {label}
-                  {keyboardShortcutLabel ? (
-                    <span className="opacity-75"> {keyboardShortcutLabel}</span>
-                  ) : null}
-                </span>
-              </Button>
+                tooltip={
+                  <span aria-hidden="true" className="formatter-btn__tooltip">
+                    {label}
+                    {keyboardShortcutLabel ? (
+                      <span className="opacity-75">
+                        {' '}
+                        {keyboardShortcutLabel}
+                      </span>
+                    ) : null}
+                  </span>
+                }
+              />
             );
           })}
           <Button
