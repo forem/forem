@@ -128,7 +128,7 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
  * @param credentials.email {string} An email address
  * @param credentials.password {string} A password
  *
- * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for signing in a user.
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for signing in a creator.
  */
 Cypress.Commands.add('loginCreator', ({ name, username, email, password }) => {
   const encodedName = encodeURIComponent(name);
