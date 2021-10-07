@@ -231,7 +231,7 @@ RSpec.describe "Pages", type: :request do
     it "has proper text" do
       get "/robots.txt"
 
-      text = "Sitemap: https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/sitemaps/sitemap.xml.gz"
+      text = "Sitemap: #{URL.url("sitemap-index.xml")}"
       expect(response.body).to include(text)
     end
   end
