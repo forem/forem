@@ -201,6 +201,7 @@ Object {
                   class="crayons-story__details"
                 >
                   <a
+                    aria-label="Comments for post Unbranded Home Loan Account (0)"
                     class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                     data-testid="add-a-comment"
                     href="/some-post/path#comments"
@@ -449,6 +450,7 @@ Object {
                 class="crayons-story__details"
               >
                 <a
+                  aria-label="Comments for post Unbranded Home Loan Account (0)"
                   class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                   data-testid="add-a-comment"
                   href="/some-post/path#comments"
