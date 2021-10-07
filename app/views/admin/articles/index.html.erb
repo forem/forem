@@ -18,11 +18,6 @@
           href="<%= admin_articles_path(state: :chronological) %>"
           class="nav-link <%= "active" if params[:state] == "chronological" %>">Chronological</a>
       </li>
-      <li class="nav-item">
-        <a
-          href="<%= admin_articles_path(state: :satellite) %>"
-          class="nav-link <%= "active" if params[:state] == "satellite" %>">Satellite</a>
-      </li>
     </ul>
     <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
       <h1 style="color:red">

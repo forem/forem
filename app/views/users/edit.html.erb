@@ -15,8 +15,8 @@
 
   <% if params[:state] == "previous-registration" %>
     <div class="crayons-banner crayons-banner--error" role="alert">
-      There is an existing account authorized with that social account. Contact
-      <%= email_link %> if this is a mistake.
+      There is an existing account authorized with that social account.
+      <%= t("contact_prompts.if_any_questions_html") %>
     </div>
   <% end %>
 

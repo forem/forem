@@ -11,8 +11,6 @@ module Admin
                                  body_markdown
                                  approved
                                  email_digest_eligible
-                                 boosted_additional_articles
-                                 boosted_dev_digest_email
                                  main_image_background_hex_color
                                  featured_number
                                  user_id
@@ -26,8 +24,6 @@ module Admin
       when /top-/
         months_ago = params[:state].split("-")[1].to_i.months.ago
         @articles = articles_top(months_ago)
-      when "boosted-additional-articles"
-        @articles = articles_boosted_additional
       when "chronological"
         @articles = articles_chronological
       else
@@ -77,15 +73,6 @@ module Admin
         .order(public_reactions_count: :desc)
         .page(params[:page])
         .per(50)
-    end
-
-    def articles_boosted_additional
-      Article.boosted_via_additional_articles
-        .includes(:user)
-        .limited_columns_internal_select
-        .order(published_at: :desc)
-        .page(params[:page])
-        .per(100)
     end
 
     def articles_chronological
