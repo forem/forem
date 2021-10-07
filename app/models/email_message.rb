@@ -16,7 +16,7 @@ class EmailMessage < Ahoy::Message
     # We remove email delivery records periodically, except some we retain long term.
     # We generally want to retain emails directly sent by human admins.
     # The only email currently sent manually are those that are tied directly to a feedback message.
-    sql = <<-SQL.squish
+    sql = <<~SQL
       DELETE FROM ahoy_messages
       WHERE ahoy_messages.id IN (
         SELECT ahoy_messages.id
