@@ -123,7 +123,7 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
  * Logs in a creator with the given name, username, email, and password.
  *
  * @param credentials
- * @param credentials.name {string} A username
+ * @param credentials.name {string} A name
  * @param credentials.username {string} A username
  * @param credentials.email {string} An email address
  * @param credentials.password {string} A password
