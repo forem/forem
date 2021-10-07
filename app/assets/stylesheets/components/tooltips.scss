@@ -19,7 +19,7 @@
     opacity: var(--opacity-0);
   }
 
-  &__activator:focus,
+  .js-focus-visible &__activator.focus-visible:focus,
   &__activator:hover {
     .crayons-tooltip__content:not(.crayons-tooltip__suppressed) {
       opacity: 1;
