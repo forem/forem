@@ -114,7 +114,10 @@ export const Button = (props) => {
       {contentType !== 'text' && contentType !== 'icon-right' && Icon && (
         <Icon />
       )}
-      {children}
+      {(contentType === 'text' ||
+        contentType === 'icon-left' ||
+        contentType === 'icon-right') &&
+        children}
       {contentType !== 'text' && contentType === 'icon-right' && Icon && (
         <Icon />
       )}
