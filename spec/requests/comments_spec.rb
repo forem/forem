@@ -51,7 +51,7 @@ RSpec.describe "Comments", type: :request do
         expect(response.body).to include('<meta name="googlebot" content="noindex">')
       end
 
-      it "displays does not display noindex if comment has 0 or more score" do
+      it "does not display noindex if comment has 0 or more score" do
         get comment.path
         expect(response.body).not_to include('<meta name="googlebot" content="noindex">')
       end
@@ -60,6 +60,13 @@ RSpec.describe "Comments", type: :request do
         comment.commentable.update_column(:score, -5)
         get comment.path
         expect(response.body).to include('<meta name="googlebot" content="noindex">')
+      end
+
+      it "displays child comment if it's not hidden" do
+        child_comment = create(:comment, parent: comment, user: user, commentable: article)
+        comment.update(hidden_by_commentable_user: true)
+        get comment.path
+        expect(response.body).to include(child_comment.processed_html)
       end
     end
 
@@ -139,21 +146,21 @@ RSpec.describe "Comments", type: :request do
         expect(response.body).not_to include(third_level_child.processed_html)
       end
 
-      it "does not show the hidden comment's children in the article's comments section" do
+      it "shows hidden comment's children in the article's comments section if children are not hidden explicitly" do
         fourth_level_child
         get "#{article.path}/comments"
-        expect(response.body).not_to include(fourth_level_child.processed_html)
+        expect(response.body).to include(fourth_level_child.processed_html)
       end
 
-      it "does not show the hidden comment in its parent's permalink" do
+      it "shows child comments in its parent's permalink when parent is hidden and child is not" do
         get second_level_child.path
         expect(response.body).not_to include(third_level_child.processed_html)
       end
 
-      it "does not show the hidden comment's child in its parent's permalink" do
+      it "shows the hidden comment's child in its parent's permalink if the child is not hidden explicitly" do
         fourth_level_child
         get second_level_child.path
-        expect(response.body).not_to include(fourth_level_child.processed_html)
+        expect(response.body).to include(fourth_level_child.processed_html)
       end
 
       it "shows the comment in the permalink" do

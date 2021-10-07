@@ -9,6 +9,10 @@
         <div class="p-6 align-center opacity-50 fs-s">
           <span class="js-comment-username">Comment deleted</span>
         </div>
+      <% elsif should_be_hidden?(comment, @root_comment) %>
+        <div class="p-6 align-center opacity-50 fs-s">
+          <span class="js-comment-username">Comment hidden by author</span>
+        </div>
       <% else %>
         <%= render partial: "comments/comment_quality_marker", locals: {
               comment: comment,
@@ -34,7 +38,7 @@
       <% end %>
     </div>
 
-    <%= unless comment.deleted || commentable.nil?
+    <%= unless comment.deleted || commentable.nil? || should_be_hidden?(comment, @root_comment)
           (render partial: "comments/comment_footer", locals: {
             comment: comment,
             commentable: commentable,
