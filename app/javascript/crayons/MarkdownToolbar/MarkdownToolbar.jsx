@@ -8,6 +8,7 @@ import {
 import { Overflow, Help } from './icons';
 import { Button } from '@crayons';
 import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
+import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 
 const getIndexOfLineStart = (text, cursorStart) => {
   const currentCharacter = text.charAt(cursorStart);
@@ -25,6 +26,7 @@ const getIndexOfLineStart = (text, cursorStart) => {
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
+  const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
 
   const keyboardShortcutModifierText =
     Runtime.currentOS() === 'macOS' ? 'CMD' : 'CTRL';
@@ -200,9 +202,50 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     );
   };
 
+  const getSecondaryFormatterButtons = (isOverflow) =>
+    Object.keys(secondarySyntaxFormatters).map((controlName, index) => {
+      const { icon, label, keyboardShortcutKeys } =
+        secondarySyntaxFormatters[controlName];
+      return (
+        <Button
+          key={`${controlName}-btn`}
+          role={isOverflow ? 'menuitem' : 'button'}
+          variant="ghost"
+          contentType="icon"
+          icon={icon}
+          className={`formatter-btn  ${
+            isOverflow
+              ? 'overflow-menu-btn hidden m:block'
+              : 'toolbar-btn m:hidden'
+          }`}
+          tabindex={isOverflow && index === 0 ? '0' : '-1'}
+          onClick={() => insertSyntax(controlName)}
+          onKeyUp={(e) =>
+            handleToolbarButtonKeyPress(
+              e,
+              isOverflow ? 'overflow-menu-btn' : 'toolbar-btn',
+            )
+          }
+          aria-label={label}
+          tooltip={
+            smallScreen ? null : (
+              <span aria-hidden="true" className="formatter-btn__tooltip">
+                {label}
+                {keyboardShortcutKeys ? (
+                  <span className="opacity-75">
+                    {` ${keyboardShortcutModifierText} + ${keyboardShortcutKeys}`}
+                  </span>
+                ) : null}
+              </span>
+            )
+          }
+        />
+      );
+    });
+
   return (
     <div
-      className="editor-toolbar relative"
+      className="editor-toolbar relative overflow-x-auto m:overflow-visible"
       aria-label="Markdown formatting toolbar"
       role="toolbar"
       aria-controls={textAreaId}
@@ -222,68 +265,45 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
             aria-label={label}
             tooltip={
-              <span aria-hidden="true">
-                {label}
-                {keyboardShortcutKeys ? (
-                  <span className="opacity-75">
-                    {` ${keyboardShortcutModifierText} + ${keyboardShortcutKeys}`}
-                  </span>
-                ) : null}
-              </span>
+              smallScreen ? null : (
+                <span aria-hidden="true">
+                  {label}
+                  {keyboardShortcutKeys ? (
+                    <span className="opacity-75">
+                      {` ${keyboardShortcutModifierText} + ${keyboardShortcutKeys}`}
+                    </span>
+                  ) : null}
+                </span>
+              )
             }
           />
         );
       })}
+      {smallScreen ? getSecondaryFormatterButtons(false) : null}
 
-      <Button
-        id="overflow-menu-button"
-        onClick={() => setOverflowMenuOpen(!overflowMenuOpen)}
-        onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
-        aria-expanded={overflowMenuOpen ? 'true' : 'false'}
-        aria-haspopup="true"
-        variant="ghost"
-        contentType="icon"
-        icon={Overflow}
-        className="toolbar-btn ml-auto formatter-btn"
-        tabindex="-1"
-        aria-label="More options"
-      />
+      {smallScreen ? null : (
+        <Button
+          id="overflow-menu-button"
+          onClick={() => setOverflowMenuOpen(!overflowMenuOpen)}
+          onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
+          aria-expanded={overflowMenuOpen ? 'true' : 'false'}
+          aria-haspopup="true"
+          variant="ghost"
+          contentType="icon"
+          icon={Overflow}
+          className="toolbar-btn ml-auto formatter-btn hidden m:block"
+          tabindex="-1"
+          aria-label="More options"
+        />
+      )}
+
       {overflowMenuOpen && (
         <div
           id="overflow-menu"
           role="menu"
           className="absolute editor-toolbar crayons-dropdown p-2 right-0 top-100"
         >
-          {Object.keys(secondarySyntaxFormatters).map((controlName, index) => {
-            const { icon, label, keyboardShortcutKeys } =
-              secondarySyntaxFormatters[controlName];
-            return (
-              <Button
-                key={`${controlName}-btn`}
-                role="menuitem"
-                variant="ghost"
-                contentType="icon"
-                icon={icon}
-                className="overflow-menu-btn formatter-btn"
-                tabindex={index === 0 ? '0' : '-1'}
-                onClick={() => insertSyntax(controlName)}
-                onKeyUp={(e) =>
-                  handleToolbarButtonKeyPress(e, 'overflow-menu-btn')
-                }
-                aria-label={label}
-                tooltip={
-                  <span aria-hidden="true" className="formatter-btn__tooltip">
-                    {label}
-                    {keyboardShortcutKeys ? (
-                      <span className="opacity-75">
-                        {` ${keyboardShortcutModifierText} + ${keyboardShortcutKeys}`}
-                      </span>
-                    ) : null}
-                  </span>
-                }
-              />
-            );
-          })}
+          {getSecondaryFormatterButtons(true)}
           <Button
             tagName="a"
             role="menuitem"

@@ -9,6 +9,15 @@ describe('<MarkdownToolbar />', () => {
     global.Runtime = {
       currentOS: jest.fn(() => 'macOS'),
     };
+
+    global.window.matchMedia = jest.fn((query) => {
+      return {
+        matches: false,
+        media: query,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      };
+    });
   });
 
   it('should have no a11y violations when rendered', async () => {
