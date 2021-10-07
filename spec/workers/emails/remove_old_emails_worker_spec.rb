@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Emails::RemoveOldEmailsWorker, type: :woker do
+RSpec.describe Emails::RemoveOldEmailsWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority"
 
   describe "#perform" do
