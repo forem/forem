@@ -46,6 +46,7 @@ fr:
     if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
     if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
   dashboard:
+    loading: Chargement en cours...
     following_users: Utilisateurs suivis
     not_following_any_users: Vous ne suivez aucun utilisateur...
     page_title: Tableau de bord
