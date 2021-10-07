@@ -54,7 +54,6 @@ class Article < ApplicationRecord
   validates :body_markdown, bytesize: { maximum: 800.kilobytes, too_long: "is too long." }
   validates :body_markdown, length: { minimum: 0, allow_nil: false }
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
-  validates :boost_states, presence: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :canonical_url,
             uniqueness: { allow_nil: true, scope: :published, message: UNIQUE_URL_ERROR },
@@ -250,26 +249,18 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
+           :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds,
            :last_comment_at)
   }
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
-           :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
+           :main_image, :main_image_background_hex_color, :updated_at,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
            :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
-  }
-
-  scope :boosted_via_additional_articles, lambda {
-    where("boost_states ->> 'boosted_additional_articles' = 'true'")
-  }
-
-  scope :boosted_via_dev_digest_email, lambda {
-    where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
   scope :sorting, lambda { |value|
@@ -307,12 +298,6 @@ class Article < ApplicationRecord
                      }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
-
-  store_attributes :boost_states do
-    boosted_additional_articles Boolean, default: false
-    boosted_dev_digest_email Boolean, default: false
-    boosted_additional_tags String, default: ""
-  end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     # Time ago sometimes returns this phrase instead of a date

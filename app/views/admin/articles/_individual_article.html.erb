@@ -24,10 +24,8 @@
     <div>
       <a href="<%= article.path %>/edit" target="_blank" rel="noopener"><span class="btn btn-sm btn-primary">Edit</span></a>
 
-      <button class="btn btn-sm btn-success" data-action="article#increaseFeaturedNumber">Boost</button>
-
       <a class="btn btn-sm btn-secondary" href="<%= admin_user_path(article.user_id) %>" target="_blank" rel="noopener">Manage User</a>
-
+      
       <% if decorated_article.pinned? %>
         <%= link_to(
               "Unpin Post",
@@ -141,9 +139,6 @@
         <label for="approved-<%= article.id %>">Approved</label>
       </div>
       <div class="form-check col">
-        <%= f.check_box :boosted_additional_articles, id: "boosted_additional_articles-#{article.id}" %>
-        <label for="boosted_additional_articles-<%= article.id %>">Boosted</label>
-      </div>
       <div class="form-check col">
         <%= check_box_tag :pinned, "1", decorated_article.pinned?,
                           name: "article[pinned]",
@@ -159,24 +154,6 @@
         <button class="btn btn-primary float-right">Submit</button>
       </div>
     </div>
-    <% end %>
-
-    <% if article.boosted_dev_digest_email %>
-    <br /><br />
-    <% phrase = "#{article.path}?booster_org=#{article.organization&.slug || 'generic'}" %>
-    <b>BOOSTED IN <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at: nil).size %> EMAILS</b>
-    <br />
-    <b>BOOSTED IN
-      <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at: nil).where("sent_at > ?", 1.week.ago).size %>
-      EMAILS IN THE PAST WEEK</b>
-    <br /><br />
-    <b>BOOSTED IN
-      <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at: nil).where.not(opened_at: nil).size %>
-      OPENED EMAILS</b>
-    <br />
-    <b>BOOSTED IN
-      <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at: nil).where.not(opened_at: nil).where("sent_at > ?", 1.week.ago).size %>
-      OPENED EMAILS IN THE PAST WEEK</b>
     <% end %>
   </div>
 </div>
