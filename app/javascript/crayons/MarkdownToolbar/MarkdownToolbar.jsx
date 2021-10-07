@@ -52,6 +52,16 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   }, [textAreaId]);
 
   useLayoutEffect(() => {
+    // If a user resizes their screen, make sure roving tabindex continues to operate
+    const focusableToolbarButton = document.querySelector(
+      '.toolbar-btn[tabindex="0"]',
+    );
+    if (!focusableToolbarButton) {
+      document.querySelector('.toolbar-btn').setAttribute('tabindex', '0');
+    }
+  }, [smallScreen]);
+
+  useLayoutEffect(() => {
     //   TODO: maybe tidy this up with an extracted version of dropdownUtils
     const clickOutsideHandler = ({ target }) => {
       if (
