@@ -70,7 +70,7 @@ export const coreSyntaxFormatters = {
 
       return {
         formattedText: newString,
-        cursorOffsetStart: selection.length === 0 ? 2 : 0,
+        cursorOffsetStart: selection.length === 0 ? 3 : 0,
         cursorOffsetEnd: newString.length - selection.length,
         insertOnNewLine: true,
       };
@@ -83,7 +83,7 @@ export const coreSyntaxFormatters = {
       const newString = `- ${selection}`.replace(/\n/g, '\n- ');
       return {
         formattedText: newString,
-        cursorOffsetStart: selection.length === 0 ? 1 : 0,
+        cursorOffsetStart: selection.length === 0 ? 2 : 0,
         cursorOffsetEnd: newString.length - selection.length,
         insertOnNewLine: true,
       };
@@ -123,8 +123,9 @@ export const coreSyntaxFormatters = {
       const newString = `> ${selection}`.replace(/\n/g, '\n> ');
       return {
         formattedText: newString,
-        cursorOffsetStart: selection.length === 0 ? 1 : 0,
-        cursorOffsetEnd: newString.length - selection.length,
+        cursorOffsetStart: 2,
+        cursorOffsetEnd:
+          selection === '' ? 2 : newString.length - selection.length,
         insertOnNewLine: true,
       };
     },
