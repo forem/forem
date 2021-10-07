@@ -39,6 +39,10 @@ fr:
     view: Vue
     week: Semaine
     year: Année
+  contact_prompts:
+    if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.
+    if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
+    if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
   dashboard:
     following_users: Utilisateurs suivis
     loading: Chargement en cours...

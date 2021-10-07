@@ -39,6 +39,10 @@ en:
     view: View
     week: Week
     year: Year
+  contact_prompts:
+    if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
+    if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
+    if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
   dashboard:
     following_users: Following users
     loading: loading...
