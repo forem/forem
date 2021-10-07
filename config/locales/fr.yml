@@ -115,3 +115,7 @@ fr:
     billing: Facturation
     organization: Organisation
     extensions: Extensions
+  time:
+    formats:
+      short: "%-e %b"
+      short_with_year: "%-e %b, %Y"
