@@ -87,7 +87,7 @@ en:
   videos:
     new:
       title: 🎥 Upload Video File 🙌
-      beta_info_html: <strong>Video is beta:</strong> Email %{email_link} if you have any problems.
+      beta_info_html: <strong>Video is beta:</strong>
   podcasts:
     statuses:
       ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
