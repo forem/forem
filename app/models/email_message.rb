@@ -21,7 +21,7 @@ class EmailMessage < Ahoy::Message
       WHERE ahoy_messages.id IN (
         SELECT ahoy_messages.id
         FROM ahoy_messages
-        WHERE created_at < ? AND feedback_message_id = null
+        WHERE sent_at < ? AND feedback_message_id IS NULL
         LIMIT 50000
       )
     SQL
