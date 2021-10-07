@@ -46,8 +46,8 @@ en:
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
     if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
   dashboard:
-    loading: loading...
     following_users: Following users
+    loading: loading...
     not_following_any_users: You don't follow any users...
     page_title: Dashboard
   errors:
