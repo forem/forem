@@ -22,8 +22,16 @@
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left") %>
       <% if @left_sidebar_ad %>
-        <div class="crayons-sponsorship-widget" id="sponsorship-arbitrary-display-widget" data-id="<%= @left_sidebar_ad.id %>">
+        <div class="crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
           <%= @left_sidebar_ad.processed_html.html_safe %>
+        </div>
+      <% end %>
+    <% end %>
+    <% cache("display-area-left-2-#{rand(5)}", expires_in: 5.minutes) do %>
+      <% @second_left_sidebar_ad = DisplayAd.for_display("sidebar_left_2") %>
+      <% if @second_left_sidebar_ad %>
+        <div class="mt-4 crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
+          <%= @second_left_sidebar_ad.processed_html.html_safe %>
         </div>
       <% end %>
     <% end %>

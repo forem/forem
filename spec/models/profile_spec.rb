@@ -84,7 +84,7 @@ RSpec.describe Profile, type: :model do
   context "when accessing profile fields" do
     before do
       create(:profile_field, label: "Test 1")
-      create(:profile_field, label: "Test 2", input_type: :check_box)
+      create(:profile_field, label: "Test 2", input_type: :text_area)
     end
 
     let(:profile) { described_class.new }
@@ -92,16 +92,6 @@ RSpec.describe Profile, type: :model do
     it "defines accessors for active profile fields", :aggregate_failures do
       expect(profile).to respond_to(:test1)
       expect(profile).to respond_to(:test2)
-    end
-
-    it "performs ActiveRecord typecasting for profile fields", :aggregate_failures do
-      expect do
-        profile.test2 = "true"
-      end.to change(profile, :test2).from(nil).to(true)
-
-      expect do
-        profile.test2 = "f"
-      end.to change(profile, :test2).to(false)
     end
   end
 end

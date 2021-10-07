@@ -48,6 +48,16 @@
     }
   }
 
+  &__actions {
+    &:empty {
+      display: none;
+    }
+    background: var(--accent-warning-a10);
+    border: 1px solid var(--accent-warning-a10);
+    border-radius: var(--radius);
+    padding: var(--su-1);
+  }
+
   &__subheader {
     font-size: var(--fs-base);
     color: var(--base-60);

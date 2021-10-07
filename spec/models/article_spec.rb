@@ -39,7 +39,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
 
-    it { is_expected.to validate_presence_of(:boost_states) }
     it { is_expected.to validate_presence_of(:comments_count) }
     it { is_expected.to validate_presence_of(:positive_reactions_count) }
     it { is_expected.to validate_presence_of(:previous_public_reactions_count) }
@@ -939,6 +938,22 @@ RSpec.describe Article, type: :model do
       expect(articles).not_to include(excluded_no_match)
 
       expect(articles.to_a).to include(*expected)
+    end
+  end
+
+  describe ".not_cached_tagged_with_any" do
+    it "can exclude multiple tags when given an array of strings" do
+      included = create(:article, tags: "includeme")
+      excluded1 = create(:article, tags: "includeme, lol")
+      excluded2 = create(:article, tags: "includeme, omg")
+
+      articles = described_class
+        .cached_tagged_with_any("includeme")
+        .not_cached_tagged_with_any(%w[lol omg])
+
+      expect(articles).to include included
+      expect(articles).not_to include excluded1
+      expect(articles).not_to include excluded2
     end
   end
 

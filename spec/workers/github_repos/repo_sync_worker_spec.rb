@@ -44,7 +44,7 @@ RSpec.describe GithubRepos::RepoSyncWorker, type: :worker do
       end
     end
 
-    it "does not touch repo user again if recently updated " do
+    it "does not touch repo user again if recently updated" do
       repo.update_column(:updated_at, 1.day.ago)
       worker.perform(repo.id)
       old_updated_at = repo.user.reload.github_repos_updated_at

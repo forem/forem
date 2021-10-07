@@ -610,3 +610,27 @@ seeder.create_if_none(FeedbackMessage) do
     category: :bug,
   )
 end
+
+##############################################################################
+
+seeder.create_if_none(Broadcast) do
+  Broadcast.create!(
+    title: "Mock Broadcast",
+    processed_html: "<p>#{Faker::Hipster.paragraph(sentence_count: 2)}</p>",
+    type_of: "Welcome",
+    banner_style: "default",
+    active: true,
+  )
+end
+
+##############################################################################
+
+seeder.create_if_none(DisplayAd) do
+  DisplayAd.create!(
+    organization_id: 1,
+    body_markdown: "<h1>This is an add</h1>",
+    placement_area: "sidebar_left",
+    published: true,
+    approved: true,
+  )
+end

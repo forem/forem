@@ -19,13 +19,13 @@ describe('Post sidebar actions', () => {
 
   it('should open and close the share menu for the post', () => {
     // Check dropdown is closed by asserting the first option isn't visible
-    cy.findByRole('button', { name: /^Copy Post URL$/i }).should('not.exist');
+    cy.findByRole('button', { name: /^Copy link$/i }).should('not.exist');
 
     cy.findByRole('button', { name: /^Share post options$/i }).as(
       'dropdownButton',
     );
     cy.get('@dropdownButton').click();
-    cy.findByRole('button', { name: /^Copy Post URL$/i }).as(
+    cy.findByRole('button', { name: /^Copy link$/i }).as(
       'copyPostUrlButton',
     );
     cy.get('@copyPostUrlButton').should('have.focus');
@@ -51,7 +51,7 @@ describe('Post sidebar actions', () => {
       'dropdownButton',
     );
     cy.get('@dropdownButton').click();
-    cy.findByRole('button', { name: /^Copy Post URL$/i }).as(
+    cy.findByRole('button', { name: /^Copy link$/i }).as(
       'copyPostUrlButton',
     );
     cy.get('@copyPostUrlButton').should('have.focus');
@@ -65,7 +65,7 @@ describe('Post sidebar actions', () => {
       'dropdownButton',
     );
     cy.get('@dropdownButton').click();
-    cy.findByRole('button', { name: /^Copy Post URL$/i }).as(
+    cy.findByRole('button', { name: /^Copy link$/i }).as(
       'copyPostUrlButton',
     );
     cy.findByText('Copied to Clipboard').should('not.be.visible');

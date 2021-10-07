@@ -1,14 +1,11 @@
-<% image_url = Images::Optimizer.call(podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png", crop: nil, fetch_format: "jpg") %>
-
-<div class="podcastliquidtag" style="background: #<%= podcast.main_color_hex %> url(<%= image_url %>)" data-meta="<%= episode.decorate.mobile_player_metadata.to_json %>">
+<div class="podcastliquidtag" style="background: #<%= podcast.main_color_hex %>" data-meta="<%= episode.decorate.mobile_player_metadata.to_json %>">
   <div class="podcastliquidtag__info">
     <a href="/<%= podcast.slug %>/<%= episode.slug %>">
       <h1 class="podcastliquidtag__info__episodetitle"><%= episode.title %></h1>
     </a>
     <a href="/<%= podcast.slug %>" style="display:block">
       <h2 class="podcastliquidtag__info__podcasttitle">
-        <%= podcast.title %> <button class="crayons-btn follow-action-button" data-info='{"id":<%= podcast.id %>,"className":"<%= podcast.class.name %>", "name": <%= podcast.name %>}'>&nbsp;</button>
-
+        <%= podcast.title %>
       </h2>
     </a>
   </div>

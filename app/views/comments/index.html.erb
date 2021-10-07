@@ -94,8 +94,7 @@
         <%= @commentable.title %>
       </h1>
       <div class="flex">
-        <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %>">View post</a>
-        <a class="view-discussion crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments">Full discussion</a>
+        <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %>"><%= t("core.view") %> <%= t("core.post").downcase %></a>
       </div>
     </header>
   <% end %>
@@ -125,7 +124,7 @@
     <div class="comments" id="comment-trees-container">
       <% if @root_comment.present? %>
         <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
-          <%= tree_for(@root_comment, @root_comment.subtree.includes(:user).arrange[@root_comment], @commentable) %>
+          <%= tree_for(@root_comment, @root_comment.subtree.includes(user: %i[setting profile]).arrange[@root_comment], @commentable) %>
         <% end %>
       <% else %>
         <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>

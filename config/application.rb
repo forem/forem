@@ -55,6 +55,8 @@ module PracticalDeveloper
 
     config.middleware.use Rack::Deflater
 
+    config.i18n.fallbacks = [:en]
+
     # Globally handle Pundit::NotAuthorizedError by serving 404
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found
 

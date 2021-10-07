@@ -128,7 +128,7 @@ export class CommentSubscription extends Component {
           >
             {subscribed ? 'Unsubscribe' : 'Subscribe'}
           </Button>
-          {subscribed && (
+          {subscribed ? (
             <Button
               id="subscription-settings-btn"
               data-testid="subscription-settings"
@@ -136,7 +136,7 @@ export class CommentSubscription extends Component {
               icon={CogIcon}
               contentType="icon"
             />
-          )}
+          ) : null}
         </ButtonGroup>
         {subscribed && (
           <Dropdown

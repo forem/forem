@@ -1,15 +1,15 @@
 /**
  * A function to generate an error alert within the /admin/ space.
  *
- * @function errorAlert
+ * @function displayErrorAlert
  * @param {Object} modalProps Properties of the Error Alert
- * @param {string} modalProps.errMsg The error message displayed within the alert.
+ * @param {string} modalProps.alertMsg The message displayed within the alert.
  */
 
-export const displayErrorAlert = function (errMsg) {
+export const displayErrorAlert = function (alertMsg) {
   return document.dispatchEvent(
     new CustomEvent('error:generate', {
-      detail: { errMsg },
+      detail: { alertMsg },
     }),
   );
 };

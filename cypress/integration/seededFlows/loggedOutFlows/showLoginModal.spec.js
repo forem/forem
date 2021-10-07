@@ -98,7 +98,7 @@ describe('Show log in modal', () => {
     cy.get('[data-follow-clicks-initialized]');
 
     cy.findByRole('heading', {
-      name: 'Developer on Fire Developer on Fire Follow',
+      name: 'Developer on Fire Developer on Fire',
     });
 
     verifyLoginModalBehavior(() =>
