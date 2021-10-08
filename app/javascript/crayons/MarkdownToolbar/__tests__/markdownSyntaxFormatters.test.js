@@ -66,10 +66,9 @@ describe('markdownSntaxFormatters', () => {
 
   it('formats an unordered list from an empty selection', () => {
     expect(coreSyntaxFormatters['unorderedList'].getFormatting('')).toEqual({
-      formattedText: '- ',
-      cursorOffsetStart: 2,
-      cursorOffsetEnd: 2,
-      insertOnNewLine: true,
+      formattedText: '\n- ',
+      cursorOffsetStart: 3,
+      cursorOffsetEnd: 3,
     });
   });
 
@@ -77,10 +76,9 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['unorderedList'].getFormatting(exampleTextSelection),
     ).toEqual({
-      formattedText: '- selection\n',
-      cursorOffsetStart: 0,
-      cursorOffsetEnd: 3,
-      insertOnNewLine: true,
+      formattedText: '\n- selection\n',
+      cursorOffsetStart: 1,
+      cursorOffsetEnd: 4,
     });
   });
 
@@ -88,19 +86,17 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['unorderedList'].getFormatting('one\ntwo'),
     ).toEqual({
-      formattedText: '- one\n- two\n',
-      cursorOffsetStart: 0,
-      cursorOffsetEnd: 5,
-      insertOnNewLine: true,
+      formattedText: '\n- one\n- two\n',
+      cursorOffsetStart: 1,
+      cursorOffsetEnd: 6,
     });
   });
 
   it('formats an ordered list from an empty selection', () => {
     expect(coreSyntaxFormatters['orderedList'].getFormatting('')).toEqual({
-      formattedText: '1. ',
-      cursorOffsetStart: 3,
-      cursorOffsetEnd: 3,
-      insertOnNewLine: true,
+      formattedText: '\n1. ',
+      cursorOffsetStart: 4,
+      cursorOffsetEnd: 4,
     });
   });
 
@@ -108,10 +104,9 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['orderedList'].getFormatting(exampleTextSelection),
     ).toEqual({
-      formattedText: '1. selection\n',
-      cursorOffsetStart: 0,
-      cursorOffsetEnd: 4,
-      insertOnNewLine: true,
+      formattedText: '\n1. selection\n',
+      cursorOffsetStart: 1,
+      cursorOffsetEnd: 5,
     });
   });
 
@@ -119,10 +114,9 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['orderedList'].getFormatting('one\ntwo'),
     ).toEqual({
-      formattedText: '1. one\n2. two\n',
-      cursorOffsetStart: 0,
-      cursorOffsetEnd: 7,
-      insertOnNewLine: true,
+      formattedText: '\n1. one\n2. two\n',
+      cursorOffsetStart: 1,
+      cursorOffsetEnd: 8,
     });
   });
 
@@ -176,10 +170,9 @@ describe('markdownSntaxFormatters', () => {
 
   it('formats a quote with empty selection', () => {
     expect(coreSyntaxFormatters['quote'].getFormatting('')).toEqual({
-      formattedText: '> ',
-      cursorOffsetStart: 2,
-      cursorOffsetEnd: 2,
-      insertOnNewLine: true,
+      formattedText: '\n> \n',
+      cursorOffsetStart: 3,
+      cursorOffsetEnd: 3,
     });
   });
 
@@ -187,19 +180,17 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['quote'].getFormatting(exampleTextSelection),
     ).toEqual({
-      formattedText: '> selection',
-      cursorOffsetStart: 2,
-      cursorOffsetEnd: 2,
-      insertOnNewLine: true,
+      formattedText: '\n> selection\n',
+      cursorOffsetStart: 3,
+      cursorOffsetEnd: 4,
     });
   });
 
   it('formats a quote on a multi-line selection', () => {
     expect(coreSyntaxFormatters['quote'].getFormatting('one\ntwo')).toEqual({
-      formattedText: '> one\n> two',
-      cursorOffsetStart: 2,
-      cursorOffsetEnd: 4,
-      insertOnNewLine: true,
+      formattedText: '\n> one\n> two\n',
+      cursorOffsetStart: 3,
+      cursorOffsetEnd: 6,
     });
   });
 
@@ -217,10 +208,9 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['codeBlock'].getFormatting(exampleTextSelection),
     ).toEqual({
-      formattedText: '```\nselection\n```\n',
-      cursorOffsetStart: 4,
-      cursorOffsetEnd: 4,
-      insertOnNewLine: true,
+      formattedText: '\n```\nselection\n```\n',
+      cursorOffsetStart: 5,
+      cursorOffsetEnd: 5,
     });
   });
 

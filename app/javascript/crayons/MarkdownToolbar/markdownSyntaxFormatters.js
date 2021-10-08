@@ -62,10 +62,10 @@ export const coreSyntaxFormatters = {
     icon: OrderedList,
     label: 'Ordered list',
     getFormatting: (selection) => {
-      let newString = selection
+      let newString = `\n${selection
         .split('\n')
         .map((textChunk, index) => `${index + 1}. ${textChunk}`)
-        .join('\n');
+        .join('\n')}`;
 
       if (selection !== '') {
         newString += '\n';
@@ -73,9 +73,8 @@ export const coreSyntaxFormatters = {
 
       return {
         formattedText: newString,
-        cursorOffsetStart: selection.length === 0 ? 3 : 0,
+        cursorOffsetStart: selection.length === 0 ? 4 : 1,
         cursorOffsetEnd: newString.length - selection.length,
-        insertOnNewLine: true,
       };
     },
   },
@@ -83,7 +82,8 @@ export const coreSyntaxFormatters = {
     icon: UnorderedList,
     label: 'Unordered list',
     getFormatting: (selection) => {
-      let newString = `- ${selection}`.replace(/\n/g, '\n- ');
+      const bulletedSelection = selection.replace(/\n/g, '\n- ');
+      let newString = `\n- ${bulletedSelection}`;
 
       if (selection !== '') {
         newString += '\n';
@@ -91,9 +91,8 @@ export const coreSyntaxFormatters = {
 
       return {
         formattedText: newString,
-        cursorOffsetStart: selection.length === 0 ? 2 : 0,
+        cursorOffsetStart: selection.length === 0 ? 3 : 1,
         cursorOffsetEnd: newString.length - selection.length,
-        insertOnNewLine: true,
       };
     },
   },
@@ -128,13 +127,13 @@ export const coreSyntaxFormatters = {
     icon: Quote,
     label: 'Quote',
     getFormatting: (selection) => {
-      const newString = `> ${selection}`.replace(/\n/g, '\n> ');
+      const quotedSelection = selection.replace(/\n/g, '\n> ');
+      const newString = `\n> ${quotedSelection}\n`;
       return {
         formattedText: newString,
-        cursorOffsetStart: 2,
+        cursorOffsetStart: 3,
         cursorOffsetEnd:
-          selection === '' ? 2 : newString.length - selection.length,
-        insertOnNewLine: true,
+          selection === '' ? 3 : newString.length - selection.length,
       };
     },
   },
@@ -151,10 +150,9 @@ export const coreSyntaxFormatters = {
     icon: CodeBlock,
     label: 'Code block',
     getFormatting: (selection) => ({
-      formattedText: `\`\`\`\n${selection}\n\`\`\`\n`,
-      cursorOffsetStart: 4,
-      cursorOffsetEnd: 4,
-      insertOnNewLine: true,
+      formattedText: `\n\`\`\`\n${selection}\n\`\`\`\n`,
+      cursorOffsetStart: 5,
+      cursorOffsetEnd: 5,
     }),
   },
 };

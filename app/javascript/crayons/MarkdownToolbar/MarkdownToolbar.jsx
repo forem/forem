@@ -174,25 +174,16 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       selectionEnd,
     } = getSelectionData(syntaxName);
 
-    const {
-      formattedText,
-      cursorOffsetStart,
-      cursorOffsetEnd,
-      insertOnNewLine,
-    } = markdownSyntaxFormatters[syntaxName].getFormatting(selectedText);
+    const { formattedText, cursorOffsetStart, cursorOffsetEnd } =
+      markdownSyntaxFormatters[syntaxName].getFormatting(selectedText);
 
-    const requiresANewLine = selectionStart !== 0 && insertOnNewLine;
-    const newLineOffset = requiresANewLine ? 1 : 0;
-
-    const newTextContent = `${textBeforeInsertion}${
-      requiresANewLine ? '\n' : ''
-    }${formattedText}${textAfterInsertion}`;
+    const newTextContent = `${textBeforeInsertion}${formattedText}${textAfterInsertion}`;
 
     textArea.value = newTextContent;
     textArea.focus();
     textArea.setSelectionRange(
-      selectionStart + cursorOffsetStart + newLineOffset,
-      selectionEnd + cursorOffsetEnd + newLineOffset,
+      selectionStart + cursorOffsetStart,
+      selectionEnd + cursorOffsetEnd,
     );
   };
 
