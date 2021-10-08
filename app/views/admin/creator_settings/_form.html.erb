@@ -14,7 +14,7 @@
   <p class="crayons-field__description">Ideally SVG, but PNG will work, too. Min size: 300x300px.</p>
 <% end %>
 <span style="display:block; border:none;">
-  <%= file_field_tag :logo_svg, class: "crayons-btn crayons-btn--secondary", role: "button", required: true, data: { action: "" } %>
+  <%= file_field_tag :logo_svg, class: "crayons-btn crayons-btn--secondary", required: true, data: { action: "" } %>
 </span>
 
 <% if ::Settings::General.logo_svg.present? %>
@@ -32,7 +32,6 @@
   <% end %>
   <%= color_field_tag :primary_brand_color_hex,
                       class: "crayons-color-selector",
-                      # role: "button",
                       pattern: "^#+([a-fA-F0-9]{6})$",
                       required: true %>
 </div>
