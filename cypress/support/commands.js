@@ -160,40 +160,6 @@ Cypress.Commands.add('loginCreator', ({ name, username, email, password }) => {
 /**
 
 /**
- * Logs in a user with the given email and password.
- *
- * @param credentials
- * @param credentials.email {string} An email address
- * @param credentials.password {string} A password
- *
- * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for signing in a user.
- */
-Cypress.Commands.add('loginUser', ({ email, password }) => {
-  const encodedEmail = encodeURIComponent(email);
-  const encodedPassword = encodeURIComponent(password);
-
-  function getLoginRequest() {
-    return cy.request(
-      'POST',
-      '/users/sign_in',
-      `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
-    );
-  }
-
-  return getLoginRequest().then((response) => {
-    if (response.status === 200) {
-      return response;
-    }
-
-    cy.log('Login failed. Attempting one more login.');
-
-    // If we have a login failure, try one more time.
-    // This is to combat some flaky tests where the login fails occasionnally.
-    return getLoginRequest();
-  });
-});
-
-/**
  * Gets an iframe with the given selector (or the first/only iframe if none is passed in),
  * waits for its content to be loaded, and returns a wrapped reference to the iframe body
  * that can then be chained off of.
