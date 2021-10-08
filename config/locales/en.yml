@@ -112,3 +112,7 @@ en:
     billing: "Billing"
     organization: "Organization"
     extensions: "Extensions"
+  time:
+    formats:
+      short: "%b %-e"
+      short_with_year: "%b %-e, %Y"
