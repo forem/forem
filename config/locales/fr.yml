@@ -47,18 +47,18 @@ fr:
   date:
     abbr_month_names:
     -
-    - Janv
-    - Fevr
-    - Mars
-    - Avril
-    - Mai
-    - Juin
-    - Juil
-    - Aout
-    - Sept
-    - Oct
-    - Nov
-    - Dec
+    - janv
+    - févr
+    - mars
+    - avril
+    - mai
+    - juin
+    - juil
+    - aout
+    - sept
+    - oct
+    - nov
+    - déc
   errors:
     messages:
       accepted: doit être accepté
