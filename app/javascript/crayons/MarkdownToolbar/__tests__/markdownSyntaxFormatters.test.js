@@ -77,9 +77,9 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['unorderedList'].getFormatting(exampleTextSelection),
     ).toEqual({
-      formattedText: '- selection',
+      formattedText: '- selection\n',
       cursorOffsetStart: 0,
-      cursorOffsetEnd: 2,
+      cursorOffsetEnd: 3,
       insertOnNewLine: true,
     });
   });
@@ -88,9 +88,9 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['unorderedList'].getFormatting('one\ntwo'),
     ).toEqual({
-      formattedText: '- one\n- two',
+      formattedText: '- one\n- two\n',
       cursorOffsetStart: 0,
-      cursorOffsetEnd: 4,
+      cursorOffsetEnd: 5,
       insertOnNewLine: true,
     });
   });
@@ -108,9 +108,9 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['orderedList'].getFormatting(exampleTextSelection),
     ).toEqual({
-      formattedText: '1. selection',
+      formattedText: '1. selection\n',
       cursorOffsetStart: 0,
-      cursorOffsetEnd: 3,
+      cursorOffsetEnd: 4,
       insertOnNewLine: true,
     });
   });
@@ -119,9 +119,9 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['orderedList'].getFormatting('one\ntwo'),
     ).toEqual({
-      formattedText: '1. one\n2. two',
+      formattedText: '1. one\n2. two\n',
       cursorOffsetStart: 0,
-      cursorOffsetEnd: 6,
+      cursorOffsetEnd: 7,
       insertOnNewLine: true,
     });
   });
@@ -217,7 +217,7 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['codeBlock'].getFormatting(exampleTextSelection),
     ).toEqual({
-      formattedText: '```\nselection\n```',
+      formattedText: '```\nselection\n```\n',
       cursorOffsetStart: 4,
       cursorOffsetEnd: 4,
       insertOnNewLine: true,

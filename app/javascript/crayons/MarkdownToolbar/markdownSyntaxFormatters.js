@@ -62,10 +62,14 @@ export const coreSyntaxFormatters = {
     icon: OrderedList,
     label: 'Ordered list',
     getFormatting: (selection) => {
-      const newString = selection
+      let newString = selection
         .split('\n')
         .map((textChunk, index) => `${index + 1}. ${textChunk}`)
         .join('\n');
+
+      if (selection !== '') {
+        newString += '\n';
+      }
 
       return {
         formattedText: newString,
@@ -79,7 +83,12 @@ export const coreSyntaxFormatters = {
     icon: UnorderedList,
     label: 'Unordered list',
     getFormatting: (selection) => {
-      const newString = `- ${selection}`.replace(/\n/g, '\n- ');
+      let newString = `- ${selection}`.replace(/\n/g, '\n- ');
+
+      if (selection !== '') {
+        newString += '\n';
+      }
+
       return {
         formattedText: newString,
         cursorOffsetStart: selection.length === 0 ? 2 : 0,
@@ -142,7 +151,7 @@ export const coreSyntaxFormatters = {
     icon: CodeBlock,
     label: 'Code block',
     getFormatting: (selection) => ({
-      formattedText: `\`\`\`\n${selection}\n\`\`\``,
+      formattedText: `\`\`\`\n${selection}\n\`\`\`\n`,
       cursorOffsetStart: 4,
       cursorOffsetEnd: 4,
       insertOnNewLine: true,
