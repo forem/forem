@@ -98,13 +98,10 @@ RSpec.describe "Sitemaps", type: :request do
 
     context "with tags in param" do
       before do
-        create_list(:tag, 7)
+        create_list(:tag, 8)
         Tag.all.each do |tag|
           tag.update_column(:hotness_score, rand(100_000))
         end
-        # There is no guarantee that `updated_at` is set and it's `nil` for
-        # hundreds of tags in DEV alone, so we need to account for this.
-        create :tag, updated_at: nil, hotness_score: rand(100_000)
       end
 
       it "renders hottest tags if /sitemap-tags", :aggregate_failures do
