@@ -114,52 +114,6 @@ RSpec.describe ArticleDecorator, type: :decorator do
     end
   end
 
-  describe "internal_utm_params" do
-    it "returns utm params for a boosted article" do
-      article.boosted_additional_articles = true
-
-      params = ["utm_medium=internal", "utm_campaign=_boosted", "booster_org="]
-      expected_result = "?utm_source=additional_box&#{params.join('&')}"
-      expect(article.decorate.internal_utm_params).to eq(expected_result)
-    end
-
-    it "returns utm params for a boosted article belonging to an organization" do
-      article.boosted_additional_articles = true
-      article.organization = organization
-
-      slug = organization.slug
-      params = ["utm_medium=internal", "utm_campaign=#{slug}_boosted", "booster_org=#{slug}"]
-      expected_result = "?utm_source=additional_box&#{params.join('&')}"
-      expect(article.decorate.internal_utm_params).to eq(expected_result)
-    end
-
-    it "returns utm params for a regular article" do
-      article.boosted_additional_articles = false
-
-      params = ["utm_medium=internal", "utm_campaign=regular", "booster_org="]
-      expected_result = "?utm_source=additional_box&#{params.join('&')}"
-      expect(article.decorate.internal_utm_params).to eq(expected_result)
-    end
-
-    it "returns utm params for a regular article belonging to an organization" do
-      article.boosted_additional_articles = false
-      article.organization = organization
-
-      slug = organization.slug
-      params = ["utm_medium=internal", "utm_campaign=regular", "booster_org=#{slug}"]
-      expected_result = "?utm_source=additional_box&#{params.join('&')}"
-      expect(article.decorate.internal_utm_params).to eq(expected_result)
-    end
-
-    it "returns utm params for an article in a different place" do
-      article.boosted_additional_articles = false
-
-      params = ["utm_medium=internal", "utm_campaign=regular", "booster_org="]
-      expected_result = "?utm_source=homepage&#{params.join('&')}"
-      expect(article.decorate.internal_utm_params("homepage")).to eq(expected_result)
-    end
-  end
-
   describe "#published_at_int" do
     it "returns the publication date as an integer" do
       expect(article.decorate.published_at_int).to eq(article.published_at.to_i)

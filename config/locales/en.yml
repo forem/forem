@@ -5,6 +5,7 @@ en:
     all: All
     comment: Comment
     copy_link: Copy link
+    community_name_is_great: "%{community_name} is great!"
     create_account: Create account
     create_post: Create Post
     discussion: Discussion
@@ -13,7 +14,9 @@ en:
     follow: Follow
     follow_back: Follow back
     following: Following
+    following_tags: "Following tags"
     full: Full
+    home: Home
     infinity: Infinity
     latest: Latest
     like: Like
@@ -35,10 +38,17 @@ en:
     search: Search
     see_all: See all
     share_to: Share to %{media}
+    tags: "Tags"
+    tags_to_follow: "Tags to follow on %{community_name}"
+    top_tags: "Top tags"
     trending_on: Trending on
     view: View
     week: Week
     year: Year
+  contact_prompts:
+    if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
+    if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
+    if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
   dashboard:
     following_users: Following users
     loading: loading...

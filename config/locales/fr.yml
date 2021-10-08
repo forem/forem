@@ -4,6 +4,7 @@ fr:
     add_comment: Ajouter un commentaire
     all: Tout
     comment: Commentaire
+    community_name_is_great: "%{community_name} est super"
     copy_link: Copier le lien
     create_account: Créer un profil
     create_post: Créer une publication
@@ -13,7 +14,9 @@ fr:
     follow: Suivre
     follow_back: Suivre aussi
     following: Abonné
+    following_tags: Sujets suivis
     full: Complet
+    home: Page D'Accueil
     infinity: Infini
     latest: Récent
     like: Aime
@@ -35,10 +38,17 @@ fr:
     search: Recherche
     see_all: Tout voir
     share_to: Partager sur %{media}
+    tags: Sujets
+    tags_to_follow: Sujets dans %{community_name}
+    top_tags: Sujets les plus utilisées
     trending_on: Populaire sur
     view: Vue
     week: Semaine
     year: Année
+  contact_prompts:
+    if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.
+    if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
+    if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
   dashboard:
     following_users: Utilisateurs suivis
     loading: Chargement en cours...

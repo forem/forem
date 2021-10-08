@@ -94,10 +94,6 @@ send_welcome_notifications:
   description: "Sends welcome notifications to new users (runs daily at 16:30 UTC)"
   cron: "0 16 * * *"
   class: "Broadcasts::SendWelcomeNotificationsWorker"
-sitemap_refresh:
-  description: "Regenerates the sitemap and pings search engines (runs hourly on the 30th minute after the hour)"
-  cron: "30 * * * *"
-  class: "SitemapRefreshWorker"
 hourly_feed_cache_bust:
   description: "Busts the edge cache of the feed (runs hourly on the hour)"
   cron: "0 * * * *"
