@@ -58,9 +58,9 @@ For further actions, you may consider blocking this person and/or reporting abus
 
   hideLinks.forEach((link) => {
     const { hideType, commentId } = link.dataset;
-
     if (hideType === 'hide') {
-      link.addEventListener('click', () => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
         showHideCommentsModal(commentId);
         // hide(commentId);
       });
