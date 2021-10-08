@@ -53,7 +53,7 @@ describe('Creator Setup Page', () => {
     cy.findByText(/^Who can view content in this community/).should(
       'be.visible',
     );
-    cy.findAllByRole('radio').check('3');
+    cy.findAllByRole('radio').check('0');
     cy.findAllByRole('radio').should('be.checked');
   });
 
@@ -65,7 +65,7 @@ describe('Creator Setup Page', () => {
     );
     cy.findByLabelText('Brand color').invoke('attr', 'value', '#ff0000');
     cy.findAllByRole('radio').first().check('0');
-    cy.findAllByRole('radio').check('3');
+    cy.findAllByRole('radio').check('0');
     cy.findByRole('button', { name: 'Finish' }).click();
     cy.url().should('equal', '/');
   });
