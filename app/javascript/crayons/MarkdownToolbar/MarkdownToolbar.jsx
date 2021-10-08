@@ -62,32 +62,25 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   }, [smallScreen]);
 
   useLayoutEffect(() => {
-    //   TODO: maybe tidy this up with an extracted version of dropdownUtils
     const clickOutsideHandler = ({ target }) => {
-      if (
-        target.id !== 'overflow-menu-button' &&
-        !document
-          .querySelector('.editor-toolbar__overflow-menu')
-          .contains(target)
-      ) {
+      if (target.id !== 'overflow-menu-button') {
         setOverflowMenuOpen(false);
       }
     };
+
     const escapePressHandler = ({ key }) => {
       if (key === 'Escape') {
         setOverflowMenuOpen(false);
         document.getElementById('overflow-menu-button').focus();
       }
       if (key === 'Tab') {
-        // User tabbing away from toolbar, close without changing focus
         setOverflowMenuOpen(false);
       }
     };
 
     if (overflowMenuOpen) {
-      // send focus to the first option
       document
-        .getElementsByClassName('editor-toolbar__overflow-menu')[0]
+        .getElementById('overflow-menu')
         .getElementsByClassName('overflow-menu-btn')[0]
         .focus();
 
@@ -311,6 +304,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
 
       {overflowMenuOpen && (
         <div
+          id="overflow-menu"
           role="menu"
           className="absolute editor-toolbar editor-toolbar__overflow-menu crayons-dropdown p-2 right-0 top-100"
         >
