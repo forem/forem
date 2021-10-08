@@ -1,28 +1,28 @@
-<% title "Tags on #{community_name}" %>
+<% title t("core.tags") %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/tags") %>" />
-  <meta name="description" content="Tags to follow on <%= community_name %>">
+  <meta name="description" content="<%= t("core.tags_to_follow", community_name: community_name) %>">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/tags") %>" />
-  <meta property="og:title" content="Tags to follow on <%= community_name %>" />
+  <meta property="og:title" content="<%= t("core.tags_to_follow", community_name: community_name) %>" />
   <meta property="og:image" content="<%= Settings::General.main_social_image %>" />
-  <meta property="og:description" content="<%= community_name %> is great!" />
+  <meta property="og:description" content="<%= t("core.community_name_is_great", community_name: community_name) %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="About <%= community_name %>">
-  <meta name="twitter:description" content="<%= community_name %> is great!">
+  <meta name="twitter:description" content="<%= t("core.community_name_is_great", community_name: community_name) %>">
   <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
 <% end %>
 
 <main id="main-content" class="crayons-layout crayons-layout--1-col">
   <header class="px-2 m:px-0 flex items-center justify-between">
-    <h1>Top tags</h1>
-    <%= link_to "Following tags", dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
+    <h1><%= t("core.top_tags") %></h1>
+    <%= link_to t("core.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
   </header>
 
   <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0" data-follow-button-container="true">

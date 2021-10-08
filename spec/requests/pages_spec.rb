@@ -231,7 +231,7 @@ RSpec.describe "Pages", type: :request do
     it "has proper text" do
       get "/robots.txt"
 
-      text = "Sitemap: #{URL.url("sitemap-index.xml")}"
+      text = "Sitemap: #{URL.url('sitemap-index.xml')}"
       expect(response.body).to include(text)
     end
   end
