@@ -41,7 +41,7 @@ class SitemapsController < ApplicationController
     when "tags" # tags
       @tags = Tag.order("hotness_score DESC")
         .where(supported: true)
-        .limit(RESULTS_LIMIT).offset(offset).pluck(:name, :updated_at, :created_at)
+        .limit(RESULTS_LIMIT).offset(offset).pluck(:name, :updated_at)
     end
     set_surrogate_controls(Time.current)
     @view_template = resource
