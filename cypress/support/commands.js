@@ -117,7 +117,6 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   });
 });
 
-/**
 
 /**
  * Logs in a creator with the given name, username, email, and password.
@@ -156,8 +155,6 @@ Cypress.Commands.add('loginCreator', ({ name, username, email, password }) => {
     return getLoginRequest();
   });
 });
-
-/**
 
 /**
  * Gets an iframe with the given selector (or the first/only iframe if none is passed in),
