@@ -9,19 +9,7 @@ import { Overflow, Help } from './icons';
 import { Button } from '@crayons';
 import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
-
-const getIndexOfLineStart = (text, cursorStart) => {
-  const currentCharacter = text.charAt(cursorStart);
-  if (currentCharacter === '\n') {
-    return cursorStart;
-  }
-
-  if (cursorStart !== 0) {
-    return getIndexOfLineStart(text, cursorStart - 1);
-  }
-
-  return 0;
-};
+import { getIndexOfLineStart } from '@utilities/textAreaUtils';
 
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
@@ -97,6 +85,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     };
   }, [overflowMenuOpen]);
 
+  // Handles keyboard 'roving tabindex' pattern for toolbar
   const handleToolbarButtonKeyPress = (event, className) => {
     const { key, target } = event;
     const {
