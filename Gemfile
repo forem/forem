@@ -23,7 +23,7 @@ gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cloudinary", "~> 1.21" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.9" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.52.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.53.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.5" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -133,7 +133,7 @@ group :development do
 end
 
 group :development, :test do
-  gem "amazing_print", "~> 1.3" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
+  gem "amazing_print", "~> 1.4" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.5.3" # For end to end tests (E2E)
