@@ -12,8 +12,7 @@ export const Default = () => {
       <textarea
         id="text-area"
         aria-label="Editor"
-        className="crayons-textfield min-h-full border-0"
-        style={{ borderRadius: 0 }}
+        className="crayons-textfield min-h-full border-0 radius-0"
       />
     </div>
   );

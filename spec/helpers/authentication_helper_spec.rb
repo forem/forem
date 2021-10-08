@@ -81,8 +81,8 @@ RSpec.describe AuthenticationHelper, type: :helper do
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(false)
       end
 
-      it "returns 'crayons-mouse-tooltip' class for relevant helpers" do
-        expect(tooltip_class_on_auth_provider_enablebtn).to eq("crayons-mouse-tooltip")
+      it "returns 'crayons-hover-tooltip' class for relevant helpers" do
+        expect(tooltip_class_on_auth_provider_enablebtn).to eq("crayons-hover-tooltip")
       end
 
       it "returns 'disabled' attribute for relevant helper" do

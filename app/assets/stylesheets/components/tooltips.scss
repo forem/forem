@@ -29,8 +29,8 @@
   }
 }
 
-// Minimal version for mouse-only hover tooltips
-.crayons-mouse-tooltip[data-tooltip] {
+// Minimal version for hover tooltips not triggered by keyboard
+.crayons-hover-tooltip[data-tooltip] {
   position: relative;
 
   &:after {

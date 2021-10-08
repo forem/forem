@@ -66,7 +66,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     const clickOutsideHandler = ({ target }) => {
       if (
         target.id !== 'overflow-menu-button' &&
-        !document.getElementById('overflow-menu').contains(target)
+        !document
+          .querySelector('.editor-toolbar__overflow-menu')
+          .contains(target)
       ) {
         setOverflowMenuOpen(false);
       }
@@ -85,7 +87,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     if (overflowMenuOpen) {
       // send focus to the first option
       document
-        .getElementById('overflow-menu')
+        .getElementsByClassName('editor-toolbar__overflow-menu')[0]
         .getElementsByClassName('overflow-menu-btn')[0]
         .focus();
 
@@ -309,9 +311,8 @@ export const MarkdownToolbar = ({ textAreaId }) => {
 
       {overflowMenuOpen && (
         <div
-          id="overflow-menu"
           role="menu"
-          className="absolute editor-toolbar crayons-dropdown p-2 right-0 top-100"
+          className="absolute editor-toolbar editor-toolbar__overflow-menu crayons-dropdown p-2 right-0 top-100"
         >
           {getSecondaryFormatterButtons(true)}
           <Button
