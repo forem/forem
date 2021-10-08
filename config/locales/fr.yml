@@ -3,16 +3,20 @@ fr:
   core:
     add_comment: Ajouter un commentaire
     all: Tout
+    analytics: Analytique
     comment: Commentaire
     community_name_is_great: "%{community_name} est super"
     copy_link: Copier le lien
     create_account: Créer un profil
     create_post: Créer une publication
+    dashboard: Tableau de bord
     discussion: Discussion
     edit_profile: Editer le profil
     feed: Fil
     follow: Suivre
     follow_back: Suivre aussi
+    follower: Suiveur
+    followers: Suiveurs
     following: Abonné
     following_tags: Sujets suivis
     full: Complet
@@ -27,6 +31,7 @@ fr:
     my_tags: Mes sujets
     popular_tags: Sujets populaires
     post: Publication
+    posts: Publications
     reaction: Réaction
     reactions:
       heart: Coeur
@@ -37,6 +42,7 @@ fr:
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Tout voir
+    series: Séries
     share_to: Partager sur %{media}
     tags: Sujets
     tags_to_follow: Sujets dans %{community_name}
@@ -50,10 +56,14 @@ fr:
     if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
     if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
   dashboard:
+    empty_follower: Vous n'avez pas encore d'abonnés...
+    empty_post: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit
     following_users: Utilisateurs suivis
     loading: Chargement en cours...
     not_following_any_users: Vous ne suivez aucun utilisateur...
     page_title: Tableau de bord
+    upload_a_video: Charger une vidéo
+    write_new_post: Écrivez votre premier message maintenant
   date:
     abbr_month_names:
     -

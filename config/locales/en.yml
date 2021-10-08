@@ -3,16 +3,20 @@ en:
   core:
     add_comment: Add comment
     all: All
+    analytics: Analytics
     comment: Comment
     copy_link: Copy link
     community_name_is_great: "%{community_name} is great!"
     create_account: Create account
     create_post: Create Post
+    dashboard: Dashboard
     discussion: Discussion
     edit_profile: Edit profile
     feed: Feed
     follow: Follow
     follow_back: Follow back
+    follower: Follower
+    followers: Followers
     following: Following
     following_tags: "Following tags"
     full: Full
@@ -27,6 +31,7 @@ en:
     my_tags: My Tags
     popular_tags: Popular Tags
     post: Post
+    posts: Posts
     reaction: Reaction
     reactions:
       heart: Heart
@@ -37,6 +42,7 @@ en:
     report_abuse: Report abuse
     search: Search
     see_all: See all
+    series: Series
     share_to: Share to %{media}
     tags: "Tags"
     tags_to_follow: "Tags to follow on %{community_name}"
@@ -50,10 +56,14 @@ en:
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
     if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
   dashboard:
+    empty_follower: You don't have any followers yet...
+    empty_post: This is where you can manage your posts, but you haven't written anything yet.
     following_users: Following users
     loading: loading...
     not_following_any_users: You don't follow any users...
     page_title: Dashboard
+    upload_a_video: Upload a video
+    write_new_post: Write your first post now
   errors:
     messages:
       accepted: must be accepted
