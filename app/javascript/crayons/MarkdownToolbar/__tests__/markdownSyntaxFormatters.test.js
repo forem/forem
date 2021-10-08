@@ -29,8 +29,8 @@ describe('markdownSntaxFormatters', () => {
   it('formats a link with an empty selection', () => {
     expect(coreSyntaxFormatters['link'].getFormatting('')).toEqual({
       formattedText: '[](url)',
-      cursorOffsetStart: 1,
-      cursorOffsetEnd: 1,
+      cursorOffsetStart: 3,
+      cursorOffsetEnd: -2,
     });
   });
 
@@ -39,8 +39,8 @@ describe('markdownSntaxFormatters', () => {
       coreSyntaxFormatters['link'].getFormatting(exampleTextSelection),
     ).toEqual({
       formattedText: '[selection](url)',
-      cursorOffsetStart: 1,
-      cursorOffsetEnd: 1,
+      cursorOffsetStart: 12,
+      cursorOffsetEnd: 7,
     });
   });
 
@@ -49,8 +49,8 @@ describe('markdownSntaxFormatters', () => {
       coreSyntaxFormatters['link'].getFormatting('http://myurl.com'),
     ).toEqual({
       formattedText: '[](http://myurl.com)',
-      cursorOffsetStart: 3,
-      cursorOffsetEnd: 3,
+      cursorOffsetStart: 1,
+      cursorOffsetEnd: -15,
     });
   });
 
@@ -59,8 +59,8 @@ describe('markdownSntaxFormatters', () => {
       coreSyntaxFormatters['link'].getFormatting('https://myurl.com'),
     ).toEqual({
       formattedText: '[](https://myurl.com)',
-      cursorOffsetStart: 3,
-      cursorOffsetEnd: 3,
+      cursorOffsetStart: 1,
+      cursorOffsetEnd: -16,
     });
   });
 

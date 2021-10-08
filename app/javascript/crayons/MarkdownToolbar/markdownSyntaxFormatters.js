@@ -48,10 +48,13 @@ export const coreSyntaxFormatters = {
     keyboardShortcutKeys: `K`,
     getFormatting: (selection) => {
       const isUrl = isStringStartAUrl(selection);
+      const selectionLength = selection.length;
       return {
         formattedText: isUrl ? `[](${selection})` : `[${selection}](url)`,
-        cursorOffsetStart: isUrl ? 3 : 1,
-        cursorOffsetEnd: isUrl ? 3 : 1,
+        cursorOffsetStart: isUrl ? 1 : selectionLength + 3,
+        cursorOffsetEnd: isUrl
+          ? -1 * (selectionLength - 1)
+          : selectionLength - 2,
       };
     },
   },
