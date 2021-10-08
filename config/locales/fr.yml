@@ -15,6 +15,7 @@ fr:
     follow: Suivre
     follow_back: Suivre aussi
     follower: Suiveur
+    followers: Suiveurs
     following: Abonné
     full: Complet
     infinity: Infini
@@ -27,6 +28,7 @@ fr:
     my_tags: Mes sujets
     popular_tags: Sujets populaires
     post: Publication
+    posts: Publications
     reaction: Réaction
     reactions:
       heart: Coeur

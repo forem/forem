@@ -15,6 +15,7 @@ en:
     follow: Follow
     follow_back: Follow back
     follower: Follower
+    followers: Followers
     following: Following
     full: Full
     infinity: Infinity
@@ -27,6 +28,7 @@ en:
     my_tags: My Tags
     popular_tags: Popular Tags
     post: Post
+    posts: Posts
     reaction: Reaction
     reactions:
       heart: Heart
