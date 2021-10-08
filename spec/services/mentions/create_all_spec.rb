@@ -35,7 +35,7 @@ RSpec.shared_examples "valid notifiable and has mentions" do
     expect(Mention.all.size).to eq(0)
   end
 
-  it "deletes notifications associated with mention if delted from notifiable" do
+  it "deletes notifications associated with mention if deleted from notifiable" do
     set_markdown_and_save(notifiable, mention_markdown)
     described_class.call(notifiable)
     expect(Mention.all.size).to eq(1)
