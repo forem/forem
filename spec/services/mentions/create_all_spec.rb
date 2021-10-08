@@ -35,6 +35,19 @@ RSpec.shared_examples "valid notifiable and has mentions" do
     expect(Mention.all.size).to eq(0)
   end
 
+  it "deletes notifications associated with mention if delted from notifiable" do
+    set_markdown_and_save(notifiable, mention_markdown)
+    described_class.call(notifiable)
+    expect(Mention.all.size).to eq(1)
+    Notification.send_mention_notification_without_delay(Mention.last)
+    expect(Notification.all.size).to eq(1)
+
+    set_markdown_and_save(notifiable, "Hello, you are cool.")
+    described_class.call(notifiable)
+    expect(Mention.all.size).to eq(0)
+    expect(Notification.all.size).to eq(0)
+  end
+
   it "creates one mention even if multiple mentions of same user" do
     set_markdown_and_save(notifiable, "Hello @#{user.username} @#{user.username} @#{user.username}, you rock.")
     described_class.call(notifiable)
