@@ -15,7 +15,6 @@ export class SingleArticle extends Component {
     if (tag) {
       return (
         <span className="crayons-tag" key={key}>
-          <span className="crayons-tag__prefix">#</span>
           {tag}
         </span>
       );

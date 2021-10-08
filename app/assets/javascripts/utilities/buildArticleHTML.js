@@ -39,7 +39,7 @@ function buildArticleHTML(article) {
         article.flare_tag.bg_color_hex +
         ';color:' +
         article.flare_tag.text_color_hex +
-        "'><span className='crayons-tag__prefix'>#</span>" +
+        "'>" +
         article.flare_tag.name +
         '</a>';
     }
@@ -68,7 +68,7 @@ function buildArticleHTML(article) {
           tagString +
           '<a href="/t/' +
           t +
-          '" class="crayons-tag"><span class="crayons-tag__prefix">#</span>' +
+          '" class="crayons-tag">' +
           t +
           '</a>\n';
       });

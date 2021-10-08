@@ -14,14 +14,7 @@ function titleArea({
   let tags = '';
   if (tagArray.length > 0 && tagArray[0].length > 0) {
     tags = tagArray.map((tag) => {
-      return (
-        tag.length > 0 && (
-          <span className="crayons-tag">
-            <span className="crayons-tag__prefix">#</span>
-            {tag}
-          </span>
-        )
-      );
+      return tag.length > 0 && <span className="crayons-tag mr-2">{tag}</span>;
     });
   }
 

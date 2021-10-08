@@ -27,12 +27,12 @@
 
   <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0" data-follow-button-container="true">
     <% @tags.each do |tag| %>
-      <% color = Color::CompareHex.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-      <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative" style="border-top-color: <%= color %>; ">
-        <h3 class="crayons-tag crayons-tag--l mb-2">
-          <a href="<%= URL.tag tag %>" class="crayons-link">
-            <span class="crayons-tag__prefix">#</span><%= tag.name %>
-          </a>
+      <% tag_color = Color::CompareHex.new([tag.bg_color_hex || "#000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+      <% tag_color_faded = Color::CompareHex.new([tag_color]).opacity(0.1) %>
+
+      <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative" style="border-top-color: <%= tag_color %>; ">
+        <h3 class="mb-2 -ml-2">
+          <a class="crayons-tag" <% if tag.bg_color_hex || tag.text_color_hex %> style="--tag-color: <%= tag_color %>; --tag-color-faded: <%= tag_color_faded %>;"<% end %> href="<%= URL.tag tag %>"><%= tag.name %></a>
         </h3>
         <% if tag.short_summary.present? %>
           <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>

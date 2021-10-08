@@ -16,9 +16,9 @@
           <% user_stickies.each_with_index do |article, index| %>
             <a class="crayons-link crayons-link--contentful" href="<%= article.path %>">
               <%= article.title %>
-              <div class="crayons-link__secondary -ml-1">
+              <div class="crayons-link__secondary">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>
-                  <span class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></span>
+                  <span class="crayons-tag"><%= tag %></span>
                 <% end %>
               </div>
             </a>
@@ -41,9 +41,9 @@
               </span>
               <div>
                 <%= article.title %>
-                <div class="crayons-link__secondary -ml-1">
+                <div class="crayons-link__secondary">
                   <% article.decorate.cached_tag_list_array.each do |tag| %>
-                    <span class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></span>
+                    <span class="crayons-tag"><%= tag %></span>
                   <% end %>
                 </div>
               </div>

@@ -149,9 +149,12 @@
             </h1>
 
             <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
-              <div class="spec__tags">
+              <div class="spec__tags flex color-base-80">
                 <% @article.cached_tag_list_array.each do |tag| %>
-                  <a class="crayons-tag" href="/t/<%= tag %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+                  <% tag_hash = tag_colors(tag) %>
+                  <% tag_color = Color::CompareHex.new([tag_hash[:background] || "#000000", tag_hash[:color] || "#ffffff"]).brightness(0.8) %>
+                  <% tag_color_faded = Color::CompareHex.new([tag_color]).opacity(0.1) %>
+                  <a class="crayons-tag" <% if tag_hash[:background] || tag_hash[:color] %> style="--tag-color: <%= tag_color %>; --tag-color-faded: <%= tag_color_faded %>;"<% end %> href="/t/<%= tag %>"><%= tag %></a>
                 <% end %>
               </div>
             <% end %>

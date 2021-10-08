@@ -162,35 +162,19 @@ Object {
                 <a
                   class="crayons-tag"
                   href="/t/javascript"
-                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
                 >
-                  <span
-                    class="crayons-tag__prefix"
-                  >
-                    #
-                  </span>
                   javascript
                 </a>
                 <a
                   class="crayons-tag"
                   href="/t/ruby"
                 >
-                  <span
-                    class="crayons-tag__prefix"
-                  >
-                    #
-                  </span>
                   ruby
                 </a>
                 <a
                   class="crayons-tag"
                   href="/t/go"
                 >
-                  <span
-                    class="crayons-tag__prefix"
-                  >
-                    #
-                  </span>
                   go
                 </a>
               </div>
@@ -411,35 +395,19 @@ Object {
               <a
                 class="crayons-tag"
                 href="/t/javascript"
-                style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
               >
-                <span
-                  class="crayons-tag__prefix"
-                >
-                  #
-                </span>
                 javascript
               </a>
               <a
                 class="crayons-tag"
                 href="/t/ruby"
               >
-                <span
-                  class="crayons-tag__prefix"
-                >
-                  #
-                </span>
                 ruby
               </a>
               <a
                 class="crayons-tag"
                 href="/t/go"
               >
-                <span
-                  class="crayons-tag__prefix"
-                >
-                  #
-                </span>
                 go
               </a>
             </div>

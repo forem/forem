@@ -15,7 +15,6 @@ export const SelectedTags = ({ tags, onRemoveTag, onKeyPress }) => {
             className="tag-name crayons-tag"
             data-no-instant
           >
-            <span className="crayons-tag__prefix">#</span>
             <span role="button" tabIndex="0">
               {tag}
             </span>

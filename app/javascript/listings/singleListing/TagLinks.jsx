@@ -7,12 +7,12 @@ export const TagLinks = ({ tags, onClick }) => (
       ? tags.map((tag) => {
           return (
             <a
+              key={tag}
               href={`/listings?t=${tag}`}
               onClick={(e) => onClick(e, tag)}
               className="crayons-tag"
               data-no-instant
             >
-              <span className="crayons-tag__prefix">#</span>
               {tag}
             </a>
           );

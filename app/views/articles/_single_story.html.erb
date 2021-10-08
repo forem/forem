@@ -101,17 +101,12 @@
           <%= story.title %>
         </a>
       </h2>
-      <div class="crayons-story__tags">
-        <% flare_tag = FlareTag.new(story, @tag).tag %>
-        <% if flare_tag %>
-          <a href="<%= URL.tag flare_tag %>" class="crayons-tag" style="background:<%= flare_tag.bg_color_hex %>;color:<%= flare_tag.text_color_hex %>"><span class="crayons-tag__prefix">#</span><%= flare_tag.name %></a>
-        <% end %>
-        <% tags_to_display = story.cached_tag_list_array
-           if flare_tag
-             tags_to_display = tags_to_display.reject { |tag| tag == flare_tag.name }
-           end %>
-        <% tags_to_display.each do |tag| %>
-        <a href="/t/<%= tag %>" class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+      <div class="crayons-story__tags flex">
+        <% story.cached_tag_list_array.each do |tag| %>
+          <% tag_hash = tag_colors(tag) %>
+          <% tag_color = Color::CompareHex.new([tag_hash[:background] || "#000000", tag_hash[:color] || "#ffffff"]).brightness(0.8) %>
+          <% tag_color_faded = Color::CompareHex.new([tag_color || "#000000"]).opacity(0.1) %>
+          <a class="crayons-tag" <% if tag_hash[:background] || tag_hash[:color] %> style="--tag-color: <%= tag_color %>; --tag-color-faded: <%= tag_color_faded %>;"<% end %> href="/t/<%= tag %>"><%= tag %></a>
         <% end %>
       </div>
       <div class="crayons-story__bottom">

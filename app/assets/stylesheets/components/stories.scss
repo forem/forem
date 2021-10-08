@@ -139,6 +139,8 @@
   &__tags {
     margin-bottom: var(--su-2);
     margin-left: calc(var(--su-1) * -1);
+    font-size: var(--fs-s);
+    color: var(--base-80);
   }
 
   &__title {
@@ -147,10 +149,9 @@
     font-size: var(--title-font-size);
     overflow-wrap: anywhere;
     word-break: break-word;
-    margin-bottom: var(--su-1);
 
     @media (min-width: $breakpoint-m) {
-      margin-bottom: var(--su-2);
+      margin-bottom: var(--su-1);
     }
 
     a {
