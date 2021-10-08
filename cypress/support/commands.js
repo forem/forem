@@ -117,6 +117,45 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   });
 });
 
+
+/**
+ * Logs in a creator with the given name, username, email, and password.
+ *
+ * @param credentials
+ * @param credentials.name {string} A name
+ * @param credentials.username {string} A username
+ * @param credentials.email {string} An email address
+ * @param credentials.password {string} A password
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for signing in a creator.
+ */
+Cypress.Commands.add('loginCreator', ({ name, username, email, password }) => {
+  const encodedName = encodeURIComponent(name);
+  const encodedUsername = encodeURIComponent(username);
+  const encodedEmail = encodeURIComponent(email);
+  const encodedPassword = encodeURIComponent(password);
+
+  function getLoginRequest() {
+    return cy.request(
+      'POST',
+      '/users',
+      `utf8=%E2%9C%93&user%5Bname%5D=${encodedName}&user%5Busername%5D=${encodedUsername}&user%5Bemail%5D=${encodedEmail}%40forem.local&user%5Bpassword%5D=${encodedPassword}&commit=Create+my+account`,
+    );
+  }
+
+  return getLoginRequest().then((response) => {
+    if (response.status === 200) {
+      return response;
+    }
+
+    cy.log('Login failed. Attempting one more login.');
+
+    // If we have a login failure, try one more time.
+    // This is to combat some flaky tests where the login fails occasionnally.
+    return getLoginRequest();
+  });
+});
+
 /**
  * Gets an iframe with the given selector (or the first/only iframe if none is passed in),
  * waits for its content to be loaded, and returns a wrapped reference to the iframe body
