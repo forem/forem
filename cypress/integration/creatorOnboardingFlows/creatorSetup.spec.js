@@ -26,64 +26,47 @@ describe('Creator Setup Page', () => {
   });
 
   it('should contain a logo upload field and upload a logo upon click', () => {
-    cy.findByTestId('creator-setup-form')
-      .findByText(/^Logo/)
-      .should('be.visible');
-    cy.findByTestId('creator-setup-form').as('creatorSetupForm');
-    cy.get('@creatorSetupForm')
-      .findByLabelText('Logo')
-      .attachFile('/images/admin-image.png');
+    cy.findByText(/^Logo/).should('be.visible');
+    cy.findByRole('button', { name: /logo/i }).attachFile(
+      '/images/admin-image.png',
+    );
   });
 
   it('should contain a brand color selector field', () => {
-    cy.findByTestId('creator-setup-form').as('creatorSetupForm');
-    cy.get('@creatorSetupForm')
-      .findByText(/^Brand color/)
-      .should('be.visible');
+    cy.findByText(/^Brand color/).should('be.visible');
   });
 
   // TODO: Circle back around to testing the selection of a brand color from the color picker,
   // as this input isn't very testable at the moment. See https://github.com/cypress-io/cypress/issues/7812.
 
   it.skip('should allow a brand color to be selected upon click', () => {
-    cy.findByTestId('creator-setup-form').as('creatorSetupForm');
-    cy.get('@creatorSetupForm')
-      .findByRole('color', { name: 'primary_brand_color_hex' })
-      .click();
+    cy.findByRole('color', { name: 'primary_brand_color_hex' }).click();
   });
 
   it("should contain a 'Who can join this community?' radio selector field and allow selection upon click", () => {
-    cy.findByTestId('creator-setup-form').as('creatorSetupForm');
-    cy.get('@creatorSetupForm')
-      .findByText(/^Who can join this community/)
-      .should('be.visible');
-    cy.findByTestId('creator-setup-form').as('creatorSetupForm');
-    cy.get('@creatorSetupForm')
-      .findByRole('radio', { name: 'invite_only_mode_0' })
-      .check('Everyone');
-    cy.findByRole('radio', { name: 'invite_only_mode_0' }).should.should(
-      'be.checked',
-    );
+    cy.findByText(/^Who can join this community/).should('be.visible');
+    cy.findAllByRole('radio').first().check('0');
+    cy.findAllByRole('radio').should('be.checked');
   });
 
   it("should contain a 'Who can view content in this community?' radio selector field and allow selection upon click", () => {
-    cy.findByTestId('creator-setup-form').as('creatorSetupForm');
-    cy.get('@creatorSetupForm')
-      .findByText(/^Who can view content in this community/)
-      .should('be.visible');
-    cy.findByTestId('creator-setup-form').as('creatorSetupForm');
-    cy.get('@creatorSetupForm')
-      .findByRole('radio', { name: 'public_0' })
-      .check('Everyone');
-    cy.findByRole('radio', { name: 'public_0' }).should.should('be.checked');
+    cy.findByText(/^Who can view content in this community/).should(
+      'be.visible',
+    );
+    cy.findAllByRole('radio').check('3');
+    cy.findAllByRole('radio').should('be.checked');
   });
 
-  it("should sign the user in when 'Finish' is clicked", () => {
-    cy.findByTestId('creator-signup-form').as('creatorSignupForm');
-    cy.get('@creatorSignupForm')
-      .findByRole('button', { name: 'Finish' })
-      .click();
-
+  it("should redirect the creator to the home page when the form is completely filled out and 'Finish' is clicked", () => {
+    cy.findByRole('textbox', { name: /community name/i }).as('communityName');
+    cy.get('@communityName').type('Climbing Life');
+    cy.findByRole('button', { name: /logo/i }).attachFile(
+      '/images/admin-image.png',
+    );
+    cy.findByLabelText('Brand color').invoke('attr', 'value', '#ff0000');
+    cy.findAllByRole('radio').first().check('0');
+    cy.findAllByRole('radio').check('3');
+    cy.findByRole('button', { name: 'Finish' }).click();
     cy.url().should('equal', '/');
   });
 });
