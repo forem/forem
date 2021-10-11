@@ -97,8 +97,8 @@
             </a>
         <% end %>
       </div>
-      <p><%= link_to t("podcasts.suggest_a_podcast"), new_podcast_path, class: "suggest-podcast" %></p>
     <% end %>
+    <p><%= link_to t("podcasts.suggest_a_podcast"), new_podcast_path, class: "suggest-podcast" %></p>
   </main>
 
 <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", defer: true %>

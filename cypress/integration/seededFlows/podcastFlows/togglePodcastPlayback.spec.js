@@ -5,7 +5,7 @@ describe('Toggle Podcast playback', () => {
 
   it('should toggle podcast playback', () => {
     cy.visit('/pod');
-    cy.contains('div', 'Example media | crow call').click();
+    cy.contains('a', 'Example media | crow call').click();
 
     cy.findByRole('button', { name: 'Developer on Fire Play podcast' }).as(
       'toggleButton',
