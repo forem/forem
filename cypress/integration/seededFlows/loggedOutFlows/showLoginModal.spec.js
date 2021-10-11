@@ -76,7 +76,7 @@ describe('Show log in modal', () => {
     );
 
     cy.visit('/t/tag1');
-    cy.findByRole('heading', { name: '# tag1' });
+    cy.findByRole('heading', { name: 'tag1' });
 
     verifyLoginModalBehavior(() =>
       cy.findByRole('button', { name: 'Follow tag: tag1' }),
