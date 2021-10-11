@@ -194,10 +194,10 @@ function renderTagOnArticle(tagName, colors) {
     getArticleContainer().getElementsByClassName('spec__tags')[0];
 
   const newTag = document.createElement('a');
-  newTag.innerText = `#${tagName}`;
-  newTag.setAttribute('class', 'crayons-tag mr-1');
+  newTag.innerText = `${tagName}`;
+  newTag.setAttribute('class', 'crayons-tag');
   newTag.setAttribute('href', `/t/${tagName}`);
-  newTag.style = `background-color: ${colors.bg}; color: ${colors.text};`;
+  newTag.style = `--tag-color: ${colors.text};`;
 
   articleTagsContainer.appendChild(newTag);
 }

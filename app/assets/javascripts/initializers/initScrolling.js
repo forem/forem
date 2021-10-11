@@ -110,7 +110,7 @@ function buildTagsHTML(tag) {
 
   return `<div class="crayons-card p-4 m:p-6 flex flex-col single-article" id="follows-${tag.id}" style="border: 1px solid ${tag.color}; box-shadow: 3px 3px 0 ${tag.color}">
     <h3 class="s:mb-1 p-0 fw-medium">
-      <a href="/t/${tag.name}" class="crayons-tag crayons-tag--l">
+      <a href="/t/${tag.name}" class="crayons-tag">
         ${tag.name}
       </a>
       ${antifollow}

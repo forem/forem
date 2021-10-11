@@ -98,9 +98,9 @@ describe('<ItemListItem />', () => {
 
     const { getByText } = render(<ItemListItem item={item} />);
 
-    getByText('#discuss');
+    getByText('discuss');
 
-    expect(getByText('#discuss').closest('a').getAttribute('href')).toBe(
+    expect(getByText('discuss').closest('a').getAttribute('href')).toBe(
       '/t/discuss',
     );
   });
