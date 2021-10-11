@@ -29,8 +29,8 @@ describe('markdownSntaxFormatters', () => {
   it('formats a link with an empty selection', () => {
     expect(coreSyntaxFormatters['link'].getFormatting('')).toEqual({
       formattedText: '[](url)',
-      cursorOffsetStart: 3,
-      cursorOffsetEnd: -2,
+      cursorOffsetStart: 1,
+      cursorOffsetEnd: 1,
     });
   });
 
@@ -40,7 +40,7 @@ describe('markdownSntaxFormatters', () => {
     ).toEqual({
       formattedText: '[selection](url)',
       cursorOffsetStart: 12,
-      cursorOffsetEnd: 7,
+      cursorOffsetEnd: 6,
     });
   });
 

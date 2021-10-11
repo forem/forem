@@ -49,12 +49,19 @@ export const coreSyntaxFormatters = {
     getFormatting: (selection) => {
       const isUrl = isStringStartAUrl(selection);
       const selectionLength = selection.length;
+
+      if (selectionLength === 0) {
+        return {
+          formattedText: '[](url)',
+          cursorOffsetStart: 1,
+          cursorOffsetEnd: 1,
+        };
+      }
+
       return {
         formattedText: isUrl ? `[](${selection})` : `[${selection}](url)`,
         cursorOffsetStart: isUrl ? 1 : selectionLength + 3,
-        cursorOffsetEnd: isUrl
-          ? -1 * (selectionLength - 1)
-          : selectionLength - 2,
+        cursorOffsetEnd: isUrl ? -1 * (selectionLength - 1) : 6,
       };
     },
   },
