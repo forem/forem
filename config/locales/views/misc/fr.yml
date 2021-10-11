@@ -1,0 +1,12 @@
+---
+fr:
+  v:
+    series:
+      meta:
+        description: View %{title} on %{site}
+      heading: "%{user}'s Series"
+      empty: This user doesn't have any series
+      list:
+        heading: "%{series} Series' Articles"
+        back: Back to %{user}'s Series
+        empty: This series doesn't have any articles

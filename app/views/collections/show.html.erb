@@ -1,5 +1,6 @@
-<% title_string = "#{@collection.slug} Series' Articles" %>
-<% description_string = "View #{title_string} on #{community_name}" %>
+<% _t = "v.series.list" %>
+<% title_string = t "heading", scope: _t, series: @collection.slug %>
+<% description_string = t "v.series.meta.description", title: title_string, site: community_name %>
 
 <%= content_for :page_meta do %>
   <%= render "collections/meta", title_string: title_string, description_string: description_string, path: @collection.path %>
@@ -8,7 +9,7 @@
 <main id="main-content" class="crayons-layout crayons-layout--1-col">
   <header class="px-2 m:px-0">
     <h1><%= title_string %></h1>
-    <%= link_to "Back to #{@user.name}'s Series", user_series_path(@user.username) %>
+    <%= link_to t("back", scope: _t, user: @user.name), user_series_path(@user.username) %>
   </header>
 
   <div class="articles-list" id="articles-list">
@@ -19,7 +20,7 @@
         <% end %>
         <%= javascript_packs_with_chunks_tag "followButtons", "feedPreviewCards", defer: true %>
       <% else %>
-        <p>This series doesn't have any articles</p>
+        <p><%= t("empty", scope: _t) %></p>
       <% end %>
     </div>
   </div>
