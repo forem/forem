@@ -228,7 +228,7 @@ export class ArticleCoverImage extends Component {
 }
 
 ArticleCoverImage.propTypes = {
-  mainImage: PropTypes.string.isRequired,
+  mainImage: PropTypes.string,
   onMainImageUrlChange: PropTypes.func.isRequired,
 };
 

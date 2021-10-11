@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_07_172232) do
+ActiveRecord::Schema.define(version: 2021_10_08_170433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1189,7 +1189,7 @@ ActiveRecord::Schema.define(version: 2021_10_07_172232) do
     t.bigint "badge_id"
     t.string "bg_color_hex"
     t.string "category", default: "uncategorized", null: false
-    t.datetime "created_at"
+    t.datetime "created_at", null: false
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.bigint "mod_chat_channel_id"
@@ -1206,7 +1206,7 @@ ActiveRecord::Schema.define(version: 2021_10_07_172232) do
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0
     t.string "text_color_hex"
-    t.datetime "updated_at"
+    t.datetime "updated_at", null: false
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true

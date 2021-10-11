@@ -1,7 +1,9 @@
 <% title "Dashboard" %>
+  <header class="crayons-layout">
+    <h1 class="p-2 pb-0 m:p-0 crayons-title"></h1>
 <main id="main-content">
   <section class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard</h1>
+    <h1 class="p-2 pb-0 m:p-0 crayons-title"><%= t("core.dashboard") %></h1>
     <%= render "actions_mobile" %>
     <%= render "analytics" %>
   </section>
@@ -13,7 +15,7 @@
 
     <div class="crayons-layout__content flex flex-col">
       <div class="flex items-center justify-between mb-3">
-        <h2 class="hidden m:block crayons-subtitle-2">Posts</h2>
+        <h2 class="hidden m:block crayons-subtitle-2"><%= t("core.posts") %></h2>
 
         <div class="flex flex-wrap">
           <% if params[:which] != "organization" %>
@@ -59,8 +61,8 @@
               <% image_url = Images::Optimizer.call(Settings::General.mascot_image_url, width: 300, crop: "imagga_scale") %>
               <%= image_tag(image_url, class: "sloan mb-7", alt: "Mascot image") %>
             <% end %>
-            <p class="mb-6">This is where you can manage your posts, but you haven't written anything yet.</p>
-            <p><a href="/new" class="crayons-btn crayons-btn--l">Write your first post now</a></p>
+            <p class="mb-6"><%= t("dashboard.empty_post") %></p>
+            <p><a href="/new" class="crayons-btn crayons-btn--l"><%= t("dashboard.write_new_post") %></a></p>
           </div>
         </div>
       <% end %>
