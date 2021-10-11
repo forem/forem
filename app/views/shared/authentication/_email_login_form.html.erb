@@ -14,6 +14,12 @@
     <%= f.label :remember_me, class: "crayons-field__label fw-normal" %>
   </div>
 
+  <% if ReCaptcha::CheckRegistrationEnabled.call %>
+      <div class="recaptcha-tag-container mt-2">
+        <%= recaptcha_tags site_key: Settings::Authentication.recaptcha_site_key %>
+      </div>
+    <% end %>
+
   <div class="actions pt-3">
     <%= f.submit "Continue", class: "crayons-btn crayons-btn--l w-100" %>
   </div>
