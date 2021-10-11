@@ -37,7 +37,7 @@ describe('Follow tag', () => {
 
       cy.get('@user').then((user) => {
         cy.loginAndVisit(user, '/t/tag1').then(() => {
-          cy.findByRole('heading', { name: '# tag1' });
+          cy.findByRole('heading', { name: 'tag1' });
           cy.get('[data-follow-clicks-initialized]');
         });
       });
