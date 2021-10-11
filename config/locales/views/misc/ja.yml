@@ -1,0 +1,12 @@
+---
+ja:
+  v:
+    onboardings:
+      meta:
+        title: "%{community} へようこそ！"
+      heading: 今日から私たちの一員です！
+      subtitle: まず何をしたらいい？
+      close: Close Welcome Message
+      settings_html: "<span class=\"emoji\">💅🏼</span>プロフィールを設定する"
+      welcome_html: "<span class=\"emoji\">😊</span>ようこそスレッドに挨拶する"
+      write_html: "<span class=\"emoji\">✍🏾</span>%{community}に最初の記事を書く"
