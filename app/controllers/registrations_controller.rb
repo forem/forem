@@ -71,7 +71,7 @@ class RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
     resource.registered_at = Time.current
     resource.build_setting(editor_version: "v2")
-    resource.remote_profile_image_url = Users::ProfileImageGenerator.call if resource.remote_profile_image_url.blank?
+    resource.remote_profile_image_url = Users::ProfileImageGenerator.call if resource.profile_image.blank?
     if FeatureFlag.enabled?(:creator_onboarding)
       resource.password_confirmation = resource.password
     end
