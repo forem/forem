@@ -180,7 +180,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     const newTextContent = `${textBeforeInsertion}${formattedText}${textAfterInsertion}`;
 
     textArea.value = newTextContent;
-    textArea.focus();
+    textArea.focus({ preventScroll: true });
     textArea.setSelectionRange(
       selectionStart + cursorOffsetStart,
       selectionEnd + cursorOffsetEnd,
