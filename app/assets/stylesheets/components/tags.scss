@@ -16,6 +16,10 @@
     color: var(--tag-color);
   }
 
+  &--flare::before {
+    color: revert;
+  }
+
   &--filled {
     background: var(--tag-color-faded);
   }

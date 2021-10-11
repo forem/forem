@@ -1,6 +1,9 @@
 <header class="flex mb-6 items-center">
   <div>
-    <h2 class="crayons-title"><span class="crayons-tag" style="background:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;"><%= @tag.name %></span></h2>
+    <% tag_color = Color::CompareHex.new([@tag.bg_color_hex || "#000000", @tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+    <% tag_color_faded = Color::CompareHex.new([tag_color]).opacity(0.1) %>
+
+    <h2 class="crayons-title"><span class="crayons-tag" style="--tag-color: <%= tag_color %>; --tag-color-faded: <%= tag_color_faded %>;"><%= @tag.name %></span></h2>
     <p>Tagged <%= @tag.taggings_count %> times</p>
   </div>
 
