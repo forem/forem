@@ -122,8 +122,9 @@ fr:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
   podcasts:
-    latest_episodes: Épisodes Récents
     featured_shows: Épisodes en vedette
+    latest_episodes: Épisodes Récents
+    suggest_a_podcast: Suggérer un podcast
     statuses:
       ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast
       unparsable: Le rss du podcast n'a pas pu être analysé

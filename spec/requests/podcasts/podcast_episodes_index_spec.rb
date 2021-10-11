@@ -15,6 +15,17 @@ RSpec.describe "Podcast Episodes Index Spec", type: :request do
       expect(response.body).not_to include("unreachable")
     end
 
+    it "shows featured podcasts area if there are any" do
+      create(:podcast, featured: true)
+      get "/pod"
+      expect(response.body).to include(I18n.t("podcasts.featured_shows"))
+    end
+
+    it "does not show featured podcasts area if there are not any" do
+      get "/pod"
+      expect(response.body).not_to include(I18n.t("podcasts.featured_shows"))
+    end
+
     it "sets proper surrogate key" do
       pe = create(:podcast_episode)
       get "/pod"
