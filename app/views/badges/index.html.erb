@@ -1,9 +1,10 @@
-<% title "Badges" %>
+<% _t = "v.badges" %>
+<% title t("meta.title", scope: _t) %>
 
 <div class="blank-space"></div>
 <div class="container article">
-  <h1 style="text-align: center;">Badges</h1>
-  <p style="text-align: center; max-width: 96%;">Receive badges for being awesome! Click on a badge to see how you can earn it.</p>
+  <h1 style="text-align: center;"><%= t("heading", scope: _t) %></h1>
+  <p style="text-align: center; max-width: 96%;"><%= t("desc", scope: _t) %></p>
   <div class="body sticker-book">
     <% @badges.each do |badge| %>
     <a href="/badge/<%= badge.slug %>">

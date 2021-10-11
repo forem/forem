@@ -1,0 +1,12 @@
+---
+en:
+  v:
+    badges:
+      meta:
+        title: Badges
+        name: "%{title} Badge"
+      all:
+        other: Show all %{count} badges
+      heading: Badges
+      desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
+      name: "🏅 %{title} Badge 🏅"
