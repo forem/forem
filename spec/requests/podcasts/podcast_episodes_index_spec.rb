@@ -16,7 +16,8 @@ RSpec.describe "Podcast Episodes Index Spec", type: :request do
     end
 
     it "shows featured podcasts area if there are any" do
-      create(:podcast, featured: true)
+      podcast = create(:podcast, featured: true, published: true)
+      create(:podcast_episode, title: "SuperMario", podcast: podcast)
       get "/pod"
       expect(response.body).to include(I18n.t("podcasts.featured_shows"))
     end
