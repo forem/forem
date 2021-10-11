@@ -99,6 +99,8 @@ en:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
   podcasts:
+    latest_episodes: Latest episodes
+    featured_shows: Featured shows
     statuses:
       ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
       unparsable: Podcast's rss couldn't be parsed
