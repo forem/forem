@@ -1,18 +1,18 @@
 <%= content_for :page_meta do %>
-  <% title("#{community_name} EVENTS") %>
+  <% title t("views.events.list.meta.title", site: community_name) %>
   <link rel="canonical" href="<%= app_url("/events") %>" />
-  <meta name="description" content="<%= community_name %> Events">
+  <meta name="description" content="<%= t("views.events.list.meta.description", site: community_name) %>">
 <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/events") %>" />
-  <meta property="og:title" content="<%= community_name %> Events" />
-  <meta property="og:description" content="Community events." />
+  <meta property="og:title" content="<%= t("views.events.list.meta.og.title", site: community_name) %>" />
+  <meta property="og:description" content="<%= t("views.events.list.meta.og.description") %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
   <meta property="og:image" content="<%= Settings::General.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="<%= community_name %> Events">
+  <meta name="twitter:title" content="<%= t("views.events.list.meta.og.title", site: community_name) %>">
   <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
 <% end %>
 
@@ -21,20 +21,20 @@
 <div class="crayons-layout crayons-layout--limited-l">
   <div class="crayons-card text-styles text-padding">
     <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">
-      Upcoming Events
+      <%= t("views.events.list.heading") %>
     </h1>
 
     <%= render partial: "event", collection: @events, as: :event %>
 
     <% if @events.none? %>
       <div class="crayons-notice" aria-live="polite">
-        There are no upcoming events currently scheduled
+        <%= t("views.events.list.empty") %>
       </div>
     <% end %>
 
     <% if @past_events.any? %>
       <h1>
-        Past Events
+        <%= t("views.events.list.past") %>
       </h1>
       <%= render partial: "event", collection: @past_events, as: :event %>
     <% end %>

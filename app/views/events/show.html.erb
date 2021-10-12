@@ -1,7 +1,7 @@
 <%= content_for :page_meta do %>
-  <% title("#{@event.title} - #{community_name}") %>
+  <% title t("views.events.meta.title", event: @event.title, site: community_name) %>
   <link rel="canonical" href="<%= app_url("/#{@event.slug}") %>" />
-  <meta name="description" content="<%= community_name %> | Events">
+  <meta name="description" content="<%= t("views.events.meta.description", site: community_name) %>">
  <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
@@ -69,9 +69,9 @@
   <div style="height:30px">
   </div>
   <div class="body">
-    <h1 style="padding-left: 20px; font-weight: 500;"><%= @event.category %>: <%= @event.title %></h1>
+    <h1 style="padding-left: 20px; font-weight: 500;"><%= t("views.events.heading", category: @event.category, title: @event.title) %></h1>
     <%= render "event", event: @event %>
     <h3 style="text-align: center">
-      <span style="background-color: yellow; padding: 5px"><a href="/events"> All EVENTS </a></span></h3>
+      <span style="background-color: yellow; padding: 5px"><a href="/events"><%= t("views.events.all") %></a></span></h3>
   </div>
 </div>
