@@ -8,7 +8,7 @@ module Moderator
       user = User.find_by(id: user_id)
       return unless user
 
-      user.articles.published.each do |article|
+      user.articles.published.find_each do |article|
         if article.has_frontmatter?
           article.body_markdown.sub!(/\npublished:\s*true\s*\n/, "\npublished: false\n")
         else
