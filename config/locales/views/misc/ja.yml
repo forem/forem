@@ -1,0 +1,9 @@
+---
+ja:
+  views:
+    reading_list:
+      meta:
+        title: 切り抜き帳
+        description: あなたの保存した記事の一覧です。
+        og:
+          title: 切り抜き帳 - %{community}

@@ -1,0 +1,9 @@
+---
+fr:
+  views:
+    reading_list:
+      meta:
+        title: Reading List
+        description: My saved posts.
+        og:
+          title: Reading List - %{community}
