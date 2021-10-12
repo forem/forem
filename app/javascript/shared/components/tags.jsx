@@ -101,7 +101,7 @@ export class Tags extends Component {
 
   get isTopOfSearchResults() {
     const { selectedIndex } = this.state;
-    return selectedIndex <= 0;
+    return selectedIndex < 0;
   }
 
   get isBottomOfSearchResults() {
@@ -356,7 +356,7 @@ export class Tags extends Component {
       // allows user to choose a tag when they've typed the partial or whole word
       this.setState({
         searchResults: response.result.filter(
-          (t) => !this.selected.includes(t.name),
+          (t) => t.name === query || !this.selected.includes(t.name),
         ),
       });
     });
