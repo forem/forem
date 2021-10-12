@@ -55,6 +55,7 @@ namespace :admin do
       post "send_email"
       post "verify_email_ownership"
       patch "unlock_access"
+      post "unpublish_all_articles"
     end
   end
 
