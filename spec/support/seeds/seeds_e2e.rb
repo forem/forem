@@ -160,7 +160,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.com") do
+seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.local") do
   user = User.create!(
     name: "Article Editor v2 User",
     email: "article-editor-v2-user@forem.local",
@@ -237,7 +237,7 @@ chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.lo
 end
 
 ##############################################################################
-seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.com") do
+seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") do
   user = User.create!(
     name: "Notifications User",
     email: "notifications-user@forem.local",
@@ -265,7 +265,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.com") do
+seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.local") do
   liquid_tags_user = User.create!(
     name: "Liquid tags User",
     email: "liquid-tags-user@forem.local",
@@ -344,7 +344,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(Article, "title", "Test article") do
+seeder.create_if_doesnt_exist(Article, "slug", "test-article-slug") do
   markdown = <<~MARKDOWN
     ---
     title:  Test article
@@ -355,7 +355,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Test article") do
     #{Faker::Markdown.random}
     #{Faker::Hipster.paragraph(sentence_count: 2)}
   MARKDOWN
-  article = Article.create(
+  article = Article.create!(
     body_markdown: markdown,
     featured: true,
     show_comments: true,
@@ -397,7 +397,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(User, "email", "series-user@forem.com") do
+seeder.create_if_doesnt_exist(User, "email", "series-user@forem.local") do
   series_user = User.create!(
     name: "Series User",
     email: "series-user@forem.local",
