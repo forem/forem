@@ -5,6 +5,7 @@ en:
     all: All
     analytics: Analytics
     comment: Comment
+    comments: Comments
     copy_link: Copy link
     community_name_is_great: "%{community_name} is great!"
     create_account: Create account
