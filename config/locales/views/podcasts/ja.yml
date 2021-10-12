@@ -1,6 +1,6 @@
 ---
 ja:
-  v:
+  views:
     podcasts:
       meta:
         title: Podcasts
@@ -26,5 +26,5 @@ ja:
         unreachable: ポッドキャストの feed_url にアクセスできません
       speed: 1x
       tag: podcast
-      time: initializing...
+      initializing: initializing...
       unsupported: Your browser does not support the audio element.

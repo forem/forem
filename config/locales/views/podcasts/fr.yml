@@ -1,6 +1,6 @@
 ---
 fr:
-  v:
+  views:
     podcasts:
       meta:
         title: Podcasts
@@ -26,5 +26,5 @@ fr:
         unreachable: Le feed_url du podcast n'est pas accessible
       speed: 1x
       tag: podcast
-      time: initializing...
+      initializing: initializing...
       unsupported: Your browser does not support the audio element.

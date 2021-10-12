@@ -1,15 +1,14 @@
-<% _t = "v.podcasts.form" %>
 <%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
 
 <%= form_with(model: podcast, local: true) do |form| %>
   <div>
     <header class="mb-4">
-      <a href="/pod" class="podcast-back-button"><%= t("return", scope: _t) %></a>
-      <h2><%= t("heading", scope: _t) %></h2>
+      <a href="/pod" class="podcast-back-button"><%= t("views.podcasts.form.return") %></a>
+      <h2><%= t("views.podcasts.form.heading") %></h2>
     </header>
     <% if podcast.errors.any? %>
       <div class="podcast-errors">
-        <h2><%= t("errors", scope: _t, count: podcast.errors.count) %></h2>
+        <h2><%= t("views.podcasts.form.errors", count: podcast.errors.count) %></h2>
         <ul>
         <% podcast.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -20,7 +19,7 @@
     <div id="podcast-form-data" class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
       <div class="crayons-field crayons-field--checkbox">
         <%= check_box_tag :i_am_owner, class: "crayons-checkbox" %>
-        <%= label_tag :i_am_owner, t("owner", scope: _t), class: "crayons-field__label" %>
+        <%= label_tag :i_am_owner, t("views.podcasts.form.owner"), class: "crayons-field__label" %>
       </div>
       <div class="crayons-field">
         <%= form.label :title, class: "crayons-field__label" %>
@@ -75,7 +74,7 @@
         <%= form.text_field :soundcloud_url, class: "crayons-textfield" %>
       </div>
       <div class="crayons-field">
-        <%= form.submit t("suggest", scope: _t), class: "crayons-btn" %>
+        <%= form.submit t("views.podcasts.form.suggest"), class: "crayons-btn" %>
       </div>
     </div>
   </div>
