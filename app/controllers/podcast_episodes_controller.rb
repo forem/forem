@@ -5,7 +5,7 @@ class PodcastEpisodesController < ApplicationController
   def index
     @podcast_index = true
 
-    @podcasts = Podcast.available.featured.order(title: :asc).limit(4)
+    @featured_podcasts = Podcast.available.featured.order(title: :asc).limit(4)
     @more_podcasts = Podcast.available.order(title: :asc)
     @podcast_episodes = PodcastEpisodeDecorator.decorate_collection(PodcastEpisode
       .available

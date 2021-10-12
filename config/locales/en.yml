@@ -4,6 +4,7 @@ en:
     add_comment: Add comment
     all: All
     analytics: Analytics
+    browse: Browse
     comment: Comment
     copy_link: Copy link
     community_name_is_great: "%{community_name} is great!"
@@ -29,6 +30,7 @@ en:
     month: Month
     more_from: More from
     my_tags: My Tags
+    podcasts: Podcasts
     popular_tags: Popular Tags
     post: Post
     posts: Posts
@@ -102,6 +104,7 @@ en:
     featured_shows: Featured shows
     latest_episodes: Latest episodes
     suggest_a_podcast: Suggest a podcast
+    view_all_podcasts: View all podcasts
     statuses:
       ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
       unparsable: Podcast's rss couldn't be parsed
