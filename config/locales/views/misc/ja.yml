@@ -1,6 +1,6 @@
 ---
 ja:
-  v:
+  views:
     series:
       meta:
         description: "%{site} で「%{title}」を見る"

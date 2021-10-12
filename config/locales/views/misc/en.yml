@@ -1,6 +1,6 @@
 ---
 en:
-  v:
+  views:
     series:
       meta:
         description: View %{title} on %{site}
