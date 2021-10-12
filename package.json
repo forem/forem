@@ -124,7 +124,7 @@
     "jest-axe": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^1.0.0",
-    "jsdom": "^16.7.0",
+    "jsdom": "^18.0.0",
     "lint-staged": "^11.2.3",
     "markdown-loader": "^6.0.0",
     "prettier": "^2.4.1",
