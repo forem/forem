@@ -14,7 +14,7 @@ module Moderator
         else
           article.published = false
         end
-        article.save
+        article.save(validate: false)
       end
     end
   end
