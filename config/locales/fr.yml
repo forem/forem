@@ -23,14 +23,20 @@ fr:
     full: Complet
     home: Page D'Accueil
     infinity: Infini
+    joined: Rejoint
+    joined_on: Rejoint le
     latest: Récent
     like: Aime
     listings: Annonces
+    loading: Chargement en cours...
+    location: Lieu
     log_in: Se connecter
     month: Mois
     more_from: Plus de la part de
     my_tags: Mes sujets
     podcasts: Podcasts
+    pinned: Épinglé
+    on_video: "%{name} en Vidéo"
     popular_tags: Sujets populaires
     post: Publication
     posts: Publications
@@ -123,6 +129,10 @@ fr:
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
+  videos:
+    new:
+      title: 🎥 Télécharger un fichier vidéo 🙌
+      beta_info_html: <strong>Vidéo est en bêta:</strong>
   podcasts:
     featured_shows: Épisodes en vedette
     latest_episodes: Épisodes Récents
