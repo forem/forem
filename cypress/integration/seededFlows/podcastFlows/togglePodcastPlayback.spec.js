@@ -4,7 +4,7 @@ describe('Toggle Podcast playback', () => {
   });
 
   it('should toggle podcast playback', () => {
-    cy.visit('/developeronfire');
+    cy.visit('/developeronfire/episode-162-sue-black-resilience-through-adversity');
     cy.findByRole('button', { name: 'Developer on Fire Play podcast' }).as(
       'toggleButton',
     );
