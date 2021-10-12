@@ -1,7 +1,7 @@
 /* global Runtime */
 
 import { Fragment, h } from 'preact';
-import { useReducer } from 'preact/hooks';
+import { useReducer, useEffect, useState } from 'preact/hooks';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { addSnackbarItem } from '../../Snackbar';
@@ -32,26 +32,17 @@ function imageUploaderReducer(state, action) {
     case 'uploading_image':
       return {
         ...state,
-        uploadError: false,
         uploadingErrorMessage: null,
         uploadingImage: true,
         insertionImageUrls: [],
-        showImageCopiedMessage: false,
       };
 
     case 'upload_error':
       return {
         ...state,
         insertionImageUrls: [],
-        uploadError: true,
         uploadErrorMessage: payload.errorMessage,
         uploadingImage: false,
-      };
-
-    case 'show_copied_image_message':
-      return {
-        ...state,
-        showImageCopiedMessage: true,
       };
 
     case 'upload_image_success':
@@ -59,6 +50,7 @@ function imageUploaderReducer(state, action) {
         ...state,
         insertionImageUrls: payload.insertionImageUrls,
         uploadingImage: false,
+        uploadingErrorMessage: null,
       };
 
     default:
@@ -66,19 +58,30 @@ function imageUploaderReducer(state, action) {
   }
 }
 
-const NativeIosImageUpload = ({
-  uploadingImage,
-  extraProps,
-  handleNativeMessage,
-}) => (
+function initNativeImagePicker(e) {
+  e?.preventDefault();
+  window.webkit.messageHandlers.imageUpload.postMessage({
+    id: 'native-image-upload-message',
+  });
+}
+
+/**
+ * Button which triggers native iOS image upload behavior in V1 Editor UI
+ *
+ * @param {object} props
+ * @param {boolean} props.uploadingImage Is an image currently being uploaded
+ * @param {function} props.handleNativeMessage Callback to handle iOS native message
+ */
+const NativeIosV1ImageUpload = ({ uploadingImage, handleNativeMessage }) => (
   <Fragment>
     {!uploadingImage && (
       <Button
+        aria-label="Upload an image"
         className="mr-2 fw-normal"
         variant="ghost"
         contentType="icon-left"
         icon={ImageIcon}
-        {...extraProps}
+        onClick={initNativeImagePicker}
       >
         Upload image
       </Button>
@@ -92,60 +95,112 @@ const NativeIosImageUpload = ({
   </Fragment>
 );
 
-const StandardImageUpload = ({ handleInsertionImageUpload, uploadingImage }) =>
-  uploadingImage ? null : (
+/**
+ * The V2 editor uses a toolbar button press to trigger a visually hidden file input.
+ *
+ * @param {object} props
+ * @param {object} props.buttonProps Any props to be added to the trigger button
+ * @param {function} props.handleInsertionImageUpload Callback to handle image upload
+ * @param {boolean} props.uploadingImage Is an image currently being uploaded
+ * @param {boolean} props.useNativeUpload Should iOS native upload functionality be used
+ * @param {function} props.handleNativeMessage Callback for iOS native upload message handling
+ * @param {string} props.uploadErrorMessage Error message to be displayed
+ *
+ */
+const V2EditorImageUpload = ({
+  buttonProps,
+  handleInsertionImageUpload,
+  uploadingImage,
+  useNativeUpload,
+  handleNativeMessage,
+  uploadErrorMessage,
+}) => {
+  useEffect(() => {
+    if (uploadErrorMessage) {
+      addSnackbarItem({
+        message: uploadErrorMessage,
+        addCloseButton: true,
+      });
+    }
+  }, [uploadErrorMessage]);
+
+  const { tooltip: actionTooltip } = buttonProps;
+  return (
     <Fragment>
-      <label className="cursor-pointer crayons-btn crayons-btn--ghost">
-        <ImageIcon /> Upload image
+      {useNativeUpload ? (
+        <input
+          type="hidden"
+          id="native-image-upload-message"
+          value=""
+          onChange={handleNativeMessage}
+        />
+      ) : (
         <input
           type="file"
+          tabindex="-1"
+          aria-label="Upload image"
           id="image-upload-field"
           onChange={handleInsertionImageUpload}
           className="screen-reader-only"
-          multiple
           accept="image/*"
           data-max-file-size-mb="25"
         />
-      </label>
+      )}
+
+      <Button
+        {...buttonProps}
+        icon={uploadingImage ? Spinner : ImageIcon}
+        onClick={() => {
+          if (useNativeUpload) {
+            initNativeImagePicker();
+          } else {
+            document.getElementById('image-upload-field').click();
+          }
+        }}
+        aria-label="Upload image"
+        tooltip={uploadingImage ? 'Uploading' : actionTooltip}
+      />
     </Fragment>
   );
+};
 
-export const ImageUploader = () => {
-  const [state, dispatch] = useReducer(imageUploaderReducer, {
-    insertionImageUrls: [],
-    uploadError: false,
-    uploadErrorMessage: null,
-    showImageCopiedMessage: false,
-    uploadingImage: false,
-  });
+/**
+ * The V1 Editor uses a more detailed image upload UI, displaying errors and markdown text inline
+ *
+ * @param {object} props
+ * @param {boolean} props.uploadingImage Is an image currently being uploaded
+ * @param {boolean} props.useNativeUpload Should iOS native upload functionality be used
+ * @param {function} props.handleNativeMessage Callback for iOS native upload message handling
+ * @param {function} props.handleInsertionImageUpload Callback to handle image upload
+ * @param {string[]} props.insertionImageUrls URLs of successfully uploaded images
+ * @param {string} props.uploadErrorMessage Error message to be displayed
+ *
+ * @returns
+ */
+const V1EditorImageUpload = ({
+  uploadingImage,
+  useNativeUpload,
+  handleNativeMessage,
+  handleInsertionImageUpload,
+  insertionImageUrls,
+  uploadErrorMessage,
+}) => {
+  const [showCopiedImageText, setShowCopiedImageText] = useState(false);
 
-  const {
-    uploadingImage,
-    showImageCopiedMessage,
-    uploadErrorMessage,
-    uploadError,
-    insertionImageUrls,
-  } = state;
+  useEffect(() => {
+    if (uploadingImage) {
+      setShowCopiedImageText(false);
+    }
+  }, [uploadingImage]);
 
-  let imageMarkdownInput = null;
-
-  function onUploadError(error) {
-    dispatch({
-      type: 'upload_error',
-      payload: { errorMessage: error.message },
-    });
-  }
-
-  function copyText() {
-    imageMarkdownInput = document.getElementById(
+  const copyText = () => {
+    const imageMarkdownInput = document.getElementById(
       'image-markdown-copy-link-input',
     );
 
     Runtime.copyToClipboard(imageMarkdownInput.value)
       .then(() => {
-        dispatch({
-          type: 'show_copied_image_message',
-        });
+        setShowCopiedImageText(true);
       })
       .catch((error) => {
         addSnackbarItem({
@@ -154,6 +209,84 @@ export const ImageUploader = () => {
         });
         Honeybadger.notify(error);
       });
+  };
+  return (
+    <div className="flex items-center">
+      {uploadingImage && (
+        <span class="lh-base pl-3 border-0 py-2 inline-block">
+          <Spinner /> Uploading...
+        </span>
+      )}
+
+      {useNativeUpload ? (
+        <NativeIosV1ImageUpload
+          uploadingImage={uploadingImage}
+          handleNativeMessage={handleNativeMessage}
+        />
+      ) : uploadingImage ? null : (
+        <Fragment>
+          <label className="cursor-pointer crayons-btn crayons-btn--ghost">
+            <ImageIcon /> Upload image
+            <input
+              type="file"
+              id="image-upload-field"
+              onChange={handleInsertionImageUpload}
+              className="screen-reader-only"
+              multiple
+              accept="image/*"
+              data-max-file-size-mb="25"
+            />
+          </label>
+        </Fragment>
+      )}
+
+      {insertionImageUrls.length > 0 && (
+        <ClipboardButton
+          onCopy={copyText}
+          imageUrls={insertionImageUrls}
+          showCopyMessage={showCopiedImageText}
+        />
+      )}
+
+      {uploadErrorMessage ? (
+        <span className="color-accent-danger">{uploadErrorMessage}</span>
+      ) : null}
+    </div>
+  );
+};
+
+/**
+ * Image Uploader feature for editor forms
+ *
+ * @param {object} props
+ * @param {string} props.editorVersion The current editor version being used
+ * @param {object} props.buttonProps Any additional props to be added to upload image button (v2 editor only)
+ * @param {function} props.onImageUploadStart Callback for when image upload begins
+ * @param {function} props.onImageUploadSuccess Callback for when image upload succeeds
+ * @param {function} props.onImageUploadError Callback for when image upload fails
+ *
+ */
+export const ImageUploader = ({
+  editorVersion = 'v2',
+  buttonProps = {},
+  onImageUploadStart,
+  onImageUploadSuccess,
+  onImageUploadError,
+}) => {
+  const [state, dispatch] = useReducer(imageUploaderReducer, {
+    insertionImageUrls: [],
+    uploadErrorMessage: null,
+    uploadingImage: false,
+  });
+
+  const { uploadingImage, uploadErrorMessage, insertionImageUrls } = state;
+
+  function onUploadError(error) {
+    onImageUploadError?.();
+    dispatch({
+      type: 'upload_error',
+      payload: { errorMessage: error.message },
+    });
   }
 
   function handleInsertionImageUpload(e) {
@@ -165,6 +298,7 @@ export const ImageUploader = () => {
         type: 'uploading_image',
       });
 
+      onImageUploadStart?.();
       generateMainImage(payload, handleInsertImageUploadSuccess, onUploadError);
     }
   }
@@ -174,6 +308,8 @@ export const ImageUploader = () => {
       type: 'upload_image_success',
       payload: { insertionImageUrls: response.links },
     });
+
+    onImageUploadSuccess?.(`![Image description](${response.links})`);
   }
 
   function handleNativeMessage(e) {
@@ -181,6 +317,7 @@ export const ImageUploader = () => {
 
     switch (message.action) {
       case 'uploading':
+        onImageUploadStart?.();
         dispatch({
           type: 'uploading_image',
         });
@@ -192,6 +329,7 @@ export const ImageUploader = () => {
         });
         break;
       case 'success':
+        onImageUploadSuccess?.(`![Image description](${message.link})`);
         dispatch({
           type: 'upload_image_success',
           payload: { insertionImageUrls: [message.link] },
@@ -200,55 +338,32 @@ export const ImageUploader = () => {
     }
   }
 
-  function initNativeImagePicker(e) {
-    e.preventDefault();
-    window.webkit.messageHandlers.imageUpload.postMessage({
-      id: 'native-image-upload-message',
-    });
+  // When the component is rendered in an environment that supports a native
+  // image picker, we want to use the native UX rather than standard file upload
+  const useNativeUpload = Runtime.isNativeIOS('imageUpload');
+
+  if (editorVersion === 'v2') {
+    return (
+      <V2EditorImageUpload
+        buttonProps={buttonProps}
+        uploadingImage={uploadingImage}
+        handleInsertionImageUpload={handleInsertionImageUpload}
+        useNativeUpload={useNativeUpload}
+        handleNativeMessage={handleNativeMessage}
+        uploadErrorMessage={uploadErrorMessage}
+      />
+    );
   }
 
-  // When the component is rendered in an environment that supports a native
-  // image picker for image upload we want to add the aria-label attr and the
-  // onClick event to the UI button. This event will kick off the native UX.
-  // The props are unwrapped (using spread operator) in the button below
-  const useNativeUpload = Runtime.isNativeIOS('imageUpload');
-  const extraProps = useNativeUpload
-    ? { onClick: initNativeImagePicker, 'aria-label': 'Upload an image' }
-    : { tabIndex: -1 };
-
   return (
-    <div className="flex items-center">
-      {uploadingImage && (
-        <span class="lh-base pl-3 border-0 py-2 inline-block">
-          <Spinner /> Uploading...
-        </span>
-      )}
-
-      {useNativeUpload ? (
-        <NativeIosImageUpload
-          extraProps={extraProps}
-          uploadingImage={uploadingImage}
-          handleNativeMessage={handleNativeMessage}
-        />
-      ) : (
-        <StandardImageUpload
-          uploadingImage={uploadingImage}
-          handleInsertionImageUpload={handleInsertionImageUpload}
-        />
-      )}
-
-      {insertionImageUrls.length > 0 && (
-        <ClipboardButton
-          onCopy={copyText}
-          imageUrls={insertionImageUrls}
-          showCopyMessage={showImageCopiedMessage}
-        />
-      )}
-
-      {uploadError && (
-        <span className="color-accent-danger">{uploadErrorMessage}</span>
-      )}
-    </div>
+    <V1EditorImageUpload
+      uploadingImage={uploadingImage}
+      useNativeUpload={useNativeUpload}
+      handleNativeMessage={handleNativeMessage}
+      handleInsertionImageUpload={handleInsertionImageUpload}
+      insertionImageUrls={insertionImageUrls}
+      uploadErrorMessage={uploadErrorMessage}
+    />
   );
 };
 

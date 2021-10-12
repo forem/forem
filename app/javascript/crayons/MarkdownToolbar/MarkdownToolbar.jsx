@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
+import { ImageUploader } from '../../article-form/components/ImageUploader';
 import {
   coreSyntaxFormatters,
   secondarySyntaxFormatters,
@@ -8,6 +9,25 @@ import { Overflow, Help } from './icons';
 import { Button } from '@crayons';
 import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
+import { getSelectionData } from '@utilities/textAreaUtils';
+
+const getNextMatchingSibling = (element, selector) => {
+  let sibling = element.nextElementSibling;
+
+  while (sibling) {
+    if (sibling.matches(selector)) return sibling;
+    sibling = sibling.nextElementSibling;
+  }
+};
+
+const getPreviousMatchingSibling = (element, selector) => {
+  let sibling = element.previousElementSibling;
+
+  while (sibling) {
+    if (sibling.matches(selector)) return sibling;
+    sibling = sibling.previousElementSibling;
+  }
+};
 
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
@@ -85,10 +105,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   // Handles keyboard 'roving tabindex' pattern for toolbar
   const handleToolbarButtonKeyPress = (event, className) => {
     const { key, target } = event;
-    const {
-      nextElementSibling: nextButton,
-      previousElementSibling: previousButton,
-    } = target;
+
+    const nextButton = getNextMatchingSibling(target, `.${className}`);
+    const previousButton = getPreviousMatchingSibling(target, `.${className}`);
 
     switch (key) {
       case 'ArrowRight':
@@ -132,8 +151,43 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       markdownSyntaxFormatters[syntaxName].getFormatting(textArea);
 
     textArea.value = newTextAreaValue;
+    textArea.dispatchEvent(new Event('input'));
     textArea.focus({ preventScroll: true });
     textArea.setSelectionRange(newCursorStart, newCursorEnd);
+  };
+
+  const handleImageUploadStarted = () => {
+    const { textBeforeInsertion, textAfterInsertion, selectionEnd } =
+      getSelectionData();
+
+    const placeholder = '![Uploading image](...)';
+    const textWithPlaceholder = `${textBeforeInsertion}\n${placeholder}${textAfterInsertion}`;
+    textArea.value = textWithPlaceholder;
+    // Make sure Editor text area updates via linkstate
+    textArea.dispatchEvent(new Event('input'));
+
+    textArea.focus({ preventScroll: true });
+
+    // Set cursor to the end of the placeholder
+    const newCursorPosition = selectionEnd + placeholder.length + 1;
+    textArea.setSelectionRange(newCursorPosition, newCursorPosition);
+  };
+
+  const handleImageUploadSuccess = (imageMarkdown) => {
+    const newTextValue = textArea.value.replace(
+      '![Uploading image](...)',
+      imageMarkdown,
+    );
+    textArea.value = newTextValue;
+    // Make sure Editor text area updates via linkstate
+    textArea.dispatchEvent(new Event('input'));
+  };
+
+  const handleImageUploadError = () => {
+    const newTextValue = textArea.value.replace('![Uploading image](...)', '');
+    textArea.value = newTextValue;
+    // Make sure Editor text area updates via linkstate
+    textArea.dispatchEvent(new Event('input'));
   };
 
   const getSecondaryFormatterButtons = (isOverflow) =>
@@ -214,6 +268,25 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           />
         );
       })}
+
+      <ImageUploader
+        editorVersion="v2"
+        onImageUploadStart={handleImageUploadStarted}
+        onImageUploadSuccess={handleImageUploadSuccess}
+        onImageUploadError={handleImageUploadError}
+        buttonProps={{
+          onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'toolbar-btn'),
+          tooltip: smallScreen ? null : (
+            <span aria-hidden="true">Upload image</span>
+          ),
+          key: 'image-btn',
+          variant: 'ghost',
+          contentType: 'icon',
+          className: 'toolbar-btn formatter-btn',
+          tabindex: '-1',
+        }}
+      />
+
       {smallScreen ? getSecondaryFormatterButtons(false) : null}
 
       {smallScreen ? null : (

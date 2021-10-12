@@ -19,6 +19,7 @@ describe('<Form />', () => {
       isNativeIOS: jest.fn(() => {
         return false;
       }),
+      currentOS: jest.fn(() => 'macOS'),
     };
 
     global.window.matchMedia = jest.fn((query) => {
