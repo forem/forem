@@ -1,6 +1,6 @@
 ---
 en:
-  v:
+  views:
     campaign:
       subtitle: Stories (%{count})
       view: See all posts
@@ -13,8 +13,7 @@ en:
         again: Try again
         install: Install the app
     pins:
-      article_html: Pinned%{ext}
-      ext: "\_post"
+      article: Pinned
       pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
       removed: "🗑 Pin removed"
       error: You can only have five pins
@@ -22,7 +21,7 @@ en:
       icon: Love
       seek: Become a sponsor
     sticky:
-      created_at: Joined
+      joined: Joined
       default_cta: Learn more
       email: Email
       hot: Hot

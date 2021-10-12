@@ -1,4 +1,3 @@
-<% _t = "v.sticky" %>
 <% @actor = @article.organization || @article.user %>
 <div class="crayons-article-sticky grid gap-4 break-word" id="article-show-primary-sticky-nav">
   <div class="crayons-card crayons-card--secondary branded-7 p-4 pt-0 gap-4 grid" style="border-top-color: <%= Color::CompareHex.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %>;">
@@ -10,7 +9,7 @@
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
-            <%= t "more_from_html", scope: _t, actor: link_to(@actor.name, @actor.path) %>
+            <%= t("views.sticky.more_from_html", actor: link_to(@actor.name, @actor.path)) %>
           </h3>
         </header>
         <div>
@@ -30,8 +29,8 @@
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
-            <%= t "trending_html", scope: _t, app: link_to(community_name, app_url) %>
-            <%= inline_svg_tag("twemoji/fire.svg", aria: true, class: "crayons-icon crayons-icon--default", title: t("hot", scope: _t)) %>
+            <%= t("views.sticky.trending_html", app: link_to(community_name, app_url)) %>
+            <%= inline_svg_tag("twemoji/fire.svg", aria: true, class: "crayons-icon crayons-icon--default", title: t("views.sticky.hot")) %>
           </h3>
         </header>
         <div>

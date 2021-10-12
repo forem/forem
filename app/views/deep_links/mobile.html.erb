@@ -1,35 +1,34 @@
-<% _t = "v.deep_links" %>
 <div id="mobile-deep-link-spinner" class="flex flex-col" aria-live="polite">
   <svg class="crayons-icon crayons-spinner" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.364 5.636L16.95 7.05A7 7 0 1019 12h2a9 9 0 11-2.636-6.364z" fill="currentColor" class="grow-1"></path></svg>
-  <p class="align-center"><%= t("subtitle", scope: _t) %></p>
+  <p class="align-center"><%= t("views.deep_links.subtitle") %></p>
 </div>
 
 <div class="mobile-deep-link-banner invisible" role="alert">
   <div class="crayons-notice crayons-notice--warning">
     <p>
-      <%= t("alert.subtitle", scope: _t) %>
+      <%= t("views.deep_links.alert.subtitle") %>
     </p>
     <p class="mt-5">
-      <%= t "alert.desc_html", scope: _t, email: link_to(ForemInstance.email, href: "mailto:#{ForemInstance.email}") %>
+      <%= t("views.deep_links.alert.desc_html", email: link_to(ForemInstance.email, href: "mailto:#{ForemInstance.email}")) %>
     </p>
   </div>
 
   <div class="crayons-card">
     <div class="flex w-100">
       <a href="javascript:history.back()" class="crayons-btn crayons-btn--l crayons-btn--secondary grow-1 whitespace-nowrap mt-5 mx-5">
-        <%= t("alert.back", scope: _t) %>
+        <%= t("views.deep_links.alert.back") %>
       </a>
     </div>
 
     <div class="flex w-100">
       <a id="link-to-mobile-install-retry" href="/" class="crayons-btn crayons-btn--l crayons-btn--secondary grow-1 whitespace-nowrap my-5 mx-5">
-        <%= t("alert.again", scope: _t) %>
+        <%= t("views.deep_links.alert.again") %>
       </a>
     </div>
 
     <div class="flex w-100">
       <a id="link-to-mobile-install" href="/" class="crayons-btn crayons-btn--l grow-1 whitespace-nowrap mb-5 mx-5">
-        <%= t("alert.install", scope: _t) %>
+        <%= t("views.deep_links.alert.install") %>
       </a>
     </div>
   </div>
