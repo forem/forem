@@ -1,6 +1,6 @@
 ---
 ja:
-  v:
+  views:
     onboardings:
       meta:
         title: "%{community} へようこそ！"

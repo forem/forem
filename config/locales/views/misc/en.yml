@@ -1,6 +1,6 @@
 ---
 en:
-  v:
+  views:
     onboardings:
       meta:
         title: Welcome to %{community}
