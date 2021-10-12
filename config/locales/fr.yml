@@ -3,28 +3,41 @@ fr:
   core:
     add_comment: Ajouter un commentaire
     all: Tout
+    analytics: Analytique
     comment: Commentaire
+    community_name_is_great: "%{community_name} est super"
     copy_link: Copier le lien
     create_account: Créer un profil
     create_post: Créer une publication
+    dashboard: Tableau de bord
     discussion: Discussion
     edit_profile: Editer le profil
     feed: Fil
     follow: Suivre
     follow_back: Suivre aussi
+    follower: Suiveur
+    followers: Suiveurs
     following: Abonné
+    following_tags: Sujets suivis
     full: Complet
     home: Page D'Accueil
     infinity: Infini
+    joined: Rejoint
+    joined_on: Rejoint le
     latest: Récent
     like: Aime
     listings: Annonces
+    loading: Chargement en cours...
+    location: Lieu
     log_in: Se connecter
     month: Mois
     more_from: Plus de la part de
     my_tags: Mes sujets
+    pinned: Épinglé
+    on_video: "%{name} en Vidéo"
     popular_tags: Sujets populaires
     post: Publication
+    posts: Publications
     reaction: Réaction
     reactions:
       heart: Coeur
@@ -35,7 +48,11 @@ fr:
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Tout voir
+    series: Séries
     share_to: Partager sur %{media}
+    tags: Sujets
+    tags_to_follow: Sujets dans %{community_name}
+    top_tags: Sujets les plus utilisées
     trending_on: Populaire sur
     view: Vue
     week: Semaine
@@ -45,25 +62,29 @@ fr:
     if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
     if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
   dashboard:
+    empty_follower: Vous n'avez pas encore d'abonnés...
+    empty_post: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit
     following_users: Utilisateurs suivis
     loading: Chargement en cours...
     not_following_any_users: Vous ne suivez aucun utilisateur...
     page_title: Tableau de bord
+    upload_a_video: Charger une vidéo
+    write_new_post: Écrivez votre premier message maintenant
   date:
     abbr_month_names:
     -
-    - Janv
-    - Fevr
-    - Mars
-    - Avril
-    - Mai
-    - Juin
-    - Juil
-    - Aout
-    - Sept
-    - Oct
-    - Nov
-    - Dec
+    - janv
+    - févr
+    - mars
+    - avril
+    - mai
+    - juin
+    - juil
+    - aout
+    - sept
+    - oct
+    - nov
+    - déc
   errors:
     messages:
       accepted: doit être accepté
@@ -106,6 +127,10 @@ fr:
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
+  videos:
+    new:
+      title: 🎥 Télécharger un fichier vidéo 🙌
+      beta_info_html: <strong>Vidéo est en bêta:</strong>
   podcasts:
     statuses:
       ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast
@@ -120,3 +145,7 @@ fr:
     billing: Facturation
     organization: Organisation
     extensions: Extensions
+  time:
+    formats:
+      short: "%-e %b"
+      short_with_year: "%-e %b, %Y"

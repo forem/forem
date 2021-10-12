@@ -3,28 +3,41 @@ en:
   core:
     add_comment: Add comment
     all: All
+    analytics: Analytics
     comment: Comment
     copy_link: Copy link
+    community_name_is_great: "%{community_name} is great!"
     create_account: Create account
     create_post: Create Post
+    dashboard: Dashboard
     discussion: Discussion
     edit_profile: Edit profile
     feed: Feed
     follow: Follow
     follow_back: Follow back
+    follower: Follower
+    followers: Followers
     following: Following
+    following_tags: "Following tags"
     full: Full
     home: Home
     infinity: Infinity
+    joined: Joined
+    joined_on: Joined on
     latest: Latest
     like: Like
     listings: Listings
+    loading: loading...
+    location: Location
     log_in: Log in
     month: Month
     more_from: More from
     my_tags: My Tags
+    pinned: Pinned
+    on_video: "%{name} on Video"
     popular_tags: Popular Tags
     post: Post
+    posts: Posts
     reaction: Reaction
     reactions:
       heart: Heart
@@ -35,7 +48,11 @@ en:
     report_abuse: Report abuse
     search: Search
     see_all: See all
+    series: Series
     share_to: Share to %{media}
+    tags: "Tags"
+    tags_to_follow: "Tags to follow on %{community_name}"
+    top_tags: "Top tags"
     trending_on: Trending on
     view: View
     week: Week
@@ -45,10 +62,14 @@ en:
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
     if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
   dashboard:
+    empty_follower: You don't have any followers yet...
+    empty_post: This is where you can manage your posts, but you haven't written anything yet.
     following_users: Following users
     loading: loading...
     not_following_any_users: You don't follow any users...
     page_title: Dashboard
+    upload_a_video: Upload a video
+    write_new_post: Write your first post now
   errors:
     messages:
       accepted: must be accepted
@@ -83,6 +104,10 @@ en:
       wrong_length:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
+  videos:
+    new:
+      title: 🎥 Upload Video File 🙌
+      beta_info_html: <strong>Video is beta:</strong>
   podcasts:
     statuses:
       ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
@@ -97,3 +122,7 @@ en:
     billing: "Billing"
     organization: "Organization"
     extensions: "Extensions"
+  time:
+    formats:
+      short: "%b %-e"
+      short_with_year: "%b %-e, %Y"

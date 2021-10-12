@@ -9,3 +9,13 @@ StrongMigrations.target_postgresql_version = 11
 
 # https://github.com/ankane/strong_migrations#down-migrations--rollbacks
 StrongMigrations.check_down = true
+
+module StrongMigrations
+  def self.temporarily_disable_check(check)
+    disable_check check
+
+    yield
+  ensure
+    enable_check check
+  end
+end

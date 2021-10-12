@@ -81,7 +81,7 @@ class SitemapsController < ApplicationController
   end
 
   def resource_string
-    params[:sitemap].gsub(".xml","").split("-")[1]
+    params[:sitemap].gsub(".xml", "").split("-")[1]
   end
 
   def offset

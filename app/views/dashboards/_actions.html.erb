@@ -4,7 +4,7 @@
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>"
       href="<%= dashboard_path %>"
       <%= params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) ? ' aria-current="page"'.html_safe : "" %>>
-      Posts
+      <%= t("core.posts") %>
       <span class="crayons-indicator"><%= @user.articles_count %></span>
       </a>
     </li>
@@ -13,7 +13,7 @@
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) %>"
       href="<%= user_series_path(current_user.username) %>"
       <%= params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) ? ' aria-current="page"'.html_safe : "" %>>
-      Series
+      <%= t("core.series") %>
       <span class="crayons-indicator"><%= @user.collections.count %></span>
       </a>
     </li>
@@ -22,7 +22,7 @@
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "followers" %>"
       href="/dashboard/user_followers"
       <%= params[:action] == "followers" ? ' aria-current="page"'.html_safe : "" %>>
-      Followers
+      <%= t("core.followers") %>
       <span class="crayons-indicator"><%= @user.followers_count %></span>
       </a>
     </li>
@@ -65,14 +65,14 @@
 
     <li>
       <a class="crayons-link crayons-link--block" href="/listings/dashboard" data-no-instant>
-      Listings
+      <%= t("core.listings") %>
       <%= inline_svg_tag("external-link.svg", aria_hidden: true, class: "crayons-icon") %>
       </a>
     </li>
 
     <li>
       <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_path %>">
-      Analytics
+      <%= t("core.analytics") %>
       </a>
     </li>
 
@@ -86,7 +86,7 @@
 
   <% if policy(:video).new? && policy(:video).enabled? %>
     <li>
-      <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant> Upload a video</a>
+      <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant> <%= t("dashboard.upload_a_video") %></a>
     </li>
   <% end %>
   </ul>
