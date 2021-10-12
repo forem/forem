@@ -1,4 +1,3 @@
-<% _t = "v.videos" %>
 <style>
   form.upload-form {
     background: #fdf9f3;
@@ -12,7 +11,7 @@
 </style>
 <center style="margin-top:200px">
   <%= stylesheet_link_tag "s3_direct_upload", media: "all" %>
-  <h1><%= t("upload", scope: _t) %></h1>
+  <h1><%= t("views.videos.upload") %></h1>
   <%= s3_uploader_form callback_url: "/videos",
                        callback_method: "POST",
                        callback_param: "article[video]",
@@ -34,7 +33,7 @@
   <% end %>
   <div style="margin:50px auto;max-width:80%;font-size:0.86em;">
     <p>
-      <%= t "beta_html", scope: _t, contact: t("contact_prompts.if_any_questions_html") %>
+      <%= t("views.videos.beta_html", contact: t("contact_prompts.if_any_questions_html")) %>
     </p>
   </div>
 </center>
