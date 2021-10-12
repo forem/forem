@@ -32,7 +32,7 @@
       <% if actor.profile.location.present? %>
         <li>
           <div class="key">
-            Location
+            <%= t("core.location") %>
           </div>
           <div class="value">
             <%= actor.profile.location %>
@@ -53,7 +53,7 @@
       <% end %>
       <li>
         <div class="key">
-          Joined
+          <%= t("core.joined") %>
         </div>
         <div class="value">
           <%= local_date(actor.created_at) %>
