@@ -1,0 +1,32 @@
+---
+ja:
+  v:
+    campaign:
+      subtitle: Stories (%{count})
+      view: See all posts
+    deep_links:
+      subtitle: Opening the mobile app...
+      alert:
+        subtitle: Whoops! Did you get stuck trying to open the mobile app?
+        desc_html: Make sure it's installed and try again. If the problem persists contact %{email}
+        back: Take me back
+        again: Try again
+        install: Install the app
+    pins:
+      article_html: 要注目%{ext}
+      ext: 記事
+      pinned: "📌 指定完了（要注目記事は新しい順に最大 5 件まで表示されます）"
+      removed: "🗑 注目を外しました"
+      error: 5 件までしか指定できません
+    sponsor:
+      icon: Love
+      seek: Become a sponsor
+    sticky:
+      created_at: 登録日
+      default_cta: 詳細
+      email: メール
+      hot: 話題
+      location: 場所
+      more_from_html: "%{actor} をもっと知る"
+      no_summary: このタグの記事
+      trending_html: "%{app} で今話題"

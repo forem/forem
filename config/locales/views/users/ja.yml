@@ -1,0 +1,21 @@
+---
+ja:
+  v:
+    users:
+      profile_fields:
+        bio:
+          label: 自己紹介
+          placeholder: 簡単な紹介文をどうぞ
+        display_email_on_profile: プロフィールにメールアドレスを表示
+        location:
+          label: 場所
+          placeholder: イーハトーヴォ県モリーオ市
+        website:
+          label: サイト URL
+          placeholder: https://yoursite.com
+        education: Education
+        currently_learning: Currently learning
+        currently_hacking_on: Currently hacking on
+        available_for: Available for
+        skills_languages: Skills/Languages
+        work: Work
