@@ -118,7 +118,7 @@
     "eslint-plugin-react": "^7.26.1",
     "faker": "^5.5.3",
     "husky": "^7.0.2",
-    "jest": "27.2.4",
+    "jest": "27.2.5",
     "jest-axe": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^1.0.0",
