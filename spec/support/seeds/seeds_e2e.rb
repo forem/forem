@@ -18,8 +18,8 @@ Settings::SMTP.password = "password"
 ##############################################################################
 
 # Some of our Cypress tests assume specific DEV profile fields to exist
-ProfileField.create!(label: "Work", display_area: :header)
-ProfileField.create!(label: "Education", display_area: :header)
+ProfileField.create_with(display_area: :header).find_or_create_by(label: "Work")
+ProfileField.create_with(display_area: :header).find_or_create_by(label: "Education")
 Profile.refresh_attributes!
 
 ##############################################################################
@@ -133,7 +133,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(User, "email", "article-editor-v1-user@forem.com") do
+seeder.create_if_doesnt_exist(User, "email", "article-editor-v1-user@forem.local") do
   user = User.create!(
     name: "Article Editor v1 User",
     email: "article-editor-v1-user@forem.local",
@@ -552,7 +552,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(Podcast, "title", "Test podcast") do
+seeder.create_if_doesnt_exist(Podcast, "title", "Developer on Fire") do
   podcast_attributes = {
     title: "Developer on Fire",
     description: "",
