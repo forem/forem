@@ -169,7 +169,7 @@
     "postcss-cssnext": "^3.1.0",
     "postcss-smart-import": "^0.7.6",
     "postscribe": "^2.0.8",
-    "preact": "^10.5.14",
+    "preact": "^10.5.15",
     "prop-types": "^15.7.2",
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",
