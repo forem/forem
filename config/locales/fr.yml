@@ -25,6 +25,7 @@ fr:
     latest: Récent
     like: Aime
     listings: Annonces
+    loading: Chargement en cours...
     log_in: Se connecter
     month: Mois
     more_from: Plus de la part de
@@ -121,12 +122,6 @@ fr:
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
-  podcasts:
-    statuses:
-      ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast
-      unparsable: Le rss du podcast n'a pas pu être analysé
-      unplayable: Ce podcast peut ne pas être lisible dans le navigateur
-      unreachable: Le feed_url du podcast n'est pas accessible
   settings_menu:
     profile: Profil
     customization: Personnalisation
