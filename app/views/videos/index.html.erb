@@ -23,7 +23,7 @@
 
   <main id="main-content">
     <header class="video-page-title">
-      <h1><%= community_name %> on Video</h1>
+      <h1><%= t("core.on_video", name: community_name) %></h1>
     </header>
     <div class="video-collection" id="video-collection">
       <% @video_articles.each do |video_article| %>
@@ -38,7 +38,7 @@
     </div>
     <div class="subvideos"></div>
     <div class="loading-articles" id="loading-articles">
-      loading...
+      <%= t("core.loading") %>
     </div>
   </main>
 </div>
