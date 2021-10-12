@@ -525,7 +525,7 @@ RSpec.describe Article, type: :model do
     end
 
     context "when published" do
-      before { article0.update(published: true) }
+      before { article0.update!(published: true) }
 
       it "creates proper slug with this-is-the-slug format" do
         expect(article0.slug).to start_with("hey-this-is-a-slug")
@@ -540,6 +540,16 @@ RSpec.describe Article, type: :model do
         underscored_article = build(:article, title: "hey_hey_hey node_modules", published: true)
         expect(underscored_article.valid?).to eq true
       end
+
+      # rubocop:disable RSpec/NestedGroups
+      context "with non-Roman characters" do
+        let(:title) { "Я не говорю по-Русски" }
+
+        it "converts the slug to Roman characters" do
+          expect(article0.slug).to start_with("ia-nie-ghovoriu-po-russki")
+        end
+      end
+      # rubocop:enable RSpec/NestedGroups
     end
   end
 
