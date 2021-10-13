@@ -22,17 +22,26 @@ fr:
     full: Complet
     home: Page D'Accueil
     infinity: Infini
+    joined: Rejoint
+    joined_on: Rejoint le
     latest: Récent
     like: Aime
     listings: Annonces
+    loading: Chargement en cours...
+    location: Lieu
     log_in: Se connecter
     month: Mois
     more_from: Plus de la part de
     my_tags: Mes sujets
+    pinned: Épinglé
+    on_video: "%{name} en Vidéo"
     popular_tags: Sujets populaires
     post: Publication
     posts: Publications
     reaction: Réaction
+    reaction_pluralized:
+      one: réaction
+      other: réactions
     reactions:
       heart: Coeur
       save: Sauver
@@ -121,6 +130,10 @@ fr:
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
+  videos:
+    new:
+      title: 🎥 Télécharger un fichier vidéo 🙌
+      beta_info_html: <strong>Vidéo est en bêta:</strong>
   podcasts:
     statuses:
       ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast

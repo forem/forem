@@ -69,7 +69,7 @@ gem "parallel", "~> 1.21" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with GitHub OAuth client
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_search", "~> 2.3.5" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
-gem "puma", "~> 5.5.0" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 5.5.1" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 2.0" # Ruby library for Pusher Channels HTTP API
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
@@ -99,13 +99,14 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.2.2" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.0.12" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.1.8" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
+gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "store_attribute", "~> 0.9.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.38" # Ruby library for the Stripe API
+gem "stripe", "~> 5.39" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files

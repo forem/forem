@@ -1,0 +1,12 @@
+---
+en:
+  views:
+    onboardings:
+      meta:
+        title: Welcome to %{community}
+      heading: You're now a part of the community!
+      subtitle: SUGGESTED THINGS YOU CAN DO
+      close: Close Welcome Message
+      settings_html: "<span class=\"emoji\">💅🏼</span>Customize your profile"
+      welcome_html: "<span class=\"emoji\">😊</span>Join the Welcome thread"
+      write_html: "<span class=\"emoji\">✍🏾</span>Write your first %{community} post"
