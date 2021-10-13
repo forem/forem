@@ -88,7 +88,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(Organization) do
+seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
   organization = Organization.create!(
     name: "Bachmanity",
     summary: Faker::Company.bs,
