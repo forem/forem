@@ -6,6 +6,6 @@ fr:
         title: Videos
         og:
           description: All videos on %{community}
-      heading: "%{community} on Video"
-      beta_html: "<strong>Video is beta:</strong> %{contact}"
-      upload: "🎥 Upload Video File 🙌"
+      heading: "%{name} en Vidéo"
+      beta_html: "<strong>Vidéo est en bêta:</strong> %{contact}"
+      upload: "🎥 Télécharger un fichier vidéo 🙌"
