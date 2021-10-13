@@ -1,11 +1,11 @@
 <div class="comments-container comments-dedicated-page-container">
-  <h3>Comment from a deleted article or podcast</h3>
+  <h3><%= t("views.comments.orphan.heading") %></h3>
   <div class="single-comment-node root">
     <% @user ||= @root_comment.user %>
     <% if @root_comment.blank? || @root_comment.deleted %>
       <div class="inner-comment">
         <div class="body">
-          [deleted]
+          <%= t("views.comments.orphan.deleted") %>
         </div>
       </div>
     <% else %>
@@ -15,7 +15,7 @@
         <% if decorated_comment.low_quality %>
           <div class="crayons-notice crayons-notice--warning low-quality-comment-marker">
             <%= image_tag(Images::Optimizer.call(Settings::General.mascot_image_url, width: 50, height: 50, crop: "imagga_scale"), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
-            Comment marked as low quality/non-constructive by the community. <a href="/code-of-conduct">View Code of Conduct</a>
+            <%= t("views.comments.quality.low") %> <a href="/code-of-conduct"><%= t("views.comments.quality.conduct") %></a>
           </div>
         <% end %>
 
@@ -52,8 +52,8 @@
         <div class="actions">
           <% if @root_comment.user_id == current_user&.id %>
             <span class="current-user-actions">
-              <a href="<%= @root_comment.path %>/delete_confirm" class="edit-butt" rel="nofollow">DELETE</a>
-              <a href="<%= @root_comment.path %>/edit" class="edit-butt" rel="nofollow">EDIT</a>
+              <a href="<%= @root_comment.path %>/delete_confirm" class="edit-butt" rel="nofollow"><%= t("views.comments.orphan.delete") %></a>
+              <a href="<%= @root_comment.path %>/edit" class="edit-butt" rel="nofollow"><%= t("views.comments.orphan.edit") %></a>
             </span>
           <% end %>
         </div>

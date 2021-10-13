@@ -1,0 +1,6 @@
+---
+ja:
+  time:
+    formats:
+      comment: "%y年%-m月%-d日"
+      short: "%-m月%-d日"

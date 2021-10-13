@@ -10,7 +10,6 @@ fr:
     create_account: Créer un profil
     create_post: Créer une publication
     dashboard: Tableau de bord
-    discussion: Discussion
     edit_profile: Editer le profil
     feed: Fil
     follow: Suivre
@@ -19,7 +18,6 @@ fr:
     followers: Suiveurs
     following: Abonné
     following_tags: Sujets suivis
-    full: Complet
     home: Page D'Accueil
     infinity: Infini
     latest: Récent
@@ -48,7 +46,6 @@ fr:
     tags_to_follow: Sujets dans %{community_name}
     top_tags: Sujets les plus utilisées
     trending_on: Populaire sur
-    view: Vue
     week: Semaine
     year: Année
   contact_prompts:
