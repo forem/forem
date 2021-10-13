@@ -3,12 +3,7 @@
 <h1 class="registration__title">
   Welcome to FORUM
 </h1>
-<form class="flex w-100" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓">
-      <button id="algobtn" name="button" type="submit" class="crayons-btn crayons-btn--l crayons-btn--brand-facebook crayons-btn--icon-left grow-1 whitespace-nowrap">
 
-
-        Continue with Facebook
-</button></form>
 <p class="registration__description">
   <a href="/">FORUM</a> is a proof-of-stake social network on the Algorand blockchain.
   </p>
@@ -69,9 +64,29 @@
   </a>
 </p>
 
-<div id="sign-in-password-form" class="mt-8 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:580px;">
-  <% if flash[:notice] %>
-    <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
-      <%= flash[:notice] %>
-    </div>
-  <% end %>
+<script>
+  function confirmSubmit() {
+    var agree = confirm("Are you sure you wish to continue?");
+    if (agree)
+      return true;
+    else
+      return false;
+  }
+
+  function submitform(event) {
+    event.preventDefault();
+    var myWindow = window.open("", "MsgWindow", "width=600,height=600");
+    function myFunction() {
+    myWindow.document.getElementById("myEmbed").src;
+  document.getElementById("demo").innerHTML = x;
+}
+    myWindow.document.write("<p>This is 'MsgWindow'. I am 600px wide and 600px tall!</p>");
+    var timer = setInterval(function() {
+      if (myWindow.closed) {
+        clearInterval(timer);
+        document.forms['form1'].submit();
+      }
+    }, 1000);
+  }
+
+</script>
