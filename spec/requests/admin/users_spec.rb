@@ -324,7 +324,7 @@ RSpec.describe "/admin/users", type: :request do
     let(:user) { create(:user) }
 
     it "unpublishes all articles" do
-      allow(Moderator::UnpublishAllArticles).to receive(:perform_async)
+      allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
       post unpublish_all_articles_admin_user_path(user.id)
       expect(Moderator::UnpublishAllArticles).to have_received(:perform_async).with(user.id)
     end
