@@ -98,7 +98,7 @@
     </div>
     <div id="semidestructive-actions" class="pt-6 collapse">
       <h3>Unpublish all posts</h3>
-      <p>This will make all links of the user's posts unreachable, If the user is not suspended, they can still re-publish their posts.</p>
+      <p>This will make all links of the user's posts unreachable. If the user is not suspended, they can still re-publish their posts.</p>
       <%= form_for(@user, url: unpublish_all_articles_admin_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? All posts will be unavailable to the community.')" }) do |f| %>
           <button class="btn btn-warning">🔒 Unpublish all posts 🔒</button>
       <% end %>
