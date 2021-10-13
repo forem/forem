@@ -626,8 +626,9 @@ end
 ##############################################################################
 
 seeder.create_if_none(DisplayAd) do
+  org_id = Organization.find_by(slug: "bachmanity").id
   DisplayAd.create!(
-    organization_id: 1,
+    organization_id: org_id,
     body_markdown: "<h1>This is an add</h1>",
     placement_area: "sidebar_left",
     published: true,
