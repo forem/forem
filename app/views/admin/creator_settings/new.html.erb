@@ -1,5 +1,6 @@
 <% if FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? %>
 <style>
+  <%= Rails.application.assets["setup-mode.css"].to_s.html_safe %>
   #page-content {
     display: flex;
     flex-direction: column;
