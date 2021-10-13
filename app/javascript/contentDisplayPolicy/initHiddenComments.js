@@ -48,7 +48,7 @@ For further actions, you may consider blocking this person and/or reporting abus
     // const comment_id_input = form.getElementsByClassName("hide_comment_id")[0];
     // comment_id_input.value = commentId;
     window.Forem.showModal({
-      title: 'Are you sure you want to hide this comment?',
+      title: 'Confirm hiding the comment',
       contentSelector: '#hide-comments-modal',
       overlay: true,
     });

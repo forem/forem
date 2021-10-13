@@ -1,29 +1,25 @@
 <div id="hide-comments-modal" class="hide-comments-modal hidden">
-  <div class="authentication-modal__container">
-    <figure class="authentication-modal__image-container">
-      <img class="authentication-modal__image" src="<%= optimized_image_url(Settings::General.logo_png, width: 190) %>"
-        alt="<%= community_name %>" loading="lazy" />
-    </figure>
+  <div class="hide-comments-modal__container">
     <%= form_with url: "/comments/hide", id: "hide-comments-modal__form", method: :patch, remote: true do |f| %>
-      <div class="authentication-modal__content">
-        <p class="authentication-modal__description">
+      <div class="hide-comments-modal__content">
+        <p class="hide-comments-modal__description">
           Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.
         </p>
         <p>
           <%= f.check_box :hide_children %>
           <%= f.label :hide_children, "Hide child comments as well" %>
         </p>
-      </div>
-      <div class="authentication-modal__actions">
-        <button type="submit" class="crayons-link crayons-link--block w-100 border-0 bg-transparent">
-          Confirm
-        </button>
+        <p>
+          <button type="submit" class="crayons-btn">
+            Confirm
+          </button>
+        </p>
       </div>
     <% end %>
-    <footer class="authentication-modal__footer">
+    <footer class="hide-comments-modal__footer">
       <p>For further actions, you may consider blocking this person and/or reporting abuse.</p>
     </footer>
   </div>
 </div>
 
-<%# javascript_packs_with_chunks_tag "signupModalShortcuts", defer: true %>
+<%= javascript_packs_with_chunks_tag "hideCommentsModalShortcuts", defer: true %>
