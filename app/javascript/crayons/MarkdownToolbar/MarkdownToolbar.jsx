@@ -286,7 +286,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         <div
           id="overflow-menu"
           role="menu"
-          className="absolute editor-toolbar editor-toolbar__overflow-menu crayons-dropdown p-2 right-0 top-100"
+          className="crayons-dropdown flex p-2 min-w-unset right-0 top-100"
         >
           {getSecondaryFormatterButtons(true)}
           <Button

@@ -1,14 +1,6 @@
 .editor-toolbar {
   display: flex;
   background: var(--base-0);
-  padding: var(--su-2) var(--content-padding-x);
-
-  &__overflow-menu {
-    position: asbolute;
-    background: var(--card-bg);
-    right: var(--content-padding-x);
-    min-width: auto;
-  }
 
   .formatter-btn {
     min-width: 50px;

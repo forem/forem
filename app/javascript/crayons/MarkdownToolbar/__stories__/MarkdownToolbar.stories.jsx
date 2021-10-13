@@ -8,7 +8,14 @@ export default {
 export const Default = () => {
   return (
     <div>
-      <MarkdownToolbar textAreaId="text-area" />
+      <div
+        style={{
+          padding: 'var(--su-2) var(--content-padding-x)',
+          background: 'var(--base-0)',
+        }}
+      >
+        <MarkdownToolbar textAreaId="text-area" />
+      </div>
       <textarea
         id="text-area"
         aria-label="Editor"
