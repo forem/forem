@@ -1,9 +1,7 @@
-<% title "Dashboard" %>
-  <header class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0 crayons-title"></h1>
+<% title t("views.dashboard.heading") %>
 <main id="main-content">
   <section class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0 crayons-title"><%= t("core.dashboard") %></h1>
+    <h1 class="p-2 pb-0 m:p-0 crayons-title"><%= t("views.dashboard.heading") %></h1>
     <%= render "actions_mobile" %>
     <%= render "analytics" %>
   </section>
@@ -15,23 +13,23 @@
 
     <div class="crayons-layout__content flex flex-col">
       <div class="flex items-center justify-between mb-3">
-        <h2 class="hidden m:block crayons-subtitle-2"><%= t("core.posts") %></h2>
+        <h2 class="hidden m:block crayons-subtitle-2"><%= t("views.dashboard.posts.heading") %></h2>
 
         <div class="flex flex-wrap">
           <% if params[:which] != "organization" %>
             <% if @articles.any?(&:archived) %>
-              <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink", class: "crayons-btn crayons-btn--outlined ml-2 whitespace-nowrap my-1" %>
+              <%= link_to t("views.dashboard.posts.archived"), "javascript:;", id: "toggleArchivedLink", class: "crayons-btn crayons-btn--outlined ml-2 whitespace-nowrap my-1" %>
             <% end %>
             <% if @articles.any? %>
-              <%= select_tag "dashboard_sort", options_for_select(sort_options, params[:sort]), "aria-label": "Sort By", class: "crayons-select w-auto ml-2 my-1" %>
+              <%= select_tag "dashboard_sort", options_for_select(sort_options, params[:sort]), "aria-label": t("views.dashboard.posts.option.aria_label"), class: "crayons-select w-auto ml-2 my-1" %>
             <% end %>
           <% end %>
 
           <% if @organizations && @organizations.size > 0 && (params[:which].blank? || params[:which] == "organization") %>
             <select id="dashboard_author" class="crayons-select w-auto ml-2 my-1">
-              <option value="/dashboard" <%= "selected" if params[:which].blank? %>>Personal</option>
+              <option value="/dashboard" <%= "selected" if params[:which].blank? %>><%= t("views.dashboard.posts.personal") %></option>
               <% @organizations.each do |org| %>
-                <option value="/dashboard/organization/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %> (<%= org.articles_count %>)</option>
+                <option value="/dashboard/organization/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= t("views.dashboard.posts.org", name: org.name, num: org.articles_count) %></option>
               <% end %>
             </select>
           <% end %>
@@ -61,8 +59,8 @@
               <% image_url = Images::Optimizer.call(Settings::General.mascot_image_url, width: 300, crop: "imagga_scale") %>
               <%= image_tag(image_url, class: "sloan mb-7", alt: "Mascot image") %>
             <% end %>
-            <p class="mb-6"><%= t("dashboard.empty_post") %></p>
-            <p><a href="/new" class="crayons-btn crayons-btn--l"><%= t("dashboard.write_new_post") %></a></p>
+            <p class="mb-6"><%= t("views.dashboard.posts.empty.desc") %></p>
+            <p><a href="/new" class="crayons-btn crayons-btn--l"><%= t("views.dashboard.posts.empty.new") %></a></p>
           </div>
         </div>
       <% end %>
