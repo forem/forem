@@ -1,0 +1,30 @@
+---
+ja:
+  views:
+    reactions:
+      category:
+        hands: Hands
+        like: いいね
+        readinglist: 切り抜き帳
+        thinking: Thinking
+        thumbsup: 高評価
+        thumbsdown: 低評価
+        unicorn: Unicorn
+        vomit: ひどい
+      summary:
+        count_html:
+          other: "%{start}反響%{end}\_%{count}\_%{start}件%{end}"
+        title: 反響
+      like:
+        title: ハート
+        aria_label: いいね
+        icon: お気に入りのハートマーク
+        text: いいね
+      unicorn:
+        title: Unicorn
+        aria_label: React with unicorn
+      readingList:
+        title: 保存
+        aria_label: 切り抜き帳に追加
+        icon: 保存ボタン
+        text: 保存

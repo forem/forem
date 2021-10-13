@@ -1,0 +1,13 @@
+---
+en:
+  views:
+    notifications:
+      reacted:
+        and_html: "%{first} and %{last}"
+        and_other_html:
+          other: "%{first} and %{count} others"
+        verb_html:
+          other: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
+        your:
+          article: your article
+          comment: your comment
