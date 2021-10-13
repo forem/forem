@@ -34,7 +34,6 @@ en:
     more_from: More from
     my_tags: My Tags
     pinned: Pinned
-    on_video: "%{name} on Video"
     popular_tags: Popular Tags
     post: Post
     posts: Posts
@@ -107,10 +106,6 @@ en:
       wrong_length:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
-  videos:
-    new:
-      title: 🎥 Upload Video File 🙌
-      beta_info_html: <strong>Video is beta:</strong>
   podcasts:
     statuses:
       ssl_failed: SSL certificate verify failed while fetching podcast's feed_url

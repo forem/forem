@@ -10,3 +10,11 @@ en:
       settings_html: "<span class=\"emoji\">💅🏼</span>Customize your profile"
       welcome_html: "<span class=\"emoji\">😊</span>Join the Welcome thread"
       write_html: "<span class=\"emoji\">✍🏾</span>Write your first %{community} post"
+    videos:
+      meta:
+        title: Videos
+        og:
+          description: All videos on %{community}
+      heading: "%{community} on Video"
+      beta_html: "<strong>Video is beta:</strong> %{contact}"
+      upload: "🎥 Upload Video File 🙌"
