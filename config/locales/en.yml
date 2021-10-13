@@ -39,6 +39,9 @@ en:
     post: Post
     posts: Posts
     reaction: Reaction
+    reaction_pluralized:
+      one: reaction
+      other: reactions
     reactions:
       heart: Heart
       save: Save

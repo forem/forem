@@ -39,6 +39,9 @@ fr:
     post: Publication
     posts: Publications
     reaction: Réaction
+    reaction_pluralized:
+      one: réaction
+      other: réactions
     reactions:
       heart: Coeur
       save: Sauver
