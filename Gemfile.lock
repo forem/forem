@@ -963,7 +963,7 @@ DEPENDENCIES
   patron (~> 0.13.3)
   pg (~> 1.2)
   pg_query (>= 0.9.0)
-  pg_search (~> 2.3)
+  pg_search (~> 2.3.5)
   pghero (~> 2.8)
   pry (~> 0.14)
   pry-rails (~> 0.3)
