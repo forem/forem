@@ -10,10 +10,9 @@ module Moderator
 
       user.articles.published.find_each do |article|
         if article.has_frontmatter?
-          article.body_markdown.sub!(/^published:\s*true\s*\n/, "\npublished: false$")
-        else
-          article.published = false
+          article.body_markdown.sub!(/^published:\s*true\s*$/, "published: false")
         end
+        article.published = false
         article.save(validate: false)
       end
     end
