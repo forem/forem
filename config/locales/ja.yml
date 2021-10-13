@@ -1,6 +1,0 @@
----
-ja:
-  core:
-    loading: loading...
-  contact_prompts:
-    if_any_questions_html: わからないことがありましたら<a href="/contact">お問い合わせ</a>ください。
