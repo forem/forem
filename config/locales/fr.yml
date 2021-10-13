@@ -22,18 +22,25 @@ fr:
     full: Complet
     home: Page D'Accueil
     infinity: Infini
+    joined: Rejoint
+    joined_on: Rejoint le
     latest: Récent
     like: Aime
     listings: Annonces
     loading: Chargement en cours...
+    location: Lieu
     log_in: Se connecter
     month: Mois
     more_from: Plus de la part de
     my_tags: Mes sujets
+    pinned: Épinglé
     popular_tags: Sujets populaires
     post: Publication
     posts: Publications
     reaction: Réaction
+    reaction_pluralized:
+      one: réaction
+      other: réactions
     reactions:
       heart: Coeur
       save: Sauver

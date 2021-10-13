@@ -22,18 +22,25 @@ en:
     full: Full
     home: Home
     infinity: Infinity
+    joined: Joined
+    joined_on: Joined on
     latest: Latest
     like: Like
     listings: Listings
     loading: loading...
+    location: Location
     log_in: Log in
     month: Month
     more_from: More from
     my_tags: My Tags
+    pinned: Pinned
     popular_tags: Popular Tags
     post: Post
     posts: Posts
     reaction: Reaction
+    reaction_pluralized:
+      one: reaction
+      other: reactions
     reactions:
       heart: Heart
       save: Save

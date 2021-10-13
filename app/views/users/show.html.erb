@@ -72,14 +72,14 @@
           <div class="profile-header__meta">
             <% if @user.profile.location.present? %>
               <span class="profile-header__meta__item">
-                <%= inline_svg_tag("location.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: "Location") %>
+                <%= inline_svg_tag("location.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("core.location")) %>
                 <%= @user.profile.location %>
               </span>
             <% end %>
 
             <span class="profile-header__meta__item">
-              <%= inline_svg_tag("cake.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: "Joined") %>
-              Joined on&nbsp;
+              <%= inline_svg_tag("cake.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("core.joined")) %>
+              <%= t("core.joined_on") %>&nbsp;
               <%= local_date(@user.created_at) %>
             </span>
 
