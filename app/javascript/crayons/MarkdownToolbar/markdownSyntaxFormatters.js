@@ -124,9 +124,11 @@ export const coreSyntaxFormatters = {
       const adjustingHeading = currentHeadingIndex > 0;
 
       return {
-        formattedText: adjustingHeading ? `#${selection}` : `## ${selection}`,
-        cursorOffsetStart: adjustingHeading ? currentHeadingIndex + 2 : 3,
-        cursorOffsetEnd: adjustingHeading ? 1 : 3,
+        formattedText: adjustingHeading
+          ? `#${selection}`
+          : `\n## ${selection}\n`,
+        cursorOffsetStart: adjustingHeading ? currentHeadingIndex + 2 : 4,
+        cursorOffsetEnd: adjustingHeading ? 1 : 4,
       };
     },
   },

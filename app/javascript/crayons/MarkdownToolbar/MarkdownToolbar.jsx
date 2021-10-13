@@ -140,13 +140,13 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     // The 'heading' formatter can edit a previously inserted syntax,
     // so we check if we need adjust the selection to the start of the line
     if (syntaxName === 'heading') {
-      const startOfLine = getIndexOfLineStart(
+      const indexOfLineStart = getIndexOfLineStart(
         textArea.value,
         initialSelectionStart,
       );
 
-      if (textArea.value.charAt(startOfLine + 1) === '#') {
-        selectionStart = startOfLine + 1;
+      if (textArea.value.charAt(indexOfLineStart + 1) === '#') {
+        selectionStart = indexOfLineStart;
       }
     }
 

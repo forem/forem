@@ -175,7 +175,7 @@ export const useTextAreaAutoResize = () => {
  * @returns
  */
 export const getIndexOfLineStart = (text, cursorStart) => {
-  const currentCharacter = text.charAt(cursorStart);
+  const currentCharacter = text.charAt(cursorStart - 1);
   if (currentCharacter === '\n') {
     return cursorStart;
   }

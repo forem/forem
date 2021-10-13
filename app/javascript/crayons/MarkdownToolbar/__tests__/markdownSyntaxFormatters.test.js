@@ -122,9 +122,9 @@ describe('markdownSntaxFormatters', () => {
 
   it('Formats a heading from an empty selection', () => {
     expect(coreSyntaxFormatters['heading'].getFormatting('')).toEqual({
-      formattedText: '## ',
-      cursorOffsetStart: 3,
-      cursorOffsetEnd: 3,
+      formattedText: '\n## \n',
+      cursorOffsetStart: 4,
+      cursorOffsetEnd: 4,
     });
   });
 
@@ -132,9 +132,9 @@ describe('markdownSntaxFormatters', () => {
     expect(
       coreSyntaxFormatters['heading'].getFormatting(exampleTextSelection),
     ).toEqual({
-      formattedText: '## selection',
-      cursorOffsetStart: 3,
-      cursorOffsetEnd: 3,
+      formattedText: '\n## selection\n',
+      cursorOffsetStart: 4,
+      cursorOffsetEnd: 4,
     });
   });
 

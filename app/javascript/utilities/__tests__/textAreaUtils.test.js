@@ -72,6 +72,6 @@ describe('getIndexOfLineStart', () => {
   });
 
   it('returns start index of line for a multi-line text', () => {
-    expect(getIndexOfLineStart('one\ntwo', 6)).toEqual(3);
+    expect(getIndexOfLineStart('one\ntwo', 6)).toEqual(4);
   });
 });
