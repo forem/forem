@@ -96,7 +96,7 @@ class CommentsController < ApplicationController
     end
   # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
   # for details as to why this is necessary
-  rescue UnauthorizedError => e
+  rescue ModerationUnauthorizedError => e
     render json: { error: e.message }, status: :unprocessable_entity
   rescue Pundit::NotAuthorizedError, RateLimitChecker::LimitReached
     raise
@@ -132,7 +132,7 @@ class CommentsController < ApplicationController
     else
       render json: { status: @comment&.errors&.full_messages&.to_sentence }, status: :unprocessable_entity
     end
-  rescue UnauthorizedError => e
+  rescue ModerationUnauthorizedError => e
     render json: { error: e.message }, status: :unprocessable_entity
   rescue StandardError => e
     skip_authorization
@@ -302,7 +302,7 @@ class CommentsController < ApplicationController
   def permit_commentor
     return unless user_blocked?
 
-    raise UnauthorizedError, "You have been blocked by the author of this post"
+    raise ModerationUnauthorizedError, "Not allowed due to moderation action"
   end
 
   def user_blocked?
