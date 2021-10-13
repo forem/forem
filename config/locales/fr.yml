@@ -2,7 +2,6 @@
 fr:
   core:
     add_comment: Ajouter un commentaire
-    all: Tout
     analytics: Analytique
     comment: Commentaire
     community_name_is_great: "%{community_name} est super"
