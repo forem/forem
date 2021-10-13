@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_08_170433) do
+ActiveRecord::Schema.define(version: 2021_10_07_172232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -494,25 +494,6 @@ ActiveRecord::Schema.define(version: 2021_10_08_170433) do
     t.bigint "user_id"
     t.datetime "verified_at"
     t.index ["user_id"], name: "index_email_authorizations_on_user_id"
-  end
-
-  create_table "events", force: :cascade do |t|
-    t.string "category"
-    t.string "cover_image"
-    t.datetime "created_at", null: false
-    t.text "description_html"
-    t.text "description_markdown"
-    t.datetime "ends_at"
-    t.string "host_name"
-    t.boolean "live_now", default: false
-    t.string "location_name"
-    t.string "location_url"
-    t.string "profile_image"
-    t.boolean "published"
-    t.string "slug"
-    t.datetime "starts_at"
-    t.string "title"
-    t.datetime "updated_at", null: false
   end
 
   create_table "feedback_messages", force: :cascade do |t|
@@ -1189,7 +1170,7 @@ ActiveRecord::Schema.define(version: 2021_10_08_170433) do
     t.bigint "badge_id"
     t.string "bg_color_hex"
     t.string "category", default: "uncategorized", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.bigint "mod_chat_channel_id"
@@ -1206,7 +1187,7 @@ ActiveRecord::Schema.define(version: 2021_10_08_170433) do
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0
     t.string "text_color_hex"
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at"
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
