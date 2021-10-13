@@ -122,11 +122,7 @@ class Notification < ApplicationRecord
     def remove_all(notifiable_ids:, notifiable_type:)
       return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
 
-      if Rails.env.production?
-        Notifications::RemoveAllWorker.perform_async(notifiable_ids, notifiable_type)
-      else
-        Notifications::RemoveAllWorker.new.perform(notifiable_ids, notifiable_type)
-      end
+      Notifications::RemoveAllWorker.perform_async(notifiable_ids, notifiable_type)
     end
 
     def remove_all_without_delay(notifiable_ids:, notifiable_type:)
