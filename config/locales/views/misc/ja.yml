@@ -1,0 +1,32 @@
+---
+ja:
+  views:
+    hamburger:
+      title: メインメニュー
+      back: 戻る
+      forward: 進む
+      refresh: 更新
+      icon: 閉じる
+      icon_left: 左メニュー
+      icon_right: 右メニュー
+    search:
+      heading: "%{for}検索結果"
+      for: 「%{query}」の
+      placeholder: 検索…
+      icon:
+        aria_label: 検索する
+        title: 検索する
+      nav:
+        posts: 記事
+        podcasts: ポッドキャスト
+        people: 人物
+        comments: コメント
+        my: 私の記事
+      sort:
+        aria_label: 検索結果の並べ替え
+        relevance: 関連順
+        newest: 新しい順
+        oldest: 古い順
+      meta:
+        title: 検索結果
+        description: "%{site} => 検索結果"

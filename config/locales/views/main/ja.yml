@@ -1,0 +1,77 @@
+---
+ja:
+  views:
+    main:
+      aria_home: "%{community} トップ"
+      header:
+        create: アカウント作成
+        connect:
+          aria_label: Connect
+          icon: Connect
+        login: ログイン
+        menu:
+          aria_label: メインメニュー
+        moderation:
+          aria_label: 審査
+          icon: 審査
+        notifications:
+          aria_label: 通知
+          icon: 通知
+        skip: 内容までスキップ
+      modal:
+        create:
+          aria_label: 新しいアカウントを作る
+          text: 新しいアカウントを作る
+        login:
+          aria_label: ログイン
+          text: ログイン
+        footer: 私たちは透明性を心がけ、必要以上の情報を収集しません。
+      nav:
+        admin: 管理画面
+        dashboard: マイページ
+        etc: "..."
+        list: 切り抜き帳
+        moderator: 審査室
+        other: その他
+        settings: 設定
+      nav_name:
+        About: サイトについて
+        Code of Conduct: お約束
+        Contact: お問い合わせ
+        FAQ: FAQ
+        Listings: 告知
+        Podcasts: ポッドキャスト
+        Privacy Policy: 個人情報の取扱い
+        Reading List: 切り抜き帳
+        Sponsors: スポンサー
+        Tags: タグ
+        Terms of use: 利用規約
+        Videos: 動画
+      side:
+        listings:
+          heading: 告知板
+          all: すべての告知
+          new: 告知を作成
+        trend: trending guides/resources
+        recent: recently queried
+      tags:
+        aria_label: Customize tag priority
+        follow: フォロー
+        my: 私のタグ
+        popular: 話題のタグ
+      footer:
+        aria_label: サイト情報
+        built:
+          text_html: Built on %{forem} — the %{opensource} software that powers %{dev} and other inclusive communities.
+          forem: Forem
+          opensource: open source
+          dev: DEV
+        desc: "%{community} – %{desc}"
+        logo: Forem logo
+        powered:
+          text_html: Made with love and %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
+          rails: Ruby on Rails
+      home: トップページ
+      new: 記事を作成
+      signout: ログアウト
+      signup: 登録／ログイン

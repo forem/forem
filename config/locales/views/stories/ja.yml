@@ -1,0 +1,25 @@
+---
+ja:
+  views:
+    stories:
+      meta:
+        description_tagged: "%{tag} content on %{name}"
+        page: " Page %{page}"
+        rss: "%{name} RSS Feed"
+      heading: 記事
+      discuss: "#discuss"
+      follow: フォロー
+      menu:
+        aria_left: nav-button-left
+        aria_right: nav-button-right
+      sort:
+        aria_label: 記事の表示条件
+        aria_tagged: タグ内の記事の表示条件
+        feed: おすすめ
+        week: 今週
+        month: 今月
+        year: 今年
+        infinity: 全期間
+        latest: 新着順
+        signin_html: "👋 <a href=\"%{path}\">ログイン</a>すると<strong>人気</strong>や<strong>新着</strong>順で並べ替えができます。"
+        top: 人気順
