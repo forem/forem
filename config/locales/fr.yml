@@ -30,6 +30,7 @@ fr:
     loading: Chargement en cours...
     location: Lieu
     log_in: Se connecter
+    moderator_center: Centre de modération
     month: Mois
     more_from: Plus de la part de
     my_tags: Mes sujets
@@ -47,12 +48,15 @@ fr:
       save: Sauver
       unicorn: Licorne
     read_next: Lire ensuite
+    reading_list: Liste de lecture
     reply: Répondre
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Tout voir
     series: Séries
+    settings: Paramètres
     share_to: Partager sur %{media}
+    sign_out: Se déconnecter
     tags: Sujets
     tags_to_follow: Sujets dans %{community_name}
     top_tags: Sujets les plus utilisées

@@ -30,6 +30,7 @@ en:
     loading: loading...
     location: Location
     log_in: Log in
+    moderator_center: Moderator Center
     month: Month
     more_from: More from
     my_tags: My Tags
@@ -47,12 +48,15 @@ en:
       save: Save
       unicorn: Unicorn
     read_next: Read next
+    reading_list: Reading list
     reply: Reply
     report_abuse: Report abuse
     search: Search
     see_all: See all
     series: Series
+    settings: Settings
     share_to: Share to %{media}
+    sign_out: Sign Out
     tags: "Tags"
     tags_to_follow: "Tags to follow on %{community_name}"
     top_tags: "Top tags"
