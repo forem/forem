@@ -224,7 +224,9 @@
   --tag-color-hover: var(--base-100);
 
   // Story
-  --story-comments-bg: var(--base-0);
+  --story-comments-bg: 249, 249, 249;
+  --story-comments-bg-top: rgba(var(--story-comments-bg), 0);
+  --story-comments-bg-bottom: rgba(var(--story-comments-bg), 1);
 
   // Select icon
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjMDgwOTBBIi8+Cjwvc3ZnPg==);

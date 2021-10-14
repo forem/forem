@@ -4,7 +4,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def create?
-    !user_suspended? && !user.comment_suspended? && !user_blocked?
+    !user_suspended? && !user.comment_suspended?
   end
 
   def update?
@@ -28,7 +28,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def moderator_create?
-    !user_blocked? && (user_moderator? || minimal_admin?)
+    user_moderator? || minimal_admin?
   end
 
   def hide?
@@ -67,12 +67,6 @@ class CommentPolicy < ApplicationPolicy
 
   def user_author?
     record.user_id == user.id
-  end
-
-  def user_blocked?
-    return false if user.blocked_by_count.zero?
-
-    UserBlock.blocking?(record.commentable.user_id, user.id)
   end
 
   def user_commentable_author?
