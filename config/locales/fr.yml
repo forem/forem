@@ -1,5 +1,9 @@
 ---
 fr:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
+    if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.
+    if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
   core:
     add_comment: Ajouter un commentaire
     all: Tout
@@ -34,8 +38,8 @@ fr:
     month: Mois
     more_from: Plus de la part de
     my_tags: Mes sujets
-    pinned: Épinglé
     on_video: "%{name} en Vidéo"
+    pinned: Épinglé
     popular_tags: Sujets populaires
     post: Publication
     posts: Publications
@@ -64,10 +68,6 @@ fr:
     view: Vue
     week: Semaine
     year: Année
-  contact_prompts:
-    if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.
-    if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
-    if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
   dashboard:
     empty_follower: Vous n'avez pas encore d'abonnés...
     empty_post: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit
@@ -79,7 +79,7 @@ fr:
     write_new_post: Écrivez votre premier message maintenant
   date:
     abbr_month_names:
-    -
+    - 
     - janv
     - févr
     - mars
@@ -134,10 +134,6 @@ fr:
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
-  videos:
-    new:
-      title: 🎥 Télécharger un fichier vidéo 🙌
-      beta_info_html: <strong>Vidéo est en bêta:</strong>
   podcasts:
     statuses:
       ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast
@@ -145,14 +141,18 @@ fr:
       unplayable: Ce podcast peut ne pas être lisible dans le navigateur
       unreachable: Le feed_url du podcast n'est pas accessible
   settings_menu:
-    profile: Profil
-    customization: Personnalisation
-    notifications: Notifications
     account: Compte
     billing: Facturation
-    organization: Organisation
+    customization: Personnalisation
     extensions: Extensions
+    notifications: Notifications
+    organization: Organisation
+    profile: Profil
   time:
     formats:
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"
+  videos:
+    new:
+      beta_info_html: "<strong>Vidéo est en bêta:</strong>"
+      title: "\U0001F3A5 Télécharger un fichier vidéo \U0001F64C"
