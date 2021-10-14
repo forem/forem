@@ -39,7 +39,8 @@
               <%= story.cached_user.name %>
             </a>
             <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block">
-              <button id="story-author-preview-trigger-<%= story.id %>" aria-controls="story-author-preview-content-<%= story.id %>" class="profile-preview-card__trigger fs-s p-1 -ml-1 -my-2 crayons-btn crayons-btn--ghost" aria-label="<%= story.cached_user.name %> profile details">
+              <button id="story-author-preview-trigger-<%= story.id %>" aria-controls="story-author-preview-content-<%= story.id %>" class="profile-preview-card__trigger fs-s p-1 -ml-1 -my-2 crayons-btn crayons-btn--ghost" aria-label="<%= t("views.users.details",
+                                                                                                                                                                                                                                                 user: story.cached_user.name) %>">
                 <%= story.cached_user.name %>
               </button>
               <div
@@ -65,7 +66,7 @@
                     <button
                       class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
                       data-info='{"id": <%= story.user_id %>, "className": "User", "style": "full", "name": "<%= story.cached_user.name %>"}'>
-                      <%= t("core.follow") %>
+                      <%= t("views.users.follow") %>
                     </button>
                   </div>
                   <div
