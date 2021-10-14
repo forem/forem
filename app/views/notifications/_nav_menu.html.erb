@@ -1,8 +1,8 @@
 <% no_filter = params[:filter].blank? %>
 <% org_filter = params[:filter].to_s.match?(/^org$/i) %>
-<% comments_filter = params[:filter].to_s.casecmp("comments").zero? %>
+<% comments_filter = params[:filter].to_s.match?(/^comments$/i) %>
 <% user_comments = comments_filter && params[:org_id].blank? %>
-<% user_posts = params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>
+<% user_posts = params[:filter].to_s.match?(/^posts$/i) && params[:org_id].blank? %>
 
 <nav class="hidden m:block pt-4" aria-label="Notifications">
   <div>
