@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "/creator_settings/new", type: :request do
   let!(:super_admin) { create(:user, :super_admin) }
+  let!(:creator) { create(:user, :creator) }
   let!(:non_admin_user) { create(:user) }
   let(:params) do
     { community_name: "Climbing Life",
@@ -19,6 +20,7 @@ RSpec.describe "/creator_settings/new", type: :request do
   describe "GET /admin/creator_settings/new" do
     before do
       sign_in super_admin
+      sign_in creator
       get new_admin_creator_setting_path
     end
 
@@ -47,6 +49,7 @@ RSpec.describe "/creator_settings/new", type: :request do
     describe "POST /admin/creator_settings/new" do
       before do
         sign_in super_admin
+        sign_in creator
         get new_admin_creator_setting_path
       end
 
