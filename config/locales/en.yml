@@ -1,12 +1,16 @@
 ---
 en:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
+    if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
+    if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
   core:
     add_comment: Add comment
     all: All
     analytics: Analytics
     comment: Comment
-    copy_link: Copy link
     community_name_is_great: "%{community_name} is great!"
+    copy_link: Copy link
     create_account: Create account
     create_post: Create Post
     dashboard: Dashboard
@@ -18,7 +22,7 @@ en:
     follower: Follower
     followers: Followers
     following: Following
-    following_tags: "Following tags"
+    following_tags: Following tags
     full: Full
     home: Home
     infinity: Infinity
@@ -34,8 +38,8 @@ en:
     month: Month
     more_from: More from
     my_tags: My Tags
-    pinned: Pinned
     on_video: "%{name} on Video"
+    pinned: Pinned
     popular_tags: Popular Tags
     post: Post
     posts: Posts
@@ -57,17 +61,13 @@ en:
     settings: Settings
     share_to: Share to %{media}
     sign_out: Sign Out
-    tags: "Tags"
-    tags_to_follow: "Tags to follow on %{community_name}"
-    top_tags: "Top tags"
+    tags: Tags
+    tags_to_follow: Tags to follow on %{community_name}
+    top_tags: Top tags
     trending_on: Trending on
     view: View
     week: Week
     year: Year
-  contact_prompts:
-    if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
-    if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
-    if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
   dashboard:
     empty_follower: You don't have any followers yet...
     empty_post: This is where you can manage your posts, but you haven't written anything yet.
@@ -111,10 +111,6 @@ en:
       wrong_length:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
-  videos:
-    new:
-      title: 🎥 Upload Video File 🙌
-      beta_info_html: <strong>Video is beta:</strong>
   podcasts:
     statuses:
       ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
@@ -122,14 +118,18 @@ en:
       unplayable: This podcast may not be playable in the browser
       unreachable: Podcast's feed_url is not reachable
   settings_menu:
-    profile: "Profile"
-    customization: "Customization"
-    notifications: "Notifications"
-    account: "Account"
-    billing: "Billing"
-    organization: "Organization"
-    extensions: "Extensions"
+    account: Account
+    billing: Billing
+    customization: Customization
+    extensions: Extensions
+    notifications: Notifications
+    organization: Organization
+    profile: Profile
   time:
     formats:
       short: "%b %-e"
       short_with_year: "%b %-e, %Y"
+  videos:
+    new:
+      beta_info_html: "<strong>Video is beta:</strong>"
+      title: "\U0001F3A5 Upload Video File \U0001F64C"
