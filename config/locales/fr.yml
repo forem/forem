@@ -38,7 +38,6 @@ fr:
     month: Mois
     more_from: Plus de la part de
     my_tags: Mes sujets
-    on_video: "%{name} en Vidéo"
     pinned: Épinglé
     popular_tags: Sujets populaires
     post: Publication
@@ -152,7 +151,3 @@ fr:
     formats:
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"
-  videos:
-    new:
-      beta_info_html: "<strong>Vidéo est en bêta:</strong>"
-      title: "\U0001F3A5 Télécharger un fichier vidéo \U0001F64C"

@@ -38,7 +38,6 @@ en:
     month: Month
     more_from: More from
     my_tags: My Tags
-    on_video: "%{name} on Video"
     pinned: Pinned
     popular_tags: Popular Tags
     post: Post
@@ -129,7 +128,3 @@ en:
     formats:
       short: "%b %-e"
       short_with_year: "%b %-e, %Y"
-  videos:
-    new:
-      beta_info_html: "<strong>Video is beta:</strong>"
-      title: "\U0001F3A5 Upload Video File \U0001F64C"
