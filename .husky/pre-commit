@@ -4,3 +4,9 @@ FILES=$(git diff --cached --name-only)
 
 # Run lint-staged on all staged
 echo "$FILES" | yarn lint-staged
+
+# Check if we updated I18n files
+echo $FILES|grep "config/locales" > /dev/null
+[ $? -ne 0 ] && exit 0
+i18n-tasks normalize
+git add config/locales
