@@ -1,5 +1,5 @@
 <% no_filter = params[:filter].blank? %>
-<% org_filter = params[:filter].to_s.casecmp("org").zero? %>
+<% org_filter = params[:filter].to_s.match?(/^org$/i) %>
 <% comments_filter = params[:filter].to_s.casecmp("comments").zero? %>
 <% user_comments = comments_filter && params[:org_id].blank? %>
 <% user_posts = params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>
