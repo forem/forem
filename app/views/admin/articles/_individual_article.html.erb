@@ -25,7 +25,7 @@
       <a href="<%= article.path %>/edit" target="_blank" rel="noopener"><span class="btn btn-sm btn-primary">Edit</span></a>
 
       <a class="btn btn-sm btn-secondary" href="<%= admin_user_path(article.user_id) %>" target="_blank" rel="noopener">Manage User</a>
-      
+
       <% if decorated_article.pinned? %>
         <%= link_to(
               "Unpin Post",
