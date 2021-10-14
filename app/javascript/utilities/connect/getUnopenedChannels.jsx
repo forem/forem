@@ -34,10 +34,10 @@ class UnopenedChannelNotice extends Component {
     });
     this.fetchUnopenedChannel(this.updateMessageNotification);
 
-    if(document.getElementById('connect-link')) {
+    if (document.getElementById('connect-link')) {
       document.getElementById('connect-link').onclick = () => {
         // Hack, should probably be its own component in future
-        document.getElementById('connect-number').classList.add('hidden');
+        document.getElementById('connect-number')?.classList.add('hidden');
         this.setState({ visible: false });
       };
     }
@@ -50,7 +50,7 @@ class UnopenedChannelNotice extends Component {
       if (unopenedChannels[0].adjusted_slug === `@${userData().username}`) {
         return;
       }
-      number.classList.remove('hidden');
+      number?.classList.remove('hidden');
       number.innerHTML = unopenedChannels.length;
       document.getElementById(
         'connect-link',
@@ -60,7 +60,7 @@ class UnopenedChannelNotice extends Component {
         'force',
       );
     } else {
-      number.classList.add('hidden');
+      number?.classList.add('hidden');
     }
   };
 
