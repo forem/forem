@@ -9,6 +9,7 @@ fr:
     all: Tout
     analytics: Analytique
     comment: Commentaire
+    comments: Commentaires
     community_name_is_great: "%{community_name} est super"
     copy_link: Copier le lien
     create_account: Créer un profil

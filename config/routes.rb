@@ -225,8 +225,8 @@ Rails.application.routes.draw do
                                            constraints: { view: /moderate/ }
     get "/listings/:category/:slug/delete_confirm", to: "listings#delete_confirm"
     delete "/listings/:category/:slug", to: "listings#destroy"
-    get "/notifications/:filter", to: "notifications#index"
-    get "/notifications/:filter/:org_id", to: "notifications#index"
+    get "/notifications/:filter", to: "notifications#index", as: :notifications_filter
+    get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     patch "/onboarding_update", to: "users#onboarding_update"
