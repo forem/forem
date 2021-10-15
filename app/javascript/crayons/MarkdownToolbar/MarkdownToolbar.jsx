@@ -198,11 +198,11 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           variant="ghost"
           contentType="icon"
           icon={icon}
-          className={`formatter-btn  ${
+          className={
             isOverflow
               ? 'overflow-menu-btn hidden m:block'
               : 'toolbar-btn m:hidden'
-          }`}
+          }
           tabindex={isOverflow && index === 0 ? '0' : '-1'}
           onClick={() => insertSyntax(controlName)}
           onKeyUp={(e) =>
@@ -214,7 +214,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           aria-label={label}
           tooltip={
             smallScreen ? null : (
-              <span aria-hidden="true" className="formatter-btn__tooltip">
+              <span aria-hidden="true">
                 {label}
                 {keyboardShortcutKeys ? (
                   <span className="opacity-75">
@@ -244,7 +244,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             variant="ghost"
             contentType="icon"
             icon={icon}
-            className="toolbar-btn formatter-btn"
+            className="toolbar-btn"
             tabindex={index === 0 ? '0' : '-1'}
             onClick={() => insertSyntax(controlName)}
             onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
@@ -276,7 +276,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           variant="ghost"
           contentType="icon"
           icon={Overflow}
-          className="toolbar-btn ml-auto formatter-btn hidden m:block"
+          className="toolbar-btn ml-auto hidden m:block"
           tabindex="-1"
           aria-label="More options"
         />
@@ -286,7 +286,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         <div
           id="overflow-menu"
           role="menu"
-          className="crayons-dropdown flex p-2 min-w-unset right-0 top-100"
+          className="crayons-dropdown flex gap-2 p-2 min-w-unset right-0 top-100"
         >
           {getSecondaryFormatterButtons(true)}
           <Button

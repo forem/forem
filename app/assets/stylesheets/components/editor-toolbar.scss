@@ -1,12 +1,5 @@
 .editor-toolbar {
   display: flex;
   background: var(--base-0);
-
-  .formatter-btn {
-    min-width: 50px;
-
-    .crayons-icon {
-      vertical-align: middle;
-    }
-  }
+  gap: var(--su-2);
 }
