@@ -371,10 +371,6 @@ class User < ApplicationRecord
     has_role?(:tech_admin) || has_role?(:super_admin)
   end
 
-  def creator?
-    has_role?(:creator)
-  end
-
   def vomitted_on?
     Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
   end
