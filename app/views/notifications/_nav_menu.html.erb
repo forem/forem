@@ -63,7 +63,7 @@
           data-text="All"
           class="crayons-tabs__item <%= "crayons-tabs__item--current" if no_filter %>"
           href="<%= notifications_path %>"
-          aria-current="<%= "page" if params[:filter].blank? %>">
+          aria-current="<%= "page" if no_filter %>">
           <%= t("core.all") %>
         </a>
       </li>
