@@ -218,7 +218,7 @@ export const MentionAutocompleteTextArea = forwardRef(
         // inputs. This check is necessary to prevent an issue in iOS browsers only.
         // An additional check to see if the component can be focusable
         // covers the use case for clicking on elements in the mention autocomplete list.
-        activeInput.focus();
+        activeInput.focus({ preventScroll: true });
         activeInput.setSelectionRange(cursorPosition, cursorPosition - 1);
         setFocusable(true);
       }
@@ -325,7 +325,7 @@ export const MentionAutocompleteTextArea = forwardRef(
           plainTextArea,
           comboboxTextArea,
         });
-        plainTextArea.focus();
+        plainTextArea.focus({ preventScroll: true });
       }
 
       // Initialize the new text areas in the "non-autosuggest" state, hiding the combobox until a search begins

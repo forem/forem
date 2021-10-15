@@ -130,8 +130,8 @@ module Authentication
 
     def update_user(user)
       user.tap do |model|
-        user.unlock_access! if user.access_locked?
-        user.assign_attributes(provider.existing_user_data)
+        model.unlock_access! if model.access_locked?
+        model.assign_attributes(provider.existing_user_data)
 
         update_profile_updated_at(model)
 

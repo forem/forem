@@ -1,15 +1,15 @@
 <div class="block m:hidden px-2">
   <select id="mobile_nav_dashboard" class="crayons-select">
-    <option value="/dashboard" <%= "selected" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>>Posts (<%= @user.articles_count %>)</option>
-    <option value="/dashboard/user_followers" <%= "selected" if params[:action] == "followers" %>>Followers (<%= @user.followers_count %>)</option>
+    <option value="/dashboard" <%= "selected" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>><%= t("core.posts") %> (<%= @user.articles_count %>)</option>
+    <option value="/dashboard/user_followers" <%= "selected" if params[:action] == "followers" %>><%= t("core.followers") %>(<%= @user.followers_count %>)</option>
     <option value="/dashboard/following_tags" <%= "selected" if params[:action] == "following_tags" %>>Following tags (<%= @user.following_tags_count %>)</option>
     <option value="/dashboard/following_users" <%= "selected" if params[:action] == "following_users" %>>Following users (<%= @user.following_users_count %>)</option>
     <option value="/dashboard/following_organizations" <%= "selected" if params[:action] == "following_organizations" %>>Following organizations (<%= @user.following_organizations_count %>)</option>
     <option value="/dashboard/following_podcasts" <%= "selected" if params[:action] == "following_podcasts" %>>Following podcasts (<%= @user.following_podcasts_count %>)</option>
 
-    <option value="/listings/dashboard">Listings</option>
+    <option value="/listings/dashboard"><%= t("core.listings") %></option>
 
-    <option value="<%= dashboard_analytics_path %>">Analytics</option>
+    <option value="<%= dashboard_analytics_path %>"><%= t("core.analytics") %></option>
 
     <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
       <% @organizations.each do |org| %>
@@ -18,7 +18,7 @@
     <% end %>
 
     <% if policy(:video).new? && policy(:video).enabled? %>
-      <option value="<%= new_video_path %>">Upload a video</option>
+      <option value="<%= new_video_path %>"><%= t("dashboard.upload_a_video") %></option>
     <% end %>
   </select>
 </div>

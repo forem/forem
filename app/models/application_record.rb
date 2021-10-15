@@ -53,6 +53,37 @@ class ApplicationRecord < ActiveRecord::Base
     raise UninferrableDecoratorError, "Could not infer a decorator for #{called_on.class.name}."
   end
 
+  def self.statement_timeout
+    connection.execute("SELECT setting FROM pg_settings WHERE name = 'statement_timeout'")
+      .first["setting"]
+      .to_i
+      .seconds / 1000
+  end
+
+  def self.with_statement_timeout(duration)
+    # Using SET LOCAL only works inside a transaction.
+    transaction do
+      original_timeout = statement_timeout
+      milliseconds = (duration.to_f * 1000).to_i
+      connection.execute "SET LOCAL statement_timeout = #{milliseconds}"
+      yield
+    ensure
+      # Typically this value is reset after a transaction is completed (whether
+      # successfully or unsuccessfully), but a nested transaction will not reset
+      # this value after the inner transaction is complete because they are not
+      # isolated from the outer transaction the way the outer transaction is
+      # from transactions on other connections. Nested transactions are
+      # implemented simply as savepoints inside the top-level transaction. For
+      # this reason, we need to explicitly reset the statement timeout so that
+      # when the block completes the statement timeout is reset to its previous
+      # value.
+      #
+      # See: https://www.postgresql.org/docs/11/sql-savepoint.html
+      milliseconds = original_timeout.to_i * 1000
+      connection.execute "SET LOCAL statement_timeout = #{milliseconds}"
+    end
+  end
+
   def errors_as_sentence
     errors.full_messages.to_sentence
   end
