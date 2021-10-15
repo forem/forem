@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_08_170433) do
+ActiveRecord::Schema.define(version: 2021_10_13_060449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -494,25 +494,6 @@ ActiveRecord::Schema.define(version: 2021_10_08_170433) do
     t.bigint "user_id"
     t.datetime "verified_at"
     t.index ["user_id"], name: "index_email_authorizations_on_user_id"
-  end
-
-  create_table "events", force: :cascade do |t|
-    t.string "category"
-    t.string "cover_image"
-    t.datetime "created_at", null: false
-    t.text "description_html"
-    t.text "description_markdown"
-    t.datetime "ends_at"
-    t.string "host_name"
-    t.boolean "live_now", default: false
-    t.string "location_name"
-    t.string "location_url"
-    t.string "profile_image"
-    t.boolean "published"
-    t.string "slug"
-    t.datetime "starts_at"
-    t.string "title"
-    t.datetime "updated_at", null: false
   end
 
   create_table "feedback_messages", force: :cascade do |t|
