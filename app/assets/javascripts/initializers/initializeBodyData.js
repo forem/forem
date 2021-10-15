@@ -43,7 +43,7 @@ function fetchBaseData() {
         document.body.dataset.user = json.user;
         document.body.dataset.creator = json.creator;
         browserStoreCache('set', json.user);
-        browserStoreCache('set', json.creator);
+
         setTimeout(() => {
           if (typeof ga === 'function') {
             ga('set', 'userId', JSON.parse(json.user).id);
