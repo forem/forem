@@ -11,7 +11,7 @@ describe('Creator Setup Page', () => {
     cy.visit(`${baseUrl}admin/creator_settings/new?referrer=${baseUrl}`);
   });
 
-  it('should submit the creator settings', () => {
+  it('should submit the creator settings form', () => {
     // should display a welcome message
     cy.findByText("Lovely! Let's set up your Forem.").should('be.visible');
     cy.findByText('No stress, you can always change it later.').should(
@@ -61,5 +61,20 @@ describe('Creator Setup Page', () => {
     // should redirect the creator to the home page when the form is completely filled out and 'Finish' is clicked
     cy.findByRole('button', { name: 'Finish' }).click();
     cy.url().should('equal', baseUrl);
+  });
+
+  it('should not submit the creator settings form if any of the fields are not filled out', () => {
+    // TODO: Circle back around to testing this once the styling for the form is complete
+    cy.findByRole('textbox', { name: /community name/i }).should(
+      'have.attr',
+      'required',
+    );
+    cy.findByRole('button', { name: /logo/i }).should('have.attr', 'required');
+    // should not redirect the creator to the home page when the form is not completely filled out and 'Finish' is clicked
+    cy.findByRole('button', { name: 'Finish' }).click();
+    cy.url().should(
+      'equal',
+      `${baseUrl}admin/creator_settings/new?referrer=${baseUrl}`,
+    );
   });
 });
