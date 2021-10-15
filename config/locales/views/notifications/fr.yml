@@ -23,7 +23,6 @@ fr:
         first_html: "%{user} wrote their first comment on %{title}"
         first_reply: "Give them their first reply! 🎉"
         left_html: "%{user} just left a comment on %{title}."
-        new: "💬 New Comment"
         replied_html: "%{user} replied to a thread in %{title}"
         report: All negative reactions are 100% private. If this comment violates the code of conduct, please downvote/report as inappropriate.
         welcome_html: Since they are new to the community, could you leave a nice reply to help them feel welcome? <strong>Thank you!</strong>

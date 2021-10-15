@@ -4,3 +4,32 @@ ja:
     if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
     if_any_questions_html: わからないことがありましたら<a href="/contact">お問い合わせ</a>ください。
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        other: 約%{count}時間前
+      about_x_months:
+        other: 約%{count}ヶ月前
+      about_x_years:
+        other: 約%{count}年前
+      almost_x_years:
+        other: "%{count}年弱前"
+      half_a_minute: 30秒ほど前
+      less_than_x_seconds:
+        one: 1秒以内
+        other: "%{count}秒弱前"
+      less_than_x_minutes:
+        one: 1分以内
+        other: "%{count}分弱前"
+      over_x_years:
+        other: "%{count}年以上前"
+      x_seconds:
+        other: "%{count}秒前"
+      x_minutes:
+        other: "%{count}分前"
+      x_days:
+        other: "%{count}日前"
+      x_months:
+        other: "%{count}ヶ月前"
+      x_years:
+        other: "%{count}年前"
