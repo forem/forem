@@ -111,5 +111,6 @@ en:
     extensions: "Extensions"
   time:
     formats:
+      comment: "%B %d, %Y"
       short: "%b %-e"
       short_with_year: "%b %-e, %Y"

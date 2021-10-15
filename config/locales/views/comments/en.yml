@@ -133,15 +133,14 @@ en:
         view:
           icon: View button
           text: View
-      plucked:
-        count:
-          one: "%{count} comment"
-          other: "%{count} comments"
-        empty: New
+      count:
+        one: "%{count} comment"
+        other: "%{count} comments"
+      empty: New
+      add: "Add\_Comment"
       summary:
         count_html:
           one: "%{count}%{start}\_comment%{end}"
           other: "%{count}%{start}\_comments%{end}"
-        empty: "Add\_Comment"
         title: Comments
 

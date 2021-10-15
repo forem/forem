@@ -134,5 +134,6 @@ fr:
     extensions: Extensions
   time:
     formats:
+      comment: "%B %d, %Y"
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"

@@ -133,12 +133,11 @@ ja:
         view:
           icon: 表示するボタン
           text: 表示
-      plucked:
-        count:
-          other: コメント %{count}
-        empty: 書く
+      count:
+        other: コメント %{count}
+      empty: 新着
+      add: コメントを寄せる
       summary:
         count_html:
           other: "%{start}コメント%{end}\_%{count}\_%{start}件%{end}"
-        empty: コメントを寄せる
         title: コメント
