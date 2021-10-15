@@ -1,11 +1,12 @@
 describe('Creator Setup Page', () => {
+  const { baseUrl } = Cypress.config();
+
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/creatorUser.json').as('creator');
     cy.get('@creator').then((creator) => {
       cy.loginCreator(creator);
     });
-    const { baseUrl } = Cypress.config();
 
     cy.visit(`${baseUrl}admin/creator_settings/new?referrer=${baseUrl}`);
   });
@@ -59,6 +60,6 @@ describe('Creator Setup Page', () => {
     cy.findAllByRole('radio').check('0');
     // should redirect the creator to the home page when the form is completely filled out and 'Finish' is clicked
     cy.findByRole('button', { name: 'Finish' }).click();
-    cy.url().should('equal', '/');
+    cy.url().should('equal', baseUrl);
   });
 });
