@@ -7,7 +7,7 @@ module Emails
     STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_REMOVE_OLD_EMAILS", 10).to_i.seconds
 
     def perform
-      EmailMessage.with_statement_timeout STATEMENT_TIMEOUT do
+      ApplicationRecord.with_statement_timeout STATEMENT_TIMEOUT do
         EmailMessage.fast_destroy_old_retained_email_deliveries
       end
     end
