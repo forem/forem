@@ -15,7 +15,7 @@ module Admin
       email_body
     ].freeze
 
-    after_action only: %i[update user_status banish full_delete merge] do
+    after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
@@ -125,6 +125,12 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
+      redirect_to admin_users_path
+    end
+
+    def unpublish_all_articles
+      Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
+      flash[:success] = "Posts are being unpublished in the background. The job will complete soon."
       redirect_to admin_users_path
     end
 

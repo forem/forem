@@ -12,7 +12,7 @@
 </div>
 <% if actor.tag_line.present? %>
   <div class="color-base-70">
-    <%= truncate (actor.tag_line || actor.summary || "Posts in this tag"), length: 200 %>
+    <%= truncate (actor.tag_line || actor.summary || t("views.sticky.no_summary")), length: 200 %>
   </div>
 <% end %>
 
@@ -22,7 +22,7 @@
       <% if actor.setting.display_email_on_profile && context != "sidebar" %>
         <li>
           <div class="key">
-            Email
+            <%= t("views.sticky.email") %>
           </div>
           <div class="value">
             <a href="mailto:<%= actor.email %>"><%= actor.email %></a>
@@ -32,7 +32,7 @@
       <% if actor.profile.location.present? %>
         <li>
           <div class="key">
-            <%= t("core.location") %>
+            <%= t("views.sticky.location") %>
           </div>
           <div class="value">
             <%= actor.profile.location %>
@@ -43,7 +43,7 @@
         <% header_fields.sort.each do |title, value| %>
           <li>
             <div class="key">
-              <%= title %>
+              <%= t("views.users.profile_fields.#{title}") %>
             </div>
             <div class="value">
               <%= value %>
@@ -53,7 +53,7 @@
       <% end %>
       <li>
         <div class="key">
-          <%= t("core.joined") %>
+          <%= t("views.sticky.joined") %>
         </div>
         <div class="value">
           <%= local_date(actor.created_at) %>
@@ -67,8 +67,8 @@
   </div>
   <% if actor.cta_button_text.present? && actor.cta_button_url.present? %>
     <div>
-      <a href="<%= actor.cta_button_url || "Learn more" %>" class="crayons-btn crayons-btn--outlined w-100">
-        <%= actor.cta_button_text %>
+      <a href="<%= actor.cta_button_url %>" class="crayons-btn crayons-btn--outlined w-100">
+        <%= actor.cta_button_text || t("views.sticky.default_cta") %>
       </a>
     </div>
   <% end %>
