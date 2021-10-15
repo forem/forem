@@ -4,7 +4,7 @@ module Emails
 
     sidekiq_options queue: :low_priority, retry: 10
 
-    STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_REMOVE_OLD_EMAILS", 10).to_i.seconds
+    STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_REMOVE_OLD_EMAILS", 10_000).to_i.seconds / 1_000.to_f
 
     def perform
       ApplicationRecord.with_statement_timeout STATEMENT_TIMEOUT do

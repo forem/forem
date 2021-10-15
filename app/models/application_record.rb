@@ -64,7 +64,7 @@ class ApplicationRecord < ActiveRecord::Base
     # Using SET LOCAL only works inside a transaction.
     transaction do
       original_timeout = statement_timeout
-      milliseconds = duration.to_i * 1000
+      milliseconds = (duration.to_f * 1000).to_i
       connection.execute "SET LOCAL statement_timeout = #{milliseconds}"
       yield
     ensure
