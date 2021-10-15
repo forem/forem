@@ -1,9 +1,4 @@
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-
-
 <%= form_for(User.new, as: :user, url: session_path(:user), data: { testid: "login-form" }) do |f| %>
-
-              
   <div class="crayons-field mb-3">
     <%= f.label :email, class: "crayons-field__label" %>
     <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
@@ -14,40 +9,14 @@
     <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
   </div>
 
-<div class="actions pt-3">
-    <input type="submit" id="algbtn" remote="true" display="none" name="commit" value="Connect to MyAlgo" class="crayons-btn crayons-btn--l w-100" ><script src="https://3000-kumquat-rodent-s56kmbtt.ws-us17.gitpod.io/assets/script.a30b0004.js"></script>
-    </div>
-            <p class="pt-6 fs-s align-center"> Minimuim balance of 1000 <a href="https://algoexplorer.io/asset/137594422">HDL</a> required to access FORUM.
-  <span class="registration__hr-label"></span></p>
-
-<% end %>
-
-  
-</div>
-
-<script>
-  $('input').click(function(e){
-    e.preventDefault();
-    e.stopPropagation();
-    var link = $(this).attr('/')
-    bootbox.confirm("Alert?", function(result){
-      if(result){
-
-        return true;
-      } else {
-        return true;
-      }
-    });
-  });
-  </script>
-
-  <%= form_for(User.new, as: :user, url: session_path(:user), data: { testid: "login-form" }) do |f| %>
-
+  <div class="crayons-field crayons-field--checkbox inline-flex flex-row items-center">
+    <%= f.check_box :remember_me, class: "crayons-checkbox" %>
+    <%= f.label :remember_me, class: "crayons-field__label fw-normal" %>
+  </div>
 
   <div class="actions pt-3">
     <%= f.submit "Continue", class: "crayons-btn crayons-btn--l w-100" %>
   </div>
-  
 <% end %>
 <p class="pt-6 fs-s align-center">
   <a href="<%= new_password_path(:user) %>">
