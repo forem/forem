@@ -895,6 +895,7 @@ ActiveRecord::Schema.define(version: 2021_10_13_060449) do
     t.datetime "created_at", null: false
     t.bigint "creator_id"
     t.text "description"
+    t.boolean "featured", default: false
     t.string "feed_url", null: false
     t.string "image", null: false
     t.string "itunes_url"
