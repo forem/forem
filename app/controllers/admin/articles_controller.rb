@@ -40,8 +40,11 @@ module Admin
       article = Article.find(params[:id])
 
       if article.update(article_params)
-        PinnedArticle.set(article) if params.dig(:article, :pinned)
-
+        if params.dig(:article, :pinned)
+          PinnedArticle.set(article)
+        elsif PinnedArticle.exists? && PinnedArticle.id == article.id
+          PinnedArticle.remove
+        end
         flash[:success] = "Article saved!"
       else
         flash[:danger] = article.errors_as_sentence
