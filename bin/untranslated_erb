@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 class I18nExtractor
   ERB_TAG = /<%(.*?)%>/
-  HTML_TAG = /<(.*?)>/
+  HTML_TAG = /<[^>]*>|<\/[^>]*>|[^>]*\/>|\".+">|">|<\w+(.+|)|.+="(.+)|"/
   SEPERATOR = '_@@@_'
   SKIP_TAGS = [[/<script/i,/<\/script>/i],[/<%/,/%>/],[/<style/i,/\/style>/i]]
 
@@ -14,7 +14,7 @@ class I18nExtractor
   def extract
     File.open(@filename).each_with_index do |line,i|
       next if in_script_block?(line)
-      text = line.gsub(ERB_TAG, SEPERATOR).gsub(HTML_TAG,SEPERATOR).strip
+      text = line.gsub(HTML_TAG,SEPERATOR).gsub(ERB_TAG, SEPERATOR).strip
       arr = text.split SEPERATOR
       arr.each do |e|
         if e.strip.size > 1
