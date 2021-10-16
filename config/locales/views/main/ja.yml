@@ -4,12 +4,12 @@ ja:
     main:
       aria_home: "%{community} トップ"
       header:
-        create: アカウント作成
+        create_account: アカウント作成
         connect:
           aria_label: Connect
           icon: Connect
         login: ログイン
-        menu:
+        nav:
           aria_label: メインメニュー
         moderation:
           aria_label: 審査
@@ -19,7 +19,7 @@ ja:
           icon: 通知
         skip: 内容までスキップ
       modal:
-        create:
+        create_account:
           aria_label: 新しいアカウントを作る
           text: 新しいアカウントを作る
         login:
@@ -29,9 +29,9 @@ ja:
       nav:
         admin: 管理画面
         dashboard: マイページ
-        etc: "..."
+        placeholder: "..."
         list: 切り抜き帳
-        moderator: 審査室
+        moderator_center: 審査室
         other: その他
         settings: 設定
       nav_name:
@@ -57,8 +57,8 @@ ja:
       tags:
         aria_label: Customize tag priority
         follow: フォロー
-        my: 私のタグ
-        popular: 話題のタグ
+        my_tags: 私のタグ
+        popular_tags: 話題のタグ
       footer:
         aria_label: サイト情報
         built:
@@ -72,6 +72,6 @@ ja:
           text_html: Made with love and %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
           rails: Ruby on Rails
       home: トップページ
-      new: 記事を作成
+      create_post: 記事を作成
       signout: ログアウト
       signup: 登録／ログイン

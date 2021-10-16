@@ -2,11 +2,11 @@
 fr:
   views:
     hamburger:
-      title: Navigation menu
+      icon: Navigation menu
       back: Back
       forward: Forward
       refresh: Refresh
-      icon: Close
+      icon_close: Close
       icon_left: Left menu
       icon_right: Right menu
     search:
@@ -21,7 +21,7 @@ fr:
         podcasts: Podcasts
         people: People
         comments: Comments
-        my: My posts only
+        my_posts: My posts only
       sort:
         aria_label: Search result sort options
         relevance: Most Relevant

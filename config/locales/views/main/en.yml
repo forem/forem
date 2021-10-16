@@ -4,12 +4,12 @@ en:
     main:
       aria_home: "%{community} Home"
       header:
-        create: Create account
+        create_account: Create account
         connect:
           aria_label: Connect
           icon: Connect
         login: Log in
-        menu:
+        nav:
           aria_label: Navigation menu
         moderation:
           aria_label: Moderation
@@ -19,7 +19,7 @@ en:
           icon: Notifications
         skip: Skip to content
       modal:
-        create:
+        create_account:
           aria_label: Create new account
           text: Create account
         login:
@@ -29,9 +29,9 @@ en:
       nav:
         admin: Admin
         dashboard: Dashboard
-        etc: "..."
+        placeholder: "..."
         list: Reading list
-        moderator: Moderator Center
+        moderator_center: Moderator Center
         other: Other
         settings: Settings
       nav_name:
@@ -57,8 +57,8 @@ en:
       tags:
         aria_label: Customize tag priority
         follow: Follow
-        my: My Tags
-        popular: Popular Tags
+        my_tags: My Tags
+        popular_tags: Popular Tags
       footer:
         aria_label: Site information
         built:
@@ -72,6 +72,6 @@ en:
           text_html: Made with love and %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
           rails: Ruby on Rails
       home: Home
-      new: Create Post
+      create_post: Create Post
       signout: Sign Out
       signup: Sign In/Up

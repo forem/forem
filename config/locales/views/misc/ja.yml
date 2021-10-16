@@ -2,11 +2,11 @@
 ja:
   views:
     hamburger:
-      title: メインメニュー
+      icon: メインメニュー
       back: 戻る
       forward: 進む
       refresh: 更新
-      icon: 閉じる
+      icon_close: 閉じる
       icon_left: 左メニュー
       icon_right: 右メニュー
     search:
@@ -21,7 +21,7 @@ ja:
         podcasts: ポッドキャスト
         people: 人物
         comments: コメント
-        my: 私の記事
+        my_posts: 私の記事
       sort:
         aria_label: 検索結果の並べ替え
         relevance: 関連順

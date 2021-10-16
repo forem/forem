@@ -3,7 +3,7 @@
   <a href="#main-content" class="skip-content-link"><%= t("views.main.header.skip") %></a>
   <div class="crayons-header__container">
     <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded js-hamburger-trigger inline-block m:hidden mx-2">
-      <%= inline_svg_tag("hamburger.svg", aria: true, class: "crayons-icon", title: t("views.hamburger.title")) %>
+      <%= inline_svg_tag("hamburger.svg", aria: true, class: "crayons-icon", title: t("views.hamburger.icon")) %>
     </button>
     <%= render "layouts/logo" %>
 
@@ -37,7 +37,7 @@
         <%= inline_svg_tag("search.svg", aria: true, class: "crayons-icon", title: t("views.search.icon.title")) %>
       </a>
       <% if user_signed_in? %>
-        <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto"><%= t("views.main.new") %></a>
+        <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto"><%= t("views.main.create_post") %></a>
 
         <span class="trusted-visible-block">
           <a id="moderation-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded m:flex hidden" aria-label="<%= t("views.main.header.moderation.aria_label") %>" href="<%= mod_path %>">
@@ -58,7 +58,7 @@
         </a>
 
         <div class="crayons-header__menu" id="crayons-header__menu">
-          <button type="button" class="crayons-header__menu__trigger" id="member-menu-button" aria-label="<%= t("views.main.header.menu.aria_label") %>" aria-expanded="false">
+          <button type="button" class="crayons-header__menu__trigger" id="member-menu-button" aria-label="<%= t("views.main.header.nav.aria_label") %>" aria-expanded="false">
             <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" /></span>
           </button>
           <%= render "layouts/nav_menu" %>
@@ -69,7 +69,7 @@
         </a>
 
         <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn mr-2 whitespace-nowrap fs-s s:fs-base" data-no-instant>
-          <%= t("views.main.header.create") %>
+          <%= t("views.main.header.create_account") %>
         </a>
       <% end %>
     </div>
