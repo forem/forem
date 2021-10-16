@@ -15,6 +15,6 @@ ja:
         url: 対象 URL
         message:
           subtitle: メッセージ
-          desc: 管理者が状況を把握できるよう、追加情報や背景を説明してください。
+          description: 管理者が状況を把握できるよう、追加情報や背景を説明してください。
           placeholder: "..."
         submit: 報告を送る

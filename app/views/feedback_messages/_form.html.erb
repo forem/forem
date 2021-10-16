@@ -62,7 +62,7 @@
   <div class="crayons-field">
     <label for="feedback_message_message">
       <%= t("views.feedback.form.message.subtitle") %>
-      <p class="crayons-field__description m-0"><%= t("views.feedback.form.message.desc") %></p>
+      <p class="crayons-field__description m-0"><%= t("views.feedback.form.message.description") %></p>
     </label>
     <%= f.text_area :message, class: "crayons-textfield", placeholder: t("views.feedback.form.message.placeholder"), value: @previous_message, required: true %>
   </div>

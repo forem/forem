@@ -15,6 +15,6 @@ fr:
         url: Reported URL
         message:
           subtitle: Message
-          desc: Please provide any additional information or context that will help us understand and handle the situation.
+          description: Please provide any additional information or context that will help us understand and handle the situation.
           placeholder: "..."
         submit: Send Feedback
