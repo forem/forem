@@ -36,9 +36,9 @@ en:
       follow: Follow
       following_tags: Following tags
       moderator:
-        text_html: 'comma separated, space is optional. Example: %{code}'
+        text_html: "comma separated, space is optional. Example: %{code}"
         code: 123
-        placeholder: 'comma separated, space is optional. Example: 1,2,3'
+        placeholder: "comma separated, space is optional. Example: 1,2,3"
       published:
         one: 1 post published
         other: "%{count} posts published"
