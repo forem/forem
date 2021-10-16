@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { articlePropTypes } from '../../common-prop-types';
 import { Button } from '../../crayons/Button';
+import { locale } from '../../utilities/locale';
 
 export const ReactionsCount = ({ article }) => {
   const totalReactions = article.public_reactions_count || 0;
@@ -32,7 +33,7 @@ export const ReactionsCount = ({ article }) => {
         {totalReactions}
         <span className="hidden s:inline">
           &nbsp;
-          {`${totalReactions == 1 ? 'reaction' : 'reactions'}`}
+          {`${totalReactions == 1 ? locale('core.reaction') : `${locale('core.reaction')}s`}`}
         </span>
       </span>
     </Button>

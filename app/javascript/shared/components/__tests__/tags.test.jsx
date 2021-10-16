@@ -1,3 +1,4 @@
+import fetch from 'jest-fetch-mock';
 import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
@@ -8,6 +9,7 @@ describe('<Tags />', () => {
     const environment = document.createElement('meta');
     environment.setAttribute('name', 'environment');
     document.body.appendChild(environment);
+    window.fetch = fetch;
   });
 
   it('should have no a11y violations', async () => {

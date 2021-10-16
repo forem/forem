@@ -65,7 +65,7 @@
                     <button
                       class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
                       data-info='{"id": <%= story.user_id %>, "className": "User", "style": "full", "name": "<%= story.cached_user.name %>"}'>
-                      Follow
+                      <%= t("core.follow") %>
                     </button>
                   </div>
                   <div
@@ -90,7 +90,7 @@
         <div
           class="pinned color-accent-brand fw-bold"
           data-testid="pinned-article">
-          <%= inline_svg_tag("pin.svg", alt: "", aria_hidden: true, class: "mr-1 align-text-bottom color-accent-brand") %>Pinned <span class="hidden s:inline">post</span>
+          <%= inline_svg_tag("pin.svg", alt: "", aria_hidden: true, class: "mr-1 align-text-bottom color-accent-brand") %><%= t("views.pins.article") %>
         </div>
       <% end %>
     </div>
@@ -117,22 +117,22 @@
       <div class="crayons-story__bottom">
         <div class="crayons-story__details">
           <% if story.public_reactions_count > 0 %>
-            <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>">
+            <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="Comments for post <%= story.title %> (<%= story.public_reactions_count %>)">
               <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Reactions") %>
               <%= story.public_reactions_count %>
-              <span class="hidden s:inline">&nbsp;<%= story.public_reactions_count == 1 ? "reaction" : "reactions" %></span>
+              <span class="hidden s:inline">&nbsp;<%= t("core.reaction_pluralized", count: story.public_reactions_count) %></span>
             </a>
           <% end %>
           <% if story.comments_count > 0 %>
-            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left">
+            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" aria-label="Comments for post <%= story.title %> (<%= story.public_reactions_count %>)">
               <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Comments") %>
               <%= story.comments_count %>
-              <span class="hidden s:inline">&nbsp;<%= story.comments_count == 1 ? "comment" : "comments" %></span>
+              <span class="hidden s:inline">&nbsp;<%= story.comments_count == 1 ? t("core.comment").downcase : t("core.comment").downcase.pluralize %></span>
             </a>
           <% else %>
-            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left">
+            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" aria-label="Comments for post <%= story.title %> (<%= story.public_reactions_count %>)">
               <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Comments") %>
-              <span class="hidden s:inline">Add&nbsp;Comment</span>
+              <span class="hidden s:inline">Add&nbsp;<%= t("core.comment") %></span>
             </a>
           <% end %>
         </div>

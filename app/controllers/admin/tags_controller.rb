@@ -5,7 +5,7 @@ module Admin
     ALLOWED_PARAMS = %i[
       id supported rules_markdown short_summary pretty_name bg_color_hex
       text_color_hex user_id alias_for badge_id requires_approval
-      category social_preview_template wiki_body_markdown submission_template
+      social_preview_template wiki_body_markdown submission_template
       name
     ].freeze
 

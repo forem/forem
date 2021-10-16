@@ -9,15 +9,16 @@ RSpec.describe "User visits a homepage", type: :system do
     it "shows the sign-in block" do
       visit "/"
       within "#sidebar-wrapper-left" do
-        expect(page).to have_text("Log in")
-        expect(page).to have_text("Create new account")
+        p I18n.t("create_account")
+        expect(page).to have_text(I18n.t("core.log_in"))
+        expect(page).to have_text(I18n.t("core.create_account"))
       end
     end
 
     it "shows the tags block" do
       visit "/"
       within("#sidebar-nav-default-tags") do
-        Tag.where(supported: true).limit(30).each do |tag|
+        Tag.supported.limit(30).each do |tag|
           expect(page).to have_link("##{tag.name}", href: "/t/#{tag.name}")
         end
       end

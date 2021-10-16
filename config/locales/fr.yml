@@ -1,0 +1,160 @@
+---
+fr:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
+    if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.
+    if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
+  core:
+    add_comment: Ajouter un commentaire
+    all: Tout
+    analytics: Analytique
+    browse: Parcourir
+    comment: Commentaire
+    comments: Commentaires
+    community_name_is_great: "%{community_name} est super"
+    copy_link: Copier le lien
+    create_account: Créer un profil
+    create_post: Créer une publication
+    dashboard: Tableau de bord
+    discussion: Discussion
+    edit_profile: Editer le profil
+    feed: Fil
+    follow: Suivre
+    follow_back: Suivre aussi
+    follower: Suiveur
+    followers: Suiveurs
+    following: Abonné
+    following_tags: Sujets suivis
+    full: Complet
+    home: Page D'Accueil
+    infinity: Infini
+    joined: Rejoint
+    joined_on: Rejoint le
+    latest: Récent
+    like: Aime
+    listings: Annonces
+    loading: Chargement en cours...
+    location: Lieu
+    log_in: Se connecter
+    moderator_center: Centre de modération
+    month: Mois
+    more_from: Plus de la part de
+    my_tags: Mes sujets
+    podcasts: Podcasts
+    pinned: Épinglé
+    popular_tags: Sujets populaires
+    post: Publication
+    posts: Publications
+    reaction: Réaction
+    reaction_pluralized:
+      one: réaction
+      other: réactions
+    reactions:
+      heart: Coeur
+      save: Sauver
+      unicorn: Licorne
+    read_next: Lire ensuite
+    reading_list: Liste de lecture
+    reply: Répondre
+    report_abuse: Signaler un abus
+    search: Recherche
+    see_all: Tout voir
+    series: Séries
+    settings: Paramètres
+    share_to: Partager sur %{media}
+    sign_out: Se déconnecter
+    tags: Sujets
+    tags_to_follow: Sujets dans %{community_name}
+    top_tags: Sujets les plus utilisées
+    trending_on: Populaire sur
+    view: Vue
+    week: Semaine
+    year: Année
+  dashboard:
+    empty_follower: Vous n'avez pas encore d'abonnés...
+    empty_post: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit
+    following_users: Utilisateurs suivis
+    loading: Chargement en cours...
+    not_following_any_users: Vous ne suivez aucun utilisateur...
+    page_title: Tableau de bord
+    upload_a_video: Charger une vidéo
+    write_new_post: Écrivez votre premier message maintenant
+  date:
+    abbr_month_names:
+    - 
+    - janv
+    - févr
+    - mars
+    - avril
+    - mai
+    - juin
+    - juil
+    - aout
+    - sept
+    - oct
+    - nov
+    - déc
+  errors:
+    messages:
+      accepted: doit être accepté
+      already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
+      bad_protocol: doit commencer par %{protocols}
+      bad_uri: est une URL invalide
+      blank: ne peut pas être vide
+      confirmation: ne correspond pas à %{attribute}
+      confirmation_period_expired: doit être confirmé dans %{period}, veuillez en demander un nouveau
+      empty: ne peut pas être vide
+      equal_to: doit être égal à %{count}
+      even: doit être pair
+      exclusion: est réservé
+      expired: a expiré, veuillez en demander un nouveau
+      greater_than: doit être supérieur à %{count}
+      greater_than_or_equal_to: doit être supérieur ou égal à %{count}
+      inclusion: n'est pas inclus dans la liste
+      invalid: est invalide
+      less_than: doit être inférieur à %{count}
+      less_than_or_equal_to: doit être inférieur ou égal à %{count}
+      model_invalid: 'Échec de la validation: %{errors}'
+      not_a_number: n'est pas un nombre
+      not_an_integer: Doit être un entier
+      not_found: pas trouvé
+      not_locked: n'était pas verrouillé
+      not_saved:
+        one: 1 erreur a interdit l'enregistrement de cette %{resource}
+        other: "%{count} erreurs ont interdit l'enregistrement de cette %{resource}:"
+      odd: doit être étrange
+      other_than: doit être différent de %{count}
+      present: doit être vide
+      required: doit exister
+      taken: a déjà été pris
+      too_long:
+        one: est trop long (le maximum est de 1 caractère)
+        other: est trop long (le maximum est de %{count} caractères)
+      too_short:
+        one: est trop court (au moins 1 caractère)
+        other: est trop court (le minimum est de %{count} caractères)
+      wrong_length:
+        one: est la mauvaise longueur (devrait être 1 caractère)
+        other: est la mauvaise longueur (devrait être %{count} caractères)
+  podcasts:
+    featured_shows: Épisodes en vedette
+    latest_episodes: Épisodes Récents
+    suggest_a_podcast: Suggérer un podcast
+    view_all_podcasts: Voir tous les podcasts
+    statuses:
+      ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast
+      unparsable: Le rss du podcast n'a pas pu être analysé
+      unplayable: Ce podcast peut ne pas être lisible dans le navigateur
+      unreachable: Le feed_url du podcast n'est pas accessible
+  settings_menu:
+    account: Compte
+    billing: Facturation
+    customization: Personnalisation
+    extensions: Extensions
+    notifications: Notifications
+    organization: Organisation
+    profile: Profil
+  time:
+    formats:
+      short: "%-e %b"
+      short_with_year: "%-e %b, %Y"

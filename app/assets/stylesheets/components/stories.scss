@@ -77,7 +77,10 @@
     padding-bottom: 42%;
     background-size: cover;
     background-position: center center;
-    border-radius: var(--radius) var(--radius) 0 0;
+
+    @media (min-width: $breakpoint-s) {
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
   }
 
   &__body {
@@ -190,7 +193,7 @@
 
   &__comments {
     cursor: default;
-    background: var(--story-comments-bg);
+    background: RGB(var(--story-comments-bg));
     border-radius: var(--radius);
     position: relative;
     bottom: var(--su-2);

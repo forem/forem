@@ -1,4 +1,4 @@
-import { Application } from 'stimulus';
+import { Application } from '@hotwired/stimulus';
 import fetch from 'jest-fetch-mock';
 import DataUpdateScriptController from '../../controllers/data_update_script_controller';
 

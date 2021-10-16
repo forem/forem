@@ -57,7 +57,7 @@ namespace :navigation_links do
       section: :other,
     )
     NavigationLink.where(url: "/terms").first_or_create(
-      name: "Terms of use",
+      name: "Terms of Use",
       url: URL.url("terms"),
       icon: look_icon,
       display_only_when_signed_in: false,
@@ -150,7 +150,7 @@ namespace :navigation_links do
       section: :other,
     )
     NavigationLink.where(url: "#{base_url}/terms").first_or_create(
-      name: "Terms of use",
+      name: "Terms of Use",
       icon: look_icon,
       display_only_when_signed_in: false,
       position: 2,

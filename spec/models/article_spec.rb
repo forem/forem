@@ -39,7 +39,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
 
-    it { is_expected.to validate_presence_of(:boost_states) }
     it { is_expected.to validate_presence_of(:comments_count) }
     it { is_expected.to validate_presence_of(:positive_reactions_count) }
     it { is_expected.to validate_presence_of(:previous_public_reactions_count) }
@@ -526,7 +525,7 @@ RSpec.describe Article, type: :model do
     end
 
     context "when published" do
-      before { article0.update(published: true) }
+      before { article0.update!(published: true) }
 
       it "creates proper slug with this-is-the-slug format" do
         expect(article0.slug).to start_with("hey-this-is-a-slug")
@@ -541,6 +540,16 @@ RSpec.describe Article, type: :model do
         underscored_article = build(:article, title: "hey_hey_hey node_modules", published: true)
         expect(underscored_article.valid?).to eq true
       end
+
+      # rubocop:disable RSpec/NestedGroups
+      context "with non-Roman characters" do
+        let(:title) { "Я не говорю по-Русски" }
+
+        it "converts the slug to Roman characters" do
+          expect(article0.slug).to start_with("ia-nie-ghovoriu-po-russki")
+        end
+      end
+      # rubocop:enable RSpec/NestedGroups
     end
   end
 
@@ -939,6 +948,22 @@ RSpec.describe Article, type: :model do
       expect(articles).not_to include(excluded_no_match)
 
       expect(articles.to_a).to include(*expected)
+    end
+  end
+
+  describe ".not_cached_tagged_with_any" do
+    it "can exclude multiple tags when given an array of strings" do
+      included = create(:article, tags: "includeme")
+      excluded1 = create(:article, tags: "includeme, lol")
+      excluded2 = create(:article, tags: "includeme, omg")
+
+      articles = described_class
+        .cached_tagged_with_any("includeme")
+        .not_cached_tagged_with_any(%w[lol omg])
+
+      expect(articles).to include included
+      expect(articles).not_to include excluded1
+      expect(articles).not_to include excluded2
     end
   end
 

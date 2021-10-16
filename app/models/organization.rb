@@ -110,12 +110,6 @@ class Organization < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
-  def suspended?
-    # Hacky, yuck!
-    # TODO: [@jacobherrington] Remove this method
-    false
-  end
-
   def destroyable?
     organization_memberships.count == 1 && articles.count.zero? && credits.count.zero?
   end

@@ -1,28 +1,29 @@
+---
 en:
   devise:
     failure:
-      invited: "You have a pending invitation, accept it to finish creating your account."
+      invited: You have a pending invitation, accept it to finish creating your account.
     invitations:
-      send_instructions: "An invitation email has been sent to %{email}."
-      invitation_token_invalid: "The invitation token provided is not valid!"
-      updated: "Your password was set successfully. You are now signed in."
-      updated_not_active: "Your password was set successfully."
-      no_invitations_remaining: "No invitations remaining"
-      invitation_removed: "Your invitation was removed."
-      new:
-        header: "Send invitation"
-        submit_button: "Send an invitation"
       edit:
-        header: "Set your password"
-        submit_button: "Let's Get Started"
+        header: Set your password
+        submit_button: Let's Get Started
+      invitation_removed: Your invitation was removed.
+      invitation_token_invalid: The invitation token provided is not valid!
+      new:
+        header: Send invitation
+        submit_button: Send an invitation
+      no_invitations_remaining: No invitations remaining
+      send_instructions: An invitation email has been sent to %{email}.
+      updated: Your password was set successfully. You are now signed in.
+      updated_not_active: Your password was set successfully.
     mailer:
       invitation_instructions:
-        subject: "Invitation instructions"
-        hello: "Hello %{email}"
-        someone_invited_you: "Someone has invited you to %{url}, you can accept it through the link below."
-        accept: "Accept invitation"
-        accept_until: "This invitation will be due in %{due_date}."
-        ignore: "If you don't want to accept the invitation, please ignore this email. Your account won't be created until you access the link above and set your password."
+        accept: Accept invitation
+        accept_until: This invitation will be due in %{due_date}.
+        hello: Hello %{email}
+        ignore: If you don't want to accept the invitation, please ignore this email. Your account won't be created until you access the link above and set your password.
+        someone_invited_you: Someone has invited you to %{url}, you can accept it through the link below.
+        subject: Invitation instructions
   time:
     formats:
       devise:

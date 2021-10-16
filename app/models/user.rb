@@ -220,6 +220,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
+  after_save :create_conditional_autovomits
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
 
@@ -249,17 +250,37 @@ class User < ApplicationRecord
   end
 
   def calculate_score
-    score = (articles.where(featured: true).size * 100) + comments.sum(:score)
-    update_column(:score, score)
+    # User score is used to mitigate spam by reducing visibility of flagged users
+    # It can generally be used as a baseline for affecting certain functionality which
+    # relies on trust gray area.
+
+    # Current main use: If score is below zero, the user's profile page will render noindex
+    # meta tag. This is a subtle anti-spam mechanism.
+
+    # It can be changed as frequently as needed to do a better job reflecting its purpose
+    # Changes should generally keep the score within the same order of magnitude so that
+    # mass re-calculation is needed.
+    user_reaction_points = Reaction.user_vomits.where(reactable_id: id).sum(:points)
+    calculated_score = (badge_achievements_count * 10) + user_reaction_points
+    update_column(:score, calculated_score)
   end
 
   def path
     "/#{username}"
   end
 
+  # NOTE: This method is only used in the EmailDigestArticleCollector and does
+  # not perform particularly well. It should most likely not be used in other
+  # parts of the app.
   def followed_articles
-    Article
-      .cached_tagged_with_any(cached_followed_tag_names).unscope(:select)
+    relation = Article
+    if cached_antifollowed_tag_names.any?
+      relation = relation.not_cached_tagged_with_any(cached_antifollowed_tag_names)
+    end
+
+    relation
+      .cached_tagged_with_any(cached_followed_tag_names)
+      .unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
   end
 
@@ -307,6 +328,20 @@ class User < ApplicationRecord
         id: Follow.where(
           follower_id: id,
           followable_type: "ActsAsTaggableOn::Tag",
+          points: 1..,
+        ).select(:followable_id),
+      ).pluck(:name)
+    end
+  end
+
+  def cached_antifollowed_tag_names
+    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+      Tag.where(
+        id: Follow.where(
+          follower_id: id,
+          followable_type: "ActsAsTaggableOn::Tag",
+          points: ...1,
         ).select(:followable_id),
       ).pluck(:name)
     end
@@ -322,6 +357,10 @@ class User < ApplicationRecord
 
   def admin?
     has_role?(:super_admin)
+  end
+
+  def creator?
+    has_role?(:creator)
   end
 
   def any_admin?
@@ -571,6 +610,19 @@ class User < ApplicationRecord
 
   def bust_cache
     Users::BustCacheWorker.perform_async(id)
+  end
+
+  def create_conditional_autovomits
+    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
+      name.match?(/#{term}/i)
+    end
+
+    Reaction.create!(
+      user_id: Settings::General.mascot_user_id,
+      reactable_id: id,
+      reactable_type: "User",
+      category: "vomit",
+    )
   end
 
   # TODO: @citizen428 I don't want to completely remove this method yet, as we

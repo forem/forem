@@ -3,7 +3,19 @@ module Admin
     layout "admin"
     using StringToBoolean
 
-    after_action only: %i[update user_status banish full_delete merge] do
+    USER_ALLOWED_PARAMS = %i[
+      new_note note_for_current_role user_status
+      merge_user_id add_credits remove_credits
+      add_org_credits remove_org_credits
+      organization_id identity_id
+    ].freeze
+
+    EMAIL_ALLOWED_PARAMS = %i[
+      email_subject
+      email_body
+    ].freeze
+
+    after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
@@ -113,6 +125,12 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
+      redirect_to admin_users_path
+    end
+
+    def unpublish_all_articles
+      Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
+      flash[:success] = "Posts are being unpublished in the background. The job will complete soon."
       redirect_to admin_users_path
     end
 
@@ -260,18 +278,12 @@ module Admin
     end
 
     def user_params
-      allowed_params = %i[
-        new_note note_for_current_role user_status
-        merge_user_id add_credits remove_credits
-        add_org_credits remove_org_credits
-        organization_id identity_id
-      ]
-      params.require(:user).permit(allowed_params)
+      params.require(:user).permit(USER_ALLOWED_PARAMS)
     end
 
     def send_email_params
-      params.require(%i[email_subject email_body])
-      params.permit(%i[email_subject email_body])
+      params.require(EMAIL_ALLOWED_PARAMS)
+      params.permit(EMAIL_ALLOWED_PARAMS)
     end
   end
 end

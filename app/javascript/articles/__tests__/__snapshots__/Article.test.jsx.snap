@@ -201,6 +201,7 @@ Object {
                   class="crayons-story__details"
                 >
                   <a
+                    aria-label="Comments for post Unbranded Home Loan Account (0)"
                     class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                     data-testid="add-a-comment"
                     href="/some-post/path#comments"
@@ -223,7 +224,7 @@ Object {
                     <span
                       class="hidden s:inline"
                     >
-                      Add comment
+                      [missing "en.core.add_comment" translation]
                     </span>
                   </a>
                 </div>
@@ -449,6 +450,7 @@ Object {
                 class="crayons-story__details"
               >
                 <a
+                  aria-label="Comments for post Unbranded Home Loan Account (0)"
                   class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                   data-testid="add-a-comment"
                   href="/some-post/path#comments"
@@ -471,7 +473,7 @@ Object {
                   <span
                     class="hidden s:inline"
                   >
-                    Add comment
+                    [missing "en.core.add_comment" translation]
                   </span>
                 </a>
               </div>

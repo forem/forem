@@ -146,7 +146,6 @@ Rails.application.routes.draw do
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
     resources :organizations, only: %i[update create destroy]
-    resources :followed_articles, only: [:index]
     resources :follows, only: %i[show create] do
       collection do
         get "/bulk_show", to: "follows#bulk_show"
@@ -167,7 +166,6 @@ Rails.application.routes.draw do
         post "/update_or_create", to: "github_repos#update_or_create"
       end
     end
-    resources :events, only: %i[index show]
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
@@ -227,8 +225,8 @@ Rails.application.routes.draw do
                                            constraints: { view: /moderate/ }
     get "/listings/:category/:slug/delete_confirm", to: "listings#delete_confirm"
     delete "/listings/:category/:slug", to: "listings#destroy"
-    get "/notifications/:filter", to: "notifications#index"
-    get "/notifications/:filter/:org_id", to: "notifications#index"
+    get "/notifications/:filter", to: "notifications#index", as: :notifications_filter
+    get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     patch "/onboarding_update", to: "users#onboarding_update"
@@ -314,8 +312,6 @@ Rails.application.routes.draw do
     get "/badge", to: "pages#badge", as: :pages_badge
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
-    get "/events", to: "events#index"
-    get "/workshops", to: redirect("events")
     get "/sponsors", to: "pages#sponsors"
     get "/search", to: "stories/articles_search#index"
     post "articles/preview", to: "articles#preview"

@@ -2,6 +2,8 @@ module Admin
   class ChatChannelsController < Admin::ApplicationController
     layout "admin"
 
+    CHAT_ALLOWED_PARAMS = %i[usernames_string channel_name username_string].freeze
+
     def index
       @q = ChatChannel.where(channel_type: "invite_only").includes(:users).ransack(params[:q])
       @group_chat_channels = @q.result.page(params[:page]).per(50)
@@ -51,8 +53,7 @@ module Admin
     end
 
     def chat_channel_params
-      allowed_params = %i[usernames_string channel_name username_string]
-      params.require(:chat_channel).permit(allowed_params)
+      params.require(:chat_channel).permit(CHAT_ALLOWED_PARAMS)
     end
   end
 end

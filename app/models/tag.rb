@@ -41,6 +41,7 @@ class Tag < ActsAsTaggableOn::Tag
                   using: { tsearch: { prefix: true } }
 
   scope :eager_load_serialized_data, -> {}
+  scope :supported, -> { where(supported: true) }
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates

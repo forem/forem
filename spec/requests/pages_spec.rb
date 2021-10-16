@@ -27,7 +27,7 @@ RSpec.describe "Pages", type: :request do
         page.save! # Trigger processing of page.body_html
       end
 
-      it "returns json data " do
+      it "returns json data" do
         get "/page/#{page.slug}"
 
         expect(response.media_type).to eq("application/json")
@@ -231,7 +231,7 @@ RSpec.describe "Pages", type: :request do
     it "has proper text" do
       get "/robots.txt"
 
-      text = "Sitemap: https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/sitemaps/sitemap.xml.gz"
+      text = "Sitemap: #{URL.url('sitemap-index.xml')}"
       expect(response.body).to include(text)
     end
   end

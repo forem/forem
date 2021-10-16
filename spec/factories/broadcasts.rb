@@ -48,6 +48,15 @@ FactoryBot.define do
       end
     end
 
+    factory :forem_connect_broadcast do
+      title          { "Welcome Notification: forem_connect" }
+      type_of        { "Welcome" }
+      processed_html do
+        "You're on a roll! 🎉  Do you have a Forem account? Consider " \
+          "<a href='/settings'>connecting it</a>."
+      end
+    end
+
     factory :twitter_connect_broadcast do
       title          { "Welcome Notification: twitter_connect" }
       type_of        { "Welcome" }

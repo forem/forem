@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
   before_action :remember_cookie_sync
   before_action :forward_to_app_config_domain
+  before_action :determine_locale
 
   include SessionCurrentUser
   include ValidRequest
@@ -39,8 +40,7 @@ class ApplicationController < ActionController::Base
                           omniauth_callbacks
                           passwords
                           registrations
-                          service_worker
-                          shell].freeze
+                          service_worker].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   CONTENT_CHANGE_PATHS = [
@@ -176,6 +176,14 @@ class ApplicationController < ActionController::Base
     return unless Rails.env.development? && Stripe.api_key.present?
 
     Stripe.log_level = Stripe::LEVEL_INFO
+  end
+
+  def determine_locale
+    I18n.locale = if %w[en fr].include?(params[:locale])
+                    params[:locale]
+                  else
+                    Settings::UserExperience.default_locale
+                  end
   end
 
   def remember_cookie_sync
