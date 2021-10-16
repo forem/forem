@@ -53,12 +53,12 @@ class FollowsController < ApplicationController
   def create
     authorize Follow
 
-    followable = case params[:followable_type]
-                 when "Organization"
+    followable = case params[:followable_type].downcase
+                 when "organization"
                    Organization.find(params[:followable_id])
-                 when "Tag"
+                 when "tag"
                    Tag.find(params[:followable_id])
-                 when "Podcast"
+                 when "podcast"
                    Podcast.find(params[:followable_id])
                  else
                    User.find(params[:followable_id])
@@ -102,6 +102,7 @@ class FollowsController < ApplicationController
 
   def follow(followable, need_notification: false)
     user_follow = current_user.follow(followable)
+    puts
     Notification.send_new_follower_notification(user_follow) if need_notification
     "followed"
   rescue ActiveRecord::RecordInvalid
