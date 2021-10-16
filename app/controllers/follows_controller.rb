@@ -102,7 +102,6 @@ class FollowsController < ApplicationController
 
   def follow(followable, need_notification: false)
     user_follow = current_user.follow(followable)
-    puts
     Notification.send_new_follower_notification(user_follow) if need_notification
     "followed"
   rescue ActiveRecord::RecordInvalid
