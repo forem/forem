@@ -101,7 +101,12 @@ class Article < ApplicationRecord
   before_save :fetch_video_duration
   before_save :set_caches
   before_create :create_password
+  # Purging article edge-cache
+  after_create :purge_all
   before_destroy :before_destroy_actions, prepend: true
+
+  after_destroy :purge, :purge_all
+  after_save :purge
 
   after_save :create_conditional_autovomits
   after_save :bust_cache

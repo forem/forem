@@ -1373,4 +1373,32 @@ RSpec.describe Article, type: :model do
       expect(another_article.errors.messages[:feed_source_url]).to include(error_message)
     end
   end
+
+  describe "Validating edge-cache purging calls" do
+    let(:article) { create(:article) }
+
+    before do
+      allow(article).to receive(:purge)
+      allow(article).to receive(:purge_all)
+    end
+
+    it "invokes :purge_all when a new article is created" do
+      article.run_callbacks(:create)
+
+      expect(article).to have_received(:purge_all).once
+    end
+
+    it "invokes :purge when an article is saved" do
+      article.run_callbacks(:save)
+
+      expect(article).to have_received(:purge).once
+    end
+
+    it "invokes :purge and :purge_all when an article is destroyed" do
+      article.run_callbacks(:destroy)
+
+      expect(article).to have_received(:purge).once
+      expect(article).to have_received(:purge_all).once
+    end
+  end
 end
