@@ -1,5 +1,4 @@
-
-<%= form_tag('/users/sign_in', id: "login-form") do %>
+<%= form_tag(session_path(:user), id: "login-form") do %>
 <%= form_for(User.new, as: :user, url: session_path(:user), data: { testid: "login-form" }) do |f| %>
   <div class="crayons-field mb-3">
     <%= f.label :email, class: "crayons-field__label" %>
