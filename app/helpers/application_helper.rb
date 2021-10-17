@@ -126,7 +126,7 @@ module ApplicationHelper
     followable_type = if followable.respond_to?(:decorated?) && followable.decorated?
                         followable.object.class.name.downcase
                       else
-                        followable.class.name.downcase
+                        followable.class.name
                       end
 
     followable_name = followable.name
