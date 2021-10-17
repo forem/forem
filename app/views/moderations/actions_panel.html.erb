@@ -24,7 +24,7 @@
               data-category="thumbsup"
               data-reactable-type="<%= @moderatable.class.name %>">
         <div class="reaction-button-circle">
-          <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumbup")) %>
+          <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_up")) %>
           <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
         </div>
         <span class="vote-text"><%= t("views.moderations.actions.vote_up") %></span>
@@ -34,7 +34,7 @@
               data-category="thumbsdown"
               data-reactable-type="<%= @moderatable.class.name %>">
         <div class="reaction-button-circle">
-          <%= inline_svg_tag("twemoji/thumb-down.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumbdown")) %>
+          <%= inline_svg_tag("twemoji/thumb-down.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_down")) %>
           <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
         </div>
         <span class="vote-text"><%= t("views.moderations.actions.vote_down") %></span>
@@ -119,14 +119,14 @@
     <% end %>
 
     <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
-    <button aria-haspopup="true" aria-expanded="false" aria-controls="set-experience-options" class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="<%= t("views.moderations.actions.exp.aria_label") %>">
+    <button aria-haspopup="true" aria-expanded="false" aria-controls="set-experience-options" class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="<%= t("views.moderations.actions.experience.aria_label") %>">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
-          <%= inline_svg_tag("book.svg", aria: true, title: t("views.moderations.actions.exp.icon")) %>
+          <%= inline_svg_tag("book.svg", aria: true, title: t("views.moderations.actions.experience.icon")) %>
         </div>
         <header>
-          <h2><%= t("views.moderations.actions.exp.heading") %></h2>
-          <h3><%= t("views.moderations.actions.exp.subtitle") %></h3>
+          <h2><%= t("views.moderations.actions.experience.heading") %></h2>
+          <h3><%= t("views.moderations.actions.experience.subtitle") %></h3>
         </header>
       </div>
       <div class=" toggle-chevron-container ">
@@ -148,7 +148,7 @@
         data-group=" experience_level ">
         <div class=" level-rating-content ">
           <span class=" level-rating-number "><%= rating_level[1] %></span>
-          <span class=" level-rating-text "><%= t("views.moderations.actions.exp.level.#{rating_name}") %></span>
+          <span class=" level-rating-text "><%= t("views.moderations.actions.experience.level.#{rating_name}") %></span>
         </div>
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: t("views.moderations.actions.checkmark")) %>
       </button>

@@ -34,7 +34,10 @@
     <h1 class="pt-5" style="text-align: center"><%= t("views.moderations.notice.subtitle", community: community_name) %></h1>
     <div class="body">
       <p><%= t("views.moderations.notice.desc1_html", community: community_name) %></p>
-      <p><%= t("views.moderations.notice.desc2_html", code: link_to(t("views.moderations.notice.code"), code_of_conduct_path), trusted: link_to(t("views.moderations.notice.trusted"), community_moderation_path), tag: link_to(t("views.moderations.notice.tag"), tag_moderation_path)) %></p>
+      <p>
+        <%= t("views.moderations.notice.desc2_html", code: link_to(t("views.moderations.notice.code_of_conduct"), code_of_conduct_path), trusted: link_to(t("views.moderations.notice.trusted"), community_moderation_path),
+                                                     tag: link_to(t("views.moderations.notice.tag"), tag_moderation_path)) %>
+      </p>
       <p><%= t("views.moderations.notice.desc3_html", email: mail_to(email_link, email_link)) %></p>
       <% unless user_signed_in? %>
         <p><em><%= t("views.moderations.notice.desc4") %></em></p>

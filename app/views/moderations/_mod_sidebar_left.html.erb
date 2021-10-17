@@ -65,11 +65,11 @@
         <%= inline_svg_tag("link-external.svg", aria: true, title: t("views.moderations.aside.external"), class: "crayons-icon") %>
       </a>
       <a href="<%= URL.url %>/terms" class="crayons-link crayons-link--block mod-center--nav__item">
-        <%= t("views.moderations.aside.terms") %>
+        <%= t("views.moderations.aside.terms_and_conditions") %>
         <%= inline_svg_tag("link-external.svg", aria: true, title: t("views.moderations.aside.external"), class: "crayons-icon") %>
       </a>
       <a href="<%= URL.url %>/code-of-conduct" class="crayons-link crayons-link--block mod-center--nav__item">
-        <%= t("views.moderations.aside.code") %>
+        <%= t("views.moderations.aside.code_of_conduct") %>
         <%= inline_svg_tag("link-external.svg", aria: true, title: t("views.moderations.aside.external"), class: "crayons-icon") %>
       </a>
     </div>
@@ -79,7 +79,7 @@
       <%= t("views.moderations.aside.feedback.subtitle") %>
     </span>
     <span>
-      <%= t("views.moderations.aside.feedback.desc", email: ForemInstance.email) %>
+      <%= t("views.moderations.aside.feedback.description", email: ForemInstance.email) %>
     </span>
   </div>
 </aside>
