@@ -392,6 +392,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Organization test article") do
     show_comments: true,
     user_id: admin_user.id,
     organization_id: Organization.first.id,
+    slug: "test-organization-article-slug",
   )
 end
 
