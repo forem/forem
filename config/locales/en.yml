@@ -9,6 +9,7 @@ en:
     all: All
     analytics: Analytics
     browse: Browse
+    code_of_conduct: Code of Conduct
     comment: Comment
     comments: Comments
     community_name_is_great: "%{community_name} is great!"
@@ -36,15 +37,18 @@ en:
     loading: loading...
     location: Location
     log_in: Log in
+    min_read: min read
     moderator_center: Moderator Center
     month: Month
     more_from: More from
     my_tags: My Tags
+    other: Other
     podcasts: Podcasts
     pinned: Pinned
     popular_tags: Popular Tags
     post: Post
     posts: Posts
+    posted_on: Posted on
     reaction: Reaction
     reaction_pluralized:
       one: reaction
@@ -57,6 +61,8 @@ en:
     reading_list: Reading list
     reply: Reply
     report_abuse: Report abuse
+    save: Save
+    saved: Saved
     search: Search
     see_all: See all
     series: Series

@@ -9,6 +9,7 @@ fr:
     all: Tout
     analytics: Analytique
     browse: Parcourir
+    code_of_conduct: Code de conduite
     comment: Commentaire
     comments: Commentaires
     community_name_is_great: "%{community_name} est super"
@@ -36,15 +37,18 @@ fr:
     loading: Chargement en cours...
     location: Lieu
     log_in: Se connecter
+    min_read: min lues
     moderator_center: Centre de modération
     month: Mois
     more_from: Plus de la part de
     my_tags: Mes sujets
+    other: Autre
     podcasts: Podcasts
     pinned: Épinglé
     popular_tags: Sujets populaires
     post: Publication
     posts: Publications
+    posted_on: Posté sur
     reaction: Réaction
     reaction_pluralized:
       one: réaction
@@ -57,6 +61,8 @@ fr:
     reading_list: Liste de lecture
     reply: Répondre
     report_abuse: Signaler un abus
+    save: Enregistrer
+    saved: Enregistré
     search: Recherche
     see_all: Tout voir
     series: Séries

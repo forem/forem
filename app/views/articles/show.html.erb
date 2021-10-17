@@ -117,7 +117,7 @@
                   <% end %>
                   <p class="fs-xs color-base-60">
                     <% if @article.published_timestamp.present? %>
-                      Posted on
+                      <%= t("core.posted_on") %>
                       <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
                     <% end %>
                     <% if @article.co_author_ids.present? %>
