@@ -138,7 +138,7 @@ Cypress.Commands.add('loginCreator', ({ name, username, email, password }) => {
     return cy.request(
       'POST',
       '/users',
-      `utf8=%E2%9C%93&user%5Bname%5D=${encodedName}&user%5Busername%5D=${encodedUsername}&user%5Bemail%5D=${encodedEmail}%40forem.local&user%5Bpassword%5D=${encodedPassword}&commit=Create+my+account`,
+      `utf8=%E2%9C%93&user%5Bname%5D=${encodedName}&user%5Busername%5D=${encodedUsername}&user%5Bemail%5D=${encodedEmail}%40forem.local&user%5Bpassword%5D=${encodedPassword}&commit=Create+my+account&user%5Bforem_owner_secret%5D=secret`,
     );
   }
 
