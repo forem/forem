@@ -10,7 +10,7 @@ module Reactions
       return unless reactable
 
       reactable.touch_by_reaction if reactable.respond_to?(:touch_by_reaction)
-      if reaction.reactable.respond_to?(:sync_reactions_count)
+      if reactable.respond_to?(:sync_reactions_count)
         ThrottledCall.perform(:sync_reactions_count, throttle_for: 15.minutes) do
           reactable.sync_reactions_count
         end

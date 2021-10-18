@@ -770,7 +770,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    "#{title.to_s.downcase.parameterize.tr('_', '')}-#{rand(100_000).to_s(26)}"
+    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
   end
 
   def clean_data
