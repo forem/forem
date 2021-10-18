@@ -1,0 +1,21 @@
+---
+fr:
+  views:
+    users:
+      profile_fields:
+        bio:
+          label: Bio
+          placeholder: A short bio...
+        display_email_on_profile: Display email on profile
+        location:
+          label: Location
+          placeholder: Halifax, Nova Scotia
+        website:
+          label: Website URL
+          placeholder: https://yoursite.com
+        education: Education
+        currently_learning: Currently learning
+        currently_hacking_on: Currently hacking on
+        available_for: Available for
+        skills_languages: Skills/Languages
+        work: Work
