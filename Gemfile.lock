@@ -606,7 +606,7 @@ GEM
     recaptcha (5.8.1)
       json
     redcarpet (3.5.1)
-    redis (4.5.0)
+    redis (4.5.1)
     redis-actionpack (5.1.0)
       actionpack (>= 4.0, < 7)
       redis-rack (>= 1, < 3)
@@ -971,7 +971,7 @@ DEPENDENCIES
   ransack (~> 2.4)
   recaptcha (~> 5.8)
   redcarpet (~> 3.5)
-  redis (~> 4.5.0)
+  redis (~> 4.5.1)
   redis-actionpack (= 5.1.0)
   redis-rack (= 2.0.6)
   redis-rails (~> 5.0.2)

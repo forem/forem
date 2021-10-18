@@ -79,7 +79,7 @@ gem "rails", "~> 6.1.4" # Ruby on Rails
 gem "ransack", "~> 2.4" # Searching and sorting
 gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
-gem "redis", "~> 4.5.0" # Redis ruby client
+gem "redis", "~> 4.5.1" # Redis ruby client
 gem "rpush", "~> 6.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
