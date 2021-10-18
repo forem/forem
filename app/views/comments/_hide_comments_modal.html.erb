@@ -1,12 +1,12 @@
 <div id="hide-comments-modal" class="hide-comments-modal hidden">
   <div class="hide-comments-modal__container">
-    <%= form_with url: "/comments/hide", id: "hide-comments-modal__form", method: :patch, remote: true do |f| %>
+    <%= form_with url: "/comments/hide", class: "hide-comments-modal__form", id: "hide-comments-modal__form", method: :patch, remote: true, html: { "data-type": "json" } do |f| %>
       <div class="hide-comments-modal__content">
         <p class="hide-comments-modal__description">
           Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.
         </p>
         <p>
-          <%= f.check_box :hide_children %>
+          <%= f.check_box :hide_children, class: "hide_children" %>
           <%= f.label :hide_children, "Hide child comments as well" %>
         </p>
         <p>

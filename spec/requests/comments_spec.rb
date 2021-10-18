@@ -405,6 +405,14 @@ RSpec.describe "Comments", type: :request do
         expect(child_comment.hidden_by_commentable_user).to be true
       end
 
+      it "hides second level child if hide_children is passed" do
+        second_level_child = create(:comment, parent: child_comment, commentable: article, user: user)
+        patch "/comments/#{parent_comment.id}/hide", params: { hide_children: "1" },
+                                                     headers: { HTTP_ACCEPT: "application/json" }
+        second_level_child.reload
+        expect(second_level_child.hidden_by_commentable_user).to be true
+      end
+
       it "hides child comment when hide_children is not passed" do
         patch "/comments/#{parent_comment.id}/hide", params: { hide_children: "0" },
                                                      headers: { HTTP_ACCEPT: "application/json" }
