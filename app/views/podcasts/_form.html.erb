@@ -4,7 +4,7 @@
   <div>
     <header class="mb-4">
       <a href="/pod" class="podcast-back-button">&lt; return to podcasts</a>
-      <h2>Suggest a Podcast</h2>
+      <h2><%= I18n.t("podcasts.suggest_a_podcast") %></h2>
     </header>
     <% if podcast.errors.any? %>
       <div class="podcast-errors">

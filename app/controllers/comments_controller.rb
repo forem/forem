@@ -9,8 +9,6 @@ class CommentsController < ApplicationController
 
   # GET /comments
   # GET /comments.json
-  # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/PerceivedComplexity
   def index
     skip_authorization
     @on_comments_page = true
@@ -37,9 +35,6 @@ class CommentsController < ApplicationController
 
     set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
-  # rubocop:enable Metrics/PerceivedComplexity
-
   # GET /comments/1
   # GET /comments/1.json
   # GET /comments/1/edit
