@@ -26,6 +26,15 @@ fr:
       pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
       removed: "🗑 Pin removed"
       error: You can only have five pins
+    series:
+      meta:
+        description: View %{title} on %{site}
+      heading: "%{user}'s Series"
+      empty: This user doesn't have any series
+      list:
+        heading: "%{series} Series' Articles"
+        back: Back to %{user}'s Series
+        empty: This series doesn't have any articles
     sponsor:
       icon: Love
       seek: Become a sponsor
