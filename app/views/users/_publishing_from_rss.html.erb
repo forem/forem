@@ -1,33 +1,31 @@
 <div class="crayons-card crayons-card--content-rows">
   <div class="grid gap-4">
     <h2 class="crayons-subtitle-1">
-      Publishing to <%= community_name %> from RSS
+      <%= t("views.settings.extensions.rss.heading", community: community_name) %>
     </h2>
     <% if @users_setting.feed_url.present? %>
       <%= form_for @users_setting, url: users_settings_path do |f| %>
         <%= f.hidden_field :feed_url, value: @users_setting.feed_url %>
         <%= f.hidden_field :tab, value: @tab %>
         <div class="flex items-center">
-          <button type="submit" class="crayons-btn crayons-btn--secondary">Fetch feed now</button>
-          <p class="pl-2">Last Fetched: <time id="rss-fetch-time" datetime="<%= @users_setting.user.feed_fetched_at.iso8601 %>"></time></p>
+          <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.extensions.rss.fetch") %></button>
+          <p class="pl-2"><%= t("views.settings.extensions.rss.last_html", time: tag.time(id: "rss-fetch-time", datetime: @users_setting.user.feed_fetched_at.iso8601)) %></p>
         </div>
       <% end %>
     <% end %>
     <p>
-      Posts will land in your <a href="/dashboard">dashboard</a>
-      <strong>as drafts</strong>, and then you can publish from there.
+      <%= t("views.settings.extensions.rss.desc1_html", dashboard: link_to(t("views.settings.extensions.rss.dashboard"), "/dashboard")) %>
     </p>
-    <p>Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.</p>
+    <p><%= t("views.settings.extensions.rss.desc2") %></p>
     <p>
-      To find out more about how drafts are created from your feed, read this
-      <a href="<%= publishing_from_rss_guide_path %>">guide</a>.
+      <%= t("views.settings.extensions.rss.desc3_html", guide: link_to(t("views.settings.extensions.rss.guide"), publishing_from_rss_guide_path)) %>
     </p>
     <p>
-      Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter.
+      <%= t("views.settings.extensions.rss.desc4") %>
       <%= t("contact_prompts.if_any_questions_html") %>
     </p>
-    <p>FYI: Medium RSS feed URLs are <em>https://medium.com/feed/@your_username</em></p>
-    <p><em>By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.</em></p>
+    <p><%= t("views.settings.extensions.rss.desc5_html") %></p>
+    <p><em><%= t("views.settings.extensions.rss.desc6") %></em></p>
   </div>
 
   <%= form_for @users_setting, url: users_settings_path, html: { class: "grid gap-6" } do |f| %>
@@ -38,20 +36,16 @@
 
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :feed_mark_canonical, class: "crayons-checkbox" %>
-      <%= f.label :feed_mark_canonical, "Mark the RSS source as canonical URL by default <p class='crayons-field__description'>If you check this box, the post will automatically mark the feed source as the canonical URL.</p>".html_safe, class: "crayons-field__label" %>
+      <%= f.label :feed_mark_canonical, t("views.settings.extensions.rss.mark_canonical_html"), class: "crayons-field__label" %>
     </div>
 
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :feed_referential_link, class: "crayons-checkbox" %>
-      <%= f.label :feed_referential_link,
-                  "Replace self-referential links with #{community_name}-specific links <p class='crayons-field__description'>\
-                  If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on #{community_name} if available. \
-                  This is primarily meant for folks migrating their entire blog onto #{community_name}.</p>".html_safe,
-                  class: "crayons-field__label" %>
+      <%= f.label :feed_referential_link, t("views.settings.extensions.rss.referential_html", community: community_name), class: "crayons-field__label" %>
     </div>
 
     <%= f.hidden_field :tab, value: @tab, id: nil %>
-    <% button_text = @users_setting.feed_url.present? ? "Save Feed Settings" : "Submit Feed Settings" %>
+    <% button_text = @users_setting.feed_url.present? ? t("views.settings.extensions.rss.save") : t("views.settings.extensions.rss.submit") %>
     <button class="crayons-btn w-max" type="submit"><%= button_text %></button>
   <% end %>
 </div>

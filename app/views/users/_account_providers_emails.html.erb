@@ -1,15 +1,15 @@
 <div class="crayons-card crayons-card--content-rows" id="emails">
-  <h2>Account emails</h2>
+  <h2><%= t("views.settings.account.emails") %></h2>
   <ul class="list-none">
     <li class="mb-2">
-      <strong class="color-base-60">Primary email</strong>
+      <strong class="color-base-60"><%= t("views.settings.account.primary") %></strong>
       <span class="pl-2"><%= @user.email %></span>
     </li>
 
     <% @user.identities_enabled.each do |identity| %>
       <% provider = authentication_provider(identity.provider) %>
       <li class="mb-2">
-        <strong class="color-base-60"><%= provider.official_name %> email</strong>
+        <strong class="color-base-60"><%= t("views.settings.account.provider_email", provider: provider.official_name) %></strong>
         <span class="pl-2"><%= identity.email %></span>
       </li>
     <% end %>

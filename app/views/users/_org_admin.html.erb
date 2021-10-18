@@ -2,7 +2,7 @@
 <%= render "shared/webcomponents_loader_script" %>
 
 <div class="crayons-card crayons-card--content-rows">
-  <h2>Organization Members</h2>
+  <h2><%= t("views.settings.org.admin.members") %></h2>
 
   <div class="grid gap-2">
     <% @org_organization_memberships.each do |org_membership| %>
@@ -10,11 +10,11 @@
         <p class="fw-medium flex-1">
           <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
           <% if org_membership.user == @user %>
-            <span class="crayons-indicator">You</span>
+            <span class="crayons-indicator"><%= t("views.settings.org.admin.you") %></span>
           <% end %>
 
           <% if org_membership.type_of_user == "admin" %>
-            <span class="crayons-indicator crayons-indicator--critical">Admin</span>
+            <span class="crayons-indicator crayons-indicator--critical"><%= t("views.settings.org.admin.admin") %></span>
           <% end %>
         </p>
 
@@ -22,21 +22,21 @@
           <% if org_membership.user == @user && org_membership.type_of_user == "admin" %>
           <!-- TODO: ? -->
           <% elsif org_membership.user != @user && org_membership.type_of_user == "admin" %>
-            <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('Are you sure you want to take away admin status from #{org_membership.user.name}?');" do %>
+            <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.revoke.confirm', user: org_membership.user.name)}');" do %>
               <%= hidden_field_tag "user_id", org_membership.user_id %>
               <%= hidden_field_tag "organization_id", @organization.id %>
-              <button class="crayons-btn crayons-btn--secondary ml-2" title="Revoke admin status" type="submit">Revoke admin status</button>
+              <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.revoke.title") %>" type="submit"><%= t("views.settings.org.admin.revoke.text") %></button>
             <% end %>
           <% else %>
-            <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('Are you sure you want to give #{org_membership.user.name} admin status?');" do %>
+            <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.make.confirm', user: org_membership.user.name)}');" do %>
               <%= hidden_field_tag "user_id", org_membership.user_id %>
               <%= hidden_field_tag "organization_id", @organization.id %>
-              <button class="crayons-btn crayons-btn--secondary ml-2" title="Make admin" type="submit">Make admin</button>
+              <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.make.title") %>" type="submit"><%= t("views.settings.org.admin.make.text") %></button>
             <% end %>
-            <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('Are you sure you want remove #{org_membership.user.name} from the organization?');" do %>
+            <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('#{t('views.settings.org.admin.remove.confirm', user: org_membership.user.name)}');" do %>
               <%= hidden_field_tag "user_id", org_membership.user_id %>
               <%= hidden_field_tag "organization_id", @organization.id %>
-              <button class="crayons-btn crayons-btn--secondary ml-2" title="Remove from org" type="submit">Remove from org</button>
+              <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.remove.title") %>" type="submit"><%= t("views.settings.org.admin.remove.text") %></button>
             <% end %>
           <% end %>
         </div>
@@ -45,39 +45,36 @@
   </div>
 
   <header>
-    <h2 class="mb-2">Grow the team</h2>
-    <p>Invite teammates by sending them the secret and the following instructions:</p>
+    <h2 class="mb-2"><%= t("views.settings.org.admin.grow") %></h2>
+    <p><%= t("views.settings.org.admin.invite") %></p>
   </header>
 
   <div class="crayons-card crayons-card--secondary p-4">
     <ol class="list-decimal pl-6 mb-2">
-      <li>Sign up at
-        <a href="<%= app_url %>"><%= app_url %></a></li>
-      <li>Navigate to
-        <a href="<%= app_url(user_settings_path(:organization)) %>"><%= app_url(user_settings_path(:organization)) %></a>
-      </li>
-      <li>Paste the secret code below and click <b>Join Organization</b></li>
+      <li><%= t("views.settings.org.admin.inst1_html", url: link_to(app_url, app_url)) %></li>
+      <li><%= t("views.settings.org.admin.inst2_html", url: link_to(app_url(user_settings_path(:organization)), app_url(user_settings_path(:organization)))) %></li>
+      <li><%= t("views.settings.org.admin.inst3_html") %></li>
     </ol>
     <p>
-      Your secret code is:
+      <%= t("views.settings.org.admin.secret_code") %>
       <clipboard-copy for="settings-org-secret" onclick="nextElementSibling.hidden = false">
-        <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="Organization secret (to be rotated regularly)">
-        <%= inline_svg_tag("copy.svg", aria: true, class: "crayons-icon", title: "Copy to clipboard") %>
+        <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.aria_label") %>">
+        <%= inline_svg_tag("copy.svg", aria: true, class: "crayons-icon", title: t("views.settings.org.admin.copy.icon")) %>
       </clipboard-copy>
-      <span class="copy-text-announcer" id="copy-text-announcer" role="alert" hidden>Copied to clipboard!</span>
+      <span class="copy-text-announcer" id="copy-text-announcer" role="alert" hidden><%= t("views.settings.org.admin.copy.text") %></span>
   </div>
 
   <div class="flex items-center">
-    <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('Are you sure you want to generate a new secret? All outstanding secrets will be invalid.');" do %>
+    <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('#{t('views.settings.org.admin.gen.confirm')}');" do %>
       <%= hidden_field_tag "organization[id]", @organization.id %>
-      <button type="submit" class="crayons-btn crayons-btn--secondary">Generate new secret</button>
+      <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.org.admin.gen.submit") %></button>
     <% end %>
-    <p class="fw-medium color-accent-danger ml-3">You should rotate this regularly!</p>
+    <p class="fw-medium color-accent-danger ml-3"><%= t("views.settings.org.admin.gen.text") %></p>
   </div>
 </div>
 
 <div class="crayons-card crayons-card--content-rows">
-  <h2>Organization details</h2>
+  <h2><%= t("views.settings.org.admin.details") %></h2>
 
   <%= form_for @organization, html: { class: "grid gap-6" } do |f| %>
     <%= f.hidden_field :id %>
@@ -86,9 +83,9 @@
       <%= f.text_field :name, maxlength: 50, class: "crayons-textfield", placeholder: "Acme Inc." %>
     </div>
     <div class="crayons-field">
-      <%= f.label :slug, "Username", class: "crayons-field__label" %>
-      <%= f.text_field :slug, maxlength: 18, minlength: 2, class: "crayons-textfield", placeholder: "acmeinc" %>
-      <p class="crayons-field__description">Your organization's URL is: <%= app_url(@organization.slug) %></p>
+      <%= f.label :slug, class: "crayons-field__label" %>
+      <%= f.text_field :slug, maxlength: 18, minlength: 2, class: "crayons-textfield" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.admin.form.slug", slug: app_url(@organization.slug)) %></p>
     </div>
 
     <div class="crayons-field">
@@ -138,101 +135,92 @@
     <div class="crayons-field">
       <%= f.label :tag_line, class: "crayons-field__label" %>
       <%= f.text_field :tag_line, maxlength: 60, class: "crayons-textfield" %>
-      <p class="crayons-field__description">Limit of 60 characters</p>
+      <p class="crayons-field__description"><%= t("views.settings.org.admin.form.tag_line") %></p>
     </div>
     <div class="crayons-field">
       <%= f.label :summary, class: "crayons-field__label" %>
       <%= f.text_area :summary, maxlength: 250, class: "crayons-textfield" %>
-      <p class="crayons-field__description">Limit of 250 characters</p>
+      <p class="crayons-field__description"><%= t("views.settings.org.admin.form.summary") %></p>
     </div>
 
     <%= render partial: "shared/logo_design", locals: { f: f, account: @organization_membership.organization } %>
 
     <div class="crayons-field">
       <%= f.label :location, class: "crayons-field__label" %>
-      <%= f.text_field :location, maxlength: 64, class: "crayons-textfield", placeholder: "Halifax, Nova Scotia" %>
-      <p class="crayons-field__description">Limit of 64 characters</p>
+      <%= f.text_field :location, maxlength: 64, class: "crayons-textfield" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.admin.form.location") %></p>
     </div>
     <div class="crayons-field">
-      <%= f.label :email, "Support email", class: "crayons-field__label" %>
-      <%= f.text_field :email, maxlength: 64, placeholder: "mail@example.com", class: "crayons-textfield" %>
-      <p class="crayons-field__description">Limit of 64 characters</p>
+      <%= f.label :email, class: "crayons-field__label" %>
+      <%= f.text_field :email, maxlength: 64, class: "crayons-textfield" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.admin.form.email") %></p>
     </div>
     <div class="crayons-field">
-      <%= f.label :company_size, "Organization size", class: "crayons-field__label" %>
-      <%= f.text_field :company_size, maxlength: 7, placeholder: "...", class: "crayons-textfield" %>
-      <p class="crayons-field__description">Enter a number</p>
+      <%= f.label :company_size, class: "crayons-field__label" %>
+      <%= f.text_field :company_size, maxlength: 7, class: "crayons-textfield" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.admin.form.company_size") %></p>
     </div>
     <div class="crayons-field">
-      <%= f.label :story, "Our story", class: "crayons-field__label" %>
-      <%= f.text_area :story, maxlength: 640, placeholder: "...", class: "crayons-textfield" %>
-      <p class="crayons-field__description">Limit of 640 characters</p>
+      <%= f.label :story, class: "crayons-field__label" %>
+      <%= f.text_area :story, maxlength: 640, class: "crayons-textfield" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.admin.form.story") %></p>
     </div>
     <div class="crayons-field">
-      <%= f.label :tech_stack, "Our stack", class: "crayons-field__label" %>
-      <%= f.text_area :tech_stack, maxlength: 640, placeholder: "...", class: "crayons-textfield" %>
-      <p class="crayons-field__description">Limit of 640 characters</p>
+      <%= f.label :tech_stack, class: "crayons-field__label" %>
+      <%= f.text_area :tech_stack, maxlength: 640, class: "crayons-textfield" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.admin.form.tech_stack") %></p>
     </div>
     <header>
-      <h2 class="mb-2">Call-to-action box</h2>
-      <p>Customizable text that appears to the right of every post for your organization.</p>
+      <h2 class="mb-2"><%= t("views.settings.org.admin.cta") %></h2>
+      <p><%= t("views.settings.org.admin.cta_desc") %></p>
     </header>
     <div class="crayons-field">
-      <%= f.label :cta_body_markdown, "Body text", class: "crayons-field__label" %>
-      <%= f.text_area :cta_body_markdown, maxlength: 256, class: "crayons-textfield", placeholder: "..." %>
-      <p class="crayons-field__description">Limited markdown: _italic_ and **bold** is okay. Links, and headers etc. will not show up. 256 character limit.</p>
+      <%= f.label :cta_body_markdown, class: "crayons-field__label" %>
+      <%= f.text_area :cta_body_markdown, maxlength: 256, class: "crayons-textfield" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.admin.form.cta_body_markdown") %></p>
     </div>
     <div class="crayons-field">
-      <%= f.label :cta_button_text, "Link text", class: "crayons-field__label" %>
-      <%= f.text_field :cta_button_text, maxlength: 20, placeholder: "Visit Acme Site", class: "crayons-textfield" %>
-      <p class="crayons-field__description">Limit of 20 characters</p>
+      <%= f.label :cta_button_text, class: "crayons-field__label" %>
+      <%= f.text_field :cta_button_text, maxlength: 20, class: "crayons-textfield" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.admin.form.cta_button_text") %></p>
     </div>
     <div class="crayons-field">
       <%= f.label :cta_button_url, "Link url", class: "crayons-field__label" %>
       <%= f.text_field :cta_button_url, maxlength: 150, placeholder: "https://example.com", class: "crayons-textfield" %>
     </div>
 
-    <button class="crayons-btn w-max" type="submit">Save</button>
+    <button class="crayons-btn w-max" type="submit"><%= t("views.settings.org.admin.form.submit") %></button>
   <% end %>
 </div>
 
 <div class="crayons-card crayons-card--content-rows">
   <header>
-    <h2 class="color-accent-danger">Danger Zone</h2>
+    <h2 class="color-accent-danger"><%= t("views.settings.danger") %></h2>
   </header>
   <div class="crayons-field">
     <div class="grid gap-2">
       <header>
-        <h2>Delete Organization</h2>
+        <h2><%= t("views.settings.org.admin.delete.heading") %></h2>
       </header>
       <p>
-        You can delete your organization if you:
-        <ul>
-          <li>are the only member in the organization</li>
-          <li>are an admin of the organization</li>
-          <li>the organization has no posts</li>
-          <li>and the organization has no credits</li>
-        </ul>
+        <%= t("views.settings.org.admin.delete.desc_html") %>
       </p>
       <% if @org_organization_memberships.size === 1 && @organization.articles_count.zero? %>
-        <% onsubmit = "return confirm('Are you absolutely sure you want to delete your organization: #{@organization.name}?');" %>
+        <% onsubmit = "return confirm('#{t('views.settings.org.admin.delete.confirm', name: @organization.name)}');" %>
         <%= form_tag organization_path(@organization.id), method: :delete, onsubmit: onsubmit do %>
           <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
-            Delete "<%= @organization.name %>"
+            <%= t("views.settings.org.admin.delete.submit", name: @organization.name) %>
           </button>
         <% end %>
       <% else %>
         <div class="crayons-card crayons-card--secondary">
           <div class="crayons-card__body">
-            Your organization currently does not meet the above requirements.
-            Please remove all other members and organization posts first.
+            <%= t("views.settings.org.admin.delete.unmet") %>
           </div>
         </div>
       <% end %>
       <p>
-        Questions? Email us at
-        <a href="<%= ForemInstance.email %>"><%= ForemInstance.email %></a>
-        for help.
+        <%= t("views.settings.org.admin.delete.questions_html", email: link_to(ForemInstance.email, ForemInstance.email)) %>
       </p>
     </div>
   </div>
