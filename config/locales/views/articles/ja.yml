@@ -1,0 +1,84 @@
+---
+ja:
+  views:
+    articles:
+      meta:
+        description: このコミュニティに投稿された記事
+      actions:
+        aria_label: 記事へのアクション
+      comments:
+        aria_label: Comments for post %{title} (%{num})
+        subtitle_html: みんなの声%{num}
+        num: "（%{num}）"
+        subscribe: 投稿
+      conduct:
+        aria_label: 倫理的措置
+        code: お約束
+        report: 通報する
+      delete:
+        heading: この記事を削除してもよろしいですか？
+        desc:
+          text_html: この操作は取り消せません。それとも%{action}ますか？
+          edit: 編集し
+          unpublish: 公開停止し
+        action:
+          button: 削除
+          cancel: やめる
+          edit: 編集
+          unpublish: 公開停止
+      lock:
+        meta:
+          title: Confirm Discussion Lock
+        heading: Are you sure you want to lock the discussion on this post?
+        desc_html: Users will not be able to add new comments. This will <em class="fw-bold">not</em> remove existing comments. You can unlock the discussion at any time to allow users to leave comments again.
+        cancel: Cancel
+        notes:
+          label: Notes (optional) - this is only visible to you and admins
+          placeholder: More details as to why you locked the discussion.
+        reason:
+          label: Reason for locking the discussion (optional) - this will be publicly displayed
+          placeholder: The reason why you're locking this discussion.
+        submit: コメント欄を凍結する
+      preview_discuss_html:
+        zero: New Discussion!
+        other: '#discuss <img src="%{image}" />%{count}'
+      save:
+        title: 切り抜き帳に保存
+        aria_label: 切り抜き帳に保存
+        initial: 保存
+        success: 保存済
+      series:
+        subtitle: "%{slug}（%{size}）"
+        size:
+          other: 全 %{count} 部
+        published: "%{date}に公開"
+        inbetween:
+          num: "︙"
+          text:
+            other: "…（%{count} 部分）…"
+          title: すべて表示
+      unlock:
+        meta:
+          title: Confirm Discussion Unlock
+        heading: Are you sure you want to unlock the discussion on this post?
+        desc: Users will be able to add new comments. You can lock the discussion at any time to prevent users from leaving comments again.
+        cancel: Cancel
+        notes: 'Notes from when this discussion was locked (only visible to you and admins):'
+        reason: 'Reason this discussion was locked (publicly visible):'
+        submit: コメント欄の凍結を解除する
+      unpublished:
+        subtitle: 非公開の記事
+        text: " この URL を知っている人はアクセスできます。リンクを教える場合は注意してください。"
+        edit: 編集画面へ
+      co_authors_html: '共著者: %{names}'
+      crossposted:
+        text_html: 元記事は %{on} %{url} で掲載
+        'on': "%{date}に"
+      edited: "%{date}に更新"
+      for_org_html: "%{start} が %{end}%{org}%{start} へ執筆%{end}"
+      missing: 記事は公開終了しました
+      posted_html: "%{date}投稿"
+      read_next: 次に読みたい
+      reading_time:
+        other: "%{count} 分で読める"
+      right_nav: 作者情報
