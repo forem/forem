@@ -9,8 +9,6 @@ class CommentsController < ApplicationController
 
   # GET /comments
   # GET /comments.json
-  # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/PerceivedComplexity
   def index
     skip_authorization
     @on_comments_page = true
@@ -36,12 +34,7 @@ class CommentsController < ApplicationController
     @commentable_type = @commentable.class.name if @commentable
 
     set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
-
-    render :deleted_commentable_comment unless @commentable
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
-  # rubocop:enable Metrics/PerceivedComplexity
-
   # GET /comments/1
   # GET /comments/1.json
   # GET /comments/1/edit
@@ -62,6 +55,7 @@ class CommentsController < ApplicationController
     @comment.user_id = current_user.id
 
     authorize @comment
+    permit_commentor
 
     if @comment.save
       checked_code_of_conduct = params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
@@ -95,6 +89,8 @@ class CommentsController < ApplicationController
     end
   # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
   # for details as to why this is necessary
+  rescue ModerationUnauthorizedError => e
+    render json: { error: e.message }, status: :unprocessable_entity
   rescue Pundit::NotAuthorizedError, RateLimitChecker::LimitReached
     raise
   rescue StandardError => e
@@ -115,6 +111,7 @@ class CommentsController < ApplicationController
     @comment.user_id = moderator.id
     @comment.body_markdown = response_template.content
     authorize @comment
+    permit_commentor
 
     if @comment.save
       Notification.send_new_comment_notifications_without_delay(@comment)
@@ -128,6 +125,8 @@ class CommentsController < ApplicationController
     else
       render json: { status: @comment&.errors&.full_messages&.to_sentence }, status: :unprocessable_entity
     end
+  rescue ModerationUnauthorizedError => e
+    render json: { error: e.message }, status: :unprocessable_entity
   rescue StandardError => e
     skip_authorization
 
@@ -291,5 +290,17 @@ class CommentsController < ApplicationController
     else
       :comment_creation
     end
+  end
+
+  def permit_commentor
+    return unless user_blocked?
+
+    raise ModerationUnauthorizedError, "Not allowed due to moderation action"
+  end
+
+  def user_blocked?
+    return false if current_user.blocked_by_count.zero?
+
+    UserBlock.blocking?(@comment.commentable.user_id, current_user.id)
   end
 end
