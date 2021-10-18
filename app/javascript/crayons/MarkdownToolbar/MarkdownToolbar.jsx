@@ -200,8 +200,8 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           icon={icon}
           className={
             isOverflow
-              ? 'overflow-menu-btn hidden m:block'
-              : 'toolbar-btn m:hidden'
+              ? 'overflow-menu-btn hidden m:block mr-2'
+              : 'toolbar-btn m:hidden mr-2'
           }
           tabindex={isOverflow && index === 0 ? '0' : '-1'}
           onClick={() => insertSyntax(controlName)}
@@ -244,7 +244,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             variant="ghost"
             contentType="icon"
             icon={icon}
-            className="toolbar-btn"
+            className="toolbar-btn mr-2"
             tabindex={index === 0 ? '0' : '-1'}
             onClick={() => insertSyntax(controlName)}
             onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
@@ -286,7 +286,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         <div
           id="overflow-menu"
           role="menu"
-          className="crayons-dropdown flex gap-2 p-2 min-w-unset right-0 top-100"
+          className="crayons-dropdown flex p-2 min-w-unset right-0 top-100"
         >
           {getSecondaryFormatterButtons(true)}
           <Button
