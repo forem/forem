@@ -196,7 +196,7 @@ export class ReadingList extends Component {
     );
     return (
       <main id="main-content">
-        <header className="crayons-layout s:flex flex-col s:flex-row p-3 items-center justify-between">
+        <header className="crayons-layout s:flex flex-col s:flex-row p-4 pb-0 items-center justify-between">
           <h1 class="crayons-title mb-2 s:mb-0">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
             {` (${itemsTotal})`}
