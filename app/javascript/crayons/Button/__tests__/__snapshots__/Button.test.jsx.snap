@@ -23,3 +23,5 @@ exports[`<Button /> component should render an enabled button when using default
 exports[`<Button /> component should render an outlined button when using the variant "outlined" 1`] = `"<button class=\\"crayons-btn crayons-btn--outlined\\" type=\\"button\\">Hello world!</button>"`;
 
 exports[`<Button /> component should render with a tabIndex 1`] = `"<button class=\\"crayons-btn\\" tabindex=\\"0\\" type=\\"button\\">Hello world!</button>"`;
+
+exports[`<Button /> component should render with a tooltip 1`] = `"<button class=\\"crayons-btn crayons-tooltip__activator\\" type=\\"button\\">Hello world!<span class=\\"crayons-tooltip__content \\">tooltip text</span></button>"`;
