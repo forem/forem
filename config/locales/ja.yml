@@ -1,6 +1,0 @@
----
-ja:
-  time:
-    formats:
-      stackexchange: "%b %e '%y"
-      tweet: "%H:%M %p - %d %b %Y"
