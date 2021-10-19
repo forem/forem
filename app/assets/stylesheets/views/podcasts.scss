@@ -40,4 +40,12 @@
       opacity: 0.8;
     }
   }
+
+  &--all {
+    &:nth-child(6) {
+      @media (min-width: $breakpoint-m) {
+        display: none;
+      }
+    }
+  }
 }
