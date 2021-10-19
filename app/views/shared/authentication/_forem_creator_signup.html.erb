@@ -76,7 +76,7 @@
         <%= f.label :password, "Password", class: "crayons-field__label" %>
         <div class="relative">
           <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: "••••••••", required: true, aria: { describedby: "password-helper-text" } %>
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Show password" aria-pressed="false">
+          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Show password" aria-pressed="false">
             <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: "Show password") %>
             <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: "Hide password") %>
           </button>
