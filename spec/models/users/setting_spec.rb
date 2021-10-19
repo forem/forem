@@ -91,8 +91,8 @@ RSpec.describe Users::Setting, type: :model do
         expect(setting.latest_feed?).to be true
       end
 
-      it "does not accept invalid navbar" do
-        expect { setting.config_navbar = 10 }.to raise_error(ArgumentError)
+      it "does not accept invalid feed type" do
+        expect { setting.config_feed = 10 }.to raise_error(ArgumentError)
       end
     end
 
