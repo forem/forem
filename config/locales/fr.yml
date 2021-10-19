@@ -13,6 +13,7 @@ fr:
     comments: Commentaires
     community_name_is_great: "%{community_name} est super"
     copy_link: Copier le lien
+    create: Créer
     create_account: Créer un profil
     create_post: Créer une publication
     dashboard: Tableau de bord
@@ -36,6 +37,7 @@ fr:
     loading: Chargement en cours...
     location: Lieu
     log_in: Se connecter
+    manage: Gérer
     moderator_center: Centre de modération
     month: Mois
     more_from: Plus de la part de
