@@ -10,11 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_13_060449) do
+ActiveRecord::Schema.define(version: 2021_10_19_151431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
-  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -365,6 +364,16 @@ ActiveRecord::Schema.define(version: 2021_10_13_060449) do
     t.index ["organization_id"], name: "index_collections_on_organization_id"
     t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_collections_on_user_id"
+  end
+
+  create_table "comment_edits", force: :cascade do |t|
+    t.bigint "comment_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "editor_id"
+    t.jsonb "modifications"
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["comment_id"], name: "index_comment_edits_on_comment_id"
+    t.index ["editor_id"], name: "index_comment_edits_on_editor_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -1391,6 +1400,7 @@ ActiveRecord::Schema.define(version: 2021_10_13_060449) do
   create_table "users_settings", force: :cascade do |t|
     t.string "brand_color1", default: "#000000"
     t.string "brand_color2", default: "#ffffff"
+    t.integer "config_feed", default: 0, null: false
     t.integer "config_font", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false
     t.integer "config_theme", default: 0, null: false
