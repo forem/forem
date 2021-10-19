@@ -84,7 +84,7 @@
             <% end %>
             <button class="crayons-btn crayons-btn--outlined mr-2">
               <label for="cover-image-input">
-                <% if article.main_image.present? %><%= t("views.editor.cover.change") %><% else %><%= t("views.editor.cover.add") %><% end %>
+                <% if article.main_image.present? %><%= t("views.editor.cover_image.change") %><% else %><%= t("views.editor.cover_image.add") %><% end %>
               </label>
               <input id="cover-image-input" type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25">
             </button>

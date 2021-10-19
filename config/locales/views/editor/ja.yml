@@ -2,14 +2,15 @@
 ja:
   views:
     editor:
+      meta:
+        title: 記事の編集
       heading:
-        edit: 記事の編集
         new: 新しい記事
       create: 記事を作成
       close:
         icon: 閉じる
         title: 編集画面を閉じる
-      cover:
+      cover_image:
         add: 見出し画像を追加
         change: 変更
       edit: 編集

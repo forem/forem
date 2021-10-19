@@ -2,10 +2,11 @@
 ja:
   views:
     manager:
-      heading: "「%{title}」の状態"
+      meta:
+        title: "「%{title}」の状態"
       error:
         pins: "ごめんなさい！%{error} 😬"
-      desc:
+      tools:
         heading: 'Tools:'
         subtitle: 'Experience Level of Post:'
         text_html: " Is your post written more for a beginner or an advanced audience?  Adjust this level as a <em>gentle</em> indicator which will help show the post to the people who will benefit the most."

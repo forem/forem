@@ -2,10 +2,11 @@
 fr:
   views:
     manager:
-      heading: Manage %{title}
+      meta:
+        title: Manage %{title}
       error:
         pins: "Uh Oh! %{error} 😬"
-      desc:
+      tools:
         heading: 'Tools:'
         subtitle: 'Experience Level of Post:'
         text_html: " Is your post written more for a beginner or an advanced audience?  Adjust this level as a <em>gentle</em> indicator which will help show the post to the people who will benefit the most."

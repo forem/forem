@@ -1,4 +1,4 @@
-<% title t("views.manager.heading", title: @article.title) %>
+<% title t("views.manager.meta.title", title: @article.title) %>
 <main id="main-content">
   <div class="dashboard-manage-header">
     <div class="dashboard-manage-header-inner-container">
@@ -15,8 +15,8 @@
           <h3 class="manage-page-success"><%= flash[:success] %></h3>
         </div>
       <% end %>
-      <h2><%= t("views.manager.desc.heading") %></h2>
-      <p><strong><%= t("views.manager.desc.subtitle") %></strong><%= t("views.manager.desc.text_html") %>
+      <h2><%= t("views.manager.tools.heading") %></h2>
+      <p><strong><%= t("views.manager.tools.subtitle") %></strong><%= t("views.manager.tools.text_html") %>
       <h2><%= t("views.manager.tips.heading") %></h2>
       <ol>
         <li>

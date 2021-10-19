@@ -2,14 +2,15 @@
 en:
   views:
     editor:
+      meta:
+        title: Edit Post
       heading:
-        edit: Edit Post
         new: New Post
       create: Create Post
       close:
         icon: Close
         title: Close the editor
-      cover:
+      cover_image:
         add: Add a cover image
         change: Change
       edit: Edit
