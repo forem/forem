@@ -40,7 +40,7 @@
     </header>
   <% end %>
   <h2 class="crayons-subtitle-1 p-3 pt-0 m:p-0"><%= t("podcasts.latest_episodes") %></h2>
-  <div class="grid gap-2 m:gap-4 grid-cols-2 s:grid-cols-3 m:grid-cols-5 px-2 m:px-0">
+  <div class="grid gap-2 m:gap-4 grid-cols-2 s:grid-cols-3 m:grid-cols-5 px-2 m:px-0 mb-6">
     <% @podcast_episodes.each do |episode| %>
       <% episode = episode.decorate %>
       <a href="/<%= episode.podcast.slug %>/<%= episode.slug %>" class="crayons-card podcast-episode-card <% unless @podcast %>podcast-episode-card--all<% end %>">
@@ -69,13 +69,13 @@
   <% end %>
   <% if @featured_podcasts && @featured_podcasts.any? %>
     <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("podcasts.featured_shows") %></h2>
-    <div class="grid gap-2 m:gap-4 l:gap-6 grid-cols-2 m:grid-cols-<%= [@featured_podcasts.size, 3].max %> px-2 m:px-0">
+    <div class="grid gap-2 m:gap-4 l:gap-6 grid-cols-2 m:grid-cols-<%= [@featured_podcasts.size, 3].max %> px-2 m:px-0 mb-6">
       <% @featured_podcasts.each do |podcast| %>
         <a href="/<%= podcast.slug %>">
             <%= optimized_image_tag(podcast.image_url,
                                     optimizer_options: { crop: "imagga_scale", width: 500, height: 500 },
                                     image_options: { alt: podcast.title, loading: "lazy", class: "w-100 h-auto border-2" }) %>
-            <h3 class="crayons-story__title align-center fs-xl mt-2">
+            <h3 class="crayons-subtitle-2 align-center">
               <%= podcast.title %>
             </h3>
         </a>
@@ -84,12 +84,14 @@
     <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("core.browse") %></h2>
     <div class="grid gap-2 s:grid-cols-2 m:grid-cols-4 px-2 m:px-0">
       <% @more_podcasts.each do |podcast| %>
-        <a href="/<%= podcast.slug %>" class="crayons-link flex items-center m:fs-l">
+        <a href="/<%= podcast.slug %>" class="crayons-link flex items-center m:fs-l  lh-tight">
           <span class="crayons-logo crayons-logo--xl mr-3">
             <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "fill", width: 100, height: 100) %>"
               alt="<%= podcast.title %>" aria-hidden="true" class="crayons-logo__image" />
           </span>
-          <%= podcast.title %>
+          <span class="truncate-at-2">
+            <%= podcast.title %>
+          </span>
         </a>
       <% end %>
     </div>
