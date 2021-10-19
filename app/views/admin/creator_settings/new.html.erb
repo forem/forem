@@ -6,20 +6,22 @@
     flex-direction: column;
   }
 </style>
-<div id="creator-setup-form" class="mt-8 mb-6 p-7 align-left mx-auto" style="max-width:580px;">
-  <% if flash[:error] %>
-    <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
-      <%= flash[:error] %>
-    </div>
-  <% end %>
+<main id="main-content" class="flex flex-1 justify-center flex-col crayons-layout crayons-layout--limited-xs">
+  <div aria-live="assertive">
+    <% if flash[:error] %>
+      <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
+        <%= flash[:error] %>
+      </div>
+    <% end %>
+  </div>
 
   <%= form_tag(admin_creator_settings_path, method: "post") do %>
     <% if defined?(resource) && resource&.errors&.any? %>
       <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
         <div class="crayons-card__header">
-          <h3 class="crayons-card__headline">
+          <h1 class="crayons-card__headline">
             Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
-          </h3>
+          </h1>
         </div>
         <div class="crayons-card__body">
           <ul>
