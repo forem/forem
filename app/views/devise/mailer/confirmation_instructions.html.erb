@@ -1,5 +1,5 @@
 <% if @user.creator? %>
-  <%= render partial: "creator_confirmation_instructions", locals: { user: @resource, confirmation_token: @token } %>
+  <%= render partial: "creator_confirmation_instructions", locals: { url: confirmation_url(@resource, confirmation_token: @token) } %>
 <% else %>
   <p>Welcome <%= @email %>!</p>
 
