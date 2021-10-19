@@ -102,3 +102,4 @@ const editUsername = document.getElementsByClassName(
   'js-creator-edit-username',
 )[0];
 editUsername.addEventListener('click', showUsernameField);
+editUsername.addEventListener('keydown', showUsernameField);
