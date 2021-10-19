@@ -88,7 +88,7 @@
     "@storybook/addon-notes": "^5.3.21",
     "@storybook/addon-storysource": "^6.3.12",
     "@storybook/addons": "^6.2.8",
-    "@storybook/builder-webpack5": "^6.3.11",
+    "@storybook/builder-webpack5": "^6.3.12",
     "@storybook/manager-webpack5": "^6.3.11",
     "@storybook/preact": "^6.3.10",
     "@testing-library/cypress": "^7.0.7",
