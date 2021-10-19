@@ -1,7 +1,7 @@
 <%= content_for :page_meta do %>
   <%= render "podcast_episodes/meta" %>
 <% end %>
-  <main id="main-content" class="podcast-index crayons-layout crayons-layout--1-col mb-8">
+  <main id="main-content" class="crayons-layout podcast-index mb-8">
     <% if @podcast %>
       <header class="px-2 m:px-0 flex items-center justify-between">
         <h3>
@@ -40,8 +40,8 @@
         <div class="crayons-card p-0 flex flex-col relative">
           <a href="/<%= episode.podcast.slug %>/<%= episode.slug %>">
             <%= optimized_image_tag(episode.image_url || episode.podcast.image_url,
-                                  optimizer_options: { crop: "imagga_scale", width: 240, height: 240 },
-                                  image_options: { alt: episode.title, loading: "lazy", class: "w-100 h-auto "}) %>
+                                    optimizer_options: { crop: "imagga_scale", width: 240, height: 240 },
+                                    image_options: { alt: episode.title, loading: "lazy", class: "w-100 h-auto " }) %>
           </a>
           <div class="p-3">
             <h3 class="crayons-story__title">
@@ -75,8 +75,8 @@
         <% @featured_podcasts.each do |podcast| %>
           <a href="/<%= podcast.slug %>">
               <%= optimized_image_tag(podcast.image_url,
-                                    optimizer_options: { crop: "imagga_scale", width: 500, height: 500 },
-                                    image_options: { alt: podcast.title, loading: "lazy", class: "w-100 h-auto border-2"}) %>
+                                      optimizer_options: { crop: "imagga_scale", width: 500, height: 500 },
+                                      image_options: { alt: podcast.title, loading: "lazy", class: "w-100 h-auto border-2" }) %>
               <h3 class="crayons-story__title align-center fs-xl mt-2">
                 <%= podcast.title %>
               </h3>
