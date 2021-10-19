@@ -7,7 +7,7 @@ ja:
       medium:
         logo: Medium Logo
       poll:
-        just_show: Just show me the results
+        show_results: Just show me the results
       reddit:
         author: 'Author: %{author}'
         see: See Full Post
@@ -26,8 +26,8 @@ ja:
       user_subscription:
         confirm:
           subtitle: Confirm subscribe
-          button: Confirm subscription
-          cancel: Cancel
+          button_text: Confirm subscription
+          cancel_text: Cancel
           text_html: You'll share your email address%{email}, username, name, and DEV profile URL with %{username}. Once you do this, you cannot undo this.
         logged_out: You must first sign in to DEV.
         sign_in: Sign In
