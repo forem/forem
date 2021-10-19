@@ -34,7 +34,7 @@
       <% end %>
     </div>
 
-    <%= unless comment.deleted
+    <%= unless comment.deleted || commentable.nil?
           (render partial: "comments/comment_footer", locals: {
             comment: comment,
             commentable: commentable,

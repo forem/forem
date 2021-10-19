@@ -288,10 +288,6 @@ function insertArticles(articles) {
   }
 }
 
-function fetchNextPodcastPage(el) {
-  fetchNext(el, '/api/podcast_episodes', insertArticles);
-}
-
 function paginate(tag, params, requiresApproval) {
   const searchHash = {
     ...{ per_page: 15, page: nextPage },
@@ -367,12 +363,7 @@ function fetchNextPageIfNearBottom() {
   var fetchCallback;
   var scrollableElem;
 
-  if (indexWhich === 'podcast-episodes') {
-    scrollableElem = document.getElementById('main-content');
-    fetchCallback = function fetch() {
-      fetchNextPodcastPage(indexContainer);
-    };
-  } else if (indexWhich === 'videos') {
+  if (indexWhich === 'videos') {
     scrollableElem = document.getElementById('main-content');
     fetchCallback = function fetch() {
       fetchNextVideoPage(indexContainer);

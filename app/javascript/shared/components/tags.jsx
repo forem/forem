@@ -101,7 +101,7 @@ export class Tags extends Component {
 
   get isTopOfSearchResults() {
     const { selectedIndex } = this.state;
-    return selectedIndex <= 0;
+    return selectedIndex < 0;
   }
 
   get isBottomOfSearchResults() {
@@ -356,7 +356,7 @@ export class Tags extends Component {
       // allows user to choose a tag when they've typed the partial or whole word
       this.setState({
         searchResults: response.result.filter(
-          (t) => !this.selected.includes(t.name),
+          (t) => t.name === query || !this.selected.includes(t.name),
         ),
       });
     });
@@ -419,13 +419,15 @@ export class Tags extends Component {
         ) : (
           ''
         )}
-        <div
-          className={`${classPrefix}__tagrules--${
-            showingRulesForTag === tag.name ? 'active' : 'inactive'
-          }`}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: tag.rules_html }}
-        />
+        {!showingTopTags && (
+          <div
+            className={`${classPrefix}__tagrules--${
+              showingRulesForTag === tag.name ? 'active' : 'inactive'
+            }`}
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: tag.rules_html }}
+          />
+        )}
       </div>
     ));
     if (
@@ -492,8 +494,8 @@ Tags.propTypes = {
   maxTags: PropTypes.number.isRequired,
   classPrefix: PropTypes.string.isRequired,
   fieldClassName: PropTypes.string.isRequired,
-  listing: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
+  listing: PropTypes.string,
+  category: PropTypes.string,
   onFocus: PropTypes.func.isRequired,
   pattern: PropTypes.string.isRequired,
 };

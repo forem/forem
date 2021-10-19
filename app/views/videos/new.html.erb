@@ -11,7 +11,7 @@
 </style>
 <center style="margin-top:200px">
   <%= stylesheet_link_tag "s3_direct_upload", media: "all" %>
-  <h1>🎥 Upload Video File 🙌</h1>
+  <h1><%= t("views.videos.upload") %></h1>
   <%= s3_uploader_form callback_url: "/videos",
                        callback_method: "POST",
                        callback_param: "article[video]",
@@ -33,7 +33,7 @@
   <% end %>
   <div style="margin:50px auto;max-width:80%;font-size:0.86em;">
     <p>
-      <strong>Video is beta:</strong> Email <%= email_link %> if you have any problems.
+      <%= t("views.videos.beta_html", contact: t("contact_prompts.if_any_questions_html")) %>
     </p>
   </div>
 </center>

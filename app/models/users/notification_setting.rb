@@ -13,7 +13,9 @@ module Users
     after_commit :subscribe_to_mailchimp_newsletter
 
     def subscribe_to_mailchimp_newsletter
-      return unless email_newsletter
+      return if Settings::General.mailchimp_api_key.blank?
+      return unless saved_changes.key?(:email_newsletter)
+      return if user.email.blank?
 
       Users::SubscribeToMailchimpNewsletterWorker.perform_async(user.id)
     end

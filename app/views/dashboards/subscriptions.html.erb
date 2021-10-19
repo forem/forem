@@ -1,19 +1,20 @@
 <% title "Subscriptions #{@source.title}" %>
 
 <div class="crayons-layout crayons-layout--1-col">
-  <header class="flex items-center justify-between p-2 m:p-0">
-    <div>
-      <h1 class="crayons-title">Subscriptions</h1>
-      <h2 class="fs-base s:fs-xl fw-medium">
-        <em class="fs-italic fw-normal color-base-60">for</em>
-        <a href=<%= @source.path %>><%= @source.title %></a>
-      </h2>
-    </div>
-    <%#TODO: [@forem/delightful]: uncomment this when ready to implement CSV exports%>
-    <%#<button type="button" class="crayons-btn crayons-btn--secondary">Export CSV</button>%>
-  </header>
 
-  <main>
+  <main id="main-content">
+    <section class="flex items-center justify-between p-2 m:p-0">
+      <div>
+        <h1 class="crayons-title">Subscriptions</h1>
+        <h2 class="fs-base s:fs-xl fw-medium">
+          <em class="fs-italic fw-normal color-base-60">for</em>
+          <a href=<%= @source.path %>><%= @source.title %></a>
+        </h2>
+      </div>
+      <%#TODO: [@forem/delightful]: uncomment this when ready to implement CSV exports%>
+      <%#<button type="button" class="crayons-btn crayons-btn--secondary">Export CSV</button>%>
+    </section>
+
     <% if @subscriptions.any? %>
       <table class="crayons-table w-100">
         <tbody class="crayons-card">

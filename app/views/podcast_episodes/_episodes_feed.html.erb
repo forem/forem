@@ -1,6 +1,6 @@
 <% @podcast_episodes.each_with_index do |episode, i| %>
-  <a href="<%= episode.path %>" class="small-pic-link-wrapper" id="article-link-<%= episode.id %>">
-    <div class="single-article single-article-small-pic single-article-single-podcast">
+  <a href="<%= episode.path %>">
+    <div class="crayons-card">
       <div class="small-pic">
         <%= optimized_image_tag(episode.image_url || episode.podcast.image_url,
                                 optimizer_options: { crop: "imagga_scale", width: 240, height: 240 },

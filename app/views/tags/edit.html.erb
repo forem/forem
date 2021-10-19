@@ -1,25 +1,7 @@
 <% title "Edit #{@tag.name}" %>
 
-<style>
-  .widget header {
-    color: <%= Color::CompareHex.new([@tag.bg_color_hex || "#0000000", @tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-  }
-
-  .slanty-accent {
-    background-color: <%= Color::CompareHex.new([@tag.bg_color_hex || "#ffffff"]).accent %>
-  }
-
-  .tag-edit-tag {
-    text-align: center;
-    color: <%= @tag.text_color_hex %>;
-  }
-</style>
-<br>
-<br>
-<br>
-<div class="user-profile-header tag-header" style="background-color:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;">
-  <div class="slanty-accent"></div>
-  <div class="tag-or-query-header-container tag-edit-tag">
+<div style="background-color:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;">
+  <div class="tag-or-query-header-container tag-edit-tag py-8 align-center">
     <h1> Editing:
       <a href="<%= URL.tag @tag %>" style="color: <%= @tag.text_color_hex %>;text-decoration: underline;"><%= @tag.name %></a>
     </h1>

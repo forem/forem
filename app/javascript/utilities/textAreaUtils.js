@@ -128,9 +128,8 @@ const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
  */
 export const useTextAreaAutoResize = () => {
   const [textArea, setTextArea] = useState(null);
-  const [constrainToContentHeight, setConstrainToContentHeight] = useState(
-    false,
-  );
+  const [constrainToContentHeight, setConstrainToContentHeight] =
+    useState(false);
   const [additionalElements, setAdditionalElements] = useState([]);
 
   useEffect(() => {
@@ -166,4 +165,24 @@ export const useTextAreaAutoResize = () => {
   }, [textArea, additionalElements, constrainToContentHeight]);
 
   return { setTextArea, setAdditionalElements, setConstrainToContentHeight };
+};
+
+/**
+ * Helper function to return the index of the current line's starting point
+ *
+ * @param {string} text The text value of the textArea
+ * @param {number} cursorStart The current position of the user's cursor
+ * @returns
+ */
+export const getIndexOfLineStart = (text, cursorStart) => {
+  const currentCharacter = text.charAt(cursorStart - 1);
+  if (currentCharacter === '\n') {
+    return cursorStart;
+  }
+
+  if (cursorStart !== 0) {
+    return getIndexOfLineStart(text, cursorStart - 1);
+  }
+
+  return 0;
 };
