@@ -1,39 +1,41 @@
 <%= content_for :page_meta do %>
   <%= render "podcast_episodes/meta" %>
 <% end %>
-  <main id="main-content" class="crayons-layout podcast-index mb-8">
-    <% if @podcast %>
-      <header class="px-2 m:px-0 flex items-center justify-between">
-        <h3>
-          <a href="/pod"><%= t("podcasts.view_all_podcasts") %></a>
-        </h3>
-      </header>
-      <div class="user-profile-header podcast-header" style="background:#<%= @podcast.main_color_hex %>;">
-        <div class="tag-or-query-header-container">
-          <h1><img class="record main-image" src="<%= Images::Optimizer.call(@podcast.image_url, crop: "fill", width: 420, height: 420) %>"
-                  alt="<%= @podcast.title %>" /> <%= @podcast.title %>
-          </h1>
-          <h2>
-            <button
-              id="user-follow-butt"
-              class="crayons-btn follow-action-button"
-              style="min-width: 100px;"
-              data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>", "name": "<%= @podcast.name %>"}'>
-                &nbsp;
-            </button>
-          </h2>
+  <% if @podcast %>
+    <div style="background:#<%= @podcast.main_color_hex %>;" class="mb-4">
+      <div class="crayons-layout relative">
+        <nav class="s:absolute mt-2">
+          <a href="/pod" class="crayons-btn crayons-btn--ghost crayons-btn--inverted">&laquo; <%= t("podcasts.view_all_podcasts") %></a>
+        </nav>
+        <div class="flex s:flex-col items-start s:items-center p-3 pt-0 s:pt-3">
+          <span class="crayons-logo crayons-logo--2xl s:crayons-logo--3xl mr-4 s:mr-0 s:mb-2">
+            <img class="crayons-logo__image" src="<%= Images::Optimizer.call(@podcast.image_url, crop: "fill", width: 420, height: 420) %>" alt="<%= @podcast.title %>" />
+          </span>
+          <div class="s:align-center">
+            <h1 class="crayons-title color-base-inverted mb-2">
+              <%= @podcast.title %>
+            </h1>
+            <p>
+              <button
+                id="user-follow-butt"
+                class="crayons-btn crayons-btn--inverted follow-action-button"
+                style="min-width: 100px;"
+                data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>", "name": "<%= @podcast.name %>"}'>
+                  &nbsp;
+              </button>
+            </p>
+          </div>
         </div>
       </div>
-    <% else %>
-      <header class="px-2 m:px-0 flex items-center justify-between">
-        <h1>
-          <%= t("core.podcasts") %>
-        </h1>
-      </header>
+    </div>
+  <% end %>
+  <main id="main-content" class="crayons-layout podcast-index mb-8">
+    <% unless @podcast %>
+      <h1 class="crayons-title p-3 pb-0 m:p-0">
+        <%= t("core.podcasts") %>
+      </h1>
     <% end %>
-    <header class="mt-1 px-2 m:px-0 flex items-center justify-between">
-      <h2><%= t("podcasts.latest_episodes") %></h2>
-    </header>
+    <h2 class="crayons-subtitle-1 p-3 pt-0 m:p-0"><%= t("podcasts.latest_episodes") %></h2>
     <div class="grid gap-2 m:gap-4 l:gap-6 grid-cols-2 m:grid-cols-3 l:grid-cols-6 px-2 m:px-0">
       <% @podcast_episodes.each do |episode| %>
         <% episode = episode.decorate %>
@@ -68,9 +70,7 @@
       <%= paginate @podcast_episodes, params: { i: nil } %>
     <% end %>
     <% if @featured_podcasts && @featured_podcasts.any? %>
-      <header class="mt-7 px-2 m:px-0 flex items-center justify-between">
-        <h2><%= t("podcasts.featured_shows") %></h2>
-      </header>
+      <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("podcasts.featured_shows") %></h2>
       <div class="grid gap-2 m:gap-4 l:gap-6 grid-cols-2 m:grid-cols-<%= [@featured_podcasts.size, 3].max %> px-2 m:px-0">
         <% @featured_podcasts.each do |podcast| %>
           <a href="/<%= podcast.slug %>">
@@ -83,9 +83,7 @@
           </a>
         <% end %>
       </div>
-      <header class="mt-7 px-2 m:px-0 flex items-center justify-between">
-        <h2><%= t("core.browse") %></h2>
-      </header>
+      <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("core.browse") %></h2>
       <div class="podcasts-browse-more grid gap-2 m:gap-4 l:gap-6 grid-cols-2 m:grid-cols-3 l:grid-cols-4 px-2 m:px-0">
         <% @more_podcasts.each do |podcast| %>
             <a href="/<%= podcast.slug %>" class="mt-3 w-100  h-auto block fs-l m:fs-xl">
