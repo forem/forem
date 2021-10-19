@@ -1,7 +1,10 @@
 describe('Creator Signup Page', () => {
   beforeEach(() => {
     cy.testSetup();
-    // NOTE: The "New Forem Owner" field is displayed based on a rails env variable which is set on Travis already. It cannot be dynamically updated for the Cypress tests, hence we have chosen the route of passing the forem_owner_secret as a param. This sends us down the path with least resistance.
+    // NOTE: The "New Forem Owner" field is displayed based on a rails env variable
+    // which is set on Travis already. It cannot be dynamically updated for the
+    // Cypress tests, hence we have chosen the route of passing the forem_owner_secret
+    // as a param. This sends us down the path with least resistance.
     cy.visit('/enter?state=new-user&forem_owner_secret=secret');
   });
 
