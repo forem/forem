@@ -3,8 +3,7 @@ en:
   views:
     comments:
       meta:
-        title: "%{title} - %{site}"
-        title_root: Discussion of %{title} - %{site}
+        title_root: Discussion of %{title}
         description: An article from the community
         og:
           title: Discussion of %{title}
@@ -47,10 +46,7 @@ en:
         info: find out more
       locked: The discussion has been locked. New comments can't be added.
       orphan:
-        heading: Comment from a deleted article or podcast
-        deleted: "[deleted]"
-        delete: DELETE
-        edit: EDIT
+        deleted: "[Comment from a deleted post]"
       re:
         text_html: "%{re}%{title}"
         re: 'Re: '
@@ -105,12 +101,15 @@ en:
         icon: Dropdown menu
         copy:
           aria_label: Copy link to %{user}'s comment
+          text: Copy link
         settings:
           aria_label: Go to %{user}'s comment settings
         action:
           aria_label: "%{action} %{user}'s comment"
           hide: Hide
           unhide: Unhide
+          hide_text: Hide
+          unhide_text: Unhide
         moderate:
           aria_label: Moderate %{user}'s comment
         report:

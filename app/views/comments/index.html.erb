@@ -1,10 +1,11 @@
 <%= javascript_packs_with_chunks_tag "postCommentsPage", defer: true %>
 <% if @root_comment.present? %>
-  <% title(t("views.comments.meta.title", title: @root_comment.title, site: community_name)) %>
+  <% title(@root_comment.title.to_s) %>
 <% else %>
-  <% title(t("views.comments.meta.title_root", title: @commentable.title, site: community_name)) %>
+  <% title(t("views.comments.meta.title_root", title: @commentable.title)) %>
 <% end %>
 
+<% if @commentable %>
 <%= content_for :page_meta do %>
   <meta name="description" content="<%= @commentable.description || t("views.comments.meta.description") %>">
   <%= meta_keywords_article %>
@@ -41,11 +42,12 @@
     <% end %>
   <% end %>
 <% end %>
+<% end %>
 
 <%= javascript_packs_with_chunks_tag "commentDropdowns", "followButtons", defer: true %>
 
 <div class="crayons-layout crayons-layout--limited-l gap-0" data-follow-button-container="true">
-  <% if @commentable.class.name == "Article" %>
+  <% if @commentable && @commentable.class.name == "Article" %>
     <%= render "shared/payment_pointer", user: @commentable.user %>
     <span id="comment-article-indicator" data-article-id="<%= @commentable.id %>"></span>
   <% end %>
@@ -89,15 +91,19 @@
     <div id="response-templates-data" class="hidden"></div>
     <%= javascript_packs_with_chunks_tag "responseTemplates", "commentsDisplay", defer: true %>
     <header class="p-2 pb-4 m:p-6 m:pb-6 crayons-card crayons-card--secondary s:mx-2 m:mx-4 -mb-1 z-0">
+      <% if @commentable %>
       <h1 class="crayons-subtitle-1 mb-4">
         <%= t("views.comments.parent.subtitle_html",
-              start: tag("span", { class: %w[fw-normal color-base-60] }, true), # rubocop:disable Rails/ContentTag
+              start: tag("span", { class: %w[fw-normal color-base-60] }, true),
               end: "</span>".html_safe,
-              title: tag.span(@commentable.title, class: "with-content-font", lang: @commentable.base_lang)) %>
+              title: tag.span(@commentable.title)) %>
       </h1>
       <div class="flex">
         <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %>"><%= t("views.comments.parent.view") %></a>
       </div>
+      <% else %>
+        <%= t("views.comments.orphan.deleted") %>
+      <% end %>
     </header>
   <% end %>
 
@@ -106,9 +112,9 @@
       <h2 class="crayons-subtitle-2 pb-2">
         <a href="<%= parent.path %>" class="crayons-link">
           <%= t("views.comments.parent.reply_html",
-                start: tag("span", { class: %w[fw-normal opacity-75] }, true), # rubocop:disable Rails/ContentTag
+                start: tag("span", { class: %w[fw-normal opacity-75] }, true),
                 end: "</span>".html_safe,
-                title: tag.span(parent.title(150), class: "with-content-font", lang: @commentable.base_lang)) %>
+                title: tag.span(parent.title(150)) %>
         </a>
       </h2>
     </div>
@@ -117,8 +123,8 @@
   <section
     class="crayons-card text-padding min-w-0 z-elevate"
     id="comments-container"
-    data-commentable-id="<%= @commentable.id %>"
-    data-commentable-type="<%= @commentable.class.name %>">
+    data-commentable-id="<%= @commentable&.id %>"
+    data-commentable-type="<%= @commentable&.class&.name %>">
 
     <% unless @root_comment %>
       <%= render "form",
@@ -140,7 +146,7 @@
       <% end %>
     </div>
 
-    <% if @commentable.any_comments_hidden %>
+    <% if @commentable&.any_comments_hidden %>
       <p class="mb-2 pt-6 fs-s align-center color-base-60">
         <%= t("views.comments.hidden.text_html", info: link_to(t("views.comments.hidden.info"), "/faq#what-does-comment-hidden-by-post-author-mean")) %>
       </p>
@@ -151,7 +157,7 @@
     <%= render "articles/conduct_and_abuse_actions", page: "comments_index" %>
   </div>
 
-  <% if has_vid?(@commentable) %>
+  <% if @commentable && has_vid?(@commentable) %>
     <%= render "articles/fitvids" %>
   <% end %>
 </div>

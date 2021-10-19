@@ -3,8 +3,7 @@ ja:
   views:
     comments:
       meta:
-        title: "%{title} - %{site}"
-        title_root: "%{title} への声 - %{site}"
+        title_root: "%{title} への声"
         description: このコミュニティに投稿された記事
         og:
           title: "%{title} への声"
@@ -47,10 +46,7 @@ ja:
         info: 詳細
       locked: コメント欄は凍結中です。新しいコメントは書き込めません。
       orphan:
-        heading: 削除された記事またはポッドキャストへのコメント
-        deleted: "[削除済]"
-        delete: 削除する
-        edit: 編集する
+        deleted: "[削除された投稿へのコメント]"
       re:
         text_html: "「%{title}」%{re}"
         re: への返信
@@ -105,12 +101,15 @@ ja:
         icon: ドロップダウンメニュー
         copy:
           aria_label: "%{user} のコメントのリンクをコピーする"
+          text: リンクをコピー
         settings:
           aria_label: "%{user} のコメント設定へ"
         action:
           aria_label: "%{user} のコメントを%{action}"
           hide: 隠す
           unhide: 再表示する
+          hide_text: 隠す
+          unhide_text: 再表示
         moderate:
           aria_label: "%{user} のコメントを審査"
         report:
