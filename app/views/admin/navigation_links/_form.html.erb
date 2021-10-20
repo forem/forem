@@ -17,8 +17,11 @@
     <%= form.hidden_field :icon, "data-svg-icon-upload-target": "svgIconContent" %>
 
     <input
-      type="file" accept="image/svg+xml" class="form-control-file"
-      data-action="svg-icon-upload#selectSvgIcon" required="true" />
+      type="file"
+      accept="image/svg+xml"
+      class="form-control-file"
+      data-action="svg-icon-upload#selectSvgIcon"
+      <%= form.object[:icon].blank? ? "required=true" : "" %> />
 
     <div class="alert alert-info">An SVG icon should be uploaded</div>
     <div data-svg-icon-upload-target="svgIconMessageValidate"></div>
