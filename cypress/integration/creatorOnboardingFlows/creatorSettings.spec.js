@@ -64,14 +64,6 @@ describe('Creator Setup Page', () => {
       'have.attr',
       'required',
     );
-    cy.findByRole('radio', { name: /everyone/i }).should(
-      'have.attr',
-      'required',
-    );
-    cy.findByRole('radio', { name: /members only/i }).should(
-      'have.attr',
-      'required',
-    );
     // should not redirect the creator to the home page when the form is not completely filled out and 'Finish' is clicked
     cy.findByRole('button', { name: 'Finish' }).click();
     cy.url().should(
