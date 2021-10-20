@@ -41,6 +41,37 @@
 
   <div class="crayons-card crayons-card--content-rows">
     <h2 class="crayons-subtitle-1">
+      Reading
+    </h2>
+    <div>
+      <%= f.label :experience_level, class: "crayons-subtitle-2" %>
+      <p>
+        What is your approximate experience level (1-5)? This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are
+        shown along with tags you follow etc.
+      </p>
+    </div>
+    <div class="crayons-field">
+      <div class="theme-selector-field grid grid-cols-5">
+        <% user_experience_levels.each_with_index do |exp, i| %>
+          <%= render partial: "experience_selector", locals: { f: f, exp: exp, i: i, label: user_experience_labels } %>
+        <% end %>
+      </div>
+    </div>
+    <div>
+      <%= f.label :default_feed, class: "crayons-subtitle-2" %>
+      <p><%= Constants::Settings::General::DETAILS[:default_feed][:description] %></p>
+    </div>
+    <div class="crayons-field">
+      <%= f.select(
+            :config_homepage_feed,
+            options_for_select(SettingsHelper::HOMEPAGE_FEED_OPTIONS, @users_setting.config_homepage_feed),
+            class: "custom-select mr-2",
+          ) %>
+    </div>
+  </div>
+
+  <div class="crayons-card crayons-card--content-rows">
+    <h2 class="crayons-subtitle-1">
       Writing
     </h2>
     <div class="crayons-field">
@@ -50,24 +81,6 @@
           <%= render partial: "editor_selector", locals: { f: f, version: version } %>
         <% end %>
       </div>
-    </div>
-  </div>
-
-  <div class="crayons-card crayons-card--content-rows">
-    <h2 class="crayons-subtitle-1">
-      Content
-    </h2>
-    <div class="crayons-field">
-      <%= f.label :experience_level, "What is your approximate experience level (1-5)?", class: "crayons-field__label" %>
-      <div class="theme-selector-field grid grid-cols-5">
-        <% user_experience_levels.each_with_index do |exp, i| %>
-          <%= render partial: "experience_selector", locals: { f: f, exp: exp, i: i, label: user_experience_labels } %>
-        <% end %>
-      </div>
-      <p>
-        This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are
-        shown along with tags you follow etc.
-      </p>
     </div>
   </div>
 

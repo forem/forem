@@ -4,7 +4,8 @@ module Users
     before_action :authenticate_user!
     after_action :verify_authorized
 
-    ALLOWED_PARAMS = %i[config_theme
+    ALLOWED_PARAMS = %i[config_homepage_feed
+                        config_theme
                         config_font
                         config_navbar
                         display_announcements

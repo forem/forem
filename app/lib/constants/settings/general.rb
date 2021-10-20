@@ -23,6 +23,9 @@ module Constants
             placeholder: ""
           }
         },
+        default_feed: {
+          description: "Which tab on the homefeed should be selected by default every time you visit the homepage?"
+        },
         favicon_url: {
           description: "Used as the site favicon",
           placeholder: IMAGE_PLACEHOLDER
