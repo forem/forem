@@ -12,7 +12,7 @@ RSpec.describe Users::Setting, type: :model do
     it { is_expected.to define_enum_for(:config_font).with_values(default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5).with_suffix(:font) }
     it { is_expected.to define_enum_for(:config_navbar).with_values(default: 0, static: 1).with_suffix(:navbar) }
     it { is_expected.to define_enum_for(:config_theme).with_values(default: 0, minimal_light_theme: 1, night_theme: 2, pink_theme: 3, ten_x_hacker_theme: 4) }
-    it { is_expected.to define_enum_for(:config_feed).with_values(default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5).with_suffix(:feed) }
+    it { is_expected.to define_enum_for(:config_homepage_feed).with_values(default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5).with_suffix(:feed) }
 
     describe "validating color fields" do
       it "is valid if the field is a correct hex color with leading #" do
