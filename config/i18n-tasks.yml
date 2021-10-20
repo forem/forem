@@ -16,9 +16,9 @@ data:
   # Locale files or `File.find` patterns where translations are read from:
   read:
     ## Default:
-    # - config/locales/%{locale}.yml
+    - config/locales/%{locale}.yml
     ## More files:
-    # - config/locales/**/*.%{locale}.yml
+    - config/locales/**/*.%{locale}.yml
 
   # Locale files to write new keys to, based on a list of key pattern => file rules. Matched from top to bottom:
   # `i18n-tasks normalize -p` will force move the keys according to these rules
@@ -70,6 +70,7 @@ search:
     - app/assets/images
     - app/assets/fonts
     - app/assets/videos
+    - app/javascript/storybook-static
 
   ## Alternatively, the only files or `File.fnmatch patterns` to search in `paths`:
   ## If specified, this settings takes priority over `exclude`, but `exclude` still applies.
@@ -92,7 +93,17 @@ search:
 #   deepl_api_key: "48E92789-57A3-466A-9959-1A1A1A1A1A1A"
 
 ## Do not consider these keys missing:
-# ignore_missing:
+ignore_missing:
+  - date.*
+
+  # TODO: add translations for these
+  - 'activerecord.attributes.doorkeeper/*'
+  - 'activerecord.errors.models.doorkeeper/*'
+  - devise.*
+  - doorkeeper.*
+
+  # these are loaded from kaminari default gem
+  - views.*
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 

@@ -9,6 +9,7 @@
 /app/services/search/                               @forem/sre
 /app/workers/                                       @forem/sre
 /config/                                            @forem/sre
+/config/locales
 /db/                                                @forem/sre @forem/backend
 /lib/data_update_scripts/                           @forem/sre
 /lib/sidekiq/                                       @forem/sre

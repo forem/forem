@@ -1,0 +1,35 @@
+---
+fr:
+  devise:
+    failure:
+      invited: Vous avez une invitation en attente, acceptez-la pour terminer la création de votre compte.
+    invitations:
+      edit:
+        header: Confirmation
+        new_password: Mot de passe
+        new_password_confirmation: Confirmation du mot de passe
+        submit_button: Confirmer
+      invitation_removed: Votre invitation a été supprimée.
+      invitation_token_invalid: Le jeton d'invitation fourni n'est pas valide!
+      new:
+        header: Nouvel utilisateur
+        legend: Envoyer l’invitation
+        submit_button: Envoyer
+      no_invitations_remaining: Il n'y a plus d'invitations restantes
+      send_instructions: Un e-mail d'invitation a été envoyé à %{email}.
+      updated: Votre mot de passe a été défini avec succès. Vous êtes maintenant connecté.
+      updated_not_active: Votre mot de passe a été défini avec succès.
+    mailer:
+      invitation_instructions:
+        accept: Accepter l'invitation
+        accept_until: Cette invitation sera valable jusqu'au %{due_date}.
+        hello: Bonjour %{email}
+        ignore: Si vous ne souhaitez pas accepter cette invitation, veuillez ignorer cet e-mail.<br />Votre compte ne sera pas créé tant que vous n'accéderez pas au lien ci-dessous et que vous ayez défini votre mot de passe.
+        someone_invited_you: Vous avez été invité à rejoindre %{url}, vous pouvez accepter cette invitation via le lien ci-dessous.
+        subject: Vous avez reçu une invitation
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%B %d, %Y %I:%M %p"
