@@ -38,28 +38,26 @@
 </div>
 
 <div class="crayons-field mt-6 align-left">
-  <%= label_tag :invite_only_mode, class: "crayons-field__label", aria: { label: "Who can join this community?" } do %>
-    Who can join this community?
-  <% end %>
-
-  <div className="crayons-field crayons-field--radio">
-    <%= radio_button_tag :invite_only_mode, "0", class: "crayons-field crayons-field--radio", required: true %>
-    <%= label_tag :invite_only_mode, "Everyone", value: "false" %>
-    <br>
-    <%= radio_button_tag :invite_only_mode, "1", class: "crayons-field crayons-field--radio", required: true %>
-    <%= label_tag :invite_only_mode, "Only people who are invited", value: "true" %>
-  </div>
+  <fieldset aria-describedby="section-description">
+    <legend class="fs-l">Who can join this community?</legend>
+    <div>
+      <%= radio_button_tag :invite_only_mode, "0", class: "crayons-field crayons-field--radio", required: true %>
+      <label for="invite_only_mode_0">Everyone</label>
+      <br>
+      <%= radio_button_tag :invite_only_mode, "1", class: "crayons-field crayons-field--radio", required: true %>
+      <label for="invite_only_mode_1">Only people who are invited</label>
+    </div>
+  </fieldset>
 
 <div class="crayons-field mt-6 align-left">
-  <%= label_tag :public, class: "crayons-field__label", aria: { label: "Who can view content in this community?" } do %>
-    Who can view content in this community?
-  <% end %>
-
-  <div className="crayons-field crayons-field--radio">
-    <%= radio_button_tag :public, "0", class: "crayons-field crayons-field--radio", required: true %>
-    <%= label_tag :public, "Everyone", value: "false" %>
-    <br>
-    <%= radio_button_tag :public, "1", class: "crayons-field crayons-field--radio", required: true %>
-    <%= label_tag :public, "Members only", value: "true" %>
+  <fieldset aria-describedby="section-description">
+    <legend class="fs-l">Who can view content in this community?</legend>
+    <div>
+      <%= radio_button_tag :public, "0", class: "crayons-field crayons-field--radio", required: true %>
+      <label for="public_0">Everyone</label>
+      <br>
+      <%= radio_button_tag :public, "1", class: "crayons-field crayons-field--radio", required: true %>
+      <label for="public_1">Members only</label>
+    </div>
   </div>
 </div>

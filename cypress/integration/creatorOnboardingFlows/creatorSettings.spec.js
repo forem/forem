@@ -35,15 +35,17 @@ describe('Creator Setup Page', () => {
     cy.findByRole('textbox', { name: /brand color/i }).should('be.visible');
 
     // should contain a 'Who can join this community?' radio selector field and allow selection upon click
-    cy.findByText(/^Who can join this community/).should('be.visible');
-    cy.findAllByRole('radio').first().check('0');
+    cy.findByRole('group', { name: /^Who can join this community/i }).should(
+      'be.visible',
+    );
+    cy.findAllByRole('radio', { name: /everyone/i }).check();
     cy.findAllByRole('radio').should('be.checked');
 
     // should contain a 'Who can view content in this community?' radio selector field and allow selection upon click
-    cy.findByText(/^Who can view content in this community/).should(
-      'be.visible',
-    );
-    cy.findAllByRole('radio').check('0');
+    cy.findByRole('group', {
+      name: /^Who can view content in this community/i,
+    }).should('be.visible');
+    cy.findAllByRole('radio', { name: /members only/i }).check();
     cy.findAllByRole('radio').should('be.checked');
 
     // should redirect the creator to the home page when the form is completely filled out and 'Finish' is clicked
@@ -59,6 +61,14 @@ describe('Creator Setup Page', () => {
     );
     cy.findByRole('button', { name: /logo/i }).should('have.attr', 'required');
     cy.findByRole('textbox', { name: /brand color/i }).should(
+      'have.attr',
+      'required',
+    );
+    cy.findByRole('radio', { name: /everyone/i }).should(
+      'have.attr',
+      'required',
+    );
+    cy.findByRole('radio', { name: /members only/i }).should(
       'have.attr',
       'required',
     );
