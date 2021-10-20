@@ -1,11 +1,11 @@
 <div class="form-group">
   <%= form.label :name %>
-  <%= form.text_field :name, class: "form-control" %>
+  <%= form.text_field :name, class: "form-control", required: true %>
   <div class="alert alert-info">A friendly name for the navigation link</div>
 </div>
 <div class="form-group">
   <%= form.label :url %>
-  <%= form.text_field :url, class: "form-control" %>
+  <%= form.text_field :url, class: "form-control", pattern: "^(https?:\/\/|\/)\w+\.[^\s]+$|^\/[^\s]*$", title: "The URL can be absolute by beginning with http/s or it can be relative beginning with a /", required: true %>
   <div class="alert alert-info">A full (external) or relative (internal) URL for the link</div>
 </div>
 <div class="form-group" data-controller="svg-icon-upload">
@@ -18,7 +18,7 @@
 
     <input
       type="file" accept="image/svg+xml" class="form-control-file"
-      data-action="svg-icon-upload#selectSvgIcon" />
+      data-action="svg-icon-upload#selectSvgIcon" required="true" />
 
     <div class="alert alert-info">An SVG icon should be uploaded</div>
     <div data-svg-icon-upload-target="svgIconMessageValidate"></div>
