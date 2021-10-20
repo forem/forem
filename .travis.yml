@@ -91,7 +91,18 @@ jobs:
         - bin/test-console-check
         - yarn build-storybook
     - stage: Test
-      name: "E2E Seeded"
+      name: "E2E Seeded Node 0"
+      env:
+        - KNAPSACK_PRO_CI_NODE_TOTAL=2
+        - KNAPSACK_PRO_CI_NODE_INDEX=0
+      script:
+        - bundle exec rails db:create db:schema:load assets:precompile
+        - yarn cypress install
+        - bin/e2e-ci
+    - stage: Test
+      name: "E2E Seeded Node 1"
+      - KNAPSACK_PRO_CI_NODE_TOTAL=2
+      - KNAPSACK_PRO_CI_NODE_INDEX=1
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
