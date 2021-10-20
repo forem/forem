@@ -1,0 +1,76 @@
+---
+ja:
+  views:
+    auth:
+      background: forem 背景
+      create:
+        aria_label: 新しいアカウントを作る
+        text: アカウント登録
+      creator:
+        text1: Forem の世界があなたを待っています。
+        text2: まずあなたの管理者アカウントを作りましょう。
+        text3: それから Forem の設定へご案内します。
+        hint:
+          aria_label: ユーザー名を編集
+          icon: ユーザー名を編集
+          text_html: "%{start}あなたのユーザー名は\_%{end}%{button}%{start}\_です%{end}"
+        submit: 私のアカウントを作成
+      login:
+        aria_label: ログイン
+        text: ログイン
+        continue: 次へ
+        forgot: パスワードを忘れた
+      provider:
+        text: "%{provider} から%{action}"
+        login: ログイン
+        signup: 登録
+        email:
+          icon: メールアドレス
+          text: メールアドレスで登録
+      register:
+        errors:
+          other: 問題が %{count} 件発生しました
+        allow:
+          one_html: "<strong>@%{domain}</strong> アドレスからのみ登録を受け付けています。"
+          list: 以下のアドレスからのみ登録を受け付けています。
+        create: アカウントを作る
+        field:
+          name:
+            aria_label: 名前
+            label: 名前
+          username:
+            aria_label: ユーザー名
+            desc: ユーザー名には英数小文字と半角アンダーバーのみ使用できます。長さは 30 文字までです。
+            label: ユーザー名
+          email:
+            aria_label: メールアドレス
+            label: メールアドレス
+            placeholder: john@example.com
+          password:
+            aria_label: パスワード
+            desc: 8 文字以上
+            label: パスワード
+            placeholder: "••••••••"
+            hide: パスワードを表示
+            show: パスワードを隠す
+          confirm:
+            aria_label: パスワードを再入力
+            label: パスワードを再入力
+          required: "* は必須項目"
+        secret:
+          label: 新しい Forem の暗証コード
+          placeholder: Forem ホストから伝えられた通り入力
+        submit: 登録する
+      wizard:
+        meta:
+          title: Forem を始めましょう
+        heading: Forem の世界があなたを待っています
+        step_1: まずアカウントを作成します。これが最初の super admin になります。
+        step_2_html: 以下から登録を済ませると、%{path} でサイトの設定が行えます。
+        step_3: 管理者はたくさんのことができます。少しずつ学んでいきましょう。
+        step_4: わからないことがあったら、Forem 開発チームにお尋ねください！
+        step_5: "For Empowering Community 🌱"
+      tagline: 交流や便利な機能を利用するにはログイン
+      title:
+        text_html: <a href="/">%{name}</a> is a community of %{maybe_size}amazing %{label}
+        size: "%{num} "
