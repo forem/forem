@@ -84,15 +84,15 @@ RSpec.describe Users::Setting, type: :model do
       end
     end
 
-    describe "#config_feed" do
+    describe "#config_homepage_feed" do
       it "accepts valid feed type" do
-        setting.config_feed = 1
+        setting.config_homepage_feed = 1
         expect(setting).to be_valid
         expect(setting.latest_feed?).to be true
       end
 
       it "does not accept invalid feed type" do
-        expect { setting.config_feed = 10 }.to raise_error(ArgumentError)
+        expect { setting.config_homepage_feed = 10 }.to raise_error(ArgumentError)
       end
     end
 
