@@ -74,7 +74,7 @@
       When adding GIFs to posts and comments, please note that there is a limit of 200 megapixels per frame/page.
       <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_220,q_auto,w_220/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" loading="lazy" />
     </p>
-    <pre>![Alt text of image](put-link-to-image-here)</pre>
+    <pre>![Image description](put-link-to-image-here)</pre>
     <figure>
         <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_50,q_auto,w_50/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" loading="lazy" />
         <figcaption>You can even add a caption using the HTML <code>figcaption</code> tag!</figcaption>
@@ -97,8 +97,8 @@
     <%= render partial: "editor_guide_h3", locals: { id: "alt-text-for-images", title: "Providing alternative descriptions for images" } %>
     <p>Some users might not be able to see or easily process images that you use in your posts. Providing an alternative description for an image helps make sure that everyone can understand your post, whether they can see the image or not.</p>
     <p>When you upload an image in the editor, you will see the following text to copy and paste into your post:</p>
-    <pre>![Alt Text](/file-path/my-image.png)</pre>
-    <p>Replace the "Alt Text" in square brackets with a description of your image - for example:</p>
+    <pre>![Image description](/file-path/my-image.png)</pre>
+    <p>Replace the "Image description" in square brackets with a description of your image - for example:</p>
     <pre>![A pie chart showing 40% responded "Yes", 50% responded "No" and 10% responded "Not sure"](/file-path/my-image.png)</pre>
     <p>By doing this, if someone reads your post using an assistive device like a screen reader (which turns written content into spoken audio) they will hear the description you entered.</p>
 

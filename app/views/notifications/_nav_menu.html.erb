@@ -1,27 +1,45 @@
+<% no_filter = params[:filter].blank? %>
+<% org_filter = params[:filter].to_s.match?(/^org$/i) %>
+<% comments_filter = params[:filter].to_s.match?(/^comments$/i) %>
+<% user_comments = comments_filter && params[:org_id].blank? %>
+<% user_posts = params[:filter].to_s.match?(/^posts$/i) && params[:org_id].blank? %>
+
 <nav class="hidden m:block pt-4" aria-label="Notifications">
   <div>
     <% if @organizations.present? %>
       <h3 class="crayons-subtitle-3 mb-4 pl-2"><%= @user.name %></h3>
     <% end %>
-    <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].blank? %>" href="/notifications">
+
+    <a
+      class="crayons-link crayons-link--block <%= "crayons-link--current" if no_filter %>"
+      href="<%= notifications_path %>">
       <%= t("core.all") %>
     </a>
-    <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">
-      <%= t("core.comment").pluralize %>
+    <a
+      class="crayons-link crayons-link--block <%= "crayons-link--current" if user_comments %>"
+      href="<%= notifications_filter_path(:comments) %>">
+      <%= t("core.comments") %>
     </a>
-    <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
-      <%= t("core.post").pluralize %>
+    <a
+      class="crayons-link crayons-link--block <%= "crayons-link--current" if user_posts %>"
+      href="<%= notifications_filter_path(:posts) %>">
+      <%= t("core.posts") %>
     </a>
   </div>
+
   <% if @organizations.present? %>
     <% @organizations.each do |org| %>
       <div class="pt-6">
         <h3 class="crayons-subtitle-3 mb-4 pl-2"><%= org.name %></h3>
-        <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
+        <a
+          class="crayons-link crayons-link--block <%= "crayons-link--current" if org_filter && params[:org_id].to_i == org.id %>"
+          href="<%= notifications_filter_org_path(filter: :org, org_id: org.id) %>">
           <%= t("core.all") %>
         </a>
-        <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
-          <%= t("core.comment").pluralize %>
+        <a
+          class="crayons-link crayons-link--block <%= "crayons-link--current" if comments_filter && params[:org_id].to_i == org.id %>"
+          href="<%= notifications_filter_org_path(filter: :comments, org_id: org.id) %>">
+          <%= t("core.comments") %>
         </a>
       </div>
     <% end %>
@@ -31,9 +49,9 @@
 <nav class="block m:hidden px-4" aria-label="Notifications">
   <% if @organizations.present? %>
     <select id="notifications-filter__select" class="crayons-select mb-2">
-      <option value="/notifications"><%= @user.name %></option>
+      <option value="<%= notifications_path %>"><%= @user.name %></option>
       <% @organizations.each do |org| %>
-        <option value="/notifications/org/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %></option>
+        <option value="<%= notifications_filter_org_path(filter: :org, org_id: org.id) %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %></option>
       <% end %>
     </select>
   <% end %>
@@ -41,30 +59,49 @@
   <div class="crayons-tabs <%= "hidden" if params[:org_id].present? %>">
     <ul class="crayons-tabs__list">
       <li>
-        <a data-text="All" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].blank? %>" href="/notifications" aria-current="<%= "page" if params[:filter].blank? %>">
+        <a
+          data-text="All"
+          class="crayons-tabs__item <%= "crayons-tabs__item--current" if no_filter %>"
+          href="<%= notifications_path %>"
+          aria-current="<%= "page" if no_filter %>">
           <%= t("core.all") %>
         </a>
       </li>
       <li>
-        <a data-text="Comments" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments" aria-current="<%= "page" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>">
-          <%= t("core.comment").pluralize %>
+        <a
+          data-text="Comments"
+          class="crayons-tabs__item <%= "crayons-tabs__item--current" if user_comments %>"
+          href="<%= notifications_filter_path(:comments) %>"
+          aria-current="<%= "page" if user_comments %>">
+          <%= t("core.comments") %>
         </a>
       </li>
       <li>
-        <a data-text="Posts" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts" aria-current="<%= "page" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>">
-          <%= t("core.post").pluralize %>
+        <a
+          data-text="Posts"
+          class="crayons-tabs__item <%= "crayons-tabs__item--current" if user_posts %>"
+          href="<%= notifications_filter_path(:posts) %>"
+          aria-current="<%= "page" if user_posts %>">
+          <%= t("core.posts") %>
         </a>
       </li>
     </ul>
   </div>
+
   <% if @organizations.present? %>
     <% @organizations.each do |org| %>
       <div class="crayons-tabs <%= "hidden" unless params[:org_id].to_i == org.id %>">
-        <a data-text="All" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
+        <a
+          data-text="All"
+          class="crayons-tabs__item <%= "crayons-tabs__item--current" if org_filter && params[:org_id].to_i == org.id %>"
+          href="<%= notifications_filter_org_path(filter: :org, org_id: org.id) %>">
           <%= t("core.all") %>
         </a>
-        <a data-text="Comments" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
-          <%= t("core.comment").pluralize %>
+        <a
+          data-text="Comments"
+          class="crayons-tabs__item <%= "crayons-tabs__item--current" if comments_filter && params[:org_id].to_i == org.id %>"
+          href="<%= notifications_filter_org_path(filter: :comments, org_id: org.id) %>">
+          <%= t("core.comments") %>
         </a>
       </div>
     <% end %>

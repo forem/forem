@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
 function linksToMarkdownForm(imageLinks) {
-  return imageLinks.map((imageLink) => `![Alt Text](${imageLink})`).join('\n');
+  return imageLinks
+    .map((imageLink) => `![Image description](${imageLink})`)
+    .join('\n');
 }
 
 const CopyIcon = () => (

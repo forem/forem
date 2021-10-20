@@ -72,7 +72,7 @@ RSpec.describe "Podcast Create", type: :request do
     it "doesn't create with invalid attributes" do
       create(:podcast, slug: valid_attributes[:slug])
       post podcasts_path, params: { podcast: valid_attributes }
-      expect(response.body).to include("Suggest a Podcast")
+      expect(response.body).to include(I18n.t("podcasts.suggest_a_podcast"))
     end
 
     it "returns error if image file name is too long" do
@@ -80,14 +80,14 @@ RSpec.describe "Podcast Create", type: :request do
       allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
       valid_attributes[:image] = image
       post podcasts_path, params: { podcast: valid_attributes }
-      expect(response.body).to include("Suggest a Podcast")
+      expect(response.body).to include(I18n.t("podcasts.suggest_a_podcast"))
     end
 
     it "returns error if image is not a file" do
       image = "A String"
       valid_attributes[:image] = image
       post podcasts_path, params: { podcast: valid_attributes }
-      expect(response.body).to include("Suggest a Podcast")
+      expect(response.body).to include(I18n.t("podcasts.suggest_a_podcast"))
     end
 
     it "returns error if pattern_image file name is too long" do
@@ -95,14 +95,14 @@ RSpec.describe "Podcast Create", type: :request do
       allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
       valid_attributes[:pattern_image] = image
       post podcasts_path, params: { podcast: valid_attributes }
-      expect(response.body).to include("Suggest a Podcast")
+      expect(response.body).to include(I18n.t("podcasts.suggest_a_podcast"))
     end
 
     it "returns error if pattern_image is not a file" do
       image = "A String"
       valid_attributes[:pattern_image] = image
       post podcasts_path, params: { podcast: valid_attributes }
-      expect(response.body).to include("Suggest a Podcast")
+      expect(response.body).to include(I18n.t("podcasts.suggest_a_podcast"))
     end
   end
 end
