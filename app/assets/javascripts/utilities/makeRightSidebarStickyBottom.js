@@ -1,105 +1,110 @@
 function makeRightSidebarStickyBottom() {
-  const sidebar = document.getElementById('article-show-primary-sticky-nav');
   const isMobileDevice = screen.width <= 480;
-  const sidebarShowsEntirelyInViewport = elementInViewport(sidebar);
-  const lastChild = getLastSuggestedArticleElement(sidebar);
-  const sidebarWidth = lastChild.getBoundingClientRect().width;
+  const sidebar = document.getElementById('sidebar-content');
+  const sidebarShowsEntirelyInViewport = isCompletelyVisible(sidebar);
 
-  let lastScrollPositionTop = 0;
-  let sidebarPositionTop = 0;
-  let sidebarIsPositionFixed = false;
-
-  if (!sidebarShowsEntirelyInViewport && !isMobileDevice) {
-    sidebar.classList.remove('crayons-article-sticky');
-    window.addEventListener('scroll', throttle(handleScroll));
+  if (sidebarShowsEntirelyInViewport || isMobileDevice) {
+    return;
   }
 
+  window.addEventListener('scroll', handleScroll);
+
+  const containerPadding = 28;
+  const navBarHeight = 56;
+  const articleColumnDiv = document.getElementById('main-content');
+  const sidebarPlaceholder = document.getElementById('sidebar-placeholder');
+
+  // these values are used for calculating when to apply marginTop to the sidebar-placeholde
+  // and when to set the sidebar position as fixed or sticky
+  const initialShownSidebarHeight = window.innerHeight - sidebar.offsetTop;
+  const pixelsToReachBottomOfSidebar =
+    sidebar.offsetHeight - initialShownSidebarHeight;
+  const pixelsToReachBottomOfArticle =
+    articleColumnDiv.offsetHeight -
+    window.innerHeight +
+    articleColumnDiv.offsetTop;
+  const pixelsToOffsetToScrollTop = sidebar.offsetHeight - window.innerHeight;
+  const marginTopWhenReachedBottomOfArticle =
+    pixelsToReachBottomOfArticle -
+    pixelsToOffsetToScrollTop -
+    navBarHeight -
+    containerPadding;
+
+  sidebar.style.width = `${sidebar.offsetWidth}px`;
+  sidebar.classList.remove('crayons-article-sticky');
+
+  // variables to be set by scroll event listener
+  let lastScrollPosition = 0;
+  let setSidebarPosition = false;
+  let setSidebarStickyTop = false;
+  let distanceMovedDown = 0;
+
   function handleScroll() {
-    console.debug('Handling scroll'); // eslint-disable-line no-console
-    var st = window.scrollY;
-    const scrollingDown = st > lastScrollPositionTop;
+    const windowScrollY = window.pageYOffset;
+    const scrollingDown = windowScrollY > lastScrollPosition;
+    const distanceMovedDuringScroll = windowScrollY - lastScrollPosition;
+    distanceMovedDown += distanceMovedDuringScroll;
 
     if (scrollingDown) {
-      if (!sidebarIsPositionFixed) {
-        const reachedBottomOfSidebar =
-          window.innerHeight - lastChild.getBoundingClientRect().bottom > 8;
+      setSidebarStickyTop = false;
+      const reachedBottomOfSidebar =
+        distanceMovedDown >= pixelsToReachBottomOfSidebar;
+      if (reachedBottomOfSidebar) {
+        if (!setSidebarPosition) {
+          setSidebarPosition = true;
+          sidebar.style.position = 'fixed';
+          sidebar.style.bottom = `10px`; // so that it looks consistent from bottom
+          setSidebarPosition = true;
+        }
+      }
 
-        if (reachedBottomOfSidebar) {
-          sidebarPositionTop = sidebar.getBoundingClientRect().top;
-          if (!sidebarIsPositionFixed) {
-            sidebar.style.top = `${sidebarPositionTop}px`;
-            sidebar.style.position = 'fixed';
-            sidebar.style.width = `${sidebarWidth}px`;
-            sidebarIsPositionFixed = true;
+      const reachedBottomOfArticle =
+        windowScrollY >= pixelsToReachBottomOfArticle;
+      if (reachedBottomOfArticle) {
+        sidebarPlaceholder.style.marginTop = `${marginTopWhenReachedBottomOfArticle}px`;
+        sidebar.style.position = '';
+      }
+    } else {
+      if (setSidebarPosition) {
+        if (!setSidebarStickyTop) {
+          distanceMovedDown = 0;
+
+          // this condition is for handling the scenario when user scrolls back up when they reached the bottom of the article
+          // we don't want the resultant marginTop to cause the sidebar's div height to become longer than the original height.
+          const marginTop =
+            windowScrollY - pixelsToOffsetToScrollTop <
+            marginTopWhenReachedBottomOfArticle
+              ? windowScrollY - pixelsToOffsetToScrollTop
+              : marginTopWhenReachedBottomOfArticle;
+          sidebarPlaceholder.style.marginTop = `${marginTop}px`;
+          sidebar.style.position = '';
+          sidebar.style.bottom = '';
+          sidebar.style.top = '';
+          setSidebarPosition = false;
+        }
+      } else {
+        if (setSidebarStickyTop) {
+          sidebarPlaceholder.style.marginTop = `${windowScrollY}px`;
+          distanceMovedDown = 0;
+        } else {
+          const sidebarPlaceholderMarginTop =
+            -distanceMovedDown + navBarHeight + containerPadding;
+          const reachedTopOfSidebar =
+            sidebarPlaceholderMarginTop >= pixelsToReachBottomOfSidebar;
+
+          if (reachedTopOfSidebar) {
+            distanceMovedDown = 0;
+            sidebar.style.position = 'sticky';
+            setSidebarStickyTop = true;
           }
         }
       }
-    } else {
-      if (sidebarIsPositionFixed) {
-        const distanceMoved = st - lastScrollPositionTop;
-        sidebarPositionTop -= distanceMoved;
-        sidebar.style.top = `${sidebarPositionTop}px`;
-
-        // this ensures that the right sidebar will not be moving beyond the top of the article
-        const headerHeight = 56;
-        const layoutPadding = 24;
-        const sidebarStickyTopVal = headerHeight + layoutPadding;
-        const reachedTopOfArticle =
-          Math.abs(sidebarPositionTop) <= sidebarStickyTopVal;
-
-        if (reachedTopOfArticle) {
-          sidebar.style.removeProperty('position');
-          sidebar.style.removeProperty('top');
-          sidebarIsPositionFixed = false;
-        }
-      }
     }
 
-    lastScrollPositionTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+    lastScrollPosition = windowScrollY <= 0 ? 0 : windowScrollY; // For Mobile or negative scrolling
   }
 }
 
-function getLastSuggestedArticleElement(rightSidebar) {
-  let lastChild = rightSidebar;
-  while (lastChild.hasChildNodes()) {
-    lastChild = lastChild.lastElementChild;
-    if (lastChild.className == 'crayons-card crayons-card--secondary') {
-      break;
-    }
-  }
-  return lastChild;
-}
-
-function elementInViewport(el) {
-  var top = el.offsetTop;
-  var left = el.offsetLeft;
-  var width = el.offsetWidth;
-  var height = el.offsetHeight;
-
-  while (el.offsetParent) {
-    el = el.offsetParent;
-    top += el.offsetTop;
-    left += el.offsetLeft;
-  }
-
-  const bottomPadding = 10;
-  return (
-    top >= window.scrollY &&
-    left >= window.scrollX &&
-    top + height + bottomPadding <= window.scrollY + window.innerHeight &&
-    left + width <= window.scrollX + window.innerWidth
-  );
-}
-
-function throttle(callback, limit = 1) {
-  var wait = false;
-  return function () {
-    if (!wait) {
-      callback.call();
-      wait = true;
-      setTimeout(function () {
-        wait = false;
-      }, limit);
-    }
-  };
+function isCompletelyVisible(el) {
+  return el.offsetHeight < window.innerHeight;
 }

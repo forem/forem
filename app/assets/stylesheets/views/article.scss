@@ -291,6 +291,10 @@
   }
 }
 
+#article-sidebar {
+  height: fit-content;
+}
+
 .user-metadata-details {
   li + li {
     margin-top: var(--su-3);
