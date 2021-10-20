@@ -99,7 +99,6 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
   describe "#display_social_login?" do
     let(:twitter_provider_name) { :twitter }
-    let(:apple_provider_name) { :apple }
     let(:forem_provider_name) { :forem }
     let(:mobile_browser_ua) { "Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148" }
     let(:android_foremwebview_ua) do
