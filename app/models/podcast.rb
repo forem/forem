@@ -25,6 +25,7 @@ class Podcast < ApplicationRecord
   after_save :bust_cache
 
   scope :reachable, -> { where(id: PodcastEpisode.reachable.select(:podcast_id)) }
+  scope :featured, -> { where(featured: true) }
   scope :published, -> { where(published: true) }
   scope :available, -> { reachable.published }
   scope :eager_load_serialized_data, -> { includes(:user, :podcast, :tags) }

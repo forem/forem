@@ -270,7 +270,7 @@ export default class ConfigController extends Controller {
       const targetAuthDisableBtn = document.querySelector(
         '[data-enable-auth="true"]',
       );
-      targetAuthDisableBtn.parentElement.classList.add('crayons-tooltip');
+      targetAuthDisableBtn.parentElement.classList.add('crayons-hover-tooltip');
       targetAuthDisableBtn.parentElement.setAttribute(
         'data-tooltip',
         'To edit this, you must first enable Email address as a registration option',

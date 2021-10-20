@@ -1,6 +1,6 @@
 <%= javascript_packs_with_chunks_tag "postCommentsPage", defer: true %>
 <% if @root_comment.present? %>
-  <% title("#{@root_comment.title}") %>
+  <% title(@root_comment.title.to_s) %>
 <% else %>
   <% title("Discussion of #{@commentable.title}") %>
 <% end %>
