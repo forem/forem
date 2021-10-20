@@ -19,7 +19,8 @@ class AsyncInfoController < ApplicationController
           param: request_forgery_protection_token,
           token: form_authenticity_token,
           user: user_data,
-          creator: creator_data
+          creator: creator_data,
+          creator_onboarding: use_creator_onboarding
         }
       end
     end
@@ -65,6 +66,10 @@ class AsyncInfoController < ApplicationController
 
   def creator_data
     @user.creator?
+  end
+
+  def use_creator_onboarding
+    FeatureFlag.enabled?(:creator_onboarding) && creator_data
   end
 
   def user_cache_key
