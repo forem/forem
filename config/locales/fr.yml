@@ -156,5 +156,6 @@ fr:
     profile: Profil
   time:
     formats:
+      json: "%b %e, %Y"
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"

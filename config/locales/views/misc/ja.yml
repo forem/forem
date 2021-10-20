@@ -1,0 +1,29 @@
+---
+ja:
+  views:
+    email_subscriptions:
+      unsubscribe:
+        heading: "You have been unsubscribed from %{type}. 😔"
+        desc: You will no longer receive emails like this. If you'd like to re-subscribe or manage your full email preferences, please %{link}.
+        link: click here
+      invalid:
+        heading: Token expired or invalid
+        desc: Please %{signin} to manage your email preferences.
+        signin: sign-in
+    stats:
+      meta:
+        title: あなたの記事の統計情報
+      heading_html: 「%{article}」の統計
+      period:
+        aria_label: 分析期間
+        week: 今週
+        month: 今月
+        infinity: 全期間
+      readers: Readers Summary
+      followers: New Followers Summary
+      reactions: "Reactions Summary ❤🦄🔖"
+      comments: "Comments Summary 💬"
+      traffic:
+        text: "Traffic Source Summary 🚦"
+        source: Source
+        views: Views

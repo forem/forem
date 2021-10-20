@@ -1,0 +1,5 @@
+---
+ja:
+  time:
+    formats:
+      json: "%Y年%_m月%e日"

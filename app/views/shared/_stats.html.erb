@@ -1,13 +1,13 @@
-<nav class="crayons-tabs crayons-tabs--analytics" aria-label="Analytics period">
+<nav class="crayons-tabs crayons-tabs--analytics" aria-label="<%= t("views.stats.period.aria_label") %>">
   <ul class="crayons-tabs__list">
     <li>
-      <button data-text="Week" class="crayons-tabs__item crayons-tabs__item--current" id="week-button" aria-current="page">Week</button>
+      <button data-text="<%= t("views.stats.period.week") %>" class="crayons-tabs__item crayons-tabs__item--current" id="week-button" aria-current="page"><%= t("views.stats.period.week") %></button>
     </li>
     <li>
-      <button data-text="Month" class="crayons-tabs__item" id="month-button">Month</button>
+      <button data-text="<%= t("views.stats.period.month") %>" class="crayons-tabs__item" id="month-button"><%= t("views.stats.period.month") %></button>
     </li>
     <li>
-      <button data-text="Infinity" class="crayons-tabs__item" id="infinity-button">Infinity</button>
+      <button data-text="<%= t("views.stats.period.infinity") %>" class="crayons-tabs__item" id="infinity-button"><%= t("views.stats.period.infinity") %></button>
     </li>
   </ul>
 </nav>
@@ -29,13 +29,13 @@
 
 <div class="graphs my-5">
   <div class="graphs__col crayons-card mx-5">
-    <h2 class="my-5">Readers Summary</h2>
+    <h2 class="my-5"><%= t("views.stats.readers") %></h2>
     <div class="charts-container">
       <canvas id="readers-chart"></canvas>
     </div>
   </div>
   <div class="graphs__col crayons-card mx-5">
-    <h2 class="my-5">New Followers Summary</h2>
+    <h2 class="my-5"><%= t("views.stats.followers") %></h2>
     <div class="charts-container">
       <canvas id="followers-chart"></canvas>
     </div>
@@ -44,13 +44,13 @@
 
 <div class="graphs mb-5">
   <div class="graphs__col crayons-card mx-5">
-    <h2 class="my-5">Reactions Summary ❤🦄🔖</h2>
+    <h2 class="my-5"><%= t("views.stats.reactions") %></h2>
     <div class="charts-container">
       <canvas id="reactions-chart"></canvas>
     </div>
   </div>
   <div class="graphs__col crayons-card mx-5">
-    <h2 class="my-5">Comments Summary 💬</h2>
+    <h2 class="my-5"><%= t("views.stats.comments") %></h2>
     <div class="charts-container">
       <canvas id="comments-chart"></canvas>
     </div>
@@ -58,12 +58,12 @@
 </div>
 
 <div class="w-90 crayons-card mx-5 mb-5 p-5">
-  <h2 class="align-center mb-5">Traffic Source Summary 🚦</h2>
+  <h2 class="align-center mb-5"><%= t("views.stats.traffic.text") %></h2>
   <table class="w-100 m-auto crayons-table">
     <thead>
       <tr>
-        <th class="align-left">Source</th>
-        <th class="align-right">Views</th>
+        <th class="align-left"><%= t("views.stats.traffic.source") %></th>
+        <th class="align-right"><%= t("views.stats.traffic.views") %></th>
       </tr>
     </thead>
 

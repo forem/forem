@@ -133,5 +133,6 @@ en:
     profile: Profile
   time:
     formats:
+      json: "%b %e, %Y"
       short: "%b %-e"
       short_with_year: "%b %-e, %Y"
